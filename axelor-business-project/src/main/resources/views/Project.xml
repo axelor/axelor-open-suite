@@ -229,6 +229,26 @@
           reload-dotted="true"/>
       </panel>
 
+      <!-- MGM-106 Record invoicing data panel for freidleistung projects -->
+      <panel title="Record Invoicing Data" name="recordInvoicingDataPanel">
+        <panel name="subcontractorInfoPanel" title="Subcontractor" colSpan="12">
+          <field name="subcontractor"
+            domain="self.isSupplier = true AND :company member of self.companySet"/>
+        </panel>
+        <panel name="subcontractorQualificationPanel" title="Qualifications" colSpan="12">
+          <panel-dashlet name="subcontractorTaskDashlet" title="Subcontractor Task"
+            action="mgm-action-business-project-fremdleistung-subcontractor-task-dashlet"
+            colSpan="12" canNew="true" x-show-bars="true" canDelete="true"/>
+        </panel>
+
+        <panel name="subcontractExpensesPanel" title="Project extra expenses" colSpan="12">
+          <panel-dashlet name="subcontractExtraExpenseDashlet"
+            title="Project extra expenses" canEdit="true" readonly="false"
+            action="mgm-action-project-extra-expense-line-dashlet" colSpan="12" canNew="true"
+            x-show-bars="true" canDelete="true"/>
+        </panel>
+      </panel>
+
       <!-- MGM-100 expense reporting -->
       <panel title="4 Expense Report" name="expenseReportsPanel">
         <panel-dashlet name="projectExpenseDashlet" title="Project Expenses"
@@ -708,8 +728,13 @@
         <field name="$totalTasksReported" title="Total Number of Tasks reported"
           readonly="true" depends="id" colSpan="4">
           <viewer depends="$totalTasksReported"><![CDATA[
-    <span style="color: {{ !record.$totalTasksReported || parseInt(record.$totalTasksReported.split('/')[0]) < parseInt(record.$totalTasksReported.split('/')[1]) ? 'red' : 'green' }}">
-        {{ record.$totalTasksReported || '0/0' }}
+    <span style="color: {{
+      !record.$totalTasksReported ? 'red' :
+      (typeof record.$totalTasksReported === 'string' && record.$totalTasksReported.includes('/')) ?
+        (parseInt(record.$totalTasksReported.split('/')[0]) < parseInt(record.$totalTasksReported.split('/')[1]) ? 'red' : 'green') :
+        (record.$totalTasksReported == 0 ? 'red' : 'inherit')
+    }}">
+      {{ record.$totalTasksReported || '0' }}
     </span>
   ]]></viewer>
         </field>

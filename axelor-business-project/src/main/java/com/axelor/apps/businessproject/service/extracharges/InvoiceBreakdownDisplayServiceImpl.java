@@ -167,7 +167,7 @@ public class InvoiceBreakdownDisplayServiceImpl implements InvoiceBreakdownDispl
               line.getExTaxTotal(),
               false,
               null,
-              line.getDescription()));
+              null));
     }
     return sequence;
   }

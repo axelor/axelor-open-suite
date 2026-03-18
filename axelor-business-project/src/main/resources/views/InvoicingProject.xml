@@ -73,6 +73,13 @@
           showIf="logTimesSet &amp;&amp; logTimesSet.length &gt; 0" readonlyIf="invoice"
           name="logTimesSetPanel"/>
 
+        <panel-related title="Subcontractor tasks" field="subcontractorTaskSet"
+          colSpan="12" canNew="false" canEdit="false" canSelect="false"
+          grid-view="mgm-fremdleistung-project-subcontractor-task-grid"
+          form-view="mgm-fremdleistung-project-subcontractor-task-form"
+          showIf="subcontractorTaskSet &amp;&amp; subcontractorTaskSet.length &gt; 0"
+          readonlyIf="invoice" name="subcontractorTaskSetPanel"/>
+
         <panel-related title="Expenses" field="expenseLineSet" colSpan="12"
           canNew="false" canEdit="false" canSelect="false" form-view="expense-line-form"
           grid-view="expense-line-invoicing-project-grid"

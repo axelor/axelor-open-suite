@@ -4,18 +4,22 @@ import static com.axelor.apps.businessproject.exception.BusinessProjectException
 
 import com.axelor.apps.base.AxelorAlertException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.businessproject.db.ProjectType;
 import com.axelor.apps.businessproject.db.repo.ProjectStatusBusinessProjectRepository;
+import com.axelor.apps.businessproject.db.repo.SubcontractorTaskRepository;
 import com.axelor.apps.businessproject.db.repo.TaskStatusBusinessProjectRepository;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.taskreport.TaskMemberReportService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectStatus;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,13 +175,29 @@ public class ProjectStatusChangeServiceImpl extends TaskStatusChangeServiceImpl
   }
 
   protected boolean readyForValidation(Project project) {
-    if (project == null || project.getProjectTaskList() == null) {
+    if (project == null) {
       return false;
     }
 
-    return project.getProjectTaskList().stream()
-        .filter(task -> !Boolean.TRUE.equals(task.getIsTemplate()))
-        .allMatch(task -> Beans.get(TaskMemberReportService.class).hasTaskMemberReport(task));
+    ProjectType projectType = project.getProjectType();
+
+    boolean allExpensesSent = projectService.allExpensesSent(project);
+
+    if (projectType != null && Boolean.TRUE.equals(projectType.getRequiresTask())) {
+      List<ProjectTask> tasks = project.getProjectTaskList();
+      if (tasks == null || tasks.isEmpty()) {
+        return false;
+      }
+
+      boolean allTaskReported =
+          project.getProjectTaskList().stream()
+              .filter(task -> !Boolean.TRUE.equals(task.getIsTemplate()))
+              .allMatch(task -> Beans.get(TaskMemberReportService.class).hasTaskMemberReport(task));
+
+      return allExpensesSent && allTaskReported;
+    }
+
+    return allExpensesSent;
   }
 
   protected boolean readyForInProgress(Project project) throws AxelorAlertException {
@@ -188,9 +208,23 @@ public class ProjectStatusChangeServiceImpl extends TaskStatusChangeServiceImpl
     String taskNewStatus = getTaskStatus(TASK_STATUS_NEW).getName();
 
     // Project should be in progress if any task is not New
-    return project.getProjectTaskList().stream()
-        .filter(task -> !Boolean.TRUE.equals(task.getIsTemplate()))
-        .anyMatch(task -> !taskNewStatus.equals(task.getStatus().getName()));
+    boolean anyTaskStarted =
+        project.getProjectTaskList().stream()
+            .filter(task -> !Boolean.TRUE.equals(task.getIsTemplate()))
+            .anyMatch(task -> !taskNewStatus.equals(task.getStatus().getName()));
+
+    boolean hasSubcontractorTasks =
+        Beans.get(SubcontractorTaskRepository.class)
+                .all()
+                .filter("self.project.id = :projectId")
+                .bind("projectId", project.getId())
+                .count()
+            > 0;
+
+    return projectService.hasExtraExpenses(project)
+        || anyTaskStarted
+        || hasSubcontractorTasks
+        || projectService.hasExpense(project);
   }
 
   protected boolean isInvoicedOrPaid(Project project) {

@@ -31,6 +31,8 @@ import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.db.ProjectType;
 import com.axelor.apps.businessproject.db.TaskReport;
+import com.axelor.apps.businessproject.db.repo.ExtraExpenseLineRepository;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
@@ -93,6 +95,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected SaleOrderStockLocationService saleOrderStockLocationService;
   protected ProjectTimeUnitService projectTimeUnitService;
   protected SaleOrderGeneratorService saleOrderGeneratorService;
+  protected ExpenseRepository expenseRepository;
 
   public static final int BIG_DECIMAL_SCALE = 2;
   public static final String FA_LEVEL_UP = "arrow-90deg-up";
@@ -118,7 +121,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       UnitConversionForProjectService unitConversionForProjectService,
       SaleOrderStockLocationService saleOrderStockLocationService,
       ProjectTimeUnitService projectTimeUnitService,
-      SaleOrderGeneratorService saleOrderGeneratorService) {
+      SaleOrderGeneratorService saleOrderGeneratorService,
+      ExpenseRepository expenseRepository) {
     super(
         projectRepository,
         projectStatusRepository,
@@ -138,6 +142,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     this.saleOrderStockLocationService = saleOrderStockLocationService;
     this.projectTimeUnitService = projectTimeUnitService;
     this.saleOrderGeneratorService = saleOrderGeneratorService;
+    this.expenseRepository = expenseRepository;
   }
 
   @Override
@@ -330,7 +335,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     if (project == null) return false;
 
     List<Expense> expenses =
-        Beans.get(ExpenseRepository.class)
+        expenseRepository
             .all()
             .filter("self.project.id = :projectId")
             .bind("projectId", project.getId())
@@ -368,7 +373,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
   @Override
   public long getProjectExpenseCount(Project project) {
-    return Beans.get(ExpenseRepository.class)
+    return expenseRepository
         .all()
         .filter("self.project.id = :projectId")
         .bind("projectId", project.getId())
@@ -391,6 +396,34 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     return (allTimesheetLinesValidated(project) && allExpensesValidated(project));
   }
 
+  @Override
+  public Boolean allExpensesSent(Project project) {
+    List<Expense> expenses =
+        expenseRepository
+            .all()
+            .filter("self.project.id = :projectId")
+            .bind("projectId", project.getId())
+            .fetch();
+
+    if (expenses.isEmpty()) {
+      return Boolean.FALSE;
+    }
+    return expenses.stream()
+        .allMatch(
+            expense ->
+                Objects.equals(expense.getStatusSelect(), ExpenseRepository.STATUS_CONFIRMED));
+  }
+
+  @Override
+  public Boolean hasExtraExpenses(Project project) {
+    return Beans.get(ExtraExpenseLineRepository.class)
+            .all()
+            .filter("self.project.id = :projectId")
+            .bind("projectId", project.getId())
+            .count()
+        > 0;
+  }
+
   protected List<TimesheetLine> getAllTimesheetLines(Project project) {
     return Beans.get(TimesheetLineRepository.class)
         .all()
@@ -399,8 +432,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         .fetch();
   }
 
-  protected boolean hasExpense(Project project) {
-    return Beans.get(ExpenseRepository.class)
+  @Override
+  public boolean hasExpense(Project project) {
+    return expenseRepository
             .all()
             .filter("self.project.id = :projectId")
             .bind("projectId", project.getId())
@@ -1018,5 +1052,24 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     if (hasChanged) {
       JpaRepository.of(TaskReport.class).persist(taskReport);
     }
+  }
+
+  @Override
+  public Partner getSubcontractor(Project project) throws AxelorException {
+    if (project == null || project.getSubcontractor() == null) return null;
+
+    Partner subcontractor = project.getSubcontractor();
+
+    if (!Boolean.TRUE.equals(subcontractor.getIsSupplier())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          BusinessProjectExceptionMessage.BUSINESS_PROJECT_SUBCONTRACTOR_IS_NOT_A_SUPPLIER,
+          subcontractor.getFullName(),
+          project.getFullName());
+    }
+
+    log.debug("Subcontractor ... {}", subcontractor.getFullName());
+
+    return subcontractor;
   }
 }

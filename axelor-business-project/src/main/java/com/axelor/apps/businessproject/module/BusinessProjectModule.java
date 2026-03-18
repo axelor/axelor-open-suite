@@ -66,6 +66,8 @@ import com.axelor.apps.businessproject.service.statuschange.ProjectStatusChangeS
 import com.axelor.apps.businessproject.service.statuschange.ProjectStatusChangeServiceImpl;
 import com.axelor.apps.businessproject.service.statuschange.TaskStatusChangeService;
 import com.axelor.apps.businessproject.service.statuschange.TaskStatusChangeServiceImpl;
+import com.axelor.apps.businessproject.service.subcontractortask.SubcontractorTaskInvoiceService;
+import com.axelor.apps.businessproject.service.subcontractortask.SubcontractorTaskInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.taskreport.*;
 import com.axelor.apps.contract.service.ContractInvoicingServiceImpl;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
@@ -213,5 +215,8 @@ public class BusinessProjectModule extends AxelorModule {
     bind(TaskMemberReportCreateService.class).to(TaskMemberReportCreateServiceImpl.class);
     bind(ExtraExpenseLineService.class).to(ExtraExpenseLineServiceImpl.class);
     bind(ProjectTypeRepository.class).to(ProjectTypeBusinessProjectRepository.class);
+    bind(SubcontractorTaskInvoiceService.class).to(SubcontractorTaskInvoiceServiceImpl.class);
+    bind(ExtraExpenseLineRepository.class).to(ExtraExpenseLineBusinessProjectRepository.class);
+    bind(SubcontractorTaskRepository.class).to(SubcontractorTaskBusinessProjectRepository.class);
   }
 }

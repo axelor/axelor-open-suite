@@ -17,6 +17,9 @@
     <boolean name="requiresValidation" title="Requires Validation" default="false"/>
     <boolean name="requiresInvoicing" title="Requires Invoicing" default="true"/>
     <boolean name="requiresConfirmation" title="Requires confirmation" default="false"/>
+    <boolean name="requiresRecordInvoicingData" title="Requires record invoicing data"
+      default="false"/>
+
     <integer name="defaultExpenseCategory" selection="hr.expense.category.select"
       default="1"/>
 

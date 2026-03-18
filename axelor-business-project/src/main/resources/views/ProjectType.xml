@@ -20,12 +20,14 @@
       <field name="name" required="true"/>
       <field name="sequence" readonlyIf="id"/>
     </panel>
-    <panel name="flagsPanel" title="Behavior">
+    <panel name="flagsPanel" title="Behavior"
+      help="This boolean flags will determine which panel tabs to show per project type on the project form and the behaviour of the project of this type in during computation">
       <field name="requiresTask" colSpan="6"/>
       <field name="requiresExpense" colSpan="6"/>
       <field name="requiresTaskReport" colSpan="6"/>
       <field name="requiresValidation" colSpan="6"/>
       <field name="requiresInvoicing" colSpan="6"/>
+      <field name="requiresRecordInvoicingData"/>
     </panel>
     <panel name="configurations" title="Mapping configurations" colSpan="12">
       <field name="defaultExpenseCategory" colSpan="6"/>

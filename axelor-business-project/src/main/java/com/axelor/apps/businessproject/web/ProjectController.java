@@ -29,13 +29,11 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.dms.DMSFileService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.businessproject.db.InvoicingProject;
-import com.axelor.apps.businessproject.db.ProjectType;
-import com.axelor.apps.businessproject.db.TaskMemberReport;
-import com.axelor.apps.businessproject.db.TaskReport;
+import com.axelor.apps.businessproject.db.*;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.db.repo.ProjectTypeBusinessProjectRepository;
 import com.axelor.apps.businessproject.db.repo.ProjectTypeRepository;
+import com.axelor.apps.businessproject.db.repo.SubcontractorTaskRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.*;
 import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateService;
@@ -51,6 +49,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.dms.db.DMSFile;
@@ -66,9 +65,8 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,6 +80,7 @@ public class ProjectController {
   @Inject protected DMSFileService dmsFileService;
   @Inject protected MetaFileRepository metaFileRepository;
   @Inject protected TaskReportService taskReportService;
+  @Inject protected ProjectRepository projectRepository;
 
   public void generateQuotation(ActionRequest request, ActionResponse response) {
     try {
@@ -108,7 +107,7 @@ public class ProjectController {
               .add("form", "purchase-order-form")
               .add("grid", "purchase-order-quotation-grid")
               .param("search-filters", "purchase-order-filters")
-              .context("_project", Beans.get(ProjectRepository.class).find(project.getId()))
+              .context("_project", projectRepository.find(project.getId()))
               .map());
     }
   }
@@ -128,7 +127,7 @@ public class ProjectController {
   public void showInvoicingProjects(ActionRequest request, ActionResponse response) {
 
     Project project = request.getContext().asType(Project.class);
-    project = Beans.get(ProjectRepository.class).find(project.getId());
+    project = projectRepository.find(project.getId());
     InvoicingProjectService invoicingProjectService = Beans.get(InvoicingProjectService.class);
     InvoicingProjectRepository invoicingProjectRepository =
         Beans.get(InvoicingProjectRepository.class);
@@ -325,7 +324,7 @@ public class ProjectController {
       return;
     }
 
-    Project project = Beans.get(ProjectRepository.class).find(Long.valueOf(projectId.toString()));
+    Project project = projectRepository.find(Long.valueOf(projectId.toString()));
     Company company = (Company) request.getContext().get("company");
     Partner clientPartner = (Partner) request.getContext().get("clientPartner");
     if (clientPartner == null || company == null) {
@@ -397,7 +396,7 @@ public class ProjectController {
     Project project = request.getContext().asType(Project.class);
 
     if (project.getId() != null) {
-      project = Beans.get(ProjectRepository.class).find(project.getId());
+      project = projectRepository.find(project.getId());
       long taskCount =
           project.getProjectTaskList().stream().filter(task -> !task.getIsTemplate()).count();
 
@@ -508,30 +507,70 @@ public class ProjectController {
     Project project = getProjectFromRequest(request);
     if (project == null) return;
 
-    TaskReport taskReport = taskReportService.getTaskReport(project);
-
-    String taskCount =
-        taskReport != null ? taskReportService.getReportedTaskCount(taskReport) : "0/0";
-
-    BigDecimal totalHours = BigDecimal.ZERO;
-
-    long dirtAllowanceCount = 0;
-
-    if (taskReport != null && taskReport.getTaskMemberReports() != null) {
-      totalHours = taskReport.getTotalWorkHours();
-      for (TaskMemberReport tmr : taskReport.getTaskMemberReports()) {
-        if (Boolean.TRUE.equals(tmr.getDirtAllowance())) {
-          dirtAllowanceCount++;
-        }
-      }
-    }
+    ProjectType projectType = project.getProjectType();
+    boolean requiresTask =
+        projectType != null && Boolean.TRUE.equals(projectType.getRequiresTask());
+    boolean hasRecordInvoiceData =
+        projectType != null && Boolean.TRUE.equals(projectType.getRequiresRecordInvoicingData());
 
     long expenseCount = projectService.getProjectExpenseCount(project);
-
-    response.setValue("$totalTasksReported", taskCount);
-    response.setValue("$totalHoursReported", totalHours);
-    response.setValue("$totalDirtAllowance", dirtAllowanceCount);
     response.setValue("$totalExpensesReported", expenseCount);
+
+    if (requiresTask) {
+      TaskReport taskReport = taskReportService.getTaskReport(project);
+
+      String taskCount =
+          taskReport != null ? taskReportService.getReportedTaskCount(taskReport) : "0/0";
+
+      BigDecimal totalHours = BigDecimal.ZERO;
+      long dirtAllowanceCount = 0;
+
+      if (taskReport != null && taskReport.getTaskMemberReports() != null) {
+        totalHours = taskReport.getTotalWorkHours();
+        for (TaskMemberReport tmr : taskReport.getTaskMemberReports()) {
+          if (Boolean.TRUE.equals(tmr.getDirtAllowance())) {
+            dirtAllowanceCount++;
+          }
+        }
+      }
+
+      response.setValue("$totalTasksReported", taskCount);
+      response.setValue("$totalHoursReported", totalHours);
+      response.setValue("$totalDirtAllowance", dirtAllowanceCount);
+      response.setAttr("projectSummaryPanel", "title", "Dirt Allowance");
+      response.setAttr("$totalDirtAllowance", "hidden", false);
+      response.setAttr("$totalTasksReported", "title", "Total Number of Tasks Reported");
+
+    } else if (hasRecordInvoiceData) {
+      List<SubcontractorTask> workLines =
+          Beans.get(SubcontractorTaskRepository.class)
+              .all()
+              .filter("self.project.id = :projectId")
+              .bind("projectId", project.getId())
+              .fetch();
+
+      long workLineCount = workLines.size();
+
+      BigDecimal totalHours =
+          workLines.stream()
+              .map(line -> line.getTimeSpent() != null ? line.getTimeSpent() : BigDecimal.ZERO)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+      response.setValue("$totalTasksReported", workLineCount);
+      response.setValue("$totalHoursReported", totalHours);
+      response.setAttr("projectSummaryPanel", "title", "Subcontractor Work");
+      response.setAttr("$totalDirtAllowance", "hidden", true);
+      response.setAttr("$totalTasksReported", "title", "Total Subcontractor Tasks");
+      response.setAttr("validatedItemsPanel", "title", "Items");
+      response.setAttr("$totalHoursToBill", "hidden", true);
+    } else {
+      response.setAttr("$totalTasksReported", "hidden", true);
+      response.setAttr("$totalHoursReported", "hidden", true);
+      response.setAttr("$totalDirtAllowance", "hidden", true);
+      response.setAttr("projectSummaryPanel", "title", "");
+      response.setAttr("validatedItemsPanel", "title", "Items");
+      response.setAttr("$totalHoursToBill", "hidden", true);
+    }
   }
 
   public void updateProjectStatus(ActionRequest request, ActionResponse response) {
@@ -543,6 +582,48 @@ public class ProjectController {
     } catch (AxelorAlertException e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setSubcontractorTaskDefaults(ActionRequest request, ActionResponse response) {
+    long projectId = ((Number) request.getContext().get("_projectId")).longValue();
+
+    if (projectId == 0L) {
+      return;
+    }
+
+    Project project = projectRepository.find(projectId);
+    if (project == null) {
+      return;
+    }
+
+    response.setValue("project", project);
+
+    try {
+      Partner subcontractor = projectService.getSubcontractor(project);
+      response.setValue("subcontractor", subcontractor);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e);
+    }
+
+    // Set employee domain based on project members + assignedTo
+    Set<User> members =
+        new HashSet<>(
+            Optional.ofNullable(project.getMembersUserSet()).orElse(Collections.emptySet()));
+    if (project.getAssignedTo() != null) {
+      members.add(project.getAssignedTo());
+    }
+
+    String employeeIds =
+        members.stream()
+            .map(User::getEmployee)
+            .filter(Objects::nonNull)
+            .map(e -> String.valueOf(e.getId()))
+            .collect(Collectors.joining(","));
+
+    response.setAttr(
+        "employee",
+        "domain",
+        employeeIds.isEmpty() ? "self.id IN (null)" : "self.id IN (" + employeeIds + ")");
   }
 
   public void getBilledHours(ActionRequest request, ActionResponse response) {
@@ -575,7 +656,8 @@ public class ProjectController {
     Project project = request.getContext().asType(Project.class);
 
     if (project == null || project.getId() == null) return null;
-    return Beans.get(ProjectRepository.class).find(project.getId());
+
+    return projectRepository.find(project.getId());
   }
 
   public void migrateProjectType(ActionRequest request, ActionResponse response) {
@@ -620,6 +702,11 @@ public class ProjectController {
               "taskReportsPanel",
               "Task Report",
               Boolean.TRUE.equals(projectType.getRequiresTaskReport())
+            },
+            new Object[] {
+              "recordInvoicingDataPanel",
+              "Record Invoicing Data",
+              Boolean.TRUE.equals(projectType.getRequiresRecordInvoicingData())
             },
             new Object[] {
               "expenseReportsPanel",

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="mgm-subcontractor-task-grid" title="Subcontractor Services"
+    model="com.axelor.apps.businessproject.db.SubcontractorTask">
+    <field name="product"/>
+    <field name="employee"/>
+    <field name="timeSpent"/>
+    <field name="comments"/>
+  </grid>
+
+  <grid name="mgm-fremdleistung-project-subcontractor-task-grid" title="Subcontractor Services"
+    model="com.axelor.apps.businessproject.db.SubcontractorTask">
+    <field name="product"/>
+    <field name="timeSpent"/>
+    <field name="comments"/>
+  </grid>
+
+  <form name="mgm-subcontractor-task-form" title="Subcontractor Service"
+    model="com.axelor.apps.businessproject.db.SubcontractorTask">
+    <panel name="mainPanel" title="Subcontractor Service Info">
+      <field name="product" required="true"
+        domain="self.isActivity = true AND self.dtype = 'Product'"/>
+      <field name="timeSpent"/>
+      <field name="employee" readonly="false"/>
+      <field name="project" hidden="true"/>
+      <field name="subContractor" hidden="true"/>
+    </panel>
+    <panel name="commentsPanel" title="Comments">
+      <field name="comments" showTitle="false" colSpan="12"/>
+    </panel>
+  </form>
+
+  <form name="mgm-fremdleistung-project-subcontractor-task-form" title="Subcontractor Service"
+    onNew="mgm-action-method-business-project-set-subcontractor-task-defaults"
+    model="com.axelor.apps.businessproject.db.SubcontractorTask">
+    <panel name="mainPanel" title="Subcontractor Service Info">
+      <field name="product" required="true"
+        domain="self.isActivity = true AND self.dtype = 'Product'"/>
+      <field name="timeSpent"/>
+      <field name="project" hidden="true"/>
+      <field name="subcontractor" hidden="true"/>
+    </panel>
+    <panel name="commentsPanel" title="Comments">
+      <field name="comments" showTitle="false" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-method
+    name="mgm-action-method-business-project-set-subcontractor-task-defaults">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="setSubcontractorTaskDefaults"/>
+  </action-method>
+
+  <action-view
+    name="mgm-action-business-project-fremdleistung-subcontractor-task-dashlet"
+    model="com.axelor.apps.businessproject.db.SubcontractorTask" title="Subcontractor Service">
+    <view type="grid" name="mgm-fremdleistung-project-subcontractor-task-grid"/>
+    <view type="form" name="mgm-fremdleistung-project-subcontractor-task-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="true"/>
+    <domain>
+      self.project.id = :_projectId
+    </domain>
+    <context name="_projectId" expr="eval: __this__.id"/>
+  </action-view>
+
+</object-views>
