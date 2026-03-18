@@ -38,7 +38,8 @@
       <button name="annualReportBtn" title="Show expenses annual report" showIf="id"
         onClick="action-employee-view-annual-report-wizard"/>
       <button onClick="action-employee-view-employee-planning" name="employeePlanningBtn"
-        title="Employee planning" if="__config__.app.getApp('production')?.getEmployeeScheduling()"/>
+        title="Employee planning" if-module="axelor-business-production"
+        if="__config__.app.getApp('production')?.getEmployeeScheduling()"/>
     </toolbar>
 
     <!-- New employee wizard -->
