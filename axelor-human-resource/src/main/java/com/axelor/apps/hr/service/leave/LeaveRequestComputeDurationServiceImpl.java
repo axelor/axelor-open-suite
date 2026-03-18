@@ -35,6 +35,7 @@ import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -408,7 +409,14 @@ public class LeaveRequestComputeDurationServiceImpl implements LeaveRequestCompu
     for (LeaveRequest leave : leaveList) {
       BigDecimal leaveHours = computeDuration(leave, date, date);
       if (leave.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
-        leaveHours = leaveHours.multiply(dayValueInHours);
+        WeeklyPlanning weeklyPlanning = getWeeklyPlanning(leave, leave.getEmployee());
+        BigDecimal dayValueInDays =
+            BigDecimal.valueOf(
+                weeklyPlanningService.getWorkingDayValueInDays(weeklyPlanning, date));
+        if (dayValueInDays.signum() != 0) {
+          leaveHours =
+              leaveHours.divide(dayValueInDays, 2, RoundingMode.HALF_UP).multiply(dayValueInHours);
+        }
       }
       totalLeaveHours = totalLeaveHours.add(leaveHours);
     }
