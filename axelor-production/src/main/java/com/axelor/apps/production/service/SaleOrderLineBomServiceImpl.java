@@ -91,18 +91,25 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
         if (saleOrderLine.getIsToProduce()
             && !solDetailsBomUpdateService.isSolDetailsUpdated(
                 saleOrderLine, saleOrderLine.getSaleOrderLineDetailsList())) {
-          saleOrderLineDetailsBomService
-              .createSaleOrderLineDetailsFromBom(lineBom, saleOrder, saleOrderLine)
-              .stream()
-              .filter(Objects::nonNull)
-              .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
-          saleOrderLineDetailsProdProcessService
-              .createSaleOrderLineDetailsFromProdProcess(
-                  lineBom.getProdProcess(), saleOrder, saleOrderLine)
-              .stream()
-              .filter(Objects::nonNull)
-              .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_OPERATION)
-              .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+          if (lineBom != null) {
+            saleOrderLineDetailsBomService
+                .createSaleOrderLineDetailsFromBom(lineBom, saleOrder, saleOrderLine)
+                .stream()
+                .filter(Objects::nonNull)
+                .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+            if (lineBom.getProdProcess() == null) {
+              saleOrderLinesList.add(saleOrderLine);
+              continue;
+            }
+            saleOrderLineDetailsProdProcessService
+                .createSaleOrderLineDetailsFromProdProcess(
+                    lineBom.getProdProcess(), saleOrder, saleOrderLine)
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(
+                    line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_OPERATION)
+                .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+          }
         }
         saleOrderLinesList.add(saleOrderLine);
       }

@@ -204,6 +204,9 @@ public class SaleOrderLineProductProductionServiceImpl
             .filter(Objects::nonNull)
             .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
       }
+      if (billOfMaterial == null || billOfMaterial.getProdProcess() == null) {
+        return;
+      }
       saleOrderLineDetailsProdProcessService.addSaleOrderLineDetailsFromProdProcess(
           billOfMaterial.getProdProcess(), saleOrder, saleOrderLine);
     }
