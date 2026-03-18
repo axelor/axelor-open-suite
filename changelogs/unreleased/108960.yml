@@ -1,0 +1,3 @@
+---
+title: "Payment session: fixed bill of exchange session with credit note compensation losing remaining invoice term amount."
+module: axelor-account
