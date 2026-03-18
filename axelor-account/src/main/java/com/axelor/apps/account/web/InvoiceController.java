@@ -44,7 +44,6 @@ import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
-import com.axelor.apps.account.service.invoice.InvoiceNoteService;
 import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
@@ -1533,13 +1532,6 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
     String domain = Beans.get(InvoiceDomainService.class).getFiscalPositionDomain(invoice);
     response.setAttr("fiscalPosition", "domain", domain);
-  }
-
-  @ErrorException
-  public void generateInvoiceNote(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-    Beans.get(InvoiceNoteService.class).generateInvoiceNote(invoice);
-    response.setValues(invoice);
   }
 
   @ErrorException
