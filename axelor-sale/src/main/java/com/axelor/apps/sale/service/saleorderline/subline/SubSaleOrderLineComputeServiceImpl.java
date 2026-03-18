@@ -67,6 +67,8 @@ public class SubSaleOrderLineComputeServiceImpl implements SubSaleOrderLineCompu
             computeSumSubLineList(subSaleOrderLine, saleOrder);
           }
           computePrices(saleOrderLine, saleOrder);
+        } else {
+          saleOrderLineProductService.fillPrice(saleOrderLine, saleOrder);
         }
       } else {
         saleOrderLineProductService.fillPrice(saleOrderLine, saleOrder);
