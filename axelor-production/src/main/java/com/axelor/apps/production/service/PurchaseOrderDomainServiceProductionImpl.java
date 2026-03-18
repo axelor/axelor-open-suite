@@ -16,13 +16,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.service;
+package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.service.PurchaseOrderDomainServiceImpl;
 
-public interface PurchaseOrderDomainService {
-  String getPartnerBaseDomain(Company company);
+public class PurchaseOrderDomainServiceProductionImpl extends PurchaseOrderDomainServiceImpl {
 
-  String getPartnerBaseDomain(Company company, PurchaseOrder purchaseOrder);
+  @Override
+  public String getPartnerBaseDomain(Company company, PurchaseOrder purchaseOrder) {
+    if (Boolean.TRUE.equals(purchaseOrder.getOutsourcingOrder())) {
+      long companyId = company.getPartner() == null ? 0L : company.getPartner().getId();
+      return String.format(
+          "self.id != %d AND self.isContact = false AND self.isSubcontractor = true AND :company member of self.companySet",
+          companyId);
+    }
+    return super.getPartnerBaseDomain(company, purchaseOrder);
+  }
 }
