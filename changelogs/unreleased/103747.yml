@@ -1,0 +1,3 @@
+---
+title: "InvoiceNote: updated modelisation to extract invoice type in a new separate object."
+module: axelor-account
