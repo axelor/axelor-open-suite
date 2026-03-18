@@ -618,12 +618,14 @@ public class CostSheetServiceImpl implements CostSheetService {
         }
         qty = qty.add(purchaseOrderLine.getQty());
       }
+      BigDecimal ratio = costSheet.getManufOrderProducedRatio();
+      BigDecimal proratedQty = qty.multiply(ratio);
       costSheetLineService.createCostSheetLine(
           key.getProductName(),
           key.getProductCode(),
           bomLevel,
-          qty,
-          qty.multiply(key.getPrice()),
+          proratedQty,
+          proratedQty.multiply(key.getPrice()),
           null,
           null,
           CostSheetLineRepository.TYPE_CONSUMED_PRODUCT,

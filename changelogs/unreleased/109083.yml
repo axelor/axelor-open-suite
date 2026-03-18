@@ -1,0 +1,3 @@
+---
+title: "Manufacturing order: fixed incorrect subcontracting cost and unit price on outgoing stock move during partial finish."
+module: axelor-production
