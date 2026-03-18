@@ -222,7 +222,8 @@ public class InventoryImportExportServiceImpl implements InventoryImportExportSe
     item[5] = inventoryLine.getCurrentQty().setScale(digitForQty, RoundingMode.HALF_UP).toString();
 
     item[6] =
-        Optional.of(inventoryLine.getRealQty().setScale(digitForQty, RoundingMode.HALF_UP))
+        Optional.ofNullable(inventoryLine.getRealQty())
+            .map(qty -> qty.setScale(digitForQty, RoundingMode.HALF_UP))
             .filter(
                 qty ->
                     inventoryStatus != InventoryRepository.STATUS_DRAFT
