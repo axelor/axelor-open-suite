@@ -24,6 +24,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.inject.Beans;
+import java.math.BigDecimal;
 import java.util.Map;
 
 public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
@@ -70,6 +71,7 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
   public SaleOrderLine copy(SaleOrderLine entity, boolean deep) {
     SaleOrderLine copy = super.copy(entity, deep);
     copy.setConfigurator(null);
+    copy.setDeliveredQty(BigDecimal.ZERO);
 
     return copy;
   }
