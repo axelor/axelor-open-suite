@@ -67,10 +67,14 @@ public class SaleOrderLineDetailsBomServiceImpl implements SaleOrderLineDetailsB
       BillOfMaterial billOfMaterial, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException {
 
+    List<SaleOrderLineDetails> currentDetailsList = saleOrderLine.getSaleOrderLineDetailsList();
     List<SaleOrderLineDetails> operationSolDetailsLineList =
-        saleOrderLine.getSaleOrderLineDetailsList().stream()
-            .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_OPERATION)
-            .collect(Collectors.toList());
+        currentDetailsList == null
+            ? new ArrayList<>()
+            : currentDetailsList.stream()
+                .filter(
+                    line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_OPERATION)
+                .collect(Collectors.toList());
     List<SaleOrderLineDetails> updatedSolDetailsLineList =
         createSaleOrderLineDetailsFromBom(billOfMaterial, saleOrder, saleOrderLine);
     updatedSolDetailsLineList.addAll(operationSolDetailsLineList);
