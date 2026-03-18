@@ -58,7 +58,7 @@
 
   <form name="business-project-form" title="Business project"
     model="com.axelor.apps.project.db.Project" width="large"
-    onLoad="mgm-action-group-project-form-on-load"
+    onLoad="mgm-action-group-project-form-on-load,mgm-action-project-calculate-hour-check"
     onNew="action-business-project-project-group-on-new" onSave="action-project-group-on-save"
     canAttach="false">
     <!-- MGM-80 @gkouete- showing planning and financial data not required -->
@@ -235,13 +235,6 @@
           canEdit="true" readonly="false" action="mgm-action-project-expense-dashlet" colSpan="12"
           canNew="true" x-show-bars="true"/>
       </panel>
-      <!-- <panel title="2 Expense Report" name="expenseReportsPanel" -->
-      <!-- showIf="projectTypeSelect == 1"> -->
-      <!-- <panel-dashlet name="projectExpenseDashlet" title="Project Expenses" -->
-      <!-- canEdit="true" readonly="false" action="mgm-action-project-expense-dashlet" colSpan="12" -->
-      <!-- canNew="true" x-show-bars="true"/> -->
-      <!-- </panel> -->
-
       <!-- MGM-114 -->
       <panel title="5 Review and Confirmation" name="otherExpensesReportPanel">
         <panel-dashlet name="otherExpensesReportDashlet"
@@ -250,15 +243,6 @@
           canDelete="true" x-show-bars="true"/>
         <panel-include view="incl-project-summary-panel-form"/>
       </panel>
-
-      <!-- <panel title="3 Review and Confirmation" name="otherExpensesReportPanel" -->
-      <!-- showIf="projectTypeSelect == 1"> -->
-      <!-- <panel-dashlet name="otherExpensesReportDashlet" -->
-      <!-- title="Project extra expenses" canEdit="true" readonly="false" -->
-      <!-- action="mgm-action-project-extra-expense-line-dashlet" colSpan="12" canNew="true" -->
-      <!-- x-show-bars="true"/> -->
-      <!-- <panel-include view="incl-project-summary-panel-form"/> -->
-      <!-- </panel> -->
 
       <panel title="Configurations" name="configurationsPanel"
         if="['admins' ].any(g -> __user__.group.code.contains(g))">
@@ -376,12 +360,7 @@
         <panel-dashlet name="saleOrderLinePanelDashlet"
           action="action-project-dashlet-sale-order-line" colSpan="12"/>
       </panel>
-      <!-- MGM-66 -->
-      <!-- <panel-include view="incl-wiki-panel-form"/> -->
-      <!-- MGM-80 @gkouete: No need to show the log time panel -->
-      <!-- <panel title="Log Times" name="logTimesPanel" if-module="axelor-human-resource" if="__config__.app.isApp('timesheet')">
-        <panel-include view="incl-log-times-panel-form"/> </panel> -->
-      <!--- MGM-66: display panel to only selected group e.g admins -->
+
       <panel-include view="incl-project-roadmap-panel-form"
         if="__user__.group.code == 'admins'"/>
       <!--- MGM-66: display panel to only selected group e.g admins -->
@@ -390,12 +369,6 @@
         if="!(['CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))">
         <panel-include view="custom-mgm-incl-project-invoicing-panel-content"/>
       </panel>
-      <!-- <panel onTabSelect="mgm-action-business-project-set-default-invoice-flags" -->
-      <!-- title="4 Invoicing" name="invoicingPanel" -->
-      <!-- if="!(['CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))" -->
-      <!-- showIf="projectTypeSelect == 1"> -->
-      <!-- <panel-include view="custom-mgm-incl-project-invoicing-panel-content"/> -->
-      <!-- </panel> -->
     </panel-tabs>
     <panel-mail name="mailPanel" if="__user__.group.code == 'admins'">
       <mail-messages limit="4"/>
@@ -733,7 +706,7 @@
       <panel name="validatedItemsPanel" title="Validated Items" colSpan="12">
 
         <field name="$totalTasksReported" title="Total Number of Tasks reported"
-          readonly="true" depends="id" colSpan="6">
+          readonly="true" depends="id" colSpan="4">
           <viewer depends="$totalTasksReported"><![CDATA[
     <span style="color: {{ !record.$totalTasksReported || parseInt(record.$totalTasksReported.split('/')[0]) < parseInt(record.$totalTasksReported.split('/')[1]) ? 'red' : 'green' }}">
         {{ record.$totalTasksReported || '0/0' }}
@@ -742,10 +715,19 @@
         </field>
 
         <field name="$totalHoursReported" title="Total Number of hours reported"
-          readonly="true" depends="id" colSpan="6">
+          readonly="true" depends="id" colSpan="4">
           <viewer depends="$totalHoursReported"><![CDATA[
                     <span style="color: {{ record.$totalHoursReported ? (record.$totalHoursReported == 0 ? 'red' : 'inherit') : 'red' }}">
                         {{ record.$totalHoursReported || '0' }}
+                    </span>
+                ]]></viewer>
+        </field>
+
+        <field name="$totalHoursToBill" title="Total hours to bill" readonly="true"
+          colSpan="4">
+          <viewer depends="$totalHoursReported"><![CDATA[
+                    <span style="color: {{ record.$totalHoursToBill ? (record.$totalHoursToBill == 0 ? 'red' : 'inherit') : 'red' }}">
+                        {{ record.$totalHoursToBill || '0' }}
                     </span>
                 ]]></viewer>
         </field>
@@ -759,8 +741,18 @@
                 ]]></viewer>
         </field>
 
-      </panel>
+        <field name="$hoursMismatchWarning" showTitle="false" readonly="true" colSpan="12">
+          <viewer><![CDATA[
+                  <div ng-if="record.$totalHoursToBill != null && record.$totalHoursReported != null && (parseFloat(record.$totalHoursToBill) != parseFloat(record.$totalHoursReported))"
+                       style="color: #8a6d3b; background-color: #fcf8e3; border: 1px solid #faebcc; padding: 12px; border-radius: 4px; margin-top: 15px; display: flex;
+                          align-items: center; justify-content: center; font-size: 14px;">
+                    <i class="fa fa-exclamation-triangle" style="margin-right: 10px; font-size: 18px;"></i>
+                    <strong>Reported hours and billable hours do not match!</strong>
+                  </div>
+          ]]></viewer>
+        </field>
 
+      </panel>
       <field name="isConfirmedForInvoicing"
         onChange="mgm-action-group-business-project-confimred-project-on-change"/>
     </panel>
@@ -821,6 +813,13 @@
       expr="eval: __config__.app.getApp('project')?.defaultProjectType"/>
   </action-record>
 
+  <!-- <action-record name="mgm-action-project-calculate-hour-check" -->
+  <!-- model="com.axelor.apps.project.db.Project"> -->
+  <!-- <field name="$totalHoursToBill" -->
+  <!-- expr="eval: __repo__(TimesheetLine).all().filter('self.project = ?1', id).fetch().sum('hoursDuration')
+    ?: 0"/> -->
+  <!-- </action-record> -->
+
   <action-method name="action-project-method-generate-quotation">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="generateQuotation"/>
@@ -829,6 +828,10 @@
   <action-method name="action-project-method-generate-purchase-quotation">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="generatePurchaseQuotation"/>
+  </action-method>
+
+  <action-method name="mgm-action-project-calculate-hour-check">
+    <call class="com.axelor.apps.businessproject.web.ProjectController" method="getBilledHours"/>
   </action-method>
 
   <action-method name="action-project-method-get-partner-data">

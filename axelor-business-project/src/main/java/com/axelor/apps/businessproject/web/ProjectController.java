@@ -43,6 +43,8 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.statuschange.ProjectStatusChangeService;
 import com.axelor.apps.businessproject.service.taskreport.TaskReportService;
 import com.axelor.apps.businessproject.translation.ITranslation;
+import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -541,6 +543,32 @@ public class ProjectController {
     } catch (AxelorAlertException e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void getBilledHours(ActionRequest request, ActionResponse response) {
+
+    Project project = getProjectFromRequest(request);
+    if (project == null) return;
+
+    List<TimesheetLine> lines =
+        Beans.get(TimesheetLineRepository.class)
+            .all()
+            .filter("self.project.id = :projectId AND self.isValidated = true")
+            .bind("projectId", project.getId())
+            .fetch();
+
+    BigDecimal totalHoursToBill = BigDecimal.ZERO;
+    if (lines != null) {
+      for (TimesheetLine line : lines) {
+        if (line.getHoursDuration() != null) {
+          totalHoursToBill = totalHoursToBill.add(line.getHoursDuration());
+        }
+      }
+    }
+
+    // use a scale of 2 decimal places (0 becomes 0.00)
+    totalHoursToBill = totalHoursToBill.setScale(2, java.math.RoundingMode.HALF_UP);
+    response.setValue("$totalHoursToBill", totalHoursToBill);
   }
 
   private Project getProjectFromRequest(ActionRequest request) {
