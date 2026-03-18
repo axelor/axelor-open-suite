@@ -19,18 +19,14 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.repo.BillOfMaterialLineRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
-import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.i18n.I18n;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -101,7 +97,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
                 .stream()
                 .filter(Objects::nonNull)
                 .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
-            if (traceMissingProdProcess(lineBom, saleOrderLine)) {
+            if (lineBom.getProdProcess() == null) {
               saleOrderLinesList.add(saleOrderLine);
               continue;
             }
@@ -122,19 +118,5 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
     return saleOrderLinesList.stream()
         .sorted(Comparator.comparingInt(SaleOrderLine::getSequence))
         .collect(Collectors.toList());
-  }
-
-  @Override
-  public boolean traceMissingProdProcess(
-      BillOfMaterial billOfMaterial, SaleOrderLine saleOrderLine) {
-    if (billOfMaterial != null && billOfMaterial.getProdProcess() == null) {
-      TraceBackService.trace(
-          new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(ProductionExceptionMessage.SALE_ORDER_LINE_PROD_PROCESS_REQUIRED),
-              saleOrderLine.getProduct().getName()));
-      return true;
-    }
-    return false;
   }
 }

@@ -902,7 +902,6 @@
 "Supplier RFQ/PO","Devis/Commande Fournisseur",,
 "Supply method for manufacturing orders","Méthode d'approvisionnement sur les OF",,
 "Surcharge",,,
-"The BoM for %s has no production process. Operation lines were not generated.","La nomenclature du produit %s n'a pas de gamme de production. Les lignes d'opération n'ont pas été générées.",,
 "The Calculation quantity of the bill of material %s is equal to zero.","La quantité de calcul de la nomenclature %s est égal à zero.",,
 "The bill of materials %s has been generated","La nomenclature %s a été générée",,
 "The condition formula to generate the bill of material returns null value or is not consistent. Please correct on configurator BOM id : %s.","La formule de condition de génération de la nomenclature a renvoyé une valeur null ou est incorrecte. Merci de corriger le configurateur de nomenclature avec l'id : %s",,
