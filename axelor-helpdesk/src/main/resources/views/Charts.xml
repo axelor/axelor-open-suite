@@ -547,7 +547,7 @@
 	        SELECT COUNT(self.id) * 100. / (SELECT COUNT(self2.id) FROM Ticket self2 WHERE self2.ticketType.id = :id) AS _percentage,
 	            self.ticketStatus.name AS _status
 	        FROM Ticket self
-	        WHERE self.ticketType = :id
+	        WHERE self.ticketType.id = :id
 	        GROUP BY self.ticketStatus.name
 	        ORDER BY self.ticketStatus.name
         ]]>

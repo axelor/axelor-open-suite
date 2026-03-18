@@ -184,14 +184,13 @@ public class SaleOrderLineProductProductionServiceImpl
       throws AxelorException {
     AppProduction appProduction = appProductionService.getAppProduction();
     AppSale appSale = appSaleService.getAppSale();
-    boolean shouldGenerateLines =
-        Boolean.TRUE.equals(saleOrderLine.getIsToProduce())
-            && appSale.getListDisplayTypeSelect()
-                == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
-            && !appProduction.getIsBomLineGenerationInSODisabled();
-
     BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
-    if (shouldGenerateLines) {
+    boolean shouldGenerate =
+        saleOrderLine.getIsToProduce()
+            || (billOfMaterial != null && saleOrderLine.getBillOfMaterialLine() != null);
+    if (shouldGenerate
+        && appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
+        && !appProduction.getIsBomLineGenerationInSODisabled()) {
       if (!solBomUpdateService.isUpdated(saleOrderLine)) {
         saleOrderLineBomService.createSaleOrderLinesFromBom(billOfMaterial, saleOrder).stream()
             .filter(Objects::nonNull)
@@ -205,7 +204,7 @@ public class SaleOrderLineProductProductionServiceImpl
             .filter(Objects::nonNull)
             .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
       }
-      if (saleOrderLineBomService.traceMissingProdProcess(billOfMaterial, saleOrderLine)) {
+      if (billOfMaterial == null || billOfMaterial.getProdProcess() == null) {
         return;
       }
       saleOrderLineDetailsProdProcessService.addSaleOrderLineDetailsFromProdProcess(

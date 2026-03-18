@@ -68,12 +68,13 @@ public class ProductBaseRepository extends ProductRepository {
           FULL_NAME_FORMAT, product.getCode(), product.getName());
     }
 
-    product = super.save(product);
-
-    // Barcode generation
     if (Strings.isNullOrEmpty(product.getSerialNumber())) {
       product.setSerialNumber(product.getCode());
     }
+
+    product = super.save(product);
+
+    // Barcode generation
     if (product.getBarCode() == null
         && appBaseService.getAppBase().getActivateBarCodeGeneration()) {
       boolean addPadding = false;
