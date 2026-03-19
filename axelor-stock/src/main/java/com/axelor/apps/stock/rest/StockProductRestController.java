@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,8 @@ import com.axelor.apps.stock.rest.dto.StockProductGetRequest;
 import com.axelor.apps.stock.rest.dto.StockProductPutRequest;
 import com.axelor.apps.stock.rest.dto.StockProductVariantResponse;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -36,20 +38,17 @@ import com.axelor.utils.api.RequestStructure;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.util.Arrays;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/stock-product")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -70,7 +69,7 @@ public class StockProductRestController {
       @PathParam("productId") long productId, StockProductGetRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().readAccess(Product.class).check();
+    new SecurityCheck().readAccess(Product.class, productId).check();
 
     Product product = ObjectFinder.find(Product.class, productId, requestBody.getVersion());
 
@@ -95,7 +94,7 @@ public class StockProductRestController {
       @PathParam("productId") Long productId, StockProductPutRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(Product.class).check();
+    new SecurityCheck().writeAccess(Product.class, productId).check();
 
     Product product = ObjectFinder.find(Product.class, productId, requestBody.getVersion());
 
@@ -104,10 +103,10 @@ public class StockProductRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Update locker for product with id "
-            + product.getId()
-            + " to "
-            + requestBody.getNewLocker());
+        String.format(
+            I18n.get(ITranslation.UPDATE_LOCKER_FOR_PRODUCT),
+            product.getId(),
+            requestBody.getNewLocker()));
   }
 
   @Operation(
@@ -122,19 +121,17 @@ public class StockProductRestController {
     RequestValidator.validateBody(requestBody);
 
     new SecurityCheck()
+        .readAccess(Product.class, productId)
         .readAccess(
             Arrays.asList(
-                Product.class,
-                ProductVariant.class,
-                ProductVariantAttr.class,
-                ProductVariantValue.class))
+                ProductVariant.class, ProductVariantAttr.class, ProductVariantValue.class))
         .check();
 
     Product product = ObjectFinder.find(Product.class, productId, requestBody.getVersion());
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Request completed",
+        I18n.get(ITranslation.REQUEST_COMPLETED),
         new StockProductVariantResponse(
             product, Beans.get(StockProductRestService.class).fetchAttributes(product)));
   }

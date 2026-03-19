@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,14 +33,14 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.hr.service.expense.ExpensePaymentService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -52,18 +52,18 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
   protected final Logger log = LoggerFactory.getLogger(getClass());
   protected final AppAccountService appAccountService;
   protected final ExpenseRepository expenseRepo;
-  protected final ExpenseService expenseService;
+  protected final ExpensePaymentService expensePaymentService;
   protected final BankOrderMergeService bankOrderMergeService;
 
   @Inject
   public BatchCreditTransferExpensePaymentHR(
       AppAccountService appAccountService,
       ExpenseRepository expenseRepo,
-      ExpenseService expenseService,
+      ExpensePaymentService expensePaymentService,
       BankOrderMergeService bankOrderMergeService) {
     this.appAccountService = appAccountService;
     this.expenseRepo = expenseRepo;
-    this.expenseService = expenseService;
+    this.expensePaymentService = expensePaymentService;
     this.bankOrderMergeService = bankOrderMergeService;
   }
 
@@ -143,9 +143,8 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
       query.bind("bankDetailsSet", bankDetailsSet);
     }
 
-    for (List<Expense> expenseList;
-        !(expenseList = query.fetch(FETCH_LIMIT)).isEmpty();
-        JPA.clear()) {
+    List<Expense> expenseList;
+    while (!(expenseList = query.fetch(getFetchLimit())).isEmpty()) {
       for (Expense expense : expenseList) {
         try {
           addPayment(expense, accountingBatch.getBankDetails());
@@ -164,6 +163,8 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
           break;
         }
       }
+      JPA.clear();
+      findBatch();
     }
 
     return doneList;
@@ -182,7 +183,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
         String.format(
             "Credit transfer batch for expense payment: adding payment for expense %s",
             expense.getExpenseSeq()));
-    expenseService.addPayment(expense, bankDetails);
+    expensePaymentService.addPayment(expense, bankDetails);
   }
 
   /**

@@ -1,0 +1,2 @@
+"code";"eventSubjectGroovyFormula"
+"project";"project.fullName + "" - "" + projectTask.fullName"

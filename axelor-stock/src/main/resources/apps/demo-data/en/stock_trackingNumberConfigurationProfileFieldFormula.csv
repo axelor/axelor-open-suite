@@ -1,0 +1,17 @@
+"importId";"metaModel";"metaField";"formula";"computationPriority"
+1;"TrackingNumber";"volume";"if (dimension0 && dimension1 && dimension2) {
+return (dimension0)*(dimension1)*(dimension2);
+} else {
+return null;}";1
+2;"TrackingNumber";"unitMass";"if (volume && product.productDensity) {
+return (volume * product.productDensity) ;
+} else {
+return null;}";2
+3;"TrackingNumber";"mass";"if (unitMass && nbrOfPieces) {
+return unitMass * nbrOfPieces;
+} else {
+return null;}";3
+4;"TrackingNumber";"metricMass";"if (dimension0 && unitMass) {
+return unitMass / dimension0 ;
+} else {
+return null;}";4

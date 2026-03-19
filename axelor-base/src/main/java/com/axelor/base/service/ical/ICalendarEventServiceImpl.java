@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,11 +24,11 @@ import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.message.db.EmailAddress;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.mail.MessagingException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
-import javax.mail.MessagingException;
 
 public class ICalendarEventServiceImpl implements ICalendarEventService {
 
@@ -36,8 +36,14 @@ public class ICalendarEventServiceImpl implements ICalendarEventService {
 
   @Override
   public List<ICalendarUser> addEmailGuest(EmailAddress email, ICalendarEvent event)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, MessagingException, IOException, ICalendarException, ParseException {
+      throws ClassNotFoundException,
+          InstantiationException,
+          IllegalAccessException,
+          AxelorException,
+          MessagingException,
+          IOException,
+          ICalendarException,
+          ParseException {
     if (email != null) {
       if (event.getAttendees() == null
           || !event.getAttendees().stream()

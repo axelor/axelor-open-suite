@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@
 package com.axelor.apps.bankpayment.service.bankorder.file.directdebit;
 
 import com.axelor.apps.account.db.Umr;
+import com.axelor.apps.account.service.umr.UmrService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
@@ -54,16 +55,17 @@ import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.ServiceLevel3Choice;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
@@ -427,12 +429,19 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
     for (BankOrderLine bankOrderLine : bankOrderLineList) {
 
       BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
-      Umr receiverUmr = bankOrderLine.getPartner().getActiveUmr();
+      Company company = bankOrderLine.getReceiverCompany();
+      if (company == null && bankOrderLine.getBankOrder() != null) {
+        company = bankOrderLine.getBankOrder().getSenderCompany();
+      }
+
+      Umr receiverUmr = Beans.get(UmrService.class).getActiveUmr(company, receiverBankDetails);
 
       if (receiverUmr == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BankPaymentExceptionMessage.DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR));
+            I18n.get(BankPaymentExceptionMessage.DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR),
+            bankOrderLine.getPartner().getFullName(),
+            receiverBankDetails.getFullName());
       }
 
       /*
@@ -472,8 +481,8 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
        * Usage  : Amount must be between 0.01 and 999999999.99
        */
       CurrencyAndAmount currencyAndAmount = factory.createCurrencyAndAmount();
-      currencyAndAmount.setCcy(CURRENCY_CODE);
-      currencyAndAmount.setValue(bankOrderLine.getBankOrderAmount());
+      currencyAndAmount.setCcy(companyCurrency.getCodeISO());
+      currencyAndAmount.setValue(bankOrderLine.getCompanyCurrencyAmount());
       directDebitTransactionInformation1.setInstdAmt(currencyAndAmount);
 
       /*
@@ -628,7 +637,12 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
        * Information supplied to enable the matching of an entry with the items that the transfer is intended
        * to settle, eg, commercial invoices in an accounts' receivable system in an unstructured form.
        */
-      remittanceInformation1.getUstrd().add(bankOrderLine.getReceiverReference());
+      remittanceInformation1
+          .getUstrd()
+          .add(
+              bankOrderLine
+                  .getReceiverReference()
+                  .substring(0, Math.min(140, bankOrderLine.getReceiverReference().length() - 1)));
 
       /*
        * Structured   (choice 2 of 2)

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity sequential="true" name="Invoice"
-    implements="com.axelor.apps.base.interfaces.PricedOrder">
+    implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable,com.axelor.apps.base.interfaces.GlobalDiscounter">
 
     <!-- NOT DISPLAY -->
     <many-to-one name="canceledPaymentSchedule"
@@ -27,6 +27,8 @@
       title="Partner"/>
     <many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner"
       title="Contact"/>
+    <many-to-one name="thirdPartyPayerPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Third-party payer"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
       title="Payment mode"/>
     <many-to-one name="paymentCondition"
@@ -41,14 +43,20 @@
 
     <string name="addressStr" title="Address" large="true" multiline="true"/>
     <string name="deliveryAddressStr" title="Delivery address" large="true" multiline="true"/>
-    <string name="internalReference" title="Internal Ref."/>
-    <string name="externalReference" title="External Ref."/>
+    <string name="internalReference" title="Internal Ref." large="true"/>
+    <string name="externalReference" title="External Ref." large="true"/>
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList"
       title="Price list"/>
     <boolean name="hideDiscount" title="Hide Discount on prints"/>
 
+    <integer name="discountTypeSelect" title="Discount type"
+      selection="base.price.list.line.amount.type.select"/>
+    <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
+    <decimal name="priceBeforeGlobalDiscount" title="Total W.T. before discount"
+      precision="20" scale="10"/>
+
     <!-- Dates -->
-    <date name="invoiceDate" title="Invoice Date"/>
+    <date name="invoiceDate" title="Invoice date"/>
     <date name="dueDate" title="Due date"/>
     <date name="nextDueDate" title="Next due date" readonly="true"/>
     <date name="originDate" title="Origin date"/>
@@ -78,13 +86,13 @@
     <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice"
       title="Invoice Lines"/>
     <one-to-many name="invoiceLineTaxList" ref="InvoiceLineTax" mappedBy="invoice"
-      title="Tax Lines" readonly="true"/>
+      title="Tax Lines"/>
 
     <!-- Configuration -->
     <boolean name="alreadyPrintedOk" title="Already printed" default="true"/>
     <many-to-one name="originalInvoice" ref="Invoice" title="Invoice of origin"/>
     <one-to-many name="refundInvoiceList" ref="Invoice" mappedBy="originalInvoice"
-      title="Refunds"/>
+      title="Credit notes"/>
     <integer name="irrecoverableStatusSelect" title="Irrecoverable status" default="0"
       readonly="true" selection="iaccount.account.schedule.irrecoverable.status.select"/>
     <many-to-one name="managementObject"
@@ -127,11 +135,12 @@
       title="Rejection move line"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to usher"/>
     <boolean name="lcrAccounted" title="LCR accounted"/>
-    <decimal name="amountRejected" title="Rejected amount"/>
+    <decimal name="amountRejected" title="Rejected amount" scale="3" precision="20"/>
     <datetime name="rejectDateTime" title="Rejection date"/>
     <many-to-one name="interbankCodeLine"
       ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason"/>
-    <decimal name="directDebitAmount" title="Debited amount" readonly="true"/>
+    <decimal name="directDebitAmount" title="Debited amount" scale="3" precision="20"
+      readonly="true"/>
     <many-to-one name="paymentMove" ref="com.axelor.apps.account.db.Move"
       title="Payment Move"/>
 
@@ -142,24 +151,28 @@
     <many-to-one name="printedPDF" ref="com.axelor.meta.db.MetaFile"/>
     <boolean name="groupProductsOnPrintings" title="Group products on printings"/>
     <string name="invoiceProductStatement" title="Print statement for products"/>
+    <one-to-many name="invoiceNoteList" ref="InvoiceNote" mappedBy="invoice"
+      title="Invoice note list"/>
 
     <!-- Totals & Status -->
 
     <!-- Total based on the partner currency in the company accounts -->
-    <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
-    <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
-    <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
-    <decimal name="amountPaid" title="Amount paid" readonly="true"/>
-    <decimal name="amountRemaining" title="Amount remaining" readonly="true"/>
+    <decimal name="exTaxTotal" title="Total W.T." scale="3" precision="20" readonly="true"/>
+    <decimal name="taxTotal" title="Total Tax" scale="3" precision="20" readonly="true"/>
+    <decimal name="inTaxTotal" title="Total A.T.I." scale="3" precision="20" readonly="true"/>
+    <decimal name="amountPaid" title="Amount paid" scale="3" precision="20" readonly="true"/>
+    <decimal name="amountRemaining" title="Amount remaining" scale="3" precision="20"
+      readonly="true"/>
 
     <!-- Totals based on the company currency -->
-    <decimal name="companyExTaxTotal" title="Total W.T." scale="2" precision="20"
+    <decimal name="companyExTaxTotal" title="Total W.T." scale="3" precision="20"
       readonly="true"/>
-    <decimal name="companyTaxTotal" title="Total Tax" scale="2" precision="20"
+    <decimal name="companyTaxTotal" title="Total Tax" scale="3" precision="20"
       readonly="true"/>
-    <decimal name="companyInTaxTotal" title="Total A.T.I." scale="2" precision="20"
+    <decimal name="companyInTaxTotal" title="Total A.T.I." scale="3" precision="20"
       readonly="true"/>
-    <decimal name="companyInTaxTotalRemaining" title="Remaining to pay" readonly="true"/>
+    <decimal name="companyInTaxTotalRemaining" title="Remaining to pay" scale="3"
+      precision="20" readonly="true"/>
 
     <boolean name="hasPendingPayments" readonly="true"/>
     <integer name="statusSelect" title="Status" selection="iaccount.invoice.status.select"
@@ -175,6 +188,9 @@
 
     <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails"
       title="Company bank"/>
+
+    <many-to-one name="companyTaxNumber" ref="com.axelor.apps.account.db.TaxNumber"
+      title="Company tax number"/>
 
     <!-- Invoice mail -->
     <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation"
@@ -227,9 +243,10 @@
     <many-to-one name="financialDiscount"
       ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
     <decimal name="financialDiscountRate" title="Financial discount rate"/>
-    <decimal name="financialDiscountTotalAmount" title="Financial discount total amount"/>
+    <decimal name="financialDiscountTotalAmount" title="Financial discount total amount"
+      scale="3" precision="20"/>
     <decimal name="remainingAmountAfterFinDiscount"
-      title="Remaining amount after Fin. discount"/>
+      title="Remaining amount after Fin. discount" scale="3" precision="20"/>
     <string name="legalNotice" title="Legal notice" large="true"
       help="Legal notice displayed on invoices where a discount was granted"/>
     <date name="financialDiscountDeadlineDate" title="Financial Discount Deadline Date"/>
@@ -242,15 +259,29 @@
 	      id]]>
     </integer>
 
+    <many-to-one name="latePaymentInterestSourceInvoice"
+      ref="com.axelor.apps.account.db.Invoice" title="Late payment interest source invoice"/>
 
     <!-- Invoice terms -->
     <integer name="paymentProgress" title="Payment progress" default="0"/>
     <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm"
       mappedBy="invoice" title="Invoice terms"/>
 
+    <many-to-one name="companyCurrency" transient="true"
+      ref="com.axelor.apps.base.db.Currency">
+      <![CDATA[
+      return company != null ? company.getCurrency() : null;
+	    ]]>
+    </many-to-one>
+
+    <date name="cutOffStartDate" title="From"/>
+    <date name="cutOffEndDate" title="To"/>
+
     <unique-constraint columns="invoiceId,company"/>
 
     <finder-method name="findByMove" using="move"/>
+
+    <finder-method name="findByOldMove" using="oldMove"/>
 
     <extra-code><![CDATA[
 
@@ -277,6 +308,7 @@
 	    public static final int OPERATION_SUB_TYPE_DEFAULT = 1;
 	    public static final int OPERATION_SUB_TYPE_ADVANCE = 2;
 	    public static final int OPERATION_SUB_TYPE_BALANCE = 3;
+	    public static final int OPERATION_SUB_TYPE_LATE_PAYMENT = 9;
 
 	    // REPORT TYPE
 		public static final int REPORT_TYPE_PROFORMA = 1;
@@ -336,6 +368,7 @@
       <field name="pfpValidateStatusSelect" on="UPDATE"/>
       <field name="reasonOfRefusalToPay" on="UPDATE"/>
       <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
+      <field name="companyTaxNumber" on="UPDATE"/>
       <message if="true" on="CREATE">Invoice created</message>
       <message if="statusSelect == 2" tag="important">Validated</message>
       <message if="statusSelect == 3" tag="success">Ventilated</message>

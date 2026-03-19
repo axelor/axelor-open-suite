@@ -1,0 +1,3 @@
+---
+title: "Employee: fixed employee planning button being displayed when axelor-business-production module is not installed."
+module: axelor-human-resource

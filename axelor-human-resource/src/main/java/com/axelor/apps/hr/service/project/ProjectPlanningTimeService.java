@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,11 +19,17 @@
 package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.ICalendarEvent;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.project.db.PlannedTimeValue;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 public interface ProjectPlanningTimeService {
 
@@ -31,9 +37,45 @@ public interface ProjectPlanningTimeService {
 
   public BigDecimal getProjectPlannedHrs(Project project);
 
-  public void addMultipleProjectPlanningTime(Map<String, Object> dataMap) throws AxelorException;
+  void addSingleProjectPlanningTime(ProjectPlanningTime projectPlanningTime) throws AxelorException;
 
-  public void removeProjectPlanningLines(List<Map<String, Object>> projectPlanningLines);
+  public void removeProjectPlanningLines(List<Integer> projectPlanningLineIds);
+
+  public void removeProjectPlanningLine(ProjectPlanningTime projectPlanningTime);
 
   public BigDecimal getDurationForCustomer(ProjectTask projectTask);
+
+  void updateProjectPlanningTime(
+      ProjectPlanningTime projectPlanningTime,
+      LocalDateTime startDateTime,
+      LocalDateTime endDateTime,
+      String description);
+
+  void updateLinkedEvent(ProjectPlanningTime projectPlanningTime);
+
+  void deleteLinkedProjectPlanningTime(List<Long> ids);
+
+  ProjectPlanningTime loadLinkedPlanningTime(ICalendarEvent event);
+
+  BigDecimal computePlannedTime(ProjectPlanningTime projectPlanningTime) throws AxelorException;
+
+  String computeDisplayTimeUnitDomain(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException;
+
+  List<Long> computeAvailableDisplayTimeUnitIds(Unit unit);
+
+  String computeDisplayPlannedTimeRestrictedDomain(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException;
+
+  BigDecimal getDefaultPlanningTime(ProjectPlanningTime projectPlanningTime) throws AxelorException;
+
+  PlannedTimeValue getDefaultPlanningRestrictedTime(ProjectPlanningTime projectPlanningTime)
+      throws AxelorException;
+
+  List<ProjectPlanningTime> getProjectPlanningTimeIdList(
+      Employee employee, LocalDate fromDate, LocalDate toDate);
+
+  BigDecimal getOldBudgetedTime(ProjectTask projectTask);
+
+  Unit getTimeUnit(ProjectTask projectTask);
 }

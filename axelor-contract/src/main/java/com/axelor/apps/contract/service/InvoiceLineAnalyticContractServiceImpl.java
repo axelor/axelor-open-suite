@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,15 +20,17 @@ package com.axelor.apps.contract.service;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
-import com.axelor.utils.service.ListToolService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class InvoiceLineAnalyticContractServiceImpl
@@ -37,20 +39,24 @@ public class InvoiceLineAnalyticContractServiceImpl
   @Inject
   public InvoiceLineAnalyticContractServiceImpl(
       AnalyticAccountRepository analyticAccountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
       AnalyticMoveLineService analyticMoveLineService,
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
-      ListToolService listToolService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      AnalyticLineModelService analyticLineModelService,
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      CurrencyScaleService currencyScaleService,
+      AnalyticAxisService analyticAxisService) {
     super(
         analyticAccountRepository,
-        accountAnalyticRulesRepository,
         analyticMoveLineService,
         analyticToolService,
         accountConfigService,
-        listToolService,
-        appAccountService);
+        appAccountService,
+        analyticLineModelService,
+        analyticMoveLineRepository,
+        currencyScaleService,
+        analyticAxisService);
   }
 
   @Override

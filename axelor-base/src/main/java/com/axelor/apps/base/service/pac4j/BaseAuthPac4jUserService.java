@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,11 +20,13 @@ package com.axelor.apps.base.service.pac4j;
 
 import com.axelor.auth.db.User;
 import com.axelor.auth.pac4j.AuthPac4jUserService;
+import com.google.inject.persist.Transactional;
 import org.pac4j.core.profile.CommonProfile;
 
 public class BaseAuthPac4jUserService extends AuthPac4jUserService {
 
   @Override
+  @Transactional
   protected void updateUser(User user, CommonProfile profile) {
     super.updateUser(user, profile);
 

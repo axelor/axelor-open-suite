@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -34,7 +35,7 @@ import com.axelor.apps.stock.service.batch.model.StockMoveLineOrigin;
 import com.axelor.apps.stock.service.batch.model.TrackProduct;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -111,7 +112,7 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
   protected void resetStockLocations() {
 
-    javax.persistence.Query clearWapHistoryLinesQuery =
+    jakarta.persistence.Query clearWapHistoryLinesQuery =
         JPA.em()
             .createNativeQuery(
                 "UPDATE stock_stock_location_line SET "
@@ -124,17 +125,19 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
   protected void updatePlannedQty(StockMoveGroup stockMoveGroup) throws AxelorException {
 
-    List<StockMove> stockMoves;
-    Query<StockMove> query = buildQueryFetchStockMoveFromGroup(stockMoveGroup).order("id");
+    List<StockMoveLine> stockMoveLineList;
+    Query<StockMoveLine> query = buildQueryFetchStockMoveLineFromGroup(stockMoveGroup).order("id");
     int offSet = 0;
-    while (!(stockMoves = query.fetch(FETCH_LIMIT, offSet)).isEmpty()) {
+    while (!(stockMoveLineList = query.fetch(FETCH_LIMIT, offSet)).isEmpty()) {
 
-      for (StockMove stockMove : stockMoves) {
-        stockMoveService.updateLocations(
-            stockMove,
-            stockMove.getFromStockLocation(),
-            stockMove.getToStockLocation(),
-            StockMoveRepository.STATUS_DRAFT);
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        stockMoveLineService.updateLocations(
+            StockMoveRepository.STATUS_DRAFT,
+            StockMoveRepository.STATUS_PLANNED,
+            stockMoveLine.getStockMove().getPlannedStockMoveLineList(),
+            stockMoveLine.getStockMove().getEstimatedDate(),
+            false,
+            true);
       }
 
       offSet += FETCH_LIMIT;
@@ -183,15 +186,14 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
     for (Entry<TrackProduct, StockMoveLineOrigin> entry : stockMoveLinesMap.entrySet()) {
       stockMoveLineService.updateLocations(
-          stockLocationRepository.find(group.getFromStockLocation()),
-          stockLocationRepository.find(group.getToStockLocation()),
           StockMoveRepository.STATUS_PLANNED,
           StockMoveRepository.STATUS_REALIZED,
           Collections.singletonList(entry.getValue().getStockMoveLine()),
           null,
           false,
           group.getRealDate(),
-          entry.getValue().getOrigin());
+          entry.getValue().getOrigin(),
+          true);
     }
   }
 
@@ -202,13 +204,9 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
   protected void clearWapHistoryLines() {
 
-    javax.persistence.Query clearWapHistoryLinesQuery =
-        JPA.em().createNativeQuery("Delete FROM stock_wap_history");
-
-    javax.persistence.Query clearStockLocationsHistoryLinesQuery =
+    jakarta.persistence.Query clearStockLocationsHistoryLinesQuery =
         JPA.em().createNativeQuery("Delete FROM stock_stock_location_line_history");
 
-    JPA.runInTransaction(clearWapHistoryLinesQuery::executeUpdate);
     JPA.runInTransaction(clearStockLocationsHistoryLinesQuery::executeUpdate);
   }
 
@@ -216,8 +214,8 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
     StringBuilder query =
         new StringBuilder(
-            "self.fromStockLocation.id = :fromStockLocation"
-                + " AND self.toStockLocation.id = :toStockLocation"
+            "self.fromStockLocation = :fromStockLocation"
+                + " AND self.toStockLocation = :toStockLocation"
                 + " AND self.statusSelect = :status");
 
     if (stockMoveGroup.getRealDate() == null) {
@@ -235,9 +233,33 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
         .bind("status", stockMoveGroup.getStatusSelect());
   }
 
+  protected Query<StockMoveLine> buildQueryFetchStockMoveLineFromGroup(
+      StockMoveGroup stockMoveGroup) {
+
+    StringBuilder query =
+        new StringBuilder(
+            "self.fromStockLocation = :fromStockLocation"
+                + " AND self.toStockLocation = :toStockLocation"
+                + " AND self.stockMove.statusSelect = :status");
+
+    if (stockMoveGroup.getRealDate() == null) {
+      query.append(" AND self.stockMove.realDate is NULL");
+    } else {
+      query.append(" AND self.stockMove.realDate = :realDate");
+    }
+
+    return stockMoveLineRepository
+        .all()
+        .filter(query.toString())
+        .bind("realDate", stockMoveGroup.getRealDate())
+        .bind("fromStockLocation", stockMoveGroup.getFromStockLocation())
+        .bind("toStockLocation", stockMoveGroup.getToStockLocation())
+        .bind("status", stockMoveGroup.getStatusSelect());
+  }
+
   protected List<StockMoveGroup> fetchStockMoveGroup() {
     List<StockMoveGroup> stockMoveGroups = new ArrayList<>();
-    javax.persistence.Query query =
+    jakarta.persistence.Query query =
         JPA.em()
             .createQuery(
                 "SELECT "

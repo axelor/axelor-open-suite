@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,24 +18,39 @@
  */
 package com.axelor.apps.project.db.repo;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.exception.ProjectExceptionMessage;
+import com.axelor.apps.project.service.ProjectNameComputeService;
 import com.axelor.apps.project.service.ProjectTaskService;
+import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.roadmap.ProjectVersionRemoveService;
+import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppProject;
 import com.axelor.team.db.Team;
-import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
+import java.util.Map;
 
 public class ProjectManagementRepository extends ProjectRepository {
 
   @Inject ProjectTaskService projectTaskService;
 
-  protected void setAllProjectFullName(Project project) {
-    String projectCode =
-        (Strings.isNullOrEmpty(project.getCode())) ? "" : project.getCode() + " - ";
-    project.setFullName(projectCode + project.getName());
-    if (project.getChildProjectList() != null && !project.getChildProjectList().isEmpty()) {
+  protected void setAllProjectFullName(Project project) throws AxelorException {
+    ProjectNameComputeService projectNameComputeService =
+        Beans.get(ProjectNameComputeService.class);
+    project.setFullName(projectNameComputeService.setProjectFullName(project));
+    if (ObjectUtils.notEmpty(project.getChildProjectList())) {
       for (Project child : project.getChildProjectList()) {
-        String code = (Strings.isNullOrEmpty(child.getCode())) ? "" : child.getCode() + " - ";
-        child.setFullName(code + child.getName());
+        child.setFullName(projectNameComputeService.setProjectFullName(child));
       }
     }
   }
@@ -56,6 +71,29 @@ public class ProjectManagementRepository extends ProjectRepository {
   @Override
   public Project save(Project project) {
 
+    AppProject appProject = Beans.get(AppProjectService.class).getAppProject();
+
+    try {
+      if (StringUtils.isBlank(project.getCode()) && appProject.getGenerateProjectSequence()) {
+        Company company = project.getCompany();
+        String seq =
+            Beans.get(SequenceService.class)
+                .getSequenceNumber(
+                    SequenceRepository.PROJECT_SEQUENCE, company, Project.class, "code", project);
+
+        if (seq == null) {
+          throw new AxelorException(
+              company,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(ProjectExceptionMessage.PROJECT_SEQUENCE_ERROR),
+              company.getName());
+        }
+        project.setCode(seq);
+      }
+    } catch (AxelorException e) {
+      throw new PersistenceException(e.getMessage(), e);
+    }
+
     ProjectManagementRepository.setAllProjectMembersUserSet(project);
 
     if (project.getSynchronize()) {
@@ -65,7 +103,12 @@ public class ProjectManagementRepository extends ProjectRepository {
         project.getMembersUserSet().forEach(team::addMember);
       }
     }
-    setAllProjectFullName(project);
+    try {
+      setAllProjectFullName(project);
+    } catch (AxelorException e) {
+      TraceBackService.traceExceptionFromSaveMethod(e.getCause());
+      throw new PersistenceException(e.getMessage(), e);
+    }
     project.setDescription(projectTaskService.getTaskLink(project.getDescription()));
     return super.save(project);
   }
@@ -75,5 +118,28 @@ public class ProjectManagementRepository extends ProjectRepository {
     Project project = super.copy(entity, false);
     project.setCode(null);
     return project;
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    try {
+      final String canceledProjectStatusIdStr = "$canceledProjectStatusId";
+
+      AppProject appProject = Beans.get(AppProjectService.class).getAppProject();
+
+      if (appProject.getCanceledProjectStatus() != null) {
+        json.put(canceledProjectStatusIdStr, appProject.getCanceledProjectStatus().getId());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+    return super.populate(json, context);
+  }
+
+  @Override
+  public void remove(Project entity) {
+    Beans.get(ProjectVersionRemoveService.class).removeProjectFromRoadmap(entity);
+
+    super.remove(entity);
   }
 }

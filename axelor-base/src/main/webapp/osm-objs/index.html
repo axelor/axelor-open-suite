@@ -46,7 +46,7 @@
 
 		function getPathname() {
 			var pathname = location.pathname.split('/');
-			return ('/' + pathname[1] + '/');
+		    return ['osm-objs',''].indexOf(pathname[1]) == -1  ? ('/' + pathname[1]) : '';
 		}
 	</script>
 
@@ -61,7 +61,7 @@
 		var bounds = new L.LatLngBounds();
 		var object = getQueryVariable("object");
 
-		var url = getAppHome() + getPathname() + "ws/map/" + object;
+		var url = getAppHome() + getPathname() + "/ws/map/" + object;
 		var id = getQueryVariable("id");
 		if (id) {
 			url += "/" + id;

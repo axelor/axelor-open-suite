@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,13 +23,17 @@ import com.axelor.apps.bankpayment.db.BankPaymentConfig;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.script.ScriptAllowed;
 import com.google.common.base.Strings;
 
+@ScriptAllowed
 public class BankPaymentConfigService {
 
   public BankPaymentConfig getBankPaymentConfig(Company company) throws AxelorException {
@@ -205,5 +209,20 @@ public class BankPaymentConfigService {
           bankPaymentConfig.getCompany().getName());
     }
     return bankPaymentConfig.getIcsNumber();
+  }
+
+  public PrintingTemplate getBankStatementLinePrintTemplate(Company company)
+      throws AxelorException {
+    PrintingTemplate bankStatementLinesPrintTemplate = null;
+    if (ObjectUtils.notEmpty(company)) {
+      bankStatementLinesPrintTemplate =
+          getBankPaymentConfig(company).getBankStatementLinesPrintTemplate();
+    }
+    if (ObjectUtils.isEmpty(bankStatementLinesPrintTemplate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
+    }
+    return bankStatementLinesPrintTemplate;
   }
 }

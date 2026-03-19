@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,11 +18,19 @@
  */
 package com.axelor.apps.stock.db.repo;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.inject.Beans;
 import java.util.Map;
+import java.util.Optional;
 
 public class StockMoveLineStockRepository extends StockMoveLineRepository {
 
@@ -36,28 +44,60 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    Long stockMoveLineId = (Long) json.get("id");
-    StockMoveLine stockMoveLine = find(stockMoveLineId);
+    try {
+      Long stockMoveLineId = (Long) json.get("id");
+      StockMoveLine stockMoveLine = find(stockMoveLineId);
 
-    StockMove stockMove = stockMoveLine.getStockMove();
+      StockMove stockMove = stockMoveLine.getStockMove();
 
-    if (stockMove == null
-        || (stockMove.getFromStockLocation() != null
-            && stockMove.getFromStockLocation().getTypeSelect()
-                == StockLocationRepository.TYPE_VIRTUAL)) {
-
-      return super.populate(json, context);
-    }
-
-    if (stockMove.getStatusSelect() < StockMoveRepository.STATUS_REALIZED) {
-      Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine);
+      populateTrackingNumberConfig(json, stockMoveLine);
       json.put(
-          "availableStatus",
-          stockMoveLine.getProduct() != null && stockMoveLine.getProduct().getStockManaged()
-              ? stockMoveLine.getAvailableStatus()
-              : null);
-      json.put("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
+          "$nbDecimalDigitForUnitPrice",
+          Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
+      json.put("$nbDecimalDigitForQty", Beans.get(AppBaseService.class).getNbDecimalDigitForQty());
+
+      if (stockMove == null
+          || (stockMoveLine.getFromStockLocation() != null
+              && stockMoveLine.getFromStockLocation().getTypeSelect()
+                  == StockLocationRepository.TYPE_VIRTUAL)) {
+
+        return super.populate(json, context);
+      }
+      if (stockMove.getStatusSelect() < StockMoveRepository.STATUS_REALIZED) {
+        Beans.get(StockMoveLineService.class)
+            .setAvailableStatus(stockMoveLine, stockMoveLine.getStockMove());
+        json.put(
+            "availableStatus",
+            stockMoveLine.getProduct() != null && stockMoveLine.getProduct().getStockManaged()
+                ? stockMoveLine.getAvailableStatus()
+                : null);
+        json.put("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
+        json.put("availableQty", stockMoveLine.getAvailableQty());
+        json.put("availableQtyForProduct", stockMoveLine.getAvailableQtyForProduct());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
     }
+
     return super.populate(json, context);
+  }
+
+  protected void populateTrackingNumberConfig(Map<String, Object> json, StockMoveLine stockMoveLine)
+      throws AxelorException {
+    final String trackingNumberConfiguration = "$trackingNumberConfiguration";
+
+    TrackingNumberConfiguration trackingNumberConfig = null;
+    if (stockMoveLine != null) {
+      Product product = stockMoveLine.getProduct();
+      Company company =
+          Optional.ofNullable(stockMoveLine.getStockMove()).map(StockMove::getCompany).orElse(null);
+
+      trackingNumberConfig =
+          (TrackingNumberConfiguration)
+              Beans.get(ProductCompanyService.class)
+                  .get(product, "trackingNumberConfiguration", company);
+    }
+
+    json.put(trackingNumberConfiguration, trackingNumberConfig);
   }
 }

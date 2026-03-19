@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,24 +24,23 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface InvoiceLineService {
 
-  TaxLine getTaxLine(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
+  Set<TaxLine> getTaxLineSet(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase)
       throws AxelorException;
 
   BigDecimal getExTaxUnitPrice(
-      Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase)
+      Invoice invoice, InvoiceLine invoiceLine, Set<TaxLine> taxLineSet, boolean isPurchase)
       throws AxelorException;
 
   BigDecimal getInTaxUnitPrice(
-      Invoice invoice, InvoiceLine invoiceLine, TaxLine taxLine, boolean isPurchase)
+      Invoice invoice, InvoiceLine invoiceLine, Set<TaxLine> taxLineSet, boolean isPurchase)
       throws AxelorException;
 
   BigDecimal getAccountingExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException;
@@ -60,9 +59,9 @@ public interface InvoiceLineService {
 
   int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price);
 
-  Unit getUnit(Product product, boolean isPurchase);
+  Unit getUnit(Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException;
 
-  void compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
+  Map<String, Object> compute(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
 
   Map<String, Object> resetProductInformation(Invoice invoice) throws AxelorException;
 
@@ -111,9 +110,14 @@ public interface InvoiceLineService {
 
   boolean checkManageCutOffDates(InvoiceLine invoiceLine);
 
-  void applyCutOffDates(
-      InvoiceLine invoiceLine, Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
+  void applyCutOffDates(InvoiceLine invoiceLine, Invoice invoice);
 
   Map<String, String> getProductDescriptionAndNameTranslation(
-      Invoice invoice, InvoiceLine invoiceLine, String userLanguage) throws AxelorException;
+      Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
+
+  BigDecimal getInTaxPrice(InvoiceLine invoiceLine);
+
+  Map<String, Map<String, Object>> setScale(InvoiceLine invoiceLine, Invoice invoice);
+
+  Map<String, Object> recomputeTax(Invoice invoice, InvoiceLine invoiceLine) throws AxelorException;
 }

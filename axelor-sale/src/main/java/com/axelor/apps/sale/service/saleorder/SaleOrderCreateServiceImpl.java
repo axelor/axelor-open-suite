@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,12 +34,18 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
+import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppSale;
+import com.axelor.studio.db.repo.AppSaleRepository;
 import com.axelor.team.db.Team;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -56,6 +62,11 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   protected AppSaleService appSaleService;
   protected SaleOrderService saleOrderService;
   protected SaleOrderComputeService saleOrderComputeService;
+  protected SaleOrderLineComputeService saleOrderLineComputeService;
+  protected SaleOrderLineProductService saleOrderLineProductService;
+  protected SaleOrderLinePriceService saleOrderLinePriceService;
+  protected SaleOrderDateService saleOrderDateService;
+  protected final SubSaleOrderLineComputeService subSaleOrderLineComputeService;
 
   @Inject
   public SaleOrderCreateServiceImpl(
@@ -63,27 +74,58 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
       SaleOrderService saleOrderService,
-      SaleOrderComputeService saleOrderComputeService) {
-
+      SaleOrderComputeService saleOrderComputeService,
+      SaleOrderLineComputeService saleOrderLineComputeService,
+      SaleOrderLineProductService saleOrderLineProductService,
+      SaleOrderLinePriceService saleOrderLinePriceService,
+      SaleOrderDateService saleOrderDateService,
+      SubSaleOrderLineComputeService subSaleOrderLineComputeService) {
     this.partnerService = partnerService;
     this.saleOrderRepo = saleOrderRepo;
     this.appSaleService = appSaleService;
     this.saleOrderService = saleOrderService;
     this.saleOrderComputeService = saleOrderComputeService;
+    this.saleOrderLineComputeService = saleOrderLineComputeService;
+    this.saleOrderLineProductService = saleOrderLineProductService;
+    this.saleOrderLinePriceService = saleOrderLinePriceService;
+    this.saleOrderDateService = saleOrderDateService;
+    this.subSaleOrderLineComputeService = subSaleOrderLineComputeService;
   }
 
   @Override
-  public SaleOrder createSaleOrder(Company company) throws AxelorException {
-    SaleOrder saleOrder = new SaleOrder();
-    saleOrder.setCreationDate(appSaleService.getTodayDate(company));
-    if (company != null) {
-      saleOrder.setCompany(company);
-      saleOrder.setCurrency(company.getCurrency());
-    }
-    saleOrder.setSalespersonUser(AuthUtils.getUser());
-    saleOrder.setTeam(saleOrder.getSalespersonUser().getActiveTeam());
-    saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
-    saleOrderService.computeEndOfValidityDate(saleOrder);
+  public SaleOrder createSaleOrder(
+      User salespersonUser,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      LocalDate estimatedShippingDate,
+      String internalReference,
+      String externalReference,
+      PriceList priceList,
+      Partner clientPartner,
+      Team team,
+      TaxNumber taxNumber,
+      String internalNote,
+      FiscalPosition fiscalPosition,
+      TradingName tradingName)
+      throws AxelorException {
+    SaleOrder saleOrder =
+        createSaleOrder(
+            salespersonUser,
+            company,
+            contactPartner,
+            currency,
+            estimatedShippingDate,
+            internalReference,
+            externalReference,
+            priceList,
+            clientPartner,
+            team,
+            taxNumber,
+            fiscalPosition,
+            tradingName);
+    saleOrder.setInternalNote(internalNote);
+    saleOrder.setTradingName(tradingName);
     return saleOrder;
   }
 
@@ -155,84 +197,9 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
 
-    saleOrderService.computeEndOfValidityDate(saleOrder);
+    saleOrderDateService.computeEndOfValidityDate(saleOrder);
 
     return saleOrder;
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public SaleOrder mergeSaleOrders(
-      List<SaleOrder> saleOrderList,
-      Currency currency,
-      Partner clientPartner,
-      Company company,
-      Partner contactPartner,
-      PriceList priceList,
-      Team team,
-      TaxNumber taxNumber,
-      FiscalPosition fiscalPosition)
-      throws AxelorException {
-
-    String numSeq = "";
-    String externalRef = "";
-    for (SaleOrder saleOrderLocal : saleOrderList) {
-      if (!numSeq.isEmpty()) {
-        numSeq += "-";
-      }
-      numSeq += saleOrderLocal.getSaleOrderSeq();
-
-      if (!externalRef.isEmpty()) {
-        externalRef += "|";
-      }
-      if (saleOrderLocal.getExternalReference() != null) {
-        externalRef += saleOrderLocal.getExternalReference();
-      }
-    }
-
-    SaleOrder saleOrderMerged =
-        this.createSaleOrder(
-            AuthUtils.getUser(),
-            company,
-            contactPartner,
-            currency,
-            null,
-            numSeq,
-            externalRef,
-            priceList,
-            clientPartner,
-            team,
-            taxNumber,
-            fiscalPosition);
-
-    this.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
-
-    saleOrderComputeService.computeSaleOrder(saleOrderMerged);
-
-    saleOrderRepo.save(saleOrderMerged);
-
-    this.removeOldSaleOrders(saleOrderList);
-
-    return saleOrderMerged;
-  }
-
-  // Attachment of all sale order lines to new sale order
-  protected void attachToNewSaleOrder(List<SaleOrder> saleOrderList, SaleOrder saleOrderMerged) {
-    for (SaleOrder saleOrder : saleOrderList) {
-      int countLine = 1;
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        saleOrderLine.setSequence(countLine * 10);
-        saleOrderMerged.addSaleOrderLineListItem(saleOrderLine);
-        countLine++;
-      }
-    }
-  }
-
-  // Remove old sale orders after merge
-  protected void removeOldSaleOrders(List<SaleOrder> saleOrderList) {
-    for (SaleOrder saleOrder : saleOrderList) {
-      saleOrderRepo.remove(saleOrder);
-    }
   }
 
   @Override
@@ -245,7 +212,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     copy.setCurrency(wizardCurrency);
     copy.setPriceList(wizardPriceList);
 
-    saleOrderService.computeEndOfValidityDate(copy);
+    saleOrderDateService.computeEndOfValidityDate(copy);
 
     this.updateSaleOrderLineList(copy);
 
@@ -260,12 +227,25 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   public void updateSaleOrderLineList(SaleOrder saleOrder) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     if (saleOrderLineList != null) {
-      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         if (saleOrderLine.getProduct() != null) {
-          saleOrderLineService.resetPrice(saleOrderLine);
-          saleOrderLineService.fillPrice(saleOrderLine, saleOrder);
-          saleOrderLineService.computeValues(saleOrder, saleOrderLine);
+          if (!saleOrder.getTemplate()) {
+            saleOrderLinePriceService.resetPrice(saleOrderLine);
+          }
+          AppSale appSale = appSaleService.getAppSale();
+          if (appSale.getListDisplayTypeSelect()
+              == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
+            subSaleOrderLineComputeService.updateSubSaleOrderLineList(saleOrderLine, saleOrder);
+            if (appSale.getIsSOLPriceTotalOfSubLines()) {
+              subSaleOrderLineComputeService.computeSumSubLineList(saleOrderLine, saleOrder);
+            } else {
+              saleOrderLineProductService.fillPrice(saleOrderLine, saleOrder);
+              saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+            }
+          } else {
+            saleOrderLineProductService.fillPrice(saleOrderLine, saleOrder);
+            saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+          }
         }
       }
     }

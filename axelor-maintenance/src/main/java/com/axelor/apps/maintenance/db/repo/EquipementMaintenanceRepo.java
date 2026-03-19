@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,12 +28,17 @@ import com.axelor.apps.maintenance.db.Imaintenance;
 import com.axelor.apps.maintenance.exception.MaintenanceExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 
 public class EquipementMaintenanceRepo extends EquipementMaintenanceRepository {
 
-  @Inject private SequenceService sequenceService;
+  protected SequenceService sequenceService;
+
+  @Inject
+  public EquipementMaintenanceRepo(SequenceService sequenceService) {
+    this.sequenceService = sequenceService;
+  }
 
   @Override
   public EquipementMaintenance save(EquipementMaintenance entity) {
@@ -51,7 +56,7 @@ public class EquipementMaintenanceRepo extends EquipementMaintenanceRepository {
   protected void setCode(EquipementMaintenance entity) throws AxelorException {
     String code =
         sequenceService.getSequenceNumber(
-            Imaintenance.SEQ_MAINTENANCE, EquipementMaintenance.class, "code");
+            Imaintenance.SEQ_MAINTENANCE, EquipementMaintenance.class, "code", entity);
 
     if (Strings.isNullOrEmpty(code)) {
       throw new AxelorException(

@@ -14,6 +14,10 @@ there are a few guidelines we’d like you to follow:
 By submitting code as an individual you agree to the [individual contributor license agreement][individual-cla].
 By submitting code as an entity you agree to the [corporate contributor license agreement][corporate-cla].
 
+## Security issues
+
+If you believe you've found a security vulnerability, please read our [security policy](SECURITY.md) for more details.
+
 ## Reporting Issues
 
 Before you submit your issue search the archive, maybe your question was already answered.

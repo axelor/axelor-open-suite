@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,14 +18,22 @@
  */
 package com.axelor.apps.stock.service;
 
-import com.axelor.apps.base.service.AddressServiceImpl;
+import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.address.AddressServiceImpl;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.db.JPA;
+import com.axelor.utils.helpers.address.AddressHelper;
+import jakarta.inject.Inject;
 
 public class AddressServiceStockImpl extends AddressServiceImpl {
   static {
     registerCheckUsedFunc(AddressServiceStockImpl::checkAddressUsedStock);
+  }
+
+  @Inject
+  public AddressServiceStockImpl(AddressHelper ads, MapService mapService) {
+    super(ads, mapService);
   }
 
   private static boolean checkAddressUsedStock(Long addressId) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,27 +22,35 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveManagement;
 import com.axelor.auth.db.User;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class LeaveManagementService {
 
   @Inject protected AppBaseService appBaseService;
 
   public LeaveLine computeQuantityAvailable(LeaveLine leaveLine) {
-    List<LeaveManagement> leaveManagementList = leaveLine.getLeaveManagementList();
+
     leaveLine.setTotalQuantity(BigDecimal.ZERO);
-    if (leaveManagementList != null && !leaveManagementList.isEmpty()) {
-      for (LeaveManagement leaveManagement : leaveManagementList) {
-        leaveLine.setTotalQuantity(leaveLine.getTotalQuantity().add(leaveManagement.getValue()));
-      }
-      leaveLine.setQuantity(leaveLine.getTotalQuantity().subtract(leaveLine.getDaysValidated()));
+    leaveLine.setQuantity(BigDecimal.ZERO);
+
+    List<LeaveManagement> leaveManagementList = leaveLine.getLeaveManagementList();
+    if (CollectionUtils.isEmpty(leaveManagementList)) {
+      return leaveLine;
     }
+
+    leaveLine.setTotalQuantity(
+        leaveManagementList.stream()
+            .map(LeaveManagement::getValue)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO));
+    leaveLine.setQuantity(leaveLine.getTotalQuantity().subtract(leaveLine.getDaysValidated()));
     return leaveLine;
   }
 
@@ -56,10 +64,24 @@ public class LeaveManagementService {
       LocalDate toDate,
       BigDecimal value) {
 
+    LeaveManagement leaveManagement =
+        createLeaveManagement(user, comments, date, fromDate, toDate, value);
+    leaveManagement.setLeaveLine(leaveLine);
+
+    return leaveManagement;
+  }
+
+  @Transactional
+  public LeaveManagement createLeaveManagement(
+      User user,
+      String comments,
+      LocalDate date,
+      LocalDate fromDate,
+      LocalDate toDate,
+      BigDecimal value) {
+
     LeaveManagement leaveManagement = new LeaveManagement();
 
-    leaveManagement.setLeaveLine(leaveLine);
-    leaveManagement.setUser(user);
     leaveManagement.setComments(comments);
     if (date == null) {
       leaveManagement.setDate(
@@ -79,7 +101,6 @@ public class LeaveManagementService {
    * Reset leave management list by adding a new leave management line with negative quantity.
    *
    * @param leaveLine
-   * @param employee
    * @param comments
    * @param date
    * @param fromDate

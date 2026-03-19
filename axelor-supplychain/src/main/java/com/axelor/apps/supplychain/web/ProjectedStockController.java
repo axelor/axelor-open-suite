@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,12 +23,17 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.cart.CartProductService;
 import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.supplychain.db.MrpLine;
+import com.axelor.apps.supplychain.db.MrpLineType;
+import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
-import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
+import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -39,13 +44,22 @@ import com.axelor.rpc.Context;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectedStockController {
 
+  protected static final String KEY_DATE = "name";
+  protected static final String KEY_CUMULATIVE_QTY = "cumulativeQty";
   public static final String VIEW_AVAILABLE_STOCK_QTY_TITLE = /*$$(*/ "%s stock location" /*)*/;
   public static final String VIEW_SOL_OF_PRODUCT_TITLE = /*$$(*/ "%s sale order" /*)*/;
   public static final String VIEW_POL_OF_PRODUCT_TITLE = /*$$(*/ "%s purchase order" /*)*/;
@@ -64,7 +78,7 @@ public class ProjectedStockController {
     Long companyId = mapId.get("companyId");
     Long stockLocationId = mapId.get("stockLocationId");
     String domain =
-        Beans.get(StockLocationLineService.class)
+        Beans.get(StockLocationLineFetchService.class)
             .getAvailableStockForAProduct(productId, companyId, stockLocationId);
 
     Product product = Beans.get(ProductRepository.class).find(mapId.get("productId"));
@@ -150,7 +164,7 @@ public class ProjectedStockController {
     Long companyId = mapId.get("companyId");
     Long stockLocationId = mapId.get("stockLocationId");
     String domain =
-        Beans.get(StockLocationLineService.class)
+        Beans.get(StockLocationLineFetchService.class)
             .getRequestedReservedQtyForAProduct(productId, companyId, stockLocationId);
     Product product = Beans.get(ProductRepository.class).find(mapId.get("productId"));
     String title = I18n.get(VIEW_REQUESTED_RESERVED_QTY_TITLE);
@@ -189,7 +203,8 @@ public class ProjectedStockController {
                 .param("popup", "true")
                 .param("popup-save", "false")
                 .param("popup.maximized", "true")
-                .context("_mrpLineList", mrpLineList)
+                .context(
+                    "_mrpLineList", Beans.get(MrpLineService.class).getMrpLineListCopy(mrpLineList))
                 .map());
       } catch (Exception e) {
         TraceBackService.trace(response, e);
@@ -202,53 +217,102 @@ public class ProjectedStockController {
   }
 
   public void showChartProjectedStock(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
-    List<Map<String, Object>> dataList = new ArrayList<>();
-
-    @SuppressWarnings("unchecked")
-    Collection<Map<String, Object>> contextMrpLineList =
-        (Collection<Map<String, Object>>) context.get("_mrpLineListToProject");
-
-    List<MrpLine> mrpLineList =
-        contextMrpLineList.stream()
-            .map(map -> Mapper.toBean(MrpLine.class, map))
-            .collect(Collectors.toList());
-
-    if (!mrpLineList.isEmpty()) {
-      List<MrpLine> mrpLineLastList = new ArrayList<>();
-      MrpLine lastMrpLine = mrpLineList.get(0);
-
-      for (int i = 1; i < mrpLineList.size(); ++i) {
-        MrpLine mrpLine = mrpLineList.get(i);
-        if (mrpLine.getMaturityDate().isAfter(lastMrpLine.getMaturityDate())) {
-          mrpLineLastList.add(lastMrpLine);
-        }
-        lastMrpLine = mrpLine;
-      }
-      mrpLineLastList.add(lastMrpLine);
-      lastMrpLine = mrpLineList.get(0);
-      LocalDate mrpDate = lastMrpLine.getMaturityDate();
-      for (MrpLine mrpLine : mrpLineLastList) {
-        mrpDate = addInterElementForProjectedStockChart(dataList, lastMrpLine, mrpDate, mrpLine);
-        Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("name", mrpLine.getMaturityDate());
-        dataMap.put("cumulativeQty", mrpLine.getCumulativeQty());
-        dataList.add(dataMap);
-        lastMrpLine = mrpLine;
-      }
+    List<MrpLine> mrpLineList = extractMrpLines(request.getContext());
+    if (CollectionUtils.isEmpty(mrpLineList)) {
+      response.setData(Collections.emptyList());
+      return;
     }
-    response.setData(dataList);
+    List<MrpLine> dailySnapshots = filterAndSortSnapshots(mrpLineList);
+    List<Map<String, Object>> chartData = generateChartData(dailySnapshots);
+    response.setData(chartData);
   }
 
-  protected LocalDate addInterElementForProjectedStockChart(
-      List<Map<String, Object>> dataList, MrpLine lastMrpLine, LocalDate mrpDate, MrpLine mrpLine) {
-    while (mrpDate.isBefore(mrpLine.getMaturityDate())) {
-      mrpDate = mrpDate.plusDays(1);
-      Map<String, Object> dataMapDate = new HashMap<>();
-      dataMapDate.put("name", mrpDate);
-      dataMapDate.put("cumulativeQty", lastMrpLine.getCumulativeQty());
-      dataList.add(dataMapDate);
+  @SuppressWarnings("unchecked")
+  protected List<MrpLine> extractMrpLines(Context context) {
+    Collection<Map<String, Object>> rawList =
+        (Collection<Map<String, Object>>) context.get("_mrpLineListToProject");
+
+    if (rawList == null) {
+      return new ArrayList<>();
     }
-    return mrpDate;
+
+    return rawList.stream()
+        .map(map -> Mapper.toBean(MrpLine.class, map))
+        .collect(Collectors.toList());
+  }
+
+  protected List<MrpLine> filterAndSortSnapshots(List<MrpLine> mrpLines) {
+    Comparator<MrpLine> intraDatePriority =
+        Comparator.comparing(
+                (MrpLine line) ->
+                    line.getMrpLineType() != null ? loadMrpLineType(line).getTypeSelect() : null,
+                Comparator.nullsLast(Comparator.naturalOrder()))
+            .thenComparing(
+                line -> line.getMrpLineType() != null ? loadMrpLineType(line).getSequence() : null,
+                Comparator.nullsLast(Comparator.naturalOrder()));
+    Map<LocalDate, MrpLine> bestLinePerDate =
+        mrpLines.stream()
+            .collect(
+                Collectors.toMap(
+                    MrpLine::getMaturityDate,
+                    Function.identity(),
+                    BinaryOperator.maxBy(intraDatePriority),
+                    TreeMap::new));
+    return new ArrayList<>(bestLinePerDate.values());
+  }
+
+  protected MrpLineType loadMrpLineType(MrpLine line) {
+    MrpLineType ref = line.getMrpLineType();
+    if (ref == null || ref.getId() == null) {
+      return null;
+    }
+    return JPA.find(MrpLineType.class, ref.getId());
+  }
+
+  protected List<Map<String, Object>> generateChartData(List<MrpLine> dailySnapshots) {
+    List<Map<String, Object>> dataList = new ArrayList<>();
+    MrpLine previousLine = dailySnapshots.get(0);
+    for (MrpLine currentLine : dailySnapshots) {
+      fillDateGaps(dataList, previousLine, currentLine.getMaturityDate());
+      dataList.add(createDataPoint(currentLine.getMaturityDate(), currentLine.getCumulativeQty()));
+      previousLine = currentLine;
+    }
+
+    return dataList;
+  }
+
+  protected void fillDateGaps(
+      List<Map<String, Object>> dataList, MrpLine previousLine, LocalDate targetDate) {
+    LocalDate dateIterator = previousLine.getMaturityDate().plusDays(1);
+    while (dateIterator.isBefore(targetDate)) {
+      dataList.add(createDataPoint(dateIterator, previousLine.getCumulativeQty()));
+      dateIterator = dateIterator.plusDays(1);
+    }
+  }
+
+  protected Map<String, Object> createDataPoint(LocalDate date, Object qty) {
+    Map<String, Object> point = new HashMap<>();
+    point.put(KEY_DATE, date);
+    point.put(KEY_CUMULATIVE_QTY, qty);
+    return point;
+  }
+
+  @SuppressWarnings("unchecked")
+  public void addToCart(ActionRequest request, ActionResponse response) {
+    try {
+      LinkedHashMap<String, Object> productHashMap =
+          (LinkedHashMap<String, Object>) request.getContext().get("product");
+      if (productHashMap == null) {
+        return;
+      }
+      Product product =
+          Beans.get(ProductRepository.class)
+              .find(Long.valueOf(productHashMap.get("id").toString()));
+      Beans.get(CartProductService.class).addToCart(product);
+      response.setNotify(
+          String.format(I18n.get(SaleExceptionMessage.PRODUCT_ADDED_TO_CART), product.getName()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

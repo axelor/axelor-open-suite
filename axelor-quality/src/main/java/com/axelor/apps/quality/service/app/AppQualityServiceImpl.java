@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,34 +18,50 @@
  */
 package com.axelor.apps.quality.service.app;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.apps.quality.db.QualityConfig;
+import com.axelor.apps.quality.db.repo.QualityConfigRepository;
+import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppQuality;
 import com.axelor.studio.db.repo.AppQualityRepository;
-import com.axelor.studio.db.repo.AppRepository;
-import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import java.util.List;
 
 public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQualityService {
 
   private AppQualityRepository appQualityRepo;
+  private CompanyRepository companyRepository;
+  private QualityConfigRepository qualityConfigRepository;
 
   @Inject
   public AppQualityServiceImpl(
-      AppRepository appRepo,
-      MetaFiles metaFiles,
-      AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsStudioService,
-      AppQualityRepository appQualityRepo) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
+      AppService appService,
+      AppQualityRepository appQualityRepo,
+      CompanyRepository companyRepository,
+      QualityConfigRepository qualityConfigRepository) {
+    super(appService);
     this.appQualityRepo = appQualityRepo;
+    this.companyRepository = companyRepository;
+    this.qualityConfigRepository = qualityConfigRepository;
   }
 
   @Override
   public AppQuality getAppQuality() {
-    return appQualityRepo.all().fetchOne();
+    return appQualityRepo.all().cacheable().autoFlush(false).fetchOne();
+  }
+
+  @Override
+  @Transactional
+  public void generateQualityConfigurations() {
+    List<Company> companies = companyRepository.all().filter("self.qualityConfig is null").fetch();
+
+    for (Company company : companies) {
+      QualityConfig qualityConfig = new QualityConfig();
+      qualityConfig.setCompany(company);
+      qualityConfigRepository.save(qualityConfig);
+    }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,42 +18,50 @@
  */
 package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.LogisticalForm;
-import com.axelor.apps.supplychain.report.IReport;
-import com.axelor.i18n.I18n;
-import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
+import com.axelor.apps.supplychain.service.LogisticalFormStockMoveService;
+import com.axelor.apps.supplychain.service.LogisticalFormSupplychainService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
 
-@Singleton
 public class LogisticalFormController {
 
-  public void print(ActionRequest request, ActionResponse response) {
+  public void refreshLogisticalForm(ActionRequest request, ActionResponse response) {
+    response.setSignal("refresh-tab", true);
+  }
+
+  public void validateAndUpdateStockMoveList(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+    LogisticalForm savedLogisticalForm = null;
+    if (logisticalForm.getId() != null) {
+      savedLogisticalForm = Beans.get(LogisticalFormRepository.class).find(logisticalForm.getId());
+    }
+    String error =
+        Beans.get(LogisticalFormStockMoveService.class)
+            .validateAndUpdateStockMoveList(savedLogisticalForm, logisticalForm);
+    if (!error.isEmpty()) {
+      response.setError(error);
+      response.setValue("stockMoveList", savedLogisticalForm.getStockMoveList());
+      return;
+    }
+    if (savedLogisticalForm == null) {
+      response.setValue("packagingList", logisticalForm.getPackagingList());
+    } else {
+      response.setValue("packagingList", savedLogisticalForm.getPackagingList());
+    }
+  }
+
+  public void processCollected(ActionRequest request, ActionResponse response) {
     try {
       LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
-
-      String name =
-          String.format("%s %s", I18n.get("Packing list"), logisticalForm.getDeliveryNumberSeq());
-
-      String fileLink =
-          ReportFactory.createReport(IReport.PACKING_LIST, name + " - ${date}")
-              .addParam("LogisticalFormId", logisticalForm.getId())
-              .addParam(
-                  "Timezone",
-                  logisticalForm.getCompany() != null
-                      ? logisticalForm.getCompany().getTimezone()
-                      : null)
-              .addParam(
-                  "Locale",
-                  ReportSettings.getPrintingLocale(logisticalForm.getDeliverToCustomerPartner()))
-              .generate()
-              .getFileLink();
-
-      response.setView(ActionView.define(name).add("html", fileLink).map());
+      logisticalForm = Beans.get(LogisticalFormRepository.class).find(logisticalForm.getId());
+      Beans.get(LogisticalFormSupplychainService.class).processCollected(logisticalForm);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

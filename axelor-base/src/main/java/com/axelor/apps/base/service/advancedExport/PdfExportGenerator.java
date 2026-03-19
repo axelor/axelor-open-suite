@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,44 +24,42 @@ import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import org.openpdf.text.Document;
+import org.openpdf.text.Font;
+import org.openpdf.text.FontFactory;
+import org.openpdf.text.Phrase;
+import org.openpdf.text.pdf.PdfPCell;
+import org.openpdf.text.pdf.PdfPTable;
+import org.openpdf.text.pdf.PdfWriter;
 
 public class PdfExportGenerator extends AdvancedExportGenerator {
 
-  private Document document = null;
-
-  private PdfPTable table = null;
-
   private AdvancedExport advancedExport;
 
-  private File exportFile;
+  private Document document;
+  private PdfPTable table;
 
+  private File exportFile;
   private String exportFileName;
 
   public PdfExportGenerator(AdvancedExport advancedExport) throws AxelorException {
-    this.advancedExport = advancedExport;
-    exportFileName = advancedExport.getMetaModel().getName() + ".pdf";
-    document = new Document();
-    table = new PdfPTable(advancedExport.getAdvancedExportLineList().size());
     try {
-      exportFile = File.createTempFile(advancedExport.getMetaModel().getName(), ".pdf");
-      FileOutputStream outStream = new FileOutputStream(exportFile);
-      PdfWriter.getInstance(document, outStream);
-    } catch (IOException | DocumentException e) {
+
+      this.advancedExport = advancedExport;
+      this.exportFileName = advancedExport.getMetaModel().getName();
+      this.exportFile = File.createTempFile(exportFileName, ".pdf");
+
+      this.document = new Document();
+      this.table = new PdfPTable(advancedExport.getAdvancedExportLineList().size());
+      this.table.setWidthPercentage(100);
+      PdfWriter.getInstance(document, new FileOutputStream(exportFile));
+    } catch (IOException e) {
       TraceBackService.trace(e);
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
@@ -70,54 +68,60 @@ public class PdfExportGenerator extends AdvancedExportGenerator {
 
   @Override
   public void generateHeader() throws AxelorException {
-    try {
-      PdfPCell headerCell;
-      for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
-        headerCell =
-            new PdfPCell(
-                new Phrase(
-                    I18n.get(advancedExportLine.getTitle()),
-                    new Font(BaseFont.createFont(), 8, 0, BaseColor.WHITE)));
-        headerCell.setBackgroundColor(BaseColor.GRAY);
-        headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        table.addCell(headerCell);
-      }
-    } catch (DocumentException | IOException e) {
-      TraceBackService.trace(e);
-      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    Font font = getFont(8);
+    for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
+      String header =
+          advancedExport.getUseTechnicalFieldName()
+              ? advancedExportLine.getTargetField()
+              : I18n.get(advancedExportLine.getTitle());
+      PdfPCell cell = getHeaderCell(font, header);
+      table.addCell(cell);
     }
   }
 
   @SuppressWarnings("rawtypes")
   @Override
-  public void generateBody(List<List> dataList) {
-    PdfPCell cell;
-    Font font = new Font();
-    font.setSize(7);
-
+  public void generateBody(List<List> dataList) throws AxelorException {
+    Font font = getFont(7);
     for (List listObj : dataList) {
-      for (int colIndex = 0; colIndex < listObj.size(); colIndex++) {
-        Object value = listObj.get(colIndex);
-        String columnValue = null;
-        if (!(value == null || value.equals(""))) {
-          if (value instanceof BigDecimal) columnValue = convertDecimalValue(value);
-          else columnValue = value.toString();
-        }
-        cell = new PdfPCell(new Phrase(columnValue, font));
+      for (Object value : listObj) {
+        PdfPCell cell = getCell(font, getColumnValue(value));
         table.addCell(cell);
       }
     }
   }
 
+  protected String getColumnValue(Object value) {
+    String columnValue;
+    if (!(value == null || value.equals(""))) {
+      if (value instanceof BigDecimal) columnValue = convertDecimalValue(value);
+      else columnValue = value.toString();
+    } else {
+      columnValue = "";
+    }
+    return columnValue;
+  }
+
+  protected PdfPCell getHeaderCell(Font font, String value) {
+    PdfPCell cell = getCell(font, value);
+    cell.setBackgroundColor(Color.LIGHT_GRAY);
+    return cell;
+  }
+
+  protected PdfPCell getCell(Font font, String value) {
+    Phrase phrase = new Phrase(value, font);
+    PdfPCell cell = new PdfPCell(phrase);
+    return cell;
+  }
+
+  protected Font getFont(float size) {
+    return FontFactory.getFont(FontFactory.HELVETICA, size);
+  }
+
   @Override
   public void close() throws AxelorException {
-    try {
-      document.add(table);
-      document.close();
-    } catch (DocumentException e) {
-      TraceBackService.trace(e);
-      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
-    }
+    document.add(table);
+    document.close();
   }
 
   @Override
@@ -132,6 +136,6 @@ public class PdfExportGenerator extends AdvancedExportGenerator {
 
   @Override
   public String getFileName() {
-    return exportFileName;
+    return exportFileName + ".pdf";
   }
 }

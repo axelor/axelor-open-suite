@@ -1,0 +1,2 @@
+"importId";"name";"isRequiredForCompanies";"titleToDisplay";"requiredSize";"validationMethodSelect";"useSiren";"sirenPos";"sirenLength";"useNic";"nicPos";"nicLength";"useTaxNbr"
+"1";"France";"true";;"14";"com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberValidatorFRA";"true";"1";"9";"true";"10";"5";true

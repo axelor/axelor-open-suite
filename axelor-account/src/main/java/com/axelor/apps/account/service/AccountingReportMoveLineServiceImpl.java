@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.PaymentMoveLineDistribution;
@@ -34,12 +36,12 @@ import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.studio.app.service.AppService;
-import com.axelor.utils.file.FileTool;
+import com.axelor.utils.helpers.file.FileHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -49,7 +51,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -168,8 +169,10 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     lines.addAll(generateN4DSLines(accountingExport));
 
     File file =
-        FileTool.writer(
-            Beans.get(AppService.class).getDataExportDir(), fileName, (List<String>) lines);
+        FileHelper.writer(
+            AppSettings.get().get(AvailableAppSettings.DATA_UPLOAD_DIR),
+            fileName,
+            (List<String>) lines);
     InputStream is = new FileInputStream(file);
     return Beans.get(MetaFiles.class).attach(is, fileName, accountingExport).getMetaFile();
   }
@@ -216,7 +219,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
 
     Partner companyPartner = accountingExport.getCompany().getPartner();
     Address address = companyPartner.getMainAddress();
-    String alpha2code = address.getAddressL7Country().getAlpha2Code();
+    String alpha2code = address.getCountry().getAlpha2Code();
     String registrationCode = companyPartner.getRegistrationCode().replaceAll(" ", "");
     String siren = computeSiren(registrationCode, alpha2code);
     String nic = computeNic(registrationCode, alpha2code);
@@ -479,7 +482,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
             + "LEFT OUTER JOIN pmvld.moveLine moveLine "
             + "LEFT OUTER JOIN pmvld.partner partner "
             + "LEFT OUTER JOIN partner.mainAddress address "
-            + "LEFT OUTER JOIN address.addressL7Country country "
+            + "LEFT OUTER JOIN address.country country "
             + "LEFT OUTER JOIN address.city city "
             + "LEFT OUTER JOIN moveLine.account account "
             + "LEFT OUTER JOIN account.serviceType serviceType "

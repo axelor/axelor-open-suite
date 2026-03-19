@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,9 @@
 package com.axelor.apps.contract.generator;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.TaxNumberRepository;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -35,11 +37,11 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
 
   public InvoiceGeneratorContract(Contract contract) throws AxelorException {
     super(
-        contract.getTargetTypeSelect() == ContractRepository.CUSTOMER_CONTRACT
-            ? InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
-            : InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
+        getOperationType(contract),
         contract.getCompany(),
-        contract.getPartner(),
+        contract.getInvoicedPartner() != null
+            ? contract.getInvoicedPartner()
+            : contract.getPartner(),
         null,
         null,
         contract.getContractId(),
@@ -71,12 +73,17 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
           InvoiceRepository.OPERATION_SUB_TYPE_CONTRACT_CLOSING_INVOICE);
     }
 
-    invoice.setContract(contract);
     if (contract.getInvoicingDate() != null) {
       invoice.setInvoiceDate(contract.getInvoicingDate());
     } else {
       invoice.setInvoiceDate(appBaseService.getTodayDate(company));
     }
+
+    TaxNumber companyTaxNumber =
+        Beans.get(TaxNumberRepository.class)
+            .findByCompanyAndTaxNbr(company, company.getPartner().getTaxNbr())
+            .fetchOne();
+    invoice.setCompanyTaxNumber(companyTaxNumber);
 
     return invoice;
   }
@@ -84,5 +91,28 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
   @Override
   public Invoice generate() throws AxelorException {
     return createInvoiceHeader();
+  }
+
+  protected static int getOperationType(Contract contract) {
+    int targetTypeSelect = contract.getTargetTypeSelect();
+    int operationType = 0;
+
+    switch (targetTypeSelect) {
+      case ContractRepository.CUSTOMER_CONTRACT:
+        operationType = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
+        break;
+      case ContractRepository.SUPPLIER_CONTRACT:
+        operationType = InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
+        break;
+      case ContractRepository.YEB_CUSTOMER_CONTRACT:
+        operationType = InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+        break;
+      case ContractRepository.YEB_SUPPLIER_CONTRACT:
+        operationType = InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
+        break;
+      default:
+        break;
+    }
+    return operationType;
   }
 }

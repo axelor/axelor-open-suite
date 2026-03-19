@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <dashboard name="project-my-projects" title="My projects">
     <dashlet action="action-project-db-my-tasks-to-do"/>
     <dashlet action="action-project-db-my-tasks-due"/>
-    <dashlet action="action-project-db-my-today-planning"/>
-    <dashlet action="action-project-db-my-upcomming-planning"/>
+    <dashlet action="action-project-db-my-today-planning"
+      if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
+    <dashlet action="action-project-db-my-upcomming-planning"
+      if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
   </dashboard>
 
   <dashboard name="project-planned-charge" title="Planned charge">
@@ -20,96 +22,90 @@
   <form name="project-dashboard-form" title="Project dashboard"
     model="com.axelor.utils.db.Wizard" onNew="action-project-dashboard-method-on-new" width="large"
     canNew="false" canEdit="false" canDelete="false">
-    <panel name="overviewPanel" title="Overview" readonly="true">
-      <field name="$description" showTitle="false">
-        <viewer>
-	        <![CDATA[
-	          <p>{{record.$description}}</p>
-	        ]]>
-        </viewer>
-      </field>
-      <spacer/>
-      <panel name="issueTrackingPanel" title="Issue tracking" icon="fa-sticky-note">
-        <field name="$categoryList" showTitle="false" colSpan="12"
-          hideIf="$categoryList.length == 0">
+    <panel name="overviewPanel" title="Dashboard" readonly="true" colSpan="12"
+      canCollapse="true">
+      <panel name="issueTrackingPanel" title="Task tracking" icon="sticky-fill">
+        <field name="$categoryList" showTitle="false" hideIf="$categoryList.length == 0">
           <viewer>
-					<![CDATA[
-				   	   <table class="table table-striped">
-				   	     <thead>
-					        <tr>
-					          <th></th>
-					          <th x-translate>Open</th>
-					          <th x-translate>Closed</th>
-					          <th x-translate>Total</th>
-					        </tr>
-					     </thead>
-					     <tbody>
-					       <tr ng-repeat="item in record.$categoryList">
-					         <td><a href="" ui-action-click="com.axelor.apps.project.service.ProjectDashboardService:getTasksOpenedPerCategoryView({{item.categoryId}})">{{item.categoryName}}</a></td>
-					         <td><a href="" ui-action-click="com.axelor.apps.project.service.ProjectDashboardService:getTasksOpenedPerCategoryView({{item.categoryId}})">{{item.open}}</a></td>
-					         <td><a href="" ui-action-click="com.axelor.apps.project.service.ProjectDashboardService:getTasksClosedPerCategoryView({{item.categoryId}})">{{item.closed}}</a></td>
-					         <td><a href="" ui-action-click="com.axelor.apps.project.service.ProjectDashboardService:getTasksPerCategoryView({{item.categoryId}})">{{item.total}}</a></td>
-					       </tr>
-					     </tbody>
-					   </table>
-					   <span><a href="#/ds/all.open.project.tasks" x-translate>View all issues</a><span ng-if="record.$isShowCalendarView"> | <a href="#/ds/action-project-dashboard-view-per-user-calendar" x-translate>Calendar</a></span><span ng-if="record.$isShowGanttView"> | <a href="#/ds/action-project-dashboard-view-open-gantt" x-translate>Gantt</a></span></span>
+            <![CDATA[
+						<>
+					        <Table striped>
+					            <TableHead>
+					              	<TableRow>
+						                <TableCell as="th"></TableCell>
+						                <TableCell as="th">{_t('Open')}</TableCell>
+						                <TableCell as="th">{_t('Closed')}</TableCell>
+						                <TableCell as="th">{_t('Total')}</TableCell>
+					              	</TableRow>
+					            </TableHead>
+					            <TableBody>
+						           {$categoryList.map((item,index) => (
+						                <TableRow key={item.categoryId}>
+					                  	<TableCell><Button variant="link" onClick={() => $execute("action-project-dashboard-show-tasks-opened-per-category", {categoryId : item.categoryId})}>{item.categoryName}</Button></TableCell>
+						                  	<TableCell><Button variant="link" onClick={() => $execute("action-project-dashboard-show-tasks-opened-per-category", {categoryId : item.categoryId})}>{item.open}</Button></TableCell>
+						                  	<TableCell><Button variant="link" onClick={() => $execute("action-project-dashboard-show-tasks-closed-per-category", {categoryId : item.categoryId})}>{item.closed}</Button></TableCell>
+						                  	<TableCell><Button variant="link" onClick={() => $execute("action-project-dashboard-show-tasks-per-category", {categoryId : item.categoryId})}>{item.total}</Button></TableCell>
+						                </TableRow>
+						            ))}
+					            </TableBody>
+					            <TableCaption>
+							    	<Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("all.open.project.tasks")}>{_t('View all issues')}</Button>
+							    	{$isShowCalendarView && <span> | <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("action-project-dashboard-view-per-user-calendar")}>{_t('Calendar')}</Button></span>}
+							    	{$isShowGanttView && <span> | <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("action-project-dashboard-view-open-gantt")}>{_t('Gantt')}</Button></span>}
+					            </TableCaption>
+					        </Table>
+						</>
 			        ]]>
           </viewer>
         </field>
       </panel>
-      <panel name="membersPanel" title="Members" icon="fa-users"
+      <panel name="membersPanel" title="Members" icon="people-fill"
         hideIf="$membersList.length == 0">
-        <field name="$membersList" showTitle="false" colSpan="12">
+        <field name="$membersList" showTitle="false">
           <viewer>
-						<![CDATA[
-						 <div>
-				           <span ng-repeat="item in record.$membersList"><a href="#/ds/action-auth-users/edit/{{item.id}}">{{item.name}}</a><span ng-if="!$last">, </span></span>
-				         <div>
+            <![CDATA[
+				         <>
+				         	{$membersList.map((item, index) => (
+				         		<span key={index}>
+				         			<Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("action-auth-users", {userId : item.id})}>{item.name}</Button>
+				         		</span>
+				         	)).reduce((prev, curr) => prev ? [prev, ', ', curr] : [curr],'')}
+				         </>
 				        ]]>
           </viewer>
         </field>
       </panel>
-      <panel name="spentTimePanel" title="Spent time" icon="fa-clock-o"
+      <panel name="spentTimePanel" title="Spent time" icon="clock"
         if="__config__.app.isApp('timesheet')" if-module="axelor-human-resource"
-        hideIf="$spentTime == 0" showIf="$isShowTimeSpent">
+        hideIf="$spentTime == 0" showIf="manageTimeSpent">
         <field name="$spentTime" showTitle="false" colSpan="12">
           <viewer>
-						<![CDATA[
-				         <p>{{record.$spentTime}} <span x-translate>hours</span></p> <br/>
-				   	     <a href="#/ds/action-timesheet-line-log-time"><span x-translate>Log time</span></a> | <a href="#/ds/project.spent.time"><span x-translate>Details</span></a>
+            <![CDATA[
+				         <>
+				         	<p>{$spentTime} <span>{_t('hours')}</span></p> <Box/>
+				   	     	<Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("action-timesheet-line-log-time")}><span>{_t('Log time')}</span></Button> | <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={(e) => $execute("project.spent.time")}><span>{_t('Details')}</span></Button>
+				         </>
 				        ]]>
           </viewer>
         </field>
       </panel>
-      <panel name="announcementPanel" title="Latest News" icon="fa-newspaper-o"
-        if="__config__.app.isApp('business-support')" if-module="axelor-business-support"
-        hideIf="$announcementList.length == 0">
-        <field name="$announcementList" showTitle="false" colSpan="12">
-          <viewer>
-						<![CDATA[
-						 <p ng-repeat="item in record.$announcementList">
-				         <a href="#/ds/project.announcement/edit/{{item.id}}">{{item.title}}</a><br/>
-				         <span x-translate>Added by</span> <a href="#/ds/action-auth-users/edit/{{item.createdById}}">{{item.createdBy}}</a> <a href="" title="{{$moment(item.announcementDate).format('MM/DD/YYYY')}}" ui-action-click="com.axelor.apps.businesssupport.service.ProjectActivityDashboardBusinessSupportService:getProjectActivityView({{item.id}})">{{$moment(item.announcementDate).fromNow()}}</a>
-					     </p>
-					     <span ng-if="!$last"><br/></span>
-					     <a href="#/ds/project.announcement">View all news</a>
-				        ]]>
-          </viewer>
-        </field>
-      </panel>
-      <spacer/>
-      <panel name="subprojectPanel" title="Suprojects" icon="fa-gg-circle"
+      <panel name="subprojectPanel" title="Suprojects" icon="account_tree"
         hideIf="$subprojectList.length == 0">
         <field name="$subprojectList" showTitle="false" colSpan="12">
           <viewer>
-					<![CDATA[
-					 <div>
-			           <span ng-repeat="item in record.$subprojectList"><a href="#/ds/project.all/edit/{{item.id}}">{{item.name}}</a><span ng-if="!$last">, </span></span>
-			         </div>
+            <![CDATA[
+				     <>
+				         {$subprojectList.map((item, index) => (
+				         	<span key={index}>
+                                <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("project.all", {childProjectId : item.id})}>{item.name}</Button>
+				         	</span>
+				         )).reduce((prev, curr) => prev ? [prev, ', ', curr] : [curr],'')}
+				     </>
 			        ]]>
           </viewer>
         </field>
       </panel>
+      <field name="$projectId" hidden="true"/>
     </panel>
   </form>
 
@@ -120,8 +116,8 @@
     <panel name="activityPanel" title="Activity">
       <field name="$dates" showTitle="false" colSpan="12" readonly="true">
         <viewer>
-			<![CDATA[
-			 <div><i><span x-translate>From</span> {{record.$startDate}} <span x-translate>to</span> {{record.$endDate}}</i></div>
+          <![CDATA[
+			 <><i><span>{_t('From')}</span> {$startDate} <span>{_t('to')}</span> {$endDate}</i></>
 			]]>
         </viewer>
       </field>
@@ -130,36 +126,71 @@
       <field name="$activities" showTitle="false" colSpan="12" readonly="true"
         showIf="$activityList">
         <viewer>
-			<![CDATA[
-			  <span ng-repeat="activity in record.$activityList" class="mail-thread" style="border:none !important;">
-			    <span ng-repeat="(key, value) in activity" >
-			      <dt><div style="margin-bottom:10px;">{{key}}</div></dt>
-			      <div ng-repeat="titleList in value">
-			        <div ng-repeat="(title, activityList) in titleList" class="{{activityList.length > 1 && 'mail-message'}}">
-				     <dd style="margin-left: {{($first || activityList.length == 1) ? 0 : 30}}px" ng-repeat="item in activityList">
-					   <div class="{{activityList.length == 1 && 'mail-message'}}">
-					        <div ng-if="$first" class="mail-message-header subject">
-						        <text ng-if="item.subProjectName"> {{item.subProjectName}} - </text> <a href="{{item.objectLink}}">{{item.title}}</a>
-						        <span class="label {{item.utilityClass}}" style="float:right;line-height: initial;margin: 5px 0 !important; display: inline-table;" x-translate>
-				               	  {{item.modelName}}
-				            	</span>
-				            </div>
-				            <div class="mail-message-body">
-			                 <ul>
-					            <li ng-repeat="track in item.activity.tracks">
-					              <strong x-translate>{{track.title}}</strong> : <span ng-if="track.oldDisplayValue"> {{track.oldDisplayValue}} &raquo; </span><span ng-if="track.oldValue &amp;&amp; !track.oldDisplayValue"> {{track.oldValue}} &raquo; </span><span ng-if="track.displayValue">{{track.displayValue}}</span><span ng-if="!track.displayValue">{{track.value}}</span><span ng-if="!$last"><br/></span>
-					            </li>
-				             </ul>
-					         <div class="mail-message-footer">
-					            <a href="#/ds/action-auth-users/edit/{{item.userId}}">{{item.user}}</a> <text x-translate>updated document</text> - <a href="javascript:void(0)" title="{{$moment(item.time).format('MM/DD/YYYY HH:mm')}}">{{$moment(item.time).fromNow()}}</a>
-					         </div>
-				            </div>
-						  </div>
-				        </dd>
-				     </div>
-			      </div>
-			    </span>
-			  </span>
+          <![CDATA[
+				<>
+				    <Box>
+				        {$activityList.map((activity,activityIndex) => (
+				        <Box key={activityIndex}>
+				            {Object.entries(activity).map(([key, value],index) => (
+
+				            Array.isArray(value) &&
+				            <Box key={index}>
+				                <dt>
+				                    <Box mb={2}>{key}</Box>
+				                </dt>
+				                {value.map((titleList,titleListIndex) => (
+				                <Box key={titleListIndex}>
+				                    {Object.entries(titleList).map(([title, activityList],activityListIndex) => (
+
+				                    Array.isArray(activityList) &&
+				                    <Box key={activityListIndex} m={1}>
+				                        <Box as="dd" border borderColor="light-subtle" shadow="xl">
+				                            {activityList.map((item,itemIndex) => (
+				                            <Box key={itemIndex} ms={itemIndex == 0 || itemIndex.length == 1 ? 0 : 4} mb={3}>
+				                                {itemIndex == 0 &&
+					                                <Box mb={3}>
+					                                	<Box m={2} d="flex" alignItems="center">
+						                                    <Box as="strong" flex="1">
+						                                        {item.subProjectName && <span>{item.subProjectName} - </span>}
+						                                        <Link href={item.objectLink} target="_self">{item.title}</Link>
+						                                    </Box>
+						                                    <Badge bg={item.utilityClass}>{item.modelName}</Badge>
+						                                </Box>
+						                                <Box borderTop borderColor="light-subtle" mb={1}/>
+						                            </Box>
+					                            }
+				                                <Box>
+				                                    <Box as="ul" mb={1}>
+				                                        {item.activity.tracks.map((track,trackIndex) => (
+				                                        <li key={trackIndex}>
+				                                            <strong>{track.title}</strong> :
+				                                            {track.oldDisplayValue && <span> {track.oldDisplayValue} &raquo; </span>}
+				                                            {track.oldValue && !track.oldDisplayValue && <span> {track.oldValue} &raquo; </span>}
+				                                            <span> {track.displayValue || track.value} </span>
+				                                        </li>
+				                                        ))}
+				                                    </Box>
+				                                    <Box ms={2}>
+				                                        <Link href={`#/ds/action-auth-users/edit/${item.userId}`} target="_self">{item.user}</Link>
+				                                        <span> {_t('updated document')} </span> -
+				                                        <Link href="#" title={$moment(item.time).format('MM/DD/YYYY HH:mm')}>
+				                                            {$moment(item.time).fromNow()}
+				                                        </Link>
+				                                    </Box>
+				                                </Box>
+				                            </Box>
+				                            ))}
+				                        </Box>
+				                    </Box>
+				                    ))}
+				                </Box>
+				                ))}
+				            </Box>
+				            ))}
+				        </Box>
+				        ))}
+				    </Box>
+				</>
 			]]>
         </viewer>
       </field>
@@ -197,7 +228,8 @@
     model="com.axelor.apps.project.db.ProjectPlanningTime">
     <view type="grid" name="project-planning-db-grid"/>
     <view type="form" name="project-planning-time-form"/>
-    <domain>self.date = :__date__ AND self.employee.id = :_empId</domain>
+    <domain>self.startDateTime &lt; :__date__ AND self.endDateTime &gt; :__date__ AND
+      self.employee.id = :_empId</domain>
     <context name="_empId" expr="eval: __user__.employee?.id"/>
   </action-view>
 
@@ -205,7 +237,7 @@
     title="My upcoming planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
     <view type="grid" name="project-planning-db-grid"/>
     <view type="form" name="project-planning-time-form"/>
-    <domain>self.date &gt; :__date__ AND self.employee.id = :_empId</domain>
+    <domain>self.startDateTime &gt; :__date__ AND self.employee.id = :_empId</domain>
     <context name="_empId" expr="eval: __user__.employee?.id"/>
 
   </action-view>
@@ -216,9 +248,14 @@
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
     <domain>self.project.id IN :_projectIds</domain>
-    <context name="_project" expr="eval: __user__.contextProject"/>
+    <context name="_project"
+      expr="eval: projectId ? __repo__(Project).find(projectId) : __user__.activeProject"/>
     <context name="_projectIds"
-      expr="call:com.axelor.apps.project.service.ProjectService:getContextProjectIds()"/>
+      expr="call:com.axelor.apps.project.service.ProjectToolService:getActiveProjectIds()"
+      if="!projectId"/>
+    <context name="_projectIds"
+      expr="call:com.axelor.apps.project.service.ProjectToolService:getRelatedProjectIds(__repo__(Project).find(projectId))"
+      if="projectId"/>
   </action-view>
 
   <action-view name="action-project-dashboard-view-per-user-calendar"
@@ -226,9 +263,14 @@
     <view type="calendar" name="project-task-per-user-calendar"/>
     <view type="form" name="project-task-form"/>
     <domain>self.project.id IN :_projectIds</domain>
-    <context name="_project" expr="eval: __user__.contextProject"/>
+    <context name="_project"
+      expr="eval: projectId ? __repo__(Project).find(projectId) : __user__.activeProject"/>
     <context name="_projectIds"
-      expr="call:com.axelor.apps.project.service.ProjectService:getContextProjectIds()"/>
+      expr="call:com.axelor.apps.project.service.ProjectToolService:getActiveProjectIds()"
+      if="!projectId"/>
+    <context name="_projectIds"
+      expr="call:com.axelor.apps.project.service.ProjectToolService:getRelatedProjectIds(__repo__(Project).find(projectId))"
+      if="projectId"/>
   </action-view>
 
   <action-method name="action-project-dashboard-method-on-new">
@@ -248,6 +290,21 @@
   <action-method name="action-project-activity-dashboard-method-next-on-click">
     <call class="com.axelor.apps.project.web.ProjectActivityDashboardController"
       method="getNextData"/>
+  </action-method>
+
+  <action-method name="action-project-dashboard-show-tasks-opened-per-category">
+    <call class="com.axelor.apps.project.web.ProjectDashboardController"
+      method="showTasksOpenedPerCategory"/>
+  </action-method>
+
+  <action-method name="action-project-dashboard-show-tasks-closed-per-category">
+    <call class="com.axelor.apps.project.web.ProjectDashboardController"
+      method="showTasksClosedPerCategory"/>
+  </action-method>
+
+  <action-method name="action-project-dashboard-show-tasks-per-category">
+    <call class="com.axelor.apps.project.web.ProjectDashboardController"
+      method="showTasksPerCategory"/>
   </action-method>
 
 </object-views>

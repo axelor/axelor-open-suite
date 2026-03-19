@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+
+  <grid name="mass-stock-move-need-grid" title="Mass stock moves need"
+    model="com.axelor.apps.stock.db.MassStockMoveNeed" onNew="action-mass-stock-move-method-on-new">
+    <field name="productToMove" domain="self.productTypeSelect = 'storable'"/>
+    <field name="qtyToMove" x-scale="$nbDecimalDigitForQty"/>
+    <field name="trackingNumber"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+  </grid>
+
+  <form title="Mass stock move need" name="mass-stock-move-need-form"
+    model="com.axelor.apps.stock.db.MassStockMoveNeed"
+    onNew="action-mass-stock-move-need-attrs-scale" onLoad="action-mass-stock-move-need-attrs-scale">
+    <panel name="mainPanel">
+      <field name="productToMove" domain="self.productTypeSelect = 'storable'"/>
+      <field name="qtyToMove"/>
+      <field name="trackingNumber" grid-view="tracking-number-grid"
+        form-view="tracking-number-form" domain="self.product = :productToMove"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-mass-stock-move-need-attrs-scale">
+    <attribute name="scale" for="qtyToMove"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-attrs>
+
+</object-views>

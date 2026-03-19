@@ -1,0 +1,2 @@
+"importId";"cfonbConfig.importId";"exportPath";"exportFileName";"paymentScheduleExportFolderPathCFONB";"accountingDaybook";"lineMinBeforeLongReportGenerationMessageNumber";"temporaryClosureAuthorizedRoleList";"moveOnTempClosureAuthorizedRoleList";"closureAuthorizedRoleList";"dasContactPartner.importId";"allowedTaxGap";"manageAnalyticAccounting";"analyticJournal.code";"nbrOfAnalyticAxisSelect"
+1;1;"Accounting_Exports/";;"Export_ERP/Export_Prelevements/";"true";10000;"Admin|role.accounting";"Admin|role.accounting";"Admin|role.accounting";"90016";0.01;true;J1;2

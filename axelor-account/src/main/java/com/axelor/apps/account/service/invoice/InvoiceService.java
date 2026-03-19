@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,12 +22,11 @@ import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
@@ -46,25 +45,6 @@ import org.apache.commons.lang3.tuple.Pair;
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
 public interface InvoiceService {
 
-  public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices);
-
-  /**
-   * Fetches the journal to apply to an invoice, based on the operationType and A.T.I amount
-   *
-   * @param invoice Invoice to fetch the journal for.
-   * @return The suitable journal or null (!) if invoice's company is empty.
-   * @throws AxelorException If operationTypeSelect is empty
-   */
-  Journal getJournal(Invoice invoice) throws AxelorException;
-
-  /**
-   * Lever l'ensemble des alarmes d'une facture.
-   *
-   * @param invoice Une facture.
-   * @throws Exception
-   */
-  public void raisingAlarms(Invoice invoice, String alarmEngineCode);
-
   /**
    * Fonction permettant de calculer l'intégralité d'une facture :
    *
@@ -79,7 +59,7 @@ public interface InvoiceService {
    * @param invoice Une facture.
    * @throws AxelorException
    */
-  public Invoice compute(final Invoice invoice) throws AxelorException;
+  public Map<String, Object> compute(final Invoice invoice) throws AxelorException;
 
   /**
    * Validate an invoice.
@@ -106,6 +86,8 @@ public interface InvoiceService {
    */
   void validateAndVentilate(Invoice invoice) throws AxelorException;
 
+  void checkPreconditions(Invoice invoice) throws AxelorException;
+
   /**
    * Annuler une facture. (Transaction)
    *
@@ -113,6 +95,14 @@ public interface InvoiceService {
    * @throws AxelorException
    */
   public void cancel(Invoice invoice) throws AxelorException;
+
+  /**
+   * Return to draft status.
+   *
+   * @param invoice
+   * @throws AxelorException
+   */
+  void backToDraft(Invoice invoice) throws AxelorException;
 
   /**
    * Procédure permettant d'impacter la case à cocher "Passage à l'huissier" sur l'écriture de
@@ -243,6 +233,7 @@ public interface InvoiceService {
    * @return
    */
   List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice);
+
   /**
    * Filter a set of advance payment invoice. If the amount of the payment is greater than the total
    * of the invoice, we filter it. If there is no remaining amount in the move lines of the advance
@@ -312,11 +303,9 @@ public interface InvoiceService {
 
   boolean checkManageCutOffDates(Invoice invoice);
 
-  void applyCutOffDates(Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
+  void applyCutOffDates(Invoice invoice);
 
   boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice);
-
-  public void validatePfp(Long invoiceId) throws AxelorException;
 
   void updateUnpaidInvoiceTerms(Invoice invoice);
 
@@ -329,4 +318,12 @@ public interface InvoiceService {
   boolean checkInvoiceTerms(Invoice invoice) throws AxelorException;
 
   void updateInvoiceTermsParentFields(Invoice invoice);
+
+  Invoice computeEstimatedPaymentDate(Invoice invoice);
+
+  void updateThirdPartyPayerPartner(Invoice invoice);
+
+  FiscalPosition manageFiscalPositionFromCompanyTaxNumber(Invoice invoice);
+
+  TaxNumber getDefaultCompanyTaxNumber(Invoice invoice);
 }

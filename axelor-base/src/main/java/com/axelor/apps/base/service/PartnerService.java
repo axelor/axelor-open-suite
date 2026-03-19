@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -89,8 +89,6 @@ public interface PartnerService {
 
   String getSIRENNumber(Partner partner) throws AxelorException;
 
-  void convertToIndividualPartner(Partner partner);
-
   /**
    * Check if the partner in view has a duplicate.
    *
@@ -116,12 +114,12 @@ public interface PartnerService {
   PriceList getSalePriceList(Partner partner);
 
   /**
-   * Get the partner language code. If null, return the default partner language.
+   * Get the partner Localization.code. If null, return the default partner locale.
    *
    * @param partner
    * @return
    */
-  String getPartnerLanguageCode(Partner partner);
+  String getPartnerLocale(Partner partner);
 
   /**
    * Normalize phone number.
@@ -147,15 +145,11 @@ public interface PartnerService {
    */
   String getPhoneNumberFieldName(String actionName);
 
-  void setCompanyStr(Partner partner);
+  public List<Partner> getParentPartnerList(Partner partner);
 
-  String computeCompanyStr(Partner partner);
+  List<Partner> getFilteredPartners(Partner partner);
 
-  String getTaxNbrFromRegistrationCode(Partner partner);
+  List<Partner> getContactFilteredPartners(Partner partner);
 
-  String getNicFromRegistrationCode(Partner partner);
-
-  String getSirenFromRegistrationCode(Partner partner);
-
-  boolean isRegistrationCodeValid(Partner partner);
+  String checkIfRegistrationCodeExists(Partner partner);
 }

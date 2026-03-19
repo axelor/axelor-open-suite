@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.batch;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.MoveLineExportService;
@@ -31,10 +32,11 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,11 +107,16 @@ public class BatchMoveLineExport extends BatchStrategy {
 
         moveLineDone =
             moveLineRepo.all().filter("self.move.accountingReport = ?1", accountingReport).count();
-        moveDone = moveRepo.all().filter("self.accountingReport = ?1", accountingReport).count();
+        List<Move> moves =
+            moveRepo.all().filter("self.accountingReport = ?1", accountingReport).fetch();
+        moveDone = moves.size();
         debit = accountingReport.getTotalDebit();
         credit = accountingReport.getTotalCredit();
         balance = accountingReport.getBalance();
 
+        for (Move move : moves) {
+          updateAccountMove(move, false);
+        }
         updateAccountingReport(accountingReport);
 
       } catch (AxelorException e) {
@@ -176,8 +183,7 @@ public class BatchMoveLineExport extends BatchStrategy {
     comment += String.format("\t* " + I18n.get("Credit") + " : %s\n", credit);
     comment += String.format("\t* " + I18n.get("Balance") + " : %s\n", balance);
     comment +=
-        String.format(
-            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+        String.format("\t" + I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly());
 
     super.stop();
     addComment(comment);

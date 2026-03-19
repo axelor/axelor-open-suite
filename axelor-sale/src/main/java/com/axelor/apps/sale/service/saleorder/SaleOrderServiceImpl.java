@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,32 +22,34 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.base.service.DurationService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.ComplementaryProduct;
-import com.axelor.apps.sale.db.ComplementaryProductSelected;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
+import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ComplementaryProductRepository;
 import com.axelor.apps.sale.db.repo.PackLineRepository;
+import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
+import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineCreateService;
+import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
-import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
-import com.axelor.db.JpaSequence;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -58,31 +60,45 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
-import wslite.json.JSONException;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
 
-  protected SaleOrderLineService saleOrderLineService;
   protected AppBaseService appBaseService;
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected SaleOrderRepository saleOrderRepo;
   protected SaleOrderComputeService saleOrderComputeService;
   protected SaleOrderMarginService saleOrderMarginService;
+  protected SaleConfigService saleConfigService;
+  protected SaleOrderLineCreateService saleOrderLineCreateService;
+  protected SaleOrderLineComplementaryProductService saleOrderLineComplementaryProductService;
+  protected SaleOrderLinePackService saleOrderLinePackService;
+  protected SaleOrderLineDiscountService saleOrderLineDiscountService;
+  protected SaleOrderLineComputeService saleOrderLineComputeService;
 
   @Inject
   public SaleOrderServiceImpl(
-      SaleOrderLineService saleOrderLineService,
       AppBaseService appBaseService,
       SaleOrderLineRepository saleOrderLineRepo,
       SaleOrderRepository saleOrderRepo,
       SaleOrderComputeService saleOrderComputeService,
-      SaleOrderMarginService saleOrderMarginService) {
-    this.saleOrderLineService = saleOrderLineService;
+      SaleOrderMarginService saleOrderMarginService,
+      SaleConfigService saleConfigService,
+      SaleOrderLineCreateService saleOrderLineCreateService,
+      SaleOrderLineComplementaryProductService saleOrderLineComplementaryProductService,
+      SaleOrderLinePackService saleOrderLinePackService,
+      SaleOrderLineDiscountService saleOrderLineDiscountService,
+      SaleOrderLineComputeService saleOrderLineComputeService) {
     this.appBaseService = appBaseService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.saleOrderRepo = saleOrderRepo;
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderMarginService = saleOrderMarginService;
+    this.saleConfigService = saleConfigService;
+    this.saleOrderLineCreateService = saleOrderLineCreateService;
+    this.saleOrderLineComplementaryProductService = saleOrderLineComplementaryProductService;
+    this.saleOrderLinePackService = saleOrderLinePackService;
+    this.saleOrderLineDiscountService = saleOrderLineDiscountService;
+    this.saleOrderLineComputeService = saleOrderLineComputeService;
   }
 
   @Override
@@ -99,20 +115,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 && saleOrder.getVersionNumber() > 1)
             ? "-V" + saleOrder.getVersionNumber()
             : "");
-  }
-
-  @Override
-  public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder) {
-    Company company = saleOrder.getCompany();
-    if (saleOrder.getDuration() == null && company != null && company.getSaleConfig() != null) {
-      saleOrder.setDuration(company.getSaleConfig().getDefaultValidityDuration());
-    }
-    if (saleOrder.getCreationDate() != null) {
-      saleOrder.setEndOfValidityDate(
-          Beans.get(DurationService.class)
-              .computeDuration(saleOrder.getDuration(), saleOrder.getCreationDate()));
-    }
-    return saleOrder;
   }
 
   @Override
@@ -160,7 +162,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   @Override
   @Transactional(rollbackOn = Exception.class)
   public SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty)
-      throws AxelorException {
+      throws AxelorException, MalformedURLException {
 
     List<PackLine> packLineList = pack.getComponents();
     if (ObjectUtils.isEmpty(packLineList)) {
@@ -174,28 +176,15 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       sequence = soLines.stream().mapToInt(SaleOrderLine::getSequence).max().getAsInt();
     }
 
-    BigDecimal conversionRate = BigDecimal.valueOf(1.00);
-    if (pack.getCurrency() != null
-        && !pack.getCurrency().getCodeISO().equals(saleOrder.getCurrency().getCodeISO())) {
-      try {
-        conversionRate =
-            Beans.get(CurrencyConversionFactory.class)
-                .getCurrencyConversionService()
-                .convert(pack.getCurrency(), saleOrder.getCurrency());
-      } catch (MalformedURLException | JSONException | AxelorException e) {
-        TraceBackService.trace(e);
-      }
-    }
-
     if (Boolean.FALSE.equals(pack.getDoNotDisplayHeaderAndEndPack())) {
-      if (saleOrderLineService.getPackLineTypes(packLineList) == null
-          || !saleOrderLineService
+      if (saleOrderLinePackService.getPackLineTypes(packLineList) == null
+          || !saleOrderLinePackService
               .getPackLineTypes(packLineList)
               .contains(PackLineRepository.TYPE_START_OF_PACK)) {
         sequence++;
       }
       soLines =
-          saleOrderLineService.createNonStandardSOLineFromPack(
+          saleOrderLinePackService.createNonStandardSOLineFromPack(
               pack, saleOrder, packQty, soLines, sequence);
     }
 
@@ -209,8 +198,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         continue;
       }
       soLine =
-          saleOrderLineService.createSaleOrderLine(
-              packLine, saleOrder, packQty, conversionRate, ++sequence);
+          saleOrderLineCreateService.createSaleOrderLine(
+              packLine, saleOrder, packQty, BigDecimal.ONE, ++sequence);
       if (soLine != null) {
         soLine.setSaleOrder(saleOrder);
         soLines.add(soLine);
@@ -218,89 +207,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     if (soLines != null && !soLines.isEmpty()) {
-      try {
-        saleOrder = saleOrderComputeService.computeSaleOrder(saleOrder);
-        saleOrderMarginService.computeMarginSaleOrder(saleOrder);
-      } catch (AxelorException e) {
-        TraceBackService.trace(e);
-      }
-
+      soLines.sort(Comparator.comparing(SaleOrderLine::getSequence));
+      saleOrderLineComputeService.computeLevels(soLines, null);
+      saleOrder = saleOrderComputeService.computeSaleOrder(saleOrder);
+      saleOrderMarginService.computeMarginSaleOrder(saleOrder);
       saleOrderRepo.save(saleOrder);
     }
     return saleOrder;
-  }
-
-  @Override
-  public List<SaleOrderLine> handleComplementaryProducts(SaleOrder saleOrder)
-      throws AxelorException {
-    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
-    if (saleOrderLineList == null) {
-      saleOrderLineList = new ArrayList<>();
-    }
-
-    SaleOrderLine originSoLine = null;
-    for (SaleOrderLine soLine : saleOrderLineList) {
-      if (soLine.getIsComplementaryProductsUnhandledYet()) {
-        originSoLine = soLine;
-        if (originSoLine.getManualId() == null || originSoLine.getManualId().equals("")) {
-          this.setNewManualId(originSoLine);
-        }
-        break;
-      }
-    }
-
-    if (originSoLine != null
-        && originSoLine.getProduct() != null
-        && originSoLine.getSelectedComplementaryProductList() != null) {
-      for (ComplementaryProductSelected compProductSelected :
-          originSoLine.getSelectedComplementaryProductList()) {
-        // Search if there is already a line for this product to modify or remove
-        SaleOrderLine newSoLine = null;
-        for (SaleOrderLine soLine : saleOrderLineList) {
-          if (originSoLine.getManualId().equals(soLine.getParentId())
-              && soLine.getProduct() != null
-              && soLine.getProduct().equals(compProductSelected.getProduct())) {
-            // Edit line if it already exists instead of recreating, otherwise remove if already
-            // exists and is no longer selected
-            if (compProductSelected.getIsSelected()) {
-              newSoLine = soLine;
-            } else {
-              saleOrderLineList.remove(soLine);
-            }
-            break;
-          }
-        }
-
-        if (newSoLine == null) {
-          if (compProductSelected.getIsSelected()) {
-            newSoLine = new SaleOrderLine();
-            newSoLine.setProduct(compProductSelected.getProduct());
-            newSoLine.setSaleOrder(saleOrder);
-            newSoLine.setQty(compProductSelected.getQty());
-
-            saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
-            saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
-
-            newSoLine.setParentId(originSoLine.getManualId());
-
-            int targetIndex = saleOrderLineList.indexOf(originSoLine) + 1;
-            saleOrderLineList.add(targetIndex, newSoLine);
-          }
-        } else {
-          newSoLine.setQty(compProductSelected.getQty());
-
-          saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
-          saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
-        }
-      }
-      originSoLine.setIsComplementaryProductsUnhandledYet(false);
-    }
-
-    for (int i = 0; i < saleOrderLineList.size(); i++) {
-      saleOrderLineList.get(i).setSequence(i);
-    }
-
-    return saleOrderLineList;
   }
 
   @Override
@@ -309,12 +222,12 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     if (saleOrderLineList != null) {
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         BigDecimal maxDiscountAuthorized =
-            saleOrderLineService.computeMaxDiscount(saleOrder, saleOrderLine);
+            saleOrderLineDiscountService.computeMaxDiscount(saleOrder, saleOrderLine);
         if (saleOrderLine.getDiscountDerogation() != null && maxDiscountAuthorized != null) {
           maxDiscountAuthorized = saleOrderLine.getDiscountDerogation().max(maxDiscountAuthorized);
         }
         if (maxDiscountAuthorized != null
-            && saleOrderLineService.isSaleOrderLineDiscountGreaterThanMaxDiscount(
+            && saleOrderLineDiscountService.isSaleOrderLineDiscountGreaterThanMaxDiscount(
                 saleOrderLine, maxDiscountAuthorized)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -322,40 +235,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         }
       }
     }
-  }
-
-  @Transactional
-  protected void setNewManualId(SaleOrderLine saleOrderLine) {
-    saleOrderLine.setManualId(JpaSequence.nextValue("sale.order.line.idSeq"));
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public SaleOrder updateProductQtyWithPackHeaderQty(SaleOrder saleOrder) throws AxelorException {
-    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
-    boolean isStartOfPack = false;
-    BigDecimal newQty = BigDecimal.ZERO;
-    BigDecimal oldQty = BigDecimal.ZERO;
-    this.sortSaleOrderLineList(saleOrder);
-
-    for (SaleOrderLine SOLine : saleOrderLineList) {
-
-      if (SOLine.getTypeSelect() == SaleOrderLineRepository.TYPE_START_OF_PACK && !isStartOfPack) {
-        newQty = SOLine.getQty();
-        oldQty = saleOrderLineRepo.find(SOLine.getId()).getQty();
-        if (newQty.compareTo(oldQty) != 0) {
-          isStartOfPack = true;
-          SOLine = EntityHelper.getEntity(SOLine);
-          saleOrderLineRepo.save(SOLine);
-        }
-      } else if (isStartOfPack) {
-        if (SOLine.getTypeSelect() == SaleOrderLineRepository.TYPE_END_OF_PACK) {
-          break;
-        }
-        saleOrderLineService.updateProductQty(SOLine, saleOrder, oldQty, newQty);
-      }
-    }
-    return saleOrder;
   }
 
   @Transactional(rollbackOn = Exception.class)
@@ -448,17 +327,49 @@ public class SaleOrderServiceImpl implements SaleOrderService {
           continue;
         }
         newComplementarySOLines.addAll(
-            saleOrderLineService.manageComplementaryProductSaleOrderLine(
+            saleOrderLineComplementaryProductService.manageComplementaryProductSaleOrderLine(
                 complementaryProduct, saleOrder, saleOrderLine));
       } else {
         for (SaleOrderLine saleOrderLine : saleOrderLineList) {
           newComplementarySOLines.addAll(
-              saleOrderLineService.manageComplementaryProductSaleOrderLine(
+              saleOrderLineComplementaryProductService.manageComplementaryProductSaleOrderLine(
                   complementaryProduct, saleOrder, saleOrderLine));
         }
       }
     }
     newComplementarySOLines.forEach(saleOrder::addSaleOrderLineListItem);
     saleOrderComputeService.computeSaleOrder(saleOrder);
+  }
+
+  @Override
+  public boolean isIncotermRequired(SaleOrder saleOrder) {
+    return false;
+  }
+
+  @Override
+  public void checkPrintingSettings(SaleOrder saleOrder) throws AxelorException {
+    if (saleOrder.getPrintingSettings() == null) {
+      if (saleOrder.getCompany().getPrintingSettings() != null) {
+        saleOrder.setPrintingSettings(saleOrder.getCompany().getPrintingSettings());
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            String.format(
+                I18n.get(SaleExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS),
+                saleOrder.getSaleOrderSeq()),
+            saleOrder);
+      }
+    }
+  }
+
+  @Override
+  public boolean getInAti(SaleOrder saleOrder, Company company) throws AxelorException {
+    if (company == null) {
+      return false;
+    }
+    SaleConfig saleConfig = saleConfigService.getSaleConfig(company);
+    int saleOrderInAtiSelect = saleConfig.getSaleOrderInAtiSelect();
+    return saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_ALWAYS
+        || saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_DEFAULT;
   }
 }

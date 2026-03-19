@@ -1,0 +1,6 @@
+"importId";"name";"modelName";"statusSelect";"toAttach";"scriptFieldName"
+"51";"Mrp Weekly breakdown";"com.axelor.apps.supplychain.db.Mrp";"2";false;"${__i18n__.get('MRP') + ' ' + (mrp.mrpSeq ?: mrp.id) + '-' + date}"
+"52";"Mrp List";"com.axelor.apps.supplychain.db.Mrp";"2";false;"${__i18n__.get('MRP') + ' ' + (mrp.mrpSeq ?: mrp.id) + '-' + date}"
+"53";"PackingList";"com.axelor.apps.stock.db.LogisticalForm";"2";false;"${__i18n__.get('LogisticalForm.packingList') + ' ' + (logisticalForm.deliveryNumberSeq ?: logisticalForm.id) + '-' + date}"
+"54";"DeclarationOfExchangesOfGoods";"com.axelor.apps.supplychain.db.DeclarationOfExchanges";"1";true;"${__i18n__.get('Declaration of exchanges of goods') + ' ' + declarationOfExchanges.id + '-' + date}"
+"55";"DeclarationOfServices";"com.axelor.apps.supplychain.db.DeclarationOfExchanges";"1";true;"${__i18n__.get('European declaration of services') + ' ' + declarationOfExchanges.id + '-' + date}"

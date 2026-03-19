@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,11 +27,14 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.concurrent.ContextAware;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
+import com.axelor.db.tenants.TenantResolver;
 import com.axelor.inject.Beans;
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailException;
@@ -45,23 +48,29 @@ import com.axelor.message.db.EmailAccount;
 import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.TemplateRepository;
 import com.axelor.message.service.MailAccountService;
+import com.axelor.message.service.MailMessageActionService;
 import com.axelor.message.service.MailServiceMessageImpl;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaAttachment;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.rpc.filter.Filter;
 import com.axelor.text.GroovyTemplates;
 import com.axelor.text.StringTemplates;
 import com.axelor.text.Templates;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -72,18 +81,13 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.inject.Singleton;
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
 public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -96,11 +100,16 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   protected static final String RECIPIENTS_SPLIT_REGEX = "\\s*(;|,|\\|)\\s*|\\s+";
 
   protected final AppBaseService appBaseService;
+  protected final MailMessageActionService mailMessageActionService;
 
   @Inject
-  public MailServiceBaseImpl(MailAccountService mailAccountService, AppBaseService appBaseService) {
+  public MailServiceBaseImpl(
+      MailAccountService mailAccountService,
+      AppBaseService appBaseService,
+      MailMessageActionService mailMessageActionService) {
     super(mailAccountService);
     this.appBaseService = appBaseService;
+    this.mailMessageActionService = mailMessageActionService;
   }
 
   @Override
@@ -253,12 +262,17 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   protected Set<String> recipients(MailMessage message, Model entity) {
     final Set<String> recipients = new LinkedHashSet<>();
     final MailFollowerRepository followers = Beans.get(MailFollowerRepository.class);
-    String entityName = entity.getClass().getName();
 
     if (message.getRecipients() != null) {
       for (MailAddress address : message.getRecipients()) {
         recipients.add(address.getAddress());
       }
+    }
+
+    String entityName =
+        Optional.ofNullable(entity).map(Model::getClass).map(Class::getName).orElse(null);
+    if (ObjectUtils.isEmpty(entityName)) {
+      return Sets.filter(recipients, Predicates.notNull());
     }
 
     for (MailFollower follower : followers.findAll(message)) {
@@ -267,11 +281,10 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       }
       User user = follower.getUser();
       if (user != null) {
-        if (!(user.getReceiveEmails()
+        if (user.getReceiveEmails()
             && user.getFollowedMetaModelSet().stream()
-                .anyMatch(x -> x.getFullName().equals(entityName)))) {
-          continue;
-        } else {
+                .map(MetaModel::getFullName)
+                .anyMatch(entityName::equals)) {
           Partner partner = user.getPartner();
           if (partner != null && partner.getEmailAddress() != null) {
             recipients.add(partner.getEmailAddress().getAddress());
@@ -306,6 +319,8 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
     final Model related = findEntity(message);
     final MailSender sender = getMailSender(emailAccount);
+
+    mailMessageActionService.executePreMailMessageActions(message, related);
 
     final Set<String> recipients = recipients(message, related);
     if (recipients.isEmpty()) {
@@ -345,14 +360,19 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     }
 
     // send email using a separate process to void thread blocking
+    String currentTenantId = TenantResolver.currentTenantIdentifier();
     executor.submit(
-        new Callable<Boolean>() {
-          @Override
-          public Boolean call() throws Exception {
-            send(sender, email);
-            return true;
-          }
-        });
+        ContextAware.of()
+            .withTransaction(false)
+            .withTenantId(currentTenantId)
+            .build(
+                () -> {
+                  try {
+                    send(sender, email);
+                  } catch (Exception e) {
+                    throw new RuntimeException(e);
+                  }
+                }));
   }
 
   @Override
@@ -379,7 +399,11 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     return templates.fromText(subject).make(templatesContext).render();
   }
 
-  void updateTemplateAndContext(MailMessage message, Model entity) {
+  protected void updateTemplateAndContext(MailMessage message, Model entity) {
+    if (entity == null) {
+      return;
+    }
+
     boolean isDefaultTemplate = false;
     messageTemplate = this.getTemplateByModel(entity);
 
@@ -424,7 +448,8 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     if (isDefaultTemplate) {
       templatesContext.put("entity", entity);
     } else {
-      templatesContext.put(klass.getSimpleName(), entity);
+      templatesContext.put(
+          CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, klass.getSimpleName()), entity);
     }
     templates = createTemplates(messageTemplate);
   }
@@ -454,12 +479,14 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
   protected void setRecipientsFromTemplate(MailBuilder builder, Set<String> recipients) {
 
-    if (messageTemplate == null) {
-      return;
-    }
+    String[] ccRcp = new String[0];
+    String[] toRcp = new String[0];
 
-    String[] ccRcp = getRecipients(messageTemplate.getCcRecipients());
-    String[] toRcp = getRecipients(messageTemplate.getToRecipients());
+    if (messageTemplate != null) {
+      ccRcp = getRecipients(messageTemplate.getCcRecipients());
+      toRcp = getRecipients(messageTemplate.getToRecipients());
+      builder.bcc(getRecipients(messageTemplate.getBccRecipients()));
+    }
 
     if (ccRcp.length == 0) {
       ccRcp = recipients.toArray(new String[0]);
@@ -471,10 +498,9 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
     builder.to(toRcp);
     builder.cc(ccRcp);
-    builder.bcc(getRecipients(messageTemplate.getBccRecipients()));
   }
 
-  void updateRecipientsTemplatesContext(Set<String> recipients) {
+  protected void updateRecipientsTemplatesContext(Set<String> recipients) {
     String contRecipients = String.join(", ", recipients);
 
     if (templatesContext == null) {

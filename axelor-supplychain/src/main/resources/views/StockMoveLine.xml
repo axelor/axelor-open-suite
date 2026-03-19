@@ -1,7 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+
+  <grid id="stock-move-line-supplychain-grid" name="stock-move-line-grid"
+    title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" extension="true">
+    <extend target="//field[@name='product']">
+      <insert position="before">
+        <button name="addToCartBtn" title="Add to cart"
+          onClick="action-stock-move-line-method-add-to-cart" icon="cart-plus-fill"
+          if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"/>
+      </insert>
+    </extend>
+
+    <extend target="//field[@name='qtyInvoiced']">
+      <insert position="after">
+        <field name="qtyRemainingToPackage" readonly="true" x-scale="$nbDecimalDigitForQty"/>
+      </insert>
+    </extend>
+
+    <extend target="/">
+      <insert position="before">
+        <hilite strong="true" color="green"
+          if="_fromLogisticalForm &amp;&amp; $number(qtyRemainingToPackage) == 0"/>
+        <hilite strong="true" color="orange"
+          if="_fromLogisticalForm &amp;&amp; $number(qtyRemainingToPackage) > 0 &amp;&amp; $number(qtyRemainingToPackage) &lt; $number(realQty)"/>
+        <hilite strong="true" color="grey"
+          if="_fromLogisticalForm &amp;&amp; $number(qtyRemainingToPackage) == $number(realQty)"/>
+      </insert>
+    </extend>
+  </grid>
 
   <grid name="stock-move-line-sale-order-line-grid" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine"
@@ -9,10 +37,10 @@
     <field name="name" width="120"/>
     <field name="stockMove.realDate"/>
     <field name="realQty" aggregate="sum"
-      onChange="action-stock-move-line-group-real-qty-onchange" x-scale="2"/>
-    <field name="qtyInvoiced" x-scale="2"/>
-    <field name="unitPriceUntaxed" x-scale="2"/>
-    <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+      onChange="action-stock-move-line-group-real-qty-onchange" x-scale="$nbDecimalDigitForQty"/>
+    <field name="qtyInvoiced" x-scale="$nbDecimalDigitForQty"/>
+    <field name="unitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="unitPriceTaxed" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="trackingNumber" form-view="tracking-number-form"
       grid-view="tracking-number-grid" domain="self.product = :product"
@@ -23,6 +51,8 @@
       <hilite strong="true" color="info" if="availableStatusSelect == 2"/>
       <hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
     </field>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid name="stock-move-line-produced-manuf-order-grid" title="Stock move lines"
@@ -33,10 +63,10 @@
     <field name="stockMove.stockMoveSeq"/>
     <field name="stockMove.realDate"/>
     <field name="realQty" aggregate="sum"
-      onChange="action-stock-move-line-group-real-qty-onchange" x-scale="2"/>
-    <field name="qtyInvoiced" x-scale="2"/>
-    <field name="unitPriceUntaxed" x-scale="2"/>
-    <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+      onChange="action-stock-move-line-group-real-qty-onchange" x-scale="$nbDecimalDigitForQty"/>
+    <field name="qtyInvoiced" x-scale="$nbDecimalDigitForQty"/>
+    <field name="unitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="unitPriceTaxed" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="trackingNumber" form-view="tracking-number-form"
       grid-view="tracking-number-grid" domain="self.product = :product"
@@ -47,6 +77,8 @@
       <hilite strong="true" color="info" if="availableStatusSelect == 2"/>
       <hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
     </field>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid name="stock-move-line-consumed-manuf-order-grid" title="Stock move lines"
@@ -58,10 +90,10 @@
     <field name="stockMove.stockMoveSeq"/>
     <field name="stockMove.realDate"/>
     <field name="realQty" aggregate="sum"
-      onChange="action-stock-move-line-group-real-qty-onchange" x-scale="2"/>
-    <field name="qtyInvoiced" x-scale="2"/>
-    <field name="unitPriceUntaxed" x-scale="2"/>
-    <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+      onChange="action-stock-move-line-group-real-qty-onchange" x-scale="$nbDecimalDigitForQty"/>
+    <field name="qtyInvoiced" x-scale="$nbDecimalDigitForQty"/>
+    <field name="unitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="unitPriceTaxed" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="trackingNumber" form-view="tracking-number-form"
       grid-view="tracking-number-grid" domain="self.product = :product"
@@ -72,6 +104,8 @@
       <hilite strong="true" color="info" if="availableStatusSelect == 2"/>
       <hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
     </field>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid name="stock-move-line-declaration-exchanges-grid" title="Stock move lines"
@@ -87,11 +121,11 @@
     <field name="productName"/>
     <field name="stockMove.partner"/>
     <field name="realQty" aggregate="sum"
-      onChange="action-stock-move-line-group-real-qty-onchange"/>
-    <field name="qtyInvoiced" readonly="true"/>
-    <field name="unitPriceUntaxed" hidden="true" x-scale="2"/>
-    <field name="companyPurchasePrice" hidden="true" x-scale="2"/>
-    <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+      onChange="action-stock-move-line-group-real-qty-onchange" x-scale="$nbDecimalDigitForQty"/>
+    <field name="qtyInvoiced" readonly="true" x-scale="$nbDecimalDigitForQty"/>
+    <field name="unitPriceUntaxed" hidden="true" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="companyPurchasePrice" hidden="true" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="unitPriceTaxed" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="trackingNumber" form-view="tracking-number-form"
       grid-view="tracking-number-grid" domain="self.product = :product"
@@ -103,12 +137,14 @@
       <hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
       <hilite strong="true" color="warning" if="availableStatusSelect == 4"/>
     </field>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid name="stock-move-line-cut-off-grid" title="Stock move lines concerned by cut off"
     model="com.axelor.apps.stock.db.StockMoveLine" groupBy="stockMove">
     <toolbar>
-      <button name="validateBtn" title="Validate" icon="fa-check"
+      <button name="validateBtn" title="Validate" icon="check"
         onClick="action-stock-move-line-method-validate-cut-off-batch"/>
     </toolbar>
     <hilite color="danger" if="$get('stockMove.cutOffMoveGenerated')"/>
@@ -117,22 +153,37 @@
     <field name="stockMove.realDate"/>
     <field name="stockMove.statusSelect"/>
     <field name="productName"/>
-    <field name="realQty" x-scale="2"/>
-    <field name="qtyInvoiced" x-scale="2"/>
-    <field name="unitPriceUntaxed" x-scale="2"/>
-    <field name="$notInvoicedAmount" title="Amount not invoiced" type="decimal" x-scale="2"/>
+    <field name="realQty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="qtyInvoiced" x-scale="$nbDecimalDigitForQty"/>
+    <field name="unitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="$notInvoicedAmount" title="Amount not invoiced" type="decimal"
+      x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="stockMove.cutOffMoveGenerated" hidden="true"/>
     <field name="stockMove" hidden="true"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
+
+  <form id="stock-move-line-supplychain-form" name="stock-move-line-form"
+    title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine" extension="true">
+    <extend target="//field[@name='qtyInvoiced']">
+      <insert position="after">
+        <field name="qtyRemainingToPackage" readonly="true" x-scale="$nbDecimalDigitForQty"
+          colSpan="3"/>
+      </insert>
+    </extend>
+  </form>
 
   <form name="allocated-qty-stock-move-line-form" title="Change allocated qty"
     model="com.axelor.apps.stock.db.StockMoveLine">
     <panel name="mainPanel">
       <field name="reservedQty"
-        onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty"/>
+        onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty"
+        x-scale="$nbDecimalDigitForQty"/>
       <button name="confirmNewReservationBtn" title="OK"
         onClick="action-method-stock-move-line-change-reserved-qty,close"/>
       <field name="qty" hidden="true"/>
+      <field name="$nbDecimalDigitForQty" hidden="true"/>
     </panel>
   </form>
 
@@ -141,26 +192,35 @@
     <panel name="productPanel">
       <field name="productCode" title="Product code" readonly="true" colSpan="3"/>
       <field name="productName" colSpan="9" readonly="true"/>
-      <field name="realQty" readonly="true" title="Real Qty"/>
-      <field name="qtyInvoiced" readonly="true" title="Invoiced Qty"/>
-      <field name="remainingQty" readonly="true" aggregate="sum" title="Remaining Qty"/>
+      <field name="realQty" readonly="true" title="Real Qty" x-scale="$nbDecimalDigitForQty"/>
+      <field name="qtyInvoiced" readonly="true" title="Invoiced Qty"
+        x-scale="$nbDecimalDigitForQty"/>
+      <field name="remainingQty" readonly="true" aggregate="sum" title="Remaining Qty"
+        x-scale="$nbDecimalDigitForQty"/>
       <field name="qtyToInvoice" title="Qty to invoice" type="decimal"
         readonlyIf="invoiceAll || isSubline" min="0"
-        validIf="$number(remainingQty) >= $number(qtyToInvoice)"/>
+        validIf="$number(remainingQty) >= $number(qtyToInvoice)" x-scale="$nbDecimalDigitForQty"/>
       <field name="invoiceAll" title="Invoice all" type="boolean"
         onChange="action-attrs-stock-move-line-invoicing-wizard-fill-qty"/>
       <field name="isSubline" hidden="true"/>
       <field name="stockMoveLineId" hidden="true"/>
+      <field name="$nbDecimalDigitForQty" hidden="true"/>
     </panel>
   </form>
+
+  <action-record name="action-stock-move-line-record-set-qty-remaining-to-package"
+    model="com.axelor.apps.stock.db.StockMoveLine">
+    <field name="qtyRemainingToPackage" expr="eval: realQty"/>
+  </action-record>
 
   <action-view name="action-stock-move-line-product-reserved-planned"
     title="${fullName} plan. st. move" model="com.axelor.apps.stock.db.StockMoveLine">
     <view type="grid" name="stock-move-line-all-grid-planned"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.reservedQty > 0 and self.stockMove.statusSelect = 2 and
-      (self.stockMove.fromStockLocation.typeSelect = 1 or self.stockMove.toStockLocation.typeSelect
-      = 1) and self.product.id = :_id</domain>
+      (self.fromStockLocation.typeSelect = 1 or
+      self.toStockLocation.typeSelect = 1) and
+      self.product.id = :_id</domain>
   </action-view>
 
   <action-view name="action-stock-location-line-view-reserved-stock-move-lines"
@@ -168,8 +228,9 @@
     <view type="grid" name="stock-move-line-all-grid-planned"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.reservedQty > 0 and self.stockMove.statusSelect = 2 AND self.product.id =
-      :productId AND (self.stockMove.fromStockLocation.id = :locationId OR
-      self.stockMove.toStockLocation.id = :locationId)</domain>
+      :productId AND (self.fromStockLocation.id = :locationId OR
+      self.toStockLocation.id =
+      :locationId)</domain>
     <context name="productId" expr="eval: product?.id"/>
     <context name="locationId" expr="eval: stockLocation?.id "/>
   </action-view>
@@ -271,5 +332,9 @@
       expr="stockMove.pickingIsEdited || stockMove.statusSelect == 3" if="stockMove"
       for="productModel"/>
   </action-attrs>
+
+  <action-method name="action-stock-move-line-method-add-to-cart">
+    <call class="com.axelor.apps.supplychain.web.StockMoveLineController" method="addToCart"/>
+  </action-method>
 
 </object-views>

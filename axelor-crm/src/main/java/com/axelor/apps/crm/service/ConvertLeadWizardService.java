@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,18 +21,22 @@ package com.axelor.apps.crm.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.db.PartnerStatus;
+import java.util.List;
 import java.util.Map;
 
 public interface ConvertLeadWizardService {
 
-  public Lead generateDataAndConvertLeadAndGenerateOpportunity(
+  public Partner generateDataAndConvertLead(
       Lead lead,
       Integer leadToPartnerSelect,
       Integer leadToContactSelect,
       Partner partner,
       Map<String, Object> partnerMap,
-      Partner contactPartner,
-      Map<String, Object> contactPartnerMap,
-      Map<String, Object> opportunityMap)
+      PartnerStatus partnerStatus,
+      List<Partner> contactPartnerList,
+      Map<String, Object> contactPartnerMap)
       throws AxelorException;
+
+  List<Partner> convertMapListToPartnerList(List<Map<String, Object>> contactList);
 }

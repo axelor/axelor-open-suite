@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,13 +29,15 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ConfiguratorBOMRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.BillOfMaterialLineService;
+import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.JsonContext;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Optional;
 
@@ -47,23 +49,30 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
   protected ConfiguratorService configuratorService;
   protected BillOfMaterialRepository billOfMaterialRepository;
   protected ConfiguratorProdProcessService confProdProcessService;
+  protected BillOfMaterialLineService billOfMaterialLineService;
 
   @Inject
   public ConfiguratorBomServiceImpl(
       ConfiguratorBOMRepository configuratorBOMRepo,
       ConfiguratorService configuratorService,
       BillOfMaterialRepository billOfMaterialRepository,
-      ConfiguratorProdProcessService confProdProcessService) {
+      ConfiguratorProdProcessService confProdProcessService,
+      BillOfMaterialLineService billOfMaterialLineService) {
     this.configuratorBOMRepo = configuratorBOMRepo;
     this.configuratorService = configuratorService;
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.confProdProcessService = confProdProcessService;
+    this.billOfMaterialLineService = billOfMaterialLineService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Optional<BillOfMaterial> generateBillOfMaterial(
-      ConfiguratorBOM configuratorBOM, JsonContext attributes, int level, Product generatedProduct)
+      ConfiguratorBOM configuratorBOM,
+      JsonContext attributes,
+      int level,
+      Product generatedProduct,
+      Configurator configurator)
       throws AxelorException {
     level++;
     if (level > MAX_LEVEL) {
@@ -166,15 +175,15 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
 
     if (configuratorBOM.getConfiguratorBomList() != null) {
       for (ConfiguratorBOM confBomChild : configuratorBOM.getConfiguratorBomList()) {
-        generateBillOfMaterial(confBomChild, attributes, level, generatedProduct)
-            .ifPresent(billOfMaterial::addBillOfMaterialSetItem);
+        generateBillOfMaterial(confBomChild, attributes, level, generatedProduct, configurator)
+            .ifPresent(
+                childBom ->
+                    billOfMaterial.addBillOfMaterialLineListItem(
+                        billOfMaterialLineService.createFromBillOfMaterial(childBom)));
       }
     }
 
-    billOfMaterial = billOfMaterialRepository.save(billOfMaterial);
-    configuratorBOM.setBillOfMaterialId(billOfMaterial.getId());
-    configuratorBOMRepo.save(configuratorBOM);
-    return Optional.of(billOfMaterial);
+    return Optional.of(billOfMaterialRepository.save(billOfMaterial));
   }
 
   protected boolean checkConditions(ConfiguratorBOM configuratorBOM, JsonContext jsonAttributes)

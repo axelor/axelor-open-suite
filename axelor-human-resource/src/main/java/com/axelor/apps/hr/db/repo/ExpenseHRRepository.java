@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,14 +19,21 @@
 package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodService;
-import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.hr.service.expense.ExpenseLimitService;
+import com.axelor.apps.hr.service.expense.ExpenseLineService;
+import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
+import com.axelor.apps.hr.service.expense.ExpenseToolService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseHRRepository extends ExpenseRepository {
@@ -42,11 +49,12 @@ public class ExpenseHRRepository extends ExpenseRepository {
   public Expense save(Expense expense) {
     try {
       expense = super.save(expense);
-      Beans.get(ExpenseService.class).setDraftSequence(expense);
+      Beans.get(ExpenseToolService.class).setDraftSequence(expense);
       if (expense.getStatusSelect() == ExpenseRepository.STATUS_DRAFT) {
-        Beans.get(ExpenseService.class).completeExpenseLines(expense);
+        Beans.get(ExpenseLineService.class).completeExpenseLines(expense);
       }
-
+      Beans.get(ExpenseProofFileService.class).convertProofFilesInPdf(expense);
+      Beans.get(ExpenseLimitService.class).checkExpenseLimit(expense);
       return expense;
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
@@ -72,10 +80,24 @@ public class ExpenseHRRepository extends ExpenseRepository {
     expense.setValidationDateTime(null);
     expense.setPeriod(expenseFetchPeriodService.getPeriod(expense));
     expense.setExpenseSeq(null);
-    expense.setMove(null);
     expense.setMoveDate(null);
     expense.setVentilated(false);
     expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_DRAFT);
     return expense;
+  }
+
+  @Override
+  public void remove(Expense entity) {
+    if (entity.getVentilated()) {
+      try {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(HumanResourceExceptionMessage.EXPENSE_CAN_NOT_DELETE_VENTILATED),
+            entity.getExpenseSeq());
+      } catch (AxelorException e) {
+        throw new PersistenceException(e.getMessage(), e);
+      }
+    }
+    super.remove(entity);
   }
 }

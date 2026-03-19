@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,8 +41,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
 
   protected BankOrderRepository bankOrderRepo;
   protected InvoicePaymentRepository invoicePaymentRepo;
-  protected BankOrderService bankOrderService;
+  protected BankOrderComputeService bankOrderComputeService;
   protected InvoiceRepository invoiceRepository;
   protected PaymentScheduleLineRepository paymentScheduleLineRepository;
 
@@ -69,13 +69,13 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
   public BankOrderMergeServiceImpl(
       BankOrderRepository bankOrderRepo,
       InvoicePaymentRepository invoicePaymentRepo,
-      BankOrderService bankOrderService,
+      BankOrderComputeService bankOrderComputeService,
       InvoiceRepository invoiceRepository,
       PaymentScheduleLineRepository paymentScheduleLineRepository) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
-    this.bankOrderService = bankOrderService;
+    this.bankOrderComputeService = bankOrderComputeService;
     this.invoiceRepository = invoiceRepository;
     this.paymentScheduleLineRepository = paymentScheduleLineRepository;
   }
@@ -99,8 +99,6 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     bankOrder.setSenderReference(null);
     bankOrder.setBankOrderDate(
         Beans.get(AppBaseService.class).getTodayDate(bankOrder.getSenderCompany()));
-    bankOrder.setSignatoryUser(null);
-    bankOrder.setSignatoryEbicsUser(null);
 
     PaymentMode paymentMode = bankOrder.getPaymentMode();
 
@@ -131,7 +129,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
       consolidatePerPartner(bankOrder);
     }
 
-    bankOrderService.updateTotalAmounts(bankOrder);
+    bankOrderComputeService.updateTotalAmounts(bankOrder);
 
     return bankOrderRepo.save(bankOrder);
   }
@@ -152,8 +150,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     for (BankOrder bankOrder : bankOrders) {
 
       int statusSelect = bankOrder.getStatusSelect();
-      if (statusSelect != BankOrderRepository.STATUS_DRAFT
-          && statusSelect != BankOrderRepository.STATUS_AWAITING_SIGNATURE) {
+      if (statusSelect != BankOrderRepository.STATUS_DRAFT) {
         throw new AxelorException(
             bankOrder,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -347,6 +344,9 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
       BankOrder bankOrder = invoicePayment.getBankOrder();
 
       if (bankOrder != null) {
+        if (bankOrder.getId() != null) {
+          bankOrder = bankOrderRepo.find(bankOrder.getId());
+        }
         invoicePaymentsWithBankOrders.add(invoicePayment);
         bankOrders.add(bankOrder);
       }

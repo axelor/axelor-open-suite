@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     id="supplychain-sale-order-form" extension="true">
     <extend target="/">
-      <attribute name="onNew" value="action-group-supplychain-saleorder-onnew"/>
       <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
       <attribute name="onSave" value="action-supplychain-saleorder-onsave"/>
     </extend>
@@ -16,40 +15,71 @@
           onChange="action-sale-order-record-direct-order-location-onchange" widget="boolean-switch"/>
       </insert>
     </extend>
+    <extend target="//field[@name='estimatedShippingDate']">
+      <attribute name="onChange"
+        value="action-supplychain-sale-order-group-on-estimated-shipping-date-change"/>
+    </extend>
+    <extend target="//field[@name='estimatedDeliveryDate']">
+      <attribute name="onChange"
+        value="action-supplychain-sale-order-group-estimated-delivery-date-change"/>
+    </extend>
     <extend target="//field[@name='shipmentMode']">
       <attribute name="onChange" value="supplychain-action-create-shipment-cost-line"/>
       <attribute name="readOnlyIf" value="statusSelect &gt; 1"/>
     </extend>
-    <extend target="//panel-related[@name='detailLinesPanel']">
+    <extend target="//field[@name='shipmentMode']">
+      <insert position="after">
+        <button name="selectPricingLineBtn"
+          onClick="save,action-suppplychain-view-pricing-list" title="Select carrier" colSpan="6"
+          showIf="!$readonly() &amp;&amp; shipmentMode"
+          if="__config__.app.getApp('base')?.enablePricingScale"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='freightCarrierMode']">
       <attribute name="onChange"
-        value="action-sale-order-line-change-group,supplychain-action-create-shipment-cost-line"/>
+        value="action-sale-order-record-freight-carrier,supplychain-action-update-shipment-cost-line"/>
+    </extend>
+    <extend target="//panel[@name='deliveryInformationPanel']">
+      <insert position="after">
+        <panel name="packagingPanel" title="Packaging" colSpan="12">
+          <button name="estimatePackagingBtn" title="Estimate packaging" icon="envelope-fill"
+            onClick="save,action-sale-order-method-estimate-packaging"
+            readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
+          <help colSpan="12"><![CDATA[<>This packaging is different from real packagings defined during shipping process. Design for only shipping cost estimation.</>]]></help>
+          <panel-related name="packagingPanel" field="estimatedPackagingList"
+            grid-view="packaging-sale-order-grid" form-view="packaging-sale-order-form" colSpan="12"
+            widget="tree-grid" x-tree-field="childrenPackagingList"
+            summary-view="packaging-sale-order-packaging-lines-form"
+            orderBy="-packagingLevelSelect,packagingNumber" x-expand-all="true" canNew="false"
+            canEdit="false" canRemove="true"/>
+        </panel>
+      </insert>
     </extend>
   </form>
 
   <form name="sale-order-form-partner" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form-partner"
-    onNew="action-group-supplychain-saleorder-onnew,action-group-partner-saleorder-onnew"
+    onNew="action-sale-order-method-onnew,action-group-partner-saleorder-onnew"
     onLoad="action-group-supplychain-saleorder-onload" onSave="action-supplychain-saleorder-onsave">
 
     <panel-include view="sale-order-form" from="axelor-sale"/>
   </form>
 
   <form name="sale-order-generate-po-select-supplierpartner-form"
-    model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation"
-    onLoad="action-record-load-dummy-supplier-partner">
+    model="com.axelor.utils.db.Wizard" title="Confirm Purchase order generation"
+    onLoad="action-attrs-load-dummy-supplier-partner">
     <panel name="mainPanel">
       <field name="supplierPartnerSelect" title="Select supplier partner" type="many-to-one"
         target="com.axelor.apps.base.db.Partner"
         onSelect="action-supplychain-so-generate-supplier-partner-domain" required="true"/>
       <button name="generatePOConfirmBtn" title="Confirm Purchase order generation"
-        onClick="action-supplychain-so-generate-po-check-supplier-partner,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
+        onClick="action-sale-order-group-generate-po-select-supplierpartner"/>
     </panel>
   </form>
 
   <form name="sale-order-form-client" id="supplychain-sale-order-form-client"
     title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
-    onNew="action-group-supplychain-saleorder-onnew"
-    onSave="save,action-sale-order-method-compute,save"
+    onNew="action-sale-order-method-onnew" onSave="save,action-sale-order-method-compute,save"
     onLoad="action-group-supplychain-saleorder-onload" width="large">
     <panel name="mainPanel" colSpan="4">
       <panel-include view="sale-order-form-client" from="axelor-sale"/>
@@ -61,7 +91,7 @@
     extension="true">
     <extend target="/">
       <attribute name="onNew"
-        value="action-group-sale-saleorder-onnew,action-saleorder-record-template"/>
+        value="action-sale-order-method-onnew,action-saleorder-record-template"/>
     </extend>
   </form>
 
@@ -80,10 +110,11 @@
       <separator colSpan="12"/>
       <field name="numberOfPeriods" showIf="$readonly()" colSpan="4">
         <viewer><![CDATA[
-		                  <span>{{record.numberOfPeriods}}</span>
-		                  <span> </span>
-		                  <span ng-show="record.periodicityTypeSelect == 1" x-translate>day(s)</span>
-		                  <span ng-show="record.periodicityTypeSelect == 2" x-translate>month(s)</span>
+		              <>
+		                  <span>{numberOfPeriods}</span>
+		                  {periodicityTypeSelect == 1 && <span> {_t('day(s)')} </span>}
+		                  {periodicityTypeSelect == 2 && <span> {_t('month(s)')} </span>}
+		              </>
 				]]></viewer>
       </field>
       <field name="numberOfPeriods" showIf="!$readonly()" colSpan="4"
@@ -102,6 +133,8 @@
     </panel>
   </form>
 
+  <!-- ACTION GROUPs -->
+
   <action-group id="action-group-supplychain-sale-order-validate-changes"
     name="action-group-sale-order-validate-changes">
     <action name="action-supplychain-saleorder-onsave"/>
@@ -111,25 +144,20 @@
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
   </action-group>
 
-  <action-group name="action-group-supplychain-saleorder-onnew">
-    <action name="action-group-sale-saleorder-onnew"/>
-    <action name="action-sale-order-record-payment-mode"/>
-    <action name="action-supplychain-sale-order-method-get-stock-location"
-      if="tradingName?.shippingDefaultStockLocation == null || stockLocation == null"/>
-    <action name="action-sale-order-attrs-interco"/>
-    <action name="action-sale-order-record-interco"/>
-    <action name="supplychain-action-create-shipment-cost-line"/>
-    <action name="action-sale-order-record-set-default-tax-number"/>
-  </action-group>
-
   <action-group name="action-group-sale-order-supplychain-set-main-invoicing-address">
     <action name="action-sale-order-supplychain-record-main-invoicing-address"/>
     <action name="action-sale-order-method-address-str"/>
+    <action name="action-supplychain-sale-order-invoiced-partner-onchange"/>
   </action-group>
 
   <action-group name="action-group-sale-order-supplychain-set-delivery-address">
     <action name="action-sale-order-supplychain-record-delivery-address"/>
     <action name="action-sale-order-method-address-str"/>
+    <action name="action-supplychain-sale-order-delivery-partner-onchange"/>
+    <action
+      name="action-supplychain-sale-order-validate-sale-order-lines-delivery-address-on-delivered-partner-change"
+      if="saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()"/>
+    <action name="action-sale-order-method-update-sale-order-lines-delivery-address"/>
   </action-group>
 
   <action-group name="action-group-supplychain-saleorder-onload">
@@ -137,12 +165,26 @@
     <action name="action-sale-order-attrs-interco"/>
   </action-group>
 
-  <action-method name="action-supplychain-sale-order-method-get-stock-location">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getStockLocation"/>
-  </action-method>
+  <action-group name="action-sale-order-group-generate-po-select-supplierpartner">
+    <action name="action-supplychain-so-generate-po-check-supplier-partner"/>
+    <action
+      name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
+  </action-group>
+
+  <!-- ACTION METHOD -->
 
   <action-method name="action-supplychain-saleorder-onsave">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="onSave"/>
+  </action-method>
+
+  <action-method name="action-supplychain-sale-order-delivery-partner-onchange">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="deliveredPartnerChange"/>
+  </action-method>
+
+  <action-method name="action-supplychain-sale-order-invoiced-partner-onchange">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="invoicedPartnerChange"/>
   </action-method>
 
   <action-method name="action-supplychain-sale-order-method-generate-invoice">
@@ -151,6 +193,15 @@
 
   <action-method name="action-supplychain-sale-order-create-stock-move">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createStockMove"/>
+  </action-method>
+
+  <action-group name="action-supplychain-group-sale-order-create-stock-move">
+    <action name="action-supplychain-method-sale-order-check-blocking"/>
+    <action name="action-supplychain-sale-order-create-stock-move"/>
+  </action-group>
+
+  <action-method name="action-supplychain-method-sale-order-check-blocking">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="checkBlocking"/>
   </action-method>
 
   <action-method
@@ -170,25 +221,26 @@
       method="setNextInvoicingStartPeriodDate"/>
   </action-method>
 
+  <!-- ACTION VALIDATE -->
+
   <action-validate
     name="action-supplychain-sale-order-validate-check-amount-timetable">
     <alert message="The amount to be spread over the timetable is negative."
       if="amountToBeSpreadOverTheTimetable &lt; 0"/>
   </action-validate>
 
-  <action-record name="action-record-load-dummy-supplier-partner"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="supplierPartnerSelect" expr="eval:__repo__(Partner).find(supplierPartnerId)"/>
-  </action-record>
+  <action-validate
+    name="action-supplychain-sale-order-validate-sale-order-lines-delivery-address-on-delivered-partner-change">
+    <alert
+      message="Changing the delivery partner updates the order’s delivery address. Would you like to update all lines with this new address?"/>
+  </action-validate>
 
-  <action-record name="action-sale-order-record-payment-mode"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="paymentMode" expr="eval: clientPartner?.inPaymentMode"
-      if="clientPartner?.inPaymentMode != null"/>
-    <field name="paymentMode"
-      expr="eval: __user__.activeCompany?.accountConfig?.inPaymentMode"
-      if="clientPartner?.inPaymentMode == null"/>
-  </action-record>
+  <!-- ACTION RECORD -->
+
+  <action-attrs name="action-attrs-load-dummy-supplier-partner">
+    <attribute for="value" name="supplierPartnerSelect"
+      expr="eval: __repo__(Partner).find(supplierPartnerId)"/>
+  </action-attrs>
 
   <action-record name="action-sale-order-record-interco"
     model="com.axelor.apps.sale.db.SaleOrder">
@@ -217,6 +269,8 @@
       expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(deliveredPartner)"
       if="deliveredPartner != null"/>
   </action-record>
+
+  <!-- ACTION ATTRS -->
 
   <action-attrs name="action-sale-order-attrs-interco">
     <attribute for="interco" name="hidden"
@@ -299,27 +353,9 @@
     <field name="carrierPartner" expr="eval:freightCarrierMode?.carrierPartner"/>
   </action-record>
 
-  <action-record name="action-sale-order-record-partner-supplychain"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"/>
-    <field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
-    <field name="carrierPartner"
-      expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
-    <field name="incoterm"
-      expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, clientPartner).fetchOne()?.incoterm"
-      if="company != null &amp;&amp; clientPartner != null"/>
-  </action-record>
-
-  <action-record name="action-sale-order-record-update-timetable-amounts"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="timetableList"
-      expr="eval: timetableList.collect{it -> it.amount = (exTaxTotal * it.percentage / 100).setScale(__config__.app.getApp('base')?.nbDecimalDigitForUnitPrice, java.math.RoundingMode.HALF_UP); it}"
-      if="timetableList != null"/>
-  </action-record>
-
   <action-attrs name="action-sale-order-attrs-set-is-ispm-required">
     <attribute name="value" for="isIspmRequired"
-      expr="eval: clientPartner?.isIspmRequired || deliveryAddress?.addressL7Country?.isIspmRequired"/>
+      expr="eval: clientPartner?.isIspmRequired || deliveryAddress?.country?.isIspmRequired"/>
   </action-attrs>
 
   <action-method name="action-sale-order-method-allocate-all">
@@ -353,6 +389,11 @@
       method="createShipmentCostLine"/>
   </action-method>
 
+  <action-method name="supplychain-action-update-shipment-cost-line">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="updateShipmentCostLine"/>
+  </action-method>
+
   <action-method
     name="action-sale-order-supplychain-method-set-invoiced-partner-domain">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
@@ -380,6 +421,86 @@
   <action-method name="action-supplychain-sale-order-method-get-to-stock-location">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="getToStockLocation"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-set-advance-payment">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="setAdvancePayment"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-update-timetable-amounts">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="updateTimetableAmounts"/>
+  </action-method>
+
+  <!-- Shipment process -->
+  <action-view name="action-suppplychain-view-pricing-list" title="Transport rates"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="freight-carrier-pricings-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_shipmentMode" expr="eval: shipmentMode"/>
+  </action-view>
+
+  <form title="Transport rates" name="freight-carrier-pricings-wizard-form"
+    model="com.axelor.utils.db.Wizard"
+    onNew="action-supplychain-sale-order-method-set-freight-carrier-pricings-set,action-supplychain-sale-order-method-compute-pricings">
+    <panel name="main">
+      <field name="$freightCarrierPricingsSet" type="many-to-many" showTitle="false"
+        target="com.axelor.apps.supplychain.db.FreightCarrierPricing"
+        form-view="freight-carrier-pricing-form" grid-view="freight-carrier-pricing-grid"
+        colSpan="12" canNew="false" canEdit="false" canRemove="false" canSelect="false"/>
+      <button name="selectBtn" title="Select"
+        onClick="action-supplychain-sale-order-method-select-freight-carrier-pricings" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-method
+    name="action-supplychain-sale-order-method-set-freight-carrier-pricings-set">
+    <call class="com.axelor.apps.supplychain.web.FreightCarrierPricingController"
+      method="setFreightCarrierPricing"/>
+  </action-method>
+
+  <action-method
+    name="action-supplychain-sale-order-method-select-freight-carrier-pricings">
+    <call class="com.axelor.apps.supplychain.web.FreightCarrierPricingController"
+      method="selectFreightCarrierPricing"/>
+  </action-method>
+
+  <action-method name="action-supplychain-sale-order-method-compute-pricings">
+    <call class="com.axelor.apps.supplychain.web.FreightCarrierPricingController"
+      method="computePricings"/>
+  </action-method>
+
+  <action-group
+    name="action-supplychain-sale-order-group-on-estimated-shipping-date-change">
+    <action name="action-sale-order-group-on-estimated-shipping-date-change"/>
+    <action
+      name="action-supplychain-sale-order-method-update-estimated-delivery-date-with-pricing-delay"/>
+  </action-group>
+
+  <action-method
+    name="action-supplychain-sale-order-method-update-estimated-delivery-date-with-pricing-delay">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="updateEstimatedDeliveryDateWithPricingDelay"/>
+  </action-method>
+
+  <action-group
+    name="action-supplychain-sale-order-group-estimated-delivery-date-change">
+    <action name="action-sale-order-group-on-estimated-delivery-date-change"/>
+    <action name="action-supplychain-sale-order-method-notify-estimated-delivery-date-update"/>
+  </action-group>
+
+  <action-method
+    name="action-supplychain-sale-order-method-notify-estimated-delivery-date-update">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="notifyEstimatedDeliveryDateUpdate"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-estimate-packaging">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="estimatePackaging"/>
   </action-method>
 
 </object-views>

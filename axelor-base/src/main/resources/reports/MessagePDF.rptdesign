@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -54,23 +54,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="Locale" id="12">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">false</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">en</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="concealValue">false</property>
             <property name="controlType">text-box</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
@@ -173,7 +156,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -181,10 +164,10 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
-                    <property name="columnName">logo_path</property>
+                    <property name="columnName">logo_id</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <text-property name="heading">logo_path</text-property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <text-property name="heading">logo_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_height</property>
@@ -247,8 +230,8 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
-                        <property name="name">logo_path</property>
-                        <property name="dataType">string</property>
+                        <property name="name">logo_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
@@ -302,9 +285,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
-                    <property name="name">logo_path</property>
-                    <property name="nativeName">logo_path</property>
-                    <property name="dataType">string</property>
+                    <property name="name">logo_id</property>
+                    <property name="nativeName">logo_id</property>
+                    <property name="dataType">decimal</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
@@ -372,7 +355,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
-    MetaFile.file_path AS logo_path,
+    MetaFile.id AS logo_id,
 	baseCompany.height AS logo_height,
 	baseCompany.width AS logo_width,	
     self.id AS message_id,
@@ -417,7 +400,7 @@ WHERE self.id IN (@INJECTID)]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -459,7 +442,7 @@ WHERE self.id IN (@INJECTID)]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -589,10 +572,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataSet">MessageDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
-                            <property name="name">logo_path</property>
-                            <text-property name="displayName">logo_path</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                            <property name="dataType">string</property>
+                            <property name="name">logo_id</property>
+                            <text-property name="displayName">logo_id</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                            <property name="dataType">decimal</property>
+                            <property name="allowExport">true</property>
                         </structure>
                         <structure>
                             <property name="name">message_id</property>
@@ -668,23 +652,23 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </text>
                         </cell>
                         <cell id="4638">
-                            <text id="4640">
-                                <property name="fontSize">8pt</property>
+                            <image id="4749">
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                        <expression name="valueExpr" type="javascript">row["logo_id"] == null</expression>
                                     </structure>
                                 </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                                <method name="onRender"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                <property name="source">expr</property>
+                            </image>
                         </cell>
                     </row>
                 </grid>
@@ -695,10 +679,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataSet">MessageDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
-                            <property name="name">logo_path</property>
-                            <text-property name="displayName">logo_path</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                            <property name="dataType">string</property>
+                            <property name="name">logo_id</property>
+                            <text-property name="displayName">logo_id</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                            <property name="dataType">decimal</property>
                         </structure>
                         <structure>
                             <property name="name">message_id</property>
@@ -759,10 +743,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <property name="dataSet">MessageDS</property>
             <list-property name="boundDataColumns">
                 <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                    <property name="dataType">string</property>
+                    <property name="name">logo_id</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                    <property name="dataType">decimal</property>
                 </structure>
                 <structure>
                     <property name="name">message_id</property>

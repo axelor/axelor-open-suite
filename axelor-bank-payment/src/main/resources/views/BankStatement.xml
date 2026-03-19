@@ -1,37 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="bank-statement-grid" title="Bank Statements"
     model="com.axelor.apps.bankpayment.db.BankStatement" orderBy="-toDate,name" canDelete="false">
     <toolbar>
       <button name="showBankStatementLinesBtn" title="See bank statement lines"
         onClick="account-bank-statement-view-bank-statement-lines"/>
-      <button name="deleteStatementBtn" title="Delete" icon="fa-trash"
+      <button name="deleteStatementBtn" title="Delete" icon="trash"
         onClick="action-bank-statement-method-delete-multiple-statement"/>
+      <button name="printBtn" hidden="true" onClick=""/>
     </toolbar>
     <field name="id" hidden="false" width="120"/>
-    <field name="ebicsPartner.ebicsBank" width="250"
-      if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
-    <field name="ebicsPartner" width="150"
-      if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
-    <field name="bankStatementFileFormat"/>
+    <field name="name"/>
     <field name="fromDate" width="120"/>
     <field name="toDate" width="120"/>
-    <field name="statusSelect" title="Status" width="120"/>
+    <field name="statusSelect" title="Status" width="120" widget="single-select"/>
   </grid>
 
 
   <form name="bank-statement-form" title="Bank Statement"
     model="com.axelor.apps.bankpayment.db.BankStatement" width="large" canDelete="false">
     <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print" readonlyIf="statusSelect &lt; 2"
-        onClick="action-bank-statement-method-print"/>
+      <button name="printBtn" title="Print" icon="printer" readonlyIf="statusSelect &lt; 2"
+        onClick="action-bank-statement-validate-file-format,action-method-print-template"/>
       <button name="generateBankReconciliationBtn" title="Run bank reconciliation"
         readonlyIf="statusSelect &lt; 2"
         onClick="action-bank-statement-method-run-bank-reconciliation"/>
-      <button name="deleteStatementBtn" title="Delete" icon="fa-trash"
+      <button name="deleteStatementBtn" title="Delete" icon="trash"
         onClick="action-bank-statement-method-delete-statement"/>
     </toolbar>
 
@@ -42,16 +39,12 @@
           <field name="bankStatementFile" widget="binary-link" canNew="true"/>
           <field name="fromDate"/>
           <field name="toDate"/>
-          <field name="ebicsPartner"
-            if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
-          <field name="ebicsPartner.ebicsBank"
-            if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
           <field name="bankStatementFileFormat"/>
           <field name="bankStatementFileFormat.statementFileFormatSelect" hidden="true"/>
         </panel>
         <panel colSpan="4" name="actionsPanel">
           <field name="createdBy"/>
-          <field name="statusSelect" title="Status"/>
+          <field name="statusSelect" title="Status" widget="single-select"/>
           <button name="runImportBtn" title="BankStatement.Import"
             onClick="save,action-bank-statement-method-run-import" readonlyIf="!bankStatementFile"
             hideIf="statusSelect == 2"/>
@@ -110,12 +103,13 @@
     <view type="grid" name="move-line-grid"/>
     <view type="form" name="move-line-form"/>
     <domain>self.id IN
-      (SELECT brl.moveLine
+      (SELECT brl.moveLine.id
       FROM BankReconciliationLine AS brl
-      JOIN BankReconciliation
+      JOIN
+      BankReconciliation
       as br
-      ON brl.bankReconciliation = br.id
-      WHERE br.bankStatement = :_id)</domain>
+      ON brl.bankReconciliation.id = br.id
+      WHERE br.bankStatement.id = :_id)</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
 
@@ -123,10 +117,6 @@
 
   <action-method name="action-bank-statement-method-run-import">
     <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="runImport"/>
-  </action-method>
-
-  <action-method name="action-bank-statement-method-print">
-    <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="print"/>
   </action-method>
 
   <action-method name="action-bank-statement-method-run-bank-reconciliation">
@@ -144,14 +134,9 @@
       method="deleteStatement"/>
   </action-method>
 
-  <!-- SEARCH FILTERS -->
-
-  <search-filters name="bank-statement-filters"
-    model="com.axelor.apps.bankpayment.db.BankStatement" title="Bank Statement filters">
-    <field name="ebicsPartner.ebicsBank" hidden="true"
-      if="eval: !__config__.app.getApp('bank-payment').enableEbicsModule"/>
-    <field name="ebicsPartner" hidden="true"
-      if="eval: !__config__.app.getApp('bank-payment').enableEbicsModule"/>
-  </search-filters>
+  <action-validate name="action-bank-statement-validate-file-format">
+    <error message="Unknown format for file import process"
+      if="['camt.xxx.cfonb120.stm','camt.xxx.cfonb120.rep'].indexOf(bankStatementFileFormat.statementFileFormatSelect) == -1"/>
+  </action-validate>
 
 </object-views>

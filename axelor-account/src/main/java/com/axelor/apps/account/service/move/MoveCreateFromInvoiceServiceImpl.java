@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,28 +21,39 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.ReconcileService;
-import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.PaymentConditionService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import com.axelor.common.StringUtils;
+import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +61,6 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected AppAccountService appAccountService;
   protected MoveCreateService moveCreateService;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveToolService moveToolService;
@@ -60,12 +70,12 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
   protected PaymentService paymentService;
   protected ReconcileService reconcileService;
   protected MoveExcessPaymentService moveExcessPaymentService;
-  protected JournalRepository journalRepository;
   protected AccountConfigService accountConfigService;
+  protected PaymentConditionService paymentConditionService;
+  protected CurrencyService currencyService;
 
   @Inject
   public MoveCreateFromInvoiceServiceImpl(
-      AppAccountService appAccountService,
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
       MoveToolService moveToolService,
@@ -76,8 +86,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       ReconcileService reconcileService,
       MoveExcessPaymentService moveExcessPaymentService,
       AccountConfigService accountConfigService,
-      JournalRepository journalRepository) {
-    this.appAccountService = appAccountService;
+      PaymentConditionService paymentConditionService,
+      CurrencyService currencyService) {
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveToolService = moveToolService;
@@ -88,7 +98,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
     this.reconcileService = reconcileService;
     this.moveExcessPaymentService = moveExcessPaymentService;
     this.accountConfigService = accountConfigService;
-    this.journalRepository = journalRepository;
+    this.paymentConditionService = paymentConditionService;
+    this.currencyService = currencyService;
   }
 
   /**
@@ -108,29 +119,41 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       origin = invoice.getSupplierInvoiceNb();
     }
 
-    if (invoice != null && invoice.getInvoiceLineList() != null) {
-
+    if (invoice.getInvoiceLineList() != null) {
       Journal journal = invoice.getJournal();
       Company company = invoice.getCompany();
       Partner partner = invoice.getPartner();
       Account account = invoice.getPartnerAccount();
 
       String description = null;
+
       if (journal != null) {
         description = journal.getDescriptionModel();
+
+        if (journal.getDescriptionIdentificationOk() && origin != null) {
+          if (ObjectUtils.isEmpty(description)) {
+            description = origin;
+          } else {
+            description = String.format("%s %s", description, origin);
+          }
+        }
       }
 
-      if (journal.getDescriptionIdentificationOk() && origin != null) {
-        if (ObjectUtils.isEmpty(description)) {
-          description = origin;
-        } else {
-          description += " " + origin;
-        }
+      if (accountConfigService.getAccountConfig(company).getIsDescriptionRequired()
+          && StringUtils.isEmpty(description)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.MOVE_INVOICE_DESCRIPTION_REQUIRED),
+            company.getName());
       }
 
       log.debug(
           "Creation of a move specific to the invoice {} (Company : {}, Journal : {})",
-          new Object[] {invoice.getInvoiceId(), company.getName(), journal.getCode()});
+          new Object[] {
+            invoice.getInvoiceId(),
+            company.getName(),
+            Optional.ofNullable(journal).map(Journal::getCode).orElse("")
+          });
 
       int functionalOrigin = InvoiceToolService.getFunctionalOrigin(invoice);
       boolean isPurchase = InvoiceToolService.isPurchase(invoice);
@@ -157,7 +180,11 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         move.setInvoice(invoice);
 
         move.setTradingName(invoice.getTradingName());
+        paymentConditionService.checkPaymentCondition(invoice.getPaymentCondition());
         move.setPaymentCondition(invoice.getPaymentCondition());
+        move.setThirdPartyPayerPartner(invoice.getThirdPartyPayerPartner());
+
+        move.setDueDate(invoice.getDueDate());
 
         boolean isDebitCustomer = moveToolService.isDebitCustomer(invoice, false);
 
@@ -169,7 +196,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
                     company,
                     partner,
                     account,
-                    journal.getIsInvoiceMoveConsolidated(),
+                    journal != null ? journal.getIsInvoiceMoveConsolidated() : false,
                     isPurchase,
                     isDebitCustomer));
 
@@ -186,9 +213,9 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
   }
 
   /**
-   * Méthode permettant d'employer les trop-perçus 2 cas : - le compte des trop-perçus est le même
-   * que celui de la facture : alors on lettre directement - le compte n'est pas le même : on créée
-   * une O.D. de passage sur le bon compte
+   * Method to use excess payments. 2 cases: - the excess payment account is the same as the invoice
+   * account: then we reconcile directly - the account is different: we create a miscellaneous
+   * operation move to transfer to the correct account
    *
    * @param invoice
    * @return
@@ -203,12 +230,12 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
 
       if (moveToolService.isDebitCustomer(invoice, true)) {
 
-        // Emploie du trop perçu
+        // Use excess payment
         this.createMoveUseExcessPayment(invoice);
 
       } else {
 
-        // Emploie des dûs
+        // Use due amounts
         this.createMoveUseInvoiceDue(invoice);
       }
     }
@@ -216,11 +243,12 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
   }
 
   /**
-   * Méthode permettant d'employer les dûs sur l'avoir On récupère prioritairement les dûs
-   * (factures) selectionné sur l'avoir, puis les autres dûs du tiers
+   * Method to use due amounts on the credit note. We first retrieve the due amounts (invoices)
+   * selected on the credit note, then the other due amounts of the partner
    *
-   * <p>2 cas : - le compte des dûs est le même que celui de l'avoir : alors on lettre directement -
-   * le compte n'est pas le même : on créée une O.D. de passage sur le bon compte
+   * <p>2 cases: - the due account is the same as the credit note account: then we reconcile
+   * directly - the account is different: we create a miscellaneous operation move to transfer to
+   * the correct account
    *
    * @param invoice
    * @return
@@ -228,6 +256,11 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
    */
   @Override
   public Move createMoveUseInvoiceDue(Invoice invoice) throws AxelorException {
+    if (invoice.getInvoiceTermList().stream()
+        .allMatch(
+            it -> it.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_LITIGATION)) {
+      return null;
+    }
 
     Company company = invoice.getCompany();
     Move move = null;
@@ -239,21 +272,38 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         moveDueService.getInvoiceDue(invoice, accountConfig.getAutoReconcileOnInvoice());
 
     if (!debitMoveLines.isEmpty()) {
-      MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
+      List<MoveLine> invoiceCustomerMoveLines =
+          moveToolService.getInvoiceCustomerMoveLines(invoice);
 
-      // We directly use excess if invoice and excessPayment share the same account
-      if (moveToolService.isSameAccount(debitMoveLines, invoiceCustomerMoveLine.getAccount())) {
-        List<MoveLine> creditMoveLineList = new ArrayList<MoveLine>();
-        creditMoveLineList.add(invoiceCustomerMoveLine);
-        paymentService.useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLineList);
-      }
-      // Else we create a O.D
-      else {
-        this.createMoveUseDebit(invoice, debitMoveLines, invoiceCustomerMoveLine);
-      }
+      // Sort move lines: non-holdback first, then holdback
+      // This is required because holdback invoice terms cannot be paid before other terms
+      List<MoveLine> sortedInvoiceCustomerMoveLines =
+          invoiceCustomerMoveLines.stream()
+              .sorted(Comparator.comparing(this::isHoldbackMoveLine))
+              .collect(Collectors.toList());
 
-      // Management of the switch to 580
-      reconcileService.balanceCredit(invoiceCustomerMoveLine);
+      // Group debit move lines by account for matching with credit note move lines
+      Map<Account, List<MoveLine>> debitMoveLinesByAccount =
+          debitMoveLines.stream().collect(Collectors.groupingBy(MoveLine::getAccount));
+
+      // Process each customer move line from the credit note (non-holdback first, then holdback)
+      for (MoveLine invoiceCustomerMoveLine : sortedInvoiceCustomerMoveLines) {
+        Account account = invoiceCustomerMoveLine.getAccount();
+        List<MoveLine> matchingDebitLines = debitMoveLinesByAccount.get(account);
+
+        if (matchingDebitLines != null && !matchingDebitLines.isEmpty()) {
+          // Same account: direct reconciliation
+          List<MoveLine> creditMoveLineList = new ArrayList<>();
+          creditMoveLineList.add(invoiceCustomerMoveLine);
+          paymentService.useExcessPaymentOnMoveLines(matchingDebitLines, creditMoveLineList);
+        } else {
+          // Different account: create O.D.
+          this.createMoveUseDebit(invoice, debitMoveLines, invoiceCustomerMoveLine);
+        }
+
+        // Management of the switch to 580
+        reconcileService.canBeZeroBalance(null, invoiceCustomerMoveLine);
+      }
 
       invoice.setCompanyInTaxTotalRemaining(moveToolService.getInTaxTotalRemaining(invoice));
     }
@@ -277,80 +327,105 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
     if (creditMoveLineList != null && creditMoveLineList.size() != 0) {
 
       Partner partner = invoice.getPartner();
-      Account account = invoice.getPartnerAccount();
-      MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
+      List<MoveLine> invoiceCustomerMoveLines =
+          moveToolService.getInvoiceCustomerMoveLines(invoice);
+
+      // Sort move lines: non-holdback first, then holdback
+      // This is required because holdback invoice terms cannot be paid before other terms
+      List<MoveLine> sortedInvoiceCustomerMoveLines =
+          invoiceCustomerMoveLines.stream()
+              .sorted(Comparator.comparing(this::isHoldbackMoveLine))
+              .collect(Collectors.toList());
 
       Journal journal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
 
-      // We directly use excess if invoice and excessPayment share the same account
-      if (moveToolService.isSameAccount(creditMoveLineList, account)) {
-        List<MoveLine> debitMoveLineList = new ArrayList<>();
-        debitMoveLineList.add(invoiceCustomerMoveLine);
-        paymentService.useExcessPaymentOnMoveLines(debitMoveLineList, creditMoveLineList);
-      }
-      // Else we create a O.D
-      else {
+      // Group credit move lines by account for matching with invoice move lines
+      Map<Account, List<MoveLine>> creditMoveLinesByAccount =
+          creditMoveLineList.stream().collect(Collectors.groupingBy(MoveLine::getAccount));
 
-        log.debug(
-            "Creation of a O.D. move specific to the use of overpayment {} (Company : {}, Journal : {})",
-            invoice.getInvoiceId(),
-            company.getName(),
-            journal.getCode());
+      // Process each customer move line from the invoice (non-holdback first, then holdback)
+      for (MoveLine invoiceCustomerMoveLine : sortedInvoiceCustomerMoveLines) {
+        Account account = invoiceCustomerMoveLine.getAccount();
+        List<MoveLine> matchingCreditLines = creditMoveLinesByAccount.get(account);
 
-        Move move =
-            moveCreateService.createMove(
-                journal,
-                company,
-                null,
-                partner,
-                invoice.getInvoiceDate(),
-                invoice.getInvoiceDate(),
-                null,
-                invoice.getFiscalPosition(),
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-                origin,
-                null,
-                invoice.getCompanyBankDetails());
+        if (matchingCreditLines != null && !matchingCreditLines.isEmpty()) {
+          // Same account: direct reconciliation
+          List<MoveLine> debitMoveLineList = new ArrayList<>();
+          debitMoveLineList.add(invoiceCustomerMoveLine);
+          paymentService.useExcessPaymentOnMoveLines(debitMoveLineList, matchingCreditLines);
+        } else {
+          // Different account: create O.D.
+          log.debug(
+              "Creation of a O.D. move specific to the use of overpayment {} (Company : {}, Journal : {})",
+              invoice.getInvoiceId(),
+              company.getName(),
+              journal.getCode());
 
-        if (move != null) {
-          BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
-          BigDecimal amount = totalCreditAmount.min(invoiceCustomerMoveLine.getDebit());
-
-          // credit move line creation
-          MoveLine creditMoveLine =
-              moveLineCreateService.createMoveLine(
-                  move,
+          Move move =
+              moveCreateService.createMove(
+                  journal,
+                  company,
+                  invoice.getCurrency(),
                   partner,
-                  account,
-                  amount,
-                  false,
-                  appAccountService.getTodayDate(company),
-                  1,
+                  invoice.getInvoiceDate(),
+                  invoice.getInvoiceDate(),
+                  null,
+                  invoice.getFiscalPosition(),
+                  MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                  MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
                   origin,
-                  null);
-          move.getMoveLineList().add(creditMoveLine);
+                  null,
+                  invoice.getCompanyBankDetails());
 
-          // Use of excess payment
-          paymentService.useExcessPaymentWithAmountConsolidated(
-              creditMoveLineList,
-              amount,
-              move,
-              2,
-              partner,
-              company,
-              account,
-              invoice.getInvoiceDate(),
-              invoice.getDueDate());
+          if (move != null) {
+            BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
+            BigDecimal amount = totalCreditAmount.min(invoiceCustomerMoveLine.getDebit());
 
-          moveValidateService.accounting(move);
+            BigDecimal moveLineAmount =
+                moveToolService
+                    .getTotalCurrencyAmount(creditMoveLineList)
+                    .min(invoiceCustomerMoveLine.getCurrencyAmount());
+            LocalDate date = invoice.getInvoiceDate();
 
-          // Reconciliation creation
-          Reconcile reconcile =
-              reconcileService.createReconcile(
-                  invoiceCustomerMoveLine, creditMoveLine, amount, false);
-          if (reconcile != null) {
-            reconcileService.confirmReconcile(reconcile, true, true);
+            // credit move line creation
+            MoveLine creditMoveLine =
+                moveLineCreateService.createMoveLine(
+                    move,
+                    partner,
+                    account,
+                    moveLineAmount,
+                    amount,
+                    currencyService.computeScaledExchangeRate(amount, moveLineAmount),
+                    false,
+                    date,
+                    date,
+                    date,
+                    1,
+                    origin,
+                    null);
+            move.getMoveLineList().add(creditMoveLine);
+
+            // Use of excess payment
+            paymentService.useExcessPaymentWithAmountConsolidated(
+                creditMoveLineList,
+                amount,
+                move,
+                2,
+                partner,
+                company,
+                account,
+                invoice.getInvoiceDate(),
+                invoice.getDueDate());
+
+            moveValidateService.accounting(move);
+
+            // Reconciliation creation
+            Reconcile reconcile =
+                reconcileService.createReconcile(
+                    invoiceCustomerMoveLine, creditMoveLine, amount, false);
+            if (reconcile != null) {
+              reconcileService.confirmReconcile(reconcile, true, true);
+            }
           }
         }
       }
@@ -385,7 +460,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         moveCreateService.createMove(
             journal,
             company,
-            null,
+            invoice.getCurrency(),
             partner,
             invoice.getInvoiceDate(),
             invoice.getInvoiceDate(),
@@ -394,12 +469,28 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            null,
+            invoiceCustomerMoveLine.getDescription(),
             invoice.getCompanyBankDetails());
 
     if (oDmove != null) {
       BigDecimal totalDebitAmount = moveToolService.getTotalDebitAmount(debitMoveLines);
-      BigDecimal amount = totalDebitAmount.min(invoiceCustomerMoveLine.getCredit());
+      BigDecimal invoiceAmount =
+          invoiceCustomerMoveLine.getInvoiceTermList().stream()
+              .filter(
+                  it ->
+                      it.getPfpValidateStatusSelect()
+                          != InvoiceTermRepository.PFP_STATUS_LITIGATION)
+              .map(InvoiceTerm::getCompanyAmount)
+              .reduce(BigDecimal::add)
+              .orElse(invoiceCustomerMoveLine.getCredit());
+
+      BigDecimal amount = totalDebitAmount.min(invoiceAmount);
+
+      BigDecimal moveLineAmount =
+          moveToolService
+              .getTotalCurrencyAmount(debitMoveLines)
+              .min(invoiceCustomerMoveLine.getCurrencyAmount().abs());
+      LocalDate date = invoice.getInvoiceDate();
 
       // debit move line creation
       MoveLine debitMoveLine =
@@ -407,9 +498,13 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               oDmove,
               partner,
               account,
+              moveLineAmount,
               amount,
+              currencyService.computeScaledExchangeRate(amount, moveLineAmount),
               true,
-              appAccountService.getTodayDate(company),
+              date,
+              date,
+              date,
               1,
               origin,
               null);
@@ -425,7 +520,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
           company,
           null,
           account,
-          appAccountService.getTodayDate(company));
+          invoice.getInvoiceDate());
 
       moveValidateService.accounting(oDmove);
 
@@ -437,5 +532,19 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       }
     }
     return oDmove;
+  }
+
+  /**
+   * Check if a move line is a holdback move line. A move line is considered a holdback if all its
+   * invoice terms have isHoldBack = true.
+   *
+   * @param moveLine the move line to check
+   * @return true if the move line is a holdback, false otherwise
+   */
+  protected boolean isHoldbackMoveLine(MoveLine moveLine) {
+    if (moveLine.getInvoiceTermList() == null || moveLine.getInvoiceTermList().isEmpty()) {
+      return false;
+    }
+    return moveLine.getInvoiceTermList().stream().allMatch(InvoiceTerm::getIsHoldBack);
   }
 }

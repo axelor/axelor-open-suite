@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,14 +32,14 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.StringHTMLListBuilder;
-import com.google.inject.Inject;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Service {
@@ -66,7 +66,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
 
   @Override
   public String printPreparatoryProcessDeclaration(AccountingReport accountingReport)
-      throws AxelorException {
+      throws AxelorException, IOException {
 
     processAccountingReportMoveLines(accountingReport);
 
@@ -81,7 +81,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
         accountingReportDas2CheckService.checkMandatoryDataForDas2Export(accountingReport);
 
     if (!CollectionUtils.isEmpty(errorList)) {
-      StringHTMLListBuilder errorMessageBuilder = new StringHTMLListBuilder();
+      StringHtmlListBuilder errorMessageBuilder = new StringHtmlListBuilder();
       errorList.forEach(errorMessageBuilder::append);
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, errorMessageBuilder.toString());
@@ -152,7 +152,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "AND account NOT IN (:supplierAccount, :customerAccount) "
             + "AND journalType = :journalType "
             + "AND company = :company "
-            + "AND currency = :currency "
+            + "AND (:currency is null OR currency = :currency) "
             + "AND move.ignoreInAccountingOk != true "
             + "AND pmvld NOT IN (SELECT pmvld "
             + "FROM AccountingReportMoveLine history "
@@ -289,15 +289,23 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
 
   protected BigDecimal getBalance(String query, boolean isCredit) {
     String sumQuery;
+    String debitCreditConstraint;
+
     if (isCredit) {
       sumQuery = "SUM(self.inTaxProratedAmount)";
+      debitCreditConstraint = "self.moveLine.credit != 0 AND ";
     } else {
       sumQuery = "SUM(self.exTaxProratedAmount) + SUM(self.taxProratedAmount)";
+      debitCreditConstraint = "self.moveLine.debit != 0 AND ";
     }
     Query q =
         JPA.em()
             .createQuery(
-                "select " + sumQuery + " FROM PaymentMoveLineDistribution as self WHERE " + query,
+                "select "
+                    + sumQuery
+                    + " FROM PaymentMoveLineDistribution as self WHERE "
+                    + debitCreditConstraint
+                    + query,
                 BigDecimal.class);
 
     return getNullSafeBalance(q);

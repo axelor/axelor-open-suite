@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,113 +19,48 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.production.db.Machine;
+import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
-import com.axelor.apps.production.db.WorkCenter;
-import com.axelor.apps.production.db.WorkCenterGroup;
-import com.axelor.apps.production.db.repo.ProdProcessLineRepository;
-import com.axelor.apps.production.db.repo.WorkCenterRepository;
-import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-import com.axelor.db.JPA;
-import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.util.Comparator;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProdProcessLineServiceImpl implements ProdProcessLineService {
 
-  protected ProdProcessLineRepository prodProcessLineRepo;
   protected WorkCenterService workCenterService;
+  protected final ProdProcessLineComputationService prodProcessLineComputationService;
 
   @Inject
   public ProdProcessLineServiceImpl(
-      ProdProcessLineRepository prodProcessLineRepo, WorkCenterService workCenterService) {
-    this.prodProcessLineRepo = prodProcessLineRepo;
+      WorkCenterService workCenterService,
+      ProdProcessLineComputationService prodProcessLineComputationService) {
     this.workCenterService = workCenterService;
+    this.prodProcessLineComputationService = prodProcessLineComputationService;
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void setWorkCenterGroup(ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup)
+  public long computeEntireDuration(ProdProcess prodProcess, BigDecimal qty)
       throws AxelorException {
-    prodProcessLine = copyWorkCenterGroup(prodProcessLine, workCenterGroup);
-    WorkCenter workCenter =
-        workCenterService.getMainWorkCenterFromGroup(prodProcessLine.getWorkCenterGroup());
-    prodProcessLine.setWorkCenter(workCenter);
-    prodProcessLine.setDurationPerCycle(workCenterService.getDurationFromWorkCenter(workCenter));
-    prodProcessLine.setMinCapacityPerCycle(
-        workCenterService.getMinCapacityPerCycleFromWorkCenter(workCenter));
-    prodProcessLine.setMaxCapacityPerCycle(
-        workCenterService.getMaxCapacityPerCycleFromWorkCenter(workCenter));
-    prodProcessLine.setTimingOfImplementation(workCenter.getTimingOfImplementation());
-  }
-
-  /**
-   * Create a work center group from a template. Since a template is also a work center group, we
-   * copy and set template field to false.
-   */
-  protected ProdProcessLine copyWorkCenterGroup(
-      ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup) {
-    WorkCenterGroup workCenterGroupCopy = JPA.copy(workCenterGroup, false);
-    workCenterGroupCopy.setWorkCenterGroupModel(workCenterGroup);
-    workCenterGroupCopy.setTemplate(false);
-    workCenterGroup.getWorkCenterSet().forEach((workCenterGroupCopy::addWorkCenterSetItem));
-
-    prodProcessLine.setWorkCenterGroup(workCenterGroupCopy);
-    return prodProcessLineRepo.save(prodProcessLine);
+    long totalDuration = 0;
+    for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
+      totalDuration +=
+          prodProcessLineComputationService.computeEntireCycleDuration(null, prodProcessLine, qty);
+    }
+    return totalDuration;
   }
 
   @Override
-  public long computeEntireCycleDuration(ProdProcessLine prodProcessLine, BigDecimal qty)
-      throws AxelorException {
-    WorkCenter workCenter = prodProcessLine.getWorkCenter();
-
-    long duration = 0;
-    if (prodProcessLine.getWorkCenter() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(ProductionExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
-          prodProcessLine.getProdProcess() != null
-              ? prodProcessLine.getProdProcess().getCode()
-              : "null",
-          prodProcessLine.getName());
+  public Integer getNextPriority(ProdProcess prodProcess, Integer priority) {
+    if (priority == null
+        || prodProcess == null
+        || CollectionUtils.isEmpty(prodProcess.getProdProcessLineList())) {
+      return null;
     }
-
-    BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
-
-    BigDecimal nbCycles;
-    if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
-      nbCycles = qty;
-    } else {
-      nbCycles = qty.divide(maxCapacityPerCycle, 0, RoundingMode.UP);
-    }
-
-    int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
-
-    if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
-        || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
-      Machine machine = workCenter.getMachine();
-      if (machine == null) {
-        throw new AxelorException(
-            workCenter,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(ProductionExceptionMessage.WORKCENTER_NO_MACHINE),
-            workCenter.getName());
-      }
-      duration += machine.getStartingDuration();
-      duration += machine.getEndingDuration();
-      duration +=
-          nbCycles
-              .subtract(new BigDecimal(1))
-              .multiply(new BigDecimal(machine.getSetupDuration()))
-              .longValue();
-    }
-
-    BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
-    duration += nbCycles.multiply(durationPerCycle).longValue();
-
-    return duration;
+    return prodProcess.getProdProcessLineList().stream()
+        .filter(ppl -> ppl.getPriority() > priority)
+        .min(Comparator.comparingInt(ProdProcessLine::getPriority))
+        .map(ProdProcessLine::getPriority)
+        .orElse(null);
   }
 }

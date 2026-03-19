@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
-
-  <selection name="supplychain.batch.action.select">
-    <option value="3">Invoice orders</option>
-    <option value="4">Update stock history</option>
-  </selection>
 
   <selection name="supplychain.batch.invoice.stock.moves.action.select">
     <option value="2">Invoice outgoing stock moves</option>
     <option value="3">Invoice orders</option>
     <option value="4">Update stock history</option>
+    <option value="5">Check stock compliance with stock rules</option>
   </selection>
 
   <selection name="supplychain.mrp.status.select">
-    <option value="0">Draft</option>
-    <option value="1">Calculation started</option>
-    <option value="2">Calculation ended</option>
+    <option value="0" color="blue">Draft</option>
+    <option value="1" color="orange">Calculation started</option>
+    <option value="2" color="green">Calculation ended</option>
   </selection>
 
   <selection name="supplychain.mrp.line.element.select">
@@ -102,14 +98,15 @@
   </selection>
 
   <selection name="supplychain.mrp.forecast.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Confirmed</option>
-    <option value="3">Cancelled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Confirmed</option>
+    <option value="3" color="red">Cancelled</option>
   </selection>
 
   <selection name="sequence.generic.code.select"
     id="supplychain.sequence.generic.code.select">
     <option value="mrp">MRP</option>
+    <option value="packaging">Packaging</option>
   </selection>
 
   <selection name="supplychain.estimated.date.select">
@@ -151,12 +148,6 @@
     <option value="2">Created from SOP</option>
   </selection>
 
-  <selection name="base.base.partner.supply.chain.link.type.select">
-    <option value="Invoiced by">Invoiced by</option>
-    <option value="Delivered by">Delivered by</option>
-    <option value="Ordered by">Ordered by</option>
-  </selection>
-
   <selection name="supplychain.sale.order.reservation.date.field">
     <option value="0">Confirmation date</option>
     <option value="1">Estimated shipping date</option>
@@ -181,6 +172,57 @@
 
   <selection name="batch.batch.type.select" id="supplychain.batch.batch.type.select">
     <option value="900">Supplychain batch</option>
+  </selection>
+
+  <selection name="supplychain.sale.order.invoicing.state.select">
+    <option value="1">Not invoiced</option>
+    <option value="2">Partially invoiced</option>
+    <option value="3">Invoiced</option>
+  </selection>
+
+  <selection name="base.partner.link.type.type.select"
+    id="supplychain.partner.link.type.type.select">
+    <option value="Invoiced to">Invoiced to</option>
+    <option value="Ordered by">Ordered by</option>
+    <option value="Delivered to">Delivered to</option>
+  </selection>
+
+  <selection name="stock.tracking.number.origin.move.type.select"
+    id="supplychain.stock.tracking.number.origin.move.type.select">
+    <option value="3">Sale</option>
+    <option value="4">Purchase</option>
+  </selection>
+
+  <selection name="sale.order.delivery.state">
+    <option value="1">Not delivered</option>
+    <option value="2">Partially delivered</option>
+    <option value="3">Delivered</option>
+  </selection>
+
+  <selection name="sale.batch.action.select" id="supplychain.sale.batch.action.select">
+    <option value="1">Invoicing</option>
+  </selection>
+
+  <selection name="cart.line.available.status.select">
+    <option value="1">Available</option>
+    <option value="2">Missing</option>
+  </selection>
+
+  <selection name="base.product.packaging.group.select">
+    <option value="1">I</option>
+    <option value="2">II</option>
+    <option value="3">III</option>
+  </selection>
+
+  <selection name="base.pricing.type.select" id="supplychain.base.pricing.type.select">
+    <option value="FreightCarrierPricing">Freight Carrier Pricing</option>
+    <option value="FreightCarrierDelay">Freight Carrier Delay</option>
+  </selection>
+
+
+  <selection id="supplychain.call.tender.need.type.select"
+    name="purchase.call.tender.need.type.select">
+    <option value="2">MRP</option>
   </selection>
 
 </object-views>

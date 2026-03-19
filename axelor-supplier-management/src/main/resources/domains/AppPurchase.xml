@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
   <entity name="AppPurchase" cacheable="true">
-    <boolean name="supplierRequestMgt" title="Manage supplier consultations"/>
+    <boolean name="supplierRequestMgt" title="Manage supplier consultations"
+      help="This option enables the management of supplier consultation requests, allowing you to send quotation requests to multiple suppliers for the same product."/>
 
     <track>
       <field name="supplierRequestMgt" on="UPDATE"/>

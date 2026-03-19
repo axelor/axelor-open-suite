@@ -1,4 +1,4 @@
-"importId";"leaveReasonName";"employee.importId";"quantity";"daysToValidate";"daysValidated";"totalQuantity"
+"importId";"leaveReasonName";"employee_importId";"quantity";"daysToValidate";"daysValidated";"totalQuantity"
 1;"Congé payé légal et ancienneté";1;12;0;0;12
 2;"Congé payé légal et ancienneté";2;52;0;0;52
 3;"Congé payé légal et ancienneté";3;45;0;0;45
@@ -35,3 +35,4 @@
 34;"Congé sans solde";16;0;0;0;0
 35;"Congé sans solde";17;0;0;0;0
 36;"Congé sans solde";18;0;0;0;0
+37;"Congé payé légal et ancienneté";19;5;0;0;5

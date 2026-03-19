@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,18 +19,21 @@
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
+import com.axelor.apps.account.service.invoice.InvoiceJournalService;
+import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
 import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 
 @RequestScoped
 public class VentilateAdvancePaymentState extends VentilateState {
@@ -46,7 +49,10 @@ public class VentilateAdvancePaymentState extends VentilateState {
       UserService userService,
       FixedAssetGenerationService fixedAssetGenerationService,
       InvoiceTermService invoiceTermService,
-      AccountingSituationService accountingSituationService) {
+      AccountingSituationService accountingSituationService,
+      InvoiceJournalService invoiceJournalService,
+      InvoicePfpValidateService invoicePfpValidateService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService) {
     super(
         sequenceService,
         moveCreateFromInvoiceService,
@@ -57,7 +63,10 @@ public class VentilateAdvancePaymentState extends VentilateState {
         userService,
         fixedAssetGenerationService,
         invoiceTermService,
-        accountingSituationService);
+        accountingSituationService,
+        invoiceJournalService,
+        invoicePfpValidateService,
+        invoiceTermPfpToolService);
   }
 
   @Override

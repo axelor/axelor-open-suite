@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -14,6 +14,8 @@
 
     <integer name="deliveryState" title="Delivery State"
       selection="sale.order.delivery.state" readonly="true" default="1"/>
+    <integer name="invoicingState" title="Invoicing State"
+      selection="supplychain.sale.order.invoicing.state.select" readonly="true" default="1"/>
 
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Stock location"/>
@@ -21,13 +23,10 @@
     <many-to-one name="toStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="To stock location"/>
     <date name="shipmentDate" title="Date of shipment"/>
-    <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
+    <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"
+      precision="20" scale="3"/>
     <integer name="saleOrderTypeSelect" title="Type" required="true" default="1"
       selection="supplychain.sale.order.type.select"/>
-    <!-- Onglet échéancier -->
-    <one-to-many name="saleOrderScheduleLineList"
-      ref="com.axelor.apps.sale.db.SaleOrderScheduleLine" mappedBy="saleOrder"
-      title="Schedule line list"/>
     <one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable"
       title="Timetable" mappedBy="saleOrder" copy="false"/>
     <boolean name="interco" title="Interco"/>
@@ -59,6 +58,13 @@
       ref="com.axelor.apps.base.db.Partner"/>
     <many-to-one name="deliveredPartner" title="Delivery partner"
       ref="com.axelor.apps.base.db.Partner"/>
+
+    <decimal name="shippingCost" title="Shipping cost" precision="20" scale="3"
+      help="The shipping cost is accounted for in the sale order's total cost and affects the margin."/>
+
+    <one-to-many name="estimatedPackagingList" title="Estimated packagings"
+      ref="com.axelor.apps.supplychain.db.Packaging" mappedBy="saleOrder"/>
+
     <extra-code>
             <![CDATA[
                 // INVOICE
@@ -75,6 +81,11 @@
                 public static final int DELIVERY_STATE_NOT_DELIVERED = 1;
    				public static final int DELIVERY_STATE_PARTIALLY_DELIVERED = 2;
    				public static final int DELIVERY_STATE_DELIVERED = 3;
+
+   				// INVOICING STATE SELECT
+                public static final int INVOICING_STATE_NOT_INVOICED = 1;
+   				public static final int INVOICING_STATE_PARTIALLY_INVOICED = 2;
+   				public static final int INVOICING_STATE_INVOICED = 3;
             ]]>
     </extra-code>
 

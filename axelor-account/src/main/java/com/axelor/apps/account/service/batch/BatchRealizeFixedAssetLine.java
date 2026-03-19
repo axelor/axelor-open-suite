@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,19 +25,18 @@ import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.FindFixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,14 +45,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-public class BatchRealizeFixedAssetLine extends AbstractBatch {
+public class BatchRealizeFixedAssetLine extends BatchStrategy {
 
   protected FixedAssetLineMoveService fixedAssetLineMoveService;
   protected AppBaseService appBaseService;
-  protected FixedAssetLineService fixedAssetLineService;
   protected FixedAssetLineRepository fixedAssetLineRepo;
   protected FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepo;
   protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
+  protected FindFixedAssetService findFixedAssetService;
   protected static final int DEROGATORY_TYPE_SELECT = 99;
 
   protected final Set<FixedAsset> fixedAssetSet = new HashSet<>();
@@ -63,16 +62,16 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
   public BatchRealizeFixedAssetLine(
       FixedAssetLineMoveService fixedAssetLineMoveService,
       AppBaseService appBaseService,
-      FixedAssetLineService fixedAssetLineService,
       FixedAssetLineRepository fixedAssetLineRepo,
       FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepo,
-      FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService) {
+      FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService,
+      FindFixedAssetService findFixedAssetService) {
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.appBaseService = appBaseService;
-    this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetLineRepo = fixedAssetLineRepo;
     this.fixedAssetDerogatoryLineRepo = fixedAssetDerogatoryLineRepo;
     this.fixedAssetDerogatoryLineMoveService = fixedAssetDerogatoryLineMoveService;
+    this.findFixedAssetService = findFixedAssetService;
   }
 
   @Override
@@ -83,7 +82,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
     if (!batch.getAccountingBatch().getUpdateAllRealizedFixedAssetLines()
         && startDate != null
         && endDate != null
-        && startDate.isBefore(endDate)) {
+        && startDate.compareTo(endDate) <= 0) {
       query += " AND self.depreciationDate <= :endDate AND self.depreciationDate >= :startDate";
     } else {
       query += " AND self.depreciationDate < :dateNow";
@@ -119,7 +118,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
     for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {
       try {
         fixedAssetLine = fixedAssetLineRepo.find(fixedAssetLine.getId());
-        FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+        FixedAsset fixedAsset = findFixedAssetService.getFixedAsset(fixedAssetLine);
         if (fixedAsset != null
             && fixedAsset.getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
           fixedAssetSet.add(fixedAsset);
@@ -190,8 +189,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
     appendTypeComments(sbComment);
 
     sbComment.append(
-        String.format(
-            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly()));
+        String.format("\t" + I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly()));
 
     addComment(sbComment.toString());
     super.stop();

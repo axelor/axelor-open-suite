@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,9 +30,10 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.InvoiceVisibilityService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
@@ -40,18 +41,18 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.shiro.util.CollectionUtils;
@@ -61,32 +62,38 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoicePaymentToolService invoicePaymentToolService;
-  protected CurrencyService currencyService;
+  protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
   protected AppBaseService appBaseService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceService invoiceService;
-  protected InvoiceVisibilityService invoiceVisibilityService;
+  protected PfpService pfpService;
+  protected ReconcileRepository reconcileRepository;
+  protected InvoiceRepository invoiceRepository;
 
   @Inject
   public InvoicePaymentCreateServiceImpl(
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentToolService invoicePaymentToolService,
-      CurrencyService currencyService,
+      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
       AppBaseService appBaseService,
       InvoiceTermPaymentService invoiceTermPaymentService,
       InvoiceTermService invoiceTermService,
       InvoiceService invoiceService,
-      InvoiceVisibilityService invoiceVisibilityService) {
+      PfpService pfpService,
+      ReconcileRepository reconcileRepository,
+      InvoiceRepository invoiceRepository) {
 
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentToolService = invoicePaymentToolService;
-    this.currencyService = currencyService;
+    this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
     this.appBaseService = appBaseService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoiceTermService = invoiceTermService;
     this.invoiceService = invoiceService;
-    this.invoiceVisibilityService = invoiceVisibilityService;
+    this.pfpService = pfpService;
+    this.reconcileRepository = reconcileRepository;
+    this.invoiceRepository = invoiceRepository;
   }
 
   /**
@@ -105,7 +112,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       Currency currency,
       PaymentMode paymentMode,
       int typeSelect) {
-
     return new InvoicePayment(
         amount,
         paymentDate,
@@ -159,6 +165,14 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       BankDetails companyBankDetails = invoice.getPaymentSchedule().getCompanyBankDetails();
       invoicePayment.setCompanyBankDetails(companyBankDetails);
     }
+
+    if (paymentVoucher != null
+        && paymentMode != null
+        && paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_CHEQUE) {
+      invoicePayment.setChequeNumber(paymentVoucher.getChequeNumber());
+      invoicePayment.setDescription(paymentVoucher.getRef());
+    }
+
     computeAdvancePaymentImputation(invoicePayment, paymentMove, invoice.getOperationTypeSelect());
     invoice.addInvoicePaymentListItem(invoicePayment);
     invoicePaymentToolService.updateAmountPaid(invoice);
@@ -192,35 +206,23 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       InvoicePayment invoicePayment, Move paymentMove, int operationTypeSelect) {
 
     // check if the payment is an advance payment imputation
-    Invoice advanceInvoice =
+    List<Invoice> advanceInvoiceList =
         findAvancePaymentInvoiceFromPaymentInvoice(paymentMove, operationTypeSelect);
-    if (advanceInvoice != null) {
+    if (ObjectUtils.isEmpty(advanceInvoiceList)) {
+      return;
+    }
+    for (Invoice advanceInvoice : advanceInvoiceList) {
       List<InvoicePayment> invoicePaymentList = advanceInvoice.getInvoicePaymentList();
       if (invoicePaymentList != null && !invoicePaymentList.isEmpty()) {
         // set right type
         invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADV_PAYMENT_IMPUTATION);
 
         // create link between advance payment and its imputation
-        InvoicePayment advancePayment = advanceInvoice.getInvoicePaymentList().get(0);
-        advancePayment.setImputedBy(invoicePayment);
-        invoicePaymentRepository.save(advancePayment);
-
-        // set the imputed payment currency
-        invoicePayment.setCurrency(advancePayment.getCurrency());
-
-        BigDecimal currentImputedAmount = invoicePayment.getAmount();
-
-        // we force the payment amount to be equal to the advance
-        // invoice amount, so we get the right amount in the
-        // right currency.
-        BigDecimal totalAmountInAdvanceInvoice = advancePayment.getInvoice().getCompanyInTaxTotal();
-
-        BigDecimal convertedImputedAmount =
-            currentImputedAmount
-                .multiply(advancePayment.getAmount())
-                .divide(totalAmountInAdvanceInvoice, 2, RoundingMode.HALF_UP);
-
-        invoicePayment.setAmount(convertedImputedAmount);
+        List<InvoicePayment> advancePaymentList = advanceInvoice.getInvoicePaymentList();
+        for (InvoicePayment advancePayment : advancePaymentList) {
+          advancePayment.setImputedBy(invoicePayment);
+          invoicePaymentRepository.save(advancePayment);
+        }
       }
     }
   }
@@ -233,7 +235,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
    * @return the found advance invoice if the move is from a payment that comes from this invoice.
    *     null in other cases
    */
-  protected Invoice findAvancePaymentInvoiceFromPaymentInvoice(Move move, int operationTypeSelect) {
+  protected List<Invoice> findAvancePaymentInvoiceFromPaymentInvoice(
+      Move move, int operationTypeSelect) {
     List<MoveLine> moveLineList = move.getMoveLineList();
     if (moveLineList == null || moveLineList.size() < 2) {
       return null;
@@ -242,76 +245,80 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       // search for the reconcile between the debit line
       if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
           || moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-        Invoice invoice =
+        List<Invoice> invoiceList =
             findAdvancePaymentInvoiceFromPaymentMoveLine(moveLine, operationTypeSelect);
-        if (invoice == null) {
+        if (ObjectUtils.isEmpty(invoiceList)) {
           continue;
         } else {
-          return invoice;
+          return invoiceList;
         }
       }
     }
     return null;
   }
 
-  protected Invoice findAdvancePaymentInvoiceFromPaymentMoveLine(
+  protected List<Invoice> findAdvancePaymentInvoiceFromPaymentMoveLine(
       MoveLine moveLine, int operationTypeSelect) {
-    Reconcile reconcile =
+    List<Reconcile> reconcileList =
         findReconcileFromMoveLine(
             moveLine, operationTypeSelect != InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
-    if (reconcile == null) {
+    if (ObjectUtils.isEmpty(reconcileList)) {
       return null;
     }
-    // in the reconcile, search for the credit line to get the
-    // associated payment
-    MoveLine candidateMoveLine;
-    if (operationTypeSelect == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
-      candidateMoveLine = reconcile.getDebitMoveLine();
-    } else {
-      candidateMoveLine = reconcile.getCreditMoveLine();
-    }
+    List<Invoice> advancePaymentInvoiceList = new ArrayList<>();
+    for (Reconcile reconcile : reconcileList) {
 
-    if (candidateMoveLine == null || candidateMoveLine.getMove() == null) {
-      return null;
+      // in the reconcile, search for the credit line to get the
+      // associated payment
+      MoveLine candidateMoveLine;
+      if (operationTypeSelect == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+        candidateMoveLine = reconcile.getDebitMoveLine();
+      } else {
+        candidateMoveLine = reconcile.getCreditMoveLine();
+      }
+
+      if (candidateMoveLine == null || candidateMoveLine.getMove() == null) {
+        return null;
+      }
+      Move candidatePaymentMove = candidateMoveLine.getMove();
+      InvoicePayment invoicePayment =
+          invoicePaymentRepository
+              .all()
+              .filter("self.move = :_move")
+              .bind("_move", candidatePaymentMove)
+              .fetchOne();
+      // if the invoice linked to the payment is an advance
+      // payment, then return true.
+      if (invoicePayment != null
+          && invoicePayment.getInvoice() != null
+          && invoicePayment.getInvoice().getOperationSubTypeSelect()
+              == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+        advancePaymentInvoiceList.add(invoicePayment.getInvoice());
+      }
     }
-    Move candidatePaymentMove = candidateMoveLine.getMove();
-    InvoicePayment invoicePayment =
-        invoicePaymentRepository
-            .all()
-            .filter("self.move = :_move")
-            .bind("_move", candidatePaymentMove)
-            .fetchOne();
-    // if the invoice linked to the payment is an advance
-    // payment, then return true.
-    if (invoicePayment != null
-        && invoicePayment.getInvoice() != null
-        && invoicePayment.getInvoice().getOperationSubTypeSelect()
-            == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-      return invoicePayment.getInvoice();
-    }
-    return null;
+    return advancePaymentInvoiceList;
   }
 
-  protected Reconcile findReconcileFromMoveLine(MoveLine moveLine, boolean fromDebitMoveLine) {
+  protected List<Reconcile> findReconcileFromMoveLine(
+      MoveLine moveLine, boolean fromDebitMoveLine) {
     StringBuilder filterString = new StringBuilder();
     if (fromDebitMoveLine) {
       filterString.append("self.debitMoveLine = ?");
     } else {
       filterString.append("self.creditMoveLine = ?");
     }
-    Reconcile reconcile =
-        Beans.get(ReconcileRepository.class)
-            .all()
-            .filter(filterString.toString(), moveLine)
-            .fetchOne();
-    return reconcile;
+    return reconcileRepository.all().filter(filterString.toString(), moveLine).fetch();
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
+  public InvoicePayment createAndAddInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
       throws AxelorException {
-    return this.createInvoicePayment(invoice, companyBankDetails, null);
+    InvoicePayment invoicePayment = this.createInvoicePayment(invoice, companyBankDetails, null);
+
+    invoice.addInvoicePaymentListItem(invoicePayment);
+
+    return invoicePayment;
   }
 
   @Override
@@ -327,10 +334,16 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             invoice.getCurrency(),
             invoice.getPaymentMode(),
             InvoicePaymentRepository.TYPE_PAYMENT);
+    invoice.addInvoicePaymentListItem(invoicePayment);
     invoicePayment.setCompanyBankDetails(companyBankDetails);
     invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment, null);
-    invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
-    return invoicePaymentRepository.save(invoicePayment);
+    invoicePayment = invoicePaymentRepository.save(invoicePayment);
+
+    if (invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_PENDING) {
+      invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
+    }
+
+    return invoicePayment;
   }
 
   @Transactional
@@ -341,7 +354,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       LocalDate paymentDate,
       LocalDate bankDepositDate,
       String chequeNumber,
-      PaymentSession paymentSession) {
+      PaymentSession paymentSession)
+      throws AxelorException {
     if (CollectionUtils.isEmpty(invoiceTermList)) {
       return null;
     }
@@ -370,8 +384,9 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     invoicePayment.setManualChange(true);
     invoice.addInvoicePaymentListItem(invoicePayment);
 
-    invoiceTermPaymentService.initInvoiceTermPayments(invoicePayment, invoiceTermList);
-    invoicePaymentToolService.computeFinancialDiscount(invoicePayment);
+    invoiceTermPaymentService.initInvoiceTermPayments(
+        invoicePayment, invoiceTermList, invoicePayment.getPaymentDate());
+    invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
 
     invoicePayment.setAmount(
         invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));
@@ -386,26 +401,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       PaymentMode paymentMode,
       BankDetails companyBankDetails,
       LocalDate paymentDate,
-      LocalDate bankDepositDate,
-      String chequeNumber) {
-    return this.createInvoicePayment(
-        Collections.singletonList(invoiceTerm),
-        paymentMode,
-        companyBankDetails,
-        paymentDate,
-        bankDepositDate,
-        chequeNumber,
-        null);
-  }
-
-  @Override
-  public InvoicePayment createInvoicePayment(
-      Invoice invoice,
-      InvoiceTerm invoiceTerm,
-      PaymentMode paymentMode,
-      BankDetails companyBankDetails,
-      LocalDate paymentDate,
-      PaymentSession paymentSession) {
+      PaymentSession paymentSession)
+      throws AxelorException {
     return this.createInvoicePayment(
         Collections.singletonList(invoiceTerm),
         paymentMode,
@@ -426,7 +423,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       LocalDate bankDepositDate,
       String chequeNumber)
       throws AxelorException {
-    InvoiceRepository invoiceRepository = Beans.get(InvoiceRepository.class);
     List<InvoicePayment> invoicePaymentList = new ArrayList<>();
 
     for (Long invoiceId : invoiceList) {
@@ -465,7 +461,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       LocalDate paymentDate,
       LocalDate bankDepositDate,
       String chequeNumber,
-      boolean holdback) {
+      boolean holdback)
+      throws AxelorException {
     List<InvoiceTerm> invoiceTermList =
         invoice.getInvoiceTermList().stream()
             .filter(
@@ -501,7 +498,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     List<Long> invoiceToPay = new ArrayList<>();
 
     for (Long invoiceId : invoiceIdList) {
-      Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
+      Invoice invoice = invoiceRepository.find(invoiceId);
 
       if ((invoice.getStatusSelect() != InvoiceRepository.STATUS_VENTILATED
               && invoice.getOperationSubTypeSelect()
@@ -538,7 +535,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
       }
 
-      if (invoiceVisibilityService.getPfpCondition(invoice)
+      if (pfpService.getPfpCondition(invoice)
           && invoice.getPfpValidateStatusSelect() != InvoiceRepository.PFP_STATUS_VALIDATED) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -549,5 +546,33 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     }
 
     return invoiceToPay;
+  }
+
+  @Override
+  public InvoiceTerm updateInvoiceTermsAmounts(
+      InvoiceTerm invoiceTerm,
+      BigDecimal amount,
+      Reconcile reconcile,
+      Move move,
+      PaymentSession paymentSession,
+      boolean isRefund)
+      throws AxelorException {
+
+    if (invoiceTerm.getInvoice() != null) {
+      InvoicePayment invoicePayment =
+          this.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
+      invoicePayment.setReconcile(reconcile);
+
+      List<InvoiceTerm> invoiceTermList = Arrays.asList(invoiceTerm);
+
+      invoiceTermService.updateInvoiceTerms(
+          invoiceTermList, invoicePayment, amount, reconcile, new HashMap<>());
+    } else {
+      invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
+    }
+
+    invoiceTerm = invoiceTermService.updateInvoiceTermsAmountsSessionPart(invoiceTerm, isRefund);
+
+    return invoiceTerm;
   }
 }

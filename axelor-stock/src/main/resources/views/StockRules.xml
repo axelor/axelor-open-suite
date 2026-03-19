@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="stock-rules-grid" title="Stock rules" model="com.axelor.apps.stock.db.StockRules"
     orderBy="stockLocation.name,product.code,useCaseSelect">
@@ -15,32 +15,43 @@
       grid-view="product-grid"/>
     <field name="product.name" title="Product name" form-view="product-form"
       grid-view="product-grid"/>
-    <field name="minQty" aggregate="min" x-scale="2"/>
-    <field name="idealQty" aggregate="min" x-scale="2"/>
-    <field name="maxQty" aggregate="min" x-scale="2"/>
-    <field name="reOrderQty" aggregate="sum" x-scale="2"/>
+    <field name="minQty" aggregate="min" x-scale="$nbDecimalDigitForQty"/>
+    <field name="idealQty" aggregate="min" x-scale="$nbDecimalDigitForQty"/>
+    <field name="maxQty" aggregate="min" x-scale="$nbDecimalDigitForQty"/>
+    <field name="reOrderQty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="comments"/>
     <field name="useCaseSelect"/>
     <field name="typeSelect"/>
     <field name="orderAlertSelect"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <grid name="stock-rule-product-grid" title="Stock rules"
     model="com.axelor.apps.stock.db.StockRules" orderBy="stockLocation.name,useCaseSelect">
     <field name="stockLocation" form-view="stock-location-form"
       grid-view="stock-location-grid"/>
-    <field name="minQty" aggregate="min" x-scale="2"/>
-    <field name="idealQty" aggregate="min" x-scale="2"/>
-    <field name="maxQty" x-scale="2"/>
-    <field name="reOrderQty" aggregate="sum" x-scale="2"/>
+    <field name="minQty" aggregate="min" x-scale="$nbDecimalDigitForQty"/>
+    <field name="idealQty" aggregate="min" x-scale="$nbDecimalDigitForQty"/>
+    <field name="maxQty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="reOrderQty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="useCaseSelect"/>
     <field name="orderAlertSelect"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <form name="stock-rules-form" title="Stock rules" model="com.axelor.apps.stock.db.StockRules"
     onNew="action-stock-rules-record-new,action-stock-rules-attrs-scale-and-precision"
     onLoad="action-stock-rules-attrs-scale-and-precision" width="large">
     <panel name="mainPanel">
+
+      <field name="$msg" showTitle="false" colSpan="12" readonly="true">
+        <viewer depends="useCaseSelect">
+          <![CDATA[
+            <span class="label label-info" ng-show="useCaseSelect == 2" x-translate>Control stock rules are activated by supply chain batch.</span>
+          ]]>
+        </viewer>
+      </field>
+
       <field name="stockLocation" form-view="stock-location-form"
         grid-view="stock-location-grid" canEdit="false" colSpan="3"/>
       <field name="product" canEdit="false"

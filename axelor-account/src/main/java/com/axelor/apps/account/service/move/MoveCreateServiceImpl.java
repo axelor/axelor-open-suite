@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,9 +23,11 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.PaymentConditionService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -34,15 +36,16 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.i18n.I18n;
 import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.exception.ToolExceptionMessage;
-import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -59,19 +62,21 @@ public class MoveCreateServiceImpl implements MoveCreateService {
   protected CompanyConfigService companyConfigService;
 
   protected AppAccountService appAccountService;
+  protected PaymentConditionService paymentConditionService;
 
   @Inject
   public MoveCreateServiceImpl(
       AppAccountService appAccountService,
       PeriodService periodService,
       MoveRepository moveRepository,
-      CompanyConfigService companyConfigService) {
+      CompanyConfigService companyConfigService,
+      PaymentConditionService paymentConditionService) {
 
     this.periodService = periodService;
     this.moveRepository = moveRepository;
     this.companyConfigService = companyConfigService;
-
     this.appAccountService = appAccountService;
+    this.paymentConditionService = paymentConditionService;
   }
 
   /**
@@ -220,6 +225,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
    * @throws AxelorException
    */
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public Move createMove(
       Journal journal,
       Company company,
@@ -257,7 +263,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       if (move.getPeriod() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(ToolExceptionMessage.PERIOD_1),
+            I18n.get(BaseExceptionMessage.PERIOD_4),
             company.getName(),
             L10n.getInstance().format(date));
       }
@@ -267,6 +273,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
 
     move.setDate(date);
     move.setOriginDate(originDate);
+
     move.setMoveLineList(new ArrayList<MoveLine>());
 
     Currency companyCurrency = companyConfigService.getCompanyCurrency(company);
@@ -284,8 +291,12 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       move.setCurrencyCode(currency.getCodeISO());
     }
 
-    if (partner != null && partner.getPaymentCondition() != null) {
-      move.setPaymentCondition(partner.getPaymentCondition());
+    if (partner != null) {
+      PaymentCondition paymentCondition = partner.getPaymentCondition();
+      if (paymentCondition != null) {
+        paymentConditionService.checkPaymentCondition(paymentCondition);
+        move.setPaymentCondition(paymentCondition);
+      }
     }
 
     move.setOrigin(origin);
@@ -347,6 +358,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             description,
             companyBankDetails);
     move.setPaymentVoucher(paymentVoucher);
+    move.setPaymentCondition(null);
     return move;
   }
 

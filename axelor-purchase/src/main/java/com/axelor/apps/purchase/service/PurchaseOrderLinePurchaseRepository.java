@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,31 +18,32 @@
  */
 package com.axelor.apps.purchase.service;
 
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.inject.Beans;
 import java.util.Map;
 
 public class PurchaseOrderLinePurchaseRepository extends PurchaseOrderLineRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    if (context.get("_model") != null
-        && context.get("_model").toString().contains("PurchaseOrder")
-        && context.get("id") != null) {
-      Long id = (Long) json.get("id");
-      if (id != null) {
-        PurchaseOrderLine purchaseOrderLine = find(id);
-        PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
-        Product product = purchaseOrderLine.getProduct();
+    json.put(
+        "$nbDecimalDigitForUnitPrice",
+        Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
+    json.put("$nbDecimalDigitForQty", Beans.get(AppBaseService.class).getNbDecimalDigitForQty());
+
+    Long id = (Long) json.get("id");
+    if (id != null) {
+      PurchaseOrderLine purchaseOrderLine = find(id);
+      try {
         json.put(
             "$hasWarning",
-            purchaseOrder != null
-                && product != null
-                && product.getDefaultSupplierPartner() != null
-                && purchaseOrder.getSupplierPartner() != null
-                && product.getDefaultSupplierPartner() != purchaseOrder.getSupplierPartner());
+            Beans.get(PurchaseOrderLineWarningService.class).checkLineIssue(purchaseOrderLine));
+      } catch (AxelorException e) {
+        TraceBackService.trace(e);
       }
     }
     return super.populate(json, context);

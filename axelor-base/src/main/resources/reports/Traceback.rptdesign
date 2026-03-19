@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -46,23 +46,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <parameters>
-        <scalar-parameter name="Locale" id="3740">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">false</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="concealValue">false</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
         <scalar-parameter name="DBName" id="3946">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
@@ -241,7 +224,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -287,7 +270,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
 				LangTranslate.message_value
 			END) as "translation"
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TracebackDS" id="4546">
             <property name="nullsOrdering">nulls lowest</property>
@@ -391,11 +374,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">logoPosition</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">logo_path</property>
-                    <property name="alias">logo_path</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <text-property name="heading">logo_path</text-property>
+                    <property name="columnName">logo_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <text-property name="heading">logo_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_height</property>
@@ -505,8 +487,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">15</property>
-                        <property name="name">logo_path</property>
-                        <property name="dataType">string</property>
+                        <property name="name">logo_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">16</property>
@@ -613,9 +595,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">15</property>
-                    <property name="name">logo_path</property>
-                    <property name="nativeName">logo_path</property>
-                    <property name="dataType">string</property>
+                    <property name="name">logo_id</property>
+                    <property name="nativeName">logo_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
@@ -650,7 +633,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 		PrintingSettings.pdf_header as "header", 
 		PrintingSettings.pdf_footer as "footer",
 		PrintingSettings.logo_position_select as "logoPosition",
-		MetaFile.file_path as logo_path,
+		MetaFile.id as logo_id,
 		Company.height as "logo_height",
 		Company.width as "logo_width",
 		Meta.select_title
@@ -804,8 +787,7 @@ where TraceBack.id = ?
         </simple-master-page>
     </page-setup>
     <body>
-        <text id="4412">
-            <property name="fontSize">8pt</property>
+        <grid id="6075">
             <property name="dataSet">TracebackDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -827,12 +809,6 @@ where TraceBack.id = ?
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">logo_height</property>
                     <text-property name="displayName">logo_height</text-property>
                     <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'60px'}</expression>
@@ -846,25 +822,106 @@ where TraceBack.id = ?
                     <property name="dataType">integer</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">logo_id</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
             </list-property>
-            <property name="contentType">html</property>
-            <text-property name="content"><![CDATA[<TABLE >
-	<TR>
-		<VALUE-OF format="HTML">if(row["logoPosition"] == 3) {
-		"<TD>"+(row["header"] ? row["header"] : "")+"</TD><TD/><TD align='right' valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='"+row["logo_width"]+"' height='"+row["logo_height"]+"'/></td>"
-		} else if(row["logoPosition"] == 1) {
-		"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='"+row["logo_width"]+"' height='"+row["logo_height"]+"'/></TD><TD/><TD>"+(row["header"] ? row["header"] : "")+"</TD>"
-		} else if(row["logoPosition"] == 2) {
-			"<TD/><TD align='center' valign='middle'><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='"+row["logo_width"]+"' height='"+row["logo_height"]+"'/></TD><TD>"+(row["header"] ? row["header"] : "")+"</TD>"
-		}else if(row["logoPosition"] == null) {
-			"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='"+row["logo_width"]+"' height='"+row["logo_height"]+"'/>"
-		}else {
-		"<TD/><TD/><TD>"+(row["header"] ? row["header"] : "")+"</TD>"
-		}
- 		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-        </text>
+            <column id="6076"/>
+            <column id="6077"/>
+            <column id="6078"/>
+            <row id="6079">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["logoPosition"] == 3</expression>
+                    </structure>
+                </list-property>
+                <cell id="6080">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <method name="onRender"><![CDATA[var logoPosition = row["logoPosition"];
+
+if (logoPosition == 2) {
+   this.getStyle().setTextAlign('right')
+   this.getStyle().setPaddingRight('15%');
+}]]></method>
+                    <property name="textAlign">left</property>
+                    <property name="verticalAlign">middle</property>
+                    <image id="6070">
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["logoPosition"] == 0</expression>
+                            </structure>
+                        </list-property>
+                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                        <method name="onRender"><![CDATA[if(row["logo_width"] &amp;&amp; row["logo_height"]){
+    this.width=row["logo_width"]+'px';
+    this.height=row["logo_height"]+'px';
+}]]></method>
+                        <property name="source">expr</property>
+                    </image>
+                </cell>
+                <cell id="6082">
+                    <text id="6072">
+                        <property name="fontSize">8pt</property>
+                        <property name="textAlign">right</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["logoPosition"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <method name="onRender"><![CDATA[this.getStyle().setTextAlign('left')]]></method>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["header"] ? row["header"] : ""</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="6083">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["logoPosition"] != 3</expression>
+                    </structure>
+                </list-property>
+                <cell id="6084">
+                    <text id="6073">
+                        <property name="fontSize">8pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["header"] ? row["header"] : ""</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="6085">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="textAlign">right</property>
+                    <property name="verticalAlign">middle</property>
+                    <image id="6071">
+                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                        <method name="onRender"><![CDATA[if(row["logo_width"] &amp;&amp; row["logo_height"]){
+    this.width=row["logo_width"]+'px';
+    this.height=row["logo_height"]+'px';
+}]]></method>
+                        <property name="source">expr</property>
+                    </image>
+                </cell>
+            </row>
+        </grid>
         <grid id="4520">
             <column id="4521"/>
             <row id="4522">
@@ -1368,7 +1425,7 @@ where TraceBack.id = ?
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'Reference Id'</value>
+                                        <value type="javascript">'Reference ID'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>

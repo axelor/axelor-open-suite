@@ -1,0 +1,3 @@
+"importId";"name";"models";"research1_importId";"research1Value";"dateResearch1_importId";"dateResearch1Value"
+"1";"Find APOLLO !";"com.axelor.apps.base.db.Partner";"1";"APOLLO";;
+"2";"What happened last month ?";"com.axelor.apps.crm.db.Opportunity";"2";"O";"3";"TODAY[-1M]"

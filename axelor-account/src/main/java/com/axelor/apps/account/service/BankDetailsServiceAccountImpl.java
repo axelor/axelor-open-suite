@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,7 +22,9 @@ import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.BankDetailsServiceAccount;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -30,11 +32,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.inject.Beans;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
+public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl
+    implements BankDetailsServiceAccount {
 
   /**
    * In this implementation, we use the O2M in payment mode.
@@ -80,7 +83,7 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
         return "self.id IN (0)";
       } else {
         return "self.id IN ("
-            + StringTool.getIdListString(authorizedBankDetails)
+            + StringHelper.getIdListString(authorizedBankDetails)
             + ") AND self.active = true";
       }
     }
@@ -162,5 +165,17 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
       candidateBankDetails = accountingSituation.getCompanyOutBankDetails();
     }
     return candidateBankDetails;
+  }
+
+  @Override
+  public BankDetails getDefaultBankDetails(
+      Partner partner, Company company, PaymentMode paymentMode) {
+    if (partner != null) {
+      return partner.getBankDetailsList().stream()
+          .filter(bankDetails -> bankDetails.getIsDefault() && bankDetails.getActive())
+          .findFirst()
+          .orElse(null);
+    }
+    return null;
   }
 }

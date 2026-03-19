@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.gdpr.db.GDPRSearchConfigLine;
 import com.axelor.apps.gdpr.exception.GdprExceptionMessage;
 import com.axelor.apps.gdpr.service.app.AppGdprService;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -33,14 +34,13 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 
 public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
 
@@ -118,6 +118,10 @@ public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
 
       String query = buildSearchQuery(searchParams, searchConfig);
 
+      if (StringUtils.isBlank(query)) {
+        continue;
+      }
+
       //       apply search config query
       List<? extends AuditableModel> models =
           Query.of(modelClass).filter(query).bind(searchParams).fetch();
@@ -138,7 +142,7 @@ public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
               .map(Object::toString)
               .orElse("");
 
-      if (StringUtils.isEmpty(param)) {
+      if (StringUtils.isBlank(param)) {
         continue;
       }
 
@@ -146,7 +150,10 @@ public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
       query.append(" AND ");
     }
 
-    query.append(" 1 = 1");
+    if (query.length() > 0) {
+      query.append("1 = 1");
+    }
+
     return query.toString();
   }
 
@@ -215,7 +222,7 @@ public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
 
     if (fields.length == 1 || !value.isPresent()) {
       // simple case
-      return value.map(Object::toString).orElse(StringUtils.EMPTY);
+      return value.map(Object::toString).orElse("");
     } else {
       // handle subobject case
       MetaField metaField =

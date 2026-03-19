@@ -1,2 +1,10 @@
-"importId";"name";"templateLink";"format"
-1;"Message";"MessagePDF.rptdesign";"pdf"
+"importId";"name";"templateLink";"modelName";"templateEngineSelect";"format";"attach"
+"1";"Message";"MessagePDF.rptdesign";"com.axelor.message.db.Message";1;"pdf";false
+"2";"ClientSituation";"ClientSituation.rptdesign";"com.axelor.apps.base.db.Partner";2;"pdf";false
+"3";"CompanyPhoneBook";"CompanyPhoneBook.rptdesign";"com.axelor.apps.base.db.Company";2;"pdf";false
+"20";"Partner";"Partner.rptdesign";"com.axelor.apps.base.db.Partner";1;"pdf";false
+"22";"ProductCatalog_PGQL";"ProductCatalog_PGQL.rptdesign";"com.axelor.apps.base.db.Product";2;"pdf";false
+"23";"ProductSheet";"ProductSheet.rptdesign";"com.axelor.apps.base.db.Product";2;"pdf";false
+"32";"AbcAnalysis";"AbcAnalysis.rptdesign";"com.axelor.apps.base.db.ABCAnalysis";2;"pdf";true
+"33";"ContactPhoneBook";"ContactPhoneBook.rptdesign";"com.axelor.apps.base.db.Partner";2;"pdf";false
+"34";"Traceback";"Traceback.rptdesign";"com.axelor.apps.base.db.TraceBack";2;"pdf";false

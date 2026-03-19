@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
-  <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="MRP">
+  <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="MRP"
+    onDelete="action-mrp-validate-delete-multi-mrp-reset">
+    <toolbar>
+      <button name="printBtn" hideIf="true" onClick=""/>
+    </toolbar>
     <hilite if="statusSelect == 1" strong="true" color="warning"/>
     <hilite if="statusSelect == 2" strong="true" color="success"/>
     <field name="name"/>
@@ -14,37 +18,40 @@
       grid-view="stock-location-grid" colSpan="6"/>
     <field name="stockLocation.company"/>
     <field name="endDate" colSpan="6"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="MRP" width="large"
-    onLoad="action-attrs-mrp-generate-all-proposals" onNew="action-mrp-record-onnew">
+    onLoad="action-attrs-mrp-generate-all-proposals" onNew="action-mrp-record-onnew"
+    onDelete="action-mrp-validate-delete-mrp-reset">
+    <toolbar>
+      <button name="printBtn" title="Print" onClick="save,action-method-print-template"
+        showIf="statusSelect == 2"/>
+    </toolbar>
     <menubar>
-      <menu title="Tools" showTitle="true" icon="fa-wrench">
+      <menu title="Tools" showTitle="true" icon="wrench">
         <item name="runCalculationItem" title="Run calculation" showIf="statusSelect != 1"
           action="save,action-method-mrp-run-calculation"
           prompt="Are you sure you want to run the calculation ? Calculation can take a long time."/>
         <item name="generateProposalsItem" title="Generate proposals"
           showIf="statusSelect == 2" action="save,action-mrp-view-generate-proposal-wizard"/>
+        <item name="generateCallForTendersItem" title="Generate call for tenders"
+          action="save,action-mrp-view-generate-call-for-tenders-wizard"
+          if="__config__.app.getApp('purchase')?.getManageCallForTender()"/>
         <item action="save,action-method-mrp-undo-manual-changes" title="Undo manual changes"
           name="undoManualChangesItem"/>
-      </menu>
-      <menu title="Reports" showTitle="true" icon="fa-files-o">
-        <item name="printWeeksItem" title="Weekly breakdown"
-          action="save,action-method-mrp-print-weeks" showIf="statusSelect == 2"/>
-        <item name="printListItem" title="List" action="save,action-method-mrp-print-list"
-          showIf="statusSelect == 2"/>
       </menu>
     </menubar>
 
     <panel name="infoPanel">
       <field name="mrpSeq" showTitle="false" colSpan="12">
         <viewer depends="mrpSeq,mrpTypeSelect"><![CDATA[
-					<h3>
-						<span ng-show="record.mrpSeq && record.mrpTypeSelect == 1" x-translate>MRP</span>
-						<span ng-show="record.mrpSeq && record.mrpTypeSelect == 2" x-translate>MPS</span>
-						{{record.mrpSeq}}
-					</h3>
+					<>
+						<h3>
+							{mrpSeq && mrpTypeSelect == 1 && <span> {_t('MRP')} </span>}
+							{mrpSeq}
+						</h3>
+					</>
 				]]></viewer>
       </field>
     </panel>
@@ -56,14 +63,14 @@
       <field name="id"/>
       <spacer/>
       <field name="name"/>
-      <field name="createdOn" colSpan="4"/>
-      <field name="startDateTime" colSpan="4" readonly="true"/>
-      <field name="endDateTime" colSpan="4" readonly="true"/>
-      <field name="createdBy"/>
-      <field name="endDate" colSpan="6" hideIf="mrpTypeSelect == 2"/>
+      <field name="createdOn" colSpan="3"/>
+      <field name="createdBy" colSpan="3"/>
+      <field name="startDateTime" colSpan="4" readonly="true" hideIf="statusSelect == 0"/>
+      <field name="endDateTime" colSpan="4" readonly="true" hideIf="statusSelect == 0"/>
+      <field name="endDate" colSpan="6"/>
       <field name="stockLocation" form-view="stock-location-form"
         grid-view="stock-location-grid" colSpan="6"
-        domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp = null)"
+        domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp IS null)"
         canEdit="false"/>
       <field name="stockLocation.company"/>
       <field name="displayProductWithoutProposal" widget="boolean-switch"/>
@@ -71,7 +78,7 @@
       <field name="mrpTypeSelect" hidden="true"/>
       <panel-related name="productSetPanel" field="productSet" canEdit="false"
         form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12"
-        domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true AND (:mrpTypeSelect = 1 OR self.productSubTypeSelect = 1) AND self.dtype = 'Product'"/>
+        domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true AND self.dtype = 'Product'"/>
       <panel-related name="productCategorySetPanel" field="productCategorySet"
         canEdit="false" form-view="product-category-form" grid-view="product-category-grid"
         canNew="false" colSpan="12"/>
@@ -85,7 +92,7 @@
         help="A list of sale order lines that will be processed. The lines that can be selected are the ones conforming to the following conditions :\nProduct is storable\nProduct is managed in stock\nProduct is not excluded from mrp\nSale order/quotation has the same stockLocation or a subLocation\nIf MPS, product must be a finished product\nDelivered quantity of the line must be lower than total quantity\nThe line must conform to one or several of the mrp move types"/>
       <panel-related name="mrpForecastSetPanel" field="mrpForecastSet"
         form-view="mrp-forecast-form" grid-view="mrp-forecast-grid" colSpan="12"
-        domain="self.statusSelect = 2 AND self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.forecastDate &gt;= :__date__  AND self.product.stockManaged = true AND (:mrpTypeSelect = 1 OR self.product.productSubTypeSelect = 1)"/>
+        domain="self.statusSelect = 2 AND self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.forecastDate &gt;= :__date__  AND self.product.stockManaged = true"/>
     </panel>
     <panel name="statusPanel" showIf="statusSelect == 1" colSpan="12">
       <field name="statusSelect" hidden="true"/>
@@ -112,6 +119,18 @@
     </panel>
   </form>
 
+  <form name="mrp-generate-call-for-tenders-wizard-form"
+    model="com.axelor.apps.supplychain.db.Mrp" title="MPS">
+    <panel name="wizardPanel">
+      <button name="generateSelectedCallForTenderBtn"
+        title="Generate call for tender for selected lines"
+        onClick="action-method-mrp-generate-selected-call-for-tender,close"/>
+      <button name="generateAllCallForTenderBtn"
+        title="Generate call for tender for all possible lines"
+        onClick="action-method-mrp-generate-all-call-for-tender,close"/>
+    </panel>
+  </form>
+
   <action-method name="action-method-mrp-run-calculation">
     <call class="com.axelor.apps.supplychain.web.MrpController" method="runCalculation"/>
   </action-method>
@@ -125,12 +144,14 @@
       method="generateSelectedProposals"/>
   </action-method>
 
-  <action-method name="action-method-mrp-print-weeks">
-    <call class="com.axelor.apps.supplychain.web.MrpController" method="printWeeks"/>
+  <action-method name="action-method-mrp-generate-all-call-for-tender">
+    <call class="com.axelor.apps.supplychain.web.MrpController"
+      method="generateAllCallForTenders"/>
   </action-method>
 
-  <action-method name="action-method-mrp-print-list">
-    <call class="com.axelor.apps.supplychain.web.MrpController" method="printList"/>
+  <action-method name="action-method-mrp-generate-selected-call-for-tender">
+    <call class="com.axelor.apps.supplychain.web.MrpController"
+      method="generateSelectedCallForTenders"/>
   </action-method>
 
   <action-view name="action-mrp-view-mrp-line" title="Results"
@@ -141,10 +162,12 @@
     <domain>
       (self.mrp.displayProductWithoutProposal = true AND self.mrp.id = :_mrpId)
       OR
-      (self.mrp.displayProductWithoutProposal = false AND self.mrp.id = :_mrpId AND self.product.id
-      IN (select m.product from MrpLine as m
+      (self.mrp.displayProductWithoutProposal = false AND self.mrp.id = :_mrpId AND self.product
+      IN
+      (select m.product from MrpLine as m
       where m.mrp.id = :_mrpId AND m.mrpLineType.elementSelect
-      in (:_proposalElementSelect)))
+      in
+      (:_proposalElementSelect)))
     </domain>
     <context name="_mrpId" expr="eval: __this__.id"/>
     <context name="_proposalElementSelect"
@@ -154,6 +177,17 @@
   <action-view name="action-mrp-view-generate-proposal-wizard" title="Mrp"
     model="com.axelor.apps.supplychain.db.Mrp">
     <view type="form" name="mrp-generate-proposal-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-mrp-view-generate-call-for-tenders-wizard" title="Mrp"
+    model="com.axelor.apps.supplychain.db.Mrp">
+    <view type="form" name="mrp-generate-call-for-tenders-wizard-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-confirm" value="false"/>
     <view-param name="show-toolbar" value="false"/>
@@ -188,6 +222,13 @@
     <call class="com.axelor.apps.supplychain.web.MrpController" method="undoManualChanges"/>
   </action-method>
 
+  <action-validate name="action-mrp-validate-delete-mrp-reset">
+    <info message="The MRP has been reset and results deleted."/>
+  </action-validate>
+
+  <action-validate name="action-mrp-validate-delete-multi-mrp-reset">
+    <info message="The MRP have been reset and their results deleted."/>
+  </action-validate>
 </object-views>
 
 

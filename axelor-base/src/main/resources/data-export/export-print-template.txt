@@ -42,13 +42,13 @@
 		printTemplateLineListService += "</printTemplateLine>"
 	})
 	
-	birtTemplateSetService = ""
-	u.birtTemplateSet.each( {bt->
-	    birtTemplateSetService += "<birtTemplate>"
-	    birtTemplateSetService += "  <name>${bt.name}</name>"
-	    birtTemplateSetService += "  <format>${bt.format}</format>"
-	    birtTemplateSetService += "  <templateLink>${bt.templateLink}</templateLink>"
-		birtTemplateSetService += "</birtTemplate>"
+	printingTemplateSetService = ""
+	u.printingTemplateSet.each( {pt->
+	    printingTemplateSetService += "<printingTemplate>"
+	    printingTemplateSetService += "  <name>${pt.name}</name>"
+	    printingTemplateSetService += "  <format>${pt.format}</format>"
+	    printingTemplateSetService += "  <templateLink>${pt.templateLink}</templateLink>"
+		printingTemplateSetService += "</printingTemplate>"
 	})
 	
 	printTemplateSetService = ""
@@ -103,9 +103,9 @@
 		<attach>${u.attach}</attach>
 		<isEditable>${u.isEditable}</isEditable>
 		<hidePrintSettings>${u.hidePrintSettings}</hidePrintSettings>
-		<birtTemplateSet>
-			$birtTemplateSetService
-		</birtTemplateSet>
+		<printingTemplateSet>
+			$printingTemplateSetService
+		</printingTemplateSet>
 		
 		<printTemplateLineList>
 			$printTemplateLineListService

@@ -1,0 +1,4 @@
+"importId";"researchParameterConfig_importId";"researchPrimaryKey_importId";"metaModel";"metaField";"binding";"query"
+"1";"1";"1";"com.axelor.apps.base.db.Partner";"name";"partnerName";"name like :partnerName"
+"2";"2";"2";"com.axelor.apps.crm.db.Opportunity";"opportunitySeq";"opportunitySeq";"opportunitySeq like :opportunitySeq"
+"3";"2";"3";"com.axelor.apps.crm.db.Opportunity";"expectedCloseDate";"opportunityCloseDate";"expectedCloseDate = :opportunityCloseDate"

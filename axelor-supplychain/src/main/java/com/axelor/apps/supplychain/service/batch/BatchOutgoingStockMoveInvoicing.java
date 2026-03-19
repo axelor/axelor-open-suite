@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
@@ -34,9 +33,9 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.persistence.TypedQuery;
 import java.util.List;
-import javax.persistence.TypedQuery;
 
 public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
 
@@ -51,14 +50,13 @@ public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
   protected void process() {
     SupplychainBatch supplychainBatch = batch.getSupplychainBatch();
     List<Long> anomalyList = Lists.newArrayList(0L);
-    SaleOrderRepository saleRepo = Beans.get(SaleOrderRepository.class);
 
     TypedQuery<StockMove> query =
         JPA.em()
             .createQuery(
                 "SELECT self FROM StockMove self "
                     + "WHERE self.statusSelect = :statusSelect "
-                    + "AND self.originTypeSelect LIKE :typeSaleOrder "
+                    + "AND self.typeSelect = :typeSelect "
                     + "AND self.invoicingStatusSelect !=  :invoicingStatusSelect "
                     + "AND (SELECT count(invoice.id) FROM Invoice invoice WHERE invoice.statusSelect != :invoiceStatusCanceled AND invoice MEMBER OF self.invoiceSet) = 0"
                     + "AND self.id NOT IN (:anomalyList) "
@@ -71,19 +69,18 @@ public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
                     + "ORDER BY self.id",
                 StockMove.class)
             .setParameter("statusSelect", StockMoveRepository.STATUS_REALIZED)
-            .setParameter("typeSaleOrder", StockMoveRepository.ORIGIN_SALE_ORDER)
+            .setParameter("typeSelect", StockMoveRepository.TYPE_OUTGOING)
             .setParameter("invoiceStatusCanceled", InvoiceRepository.STATUS_CANCELED)
             .setParameter("invoicingStatusSelect", StockMoveRepository.STATUS_DELAYED_INVOICE)
             .setParameter("anomalyList", anomalyList)
             .setParameter("batch", batch)
-            .setMaxResults(FETCH_LIMIT);
+            .setMaxResults(getFetchLimit());
 
     List<StockMove> stockMoveList;
     while (!(stockMoveList = query.getResultList()).isEmpty()) {
       for (StockMove stockMove : stockMoveList) {
         try {
-          stockMoveInvoiceService.createInvoiceFromSaleOrder(
-              stockMove, saleRepo.find(stockMove.getOriginId()), null);
+          stockMoveInvoiceService.createInvoiceFromStockMove(stockMove, null);
           updateStockMove(stockMove);
         } catch (Exception e) {
           incrementAnomaly();
@@ -94,6 +91,7 @@ public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
         }
       }
       JPA.clear();
+      findBatch();
     }
   }
 

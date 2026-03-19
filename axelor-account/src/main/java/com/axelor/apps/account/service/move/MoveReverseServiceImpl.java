@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,21 +22,31 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
-import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelService;
+import com.axelor.apps.account.service.reconcile.ReconcileService;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -58,6 +68,11 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected ExtractContextMoveService extractContextMoveService;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoicePaymentCancelService invoicePaymentCancelService;
+  protected MoveLineToolService moveLineToolService;
+  protected UnreconcileService unReconcileService;
+  protected MoveInvoiceTermService moveInvoiceTermService;
+  protected AnalyticLineService analyticLineService;
+  protected PaymentVoucherCancelService paymentVoucherCancelService;
 
   @Inject
   public MoveReverseServiceImpl(
@@ -68,7 +83,13 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       MoveLineCreateService moveLineCreateService,
       ExtractContextMoveService extractContextMoveService,
       InvoicePaymentRepository invoicePaymentRepository,
-      InvoicePaymentCancelService invoicePaymentCancelService) {
+      InvoicePaymentCancelService invoicePaymentCancelService,
+      MoveLineToolService moveLineToolService,
+      UnreconcileService unReconcileService,
+      MoveInvoiceTermService moveInvoiceTermService,
+      AnalyticLineService analyticLineService,
+      PaymentVoucherCancelService paymentVoucherCancelService) {
+
     this.moveCreateService = moveCreateService;
     this.reconcileService = reconcileService;
     this.moveValidateService = moveValidateService;
@@ -77,6 +98,11 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     this.extractContextMoveService = extractContextMoveService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentCancelService = invoicePaymentCancelService;
+    this.moveLineToolService = moveLineToolService;
+    this.unReconcileService = unReconcileService;
+    this.moveInvoiceTermService = moveInvoiceTermService;
+    this.analyticLineService = analyticLineService;
+    this.paymentVoucherCancelService = paymentVoucherCancelService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -88,6 +114,12 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       boolean isUnreconcileOriginalMove,
       LocalDate dateOfReversion)
       throws AxelorException {
+
+    if (dateOfReversion.isBefore(move.getDate())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.REVERSE_DATE_CAN_NOT_BE_BEFORE_MOVE_DATE));
+    }
 
     String origin = move.getOrigin();
     if (move.getJournal().getHasDuplicateDetectionOnOrigin()
@@ -149,23 +181,30 @@ public class MoveReverseServiceImpl implements MoveReverseService {
         analyticMoveLineList.forEach(newMoveLine::addAnalyticMoveLineListItem);
       }
 
+      analyticLineService.setAnalyticAccount(newMoveLine, move.getCompany());
+
       newMove.addMoveLineListItem(newMoveLine);
+
+      if (newMove.getPaymentCondition() == null) {
+        newMove.setPaymentCondition(move.getPaymentCondition());
+      }
+      moveInvoiceTermService.generateInvoiceTerms(newMove);
 
       if (isUnreconcileOriginalMove) {
         List<Reconcile> reconcileList =
             Beans.get(ReconcileRepository.class)
                 .all()
                 .filter(
-                    "self.statusSelect != ?1 AND (self.debitMoveLine = ?2 OR self.creditMoveLine = ?2)",
+                    "self.statusSelect != ?1 AND (self.debitMoveLine.id = ?2 OR self.creditMoveLine.id = ?2)",
                     ReconcileRepository.STATUS_CANCELED,
-                    moveLine)
+                    moveLine.getId())
                 .fetch();
         for (Reconcile reconcile : reconcileList) {
-          reconcileService.unreconcile(reconcile);
+          unReconcileService.unreconcile(reconcile);
         }
+      } else {
+        cancelInvoicePayment(move);
       }
-
-      cancelInvoicePayment(move);
 
       if (validatedMove && isAutomaticReconcile) {
         if (isDebit) {
@@ -180,7 +219,16 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       moveValidateService.accounting(newMove);
     }
 
+    cancelPaymentVoucher(move);
+
     return moveRepository.save(newMove);
+  }
+
+  protected void cancelPaymentVoucher(Move move) {
+    PaymentVoucher paymentVoucher = move.getPaymentVoucher();
+    if (paymentVoucher != null) {
+      paymentVoucherCancelService.cancelPaymentVoucher(paymentVoucher);
+    }
   }
 
   protected void cancelInvoicePayment(Move move) throws AxelorException {
@@ -212,13 +260,18 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected MoveLine generateReverseMoveLine(
       Move reverseMove, MoveLine originMoveLine, LocalDate dateOfReversion, boolean isDebit)
       throws AxelorException {
+
+    BigDecimal currencyAmount = originMoveLine.getCurrencyAmount();
+
+    currencyAmount = moveLineToolService.computeCurrencyAmountSign(currencyAmount, isDebit);
+
     MoveLine reverseMoveLine =
         moveLineCreateService.createMoveLine(
             reverseMove,
             originMoveLine.getPartner(),
             originMoveLine.getAccount(),
-            originMoveLine.getCurrencyAmount(),
-            originMoveLine.getTaxLine(),
+            currencyAmount,
+            originMoveLine.getTaxLineSet(),
             originMoveLine.getDebit().add(originMoveLine.getCredit()),
             originMoveLine.getCurrencyRate(),
             !isDebit,
@@ -231,6 +284,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
             originMoveLine.getCutOffStartDate(),
             originMoveLine.getCutOffEndDate());
     reverseMoveLine.setVatSystemSelect(originMoveLine.getVatSystemSelect());
+    reverseMoveLine.setTaxEquiv(originMoveLine.getTaxEquiv());
 
     return reverseMoveLine;
   }
@@ -246,22 +300,29 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     LocalDate dateOfReversion =
         isChooseDate ? (LocalDate) assistantMap.get("dateOfReversion") : null;
     List<Move> reverseMoveList = new ArrayList<>();
-
+    List<String> errorList = new ArrayList<>();
     for (Move move : moveList) {
-      if (!isChooseDate) {
-        dateOfReversion =
-            extractContextMoveService.getDateOfReversion(null, move, dateOfReversionSelect);
+      try {
+        if (!isChooseDate) {
+          dateOfReversion =
+              extractContextMoveService.getDateOfReversion(null, move, dateOfReversionSelect);
+        }
+        reverseMoveList.add(
+            this.generateReverse(
+                move,
+                isAutomaticReconcile,
+                isAutomaticAccounting,
+                isUnreconcileOriginalMove,
+                dateOfReversion));
+      } catch (Exception e) {
+        errorList.add(String.format("%s: %s", move.getReference(), e.getMessage()));
       }
-
-      reverseMoveList.add(
-          this.generateReverse(
-              move,
-              isAutomaticReconcile,
-              isAutomaticAccounting,
-              isUnreconcileOriginalMove,
-              dateOfReversion));
     }
-
+    if (ObjectUtils.notEmpty(errorList)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          StringHtmlListBuilder.formatMessage(errorList));
+    }
     return reverseMoveList;
   }
 }

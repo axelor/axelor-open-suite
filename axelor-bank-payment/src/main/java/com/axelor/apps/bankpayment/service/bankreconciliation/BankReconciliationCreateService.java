@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,40 +21,44 @@ package com.axelor.apps.bankpayment.service.bankreconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.db.JPA;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Query;
 
 public class BankReconciliationCreateService {
 
   protected BankReconciliationRepository bankReconciliationRepository;
   protected CompanyRepository companyRepository;
-  protected BankReconciliationService bankReconciliationService;
+  protected BankReconciliationAccountService bankReconciliationAccountService;
+  protected BankStatementLineRepository bankStatementLineRepository;
+  protected BankReconciliationComputeNameService bankReconciliationComputeNameService;
 
   @Inject
   public BankReconciliationCreateService(
       BankReconciliationRepository bankReconciliationRepository,
       CompanyRepository companyRepository,
-      BankReconciliationService bankReconciliationService) {
+      BankReconciliationAccountService bankReconciliationAccountService,
+      BankStatementLineRepository bankStatementLineRepository,
+      BankReconciliationComputeNameService bankReconciliationComputeNameService) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.companyRepository = companyRepository;
-    this.bankReconciliationService = bankReconciliationService;
+    this.bankReconciliationAccountService = bankReconciliationAccountService;
+    this.bankStatementLineRepository = bankStatementLineRepository;
+    this.bankReconciliationComputeNameService = bankReconciliationComputeNameService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public List<BankReconciliation> createAllFromBankStatement(BankStatement bankStatement)
-      throws IOException {
+  public List<BankReconciliation> createAllFromBankStatement(BankStatement bankStatement) {
 
     List<BankReconciliation> bankReconciliationList = new ArrayList<>();
 
@@ -113,8 +117,7 @@ public class BankReconciliationCreateService {
       LocalDate toDate,
       Currency currency,
       BankDetails bankDetails,
-      BankStatement bankStatement)
-      throws IOException {
+      BankStatement bankStatement) {
 
     BankReconciliation bankReconciliation = new BankReconciliation();
     bankReconciliation.setCompany(company);
@@ -123,44 +126,12 @@ public class BankReconciliationCreateService {
     bankReconciliation.setCurrency(currency);
     bankReconciliation.setBankDetails(bankDetails);
     bankReconciliation.setBankStatement(bankStatement);
-    bankReconciliation.setName(this.computeName(bankReconciliation));
-    bankReconciliation.setJournal(bankReconciliationService.getJournal(bankReconciliation));
-    bankReconciliation.setCashAccount(bankReconciliationService.getCashAccount(bankReconciliation));
+    bankReconciliation.setName(
+        bankReconciliationComputeNameService.computeName(bankReconciliation));
+    bankReconciliation.setJournal(bankReconciliationAccountService.getJournal(bankReconciliation));
+    bankReconciliation.setCashAccount(
+        bankReconciliationAccountService.getCashAccount(bankReconciliation));
 
     return bankReconciliation;
-  }
-
-  public String computeName(BankReconciliation bankReconciliation) {
-
-    String name = "";
-    if (bankReconciliation.getCompany() != null) {
-      name += bankReconciliation.getCompany().getCode();
-    }
-    if (bankReconciliation.getCurrency() != null) {
-      if (name != "") {
-        name += "-";
-      }
-      name += bankReconciliation.getCurrency().getCodeISO();
-    }
-    if (bankReconciliation.getBankDetails() != null) {
-      if (name != "") {
-        name += "-";
-      }
-      name += bankReconciliation.getBankDetails().getAccountNbr();
-    }
-    if (bankReconciliation.getFromDate() != null) {
-      if (name != "") {
-        name += "-";
-      }
-      name += bankReconciliation.getFromDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-    }
-    if (bankReconciliation.getToDate() != null) {
-      if (name != "") {
-        name += "-";
-      }
-      name += bankReconciliation.getToDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-    }
-
-    return name;
   }
 }

@@ -1,0 +1,69 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.axelor.apps.helpdesk.rest;
+
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.helpdesk.db.Ticket;
+import com.axelor.apps.helpdesk.rest.dto.TicketPutRequest;
+import com.axelor.apps.helpdesk.rest.dto.TicketResponse;
+import com.axelor.apps.helpdesk.rest.service.TicketUpdateRestService;
+import com.axelor.apps.helpdesk.translation.ITranslation;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.utils.api.HttpExceptionHandler;
+import com.axelor.utils.api.ObjectFinder;
+import com.axelor.utils.api.RequestValidator;
+import com.axelor.utils.api.ResponseConstructor;
+import com.axelor.utils.api.SecurityCheck;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
+@Path("/aos/ticket")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+public class TicketRestController {
+
+  /** Update status of a given ticket. Full path to request is /ws/aos/ticket/{id} */
+  @Operation(
+      summary = "Update ticket status",
+      tags = {"Ticket"})
+  @Path("/{id}")
+  @PUT
+  @HttpExceptionHandler
+  public Response updateTicket(@PathParam("id") long ticketId, TicketPutRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(Ticket.class, ticketId).check();
+
+    Ticket ticket = ObjectFinder.find(Ticket.class, ticketId, requestBody.getVersion());
+
+    ticket =
+        Beans.get(TicketUpdateRestService.class)
+            .updateTicketStatus(ticket, requestBody.getTargetStatus(), requestBody.getDateTime());
+
+    return ResponseConstructor.build(
+        Response.Status.OK, I18n.get(ITranslation.TICKET_UPDATED), new TicketResponse(ticket));
+  }
+}

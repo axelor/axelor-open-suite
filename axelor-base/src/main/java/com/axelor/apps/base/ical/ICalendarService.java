@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,12 +36,12 @@ import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.repo.EmailAddressRepository;
 import com.axelor.message.service.MailAccountService;
-import com.axelor.utils.QueryBuilder;
+import com.axelor.utils.helpers.QueryBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -663,8 +663,14 @@ public class ICalendarService {
       CalDavCalendarCollection collection,
       LocalDateTime startDate,
       LocalDateTime endDate)
-      throws IOException, URISyntaxException, ParseException, ObjectStoreException,
-          ConstraintViolationException, DavException, ParserConfigurationException, ParserException,
+      throws IOException,
+          URISyntaxException,
+          ParseException,
+          ObjectStoreException,
+          ConstraintViolationException,
+          DavException,
+          ParserConfigurationException,
+          ParserException,
           AxelorException {
 
     final boolean keepRemote = calendar.getKeepRemote() == Boolean.TRUE;

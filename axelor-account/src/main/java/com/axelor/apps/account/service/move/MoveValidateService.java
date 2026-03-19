@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,6 +35,10 @@ public interface MoveValidateService {
 
   void checkPreconditions(Move move) throws AxelorException;
 
+  void checkConsistencyPreconditions(Move move) throws AxelorException;
+
+  void checkPeriodPreconditions(Move move) throws AxelorException;
+
   public void accounting(Move move) throws AxelorException;
 
   public void accounting(Move move, boolean updateCustomerAccount) throws AxelorException;
@@ -66,9 +70,15 @@ public interface MoveValidateService {
 
   String accountingMultiple(List<Integer> moveIds);
 
-  void freezeFieldsOnMoveLines(Move move);
+  void freezeFieldsOnMoveLines(Move move) throws AxelorException;
 
   void accountingMultiple(Query<Move> moveListQuery) throws AxelorException;
 
   void checkMoveLinesPartner(Move move) throws AxelorException;
+
+  void checkTaxAmount(Move move) throws AxelorException;
+
+  void checkJournalPermissions(Move move) throws AxelorException;
+
+  void checkSpecialAccountAmount(Move move, Long moveId) throws AxelorException;
 }

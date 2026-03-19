@@ -1,0 +1,3 @@
+"importId";"name";"modelName";"statusSelect";"toAttach";"scriptFieldName"
+"25";"PurchaseOrder";"com.axelor.apps.purchase.db.PurchaseOrder";"2";"false";"${__i18n__.get(purchaseOrder.statusSelect == 1 || purchaseOrder.statusSelect == 2 ? 'Purchase quotation' : 'Purchase order') + ' ' + purchaseOrder.purchaseOrderSeq +
+((__bean__(com.axelor.apps.purchase.service.app.AppPurchaseService.class).getAppPurchase().getManagePurchaseOrderVersion() && purchaseOrder.versionNumber > 1) ? '-V' + purchaseOrder.versionNumber : '') + '-' + date}"

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,24 +28,30 @@ import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.repo.EmailAddressRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import jakarta.mail.MessagingException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Map;
-import javax.mail.MessagingException;
 
 public class ICalendarEventController {
 
   @SuppressWarnings("unchecked")
   public void addEmailGuest(ActionRequest request, ActionResponse response)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, MessagingException, IOException, ICalendarException, ParseException {
+      throws ClassNotFoundException,
+          InstantiationException,
+          IllegalAccessException,
+          AxelorException,
+          MessagingException,
+          IOException,
+          ICalendarException,
+          ParseException {
     ICalendarEvent event = request.getContext().asType(ICalendarEvent.class);
     try {
       Map<String, Object> guestEmail = (Map<String, Object>) request.getContext().get("guestEmail");
       if (guestEmail != null) {
         EmailAddress emailAddress =
             Beans.get(EmailAddressRepository.class)
-                .find(new Long((guestEmail.get("id").toString())));
+                .find(Long.parseLong((guestEmail.get("id").toString())));
         if (emailAddress != null) {
           response.setValue(
               "attendees",

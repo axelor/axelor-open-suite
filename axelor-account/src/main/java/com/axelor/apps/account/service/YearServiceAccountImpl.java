@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,16 +34,17 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.YearServiceImpl;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,28 +75,12 @@ public class YearServiceAccountImpl extends YearServiceImpl {
    * @throws AxelorException
    */
   public void closeYearProcess(Year year) throws AxelorException {
-    boolean hasPreviousYearOpened =
-        yearRepository
-                .all()
-                .filter(
-                    "self.toDate < :fromDate AND self.statusSelect = :opened AND self.typeSelect = :fiscalYear")
-                .bind("fromDate", year.getFromDate())
-                .bind("opened", YearRepository.STATUS_OPENED)
-                .bind("fiscalYear", YearRepository.TYPE_FISCAL)
-                .count()
-            > 0;
-    if (hasPreviousYearOpened) {
-      throw new AxelorException(
-          year,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.YEAR_2),
-          year.getName());
-    }
+    this.checkOpenedYear(year);
 
     year = yearRepository.find(year.getId());
 
     for (Period period : year.getPeriodList()) {
-      periodService.close(period);
+      periodService.closePeriod(period);
     }
     Company company = year.getCompany();
     if (company == null) {
@@ -162,7 +147,31 @@ public class YearServiceAccountImpl extends YearServiceImpl {
       JPA.clear();
     }
     year = yearRepository.find(year.getId());
-    closeYear(year);
+
+    if (this.allPeriodClosed(year)) {
+      closeYear(year);
+    }
+  }
+
+  protected void checkOpenedYear(Year year) throws AxelorException {
+    boolean hasPreviousYearOpened =
+        yearRepository
+                .all()
+                .filter(
+                    "self.toDate < :fromDate AND self.statusSelect = :opened AND self.typeSelect = :fiscalYear AND self.company = :company")
+                .bind("fromDate", year.getFromDate())
+                .bind("opened", YearRepository.STATUS_OPENED)
+                .bind("fiscalYear", YearRepository.TYPE_FISCAL)
+                .bind("company", year.getCompany())
+                .count()
+            > 0;
+    if (hasPreviousYearOpened) {
+      throw new AxelorException(
+          year,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.YEAR_2),
+          year.getName());
+    }
   }
 
   @Transactional
@@ -211,5 +220,17 @@ public class YearServiceAccountImpl extends YearServiceImpl {
     } else {
       return BigDecimal.ZERO;
     }
+  }
+
+  protected boolean allPeriodClosed(Year year) throws AxelorException {
+    if (ObjectUtils.notEmpty(year.getPeriodList())) {
+      for (Period period : year.getPeriodList()) {
+        if (!periodService.isClosedPeriod(period)) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 }

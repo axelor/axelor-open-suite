@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,7 @@ import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.io.Files;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -41,7 +41,10 @@ import java.util.Map;
 public class ImportDemoDataController {
 
   public void importDemoDataExcel(ActionRequest request, ActionResponse response)
-      throws FileNotFoundException, IOException, AxelorException, ParseException,
+      throws FileNotFoundException,
+          IOException,
+          AxelorException,
+          ParseException,
           ClassNotFoundException {
     MetaFile metaFile =
         Beans.get(MetaFileRepository.class)

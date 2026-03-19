@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,8 @@ package com.axelor.apps.production.web;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.production.db.BillOfMaterialImportLine;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.i18n.I18n;
@@ -27,23 +29,42 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 
 public class ProductController {
 
   public void openProductTree(ActionRequest request, ActionResponse response) {
 
-    Product product = request.getContext().asType(Product.class);
-    product = Beans.get(ProductRepository.class).find(product.getId());
+    try {
+      Product product = request.getContext().asType(Product.class);
+      product = Beans.get(ProductRepository.class).find(product.getId());
 
-    TempBomTree tempBomTree =
-        Beans.get(BillOfMaterialService.class)
-            .generateTree(product.getDefaultBillOfMaterial(), true);
+      TempBomTree tempBomTree =
+          Beans.get(BillOfMaterialService.class)
+              .generateTree(product.getDefaultBillOfMaterial(), true);
 
-    response.setView(
-        ActionView.define(I18n.get("Bill of materials"))
-            .model(TempBomTree.class.getName())
-            .add("tree", "bill-of-material-tree")
-            .context("_tempBomTreeId", tempBomTree.getId())
-            .map());
+      response.setView(
+          ActionView.define(I18n.get("Bill of materials"))
+              .model(TempBomTree.class.getName())
+              .add("tree", "bill-of-material-tree")
+              .context("_tempBomTreeId", tempBomTree.getId())
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void bomImportLineProductOnNew(ActionRequest request, ActionResponse response) {
+    Context parent = request.getContext().getParent();
+    if (parent != null && BillOfMaterialImportLine.class.equals(parent.getContextClass())) {
+      BillOfMaterialImportLine billOfMaterialImportLine =
+          parent.asType(BillOfMaterialImportLine.class);
+
+      response.setValue("code", billOfMaterialImportLine.getCode());
+      response.setValue("name", billOfMaterialImportLine.getName());
+      response.setValue("productTypeSelect", ProductRepository.PRODUCT_TYPE_STORABLE);
+      response.setValue(
+          "createdFromBOMImportId", billOfMaterialImportLine.getBillOfMaterialImport().getId());
+    }
   }
 }

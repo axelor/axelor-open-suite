@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,69 +23,65 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.utils.service.ListToolService;
-import com.google.common.base.MoreObjects;
-import com.google.inject.Inject;
+import com.axelor.common.ObjectUtils;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticService {
 
   protected AnalyticAccountRepository analyticAccountRepository;
-  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AnalyticToolService analyticToolService;
   protected AccountConfigService accountConfigService;
-  protected ListToolService listToolService;
   protected AppAccountService appAccountService;
+  protected CurrencyScaleService currencyScaleService;
+  protected AnalyticAxisService analyticAxisService;
 
   @Inject
   public InvoiceLineAnalyticServiceImpl(
       AnalyticAccountRepository analyticAccountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
       AnalyticMoveLineService analyticMoveLineService,
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
-      ListToolService listToolService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      CurrencyScaleService currencyScaleService,
+      AnalyticAxisService analyticAxisService) {
     this.analyticAccountRepository = analyticAccountRepository;
-    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
     this.analyticMoveLineService = analyticMoveLineService;
     this.analyticToolService = analyticToolService;
     this.accountConfigService = accountConfigService;
-    this.listToolService = listToolService;
     this.appAccountService = appAccountService;
+    this.currencyScaleService = currencyScaleService;
+    this.analyticAxisService = analyticAxisService;
   }
 
   @Override
   public List<AnalyticMoveLine> getAndComputeAnalyticDistribution(
       InvoiceLine invoiceLine, Invoice invoice) throws AxelorException {
-    if (accountConfigService
-            .getAccountConfig(invoice.getCompany())
-            .getAnalyticDistributionTypeSelect()
-        == AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
-      return MoreObjects.firstNonNull(invoiceLine.getAnalyticMoveLineList(), new ArrayList<>());
-    }
-
     AnalyticDistributionTemplate analyticDistributionTemplate =
         analyticMoveLineService.getAnalyticDistributionTemplate(
             invoice.getPartner(),
             invoiceLine.getProduct(),
             invoice.getCompany(),
+            invoice.getTradingName(),
+            invoiceLine.getAccount(),
             InvoiceToolService.isPurchase(invoice));
     invoiceLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 
@@ -112,7 +108,10 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
       if (invoiceLine.getAnalyticMoveLineList() != null) {
         for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
           analyticMoveLineService.updateAnalyticMoveLine(
-              analyticMoveLine, invoiceLine.getCompanyExTaxTotal(), date);
+              analyticMoveLine,
+              currencyScaleService.getScaledValue(
+                  analyticMoveLine, invoiceLine.getCompanyExTaxTotal()),
+              date);
         }
       }
       return analyticMoveLineList;
@@ -131,7 +130,7 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             invoiceLine.getAnalyticDistributionTemplate(),
-            invoiceLine.getCompanyExTaxTotal(),
+            currencyScaleService.getScaledValue(invoiceLine, invoiceLine.getCompanyExTaxTotal()),
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
             date);
 
@@ -146,10 +145,13 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
       if (invoiceLine.getAccount() != null
           && invoiceLine.getAccount().getAnalyticDistributionAuthorized()
           && invoiceLine.getAccount().getAnalyticDistributionTemplate() != null
-          && accountConfigService
-                  .getAccountConfig(invoiceLine.getAccount().getCompany())
-                  .getAnalyticDistributionTypeSelect()
-              == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+          && List.of(
+                  AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT,
+                  AccountConfigRepository.DISTRIBUTION_TYPE_FREE)
+              .contains(
+                  accountConfigService
+                      .getAccountConfig(invoiceLine.getAccount().getCompany())
+                      .getAnalyticDistributionTypeSelect())) {
 
         invoiceLine.setAnalyticDistributionTemplate(
             invoiceLine.getAccount().getAnalyticDistributionTemplate());
@@ -225,5 +227,22 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   @Override
   public boolean validateAnalyticMoveLines(List<AnalyticMoveLine> analyticMoveLineList) {
     return analyticMoveLineService.validateAnalyticMoveLines(analyticMoveLineList);
+  }
+
+  @Override
+  public void checkAnalyticAxisByCompany(Invoice invoice) throws AxelorException {
+    if (invoice == null || ObjectUtils.isEmpty(invoice.getInvoiceLineList())) {
+      return;
+    }
+
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      if (!ObjectUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
+        analyticAxisService.checkRequiredAxisByCompany(
+            invoice.getCompany(),
+            invoiceLine.getAnalyticMoveLineList().stream()
+                .map(AnalyticMoveLine::getAnalyticAxis)
+                .collect(Collectors.toList()));
+      }
+    }
   }
 }

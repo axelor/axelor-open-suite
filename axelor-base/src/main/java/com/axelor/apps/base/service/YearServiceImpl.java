@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,8 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,43 +41,88 @@ public class YearServiceImpl implements YearService {
     this.yearRepository = yearRepository;
   }
 
+  @Override
+  public Year createYear(
+      Company company,
+      String name,
+      String code,
+      LocalDate fromDate,
+      LocalDate toDate,
+      String periodDuration,
+      int typeSelect) {
+    Year year = new Year();
+    year.setCompany(company);
+    year.setName(name);
+    year.setCode(code);
+    year.setFromDate(fromDate);
+    year.setToDate(toDate);
+    year.setPeriodDurationSelect(periodDuration);
+    year.setTypeSelect(typeSelect);
+    return year;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void generatePeriodsForYear(Year year) throws AxelorException {
+    year.setPeriodList(generatePeriods(year));
+    yearRepository.save(year);
+  }
+
+  @Override
   public List<Period> generatePeriods(Year year) throws AxelorException {
 
-    List<Period> periods = new ArrayList<Period>();
-    Integer duration = year.getPeriodDurationSelect();
+    String duration = year.getPeriodDurationSelect();
     LocalDate fromDate = year.getFromDate();
     LocalDate toDate = year.getToDate();
     LocalDate periodToDate = fromDate;
     Integer periodNumber = 1;
+    return generatePeriods(year, periodToDate, toDate, periodNumber, fromDate, duration);
+  }
+
+  @Override
+  public List<Period> generatePeriods(
+      Year year,
+      LocalDate periodToDate,
+      LocalDate toDate,
+      Integer periodNumber,
+      LocalDate fromDate,
+      String duration)
+      throws AxelorException {
+    List<Period> periods = new ArrayList<>();
     int c = 0;
     int loopLimit = 1000;
     while (periodToDate.isBefore(toDate)) {
-      if (periodNumber != 1) fromDate = fromDate.plusMonths(duration);
+      if (periodNumber != 1) fromDate = getToDate(fromDate, duration);
       if (c >= loopLimit) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(BaseExceptionMessage.PERIOD_3));
       }
       c += 1;
-      periodToDate = fromDate.plusMonths(duration).minusDays(1);
+      periodToDate = getToDate(fromDate, duration).minusDays(1);
       if (periodToDate.isAfter(toDate)) periodToDate = toDate;
       if (fromDate.isAfter(toDate)) continue;
-      Period period = new Period();
-      period.setFromDate(fromDate);
-      period.setToDate(periodToDate);
-      period.setYear(year);
-      period.setName(String.format("%02d", periodNumber) + "/" + year.getCode());
-      period.setCode(
-          (String.format("%02d", periodNumber)
-                  + "/"
-                  + year.getCode()
-                  + "_"
-                  + year.getCompany().getCode())
-              .toUpperCase());
-      period.setStatusSelect(year.getStatusSelect());
-      periods.add(period);
+      periods.add(createPeriod(year, periodToDate, periodNumber, fromDate));
       periodNumber++;
     }
     return periods;
+  }
+
+  protected Period createPeriod(
+      Year year, LocalDate periodToDate, Integer periodNumber, LocalDate fromDate) {
+    Period period = new Period();
+    period.setFromDate(fromDate);
+    period.setToDate(periodToDate);
+    period.setYear(year);
+    period.setName(String.format("%02d", periodNumber) + "/" + year.getCode());
+    period.setCode(
+        (String.format("%02d", periodNumber)
+                + "/"
+                + year.getCode()
+                + "_"
+                + year.getCompany().getCode())
+            .toUpperCase());
+    period.setStatusSelect(year.getStatusSelect());
+    return period;
   }
 
   @Override
@@ -90,5 +136,27 @@ public class YearServiceImpl implements YearService {
             date,
             type)
         .fetchOne();
+  }
+
+  @Override
+  public LocalDate getToDate(LocalDate fromDate, String duration) {
+    switch (duration) {
+      case YearRepository.DURATION_WEEK:
+        return fromDate.plusWeeks(1);
+      case YearRepository.DURATION_2WEEK:
+        return fromDate.plusWeeks(2);
+      case YearRepository.DURATION_MONTH:
+        return fromDate.plusMonths(1);
+      case YearRepository.DURATION_2MONTH:
+        return fromDate.plusMonths(2);
+      case YearRepository.DURATION_3MONTH:
+        return fromDate.plusMonths(3);
+      case YearRepository.DURATION_6MONTH:
+        return fromDate.plusMonths(6);
+      case YearRepository.DURATION_12MONTH:
+        return fromDate.plusMonths(12);
+      default:
+        return fromDate;
+    }
   }
 }

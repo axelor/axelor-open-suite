@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,30 +18,34 @@
  */
 package com.axelor.apps.bankpayment.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.bankpayment.db.BankOrder;
-import com.axelor.apps.bankpayment.db.EbicsUser;
+import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
-import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.report.IReport;
+import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderCheckService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderEncryptionService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.auth.AuthService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.collect.Lists;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,73 +60,12 @@ public class BankOrderController {
       BankOrder bankOrder = request.getContext().asType(BankOrder.class);
       bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
       if (bankOrder != null) {
-        Beans.get(BankOrderService.class).confirm(bankOrder);
+        Beans.get(BankOrderValidationService.class).confirm(bankOrder);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
     response.setReload(true);
-  }
-
-  public void sign(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-    bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
-    try {
-      ActionViewBuilder confirmView =
-          ActionView.define(I18n.get("Sign bank order"))
-              .model(BankOrder.class.getName())
-              .add("form", "bank-order-sign-wizard-form")
-              .param("popup", "reload")
-              .param("show-toolbar", "false")
-              .param("show-confirm", "false")
-              .param("popup-save", "false")
-              .param("forceEdit", "true")
-              .context("_showRecord", bankOrder.getId());
-
-      response.setView(confirmView.map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    Context context = request.getContext();
-    BankOrderService bankOrderService = Beans.get(BankOrderService.class);
-
-    BankOrder bankOrder = context.asType(BankOrder.class);
-    bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
-
-    try {
-
-      EbicsUser ebicsUser = bankOrder.getSignatoryEbicsUser();
-
-      if (ebicsUser == null) {
-        response.setError(I18n.get(BankPaymentExceptionMessage.EBICS_MISSING_NAME));
-      } else {
-        if (ebicsUser.getEbicsPartner().getEbicsTypeSelect()
-            == EbicsPartnerRepository.EBICS_TYPE_TS) {
-          bankOrderService.validate(bankOrder);
-        } else {
-          if (context.get("password") == null) {
-            response.setError(I18n.get(BankPaymentExceptionMessage.EBICS_WRONG_PASSWORD));
-          }
-          if (context.get("password") != null) {
-            String password = (String) context.get("password");
-            if (ebicsUser.getPassword() == null || !ebicsUser.getPassword().equals(password)) {
-              response.setValue("password", "");
-              response.setError(I18n.get(BankPaymentExceptionMessage.EBICS_WRONG_PASSWORD));
-            } else {
-              bankOrderService.validate(bankOrder);
-            }
-          }
-          response.setReload(true);
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
   }
 
   public void realize(ActionRequest request, ActionResponse response) {
@@ -131,35 +74,12 @@ public class BankOrderController {
       BankOrder bankOrder = request.getContext().asType(BankOrder.class);
       bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
       if (bankOrder != null) {
-        Beans.get(BankOrderService.class).realize(bankOrder);
+        Beans.get(BankOrderValidationService.class).realize(bankOrder);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
     response.setReload(true);
-  }
-
-  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-
-    String name = I18n.get("Bank Order") + " " + bankOrder.getBankOrderSeq();
-
-    String fileLink =
-        ReportFactory.createReport(IReport.BANK_ORDER, name + "-${date}")
-            .addParam("BankOrderId", bankOrder.getId())
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .addParam(
-                "Timezone",
-                bankOrder.getSenderCompany() != null
-                    ? bankOrder.getSenderCompany().getTimezone()
-                    : null)
-            .generate()
-            .getFileLink();
-
-    log.debug("Printing " + name);
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
   @SuppressWarnings("unchecked")
@@ -197,31 +117,18 @@ public class BankOrderController {
     }
   }
 
-  public void fillSignatoryEbicsUser(ActionRequest request, ActionResponse response) {
-    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-    if (bankOrder.getSenderBankDetails() != null) {
-      EbicsUser ebicsUser =
-          Beans.get(BankOrderService.class)
-              .getDefaultEbicsUserFromBankDetails(bankOrder.getSenderBankDetails());
-      bankOrder.setSignatoryEbicsUser(ebicsUser);
-      response.setValues(bankOrder);
-    }
-  }
-
   public void setBankDetailDomain(ActionRequest request, ActionResponse response) {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-    String domain = Beans.get(BankOrderService.class).createDomainForBankDetails(bankOrder);
-    // if nothing was found for the domain, we set it at a default value.
-    if (domain.equals("")) {
-      response.setAttr("senderBankDetails", "domain", "self.id IN (0)");
-    } else {
-      response.setAttr("senderBankDetails", "domain", domain);
-    }
+    response.setAttr(
+        "senderBankDetails",
+        "domain",
+        Beans.get(BankOrderService.class).createDomainForBankDetails(bankOrder));
   }
 
   public void fillBankDetails(ActionRequest request, ActionResponse response) {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-    BankDetails bankDetails = Beans.get(BankOrderService.class).getDefaultBankDetails(bankOrder);
+    BankDetails bankDetails =
+        Beans.get(BankOrderCheckService.class).getDefaultBankDetails(bankOrder);
     response.setValue("senderBankDetails", bankDetails);
   }
 
@@ -265,7 +172,7 @@ public class BankOrderController {
     try {
       BankOrder bankOrder = request.getContext().asType(BankOrder.class);
       bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
-      Beans.get(BankOrderService.class).cancelBankOrder(bankOrder);
+      Beans.get(BankOrderCancelService.class).cancelBankOrder(bankOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -279,10 +186,72 @@ public class BankOrderController {
     response.setReload(true);
   }
 
-  public void setStatusReject(ActionRequest request, ActionResponse response) {
+  public void decryptAndDownload(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    BankOrder bankOrder =
+        Beans.get(BankOrderRepository.class)
+            .find(Long.parseLong(request.getContext().get("_bankOrder").toString()));
+
+    String password =
+        Optional.ofNullable(request.getContext().get("password")).map(Object::toString).orElse("");
+    Beans.get(BankOrderEncryptionService.class).checkInputPassword(password);
+
+    String encryptedPassword = Beans.get(AuthService.class).encrypt(password);
+    String base64HashedPassword =
+        Base64.getUrlEncoder().encodeToString(encryptedPassword.getBytes(StandardCharsets.UTF_8));
+
+    response.setView(
+        ActionView.define(I18n.get("Export file"))
+            .add(
+                "html",
+                "ws/aos/bankorder/file-download/"
+                    + base64HashedPassword
+                    + "/"
+                    + bankOrder.getGeneratedMetaFile().getId())
+            .param("download", "true")
+            .map());
+    response.setCanClose(true);
+  }
+
+  public void setIsFileEncrypted(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-    bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
-    Beans.get(BankOrderService.class).setStatusToRejected(bankOrder);
-    response.setReload(true);
+    MetaFile generatedMetaFile = bankOrder.getGeneratedMetaFile();
+    if (generatedMetaFile == null) {
+      return;
+    }
+    response.setValue(
+        "$isMetafileEncrypted",
+        Beans.get(BankOrderEncryptionService.class).isFileEncrypted(generatedMetaFile));
+  }
+
+  public void encryptUploadedFile(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    if (!Beans.get(AppBankPaymentService.class)
+        .getAppBankPayment()
+        .getEnableBankOrderFileEncryption()) {
+      return;
+    }
+    Context context = request.getContext();
+    boolean isMetafileEncrypted =
+        Optional.ofNullable(context.get("isMetafileEncrypted"))
+            .map(Object::toString)
+            .map(Boolean::valueOf)
+            .orElse(false);
+
+    BankOrder bankOrder = context.asType(BankOrder.class);
+    MetaFile originalFile = bankOrder.getGeneratedMetaFile();
+
+    if (originalFile == null || isMetafileEncrypted) {
+      return;
+    }
+    Beans.get(BankOrderEncryptionService.class).encryptUploadedBankOrderFile(originalFile);
+  }
+
+  public void checkBankOrderLineBankDetails(ActionRequest request, ActionResponse response) {
+    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+    List<BankOrderLine> bankOrderLines =
+        Beans.get(BankOrderCheckService.class).checkBankOrderLineBankDetails(bankOrder);
+    response.setValue("bankOrderLineList", bankOrderLines);
   }
 }

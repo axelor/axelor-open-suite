@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
   <entity name="AppQuality" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <many-to-one name="qualityControlTemplate" title="Model for quality control"
-      ref="com.axelor.message.db.Template"/>
-    <boolean name="automaticMail" title="Automatic mail by completing quality control"/>
+      ref="com.axelor.message.db.Template"
+      help="You can select here the email template sent by default when a quality control is completed."/>
+    <boolean name="automaticMail" title="Automatic mail by completing quality control"
+      help="When this configuration is enabled, an email will be sent automatically each time a quality control is completed."/>
 
     <track>
       <field name="qualityControlTemplate" on="UPDATE"/>

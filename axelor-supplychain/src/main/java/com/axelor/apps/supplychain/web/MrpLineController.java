@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,13 +25,13 @@ import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.service.MrpLineService;
-import com.axelor.apps.supplychain.service.MrpService;
+import com.axelor.apps.supplychain.service.MrpProposalService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Singleton;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -67,7 +67,7 @@ public class MrpLineController {
         Beans.get(MrpLineService.class).updateProposalToProcess(mrpLineIds, proposalToProcess);
       }
 
-      response.setAttr("mrpLinePanel", "refresh", true);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -82,7 +82,7 @@ public class MrpLineController {
       Beans.get(MrpLineService.class)
           .updateProposalToProcess(mrpLine, !mrpLine.getProposalToProcess());
 
-      response.setAttr("mrpLinePanel", "refresh", true);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -94,9 +94,9 @@ public class MrpLineController {
       Mrp mrp = request.getContext().getParent().asType(Mrp.class);
       mrp = Beans.get(MrpRepository.class).find(mrp.getId());
 
-      Beans.get(MrpService.class).massUpdateProposalToProcess(mrp, true);
+      Beans.get(MrpProposalService.class).massUpdateProposalToProcess(mrp, true);
 
-      response.setAttr("mrpLinePanel", "refresh", true);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

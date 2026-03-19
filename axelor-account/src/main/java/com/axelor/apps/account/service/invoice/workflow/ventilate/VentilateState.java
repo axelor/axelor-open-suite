@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,13 +24,17 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
+import com.axelor.apps.account.service.PfpService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceJournalService;
+import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
@@ -43,13 +47,14 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,6 +82,9 @@ public class VentilateState extends WorkflowInvoice {
   protected InvoiceTermService invoiceTermService;
 
   protected AccountingSituationService accountingSituationService;
+  protected InvoiceJournalService invoiceJournalService;
+  protected InvoicePfpValidateService invoicePfpValidateService;
+  protected InvoiceTermPfpToolService invoiceTermPfpToolService;
 
   @Inject
   public VentilateState(
@@ -89,7 +97,10 @@ public class VentilateState extends WorkflowInvoice {
       UserService userService,
       FixedAssetGenerationService fixedAssetGenerationService,
       InvoiceTermService invoiceTermService,
-      AccountingSituationService accountingSituationService) {
+      AccountingSituationService accountingSituationService,
+      InvoiceJournalService invoiceJournalService,
+      InvoicePfpValidateService invoicePfpValidateService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService) {
     this.sequenceService = sequenceService;
     this.moveCreateFromInvoiceService = moveCreateFromInvoiceService;
     this.accountConfigService = accountConfigService;
@@ -100,6 +111,9 @@ public class VentilateState extends WorkflowInvoice {
     this.fixedAssetGenerationService = fixedAssetGenerationService;
     this.invoiceTermService = invoiceTermService;
     this.accountingSituationService = accountingSituationService;
+    this.invoiceJournalService = invoiceJournalService;
+    this.invoicePfpValidateService = invoicePfpValidateService;
+    this.invoiceTermPfpToolService = invoiceTermPfpToolService;
   }
 
   @Override
@@ -157,19 +171,13 @@ public class VentilateState extends WorkflowInvoice {
       invoice.setPartnerAccount(account);
     }
 
-    Account partnerAccount = invoice.getPartnerAccount();
-
-    if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE));
-    }
+    InvoiceToolService.checkUseForPartnerBalanceAndReconcileOk(invoice);
   }
 
   protected void setJournal() throws AxelorException {
     // Journal is actually set upon validation but we keep this for backward compatibility
     if (invoice.getJournal() == null) {
-      invoice.setJournal(Beans.get(InvoiceService.class).getJournal(invoice));
+      invoice.setJournal(invoiceJournalService.getJournal(invoice));
     }
   }
 
@@ -262,13 +270,7 @@ public class VentilateState extends WorkflowInvoice {
 
   protected void setInvoiceTermDueDates() throws AxelorException {
 
-    if (InvoiceToolService.isPurchase(invoice)) {
-
-      invoiceTermService.setDueDates(invoice, invoice.getOriginDate());
-    } else {
-
-      invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
-    }
+    invoiceTermService.computeInvoiceTermsDueDates(invoice);
   }
 
   protected void setMove() throws AxelorException {
@@ -283,6 +285,19 @@ public class VentilateState extends WorkflowInvoice {
     if (move != null) {
 
       moveCreateFromInvoiceService.createMoveUseExcessPaymentOrDue(invoice);
+
+      // Update invoice pfp status
+      if (invoice != null
+          && Beans.get(PfpService.class).getPfpCondition(invoice)
+          && invoice.getPfpValidateStatusSelect() == InvoiceRepository.PFP_STATUS_AWAITING
+          && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())
+          && invoice.getInvoiceTermList().stream()
+              .allMatch(
+                  it ->
+                      invoiceTermPfpToolService.getPfpValidateStatusSelect(it)
+                          == InvoiceTermRepository.PFP_STATUS_VALIDATED)) {
+        invoicePfpValidateService.validatePfp(invoice.getId());
+      }
     }
   }
 
@@ -325,7 +340,7 @@ public class VentilateState extends WorkflowInvoice {
 
     invoice.setInvoiceId(
         sequenceService.getSequenceNumber(
-            sequence, invoice.getInvoiceDate(), Invoice.class, "invoiceId"));
+            sequence, invoice.getInvoiceDate(), Invoice.class, "invoiceId", invoice));
 
     if (invoice.getInvoiceId() != null) {
       return;

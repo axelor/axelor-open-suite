@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,13 +18,15 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
+import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
-import com.axelor.apps.supplychain.db.repo.PartnerSupplychainLinkTypeRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
 import com.axelor.apps.supplychain.service.StockMoveReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -96,7 +98,7 @@ public class StockMoveController {
 
   /**
    * Called from stock move form view, on delivered partner select. Call {@link
-   * PartnerSupplychainLinkService#computePartnerFilter}
+   * PartnerLinkService#computePartnerFilter}
    *
    * @param request
    * @param response
@@ -105,10 +107,9 @@ public class StockMoveController {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
       String strFilter =
-          Beans.get(PartnerSupplychainLinkService.class)
+          Beans.get(PartnerLinkService.class)
               .computePartnerFilter(
-                  stockMove.getPartner(),
-                  PartnerSupplychainLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+                  stockMove.getPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_TO);
 
       response.setAttr("invoicedPartner", "domain", strFilter);
     } catch (Exception e) {
@@ -121,6 +122,38 @@ public class StockMoveController {
       StockMove stockMove = request.getContext().asType(StockMove.class);
       Beans.get(StockMoveServiceSupplychain.class).setDefaultInvoicedPartner(stockMove);
       response.setValues(stockMove);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkInvoiceStatus(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      Beans.get(StockMoveServiceSupplychain.class).checkInvoiceStatus(stockMove);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
+    }
+  }
+
+  public void setInvoicingStatusInvoicedDelayed(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    Beans.get(StockMoveServiceSupplychain.class).setInvoicingStatusInvoicedDelayed(stockMove);
+    response.setReload(true);
+  }
+
+  public void setInvoicingStatusInvoicedValidated(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    Beans.get(StockMoveServiceSupplychain.class).setInvoicingStatusInvoicedValidated(stockMove);
+    response.setReload(true);
+  }
+
+  public void fillRealQuantities(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+      Beans.get(StockMoveServiceSupplychain.class).fillRealQuantities(stockMove);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

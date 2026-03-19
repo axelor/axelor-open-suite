@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+
+  <form id="hr-app-project-config-form" name="app-project-config-form" title="App project"
+    model="com.axelor.studio.db.AppProject" extension="true">
+
+    <extend target="//field[@name='isEnablePerProjectTaskSequence']">
+      <insert position="after">
+        <field name="enableEventCreation" widget="boolean-switch"/>
+        <field name="eventSubjectGroovyFormula" showIf="enableEventCreation"/>
+      </insert>
+    </extend>
+
+    <extend target="//panel[@name='taskStatusMgtPanel']">
+      <insert position="after">
+        <panel name="planificationPanel" title="Planification"
+          if-module="axelor-human-resource">
+          <field name="enablePlanification"/>
+          <field name="blockPPTGeneration"/>
+
+        </panel>
+      </insert>
+    </extend>
+
+  </form>
+
+
+</object-views>

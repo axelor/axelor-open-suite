@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,11 +24,16 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.quality.db.QualityControl;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class QualityControlManagementRepository extends QualityControlRepository {
 
-  @Inject private SequenceService sequenceService;
+  protected SequenceService sequenceService;
+
+  @Inject
+  public QualityControlManagementRepository(SequenceService sequenceService) {
+    this.sequenceService = sequenceService;
+  }
 
   /**
    * Generate and set sequence in reference with predefined prefix.
@@ -42,7 +47,11 @@ public class QualityControlManagementRepository extends QualityControlRepository
       try {
         qualityControl.setReference(
             sequenceService.getSequenceNumber(
-                SequenceRepository.QUALITY_CONTROL, null, QualityControl.class, "reference"));
+                SequenceRepository.QUALITY_CONTROL,
+                null,
+                QualityControl.class,
+                "reference",
+                qualityControl));
       } catch (AxelorException e) {
         TraceBackService.traceExceptionFromSaveMethod(e);
       }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,10 +35,10 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.TypedQuery;
 import java.util.List;
-import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,7 +132,7 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
             .all()
             .filter(
                 "self.account.reconcileOk = true AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) "
-                    + "AND self.amountRemaining > 0 AND self.credit > 0 "
+                    + "AND self.amountRemaining != 0 AND self.credit > 0 "
                     + "AND self.move.partner = ?3 AND self.move.company = ?4 "
                     + "AND self.reimbursementStatusSelect = ?5",
                 MoveRepository.STATUS_ACCOUNTED,

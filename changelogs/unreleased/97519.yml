@@ -1,0 +1,3 @@
+---
+title: "Contract: fixed prorata ratio computation when invoicing period is shorter than invoicing duration."
+module: axelor-contract

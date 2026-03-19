@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
@@ -33,7 +34,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +71,7 @@ public class ProductStockController {
                 .add("form", "stock-move-line-all-form")
                 .param("search-filters", "stock-move-line-filters")
                 .domain(
-                    "self.product.id = :id AND (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id = :locationId) AND self.stockMove.statusSelect != :status AND (self.stockMove.estimatedDate <= :stockDate OR self.stockMove.realDate <= :stockDate)")
+                    "self.product.id = :id AND (self.fromStockLocation.id = :locationId OR self.toStockLocation.id = :locationId) AND self.stockMove.statusSelect != :status AND (self.stockMove.estimatedDate <= :stockDate OR self.stockMove.realDate <= :stockDate)")
                 .context("id", request.getContext().getParent().get("id"))
                 .context("locationId", locationId)
                 .context("status", StockMoveRepository.STATUS_CANCELED)
@@ -84,12 +85,14 @@ public class ProductStockController {
     try {
       Product product = request.getContext().asType(Product.class);
       StockLocationLineService stockLocationLineService = Beans.get(StockLocationLineService.class);
+      StockLocationLineFetchService stockLocationLineFetchService =
+          Beans.get(StockLocationLineFetchService.class);
       if (product.getId() == null) {
         return;
       }
       product = Beans.get(ProductRepository.class).find(product.getId());
       List<StockLocationLine> stockLocationLineList =
-          stockLocationLineService.getStockLocationLines(product);
+          stockLocationLineFetchService.getStockLocationLines(product);
 
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
         stockLocationLineService.updateStockLocationFromProduct(stockLocationLine, product);

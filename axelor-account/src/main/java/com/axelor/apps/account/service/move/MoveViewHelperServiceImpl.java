@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,19 +29,21 @@ public class MoveViewHelperServiceImpl implements MoveViewHelperService {
 
   @Override
   public String filterPartner(Company company, Journal journal) {
-    Long companyId = company.getId();
-    String domain = "self.isContact = false AND " + companyId + " member of self.companySet";
-    if (journal != null && !Strings.isNullOrEmpty(journal.getCompatiblePartnerTypeSelect())) {
-      domain += " AND (";
-      String[] partnerSet = journal.getCompatiblePartnerTypeSelect().split(", ");
-      String lastPartner = partnerSet[partnerSet.length - 1];
-      for (String partner : partnerSet) {
-        domain += "self." + partner + " = true";
-        if (!partner.equals(lastPartner)) {
-          domain += " OR ";
+    String domain = "self.isContact = false";
+    if (company != null) {
+      domain += " AND :company member of self.companySet";
+      if (journal != null && !Strings.isNullOrEmpty(journal.getCompatiblePartnerTypeSelect())) {
+        domain += " AND (";
+        String[] partnerSet = journal.getCompatiblePartnerTypeSelect().split(",");
+        String lastPartner = partnerSet[partnerSet.length - 1];
+        for (String partner : partnerSet) {
+          domain += "self." + partner.trim() + " = true";
+          if (!partner.equals(lastPartner)) {
+            domain += " OR ";
+          }
         }
+        domain += ")";
       }
-      domain += ")";
     }
     return domain;
   }

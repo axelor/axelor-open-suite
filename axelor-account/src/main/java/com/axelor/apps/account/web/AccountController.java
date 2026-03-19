@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,10 +20,16 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.MoveTemplate;
+import com.axelor.apps.account.db.MoveTemplateLine;
+import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.service.TaxAccountService;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -31,19 +37,28 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.MassUpdateTool;
-import com.google.inject.Singleton;
+import com.axelor.utils.helpers.MassUpdateHelper;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class AccountController {
@@ -101,16 +116,6 @@ public class AccountController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
-    try {
-      Account account = request.getContext().asType(Account.class);
-      Beans.get(AccountService.class)
-          .checkAnalyticAxis(account, account.getAnalyticDistributionTemplate());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -204,7 +209,7 @@ public class AccountController {
       List<Integer> selectedIds = (List<Integer>) selectedIdObj;
       final Class<? extends Model> modelClass = (Class<? extends Model>) Class.forName(metaModel);
       Integer recordsUpdated =
-          MassUpdateTool.update(modelClass, fieldName, statusSelect, selectedIds);
+          MassUpdateHelper.update(modelClass, fieldName, statusSelect, selectedIds);
       String message = null;
       if (recordsUpdated > 0) {
         message =
@@ -234,7 +239,7 @@ public class AccountController {
       String metaModel = (String) request.getContext().get("_metaModel");
       Integer statusSelect = (Integer) statusObj;
       final Class<? extends Model> modelClass = (Class<? extends Model>) Class.forName(metaModel);
-      Integer recordsUpdated = MassUpdateTool.update(modelClass, fieldName, statusSelect, null);
+      Integer recordsUpdated = MassUpdateHelper.update(modelClass, fieldName, statusSelect, null);
       String message = null;
       if (recordsUpdated > 0) {
         message =
@@ -269,8 +274,6 @@ public class AccountController {
           Beans.get(AnalyticDistributionTemplateService.class);
       analyticDistributionTemplateService.verifyTemplateValues(
           account.getAnalyticDistributionTemplate());
-      Beans.get(AccountService.class)
-          .checkAnalyticAxis(account, account.getAnalyticDistributionTemplate());
       analyticDistributionTemplateService.validateTemplatePercentages(
           account.getAnalyticDistributionTemplate());
     } catch (Exception e) {
@@ -288,5 +291,138 @@ public class AccountController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void setParentAccountDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+      String domain =
+          "self.company.id = "
+              + Optional.ofNullable(account.getCompany()).map(Company::getId).orElse(null);
+      if (account.getId() != null) {
+        List<Long> allAccountsSubAccountIncluded =
+            Beans.get(AccountService.class)
+                .getAllAccountsSubAccountIncluded(List.of(account.getId()));
+        domain +=
+            " AND self.id NOT IN ("
+                + allAccountsSubAccountIncluded.stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(","))
+                + ")";
+      }
+      response.setAttr("parentAccount", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void viewMoveTemplates(ActionRequest request, ActionResponse response) {
+    Account account = request.getContext().asType(Account.class);
+
+    List<Long> moveTemplateIdList =
+        Beans.get(MoveTemplateLineRepository.class).findByAccount(account).fetch().stream()
+            .map(MoveTemplateLine::getMoveTemplate)
+            .map(MoveTemplate::getId)
+            .distinct()
+            .collect(Collectors.toList());
+
+    ActionView.ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Move templates"));
+    actionViewBuilder.model(MoveTemplate.class.getName());
+    actionViewBuilder.add("grid", "move-template-grid");
+    actionViewBuilder.add("form", "move-template-form");
+    actionViewBuilder.domain("self.id IN (:moveTemplateIds)");
+    actionViewBuilder.context("moveTemplateIds", moveTemplateIdList);
+
+    response.setView(actionViewBuilder.map());
+  }
+
+  public void checkDefaultTaxSet(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+      if (account != null && account.getDefaultTaxSet() != null) {
+        TaxAccountService taxAccountService = Beans.get(TaxAccountService.class);
+        taxAccountService.checkTaxesNotOnlyNonDeductibleTaxes(account.getDefaultTaxSet());
+        taxAccountService.checkSumOfNonDeductibleTaxes(account.getDefaultTaxSet());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  @ErrorException
+  public void originAnalyticDistTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Account account = request.getContext().asType(Account.class);
+    if (Boolean.TRUE.equals(account.getAnalyticDistributionAuthorized())) {
+      Company accountCompany = account.getCompany();
+      if (accountCompany != null && accountCompany.getAccountConfig() != null) {
+        Integer analyticDistSelect =
+            Beans.get(AccountConfigService.class)
+                .getAccountConfig(accountCompany)
+                .getAnalyticDistributionTypeSelect();
+        if (analyticDistSelect == AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER) {
+          response.setAttr("analyticDistributionTemplateLabel", "hidden", false);
+        } else if (analyticDistSelect == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+          response.setAttr("analyticDistributionTemplate", "required", true);
+        }
+      }
+    }
+  }
+
+  @ErrorException
+  public void setDomainAnalyticDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    Account account = context.asType(Account.class);
+
+    response.setAttr(
+        "analyticDistributionTemplate",
+        "domain",
+        Beans.get(AnalyticAttrsService.class)
+            .getAnalyticDistributionTemplateDomain(
+                null, null, account.getCompany(), null, account, false));
+  }
+
+  @SuppressWarnings("unchecked")
+  public void copyAccounts(ActionRequest request, ActionResponse response) {
+    try {
+      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+      if (CollectionUtils.isEmpty(idList)) {
+        return;
+      }
+      List<Account> accountList =
+          idList.stream()
+              .map(id -> Beans.get(AccountRepository.class).find(id.longValue()))
+              .collect(Collectors.toList());
+      Beans.get(AccountService.class)
+          .copyAccounts(accountList, getCompanyList(request.getContext()));
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void copyAccount(ActionRequest request, ActionResponse response) {
+    try {
+      Long id = Long.valueOf(request.getContext().get("_id").toString());
+      Account account = Beans.get(AccountRepository.class).find(id);
+      Beans.get(AccountService.class).copyAccount(account, getCompanyList(request.getContext()));
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  protected List<Company> getCompanyList(Context context) {
+    List<Map<String, Object>> companySet = (List<Map<String, Object>>) context.get("companySet");
+    if (ObjectUtils.isEmpty(companySet)) {
+      return Collections.emptyList();
+    }
+    return companySet.stream()
+        .map(
+            map ->
+                Beans.get(CompanyRepository.class).find(Long.parseLong(map.get("id").toString())))
+        .collect(Collectors.toList());
   }
 }

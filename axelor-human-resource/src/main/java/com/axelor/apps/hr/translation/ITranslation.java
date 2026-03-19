@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -64,6 +64,57 @@ public interface ITranslation {
   public static final String EMPLOYEE_POSITION = /*$$(*/ "Employee.position"; /*)*/
   public static final String EMPLOYEE_CONTRACT_TYPE = /*$$(*/ "Employee.contractType"; /*)*/
 
+  public static final String EMPLOYEE_CODE = /*$$(*/ "Employee code"; /*)*/
+  public static final String EMPLOYEE_CODE_NATURE = /*$$(*/ "Code nature"; /*)*/
+  public static final String EMPLOYEE_NAME_AND_SURNAME = /*$$(*/ "Name and surname"; /*)*/
+  public static final String EMPLOYEE_LUNCH_VOUCHER_NUMBER = /*$$(*/ "Lunch Voucher's number"; /*)*/
+  public static final String LEAVE_REQUEST_START_DATE = /*$$(*/ "Start date"; /*)*/
+  public static final String LEAVE_REQUEST_END_DATE = /*$$(*/ "End date"; /*)*/
+  public static final String LEAVE_REQUEST_START_ON = /*$$(*/ "Start On"; /*)*/
+  public static final String LEAVE_REQUEST_END_ON = /*$$(*/ "End On"; /*)*/
+
   public static final String EDITOR_TEAM_TASK = /*$$(*/ "TeamTask"; /*)*/
   public static final String EDITOR_ADD_A_LINE = /*$$(*/ "ADD A LINE"; /*)*/
+
+  String MEDICAL_VISIT = /*$$(*/ "Medical visit"; /*)*/
+
+  String SET_TOTAL_TAX_ZERO = /*$$(*/
+      "The total tax has been set to zero since the expense type blocks taxes."; /*)*/
+
+  String DISTANCE_BETWEEN_CITIES = /*$$(*/ "The distance between %s and %s." /*)*/;
+  public static final String INCREMENT_LEAVE_REASON_BATCH_EXECUTION_RESULT = /*$$(*/
+      "%d leave reason(s) treated and %d anomaly(ies) reported !"; /*)*/
+
+  public static final String CHECK_RESPONSE_RESPONSE = /*$$(*/
+      "Here is the list of the warnings and errors" /*)*/;
+  public static final String EXPENSE_LINE_UPDATED = /*$$(*/
+      "Expense line successfully updated." /*)*/;
+  public static final String EXPENSE_UPDATED = /*$$(*/ "Expense successfully updated." /*)*/;
+  public static final String EXPENSE_UPDATED_NO_MAIL = /*$$(*/
+      "Expense successfully updated. An error occurred while sending the mail." /*)*/;
+  public static final String TIMESHEET_UPDATED = /*$$(*/ "Timesheet successfully updated." /*)*/;
+  public static final String TIMESHEET_LINE_UPDATED = /*$$(*/
+      "Timesheet line successfully updated." /*)*/;
+  public static final String TIMESHEET_CONVERTED_PERIOD_TOTAL = /*$$(*/
+      "Timesheet converted period total." /*)*/;
+  public static final String TIMER_UPDATED = /*$$(*/ "Timer successfully updated." /*)*/;
+
+  String API_LEAVE_REQUEST_UPDATED = /*$$(*/ "Leave request successfully updated." /*)*/;
+
+  String API_LEAVE_REQUEST_UPDATED_NO_MAIL = /*$$(*/
+      "Leave request successfully updated. An error occurred while sending the mail." /*)*/;
+
+  String API_LEAVE_REQUEST_CREATE_SUCCESS = /*$$(*/
+      "Leave request(s) have been correctly created." /*)*/;
+
+  String API_LEAVE_REQUEST_CREATE_SUCCESS_WITH_ERRORS = /*$$(*/
+      "Leave request(s) have been correctly created. Some requests were ignored as they were not correctly configured." /*)*/;
+
+  String API_LEAVE_REQUEST_COMPUTE_DURATION = /*$$(*/ "Duration computed." /*)*/;
+
+  String API_LEAVE_REQUEST_LEAVE_DAYS_TO_DATE_COMPUTATION = /*$$(*/
+      "Available leave days computed." /*)*/;
+
+  String LEAVE_REQUEST_CREATE_DURATION_ALERT = /*$$(*/
+      "You exceeded the available/asked duration. Do you wish to proceed ?" /*)*/;
 }

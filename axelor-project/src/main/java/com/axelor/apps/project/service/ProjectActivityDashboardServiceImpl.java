@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Wiki;
@@ -25,7 +26,9 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.i18n.I18n;
@@ -34,28 +37,33 @@ import com.axelor.mail.db.MailMessage;
 import com.axelor.mail.db.repo.MailMessageRepository;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.views.Selection;
+import com.axelor.meta.schema.views.Selection.Option;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashboardService {
 
   @Inject protected MailMessageRepository mailMessageRepo;
   @Inject protected ProjectTaskRepository projectTaskRepo;
   @Inject protected WikiRepository wikiRepo;
-  @Inject protected ProjectService projectService;
+  @Inject protected ProjectToolService projectToolService;
   @Inject protected ObjectMapper objectMapper;
   @Inject protected ProjectRepository projectRepo;
 
@@ -65,8 +73,6 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
   public Map<String, Object> getData(LocalDate startDate, LocalDate endDate, Long projectId) {
     Map<String, Object> dataMap = new HashMap<>();
 
-    List<MailMessage> mailMessageList = getMailMessages(startDate, endDate);
-
     Map<String, List<Map<String, List<Map<String, Object>>>>> activityDataMap =
         new LinkedHashMap<>();
 
@@ -75,11 +81,13 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
 
     if (projectId != null) {
       project = projectRepo.find(projectId);
-      projectService.getChildProjectIds(projectIdSet, project);
+      projectIdSet = projectToolService.getRelatedProjectIds(project);
     } else {
-      project = AuthUtils.getUser().getContextProject();
-      projectIdSet = projectService.getContextProjectIds();
+      project = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveProject).orElse(null);
+      projectIdSet = projectToolService.getActiveProjectIds();
     }
+
+    List<MailMessage> mailMessageList = getMailMessages(startDate, endDate, project);
 
     for (MailMessage message : mailMessageList) {
       LocalDateTime createdOn = message.getCreatedOn();
@@ -98,9 +106,12 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
       }
       activityMap.put("title", message.getRelatedName());
       activityMap.put("time", createdOn);
-      activityMap.put("userId", message.getAuthor().getId());
-      activityMap.put("user", message.getAuthor().getName());
-      activityMap.putAll(getModelWithUtilityClass(message.getRelatedModel()));
+      User author = message.getAuthor();
+      if (author != null) {
+        activityMap.put("userId", author.getId());
+        activityMap.put("user", author.getName());
+      }
+      activityMap.putAll(getModelWithUtilityClass(message));
       try {
         activityMap.put("activity", getActivity(message));
       } catch (Exception e) {
@@ -129,21 +140,33 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
       activityDataMap.put(date, titleMapList);
     }
 
-    dataMap.put("$startDate", startDate.format(DATE_FORMATTER));
-    dataMap.put("$endDate", endDate.format(DATE_FORMATTER));
+    DateTimeFormatter dateFormat = getDateFormatter();
+    dataMap.put("$startDate", startDate.format(dateFormat));
+    dataMap.put("$endDate", endDate.format(dateFormat));
+
     dataMap.put("$activityList", activityDataMap.isEmpty() ? null : Arrays.asList(activityDataMap));
     return dataMap;
   }
 
+  protected DateTimeFormatter getDateFormatter() {
+    return Optional.ofNullable(AuthUtils.getUser())
+        .map(User::getLocalization)
+        .filter(Objects::nonNull)
+        .map(Localization::getDateFormat)
+        .filter(StringUtils::notEmpty)
+        .map(DateTimeFormatter::ofPattern)
+        .orElse(DATE_FORMATTER);
+  }
+
   @Override
   public Map<String, Object> getPreviousData(String date, Long projectId) {
-    LocalDate formattedDate = LocalDate.parse(date, DATE_FORMATTER);
+    LocalDate formattedDate = LocalDate.parse(date, getDateFormatter());
     return this.getData(formattedDate.minusDays(30), formattedDate.minusDays(1), projectId);
   }
 
   @Override
   public Map<String, Object> getNextData(String date, Long projectId) {
-    LocalDate formattedDate = LocalDate.parse(date, DATE_FORMATTER);
+    LocalDate formattedDate = LocalDate.parse(date, getDateFormatter());
     LocalDate endDate = formattedDate.plusDays(30);
     LocalDate todayDate = LocalDate.now();
     if (todayDate.isBefore(endDate)) {
@@ -162,14 +185,22 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
     return null;
   }
 
-  protected Map<String, Object> getModelWithUtilityClass(String model) {
+  protected Map<String, Object> getModelWithUtilityClass(MailMessage message) {
+    String model = message.getRelatedModel();
     Map<String, Object> dataMap = new HashMap<>();
     if (ProjectTask.class.getName().equals(model)) {
-      dataMap.put("modelName", "Project task");
-      dataMap.put("utilityClass", "label-success");
+      ProjectTask projectTask = projectTaskRepo.find(message.getRelatedId());
+      String modelName =
+          Optional.ofNullable(projectTask.getTypeSelect())
+              .map(typeSelect -> MetaStore.getSelectionItem("project.task.type.select", typeSelect))
+              .map(Option::getTitle)
+              .orElse("Project task");
+      dataMap.put("modelName", modelName);
+      dataMap.put("utilityClass", "success");
+
     } else if (Wiki.class.getName().equals(model)) {
       dataMap.put("modelName", "Wiki");
-      dataMap.put("utilityClass", "label-warning");
+      dataMap.put("utilityClass", "warning");
     }
     return dataMap;
   }
@@ -205,20 +236,38 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
 
   protected String getActivityDate(LocalDateTime dateTime) {
     LocalDate date = dateTime.toLocalDate();
-    return LocalDate.now().equals(date) ? I18n.get("Today") : date.format(DATE_FORMATTER);
+    return LocalDate.now().equals(date) ? I18n.get("Today") : date.format(getDateFormatter());
   }
 
-  protected List<MailMessage> getMailMessages(LocalDate startDate, LocalDate endDate) {
-    return mailMessageRepo
-        .all()
-        .filter(
-            "self.type = :type AND self.relatedModel IN :relatedModels AND self.createdOn <= :endDate AND self.createdOn >= :startDate")
-        .bind("type", MailConstants.MESSAGE_TYPE_NOTIFICATION)
-        .bind("relatedModels", getRelatedModels())
-        .bind("startDate", startDate.atTime(LocalTime.MIN))
-        .bind("endDate", endDate.atTime(LocalTime.MAX))
-        .order("-id")
-        .fetch();
+  protected List<MailMessage> getMailMessages(
+      LocalDate startDate, LocalDate endDate, Project project) {
+    List<String> relatedModelList = getRelatedModels();
+    if (project == null || CollectionUtils.isEmpty(relatedModelList)) {
+      return Collections.emptyList();
+    }
+    String relatedQuery =
+        relatedModelList.stream()
+            .map(
+                model -> {
+                  return String.format(
+                      "(self.relatedModel = '%s' AND self.relatedId IN (SELECT model.id FROM %s model WHERE model.project = :project))",
+                      model, model);
+                })
+            .collect(Collectors.joining(" OR "));
+
+    String query =
+        "SELECT self FROM MailMessage self"
+            + " WHERE self.type = :type AND self.createdOn <= :endDate AND self.createdOn >= :startDate AND ("
+            + relatedQuery
+            + ") ORDER BY self.id DESC";
+
+    return JPA.em()
+        .createQuery(query, MailMessage.class)
+        .setParameter("type", MailConstants.MESSAGE_TYPE_NOTIFICATION)
+        .setParameter("project", project)
+        .setParameter("startDate", startDate.atTime(LocalTime.MIN))
+        .setParameter("endDate", endDate.atTime(LocalTime.MAX))
+        .getResultList();
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})

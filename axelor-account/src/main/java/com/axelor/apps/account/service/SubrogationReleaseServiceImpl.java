@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,8 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.ReportFactory;
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
@@ -30,7 +31,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -42,16 +42,15 @@ import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -138,7 +137,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
             "subrogationRelease",
             subrogationRelease.getCompany(),
             SubrogationRelease.class,
-            "sequenceNumber");
+            "sequenceNumber",
+            subrogationRelease);
     if (Strings.isNullOrEmpty(sequenceNumber)) {
       throw new AxelorException(
           Sequence.class,
@@ -163,7 +163,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                 "SELECT Invoice.invoiceId "
                     + " FROM SubrogationRelease SubrogationRelease "
                     + " LEFT JOIN Invoice Invoice on  Invoice member of  SubrogationRelease.invoiceSet "
-                    + " LEFT JOIN SubrogationRelease SubrogationRelease2 on Invoice member of  SubrogationRelease2.invoiceSet "
+                    + " LEFT JOIN Invoice.subrogationRelease SubrogationRelease2 "
                     + " WHERE SubrogationRelease.id = :subroID "
                     + " AND SubrogationRelease2.id != :subroID"
                     + " AND SubrogationRelease2.statusSelect IN (:statusTransmitted ,:statusAccounted,:statusCleared )")
@@ -183,26 +183,9 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   }
 
   @Override
-  public String printToPDF(SubrogationRelease subrogationRelease, String name)
-      throws AxelorException {
-    ReportSettings reportSettings = ReportFactory.createReport(IReport.SUBROGATION_RELEASE, name);
-    reportSettings.addParam("SubrogationReleaseId", subrogationRelease.getId());
-    reportSettings.addParam("Locale", ReportSettings.getPrintingLocale(null));
-    reportSettings.addParam(
-        "Timezone",
-        subrogationRelease.getCompany() != null
-            ? subrogationRelease.getCompany().getTimezone()
-            : null);
-    reportSettings.addFormat("pdf");
-    reportSettings.toAttach(subrogationRelease);
-    reportSettings.generate();
-    return reportSettings.getFileLink();
-  }
-
-  @Override
   public String exportToCSV(SubrogationRelease subrogationRelease)
       throws AxelorException, IOException {
-    String dataExportDir = appBaseService.getDataExportDir();
+    String dataExportDir = AppSettings.get().get(AvailableAppSettings.DATA_UPLOAD_DIR);
     List<String[]> allMoveLineData = new ArrayList<>();
 
     Comparator<Invoice> byInvoiceDate =
@@ -242,7 +225,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
             "%s %s.csv", I18n.get("Subrogation release"), subrogationRelease.getSequenceNumber());
     Files.createDirectories(Paths.get(filePath));
     Path path = Paths.get(filePath, fileName);
-    CsvTool.csvWriter(filePath, fileName, ';', null, allMoveLineData);
+    CsvHelper.csvWriter(filePath, fileName, ';', null, allMoveLineData);
 
     try (InputStream is = new FileInputStream(path.toFile())) {
       Beans.get(MetaFiles.class).attach(is, fileName, subrogationRelease);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -89,7 +89,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -115,22 +115,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="Locale" id="10">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">false</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -331,17 +315,17 @@ Invoice.invoice_date,
 Invoice.in_tax_total,
 Invoice.operation_type_select,
 Currency.code as currency
-from public.account_invoice as Invoice
+from account_invoice as Invoice
 left outer join base_currency as Currency on Invoice.currency = Currency.id
 where (Invoice.id in 
 	(select InvoiceBatchSet.account_invoice
-	 from public.account_invoice_batch_set as InvoiceBatchSet
-	 where InvoiceBatchSet.batch_set = (select NoteBills.batch from public.account_note_bills as NoteBills where NoteBills.id = ?))
+	 from account_invoice_batch_set as InvoiceBatchSet
+	 where InvoiceBatchSet.batch_set = (select NoteBills.batch from account_note_bills as NoteBills where NoteBills.id = ?))
 OR Invoice.operation_type_select = 4 AND  Invoice.status_select = 3 AND Invoice.original_invoice in
     (select InvoiceBatchSet.account_invoice
-	 from public.account_invoice_batch_set as InvoiceBatchSet
-	 where InvoiceBatchSet.batch_set = (select NoteBills.batch from public.account_note_bills as NoteBills where NoteBills.id = ?)))
-AND Invoice.partner = (select NoteBills.partner from public.account_note_bills as NoteBills where NoteBills.id = ?)
+	 from account_invoice_batch_set as InvoiceBatchSet
+	 where InvoiceBatchSet.batch_set = (select NoteBills.batch from account_note_bills as NoteBills where NoteBills.id = ?)))
+AND Invoice.partner = (select NoteBills.partner from account_note_bills as NoteBills where NoteBills.id = ?)
 ORDER BY Invoice.operation_type_select
 ]]></xml-property>
         </oda-data-set>
@@ -387,8 +371,8 @@ ORDER BY Invoice.operation_type_select
             </list-property>
             <xml-property name="queryText"><![CDATA[select
 Partner.partner_seq
-from public.base_partner as Partner
-where Partner.id = (select NoteBills.partner from public.account_note_bills as NoteBills where NoteBills.id = ?)]]></xml-property>
+from base_partner as Partner
+where Partner.id = (select NoteBills.partner from account_note_bills as NoteBills where NoteBills.id = ?)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -465,8 +449,8 @@ where Partner.id = (select NoteBills.partner from public.account_note_bills as N
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 Invoice.address_str
-from public.account_invoice as Invoice
-where Invoice.partner = (select NoteBills.partner from public.account_note_bills as NoteBills where NoteBills.id = ?)
+from account_invoice as Invoice
+where Invoice.partner = (select NoteBills.partner from account_note_bills as NoteBills where NoteBills.id = ?)
 LIMIT 1]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -543,8 +527,8 @@ LIMIT 1]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 Batch.end_date
-from public.base_batch as Batch
-where Batch.id = (select NoteBills.batch from public.account_note_bills as NoteBills where NoteBills.id = ?)]]></xml-property>
+from base_batch as Batch
+where Batch.id = (select NoteBills.batch from account_note_bills as NoteBills where NoteBills.id = ?)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -715,14 +699,14 @@ PrintingSettings.logo_position_select as "logoPosition",
 Company.height as "logo_height",
 Company.width as "logo_width",
 MetaFile.file_path as "logo_path"
-from public.account_accounting_batch as AccountingBatch
-left join public.base_company as Company on Company.id = AccountingBatch.company
-left join public.base_printing_settings as PrintingSettings on Company.printing_settings = PrintingSettings.id
-left outer join public.meta_file as MetaFile on (MetaFile.id = Company.logo)
+from account_accounting_batch as AccountingBatch
+left join base_company as Company on Company.id = AccountingBatch.company
+left join base_printing_settings as PrintingSettings on Company.printing_settings = PrintingSettings.id
+left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 where AccountingBatch.id in 
 	(select Batch.accounting_batch
-	 from public.base_batch as Batch
-	 where Batch.id = (select NoteBills.batch from public.account_note_bills as NoteBills where NoteBills.id = ?))]]></xml-property>
+	 from base_batch as Batch
+	 where Batch.id = (select NoteBills.batch from account_note_bills as NoteBills where NoteBills.id = ?))]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">
             <property name="nullsOrdering">nulls lowest</property>
@@ -752,7 +736,7 @@ where AccountingBatch.id in
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">-1</property>
@@ -794,7 +778,7 @@ where AccountingBatch.id in
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -932,7 +916,7 @@ NoteBills.due_date,
 NoteBills.bill_of_exchange_type_select,
 NoteBills.note_bills_seq,
 NoteBills.created_on
-from public.account_note_bills as NoteBills
+from account_note_bills as NoteBills
 where NoteBills.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1024,8 +1008,7 @@ where NoteBills.id = ?]]></xml-property>
         </simple-master-page>
     </page-setup>
     <body>
-        <text id="4412">
-            <property name="fontSize">8pt</property>
+        <grid id="5437">
             <property name="borderBottomStyle">solid</property>
             <property name="borderBottomWidth">thin</property>
             <property name="dataSet">PrintingSettings</property>
@@ -1051,14 +1034,14 @@ where NoteBills.id = ?]]></xml-property>
                 <structure>
                     <property name="name">logo_height</property>
                     <text-property name="displayName">logo_height</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
-                    <property name="dataType">integer</property>
+                    <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'35px'}</expression>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">logo_width</property>
                     <text-property name="displayName">logo_width</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
-                    <property name="dataType">integer</property>
+                    <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'100px'}</expression>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">logo_path</property>
@@ -1068,25 +1051,87 @@ where NoteBills.id = ?]]></xml-property>
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
-            <structure name="toc"/>
-            <property name="contentType">html</property>
-            <text-property name="content"><![CDATA[<TABLE >
-	<TR>
-		<VALUE-OF format="HTML">if(row["logoPosition"] == 3) {
-		"<TD>"+(row["header"] ? row["header"] : "")+"</TD><TD/><TD align='right' valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></td>"
-		} else if(row["logoPosition"] == 1) {
-		"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD><TD/><TD>"+(row["header"] ? row["header"] : "")+"</TD>"
-		} else if(row["logoPosition"] == 2) {
-			"<TD/><TD align='center' valign='middle'><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD><TD>"+(row["header"] ? row["header"] : "")+"</TD>"
-		}else if(row["logoPosition"] == null) {
-			"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/>"
-		}else {
-		"<TD/><TD/><TD>"+(row["header"] ? row["header"] : "")+"</TD>"
-		}
- 		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-        </text>
+            <column id="5438"/>
+            <column id="5439"/>
+            <column id="5440"/>
+            <row id="5441">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["logoPosition"] == 3</expression>
+                    </structure>
+                </list-property>
+                <cell id="5442">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <method name="onRender"><![CDATA[var logoPosition = row["logoPosition"];
+
+if (logoPosition == 2) {
+   this.getStyle().setTextAlign('right')
+   this.getStyle().setPaddingRight('15%');
+}]]></method>
+                    <property name="textAlign">left</property>
+                    <property name="verticalAlign">middle</property>
+                    <image id="6233">
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["logoPosition"] == 0</expression>
+                            </structure>
+                        </list-property>
+                        <method name="onRender"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                        <property name="source">file</property>
+                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                    </image>
+                </cell>
+                <cell id="5444">
+                    <text id="6234">
+                        <property name="fontSize">8pt</property>
+                        <property name="marginLeft">0pt</property>
+                        <property name="textAlign">right</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["logoPosition"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <method name="onRender"><![CDATA[this.getStyle().setTextAlign('left')]]></method>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["header"] ? row["header"] : ""</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="5445">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["logoPosition"] != 3</expression>
+                    </structure>
+                </list-property>
+                <cell id="5446">
+                    <text id="6015">
+                        <property name="fontSize">8pt</property>
+                        <property name="marginLeft">0pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["header"] ? row["header"] : ""</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5447">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="textAlign">right</property>
+                    <property name="verticalAlign">middle</property>
+                    <image id="6016">
+                        <method name="onRender"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                        <property name="source">file</property>
+                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                    </image>
+                </cell>
+            </row>
+        </grid>
         <grid id="178">
             <property name="height">2.2916666666666665in</property>
             <column id="179"/>

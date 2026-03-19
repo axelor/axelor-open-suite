@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,12 +24,14 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.Set;
 
 public interface SupplierCatalogService {
 
@@ -71,14 +73,23 @@ public interface SupplierCatalogService {
       Company company,
       Currency currency,
       LocalDate localDate,
-      TaxLine taxLine,
+      Set<TaxLine> taxLineSet,
       boolean resultInAti)
       throws AxelorException;
 
   BigDecimal getMinQty(Product product, Partner supplierPartner, Company company)
       throws AxelorException;
 
-  void checkMinQty(
+  boolean checkMinQty(
+      Product product,
+      Partner supplierPartner,
+      Company company,
+      BigDecimal qty,
+      ActionRequest request,
+      ActionResponse response)
+      throws AxelorException;
+
+  boolean checkMaxQty(
       Product product,
       Partner supplierPartner,
       Company company,
@@ -89,4 +100,6 @@ public interface SupplierCatalogService {
 
   public BigDecimal getPurchasePrice(SupplierCatalog supplierCatalog, Company company)
       throws AxelorException;
+
+  Unit getUnit(Product product, Partner supplierPartner, Company company) throws AxelorException;
 }

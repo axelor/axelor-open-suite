@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,14 +25,18 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
+import com.axelor.apps.production.service.ProdProcessComputationService;
 import com.axelor.apps.production.service.ProdProcessService;
+import com.axelor.apps.production.service.ProdProcessWorkflowService;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.collect.Lists;
-import com.google.inject.Singleton;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
+import jakarta.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Singleton
@@ -73,24 +77,19 @@ public class ProdProcessController {
     if (prodProcess.getProdProcessLineList() != null) {
       Beans.get(ProdProcessService.class).changeProdProcessListOutsourcing(prodProcess);
     }
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
     response.setValue("prodProcessLineList", prodProcess.getProdProcessLineList());
     response.setHidden("prodProcessLineList.outsourcing", !prodProcess.getOutsourcing());
 
-    if (!prodProcess.getOutsourcing()) {
+    if (!prodProcess.getOutsourcing() && !prodProcess.getOutsourcable()) {
       response.setValue("generatePurchaseOrderOnMoPlanning", false);
       response.setValue("subcontractor", null);
       response.setValue("outsourcingStockLocation", null);
-    }
-  }
-
-  public void print(ActionRequest request, ActionResponse response) {
-
-    try {
-      ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
-      String fileLink = Beans.get(ProdProcessService.class).print(prodProcess);
-      response.setView(ActionView.define(prodProcess.getName()).add("html", fileLink).map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    } else {
+      response.setValue(
+          "generatePurchaseOrderOnMoPlanning",
+          appProductionService.getAppProduction().getManageOutsourcing()
+              && appProductionService.getAppProduction().getGeneratePurchaseOrderOnMoPlanning());
     }
   }
 
@@ -100,8 +99,7 @@ public class ProdProcessController {
     ProdProcess prodProcess =
         prodProcessRepository.find(request.getContext().asType(ProdProcess.class).getId());
 
-    List<ProdProcess> prodProcessSet = Lists.newArrayList();
-    prodProcessSet =
+    List<ProdProcess> prodProcessSet =
         prodProcessRepository
             .all()
             .filter("self.originalProdProcess = :origin")
@@ -111,15 +109,14 @@ public class ProdProcessController {
 
     if (!prodProcessSet.isEmpty()) {
 
-      String existingVersions = "";
-      for (ProdProcess prodProcessVersion : prodProcessSet) {
-        existingVersions += "<li>" + prodProcessVersion.getFullName() + "</li>";
-      }
+      StringHtmlListBuilder builder = new StringHtmlListBuilder();
+      prodProcessSet.stream().map(ProdProcess::getFullName).forEach(builder::append);
+
       message =
           String.format(
               I18n.get(
-                  "This production process already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?"),
-              existingVersions);
+                  "This production process already has the following versions : <br/> %s And these versions may also have ones. Do you still wish to create a new one ?"),
+              builder.toString());
     } else {
       message = I18n.get("Do you really wish to create a new version of this production process ?");
     }
@@ -143,5 +140,66 @@ public class ProdProcessController {
             .param("search-filters", "prod-process-filters")
             .context("_showRecord", String.valueOf(copy.getId()))
             .map());
+  }
+
+  public void setDraftStaus(ActionRequest request, ActionResponse response) throws AxelorException {
+    try {
+      ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+      prodProcess = Beans.get(ProdProcessRepository.class).find(prodProcess.getId());
+      Beans.get(ProdProcessWorkflowService.class).setDraftStatus(prodProcess);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setValidateStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+      prodProcess = Beans.get(ProdProcessRepository.class).find(prodProcess.getId());
+      Beans.get(ProdProcessWorkflowService.class).setValidateStatus(prodProcess);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setApplicableStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+      prodProcess = Beans.get(ProdProcessRepository.class).find(prodProcess.getId());
+      Beans.get(ProdProcessWorkflowService.class).setApplicableStatus(prodProcess);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setObsoleteStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+      prodProcess = Beans.get(ProdProcessRepository.class).find(prodProcess.getId());
+      Beans.get(ProdProcessWorkflowService.class).setObsoleteStatus(prodProcess);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void recomputeLeadTime(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+    BigDecimal qty =
+        prodProcess.getLaunchQty() != null
+                && prodProcess.getLaunchQty().compareTo(BigDecimal.ZERO) > 0
+            ? prodProcess.getLaunchQty()
+            : BigDecimal.ONE;
+    if (prodProcess.getCompany() != null) {
+      response.setValue(
+          "leadTime", Beans.get(ProdProcessComputationService.class).getLeadTime(prodProcess, qty));
+    }
   }
 }

@@ -1,0 +1,5 @@
+"name";"metaModel.name";"localizationSet.importId";"target";"printTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"Refus BR";"StockMove";1;;;;"false";;"Rejet ou annulation de réception de commande $StockMove.purchaseOrderSet:{it|$it.externalReference$}$";"<p>Bonjour,<br/><br/>
+Nous avons le regret de vous informer que la réception de la commande $StockMove.purchaseOrderSet:{it|$it.externalReference$}$ a été rejetée ou annulée pour la raison : $StockMove.cancelReason.name$.
+<br/><br/>Veuillez trouver ci-joint les détails concernant cette annulation ou ce refus. Pour avoir de précisions supplémentaires, n'hésitez pas à nous contacter.
+<br/><br/>Cordialement,<br/>L'équipe Axelor</p>";"$StockMove.partner.emailAddress.address$";;;2

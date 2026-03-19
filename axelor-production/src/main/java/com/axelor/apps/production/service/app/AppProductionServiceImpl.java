@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,15 +25,11 @@ import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppProduction;
-import com.axelor.studio.db.repo.AppRepository;
-import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
 @Singleton
@@ -42,18 +38,13 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
   public static final int DEFAULT_NB_DECIMAL_DIGITS = 2;
 
   @Inject
-  public AppProductionServiceImpl(
-      AppRepository appRepo,
-      MetaFiles metaFiles,
-      AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsStudioService) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
+  public AppProductionServiceImpl(AppService appService) {
+    super(appService);
   }
 
   @Override
   public AppProduction getAppProduction() {
-    return Query.of(AppProduction.class).fetchOne();
+    return Query.of(AppProduction.class).cacheable().autoFlush(false).fetchOne();
   }
 
   @Override
@@ -89,5 +80,10 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
         .createQuery(
             "UPDATE Partner self SET self.isSubcontractor = FALSE WHERE self.isSubcontractor IS TRUE")
         .executeUpdate();
+  }
+
+  @Override
+  public boolean getIsCostPerProcessLine() {
+    return getAppProduction().getIsCostPerProcessLine();
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,9 +18,7 @@
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.AddressExport;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
@@ -29,29 +27,32 @@ import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.MapGoogleService;
+import com.axelor.apps.base.service.MapOsmService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.address.AddressAttrsService;
+import com.axelor.apps.base.service.address.AddressCreationService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppBaseRepository;
-import com.google.inject.Singleton;
 import com.qas.web_2005_02.AddressLineType;
 import com.qas.web_2005_02.PicklistEntryType;
 import com.qas.web_2005_02.QAAddressType;
 import com.qas.web_2005_02.QAPicklistType;
 import com.qas.web_2005_02.VerifyLevelType;
-import java.io.IOException;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -195,22 +196,6 @@ public class AddressController {
     } else response.setInfo(I18n.get(BaseExceptionMessage.ADDRESS_4));
   }
 
-  public void export(ActionRequest request, ActionResponse response)
-      throws IOException, AxelorException {
-
-    AddressExport addressExport = request.getContext().asType(AddressExport.class);
-    String dataExportDir = Beans.get(AppService.class).getDataExportDir();
-
-    String addressExportPath = addressExport.getPath();
-    if (addressExportPath == null) {
-      addressExportPath = "adresses.csv";
-    }
-
-    int size = Beans.get(AddressService.class).export(dataExportDir + addressExportPath);
-
-    response.setValue("log", size + " adresses exportées");
-  }
-
   public void viewMap(ActionRequest request, ActionResponse response) {
 
     try {
@@ -239,11 +224,10 @@ public class AddressController {
   public void viewDirection(ActionRequest request, ActionResponse response) {
     AddressRepository addressRepository = Beans.get(AddressRepository.class);
     try {
-      MapService mapService = Beans.get(MapService.class);
       String key = null;
       if (Beans.get(AppBaseService.class).getAppBase().getMapApiSelect()
           == AppBaseRepository.MAP_API_GOOGLE) {
-        key = mapService.getGoogleMapsApiKey();
+        key = Beans.get(MapGoogleService.class).getGoogleMapsApiKey();
       }
 
       Company company =
@@ -284,7 +268,8 @@ public class AddressController {
       mapView.put("title", "Map");
       mapView.put(
           "resource",
-          mapService.getDirectionUrl(key, departureLatLong.get(), arrivalLatLong.get()));
+          Beans.get(MapOsmService.class)
+              .getDirectionUrl(key, departureLatLong.get(), arrivalLatLong.get()));
       mapView.put("viewType", "html");
       response.setView(mapView);
       response.setReload(true);
@@ -309,7 +294,7 @@ public class AddressController {
   public void createPartnerAddress(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     Context parentContext = context.getParent();
-    if (parentContext.isEmpty()) {
+    if (ObjectUtils.isEmpty(parentContext)) {
       return;
     }
 
@@ -318,6 +303,13 @@ public class AddressController {
 
     String partnerField = PartnerAddressRepository.modelPartnerFieldMap.get(parentModel);
     LOG.debug("Create partner address : Parent field = {}", partnerField);
+
+    Context parentParentContext = parentContext.getParent();
+    if (partnerField == null
+        || (parentParentContext != null
+            && parentParentContext.get("_model").toString().equals(Partner.class.getName()))) {
+      return;
+    }
 
     Partner partner = null;
     if (parentContext.get(partnerField) instanceof Partner) {
@@ -364,7 +356,24 @@ public class AddressController {
 
   public void autocompleteAddress(ActionRequest request, ActionResponse response) {
     Address address = request.getContext().asType(Address.class);
-    Beans.get(AddressService.class).autocompleteAddress(address);
+    Beans.get(AddressCreationService.class).autocompleteAddress(address);
     response.setValues(address);
+  }
+
+  public void getAddressMetaField(ActionRequest request, ActionResponse response) {
+    Address address = request.getContext().asType(Address.class);
+
+    if (address.getCountry() != null) {
+      response.setAttrs(
+          Beans.get(AddressAttrsService.class).getCountryAddressMetaFieldOnChangeAttrsMap(address));
+    }
+
+    Context context = request.getContext();
+    Context parentContext = context.getParent();
+    response.setAttr(
+        "addressTypePanel",
+        "hidden",
+        parentContext != null
+            && parentContext.get("_model").toString().equals(PartnerAddress.class.getName()));
   }
 }

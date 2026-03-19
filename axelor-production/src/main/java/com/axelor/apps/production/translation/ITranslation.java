@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,4 +26,22 @@ public interface ITranslation {
   public static final String MPS_CHARGE = /*$$(*/ "Mps Charge"; /*)*/
   public static final String PRODUCTION_COMMENT = /*$$(*/
       "Please take the following comment into account:" /*)*/;
+
+  public static final String OPERATION_ORDER_DURATION_PAUSED_200 = /*$$(*/
+      "Your time on this operation is paused. The status of the operation has not been updated as someone is still working on it." /*)*/;
+
+  public static final String OPERATION_ORDER_WORKFLOW_NOT_SUPPORTED = /*$$(*/
+      "This workflow is not supported for manufacturing operation status." /*)*/;
+
+  public static final String OPERATION_ORDER_DURATION_PAUSED_403 = /*$$(*/
+      "Your time on this operation is paused. This operation cannot be stopped because other operators are still working on it. You can go to the web instance to force stop the operation." /*)*/;
+
+  public static final String REQUEST_COMPLETED = /*$$(*/ "Request successfully completed" /*)*/;
+  public static final String QUANTITY_UPDATED = /*$$(*/ "Quantity successfully updated." /*)*/;
+  public static final String MANUFACTURING_ORDER_UPDATED = /*$$(*/
+      "Manufacturing order successfully updated." /*)*/;
+  public static final String WASTED_PRODUCT_QUANTITY_UPDATED = /*$$(*/
+      "Wasted product quantity successfully updated." /*)*/;
+  public static final String MANUFACTURING_OPERATION_STATUS_UPDATED = /*$$(*/
+      "Manufacturing operation status successfully updated." /*)*/;
 }

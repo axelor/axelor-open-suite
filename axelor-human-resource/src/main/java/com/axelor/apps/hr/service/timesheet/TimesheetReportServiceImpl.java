@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,7 +33,6 @@ import com.axelor.apps.hr.db.TimesheetReminderLine;
 import com.axelor.apps.hr.db.TimesheetReport;
 import com.axelor.apps.hr.db.repo.ExtraHoursLineRepository;
 import com.axelor.apps.hr.db.repo.ExtraHoursRepository;
-import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetReminderRepository;
@@ -42,17 +41,18 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.hr.service.leave.LeaveService;
+import com.axelor.apps.hr.service.leave.LeaveRequestService;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveHoursService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateMessageService;
-import com.axelor.utils.QueryBuilder;
-import com.axelor.utils.date.DateTool;
-import com.google.inject.Inject;
+import com.axelor.utils.helpers.QueryBuilder;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.DayOfWeek;
@@ -86,7 +86,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
   protected WeeklyPlanningService weeklyPlanningService;
   protected EmployeeService employeeService;
   protected TimesheetLineService timesheetLineService;
-  protected LeaveService leaveService;
+  protected LeaveRequestService leaveRequestService;
+  protected LeaveRequestComputeLeaveHoursService leaveRequestComputeLeaveHoursService;
 
   @Inject
   public TimesheetReportServiceImpl(
@@ -101,7 +102,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
       WeeklyPlanningService weeklyPlanningService,
       EmployeeService employeeService,
       TimesheetLineService timesheetLineService,
-      LeaveService leaveService) {
+      LeaveRequestService leaveRequestService,
+      LeaveRequestComputeLeaveHoursService leaveRequestComputeLeaveHoursService) {
     this.timesheetReminderRepo = timesheetReminderRepo;
     this.timesheetReportRepository = timesheetReportRepository;
     this.extraHoursLineRepository = extraHoursLineRepository;
@@ -114,7 +116,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     this.weeklyPlanningService = weeklyPlanningService;
     this.employeeService = employeeService;
     this.timesheetLineService = timesheetLineService;
-    this.leaveService = leaveService;
+    this.leaveRequestService = leaveRequestService;
+    this.leaveRequestComputeLeaveHoursService = leaveRequestComputeLeaveHoursService;
   }
 
   @Override
@@ -348,7 +351,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
 
     Map<String, Object> map = new HashMap<String, Object>();
     map.put("userName", employee.getUser().getFullName());
-    map.put("date", DateTool.toDate(date));
+    map.put("date", LocalDateHelper.toDate(date));
     map.put("workedHour", workedHour);
     map.put("workingHour", worksHour);
     return map;
@@ -432,7 +435,11 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     if (isPublicHoliday) {
       totalHours = totalHours.add(dailyWorkingHours);
     } else {
-      totalHours = totalHours.add(getLeaveHours(employee, date, dailyWorkingHours));
+      List<LeaveRequest> leavesList = leaveRequestService.getLeaves(employee, date);
+      totalHours =
+          totalHours.add(
+              leaveRequestComputeLeaveHoursService.computeTotalLeaveHours(
+                  date, dailyWorkingHours, leavesList));
     }
 
     return totalHours.setScale(2, RoundingMode.HALF_UP);
@@ -467,20 +474,6 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return totalHours.setScale(2, RoundingMode.HALF_UP);
   }
 
-  protected BigDecimal getLeaveHours(
-      Employee employee, LocalDate date, BigDecimal dailyWorkingHours) throws AxelorException {
-    List<LeaveRequest> leavesList = leaveService.getLeaves(employee, date);
-    BigDecimal totalLeaveHours = BigDecimal.ZERO;
-    for (LeaveRequest leave : leavesList) {
-      BigDecimal leaveHours = leaveService.computeDuration(leave, date, date);
-      if (leave.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
-        leaveHours = leaveHours.multiply(dailyWorkingHours);
-      }
-      totalLeaveHours = totalLeaveHours.add(leaveHours);
-    }
-    return totalLeaveHours;
-  }
-
   protected BigDecimal getWeekLeaveHours(
       Employee employee, LocalDate fromDate, LocalDate toDate, BigDecimal dailyWorkingHours)
       throws AxelorException {
@@ -491,7 +484,11 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
           publicHolidayService.checkPublicHolidayDay(
               fromDate, employee.getPublicHolidayEventsPlanning());
       if (!isPublicHoliday) {
-        leaveHours = leaveHours.add(getLeaveHours(employee, fromDate, dailyWorkingHours));
+        List<LeaveRequest> leavesList = leaveRequestService.getLeaves(employee, fromDate);
+        leaveHours =
+            leaveHours.add(
+                leaveRequestComputeLeaveHoursService.computeTotalLeaveHours(
+                    fromDate, dailyWorkingHours, leavesList));
       }
       fromDate = fromDate.plusDays(1);
     } while (fromDate.until(toDate).getDays() > -1);

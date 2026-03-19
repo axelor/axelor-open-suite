@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,8 +21,8 @@ package com.axelor.apps.hr.service.project;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.project.db.Project;
-import com.google.inject.Inject;
-import java.time.LocalDate;
+import jakarta.inject.Inject;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +38,7 @@ public class ProjectPlanningTimeComputeNameServiceImpl
 
   @Override
   public String computeProjectPlanningTimeFullname(
-      Employee employee, Project project, LocalDate date) {
+      Employee employee, Project project, LocalDateTime startDateTime) {
     String fullName = "";
 
     try {
@@ -50,11 +50,13 @@ public class ProjectPlanningTimeComputeNameServiceImpl
         fullName += "-" + project.getCode();
       }
 
-      String dateStr = date.format(dateService.getDateFormat());
-      if (!fullName.isEmpty()) {
-        fullName += "-" + dateStr;
-      } else {
-        fullName = dateStr;
+      if (startDateTime != null) {
+        String dateStr = startDateTime.format(dateService.getDateFormat());
+        if (!fullName.isEmpty()) {
+          fullName += "-" + dateStr;
+        } else {
+          fullName = dateStr;
+        }
       }
     } catch (Exception e) {
       Logger logger = LoggerFactory.getLogger(getClass());

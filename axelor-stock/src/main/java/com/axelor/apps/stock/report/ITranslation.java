@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,6 +37,8 @@ public interface ITranslation {
       "StockLocation.totalWapValue"; /*)*/
   public static final String STOCK_LOCATION_LOCATION_TOTAL_CONTENT = /*$$(*/
       "StockLocation.locationTotalContent"; /*)*/
+  public static final String STOCK_LOCATION_LOCATION_AND_SUB_LOCATIONS_TOTAL_CONTENT = /*$$(*/
+      "StockLocation.locationAndSubLocationsTotalContent"; /*)*/
   public static final String STOCK_LOCATION_PRODUCT_NAME = /*$$(*/
       "StockLocation.productName"; /*)*/
   public static final String STOCK_LOCATION_CODE = /*$$(*/ "StockLocation.code"; /*)*/
@@ -75,6 +77,8 @@ public interface ITranslation {
   public static final String INVENTORY_FROM_RACK = /*$$(*/ "Inventory.fromRack"; /*)*/
   public static final String INVENTORY_TO_RACK = /*$$(*/ "Inventory.toRack"; /*)*/
   public static final String INVENTORY_CATEGORY = /*$$(*/ "Inventory.category"; /*)*/
+  public static final String INVENTORY_LINE_STOCK_LOCATION = /*$$(*/
+      "Inventory.lineStockLocation"; /*)*/
 
   public static final String STOCK_MOVE_INTERNAL_MOVE = /*$$(*/ "StockMove.internalMove"; /*)*/
   public static final String STOCK_MOVE_DELIVERY_ORDER = /*$$(*/ "StockMove.deliveryOrder"; /*)*/
@@ -108,6 +112,10 @@ public interface ITranslation {
   public static final String STOCK_MOVE_NET_MASS = /*$$(*/ "StockMove.netMass"; /*)*/
   public static final String STOCK_MOVE_LINE_UNIT_PRICE = /*$$(*/ "StockMove.unitPrice"; /*)*/
   public static final String STOCK_MOVE_ORDER_DATE = /*$$(*/ "StockMove.orderDate"; /*)*/
+  public static final String STOCK_MOVE_IS_ADR = /*$$(*/ "StockMove.isAdr"; /*)*/
+  public static final String STOCK_MOVE_IS_ADR_INFO = /*$$(*/ "StockMove.isAdrInfo"; /*)*/
+  public static final String STOCK_MOVE_LIMITED_QTY = /*$$(*/ "StockMove.limitedQty"; /*)*/
+  public static final String STOCK_MOVE_WEIGHT = /*$$(*/ "StockMove.weight"; /*)*/
 
   // PickingStockMove
   public static final String STOCK_MOVE_PICKING_ORDER = /*$$(*/ "StockMove.pickingOrder"; /*)*/

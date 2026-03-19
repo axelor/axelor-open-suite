@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,17 +18,38 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
-import com.google.inject.Inject;
+import com.google.common.collect.Sets;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   protected MoveLineService moveLineService;
@@ -41,6 +62,13 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   protected MoveLineToolService moveLineToolService;
   protected MoveToolService moveToolService;
   protected AnalyticLineService analyticLineService;
+  protected MoveAttrsService moveAttrsService;
+  protected AnalyticAttrsService analyticAttrsService;
+  protected MoveCutOffService moveCutOffService;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
+  protected FiscalPositionService fiscalPositionService;
+  protected TaxService taxService;
+  protected AnalyticAxisService analyticAxisService;
 
   @Inject
   public MoveLineGroupServiceImpl(
@@ -53,7 +81,15 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       MoveLineToolService moveLineToolService,
       MoveToolService moveToolService,
-      AnalyticLineService analyticLineService) {
+      AnalyticLineService analyticLineService,
+      MoveAttrsService moveAttrsService,
+      AnalyticAttrsService analyticAttrsService,
+      MoveCutOffService moveCutOffService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
+      FiscalPositionService fiscalPositionService,
+      TaxService taxService,
+      AnalyticAxisService analyticAxisService) {
+
     this.moveLineService = moveLineService;
     this.moveLineDefaultService = moveLineDefaultService;
     this.moveLineRecordService = moveLineRecordService;
@@ -64,6 +100,13 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     this.moveLineToolService = moveLineToolService;
     this.moveToolService = moveToolService;
     this.analyticLineService = analyticLineService;
+    this.moveAttrsService = moveAttrsService;
+    this.analyticAttrsService = analyticAttrsService;
+    this.moveCutOffService = moveCutOffService;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
+    this.fiscalPositionService = fiscalPositionService;
+    this.taxService = taxService;
+    this.analyticAxisService = analyticAxisService;
   }
 
   @Override
@@ -72,6 +115,9 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineDefaultService.setFieldsFromParent(moveLine, move);
     moveLineDefaultService.setAccountInformation(moveLine, move);
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
+    if (moveLine.getAccount() != null) {
+      moveLineRecordService.refreshAccountInformation(moveLine, move);
+    }
 
     Map<String, Object> valuesMap =
         new HashMap<>(this.getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move));
@@ -80,9 +126,12 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineService.balanceCreditDebit(moveLine, move);
     moveLineDefaultService.setIsOtherCurrency(moveLine, move);
     moveLineRecordService.setCurrencyFields(moveLine, move);
+    moveLineToolService.setDecimals(moveLine, move);
     moveLineDefaultService.setFinancialDiscount(moveLine);
-    moveLineService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, move);
+    moveLineRecordService.setCounter(moveLine, move);
 
+    valuesMap.put("counter", moveLine.getCounter());
     valuesMap.put("account", moveLine.getAccount());
     valuesMap.put("partner", moveLine.getPartner());
     valuesMap.put("date", moveLine.getDate());
@@ -93,7 +142,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     valuesMap.put("credit", moveLine.getCredit());
     valuesMap.put("debit", moveLine.getDebit());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
-    valuesMap.put("taxLine", moveLine.getTaxLine());
+    valuesMap.put("taxLineSet", moveLine.getTaxLineSet());
+    valuesMap.put("vatSystemSelect", moveLine.getVatSystemSelect());
     valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
     valuesMap.put("interbankCodeLine", moveLine.getInterbankCodeLine());
     valuesMap.put("exportedDirectDebitOk", moveLine.getExportedDirectDebitOk());
@@ -105,6 +155,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     valuesMap.put("financialDiscountTotalAmount", moveLine.getFinancialDiscountTotalAmount());
     valuesMap.put("remainingAmountAfterFinDiscount", moveLine.getRemainingAmountAfterFinDiscount());
     valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
+    valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
+    valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());
 
     return valuesMap;
   }
@@ -115,10 +167,35 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     Map<String, Map<String, Object>> attrsMap =
         new HashMap<>(this.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
 
-    moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
+    analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
+    moveAttrsService.addPartnerRequired(move, attrsMap);
     moveLineAttrsService.addDescriptionRequired(move, attrsMap);
+    moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
+    moveLineAttrsService.addCutOffPanelHidden(move, moveLine, attrsMap);
+    moveLineAttrsService.addCutOffDatesRequired(move, moveLine, attrsMap);
+    moveLineAttrsService.addVatSystemSelectReadonly(move, moveLine, attrsMap);
 
     return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> getOnLoadValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveLineToolService.setDecimals(moveLine, move);
+
+    valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
+    valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());
+
+    if (move != null) {
+      valuesMap.put(
+          "$validatePeriod",
+          moveToolService.isTemporarilyClosurePeriodManage(
+              move.getPeriod(), move.getJournal(), AuthUtils.getUser()));
+    }
+
+    return valuesMap;
   }
 
   @Override
@@ -128,14 +205,20 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     Map<String, Map<String, Object>> attrsMap =
         new HashMap<>(this.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
 
+    moveAttrsService.addPartnerRequired(move, attrsMap);
     moveLineAttrsService.addShowTaxAmount(moveLine, attrsMap);
     moveLineAttrsService.addInvoiceTermListPercentageWarningText(moveLine, attrsMap);
 
     if (move != null) {
       moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
-      moveLineAttrsService.addReadonly(move, attrsMap);
+      moveLineAttrsService.addReadonly(moveLine, move, attrsMap);
       moveLineAttrsService.addDescriptionRequired(move, attrsMap);
-      moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
+      analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
+      moveLineAttrsService.addThirdPartyPayerPartnerHidden(move, attrsMap);
+      moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
+      moveLineAttrsService.addCutOffPanelHidden(move, moveLine, attrsMap);
+      moveLineAttrsService.addCutOffDatesRequired(move, moveLine, attrsMap);
+      moveLineAttrsService.addVatSystemSelectReadonly(move, moveLine, attrsMap);
     }
 
     return attrsMap;
@@ -149,14 +232,20 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
     moveLineAttrsService.addInvoiceTermListPercentageWarningText(moveLine, attrsMap);
     moveLineAttrsService.addShowTaxAmount(moveLine, attrsMap);
+    moveAttrsService.addPartnerRequired(move, attrsMap);
 
     if (move != null) {
-      moveLineAttrsService.addReadonly(move, attrsMap);
+      moveLineAttrsService.addReadonly(moveLine, move, attrsMap);
       moveLineAttrsService.addDescriptionRequired(move, attrsMap);
-      moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
+      analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
       moveLineAttrsService.addValidatePeriod(move, attrsMap);
       moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
       moveLineAttrsService.addShowAnalyticDistributionPanel(move, moveLine, attrsMap);
+      moveLineAttrsService.addThirdPartyPayerPartnerHidden(move, attrsMap);
+      moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
+      moveLineAttrsService.addCutOffPanelHidden(move, moveLine, attrsMap);
+      moveLineAttrsService.addCutOffDatesRequired(move, moveLine, attrsMap);
+      moveLineAttrsService.addVatSystemSelectReadonly(move, moveLine, attrsMap);
     }
 
     return attrsMap;
@@ -168,24 +257,13 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineComputeAnalyticService.clearAnalyticAccounting(moveLine);
     moveLineCheckService.checkAnalyticByTemplate(moveLine);
     moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine, move);
-    analyticLineService.printAnalyticAccount(moveLine, move.getCompany());
+    analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
 
     if (moveLine.getAnalyticDistributionTemplate() == null) {
       moveLineComputeAnalyticService.clearAnalyticAccounting(moveLine);
     }
 
-    moveLineCheckService.checkAnalyticAxes(moveLine);
-
-    Map<String, Object> valuesMap = new HashMap<>();
-
-    valuesMap.put("axis1AnalyticAccount", moveLine.getAxis1AnalyticAccount());
-    valuesMap.put("axis2AnalyticAccount", moveLine.getAxis2AnalyticAccount());
-    valuesMap.put("axis3AnalyticAccount", moveLine.getAxis3AnalyticAccount());
-    valuesMap.put("axis4AnalyticAccount", moveLine.getAxis4AnalyticAccount());
-    valuesMap.put("axis5AnalyticAccount", moveLine.getAxis5AnalyticAccount());
-    valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
-
-    return valuesMap;
+    return createAnalyticValuesMap(moveLine);
   }
 
   @Override
@@ -205,7 +283,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineDefaultService.cleanDebitCredit(moveLine);
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
     moveLineRecordService.setCurrencyFields(moveLine, move);
-    moveLineService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine, move);
 
     Map<String, Object> valuesMap = new HashMap<>();
 
@@ -260,10 +338,12 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     valuesMap.put("cutOffEndDate", moveLine.getCutOffEndDate());
     valuesMap.put("isCutOffGenerated", moveLine.getCutOffEndDate());
     valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
-    valuesMap.put("taxLine", moveLine.getTaxLine());
+    valuesMap.put("taxLineSet", moveLine.getTaxLineSet());
     valuesMap.put("taxEquiv", moveLine.getTaxEquiv());
+    valuesMap.put("taxLineBeforeReverseSet", moveLine.getTaxLineBeforeReverseSet());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
     valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
+    valuesMap.put("vatSystemSelect", moveLine.getVatSystemSelect());
 
     return valuesMap;
   }
@@ -275,7 +355,10 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
         new HashMap<>(this.getAnalyticDistributionTemplateOnChangeAttrsMap(moveLine, move));
 
     moveLineAttrsService.addPartnerReadonly(moveLine, move, attrsMap);
-    moveLineAttrsService.addAnalyticAxisAttrs(move, attrsMap);
+    analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
+    moveLineAttrsService.changeFocus(move, moveLine, attrsMap);
+    moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
+    moveLineAttrsService.addVatSystemSelectReadonly(move, moveLine, attrsMap);
 
     return attrsMap;
   }
@@ -284,7 +367,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   public Map<String, Object> getAnalyticAxisOnChangeValuesMap(MoveLine moveLine, Move move)
       throws AxelorException {
     moveLineComputeAnalyticService.clearAnalyticAccountingIfEmpty(moveLine);
-    moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine, move);
+    moveLineComputeAnalyticService.analyzeMoveLine(moveLine, move.getCompany());
     moveLineComputeAnalyticService.clearAnalyticAccountingIfEmpty(moveLine);
 
     Map<String, Object> valuesMap = new HashMap<>();
@@ -307,24 +390,28 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   @Override
   public Map<String, Object> getDateOnChangeValuesMap(MoveLine moveLine, Move move)
       throws AxelorException {
-    moveLineRecordService.setOriginDate(moveLine);
-    moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
-    moveLineToolService.checkDateInPeriod(move, moveLine);
+    moveLineRecordService.computeDate(moveLine, move);
 
     Map<String, Object> valuesMap = new HashMap<>();
 
     valuesMap.put("originDate", moveLine.getOriginDate());
     valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+    if (move != null
+        && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL
+        && move.getMassEntryManageCutOff()
+        && moveCutOffService.checkManageCutOffDates(move)) {
+      valuesMap.put("cutOffStartDate", moveLine.getOriginDate());
+      valuesMap.put("deliveryDate", moveLine.getOriginDate());
+    }
 
     return valuesMap;
   }
 
   @Override
   public Map<String, Object> getCurrencyAmountRateOnChangeValuesMap(
-      MoveLine moveLine, LocalDate dueDate) throws AxelorException {
+      MoveLine moveLine, Move move, LocalDate dueDate) throws AxelorException {
     moveLineRecordService.setDebitCredit(moveLine);
-    moveLineInvoiceTermService.generateDefaultInvoiceTerm(
-        moveLine.getMove(), moveLine, dueDate, false);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, dueDate, false);
 
     Map<String, Object> valuesMap = new HashMap<>();
 
@@ -336,10 +423,11 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getAccountOnSelectAttrsMap(Move move) {
+  public Map<String, Map<String, Object>> getAccountOnSelectAttrsMap(
+      Journal journal, Company company) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    moveLineAttrsService.addAccountDomain(move, attrsMap);
+    moveLineAttrsService.addAccountDomain(journal, company, attrsMap);
 
     return attrsMap;
   }
@@ -356,10 +444,10 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
   @Override
   public Map<String, Map<String, Object>> getAnalyticDistributionTemplateOnSelectAttrsMap(
-      Move move) {
+      Move move, MoveLine moveLine) throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    moveLineAttrsService.addAnalyticDistributionTemplateDomain(move, attrsMap);
+    moveLineAttrsService.addAnalyticDistributionTemplateDomain(move, moveLine, attrsMap);
 
     return attrsMap;
   }
@@ -436,9 +524,38 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
 
   @Override
   public Map<String, Object> getAnalyticDistributionTemplateOnChangeLightValuesMap(
-      MoveLine moveLine) {
+      MoveLine moveLine) throws AxelorException {
     analyticLineService.checkAnalyticLineForAxis(moveLine);
+    List<AnalyticMoveLine> analyticMoveLineList =
+        Optional.ofNullable(moveLine.getAnalyticMoveLineList()).orElse(new ArrayList<>());
+    analyticAxisService.checkRequiredAxisByCompany(
+        moveLine.getMove().getCompany(),
+        analyticMoveLineList.stream()
+            .map(AnalyticMoveLine::getAnalyticAxis)
+            .collect(Collectors.toList()));
 
+    return createAnalyticValuesMap(moveLine);
+  }
+
+  @Override
+  public Map<String, Object> getAnalyticMoveLineOnChangeValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException {
+    analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
+
+    return createAnalyticValuesMap(moveLine);
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getAnalyticMoveLineOnChangeAttrsMap(
+      MoveLine moveLine, Move move) throws AxelorException {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    moveLineAttrsService.addAnalyticAccountRequired(moveLine, move, attrsMap);
+
+    return attrsMap;
+  }
+
+  protected Map<String, Object> createAnalyticValuesMap(MoveLine moveLine) {
     Map<String, Object> valuesMap = new HashMap<>();
 
     valuesMap.put("axis1AnalyticAccount", moveLine.getAxis1AnalyticAccount());
@@ -452,14 +569,36 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   }
 
   @Override
-  public Map<String, Object> getAnalyticDistributionTemplateAnalyticDistributionOnChangeValuesMap(
-      MoveLine moveLine, Move move) throws AxelorException {
-    moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine, move);
+  public Map<String, Object> getTaxLineOnChangesValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException {
+    Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();
+    TaxEquiv taxEquiv = null;
+    FiscalPosition fiscalPosition = move.getFiscalPosition();
 
     Map<String, Object> valuesMap = new HashMap<>();
+    if (fiscalPosition == null || CollectionUtils.isEmpty(taxLineSet)) {
+      valuesMap.put("taxLineBeforeReverseSet", Sets.newHashSet());
+      valuesMap.put("taxEquiv", null);
+      return valuesMap;
+    }
+    taxEquiv = moveLine.getTaxEquiv();
 
-    valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
+    Set<TaxLine> fromTaxSet = moveLine.getTaxLineBeforeReverseSet();
+    if (taxEquiv != null && !taxLineSet.equals(taxEquiv.getToTaxSet())) {
+      Set<TaxLine> toTaxSet = taxService.getTaxLineSet(taxEquiv.getToTaxSet(), moveLine.getDate());
+      taxLineSet.stream().filter(Predicate.not(toTaxSet::contains)).forEach(fromTaxSet::add);
+      toTaxSet.stream().filter(Predicate.not(taxLineSet::contains)).forEach(fromTaxSet::remove);
+    } else {
+      fromTaxSet = taxLineSet;
+    }
+    taxEquiv = fiscalPositionService.getTaxEquivFromOrToTaxSet(fiscalPosition, fromTaxSet);
+    if (taxEquiv != null) {
+      taxLineSet = taxService.getTaxLineSet(taxEquiv.getToTaxSet(), moveLine.getDate());
+    }
 
+    valuesMap.put("taxLineBeforeReverseSet", fromTaxSet);
+    valuesMap.put("taxLineSet", taxLineSet);
+    valuesMap.put("taxEquiv", taxEquiv);
     return valuesMap;
   }
 }

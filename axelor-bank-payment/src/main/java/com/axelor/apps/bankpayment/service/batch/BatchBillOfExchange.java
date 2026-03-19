@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,52 +18,47 @@
  */
 package com.axelor.apps.bankpayment.service.batch;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.batch.BatchStrategy;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
-import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BatchBillOfExchange extends AbstractBatch {
+public class BatchBillOfExchange extends BatchStrategy {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -75,10 +70,9 @@ public class BatchBillOfExchange extends AbstractBatch {
   protected MoveRepository moveRepository;
   protected JournalRepository journalRepository;
   protected AccountRepository accountRepository;
-  protected ReconcileService reconcileService;
-  protected MoveLineService moveLineService;
   protected MoveValidateService moveValidateService;
   protected AccountingBatchRepository accountingBatchRepository;
+  protected InvoiceTermReplaceService invoiceTermReplaceService;
 
   @Inject
   public BatchBillOfExchange(
@@ -90,10 +84,9 @@ public class BatchBillOfExchange extends AbstractBatch {
       JournalRepository journalRepository,
       MoveRepository moveRepository,
       AccountRepository accountRepository,
-      ReconcileService reconcileService,
-      MoveLineService moveLineService,
       MoveValidateService moveValidateService,
-      AccountingBatchRepository accountingBatchRepository) {
+      AccountingBatchRepository accountingBatchRepository,
+      InvoiceTermReplaceService invoiceTermReplaceService) {
     super();
     this.invoiceRepository = invoiceRepository;
     this.appAccountService = appAccountService;
@@ -103,10 +96,9 @@ public class BatchBillOfExchange extends AbstractBatch {
     this.journalRepository = journalRepository;
     this.moveRepository = moveRepository;
     this.accountRepository = accountRepository;
-    this.reconcileService = reconcileService;
-    this.moveLineService = moveLineService;
     this.moveValidateService = moveValidateService;
     this.accountingBatchRepository = accountingBatchRepository;
+    this.invoiceTermReplaceService = invoiceTermReplaceService;
   }
 
   @Override
@@ -127,8 +119,8 @@ public class BatchBillOfExchange extends AbstractBatch {
   protected void createLCRAccountingMovesForInvoices(
       Query<Invoice> query, List<Long> anomalyList, AccountingBatch accountingBatch) {
     List<Invoice> invoicesList = null;
-    while (!(invoicesList = query.bind("anomalyList", anomalyList).fetch(FETCH_LIMIT)).isEmpty()) {
-      findBatch();
+    while (!(invoicesList = query.bind("anomalyList", anomalyList).fetch(getFetchLimit()))
+        .isEmpty()) {
       accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
       for (Invoice invoice : invoicesList) {
         try {
@@ -143,6 +135,7 @@ public class BatchBillOfExchange extends AbstractBatch {
         }
       }
       JPA.clear();
+      findBatch();
     }
   }
 
@@ -170,52 +163,12 @@ public class BatchBillOfExchange extends AbstractBatch {
     }
     AccountConfig accountConfig =
         accountConfigService.getAccountConfig(accountingBatch.getCompany());
-    Move move = createLCRAccountMove(invoice, accountConfig, accountingBatch);
-    moveValidateService.accounting(move);
-    reconcilesMoves(move, invoice.getMove(), invoice);
-    updateInvoice(invoice, move, accountConfig);
-  }
+    Move placementMove = createLCRAccountMove(invoice, accountConfig, accountingBatch);
+    moveValidateService.accounting(placementMove);
 
-  /**
-   * Reconcile moves on account partnerAccount move line
-   *
-   * @param move
-   * @param invoiceMove
-   * @throws AxelorException
-   */
-  @Transactional(rollbackOn = {Exception.class})
-  protected void reconcilesMoves(Move move, Move invoiceMove, Invoice invoice)
-      throws AxelorException {
-    Objects.requireNonNull(move);
-    Objects.requireNonNull(invoiceMove);
-    log.debug("Reconcile move {} with {}", move, invoiceMove);
-    Account partnerAccount = invoice.getPartnerAccount();
-
-    MoveLine creditMoveLine =
-        move.getMoveLineList().stream()
-            .filter(ml -> ml.getAccount().equals(partnerAccount))
-            .findFirst()
-            .orElseThrow(
-                () ->
-                    new AxelorException(
-                        TraceBackRepository.CATEGORY_INCONSISTENCY,
-                        "Missing move line with account %s",
-                        partnerAccount.getName()));
-    MoveLine debitMoveLine =
-        invoiceMove.getMoveLineList().stream()
-            .filter(ml -> ml.getAccount().equals(partnerAccount))
-            .findFirst()
-            .orElseThrow(
-                () ->
-                    new AxelorException(
-                        TraceBackRepository.CATEGORY_INCONSISTENCY,
-                        "Missing move line with account %s",
-                        partnerAccount.getName()));
-
-    Reconcile reconcile =
-        reconcileService.createReconcile(
-            debitMoveLine, creditMoveLine, creditMoveLine.getCredit(), false);
-    reconcileService.confirmReconcile(reconcile, false, false);
+    invoiceTermReplaceService.replaceInvoiceTerms(
+        invoice, placementMove, invoice.getMove().getMoveLineList(), invoice.getPartnerAccount());
+    updateInvoice(invoice, placementMove, accountConfig);
   }
 
   /**
@@ -226,15 +179,13 @@ public class BatchBillOfExchange extends AbstractBatch {
    * @param move
    * @param accountConfig
    */
-  @Transactional
   protected void updateInvoice(Invoice invoice, Move move, AccountConfig accountConfig) {
 
-    Invoice invoiceToSave = invoiceRepository.find(invoice.getId());
-    invoiceToSave.setOldMove(invoice.getMove());
-    invoiceToSave.setMove(move);
-    invoiceToSave.setPartnerAccount(
+    invoice.setOldMove(invoice.getMove());
+    invoice.setMove(move);
+    invoice.setPartnerAccount(
         accountRepository.find(accountConfig.getBillOfExchReceivAccount().getId()));
-    invoiceToSave.setLcrAccounted(true);
+    invoice.setLcrAccounted(true);
     invoice.addBatchSetItem(batchRepo.find(batch.getId()));
   }
 
@@ -258,11 +209,12 @@ public class BatchBillOfExchange extends AbstractBatch {
             invoice.getPaymentMode(),
             invoice.getFiscalPosition(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_SALE,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             invoice.getInvoiceId(),
             null,
             invoice.getCompanyBankDetails());
     if (move != null) {
+      move.setPaymentCondition(invoice.getPaymentCondition());
 
       LocalDate todayDate = this.appBaseService.getTodayDate(invoice.getCompany());
       MoveLine creditMoveLine =
@@ -366,9 +318,5 @@ public class BatchBillOfExchange extends AbstractBatch {
             batch.getAnomaly()));
     addComment(sb.toString());
     super.stop();
-  }
-
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BANK_PAYMENT_BATCH);
   }
 }

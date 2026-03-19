@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
+import com.axelor.apps.base.utils.ZipExtractionTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.Inflector;
 import com.axelor.common.StringUtils;
@@ -49,17 +50,15 @@ import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
-import com.axelor.utils.reader.DataReaderFactory;
-import com.axelor.utils.reader.DataReaderService;
 import com.axelor.utils.service.TranslationService;
+import com.axelor.utils.service.reader.DataReader;
+import com.axelor.utils.service.reader.DataReaderFactory;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
-import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
+import jakarta.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.text.SimpleDateFormat;
@@ -70,9 +69,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
-import java.util.zip.ZipInputStream;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.FileUtils;
@@ -141,7 +138,7 @@ public class DataImportServiceImpl implements DataImportService {
 
     String extension = Files.getFileExtension(advancedImport.getImportFile().getFileName());
 
-    DataReaderService reader = dataReaderFactory.getDataReader(extension);
+    DataReader reader = dataReaderFactory.getDataReader(extension);
     reader.initialize(advancedImport.getImportFile(), advancedImport.getFileSeparator());
 
     List<CSVInput> inputs = this.process(reader, advancedImport);
@@ -155,7 +152,7 @@ public class DataImportServiceImpl implements DataImportService {
     return addImportHistory(advancedImport, logFile);
   }
 
-  private List<CSVInput> process(DataReaderService reader, AdvancedImport advancedImport)
+  private List<CSVInput> process(DataReader reader, AdvancedImport advancedImport)
       throws AxelorException, IOException, ClassNotFoundException {
 
     String[] sheets = reader.getSheetNames();
@@ -883,31 +880,7 @@ public class DataImportServiceImpl implements DataImportService {
     }
 
     File attachmentFile = MetaFiles.getPath(attachments).toFile();
-    try (ZipInputStream zis = new ZipInputStream(new FileInputStream(attachmentFile))) {
-      ZipEntry ze;
-      byte[] buffer = new byte[1024];
-
-      while ((ze = zis.getNextEntry()) != null) {
-        String fileName = ze.getName();
-        File extractFile = new File(dataDir, fileName);
-
-        if (ze.isDirectory()) {
-          extractFile.mkdirs();
-          continue;
-        } else {
-          extractFile.getParentFile().mkdirs();
-          extractFile.createNewFile();
-        }
-
-        try (FileOutputStream fos = new FileOutputStream(extractFile)) {
-          int len;
-          while ((len = zis.read(buffer)) > 0) {
-            fos.write(buffer, 0, len);
-          }
-        }
-        zis.closeEntry();
-      }
-    }
+    ZipExtractionTool.extractZipFile(attachmentFile, dataDir);
   }
 
   protected MetaFile importData(List<CSVInput> inputs) throws IOException {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="inventory-grid" title="Inventory" model="com.axelor.apps.stock.db.Inventory">
     <field name="inventorySeq" width="120"/>
@@ -10,15 +10,15 @@
     <field name="typeSelect"/>
     <field name="plannedStartDateT"/>
     <field name="plannedEndDateT"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </grid>
 
   <form name="inventory-form" title="Inventory" model="com.axelor.apps.stock.db.Inventory"
     width="large" onNew="action-inventory-record-new">
     <menubar>
-      <menu title="Tools" icon="fa-wrench" name="inventoryMenu">
-        <item name="showStockMoveItem" action="action-inventory-method-show-stockmoves"
+      <menu title="Tools" icon="wrench" name="inventoryMenu">
+        <item name="showStockMoveItem" action="save,action-inventory-method-show-stockmoves"
           title="Show stock move(s)" readonlyIf="statusSelect != 5"/>
       </menu>
     </menubar>
@@ -30,16 +30,16 @@
       </panel>
 
       <panel name="actionsPanel" colSpan="2" itemSpan="12">
-        <button name="planBtn" title="Plan" icon="fa-calendar"
+        <button name="planBtn" title="Plan" icon="calendar"
           showIf="statusSelect == 1 &amp;&amp; stockLocation != null"
           onClick="action-group-stock-inventory-plan-click"/>
-        <button name="startBtn" title="Start" icon="fa-play" showIf="statusSelect == 2"
+        <button name="startBtn" title="Start" icon="play-fill" showIf="statusSelect == 2"
           onClick="action-group-stock-inventory-start-click"/>
-        <button name="completeBtn" title="Complete" icon="fa-check"
-          showIf="statusSelect == 3" onClick="action-group-stock-inventory-complete-click"/>
-        <button name="validateBtn" title="Validate" icon="fa-check"
-          showIf="statusSelect == 4" onClick="action-group-stock-inventory-validate-click"/>
-        <button name="cancelBtn" title="Cancel" icon="fa-times-circle" css="btn-danger"
+        <button name="completeBtn" title="Complete" icon="check" showIf="statusSelect == 3"
+          onClick="action-group-stock-inventory-complete-click"/>
+        <button name="validateBtn" title="Validate" icon="check" showIf="statusSelect == 4"
+          onClick="action-group-stock-inventory-validate-click"/>
+        <button name="cancelBtn" title="Cancel" icon="x-circle-fill" css="btn-danger"
           showIf="statusSelect &lt; 6" onClick="action-group-stock-inventory-cancel-click"/>
         <button name="draftBtn" title="Draft" showIf="statusSelect == 6"
           onClick="action-group-stock-inventory-draft-click"/>
@@ -68,7 +68,10 @@
 
         <panel name="exportPanel" title="Export"
           showIf="statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 6" colSpan="12">
-          <field name="formatSelect"/>
+          <field name="formatSelect" colSpan="3"/>
+          <field name="inventoryPrintTemplate" showIf="formatSelect == 'printingTemplate'"
+            colSpan="3" domain="self.metaModel.name = 'Inventory'"
+            grid-view="printing-template-grid" form-view="printing-template-form"/>
           <panel name="showinventoryPanel" colSpan="3" stacked="true">
             <button name="showInventoryBtn" title="Export" readonlyIf="formatSelect == null"
               onClick="save,action-inventory-method-show-inventory" showIf="formatSelect != 'csv'"/>
@@ -78,7 +81,7 @@
         </panel>
 
         <panel name="importPanel" title="import.name"
-          showIf="statusSelect == 3 || statusSelect == 4" colSpan="12">
+          showIf="statusSelect == 3 || statusSelect == 4" colSpan="12">
           <field name="importFile" widget="binary-link"/>
           <button name="importFileBtn" title="import.verb" readonlyIf="importFile == null"
             onClick="action-group-stock-inventory-importfile-click" colSpan="3"/>
@@ -95,7 +98,7 @@
         <field name="productCategory" grid-view="product-category-grid"
           form-view="product-category-form"/>
         <field name="product" grid-view="product-grid" form-view="product-form"
-          domain="self.dtype = 'Product'"/>
+          domain="self.dtype = 'Product' AND self.isModel = false"/>
         <field name="excludeOutOfStock" colSpan="3"/>
         <field name="includeObsolete" colSpan="3"/>
         <spacer name="includeObsoleteSpacer" colSpan="6"/>
@@ -115,7 +118,7 @@
         form-view="product-category-form"/>
       <field name="product" canEdit="false" onSelect="action-inventory-on-select-product"
         onChange="action-inventory-on-change-product" grid-view="product-grid"
-        form-view="product-form" domain="self.dtype = 'Product'"/>
+        form-view="product-form" domain="self.dtype = 'Product' AND self.isModel = false"/>
       <field name="excludeOutOfStock" colSpan="3"/>
       <field name="includeObsolete" colSpan="3"/>
       <spacer name="includeObsoleteSpacer" colSpan="6"/>
@@ -188,7 +191,7 @@
   <action-record name="action-inventory-record-new"
     model="com.axelor.apps.stock.db.Inventory">
     <field name="statusSelect" expr="1"/>
-    <field name="formatSelect" expr="pdf"/>
+    <field name="formatSelect" expr="printingTemplate"/>
     <field name="stockLocation" expr="eval:_location"/>
     <field name="company"
       expr="eval: _location != null ? __repo__(StockLocation).find(_location.id).company :__user__.activeCompany"/>
@@ -256,21 +259,22 @@
 
   <action-attrs name="action-inventory-on-select-product">
     <attribute name="domain" for="product"
-      expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product'&quot;"
+      expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory != null &amp;&amp; typeSelect == 2"/>
     <attribute name="domain" for="product"
-      expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND self.dtype = 'Product'&quot;"
+      expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory != null &amp;&amp; typeSelect != 2"/>
     <attribute name="domain" for="product"
-      expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product'&quot;"
+      expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory == null &amp;&amp; productFamily != null &amp;&amp; typeSelect == 2"/>
     <attribute name="domain" for="product"
-      expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND self.dtype = 'Product'&quot;"
+      expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory == null &amp;&amp; productFamily != null &amp;&amp; typeSelect != 2"/>
     <attribute name="domain" for="product"
-      expr="eval:&quot;self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product'&quot;"
+      expr="eval:&quot;self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory == null &amp;&amp; productFamily == null &amp;&amp; typeSelect == 2"/>
-    <attribute name="domain" for="product" expr="eval:&quot;self.dtype = 'Product'&quot;"
+    <attribute name="domain" for="product"
+      expr="eval:&quot;self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory == null &amp;&amp; productFamily == null &amp;&amp; typeSelect != 2"/>
   </action-attrs>
 
@@ -282,10 +286,10 @@
     model="com.axelor.apps.stock.db.Inventory" title="Inventories filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <filter title="Planned Inventories">
+    <filter name="inventories-filters-planned-inventories" title="Planned Inventories">
       <domain>self.statusSelect = 1</domain>
     </filter>
-    <filter title="Inventories History">
+    <filter name="inventories-filters-inventories-history" title="Inventories History">
       <domain>self.statusSelect = 2</domain>
     </filter>
   </search-filters>

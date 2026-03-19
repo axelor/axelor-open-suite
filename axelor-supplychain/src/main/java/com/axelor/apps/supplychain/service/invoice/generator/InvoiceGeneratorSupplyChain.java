@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,11 +24,10 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
 
@@ -49,7 +48,9 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
             ? InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
             : InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
         saleOrder.getCompany(),
-        saleOrder.getPaymentCondition(),
+        isRefund
+            ? saleOrder.getClientPartner().getOutPaymentCondition()
+            : saleOrder.getPaymentCondition(),
         isRefund ? saleOrder.getClientPartner().getOutPaymentMode() : saleOrder.getPaymentMode(),
         saleOrder.getMainInvoicingAddress(),
         saleOrder.getInvoicedPartner() != null
@@ -63,7 +64,8 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
         saleOrder.getInAti(),
         saleOrder.getCompanyBankDetails(),
         saleOrder.getTradingName(),
-        saleOrder.getGroupProductsOnPrintings());
+        saleOrder.getGroupProductsOnPrintings(),
+        saleOrder.getTaxNumber());
     this.saleOrder = saleOrder;
   }
 
@@ -92,7 +94,8 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
         purchaseOrder.getInAti(),
         purchaseOrder.getCompanyBankDetails(),
         purchaseOrder.getTradingName(),
-        purchaseOrder.getGroupProductsOnPrintings());
+        purchaseOrder.getGroupProductsOnPrintings(),
+        purchaseOrder.getTaxNumber());
     this.purchaseOrder = purchaseOrder;
   }
 
@@ -122,10 +125,6 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
         stockMove.getTradingName());
 
     this.groupProductsOnPrintings = stockMove.getGroupProductsOnPrintings();
-    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
-        && stockMove.getOriginId() != null) {
-      saleOrder = Beans.get(SaleOrderRepository.class).find(stockMove.getOriginId());
-    }
   }
 
   @Override
@@ -151,6 +150,17 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
       AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
       invoice.setDisplayStockMoveOnInvoicePrinting(
           accountConfig.getDisplayStockMoveOnInvoicePrinting());
+    }
+
+    boolean isIntercoFromInvoice =
+        Beans.get(AppSupplychainService.class).getAppSupplychain().getIntercoFromInvoice();
+
+    if (isIntercoFromInvoice
+        && !invoice.getCreatedByInterco()
+        && partner != null
+        && (Beans.get(CompanyRepository.class).all().filter("self.partner = ?", partner).count()
+            > 0)) {
+      invoice.setInterco(true);
     }
 
     return invoice;

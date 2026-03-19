@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202201280001</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -19,12 +19,19 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="initialize"><![CDATA[function getNumberFormatPattern(isCompanyCurrency) {
+	var exportTypeSelect = params["ExportTypeSelect"];
+	var numberOfDecimals = isCompanyCurrency ? vars["ccNumberOfDecimals"] : vars["numberOfDecimals"];
+	var decimalPart = numberOfDecimals == 0 ? "" : "." + Array((numberOfDecimals || 2) + 1).join("0");
+	var basePart = exportTypeSelect != "xlsx" ? "#,##0" : "0";
+	var formatPattern = basePart + decimalPart;
+	return formatPattern;
+}]]></method>
     <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
-    <property name="locale">fr_FR</property>
     <parameters>
         <scalar-parameter name="AccountingReportId" id="884">
             <property name="hidden">true</property>
@@ -45,7 +52,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -59,9 +66,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -71,6 +75,17 @@
         </scalar-parameter>
         <scalar-parameter name="Password" id="2481">
             <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="ExportTypeSelect" id="5352">
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
@@ -101,8 +116,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite</property>
-            <property name="odaUser">axelor</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -186,6 +200,30 @@
                     <property name="onColumnLayout">false</property>
                     <text-property name="heading">AccountName</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">currency_amount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">currency_amount</text-property>
+                    <text-property name="heading">currency_amount</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">currency_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">currency_code</text-property>
+                    <text-property name="heading">currency_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <text-property name="heading">number_of_decimals</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">cc_number_of_decimals</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">cc_number_of_decimals</text-property>
+                    <text-property name="heading">cc_number_of_decimals</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -257,9 +295,31 @@
                         <property name="name">AccountName</property>
                         <property name="dataType">string</property>
                     </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">currency_amount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">currency_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">number_of_decimals</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">cc_number_of_decimals</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="rowFetchLimit">0</property>
+            <method name="onFetch"><![CDATA[vars["numberOfDecimals"] = dataSetRow["number_of_decimals"];
+vars["ccNumberOfDecimals"] = dataSetRow["cc_number_of_decimals"];]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -339,23 +399,60 @@
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">currency_amount</property>
+                    <property name="nativeName">currency_amount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">currency_code</property>
+                    <property name="nativeName">currency_code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">number_of_decimals</property>
+                    <property name="nativeName">number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">cc_number_of_decimals</property>
+                    <property name="nativeName">cc_number_of_decimals</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select MoveLine.id as "MoveLineId", MoveLine.name as "MoveLineName", MoveLine.description as "Description", MoveLine.debit as "Debit", MoveLine.credit as "Credit",
 MoveLine.date_val as "MoveLineDate", MoveLine.partner_full_name as "PartnerFullName", MoveLine.partner as "PartnerId",
 MoveLine.partner_seq as "PartnerSeq", MoveLine.account_code as "AccountCode", MoveLine.account_name as "AccountName",
 MoveLine.currency_amount,
-Move.currency_code
-from public.account_accounting_report as AccountingReport
-left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
-left outer join public.account_move as Move on (MoveLine.move = Move.id)
+Move.currency_code,
+Currency.number_of_decimals,
+CompanyCurrency.number_of_decimals as cc_number_of_decimals
+from account_accounting_report as AccountingReport
+left outer join account_move_line as MoveLine on (AccountingReport.id = ?)
+left outer join account_move as Move on (MoveLine.move = Move.id)
 
-left outer join public.base_company as Company on (AccountingReport.company = Company.id)
-left outer join public.account_account_config as AccountConfig on (AccountConfig.company = Company.id)
+left outer join base_company as Company on (AccountingReport.company = Company.id)
+left outer join account_account_config as AccountConfig on (AccountConfig.company = Company.id)
+left outer join base_currency as Currency on (Currency.id = Move.currency)
+left outer join base_currency as CompanyCurrency on (CompanyCurrency.id = Company.currency)
 
-left outer join public.account_account as Account on (MoveLine.account  = Account.id )
+left outer join account_account as Account on (MoveLine.account  = Account.id )
 
-left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
-left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
+left outer join account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
+left outer join account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
+
+left outer join account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
+left outer join account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
+left outer join account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
+left outer join base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
 
 where 
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
@@ -363,9 +460,11 @@ where
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
 MoveLine.date_val <= AccountingReport.date_val AND Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND
-(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND 
+(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
+(ReportAccountTagSet.account_tag_set IS NULL OR AccountTagSet.account_account = Account.id) AND
+(ReportPartnerTagSet.partner_tag_set IS NULL OR PartnerTagSet.base_partner = MoveLine.partner) AND
 Move.ignore_in_accounting_ok = false AND 
-(Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+(Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND (AccountingReport.display_closing_accounting_moves is true 
 	OR(AccountingReport.display_closing_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
@@ -547,10 +646,117 @@ AccountingReport.date_val as "ReportDate", AccountingReport.date_to as "DateTo",
 AccountingReport.publication_date_time as "ReportDateEdition",
 Currency.code as currency,
 AccountingReport.ref
-from public.account_accounting_report as AccountingReport 
-inner join public.base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)  
-left outer join public.base_period as Period on (AccountingReport.period = Period.id)
-left outer join public.base_currency as Currency on (AccountingReport.currency = Currency.id)]]></xml-property>
+from account_accounting_report as AccountingReport 
+inner join base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)  
+left outer join base_period as Period on (AccountingReport.period = Period.id)
+left outer join base_currency as Currency on (AccountingReport.currency = Currency.id)]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">
+            <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">message_key</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">message_key</text-property>
+                    <text-property name="heading">message_key</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">translation</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">translation</text-property>
+                    <text-property name="heading">translation</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">-1</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">__locale</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">-1</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">message_key</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">translation</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">message_key</property>
+                    <property name="nativeName">message_key</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">translation</property>
+                    <property name="nativeName">translation</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
+from meta_translation as LangTranslate 
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>2</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+</model:DesignValues>]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
@@ -1132,7 +1338,7 @@ else {
                 <structure>
                     <property name="name">currencyCredit</property>
                     <expression name="expression" type="javascript">if (dataSetRow["Credit"] >= 0.01 || dataSetRow["Credit"] &lt;= -0.01) {
-dataSetRow["currency_amount"]
+Math.abs(dataSetRow["currency_amount"])
 }
 else {
 0
@@ -1144,6 +1350,102 @@ else {
                     <property name="name">currencyCode</property>
                     <expression name="expression" type="javascript">dataSetRow["currency_code"]</expression>
                     <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">number_of_decimals</property>
+                    <text-property name="displayName">number_of_decimals</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">cc_number_of_decimals</property>
+                    <text-property name="displayName">cc_number_of_decimals</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["cc_number_of_decimals"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <text-property name="displayName">Debit</text-property>
+                    <expression name="expression" type="javascript">row["Debit"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_1</property>
+                    <text-property name="displayName">Credit</text-property>
+                    <expression name="expression" type="javascript">row["Credit"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_2</property>
+                    <text-property name="displayName">currencyDebit</text-property>
+                    <expression name="expression" type="javascript">row["currencyDebit"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_3</property>
+                    <text-property name="displayName">currencyCredit</text-property>
+                    <expression name="expression" type="javascript">row["currencyCredit"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_4</property>
+                    <text-property name="displayName">SumDebitPerAccount</text-property>
+                    <expression name="expression" type="javascript">row["SumDebitPerAccount"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_5</property>
+                    <text-property name="displayName">SumCreditPerAccount</text-property>
+                    <expression name="expression" type="javascript">row["SumCreditPerAccount"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_6</property>
+                    <text-property name="displayName">SubDifDb-Cr</text-property>
+                    <expression name="expression" type="javascript">row["SubDifDb-Cr"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_7</property>
+                    <text-property name="displayName">SumDifCr-Db</text-property>
+                    <expression name="expression" type="javascript">row["SumDifCr-Db"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_8</property>
+                    <text-property name="displayName">TotalDebit</text-property>
+                    <expression name="expression" type="javascript">row["TotalDebit"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_9</property>
+                    <text-property name="displayName">TotalCredit</text-property>
+                    <expression name="expression" type="javascript">row["TotalCredit"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_10</property>
+                    <text-property name="displayName">DiffDebit</text-property>
+                    <expression name="expression" type="javascript">row["DiffDebit"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_11</property>
+                    <text-property name="displayName">DiffCredit</text-property>
+                    <expression name="expression" type="javascript">row["DiffCredit"]</expression>
+                    <property name="dataType">decimal</property>
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
@@ -1509,7 +1811,7 @@ else {
                 </header>
                 <footer>
                     <row id="2518">
-                        <property name="height">0.271in</property>
+                        <property name="height">0.2708333333333333in</property>
                         <cell id="2519">
                             <property name="borderLeftColor">#9C9C9C</property>
                             <property name="borderLeftStyle">solid</property>
@@ -1585,13 +1887,57 @@ else {
                             <property name="borderTopColor">#9C9C9C</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
-                            <data id="3206">
-                                <structure name="numberFormat">
-                                    <property name="category">Custom</property>
-                                    <property name="pattern">###,##0.00</property>
-                                </structure>
+                            <data id="5357">
+                                <property name="backgroundAttachment">scroll</property>
+                                <property name="backgroundPositionX">0%</property>
+                                <property name="backgroundPositionY">0%</property>
+                                <property name="backgroundRepeat">repeat</property>
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">10pt</property>
+                                <property name="fontWeight">normal</property>
+                                <property name="fontStyle">normal</property>
+                                <property name="fontVariant">normal</property>
+                                <property name="color">black</property>
+                                <property name="textLineThrough">none</property>
+                                <property name="textOverline">none</property>
+                                <property name="textUnderline">none</property>
+                                <property name="borderBottomColor">black</property>
+                                <property name="borderBottomStyle">none</property>
+                                <property name="borderBottomWidth">medium</property>
+                                <property name="borderLeftColor">black</property>
+                                <property name="borderLeftStyle">none</property>
+                                <property name="borderLeftWidth">medium</property>
+                                <property name="borderRightColor">black</property>
+                                <property name="borderRightStyle">none</property>
+                                <property name="borderRightWidth">medium</property>
+                                <property name="borderTopColor">black</property>
+                                <property name="borderTopStyle">none</property>
+                                <property name="borderTopWidth">medium</property>
+                                <property name="marginTop">0pt</property>
+                                <property name="marginLeft">0pt</property>
+                                <property name="marginBottom">0pt</property>
+                                <property name="marginRight">0pt</property>
+                                <property name="paddingTop">1pt</property>
+                                <property name="paddingLeft">1pt</property>
+                                <property name="paddingBottom">1pt</property>
+                                <property name="paddingRight">1pt</property>
                                 <property name="textAlign">right</property>
-                                <property name="resultSetColumn">SumDebitPerAccount</property>
+                                <property name="letterSpacing">normal</property>
+                                <property name="lineHeight">normal</property>
+                                <property name="orphans">2</property>
+                                <property name="textTransform">none</property>
+                                <property name="whiteSpace">normal</property>
+                                <property name="widows">2</property>
+                                <property name="wordSpacing">normal</property>
+                                <property name="display">block</property>
+                                <property name="pageBreakAfter">auto</property>
+                                <property name="pageBreakBefore">auto</property>
+                                <property name="pageBreakInside">auto</property>
+                                <property name="showIfBlank">false</property>
+                                <property name="canShrink">false</property>
+                                <property name="overflow">hidden</property>
+                                <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern(true);]]></method>
+                                <property name="resultSetColumn">Column Binding_4</property>
                             </data>
                         </cell>
                         <cell id="2529">
@@ -1608,13 +1954,57 @@ else {
                             <property name="borderTopColor">#9C9C9C</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
-                            <data id="3207">
-                                <structure name="numberFormat">
-                                    <property name="category">Custom</property>
-                                    <property name="pattern">###,##0.00</property>
-                                </structure>
+                            <data id="5358">
+                                <property name="backgroundAttachment">scroll</property>
+                                <property name="backgroundPositionX">0%</property>
+                                <property name="backgroundPositionY">0%</property>
+                                <property name="backgroundRepeat">repeat</property>
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">10pt</property>
+                                <property name="fontWeight">normal</property>
+                                <property name="fontStyle">normal</property>
+                                <property name="fontVariant">normal</property>
+                                <property name="color">black</property>
+                                <property name="textLineThrough">none</property>
+                                <property name="textOverline">none</property>
+                                <property name="textUnderline">none</property>
+                                <property name="borderBottomColor">black</property>
+                                <property name="borderBottomStyle">none</property>
+                                <property name="borderBottomWidth">medium</property>
+                                <property name="borderLeftColor">black</property>
+                                <property name="borderLeftStyle">none</property>
+                                <property name="borderLeftWidth">medium</property>
+                                <property name="borderRightColor">black</property>
+                                <property name="borderRightStyle">none</property>
+                                <property name="borderRightWidth">medium</property>
+                                <property name="borderTopColor">black</property>
+                                <property name="borderTopStyle">none</property>
+                                <property name="borderTopWidth">medium</property>
+                                <property name="marginTop">0pt</property>
+                                <property name="marginLeft">0pt</property>
+                                <property name="marginBottom">0pt</property>
+                                <property name="marginRight">0pt</property>
+                                <property name="paddingTop">1pt</property>
+                                <property name="paddingLeft">1pt</property>
+                                <property name="paddingBottom">1pt</property>
+                                <property name="paddingRight">1pt</property>
                                 <property name="textAlign">right</property>
-                                <property name="resultSetColumn">SumCreditPerAccount</property>
+                                <property name="letterSpacing">normal</property>
+                                <property name="lineHeight">normal</property>
+                                <property name="orphans">2</property>
+                                <property name="textTransform">none</property>
+                                <property name="whiteSpace">normal</property>
+                                <property name="widows">2</property>
+                                <property name="wordSpacing">normal</property>
+                                <property name="display">block</property>
+                                <property name="pageBreakAfter">auto</property>
+                                <property name="pageBreakBefore">auto</property>
+                                <property name="pageBreakInside">auto</property>
+                                <property name="showIfBlank">false</property>
+                                <property name="canShrink">false</property>
+                                <property name="overflow">hidden</property>
+                                <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern(true);]]></method>
+                                <property name="resultSetColumn">Column Binding_5</property>
                             </data>
                         </cell>
                         <cell id="3214">
@@ -1664,7 +2054,7 @@ else {
                         </cell>
                     </row>
                     <row id="2531">
-                        <property name="height">0.271in</property>
+                        <property name="height">0.2708333333333333in</property>
                         <cell id="2532">
                             <property name="borderBottomColor">#9C9C9C</property>
                             <property name="borderBottomStyle">solid</property>
@@ -1746,15 +2136,57 @@ else {
                             <property name="borderTopColor">#9C9C9C</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
-                            <data id="2651">
+                            <data id="5360">
+                                <property name="backgroundAttachment">scroll</property>
+                                <property name="backgroundPositionX">0%</property>
+                                <property name="backgroundPositionY">0%</property>
+                                <property name="backgroundRepeat">repeat</property>
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">10pt</property>
                                 <property name="fontWeight">bold</property>
-                                <property name="numberAlign">right</property>
-                                <structure name="numberFormat">
-                                    <property name="category">Custom</property>
-                                    <property name="pattern">###,##0.00</property>
-                                </structure>
+                                <property name="fontStyle">normal</property>
+                                <property name="fontVariant">normal</property>
+                                <property name="color">black</property>
+                                <property name="textLineThrough">none</property>
+                                <property name="textOverline">none</property>
+                                <property name="textUnderline">none</property>
+                                <property name="borderBottomColor">black</property>
+                                <property name="borderBottomStyle">none</property>
+                                <property name="borderBottomWidth">medium</property>
+                                <property name="borderLeftColor">black</property>
+                                <property name="borderLeftStyle">none</property>
+                                <property name="borderLeftWidth">medium</property>
+                                <property name="borderRightColor">black</property>
+                                <property name="borderRightStyle">none</property>
+                                <property name="borderRightWidth">medium</property>
+                                <property name="borderTopColor">black</property>
+                                <property name="borderTopStyle">none</property>
+                                <property name="borderTopWidth">medium</property>
+                                <property name="marginTop">0pt</property>
+                                <property name="marginLeft">0pt</property>
+                                <property name="marginBottom">0pt</property>
+                                <property name="marginRight">0pt</property>
+                                <property name="paddingTop">1pt</property>
+                                <property name="paddingLeft">1pt</property>
+                                <property name="paddingBottom">1pt</property>
+                                <property name="paddingRight">1pt</property>
                                 <property name="textAlign">right</property>
-                                <property name="resultSetColumn">SubDifDb-Cr</property>
+                                <property name="letterSpacing">normal</property>
+                                <property name="lineHeight">normal</property>
+                                <property name="orphans">2</property>
+                                <property name="textTransform">none</property>
+                                <property name="whiteSpace">normal</property>
+                                <property name="widows">2</property>
+                                <property name="wordSpacing">normal</property>
+                                <property name="display">block</property>
+                                <property name="pageBreakAfter">auto</property>
+                                <property name="pageBreakBefore">auto</property>
+                                <property name="pageBreakInside">auto</property>
+                                <property name="showIfBlank">false</property>
+                                <property name="canShrink">false</property>
+                                <property name="overflow">hidden</property>
+                                <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern(true);]]></method>
+                                <property name="resultSetColumn">Column Binding_6</property>
                             </data>
                         </cell>
                         <cell id="2542">
@@ -1771,15 +2203,57 @@ else {
                             <property name="borderTopColor">#9C9C9C</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
-                            <data id="2652">
+                            <data id="5361">
+                                <property name="backgroundAttachment">scroll</property>
+                                <property name="backgroundPositionX">0%</property>
+                                <property name="backgroundPositionY">0%</property>
+                                <property name="backgroundRepeat">repeat</property>
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">10pt</property>
                                 <property name="fontWeight">bold</property>
-                                <property name="numberAlign">right</property>
-                                <structure name="numberFormat">
-                                    <property name="category">Custom</property>
-                                    <property name="pattern">###,##0.00</property>
-                                </structure>
+                                <property name="fontStyle">normal</property>
+                                <property name="fontVariant">normal</property>
+                                <property name="color">black</property>
+                                <property name="textLineThrough">none</property>
+                                <property name="textOverline">none</property>
+                                <property name="textUnderline">none</property>
+                                <property name="borderBottomColor">black</property>
+                                <property name="borderBottomStyle">none</property>
+                                <property name="borderBottomWidth">medium</property>
+                                <property name="borderLeftColor">black</property>
+                                <property name="borderLeftStyle">none</property>
+                                <property name="borderLeftWidth">medium</property>
+                                <property name="borderRightColor">black</property>
+                                <property name="borderRightStyle">none</property>
+                                <property name="borderRightWidth">medium</property>
+                                <property name="borderTopColor">black</property>
+                                <property name="borderTopStyle">none</property>
+                                <property name="borderTopWidth">medium</property>
+                                <property name="marginTop">0pt</property>
+                                <property name="marginLeft">0pt</property>
+                                <property name="marginBottom">0pt</property>
+                                <property name="marginRight">0pt</property>
+                                <property name="paddingTop">1pt</property>
+                                <property name="paddingLeft">1pt</property>
+                                <property name="paddingBottom">1pt</property>
+                                <property name="paddingRight">1pt</property>
                                 <property name="textAlign">right</property>
-                                <property name="resultSetColumn">SumDifCr-Db</property>
+                                <property name="letterSpacing">normal</property>
+                                <property name="lineHeight">normal</property>
+                                <property name="orphans">2</property>
+                                <property name="textTransform">none</property>
+                                <property name="whiteSpace">normal</property>
+                                <property name="widows">2</property>
+                                <property name="wordSpacing">normal</property>
+                                <property name="display">block</property>
+                                <property name="pageBreakAfter">auto</property>
+                                <property name="pageBreakBefore">auto</property>
+                                <property name="pageBreakInside">auto</property>
+                                <property name="showIfBlank">false</property>
+                                <property name="canShrink">false</property>
+                                <property name="overflow">hidden</property>
+                                <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern(true);]]></method>
+                                <property name="resultSetColumn">Column Binding_7</property>
                             </data>
                         </cell>
                         <cell id="3215">
@@ -1832,7 +2306,7 @@ else {
             </group>
             <detail>
                 <row id="3187">
-                    <property name="height">0.271in</property>
+                    <property name="height">0.2708333333333333in</property>
                     <cell id="3188">
                         <property name="borderLeftColor">#9C9C9C</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1901,13 +2375,57 @@ else {
                         <property name="borderRightColor">#9C9C9C</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <data id="3185">
-                            <structure name="numberFormat">
-                                <property name="category">Custom</property>
-                                <property name="pattern">###,##0.00</property>
-                            </structure>
+                        <data id="5353">
+                            <property name="backgroundAttachment">scroll</property>
+                            <property name="backgroundPositionX">0%</property>
+                            <property name="backgroundPositionY">0%</property>
+                            <property name="backgroundRepeat">repeat</property>
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">10pt</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="fontStyle">normal</property>
+                            <property name="fontVariant">normal</property>
+                            <property name="color">black</property>
+                            <property name="textLineThrough">none</property>
+                            <property name="textOverline">none</property>
+                            <property name="textUnderline">none</property>
+                            <property name="borderBottomColor">black</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderBottomWidth">medium</property>
+                            <property name="borderLeftColor">black</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderLeftWidth">medium</property>
+                            <property name="borderRightColor">black</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderRightWidth">medium</property>
+                            <property name="borderTopColor">black</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="borderTopWidth">medium</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="marginBottom">0pt</property>
+                            <property name="marginRight">0pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">1pt</property>
+                            <property name="paddingRight">1pt</property>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">Debit</property>
+                            <property name="letterSpacing">normal</property>
+                            <property name="lineHeight">normal</property>
+                            <property name="orphans">2</property>
+                            <property name="textTransform">none</property>
+                            <property name="whiteSpace">normal</property>
+                            <property name="widows">2</property>
+                            <property name="wordSpacing">normal</property>
+                            <property name="display">block</property>
+                            <property name="pageBreakAfter">auto</property>
+                            <property name="pageBreakBefore">auto</property>
+                            <property name="pageBreakInside">auto</property>
+                            <property name="showIfBlank">false</property>
+                            <property name="canShrink">false</property>
+                            <property name="overflow">hidden</property>
+                            <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern(true);]]></method>
+                            <property name="resultSetColumn">Column Binding</property>
                         </data>
                     </cell>
                     <cell id="3195">
@@ -1917,13 +2435,57 @@ else {
                         <property name="borderRightColor">#9C9C9C</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <data id="3186">
-                            <structure name="numberFormat">
-                                <property name="category">Custom</property>
-                                <property name="pattern">###,##0.00</property>
-                            </structure>
+                        <data id="5354">
+                            <property name="backgroundAttachment">scroll</property>
+                            <property name="backgroundPositionX">0%</property>
+                            <property name="backgroundPositionY">0%</property>
+                            <property name="backgroundRepeat">repeat</property>
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">10pt</property>
+                            <property name="fontWeight">normal</property>
+                            <property name="fontStyle">normal</property>
+                            <property name="fontVariant">normal</property>
+                            <property name="color">black</property>
+                            <property name="textLineThrough">none</property>
+                            <property name="textOverline">none</property>
+                            <property name="textUnderline">none</property>
+                            <property name="borderBottomColor">black</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderBottomWidth">medium</property>
+                            <property name="borderLeftColor">black</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderLeftWidth">medium</property>
+                            <property name="borderRightColor">black</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderRightWidth">medium</property>
+                            <property name="borderTopColor">black</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="borderTopWidth">medium</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="marginBottom">0pt</property>
+                            <property name="marginRight">0pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">1pt</property>
+                            <property name="paddingRight">1pt</property>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">Credit</property>
+                            <property name="letterSpacing">normal</property>
+                            <property name="lineHeight">normal</property>
+                            <property name="orphans">2</property>
+                            <property name="textTransform">none</property>
+                            <property name="whiteSpace">normal</property>
+                            <property name="widows">2</property>
+                            <property name="wordSpacing">normal</property>
+                            <property name="display">block</property>
+                            <property name="pageBreakAfter">auto</property>
+                            <property name="pageBreakBefore">auto</property>
+                            <property name="pageBreakInside">auto</property>
+                            <property name="showIfBlank">false</property>
+                            <property name="canShrink">false</property>
+                            <property name="overflow">hidden</property>
+                            <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern(true);]]></method>
+                            <property name="resultSetColumn">Column Binding_1</property>
                         </data>
                     </cell>
                     <cell id="3213">
@@ -1933,14 +2495,57 @@ else {
                         <property name="borderRightColor">#9C9C9C</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <data id="3244">
+                        <data id="5355">
+                            <property name="backgroundAttachment">scroll</property>
+                            <property name="backgroundPositionX">0%</property>
+                            <property name="backgroundPositionY">0%</property>
+                            <property name="backgroundRepeat">repeat</property>
+                            <property name="fontFamily">sans-serif</property>
                             <property name="fontSize">10pt</property>
-                            <structure name="numberFormat">
-                                <property name="category">Custom</property>
-                                <property name="pattern">###,##0.00</property>
-                            </structure>
+                            <property name="fontWeight">normal</property>
+                            <property name="fontStyle">normal</property>
+                            <property name="fontVariant">normal</property>
+                            <property name="color">black</property>
+                            <property name="textLineThrough">none</property>
+                            <property name="textOverline">none</property>
+                            <property name="textUnderline">none</property>
+                            <property name="borderBottomColor">black</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderBottomWidth">medium</property>
+                            <property name="borderLeftColor">black</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderLeftWidth">medium</property>
+                            <property name="borderRightColor">black</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderRightWidth">medium</property>
+                            <property name="borderTopColor">black</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="borderTopWidth">medium</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="marginBottom">0pt</property>
+                            <property name="marginRight">0pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">1pt</property>
+                            <property name="paddingRight">1pt</property>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">currencyDebit</property>
+                            <property name="letterSpacing">normal</property>
+                            <property name="lineHeight">normal</property>
+                            <property name="orphans">2</property>
+                            <property name="textTransform">none</property>
+                            <property name="whiteSpace">normal</property>
+                            <property name="widows">2</property>
+                            <property name="wordSpacing">normal</property>
+                            <property name="display">block</property>
+                            <property name="pageBreakAfter">auto</property>
+                            <property name="pageBreakBefore">auto</property>
+                            <property name="pageBreakInside">auto</property>
+                            <property name="showIfBlank">false</property>
+                            <property name="canShrink">false</property>
+                            <property name="overflow">hidden</property>
+                            <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern(false);]]></method>
+                            <property name="resultSetColumn">Column Binding_2</property>
                         </data>
                     </cell>
                     <cell id="3233">
@@ -1950,14 +2555,57 @@ else {
                         <property name="borderRightColor">#9C9C9C</property>
                         <property name="borderRightStyle">solid</property>
                         <property name="borderRightWidth">thin</property>
-                        <data id="3245">
+                        <data id="5356">
+                            <property name="backgroundAttachment">scroll</property>
+                            <property name="backgroundPositionX">0%</property>
+                            <property name="backgroundPositionY">0%</property>
+                            <property name="backgroundRepeat">repeat</property>
+                            <property name="fontFamily">sans-serif</property>
                             <property name="fontSize">10pt</property>
-                            <structure name="numberFormat">
-                                <property name="category">Custom</property>
-                                <property name="pattern">###,##0.00</property>
-                            </structure>
+                            <property name="fontWeight">normal</property>
+                            <property name="fontStyle">normal</property>
+                            <property name="fontVariant">normal</property>
+                            <property name="color">black</property>
+                            <property name="textLineThrough">none</property>
+                            <property name="textOverline">none</property>
+                            <property name="textUnderline">none</property>
+                            <property name="borderBottomColor">black</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderBottomWidth">medium</property>
+                            <property name="borderLeftColor">black</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderLeftWidth">medium</property>
+                            <property name="borderRightColor">black</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderRightWidth">medium</property>
+                            <property name="borderTopColor">black</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="borderTopWidth">medium</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="marginBottom">0pt</property>
+                            <property name="marginRight">0pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">1pt</property>
+                            <property name="paddingRight">1pt</property>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">currencyCredit</property>
+                            <property name="letterSpacing">normal</property>
+                            <property name="lineHeight">normal</property>
+                            <property name="orphans">2</property>
+                            <property name="textTransform">none</property>
+                            <property name="whiteSpace">normal</property>
+                            <property name="widows">2</property>
+                            <property name="wordSpacing">normal</property>
+                            <property name="display">block</property>
+                            <property name="pageBreakAfter">auto</property>
+                            <property name="pageBreakBefore">auto</property>
+                            <property name="pageBreakInside">auto</property>
+                            <property name="showIfBlank">false</property>
+                            <property name="canShrink">false</property>
+                            <property name="overflow">hidden</property>
+                            <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern(false);]]></method>
+                            <property name="resultSetColumn">Column Binding_3</property>
                         </data>
                     </cell>
                     <cell id="3223">
@@ -2102,7 +2750,7 @@ else {
                 </row>
                 <row id="2570">
                     <property name="backgroundColor">#EFEFEF</property>
-                    <property name="height">0.271in</property>
+                    <property name="height">0.2708333333333333in</property>
                     <cell id="2571">
                         <property name="borderBottomColor">#9C9C9C</property>
                         <property name="borderBottomStyle">solid</property>
@@ -2167,14 +2815,57 @@ else {
                         <property name="borderTopColor">#9C9C9C</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="3204">
+                        <data id="5362">
+                            <property name="backgroundAttachment">scroll</property>
+                            <property name="backgroundPositionX">0%</property>
+                            <property name="backgroundPositionY">0%</property>
+                            <property name="backgroundRepeat">repeat</property>
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <structure name="numberFormat">
-                                <property name="category">Custom</property>
-                                <property name="pattern">###,##0.00</property>
-                            </structure>
+                            <property name="fontStyle">normal</property>
+                            <property name="fontVariant">normal</property>
+                            <property name="color">black</property>
+                            <property name="textLineThrough">none</property>
+                            <property name="textOverline">none</property>
+                            <property name="textUnderline">none</property>
+                            <property name="borderBottomColor">black</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderBottomWidth">medium</property>
+                            <property name="borderLeftColor">black</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderLeftWidth">medium</property>
+                            <property name="borderRightColor">black</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderRightWidth">medium</property>
+                            <property name="borderTopColor">black</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="borderTopWidth">medium</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="marginBottom">0pt</property>
+                            <property name="marginRight">0pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">1pt</property>
+                            <property name="paddingRight">1pt</property>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">TotalDebit</property>
+                            <property name="letterSpacing">normal</property>
+                            <property name="lineHeight">normal</property>
+                            <property name="orphans">2</property>
+                            <property name="textTransform">none</property>
+                            <property name="whiteSpace">normal</property>
+                            <property name="widows">2</property>
+                            <property name="wordSpacing">normal</property>
+                            <property name="display">block</property>
+                            <property name="pageBreakAfter">auto</property>
+                            <property name="pageBreakBefore">auto</property>
+                            <property name="pageBreakInside">auto</property>
+                            <property name="showIfBlank">false</property>
+                            <property name="canShrink">false</property>
+                            <property name="overflow">hidden</property>
+                            <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern(true);]]></method>
+                            <property name="resultSetColumn">Column Binding_8</property>
                         </data>
                     </cell>
                     <cell id="2580">
@@ -2190,14 +2881,57 @@ else {
                         <property name="borderTopColor">#9C9C9C</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="3205">
+                        <data id="5363">
+                            <property name="backgroundAttachment">scroll</property>
+                            <property name="backgroundPositionX">0%</property>
+                            <property name="backgroundPositionY">0%</property>
+                            <property name="backgroundRepeat">repeat</property>
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <structure name="numberFormat">
-                                <property name="category">Custom</property>
-                                <property name="pattern">###,##0.00</property>
-                            </structure>
+                            <property name="fontStyle">normal</property>
+                            <property name="fontVariant">normal</property>
+                            <property name="color">black</property>
+                            <property name="textLineThrough">none</property>
+                            <property name="textOverline">none</property>
+                            <property name="textUnderline">none</property>
+                            <property name="borderBottomColor">black</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderBottomWidth">medium</property>
+                            <property name="borderLeftColor">black</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderLeftWidth">medium</property>
+                            <property name="borderRightColor">black</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderRightWidth">medium</property>
+                            <property name="borderTopColor">black</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="borderTopWidth">medium</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="marginBottom">0pt</property>
+                            <property name="marginRight">0pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">1pt</property>
+                            <property name="paddingRight">1pt</property>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">TotalCredit</property>
+                            <property name="letterSpacing">normal</property>
+                            <property name="lineHeight">normal</property>
+                            <property name="orphans">2</property>
+                            <property name="textTransform">none</property>
+                            <property name="whiteSpace">normal</property>
+                            <property name="widows">2</property>
+                            <property name="wordSpacing">normal</property>
+                            <property name="display">block</property>
+                            <property name="pageBreakAfter">auto</property>
+                            <property name="pageBreakBefore">auto</property>
+                            <property name="pageBreakInside">auto</property>
+                            <property name="showIfBlank">false</property>
+                            <property name="canShrink">false</property>
+                            <property name="overflow">hidden</property>
+                            <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern(true);]]></method>
+                            <property name="resultSetColumn">Column Binding_9</property>
                         </data>
                     </cell>
                     <cell id="3217">
@@ -2245,7 +2979,7 @@ else {
                 </row>
                 <row id="2582">
                     <property name="backgroundColor">#EFEFEF</property>
-                    <property name="height">0.271in</property>
+                    <property name="height">0.2708333333333333in</property>
                     <cell id="2583">
                         <property name="borderBottomColor">#9C9C9C</property>
                         <property name="borderBottomStyle">solid</property>
@@ -2310,15 +3044,57 @@ else {
                         <property name="borderTopColor">#9C9C9C</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="2659">
+                        <data id="5364">
+                            <property name="backgroundAttachment">scroll</property>
+                            <property name="backgroundPositionX">0%</property>
+                            <property name="backgroundPositionY">0%</property>
+                            <property name="backgroundRepeat">repeat</property>
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <property name="numberAlign">right</property>
-                            <structure name="numberFormat">
-                                <property name="category">Custom</property>
-                                <property name="pattern">###,##0.00</property>
-                            </structure>
+                            <property name="fontStyle">normal</property>
+                            <property name="fontVariant">normal</property>
+                            <property name="color">black</property>
+                            <property name="textLineThrough">none</property>
+                            <property name="textOverline">none</property>
+                            <property name="textUnderline">none</property>
+                            <property name="borderBottomColor">black</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderBottomWidth">medium</property>
+                            <property name="borderLeftColor">black</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderLeftWidth">medium</property>
+                            <property name="borderRightColor">black</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderRightWidth">medium</property>
+                            <property name="borderTopColor">black</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="borderTopWidth">medium</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="marginBottom">0pt</property>
+                            <property name="marginRight">0pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">1pt</property>
+                            <property name="paddingRight">1pt</property>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">DiffDebit</property>
+                            <property name="letterSpacing">normal</property>
+                            <property name="lineHeight">normal</property>
+                            <property name="orphans">2</property>
+                            <property name="textTransform">none</property>
+                            <property name="whiteSpace">normal</property>
+                            <property name="widows">2</property>
+                            <property name="wordSpacing">normal</property>
+                            <property name="display">block</property>
+                            <property name="pageBreakAfter">auto</property>
+                            <property name="pageBreakBefore">auto</property>
+                            <property name="pageBreakInside">auto</property>
+                            <property name="showIfBlank">false</property>
+                            <property name="canShrink">false</property>
+                            <property name="overflow">hidden</property>
+                            <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern(true);]]></method>
+                            <property name="resultSetColumn">Column Binding_10</property>
                         </data>
                     </cell>
                     <cell id="2592">
@@ -2334,15 +3110,57 @@ else {
                         <property name="borderTopColor">#9C9C9C</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="2660">
+                        <data id="5365">
+                            <property name="backgroundAttachment">scroll</property>
+                            <property name="backgroundPositionX">0%</property>
+                            <property name="backgroundPositionY">0%</property>
+                            <property name="backgroundRepeat">repeat</property>
+                            <property name="fontFamily">sans-serif</property>
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
-                            <property name="numberAlign">right</property>
-                            <structure name="numberFormat">
-                                <property name="category">Custom</property>
-                                <property name="pattern">###,##0.00</property>
-                            </structure>
+                            <property name="fontStyle">normal</property>
+                            <property name="fontVariant">normal</property>
+                            <property name="color">black</property>
+                            <property name="textLineThrough">none</property>
+                            <property name="textOverline">none</property>
+                            <property name="textUnderline">none</property>
+                            <property name="borderBottomColor">black</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderBottomWidth">medium</property>
+                            <property name="borderLeftColor">black</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderLeftWidth">medium</property>
+                            <property name="borderRightColor">black</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderRightWidth">medium</property>
+                            <property name="borderTopColor">black</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="borderTopWidth">medium</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="marginBottom">0pt</property>
+                            <property name="marginRight">0pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">1pt</property>
+                            <property name="paddingRight">1pt</property>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">DiffCredit</property>
+                            <property name="letterSpacing">normal</property>
+                            <property name="lineHeight">normal</property>
+                            <property name="orphans">2</property>
+                            <property name="textTransform">none</property>
+                            <property name="whiteSpace">normal</property>
+                            <property name="widows">2</property>
+                            <property name="wordSpacing">normal</property>
+                            <property name="display">block</property>
+                            <property name="pageBreakAfter">auto</property>
+                            <property name="pageBreakBefore">auto</property>
+                            <property name="pageBreakInside">auto</property>
+                            <property name="showIfBlank">false</property>
+                            <property name="canShrink">false</property>
+                            <property name="overflow">hidden</property>
+                            <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern(true);]]></method>
+                            <property name="resultSetColumn">Column Binding_11</property>
                         </data>
                     </cell>
                     <cell id="3218">
@@ -2390,5 +3208,58 @@ else {
                 </row>
             </footer>
         </table>
+        <grid id="3670">
+            <property name="marginTop">10pt</property>
+            <property name="dataSet">MoveLineDS</property>
+            <list-property name="visibility">
+                <structure>
+                    <property name="format">all</property>
+                    <expression name="valueExpr" type="javascript">row.__rownum != -1</expression>
+                </structure>
+            </list-property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">MoveLineId</property>
+                    <text-property name="displayName">MoveLineId</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["MoveLineId"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
+            <column id="3671"/>
+            <row id="3672">
+                <cell id="3673">
+                    <text id="3674">
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'AccountingReport.noEntry'
+</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+        </grid>
     </body>
+    <property name="pageVariables">
+        <variable-element name="numberOfDecimals">
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="ccNumberOfDecimals">
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>

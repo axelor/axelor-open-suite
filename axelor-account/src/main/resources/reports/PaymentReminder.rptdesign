@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.11.0.v202007221505</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -22,12 +22,12 @@
         <structure>
             <property name="name">odaURL</property>
             <property name="id">4</property>
-            <expression name="value" type="javascript">params["DBname"].value</expression>
+            <expression name="value" type="javascript">params["DBName"].value</expression>
         </structure>
         <structure>
             <property name="name">odaUser</property>
             <property name="id">4</property>
-            <expression name="value" type="javascript">params["Username"].value</expression>
+            <expression name="value" type="javascript">params["UserName"].value</expression>
         </structure>
         <structure>
             <property name="name">odaPassword</property>
@@ -60,13 +60,13 @@
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <parameters>
-        <scalar-parameter name="DBname" id="5">
+        <scalar-parameter name="DBName" id="5">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -75,29 +75,11 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Locale" id="6">
+        <scalar-parameter name="UserName" id="7">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="Username" id="7">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -186,9 +168,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/aos</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -280,10 +260,9 @@ and debtRecoveryHistory.id != debtRecoveryHistoryToCount.id]]></xml-property>
                     <text-property name="heading">reference_date</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">logo_path</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <text-property name="heading">logo_path</text-property>
+                    <property name="columnName">logo_id</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <text-property name="heading">logo_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">debt_recovery_date</property>
@@ -367,8 +346,8 @@ and debtRecoveryHistory.id != debtRecoveryHistoryToCount.id]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">logo_path</property>
-                        <property name="dataType">string</property>
+                        <property name="name">logo_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
@@ -420,6 +399,16 @@ and debtRecoveryHistory.id != debtRecoveryHistoryToCount.id]]></xml-property>
                         <property name="name">logoposition</property>
                         <property name="dataType">integer</property>
                     </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">logo_height</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">logo_width</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -433,10 +422,10 @@ and debtRecoveryHistory.id != debtRecoveryHistoryToCount.id]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">logo_path</property>
-                    <property name="nativeName">logo_path</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="name">logo_id</property>
+                    <property name="nativeName">logo_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
@@ -508,9 +497,21 @@ and debtRecoveryHistory.id != debtRecoveryHistoryToCount.id]]></xml-property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select DebtRecoveryHistory.reference_date,
-coalesce(MetaFile.file_path) as logo_path, 
+coalesce(MetaFile.id) as logo_id, 
 DebtRecoveryHistory.debt_recovery_date,
 AccountDebtRecoveryMethodLine.printing_message,
 AccountDebtRecoveryMethodLine.specific_printing_message,
@@ -520,7 +521,9 @@ PartnerAddress.addressl6 as postalCodeAndCity,
 Country.name as CountryName,
 PrintingSettings.pdf_header as header, 
 PrintingSettings.pdf_footer as footer,
-PrintingSettings.logo_position_select as logoPosition
+PrintingSettings.logo_position_select as logoPosition,
+Company.height as logo_height,
+Company.width as logo_width
 from account_debt_recovery_history DebtRecoveryHistory
 left join account_debt_recovery AccountDebtRecovery on DebtRecoveryHistory.debt_recovery = AccountDebtRecovery.id
 left join account_debt_recovery_method_line AccountDebtRecoveryMethodLine on DebtRecoveryHistory.debt_recovery_method_line =  AccountDebtRecoveryMethodLine.id
@@ -529,7 +532,7 @@ Left join base_printing_settings PrintingSettings on Company.printing_settings =
 Left join account_accounting_situation AccountingSituation on AccountDebtRecovery.accounting_situation = AccountingSituation.id
 Left join base_partner Partner on AccountingSituation.partner = Partner.id
 Left join base_address PartnerAddress on Partner.main_address = PartnerAddress.id
-Left join base_country Country on PartnerAddress.addressl7country = Country.id
+Left join base_country Country on PartnerAddress.country = Country.id
 left join meta_file as MetaFile on (MetaFile.id = Company.logo)
 where DebtRecoveryHistory.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -1055,7 +1058,7 @@ order by InvoiceTerm.sequence]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">-1</property>
@@ -1097,7 +1100,7 @@ order by InvoiceTerm.sequence]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1213,7 +1216,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
     <body>
         <grid id="321">
             <property name="display">inline</property>
-            <property name="height">7.625in</property>
+            <property name="height">7.5625in</property>
             <property name="width">7.791666666666667in</property>
             <column id="322">
                 <property name="width">1.875in</property>
@@ -1241,16 +1244,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <cell id="3703">
                     <property name="colSpan">5</property>
                     <property name="rowSpan">1</property>
-                    <text id="4412">
-                        <property name="fontSize">8pt</property>
+                    <grid id="6221">
                         <property name="dataSet">DebtRecoveryHistoryDS</property>
                         <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">logo_path</property>
-                                <text-property name="displayName">logo_path</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
                             <structure>
                                 <property name="name">header</property>
                                 <text-property name="displayName">header</text-property>
@@ -1263,26 +1259,118 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <expression name="expression" type="javascript">dataSetRow["logoposition"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
+                            <structure>
+                                <property name="name">logo_height</property>
+                                <text-property name="displayName">logo_height</text-property>
+                                <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'35px'}</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">logo_width</property>
+                                <text-property name="displayName">logo_width</text-property>
+                                <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'100px'}</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">logo_id</property>
+                                <text-property name="displayName">logo_id</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
                         </list-property>
-                        <structure name="toc"/>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<TABLE >
-	<TR>
-		<VALUE-OF format="HTML">if(row["logoPosition"] == 3) {
-		"<TD>"+row["header"]+"</TD><TD/><TD align='right' valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/></td>"
-		} else if(row["logoposition"] == 1) {
-		"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/></TD><TD/><TD>"+row["header"]+"</TD>"
-		} else if(row["logoPosition"] == 2) {
-			"<TD/><TD align='center' valign='middle'><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/></TD><TD>"+row["header"]+"</TD>"
-		}else if(row["logoPosition"] == null) {
-			"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' width='100%'/>"
-		}else {
-		"<TD/><TD/><TD>"+row["header"]+"</TD>"
-		}
- 		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                    </text>
+                        <column id="6222"/>
+                        <column id="6223"/>
+                        <column id="6224"/>
+                        <row id="6225">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["logoposition"] == 3</expression>
+                                </structure>
+                            </list-property>
+                            <cell id="6226">
+                                <property name="colSpan">2</property>
+                                <property name="rowSpan">1</property>
+                                <method name="onRender"><![CDATA[var logoPosition = row["logoposition"];
+
+if (logoPosition == 2) {
+   this.getStyle().setTextAlign('right')
+   this.getStyle().setPaddingRight('15%');
+}]]></method>
+                                <property name="verticalAlign">middle</property>
+                                <image id="6233">
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row["logoposition"] == 0</expression>
+                                        </structure>
+                                    </list-property>
+                                    <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                                    <method name="onRender"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                    <property name="source">expr</property>
+                                </image>
+                            </cell>
+                            <cell id="6228">
+                                <property name="textAlign">right</property>
+                                <property name="verticalAlign">middle</property>
+                                <text id="6234">
+                                    <property name="fontSize">8pt</property>
+                                    <property name="marginLeft">0pt</property>
+                                    <property name="textAlign">right</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row["logoposition"] == null</expression>
+                                        </structure>
+                                    </list-property>
+                                    <method name="onRender"><![CDATA[this.getStyle().setTextAlign('left')]]></method>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["header"] ? row["header"] : ""</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="6229">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["logoposition"] != 3</expression>
+                                </structure>
+                            </list-property>
+                            <cell id="6230">
+                                <property name="verticalAlign">middle</property>
+                                <text id="6015">
+                                    <property name="fontSize">8pt</property>
+                                    <property name="marginLeft">0pt</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["header"] ? row["header"] : ""</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="6231">
+                                <property name="colSpan">2</property>
+                                <property name="rowSpan">1</property>
+                                <property name="textAlign">right</property>
+                                <property name="verticalAlign">middle</property>
+                                <image id="6016">
+                                    <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                                    <method name="onRender"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                    <property name="source">expr</property>
+                                </image>
+                            </cell>
+                        </row>
+                    </grid>
                 </cell>
             </row>
             <row id="5377">

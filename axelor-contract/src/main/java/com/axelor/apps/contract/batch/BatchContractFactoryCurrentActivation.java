@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,21 +24,25 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
+import com.axelor.apps.contract.service.ContractInvoicingService;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.db.Query;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.format.DateTimeFormatter;
 
 public class BatchContractFactoryCurrentActivation extends BatchContractFactory {
 
   @Inject
   public BatchContractFactoryCurrentActivation(
-      ContractRepository repository, ContractService service, AppBaseService baseService) {
-    super(repository, service, baseService);
+      ContractRepository repository,
+      ContractService service,
+      ContractInvoicingService invoicingService,
+      AppBaseService baseService) {
+    super(repository, service, invoicingService, baseService);
   }
 
   @Override
-  Query<Contract> prepare(Batch batch) {
+  protected Query<Contract> prepare(Batch batch) {
     return repository
         .all()
         .filter(
@@ -55,7 +59,7 @@ public class BatchContractFactoryCurrentActivation extends BatchContractFactory 
   }
 
   @Override
-  void process(Contract contract) throws AxelorException {
+  protected void process(Contract contract) throws AxelorException {
     service.ongoingCurrentVersion(contract, baseService.getTodayDate(contract.getCompany()));
   }
 }

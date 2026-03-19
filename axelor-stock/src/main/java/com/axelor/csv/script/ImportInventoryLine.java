@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,27 +19,44 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
-import com.axelor.apps.stock.service.InventoryLineService;
-import com.axelor.apps.stock.service.TrackingNumberService;
-import com.google.inject.Inject;
+import com.axelor.apps.stock.service.TrackingNumberCreateService;
+import com.axelor.apps.stock.service.inventory.InventoryLineService;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Optional;
 
 public class ImportInventoryLine {
 
-  @Inject private InventoryLineRepository inventoryLineRepo;
+  protected InventoryLineRepository inventoryLineRepo;
+  protected InventoryLineService inventoryLineService;
+  protected TrackingNumberCreateService trackingNumberCreateService;
+  protected AppBaseService appBaseService;
 
-  @Inject private InventoryLineService inventoryLineService;
+  protected ProductCompanyService productCompanyService;
 
-  @Inject private TrackingNumberService trackingNumberService;
-
-  @Inject private AppBaseService appBaseService;
+  @Inject
+  public ImportInventoryLine(
+      InventoryLineRepository inventoryLineRepo,
+      InventoryLineService inventoryLineService,
+      TrackingNumberCreateService trackingNumberCreateService,
+      AppBaseService appBaseService,
+      ProductCompanyService productCompanyService) {
+    this.inventoryLineRepo = inventoryLineRepo;
+    this.inventoryLineService = inventoryLineService;
+    this.trackingNumberCreateService = trackingNumberCreateService;
+    this.appBaseService = appBaseService;
+    this.productCompanyService = productCompanyService;
+  }
 
   @Transactional(rollbackOn = {Exception.class})
   public Object importInventoryLine(Object bean, Map<String, Object> values)
@@ -49,8 +66,12 @@ public class ImportInventoryLine {
 
     InventoryLine inventoryLine = (InventoryLine) bean;
 
+    Company company =
+        Optional.ofNullable(inventoryLine.getInventory()).map(Inventory::getCompany).orElse(null);
     TrackingNumberConfiguration trackingNumberConfig =
-        inventoryLine.getProduct().getTrackingNumberConfiguration();
+        (TrackingNumberConfiguration)
+            productCompanyService.get(
+                inventoryLine.getProduct(), "trackingNumberConfiguration", company);
 
     BigDecimal qtyByTracking = BigDecimal.ONE;
 
@@ -72,21 +93,17 @@ public class ImportInventoryLine {
 
       InventoryLine inventoryLineNew;
 
+      Inventory inventory = inventoryLine.getInventory();
+
       for (int i = 0; i < inventoryLine.getRealQty().intValue(); i += qtyByTracking.intValue()) {
 
         trackingNumber =
-            trackingNumberService.createTrackingNumber(
+            trackingNumberCreateService.createTrackingNumber(
                 inventoryLine.getProduct(),
-                inventoryLine.getInventory().getStockLocation().getCompany(),
-                appBaseService.getTodayDate(
-                    inventoryLine.getInventory().getStockLocation().getCompany()),
-                inventoryLine.getInventory().getInventorySeq());
-
-        if (realQtyRemaning.compareTo(qtyByTracking) < 0) {
-          trackingNumber.setCounter(realQtyRemaning);
-        } else {
-          trackingNumber.setCounter(qtyByTracking);
-        }
+                company,
+                appBaseService.getTodayDate(company),
+                inventory.getInventorySeq(),
+                null);
 
         inventoryLineNew =
             inventoryLineService.createInventoryLine(

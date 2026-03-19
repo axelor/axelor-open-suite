@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,17 +18,20 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.service.administration.SequenceDateCheckService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.time.LocalDate;
 
 @Singleton
@@ -42,10 +45,26 @@ public class SequenceController {
     }
   }
 
+  public void validateSequence(ActionRequest request, ActionResponse response) {
+    Sequence sequence = request.getContext().asType(Sequence.class);
+    if (!Strings.isNullOrEmpty(sequence.getCodeSelect())) {
+      try {
+        Beans.get(SequenceService.class).validateSequence(sequence);
+      } catch (AxelorException e) {
+        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      }
+    }
+  }
+
   public void computeFullName(ActionRequest request, ActionResponse response) {
     Sequence sequence = request.getContext().asType(Sequence.class);
     String fullName = Beans.get(SequenceService.class).computeFullName(sequence);
     response.setValue("fullName", fullName);
+  }
+
+  public void verifyPattern(ActionRequest request, ActionResponse response) throws AxelorException {
+    Sequence sequence = request.getContext().asType(Sequence.class);
+    Beans.get(SequenceService.class).verifyPattern(sequence);
   }
 
   public void updateSequenceVersionsMonthly(ActionRequest request, ActionResponse response) {
@@ -84,9 +103,24 @@ public class SequenceController {
 
     try {
       Sequence sequence = request.getContext().asType(Sequence.class);
-      Beans.get(SequenceService.class).checkSequenceLengthValidity(sequence);
+      sequence = EntityHelper.getEntity(sequence);
+      if (!sequence.getPrefixGroovyOk() || !sequence.getSuffixGroovyOk()) {
+        Beans.get(SequenceService.class).checkSequenceLengthValidity(sequence);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void checkYearValidity(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Sequence sequence = request.getContext().asType(Sequence.class);
+    Beans.get(SequenceDateCheckService.class).isYearValid(sequence);
+  }
+
+  public void checkMonthValidity(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Sequence sequence = request.getContext().asType(Sequence.class);
+    Beans.get(SequenceDateCheckService.class).isMonthValid(sequence);
   }
 }

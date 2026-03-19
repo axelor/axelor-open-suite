@@ -1,0 +1,9 @@
+"importId";"name";"templateLink";"modelName";"templateEngineSelect";"format";"attach"
+6;"Inventory PDF";"Inventory.rptdesign";"com.axelor.apps.stock.db.Inventory";2;"pdf";false
+27;"StockLocation PDF";"StockLocation.rptdesign";"com.axelor.apps.stock.db.StockLocation";2;"pdf";false
+28;"StockMove";"StockMove.rptdesign";"com.axelor.apps.stock.db.StockMove";2;"pdf";false
+71;"PickingStockMove";"PickingStockMove.rptdesign";"com.axelor.apps.stock.db.StockMove";2;"pdf";false
+72;"ConformityCertificate";"ConformityCertificate.rptdesign";"com.axelor.apps.stock.db.StockMove";2;"pdf";false
+121;"Inventory XLSX";"Inventory.rptdesign";"com.axelor.apps.stock.db.Inventory";2;"xlsx";false
+122;"Inventory ODS";"Inventory.rptdesign";"com.axelor.apps.stock.db.Inventory";2;"ods";false
+123;"StockLocation XLSX";"StockLocation.rptdesign";"com.axelor.apps.stock.db.StockLocation";2;"xlsx";false

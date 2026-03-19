@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,44 +20,24 @@ package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderCopyService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.inject.Beans;
-import com.axelor.studio.app.service.AppService;
-import java.math.BigDecimal;
-import java.util.Map;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
 
-  @Override
-  public SaleOrder copy(SaleOrder entity, boolean deep) {
-
-    SaleOrder copy = super.copy(entity, deep);
-
-    if (!Beans.get(AppService.class).isApp("supplychain")) {
-      return copy;
-    }
-
-    copy.setShipmentDate(null);
-    copy.setDeliveryState(DELIVERY_STATE_NOT_DELIVERED);
-    copy.setAmountInvoiced(null);
-    copy.setStockMoveList(null);
-
-    if (copy.getSaleOrderLineList() != null) {
-      for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
-        saleOrderLine.setDeliveryState(null);
-        saleOrderLine.setDeliveredQty(null);
-        saleOrderLine.setAmountInvoiced(null);
-        saleOrderLine.setInvoiced(null);
-        saleOrderLine.setIsInvoiceControlled(null);
-        saleOrderLine.setReservedQty(BigDecimal.ZERO);
-      }
-    }
-
-    return copy;
+  @Inject
+  public SaleOrderSupplychainRepository(
+      SaleOrderCopyService saleOrderCopyService,
+      SaleOrderOrderingStatusService saleOrderOrderingStatusService) {
+    super(saleOrderCopyService, saleOrderOrderingStatusService);
   }
 
   @Override
@@ -75,12 +55,13 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
   }
 
   @Override
-  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    Long saleOrderId = (Long) json.get("id");
-    SaleOrder saleOrder = find(saleOrderId);
-    json.put(
-        "$invoicingState",
-        Beans.get(SaleOrderInvoiceService.class).getSaleOrderInvoicingState(saleOrder));
-    return super.populate(json, context);
+  public SaleOrder save(SaleOrder saleOrder) {
+    try {
+      Beans.get(SaleOrderLineAnalyticService.class).checkAnalyticAxisByCompany(saleOrder);
+    } catch (AxelorException e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
+    return super.save(saleOrder);
   }
 }

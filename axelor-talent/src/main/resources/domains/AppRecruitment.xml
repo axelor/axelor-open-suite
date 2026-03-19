@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
   <entity name="AppRecruitment" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <string name="lastEmailId" title="Last email sync id"/>
+    <many-to-one name="hiringStatus" ref="com.axelor.apps.talent.db.HiringStage"
+      title="Hiring status"
+      help="You can define here at which application status the candidate will be indicated as being hired. At this status, the software will propose to create an employee record for this candidate."/>
+    <many-to-one name="defaultHiringStatus" ref="com.axelor.apps.talent.db.HiringStage"
+      title="Default hiring status"/>
 
     <track>
       <field name="lastEmailId" on="UPDATE"/>
+      <field name="hiringStatus" on="UPDATE"/>
     </track>
   </entity>
 

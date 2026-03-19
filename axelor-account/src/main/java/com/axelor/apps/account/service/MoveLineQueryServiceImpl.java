@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,11 +23,12 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineQueryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class MoveLineQueryServiceImpl implements MoveLineQueryService {
@@ -35,18 +36,18 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
   protected MoveLineQueryRepository moveLineQueryRepository;
   protected AppBaseService appBaseService;
   protected ReconcileRepository reconcileRepository;
-  protected ReconcileService reconcileService;
+  protected UnreconcileService unReconcileService;
 
   @Inject
   public MoveLineQueryServiceImpl(
       MoveLineQueryRepository moveLineQueryRepository,
       AppBaseService appBaseService,
       ReconcileRepository reconcileRepository,
-      ReconcileService reconcileService) {
+      UnreconcileService unReconcileService) {
     this.moveLineQueryRepository = moveLineQueryRepository;
     this.appBaseService = appBaseService;
     this.reconcileRepository = reconcileRepository;
-    this.reconcileService = reconcileService;
+    this.unReconcileService = unReconcileService;
   }
 
   @Override
@@ -62,8 +63,11 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
       query += " AND self.move.tradingName.id = " + moveLineQuery.getTradingName().getId();
     }
 
-    query += String.format(" AND self.date >= '%s'", moveLineQuery.getFromDate().toString());
-    query += String.format(" AND self.date <= '%s'", moveLineQuery.getToDate().toString());
+    query +=
+        String.format(
+            " AND self.date >= CAST('%s' AS date)", moveLineQuery.getFromDate().toString());
+    query +=
+        String.format(" AND self.date <= CAST('%s' AS date)", moveLineQuery.getToDate().toString());
 
     query += " AND self.account.id = " + moveLineQuery.getAccount().getId();
 
@@ -74,7 +78,7 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
     if (moveLineQuery.getProcessSelect() == MoveLineQueryRepository.PROCESS_RECONCILE) {
       query += "AND self.amountRemaining != 0 ";
     } else if (moveLineQuery.getProcessSelect() == MoveLineQueryRepository.PROCESS_UNRECONCILE) {
-      query += "AND self.amountRemaining != debit + credit ";
+      query += "AND self.amountRemaining != debit - credit ";
     }
 
     query +=
@@ -91,7 +95,7 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
       throws AxelorException {
     for (Reconcile reconcile : reconcileList) {
       reconcile = reconcileRepository.find(reconcile.getId());
-      reconcileService.unreconcile(reconcile);
+      unReconcileService.unreconcile(reconcile);
       JPA.clear();
     }
   }

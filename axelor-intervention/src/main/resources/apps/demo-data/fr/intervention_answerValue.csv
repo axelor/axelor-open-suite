@@ -1,0 +1,13 @@
+"importId";"answerType.importId";"name";"isDefault";"nonConforming";"following"
+1;1;"OUI";false;false;false
+2;1;"NON";false;false;false
+3;2;"Conforme";false;false;false
+4;2;"Non conforme";false;true;false
+5;6;"Très satisfaisant";false;false;false
+6;6;"Satisfaisant";false;false;false
+7;6;"Passable";false;false;false
+8;6;"Médiocre";false;false;false
+9;9;"Fonctionnel";false;false;false
+10;9;"Non fonctionnel";false;false;false
+11;9;"Partiellement fonctionnel";false;false;false
+12;9;"En veille";false;false;false

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,10 +19,15 @@
 package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.address.AddressService;
+import com.axelor.apps.base.service.address.AddressTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import com.axelor.db.JPA;
+import com.axelor.inject.Beans;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
+import java.util.Optional;
 
 public class AddressBaseRepository extends AddressRepository {
 
@@ -31,9 +36,18 @@ public class AddressBaseRepository extends AddressRepository {
   @Override
   public Address save(Address entity) {
 
-    entity.setFullName(addressService.computeFullName(entity));
     try {
-      addressService.updateLatLong(entity);
+      EntityManager em = JPA.em().getEntityManagerFactory().createEntityManager();
+      Address oldAddressObject =
+          Optional.ofNullable(entity.getId()).map(id -> em.find(Address.class, id)).orElse(null);
+      if (oldAddressObject == null
+          || !oldAddressObject.getFullName().equals(entity.getFullName())) {
+        addressService.updateLatLong(entity);
+      }
+      AddressTemplateService addressTemplateService = Beans.get(AddressTemplateService.class);
+      addressTemplateService.setFormattedFullName(entity);
+      entity.setFullName(addressService.computeFullName(entity).toUpperCase());
+      addressTemplateService.checkRequiredAddressFields(entity);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);

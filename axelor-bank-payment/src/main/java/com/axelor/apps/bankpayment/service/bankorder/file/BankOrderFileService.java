@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,8 +18,9 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder.file;
 
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -30,13 +31,11 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.axelor.studio.app.service.AppService;
-import com.axelor.utils.file.FileTool;
-import com.axelor.utils.xml.Marschaller;
+import com.axelor.utils.helpers.file.FileHelper;
+import com.axelor.utils.xml.MarshallingHelper;
 import com.google.common.base.Strings;
+import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -45,7 +44,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +61,7 @@ public class BankOrderFileService {
   protected BankDetails senderBankDetails;
   protected Company senderCompany;
   protected Currency bankOrderCurrency;
+  protected Currency companyCurrency;
   protected BigDecimal bankOrderTotalAmount;
   protected BigDecimal arithmeticTotal;
   protected int nbOfLines;
@@ -84,6 +83,7 @@ public class BankOrderFileService {
     this.senderBankDetails = bankOrder.getSenderBankDetails();
     this.senderCompany = bankOrder.getSenderCompany();
     this.bankOrderCurrency = bankOrder.getBankOrderCurrency();
+    this.companyCurrency = bankOrder.getCompanyCurrency();
     this.bankOrderTotalAmount = bankOrder.getBankOrderTotalAmount();
     this.arithmeticTotal = bankOrder.getArithmeticTotal();
     this.nbOfLines = bankOrder.getNbOfLines();
@@ -118,7 +118,7 @@ public class BankOrderFileService {
           I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_NO_FOLDER_PATH),
           paymentMode.getName());
     }
-    return Beans.get(AppService.class).getDataExportDir() + folderPath;
+    return AppSettings.get().get(AvailableAppSettings.DATA_UPLOAD_DIR) + folderPath;
   }
 
   /**
@@ -134,21 +134,12 @@ public class BankOrderFileService {
 
     switch (fileExtension) {
       case FILE_EXTENSION_XML:
-        return Marschaller.marschalFile(
+        return MarshallingHelper.marshallFile(
             fileToCreate, context, this.getFolderPath(), this.computeFileName());
 
       case FILE_EXTENSION_TXT:
-        try {
-          return FileTool.writer(
-              this.getFolderPath(), this.computeFileName(), (List<String>) fileToCreate);
-        } catch (IOException e) {
-          throw new AxelorException(
-              e.getCause(),
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(AccountExceptionMessage.CFONB_EXPORT_2),
-              I18n.get(BaseExceptionMessage.EXCEPTION),
-              e);
-        }
+        return FileHelper.writer(
+            this.getFolderPath(), this.computeFileName(), (List<String>) fileToCreate);
 
       default:
         throw new AxelorException(

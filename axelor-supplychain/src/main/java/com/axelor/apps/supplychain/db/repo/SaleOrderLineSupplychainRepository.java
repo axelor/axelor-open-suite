@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,9 +22,9 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderLineSaleRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.SaleOrderLineSaleRepository;
-import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
@@ -65,6 +65,19 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleReposit
     json.put("availableStatusSelect", saleOrderLine.getAvailableStatusSelect());
 
     return super.populate(json, context);
+  }
+
+  @Override
+  public SaleOrderLine copy(SaleOrderLine entity, boolean deep) {
+    SaleOrderLine copy = super.copy(entity, deep);
+    copy.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
+    copy.setInvoicingState(SaleOrderLineRepository.INVOICING_STATE_NOT_INVOICED);
+    copy.setDeliveredQty(null);
+    copy.setAmountInvoiced(null);
+    copy.setInvoiced(null);
+    copy.setIsInvoiceControlled(null);
+    copy.setReservedQty(BigDecimal.ZERO);
+    return copy;
   }
 
   protected boolean availabilityIsNotManaged(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {

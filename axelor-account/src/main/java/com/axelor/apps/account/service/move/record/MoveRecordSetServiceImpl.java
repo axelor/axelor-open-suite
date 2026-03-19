@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,9 +22,16 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
-import com.axelor.apps.account.service.move.MoveLineControlService;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.JournalService;
+import com.axelor.apps.account.service.PartnerAccountService;
+import com.axelor.apps.account.service.PaymentConditionService;
+import com.axelor.apps.account.service.PfpService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -35,52 +42,67 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import com.axelor.apps.base.service.app.AppBaseService;
+import jakarta.inject.Inject;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class MoveRecordSetServiceImpl implements MoveRecordSetService {
 
-  protected MoveLineControlService moveLineControlService;
   protected PartnerRepository partnerRepository;
   protected BankDetailsService bankDetailsService;
+  protected PeriodService periodService;
+  protected PaymentConditionService paymentConditionService;
+  protected AppBaseService appBaseService;
+  protected PartnerAccountService partnerAccountService;
+  protected JournalService journalService;
+  protected PfpService pfpService;
   protected MoveToolService moveToolService;
+  protected InvoiceTermPfpToolService invoiceTermPfpToolService;
 
   @Inject
   public MoveRecordSetServiceImpl(
-      MoveLineControlService moveLineControlService,
       PartnerRepository partnerRepository,
       BankDetailsService bankDetailsService,
-      MoveToolService moveToolService) {
-    this.moveLineControlService = moveLineControlService;
+      PeriodService periodService,
+      PaymentConditionService paymentConditionService,
+      AppBaseService appBaseService,
+      PartnerAccountService partnerAccountService,
+      JournalService journalService,
+      PfpService pfpService,
+      MoveToolService moveToolService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService) {
     this.partnerRepository = partnerRepository;
     this.bankDetailsService = bankDetailsService;
+    this.periodService = periodService;
+    this.paymentConditionService = paymentConditionService;
+    this.appBaseService = appBaseService;
+    this.partnerAccountService = partnerAccountService;
+    this.journalService = journalService;
+    this.pfpService = pfpService;
     this.moveToolService = moveToolService;
+    this.invoiceTermPfpToolService = invoiceTermPfpToolService;
   }
 
   @Override
-  public Map<String, Object> setPeriod(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
-
-    HashMap<String, Object> resultMap = new HashMap<>();
-    if (move.getDate() != null && move.getCompany() != null) {
-      move.setPeriod(
-          Beans.get(PeriodService.class)
-              .getActivePeriod(move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
+  public void setPeriod(Move move) {
+    try {
+      if (move.getDate() != null && move.getCompany() != null) {
+        move.setPeriod(
+            periodService.getActivePeriod(
+                move.getDate(), move.getCompany(), YearRepository.TYPE_FISCAL));
+      }
+    } catch (AxelorException axelorException) {
+      move.setPeriod(null);
     }
-    resultMap.put("period", move.getPeriod());
-    return resultMap;
   }
 
   @Override
-  public Map<String, Object> setPaymentMode(Move move) {
-    Objects.requireNonNull(move);
-
-    HashMap<String, Object> resultMap = new HashMap<>();
-
+  public void setPaymentMode(Move move) {
     Partner partner = move.getPartner();
     JournalType journalType =
         Optional.ofNullable(move.getJournal()).map(Journal::getJournalType).orElse(null);
@@ -100,38 +122,33 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     } else {
       move.setPaymentMode(null);
     }
-    resultMap.put("paymentMode", move.getPaymentMode());
-    return resultMap;
   }
 
   @Override
-  public Map<String, Object> setPaymentCondition(Move move) {
-    Objects.requireNonNull(move);
-
-    HashMap<String, Object> resultMap = new HashMap<>();
-
+  public void setPaymentCondition(Move move) throws AxelorException {
     Partner partner = move.getPartner();
     JournalType journalType =
         Optional.ofNullable(move.getJournal()).map(Journal::getJournalType).orElse(null);
+    PaymentCondition paymentCondition = null;
+    if (partner != null && journalType != null) {
 
-    if (partner != null
-        && journalType != null
-        && !journalType
-            .getTechnicalTypeSelect()
-            .equals(JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)) {
-      move.setPaymentCondition(partner.getPaymentCondition());
-    } else {
-      move.setPaymentCondition(null);
+      Integer journalTechnicalType = journalType.getTechnicalTypeSelect();
+      if (journalTechnicalType.compareTo(JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
+          == 0) {
+        paymentCondition = partner.getOutPaymentCondition();
+      } else if (journalTechnicalType.compareTo(
+              JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)
+          != 0) {
+        paymentCondition = partner.getPaymentCondition();
+      }
     }
 
-    resultMap.put("paymentCondition", move.getPaymentCondition());
-    return resultMap;
+    paymentConditionService.checkPaymentCondition(paymentCondition);
+    move.setPaymentCondition(paymentCondition);
   }
 
   @Override
-  public Map<String, Object> setPartnerBankDetails(Move move) {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
+  public void setPartnerBankDetails(Move move) {
     Partner partner = move.getPartner();
 
     if (partner != null) {
@@ -143,15 +160,10 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     } else {
       move.setPartnerBankDetails(null);
     }
-    resultMap.put("partnerBankDetails", move.getPartnerBankDetails());
-    return resultMap;
   }
 
   @Override
-  public Map<String, Object> setCurrencyByPartner(Move move) {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
+  public void setCurrencyByPartner(Move move) {
     Partner partner = move.getPartner();
 
     if (partner != null) {
@@ -160,10 +172,6 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
           Optional.ofNullable(partner.getCurrency()).map(Currency::getCodeISO).orElse(null));
       move.setFiscalPosition(partner.getFiscalPosition());
     }
-    resultMap.put("currency", move.getCurrency());
-    resultMap.put("currencyCode", move.getCurrencyCode());
-    resultMap.put("fiscalPosition", move.getFiscalPosition());
-    return resultMap;
   }
 
   @Override
@@ -183,89 +191,133 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   }
 
   @Override
-  public Map<String, Object> setJournal(Move move) {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
+  public void setJournal(Move move) {
     move.setJournal(
         Optional.ofNullable(move.getCompany())
             .map(Company::getAccountConfig)
             .map(AccountConfig::getManualMiscOpeJournal)
             .orElse(null));
-    resultMap.put("journal", move.getJournal());
-    return resultMap;
   }
 
   @Override
-  public Map<String, Object> setFunctionalOriginSelect(Move move) {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-    if (move.getJournal() != null
-        && move.getJournal().getAuthorizedFunctionalOriginSelect() != null) {
-      if (move.getJournal().getAuthorizedFunctionalOriginSelect().split(",").length == 1) {
-        move.setFunctionalOriginSelect(
-            Integer.valueOf(move.getJournal().getAuthorizedFunctionalOriginSelect()));
-      } else {
-        move.setFunctionalOriginSelect(null);
-      }
-    }
-    resultMap.put("functionalOriginSelect", move.getFunctionalOriginSelect());
-    return resultMap;
+  public void setFunctionalOriginSelect(Move move) {
+    move.setFunctionalOriginSelect(
+        moveToolService.computeFunctionalOriginSelect(
+            move.getJournal(), move.getMassEntryStatusSelect()));
   }
 
   @Override
-  public Map<String, Object> setMoveLineDates(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
-    moveLineControlService.setMoveLineDates(move);
-    resultMap.put("moveLineList", move.getMoveLineList());
-
-    return resultMap;
-  }
-
-  @Override
-  public Map<String, Object> setCompanyBankDetails(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
+  public void setCompanyBankDetails(Move move) throws AxelorException {
     PaymentMode paymentMode = move.getPaymentMode();
     Company company = move.getCompany();
     Partner partner = move.getPartner();
+    BankDetails companyBankDetails = move.getCompanyBankDetails();
     if (company == null) {
       move.setCompanyBankDetails(null);
-      resultMap.put("companyBankDetails", null);
-      return resultMap;
+      return;
     }
+
     if (partner != null) {
       partner = partnerRepository.find(partner.getId());
     }
+
     BankDetails defaultBankDetails =
         bankDetailsService.getDefaultCompanyBankDetails(company, paymentMode, partner, null);
-    move.setCompanyBankDetails(defaultBankDetails);
-    resultMap.put("companyBankDetails", defaultBankDetails);
-
-    return resultMap;
+    move.setCompanyBankDetails(
+        defaultBankDetails != null ? defaultBankDetails : companyBankDetails);
   }
 
   @Override
-  public Map<String, Object> setMoveLineOriginDates(Move move) throws AxelorException {
+  public void setOriginDate(Move move) {
     Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
 
-    moveLineControlService.setMoveLineOriginDates(move);
-    resultMap.put("moveLineList", move.getMoveLineList());
-
-    return resultMap;
+    if (move.getDate() != null
+        && move.getJournal() != null
+        && move.getJournal().getIsFillOriginDate()) {
+      move.setOriginDate(move.getDate());
+    } else if (move.getDate() == null
+        || (move.getJournal() == null
+            || (move.getJournal() != null && !move.getJournal().getIsFillOriginDate()))) {
+      move.setOriginDate(null);
+    }
   }
 
   @Override
-  public Map<String, Object> setOriginOnMoveLineList(Move move) throws AxelorException {
+  public void setPfpStatus(Move move) throws AxelorException {
     Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
 
-    moveToolService.setOriginOnMoveLineList(move);
-    resultMap.put("moveLineList", move.getMoveLineList());
+    if (move.getJournal() != null && move.getJournal().getJournalType() != null) {
+      JournalType journalType = move.getJournal().getJournalType();
+      if (pfpService.isManagePassedForPayment(move.getCompany())
+          && pfpService.isManagePFPInRefund(move.getCompany())
+          && (journalType.getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+              || journalType.getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE)) {
+        move.setPfpValidateStatusSelect(MoveRepository.PFP_STATUS_AWAITING);
+      }
+    }
+  }
 
-    return resultMap;
+  @Override
+  public void setPfpValidatorUser(Move move) {
+    Objects.requireNonNull(move);
+
+    move.setPfpValidatorUser(
+        invoiceTermPfpToolService.getPfpValidatorUser(move.getPartner(), move.getCompany()));
+  }
+
+  @Override
+  public Map<String, Object> computeTotals(Move move) {
+
+    Map<String, Object> values = new HashMap<>();
+    if (move.getMoveLineList() == null) {
+      return values;
+    }
+    values.put("$totalLines", move.getMoveLineList().size());
+
+    BigDecimal totalDebit =
+        move.getMoveLineList().stream()
+            .map(MoveLine::getDebit)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    values.put("$totalDebit", totalDebit);
+
+    BigDecimal totalCredit =
+        move.getMoveLineList().stream()
+            .map(MoveLine::getCredit)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    values.put("$totalCredit", totalCredit);
+
+    Predicate<? super MoveLine> isDebitCreditFilter =
+        ml -> ml.getCredit().compareTo(BigDecimal.ZERO) > 0;
+    if (totalDebit.compareTo(totalCredit) > 0) {
+      isDebitCreditFilter = ml -> ml.getDebit().compareTo(BigDecimal.ZERO) > 0;
+    }
+
+    BigDecimal totalCurrency =
+        move.getMoveLineList().stream()
+            .filter(isDebitCreditFilter)
+            .map(MoveLine::getCurrencyAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .abs();
+    values.put("$totalCurrency", totalCurrency);
+
+    BigDecimal difference = totalDebit.subtract(totalCredit);
+    values.put("$difference", difference);
+
+    return values;
+  }
+
+  @Override
+  public void setThirdPartyPayerPartner(Move move) {
+    if (!appBaseService.getAppBase().getActivatePartnerRelations()) {
+      return;
+    }
+
+    if (journalService.isThirdPartyPayerOk(move.getJournal())) {
+      move.setThirdPartyPayerPartner(partnerAccountService.getPayedByPartner(move.getPartner()));
+    } else {
+      move.setThirdPartyPayerPartner(null);
+    }
   }
 }

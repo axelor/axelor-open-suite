@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,16 +19,20 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
-import com.axelor.apps.stock.service.InventoryService;
-import com.google.inject.Inject;
+import com.axelor.apps.stock.service.inventory.InventoryService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class ImportInventory {
 
-  @Inject InventoryService inventoryService;
+  @Inject protected InventoryService inventoryService;
+  @Inject protected SequenceService sequenceService;
 
   @Transactional(rollbackOn = {Exception.class})
   public Object validateInventory(Object bean, Map<String, Object> values) throws AxelorException {
@@ -37,6 +41,7 @@ public class ImportInventory {
 
     Inventory inventory = (Inventory) bean;
     inventoryService.validateInventory(inventory);
+    inventory = JpaModelHelper.ensureManaged(inventory);
 
     return inventory;
   }
@@ -46,6 +51,9 @@ public class ImportInventory {
     assert bean instanceof Inventory;
 
     Inventory inventory = (Inventory) bean;
+    inventory.setInventorySeq(
+        sequenceService.getSequenceNumber(
+            SequenceRepository.INVENTORY, Inventory.class, "inventorySeq", inventory));
     inventory.setInventoryTitle(inventoryService.computeTitle(inventory));
 
     return inventory;

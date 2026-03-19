@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,19 @@
  */
 package com.axelor.apps.bankpayment.web;
 
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationDomainService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
-import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineUnreconciliationService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
@@ -52,7 +59,7 @@ public class BankReconciliationLineController {
         bankReconciliation = (BankReconciliation) request.getContext().get("bankReconciliation");
       }
       String domain =
-          Beans.get(BankReconciliationService.class).getAccountDomain(bankReconciliation);
+          Beans.get(BankReconciliationDomainService.class).getAccountDomain(bankReconciliation);
       response.setAttr("account", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -69,31 +76,19 @@ public class BankReconciliationLineController {
       MoveLine moveLine = bankReconciliationLineContext.getMoveLine();
       BankReconciliationLine bankReconciliationLineDatabase =
           bankReconciliationLineRepository.find(bankReconciliationLineContext.getId());
+      BankReconciliationLineService bankReconciliationLineService =
+          Beans.get(BankReconciliationLineService.class);
 
       if (ObjectUtils.notEmpty(bankReconciliationLineDatabase.getMoveLine())) {
-        Beans.get(BankReconciliationService.class).unreconcileLine(bankReconciliationLineDatabase);
+        Beans.get(BankReconciliationLineUnreconciliationService.class)
+            .unreconcileLine(bankReconciliationLineDatabase);
       }
 
       if (ObjectUtils.notEmpty(moveLine)) {
-        Beans.get(BankReconciliationLineService.class)
-            .reconcileBRLAndMoveLine(
-                bankReconciliationLineRepository.find(bankReconciliationLineContext.getId()),
-                moveLine);
+        bankReconciliationLineService.reconcileBRLAndMoveLine(
+            bankReconciliationLineRepository.find(bankReconciliationLineContext.getId()), moveLine);
       }
 
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setSelected(ActionRequest request, ActionResponse response) {
-    try {
-      BankReconciliationLine bankReconciliationLineContext =
-          request.getContext().asType(BankReconciliationLine.class);
-
-      bankReconciliationLineContext =
-          Beans.get(BankReconciliationService.class).setSelected(bankReconciliationLineContext);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -104,16 +99,64 @@ public class BankReconciliationLineController {
     try {
       BankReconciliationLine bankReconciliationLineContext =
           request.getContext().asType(BankReconciliationLine.class);
-      BankReconciliationService bankReconciliationService =
-          Beans.get(BankReconciliationService.class);
 
       String domain =
-          bankReconciliationService.createDomainForMoveLine(
-              bankReconciliationLineContext.getBankReconciliation());
+          Beans.get(BankReconciliationDomainService.class)
+              .createDomainForMoveLine(bankReconciliationLineContext.getBankReconciliation());
 
       response.setAttr("moveLine", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @ErrorException
+  public void setAnalyticDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    BankReconciliationLine bankReconciliationLine =
+        request.getContext().asType(BankReconciliationLine.class);
+
+    if (request.getContext().getParent() != null) {
+      BankReconciliation bankReconciliation =
+          request.getContext().getParent().asType(BankReconciliation.class);
+
+      AnalyticDistributionTemplate analyticDistributionTemplate =
+          Beans.get(AnalyticMoveLineService.class)
+              .getAnalyticDistributionTemplate(
+                  bankReconciliationLine.getPartner(),
+                  null,
+                  bankReconciliation.getCompany(),
+                  null,
+                  bankReconciliationLine.getAccount(),
+                  false);
+
+      response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
+    }
+  }
+
+  @ErrorException
+  public void setDomainAnalyticDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    BankReconciliationLine bankReconciliationLine = context.asType(BankReconciliationLine.class);
+    Company company = null;
+
+    if (request.getContext().getParent() != null) {
+      BankReconciliation bankReconciliation =
+          request.getContext().getParent().asType(BankReconciliation.class);
+      company = bankReconciliation.getCompany();
+    }
+
+    response.setAttr(
+        "analyticDistributionTemplate",
+        "domain",
+        Beans.get(AnalyticAttrsService.class)
+            .getAnalyticDistributionTemplateDomain(
+                bankReconciliationLine.getPartner(),
+                null,
+                company,
+                null,
+                bankReconciliationLine.getAccount(),
+                false));
   }
 }

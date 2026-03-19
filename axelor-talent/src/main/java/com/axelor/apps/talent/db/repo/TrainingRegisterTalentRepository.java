@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,17 +24,28 @@ import com.axelor.apps.talent.db.Training;
 import com.axelor.apps.talent.db.TrainingRegister;
 import com.axelor.apps.talent.db.TrainingSession;
 import com.axelor.apps.talent.exception.TalentExceptionMessage;
-import com.axelor.apps.talent.service.TrainingRegisterService;
+import com.axelor.apps.talent.service.TrainingRegisterComputeNameService;
+import com.axelor.apps.talent.service.TrainingRegisterComputeRatingService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.validation.ValidationException;
 import java.util.List;
-import javax.validation.ValidationException;
 
 public class TrainingRegisterTalentRepository extends TrainingRegisterRepository {
 
-  @Inject private TrainingRegisterService trainingRegisterService;
+  protected EventRepository eventRepo;
+  protected TrainingRegisterComputeNameService trainingRegisterComputeNameService;
+  protected TrainingRegisterComputeRatingService trainingRegisterComputeRatingService;
 
-  @Inject private EventRepository eventRepo;
+  @Inject
+  public TrainingRegisterTalentRepository(
+      EventRepository eventRepo,
+      TrainingRegisterComputeNameService trainingRegisterComputeNameService,
+      TrainingRegisterComputeRatingService trainingRegisterComputeRatingService) {
+    this.eventRepo = eventRepo;
+    this.trainingRegisterComputeNameService = trainingRegisterComputeNameService;
+    this.trainingRegisterComputeRatingService = trainingRegisterComputeRatingService;
+  }
 
   @Override
   public TrainingRegister save(TrainingRegister trainingRegister) {
@@ -51,14 +62,16 @@ public class TrainingRegisterTalentRepository extends TrainingRegisterRepository
       throw new ValidationException(I18n.get(TalentExceptionMessage.INVALID_TR_DATE));
     }
 
-    trainingRegister.setFullName(trainingRegisterService.computeFullName(trainingRegister));
+    trainingRegister.setFullName(
+        trainingRegisterComputeNameService.computeFullName(trainingRegister));
 
     trainingRegister = super.save(trainingRegister);
 
-    trainingRegisterService.updateTrainingRating(trainingRegister.getTraining(), null);
+    trainingRegisterComputeRatingService.updateTrainingRating(trainingRegister.getTraining(), null);
 
     if (trainingRegister.getTrainingSession() != null) {
-      trainingRegisterService.updateSessionRating(trainingRegister.getTrainingSession(), null);
+      trainingRegisterComputeRatingService.updateSessionRating(
+          trainingRegister.getTrainingSession(), null);
     }
 
     refresh(trainingRegister);
@@ -80,10 +93,10 @@ public class TrainingRegisterTalentRepository extends TrainingRegisterRepository
 
     super.remove(trainingRegister);
 
-    trainingRegisterService.updateTrainingRating(training, null);
+    trainingRegisterComputeRatingService.updateTrainingRating(training, null);
 
     if (session != null) {
-      trainingRegisterService.updateSessionRating(session, null);
+      trainingRegisterComputeRatingService.updateSessionRating(session, null);
     }
   }
 }

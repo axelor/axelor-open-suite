@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <!-- Recruitment menus -->
   <menuitem name="recruitment-root" parent="hr-root"
-    if="__config__.app.isApp('recruitment')" title="Recruitment" icon="fa-handshake-o"
+    if="__config__.app.isApp('recruitment')" title="Recruitment" icon="handshake"
     icon-background="#84429f" order="200"/>
 
   <menuitem name="recruitment-job-position-open" parent="recruitment-root"
@@ -20,10 +20,10 @@
   </action-view>
 
   <menuitem name="recruitment-job-application-all" parent="recruitment-root"
-    title="Applications" action="recruitment.job.application.all" order="200"/>
+    title="Applicants" action="recruitment.job.application.all" order="200"/>
 
   <action-view name="recruitment.job.application.all"
-    model="com.axelor.apps.talent.db.JobApplication" title="Applications">
+    model="com.axelor.apps.talent.db.JobApplication" title="Applicants">
     <view name="job-application-kanban" type="kanban"/>
     <view name="job-application-grid" type="grid"/>
     <view name="job-application-form" type="form"/>
@@ -31,7 +31,7 @@
   </action-view>
 
   <menuitem name="recruitment-config" parent="recruitment-root" title="Configuration"
-    icon="fa-cog" order="300"/>
+    icon="gear" order="300"/>
 
   <menuitem name="recruitment-config-education-level" parent="recruitment-config"
     title="Level of education" action="recruitment.config.education.level" order="100"/>
@@ -71,7 +71,7 @@
 
   <!-- Training menus -->
   <menuitem name="training-root" parent="hr-root" if="__config__.app.isApp('training')"
-    title="Training" icon="fa-graduation-cap" icon-background="#84429f" order="300"/>
+    title="Training" icon="mortarboard-fill" icon-background="#84429f" order="300"/>
 
   <menuitem name="training-register-all" parent="training-root" title="All trainings"
     action="training.register.all" order="100"/>
@@ -80,7 +80,7 @@
     model="com.axelor.apps.talent.db.TrainingRegister" title="All trainings">
     <view name="training-register-grid" type="grid"/>
     <view name="training-register-form" type="form"/>
-    <view-param name="search-filters" value="my-training-register-fitlers"/>
+    <view-param name="search-filters" value="my-training-register-filters"/>
     <context name="_employeeId" expr="eval:__user__.employee?.id"/>
     <context name="_employeeList"
       expr="eval:([0] + __user__.teamSet.members.employee.id).flatten()"/>
@@ -93,7 +93,7 @@
     <view type="dashboard" name="training.dashboard"/>
   </action-view>
 
-  <menuitem name="training-conf" parent="training-root" title="Configuration" icon="fa-cog"
+  <menuitem name="training-conf" parent="training-root" title="Configuration" icon="gear"
     order="300"/>
 
   <menuitem name="training-category-all" parent="training-conf" title="Categories"
@@ -126,8 +126,7 @@
 
   <!-- Appraisal menus -->
   <menuitem name="appraisal-root" parent="hr-root" title="Appraisals"
-    if="__config__.app.isApp('appraisal')" icon="fa-comments-o" icon-background="#84429f"
-    order="400"/>
+    if="__config__.app.isApp('appraisal')" icon="chat" icon-background="#84429f" order="400"/>
 
   <menuitem name="appraisal-all-appraisals" title="Appraisals"
     action="appraisal.all.appraisals" parent="appraisal-root" order="100"/>
@@ -136,14 +135,14 @@
     model="com.axelor.apps.talent.db.Appraisal" title="Appraisals">
     <view name="appraisal-grid" type="grid"/>
     <view name="appraisal-form" type="form"/>
-    <view-param name="search-filters" value="appraisal-fitlers"/>
+    <view-param name="search-filters" value="appraisal-filters"/>
     <domain>self.isTemplate = false</domain>
     <context name="_userId" expr="eval:__user__.id"/>
     <context name="_teamUserIds" expr="eval:([0] + __user__.teamSet.members.id).flatten()"/>
   </action-view>
 
   <menuitem name="appraisal-config" title="Configuration" parent="appraisal-root"
-    icon="fa-cog" order="200"/>
+    icon="gear" order="200"/>
 
   <menuitem name="appraisal-template-appraisals" title="Appraisal templates"
     action="appraisal.template.appraisals" parent="appraisal-config" order="100"/>
@@ -163,5 +162,11 @@
     <view type="grid" name="appraisal-type-grid"/>
     <view type="form" name="appraisal-type-form"/>
   </action-view>
+
+  <!-- MyHR -->
+
+  <menuitem name="my-hr-appraisal-all-appraisals" title="Appraisals"
+    action="appraisal.all.appraisals" parent="my-hr-root" order="600"
+    if="__config__.app.isApp('appraisal')" icon="chat" icon-background="#84429f"/>
 
 </object-views>

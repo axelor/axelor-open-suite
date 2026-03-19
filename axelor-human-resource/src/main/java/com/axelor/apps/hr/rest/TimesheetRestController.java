@@ -1,0 +1,193 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.axelor.apps.hr.rest;
+
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.hr.db.TSTimer;
+import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.hr.rest.dto.TimesheetPostRequest;
+import com.axelor.apps.hr.rest.dto.TimesheetPutRequest;
+import com.axelor.apps.hr.rest.dto.TimesheetResponse;
+import com.axelor.apps.hr.service.timesheet.TimesheetCheckResponseService;
+import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
+import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
+import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
+import com.axelor.apps.hr.service.timesheet.timer.TimerTimesheetGenerationService;
+import com.axelor.apps.hr.translation.ITranslation;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.utils.api.HttpExceptionHandler;
+import com.axelor.utils.api.ObjectFinder;
+import com.axelor.utils.api.RequestValidator;
+import com.axelor.utils.api.ResponseConstructor;
+import com.axelor.utils.api.SecurityCheck;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
+
+@Path("/aos/timesheet")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+public class TimesheetRestController {
+  @Operation(
+      summary = "Create a timesheet",
+      tags = {"Timesheet"})
+  @Path("/")
+  @POST
+  @HttpExceptionHandler
+  public Response createTimesheet(TimesheetPostRequest requestBody) throws AxelorException {
+    SecurityCheck securityCheck = new SecurityCheck();
+    List<Long> timersId = requestBody.getTimerIdList();
+    if (CollectionUtils.isNotEmpty(timersId)) {
+      Long[] timerIds = timersId.toArray(new Long[0]);
+      securityCheck = securityCheck.readAccess(TSTimer.class, timerIds);
+    }
+    securityCheck.createAccess(Timesheet.class).check();
+    RequestValidator.validateBody(requestBody);
+
+    List<TSTimer> tsTimerList = requestBody.fetchTSTimers();
+    Timesheet timesheet =
+        Beans.get(TimesheetCreateService.class)
+            .createTimesheet(requestBody.getFromDate(), requestBody.getToDate());
+    Beans.get(TimerTimesheetGenerationService.class).addTimersToTimesheet(tsTimerList, timesheet);
+    Beans.get(TimesheetPeriodComputationService.class).setComputedPeriodTotal(timesheet);
+
+    return ResponseConstructor.buildCreateResponse(timesheet, new TimesheetResponse(timesheet));
+  }
+
+  @Operation(
+      summary = "Add timers to timesheet",
+      tags = {"Timesheet"})
+  @Path("/add-timer/{timesheetId}")
+  @PUT
+  @HttpExceptionHandler
+  public Response addTimersToTimesheet(
+      @PathParam("timesheetId") Long timesheetId, TimesheetPutRequest requestBody)
+      throws AxelorException {
+    SecurityCheck securityCheck = new SecurityCheck();
+    List<Long> timersId = requestBody.getTimerIdList();
+    if (CollectionUtils.isNotEmpty(timersId)) {
+      Long[] timerIds = timersId.toArray(new Long[0]);
+      securityCheck = securityCheck.readAccess(TSTimer.class, timerIds);
+    }
+    securityCheck.writeAccess(Timesheet.class, timesheetId).check();
+    RequestValidator.validateBody(requestBody);
+
+    Timesheet timesheet = ObjectFinder.find(Timesheet.class, timesheetId, requestBody.getVersion());
+    Beans.get(TimerTimesheetGenerationService.class)
+        .addTimersToTimesheet(requestBody.fetchTSTimers(), timesheet);
+    Beans.get(TimesheetPeriodComputationService.class).setComputedPeriodTotal(timesheet);
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.TIMESHEET_UPDATED),
+        new TimesheetResponse(timesheet));
+  }
+
+  @Operation(
+      summary = "Update timesheet status",
+      tags = {"Timesheet"})
+  @Path("/status/{timesheetId}")
+  @PUT
+  @HttpExceptionHandler
+  public Response updateTimesheetStatus(
+      @PathParam("timesheetId") Long timesheetId, TimesheetPutRequest requestBody)
+      throws AxelorException, IOException, ClassNotFoundException {
+    new SecurityCheck().writeAccess(Timesheet.class, timesheetId).check();
+    RequestValidator.validateBody(requestBody);
+
+    TimesheetWorkflowService timesheetWorkflowService = Beans.get(TimesheetWorkflowService.class);
+    Timesheet timesheet = ObjectFinder.find(Timesheet.class, timesheetId, requestBody.getVersion());
+
+    switch (requestBody.getToStatus()) {
+      case TimesheetPutRequest.TIMESHEET_UPDATE_CONFIRM:
+        timesheetWorkflowService.completeOrConfirm(timesheet);
+        break;
+      case TimesheetPutRequest.TIMESHEET_UPDATE_VALIDATE:
+        timesheetWorkflowService.validateAndSendValidationEmail(timesheet);
+        break;
+      case TimesheetPutRequest.TIMESHEET_UPDATE_REFUSE:
+        timesheetWorkflowService.refuseAndSendRefusalEmail(
+            timesheet, requestBody.getGroundForRefusal());
+        break;
+      case TimesheetPutRequest.TIMESHEET_UPDATE_CANCEL:
+        timesheetWorkflowService.cancelAndSendCancellationEmail(timesheet);
+        break;
+      default:
+        break;
+    }
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.TIMESHEET_UPDATED),
+        new TimesheetResponse(timesheet));
+  }
+
+  @Operation(
+      summary = "Check timesheet",
+      tags = {"Timesheet"})
+  @Path("/check/{timesheetId}")
+  @GET
+  @HttpExceptionHandler
+  public Response checkTimesheet(@PathParam("timesheetId") Long timesheetId)
+      throws AxelorException {
+    new SecurityCheck().readAccess(Timesheet.class, timesheetId).check();
+    Timesheet timesheet = ObjectFinder.find(Timesheet.class, timesheetId, ObjectFinder.NO_VERSION);
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.CHECK_RESPONSE_RESPONSE),
+        Beans.get(TimesheetCheckResponseService.class).createResponse(timesheet));
+  }
+
+  @Operation(
+      summary = "Convert timesheet period total",
+      tags = {"Timesheet"})
+  @Path("/convertPeriod/{timesheetId}")
+  @GET
+  @HttpExceptionHandler
+  public Response convertPeriodTotal(@PathParam("timesheetId") Long timesheetId)
+      throws AxelorException {
+    new SecurityCheck().readAccess(Timesheet.class, timesheetId).check();
+    Timesheet timesheet = ObjectFinder.find(Timesheet.class, timesheetId, ObjectFinder.NO_VERSION);
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.TIMESHEET_CONVERTED_PERIOD_TOTAL),
+        Map.of(
+            "periodTotalConvertTitle",
+            Beans.get(TimesheetService.class).getPeriodTotalConvertTitle(timesheet),
+            "periodTotalConvert",
+            Beans.get(TimesheetLineService.class)
+                .computeHoursDuration(timesheet, timesheet.getPeriodTotal(), false)));
+  }
+}

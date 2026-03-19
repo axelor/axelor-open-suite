@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,14 +19,80 @@
 package com.axelor.apps.quality.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.quality.db.repo.ControlEntryManagementRepository;
+import com.axelor.apps.quality.db.repo.ControlEntryPlanLineManagementRepository;
+import com.axelor.apps.quality.db.repo.ControlEntryPlanLineRepository;
+import com.axelor.apps.quality.db.repo.ControlEntryRepository;
+import com.axelor.apps.quality.db.repo.ControlPlanFrequencyManagementRepository;
+import com.axelor.apps.quality.db.repo.ControlPlanFrequencyRepository;
+import com.axelor.apps.quality.db.repo.ControlPlanManagementRepository;
+import com.axelor.apps.quality.db.repo.ControlPlanRepository;
 import com.axelor.apps.quality.db.repo.QualityAlertManagementRepository;
 import com.axelor.apps.quality.db.repo.QualityAlertRepository;
 import com.axelor.apps.quality.db.repo.QualityControlManagementRepository;
 import com.axelor.apps.quality.db.repo.QualityControlRepository;
+import com.axelor.apps.quality.db.repo.QualityImprovementManagementRepository;
+import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
+import com.axelor.apps.quality.db.repo.RequiredDocumentManagementRepository;
+import com.axelor.apps.quality.db.repo.RequiredDocumentRepository;
+import com.axelor.apps.quality.rest.service.QualityImprovementCreateAPIService;
+import com.axelor.apps.quality.rest.service.QualityImprovementCreateAPIServiceImpl;
+import com.axelor.apps.quality.rest.service.QualityImprovementParseService;
+import com.axelor.apps.quality.rest.service.QualityImprovementParseServiceImpl;
+import com.axelor.apps.quality.rest.service.QualityImprovementUpdateAPIService;
+import com.axelor.apps.quality.rest.service.QualityImprovementUpdateAPIServiceImpl;
+import com.axelor.apps.quality.service.CharacteristicPropertyService;
+import com.axelor.apps.quality.service.CharacteristicPropertyServiceImpl;
+import com.axelor.apps.quality.service.ControlEntryPlanLineService;
+import com.axelor.apps.quality.service.ControlEntryPlanLineServiceImpl;
+import com.axelor.apps.quality.service.ControlEntryProgressValuesComputeService;
+import com.axelor.apps.quality.service.ControlEntryProgressValuesComputeServiceImpl;
+import com.axelor.apps.quality.service.ControlEntrySampleService;
+import com.axelor.apps.quality.service.ControlEntrySampleServiceImpl;
+import com.axelor.apps.quality.service.ControlEntrySampleUpdateService;
+import com.axelor.apps.quality.service.ControlEntrySampleUpdateServiceImpl;
+import com.axelor.apps.quality.service.ControlEntryService;
+import com.axelor.apps.quality.service.ControlEntryServiceImpl;
+import com.axelor.apps.quality.service.ControlPlanFrequencyComputeNameService;
+import com.axelor.apps.quality.service.ControlPlanFrequencyComputeNameServiceImpl;
+import com.axelor.apps.quality.service.ControlPlanFrequencyService;
+import com.axelor.apps.quality.service.ControlPlanFrequencyServiceImpl;
+import com.axelor.apps.quality.service.QIAnalysisService;
+import com.axelor.apps.quality.service.QIAnalysisServiceImpl;
+import com.axelor.apps.quality.service.QIIdentificationService;
+import com.axelor.apps.quality.service.QIIdentificationServiceImpl;
+import com.axelor.apps.quality.service.QIResolutionDecisionService;
+import com.axelor.apps.quality.service.QIResolutionDecisionServiceImpl;
+import com.axelor.apps.quality.service.QIResolutionService;
+import com.axelor.apps.quality.service.QIResolutionServiceImpl;
 import com.axelor.apps.quality.service.QualityControlService;
 import com.axelor.apps.quality.service.QualityControlServiceImpl;
+import com.axelor.apps.quality.service.QualityImprovementCheckValuesService;
+import com.axelor.apps.quality.service.QualityImprovementCheckValuesServiceImpl;
+import com.axelor.apps.quality.service.QualityImprovementCreateService;
+import com.axelor.apps.quality.service.QualityImprovementCreateServiceImpl;
+import com.axelor.apps.quality.service.QualityImprovementService;
+import com.axelor.apps.quality.service.QualityImprovementServiceImpl;
+import com.axelor.apps.quality.service.QualityImprovementUpdateService;
+import com.axelor.apps.quality.service.QualityImprovementUpdateServiceImpl;
+import com.axelor.apps.quality.service.RequiredDocumentDMSService;
+import com.axelor.apps.quality.service.RequiredDocumentDMSServiceImpl;
+import com.axelor.apps.quality.service.RequiredDocumentExportService;
+import com.axelor.apps.quality.service.RequiredDocumentExportServiceImpl;
+import com.axelor.apps.quality.service.RequiredDocumentFileOnChangeService;
+import com.axelor.apps.quality.service.RequiredDocumentFileOnChangeServiceImpl;
+import com.axelor.apps.quality.service.RequiredDocumentStatusService;
+import com.axelor.apps.quality.service.RequiredDocumentStatusServiceImpl;
+import com.axelor.apps.quality.service.RequiredDocumentVersionService;
+import com.axelor.apps.quality.service.RequiredDocumentVersionServiceImpl;
+import com.axelor.apps.quality.service.TrackingNumberCharacteristicService;
+import com.axelor.apps.quality.service.TrackingNumberCharacteristicServiceImpl;
+import com.axelor.apps.quality.service.TrackingNumberQualityService;
+import com.axelor.apps.quality.service.TrackingNumberQualityServiceImpl;
 import com.axelor.apps.quality.service.app.AppQualityService;
 import com.axelor.apps.quality.service.app.AppQualityServiceImpl;
+import com.axelor.apps.quality.service.app.QIActionDistributionService;
+import com.axelor.apps.quality.service.app.QIActionDistributionServiceImpl;
 
 public class QualityModule extends AxelorModule {
 
@@ -36,5 +102,43 @@ public class QualityModule extends AxelorModule {
     bind(QualityAlertRepository.class).to(QualityAlertManagementRepository.class);
     bind(QualityControlRepository.class).to(QualityControlManagementRepository.class);
     bind(AppQualityService.class).to(AppQualityServiceImpl.class);
+    bind(QualityImprovementRepository.class).to(QualityImprovementManagementRepository.class);
+    bind(QIIdentificationService.class).to(QIIdentificationServiceImpl.class);
+    bind(QIResolutionDecisionService.class).to(QIResolutionDecisionServiceImpl.class);
+    bind(QIAnalysisService.class).to(QIAnalysisServiceImpl.class);
+    bind(QualityImprovementService.class).to(QualityImprovementServiceImpl.class);
+    bind(ControlEntryPlanLineService.class).to(ControlEntryPlanLineServiceImpl.class);
+    bind(ControlEntryService.class).to(ControlEntryServiceImpl.class);
+    bind(ControlEntrySampleService.class).to(ControlEntrySampleServiceImpl.class);
+    bind(QIActionDistributionService.class).to(QIActionDistributionServiceImpl.class);
+    bind(QIResolutionService.class).to(QIResolutionServiceImpl.class);
+    bind(ControlEntrySampleUpdateService.class).to(ControlEntrySampleUpdateServiceImpl.class);
+    bind(ControlEntryProgressValuesComputeService.class)
+        .to(ControlEntryProgressValuesComputeServiceImpl.class);
+    bind(ControlEntryRepository.class).to(ControlEntryManagementRepository.class);
+    bind(ControlPlanRepository.class).to(ControlPlanManagementRepository.class);
+    bind(ControlEntryPlanLineRepository.class).to(ControlEntryPlanLineManagementRepository.class);
+    bind(ControlPlanFrequencyRepository.class).to(ControlPlanFrequencyManagementRepository.class);
+    bind(ControlPlanFrequencyService.class).to(ControlPlanFrequencyServiceImpl.class);
+    bind(ControlPlanFrequencyComputeNameService.class)
+        .to(ControlPlanFrequencyComputeNameServiceImpl.class);
+    bind(QualityImprovementCreateService.class).to(QualityImprovementCreateServiceImpl.class);
+    bind(QualityImprovementUpdateService.class).to(QualityImprovementUpdateServiceImpl.class);
+    bind(QualityImprovementCreateAPIService.class).to(QualityImprovementCreateAPIServiceImpl.class);
+    bind(QualityImprovementParseService.class).to(QualityImprovementParseServiceImpl.class);
+    bind(QualityImprovementUpdateAPIService.class).to(QualityImprovementUpdateAPIServiceImpl.class);
+    bind(QualityImprovementCheckValuesService.class)
+        .to(QualityImprovementCheckValuesServiceImpl.class);
+    bind(RequiredDocumentRepository.class).to(RequiredDocumentManagementRepository.class);
+    bind(RequiredDocumentDMSService.class).to(RequiredDocumentDMSServiceImpl.class);
+    bind(RequiredDocumentVersionService.class).to(RequiredDocumentVersionServiceImpl.class);
+    bind(RequiredDocumentStatusService.class).to(RequiredDocumentStatusServiceImpl.class);
+    bind(RequiredDocumentFileOnChangeService.class)
+        .to(RequiredDocumentFileOnChangeServiceImpl.class);
+    bind(RequiredDocumentExportService.class).to(RequiredDocumentExportServiceImpl.class);
+    bind(CharacteristicPropertyService.class).to(CharacteristicPropertyServiceImpl.class);
+    bind(TrackingNumberCharacteristicService.class)
+        .to(TrackingNumberCharacteristicServiceImpl.class);
+    bind(TrackingNumberQualityService.class).to(TrackingNumberQualityServiceImpl.class);
   }
 }

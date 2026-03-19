@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,23 +23,20 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.rest.dto.StockTrackingNumberPostRequest;
 import com.axelor.apps.stock.rest.dto.StockTrackingNumberResponse;
-import com.axelor.apps.stock.service.TrackingNumberService;
+import com.axelor.apps.stock.service.TrackingNumberCreateService;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.servers.Server;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
-@OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/stock-tracking-number")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -61,17 +58,16 @@ public class StockTrackingNumberRestController {
     new SecurityCheck().createAccess(TrackingNumber.class).check();
 
     TrackingNumber trackingNumber =
-        Beans.get(TrackingNumberService.class)
+        Beans.get(TrackingNumberCreateService.class)
             .generateTrackingNumber(
                 requestBody.fetchProduct(),
                 requestBody.fetchCompany(),
                 Beans.get(AppBaseService.class).getTodayDate(requestBody.fetchCompany()),
                 requestBody.getOrigin(),
+                null,
                 requestBody.getNotes());
 
-    return ResponseConstructor.build(
-        Response.Status.CREATED,
-        "Resource successfully created",
-        new StockTrackingNumberResponse(trackingNumber));
+    return ResponseConstructor.buildCreateResponse(
+        trackingNumber, new StockTrackingNumberResponse(trackingNumber));
   }
 }

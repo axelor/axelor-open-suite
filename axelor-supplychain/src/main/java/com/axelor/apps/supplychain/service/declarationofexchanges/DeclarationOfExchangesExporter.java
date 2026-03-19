@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,14 +19,17 @@
 package com.axelor.apps.supplychain.service.declarationofexchanges;
 
 import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.collect.ImmutableMap;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -59,6 +62,8 @@ public abstract class DeclarationOfExchangesExporter {
   protected final String name;
 
   protected List<String> columnHeadersList;
+  protected SupplyChainConfigService supplyChainConfigService;
+  protected PrintingTemplatePrintService printingTemplatePrintService;
 
   public DeclarationOfExchangesExporter(
       DeclarationOfExchanges declarationOfExchanges,
@@ -106,7 +111,7 @@ public abstract class DeclarationOfExchangesExporter {
 
   protected String getExportDir() {
     AppSettings appSettings = AppSettings.get();
-    String exportDir = appSettings.get("data.export.dir");
+    String exportDir = appSettings.get(AvailableAppSettings.DATA_UPLOAD_DIR);
 
     if (exportDir == null) {
       throw new IllegalArgumentException(I18n.get("Export directory is not configured."));
@@ -123,7 +128,7 @@ public abstract class DeclarationOfExchangesExporter {
   protected String getFileName() {
     String title = getTitle();
     String filename = String.format("%s.%s", title, declarationOfExchanges.getFormatSelect());
-    return StringTool.getFilename(filename);
+    return StringHelper.getFilename(filename);
   }
 
   protected Path getFilePath() {

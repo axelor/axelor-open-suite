@@ -1,0 +1,6 @@
+"importId";"name";"oppositeLinkType.importId"
+1;"Lié à";
+2;"Suit";3
+3;"Précède";2
+4;"Bloque";5
+5;"Bloqué par";4

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,7 +34,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.app.service.AppService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -322,8 +322,7 @@ public class BatchReimbursementImport extends BatchStrategy {
             "\t* " + I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_10) + " : %s \n",
             this.totalAmount);
     comment +=
-        String.format(
-            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+        String.format("\t" + I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly());
 
     comment += String.format("\t* ------------------------------- \n");
     comment += String.format("\t* %s ", updateCustomerAccountLog);

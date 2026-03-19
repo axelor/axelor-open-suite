@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaJsonField;
-import com.axelor.utils.MetaTool;
+import com.axelor.utils.helpers.MetaHelper;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.temporal.Temporal;
@@ -46,7 +46,7 @@ public class MetaJsonAttrsAdapter {
       MetaJsonField metaJsonField, Object value) throws AxelorException {
 
     Objects.requireNonNull(value);
-    String wantedType = MetaTool.jsonTypeToType(metaJsonField.getType());
+    String wantedType = MetaHelper.jsonTypeToType(metaJsonField.getType());
     String fieldName = metaJsonField.getName();
     logger.debug("Adapting value {} into {}", value, wantedType);
     switch (wantedType) {
@@ -113,7 +113,7 @@ public class MetaJsonAttrsAdapter {
         value);
   }
 
-  static List<Map<String, Object>> toMapList(Object value) {
+  protected static List<Map<String, Object>> toMapList(Object value) {
     List<?> values = (List<?>) value;
     List<Map<String, Object>> result;
     if (!values.isEmpty()) {
@@ -135,7 +135,7 @@ public class MetaJsonAttrsAdapter {
    * @param model
    * @return
    */
-  static Map<String, Object> modelToJson(Model model) {
+  protected static Map<String, Object> modelToJson(Model model) {
     final Map<String, Object> manyToOneObject = new HashMap<>();
     manyToOneObject.put("id", model.getId());
     return manyToOneObject;

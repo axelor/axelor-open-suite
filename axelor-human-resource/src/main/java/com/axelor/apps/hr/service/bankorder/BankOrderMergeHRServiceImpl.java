@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,15 +23,15 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderComputeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeServiceImpl;
-import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseHRRepository;
 import com.axelor.inject.Beans;
 import com.axelor.studio.app.service.AppService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,14 +44,14 @@ public class BankOrderMergeHRServiceImpl extends BankOrderMergeServiceImpl {
   public BankOrderMergeHRServiceImpl(
       BankOrderRepository bankOrderRepo,
       InvoicePaymentRepository invoicePaymentRepo,
-      BankOrderService bankOrderService,
+      BankOrderComputeService bankOrderComputeService,
       InvoiceRepository invoiceRepository,
       PaymentScheduleLineRepository paymentScheduleLineRepository,
       ExpenseHRRepository expenseHRRepository) {
     super(
         bankOrderRepo,
         invoicePaymentRepo,
-        bankOrderService,
+        bankOrderComputeService,
         invoiceRepository,
         paymentScheduleLineRepository);
     this.expenseHRRepository = expenseHRRepository;

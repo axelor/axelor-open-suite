@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -80,6 +80,11 @@ public final class HumanResourceExceptionMessage {
       "Please, enter the number of daily work hours per employee %s" /*)*/;
   public static final String TIMESHEET_DAILY_WORK_HOURS = /*$$(*/
       "Please, configure the number of daily work hours." /*)*/;
+
+  public static final String TIMESHEET_TIME_LOGGING_PREFERENCE = /*$$(*/
+      "Please, configure the time logging unit preference." /*)*/;
+  public static final String PROJECT_PLANNING_WRONG_TIME_UNIT = /*$$(*/
+      "Project planning time unit not matching with time units in base configuration." /*)*/;
   public static final String TIMESHEET_NULL_FROM_DATE = /*$$(*/ "From date can't be empty" /*)*/;
   public static final String TIMESHEET_NULL_TO_DATE = /*$$(*/ "To date can't be empty" /*)*/;
   public static final String TIMESHEET_LINE_NULL_DATE = /*$$(*/
@@ -103,12 +108,18 @@ public final class HumanResourceExceptionMessage {
       "You are not able to take leave in advance for the reason '%s'." /*)*/;
   public static final String LEAVE_ALLOW_NEGATIVE_ALERT = /*$$(*/
       "You now have a negative number of leaves available for the reason %s" /*)*/;
+  public static final String LEAVE_ALLOW_NEGATIVE_ALERT_2 = /*$$(*/
+      "You will have a negative number of leaves available." /*)*/;
   public static final String LEAVE_REASON_NO_UNIT = /*$$(*/
       "Please, choose unit in leave reason %s." /*)*/;
   public static final String LEAVE_REQUEST_DATES_OVERLAPPED = /*$$(*/
       "A leave request is already accepted over this or a portion of this period of time. Please cancel the previous one to accept this one." /*)*/;
   public static final String LEAVE_REQUEST_NO_COMPANY = /*$$(*/
       "Please set a company up on leave request" /*)*/;
+  public static final String LEAVE_REQUEST_NO_LINE_PRESENT = /*$$(*/
+      "You need lines to fill your export." /*)*/;
+  public static final String INVALID_DATES = /*$$(*/ "Invalid dates" /*)*/;
+  public static final String LEAVE_REQUEST_WRONG_DURATION = /*$$(*/ "Duration equals 0" /*)*/;
 
   public static final String EMPLOYEE_PLANNING = /*$$(*/
       "Please, add a planning for employee : %s" /*)*/;
@@ -140,6 +151,10 @@ public final class HumanResourceExceptionMessage {
       "Employees' leaves failed to be computed due to missing data : %s" /*)*/;
   public static final String BATCH_LEAVE_MANAGEMENT_QTY_OUT_OF_BOUNDS = /*$$(*/
       "Qty must be lower than %d." /*)*/;
+  public static final String BATCH_LEAVE_REQUEST_ENDING_1 = /*$$(*/
+      "Leaves request successfully computed : %s" /*)*/;
+  public static final String BATCH_LEAVE_REQUEST_ENDING_2 = /*$$(*/
+      "Leaves request failed to be computed due to configuration anomaly : %s" /*)*/;
   public static final String BATCH_SENIORITY_LEAVE_MANAGEMENT_FORMULA = /*$$(*/
       "There is an error in a formula" /*)*/;
   public static final String BATCH_PAYROLL_PREPARATION_GENERATION_RECAP = /*$$(*/
@@ -200,8 +215,11 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_TAX_PRODUCT = /*$$(*/ "No Tax for the product %s" /*)*/;
   public static final String EXPENSE_MISSING_PERIOD = /*$$(*/ "Please fill the period" /*)*/;
+  public static final String EXPENSE_CLOSED_PERIOD = /*$$(*/ "Period is closed" /*)*/;
   public static final String EXPENSE_MISSING_PAYMENT_MODE = /*$$(*/
       "Please fill the payment mode." /*)*/;
+  public static final String ALREADY_INVITED_TO_RESTAURANT = /*$$(*/
+      "You have already been invited to the restaurant for the following dates:" /*)*/;
 
   /** Timesheet Editor */
   public static final String NEW_PROJECT_LINE = /*$$(*/ "New project line" /*)*/;
@@ -240,4 +258,196 @@ public final class HumanResourceExceptionMessage {
 
   public static final String NO_USER_FOR_EMPLOYEE = /*$$(*/
       "Please fill a user for the employee %s" /*)*/;
+
+  public static final String EXPENSE_CAN_NOT_DELETE_VENTILATED = /*$$(*/
+      "Ventilated expense can not be deleted. %s can not be deleted." /*)*/;
+
+  public static final String EXPENSE_LINE_DATE_ERROR = /*$$(*/ "Date can't be in the future" /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_EXPENSE_PRODUCT = /*$$(*/
+      "Please provide an expense product." /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_KILOMETRIC_ALLOWANCE_PARAM = /*$$(*/
+      "Please provide a kilometric allowance parameter." /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_KILOMETRIC_TYPE = /*$$(*/
+      "Please provide a kilometric type." /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_CITIES = /*$$(*/
+      "Please provide starting and arriving cities." /*)*/;
+
+  public static final String EXPENSE_LINE_MISSING_COMPANY = /*$$(*/
+      "Please provide a company." /*)*/;
+
+  public static final String MEDICAL_VISIT_PLAN_WRONG_STATUS = /*$$(*/
+      "Can only plan draft medical visit." /*)*/;
+
+  public static final String MEDICAL_VISIT_REALIZE_WRONG_STATUS = /*$$(*/
+      "Can only realize planned medical visit." /*)*/;
+
+  public static final String MEDICAL_VISIT_CANCEL_WRONG_STATUS = /*$$(*/
+      "Can only cancel planned or realized medical visit." /*)*/;
+
+  public static final String EXPENSE_BIRT_TEMPLATE_MISSING = /*$$(*/
+      "Please configure a birt template for expense report." /*)*/;
+
+  public static final String EXPENSE_ADD_LINE_WRONG_STATUS = /*$$(*/
+      "Can only add expense line to drafted expense." /*)*/;
+
+  public static final String EXPENSE_LINE_VALIDATE_TOTAL_AMOUNT = /*$$(*/
+      "The expense line amount exceeds the authorized limit of %s. Please correct the amount or request the intervention of an HR manager." /*)*/;
+
+  public static final String EXPENSE_LINE_CURRENCY_NOT_EQUAL = /*$$(*/
+      "Not all expenses are in the same currency. You can only create or add lines to an expense report when they have the same currency." /*)*/;
+
+  public static final String EXPENSE_LINE_JUSTIFICATION_FILE_NOT_CORRECT_FORMAT = /*$$(*/
+      "The file is not a PDF nor an image. Please keep the original document." /*)*/;
+
+  public static final String EXPENSE_JUSTIFICATION_FILE_MISSING = /*$$(*/
+      "Some lines do not have a justification file. Do you want to proceed ?" /*)*/;
+
+  public static final String EXPENSE_LIMIT_EXCEEDED = /*$$(*/
+      "The expense limit has been exceeded for the period %s to %s" /*)*/;
+
+  public static final String EXPENSE_LINE_NO_PROJECT = /*$$(*/
+      "This expense cannot be created because no project has been filled in and it has been noted as to be billed." /*)*/;
+
+  public static final String EXPENSE_LINE_UPDATE_BILLING_INCOMPATIBLE_PROJECT = /*$$(*/
+      "Expense line has been set as to be billed but billing expenses is disabled on this project." /*)*/;
+
+  public static final String TIMESHEET_LINES_EXCEED_DAILY_LIMIT = /*$$(*/
+      "You can't exceed the daily limit of %s hours on the %s." /*)*/;
+
+  public static final String EXPENSE_LINE_EXPENSE_TYPE_NOT_ALLOWED = /*$$(*/
+      "Only HR manager can choose this expense type." /*)*/;
+
+  public static final String EXPENSE_AMOUNT_LIMIT_ERROR = /*$$(*/
+      "At least one line of this expense exceeds the authorised amount for its type of expense." /*)*/;
+
+  public static final String EXPENSE_LINE_DISTANCE_ERROR = /*$$(*/
+      "This is a kilometric expense line. Distance must be greater than 0." /*)*/;
+
+  public static final String EXPENSE_LINE_NO_LINE_SELECTED = /*$$(*/
+      "Please select at least one expense line." /*)*/;
+
+  public static final String EXPENSE_LINE_SELECTED_CURRENCY_ERROR = /*$$(*/
+      "All lines must have the same currency." /*)*/;
+
+  public static final String EXPENSE_LINE_SELECTED_EMPLOYEE_ERROR = /*$$(*/
+      "All lines must have the same employee." /*)*/;
+
+  public static final String TIMESHEET_TIMER_EMPTY_EMPLOYEE = /*$$(*/
+      "Please choose an employee." /*)*/;
+
+  public static final String TIMESHEET_TIMER_EMPTY_ACTIVITY = /*$$(*/
+      "Please choose an activity." /*)*/;
+
+  public static final String TIMESHEET_TIMER_EMPTY_PROJECT_OR_TASK = /*$$(*/
+      "Project and project task must be chosen together." /*)*/;
+
+  public static final String TIMESHEET_TIMER_PROJECT_TASK_INCONSISTENCY = /*$$(*/
+      "Given project task and project are not related." /*)*/;
+
+  public static final String TIMESHEET_TIMER_ACTIVITY_INCONSISTENCY = /*$$(*/
+      "Given project task and activity are not related." /*)*/;
+
+  public static final String TIMESHEET_TIMER_TIMER_STOP_CONFIG_DISABLED = /*$$(*/
+      "Editing timer on stop need to be enabled to set a duration." /*)*/;
+
+  public static final String TIMESHEET_TIMER_USER_NO_EMPLOYEE = /*$$(*/
+      "Current user doesn't have an employee." /*)*/;
+
+  public static final String TIMESHEET_TIMER_ALREADY_STARTED = /*$$(*/
+      "Timer is already ongoing, stop it before starting a new one." /*)*/;
+
+  public static final String TIMESHEET_ADD_TIMER_WRONG_STATUS = /*$$(*/
+      "You can only add a timer to a drafted or a waiting for validation timesheet." /*)*/;
+
+  public static final String TIMESHEET_LINE_INVALID_DATE = /*$$(*/
+      "This date is invalid. It must be included in the timesheet's period." /*)*/;
+
+  public static final String TIMESHEET_CONFIRM_COMPLETE_WRONG_STATUS = /*$$(*/
+      "Can only confirm/complete from draft status." /*)*/;
+
+  public static final String TIMESHEET_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate a waiting for validation timesheet." /*)*/;
+
+  public static final String TIMESHEET_REFUSE_WRONG_STATUS = /*$$(*/
+      "Can only refuse a waiting for validation timesheet." /*)*/;
+
+  public static final String TIMESHEET_CANCEL_WRONG_STATUS = /*$$(*/
+      "You can not cancel an already cancelled timesheet." /*)*/;
+
+  public static final String TIMESHEET_VALIDATION_NEEDED_NOT_ENABLED = /*$$(*/
+      "Validation needed configuration is not enabled." /*)*/;
+
+  public static final String TIMESHEET_ACTIVITY_NOT_ENABLED = /*$$(*/
+      "Activity on timesheet line is not enabled." /*)*/;
+
+  public static final String TIMESHEET_ACTIVITY_NOT_ALLOWED = /*$$(*/
+      "The activity is not allowed in the current project." /*)*/;
+  public static final String TIMESHEET_PRODUCT_NOT_ACTIVITY = /*$$(*/
+      "The given product is not an activity, please choose a correct activity." /*)*/;
+
+  public static final String EXPENSE_LINE_PARENT_NOT_DRAFT = /*$$(*/
+      "This expense line is related to an expense which is not in draft." /*)*/;
+
+  public static final String EXPENSE_LINE_NEW_EXPENSE_NOT_DRAFT = /*$$(*/
+      "The new expense is not in draft." /*)*/;
+
+  public static final String EXPENSE_LINE_EXPENSE_NOT_DRAFT = /*$$(*/
+      "You can not update a line from an expense which is not in draft." /*)*/;
+
+  public static final String EXPENSE_LINE_UPDATED_CURRENCY_INCONSISTENCY = /*$$(*/
+      "Updated currency and new parent currency are incompatible." /*)*/;
+
+  public static final String EXPENSE_LINE_UPDATED_CURRENCY_CURRENT_EXPENSE_INCONSISTENCY = /*$$(*/
+      "Updated currency and current parent currency are incompatible." /*)*/;
+
+  public static final String TIMESHEET_INVALID_DATES = /*$$(*/
+      "The start date cannot be more recent than the end date." /*)*/;
+
+  public static final String TIMESHEET_LINE_INVALID_DATES = /*$$(*/
+      "%s date is invalid. It must be included in the timesheet's period." /*)*/;
+
+  public static final String NO_TIMESHEET_LINE_GENERATED = /*$$(*/
+      "No timesheet lines can be generated because no duration is entered. Please fill the duration field if you want to generate timesheet lines." /*)*/;
+
+  public static final String NO_TIMESHEET_GENERATED_DATE = /*$$(*/
+      "Please fill a generation date." /*)*/;
+
+  public static final String DATE_NOT_IN_TIMESHEET_PERIOD = /*$$(*/
+      "The date must be in the timesheet period." /*)*/;
+
+  public static final String API_LEAVE_REQUEST_WRONG_START_ON_SELECT = /*$$(*/
+      "startOnSelect should be 1 for morning or 2 for afternoon." /*)*/;
+
+  public static final String API_LEAVE_REQUEST_NONE_CREATED = /*$$(*/
+      "No leave requests were created." /*)*/;
+
+  public static final String PROJECT_PLANNING_TIME_FIRST_REQUEST = /*$$(*/
+      "No project planning time exists for this task. Do you want to create new project planning lines?" /*)*/;
+  public static final String PROJECT_PLANNING_TIME_NEW_REQUEST = /*$$(*/
+      "Warning: Project planning time already exists for this task but can't be changed automatically. Do you want to create new project planning lines?" /*)*/;
+
+  public static final String PROJECT_PLANNING_TIME_EXISTING_ON_OLD_SPRINT = /*$$(*/
+      "Project planning time on the old sprint's dates are existing, do you want to move those to the new period ?" /*)*/;
+
+  public static final String PROJECT_PLANNING_TIME_EXISTING_WITH_OLD_DURATION = /*$$(*/
+      "Project planning time on the sprint dates are existing, do you want to update these with the new budgeted time?" /*)*/;
+
+  public static final String LEAVE_REQUEST_NOT_ENOUGH_DAYS = /*$$(*/
+      "You will not have enough leaves available for this request." /*)*/;
+
+  public static final String TIMESHEET_CREATE_NO_USER_ERROR = /*$$(*/
+      "No user was found when creating the timesheet." /*)*/;
+  public static final String PROJECT_PLANNING_TIME_CREATION_CONSENT = /*$$(*/
+      "Would you like to create a new planning time?" /*)*/;
+
+  public static final String PROJECT_PLANNING_TIME_CREATION_INFO = /*$$(*/
+      "A new planning time has been created." /*)*/;
+  public static final String PROJECT_PLANNING_TIME_EXISTING_ON_DURATION = /*$$(*/
+      "There is already a project planning time in these dates." /*)*/;
+  public static final String PROJECT_PLANNING_TIME_UPDATE = /*$$(*/
+      "A project planning time already exists. Do you want to update it?" /*)*/;
 }

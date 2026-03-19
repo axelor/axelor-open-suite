@@ -1,0 +1,14 @@
+---
+name: Budget
+code: budget
+typeSelect: standard
+installOrder: 2110
+description: |
+   Budget configuration
+image: app-budget.png
+modules: 
+   axelor-budget
+dependsOn: 
+   - contract
+   - employee
+sequence: 7

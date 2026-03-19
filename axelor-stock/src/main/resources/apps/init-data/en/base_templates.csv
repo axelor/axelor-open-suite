@@ -1,0 +1,4 @@
+"name";"metaModel.name";"localizationSet.importId";"target";"printTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"BR refusal";"StockMove";1;;;;"false";;"Rejection or Cancellation of Receipt for Order $StockMove.purchaseOrderSet:{it|$it.externalReference$}$";"<p>Good morning,<br/><br/>We regret to inform you that the receipt of order $StockMove.purchaseOrderSet:{it|$it.externalReference$}$ has been rejected or cancelled for the reason : $StockMove.cancelReason.name$.
+<br/><br/>Please find attached the details regarding this cancellation or rejection. To require any further clarification, please do not hesitate to contact us.
+<br/><br/>Best regards,<br/>Axelor Team</p>";"$StockMove.partner.emailAddress.address$";;;2

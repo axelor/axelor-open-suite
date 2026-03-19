@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,8 +31,8 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class PaymentVoucherSequenceService {
 
@@ -65,7 +65,8 @@ public class PaymentVoucherSequenceService {
         paymentModeService.getPaymentModeSequence(
             paymentMode, company, paymentVoucher.getCompanyBankDetails()),
         PaymentVoucher.class,
-        "ref");
+        "ref",
+        paymentVoucher);
   }
 
   public void setReceiptNo(PaymentVoucher paymentVoucher, Company company, Journal journal)
@@ -84,7 +85,8 @@ public class PaymentVoucherSequenceService {
         SequenceRepository.PAYMENT_VOUCHER_RECEIPT_NUMBER,
         company,
         PaymentVoucher.class,
-        "receiptNo");
+        "receiptNo",
+        paymentVoucher);
   }
 
   public void checkReceipt(PaymentVoucher paymentVoucher) throws AxelorException {

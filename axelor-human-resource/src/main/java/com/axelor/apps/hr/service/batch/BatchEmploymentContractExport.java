@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,11 +25,12 @@ import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.EmploymentContractService;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
@@ -93,13 +94,13 @@ public class BatchEmploymentContractExport extends BatchStrategy {
     }
 
     File tempFile =
-        MetaFiles.createTempFile(
+        TempFiles.createTempFile(
                 Beans.get(EmploymentContractService.class).employmentContractExportName(), ".csv")
             .toFile();
 
     String[] headers = Beans.get(EmploymentContractService.class).employmentContractExportHeaders();
 
-    CsvTool.csvWriter(tempFile.getParent(), tempFile.getName(), ';', headers, list);
+    CsvHelper.csvWriter(tempFile.getParent(), tempFile.getName(), ';', headers, list);
 
     MetaFiles metaFiles = Beans.get(MetaFiles.class);
     MetaFile metaFile = metaFiles.upload(tempFile);

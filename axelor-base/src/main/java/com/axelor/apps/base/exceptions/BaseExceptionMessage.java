@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,6 +36,9 @@ public final class BaseExceptionMessage {
   /** Currency service and controller */
   public static final String CURRENCY_1 = /*$$(*/
       "No currency conversion found from '%s' to '%s' for date %s" /*)*/;
+
+  public static final String SEQUENCE_PREFIX = /*$$(*/
+      "Sequence prefix cannot start with the draft prefix '%s'." /*)*/;
 
   public static final String CURRENCY_2 = /*$$(*/
       "The currency exchange rate from '%s' to '%s' for date %s must be different from zero." /*)*/;
@@ -72,6 +75,9 @@ public final class BaseExceptionMessage {
 
   public static final String UNIT_CONVERSION_4 = /*$$(*/ "End unit cannot be void." /*)*/;
 
+  public static final String COEFFICIENT_SHOULD_NOT_BE_ZERO = /*$$(*/
+      "The coefficient for unit conversion from %s to %s should not be 0." /*)*/;
+
   public static final String CURRENCY_CONVERSION_1 = /*$$(*/
       "WARNING : Please close the current conversion period before creating new one" /*)*/;
   public static final String CURRENCY_CONVERSION_2 = /*$$(*/
@@ -89,6 +95,7 @@ public final class BaseExceptionMessage {
 
   public static final String PERIOD_2 = /*$$(*/ "Period closed" /*)*/;
   public static final String PERIOD_3 = /*$$(*/ "Too much iterations." /*)*/;
+  public static final String PERIOD_4 = /*$$(*/ "Years in 360 days" /*)*/;
   public static final String PAY_PERIOD_CLOSED = /*$$(*/
       "Warning : the pay period %s is closed." /*)*/;
 
@@ -127,6 +134,7 @@ public final class BaseExceptionMessage {
   public static final String INDICATOR_GENERATOR_GROUPING_3 = /*$$(*/
       "Error while creating the file" /*)*/;
   public static final String INDICATOR_GENERATOR_GROUPING_4 = /*$$(*/ "Result exported" /*)*/;
+
   /** Indicator generator service */
   public static final String INDICATOR_GENERATOR_1 = /*$$(*/
       "Error : a request has to be set for the indicatior generator %s" /*)*/;
@@ -135,18 +143,11 @@ public final class BaseExceptionMessage {
       "Error : incorrect request for the indicatior generator %s" /*)*/;
   public static final String INDICATOR_GENERATOR_3 = /*$$(*/ "Request performed" /*)*/;
 
-  /** Alarm engine batch service */
-  public static final String ALARM_ENGINE_BATCH_1 = /*$$(*/ "Alarm Engine %s" /*)*/;
-
-  public static final String ALARM_ENGINE_BATCH_2 = /*$$(*/ "Alarms report :" /*)*/;
-  public static final String ALARM_ENGINE_BATCH_3 = /*$$(*/ "* %s object(s) into alarm" /*)*/;
-  public static final String ALARM_ENGINE_BATCH_4 = /*$$(*/ "* %s anomaly(ies)" /*)*/;
-  public static final String ALARM_ENGINE_BATCH_5 = /*$$(*/ "Alarm batch" /*)*/;
-
   /** Base batch service */
   public static final String BASE_BATCH_1 = /*$$(*/ "Unknown action %s for the %s treatment" /*)*/;
 
   public static final String BASE_BATCH_2 = /*$$(*/ "Batch %s unknown" /*)*/;
+  public static final String BASE_BATCH_3 = /*$$(*/ "* %s anomaly(ies)" /*)*/;
 
   /** Product service */
   public static final String PRODUCT_NO_SEQUENCE = /*$$(*/
@@ -183,6 +184,9 @@ public final class BaseExceptionMessage {
   public static final String TEMPLATE_MESSAGE_BASE_2 = /*$$(*/
       "Unable to generate Birt report file" /*)*/;
 
+  public static final String FILE_NOT_FOUND_IN_STANDARD_APPLICATION = /*$$(*/
+      "%s was not found in the standard application." /*)*/;
+
   /** Tax service */
   public static final String TAX_1 = /*$$(*/ "Please enter a tax version for the tax %s" /*)*/;
 
@@ -198,8 +202,20 @@ public final class BaseExceptionMessage {
   public static final String SEQUENCE_NOT_SAVED_RECORD = /*$$(*/
       "Can't generate draft sequence number on an unsaved record." /*)*/;
 
+  public static final String SEQUENCE_PATTERN_LENGTH_NOT_VALID = /*$$(*/
+      "The pattern length should be equal to padding ." /*)*/;
+
   public static final String SEQUENCE_LENGTH_NOT_VALID = /*$$(*/
       "Total sequence length must be less than 15 characters." /*)*/;
+
+  public static final String SEQUENCE_TYPE_UNHANDLED = /*$$(*/
+      "The sequence type '%s' is not handled." /*)*/;
+
+  public static final String SEQUENCE_LETTERS_TYPE_IS_NULL = /*$$(*/
+      "The sequence letter type can't be null." /*)*/;
+
+  public static final String SEQUENCE_LETTERS_TYPE_UNHANDLED = /*$$(*/
+      "The sequence letter type '%s' is not handled." /*)*/;
 
   /** Address controller */
   public static final String ADDRESS_1 = /*$$(*/ "OK" /*)*/;
@@ -244,12 +260,6 @@ public final class BaseExceptionMessage {
       "Invalid duplicate finder field '%s'. Field type ManyToMany or OneToMany is not supported for duplicate check" /*)*/;
   public static final String GENERAL_10 = /*$$(*/ "No duplicate finder field configured." /*)*/;
   public static final String GENERAL_11 = /*$$(*/ "Please select original object." /*)*/;
-
-  /** Messsage controller */
-  public static final String MESSAGE_1 = /*$$(*/
-      "Error in print. Please check report configuration and print setting." /*)*/;
-
-  public static final String MESSAGE_2 = /*$$(*/ "Please select the Message(s) to print." /*)*/;
 
   /** Partner controller */
   public static final String PARTNER_1 = /*$$(*/ "There is no sequence set for the partners" /*)*/;
@@ -322,7 +332,8 @@ public final class BaseExceptionMessage {
       "Invalid Serial Number '%s' for '%s' barcode type.It must be only number or only alphabets" /*)*/;
   public static final String BARCODE_GENERATOR_9 = /*$$(*/ "Barcode format not supported" /*)*/;
 
-  public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;;
+  public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;
+  ;
   public static final String MAP_GOOGLE_MAPS_API_KEY_MISSING = /*$$(*/
       "Google Maps API key is missing in configuration." /*)*/;
 
@@ -344,6 +355,8 @@ public final class BaseExceptionMessage {
       "Password must have at least 8 characters with at least three of these four types: lowercase, uppercase, digit, special." /*)*/;
   public static final String USER_PATTERN_MISMATCH_CUSTOM = /*$$(*/
       "Password doesn't match with configured pattern." /*)*/;
+  public static final String USER_CODE_LENGTH_SHOULD_BE_GREATER_THAN_2 = /*$$(*/
+      "Code length should be greater than 2." /*)*/;
 
   /** Convert demo data file */
   public static final String DUPLICATE_CSV_FILE_NAME_EXISTS = /*$$(*/
@@ -379,8 +392,6 @@ public final class BaseExceptionMessage {
       "Invalid data format. Please check log for more details." /*)*/;
 
   /* ABC Analysis */
-  public static final String ABC_CLASSES_INVALID_STATE_FOR_REPORTING = /*$$(*/
-      "The analysis must be completed before the report can be printed." /*)*/;
   public static final String ABC_CLASSES_INVALID_QTY_OR_WORTH = /*$$(*/
       "The classes total quantity and total worth must equal 100%." /*)*/;
   public static final String ABC_CLASSES_NEGATIVE_OR_NULL_QTY_OR_WORTH = /*$$(*/
@@ -457,8 +468,6 @@ public final class BaseExceptionMessage {
   /* Print template */
   public static final String PRINT_TEMPLATE_CONDITION_MUST_BE_BOOLEAN = /*$$(*/
       "The groovy condition result must be a boolean" /*)*/;
-  public static final String PRINT_ERROR = /*$$(*/
-      "Error in print. Please check report configuration and print settings." /*)*/;
   public static final String PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE = /*$$(*/
       "Error in print template line with sequence %s and title %s." /*)*/;
 
@@ -485,13 +494,13 @@ public final class BaseExceptionMessage {
       "Multiple pricings found for the product/category '%s', company '%s' and model '%s', only one expected." /*)*/;
 
   public static final String PRICING_2 = /*$$(*/
-      "There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'." /*)*/;
+      "There is already a pricing that has the selected pricing as previous pricing, for the formula '%s', company '%s' and model '%s'." /*)*/;
 
   public static final String PRICING_3 = /*$$(*/
       "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal." /*)*/;
 
   public static final String PREVIOUS_PERIOD_NOT_TEMP_CLOSED = /*$$(*/
-      "The previous period is not closed or temporarily closed." /*)*/;
+      "The previous period is not closed or temporarily closed while it should be." /*)*/;
 
   public static final String PREVIOUS_PERIOD_NOT_CLOSED = /*$$(*/
       "The previous period is not closed." /*)*/;
@@ -529,14 +538,229 @@ public final class BaseExceptionMessage {
   public static final String ADVANCED_IMPORT_NOT_VALIDATED = /*$$(*/
       "Advanced import is not validated" /*)*/;
 
+  public static final String FIELD_NOT_FOUND = /*$$(*/ "This field %s doesn't exist." /*)*/;
+
+  public static final String ERROR_MISSING_RESEARCH_PARAMETER_CONFIGURATION = /*$$(*/
+      "Missing parameter configuration for model %s." /*)*/;
+
+  public static final String ERROR_MISSING_CANNOT_FIND_OBJECT = /*$$(*/
+      "Can not find object." /*)*/;
+
   public static final String COMPANY_INVALID_LOCALE = /*$$(*/
       "Warning: locale %s is invalid, please enter a valid locale." /*)*/;
 
   public static final String COMPANY_LOCALE_MISSING = /*$$(*/
       "Please fill locale for the company %s" /*)*/;
 
-  public static final String SWAGGER_DISABLED = /*$$(*/ "Swagger is not enabled." /*)*/;
+  public static final String FAKER_METHOD_DOES_NOT_EXIST = /*$$(*/
+      "The method '%s' doesn't exist in the Faker API." /*)*/;
 
-  public static final String SWAGGER_NO_RESOURCE_PACKAGES = /*$$(*/
-      "Swagger is enabled but not resource packages is specified." /*)*/;
+  public static final String FAKER_CLASS_DOES_NOT_EXIST = /*$$(*/
+      "The class '%s' doesn't exist in the Faker API." /*)*/;
+
+  public static final String FAKER_METHOD_ERROR = /*$$(*/
+      "An error occured while executing '%s'." /*)*/;
+
+  public static final String JSON_FIELD_CAN_NOT_BE_ANONYMIZED = /*$$(*/
+      "Json field can not be anonymized" /*)*/;
+
+  public static final String FAKER_FIELDS_EMPTY = /*$$(*/ "The fields are empty" /*)*/;
+
+  public static final String FAKER_METHOD_PARAMS_ERROR = /*$$(*/
+      "There is a type error on parameters of the method '%s'." /*)*/;
+
+  public static final String FAKER_CLASS_NAME_ERROR = /*$$(*/
+      "Error in class name. Please check." /*)*/;
+
+  public static final String FAKER_METHOD_NAME_ERROR = /*$$(*/
+      "Error in method name. Please check." /*)*/;
+
+  public static final String FAKER_METHOD_MISSING_PARAMS = /*$$(*/
+      "Please check yours params, both fields must be filled." /*)*/;
+
+  public static final String FAKER_METHOD_CONFIGURATION_ERROR = /*$$(*/
+      "An error occurred, please check your configuration." /*)*/;
+
+  public static final String FAKER_METHOD_PARAMETERS_CONFIGURATION_ERROR = /*$$(*/
+      "Please check your parameters configuration." /*)*/;
+
+  public static final String FAKER_METHOD_PARAMETERS_VALUE_ERROR = /*$$(*/
+      "Please check your parameters value format." /*)*/;
+
+  public static final String FAKER_METHOD_EXAMPLE_OUTPUT = /*$$(*/
+      "The faker API field is valide. An example output is : %s." /*)*/;
+
+  public static final String UNKNOWN_DURATION = /*$$(*/
+      "The duration '%s' is unknown. Valid durations are in months or years." /*)*/;
+
+  public static final String PRODUCT_MISSING_UNITS_TO_CONVERT = /*$$(*/
+      "The product %s is missing stock unit or purchase unit to make the conversion of last purchase price." /*)*/;
+
+  public static final String TEMPLATE_CONFIG_NOT_FOUND = /*$$(*/
+      "The configuration to print this model has not been found" /*)*/;
+
+  public static final String SIGNING_PDF_ERROR = /*$$(*/ "Error while signing pdf : %s" /*)*/;
+
+  public static final String CONVERT_IMAGE_TO_PDF_ERROR = /*$$(*/
+      "Error while converting image to pdf : %s" /*)*/;
+
+  public static final String NO_RECORD_SELECTED_TO_PRINT = /*$$(*/
+      "Please select records to print" /*)*/;
+
+  public static final String PFX_CERTIFICATE_WRONG_PASSWORD = /*$$(*/
+      "Error while opening the certificate, please check the password." /*)*/;
+
+  public static final String PFX_CERTIFICATE_WRONG_FILE = /*$$(*/
+      "Error with the certificate, please check if the file is a PFX certificate." /*)*/;
+
+  public static final String PFX_CERTIFICATE_ACCESS_ERROR = /*$$(*/
+      "Error while accessing certificate information." /*)*/;
+
+  public static final String VIEW_NOT_FOUND = /*$$(*/ "No view configured for model %s." /*)*/;
+
+  public static final String FILE_COULD_NOT_BE_GENERATED = /*$$(*/
+      "The file could not be generated." /*)*/;
+  public static final String SEQUENCE_GROOVY_CONFIGURATION = /*$$(*/
+      "An error occurred while generating the sequence. Please check the configuration." /*)*/;
+
+  public static final String SEQUENCE_INCREMENT_TIMEOUT = /*$$(*/
+      "Timeout while acquiring sequence lock for sequence ID %s. Please retry." /*)*/;
+
+  public static final String SEQUENCE_INCREMENT_FAILED = /*$$(*/
+      "Failed to increment sequence ID %s. Please contact administrator." /*)*/;
+
+  public static final String SEQUENCE_INCREMENT_INTERRUPTED = /*$$(*/
+      "Sequence generation was interrupted for sequence ID %s." /*)*/;
+
+  public static final String ADDRESS_TEMPLATE_ERROR = /*$$(*/
+      "An error occurred while generating the address template: '%s'" /*)*/;
+
+  public static final String ADDRESS_FIELD_TEMPLATE_ERROR = /*$$(*/
+      "An error occurred while generating the address template: '%s' - '%s'" /*)*/;
+
+  public static final String PRICING_UNAVAILABLE_FOR_THIS_CLASS = /*$$(*/
+      "Pricing process unavailable for this class : %s" /*)*/;
+  public static final String REGISTRATION_CODE_EMPTY_FOR_COMPANIES = /*$$(*/
+      "Registration code is required for companies" /*)*/;
+
+  /** Import Configuration */
+  public static final String IMPORT_CONFIGURATION_ERROR_MESSAGE = /*$$(*/
+      "There is an error in the import configuration." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_CLOSING_MESSAGE = /*$$(*/
+      "The import configuration executed successfully." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_WRONG_BINDING_FILE_TYPE_MESSAGE = /*$$(*/
+      "The binding file should be only an XML file." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_CSV_MESSAGE = /*$$(*/
+      "The data file should be only a CSV or ZIP file." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_XML_MESSAGE = /*$$(*/
+      "The data file should be only an XML or ZIP file." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_TYPE_MISSING = /*$$(*/
+      "The import configuration type is missing." /*)*/;
+
+  public static final String MISSING_ADDRESS_FIELD = /*$$(*/ "Address Field is missing : %s" /*)*/;
+
+  public static final String FACTORY_NO_FOUND = /*$$(*/
+      "Factory not found this type of generator" /*)*/;
+
+  public static final String MISSING_BIRT_PARAMETER = /*$$(*/ "Missing %s parameter(s)" /*)*/;
+
+  public static final String PRINTING_TEMPLATE_SCRIPT_ERROR = /*$$(*/
+      "Error when computing the printing filename, using template %s: %s" /*)*/;
+
+  public static final String NO_QUANTITY_PROVIDED = /*$$(*/
+      "This product comes in multiple quantities, so please specify a quantity that is a multiple of at least one from the list %s." /*)*/;
+
+  public static final String QUANTITY_NOT_MULTIPLE = /*$$(*/
+      "The product %s comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s." /*)*/;
+
+  public static final String NO_DEFAULT_ADDRESS_TEMPLATE = /*$$(*/
+      "Please fill the default address template." /*)*/;
+
+  public static final String NO_COUNTRY_FOUND = /*$$(*/ "No country found for: %s." /*)*/;
+  public static final String CITY_AND_ZIP_BOTH_EMPTY = /*$$(*/
+      "The city and postcode cannot be empty at the same time." /*)*/;
+  public static final String NO_CITY_FOUND = /*$$(*/ "No city found" /*)*/;
+  public static final String NO_ZIP_FOUND = /*$$(*/
+      "No zip found in request body or in the found city" /*)*/;
+  public static final String NO_ADDRESS_FOUND_WITH_INFO = /*$$(*/
+      "No address found with this country, zip and street name. City name is required to create a new city." /*)*/;
+
+  public static final String DATA_SHARING_MISSING_ELEMENTS = /*$$(*/
+      "Please fill in or modify some elements to be able to register" /*)*/;
+
+  public static final String LOCALIZATION_EMPTY = /*$$(*/ "Localization is empty" /*)*/;
+
+  public static final String LOCALIZATION_LANGUAGE_EMPTY = /*$$(*/
+      "Language is empty for the localization %s" /*)*/;
+
+  public static final String DATA_SHARING_REFERENTIAL_LINE_JPQL_SYNTAX_IS_WRONG = /*$$(*/
+      "Wrong JPQL syntax : %s" /*)*/;
+  public static final String DATA_SHARING_REFERENTIAL_LINE_JPQL_SYNTAX_IS_CORRECT = /*$$(*/
+      "The syntax of the script is correct." /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_DAYS = /*$$(*/
+      "There is no configured unit days in the app base config" /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_HOURS = /*$$(*/
+      "There is no configured unit hours in the app base config" /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_MINUTES = /*$$(*/
+      "There is no configured unit minutes in the app base config" /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_DAILY_WORK_HOURS = /*$$(*/
+      "There is no configured daily work hours in the app base config" /*)*/;
+
+  public static final String API_BAD_REQUEST = /*$$(*/
+      "Bad request please check api configuration information." /*)*/;
+
+  public static final String API_WRONG_CREDENTIALS = /*$$(*/
+      "Bad request please check credentials." /*)*/;
+
+  public static final String API_WRONG_SIRET_NUMBER = /*$$(*/
+      "Cannot get information with siret: %s ." /*)*/;
+
+  public static final String API_INVALID_SIRET_NUMBER = /*$$(*/
+      "Invalid SIRET number. It must contain exactly 14 digits." /*)*/;
+
+  public static final String PARTNER_REGISTRATION_CODE_ALREADY_EXISTS = /*$$(*/
+      "Registration number already exists for partner %s." /*)*/;
+
+  public static final String APP_BASE_SIRENE_API_URL_MISSING = /*$$(*/
+      "Please fill API Sirene url in app base." /*)*/;
+
+  public static final String PFX_CERTIFICATE_VALIDITY_ERROR = /*$$(*/
+      "Signature certificate is expired. Please change to a new certificate." /*)*/;
+
+  public static final String DATABACKUP_ERROR_1 = /*$$(*/ "The entry file %s is not secured." /*)*/;
+
+  public static final String PARTNER_BOOLEAN_MISSING = /*$$(*/
+      "At least one of isContact, isCustomer, isSupplier or isProspect must be true." /*)*/;
+
+  public static final String PARTNER_INVALID_BOOLEAN_1 = /*$$(*/
+      "A partner cannot be both a contact and a customer, supplier, or prospect." /*)*/;
+
+  public static final String PARTNER_INVALID_BOOLEAN_2 = /*$$(*/
+      "A partner cannot be both a customer and a prospect." /*)*/;
+
+  public static final String PACKAGING_MAX_WEIGHT_EXCEEDED = /*$$(*/
+      "The products' total weight exceeds the maximum weight carried by the packaging." /*)*/;
+
+  public static final String SEND_EMAIL_EXCEPTION = /*$$(*/ "Error when sending email: %s" /*)*/;
+
+  public static final String GOOGLE_MAP_API_ERROR_1 = /*$$(*/
+      "Error while reading the google map response." /*)*/;
+
+  public static final String GOOGLE_MAP_API_ERROR_2 = /*$$(*/
+      "Error while fetching data from Google API." /*)*/;
+
+  public static final String SEQUENCE_YEAR_VALIDITY_ERROR = /*$$(*/
+      "Prefix or suffix must contain %YY or %YYYY since yearly reset is true" /*)*/;
+
+  public static final String SEQUENCE_MONTH_VALIDITY_ERROR = /*$$(*/
+      "Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true" /*)*/;
 }

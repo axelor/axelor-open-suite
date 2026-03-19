@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,20 +27,22 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
+import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -55,8 +57,9 @@ import com.axelor.db.EntityHelper;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.message.service.TemplateMessageService;
-import com.google.inject.Inject;
+import com.axelor.utils.helpers.WrappingHelper;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -65,6 +68,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     implements InvoiceServiceSupplychain {
@@ -78,7 +82,6 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       ValidateFactory validateFactory,
       VentilateFactory ventilateFactory,
       CancelFactory cancelFactory,
-      AlarmEngineService<Invoice> alarmEngineService,
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
       PartnerService partnerService,
@@ -88,9 +91,11 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
-      TaxService taxService,
       InvoiceProductStatementService invoiceProductStatementService,
       TemplateMessageService templateMessageService,
+      InvoiceTermFilterService invoiceTermFilterService,
+      InvoicePrintService invoicePrintService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService,
       InvoiceLineRepository invoiceLineRepo,
       IntercoService intercoService,
       StockMoveRepository stockMoveRepository) {
@@ -98,7 +103,6 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         validateFactory,
         ventilateFactory,
         cancelFactory,
-        alarmEngineService,
         invoiceRepo,
         appAccountService,
         partnerService,
@@ -108,9 +112,11 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         invoiceTermService,
         invoiceTermPfpService,
         appBaseService,
-        taxService,
         invoiceProductStatementService,
-        templateMessageService);
+        templateMessageService,
+        invoiceTermFilterService,
+        invoicePrintService,
+        invoiceTermPfpToolService);
     this.invoiceLineRepo = invoiceLineRepo;
     this.intercoService = intercoService;
     this.stockMoveRepository = stockMoveRepository;
@@ -126,6 +132,10 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       intercoService.generateIntercoInvoice(invoice);
     }
 
+    updateTimetable(invoice);
+  }
+
+  protected void updateTimetable(Invoice invoice) {
     TimetableRepository timeTableRepo = Beans.get(TimetableRepository.class);
 
     List<Timetable> timetableList =
@@ -135,6 +145,24 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       timetable.setInvoiced(true);
       timeTableRepo.save(timetable);
     }
+
+    int operationTypeSelect = invoice.getOperationTypeSelect();
+    if (operationTypeSelect == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+        || operationTypeSelect == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      Invoice originalInvoice = invoice.getOriginalInvoice();
+      if (originalInvoice != null) {
+        Timetable timetable =
+            timeTableRepo
+                .all()
+                .filter("self.invoice = :invoice")
+                .bind("invoice", originalInvoice)
+                .fetchOne();
+        if (timetable != null) {
+          timetable.setInvoiced(false);
+          timetable.setInvoice(null);
+        }
+      }
+    }
   }
 
   @Override
@@ -143,22 +171,51 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
       return super.getDefaultAdvancePaymentInvoice(invoice);
     }
-
+    Set<Long> saleOrderIds = new HashSet<>();
+    Set<Long> purchaseOrderIds = new HashSet<>();
     SaleOrder saleOrder = invoice.getSaleOrder();
     PurchaseOrder purchaseOrder = invoice.getPurchaseOrder();
+    Set<StockMove> stockMoveSet = invoice.getStockMoveSet();
     Company company = invoice.getCompany();
     Currency currency = invoice.getCurrency();
-    if (company == null || (saleOrder == null && purchaseOrder == null)) {
+    if (company == null
+        || (saleOrder == null && purchaseOrder == null && CollectionUtils.isEmpty(stockMoveSet))) {
       return super.getDefaultAdvancePaymentInvoice(invoice);
     }
     boolean generateMoveForInvoicePayment =
         accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment();
 
-    String filter = writeGeneralFilterForAdvancePayment();
+    if (CollectionUtils.isNotEmpty(stockMoveSet)) {
+      saleOrderIds.addAll(
+          stockMoveSet.stream()
+              .flatMap(
+                  move ->
+                      WrappingHelper.wrap(move.getSaleOrderSet()).stream().map(SaleOrder::getId))
+              .collect(Collectors.toList()));
+      purchaseOrderIds.addAll(
+          stockMoveSet.stream()
+              .flatMap(
+                  move ->
+                      WrappingHelper.wrap(move.getPurchaseOrderSet()).stream()
+                          .map(PurchaseOrder::getId))
+              .collect(Collectors.toList()));
+    }
+
     if (saleOrder != null) {
-      filter += " AND self.saleOrder = :_saleOrder";
-    } else if (purchaseOrder != null) {
-      filter += " AND self.purchaseOrder = :_purchaseOrder";
+      saleOrderIds.add(saleOrder.getId());
+    }
+
+    if (purchaseOrder != null) {
+      purchaseOrderIds.add(purchaseOrder.getId());
+    }
+
+    String filter = writeGeneralFilterForAdvancePayment();
+    if (CollectionUtils.isNotEmpty(saleOrderIds)) {
+      filter += " AND self.saleOrder.id IN :_saleOrderList";
+    }
+
+    if (CollectionUtils.isNotEmpty(purchaseOrderIds)) {
+      filter += " AND self.purchaseOrder.id IN :_purchaseOrderList";
     }
 
     if (!generateMoveForInvoicePayment) {
@@ -169,11 +226,18 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
             .all()
             .filter(filter)
             .bind("_status", InvoiceRepository.STATUS_VALIDATED)
-            .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE);
-    if (saleOrder != null) {
-      query.bind("_saleOrder", saleOrder);
-    } else if (purchaseOrder != null) {
-      query.bind("_purchaseOrder", purchaseOrder);
+            .bind("_operationSubType", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+            .bind(
+                "_operationType",
+                InvoiceToolService.isPurchase(invoice)
+                    ? InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+                    : InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
+    if (CollectionUtils.isNotEmpty(saleOrderIds)) {
+      query.bind("_saleOrderList", saleOrderIds);
+    }
+
+    if (CollectionUtils.isNotEmpty(purchaseOrderIds)) {
+      query.bind("_purchaseOrderList", purchaseOrderIds);
     }
     if (!generateMoveForInvoicePayment) {
       if (currency == null) {
@@ -321,7 +385,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       List<StockMove> stockMoveList =
           stockMoveRepository
               .all()
-              .filter(":invoiceId in self.invoiceSet.id")
+              .filter(":invoiceId in (self.invoiceSet.id)")
               .bind("invoiceId", invoice.getId())
               .fetch();
       for (StockMove stockMove : stockMoveList) {
@@ -334,5 +398,12 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         stockMoveRepository.save(stockMove);
       }
     }
+  }
+
+  @Override
+  public boolean hasFiscalPositionMismatch(Invoice invoice) {
+    SaleOrder saleOrder = invoice.getSaleOrder();
+    return saleOrder != null
+        && !Objects.equals(saleOrder.getFiscalPosition(), invoice.getFiscalPosition());
   }
 }

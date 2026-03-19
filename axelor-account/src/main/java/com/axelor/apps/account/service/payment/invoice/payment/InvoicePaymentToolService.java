@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,9 +25,11 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface InvoicePaymentToolService {
 
@@ -57,16 +59,28 @@ public interface InvoicePaymentToolService {
    */
   List<MoveLine> getMoveLinesFromPayments(List<InvoicePayment> payments, boolean getCreditLine);
 
-  public void checkConditionBeforeSave(InvoicePayment invoicePayment) throws AxelorException;
+  void checkConditionBeforeSave(InvoicePayment invoicePayment) throws AxelorException;
 
   BigDecimal getPayableAmount(
-      List<InvoiceTerm> invoiceTermList, LocalDate date, boolean manualChange);
-
-  void computeFinancialDiscount(InvoicePayment invoicePayment);
+      List<InvoiceTerm> invoiceTermList,
+      LocalDate date,
+      boolean manualChange,
+      Currency paymentCurrency)
+      throws AxelorException;
 
   BigDecimal getMassPaymentAmount(List<Long> invoiceIdList, LocalDate date);
 
   boolean applyFinancialDiscount(InvoicePayment invoicePayment);
 
-  void computeFromInvoiceTermPayments(InvoicePayment invoicePayment);
+  Pair<List<Long>, Boolean> changeAmount(InvoicePayment invoicePayment, Long invoiceId)
+      throws AxelorException;
+
+  List<Long> loadInvoiceTerms(InvoicePayment invoicePayment, Long invoiceId) throws AxelorException;
+
+  BigDecimal computeCompanyAmount(
+      BigDecimal amountInCurrency,
+      Currency paymentCurrency,
+      Currency companyCurrency,
+      LocalDate paymentDate)
+      throws AxelorException;
 }

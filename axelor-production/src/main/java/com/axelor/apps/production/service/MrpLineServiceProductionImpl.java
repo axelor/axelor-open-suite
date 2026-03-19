@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,14 +19,22 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ProdProcess;
+import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ProductionConfigRepository;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -43,13 +51,17 @@ import com.axelor.apps.supplychain.db.repo.MrpLineOriginRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
-import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
+import com.axelor.apps.supplychain.service.PurchaseOrderCreateSupplychainService;
 import com.axelor.db.Model;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
@@ -57,11 +69,15 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
   protected ManufOrderService manufOrderService;
   protected ManufOrderRepository manufOrderRepository;
   protected OperationOrderRepository operationOrderRepository;
+  protected BillOfMaterialService billOfMaterialService;
+  protected ProdProcessLineService prodProcessLineService;
+  protected ProductionConfigService productionConfigService;
+  protected final ProdProcessComputationService prodProcessComputationService;
 
   @Inject
   public MrpLineServiceProductionImpl(
       AppBaseService appBaseService,
-      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderCreateSupplychainService purchaseOrderCreateSupplychainService,
       PurchaseOrderService purchaseOrderService,
       PurchaseOrderLineService purchaseOrderLineService,
       PurchaseOrderRepository purchaseOrderRepo,
@@ -72,10 +88,14 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
       ManufOrderService manufOrderService,
       ManufOrderRepository manufOrderRepository,
       OperationOrderRepository operationOrderRepository,
-      MrpLineRepository mrpLineRepo) {
+      MrpLineRepository mrpLineRepo,
+      BillOfMaterialService billOfMaterialService,
+      ProdProcessLineService prodProcessLineService,
+      ProductionConfigService productionConfigService,
+      ProdProcessComputationService prodProcessComputationService) {
     super(
         appBaseService,
-        purchaseOrderSupplychainService,
+        purchaseOrderCreateSupplychainService,
         purchaseOrderService,
         purchaseOrderLineService,
         purchaseOrderRepo,
@@ -87,6 +107,10 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
     this.manufOrderService = manufOrderService;
     this.manufOrderRepository = manufOrderRepository;
     this.operationOrderRepository = operationOrderRepository;
+    this.billOfMaterialService = billOfMaterialService;
+    this.prodProcessLineService = prodProcessLineService;
+    this.productionConfigService = productionConfigService;
+    this.prodProcessComputationService = prodProcessComputationService;
   }
 
   @Override
@@ -112,6 +136,53 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
   protected void generateManufacturingProposal(MrpLine mrpLine) throws AxelorException {
 
     Product product = mrpLine.getProduct();
+    Company company = mrpLine.getStockLocation().getCompany();
+
+    ProductionConfig productionConfig = productionConfigService.getProductionConfig(company);
+
+    boolean isAsapScheduling =
+        productionConfig.getScheduling()
+            == ProductionConfigRepository.AS_SOON_AS_POSSIBLE_SCHEDULING;
+
+    LocalDate maturityDate = mrpLine.getMaturityDate();
+    BigDecimal qty = mrpLine.getQty();
+
+    LocalDateTime plannedStartDateT = null;
+    LocalDateTime plannedEndDateT = null;
+
+    BillOfMaterial billOfMaterial = mrpLine.getBillOfMaterial();
+    if (billOfMaterial == null) {
+      billOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
+    }
+
+    if (billOfMaterial == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProductionExceptionMessage.MRP_BOM_REQUIRED),
+          product.getFullName());
+    }
+    if (billOfMaterial.getProdProcess() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProductionExceptionMessage.MRP_PROD_PROCESS_REQUIRED),
+          product.getName());
+    }
+
+    if (isAsapScheduling) {
+      plannedStartDateT = maturityDate.atStartOfDay();
+    } else {
+
+      // The +2 adds 2 minutes to the plannedEndDateT to avoid the overflowing of the calculated
+      // plannedStartDateT on the current date time.
+      LocalDateTime maturityDateTime =
+          maturityDate.isEqual(LocalDate.now())
+              ? maturityDate.atTime(
+                  appBaseService.getTodayDateTime(company).toLocalTime().plusMinutes(2))
+              : maturityDate.atStartOfDay();
+      plannedEndDateT =
+          maturityDateTime.plusMinutes(
+              getTotalDurationInMinutes(billOfMaterial.getProdProcess(), qty));
+    }
 
     ManufOrder manufOrder =
         manufOrderService.generateManufOrder(
@@ -119,14 +190,24 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
             mrpLine.getQty(),
             ManufOrderService.DEFAULT_PRIORITY,
             ManufOrderService.IS_TO_INVOICE,
-            null,
-            mrpLine.getMaturityDate().atStartOfDay(),
-            null,
+            billOfMaterial,
+            plannedStartDateT,
+            plannedEndDateT,
             ManufOrderOriginTypeProduction
                 .ORIGIN_TYPE_MRP); // TODO compute the time to produce to put the manuf order at the
     // correct day
 
+    mrpLine = mrpLineRepo.find(mrpLine.getId());
     linkToOrder(mrpLine, manufOrder);
+  }
+
+  protected long getTotalDurationInMinutes(ProdProcess prodProcess, BigDecimal qty)
+      throws AxelorException {
+    long totalDuration = 0;
+    if (prodProcess != null) {
+      totalDuration = prodProcessComputationService.getLeadTime(prodProcess, qty);
+    }
+    return TimeUnit.SECONDS.toMinutes(totalDuration);
   }
 
   @Override

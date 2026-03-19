@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,22 +25,22 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.i18n.L10n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.Query;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Singleton;
-import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
 public class PeriodServiceImpl implements PeriodService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -67,9 +67,7 @@ public class PeriodServiceImpl implements PeriodService {
       throws AxelorException {
 
     Period period = this.getPeriod(date, company, typeSelect);
-    if (period == null
-        || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
-        || period.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
+    if (period == null || this.isClosedPeriod(period)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.PERIOD_1),
@@ -104,9 +102,7 @@ public class PeriodServiceImpl implements PeriodService {
                 PeriodRepository.STATUS_OPENED)
             .fetchOne();
 
-    if (nextPeriod == null
-        || nextPeriod.getStatusSelect() == PeriodRepository.STATUS_CLOSED
-        || nextPeriod.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
+    if (nextPeriod == null || this.isClosedPeriod(nextPeriod)) {
       throw new AxelorException(
           period,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -118,8 +114,7 @@ public class PeriodServiceImpl implements PeriodService {
   }
 
   public void testOpenPeriod(Period period) throws AxelorException {
-    if (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
-        || period.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS) {
+    if (this.isClosedPeriod(period)) {
       throw new AxelorException(
           period,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -215,9 +210,7 @@ public class PeriodServiceImpl implements PeriodService {
    * @throws AxelorException if the period is closed
    */
   public void checkPeriod(Period period) throws AxelorException {
-    if (period != null
-        && (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED
-            || period.getStatusSelect() == PeriodRepository.STATUS_CLOSURE_IN_PROGRESS)) {
+    if (this.isClosedPeriod(period)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BaseExceptionMessage.PAY_PERIOD_CLOSED),
@@ -240,9 +233,10 @@ public class PeriodServiceImpl implements PeriodService {
       Query resultQuery =
           JPA.em()
               .createQuery(
-                  "SELECT self.id FROM Period self WHERE self.toDate = :date AND self.year.company = :company");
+                  "SELECT self.id FROM Period self WHERE self.toDate = :date AND self.year.company = :company AND self.year.typeSelect = :typeSelect");
       resultQuery.setParameter("date", period.getFromDate().minusDays(1));
       resultQuery.setParameter("company", period.getYear().getCompany());
+      resultQuery.setParameter("typeSelect", period.getYear().getTypeSelect());
       if (resultQuery.getResultList() != null && !resultQuery.getResultList().isEmpty()) {
         for (Object result : resultQuery.getResultList()) {
           Period previousPeriod = periodRepo.find(Long.valueOf(result.toString()).longValue());
@@ -289,7 +283,6 @@ public class PeriodServiceImpl implements PeriodService {
   @Override
   @Transactional
   public void openPeriod(Period period) {
-
     if (period != null) {
       period.setStatusSelect(PeriodRepository.STATUS_OPENED);
     }
@@ -300,5 +293,29 @@ public class PeriodServiceImpl implements PeriodService {
   public void closureInProgress(Period period) {
     period.setStatusSelect(PeriodRepository.STATUS_CLOSURE_IN_PROGRESS);
     periodRepo.save(period);
+  }
+
+  @Override
+  public void closePeriod(Period period) {
+    int oldPeriodStatusSelect = period.getStatusSelect();
+
+    try {
+      this.closureInProgress(period);
+      this.close(period);
+    } catch (Exception e) {
+      resetStatus(period, oldPeriodStatusSelect);
+      TraceBackService.trace(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void resetStatus(Period period, int oldPeriodStatusSelect) {
+
+    Period periodBDD = periodRepo.find(period.getId());
+    if (period != null) {
+      periodBDD.setStatusSelect(oldPeriodStatusSelect);
+    }
+    periodRepo.save(periodBDD);
   }
 }

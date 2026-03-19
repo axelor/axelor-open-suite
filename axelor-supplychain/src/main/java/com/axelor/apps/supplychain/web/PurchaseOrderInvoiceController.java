@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,19 +21,22 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceViewService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 
 @Singleton
@@ -46,8 +49,14 @@ public class PurchaseOrderInvoiceController {
     purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 
     try {
+
+      BigDecimal amountToInvoice =
+          purchaseOrder
+              .getExTaxTotal()
+              .subtract(Beans.get(OrderInvoiceService.class).amountToBeInvoiced(purchaseOrder));
+
       Beans.get(PurchaseOrderInvoiceService.class)
-          .displayErrorMessageIfPurchaseOrderIsInvoiceable(purchaseOrder, BigDecimal.ZERO, false);
+          .displayErrorMessageIfPurchaseOrderIsInvoiceable(purchaseOrder, amountToInvoice, false);
       Invoice invoice = Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
       if (invoice != null) {
         response.setReload(true);
@@ -129,6 +138,20 @@ public class PurchaseOrderInvoiceController {
       response.setAttr("$operationSelect", "value", "1");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setAmountToInvoiceScale(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    boolean isPercent = (Boolean) request.getContext().getOrDefault("isPercent", false);
+
+    if (purchaseOrder != null && purchaseOrder.getCurrency() != null) {
+      response.setAttr(
+          "$amountToInvoice",
+          "scale",
+          isPercent
+              ? AppSaleService.DEFAULT_NB_DECIMAL_DIGITS
+              : Beans.get(CurrencyScaleService.class).getScale(purchaseOrder));
     }
   }
 }

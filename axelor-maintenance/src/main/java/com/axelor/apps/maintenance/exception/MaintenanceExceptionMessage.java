@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,4 +24,13 @@ public final class MaintenanceExceptionMessage {
 
   public static final String EQUIPEMENT_MAINTENANCE_MISSING_SEQUENCE = /*$$(*/
       "Missing equipement maintenance sequence." /*)*/;
+
+  public static final String MANUF_ORDER_1 = /*$$(*/
+      "Please select the Manufacturing order(s) to print." /*)*/;
+
+  public static final String MAINTENANCE_REQUEST_CREATION_EQUIPMENT_MISSING = /*$$(*/
+      "Please indicate an equipment for the maintenance request." /*)*/;
+
+  public static final String MAINTENANCE_REQUEST_CREATION_EXPECTED_DATE_MISSING = /*$$(*/
+      "Please indicate an expected date for the maintenance request." /*)*/;
 }

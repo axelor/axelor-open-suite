@@ -1,0 +1,29 @@
+"importId";"name";"typeSelect";"docType";"reportExportTypeSelect"
+"FRA_PCG1";"Journal";11;1;1
+"FRA_PCG10";"Grand livre";1;1;1
+"FRA_PCG19";"Grand livre (ancienne présentation)";14;1;1
+"FRA_PCG11";"Grand livre auxiliaire";7;1;1
+"FRA_PCG20";"Balance générale";2;1;1
+"FRA_PCG21";"Balance auxiliaire";6;1;1
+"FRA_PCG22";"Balance âgée";4;1;1
+"FRA_PCG23";"Balance clients détaillée";3;1;1
+"FRA_PCG100";"Bilan";3000;1;1
+"FRA_PCG101";"Compte de résultat";3000;1;1
+"FRA_PCG102";"Soldes intermédiaires de gestion (SIG)";3000;1;1
+"FRA_PCG30";"Factures client/fournisseurs dont le terme est échu";23;1;1
+"FRA_PCG31";"Factures client/fournisseurs ayant connu un retard de paiement";24;1;1
+"FRA_PCG32";"Bordereau de remise de chèques";5;1;1
+"FRA_PCG33";"Récapitulatif des reçus espèces";10;1;1
+"FRA_PCG34";"Différences paiement";13;1;1
+"FRA_PCG40";"Etat TVA sur facturation";12;1;1
+"FRA_PCG41";"Etat TVA sur encaissement";15;1;1
+"FRA_PCG50";"Tableau des acquisitions";16;1;1
+"FRA_PCG55";"Etat préparatoire Immo. DGI 2054";21;1;1
+"FRA_PCG51";"Synthèses des valeurs brutes et des amortissements";17;1;1
+"FRA_PCG56";"Etat préparatoire Immo. DGI 2055";22;1;1
+"FRA_PCG60";"Vérification déclaration DADS (FR)";20;1;1
+"FRA_PCG61";"Etat préparatoire DADS (FR)";19;1;1
+"FRA_PCG1000";"Export FEC -> Administration";1000;2;2
+"FRA_PCG1001";"Export FEC -> Logiciel comptable";1001;2;2
+"FRA_PCG1010";"Export balance générale -> Logiciel comptable";1010;2;2
+"FRA_PCG1011";"Export N4DS (FR)";1011;2;2

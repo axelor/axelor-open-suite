@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,19 +19,22 @@
 package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.sale.db.SaleBatch;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +53,7 @@ public class BatchInvoicing extends BatchStrategy {
   @Override
   protected void process() {
 
-    List<SaleOrder> saleOrders = subscriptionInvoiceService.getSubscriptionOrders(FETCH_LIMIT);
+    List<SaleOrder> saleOrders = subscriptionInvoiceService.getSubscriptionOrders(getFetchLimit());
 
     while (!saleOrders.isEmpty()) {
       for (SaleOrder saleOrder : saleOrders) {
@@ -75,7 +78,8 @@ public class BatchInvoicing extends BatchStrategy {
         }
       }
       JPA.clear();
-      saleOrders = subscriptionInvoiceService.getSubscriptionOrders(FETCH_LIMIT);
+      findBatch();
+      saleOrders = subscriptionInvoiceService.getSubscriptionOrders(getFetchLimit());
     }
   }
 
@@ -92,14 +96,23 @@ public class BatchInvoicing extends BatchStrategy {
             "\t* %s " + I18n.get(SupplychainExceptionMessage.BATCH_INVOICING_2) + "\n",
             batch.getDone());
     comment +=
-        String.format(
-            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+        String.format("\t" + I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly());
 
     super.stop();
     addComment(comment);
   }
 
+  @Override
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_SALE_BATCH);
+  }
+
+  @Override
+  protected Integer getFetchLimit() {
+    return Optional.ofNullable(batch)
+        .map(Batch::getSaleBatch)
+        .map(SaleBatch::getFetchLimit)
+        .filter(v -> v > 0)
+        .orElseGet(super::getFetchLimit);
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,6 +39,10 @@ public interface ITranslation {
   public static final String CLIENT_SITUATION_PHONE = /*$$(*/ "ClientSituation.phone"; /*)*/
   public static final String CLIENT_SITUATION_FUNCTION = /*$$(*/ "ClientSituation.function"; /*)*/
   public static final String CLIENT_SITUATION_CONTACTS = /*$$(*/ "ClientSituation.contacts"; /*)*/
+  public static final String CLIENT_SITUATION_QUOTATIONS_ORDERS = /*$$(*/
+      "ClientSituation.quotations/orders"; /*)*/
+  public static final String CLIENT_SITUATION_QUOTATIONS = /*$$(*/
+      "ClientSituation.quotations"; /*)*/
   public static final String CLIENT_SITUATION_ORDERS = /*$$(*/ "ClientSituation.orders"; /*)*/
   public static final String CLIENT_SITUATION_DATE = /*$$(*/ "ClientSituation.date"; /*)*/
   public static final String CLIENT_SITUATION_REFERENCE = /*$$(*/ "ClientSituation.reference"; /*)*/
@@ -46,6 +50,8 @@ public interface ITranslation {
   public static final String CLIENT_SITUATION_TOTAL_HT = /*$$(*/ "ClientSituation.totalHT"; /*)*/
   public static final String CLIENT_SITUATION_TOTAL_TAX = /*$$(*/ "ClientSituation.totalTax"; /*)*/
   public static final String CLIENT_SITUATION_TOTAL_ATI = /*$$(*/ "ClientSituation.totalATI"; /*)*/
+  public static final String CLIENT_SITUATION_AMOUNT_REMAINING_TO_ORDER = /*$$(*/
+      "ClientSituation.amountRemainingToOrder"; /*)*/
   public static final String CLIENT_SITUATION_TO_INVOICE = /*$$(*/
       "ClientSituation.toInvoice"; /*)*/
   public static final String CLIENT_SITUATION_STATUS = /*$$(*/ "ClientSituation.status"; /*)*/
@@ -86,6 +92,18 @@ public interface ITranslation {
       "ClientSituation.totalAtiTerm"; /*)*/
   public static final String CLIENT_SITUATION_DUE_DATE_TERM = /*$$(*/
       "ClientSituation.dueDateTerm"; /*)*/
+  public static final String CLIENT_SITUATION_TRADING_NAME = /*$$(*/
+      "ClientSituation.tradingName"; /*)*/
+  public static final String CLIENT_SITUATION_DELIVERY_STOCK_MOVES = /*$$(*/
+      "ClientSituation.deliveryStockMoves"; /*)*/
+  public static final String CLIENT_SITUATION_REAL_DATE = /*$$(*/ "ClientSituation.realDate"; /*)*/
+  public static final String CLIENT_SITUATION_SEQ = /*$$(*/ "ClientSituation.seq"; /*)*/
+  public static final String CLIENT_SITUATION_SALE_ORDER = /*$$(*/
+      "ClientSituation.saleOrder"; /*)*/
+  public static final String CLIENT_SITUATION_TO_ADDRESS_STR = /*$$(*/
+      "ClientSituation.toAddressStr"; /*)*/
+  public static final String CLIENT_SITUATION_STATUS_STOCK_MOVE = /*$$(*/
+      "ClientSituation.statusSM"; /*)*/
 
   public static final String PRODUCT_CATALOG_SUMMARY = /*$$(*/ "ProductCatalog.summary"; /*)*/
   public static final String PRODUCT_CATALOG_REFERENCE = /*$$(*/ "ProductCatalog.reference"; /*)*/

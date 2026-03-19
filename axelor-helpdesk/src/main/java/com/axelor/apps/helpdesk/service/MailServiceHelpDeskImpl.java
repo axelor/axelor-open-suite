@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,17 +20,15 @@ package com.axelor.apps.helpdesk.service;
 
 import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.helpdesk.db.Ticket;
-import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.MailMessage;
 import com.axelor.message.service.MailAccountService;
+import com.axelor.message.service.MailMessageActionService;
 import com.axelor.studio.app.service.AppService;
-import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import java.io.IOException;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -38,20 +36,10 @@ public class MailServiceHelpDeskImpl extends MailServiceBaseImpl {
 
   @Inject
   public MailServiceHelpDeskImpl(
-      MailAccountService mailAccountService, AppBaseService appBaseService) {
-    super(mailAccountService, appBaseService);
-  }
-
-  @Override
-  protected String getSubject(MailMessage message, Model entity) {
-    if (!(Ticket.class.isInstance(entity)) || !Beans.get(AppService.class).isApp("helpdesk")) {
-      return super.getSubject(message, entity);
-    }
-    Ticket ticket = (Ticket) entity;
-    if (!Strings.isNullOrEmpty(ticket.getMailSubject())) {
-      return ticket.getMailSubject();
-    }
-    return super.getSubject(message, entity);
+      MailAccountService mailAccountService,
+      AppBaseService appBaseService,
+      MailMessageActionService mailMessageActionService) {
+    super(mailAccountService, appBaseService, mailMessageActionService);
   }
 
   @Override

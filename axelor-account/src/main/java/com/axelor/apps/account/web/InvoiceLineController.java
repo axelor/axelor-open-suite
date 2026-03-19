@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,10 +19,8 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
-import com.axelor.apps.account.db.AnalyticAxis;
-import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
@@ -34,24 +32,26 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
-import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
+import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
-import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
+import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -59,7 +59,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,8 +67,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class InvoiceLineController {
@@ -127,9 +127,9 @@ public class InvoiceLineController {
     }
 
     try {
-      Beans.get(InvoiceLineService.class).compute(invoice, invoiceLine);
-
-      response.setValues(invoiceLine);
+      Map<String, Object> invoiceLineMap =
+          Beans.get(InvoiceLineService.class).compute(invoice, invoiceLine);
+      response.setValues(invoiceLineMap);
       response.setAttr(
           "priceDiscounted",
           "hidden",
@@ -189,18 +189,9 @@ public class InvoiceLineController {
                   invoice,
                   invoiceLine,
                   invoiceLine.getProduct().getInAti()
-                      ? Beans.get(InvoiceLineService.class)
-                          .getInTaxUnitPrice(
-                              invoice,
-                              invoiceLine,
-                              invoiceLine.getTaxLine(),
-                              InvoiceToolService.isPurchase(invoice))
-                      : Beans.get(InvoiceLineService.class)
-                          .getExTaxUnitPrice(
-                              invoice,
-                              invoiceLine,
-                              invoiceLine.getTaxLine(),
-                              InvoiceToolService.isPurchase(invoice)));
+                      ? invoiceLine.getInTaxPrice()
+                      : invoiceLine.getPrice());
+
       discounts.remove("price");
       for (Entry<String, Object> entry : discounts.entrySet()) {
         response.setValue(entry.getKey(), entry.getValue());
@@ -224,14 +215,14 @@ public class InvoiceLineController {
 
     try {
       BigDecimal inTaxPrice = invoiceLine.getInTaxPrice();
-      TaxLine taxLine = invoiceLine.getTaxLine();
+      Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
 
       response.setValue(
           "price",
           Beans.get(TaxService.class)
               .convertUnitPrice(
                   true,
-                  taxLine,
+                  taxLineSet,
                   inTaxPrice,
                   Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
     } catch (Exception e) {
@@ -249,50 +240,34 @@ public class InvoiceLineController {
     Context context = request.getContext();
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+    Invoice invoice = this.getInvoice(request.getContext());
+    invoiceLine.setInvoice(invoice);
 
     try {
       BigDecimal exTaxPrice = invoiceLine.getPrice();
-      TaxLine taxLine = invoiceLine.getTaxLine();
+      Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
 
       response.setValue(
           "inTaxPrice",
           Beans.get(TaxService.class)
               .convertUnitPrice(
                   false,
-                  taxLine,
+                  taxLineSet,
                   exTaxPrice,
-                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
+                  Beans.get(CurrencyScaleService.class).getScale(invoiceLine)));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
+  @ErrorException
   public void convertUnitPrice(ActionRequest request, ActionResponse response) {
+    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
 
-    Context context = request.getContext();
+    Invoice invoice = this.getInvoice(request.getContext());
+    invoiceLine.setInvoice(invoice);
 
-    InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
-
-    Invoice invoice = this.getInvoice(context);
-
-    if (invoice == null
-        || invoiceLine.getProduct() == null
-        || invoiceLine.getPrice() == null
-        || invoiceLine.getInTaxPrice() == null) {
-      return;
-    }
-
-    try {
-      BigDecimal price = invoiceLine.getPrice();
-      BigDecimal inTaxPrice =
-          price.add(
-              price.multiply(invoiceLine.getTaxLine().getValue().divide(new BigDecimal(100))));
-
-      response.setValue("inTaxPrice", inTaxPrice);
-
-    } catch (Exception e) {
-      response.setInfo(e.getMessage());
-    }
+    response.setValue("inTaxPrice", Beans.get(InvoiceLineService.class).getInTaxPrice(invoiceLine));
   }
 
   public void emptyLine(ActionRequest request, ActionResponse response) {
@@ -450,35 +425,14 @@ public class InvoiceLineController {
   public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-      if (request.getContext().getParent() != null) {
-        Invoice invoice = request.getContext().getParent().asType(Invoice.class);
-        List<Long> analyticAccountList = new ArrayList<Long>();
-        AnalyticToolService analyticToolService = Beans.get(AnalyticToolService.class);
-        AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
-        for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-          if (invoice != null
-              && invoice.getCompany() != null
-              && analyticToolService.isPositionUnderAnalyticAxisSelect(invoice.getCompany(), i)) {
-            analyticAccountList =
-                analyticLineService.getAxisDomains(invoiceLine, invoice.getCompany(), i);
-            if (CollectionUtils.isEmpty(analyticAccountList)) {
-              response.setAttr(
-                  "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-                  "domain",
-                  "self.id IN (0)");
-            } else {
-              String idList =
-                  analyticAccountList.stream()
-                      .map(id -> id.toString())
-                      .collect(Collectors.joining(","));
-              response.setAttr(
-                  "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-                  "domain",
-                  "self.id IN (" + idList + ")");
-            }
-          }
-        }
+      if (request.getContext().getParent() == null) {
+        return;
       }
+
+      Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+      response.setAttrs(
+          Beans.get(AnalyticGroupService.class)
+              .getAnalyticAxisDomainAttrsMap(invoiceLine, invoice.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -487,7 +441,8 @@ public class InvoiceLineController {
   public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response) {
     try {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-      if (request.getContext().getParent() != null) {
+      if (request.getContext().getParent() != null
+          && Invoice.class.equals(request.getContext().getParent().getContextClass())) {
         Invoice invoice = request.getContext().getParent().asType(Invoice.class);
         AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
         for (int i = startAxisPosition; i <= endAxisPosition; i++) {
@@ -540,7 +495,7 @@ public class InvoiceLineController {
         Invoice invoice = request.getContext().getParent().asType(Invoice.class);
         if (invoiceLine != null && invoice != null) {
           Beans.get(AnalyticLineService.class)
-              .printAnalyticAccount(invoiceLine, invoice.getCompany());
+              .setAnalyticAccount(invoiceLine, invoice.getCompany());
           response.setValues(invoiceLine);
         }
       }
@@ -555,11 +510,9 @@ public class InvoiceLineController {
       InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
       InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
       Invoice parent = this.getInvoice(context);
-      String userLanguage = AuthUtils.getUser().getLanguage();
 
       Map<String, String> translation =
-          invoiceLineService.getProductDescriptionAndNameTranslation(
-              parent, invoiceLine, userLanguage);
+          invoiceLineService.getProductDescriptionAndNameTranslation(parent, invoiceLine);
 
       String description = translation.get("description");
       String productName = translation.get("productName");
@@ -579,9 +532,20 @@ public class InvoiceLineController {
 
   public void checkAnalyticMoveLineForAxis(ActionRequest request, ActionResponse response) {
     try {
-      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-      if (invoiceLine != null) {
+      Context context = request.getContext();
+      InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+      Invoice invoice = this.getInvoice(context);
+
+      if (invoiceLine != null && invoice != null) {
         Beans.get(AnalyticLineService.class).checkAnalyticLineForAxis(invoiceLine);
+        List<AnalyticMoveLine> analyticMoveLineList =
+            Optional.ofNullable(invoiceLine.getAnalyticMoveLineList()).orElse(new ArrayList<>());
+        Beans.get(AnalyticAxisService.class)
+            .checkRequiredAxisByCompany(
+                invoice.getCompany(),
+                analyticMoveLineList.stream()
+                    .map(AnalyticMoveLine::getAnalyticAxis)
+                    .collect(Collectors.toList()));
         response.setValues(invoiceLine);
       }
     } catch (Exception e) {
@@ -594,61 +558,78 @@ public class InvoiceLineController {
       Context parentContext = request.getContext().getParent();
       if (parentContext != null && parentContext.getContextClass().equals(Invoice.class)) {
         Invoice invoice = request.getContext().getParent().asType(Invoice.class);
-        if (invoice.getCompany() != null) {
-          AccountConfig accountConfig =
-              Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
-          if (accountConfig != null) {
-            AnalyticAxis analyticAxis = null;
-            for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-              response.setAttr(
-                  "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-                  "hidden",
-                  !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
-              for (AnalyticAxisByCompany analyticAxisByCompany :
-                  accountConfig.getAnalyticAxisByCompanyList()) {
-                if (analyticAxisByCompany.getSequence() + 1 == i) {
-                  analyticAxis = analyticAxisByCompany.getAnalyticAxis();
-                }
-              }
-              if (analyticAxis != null) {
-                response.setAttr(
-                    "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-                    "title",
-                    analyticAxis.getName());
-                analyticAxis = null;
-              }
-            }
-          }
-        }
+
+        Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+        Beans.get(AnalyticAttrsService.class)
+            .addAnalyticAxisAttrs(invoice.getCompany(), null, attrsMap);
+
+        response.setAttrs(attrsMap);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  public void checkAnalyticAccount(ActionRequest request, ActionResponse response) {
+  public void setScale(ActionRequest request, ActionResponse response) {
     try {
-      AccountService accountService = Beans.get(AccountService.class);
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      Invoice invoice = this.getInvoice(request.getContext());
 
-      if (Invoice.class.equals(request.getContext().getContextClass())) {
-        Invoice invoice = request.getContext().asType(Invoice.class);
-        if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())) {
-          for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-            if (invoiceLine != null && invoiceLine.getAccount() != null) {
-              accountService.checkAnalyticAxis(
-                  invoiceLine.getAccount(), invoiceLine.getAnalyticDistributionTemplate());
-            }
-          }
-        }
-      } else {
-        InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-        if (invoiceLine != null && invoiceLine.getAccount() != null) {
-          accountService.checkAnalyticAxis(
-              invoiceLine.getAccount(), invoiceLine.getAnalyticDistributionTemplate());
-        }
-      }
+      response.setAttrs(Beans.get(InvoiceLineService.class).setScale(invoiceLine, invoice));
     } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void recomputeTax(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+      Invoice invoice = getInvoice(context);
+
+      response.setValues(Beans.get(InvoiceLineService.class).recomputeTax(invoice, invoiceLine));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onSelectTaxLineSet(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = this.getInvoice(request.getContext());
+
+      if (invoice == null) {
+        return;
+      }
+
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+      Beans.get(InvoiceLineGroupService.class).setInvoiceLineTaxLineSetDomain(invoice, attrsMap);
+
+      response.setAttrs(attrsMap);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setDomainAnalyticDistributionTemplate(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+      Invoice invoice = getInvoice(context);
+
+      response.setAttr(
+          "analyticDistributionTemplate",
+          "domain",
+          Beans.get(AnalyticAttrsService.class)
+              .getAnalyticDistributionTemplateDomain(
+                  invoice.getPartner(),
+                  invoiceLine.getProduct(),
+                  invoice.getCompany(),
+                  invoice.getTradingName(),
+                  null,
+                  InvoiceToolService.isPurchase(invoice)));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -39,25 +40,29 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
+import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
+import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -66,8 +71,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,6 +87,11 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   protected CommonInvoiceService commonInvoiceService;
   protected AddressService addressService;
   protected InvoiceLineOrderService invoiceLineOrderService;
+  protected CurrencyService currencyService;
+  protected CurrencyScaleService currencyScaleService;
+  protected OrderInvoiceService orderInvoiceService;
+  protected InvoiceTaxService invoiceTaxService;
+  protected InvoiceLineRepository invoiceLineRepository;
 
   @Inject
   public PurchaseOrderInvoiceServiceImpl(
@@ -95,7 +103,12 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       AccountConfigService accountConfigService,
       CommonInvoiceService commonInvoiceService,
       AddressService addressService,
-      InvoiceLineOrderService invoiceLineOrderService) {
+      InvoiceLineOrderService invoiceLineOrderService,
+      CurrencyService currencyService,
+      CurrencyScaleService currencyScaleService,
+      OrderInvoiceService orderInvoiceService,
+      InvoiceTaxService invoiceTaxService,
+      InvoiceLineRepository invoiceLineRepository) {
     this.invoiceServiceSupplychain = invoiceServiceSupplychain;
     this.invoiceService = invoiceService;
     this.invoiceRepo = invoiceRepo;
@@ -105,12 +118,18 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     this.commonInvoiceService = commonInvoiceService;
     this.addressService = addressService;
     this.invoiceLineOrderService = invoiceLineOrderService;
+    this.currencyService = currencyService;
+    this.currencyScaleService = currencyScaleService;
+    this.orderInvoiceService = orderInvoiceService;
+    this.invoiceTaxService = invoiceTaxService;
+    this.invoiceLineRepository = invoiceLineRepository;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException {
     Invoice invoice = this.createInvoice(purchaseOrder);
+    invoiceTaxService.manageTaxByAmount(purchaseOrder, invoice);
     invoice = invoiceRepo.save(invoice);
     invoiceService.setDraftSequence(invoice);
     invoice.setAddressStr(Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
@@ -123,13 +142,13 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(purchaseOrder);
 
     Invoice invoice = invoiceGenerator.generate();
+    invoice.setPurchaseOrder(purchaseOrder);
 
     List<InvoiceLine> invoiceLineList =
         this.createInvoiceLines(invoice, purchaseOrder.getPurchaseOrderLineList());
 
     invoiceGenerator.populate(invoice, invoiceLineList);
 
-    invoice.setPurchaseOrder(purchaseOrder);
     invoice.setAdvancePaymentInvoiceSet(invoiceService.getDefaultAdvancePaymentInvoice(invoice));
     return invoice;
   }
@@ -177,7 +196,6 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       Invoice invoice, List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine)
       throws AxelorException {
     invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
-    purchaseOrderLine.setInvoiced(true);
   }
 
   @Override
@@ -185,6 +203,15 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       throws AxelorException {
 
     Product product = purchaseOrderLine.getProduct();
+    BigDecimal qtyAlreadyInvoiced =
+        invoiceLineRepository
+            .all()
+            .filter("self.purchaseOrderLine = :purchaseOrderLine")
+            .bind("purchaseOrderLine", purchaseOrderLine)
+            .fetch()
+            .stream()
+            .map(InvoiceLine::getQty)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
         new InvoiceLineGeneratorSupplyChain(
@@ -192,7 +219,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             product,
             purchaseOrderLine.getProductName(),
             purchaseOrderLine.getDescription(),
-            purchaseOrderLine.getQty(),
+            purchaseOrderLine.getQty().subtract(qtyAlreadyInvoiced),
             purchaseOrderLine.getUnit(),
             purchaseOrderLine.getSequence(),
             false,
@@ -253,17 +280,22 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
 
     if (purchaseAmount != null) {
-      invoicedAmount = invoicedAmount.add(purchaseAmount);
+      invoicedAmount =
+          currencyScaleService.getScaledValue(purchaseOrder, invoicedAmount.add(purchaseAmount));
     }
     if (refundAmount != null) {
-      invoicedAmount = invoicedAmount.subtract(refundAmount);
+      invoicedAmount =
+          currencyScaleService.getScaledValue(purchaseOrder, invoicedAmount.subtract(refundAmount));
     }
 
     if (!purchaseOrder.getCurrency().equals(purchaseOrder.getCompany().getCurrency())
         && purchaseOrder.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
       BigDecimal rate =
-          invoicedAmount.divide(purchaseOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
-      invoicedAmount = purchaseOrder.getExTaxTotal().multiply(rate);
+          currencyService.computeScaledExchangeRate(
+              invoicedAmount, purchaseOrder.getCompanyExTaxTotal());
+      invoicedAmount =
+          currencyScaleService.getScaledValue(
+              purchaseOrder, purchaseOrder.getExTaxTotal().multiply(rate));
     }
 
     log.debug(
@@ -292,8 +324,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       if (excludeCurrentInvoice) {
         query += " AND self.invoice.id <> :invoiceId";
       } else {
-        query +=
-            " OR (self.invoice.id = :invoiceId AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect) ";
+        query += " AND self.invoice.id = :invoiceId";
       }
     }
 
@@ -419,7 +450,6 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             this.createInvoiceLine(
                 invoice, purchaseOrderLine, qtyToInvoiceMap.get(purchaseOrderLine.getId()));
         invoiceLineList.addAll(invoiceLines);
-        purchaseOrderLine.setInvoiced(true);
       }
     }
 
@@ -583,7 +613,6 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     Invoice invoice =
         createInvoiceAndLines(
             purchaseOrder,
-            purchaseOrder.getPurchaseOrderLineTaxList(),
             advancePaymentProduct,
             percentToInvoice,
             InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
@@ -598,7 +627,6 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
               });
     }
 
-    invoice.setPurchaseOrder(purchaseOrder);
     invoice.setAddressStr(addressService.computeAddressStr(invoice.getAddress()));
     invoiceService.setDraftSequence(invoice);
     invoice.setPartnerTaxNbr(purchaseOrder.getSupplierPartner().getTaxNbr());
@@ -608,7 +636,6 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
   protected Invoice createInvoiceAndLines(
       PurchaseOrder purchaseOrder,
-      List<PurchaseOrderLineTax> taxLineList,
       Product invoicingProduct,
       BigDecimal percentToInvoice,
       int operationSubTypeSelect,
@@ -617,18 +644,11 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(purchaseOrder);
 
     Invoice invoice = invoiceGenerator.generate();
+    invoice.setPurchaseOrder(purchaseOrder);
 
     List<InvoiceLine> invoiceLinesList =
-        (taxLineList != null && !taxLineList.isEmpty())
-            ? this.createInvoiceLinesFromTax(
-                invoice,
-                taxLineList.stream()
-                    .filter(polt -> !polt.getReverseCharged())
-                    .collect(Collectors.toList()),
-                invoicingProduct,
-                percentToInvoice)
-            : commonInvoiceService.createInvoiceLinesFromOrder(
-                invoice, purchaseOrder.getInTaxTotal(), invoicingProduct, percentToInvoice);
+        this.createInvoiceLines(
+            invoice, purchaseOrder.getPurchaseOrderLineList(), invoicingProduct, percentToInvoice);
 
     invoiceGenerator.populate(invoice, invoiceLinesList);
 
@@ -647,29 +667,40 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     return invoice;
   }
 
-  protected List<InvoiceLine> createInvoiceLinesFromTax(
+  protected List<InvoiceLine> createInvoiceLines(
       Invoice invoice,
-      List<PurchaseOrderLineTax> taxLineList,
+      List<PurchaseOrderLine> purchaseOrderLineList,
       Product invoicingProduct,
       BigDecimal percentToInvoice)
       throws AxelorException {
 
     List<InvoiceLine> createdInvoiceLineList = new ArrayList<>();
-    if (taxLineList != null) {
-      for (PurchaseOrderLineTax purchaseOrderLineTax : taxLineList) {
-        InvoiceLineGenerator invoiceLineGenerator =
-            invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
-                invoice, invoicingProduct, percentToInvoice, purchaseOrderLineTax);
+    if (ObjectUtils.isEmpty(purchaseOrderLineList)) {
+      return createdInvoiceLineList;
+    }
 
-        List<InvoiceLine> invoiceOneLineList = invoiceLineGenerator.creates();
-        // link to the created invoice line the first line of the sale order.
-        for (InvoiceLine invoiceLine : invoiceOneLineList) {
-          PurchaseOrderLine purchaseOrderLine =
-              purchaseOrderLineTax.getPurchaseOrder().getPurchaseOrderLineList().get(0);
-          invoiceLine.setPurchaseOrderLine(purchaseOrderLine);
-        }
-        createdInvoiceLineList.addAll(invoiceOneLineList);
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+      InvoiceLineGeneratorSupplyChain invoiceLineGenerator = null;
+      if (!purchaseOrderLine.getIsTitleLine()) {
+        invoiceLineGenerator =
+            invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
+                invoice,
+                invoicingProduct,
+                percentToInvoice,
+                null,
+                purchaseOrderLine,
+                purchaseOrderLine.getExTaxTotal(),
+                purchaseOrderLine.getTaxLineSet());
+      } else {
+        invoiceLineGenerator =
+            invoiceLineOrderService.getInvoiceLineGeneratorForTitleLines(
+                invoice,
+                purchaseOrderLine.getProductName(),
+                null,
+                purchaseOrderLine,
+                purchaseOrderLine.getQty());
       }
+      createdInvoiceLineList.addAll(invoiceLineGenerator.creates());
     }
     return createdInvoiceLineList;
   }
@@ -678,24 +709,15 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   public void displayErrorMessageIfPurchaseOrderIsInvoiceable(
       PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
       throws AxelorException {
-    List<Invoice> invoices =
-        invoiceRepo
-            .all()
-            .filter(
-                " self.purchaseOrder.id = :purchaseOrderId "
-                    + "AND self.statusSelect != :invoiceStatus "
-                    + "AND (self.operationTypeSelect = :purchaseOperationTypeSelect OR self.operationTypeSelect = :refundOperationTypeSelect)")
-            .bind("purchaseOrderId", purchaseOrder.getId())
-            .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
-            .bind("purchaseOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
-            .bind("refundOperationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)
-            .fetch();
     if (isPercent) {
       amountToInvoice =
           (amountToInvoice.multiply(purchaseOrder.getExTaxTotal()))
-              .divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP);
+              .divide(
+                  new BigDecimal("100"),
+                  currencyScaleService.getScale(purchaseOrder),
+                  RoundingMode.HALF_UP);
     }
-    BigDecimal sumInvoices = commonInvoiceService.computeSumInvoices(invoices);
+    BigDecimal sumInvoices = orderInvoiceService.amountToBeInvoiced(purchaseOrder);
     sumInvoices = sumInvoices.add(amountToInvoice);
     if (sumInvoices.compareTo(purchaseOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(

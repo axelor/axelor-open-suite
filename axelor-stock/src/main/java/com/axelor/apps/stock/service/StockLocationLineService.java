@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,6 @@ import com.axelor.apps.stock.db.repo.StockLocationLineHistoryRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 public interface StockLocationLineService {
 
@@ -42,7 +41,8 @@ public interface StockLocationLineService {
       boolean future,
       boolean isIncrement,
       LocalDate lastFutureStockMoveDate,
-      TrackingNumber trackingNumber)
+      TrackingNumber trackingNumber,
+      boolean generateOrder)
       throws AxelorException;
 
   public void updateLocation(
@@ -53,10 +53,11 @@ public interface StockLocationLineService {
       boolean current,
       boolean future,
       boolean isIncrement,
-      LocalDate lastFutureStockMoveDate)
+      LocalDate lastFutureStockMoveDate,
+      boolean generateOrder)
       throws AxelorException;
 
-  public void minStockRules(
+  public void maxStockRules(
       Product product,
       BigDecimal qty,
       StockLocationLine stockLocationLine,
@@ -80,14 +81,15 @@ public interface StockLocationLineService {
       throws AxelorException;
 
   /**
-   * Check if the stock location has more than qty units of the product
+   * Check if the stock location has enough qty of the product in the given unit.
    *
    * @param stockLocation
    * @param product
+   * @param unit
    * @param qty
    * @throws AxelorException if there is not enough qty in stock
    */
-  public void checkIfEnoughStock(StockLocation stockLocation, Product product, BigDecimal qty)
+  void checkIfEnoughStock(StockLocation stockLocation, Product product, Unit unit, BigDecimal qty)
       throws AxelorException;
 
   public StockLocationLine updateLocation(
@@ -132,35 +134,6 @@ public interface StockLocationLineService {
       StockLocation detailLocation, Product product, TrackingNumber trackingNumber);
 
   /**
-   * Allow to get the location line of a given product in a given location.
-   *
-   * @param stockLocation A location
-   * @param product A product
-   * @return The stock location line if found, else null
-   */
-  public StockLocationLine getStockLocationLine(StockLocation stockLocation, Product product);
-
-  /**
-   * Allow to get the location lines of a given product.
-   *
-   * @param product
-   * @return
-   */
-  public List<StockLocationLine> getStockLocationLines(Product product);
-
-  /**
-   * Allow to get the detailed location line of a given product, product variant and tracking number
-   * in a given location.
-   *
-   * @param stockLocation A location
-   * @param product A product
-   * @param trackingNumber A tracking number
-   * @return The stock location line if found, else null
-   */
-  public StockLocationLine getDetailLocationLine(
-      StockLocation stockLocation, Product product, TrackingNumber trackingNumber);
-
-  /**
    * Allow the creation of a location line of a given product in a given location.
    *
    * @param stockLocation A location
@@ -182,25 +155,6 @@ public interface StockLocationLineService {
       StockLocation stockLocation, Product product, TrackingNumber trackingNumber);
 
   /**
-   * Allow to get the available qty of product in a given location.
-   *
-   * @param stockLocation
-   * @param product
-   * @return
-   */
-  public BigDecimal getAvailableQty(StockLocation stockLocation, Product product);
-
-  /**
-   * Allow to get the available qty of product for a given Tracking Number.
-   *
-   * @param stockLocation
-   * @param trackingNumber
-   * @return
-   */
-  public BigDecimal getTrackingNumberAvailableQty(
-      StockLocation stockLocation, TrackingNumber trackingNumber);
-
-  /**
    * For a given line, compute the future quantity of a stock location line from its current qty and
    * planned stock move lines with the same stock location and the same product.
    *
@@ -210,43 +164,15 @@ public interface StockLocationLineService {
   BigDecimal computeFutureQty(StockLocationLine stockLocationLine) throws AxelorException;
 
   /**
-   * Create a query to find stock location line of a product of a specific/all company and a
-   * specific/all stock location
-   *
-   * @param productId, companyId and stockLocationId
-   * @return the query.
-   */
-  public String getStockLocationLineListForAProduct(
-      Long productId, Long companyId, Long stockLocationId);
-
-  /**
-   * Create a query to find product's available qty of a specific/all company and a specific/all
-   * stock location
-   *
-   * @param productId, companyId and stockLocationId
-   * @return the query.
-   */
-  public String getAvailableStockForAProduct(Long productId, Long companyId, Long stockLocationId);
-
-  /**
-   * Create a query to find product's requested reserved qty of a specific/all company and a
-   * specific/all stock location
-   *
-   * @param productId, companyId and stockLocationId
-   * @return the query.
-   */
-  public String getRequestedReservedQtyForAProduct(
-      Long productId, Long companyId, Long stockLocationId);
-
-  /**
    * Update avgPrice in stock location line and save wap history in the line.
    *
    * @param stockLocationLine stock location line to updated.
    * @param wap weighted average price which will update the field avgPrice.
+   * @throws AxelorException
    * @deprecated Please use updateHistory this method will not create a proper history
    */
   @Deprecated
-  void updateWap(StockLocationLine stockLocationLine, BigDecimal wap);
+  void updateWap(StockLocationLine stockLocationLine, BigDecimal wap) throws AxelorException;
 
   /**
    * Update avgPrice in stock location line and save wap history in the line.
@@ -254,10 +180,12 @@ public interface StockLocationLineService {
    * @param stockLocationLine stock location line to updated.
    * @param wap weighted average price which will update the field avgPrice.
    * @param stockMoveLine the move line responsible for the WAP change.
+   * @throws AxelorException
    * @deprecated Please use updateHistory this method will not create a proper history
    */
   @Deprecated
-  void updateWap(StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine);
+  void updateWap(StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine)
+      throws AxelorException;
 
   /**
    * Same as {@link #updateWap(StockLocationLine, BigDecimal, StockMoveLine)} but date and origin
@@ -267,6 +195,7 @@ public interface StockLocationLineService {
    * @param wap
    * @param stockMoveLine
    * @param date
+   * @throws AxelorException
    * @deprecated Please use updateHistory this method will not create a proper history
    */
   @Deprecated
@@ -275,7 +204,8 @@ public interface StockLocationLineService {
       BigDecimal wap,
       StockMoveLine stockMoveLine,
       LocalDate date,
-      String origin);
+      String origin)
+      throws AxelorException;
 
   /**
    * Update stock location line history
@@ -285,11 +215,13 @@ public interface StockLocationLineService {
    * @param dateT can be null but will be by default todayDate
    * @param origin can be null
    * @param typeSelect must not be null (see {@link StockLocationLineHistoryRepository})
+   * @throws AxelorException
    */
   void updateHistory(
       StockLocationLine stockLocationLine,
       StockMoveLine stockMoveLine,
       LocalDateTime dateT,
       String origin,
-      String typeSelect);
+      String typeSelect)
+      throws AxelorException;
 }

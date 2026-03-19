@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,15 +25,19 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceLineCheckService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
+import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolService;
+import com.axelor.apps.account.service.invoice.tax.InvoiceTaxComputeService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
@@ -46,10 +50,12 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.address.AddressService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ContextEntity;
@@ -59,6 +65,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,6 +89,7 @@ public abstract class InvoiceGenerator {
   protected BankDetails companyBankDetails;
   protected TradingName tradingName;
   protected Boolean groupProductsOnPrintings;
+  protected TaxNumber companyTaxNumber;
   protected static int DEFAULT_INVOICE_COPY = 1;
 
   protected InvoiceGenerator(
@@ -99,7 +107,8 @@ public abstract class InvoiceGenerator {
       Boolean inAti,
       BankDetails companyBankDetails,
       TradingName tradingName,
-      Boolean groupProductsOnPrintings)
+      Boolean groupProductsOnPrintings,
+      TaxNumber companyTaxNumber)
       throws AxelorException {
 
     this.operationType = operationType;
@@ -118,6 +127,7 @@ public abstract class InvoiceGenerator {
     this.tradingName = tradingName;
     this.groupProductsOnPrintings = groupProductsOnPrintings;
     this.today = Beans.get(AppAccountService.class).getTodayDate(company);
+    this.companyTaxNumber = companyTaxNumber;
   }
 
   /**
@@ -207,6 +217,10 @@ public abstract class InvoiceGenerator {
     if (accountingSituation != null) {
       invoice.setInvoiceAutomaticMail(accountingSituation.getInvoiceAutomaticMail());
       invoice.setInvoiceMessageTemplate(accountingSituation.getInvoiceMessageTemplate());
+      invoice.setInvoiceAutomaticMailOnValidate(
+          accountingSituation.getInvoiceAutomaticMailOnValidate());
+      invoice.setInvoiceMessageTemplateOnValidate(
+          accountingSituation.getInvoiceMessageTemplateOnValidate());
       invoice.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
     }
 
@@ -258,21 +272,16 @@ public abstract class InvoiceGenerator {
     }
     invoice.setGroupProductsOnPrintings(groupProductsOnPrintings);
 
+    invoice.setCompanyTaxNumber(companyTaxNumber);
+
     // Set ATI mode on invoice
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
-    int atiChoice = accountConfig.getInvoiceInAtiSelect();
-
     if (inAti == null) {
       invoice.setInAti(accountConfigService.getInvoiceInAti(accountConfig));
-    } else if (atiChoice == AccountConfigRepository.INVOICE_ATI_DEFAULT
-        || atiChoice == AccountConfigRepository.INVOICE_WT_DEFAULT) {
-      invoice.setInAti(inAti);
-    } else if (atiChoice == AccountConfigRepository.INVOICE_ATI_ALWAYS) {
-      invoice.setInAti(true);
     } else {
-      invoice.setInAti(false);
+      invoice.setInAti(inAti);
     }
     if (companyBankDetails == null) {
       fillCompanyBankDetails(accountingSituation, accountConfig);
@@ -292,6 +301,8 @@ public abstract class InvoiceGenerator {
     }
 
     invoice.setInvoicesCopySelect(getInvoiceCopy());
+
+    invoice.setCompanyTaxNumber(companyTaxNumber);
 
     InvoiceToolService.setPfpStatus(invoice);
 
@@ -407,7 +418,9 @@ public abstract class InvoiceGenerator {
     if (invoice.getInvoiceLineTaxList() == null) {
       invoice.setInvoiceLineTaxList(new ArrayList<InvoiceLineTax>());
     } else {
+      List<InvoiceLineTax> invoiceLineTaxList = getUpdatedInvoiceLineTax(invoice);
       invoice.getInvoiceLineTaxList().clear();
+      invoice.getInvoiceLineTaxList().addAll(invoiceLineTaxList);
     }
   }
 
@@ -418,54 +431,68 @@ public abstract class InvoiceGenerator {
    * @throws AxelorException
    */
   public void computeInvoice(Invoice invoice) throws AxelorException {
+    CurrencyScaleService currencyScaleService = Beans.get(CurrencyScaleService.class);
+    InvoiceLineCheckService invoiceLineCheckService = Beans.get(InvoiceLineCheckService.class);
+    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    invoiceLineCheckService.checkTaxLinesNotOnlyNonDeductibleTaxes(invoiceLineList);
+    invoiceLineCheckService.checkSumOfNonDeductibleTaxes(invoiceLineList);
 
     // In the invoice currency
     invoice.setExTaxTotal(BigDecimal.ZERO);
-    invoice.setTaxTotal(BigDecimal.ZERO);
-    invoice.setInTaxTotal(BigDecimal.ZERO);
 
     // In the company accounting currency
     invoice.setCompanyExTaxTotal(BigDecimal.ZERO);
-    invoice.setCompanyTaxTotal(BigDecimal.ZERO);
-    invoice.setCompanyInTaxTotal(BigDecimal.ZERO);
 
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+    for (InvoiceLine invoiceLine : invoiceLineList) {
 
       if (invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL) {
         continue;
       }
 
       // In the invoice currency
-      invoice.setExTaxTotal(invoice.getExTaxTotal().add(invoiceLine.getExTaxTotal()));
+      invoice.setExTaxTotal(
+          currencyScaleService.getScaledValue(
+              invoice, invoice.getExTaxTotal().add(invoiceLine.getExTaxTotal())));
 
       // In the company accounting currency
       invoice.setCompanyExTaxTotal(
-          invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal()));
+          currencyScaleService.getCompanyScaledValue(
+              invoice, invoice.getCompanyExTaxTotal().add(invoiceLine.getCompanyExTaxTotal())));
     }
 
-    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
-
-      // In the invoice currency
-      invoice.setTaxTotal(invoice.getTaxTotal().add(invoiceLineTax.getTaxTotal()));
-
-      // In the company accounting currency
-      invoice.setCompanyTaxTotal(
-          invoice.getCompanyTaxTotal().add(invoiceLineTax.getCompanyTaxTotal()));
-    }
-
-    // In the invoice currency
-    invoice.setInTaxTotal(invoice.getExTaxTotal().add(invoice.getTaxTotal()));
-
-    // In the company accounting currency
-    invoice.setCompanyInTaxTotal(invoice.getCompanyExTaxTotal().add(invoice.getCompanyTaxTotal()));
-    invoice.setCompanyInTaxTotalRemaining(invoice.getCompanyInTaxTotal());
-
-    invoice.setAmountRemaining(invoice.getInTaxTotal());
+    Beans.get(InvoiceTaxComputeService.class).recomputeInvoiceTaxAmounts(invoice);
 
     invoice.setHasPendingPayments(false);
+
+    if (!ObjectUtils.isEmpty(invoiceLineList)
+        && ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
+      Beans.get(InvoiceTermService.class).computeInvoiceTerms(invoice);
+    }
+
+    invoice.setAmountRemaining(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
 
     logger.debug(
         "Invoice amounts : W.T. = {}, Tax = {}, A.T.I. = {}",
         new Object[] {invoice.getExTaxTotal(), invoice.getTaxTotal(), invoice.getInTaxTotal()});
+  }
+
+  protected List<InvoiceLineTax> getUpdatedInvoiceLineTax(Invoice invoice) {
+    List<InvoiceLineTax> invoiceLineTaxList = new ArrayList<>();
+
+    if (ObjectUtils.isEmpty(invoice.getInvoiceLineTaxList())) {
+      return invoiceLineTaxList;
+    }
+
+    invoiceLineTaxList.addAll(
+        invoice.getInvoiceLineTaxList().stream()
+            .filter(
+                invoiceLineTax ->
+                    Beans.get(InvoiceLineTaxToolService.class).isManageByAmount(invoiceLineTax)
+                        && invoiceLineTax
+                                .getTaxTotal()
+                                .compareTo(invoiceLineTax.getPercentageTaxTotal())
+                            != 0)
+            .collect(Collectors.toList()));
+    return invoiceLineTaxList;
   }
 }

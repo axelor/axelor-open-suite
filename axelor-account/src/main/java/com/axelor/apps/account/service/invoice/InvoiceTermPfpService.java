@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,18 +18,18 @@
  */
 package com.axelor.apps.account.service.invoice;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Company;
 import com.axelor.auth.db.User;
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface InvoiceTermPfpService {
-  void validatePfp(InvoiceTerm invoiceTerm, User currenctUser);
-
-  Integer massValidatePfp(List<Long> invoiceTermIds);
 
   Integer massRefusePfp(
       List<Long> invoiceTermIds, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
@@ -42,5 +42,21 @@ public interface InvoiceTermPfpService {
       BigDecimal invoiceAmount,
       BigDecimal grantedAmount,
       PfpPartialReason partialReason)
+      throws AxelorException;
+
+  InvoiceTerm createPfpInvoiceTerm(
+      InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount) throws AxelorException;
+
+  void refreshInvoicePfpStatus(Invoice invoice);
+
+  boolean getUserCondition(User pfpValidatorUser, User user);
+
+  boolean getInvoiceTermsCondition(List<InvoiceTerm> invoiceTermList);
+
+  boolean generateInvoiceTermsAfterPfpPartial(List<InvoiceTerm> invoiceTermList)
+      throws AxelorException;
+
+  void validatePfpValidatedAmount(
+      MoveLine debitMoveLine, MoveLine creditMoveLine, BigDecimal amount, Company company)
       throws AxelorException;
 }

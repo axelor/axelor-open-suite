@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,14 +23,12 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -42,8 +40,8 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
@@ -63,12 +61,11 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
   @Inject
   public BatchAccountingCutOffSupplyChain(
       AccountingCutOffService cutOffService,
-      MoveLineRepository moveLineRepository,
       AccountingBatchRepository accountingBatchRepository,
       StockMoveRepository stockMoveRepository,
       StockMoveLineRepository stockMoveLineRepository,
       AccountingCutOffSupplyChainService cutOffSupplyChainService) {
-    super(cutOffService, moveLineRepository, accountingBatchRepository);
+    super(cutOffService, accountingBatchRepository);
     this.stockMoveRepository = stockMoveRepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.cutOffSupplyChainService = cutOffSupplyChainService;
@@ -76,25 +73,30 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
 
   @Override
   protected void process() {
-    AccountingBatch accountingBatch = batch.getAccountingBatch();
+    try {
+      AccountingBatch accountingBatch = batch.getAccountingBatch();
 
-    LocalDate moveDate = accountingBatch.getMoveDate();
-    int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
-    updateBatch(moveDate, accountingCutOffTypeSelect);
+      LocalDate moveDate = accountingBatch.getMoveDate();
+      int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
+      updateBatch(moveDate, accountingCutOffTypeSelect);
 
-    if (accountingCutOffTypeSelect
-        < AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) {
-      if (this.recordIdList == null) {
-        this._processStockMovesByQuery(accountingBatch);
+      if (accountingCutOffTypeSelect
+          < AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) {
+        if (this.recordIdList == null) {
+          this._processStockMovesByQuery(accountingBatch);
+        } else {
+          this._processStockMovesByIds(accountingBatch);
+        }
       } else {
-        this._processStockMovesByIds(accountingBatch);
+        if (this.recordIdList == null) {
+          this._processByQuery(accountingBatch);
+        } else {
+          this._processByIds(accountingBatch);
+        }
       }
-    } else {
-      if (this.recordIdList == null) {
-        this._processMovesByQuery(accountingBatch);
-      } else {
-        this._processMovesByIds(accountingBatch);
-      }
+    } catch (Exception e) {
+      TraceBackService.trace(e, null, batch.getId());
+      incrementAnomaly();
     }
   }
 
@@ -108,9 +110,8 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
     Query<StockMove> stockMoveQuery =
         cutOffSupplyChainService.getStockMoves(company, accountingCutOffTypeSelect, moveDate);
 
-    while (!(stockMoveList = stockMoveQuery.fetch(AbstractBatch.FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(stockMoveList = stockMoveQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
 
-      findBatch();
       accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
       company = accountingBatch.getCompany();
 
@@ -125,6 +126,7 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
       }
 
       JPA.clear();
+      findBatch();
     }
   }
 
@@ -153,7 +155,7 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
       String moveDescription = accountingBatch.getMoveDescription();
       String reverseMoveDescription = accountingBatch.getReverseMoveDescription();
       int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
-      int cutOffMoveStatusSelect = accountingBatch.getCutOffMoveStatusSelect();
+      int cutOffMoveStatusSelect = accountingBatch.getGeneratedMoveStatusSelect();
       boolean recoveredTax = accountingBatch.getRecoveredTax();
       boolean ati = accountingBatch.getAti();
       boolean includeNotStockManagedProduct = accountingBatch.getIncludeNotStockManagedProduct();

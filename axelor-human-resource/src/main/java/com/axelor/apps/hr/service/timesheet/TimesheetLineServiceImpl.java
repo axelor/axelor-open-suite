@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,9 +21,11 @@ package com.axelor.apps.hr.service.timesheet;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -34,15 +36,14 @@ import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +54,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   protected TimesheetRepository timesheetRepo;
   protected AppHumanResourceService appHumanResourceService;
   protected UserHrService userHrService;
+  protected DateService dateService;
 
   @Inject
   public TimesheetLineServiceImpl(
@@ -60,12 +62,14 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
       EmployeeRepository employeeRepository,
       TimesheetRepository timesheetRepo,
       AppHumanResourceService appHumanResourceService,
-      UserHrService userHrService) {
+      UserHrService userHrService,
+      DateService dateService) {
     this.timesheetService = timesheetService;
     this.employeeRepository = employeeRepository;
     this.timesheetRepo = timesheetRepo;
     this.appHumanResourceService = appHumanResourceService;
     this.userHrService = userHrService;
+    this.dateService = dateService;
   }
 
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -138,7 +142,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         }
         return duration.multiply(dailyWorkHrs);
       case EmployeeRepository.TIME_PREFERENCE_MINUTES:
-        return duration.divide(new BigDecimal(60), 2, RoundingMode.HALF_UP);
+        return duration.divide(
+            new BigDecimal(60), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
       default:
         return duration;
     }
@@ -153,47 +158,13 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
         }
-        return duration.divide(dailyWorkHrs, 2, RoundingMode.HALF_UP);
+        return duration.divide(
+            dailyWorkHrs, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
       case EmployeeRepository.TIME_PREFERENCE_MINUTES:
-        return duration.multiply(new BigDecimal(60));
+        return duration.multiply(new BigDecimal(60)).setScale(2, RoundingMode.HALF_UP);
       default:
-        return duration;
+        return duration.setScale(2, RoundingMode.HALF_UP);
     }
-  }
-
-  @Override
-  public TimesheetLine createTimesheetLine(
-      Project project,
-      Product product,
-      Employee employee,
-      LocalDate date,
-      Timesheet timesheet,
-      BigDecimal hours,
-      String comments) {
-
-    TimesheetLine timesheetLine = new TimesheetLine();
-
-    timesheetLine.setDate(date);
-    timesheetLine.setComments(comments);
-    timesheetLine.setProduct(product);
-    timesheetLine.setProject(project);
-    timesheetLine.setEmployee(employee);
-    timesheetLine.setHoursDuration(hours);
-    try {
-      timesheetLine.setDuration(computeHoursDuration(timesheet, hours, false));
-    } catch (AxelorException e) {
-      log.error(e.getLocalizedMessage());
-      TraceBackService.trace(e);
-    }
-    timesheet.addTimesheetLineListItem(timesheetLine);
-
-    return timesheetLine;
-  }
-
-  @Override
-  public TimesheetLine createTimesheetLine(
-      Employee employee, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments) {
-    return createTimesheetLine(null, null, employee, date, timesheet, hours, comments);
   }
 
   @Override
@@ -242,25 +213,68 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     return Duration.ofSeconds(totalSecDuration);
   }
 
-  @Override
-  public Map<Project, BigDecimal> getProjectTimeSpentMap(List<TimesheetLine> timesheetLineList) {
-    Map<Project, BigDecimal> projectTimeSpentMap = new HashMap<>();
+  public void checkDailyLimit(
+      Timesheet timesheet, TimesheetLine currentTimesheetLine, BigDecimal hoursDuration)
+      throws AxelorException {
+    Integer dailyLimit = getDailyLimitFromApp();
 
-    if (timesheetLineList != null) {
-
-      for (TimesheetLine timesheetLine : timesheetLineList) {
-        Project project = timesheetLine.getProject();
-        BigDecimal hoursDuration = timesheetLine.getHoursDuration();
-
-        if (project != null) {
-          if (projectTimeSpentMap.containsKey(project)) {
-            hoursDuration = hoursDuration.add(projectTimeSpentMap.get(project));
-          }
-          projectTimeSpentMap.put(project, hoursDuration);
-        }
-      }
+    if (dailyLimit == 0) {
+      return;
     }
 
-    return projectTimeSpentMap;
+    BigDecimal totalHoursDuration = calculateTotalHoursDuration(timesheet, currentTimesheetLine);
+
+    if (isExceedingDailyLimit(totalHoursDuration, hoursDuration, dailyLimit)) {
+      handleExceedingDailyLimit(dailyLimit, currentTimesheetLine.getDate());
+    }
+  }
+
+  @Override
+  public Integer getDailyLimitFromApp() {
+    return appHumanResourceService.getAppTimesheet().getDailyLimit();
+  }
+
+  protected BigDecimal calculateTotalHoursDuration(
+      Timesheet timesheet, TimesheetLine currentTimesheetLine) {
+    List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+    if (CollectionUtils.isEmpty(timesheetLineList)) {
+      return BigDecimal.ZERO;
+    }
+    return timesheetLineList.stream()
+        .filter(
+            l ->
+                !l.equals(currentTimesheetLine)
+                    && l.getDate().equals(currentTimesheetLine.getDate()))
+        .map(TimesheetLine::getHoursDuration)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  @Override
+  public boolean isExceedingDailyLimit(
+      BigDecimal totalHoursDuration, BigDecimal hoursDuration, int dailyLimit) {
+    return totalHoursDuration.add(hoursDuration).compareTo(new BigDecimal(dailyLimit)) > 0;
+  }
+
+  protected void handleExceedingDailyLimit(Integer dailyLimit, LocalDate date)
+      throws AxelorException {
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        String.format(
+            I18n.get(HumanResourceExceptionMessage.TIMESHEET_LINES_EXCEED_DAILY_LIMIT),
+            dailyLimit,
+            date.format(dateService.getDateFormat())));
+  }
+
+  @Override
+  public Product getDefaultProduct(TimesheetLine timesheetLine) {
+    return userHrService.getTimesheetProduct(timesheetLine.getEmployee(), null);
+  }
+
+  @Override
+  public void resetTimesheetLineTimer(TSTimer tsTimer) {
+    TimesheetLine timesheetLine = tsTimer.getTimesheetLine();
+    if (timesheetLine != null) {
+      timesheetLine.setTimer(null);
+    }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -143,6 +144,8 @@ public interface MoveToolService {
    */
   BigDecimal getTotalDebitAmount(List<MoveLine> debitMoveLineList);
 
+  BigDecimal getTotalCurrencyAmount(List<MoveLine> moveLineList);
+
   /**
    * Compute the balance amount : total debit - total credit
    *
@@ -191,9 +194,9 @@ public interface MoveToolService {
 
   boolean checkMoveLinesCutOffDates(Move move);
 
-  List<Move> getMovesWithDuplicatedOrigin(Move move) throws AxelorException;
+  List<Move> getMovesWithDuplicatedOrigin(Move move);
 
-  List<Move> findDaybookAndAccountingByYear(Set<Year> yearList);
+  List<Move> findMoveByYear(Set<Year> yearList, List<Integer> statusList);
 
   @CallMethod
   boolean isSimulatedMovePeriodClosed(Move move);
@@ -201,4 +204,21 @@ public interface MoveToolService {
   void exceptionOnGenerateCounterpart(Move move) throws AxelorException;
 
   void setDescriptionOnMoveLineList(Move move);
+
+  boolean isMultiCurrency(Move move);
+
+  List<Integer> getMoveStatusSelect(String moveStatusSelect, Set<Company> companySet);
+
+  List<Integer> getMoveStatusSelect(String moveStatusSelect, Company company);
+
+  List<Integer> getMoveStatusSelection(Company company, Journal journal) throws AxelorException;
+
+  Integer computeFunctionalOriginSelect(Journal journal, Integer massEntryStatus);
+
+  List<MoveLine> getRefundAdvancePaymentMoveLines(InvoicePayment invoicePayment)
+      throws AxelorException;
+
+  List<InvoiceTerm> _getInvoiceTermList(Move move);
+
+  boolean isOpenOrClosureMove(Move move);
 }

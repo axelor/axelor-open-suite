@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,12 +24,14 @@ import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.observer.ProductFireService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.service.TranslationService;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
+import java.util.Map;
 
 public class ProductBaseRepository extends ProductRepository {
 
@@ -40,6 +42,8 @@ public class ProductBaseRepository extends ProductRepository {
   protected static final String FULL_NAME_FORMAT = "[%s] %s";
 
   @Inject protected BarcodeGeneratorService barcodeGeneratorService;
+
+  @Inject protected ProductFireService productFireService;
 
   @Override
   public Product save(Product product) {
@@ -62,6 +66,10 @@ public class ProductBaseRepository extends ProductRepository {
     } else {
       translationService.createFormatedValueTranslations(
           FULL_NAME_FORMAT, product.getCode(), product.getName());
+    }
+
+    if (Strings.isNullOrEmpty(product.getSerialNumber())) {
+      product.setSerialNumber(product.getCode());
     }
 
     product = super.save(product);
@@ -92,15 +100,13 @@ public class ProductBaseRepository extends ProductRepository {
   public Product copy(Product product, boolean deep) {
     Product copy = super.copy(product, deep);
     Beans.get(ProductService.class).copyProduct(product, copy);
-
-    try {
-      if (appBaseService.getAppBase().getGenerateProductSequence()) {
-        copy.setCode(Beans.get(ProductService.class).getSequence(product));
-      }
-    } catch (Exception e) {
-      TraceBackService.traceExceptionFromSaveMethod(e);
-      throw new PersistenceException(e.getMessage(), e);
-    }
+    Beans.get(ProductService.class).copyProductCompanies(product.getProductCompanyList(), copy);
     return copy;
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    productFireService.populate(json, context);
+    return super.populate(json, context);
   }
 }

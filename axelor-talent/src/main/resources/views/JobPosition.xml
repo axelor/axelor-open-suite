@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="job-position-grid" title="Job positions"
     model="com.axelor.apps.talent.db.JobPosition">
@@ -10,14 +10,14 @@
     <field name="companyDepartment"/>
     <field name="employee"/>
     <field name="contractType"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="job-position-form" title="Job position"
     model="com.axelor.apps.talent.db.JobPosition" width="large">
     <toolbar>
       <button name="createJobApplicationBtn" title="Create a job application" colSpan="3"
-        onClick="save,action-job-position-create-application"/>
+        onClick="action-job-position-group-create-job-application"/>
     </toolbar>
 
     <panel name="mainPanel" readonlyIf="statusSelect == 4">
@@ -56,7 +56,7 @@
         showIf="statusSelect == 1 || statusSelect == 2" colSpan="12"/>
       <button name="cancelBtn" title="Cancel"
         onClick="save,action-job-position-record-status-cancel,save" hideIf="statusSelect == 4"
-        colSpan="12" icon="fa-times-circle" css="btn-danger"/>
+        colSpan="12" icon="x-circle-fill" css="btn-danger"/>
     </panel>
     <panel name="otherDetailPanel" sidebar="true" readonlyIf="statusSelect == 4">
       <field name="contractType" colSpan="6"/>
@@ -72,13 +72,12 @@
     <field name="jobTitle"/>
     <field name="jobReference"/>
     <template><![CDATA[
-			<div>
-			  <div class="span12">
-				<span><strong>{{jobTitle}}</strong></span>
-		  		<br/>
-		  		<span><strong>{{jobReference}}</strong></span>
-		  	  </div>
-			</div>
+			<>
+				<Box>
+					<span><strong>{jobTitle}</strong></span> <Box/>
+					<span><strong>{jobReference}</strong></span>
+				</Box>
+			</>
 		]]>
     </template>
   </cards>
@@ -125,12 +124,22 @@
     <field name="statusSelect" expr="eval: 4"/>
   </action-record>
 
+  <action-validate name="action-job-position-validate-check-responsible">
+    <error message="Set a hiring manager to create a job application." if="!employee"/>
+  </action-validate>
+
+  <action-group name="action-job-position-group-create-job-application">
+    <action name="action-job-position-validate-check-responsible"/>
+    <action name="save"/>
+    <action name="action-job-position-create-application"/>
+  </action-group>
+
   <search-filters name="job-position-filters"
     model="com.axelor.apps.talent.db.JobPosition" title="Job Position Filters">
-    <filter title="Current job offers">
+    <filter name="job-position-filters-current-job-offers" title="Current job offers">
       <domain>self.statusSelect &lt; 3</domain>
     </filter>
-    <filter title="Closed job offers">
+    <filter name="job-position-filters-closed-job-offers" title="Closed job offers">
       <domain>self.statusSelect &gt; 2</domain>
     </filter>
   </search-filters>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,28 +19,34 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.service.AccountingSituationInitService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationCheckService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationInitService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.studio.app.service.AppService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import javax.persistence.PersistenceException;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class PartnerAccountRepository extends PartnerBaseRepository {
 
-  private AppService appService;
+  protected AppService appService;
 
-  private AccountingSituationInitService accountingSituationInitService;
+  protected AccountingSituationInitService accountingSituationInitService;
+
+  protected AccountingSituationCheckService accountingSituationCheckService;
 
   @Inject
   public PartnerAccountRepository(
-      AppService appService, AccountingSituationInitService accountingSituationInitService) {
+      AppService appService,
+      AccountingSituationInitService accountingSituationInitService,
+      AccountingSituationCheckService accountingSituationCheckService) {
     this.appService = appService;
     this.accountingSituationInitService = accountingSituationInitService;
+    this.accountingSituationCheckService = accountingSituationCheckService;
   }
 
   @Override
@@ -57,6 +63,8 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
           accountingSituationInitService.createAccountingSituation(this.find(partner.getId()));
         }
 
+        accountingSituationCheckService.checkDuplicatedCompaniesInAccountingSituation(partner);
+
         // We do this for contacts too as it seems this is the way employees are handled
         if (CollectionUtils.isNotEmpty(partner.getAccountingSituationList())) {
           for (AccountingSituation situation : partner.getAccountingSituationList()) {
@@ -70,17 +78,5 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
-  }
-
-  @Override
-  public Partner copy(Partner partner, boolean deep) {
-
-    Partner copy = super.copy(partner, deep);
-
-    if (appService.isApp("account")) {
-      copy.setAccountingSituationList(null);
-    }
-
-    return copy;
   }
 }

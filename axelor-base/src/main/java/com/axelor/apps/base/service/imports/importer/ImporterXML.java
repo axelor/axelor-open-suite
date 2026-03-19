@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,17 +18,31 @@
  */
 package com.axelor.apps.base.service.imports.importer;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportHistory;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.xml.XMLImporter;
+import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.google.common.io.Files;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.Map;
 
 class ImporterXML extends Importer {
 
+  @Inject
+  public ImporterXML(ExcelToCSV excelToCSV, MetaFiles metaFiles, AppBaseService appBaseService) {
+    super(excelToCSV, metaFiles, appBaseService);
+  }
+
   @Override
   protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
-      throws IOException {
+      throws IOException, AxelorException {
 
     XMLImporter importer = new XMLImporter(bind, data);
 
@@ -41,7 +55,13 @@ class ImporterXML extends Importer {
   }
 
   @Override
-  protected ImportHistory process(String bind, String data) throws IOException {
-    return process(bind, data, null);
+  public void checkEntryFilesType(MetaFile bind, MetaFile data) throws AxelorException {
+    super.checkEntryFilesType(bind, data);
+    if (!Files.getFileExtension(data.getFilePath()).equals("xml")
+        && !Files.getFileExtension(data.getFilePath()).equals("zip")) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BaseExceptionMessage.IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_XML_MESSAGE));
+    }
   }
 }

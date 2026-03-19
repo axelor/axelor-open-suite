@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -46,6 +46,12 @@ public class ProductionBatchService extends AbstractBatchService {
       case ProductionBatchRepository.ACTION_COMPUTE_WORK_IN_PROGRESS_VALUATION:
         batch = computeValuation(productionBatch);
         break;
+      case ProductionBatchRepository.ACTION_FILL_SOP_REAL_VALUES:
+        batch = fillSopRealValues(productionBatch);
+        break;
+      case ProductionBatchRepository.ACTION_GENERATE_PO_FOR_SO:
+        batch = generatePoFromSo(productionBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -58,5 +64,13 @@ public class ProductionBatchService extends AbstractBatchService {
 
   public Batch computeValuation(ProductionBatch productionBatch) {
     return Beans.get(BatchComputeWorkInProgressValuation.class).run(productionBatch);
+  }
+
+  public Batch fillSopRealValues(ProductionBatch productionBatch) {
+    return Beans.get(BatchFillSopRealValues.class).run(productionBatch);
+  }
+
+  public Batch generatePoFromSo(ProductionBatch productionBatch) {
+    return Beans.get(BatchGeneratePoFromSo.class).run(productionBatch);
   }
 }

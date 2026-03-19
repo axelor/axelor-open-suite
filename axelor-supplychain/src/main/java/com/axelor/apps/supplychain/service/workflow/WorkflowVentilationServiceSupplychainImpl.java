@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,6 +41,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineUtils;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -48,13 +49,13 @@ import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
-import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -65,29 +66,29 @@ import org.slf4j.LoggerFactory;
 
 public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilationServiceImpl {
 
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private SaleOrderInvoiceService saleOrderInvoiceService;
+  protected SaleOrderInvoiceService saleOrderInvoiceService;
 
-  private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
+  protected PurchaseOrderInvoiceService purchaseOrderInvoiceService;
 
-  private SaleOrderRepository saleOrderRepository;
+  protected SaleOrderRepository saleOrderRepository;
 
-  private PurchaseOrderRepository purchaseOrderRepository;
+  protected PurchaseOrderRepository purchaseOrderRepository;
 
-  private AccountingSituationSupplychainService accountingSituationSupplychainService;
+  protected AccountingSituationSupplychainService accountingSituationSupplychainService;
 
-  private AppSupplychainService appSupplychainService;
+  protected AppSupplychainService appSupplychainService;
 
-  private StockMoveInvoiceService stockMoveInvoiceService;
+  protected StockMoveInvoiceService stockMoveInvoiceService;
 
-  private UnitConversionService unitConversionService;
+  protected UnitConversionService unitConversionService;
 
-  private AppBaseService appBaseService;
+  protected AppBaseService appBaseService;
 
-  private SupplyChainConfigService supplyChainConfigService;
+  protected SupplyChainConfigService supplyChainConfigService;
 
-  private StockMoveLineRepository stockMoveLineRepository;
+  protected StockMoveLineRepository stockMoveLineRepository;
 
   @Inject
   public WorkflowVentilationServiceSupplychainImpl(
@@ -205,7 +206,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       return null;
     }
 
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    SaleOrder saleOrder = SaleOrderLineUtils.getParentSol(saleOrderLine).getSaleOrder();
 
     // Update invoiced amount on sale order line
     BigDecimal invoicedAmountToAdd = invoiceLine.getExTaxTotal();
@@ -297,21 +298,18 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       if (stockMoveLine == null) {
         continue;
       }
-      if (isStockMoveInvoicingPartiallyActivated(invoice, stockMoveLine)) {
+      if (isStockMoveInvoicingPartiallyActivated(invoice)) {
         BigDecimal qty = stockMoveLine.getQtyInvoiced();
         StockMove stockMove = stockMoveLine.getStockMove();
+        Unit movUnit = stockMoveLine.getUnit();
+        Unit invUnit = invoiceLine.getUnit();
 
-        if (stockMoveInvoiceService.isInvoiceRefundingStockMove(stockMove, invoice)) {
-          qty = qty.subtract(invoiceLine.getQty());
-        } else {
-          qty = qty.add(invoiceLine.getQty());
-        }
+        BigDecimal invoiceQty = invoiceLine.getQty();
 
-        Unit movUnit = stockMoveLine.getUnit(), invUnit = invoiceLine.getUnit();
         try {
-          qty =
+          invoiceQty =
               unitConversionService.convert(
-                  invUnit, movUnit, qty, appBaseService.getNbDecimalDigitForQty(), null);
+                  invUnit, movUnit, invoiceQty, appBaseService.getNbDecimalDigitForQty(), null);
         } catch (AxelorException e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -320,12 +318,26 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
                   + e.getMessage());
         }
 
+        if (stockMoveInvoiceService.isInvoiceRefundingStockMove(stockMove, invoice)) {
+          qty = qty.subtract(invoiceQty);
+        } else {
+          qty = qty.add(invoiceQty);
+        }
+
         if (stockMoveLine.getRealQty().compareTo(qty) >= 0) {
           stockMoveLine.setQtyInvoiced(qty);
         } else {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_QTY_MAX));
+              String.format(
+                  I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_QTY_MAX),
+                  qty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
+                      .toString(),
+                  stockMoveLine
+                      .getRealQty()
+                      .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
+                      .toString(),
+                  stockMoveLine.getProductName()));
         }
       } else {
         // set qty invoiced to the maximum (or emptying it if refund) for all stock move lines
@@ -380,13 +392,9 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
   }
 
-  protected boolean isStockMoveInvoicingPartiallyActivated(
-      Invoice invoice, StockMoveLine stockMoveLine) throws AxelorException {
+  protected boolean isStockMoveInvoicingPartiallyActivated(Invoice invoice) throws AxelorException {
     SupplyChainConfig supplyChainConfig =
         supplyChainConfigService.getSupplyChainConfig(invoice.getCompany());
-    return stockMoveLine.getSaleOrderLine() != null
-            && supplyChainConfig.getActivateOutStockMovePartialInvoicing()
-        || stockMoveLine.getPurchaseOrderLine() != null
-            && supplyChainConfig.getActivateIncStockMovePartialInvoicing();
+    return supplyChainConfig.getActivateOutStockMovePartialInvoicing();
   }
 }

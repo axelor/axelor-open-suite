@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PayVoucherDueElement;
@@ -27,7 +26,6 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherControlService;
@@ -43,14 +41,14 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,9 +111,11 @@ public class PaymentVoucherController {
 
     try {
       Beans.get(PaymentVoucherLoadService.class).resetImputation(paymentVoucher);
+
       response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
       response.setValue(
           "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
+      response.setValue("remainingAmount", paymentVoucher.getPaidAmount());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -132,7 +132,8 @@ public class PaymentVoucherController {
         Journal journal =
             Beans.get(PaymentModeService.class)
                 .getPaymentModeJournal(paymentMode, company, companyBankDetails);
-        if (journal.getExcessPaymentOk()) {
+        if (journal.getExcessPaymentOk()
+            && CollectionUtils.isEmpty(paymentVoucher.getPayVoucherElementToPayList())) {
           response.setAlert(I18n.get("No items have been selected. Do you want to continue?"));
         }
         if (!Beans.get(PaymentVoucherControlService.class).controlMoveAmounts(paymentVoucher)) {
@@ -158,32 +159,6 @@ public class PaymentVoucherController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  public void printPaymentVoucher(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
-
-    String name = I18n.get("Payment voucher");
-    if (!Strings.isNullOrEmpty(paymentVoucher.getReceiptNo())) {
-      name += " " + paymentVoucher.getReceiptNo();
-    }
-
-    String fileLink =
-        ReportFactory.createReport(IReport.PAYMENT_VOUCHER, name + "-${date}")
-            .addParam("PaymentVoucherId", paymentVoucher.getId())
-            .addParam(
-                "Timezone",
-                paymentVoucher.getCompany() != null
-                    ? paymentVoucher.getCompany().getTimezone()
-                    : null)
-            .generate()
-            .getFileLink();
-
-    logger.debug("Printing " + name);
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
   /**
@@ -251,6 +226,23 @@ public class PaymentVoucherController {
 
       response.setAttr("receiptNo", "hidden", !displayReceipt);
       response.setAttr("printPaymentVoucherBtn", "hidden", !displayReceipt);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void resetAndReloadElementToPay(ActionRequest request, ActionResponse response) {
+    PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
+    Invoice invoice =
+        Mapper.toBean(Invoice.class, (Map<String, Object>) request.getContext().get("_invoice"));
+    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    try {
+      Beans.get(PaymentVoucherLoadService.class)
+          .resetAndReloadElementToPay(paymentVoucher, invoice);
+      response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
+      response.setValue(
+          "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

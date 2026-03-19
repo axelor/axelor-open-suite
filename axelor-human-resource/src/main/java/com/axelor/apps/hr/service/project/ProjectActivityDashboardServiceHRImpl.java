@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,7 +23,7 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectActivityDashboardServiceImpl;
 import com.axelor.mail.db.MailMessage;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,11 +64,11 @@ public class ProjectActivityDashboardServiceHRImpl extends ProjectActivityDashbo
   }
 
   @Override
-  protected Map<String, Object> getModelWithUtilityClass(String model) {
-    Map<String, Object> dataMap = super.getModelWithUtilityClass(model);
-    if (TimesheetLine.class.getName().equals(model)) {
+  protected Map<String, Object> getModelWithUtilityClass(MailMessage message) {
+    Map<String, Object> dataMap = super.getModelWithUtilityClass(message);
+    if (TimesheetLine.class.getName().equals(message.getRelatedModel())) {
       dataMap.put("modelName", "Timesheet line");
-      dataMap.put("utilityClass", "label-important");
+      dataMap.put("utilityClass", "danger");
     }
     return dataMap;
   }

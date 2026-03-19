@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,18 +38,19 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;
-import com.axelor.message.db.repo.MessageRepository;
-import com.axelor.utils.ComputeNameTool;
+import com.axelor.utils.helpers.ComputeNameHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -61,8 +62,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import javax.inject.Singleton;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +69,7 @@ import org.slf4j.LoggerFactory;
 public class PartnerServiceImpl implements PartnerService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  public static final int MAX_LEVEL_OF_PARTNER = 20;
 
   protected PartnerRepository partnerRepo;
   protected AppBaseService appBaseService;
@@ -157,7 +157,7 @@ public class PartnerServiceImpl implements PartnerService {
         && appBaseService.getAppBase().getGeneratePartnerSequence()) {
       String seq =
           Beans.get(SequenceService.class)
-              .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
+              .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner);
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -198,7 +198,6 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     this.setPartnerFullName(partner);
-    this.setCompanyStr(partner);
   }
 
   /**
@@ -218,7 +217,7 @@ public class PartnerServiceImpl implements PartnerService {
     } else if (address == null) {
       partner.removePartnerAddressListItem(
           JPA.all(PartnerAddress.class)
-              .filter("self.partner = :partnerId AND self.isDefaultAddr = 't'")
+              .filter("self.partner.id = :partnerId AND self.isDefaultAddr = true")
               .bind("partnerId", partner.getId())
               .fetchOne());
 
@@ -279,7 +278,7 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public String computeFullName(Partner partner) {
-    return ComputeNameTool.computeFullName(
+    return ComputeNameHelper.computeFullName(
         partner.getFirstName(),
         partner.getName(),
         partner.getPartnerSeq(),
@@ -288,7 +287,7 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public String computeSimpleFullName(Partner partner) {
-    return ComputeNameTool.computeSimpleFullName(
+    return ComputeNameHelper.computeSimpleFullName(
         partner.getFirstName(), partner.getName(), String.valueOf(partner.getId()));
   }
 
@@ -306,21 +305,27 @@ public class PartnerServiceImpl implements PartnerService {
     name = name == null ? "" : name;
     urlMap.put(
         "google",
-        "<a class='fa fa-google' href='https://www.google.com/search?q="
+        "<a href='https://www.google.com/search?q="
             + name
             + "&gws_rd=cr"
-            + "' target='_blank' />");
+            + "' target='_blank' >"
+            + "<img src='img/social/google.svg'/>"
+            + "</a>");
     urlMap.put(
         "linkedin",
-        "<a class='fa fa-linkedin' href='https://www.linkedin.com/company/"
+        "<a href='https://www.linkedin.com/company/"
             + name
-            + "' target='_blank' />");
+            + "' target='_blank' >"
+            + "<img src='img/social/linkedin.svg'/>"
+            + "</a>");
     if (typeSelect == 2) {
       urlMap.put(
           "linkedin",
-          "<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"
+          "<a href='http://www.linkedin.com/pub/dir/"
               + name.replace("+", "/")
-              + "' target='_blank' />");
+              + "' target='_blank' >"
+              + "<img src='img/social/linkedin.svg'/>"
+              + "</a>");
     }
 
     return urlMap;
@@ -346,34 +351,9 @@ public class PartnerServiceImpl implements PartnerService {
     return idList;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public List<Long> findMailsFromPartner(Partner partner, int emailType) {
-
-    String query =
-        String.format(
-            "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 "
-                + "AND email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND related.relatedToSelectId = %s)",
-            partner.getId());
-
-    String emailAddress =
-        (partner.getEmailAddress() != null) ? partner.getEmailAddress().getAddress() : null;
-    if (emailAddress != null) {
-      query +=
-          " OR (:emailAddress IN ("
-              + ((emailType == MessageRepository.TYPE_RECEIVED)
-                  ? "email.fromEmailAddress.address"
-                  : "SELECT em.address FROM EmailAddress em WHERE em member of email.toEmailAddressSet")
-              + "))";
-    } else {
-      query += " AND email.typeSelect = " + emailType;
-    }
-    javax.persistence.Query q = JPA.em().createQuery(query);
-    if (emailAddress != null) {
-      q.setParameter("emailAddress", emailAddress);
-    }
-
-    return q.getResultList();
+    return Beans.get(PartnerMailQueryService.class).findMailsFromPartner(partner, emailType);
   }
 
   protected PartnerAddress createPartnerAddress(Address address, Boolean isDefault) {
@@ -541,15 +521,6 @@ public class PartnerServiceImpl implements PartnerService {
     return new String(Str);
   }
 
-  @Transactional
-  @Override
-  public void convertToIndividualPartner(Partner partner) {
-    partner.setIsContact(false);
-    partner.setPartnerTypeSelect(PARTNER_TYPE_INDIVIDUAL);
-    addPartnerAddress(partner, partner.getMainAddress(), true, false, false);
-    partner.setMainAddress(null);
-  }
-
   public boolean isThereDuplicatePartner(Partner partner) {
     return isThereDuplicatePartnerQuery(partner, false) != null;
   }
@@ -597,24 +568,24 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   /**
-   * Get the partner language code. If null, return the default partner language.
+   * Get the partner Localization.code. If null, return the default partner locale.
    *
    * @param partner
    * @return
    */
   @Override
-  public String getPartnerLanguageCode(Partner partner) {
+  public String getPartnerLocale(Partner partner) {
 
     String locale = null;
 
-    if (partner != null && partner.getLanguage() != null) {
-      locale = partner.getLanguage().getCode();
+    if (partner != null && partner.getLocalization() != null) {
+      locale = partner.getLocalization().getCode();
     }
     if (!Strings.isNullOrEmpty(locale)) {
       return locale;
     }
 
-    return appBaseService.getDefaultPartnerLanguageCode();
+    return appBaseService.getDefaultPartnerLocale();
   }
 
   /**
@@ -653,54 +624,6 @@ public class PartnerServiceImpl implements PartnerService {
     return actionName.substring(actionName.lastIndexOf('-') + 1);
   }
 
-  @Override
-  public void setCompanyStr(Partner partner) {
-    partner.setCompanyStr(this.computeCompanyStr(partner));
-  }
-
-  @Override
-  public String computeCompanyStr(Partner partner) {
-    String companyStr = "";
-    if (partner.getCompanySet() != null && partner.getCompanySet().size() > 0) {
-      for (Company company : partner.getCompanySet()) {
-        companyStr += company.getCode() + ",";
-      }
-      return companyStr.substring(0, companyStr.length() - 1);
-    }
-    return null;
-  }
-
-  @Override
-  public String getTaxNbrFromRegistrationCode(Partner partner) {
-    String taxNbr = "";
-
-    if (partner.getMainAddress() != null
-        && partner.getMainAddress().getAddressL7Country() != null) {
-      String countryCode = partner.getMainAddress().getAddressL7Country().getAlpha2Code();
-      String regCode = partner.getRegistrationCode();
-
-      if (regCode != null) {
-        regCode = regCode.replaceAll(" ", "");
-
-        if (regCode.length() == 14) {
-          String siren = regCode.substring(0, 9);
-          String taxKey = getTaxKeyFromSIREN(siren);
-
-          taxNbr = String.format("%s%s%s", countryCode, taxKey, siren);
-        }
-      }
-    }
-
-    return taxNbr;
-  }
-
-  protected String getTaxKeyFromSIREN(String sirenStr) {
-    int siren = Integer.parseInt(sirenStr);
-    int taxKey = Math.floorMod(siren, 97);
-    taxKey = Math.floorMod(12 + 3 * taxKey, 97);
-    return String.format("%02d", taxKey);
-  }
-
   public Partner isThereDuplicatePartnerInArchive(Partner partner) {
     return isThereDuplicatePartnerQuery(partner, true);
   }
@@ -736,86 +659,98 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @Override
-  public String getNicFromRegistrationCode(Partner partner) {
-    String regCode = partner.getRegistrationCode();
-    String nic = "";
-
-    if (regCode != null) {
-      regCode = regCode.replaceAll(" ", "");
-
-      if (regCode.length() == 14) {
-        nic = regCode.substring(9, 14);
-      }
-    }
-
-    return nic;
+  public List<Partner> getParentPartnerList(Partner partner) {
+    List<Partner> parentPartnerList = getFilteredPartners(partner);
+    parentPartnerList.removeAll(getPartnerExemptionList(partner, parentPartnerList, 0));
+    return parentPartnerList;
   }
 
   @Override
-  public String getSirenFromRegistrationCode(Partner partner) {
-    String regCode = partner.getRegistrationCode();
-    String siren = "";
-
-    if (regCode != null) {
-      regCode = regCode.replaceAll(" ", "");
-
-      if (regCode.length() == 14) {
-        siren = regCode.substring(0, 9);
-      }
-    }
-
-    return siren;
+  public List<Partner> getFilteredPartners(Partner partner) {
+    List<Long> companySet =
+        ObjectUtils.notEmpty(partner.getCompanySet())
+            ? partner.getCompanySet().stream().map(Company::getId).collect(Collectors.toList())
+            : List.of(0l);
+    return partnerRepo
+        .all()
+        .filter(
+            "self.isContact = false "
+                + "AND self.partnerTypeSelect = :partnerType "
+                + "AND self in (SELECT p FROM Partner p join p.companySet c where c.id in :companySet) ")
+        .bind("partnerType", PartnerRepository.PARTNER_TYPE_COMPANY)
+        .bind("companySet", companySet)
+        .fetch();
   }
 
   @Override
-  public boolean isRegistrationCodeValid(Partner partner) {
-    List<PartnerAddress> addresses = partner.getPartnerAddressList();
+  public List<Partner> getContactFilteredPartners(Partner partner) {
+    List<Long> companySet =
+        ObjectUtils.notEmpty(partner.getCompanySet())
+            ? partner.getCompanySet().stream().map(Company::getId).collect(Collectors.toList())
+            : List.of(0l);
+    return partnerRepo
+        .all()
+        .filter(
+            "self.isContact = true "
+                + "AND self in (SELECT p FROM Partner p join p.companySet c where c.id in :companySet) ")
+        .bind("companySet", companySet)
+        .fetch();
+  }
+
+  protected List<Partner> getPartnerExemptionList(
+      Partner partner, List<Partner> parentPartnerList, int counter) {
+    List<Partner> partnerExemptionList = new ArrayList<>();
+    partnerExemptionList.add(partner);
+
+    List<Partner> filteredList = new ArrayList<>();
+    filteredList.add(partner);
+
+    while (ObjectUtils.notEmpty(filteredList) && counter < MAX_LEVEL_OF_PARTNER) {
+      counter++;
+      filteredList = getPartnerExemptionSubList(filteredList, parentPartnerList);
+      partnerExemptionList.addAll(filteredList);
+    }
+    return partnerExemptionList;
+  }
+
+  protected List<Partner> getPartnerExemptionSubList(
+      List<Partner> partnerCheckList, List<Partner> parentPartnerList) {
+    return parentPartnerList.stream()
+        .filter(p -> partnerCheckList.contains(p.getParentPartner()))
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public String checkIfRegistrationCodeExists(Partner partner) {
+    String message = "";
     String registrationCode = partner.getRegistrationCode();
-    if (partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_COMPANY
-        || Strings.isNullOrEmpty(registrationCode)
-        || CollectionUtils.isEmpty(addresses)
-        || addresses.stream()
-                .filter(
-                    address ->
-                        address.getAddress() != null
-                            && address.getAddress().getAddressL7Country() != null
-                            && "FR"
-                                .equals(address.getAddress().getAddressL7Country().getAlpha2Code()))
-                .collect(Collectors.toList())
-                .size()
-            == 0) {
-      return true;
+    if (StringUtils.isBlank(registrationCode)) {
+      return message;
+    }
+    registrationCode = registrationCode.replaceAll("\\s+", "");
+    Query<Partner> query = partnerRepo.all();
+    StringBuilder filter =
+        new StringBuilder("REPLACE(self.registrationCode, ' ', '') = :registrationCode");
+    if (partner.getId() != null) {
+      filter.append(" AND self.id != :id");
     }
 
-    return computeRegistrationCodeValidity(registrationCode);
-  }
+    query = query.filter(filter.toString());
 
-  protected boolean computeRegistrationCodeValidity(String registrationCode) {
-    int sum = 0;
-    boolean isOddNumber = true;
-    registrationCode = registrationCode.replace(" ", "");
-    if (registrationCode.length() != 14) {
-      return false;
+    query = query.bind("registrationCode", registrationCode);
+    if (partner.getId() != null) {
+      query = query.bind("id", partner.getId());
     }
-    int i = registrationCode.length() - 1;
-    while (i > -1) {
-      int number = Character.getNumericValue(registrationCode.charAt(i));
-      if (number < 0) {
-        i--;
-        continue;
-      }
-      if (!isOddNumber) {
-        number *= 2;
-      }
-      if (number < 10) {
-        sum += number;
-      } else {
-        number -= 10;
-        sum += number + 1;
-      }
-      i--;
-      isOddNumber = !isOddNumber;
+
+    Partner existingPartner = query.fetchOne();
+
+    if (existingPartner != null) {
+      message =
+          String.format(
+              I18n.get(BaseExceptionMessage.PARTNER_REGISTRATION_CODE_ALREADY_EXISTS),
+              existingPartner.getFullName());
     }
-    return sum % 10 == 0;
+
+    return message;
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,16 +34,20 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
-import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.utils.StockLocationUtilsService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
+import com.axelor.apps.supplychain.utils.StockLocationUtilsServiceSupplychain;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ProductStockLocationServiceImpl implements ProductStockLocationService {
 
@@ -53,10 +57,11 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
   protected CompanyRepository companyRepository;
   protected StockLocationRepository stockLocationRepository;
   protected StockLocationService stockLocationService;
-  protected StockLocationLineService stockLocationLineService;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
   protected StockLocationLineRepository stockLocationLineRepository;
-  protected StockLocationServiceSupplychain stockLocationServiceSupplychain;
+  protected StockLocationUtilsServiceSupplychain stockLocationUtilsServiceSupplychain;
   protected AppBaseService appBaseService;
+  protected StockLocationUtilsService stockLocationUtilsService;
 
   @Inject
   public ProductStockLocationServiceImpl(
@@ -66,10 +71,11 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
       CompanyRepository companyRepository,
       StockLocationRepository stockLocationRepository,
       StockLocationService stockLocationService,
-      StockLocationServiceSupplychain stockLocationServiceSupplychain,
-      StockLocationLineService stockLocationLineService,
+      StockLocationUtilsServiceSupplychain stockLocationUtilsServiceSupplychain,
+      StockLocationLineFetchService stockLocationLineFetchService,
       StockLocationLineRepository stockLocationLineRepository,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      StockLocationUtilsService stockLocationUtilsService) {
     super();
     this.appBaseService = appBaseService;
     this.unitConversionService = unitConversionService;
@@ -78,9 +84,10 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     this.companyRepository = companyRepository;
     this.stockLocationRepository = stockLocationRepository;
     this.stockLocationService = stockLocationService;
-    this.stockLocationServiceSupplychain = stockLocationServiceSupplychain;
-    this.stockLocationLineService = stockLocationLineService;
+    this.stockLocationUtilsServiceSupplychain = stockLocationUtilsServiceSupplychain;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
     this.stockLocationLineRepository = stockLocationLineRepository;
+    this.stockLocationUtilsService = stockLocationUtilsService;
   }
 
   @Override
@@ -91,75 +98,45 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     Company company = companyRepository.find(companyId);
     StockLocation stockLocation = stockLocationRepository.find(stockLocationId);
     int scale = appBaseService.getNbDecimalDigitForQty();
-    if (stockLocationId != 0L && companyId != 0L) {
-      List<StockLocation> stockLocationList =
-          stockLocationService.getAllLocationAndSubLocation(stockLocation, false);
-      if (!stockLocationList.isEmpty()) {
-        BigDecimal realQty = BigDecimal.ZERO;
-        BigDecimal futureQty = BigDecimal.ZERO;
-        BigDecimal reservedQty = BigDecimal.ZERO;
-        BigDecimal requestedReservedQty = BigDecimal.ZERO;
-        BigDecimal saleOrderQty = BigDecimal.ZERO;
-        BigDecimal purchaseOrderQty = BigDecimal.ZERO;
-        BigDecimal availableQty = BigDecimal.ZERO;
 
-        saleOrderQty = this.getSaleOrderQty(product, company, stockLocation);
-        purchaseOrderQty = this.getPurchaseOrderQty(product, company, stockLocation);
-        availableQty = this.getAvailableQty(product, company, stockLocation);
-        requestedReservedQty = this.getRequestedReservedQty(product, company, stockLocation);
+    List<Long> stockLocationIds =
+        stockLocationService.getAllLocationAndSubLocation(stockLocation, false).stream()
+            .map(StockLocation::getId)
+            .collect(Collectors.toList());
 
-        for (StockLocation sl : stockLocationList) {
-          realQty = realQty.add(stockLocationService.getRealQty(productId, sl.getId(), companyId));
-          futureQty =
-              futureQty.add(stockLocationService.getFutureQty(productId, sl.getId(), companyId));
-          reservedQty =
-              reservedQty.add(
-                  stockLocationServiceSupplychain.getReservedQty(productId, sl.getId(), companyId));
-        }
-
-        map.put("$realQty", realQty.setScale(scale, RoundingMode.HALF_UP));
-        map.put("$futureQty", futureQty.setScale(scale, RoundingMode.HALF_UP));
-        map.put("$reservedQty", reservedQty.setScale(scale, RoundingMode.HALF_UP));
-        map.put(
-            "$requestedReservedQty", requestedReservedQty.setScale(scale, RoundingMode.HALF_UP));
-        map.put("$saleOrderQty", saleOrderQty.setScale(scale, RoundingMode.HALF_UP));
-        map.put("$purchaseOrderQty", purchaseOrderQty.setScale(scale, RoundingMode.HALF_UP));
-        map.put(
-            "$availableQty",
-            availableQty.subtract(reservedQty).setScale(scale, RoundingMode.HALF_UP));
-
-        return map;
-      }
-    }
     BigDecimal reservedQty =
-        stockLocationServiceSupplychain
-            .getReservedQty(productId, stockLocationId, companyId)
-            .setScale(scale, RoundingMode.HALF_UP);
+        stockLocationUtilsServiceSupplychain.getReservedQtyOfProductInStockLocations(
+            productId, stockLocationIds, companyId);
+
     map.put(
         "$realQty",
-        stockLocationService
-            .getRealQty(productId, stockLocationId, companyId)
+        stockLocationUtilsService
+            .getRealQtyOfProductInStockLocations(productId, stockLocationIds, companyId)
             .setScale(scale, RoundingMode.HALF_UP));
     map.put(
         "$futureQty",
-        stockLocationService
-            .getFutureQty(productId, stockLocationId, companyId)
+        stockLocationUtilsService
+            .getFutureQtyOfProductInStockLocations(productId, stockLocationIds, companyId)
             .setScale(scale, RoundingMode.HALF_UP));
-    map.put("$reservedQty", reservedQty);
+    map.put("$reservedQty", reservedQty.setScale(scale, RoundingMode.HALF_UP));
+
     map.put(
         "$requestedReservedQty",
-        this.getRequestedReservedQty(product, company, null).setScale(scale, RoundingMode.HALF_UP));
+        this.getRequestedReservedQty(product, company, stockLocation)
+            .setScale(scale, RoundingMode.HALF_UP));
     map.put(
         "$saleOrderQty",
-        this.getSaleOrderQty(product, company, null).setScale(scale, RoundingMode.HALF_UP));
+        this.getSaleOrderQty(product, company, stockLocation)
+            .setScale(scale, RoundingMode.HALF_UP));
     map.put(
         "$purchaseOrderQty",
-        this.getPurchaseOrderQty(product, company, null).setScale(scale, RoundingMode.HALF_UP));
+        this.getPurchaseOrderQty(product, company, stockLocation)
+            .setScale(scale, RoundingMode.HALF_UP));
     map.put(
         "$availableQty",
-        this.getAvailableQty(product, company, null)
-            .subtract(reservedQty)
+        this.getAvailableQty(product, company, stockLocation)
             .setScale(scale, RoundingMode.HALF_UP));
+
     return map;
   }
 
@@ -177,7 +154,7 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
       stockLocationId = stockLocation.getId();
     }
     String query =
-        stockLocationLineService.getStockLocationLineListForAProduct(
+        stockLocationLineFetchService.getStockLocationLineListForAProduct(
             product.getId(), companyId, stockLocationId);
 
     List<StockLocationLine> stockLocationLineList =
@@ -309,7 +286,7 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
       stockLocationId = stockLocation.getId();
     }
     String query =
-        stockLocationLineService.getAvailableStockForAProduct(
+        stockLocationLineFetchService.getAvailableStockForAProduct(
             product.getId(), companyId, stockLocationId);
     List<StockLocationLine> stockLocationLineList =
         stockLocationLineRepository.all().filter(query).fetch();
@@ -320,13 +297,19 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
 
       Unit unitConversion = product.getUnit();
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
-        BigDecimal productAvailableQty = stockLocationLine.getCurrentQty();
-        unitConversionService.convert(
-            stockLocationLine.getUnit(),
-            unitConversion,
-            productAvailableQty,
-            productAvailableQty.scale(),
-            product);
+        BigDecimal productAvailableQty =
+            appSupplychainService.isApp("supplychain")
+                    && appSupplychainService.getAppSupplychain().getManageStockReservation()
+                ? stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty())
+                : stockLocationLine.getCurrentQty();
+
+        productAvailableQty =
+            unitConversionService.convert(
+                stockLocationLine.getUnit(),
+                unitConversion,
+                productAvailableQty,
+                productAvailableQty.scale(),
+                product);
         sumAvailableQty = sumAvailableQty.add(productAvailableQty);
       }
     }

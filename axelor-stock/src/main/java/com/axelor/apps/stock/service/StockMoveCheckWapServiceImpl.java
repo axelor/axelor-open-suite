@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -39,18 +39,18 @@ import java.util.stream.Collectors;
 public class StockMoveCheckWapServiceImpl implements StockMoveCheckWapService {
 
   protected StockConfigService stockConfigService;
-  protected StockLocationLineService stockLocationLineService;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
   protected ProductCompanyService productCompanyService;
   protected StockMoveLineService stockMoveLineService;
 
   @Inject
   public StockMoveCheckWapServiceImpl(
       StockConfigService stockConfigService,
-      StockLocationLineService stockLocationLineService,
+      StockLocationLineFetchService stockLocationLineFetchService,
       ProductCompanyService productCompanyService,
       StockMoveLineService stockMoveLineService) {
     this.stockConfigService = stockConfigService;
-    this.stockLocationLineService = stockLocationLineService;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
     this.productCompanyService = productCompanyService;
     this.stockMoveLineService = stockMoveLineService;
   }
@@ -66,9 +66,10 @@ public class StockMoveCheckWapServiceImpl implements StockMoveCheckWapService {
       if (product != null
           && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
 
-        StockLocation toStockLocation = stockMove.getToStockLocation();
+        StockLocation toStockLocation = stockMoveLine.getToStockLocation();
         StockLocationLine stockLocationLine =
-            stockLocationLineService.getStockLocationLine(stockMove.getToStockLocation(), product);
+            stockLocationLineFetchService.getStockLocationLine(
+                stockMoveLine.getToStockLocation(), product);
         if (!product.getStockManaged()
             || toStockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL
             || stockLocationLine == null

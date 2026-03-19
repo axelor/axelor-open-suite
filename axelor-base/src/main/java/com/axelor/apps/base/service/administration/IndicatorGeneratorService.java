@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,9 +28,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.file.CsvTool;
-import com.google.inject.Inject;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -44,8 +45,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.persistence.Query;
-import org.hibernate.transform.BasicTransformerAdapter;
+import org.hibernate.transform.ResultTransformer;
 
 public class IndicatorGeneratorService {
 
@@ -114,7 +114,7 @@ public class IndicatorGeneratorService {
   }
 
   @SuppressWarnings("serial")
-  private static final class DataSetTransformer extends BasicTransformerAdapter {
+  private static final class DataSetTransformer implements ResultTransformer {
 
     @Override
     public Object transformTuple(Object[] tuple, String[] aliases) {
@@ -145,7 +145,7 @@ public class IndicatorGeneratorService {
       htmlBuilder.append("</style>");
       htmlBuilder.append("</head>");
       htmlBuilder.append("<body>");
-      htmlBuilder.append("<div style='overflow:auto; height:100%; max-height:436px;'>");
+      htmlBuilder.append("<div style='overflow:auto; max-height:436px;'>");
       htmlBuilder.append("<table border='1'>");
 
       // Extracting columns for table header
@@ -223,7 +223,7 @@ public class IndicatorGeneratorService {
                 + ".csv"
             : QUERY_RESULT_CSV_FILE_NAME + "_" + timeStamp + ".csv";
 
-    CsvTool.csvWriter(
+    CsvHelper.csvWriter(
         filePath, fileName, ';', columnHeader.toArray(new String[0]), queryResultData);
 
     Path path = Paths.get(filePath, fileName);

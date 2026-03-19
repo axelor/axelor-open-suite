@@ -1,24 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+
+  <form name="tracking-number-form" title="Tracking number"
+    model="com.axelor.apps.stock.db.TrackingNumber" id="supplychain-tracking-number-form"
+    extension="true">
+    <extend target="//panel[@name='originPanel']//field[@name='originInventoryLine']">
+      <insert position="after">
+        <field name="originPurchaseOrderLine"/>
+        <field name="originSaleOrderLine"/>
+      </insert>
+    </extend>
+  </form>
+
+
+  <form name="tracking-number-stock-move-line-form" title="Tracking number"
+    id="supplychain-tracking-number-stock-move-line-form"
+    model="com.axelor.apps.stock.db.TrackingNumber" extension="true">
+    <extend target="//panel[@name='originPanel']//field[@name='originInventoryLine']">
+      <insert position="after">
+        <field name="originPurchaseOrderLine"/>
+        <field name="originSaleOrderLine"/>
+      </insert>
+    </extend>
+  </form>
 
   <search name="tracking-number-search" title="Tracking number search" limit="50"
     id="tracking-number-supplychain-search">
     <search-fields>
-      <field name="product" type="reference" target="com.axelor.apps.base.db.Product"/>
-      <field name="trackingNumber" type="reference"
+      <field name="product" type="reference" target="com.axelor.apps.base.db.Product"
+        domain="self.dtype = 'Product'"/>
+      <field name="trackingNumberRef" type="reference"
         target="com.axelor.apps.stock.db.TrackingNumber" widget="SuggestBox"
         domain="self.product = :product"/>
     </search-fields>
 
     <result-fields>
       <field name="object" width="75"/>
-      <field name="trackingNumber" type="reference"
+      <field name="trackingNumberRef" type="reference"
         target="com.axelor.apps.stock.db.TrackingNumber"/>
       <field name="product" type="string"/>
-      <field name="futureQty" title="Expected/Future Quantity" type="decimal"/>
-      <field name="currentQty" title="Real/Current Quantity" type="decimal"/>
+      <field name="futureQtyVal" title="Expected/Future Quantity" type="decimal"/>
+      <field name="currentQtyVal" title="Real/Current Quantity" type="decimal"/>
       <field name="stockLocation" title="Stock location" type="string"/>
       <field name="moveLine" title="Stock move line" type="string"/>
       <field name="date" type="date"/>
@@ -27,28 +51,49 @@
 
     <select model="com.axelor.apps.stock.db.StockMove" title="Stock move"
       form-view="stock-move-form">
-      <field name="stockMoveLineList[].trackingNumber" as="trackingNumber"/>
-      <field name="stockMoveLineList[].product.fullName" as="product"/>
-      <field name="stockMoveLineList[].productName" as="moveLine"/>
-      <field name="stockMoveLineList[].realQty" as="currentQty"/>
-      <field name="stockMoveLineList[].qty" as="futureQty"/>
-      <field name="stockMoveLineList[].stockMove.realDate" as="date"/>
-      <field name="stockMoveLineList[].stockMove.origin" as="origin"/>
+      <field name="stockMoveLineList.trackingNumber" as="trackingNumberRef"/>
+      <field name="stockMoveLineList.product.fullName" as="product"/>
+      <field name="stockMoveLineList.productName" as="moveLine"/>
+      <field name="stockMoveLineList.realQty" as="currentQtyVal"/>
+      <field name="stockMoveLineList.qty" as="futureQtyVal"/>
+      <field name="stockMoveLineList.stockMove.realDate" as="date"/>
+      <field name="stockMoveLineList.stockMove.origin" as="origin"/>
       <where>
-        <input name="trackingNumber" field="stockMoveLineList[].trackingNumber"/>
+        <input name="trackingNumberRef" field="stockMoveLineList.trackingNumber"/>
       </where>
     </select>
-    <select model="com.axelor.apps.stock.db.StockLocation" title="Stock location"
-      form-view="stock-location-form">
-      <field name="detailsStockLocationLineList[].trackingNumber" as="trackingNumber"/>
-      <field name="detailsStockLocationLineList[].product.name" as="product"/>
-      <field name="detailsStockLocationLineList[].detailsStockLocation.name"
-        as="stockLocation"/>
-      <field name="detailsStockLocationLineList[].currentQty" as="currentQty"/>
-      <field name="detailsStockLocationLineList[].futureQty" as="futureQty"/>
+    <select model="com.axelor.apps.stock.db.StockLocationLine" title="Stock location"
+      form-view="stock-location-line-details-form">
+      <field name="trackingNumber" as="trackingNumberRef"/>
+      <field name="product.name" as="product"/>
+      <field name="detailsStockLocation.name" as="stockLocation"/>
+      <field name="currentQty" as="currentQtyVal"/>
+      <field name="futureQty" as="futureQtyVal"/>
       <where>
-        <input name="trackingNumber" field="detailsStockLocationLineList[].trackingNumber"/>
+        <input name="trackingNumberRef" field="trackingNumber"/>
       </where>
     </select>
   </search>
+
+  <action-record name="action-tracking-number-record-set-origin"
+    model="com.axelor.apps.stock.db.TrackingNumber"
+    id="supplychain-action-tracking-number-record-set-origin">
+    <field name="originMoveTypeSelect" expr="eval: 1" if="__parent__ == null"/>
+    <field name="originMoveTypeSelect" expr="eval: 2"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.InventoryLine'"/>
+    <field name="originInventoryLine" expr="eval: __parent__"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.InventoryLine'"/>
+    <field name="originStockMoveLine" expr="eval: __parent__"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine'"/>
+    <field name="originMoveTypeSelect" expr="eval: 1"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine' &amp;&amp; (__parent__?.stockMove?.typeSelect == 1)"/>
+    <field name="originMoveTypeSelect" expr="eval: 3"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine' &amp;&amp; (__parent__?.saleOrderLine != null || __parent__?.stockMove?.typeSelect == 2)"/>
+    <field name="originSaleOrderLine" expr="eval: __parent__?.saleOrderLine"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine' &amp;&amp; __parent__?.saleOrderLine != null"/>
+    <field name="originMoveTypeSelect" expr="eval: 4"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine' &amp;&amp; (__parent__?.purchaseOrderLine != null || __parent__?.stockMove?.typeSelect == 3)"/>
+    <field name="originPurchaseOrderLine" expr="eval: __parent__?.purchaseOrderLine"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockMoveLine' &amp;&amp; __parent__?.purchaseOrderLine != null"/>
+  </action-record>
 </object-views>

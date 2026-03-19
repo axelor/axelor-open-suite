@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -164,6 +164,10 @@ public final class StockExceptionMessage {
       "You must configure a default receipt stock location for the company %s" /*)*/;
   public static final String STOCK_CONFIG_PICKUP = /*$$(*/
       "You must configure a default pickup stock location for the company %s" /*)*/;
+  public static final String STOCK_CONFIG_VIRTUAL_OUTSOURCE_STOCK_LOCATION = /*$$(*/
+      "You must configure a default virtual outsource stock location for the company %s" /*)*/;
+  public static final String PO_MISSING_DEFAULT_STOCK_LOCATION = /*$$(*/
+      "Please add a quality control default stock location for company %s in the app stock configuration" /*)*/;
 
   /** Stock Location Controller */
   public static final String LOCATION_1 = /*$$(*/
@@ -203,37 +207,16 @@ public final class StockExceptionMessage {
    */
   public static final String LOGISTICAL_FORM_MISSING_SEQUENCE = /*$$(*/
       "Missing logistical form sequence for company %s" /*)*/;
-  public static final String LOGISTICAL_FORM_PARTNER_MISMATCH = /*$$(*/
-      "Partner mismatch: %s" /*)*/;
-  public static final String LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS = /*$$(*/
-      "Invalid dimensions on packing line No. %d" /*)*/;
-  public static final String LOGISTICAL_FORM_LINE_REQUIRED_TYPE = /*$$(*/
-      "Type is required on line %d." /*)*/;
-  public static final String LOGISTICAL_FORM_LINE_REQUIRED_STOCK_MOVE_LINE = /*$$(*/
-      "Stock move line is required on line %d." /*)*/;
-  public static final String LOGISTICAL_FORM_LINE_REQUIRED_QUANTITY = /*$$(*/
-      "Quantity is required on line %d." /*)*/;
-  public static final String LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY = /*$$(*/
-      "Total quantity for %s: %s (expected: %s)" /*)*/;
-  public static final String LOGISTICAL_FORM_LINES_EMPTY_PARCEL = /*$$(*/
-      "Parcel %d is empty." /*)*/;
-  public static final String LOGISTICAL_FORM_LINES_EMPTY_PALLET = /*$$(*/
-      "Pallet %d is empty." /*)*/;
-  public static final String LOGISTICAL_FORM_LINES_ORPHAN_DETAIL = /*$$(*/
-      "Detail line(s) not inside a parcel/pallet" /*)*/;
+
   public static final String LOGISTICAL_FORM_UNKNOWN_ACCOUNT_SELECTION = /*$$(*/
       "Unknown account selection" /*)*/;
 
   public static final String LOGISTICAL_FORM_MISSING_TEMPLATE = /*$$(*/
       "The template to send message on save is missing." /*)*/;
 
-  public static final String LOGISTICAL_FORM_INVALID_DIMENSIONS = /*$$(*/
-      "Invalid field dimensions" /*)*/;
-
   public static final String LOGISTICAL_FORM_CARRIER_VALIDATE_WRONG_STATUS = /*$$(*/
       "Can only be validated if provisioned" /*)*/;
-  public static final String LOGISTICAL_FORM_COLLECT_WRONG_STATUS = /*$$(*/
-      "Can only be collected if validated" /*)*/;
+
   public static final String LOGISTICAL_FORM_PROVISION_WRONG_STATUS = /*$$(*/
       "Can only return to provision if was validated or collected" /*)*/;
 
@@ -241,7 +224,9 @@ public final class StockExceptionMessage {
       "A cancel reason must be selected" /*)*/;
   public static final String CANCEL_REASON_BAD_TYPE = /*$$(*/
       "The type of cancel reason doesn't match with stock move" /*)*/;
-
+  public static final String STOCK_LOCATION_UNIT_NULL = /*$$(*/
+      "The unit is missing on a stock location line" /*)*/;
+  ;
   /*
    * Declaration of exchanges
    */
@@ -252,7 +237,9 @@ public final class StockExceptionMessage {
   public static final String DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_MISSING_IN_APP_STOCK = /*$$(*/
       "Please set an economic are in AppStock." /*)*/;
 
-  public static final String TRACK_NUMBER_WIZARD_TITLE = /*$$(*/ "Enter tracking numbers" /*)*/;
+  public static final String TRACK_NUMBER_WIZARD_TITLE_1 = /*$$(*/
+      "Create new tracking numbers" /*)*/;
+  public static final String TRACK_NUMBER_WIZARD_TITLE_2 = /*$$(*/ "Select tracking numbers" /*)*/;
   public static final String TRACK_NUMBER_WIZARD_NO_RECORD_ADDED_ERROR = /*$$(*/
       "No Tracking Numbers Added" /*)*/;
 
@@ -270,4 +257,96 @@ public final class StockExceptionMessage {
 
   public static final String INVENTORY_PRODUCT_TRACKING_NUMBER_ERROR = /*$$(*/
       "There is more than one line for same product with same tracking number." /*)*/;
+
+  public static final String REST_STOCK_MOVE_LINE_STOCK_LOCATION_REQUIRED = /*$$(*/
+      "Error: %s field is required and can not be null" /*)*/;
+  public static final String REST_STOCK_MOVE_LINE_STOCK_LOCATIONS_REQUIRED = /*$$(*/
+      "Error: %s and %s fields are required and can not be null" /*)*/;
+
+  /** Stock move merging controller and service */
+  public static final String STOCK_MOVE_NO_LINE_SELECTED = /*$$(*/
+      "Please select at least 2 stock moves" /*)*/;
+
+  public static final String STOCK_MOVE_MERGE_ERROR = /*$$(*/
+      "Your merge doesn't respect this/these condition(s) : %s" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_COMPANY = /*$$(*/ "Same company" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_TRADING_NAME = /*$$(*/
+      "Same trading name" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_PARTNER = /*$$(*/ "Same partner" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_FROM_AND_TO_STOCK_LOCATION = /*$$(*/
+      "Same from stock location and to stock location" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_STATUS = /*$$(*/
+      "Status must be planned or draft" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_MANUF_ORDER = /*$$(*/ "Same manuf order" /*)*/;
+  public static final String STOCK_MOVE_DIFF_SHIPMENT_FIELDS = /*$$(*/
+      "Fields linked to the shipment are differents, the value of the oldest will be kept." /*)*/;
+
+  public static final String STOCK_MOVE_TRACKING_NUMBER_DIMENSION_NOT_COMPUTED = /*$$(*/
+      "No dimension could be computed, please make sure that you have the necessary field to compute at least one field" /*)*/;
+  public static final String STOCK_MOVE_TRACKING_NUMBER_DIMENSION_EXPECTED_DECIMAL_RESULT = /*$$(*/
+      "Expected BigDecimal as result during the computation of field %s, please fix the corresponding formula." /*)*/;
+  public static final String STOCK_MOVE_TRACKING_NUMBER_PARENT_MAXIMUM_ITERATION_REACHED = /*$$(*/
+      "Maximum iteration for looking tracking numbers parent has been reached. Please check any circular parent dependencies." /*)*/;
+
+  public static final String SPLIT_MOVE_LINE_WRONG_STATUS = /*$$(*/
+      "You can only split line in draft or planned stock move." /*)*/;
+
+  public static final String SPLIT_MOVE_LINE_WRONG_TYPE = /*$$(*/
+      "You can only split line in incoming or outgoing stock move." /*)*/;
+
+  public static final String SPLIT_MOVE_LINE_WRONG_REAL_QTY = /*$$(*/
+      "Real quantity must not be equal to 0 and should be less than expected quantity." /*)*/;
+
+  public static final String STOCK_MOVE_MASS_MOVED_QTY_GREATER_THAN_CURRENT_QTY = /*$$(*/
+      "Moved qty is greater than current quantity (%s)" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_PRODUCT_NO_AVAILABLE_IN_STOCKLOCATION_SOURCE = /*$$(*/
+      "The product is not available in the stock location source indicated (%s)" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_MOVED_QUANTITY_IS_ZERO_OR_LESS = /*$$(*/
+      "Moved quantity is equal to 0 or less (%s)" /*)*/;
+  public static final String STOCK_MOVE_MASS_STOCK_MOVE_LINE_CANT_DELETE = /*$$(*/
+      "Can't delete a line linked to a realized stock move line." /*)*/;
+
+  public static final String STOCK_MOVE_MASS_FACTORY_UNKNOWN_OBJECT = /*$$(*/
+      "Unknown object, can not get service" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_PRODUCT_NO_STOCK_LOCATION_SOURCE_AVAILABLE = /*$$(*/
+      "The product %s is missing a stock location (source or dest). Please make sure that the cart stock location and stock location in the product is filled." /*)*/;
+
+  public static final String STOCK_MOVE_MASS_ALREADY_STORED_PRODUCT = /*$$(*/
+      "The product %s have already been stored" /*)*/;
+
+  public static final String MASS_STOCK_MOVE_NO_SEQUENCE = /*$$(*/
+      "There's no configured sequence for mass stock move for the company %s" /*)*/;
+
+  public static final String LOCATIONS_ARE_EMPTY = /*$$(*/
+      "Source and destination locations are empty" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_COULD_NOT_CREATE_PICKED_PRODUCT_FROM_NEED = /*$$(*/
+      "Impossible to create a picked product for product %s, no stock found for company %s" /*)*/;
+
+  public static final String STOCK_MOVE_MASS_NO_FROM_STOCK_LOCATION_SELECTED = /*$$(*/
+      "No stock location has been selected." /*)*/;
+
+  public static final String LOGISTICAL_FORM_SELECT_ONLY_ONE = /*$$(*/
+      "Please select only one logistical form." /*)*/;
+
+  public static final String LOGISTICAL_FORM_PARTNER_MISMATCH = /*$$(*/
+      "Stock move(s) must belong to the same client as the logistical form." /*)*/;
+
+  public static final String LOGISTICAL_FORM_STATUS_MISMATCH = /*$$(*/
+      "Stock move(s) status must be planned." /*)*/;
+
+  public static final String LOGISTICAL_FORM_PARTNER_NOT_A_CARRIER = /*$$(*/
+      "The chosen partner is not a carrier." /*)*/;
+
+  public static final String LOGISTICAL_FORM_DELIVER_PARTNER_NOT_A_CUSTOMER = /*$$(*/
+      "The partner to deliver to is not a customer or is not part of the company." /*)*/;
+
+  public static final String LOGISTICAL_FORM_MISSING_DELIVER_TO_PARTNER_CUSTOMER = /*$$(*/
+      "The partner to deliver to is required." /*)*/;
+
+  public static final String LOGISTICAL_FORM_STOCK_LOCATION_MUST_BE_VIRTUAL = /*$$(*/
+      "The stock location must not be virtual and part of the company." /*)*/;
 }

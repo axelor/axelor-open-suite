@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,20 +18,25 @@
  */
 package com.axelor.apps.account.service.invoice;
 
-import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
-import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.db.repo.PaymentConditionLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.PaymentConditionToolService;
+import com.axelor.apps.account.service.PfpService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
@@ -39,7 +44,9 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
@@ -50,8 +57,9 @@ public class InvoiceToolService {
   public static LocalDate getDueDate(Invoice invoice) throws AxelorException {
     LocalDate invoiceDate =
         isPurchase(invoice) ? invoice.getOriginDate() : invoice.getInvoiceDate();
-    return Beans.get(InvoiceTermService.class)
-        .getDueDate(invoice.getInvoiceTermList(), invoiceDate);
+    return ObjectUtils.isEmpty(invoice.getInvoiceTermList())
+        ? PaymentConditionToolService.getMaxDueDate(invoice.getPaymentCondition(), invoiceDate)
+        : Beans.get(InvoiceTermService.class).getDueDate(invoice.getInvoiceTermList(), invoiceDate);
   }
 
   @CallMethod
@@ -75,68 +83,6 @@ public class InvoiceToolService {
         .filter(Objects::nonNull)
         .min(Comparator.comparing(LocalDate::toEpochDay))
         .orElse(invoice.getNextDueDate());
-  }
-
-  /**
-   * Method to compute due date based on paymentConditionLine and invoiceDate
-   *
-   * @param paymentConditionLine
-   * @param invoiceDate
-   * @return
-   */
-  public static LocalDate getDueDate(
-      PaymentConditionLine paymentConditionLine, LocalDate invoiceDate) {
-
-    return getDueDate(
-        paymentConditionLine.getTypeSelect(),
-        paymentConditionLine.getPaymentTime(),
-        paymentConditionLine.getPeriodTypeSelect(),
-        paymentConditionLine.getDaySelect(),
-        invoiceDate);
-  }
-
-  /**
-   * Method to compute due date based on paymentCondition and invoiceDate
-   *
-   * @param typeSelect
-   * @param paymentTime
-   * @param periodTypeSelect
-   * @param daySelect
-   * @param invoiceDate
-   * @return
-   */
-  public static LocalDate getDueDate(
-      Integer typeSelect,
-      Integer paymentTime,
-      Integer periodTypeSelect,
-      Integer daySelect,
-      LocalDate invoiceDate) {
-
-    LocalDate nDaysDate = null;
-    if (periodTypeSelect.equals(PaymentConditionLineRepository.PERIOD_TYPE_DAYS)) {
-      nDaysDate = invoiceDate.plusDays(paymentTime);
-    } else {
-      nDaysDate = invoiceDate.plusMonths(paymentTime);
-    }
-
-    switch (typeSelect) {
-      case PaymentConditionLineRepository.TYPE_NET:
-        return nDaysDate;
-
-      case PaymentConditionLineRepository.TYPE_END_OF_MONTH_N_DAYS:
-        if (periodTypeSelect.equals(PaymentConditionLineRepository.PERIOD_TYPE_DAYS)) {
-          return invoiceDate.withDayOfMonth(invoiceDate.lengthOfMonth()).plusDays(paymentTime);
-        } else {
-          return invoiceDate.withDayOfMonth(invoiceDate.lengthOfMonth()).plusMonths(paymentTime);
-        }
-      case PaymentConditionLineRepository.TYPE_N_DAYS_END_OF_MONTH:
-        return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth());
-
-      case PaymentConditionLineRepository.TYPE_N_DAYS_END_OF_MONTH_AT:
-        return nDaysDate.withDayOfMonth(nDaysDate.lengthOfMonth()).plusDays(daySelect);
-      default:
-        return invoiceDate;
-    }
   }
 
   /**
@@ -248,7 +194,12 @@ public class InvoiceToolService {
     Partner partner = invoice.getPartner();
 
     if (partner != null) {
-      PaymentCondition paymentCondition = partner.getPaymentCondition();
+      PaymentCondition paymentCondition = null;
+      if (InvoiceToolService.isOutPayment(invoice)) {
+        paymentCondition = partner.getOutPaymentCondition();
+      } else {
+        paymentCondition = partner.getPaymentCondition();
+      }
       if (paymentCondition != null) {
         return paymentCondition;
       }
@@ -279,10 +230,12 @@ public class InvoiceToolService {
     copy.setOriginalInvoice(null);
     copy.setCompanyInTaxTotalRemaining(BigDecimal.ZERO);
     copy.setAmountPaid(BigDecimal.ZERO);
+    computeInvoiceAmounts(copy);
     copy.setAmountRemaining(copy.getInTaxTotal());
     copy.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
     copy.setAmountRejected(BigDecimal.ZERO);
     copy.setPaymentProgress(0);
+    copy.setPaymentDate(null);
     copy.clearBatchSet();
     copy.setDebitNumber(null);
     copy.setDoubtfulCustomerOk(false);
@@ -309,11 +262,7 @@ public class InvoiceToolService {
     copy.setExternalReference(null);
     copy.setLcrAccounted(false);
     copy.clearInvoiceTermList();
-    copy.setFinancialDiscount(null);
-    copy.setFinancialDiscountDeadlineDate(copy.getDueDate());
-    copy.setFinancialDiscountRate(BigDecimal.ZERO);
-    copy.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
-    copy.setRemainingAmountAfterFinDiscount(BigDecimal.ZERO);
+    setFinancialDiscount(copy);
     copy.setOldMove(null);
     copy.setBillOfExchangeBlockingOk(false);
     copy.setBillOfExchangeBlockingReason(null);
@@ -322,6 +271,12 @@ public class InvoiceToolService {
     copy.setNextDueDate(getNextDueDate(copy));
     setPfpStatus(copy);
     copy.setHasPendingPayments(false);
+    copy.setReasonOfRefusalToPay(null);
+    copy.setReasonOfRefusalToPayStr(null);
+    copy.setSubrogationRelease(null);
+    copy.setSubrogationReleaseMove(null);
+    copy.setOriginDate(null);
+    copy.setSupplierInvoiceNb(null);
   }
 
   /**
@@ -335,6 +290,8 @@ public class InvoiceToolService {
     int functionalOrigin = 0;
     if (isPurchase(invoice)) {
       functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE;
+    } else if (isLatePaymentInterest(invoice)) {
+      functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_LATE_PAYMENT_INTEREST;
     } else {
       functionalOrigin = MoveRepository.FUNCTIONAL_ORIGIN_SALE;
     }
@@ -342,13 +299,19 @@ public class InvoiceToolService {
   }
 
   public static void setPfpStatus(Invoice invoice) throws AxelorException {
-    AccountConfig accountConfig =
-        Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
+    Company company = invoice.getCompany();
+    PfpService pfpService = Beans.get(PfpService.class);
 
-    if (accountConfig.getIsManagePassedForPayment()
+    if (pfpService.isManagePassedForPayment(company)
         && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
             || (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
-                && accountConfig.getIsManagePFPInRefund()))) {
+                && pfpService.isManagePFPInRefund(company)))) {
+      AccountingSituation accountingSituation =
+          Beans.get(AccountingSituationService.class)
+              .getAccountingSituation(invoice.getPartner(), company);
+      if (accountingSituation != null) {
+        invoice.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
+      }
       invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
     } else {
       invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_NONE);
@@ -360,5 +323,63 @@ public class InvoiceToolService {
         && invoice.getCurrency() != null
         && invoice.getCompany() != null
         && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency());
+  }
+
+  public static void checkUseForPartnerBalanceAndReconcileOk(Invoice invoice)
+      throws AxelorException {
+    if (invoice.getPartnerAccount() != null
+        && (!invoice.getPartnerAccount().getReconcileOk()
+            || !invoice.getPartnerAccount().getUseForPartnerBalance())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(AccountExceptionMessage.ACCOUNT_USE_FOR_PARTNER_BALANCE_AND_RECONCILE_OK),
+          invoice.getPartnerAccount().getName());
+    }
+  }
+
+  protected static void setFinancialDiscount(Invoice copy) {
+    CurrencyScaleService currencyScaleService = Beans.get(CurrencyScaleService.class);
+    FinancialDiscount financialDiscount =
+        Optional.of(copy).map(Invoice::getPartner).map(Partner::getFinancialDiscount).orElse(null);
+    BigDecimal discountRate = BigDecimal.ZERO;
+    BigDecimal financialDiscountTotalAmount = BigDecimal.ZERO;
+    BigDecimal remainingAmountAfterFinDiscount = BigDecimal.ZERO;
+    String legalNotice = null;
+    BigDecimal inTaxTotal = copy.getInTaxTotal();
+
+    if (financialDiscount != null) {
+      discountRate = financialDiscount.getDiscountRate();
+      financialDiscountTotalAmount =
+          currencyScaleService.getCompanyScaledValue(
+              copy, discountRate.multiply(inTaxTotal).divide(BigDecimal.valueOf(100)));
+      remainingAmountAfterFinDiscount =
+          currencyScaleService.getCompanyScaledValue(
+              copy, inTaxTotal.subtract(financialDiscountTotalAmount));
+      legalNotice = financialDiscount.getLegalNotice();
+    }
+    copy.setFinancialDiscount(financialDiscount);
+    copy.setFinancialDiscountDeadlineDate(null);
+    copy.setFinancialDiscountRate(discountRate);
+    copy.setFinancialDiscountTotalAmount(financialDiscountTotalAmount);
+    copy.setRemainingAmountAfterFinDiscount(remainingAmountAfterFinDiscount);
+    copy.setLegalNotice(legalNotice);
+  }
+
+  public static Map<String, Object> computeInvoiceAmounts(Invoice copy) throws AxelorException {
+    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
+    // Update invoice lines with new currency rate
+    for (InvoiceLine invoiceLine : copy.getInvoiceLineList()) {
+      invoiceLine.setCompanyExTaxTotal(
+          invoiceLineService.getCompanyExTaxTotal(invoiceLine.getExTaxTotal(), copy));
+      invoiceLine.setCompanyInTaxTotal(
+          invoiceLineService.getCompanyExTaxTotal(invoiceLine.getInTaxTotal(), copy));
+    }
+
+    // Update invoice
+    return Beans.get(InvoiceService.class).compute(copy);
+  }
+
+  protected static boolean isLatePaymentInterest(Invoice invoice) {
+    return invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_LATE_PAYMENT;
   }
 }

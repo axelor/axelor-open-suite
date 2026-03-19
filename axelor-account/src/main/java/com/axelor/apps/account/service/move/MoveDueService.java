@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,17 +20,17 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,14 +38,13 @@ public class MoveDueService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private MoveLineRepository moveLineRepository;
-
   protected InvoiceService invoiceService;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
-  public MoveDueService(MoveLineRepository moveLineRepository, InvoiceService invoiceService) {
+  public MoveDueService(InvoiceService invoiceService, MoveLineToolService moveLineToolService) {
     this.invoiceService = invoiceService;
-    this.moveLineRepository = moveLineRepository;
+    this.moveLineToolService = moveLineToolService;
   }
 
   public MoveLine getOrignalInvoiceFromRefund(Invoice invoice) {
@@ -56,13 +55,29 @@ public class MoveDueService {
       for (MoveLine moveLine : originalInvoice.getMove().getMoveLineList()) {
         if (moveLine.getAccount().getUseForPartnerBalance()
             && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
-            && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+            && moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
           return moveLine;
         }
       }
     }
 
     return null;
+  }
+
+  public List<MoveLine> getOrignalInvoiceMoveLinesFromRefund(Invoice invoice) {
+    List<MoveLine> moveLines = Lists.newArrayList();
+    Invoice originalInvoice = invoice.getOriginalInvoice();
+
+    if (originalInvoice != null && originalInvoice.getMove() != null) {
+      for (MoveLine moveLine : originalInvoice.getMove().getMoveLineList()) {
+        if (moveLine.getAccount().getUseForPartnerBalance()
+            && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
+          moveLines.add(moveLine);
+        }
+      }
+    }
+    return moveLines;
   }
 
   public List<MoveLine> getInvoiceDue(Invoice invoice, boolean useOthersInvoiceDue)
@@ -74,50 +89,20 @@ public class MoveDueService {
 
     debitMoveLines.addAll(invoiceService.getMoveLinesFromAdvancePayments(invoice));
 
-    // Ajout de la facture d'origine
-    MoveLine originalInvoice = this.getOrignalInvoiceFromRefund(invoice);
+    // Add lines from the original invoice (may include multiple lines with holdbacks)
+    List<MoveLine> originalInvoiceMoveLines = this.getOrignalInvoiceMoveLinesFromRefund(invoice);
+    debitMoveLines.addAll(originalInvoiceMoveLines);
 
-    if (originalInvoice != null) {
-      debitMoveLines.add(originalInvoice);
-    }
-
-    // Récupérer les dûs du tiers pour le même compte que celui de l'avoir
+    // Retrieve partner due amounts for the same account as the credit note
     List<? extends MoveLine> othersDebitMoveLines = null;
     if (useOthersInvoiceDue) {
-      if (debitMoveLines != null && debitMoveLines.size() != 0) {
-        othersDebitMoveLines =
-            moveLineRepository
-                .all()
-                .filter(
-                    "self.move.company = ?1 AND (self.move.statusSelect = ?2 OR self.move.statusSelect = ?3) AND self.move.ignoreInAccountingOk IN (false,null)"
-                        + " AND self.account.useForPartnerBalance = ?4 AND self.debit > 0 AND self.amountRemaining > 0 "
-                        + " AND self.partner = ?5 AND self NOT IN (?6) ORDER BY self.date ASC ",
-                    company,
-                    MoveRepository.STATUS_ACCOUNTED,
-                    MoveRepository.STATUS_DAYBOOK,
-                    true,
-                    partner,
-                    debitMoveLines)
-                .fetch();
-      } else {
-        othersDebitMoveLines =
-            moveLineRepository
-                .all()
-                .filter(
-                    "self.move.company = ?1 AND (self.move.statusSelect = ?2 OR self.move.statusSelect = ?3) AND self.move.ignoreInAccountingOk IN (false,null)"
-                        + " AND self.account.useForPartnerBalance = ?4 AND self.debit > 0 AND self.amountRemaining > 0 "
-                        + " AND self.partner = ?5 ORDER BY self.date ASC ",
-                    company,
-                    MoveRepository.STATUS_ACCOUNTED,
-                    MoveRepository.STATUS_DAYBOOK,
-                    true,
-                    partner)
-                .fetch();
-      }
+      othersDebitMoveLines =
+          moveLineToolService.getMoveExcessDueList(false, company, invoice.getPartner(), invoice);
       debitMoveLines.addAll(othersDebitMoveLines);
     }
 
     log.debug("Number of lines to pay with the credit note : {}", debitMoveLines.size());
+    debitMoveLines = debitMoveLines.stream().distinct().collect(Collectors.toList());
 
     return debitMoveLines;
   }

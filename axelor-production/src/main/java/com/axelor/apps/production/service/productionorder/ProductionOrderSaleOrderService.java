@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,8 +26,14 @@ import java.util.List;
 
 public interface ProductionOrderSaleOrderService {
 
-  public List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException;
+  String generateProductionOrder(SaleOrder saleOrder, List<SaleOrderLine> selectedSaleOrderLine)
+      throws AxelorException;
 
-  public ProductionOrder generateManufOrders(
-      ProductionOrder productionOrder, SaleOrderLine saleOrderLine) throws AxelorException;
+  boolean areAllBlocked(List<SaleOrderLine> saleOrderLineList);
+
+  ProductionOrder fetchOrCreateProductionOrder(SaleOrder saleOrder) throws AxelorException;
+
+  List<ProductionOrder> getLinkedProductionOrders(SaleOrder saleOrder) throws AxelorException;
+
+  boolean isGenerationNeeded(SaleOrderLine line);
 }

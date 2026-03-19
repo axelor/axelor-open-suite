@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,10 +20,12 @@ package com.axelor.apps.base.callable;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.concurrent.ContextAware;
+import com.axelor.db.tenants.TenantResolver;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.exception.ToolExceptionMessage;
+import com.axelor.utils.exception.UtilsExceptionMessage;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -51,8 +53,23 @@ public class ControllerCallableTool<V> {
     V result = null;
     ExecutorService executor = Executors.newSingleThreadExecutor();
 
+    String currentTenantId = TenantResolver.currentTenantIdentifier();
+
     // Start thread
-    Future<V> future = executor.submit(callable);
+    Future<V> future =
+        executor.submit(
+            ContextAware.of()
+                .withTransaction(false)
+                .withTenantId(currentTenantId)
+                .build(
+                    () -> {
+                      try {
+                        callable.call();
+                      } catch (Exception e) {
+                        throw new RuntimeException(e);
+                      }
+                      return null;
+                    }));
 
     int processTimeout = Beans.get(AppBaseService.class).getProcessTimeout();
     // Wait processTimeout seconds
@@ -62,10 +79,12 @@ public class ControllerCallableTool<V> {
       // cause already traced in traceback
       response.setInfo(e.getCause().getMessage());
     } catch (TimeoutException e) {
-      response.setNotify(I18n.get(ToolExceptionMessage.PROCESS_BEING_COMPUTED));
+      response.setNotify(I18n.get(UtilsExceptionMessage.PROCESS_BEING_COMPUTED));
     } catch (InterruptedException e) {
       TraceBackService.trace(e);
       Thread.currentThread().interrupt();
+    } finally {
+      executor.shutdown();
     }
     return result;
   }

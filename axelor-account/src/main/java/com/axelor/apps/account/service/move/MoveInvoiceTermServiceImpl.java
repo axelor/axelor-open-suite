@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,11 +31,14 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -50,6 +53,8 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   protected InvoiceTermRepository invoiceTermRepo;
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepository;
   protected PayVoucherDueElementRepository payVoucherDueElementRepository;
+  protected InvoiceTermPfpService invoiceTermPfpService;
+  protected InvoiceTermToolService invoiceTermToolService;
 
   @Inject
   public MoveInvoiceTermServiceImpl(
@@ -58,13 +63,17 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
       MoveRepository moveRepo,
       InvoiceTermRepository invoiceTermRepo,
       PayVoucherElementToPayRepository payVoucherElementToPayRepository,
-      PayVoucherDueElementRepository payVoucherDueElementRepository) {
+      PayVoucherDueElementRepository payVoucherDueElementRepository,
+      InvoiceTermPfpService invoiceTermPfpService,
+      InvoiceTermToolService invoiceTermToolService) {
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.invoiceTermService = invoiceTermService;
     this.moveRepo = moveRepo;
     this.invoiceTermRepo = invoiceTermRepo;
     this.payVoucherElementToPayRepository = payVoucherElementToPayRepository;
     this.payVoucherDueElementRepository = payVoucherDueElementRepository;
+    this.invoiceTermPfpService = invoiceTermPfpService;
+    this.invoiceTermToolService = invoiceTermToolService;
   }
 
   @Override
@@ -96,12 +105,12 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
         move.getMoveLineList().stream()
             .filter(
                 it ->
-                    it.getAmountRemaining().compareTo(it.getDebit().max(it.getCredit())) == 0
+                    it.getAmountRemaining().abs().compareTo(it.getDebit().max(it.getCredit())) == 0
                         && it.getAccount().getUseForPartnerBalance()
                         && CollectionUtils.isNotEmpty(it.getInvoiceTermList()))
             .map(MoveLine::getInvoiceTermList)
             .flatMap(Collection::stream)
-            .filter(invoiceTermService::isNotReadonlyExceptPfp)
+            .filter(invoiceTermToolService::isNotReadonlyExceptPfp)
             .collect(Collectors.toList());
 
     invoiceTermToUpdateList.forEach(it -> invoiceTermService.updateFromMoveHeader(move, it));
@@ -151,9 +160,10 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
               .filter(it -> it.getAccount() != null && it.getAccount().getUseForPartnerBalance())
               .collect(Collectors.toList());
 
-      return moveLinesWithInvoiceTerms.size() <= 1
-          && (moveLinesWithInvoiceTerms.size() == 0
-              || moveLinesWithInvoiceTerms.get(0).getInvoiceTermList().size() <= 1);
+      return ObjectUtils.isEmpty(moveLinesWithInvoiceTerms)
+          || (moveLinesWithInvoiceTerms.size() == 1
+              && (ObjectUtils.isEmpty(moveLinesWithInvoiceTerms.get(0).getInvoiceTermList())
+                  || moveLinesWithInvoiceTerms.get(0).getInvoiceTermList().size() == 1));
     }
 
     return true;
@@ -188,7 +198,8 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
     InvoiceTerm singleInvoiceTerm = this.getSingleInvoiceTerm(move);
 
     if (singleInvoiceTerm != null
-        && invoiceTermService.isNotReadonly(singleInvoiceTerm)
+        && invoiceTermToolService.isNotReadonly(singleInvoiceTerm)
+        && !singleInvoiceTerm.getIsCustomized()
         && !Objects.equals(dueDate, singleInvoiceTerm.getDueDate())) {
       singleInvoiceTerm.setDueDate(dueDate);
       singleInvoiceTerm.getMoveLine().setDueDate(dueDate);
@@ -196,12 +207,18 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   }
 
   protected InvoiceTerm getSingleInvoiceTerm(Move move) {
-    return move.getMoveLineList().stream()
-        .filter(it -> it.getAccount().getUseForPartnerBalance())
-        .map(MoveLine::getInvoiceTermList)
-        .flatMap(Collection::stream)
-        .findFirst()
-        .orElse(null);
+    List<InvoiceTerm> invoiceTermList =
+        move.getMoveLineList().stream()
+            .filter(it -> it.getAccount().getUseForPartnerBalance())
+            .map(MoveLine::getInvoiceTermList)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+
+    if (invoiceTermList.size() == 1) {
+      return invoiceTermList.get(0);
+    } else {
+      return null;
+    }
   }
 
   @Override
@@ -241,7 +258,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
         }
 
         for (InvoiceTerm invoiceTerm : invoiceTermList) {
-          if (!invoiceTermService.isNotReadonlyExceptPfp(invoiceTerm)) {
+          if (!invoiceTermToolService.isNotReadonlyExceptPfp(invoiceTerm)) {
             return I18n.get(AccountExceptionMessage.MOVE_INVOICE_TERM_IN_PAYMENT_AWAITING_CHANGE);
           }
         }
@@ -254,14 +271,22 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   public String checkInvoiceTermInPaymentVoucher(List<InvoiceTerm> invoiceTermList) {
     if (!CollectionUtils.isEmpty(invoiceTermList)) {
       List<String> paymentVoucherRefList =
-          payVoucherElementToPayRepository.all().filter("self.invoiceTerm in (:invoiceTermList)")
-              .bind("invoiceTermList", invoiceTermList).fetch().stream()
+          payVoucherElementToPayRepository
+              .all()
+              .filter("self.invoiceTerm in (:invoiceTermList)")
+              .bind("invoiceTermList", invoiceTermList)
+              .fetch()
+              .stream()
               .map(PayVoucherElementToPay::getPaymentVoucher)
               .map(PaymentVoucher::getRef)
               .collect(Collectors.toList());
       paymentVoucherRefList.addAll(
-          payVoucherDueElementRepository.all().filter("self.invoiceTerm in (:invoiceTermList)")
-              .bind("invoiceTermList", invoiceTermList).fetch().stream()
+          payVoucherDueElementRepository
+              .all()
+              .filter("self.invoiceTerm in (:invoiceTermList)")
+              .bind("invoiceTermList", invoiceTermList)
+              .fetch()
+              .stream()
               .map(PayVoucherDueElement::getPaymentVoucher)
               .map(PaymentVoucher::getRef)
               .collect(Collectors.toList()));

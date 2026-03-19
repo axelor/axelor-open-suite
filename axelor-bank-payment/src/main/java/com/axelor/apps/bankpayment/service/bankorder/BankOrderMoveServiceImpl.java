@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@
 package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -31,7 +32,8 @@ import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
-import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -56,8 +58,8 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
@@ -84,6 +86,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
   protected JournalRepository journalRepository;
   protected AccountRepository accountRepository;
   protected InvoiceTermRepository invoiceTermRepository;
+  protected AccountConfigService accountConfigService;
 
   protected PaymentMode paymentMode;
   protected Company senderCompany;
@@ -110,7 +113,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
       BankDetailsRepository bankDetailsRepository,
       JournalRepository journalRepository,
       AccountRepository accountRepository,
-      InvoiceTermRepository invoiceTermRepository) {
+      InvoiceTermRepository invoiceTermRepository,
+      AccountConfigService accountConfigService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -125,6 +129,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     this.journalRepository = journalRepository;
     this.accountRepository = accountRepository;
     this.invoiceTermRepository = invoiceTermRepository;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
@@ -157,7 +162,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
 
     isDebit =
         orderTypeSelect == BankOrderRepository.ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER
-            || orderTypeSelect == BankOrderRepository.ORDER_TYPE_SEPA_CREDIT_TRANSFER;
+            || orderTypeSelect == BankOrderRepository.ORDER_TYPE_SEPA_CREDIT_TRANSFER
+            || orderTypeSelect == BankOrderRepository.ORDER_TYPE_NATIONAL_TREASURY_TRANSFER;
 
     generateMovesBankOrderLines(bankOrder);
   }
@@ -213,6 +219,18 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
     bankOrderLineRepository.save(bankOrderLine);
   }
 
+  protected String getBankOrderOrigin(BankOrderLine bankOrderLine) {
+    Optional<String> bankOrderSeq =
+        Optional.of(bankOrderLine).map(BankOrderLine::getBankOrder).map(BankOrder::getBankOrderSeq);
+    if (bankOrderSeq.isPresent()) {
+      return String.format(
+          "%s %s",
+          bankOrderSeq.get(),
+          bankOrderLine.getReceiverReference() != null ? bankOrderLine.getReceiverReference() : "");
+    }
+    return bankOrderLine.getReceiverReference();
+  }
+
   protected Move generateSenderMove(BankOrderLine bankOrderLine) throws AxelorException {
 
     Partner partner = bankOrderLine.getPartner();
@@ -229,22 +247,44 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-            bankOrderLine.getReceiverReference(),
+            getBankOrderOrigin(bankOrderLine),
             bankOrderLine.getReceiverLabel(),
             bankOrderLine.getBankOrder().getSenderBankDetails());
 
     senderMove.setPartnerBankDetails(getPartnerBankDetails(bankOrderLine));
 
+    Account bankAccount = senderBankAccount;
+    Account partnerAccount = null;
+
+    PaymentMode bankOrderLinePaymentMode =
+        Optional.ofNullable(bankOrderLine)
+            .map(BankOrderLine::getBankOrder)
+            .map(BankOrder::getPaymentMode)
+            .orElse(null);
+    if (bankOrderLinePaymentMode != null
+        && bankOrderLinePaymentMode.getTypeSelect() == PaymentModeRepository.TYPE_EXCHANGES) {
+      AccountConfig accountConfig = accountConfigService.getAccountConfig(senderCompany);
+      bankAccount =
+          paymentModeService.getPaymentModeAccount(
+              bankOrderLinePaymentMode,
+              senderCompany,
+              bankOrderLine.getBankOrder().getSenderBankDetails(),
+              false);
+      partnerAccount = accountConfigService.getBillOfExchReceivAccount(accountConfig);
+    } else {
+      partnerAccount = getPartnerAccount(partner, senderCompany, senderCompany);
+    }
+
     MoveLine bankMoveLine =
         moveLineCreateService.createMoveLine(
             senderMove,
             partner,
-            senderBankAccount,
+            bankAccount,
             bankOrderLine.getBankOrderAmount(),
             !isDebit,
             senderMove.getDate(),
             1,
-            bankOrderLine.getReceiverReference(),
+            getBankOrderOrigin(bankOrderLine),
             bankOrderLine.getReceiverLabel());
     senderMove.addMoveLineListItem(bankMoveLine);
 
@@ -252,7 +292,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
         moveLineCreateService.createMoveLine(
             senderMove,
             partner,
-            getPartnerAccount(partner, senderCompany, senderCompany),
+            partnerAccount,
             bankOrderLine.getBankOrderAmount(),
             isDebit,
             senderMove.getDate(),
@@ -260,6 +300,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             bankOrderLine.getReceiverReference(),
             bankOrderLine.getReceiverLabel());
     senderMove.addMoveLineListItem(partnerMoveLine);
+
+    moveValidateService.accounting(senderMove);
 
     return senderMove;
   }
@@ -288,7 +330,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
-            bankOrderLine.getReceiverReference(),
+            getBankOrderOrigin(bankOrderLine),
             bankOrderLine.getReceiverLabel(),
             bankOrderLine.getBankOrder().getSenderBankDetails());
 
@@ -303,7 +345,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             isDebit,
             receiverMove.getDate(),
             1,
-            bankOrderLine.getReceiverReference(),
+            getBankOrderOrigin(bankOrderLine),
             bankOrderLine.getReceiverLabel());
     receiverMove.addMoveLineListItem(bankMoveLine);
 
@@ -319,6 +361,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
             bankOrderLine.getReceiverReference(),
             bankOrderLine.getReceiverLabel());
     receiverMove.addMoveLineListItem(partnerMoveLine);
+
+    moveValidateService.accounting(receiverMove);
 
     return receiverMove;
   }
@@ -377,8 +421,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
 
   protected BankDetails getPartnerBankDetails(BankOrderLine bankOrderLine) {
     if (bankOrderLine.getBankOrderLineOriginList().size() == 1
-        && bankOrderLine.getBankOrderLineOriginList().get(0).getRelatedToSelect()
-            == BankOrderLineOriginRepository.RELATED_TO_INVOICE_TERM) {
+        && BankOrderLineOriginRepository.RELATED_TO_INVOICE_TERM.equals(
+            bankOrderLine.getBankOrderLineOriginList().get(0).getRelatedToSelect())) {
       BankOrderLineOrigin origin = bankOrderLine.getBankOrderLineOriginList().get(0);
       if (origin.getRelatedToSelectId() != null) {
         InvoiceTerm invoiceTerm = invoiceTermRepository.find(origin.getRelatedToSelectId());

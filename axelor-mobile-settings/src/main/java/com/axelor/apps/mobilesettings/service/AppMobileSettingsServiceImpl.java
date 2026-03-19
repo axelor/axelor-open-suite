@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,9 +20,10 @@ package com.axelor.apps.mobilesettings.service;
 
 import com.axelor.apps.mobilesettings.db.MobileConfig;
 import com.axelor.apps.mobilesettings.db.repo.MobileConfigRepository;
+import com.axelor.db.Query;
 import com.axelor.studio.db.AppMobileSettings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
 
@@ -31,6 +32,11 @@ public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
   @Inject
   public AppMobileSettingsServiceImpl(MobileConfigRepository mobileConfigRepository) {
     this.mobileConfigRepository = mobileConfigRepository;
+  }
+
+  @Override
+  public AppMobileSettings getAppMobileSettings() {
+    return Query.of(AppMobileSettings.class).cacheable().autoFlush(false).fetchOne();
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -53,5 +59,25 @@ public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
         MobileConfigRepository.APP_SEQUENCE_MANUFACTURING);
     updateMobileConfig(
         appMobileSettings.getIsCrmAppEnabled(), MobileConfigRepository.APP_SEQUENCE_CRM);
+    updateMobileConfig(
+        appMobileSettings.getIsHelpdeskAppEnabled(), MobileConfigRepository.APP_SEQUENCE_HELPDESK);
+    updateMobileConfig(
+        appMobileSettings.getIsHRAppEnabled(), MobileConfigRepository.APP_SEQUENCE_HR);
+    updateMobileConfig(
+        appMobileSettings.getIsQualityAppEnabled(), MobileConfigRepository.APP_SEQUENCE_QUALITY);
+    updateMobileConfig(
+        appMobileSettings.getIsInterventionAppEnabled(),
+        MobileConfigRepository.APP_SEQUENCE_INTERVENTION);
+    updateMobileConfig(
+        appMobileSettings.getIsSaleAppEnabled(), MobileConfigRepository.APP_SEQUENCE_SALE);
+    updateMobileConfig(
+        appMobileSettings.getIsProjectAppEnabled(), MobileConfigRepository.APP_SEQUENCE_PROJECT);
+    updateMobileConfig(
+        appMobileSettings.getIsDMSAppEnabled(), MobileConfigRepository.APP_SEQUENCE_DMS);
+    updateMobileConfig(
+        appMobileSettings.getIsPurchaseAppEnabled(), MobileConfigRepository.APP_SEQUENCE_PURCHASE);
+    updateMobileConfig(
+        appMobileSettings.getIsMaintenanceAppEnabled(),
+        MobileConfigRepository.APP_SEQUENCE_MAINTENANCE);
   }
 }

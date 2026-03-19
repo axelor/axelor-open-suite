@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,55 +18,55 @@
  */
 package com.axelor.apps.account.service.move.record;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
-import com.google.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import com.axelor.common.ObjectUtils;
+import com.google.common.collect.Sets;
+import jakarta.inject.Inject;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveDefaultServiceImpl implements MoveDefaultService {
 
   protected UserService userService;
   protected CompanyRepository companyRepository;
   protected AppBaseService appBaseService;
+  protected FiscalPositionService fiscalPositionService;
+  protected TaxService taxService;
 
   @Inject
   public MoveDefaultServiceImpl(
-      UserService userService, CompanyRepository companyRepository, AppBaseService appBaseService) {
+      UserService userService,
+      CompanyRepository companyRepository,
+      AppBaseService appBaseService,
+      FiscalPositionService fiscalPositionService,
+      TaxService taxService) {
     this.userService = userService;
     this.companyRepository = companyRepository;
     this.appBaseService = appBaseService;
+    this.fiscalPositionService = fiscalPositionService;
+    this.taxService = taxService;
   }
 
   @Override
-  public Map<String, Object> setDefaultMoveValues(Move move) {
+  public void setDefaultValues(Move move) {
+    this.setCompany(move);
+    this.setDate(move);
+    this.setDefaultCurrency(move);
 
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
-    setDefaultValues(move);
-
-    resultMap.put("company", move.getCompany());
-    resultMap.put("date", move.getDate());
-    resultMap.put("technicalOriginSelect", move.getTechnicalOriginSelect());
-    resultMap.put("tradingName", move.getTradingName());
-
-    return resultMap;
-  }
-
-  protected void setDefaultValues(Move move) {
-    Company activeCompany = userService.getUserActiveCompany();
-
-    setCompany(move, activeCompany);
-    setDate(move);
     move.setTechnicalOriginSelect(MoveRepository.TECHNICAL_ORIGIN_ENTRY);
     move.setTradingName(userService.getTradingName());
-    this.setDefaultCurrency(move);
   }
 
   protected void setDate(Move move) {
@@ -75,40 +75,60 @@ public class MoveDefaultServiceImpl implements MoveDefaultService {
     }
   }
 
-  protected void setCompany(Move move, Company activeCompany) {
+  protected void setCompany(Move move) {
+    Company activeCompany = userService.getUserActiveCompany();
+
     if (activeCompany != null) {
       move.setCompany(activeCompany);
-    } else {
-      if (onlyOneCompanyExist()) {
-        move.setCompany(companyRepository.all().fetchOne());
-      }
+    } else if (companyRepository.all().count() == 1) {
+      move.setCompany(companyRepository.all().fetchOne());
     }
   }
 
-  protected boolean onlyOneCompanyExist() {
-    return companyRepository.all().count() == 1;
-  }
-
   @Override
-  public Map<String, Object> setDefaultCurrency(Move move) {
-
-    Objects.requireNonNull(move);
-    HashMap<String, Object> resultMap = new HashMap<>();
-
+  public void setDefaultCurrency(Move move) {
     Company company = move.getCompany();
 
-    if (company != null && company.getCurrency() != null) {
+    if (move.getPartner() == null && company != null && company.getCurrency() != null) {
       move.setCompanyCurrency(company.getCurrency());
       move.setCurrency(company.getCurrency());
       move.setCurrencyCode(company.getCurrency().getCodeISO());
       move.setCompanyCurrencyCode(company.getCurrency().getCodeISO());
     }
+  }
 
-    resultMap.put("companyCurrency", move.getCompanyCurrency());
-    resultMap.put("currency", move.getCurrency());
-    resultMap.put("currencyCode", move.getCurrencyCode());
-    resultMap.put("companyCurrencyCode", move.getCompanyCurrencyCode());
+  @Override
+  public void setDefaultCurrencyOnChange(Move move) {
+    if (move.getCurrency() != null) {
+      move.setCurrencyCode(move.getCurrency().getCodeISO());
+    }
+  }
 
-    return resultMap;
+  @Override
+  public void setDefaultFiscalPositionOnChange(Move move) throws AxelorException {
+    if (ObjectUtils.isEmpty(move.getMoveLineList())) {
+      return;
+    }
+    FiscalPosition fiscalPosition = move.getFiscalPosition();
+
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      Set<TaxLine> taxLineSet =
+          CollectionUtils.isNotEmpty(moveLine.getTaxLineBeforeReverseSet())
+              ? moveLine.getTaxLineBeforeReverseSet()
+              : moveLine.getTaxLineSet();
+      TaxEquiv taxEquiv = null;
+      moveLine.setTaxLineBeforeReverseSet(Sets.newHashSet());
+
+      if (fiscalPosition != null && CollectionUtils.isNotEmpty(taxLineSet)) {
+        taxEquiv = fiscalPositionService.getTaxEquivFromOrToTaxSet(fiscalPosition, taxLineSet);
+
+        if (taxEquiv != null) {
+          moveLine.setTaxLineBeforeReverseSet(taxLineSet);
+          taxLineSet = taxService.getTaxLineSet(taxEquiv.getToTaxSet(), move.getDate());
+        }
+      }
+      moveLine.setTaxLineSet(taxLineSet);
+      moveLine.setTaxEquiv(taxEquiv);
+    }
   }
 }

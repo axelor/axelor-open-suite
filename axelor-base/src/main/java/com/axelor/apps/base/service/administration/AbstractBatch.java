@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,19 +31,20 @@ import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.MetaSelectTool;
+import com.axelor.utils.helpers.MetaSelectHelper;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public abstract class AbstractBatch {
   public static final int FETCH_LIMIT = 10;
 
   @Inject protected AppBaseService appBaseService;
-  @Inject protected MetaSelectTool metaSelectTool;
+  @Inject protected MetaSelectHelper metaSelectHelper;
 
   protected static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -129,7 +130,7 @@ public abstract class AbstractBatch {
     }
   }
 
-  protected abstract void process();
+  protected abstract void process() throws SQLException;
 
   protected boolean isRunnable(Model model) {
     this.model = model;
@@ -169,7 +170,7 @@ public abstract class AbstractBatch {
     if (actionSelectGetter != null) {
       int actionSelect = (int) actionSelectGetter.invoke(model);
       String actionSelection = modelMapper.getProperty("actionSelect").getSelection();
-      String actionTitle = metaSelectTool.getSelectTitle(actionSelection, actionSelect);
+      String actionTitle = metaSelectHelper.getSelectTitle(actionSelection, actionSelect);
 
       if (!StringUtils.isEmpty(actionTitle)) {
         actionNamePartList.add(actionTitle);
@@ -298,5 +299,15 @@ public abstract class AbstractBatch {
     }
 
     return batch;
+  }
+
+  protected Integer getFetchLimit() {
+    Integer defaultBatchFetchLimit = appBaseService.getAppBase().getDefaultBatchFetchLimit();
+
+    // if not value, default will be 1
+    if (defaultBatchFetchLimit == 0) {
+      defaultBatchFetchLimit = FETCH_LIMIT;
+    }
+    return defaultBatchFetchLimit;
   }
 }

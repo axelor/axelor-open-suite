@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineQuery;
 import com.axelor.apps.account.db.MoveLineQueryLine;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.repo.MoveLineQueryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.MoveLineQueryService;
@@ -65,20 +64,22 @@ public class MoveLineQueryController {
       MoveLineQuery moveLineQuery = request.getContext().asType(MoveLineQuery.class);
       BigDecimal selectedCreditTotal = BigDecimal.ZERO;
       BigDecimal selectedDebitTotal = BigDecimal.ZERO;
-      BigDecimal selectedBalanceTotal = BigDecimal.ZERO;
 
       for (MoveLineQueryLine moveLineQueryLine : moveLineQuery.getMoveLineQueryLineList()) {
         if (moveLineQueryLine.getIsSelected()) {
           MoveLine moveLine = moveLineQueryLine.getMoveLine();
-          selectedCreditTotal = selectedCreditTotal.add(moveLine.getCredit());
-          selectedDebitTotal = selectedDebitTotal.add(moveLine.getDebit());
+
+          if (moveLine.getCredit().signum() > 0) {
+            selectedCreditTotal = selectedCreditTotal.add(moveLine.getAmountRemaining().abs());
+          }
+
+          if (moveLine.getDebit().signum() > 0) {
+            selectedDebitTotal = selectedDebitTotal.add(moveLine.getAmountRemaining());
+          }
         }
       }
-      selectedBalanceTotal = selectedDebitTotal.subtract(selectedCreditTotal);
 
-      response.setValue("$selectedDebit", selectedDebitTotal);
-      response.setValue("$selectedCredit", selectedCreditTotal);
-      response.setValue("$selectedBalance", selectedBalanceTotal);
+      BigDecimal selectedBalanceTotal = selectedDebitTotal.subtract(selectedCreditTotal);
 
       String balanceTitle;
       if (selectedBalanceTotal.signum() > 0) {
@@ -88,6 +89,10 @@ public class MoveLineQueryController {
       } else {
         balanceTitle = I18n.get("Balance");
       }
+
+      response.setValue("$selectedDebit", selectedDebitTotal);
+      response.setValue("$selectedCredit", selectedCreditTotal);
+      response.setValue("$selectedBalance", selectedBalanceTotal);
       response.setAttr("$selectedBalance", "title", balanceTitle);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -97,7 +102,6 @@ public class MoveLineQueryController {
   public void massReconcile(ActionRequest request, ActionResponse response) {
     try {
       MoveLineQuery moveLineQuery = request.getContext().asType(MoveLineQuery.class);
-      moveLineQuery = Beans.get(MoveLineQueryRepository.class).find(moveLineQuery.getId());
       List<MoveLine> moveLineList = new ArrayList<>();
       if (!ObjectUtils.isEmpty(moveLineQuery.getMoveLineQueryLineList())) {
         List<MoveLine> moveLineSelectedList =
@@ -123,7 +127,6 @@ public class MoveLineQueryController {
   public void massUnreconcile(ActionRequest request, ActionResponse response) {
     try {
       MoveLineQuery moveLineQuery = request.getContext().asType(MoveLineQuery.class);
-      moveLineQuery = Beans.get(MoveLineQueryRepository.class).find(moveLineQuery.getId());
       List<Reconcile> reconcileList = new ArrayList<>();
       if (!ObjectUtils.isEmpty(moveLineQuery.getMoveLineQueryLineList())) {
         List<MoveLine> moveLineSelectedList =

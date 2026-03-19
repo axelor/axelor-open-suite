@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,8 +25,11 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.cart.CartProductService;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
@@ -36,7 +39,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -55,18 +58,18 @@ public class StockMoveLineController {
 
     BigDecimal qty = BigDecimal.ZERO;
     int scale = appBaseService.getNbDecimalDigitForQty();
-
+    StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
     if (moveLines != null) {
       if (newKitQty.compareTo(BigDecimal.ZERO) != 0) {
         for (StockMoveLine line : moveLines) {
           qty = (line.getQty().divide(oldKitQty, scale, RoundingMode.HALF_UP)).multiply(newKitQty);
           line.setQty(qty.setScale(scale, RoundingMode.HALF_UP));
-          line.setRealQty(qty.setScale(scale, RoundingMode.HALF_UP));
+          stockMoveLineService.fillRealQuantities(line, line.getStockMove(), line.getQty());
         }
       } else {
         for (StockMoveLine line : moveLines) {
           line.setQty(qty.setScale(scale, RoundingMode.HALF_UP));
-          line.setRealQty(qty.setScale(scale, RoundingMode.HALF_UP));
+          stockMoveLineService.fillRealQuantities(line, line.getStockMove(), line.getQty());
         }
       }
     }
@@ -224,8 +227,7 @@ public class StockMoveLineController {
 
       if (!context.containsKey("_ids")) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(AccountExceptionMessage.CUT_OFF_BATCH_NO_LINE));
+            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(AccountExceptionMessage.BATCH_NO_LINE));
       }
 
       List<Long> ids =
@@ -239,14 +241,25 @@ public class StockMoveLineController {
 
       if (CollectionUtils.isEmpty(ids)) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(AccountExceptionMessage.CUT_OFF_BATCH_NO_LINE));
+            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(AccountExceptionMessage.BATCH_NO_LINE));
       } else {
         Batch batch = Beans.get(StockMoveLineServiceSupplychain.class).validateCutOffBatch(ids, id);
         response.setInfo(batch.getComments());
       }
 
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void addToCart(ActionRequest request, ActionResponse response) {
+    try {
+      StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+      Product product = stockMoveLine.getProduct();
+      Beans.get(CartProductService.class).addToCart(product);
+      response.setNotify(
+          String.format(I18n.get(SaleExceptionMessage.PRODUCT_ADDED_TO_CART), product.getName()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
