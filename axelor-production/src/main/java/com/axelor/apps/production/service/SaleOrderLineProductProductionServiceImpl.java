@@ -176,6 +176,7 @@ public class SaleOrderLineProductProductionServiceImpl
       }
       saleOrderLineMap.put("subSaleOrderLineList", saleOrderLine.getSubSaleOrderLineList());
       saleOrderLineMap.put("saleOrderLineDetailsList", saleOrderLine.getSaleOrderLineDetailsList());
+      saleOrderLineMap.put("bomNoProdProcessWarning", saleOrderLine.getBomNoProdProcessWarning());
     }
     return saleOrderLineMap;
   }

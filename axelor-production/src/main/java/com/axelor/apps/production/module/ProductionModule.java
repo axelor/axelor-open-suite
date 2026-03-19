@@ -42,6 +42,7 @@ import com.axelor.apps.production.db.repo.RawMaterialRequirementProductionReposi
 import com.axelor.apps.production.db.repo.RawMaterialRequirementRepository;
 import com.axelor.apps.production.db.repo.SaleOrderLineDetailsManagementRepository;
 import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
+import com.axelor.apps.production.db.repo.SaleOrderLineProductionRepository;
 import com.axelor.apps.production.db.repo.StockMoveLineProductionRepository;
 import com.axelor.apps.production.db.repo.StockMoveProductionRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeManagementRepository;
@@ -311,6 +312,7 @@ import com.axelor.apps.stock.db.repo.ProductCompanyStockRepository;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.repo.MrpLineManagementRepository;
+import com.axelor.apps.supplychain.db.repo.SaleOrderLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
 import com.axelor.apps.supplychain.service.ConfiguratorCheckServiceSupplychainImpl;
@@ -457,6 +459,7 @@ public class ProductionModule extends AxelorModule {
     bind(SaleOrderLineBomSyncService.class).to(SaleOrderLineBomSyncServiceImpl.class);
     bind(SaleOrderLineDetailsService.class).to(SaleOrderLineDetailsServiceImpl.class);
     bind(SaleOrderLineDetailsRepository.class).to(SaleOrderLineDetailsManagementRepository.class);
+    bind(SaleOrderLineSupplychainRepository.class).to(SaleOrderLineProductionRepository.class);
     bind(SaleOrderLineDetailsBomService.class).to(SaleOrderLineDetailsBomServiceImpl.class);
     bind(SaleOrderLineDetailsBomLineMappingService.class)
         .to(SaleOrderLineDetailsBomLineMappingServiceImpl.class);
