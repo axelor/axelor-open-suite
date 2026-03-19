@@ -26,6 +26,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 public interface ManufOrderStockMoveService {
 
@@ -110,5 +111,6 @@ public interface ManufOrderStockMoveService {
 
   public List<Long> getOutgoingStockMoves(ManufOrder manufOrder);
 
-  void updatePrices(ManufOrder manufOrder, BigDecimal costPrice) throws AxelorException;
+  void updatePrices(ManufOrder manufOrder, BigDecimal costPrice, Set<Long> stockMoveIds)
+      throws AxelorException;
 }
