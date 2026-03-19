@@ -67,6 +67,7 @@ import java.math.RoundingMode;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService {
@@ -210,6 +211,13 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       }
     }
 
+    // Capture planned outgoing stock move IDs before finish() realizes them,
+    // to avoid re-processing stock moves already realized in previous partial finishes.
+    Set<Long> plannedOutMoveIds =
+        manufOrder.getOutStockMoveList().stream()
+            .filter(sm -> sm.getStatusSelect() != StockMoveRepository.STATUS_REALIZED)
+            .map(StockMove::getId)
+            .collect(Collectors.toSet());
     manufOrderStockMoveService.finish(manufOrder);
 
     // create cost sheet
@@ -241,7 +249,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       productCompanyService.set(
           product, "lastProductionPrice", manufOrder.getBillOfMaterial().getCostPrice(), company);
     }
-    manufOrderStockMoveService.updatePrices(manufOrder, costPrice);
+    manufOrderStockMoveService.updatePrices(manufOrder, costPrice, plannedOutMoveIds);
 
     manufOrder.setRealEndDateT(
         Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
@@ -341,6 +349,14 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         }
       }
     }
+
+    // Capture planned outgoing stock move IDs before partialFinish() realizes them,
+    // to avoid re-processing stock moves already realized in previous partial finishes.
+    Set<Long> plannedOutMoveIds =
+        manufOrder.getOutStockMoveList().stream()
+            .filter(sm -> sm.getStatusSelect() != StockMoveRepository.STATUS_REALIZED)
+            .map(StockMove::getId)
+            .collect(Collectors.toSet());
     manufOrderStockMoveService.partialFinish(manufOrder);
     CostSheet costSheet =
         Beans.get(CostSheetService.class)
@@ -349,7 +365,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
                 CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
                 Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
     manufOrderStockMoveService.updatePrices(
-        manufOrder, computeOneUnitProductionPrice(manufOrder, costSheet));
+        manufOrder, computeOneUnitProductionPrice(manufOrder, costSheet), plannedOutMoveIds);
     return sendPartialFinishMail(manufOrder);
   }
 
