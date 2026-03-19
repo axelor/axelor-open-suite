@@ -1,3 +1,0 @@
----
-title: "Reconcile: fixed reconciliation of tax move lines when partner is not set on OD moves."
-module: axelor-account

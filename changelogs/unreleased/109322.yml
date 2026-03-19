@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed project not being set on invoice lines when generating an advance payment invoice."
-module: axelor-business-project
