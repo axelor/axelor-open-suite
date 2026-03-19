@@ -88,11 +88,7 @@ public class BankReconciliationBalanceComputationServiceImpl
     BigDecimal statementOngoingReconciledBalance = BigDecimal.ZERO;
     BigDecimal movesOngoingReconciledBalance = BigDecimal.ZERO;
 
-    bankReconciliations =
-        bankReconciliationRepository
-            .findByBankDetails(bankReconciliation.getBankDetails())
-            .order("id")
-            .fetch(limit, offset);
+    bankReconciliations = getBankReconciliations(bankReconciliation, limit, offset);
     if (bankReconciliations.size() != 0) {
       statementReconciledLineBalance =
           currencyScaleService.getScaledValue(
@@ -120,11 +116,7 @@ public class BankReconciliationBalanceComputationServiceImpl
       }
       offset += limit;
       JPA.clear();
-      bankReconciliations =
-          bankReconciliationRepository
-              .findByBankDetails(bankReconciliation.getBankDetails())
-              .order("id")
-              .fetch(limit, offset);
+      bankReconciliations = getBankReconciliations(bankReconciliation, limit, offset);
     } while (bankReconciliations.size() != 0);
     JPA.clear();
 
@@ -265,6 +257,20 @@ public class BankReconciliationBalanceComputationServiceImpl
       }
     }
     return currencyScaleService.getScaledValue(brl, movesOngoingReconciledBalance);
+  }
+
+  protected List<BankReconciliation> getBankReconciliations(
+      BankReconciliation bankReconciliation, int limit, int offset) {
+    if (bankReconciliation.getStatusSelect() == BankReconciliationRepository.STATUS_DRAFT) {
+      return bankReconciliationRepository
+          .all()
+          .filter("self.bankDetails = :bankDetails AND self.statusSelect = :statusSelect")
+          .bind("bankDetails", bankReconciliation.getBankDetails())
+          .bind("statusSelect", BankReconciliationRepository.STATUS_DRAFT)
+          .order("id")
+          .fetch(limit, offset);
+    }
+    return offset == 0 ? List.of(bankReconciliation) : List.of();
   }
 
   protected BigDecimal getConvertedAmount(BigDecimal value, BankReconciliation bankReconciliation)
