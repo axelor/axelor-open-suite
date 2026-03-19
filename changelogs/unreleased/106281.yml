@@ -1,0 +1,6 @@
+---
+title: "Project: removed invoicing config booleans from project form."
+module: axelor-project
+developer: |
+ Script to remove the unused action : 
+ "DELETE FROM meta_action WHERE name = 'action-project-record-manage-timespent-reset-values';"
