@@ -545,7 +545,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (stockLocationLineList != null) {
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
 
-        BigDecimal qty = stockLocationLine.getFutureQty();
+        BigDecimal qty =
+            unitConversionService.convert(
+                stockLocationLine.getUnit(),
+                stockMoveLine.getUnit(),
+                stockLocationLine.getFutureQty(),
+                appBaseService.getNbDecimalDigitForQty(),
+                product);
         if (stockMoveLine.getQty().compareTo(qty) > 0) {
           this.splitStockMoveLine(stockMoveLine, qty, stockLocationLine.getTrackingNumber());
         } else {
