@@ -1,5 +1,0 @@
----
-title: "Business Project: fixed an issue where the project closing control checked for pending receptions even when supplier arrivals management on purchase orders was disabled."
-module: axelor-business-project
-developer: |
-  Added AppSupplychainService to BusinessProjectClosingControlServiceImpl contructor

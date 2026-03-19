@@ -1,9 +1,0 @@
----
-title: "Production: fixed wrong negative WAP calculation on manufacturing order finish after partial finish."
-module: axelor-production
-developer: |
-  `ManufOrderStockMoveService.updatePrices(ManufOrder, BigDecimal)` has been removed.
-  It is replaced by `updatePrices(ManufOrder, BigDecimal, Set<Long> stockMoveIds)`, which only
-  processes the outgoing stock moves whose IDs are provided. This prevents re-processing stock
-  moves already realized in previous partial finishes, which could cause a negative WAP.
-  Client overrides of the old method must be migrated to the new signature.
