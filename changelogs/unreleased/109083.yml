@@ -1,0 +1,5 @@
+---
+title: "Manufacturing order: fixed incorrect subcontracting cost and unit price on outgoing stock move during partial finish."
+module: axelor-production
+developer: |
+  `CostSheetServiceImpl` constructor now requires an additional `StockMoveLineRepository` parameter.

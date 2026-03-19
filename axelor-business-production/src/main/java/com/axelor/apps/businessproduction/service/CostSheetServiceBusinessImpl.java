@@ -29,6 +29,7 @@ import com.axelor.apps.production.service.ProdProcessLineComputationService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetLineService;
 import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -49,14 +50,16 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
       AppBaseService appBaseService,
       BillOfMaterialRepository billOfMaterialRepo,
       CostSheetLineService costSheetLineService,
-      UnitConversionService unitConversionService) {
+      UnitConversionService unitConversionService,
+      StockMoveLineRepository stockMoveLineRepository) {
     super(
         prodProcessLineComputationService,
         appProductionService,
         appBaseService,
         billOfMaterialRepo,
         costSheetLineService,
-        unitConversionService);
+        unitConversionService,
+        stockMoveLineRepository);
   }
 
   @Override
