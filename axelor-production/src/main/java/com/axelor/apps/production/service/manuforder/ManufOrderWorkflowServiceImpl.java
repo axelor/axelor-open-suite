@@ -31,10 +31,13 @@ import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.production.db.CostSheet;
+import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProductionConfig;
+import com.axelor.apps.production.db.repo.CostSheetLineRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
@@ -212,16 +215,17 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     manufOrder = manufOrderStockMoveService.finish(manufOrder);
 
     // create cost sheet
-    Beans.get(CostSheetService.class)
-        .computeCostPrice(
-            manufOrder,
-            CostSheetRepository.CALCULATION_END_OF_PRODUCTION,
-            Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
+    CostSheet costSheet =
+        Beans.get(CostSheetService.class)
+            .computeCostPrice(
+                manufOrder,
+                CostSheetRepository.CALCULATION_END_OF_PRODUCTION,
+                Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
 
     // update price in product
     Product product = manufOrder.getProduct();
     Company company = manufOrder.getCompany();
-    BigDecimal costPrice = computeOneUnitProductionPrice(manufOrder);
+    BigDecimal costPrice = computeOneUnitProductionPrice(manufOrder, costSheet);
 
     if (((Integer) productCompanyService.get(product, "realOrEstimatedPriceSelect", company))
         == ProductRepository.PRICE_METHOD_FORECAST) {
@@ -282,6 +286,27 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     }
   }
 
+  /**
+   * Return the cost price for one unit in a manufacturing order, using the produced quantity from
+   * the given cost sheet. This ensures the unit price matches the batch produced in the cost sheet.
+   */
+  protected BigDecimal computeOneUnitProductionPrice(ManufOrder manufOrder, CostSheet costSheet) {
+    BigDecimal producedQty =
+        costSheet.getCostSheetLineList().stream()
+            .filter(
+                l ->
+                    l.getTypeSelect() == CostSheetLineRepository.TYPE_PRODUCED_PRODUCT
+                        && manufOrder.getProduct().equals(l.getProduct()))
+            .map(CostSheetLine::getConsumptionQty)
+            .findFirst()
+            .orElse(BigDecimal.ZERO);
+    if (producedQty.signum() != 0) {
+      int scale = Beans.get(AppProductionService.class).getNbDecimalDigitForUnitPrice();
+      return manufOrder.getCostPrice().divide(producedQty, scale, RoundingMode.HALF_UP);
+    }
+    return BigDecimal.ZERO;
+  }
+
   protected BigDecimal computeRealProducedQty(ManufOrder manufOrder) {
     if (ObjectUtils.isEmpty(manufOrder.getProducedStockMoveLineList())) {
       return manufOrder.getQty();
@@ -319,12 +344,14 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       }
     }
     manufOrder = manufOrderStockMoveService.partialFinish(manufOrder);
-    Beans.get(CostSheetService.class)
-        .computeCostPrice(
-            manufOrder,
-            CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
-            Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
-    manufOrderStockMoveService.updatePrices(manufOrder, computeOneUnitProductionPrice(manufOrder));
+    CostSheet costSheet =
+        Beans.get(CostSheetService.class)
+            .computeCostPrice(
+                manufOrder,
+                CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
+                Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
+    manufOrderStockMoveService.updatePrices(
+        manufOrder, computeOneUnitProductionPrice(manufOrder, costSheet));
     return sendPartialFinishMail(manufOrder);
   }
 
