@@ -268,6 +268,12 @@
           icon="fa-plus" title="Generate tax lines"
           showIf="[1,2,5].includes(statusSelect) &amp;&amp; journal != null &amp;&amp; [1,2,4].includes(journal.journalType.technicalTypeSelect) &amp;&amp; [3,4,7].includes(functionalOriginSelect)"
           onClick="action-move-method-generate-tax-lines"/>
+        <field name="$invoicingTag" showTitle="false" hidden="true" showIf="invoice != null"
+          readonly="true" colSpan="12">
+          <viewer>
+            <![CDATA[<><Badge style={{ backgroundColor: "#EF9D3F" }}>{_t('Warning: this move comes from an invoice, and modifying it may cause errors during its accounting.')}</Badge></>]]>
+          </viewer>
+        </field>
         <panel-related name="moveLineListPanel"
           showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
           colSpan="12" height="20" field="moveLineList" form-view="move-line-move-form"
