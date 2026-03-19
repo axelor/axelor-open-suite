@@ -1,3 +1,19 @@
+## [8.1.43] (2026-03-19)
+
+### Fixes
+#### Account
+
+* Move line: ensure partner is required in grid view when account uses partner balance, consistent with form view.
+
+#### Bank Payment
+
+* Bank Order: fixed SEPA file generation to use company currency amount instead of bank order amount in InstdAmt.
+
+#### Human Resource
+
+* Expense: fixed distance computation in certain cases.
+* Timesheet: fixed wrong computation of timesheet lines generated from leaves for half days.
+
 ## [8.1.42] (2026-02-19)
 
 ### Fixes
@@ -2019,6 +2035,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.43]: https://github.com/axelor/axelor-open-suite/compare/v8.1.42...v8.1.43
 [8.1.42]: https://github.com/axelor/axelor-open-suite/compare/v8.1.41...v8.1.42
 [8.1.41]: https://github.com/axelor/axelor-open-suite/compare/v8.1.40...v8.1.41
 [8.1.40]: https://github.com/axelor/axelor-open-suite/compare/v8.1.39...v8.1.40
