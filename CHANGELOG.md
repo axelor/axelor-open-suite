@@ -1,3 +1,162 @@
+## [9.0.5] (2026-03-19)
+
+### Fixes
+#### Base
+
+* Update Axelor Open Platform to 8.1.1
+* Product: fixed an issue on product creation if serial number already existed.
+* Demo data: added missing weight unit conversions (kg to g, kg to mg) in English CSV.
+* Partner: fixed address created via API SIRENE not appearing on reports.
+* Fixed internal errors caused by invalid relation-id query comparisons in multiple references.
+* Update studio dependency to 4.0.4
+
+#### Account
+
+* Accounting config template: fixed sequences not being linked to journals when importing chart of accounts for a new company.
+* Move line: ensure partner is required in grid view when account uses partner balance, consistent with form view.
+* Move: fixed tax validation exception raised when reversing a move with reverse charge tax.
+* Move line: fixed vatSystemSelect readonly condition on tax account change.
+* Reconcile: fixed reconciliation of tax move lines when partner is not set on OD moves.
+* Use the account config of the company in actions
+* Move: fixed Generate tax lines button visible for incompatible functional origins.
+* Payment session: fixed bill of exchange session with credit note compensation losing remaining invoice term amount.
+* Invoice: fixed the financial discount account configuration error on payment when no financial discount is used.
+* Move/InvoiceTerm: fixed due date propagation for multiple invoice terms when editing move line due date.
+* Invoice: hide the invoice terms panel on advance payment invoice view.
+* Move: added a warning message when the move comes from an invoice.
+
+#### Bank Payment
+
+* Bank reconciliation: improved automatic reconciliation performance.
+* Bank Order: fixed SEPA file generation to use company currency amount instead of bank order amount in InstdAmt.
+* Payment session: fixed payment moves not generated when auto-confirm bank order is enabled with bank order confirmation accounting trigger.
+
+#### Budget
+
+* Sale order: Improved action 'action-budget-sale-order-method-fill-budget-str'
+
+#### Contract
+
+* Contract: fixed prorata ratio computation when invoicing period is shorter than invoicing duration.
+
+#### Human Resource
+
+* Timesheet line: fixed activity error when product is not passed.
+* Expense: fixed payment move not being generated immediately when the payment mode uses bank order with immediate accounting trigger.
+* Timesheet: fixed missing product field in lines generation wizard when activity is disabled.
+* Employee: fixed employee planning button being displayed when axelor-business-production module is not installed.
+* Expense type: fixed an error when creating an expense product while product codes are generated from categories.
+* Timesheet: fixed wrong computation of timesheet lines generated from leaves for half days.
+* ProjectTask/Planning: added sprint planning management on budgeted time change in planning panel
+
+#### Production
+
+* Manufacturing order: fixed consume stock moves not generated for operation orders when consumption is managed per operation.
+* Sale order / Prod process: fix NPE when BoM has no production process.
+* Manuf order: fixed error when planning an order that has no operations.
+* Sale order line: fixed NPE when changing bill of material outside of tree-editable view.
+* Manufacturing order: fixed an error when merging manufacturing orders with automatic planning after merge enabled.
+* Outsourcing purchase orders: fixed supplier selection to only show subcontractors.
+* MRP: fixed NPE during CBN process when bill of material or production process is missing.
+* Manufacturing order: fixed work center change on operation order.
+* Manufacturing order: fixed incorrect subcontracting cost and unit price on outgoing stock move during partial finish.
+* Cost sheet: fixed inconsistent human cost valuation during final production cost calculation.
+* Manufacturing Order: fixed incorrect unit price computed on outgoing stock move when produced quantity differs from planned quantity.
+* Manuf order: fixed an issue where planning a manufacturing order generated multiple consumed stock move lines per tracking number when the bill of materials used a different unit than the product's stock unit.
+* Cost sheet: fixed produced ratio when production is declared multiple times on the same day.
+* Sale order: fixed an issue where sub-lines of 3rd level and beyond were not generated when selecting a product with a multi-level BOM.
+* Production process: fixed number of decimals digits for BOM not taken into account while managing consumed product on phases.
+* Production: fixed wrong negative WAP calculation on manufacturing order finish after partial finish.
+
+#### Project
+
+* Project: removed invoicing config booleans from project form.
+* Project: made custom field type readonly when already used on existing tasks, and reset selection when changing to a non-select type.
+* Project: fixed custom field selection items not being saved after initial creation.
+* Project task: fixed the issue with the start date when a task is created using a task template that has a delay to start.
+
+#### Purchase
+
+* Message: added purchase order in related to selection.
+
+#### Sale
+
+* Sale order: fixed global discount calculation when sale order has total tax included.
+* Partner: fixed error on customer form when sales product has null name.
+* Sale order: fixed recalculate prices resetting unit and WT prices to zero when editable tree is enabled.
+* Sale order: fixed reserved quantity not aligned with order line quantity when generating sale order from cart.
+* Cart: filtered product selection to only show sellable products.
+
+#### Stock
+
+* Stock move: fixed availability status computed on expected quantity instead of real quantity.
+* StockMove/StockLocation : fixed the future quantity error when using the split tracking number configuration
+* Tracking number: fixed perishable and warranty settings not being pre-filled when manually creating a tracking number from a stock move line.
+* Inventory: fixed an error occurring when exporting an inventory with lines having no real quantity filled in.
+* Sequence: fixed invalid codeSelect values in demo data CSV preventing import of tracking number sequences and accounting report sequence.
+* Stock move: fixed future qty computation to use expected qty instead of real qty.
+
+#### Supply Chain
+
+* Stock move: fixed the currency when creating a stock move from a purchase or sale order.
+* Stock move: fixed error when opening a stock move with no linked sale or purchase orders.
+* Supply chain: fixed demo data import failure caused by empty interco status select fields in AppSupplychain CSV.
+* Sale order line: fixed an issue where duplicating a line would copy its delivery and invoicing state.
+
+#### Talent
+
+* Job application: fixed the visibility of actions panel.
+
+#### Intervention
+
+* Intervention: fixed error when generating an intervention from a contract when the intervention type is configured to automatically generate a customer request.
+
+
+### Developer
+
+#### Base
+
+PartnerGenerateServiceImpl constructor now takes an additional AddressRepository parameter.
+
+#### Human Resource
+
+TimesheetLineGenerationService.generateLines() now takes an additional boolean showActivity parameter.
+
+---
+
+Added LeaveRequestPlanningService and WeeklyPlanningService in the LeaveRequestComputeLeaveHoursServiceImpl constructor
+
+#### Production
+
+Changed constructor of `OperationOrderPlanningCommonService`: added `OperationOrderStockMoveService` parameter.
+
+---
+
+`CostSheetServiceImpl` constructor now requires an additional `StockMoveLineRepository` parameter.
+
+---
+
+`ManufOrderStockMoveService.updatePrices(ManufOrder, BigDecimal)` has been removed.
+It is replaced by `updatePrices(ManufOrder, BigDecimal, Set<Long> stockMoveIds)`, which only
+processes the outgoing stock moves whose IDs are provided. This prevents re-processing stock
+moves already realized in previous partial finishes, which could cause a negative WAP.
+Client overrides of the old method must be migrated to the new signature.
+
+#### Project
+
+Script to remove the unused action : 
+"DELETE FROM meta_action WHERE name = 'action-project-record-manage-timespent-reset-values';
+
+#### Sale
+
+- Replaced AppBaseService and AppSaleService with ProductSaleDomainService in SaleOrderLineDomainServiceImpl constructor.
+
+#### Stock
+
+- Added StockMoveService to the StockMoveLineServiceImpl constructor.
+- Added StockMoveService to the StockMoveLineServiceSupplychainImpl constructor.
+- Added StockMoveService to the StockMoveLineProductionServiceImpl constructor.
+
 ## [9.0.4] (2026-03-05)
 
 ### Fixes
@@ -590,6 +749,7 @@ Replaced the attrs action `action-purchase-order-line-attrs-delivery-panel` with
 
 * Project: improve task tree management.
 
+[9.0.5]: https://github.com/axelor/axelor-open-suite/compare/v9.0.4...v9.0.5
 [9.0.4]: https://github.com/axelor/axelor-open-suite/compare/v9.0.3...v9.0.4
 [9.0.3]: https://github.com/axelor/axelor-open-suite/compare/v9.0.2...v9.0.3
 [9.0.2]: https://github.com/axelor/axelor-open-suite/compare/v9.0.1...v9.0.2

@@ -110,6 +110,7 @@ import com.axelor.apps.production.service.ProdProductAttrsServiceImpl;
 import com.axelor.apps.production.service.ProdProductService;
 import com.axelor.apps.production.service.ProdProductServiceImpl;
 import com.axelor.apps.production.service.ProductionProductStockLocationServiceImpl;
+import com.axelor.apps.production.service.PurchaseOrderDomainServiceProductionImpl;
 import com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionImpl;
 import com.axelor.apps.production.service.PurchaseOrderTypeSelectProductionServiceImpl;
 import com.axelor.apps.production.service.QIIdentificationProductionServiceImpl;
@@ -297,6 +298,7 @@ import com.axelor.apps.production.service.productionorder.manuforder.SaleOrderLi
 import com.axelor.apps.production.service.productionorder.manuforder.SaleOrderLineMOGenerationSingleLineService;
 import com.axelor.apps.production.service.productionorder.manuforder.SaleOrderLineMOGenerationSingleLineServiceImpl;
 import com.axelor.apps.production.service.saleorder.onchange.SaleOrderOnLineChangeProductionServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderDomainServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectServiceImpl;
 import com.axelor.apps.quality.rest.service.QualityImprovementParseServiceImpl;
 import com.axelor.apps.quality.service.QIIdentificationServiceImpl;
@@ -470,6 +472,7 @@ public class ProductionModule extends AxelorModule {
     bind(SolDetailsBomUpdateService.class).to(SolDetailsBomUpdateServiceImpl.class);
     bind(PurchaseOrderTypeSelectServiceImpl.class)
         .to(PurchaseOrderTypeSelectProductionServiceImpl.class);
+    bind(PurchaseOrderDomainServiceImpl.class).to(PurchaseOrderDomainServiceProductionImpl.class);
     bind(SaleOrderLineDetailsBomSyncService.class).to(SaleOrderLineDetailsBomSyncServiceImpl.class);
     bind(SaleOrderProductionSyncService.class).to(SaleOrderProductionSyncServiceImpl.class);
     bind(TrackingNumberCompanySupplychainServiceImpl.class)

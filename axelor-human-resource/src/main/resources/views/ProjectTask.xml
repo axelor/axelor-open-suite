@@ -41,7 +41,8 @@
     </panel>
     <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
       showIf="project.isShowPlanning">
-      <field name="budgetedTime" colSpan="4"/>
+      <field name="budgetedTime" colSpan="4"
+        onChange="action-project-task-group-sprint-onchange"/>
       <field name="timeUnit" colSpan="4" readonlyIf="parentTask"
         onSelect="action-project-task-attrs-set-time-unit-domain"/>
       <spacer name="budgetedTimeSpacer" colSpan="4"/>
