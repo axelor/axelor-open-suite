@@ -91,6 +91,8 @@ import com.axelor.apps.businessproject.service.TimesheetProjectInvoiceServiceImp
 import com.axelor.apps.businessproject.service.TimesheetProjectPPTServiceImpl;
 import com.axelor.apps.businessproject.service.TimesheetProjectService;
 import com.axelor.apps.businessproject.service.TimesheetProjectServiceImpl;
+import com.axelor.apps.businessproject.service.TimesheetWorkflowBusinessProjectService;
+import com.axelor.apps.businessproject.service.TimesheetWorkflowBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.WorkflowCancelServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowValidationServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
@@ -140,6 +142,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowServiceImpl;
 import com.axelor.apps.project.service.ProjectMenuServiceImpl;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskComputeServiceImpl;
@@ -253,5 +256,8 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ProjectTaskComputeServiceImpl.class)
         .to(ProjectTaskComputeBusinessProjectServiceImpl.class);
     bind(MoveLineCreateServiceImpl.class).to(MoveLineCreateBusinessProjectServiceImpl.class);
+    bind(TimesheetWorkflowBusinessProjectService.class)
+        .to(TimesheetWorkflowBusinessProjectServiceImpl.class);
+    bind(TimesheetWorkflowServiceImpl.class).to(TimesheetWorkflowBusinessProjectServiceImpl.class);
   }
 }

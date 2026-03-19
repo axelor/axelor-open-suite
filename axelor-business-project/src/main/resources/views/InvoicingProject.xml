@@ -147,6 +147,7 @@
     <view name="timesheet-line-project-form" type="form"/>
     <domain>self.id IN (:list) </domain>
     <context name="list" expr="eval: logTimesSet.collect{it.id}"/>
+    <context name="_isInvoiceVentilated" expr="eval: invoice?.statusSelect == 3"/>
   </action-view>
 
   <search-filters name="invoicing-project-filters"

@@ -8,30 +8,33 @@
     onNew="action-timesheet-line-group-project-grid-on-new" orderBy="-date">
     <toolbar>
       <button name="newLineBtn" title="New line" icon="fa-plus"
-        onClick="action-timesheet-line-method-log-time"/>
+        onClick="action-timesheet-line-method-log-time" showIf="!_isInvoiceVentilated"/>
       <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
-        onClick="action-timesheet-line-method-remove-timesheet-lines"/>
+        onClick="action-timesheet-line-method-remove-timesheet-lines" showIf="!_isInvoiceVentilated"/>
     </toolbar>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="projectTask" onChange="action-timesheet-line-method-set-product"
-      form-view="project-task-form" grid-view="project-task-grid"/>
-    <field name="date"/>
+      form-view="project-task-form" grid-view="project-task-grid" readonlyIf="_isInvoiceVentilated"/>
+    <field name="date" readonlyIf="_isInvoiceVentilated"/>
     <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product"
-      widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
-    <field name="hoursDuration" width="62%" min="0.01" title="Duration (hours)"/>
+      widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"
+      readonlyIf="_isInvoiceVentilated"/>
+    <field name="hoursDuration" width="62%" min="0.01" title="Duration (hours)"
+      readonlyIf="_isInvoiceVentilated"/>
     <field name="durationForCustomer" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project')"/>
+      if="__config__.app.isApp('business-project')" readonlyIf="_isInvoiceVentilated"/>
     <field name="toInvoice" readonly="true" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"
+      readonlyIf="_isInvoiceVentilated"/>
     <field name="enableEditor" hidden="true"/>
     <field name="invoiced"/>
     <field name="project" hidden="true"/>
     <button name="updateToInvoiceBtn" title="Update to invoice"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"
-      readonlyIf="invoiced" icon="fa-check-circle"
+      readonlyIf="invoiced || _isInvoiceVentilated" icon="fa-check-circle"
       onClick="action-timesheet-line-method-update-to-invoice"/>
   </grid>
 
@@ -189,7 +192,7 @@
     model="com.axelor.apps.hr.db.TimesheetLine"
     onNew="action-timesheet-line-group-project-form-on-new"
     onLoad="action-timesheet-line-attrs-set-duration-label" width="large">
-    <panel name="overviewPanel" title="Overview">
+    <panel name="overviewPanel" title="Overview" readonlyIf="_isInvoiceVentilated">
       <field name="employee" form-view="employee-form" grid-view="employee-grid"
         canNew="false" canEdit="false" canView="false"/>
       <field name="projectTask" onChange="action-timesheet-line-method-set-product"/>

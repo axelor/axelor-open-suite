@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <form name="timesheet-form" model="com.axelor.apps.hr.db.Timesheet" title="Timesheet"
+    id="project-timesheet-form" extension="true">
+    <extend target="/">
+      <attribute name="onLoad" value="business-action-timesheet-group-onload"/>
+    </extend>
+  </form>
+
+  <action-group name="business-action-timesheet-group-onload">
+    <action name="action-timesheet-group-onload"/>
+    <action name="action-timesheet-method-check-cancel-btn"/>
+  </action-group>
+
+  <action-method name="action-timesheet-method-check-cancel-btn">
+    <call class="com.axelor.apps.businessproject.web.TimesheetBusinessProjectController"
+      method="checkVentilatedInvoice"/>
+  </action-method>
+
+</object-views>
