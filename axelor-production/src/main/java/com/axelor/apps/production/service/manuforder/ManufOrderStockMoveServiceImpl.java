@@ -57,6 +57,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -477,12 +478,16 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   }
 
   @Override
-  public void updatePrices(ManufOrder manufOrder, BigDecimal costPrice) throws AxelorException {
+  public void updatePrices(ManufOrder manufOrder, BigDecimal costPrice, Set<Long> stockMoveIds)
+      throws AxelorException {
     List<StockMove> outStockMoveList = manufOrder.getOutStockMoveList();
     if (ObjectUtils.isEmpty(outStockMoveList)) {
       return;
     }
     for (StockMove stockMove : outStockMoveList) {
+      if (!stockMoveIds.contains(stockMove.getId())) {
+        continue;
+      }
       updatePrices(stockMove, costPrice);
       stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
     }
