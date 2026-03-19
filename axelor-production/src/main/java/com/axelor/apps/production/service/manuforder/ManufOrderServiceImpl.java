@@ -1031,8 +1031,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     } else {
       preFillOperations(mergedManufOrder);
     }
-
-    manufOrderRepo.save(mergedManufOrder);
   }
 
   public boolean canMerge(List<Long> ids) {
