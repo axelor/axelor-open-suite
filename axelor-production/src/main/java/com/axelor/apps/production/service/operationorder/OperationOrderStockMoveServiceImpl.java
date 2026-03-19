@@ -116,24 +116,20 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
                 manufOrder.getWorkshopStockLocation(), stockConfig);
       }
 
+      stockMove.setStockMoveLineList(new ArrayList<>());
+      stockMove.setInOperationOrder(operationOrder);
+
       for (ProdProduct prodProduct : operationOrder.getToConsumeProdProductList()) {
 
         StockMoveLine stockMoveLine =
             this._createStockMoveLine(
                 prodProduct, stockMove, fromStockLocation, virtualStockLocation);
+        stockMoveLine.setConsumedOperationOrder(operationOrder);
+        stockMove.addStockMoveLineListItem(stockMoveLine);
       }
 
-      if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
+      if (!stockMove.getStockMoveLineList().isEmpty()) {
         stockMoveService.plan(stockMove);
-        operationOrder.addInStockMoveListItem(stockMove);
-      }
-
-      // fill here the consumed stock move line list item to manage the
-      // case where we had to split tracked stock move lines
-      if (stockMove.getStockMoveLineList() != null) {
-        for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-          operationOrder.addConsumedStockMoveLineListItem(stockMoveLine);
-        }
       }
     }
   }
@@ -318,6 +314,19 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
         StockMoveLineService.TYPE_IN_PRODUCTIONS,
         fromStockLocation,
         toStockLocation);
+  }
+
+  @Override
+  public boolean hasPlannedConsumeStockMove(OperationOrder operationOrder) {
+    List<StockMove> inStockMoveList = operationOrder.getInStockMoveList();
+    if (inStockMoveList == null) {
+      return false;
+    }
+    return inStockMoveList.stream()
+        .anyMatch(
+            stockMove ->
+                stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
+                    || stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED);
   }
 
   @Override
