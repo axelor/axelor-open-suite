@@ -1,0 +1,3 @@
+---
+title: "AccountConfig: New field penaltyRateNote to separate penalty rate note from legal note"
+module: axelor-account

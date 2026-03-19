@@ -266,6 +266,8 @@
       title="Client box in invoice" translatable="true"/>
     <string name="saleInvoiceLegalNote" large="true" multiline="true"
       title="Legal note on sale invoices" translatable="true"/>
+    <string name="penaltyRateNote" large="true" multiline="true" title="Penalty rate note"
+      translatable="true"/>
     <string name="termsAndConditions" large="true" title="Terms and Conditions"
       translatable="true"/>
     <many-to-one ref="com.axelor.meta.db.MetaFile" name="invoiceWatermark"
@@ -536,6 +538,7 @@
       <field name="displayItemsCategoriesOnPrinting" on="UPDATE"/>
       <field name="invoiceClientBox" on="UPDATE"/>
       <field name="saleInvoiceLegalNote" on="UPDATE"/>
+      <field name="penaltyRateNote" on="UPDATE"/>
       <field name="termsAndConditions" on="UPDATE"/>
       <field name="invoiceWatermark" on="UPDATE"/>
 
