@@ -1,3 +1,34 @@
+## [7.2.63] (2026-03-19)
+
+### Fixes
+#### Account
+
+* Move line: ensure partner is required in grid view when account uses partner balance, consistent with form view.
+* Move: fixed tax validation exception raised when reversing a move with reverse charge tax.
+* Move: fixed Generate tax lines button visible for incompatible functional origins.
+* Invoice: hide the invoice terms panel on advance payment invoice view.
+* Move: added a warning message when the move comes from an invoice.
+
+#### Bank Payment
+
+* Bank Order: fixed SEPA file generation to use company currency amount instead of bank order amount in InstdAmt.
+
+#### Human Resource
+
+* Expense: fixed payment move not being generated immediately when the payment mode uses bank order with immediate accounting trigger.
+* Expense type: fixed an error when creating an expense product while product codes are generated from categories.
+
+#### Production
+
+* Manuf order: fixed an issue where planning a manufacturing order generated multiple consumed stock move lines per tracking number when the bill of materials used a different unit than the product's stock unit.
+* Cost sheet: fixed produced ratio when production is declared multiple times on the same day.
+* Production process: fixed number of decimals digits for BOM not taken into account while managing consumed product on phases.
+
+#### Stock
+
+* Stock move: fixed future qty computation to use expected qty instead of real qty.
+* Stock move: fixed purchase tracking splits for manual tracking assignment.
+
 ## [7.2.62] (2026-03-05)
 
 ### Fixes
@@ -2933,6 +2964,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.63]: https://github.com/axelor/axelor-open-suite/compare/v7.2.62...v7.2.63
 [7.2.62]: https://github.com/axelor/axelor-open-suite/compare/v7.2.61...v7.2.62
 [7.2.61]: https://github.com/axelor/axelor-open-suite/compare/v7.2.60...v7.2.61
 [7.2.60]: https://github.com/axelor/axelor-open-suite/compare/v7.2.59...v7.2.60
