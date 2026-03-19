@@ -130,6 +130,7 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
       if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()
           && bankOrder.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
         try {
+          updatePaymentSessionStatus(paymentSession);
           bankOrderValidationService.confirm(bankOrder);
         } catch (IOException | DatatypeConfigurationException | JAXBException e) {
           throw new AxelorException(
@@ -161,5 +162,12 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
 
     super.processInvoiceTermBillOfExchange(
         paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, invoiceTermLinkWithRefund);
+  }
+
+  @Transactional
+  protected void updatePaymentSessionStatus(PaymentSession paymentSession) {
+    paymentSession = paymentSessionRepo.find(paymentSession.getId());
+    paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_AWAITING_PAYMENT);
+    paymentSessionRepo.save(paymentSession);
   }
 }
