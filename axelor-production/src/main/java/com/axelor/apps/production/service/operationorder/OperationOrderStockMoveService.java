@@ -47,6 +47,8 @@ public interface OperationOrderStockMoveService {
 
   void cancel(OperationOrder operationOrder) throws AxelorException;
 
+  boolean hasPlannedConsumeStockMove(OperationOrder operationOrder);
+
   void createNewConsumedStockMoveLineList(OperationOrder operationOrder, BigDecimal qtyToUpdate)
       throws AxelorException;
 }

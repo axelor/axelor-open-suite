@@ -392,6 +392,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
   @Override
   public void allOpFinished(ManufOrder manufOrder) throws AxelorException {
+    manufOrder = manufOrderRepo.find(manufOrder.getId());
     if (manufOrder.getOperationOrderList().stream()
         .allMatch(
             operationOrder ->
