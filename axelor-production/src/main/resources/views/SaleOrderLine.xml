@@ -15,6 +15,10 @@
       <insert position="after">
         <field name="billOfMaterialLine" hidden="true"/>
         <field name="saleSupplySelect" hidden="true"/>
+        <field name="bomNoProdProcessWarning" hidden="true"/>
+        <button name="bomWarningIconButton" showIf="bomNoProdProcessWarning" onClick=""
+          readonly="true" icon="exclamation-triangle"
+          title="The selected Bill of Materials has no Production Process configured."/>
       </insert>
     </extend>
   </grid>
@@ -51,6 +55,16 @@
           <field name="qtyProduced" x-scale="$nbDecimalDigitForQty" readonly="true"
             colSpan="12"/>
         </panel>
+      </insert>
+    </extend>
+    <extend target="//field[@name='$differentLanguageMessage']">
+      <insert position="after">
+        <field name="bomNoProdProcessWarning" showTitle="false" colSpan="12"
+          showIf="bomNoProdProcessWarning" readonly="true" type="boolean">
+          <viewer>
+            <![CDATA[<>{bomNoProdProcessWarning && <Badge bg="warning">{_t('The selected Bill of Materials has no Production Process configured.')}</Badge>}</>]]>
+          </viewer>
+        </field>
       </insert>
     </extend>
     <extend target="//field[@name='isDeliveryBlocking']">

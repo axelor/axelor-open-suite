@@ -176,6 +176,7 @@ public class SaleOrderLineProductProductionServiceImpl
       }
       saleOrderLineMap.put("subSaleOrderLineList", saleOrderLine.getSubSaleOrderLineList());
       saleOrderLineMap.put("saleOrderLineDetailsList", saleOrderLine.getSaleOrderLineDetailsList());
+      saleOrderLineMap.put("bomNoProdProcessWarning", saleOrderLine.getBomNoProdProcessWarning());
     }
     return saleOrderLineMap;
   }
@@ -203,6 +204,9 @@ public class SaleOrderLineProductProductionServiceImpl
             .stream()
             .filter(Objects::nonNull)
             .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+      }
+      if (billOfMaterial == null || billOfMaterial.getProdProcess() == null) {
+        return;
       }
       saleOrderLineDetailsProdProcessService.addSaleOrderLineDetailsFromProdProcess(
           billOfMaterial.getProdProcess(), saleOrder, saleOrderLine);

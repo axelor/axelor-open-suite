@@ -26,6 +26,13 @@
 		return this.saleSupplySelect != null && (this.saleSupplySelect == 3 || this.saleSupplySelect == 4) && this.billOfMaterial != null;
         ]]>
     </boolean>
+    <boolean name="bomNoProdProcessWarning" transient="true">
+      <![CDATA[
+        return this.billOfMaterial != null
+            && ((this.saleSupplySelect != null && (this.saleSupplySelect == 3 || this.saleSupplySelect == 4)) || this.billOfMaterialLine != null)
+            && this.billOfMaterial.getProdProcess() == null;
+        ]]>
+    </boolean>
 
     <!-- Blocking information -->
     <boolean name="isProductionBlocking" title="Block production"/>
