@@ -1,3 +1,0 @@
----
-title: "Manuf order: fixed an issue where planning a manufacturing order generated multiple consumed stock move lines per tracking number when the bill of materials used a different unit than the product's stock unit."
-module: axelor-production

@@ -1,5 +1,0 @@
----
-title: "Partner: fixed address created via API SIRENE not appearing on reports."
-module: axelor-base
-developer: |
-  PartnerGenerateServiceImpl constructor now takes an additional AddressRepository parameter.

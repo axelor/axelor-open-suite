@@ -1,3 +1,0 @@
----
-title: "Bank Order: fixed SEPA file generation to use company currency amount instead of bank order amount in InstdAmt."
-module: axelor-bank-payment

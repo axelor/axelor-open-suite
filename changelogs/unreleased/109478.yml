@@ -1,3 +1,0 @@
----
-title: "Inventory: fixed an error occurring when exporting an inventory with lines having no real quantity filled in."
-module: axelor-stock

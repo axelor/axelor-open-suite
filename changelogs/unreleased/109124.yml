@@ -1,5 +1,0 @@
----
-title: "Manufacturing order: fixed consume stock moves not generated for operation orders when consumption is managed per operation."
-module: axelor-production
-developer: |
-  Changed constructor of `OperationOrderPlanningCommonService`: added `OperationOrderStockMoveService` parameter.
