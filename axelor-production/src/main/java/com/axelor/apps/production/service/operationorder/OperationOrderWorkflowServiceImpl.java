@@ -56,6 +56,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected OperationOrderService operationOrderService;
   protected OperationOrderPlanningService operationOrderPlanningService;
+  protected ManufOrderRepository manufOrderRepo;
 
   @Inject
   public OperationOrderWorkflowServiceImpl(
@@ -67,7 +68,8 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
       ManufOrderWorkflowService manufOrderWorkflowService,
       OperationOrderService operationOrderService,
       OperationOrderPlanningService operationOrderPlanningService,
-      ManufOrderStockMoveService manufOrderStockMoveService) {
+      ManufOrderStockMoveService manufOrderStockMoveService,
+      ManufOrderRepository manufOrderRepo) {
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.operationOrderRepo = operationOrderRepo;
     this.operationOrderDurationRepo = operationOrderDurationRepo;
@@ -77,6 +79,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     this.operationOrderService = operationOrderService;
     this.operationOrderPlanningService = operationOrderPlanningService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
+    this.manufOrderRepo = manufOrderRepo;
   }
 
   /**
@@ -157,6 +160,8 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
         for (StockMove stockMove : operationOrder.getInStockMoveList()) {
           manufOrderStockMoveService.finishStockMove(stockMove);
         }
+        // Re-attach after potential JPA.clear() triggered by finishStockMove
+        operationOrder = JpaModelHelper.ensureManaged(operationOrder);
 
         StockMove newStockMove =
             operationOrderStockMoveService._createToConsumeStockMove(
@@ -287,8 +292,9 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
 
   @Override
   public void finishAndAllOpFinished(OperationOrder operationOrder) throws AxelorException {
-    ManufOrder manufOrder = operationOrder.getManufOrder();
+    Long manufOrderId = operationOrder.getManufOrder().getId();
     finishProcess(operationOrder);
+    ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
     manufOrderWorkflowService.sendFinishedMail(manufOrder);
   }
 

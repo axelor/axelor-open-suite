@@ -40,6 +40,7 @@ import com.axelor.apps.production.service.productionorder.ProductionOrderService
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDateTime;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceImpl {
@@ -114,7 +115,11 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
 
     operationOrderPlanningService.plan(manufOrder.getOperationOrderList());
 
-    manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
+    // Re-attach after potential JPA.clear() from isConsProOnOperation stock move creation.
+    // Use find() instead of save()/merge() to avoid cascade explosion (32767 columns error).
+    LocalDateTime plannedEndDateT = this.computePlannedEndDateT(manufOrder);
+    manufOrder = manufOrderRepo.find(manufOrder.getId());
+    manufOrder.setPlannedEndDateT(plannedEndDateT);
 
     if (manufOrder.getBillOfMaterial() != null) {
       manufOrder.setUnit(manufOrder.getBillOfMaterial().getUnit());

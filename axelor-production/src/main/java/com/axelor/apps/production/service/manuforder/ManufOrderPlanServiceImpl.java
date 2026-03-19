@@ -133,6 +133,15 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
 
     initFieldsNeededForPlan(manufOrder);
     planSchedulingDates(manufOrder);
+    // Re-attach after potential JPA.clear() from isConsProOnOperation stock move creation.
+    // Use find() instead of save()/merge() to avoid cascade explosion (32767 columns error):
+    // em.merge() on detached ManufOrder cascades through all collections (StockMoveLine
+    // extended in enterprise), generating a SQL query exceeding PostgreSQL column limits.
+    LocalDateTime plannedStartDateT = manufOrder.getPlannedStartDateT();
+    LocalDateTime plannedEndDateT = manufOrder.getPlannedEndDateT();
+    manufOrder = manufOrderRepo.find(manufOrder.getId());
+    manufOrder.setPlannedStartDateT(plannedStartDateT);
+    manufOrder.setPlannedEndDateT(plannedEndDateT);
     manufOrder = updateStatusToPlan(manufOrder);
     return manufOrderRepo.save(manufOrder);
   }
