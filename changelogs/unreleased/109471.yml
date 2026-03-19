@@ -1,3 +1,0 @@
----
-title: "Sale order: fixed recalculate prices resetting unit and WT prices to zero when editable tree is enabled."
-module: axelor-sale

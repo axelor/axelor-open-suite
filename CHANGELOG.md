@@ -1,3 +1,147 @@
+## [8.5.14] (2026-03-19)
+
+### Fixes
+#### Base
+
+* Update Axelor Open Platform to 7.4.9
+* Demo data: added missing weight unit conversions (kg to g, kg to mg) in English CSV.
+* Partner: fixed address created via API SIRENE not appearing on reports.
+* Update studio dependency to 3.5.6
+
+#### Account
+
+* Accounting config template: fixed sequences not being linked to journals when importing chart of accounts for a new company.
+* Move line: ensure partner is required in grid view when account uses partner balance, consistent with form view.
+* Move: fixed tax validation exception raised when reversing a move with reverse charge tax.
+* Move line: fixed vatSystemSelect readonly condition on tax account change.
+* Reconcile: fixed reconciliation of tax move lines when partner is not set on OD moves.
+* Use the account config of the company in actions
+* Move: fixed Generate tax lines button visible for incompatible functional origins.
+* Payment session: fixed bill of exchange session with credit note compensation losing remaining invoice term amount.
+* Invoice: fixed the financial discount account configuration error on payment when no financial discount is used.
+* Move/InvoiceTerm: fixed due date propagation for multiple invoice terms when editing move line due date.
+* Invoice: hide the invoice terms panel on advance payment invoice view.
+* Move: added a warning message when the move comes from an invoice.
+
+#### Bank Payment
+
+* Bank reconciliation: improved automatic reconciliation performance.
+* Bank Order: fixed SEPA file generation to use company currency amount instead of bank order amount in InstdAmt.
+* Payment session: fixed payment moves not generated when auto-confirm bank order is enabled with bank order confirmation accounting trigger.
+
+#### Budget
+
+* Sale order: Improved action 'action-budget-sale-order-method-fill-budget-str'
+
+#### Contract
+
+* Contract: fixed prorata ratio computation when invoicing period is shorter than invoicing duration.
+
+#### Human Resource
+
+* Timesheet line: fixed activity error when product is not passed.
+* Expense: fixed payment move not being generated immediately when the payment mode uses bank order with immediate accounting trigger.
+* Timesheet: fixed missing product field in lines generation wizard when activity is disabled.
+* Employee: fixed employee planning button being displayed when axelor-business-production module is not installed.
+* Expense type: fixed an error when creating an expense product while product codes are generated from categories.
+* Timesheet: fixed wrong computation of timesheet lines generated from leaves for half days.
+* ProjectTask/Planning: added sprint planning management on budgeted time change in planning panel
+
+#### Production
+
+* Manufacturing order: fixed consume stock moves not generated for operation orders when consumption is managed per operation.
+* Sale order / Prod process: fix NPE when BoM has no production process.
+* Manuf order: fixed error when planning an order that has no operations.
+* Sale order line: fixed NPE when changing bill of material outside of tree-editable view.
+* Manufacturing order: fixed an error when merging manufacturing orders with automatic planning after merge enabled.
+* Outsourcing purchase orders: fixed supplier selection to only show subcontractors.
+* MRP: fixed NPE during CBN process when bill of material or production process is missing.
+* Manufacturing order: fixed work center change on operation order.
+* Manufacturing order: fixed incorrect subcontracting cost and unit price on outgoing stock move during partial finish.
+* Cost sheet: fixed inconsistent human cost valuation during final production cost calculation.
+* Manufacturing Order: fixed incorrect unit price computed on outgoing stock move when produced quantity differs from planned quantity.
+* Manuf order: fixed an issue where planning a manufacturing order generated multiple consumed stock move lines per tracking number when the bill of materials used a different unit than the product's stock unit.
+* Cost sheet: fixed produced ratio when production is declared multiple times on the same day.
+* Sale order: fixed an issue where sub-lines of 3rd level and beyond were not generated when selecting a product with a multi-level BOM.
+* Production process: fixed number of decimals digits for BOM not taken into account while managing consumed product on phases.
+
+#### Project
+
+* Project: removed invoicing config booleans from project form.
+* Project: made custom field type readonly when already used on existing tasks, and reset selection when changing to a non-select type.
+* Project: fixed custom field selection items not being saved after initial creation.
+* Project task: fixed the issue with the start date when a task is created using a task template that has a delay to start.
+
+#### Purchase
+
+* Message: added purchase order in related to selection.
+
+#### Sale
+
+* Sale order: fixed global discount calculation when sale order has total tax included.
+* Partner: fixed error on customer form when sales product has null name.
+* Sale order: fixed recalculate prices resetting unit and WT prices to zero when editable tree is enabled.
+* Sale order: fixed reserved quantity not aligned with order line quantity when generating sale order from cart.
+* Cart: filtered product selection to only show sellable products.
+
+#### Stock
+
+* Stock move: fixed availability status computed on expected quantity instead of real quantity.
+* StockMove/StockLocation : fixed the future quantity error when using the split tracking number configuration
+* Tracking number: fixed perishable and warranty settings not being pre-filled when manually creating a tracking number from a stock move line.
+* Inventory: fixed an error occurring when exporting an inventory with lines having no real quantity filled in.
+* Sequence: fixed invalid codeSelect values in demo data CSV preventing import of tracking number sequences and accounting report sequence.
+* Stock move: fixed future qty computation to use expected qty instead of real qty.
+
+#### Supply Chain
+
+* Stock move: fixed the currency when creating a stock move from a purchase or sale order.
+* Stock move: fixed error when opening a stock move with no linked sale or purchase orders.
+* Supply chain: fixed demo data import failure caused by empty interco status select fields in AppSupplychain CSV.
+* Sale order line: fixed an issue where duplicating a line would copy its delivery and invoicing state.
+
+#### Intervention
+
+* Intervention: fixed error when generating an intervention from a contract when the intervention type is configured to automatically generate a customer request.
+
+
+### Developer
+
+#### Base
+
+PartnerGenerateServiceImpl constructor now takes an additional AddressRepository parameter.
+
+#### Human Resource
+
+TimesheetLineGenerationService.generateLines() now takes an additional boolean showActivity parameter.
+
+---
+
+Added LeaveRequestPlanningService and WeeklyPlanningService in the LeaveRequestComputeLeaveHoursServiceImpl constructor
+
+#### Production
+
+Changed constructor of `OperationOrderPlanningCommonService`: added `OperationOrderStockMoveService` parameter.
+
+---
+
+`CostSheetServiceImpl` constructor now requires an additional `StockMoveLineRepository` parameter.
+
+#### Project
+
+Script to remove the unused action : 
+"DELETE FROM meta_action WHERE name = 'action-project-record-manage-timespent-reset-values';
+
+#### Sale
+
+- Replaced AppBaseService and AppSaleService with ProductSaleDomainService in SaleOrderLineDomainServiceImpl constructor.
+
+#### Stock
+
+- Added StockMoveService to the StockMoveLineServiceImpl constructor.
+- Added StockMoveService to the StockMoveLineServiceSupplychainImpl constructor.
+- Added StockMoveService to the StockMoveLineProductionServiceImpl constructor.
+
 ## [8.5.13] (2026-03-05)
 
 ### Fixes
@@ -1617,6 +1761,7 @@ Removed CommonInvoiceService.createInvoiceLinesFromOrder Changed the parameter o
 * Bill of material: added default value for calculation quantity.
 * Manuf order: fixed relation with production order.
 
+[8.5.14]: https://github.com/axelor/axelor-open-suite/compare/v8.5.13...v8.5.14
 [8.5.13]: https://github.com/axelor/axelor-open-suite/compare/v8.5.12...v8.5.13
 [8.5.12]: https://github.com/axelor/axelor-open-suite/compare/v8.5.11...v8.5.12
 [8.5.11]: https://github.com/axelor/axelor-open-suite/compare/v8.5.10...v8.5.11

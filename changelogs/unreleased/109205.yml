@@ -1,3 +1,0 @@
----
-title: "MRP: fixed NPE during CBN process when bill of material or production process is missing."
-module: axelor-production

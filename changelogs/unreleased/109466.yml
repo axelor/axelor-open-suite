@@ -1,3 +1,0 @@
----
-title: "Supply chain: fixed demo data import failure caused by empty interco status select fields in AppSupplychain CSV."
-module: axelor-supplychain
