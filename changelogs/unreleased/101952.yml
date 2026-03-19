@@ -1,3 +1,0 @@
----
-title: "Stock move: fixed future qty computation to use expected qty instead of real qty."
-module: axelor-stock

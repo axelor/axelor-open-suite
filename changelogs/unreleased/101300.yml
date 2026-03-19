@@ -1,5 +1,0 @@
----
-title: "Timesheet: fixed wrong computation of timesheet lines generated from leaves for half days."
-module: axelor-human-resource
-developer: |
- Added LeaveRequestPlanningService and WeeklyPlanningService in the LeaveRequestComputeLeaveHoursServiceImpl constructor

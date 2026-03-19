@@ -1,3 +1,0 @@
----
-title: "Sequence: fixed invalid codeSelect values in demo data CSV preventing import of tracking number sequences and accounting report sequence."
-module: axelor-stock

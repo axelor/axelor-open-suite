@@ -1,3 +1,0 @@
----
-title: "Sale order / Prod process: fix NPE when BoM has no production process."
-module: axelor-production
