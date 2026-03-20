@@ -1,0 +1,5 @@
+---
+title: "Catalog: fixed an issue where the email form was not displayed after sending an email from a catalog."
+module: axelor-crm
+developer: |
+  - CatalogService: changed sendEmail(Catalog, Template, List<Partner>) return type from void to Message.
