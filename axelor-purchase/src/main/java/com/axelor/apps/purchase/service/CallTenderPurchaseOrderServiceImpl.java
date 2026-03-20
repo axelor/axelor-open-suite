@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -136,7 +137,7 @@ public class CallTenderPurchaseOrderServiceImpl implements CallTenderPurchaseOrd
             appBaseService.getTodayDate(company),
             partnerPriceListService.getDefaultPriceList(partner, PriceListRepository.TYPE_PURCHASE),
             partner,
-            null,
+            getTradingName(company),
             null);
     purchaseOrder.setCallTender(callTender);
     return purchaseOrder;
@@ -161,5 +162,13 @@ public class CallTenderPurchaseOrderServiceImpl implements CallTenderPurchaseOrd
     purchaseOrderLine.setPrice(filteredCallTenderOffer.getProposedPrice());
     purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
     return purchaseOrderLine;
+  }
+
+  protected TradingName getTradingName(Company company) {
+    if (appBaseService.getAppBase().getEnableTradingNamesManagement()
+        && !CollectionUtils.isEmpty(company.getTradingNameList())) {
+      return company.getTradingNameList().iterator().next();
+    }
+    return null;
   }
 }

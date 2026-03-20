@@ -80,7 +80,7 @@ public class CallTenderPurchaseOrderSupplychainServiceImpl
             appBaseService.getTodayDate(company),
             partnerPriceListService.getDefaultPriceList(partner, PriceListRepository.TYPE_PURCHASE),
             partner,
-            null,
+            getTradingName(company),
             null);
     purchaseOrder.setCallTender(callTender);
     return purchaseOrder;
