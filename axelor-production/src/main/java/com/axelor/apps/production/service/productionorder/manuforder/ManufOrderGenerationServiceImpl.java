@@ -25,6 +25,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.google.common.base.Strings;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
@@ -64,6 +65,7 @@ public class ManufOrderGenerationServiceImpl implements ManufOrderGenerationServ
 
     if (manufOrder != null) {
       if (saleOrder != null) {
+        saleOrder = JpaModelHelper.ensureManaged(saleOrder);
         manufOrder.addSaleOrderSetItem(saleOrder);
         manufOrder.setClientPartner(saleOrder.getClientPartner());
         manufOrder.setMoCommentFromSaleOrder("");
@@ -72,13 +74,14 @@ public class ManufOrderGenerationServiceImpl implements ManufOrderGenerationServ
         if (!Strings.isNullOrEmpty(saleOrder.getProductionNote())) {
           manufOrder.setMoCommentFromSaleOrder(saleOrder.getProductionNote());
         }
+        saleOrderLine = JpaModelHelper.ensureManaged(saleOrderLine);
         if (saleOrderLine != null
             && !Strings.isNullOrEmpty(saleOrderLine.getLineProductionComment())) {
           manufOrder.setMoCommentFromSaleOrderLine(saleOrderLine.getLineProductionComment());
         }
         manufOrder.setSaleOrderLine(saleOrderLine);
       }
-
+      manufOrderParent = JpaModelHelper.ensureManaged(manufOrderParent);
       manufOrder.setParentMO(manufOrderParent);
     }
     return manufOrder;

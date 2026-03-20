@@ -1,3 +1,0 @@
----
-title: "Stock move line: fixed the real quantity value when 'autoFillDeliveryRealQty' or 'autoFillReceiptRealQty' is disabled in the Supplychain app."
-module: axelor-supplychain

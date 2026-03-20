@@ -18,7 +18,7 @@
       <field name="statusSelect" readonly="true" widget="NavSelect" selection-in="[0,1,2,5]"
         colSpan="12" showTitle="false"/>
       <help colSpan="12" showIf="statusSelect == 1">
-        <![CDATA[The export process may take some time, please refresh the record to see the result.]]>
+        <![CDATA[<>The export process may take some time, please refresh the record to see the result.</>]]>
       </help>
       <field name="description" colSpan="12"/>
       <field name="fetchLimit" widget="Integer" required="true" min="1" colSpan="4"/>

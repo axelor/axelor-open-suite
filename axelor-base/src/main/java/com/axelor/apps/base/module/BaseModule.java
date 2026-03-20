@@ -58,6 +58,8 @@ import com.axelor.apps.base.db.repo.MapViewRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.PriceListLineManagementRepository;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
 import com.axelor.apps.base.db.repo.ProductCompanyBaseRepository;
 import com.axelor.apps.base.db.repo.ProductCompanyRepository;
@@ -153,8 +155,6 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.PartnerServiceImpl;
-import com.axelor.apps.base.service.PaymentModeService;
-import com.axelor.apps.base.service.PaymentModeServiceImpl;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.PfxCertificateCheckService;
@@ -398,8 +398,7 @@ import com.axelor.meta.service.MetaServiceBaseImpl;
 import com.axelor.report.ReportGenerator;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.app.service.AppService;
-import com.axelor.studio.app.service.AppServiceImpl;
+import com.axelor.studio.app.service.ScriptAppServiceImpl;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.axelor.utils.service.translation.TranslationBaseService;
 import com.axelor.utils.service.translation.TranslationBaseServiceImpl;
@@ -465,8 +464,7 @@ public class BaseModule extends AxelorModule {
     bind(AddressRepository.class).to(AddressBaseRepository.class);
     bind(YearRepository.class).to(YearBaseRepository.class);
     bind(YearService.class).to(YearServiceImpl.class);
-    bind(AppServiceImpl.class).to(AppBaseServiceImpl.class);
-    bind(AppService.class).to(AppServiceImpl.class);
+    bind(ScriptAppServiceImpl.class).to(AppBaseServiceImpl.class);
     bind(BankService.class).to(BankServiceImpl.class);
     bind(BankRepository.class).to(BankBaseRepository.class);
     bind(CompanyService.class).to(CompanyServiceImpl.class);
@@ -513,7 +511,6 @@ public class BaseModule extends AxelorModule {
     bind(AdvancedImportRepository.class).to(AdvancedImportBaseRepository.class);
     bind(AuthPac4jUserService.class).to(BaseAuthPac4jUserService.class);
     bind(ImportConfigurationRepository.class).to(ImportConfigurationBaseRepository.class);
-    bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
     bind(ModelEmailLinkService.class).to(ModelEmailLinkServiceImpl.class);
     bind(ProductVariantService.class).to(ProductVariantServiceImpl.class);
     bind(ProductCategoryDomainCreatorService.class)
@@ -646,5 +643,6 @@ public class BaseModule extends AxelorModule {
     bind(MapGoogleService.class).to(MapGoogleServiceImpl.class);
     bind(MapToolService.class).to(MapToolServiceImpl.class);
     bind(PricingLogsObserver.class);
+    bind(PriceListLineRepository.class).to(PriceListLineManagementRepository.class);
   }
 }

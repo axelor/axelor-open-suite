@@ -92,6 +92,8 @@ public class ImportSupplyChain {
 
   @Inject protected PurchaseOrderTypeSelectService purchaseOrderTypeSelectService;
 
+  @Inject protected PurchaseOrderRepository purchaseOrderRepo;
+
   @SuppressWarnings("rawtypes")
   public Object importSupplyChain(Object bean, Map values) {
 
@@ -134,6 +136,7 @@ public class ImportSupplyChain {
           stockMoveService.realize(stockMove);
           stockMove.setRealDate(purchaseOrder.getEstimatedReceiptDate());
         }
+        purchaseOrder = purchaseOrderRepo.find(purchaseOrder.getId());
         purchaseOrder.setValidationDateTime(purchaseOrder.getOrderDate().atStartOfDay());
         purchaseOrder.setValidatedByUser(AuthUtils.getUser());
         purchaseOrder.setSupplierPartner(purchaseOrderService.validateSupplier(purchaseOrder));
@@ -219,6 +222,7 @@ public class ImportSupplyChain {
           }
         }
       }
+      saleOrder = saleOrderRepo.find(saleOrder.getId());
       saleOrderRepo.save(saleOrder);
     } catch (Exception e) {
       TraceBackService.trace(e);

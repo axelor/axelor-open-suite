@@ -38,7 +38,8 @@
       <button name="annualReportBtn" title="Show expenses annual report" showIf="id"
         onClick="action-employee-view-annual-report-wizard"/>
       <button onClick="action-employee-view-employee-planning" name="employeePlanningBtn"
-        title="Employee planning" if="__config__.app.getApp('production')?.getEmployeeScheduling()"/>
+        title="Employee planning" if-module="axelor-business-production"
+        if="__config__.app.getApp('production')?.getEmployeeScheduling()"/>
     </toolbar>
 
     <!-- New employee wizard -->
@@ -134,8 +135,7 @@
 
       <panel colSpan="12">
         <field name="weeklyPlanning" title="Weekly planning" canNew="true" colSpan="4"
-          form-view="weekly-planning-form" grid-view="weekly-planning-grid"
-          domain="self.typeSelect = 1"/>
+          form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
         <field name="publicHolidayEventsPlanning" canEdit="false" colSpan="4"
           form-view="events-planning-form" grid-view="events-planning-grid"/>
         <field name="imposedDayEventsPlanning" canEdit="false" colSpan="4"
@@ -428,8 +428,7 @@
           <panel name="planningPanel" title="Plannings" colSpan="12" canCollapse="true"
             collapseIf="true">
             <field name="weeklyPlanning" title="Weekly planning" canNew="true" colSpan="4"
-              form-view="weekly-planning-form" grid-view="weekly-planning-grid"
-              domain="self.typeSelect = 1"/>
+              form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
             <field name="publicHolidayEventsPlanning" canEdit="false" colSpan="4"
               form-view="events-planning-form" grid-view="events-planning-grid"/>
             <field name="imposedDayEventsPlanning" canEdit="false" colSpan="4"
@@ -789,7 +788,7 @@
     model="com.axelor.apps.hr.db.Timesheet">
     <view type="grid" name="my-timesheets-grid"/>
     <view type="form" name="timesheet-form"/>
-    <domain>self.employee = :id</domain>
+    <domain>self.employee.id = :id</domain>
   </action-view>
 
   <action-method name="action-employee-method-show-annual-report">

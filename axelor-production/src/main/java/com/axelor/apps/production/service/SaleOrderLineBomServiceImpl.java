@@ -45,9 +45,10 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
   protected final BillOfMaterialRepository billOfMaterialRepository;
   protected final BillOfMaterialLineRepository billOfMaterialLineRepository;
   protected final BillOfMaterialLineService billOfMaterialLineService;
-  protected final BillOfMaterialService billOfMaterialService;
   protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
   protected final SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService;
+  protected final SolDetailsBomUpdateService solDetailsBomUpdateService;
+
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -57,17 +58,17 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       BillOfMaterialRepository billOfMaterialRepository,
       BillOfMaterialLineRepository billOfMaterialLineRepository,
       BillOfMaterialLineService billOfMaterialLineService,
-      BillOfMaterialService billOfMaterialService,
       SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
-      SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService) {
+      SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService,
+      SolDetailsBomUpdateService solDetailsBomUpdateService) {
     this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
     this.appSaleService = appSaleService;
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.billOfMaterialLineRepository = billOfMaterialLineRepository;
     this.billOfMaterialLineService = billOfMaterialLineService;
-    this.billOfMaterialService = billOfMaterialService;
     this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
     this.saleOrderLineDetailsProdProcessService = saleOrderLineDetailsProdProcessService;
+    this.solDetailsBomUpdateService = solDetailsBomUpdateService;
   }
 
   @Override
@@ -87,19 +88,28 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
           saleOrderLineBomLineMappingService.mapToSaleOrderLine(billOfMaterialLine, saleOrder);
       if (saleOrderLine != null) {
         BillOfMaterial lineBom = saleOrderLine.getBillOfMaterial();
-        if (saleOrderLine.getIsToProduce()) {
-          saleOrderLineDetailsBomService
-              .createSaleOrderLineDetailsFromBom(lineBom, saleOrder, saleOrderLine)
-              .stream()
-              .filter(Objects::nonNull)
-              .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
-          saleOrderLineDetailsProdProcessService
-              .createSaleOrderLineDetailsFromProdProcess(
-                  lineBom.getProdProcess(), saleOrder, saleOrderLine)
-              .stream()
-              .filter(Objects::nonNull)
-              .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_OPERATION)
-              .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+        if (saleOrderLine.getIsToProduce()
+            && !solDetailsBomUpdateService.isSolDetailsUpdated(
+                saleOrderLine, saleOrderLine.getSaleOrderLineDetailsList())) {
+          if (lineBom != null) {
+            saleOrderLineDetailsBomService
+                .createSaleOrderLineDetailsFromBom(lineBom, saleOrder, saleOrderLine)
+                .stream()
+                .filter(Objects::nonNull)
+                .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+            if (lineBom.getProdProcess() == null) {
+              saleOrderLinesList.add(saleOrderLine);
+              continue;
+            }
+            saleOrderLineDetailsProdProcessService
+                .createSaleOrderLineDetailsFromProdProcess(
+                    lineBom.getProdProcess(), saleOrder, saleOrderLine)
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(
+                    line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_OPERATION)
+                .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+          }
         }
         saleOrderLinesList.add(saleOrderLine);
       }

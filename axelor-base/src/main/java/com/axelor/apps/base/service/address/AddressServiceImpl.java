@@ -115,8 +115,9 @@ public class AddressServiceImpl implements AddressService {
       throws AxelorException {
     Preconditions.checkNotNull(address, I18n.get(BaseExceptionMessage.ADDRESS_CANNOT_BE_NULL));
 
-    if (mapService.isConfigured() && StringUtils.notBlank(address.getFullName())) {
-      Map<String, Object> result = mapService.getMap(address.getFullName());
+    String qString = mapService.getAddressString(address);
+    if (mapService.isConfigured() && StringUtils.notBlank(qString)) {
+      Map<String, Object> result = mapService.getMap(qString);
       if (result == null) {
         address.setIsValidLatLong(false);
         return Optional.empty();

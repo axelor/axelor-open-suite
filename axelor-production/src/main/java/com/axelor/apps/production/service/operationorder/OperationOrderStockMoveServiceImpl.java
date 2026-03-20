@@ -38,6 +38,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -115,24 +116,20 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
                 manufOrder.getWorkshopStockLocation(), stockConfig);
       }
 
+      stockMove.setStockMoveLineList(new ArrayList<>());
+      stockMove.setInOperationOrder(operationOrder);
+
       for (ProdProduct prodProduct : operationOrder.getToConsumeProdProductList()) {
 
         StockMoveLine stockMoveLine =
             this._createStockMoveLine(
                 prodProduct, stockMove, fromStockLocation, virtualStockLocation);
+        stockMoveLine.setConsumedOperationOrder(operationOrder);
+        stockMove.addStockMoveLineListItem(stockMoveLine);
       }
 
-      if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
+      if (!stockMove.getStockMoveLineList().isEmpty()) {
         stockMoveService.plan(stockMove);
-        operationOrder.addInStockMoveListItem(stockMove);
-      }
-
-      // fill here the consumed stock move line list item to manage the
-      // case where we had to split tracked stock move lines
-      if (stockMove.getStockMoveLineList() != null) {
-        for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-          operationOrder.addConsumedStockMoveLineListItem(stockMoveLine);
-        }
       }
     }
   }
@@ -258,6 +255,10 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
             .findFirst();
     if (stockMoveToRealize.isPresent()) {
       manufOrderStockMoveService.finishStockMove(stockMoveToRealize.get());
+      operationOrder = JpaModelHelper.ensureManaged(operationOrder);
+      company = JpaModelHelper.ensureManaged(company);
+      fromStockLocation = JpaModelHelper.ensureManaged(fromStockLocation);
+      toStockLocation = JpaModelHelper.ensureManaged(toStockLocation);
     }
 
     // generate new stock move
@@ -282,6 +283,8 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
     if (!newStockMove.getStockMoveLineList().isEmpty()) {
       // plan the stockmove
       stockMoveService.plan(newStockMove);
+      newStockMove = JpaModelHelper.ensureManaged(newStockMove);
+      operationOrder = JpaModelHelper.ensureManaged(operationOrder);
 
       operationOrder.addInStockMoveListItem(newStockMove);
       newStockMove.getStockMoveLineList().forEach(operationOrder::addConsumedStockMoveLineListItem);
@@ -311,6 +314,19 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
         StockMoveLineService.TYPE_IN_PRODUCTIONS,
         fromStockLocation,
         toStockLocation);
+  }
+
+  @Override
+  public boolean hasPlannedConsumeStockMove(OperationOrder operationOrder) {
+    List<StockMove> inStockMoveList = operationOrder.getInStockMoveList();
+    if (inStockMoveList == null) {
+      return false;
+    }
+    return inStockMoveList.stream()
+        .anyMatch(
+            stockMove ->
+                stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
+                    || stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED);
   }
 
   @Override
@@ -352,6 +368,7 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
 
     stockMoveService.cancel(stockMove);
 
+    operationOrder = JpaModelHelper.ensureManaged(operationOrder);
     // clear all lists from planned lines
     operationOrder
         .getConsumedStockMoveLineList()
@@ -359,6 +376,8 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
             stockMoveLine ->
                 stockMoveLine.getStockMove().getStatusSelect()
                     == StockMoveRepository.STATUS_CANCELED);
+
+    stockMove = JpaModelHelper.ensureManaged(stockMove);
     stockMove.clearStockMoveLineList();
 
     // create a new list
@@ -369,11 +388,12 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
       manufOrderCreateStockMoveLineService._createStockMoveLine(
           prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty, null, null);
       // Update consumed StockMoveLineList with created stock move lines
-      stockMove.getStockMoveLineList().stream()
-          .filter(
-              stockMoveLine1 ->
-                  !operationOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
-          .forEach(operationOrder::addConsumedStockMoveLineListItem);
+      List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        if (!operationOrder.getConsumedStockMoveLineList().contains(stockMoveLine)) {
+          operationOrder.addConsumedStockMoveLineListItem(stockMoveLine);
+        }
+      }
     }
     stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);

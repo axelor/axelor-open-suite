@@ -147,7 +147,9 @@ public class BatchContractInvoicing extends BatchStrategy {
   }
 
   protected void incrementDone(List<Contract> contractsList) {
+    findBatch();
     for (Contract contract : contractsList) {
+      contract = contractRepository.find(contract.getId());
       contract.addBatchSetItem(batch);
       super.incrementDone();
     }

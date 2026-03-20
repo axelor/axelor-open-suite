@@ -513,7 +513,7 @@ public class BudgetServiceImpl implements BudgetService {
           budgetRepository
               .all()
               .filter(
-                  "self.budgetKey != null and self.id != ?1 AND self.globalBudget.statusSelect != ?2",
+                  "self.budgetKey is not null and self.budgetKey != '' and self.id != ?1 AND self.globalBudget.statusSelect != ?2",
                   budget.getId() != null ? budget.getId() : Long.valueOf(0),
                   GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_ARCHIVED)
               .fetch();

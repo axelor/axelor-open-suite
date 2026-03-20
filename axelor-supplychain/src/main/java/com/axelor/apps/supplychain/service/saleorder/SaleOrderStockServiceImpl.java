@@ -66,11 +66,13 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -156,6 +158,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     Map<Pair<String, LocalDate>, List<SaleOrderLine>> saleOrderLineMap =
         getSaleOrderLineMap(saleOrder);
 
+    boolean isTitleLine = saleOrderLineMap.entrySet().size() == 1 ? true : false;
+
     for (Map.Entry<Pair<String, LocalDate>, List<SaleOrderLine>> entry :
         saleOrderLineMap.entrySet()) {
 
@@ -166,7 +170,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       List<SaleOrderLine> saleOrderLineList = entry.getValue();
 
       Optional<StockMove> stockMoveOpt =
-          createStockMove(saleOrder, deliveryAddressStr, estimatedDeliveryDate, saleOrderLineList);
+          createStockMove(
+              saleOrder, deliveryAddressStr, estimatedDeliveryDate, saleOrderLineList, isTitleLine);
       if (!stockMoveOpt.isPresent()) {
         continue;
       }
@@ -182,7 +187,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       SaleOrder saleOrder,
       String deliveryAddressStr,
       LocalDate estimatedDeliveryDate,
-      List<SaleOrderLine> saleOrderLineList)
+      List<SaleOrderLine> saleOrderLineList,
+      boolean isTitleLine)
       throws AxelorException {
     Company company = saleOrder.getCompany();
     StockMove stockMove =
@@ -202,13 +208,26 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               stockConfigService.getStockConfig(company));
     }
 
-    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+    List<SaleOrderLine> saleOrderLines = new ArrayList<>(saleOrderLineList);
+
+    if (isTitleLine && appSupplychainService.getAppSupplychain().getIsTitleLineManaged()) {
+      saleOrderLines.addAll(
+          saleOrder.getSaleOrderLineList().stream()
+              .filter(line -> line.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE)
+              .collect(Collectors.toList()));
+    }
+    saleOrderLines.sort(Comparator.comparing(SaleOrderLine::getSequence));
+
+    for (SaleOrderLine saleOrderLine : saleOrderLines) {
+      if (existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
+        continue;
+      }
       if (saleOrderLine.getProduct() != null) {
         if (saleOrderLineBlockingSupplychainService.isDeliveryBlocked(saleOrderLine)) {
           continue;
         }
         BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
-        if (qty.signum() > 0 && !existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
+        if (qty.signum() > 0) {
           StockLocation fromStockLocation = saleOrder.getStockLocation();
           if (appBaseService.getAppBase().getEnableSiteManagementForStock()
               && appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine()) {
@@ -223,8 +242,17 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               createStockMoveLine(
                   stockMove, saleOrderLine, qty, fromStockLocation, toStockLocation);
           if (stockMoveLine != null) {
-            stockMoveLine.getStockMove().addStockMoveLineListItem(stockMoveLine);
+            stockMove.addStockMoveLineListItem(stockMoveLine);
+            stockMoveLine.setSequence(stockMove.getStockMoveLineList().size());
           }
+        }
+      } else if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE) {
+        StockMoveLine stockMoveLine =
+            stockMoveLineSupplychainService.createStockMoveTitleLine(
+                stockMove, saleOrderLine, null);
+        if (stockMoveLine != null) {
+          stockMove.addStockMoveLineListItem(stockMoveLine);
+          stockMoveLine.setSequence(stockMove.getStockMoveLineList().size());
         }
       }
     }

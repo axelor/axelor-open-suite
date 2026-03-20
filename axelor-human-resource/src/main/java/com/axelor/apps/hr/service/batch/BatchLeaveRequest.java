@@ -134,7 +134,7 @@ public class BatchLeaveRequest extends BatchStrategy {
     leaveRequest.addBatchSetItem(batch);
     leaveRequestRepository.save(leaveRequest);
     leaveRequestSendService.send(leaveRequest);
-    leaveRequestMailService.sendCancellationEmail(leaveRequest);
+    leaveRequestMailService.sendConfirmationEmail(leaveRequest);
     incrementDone();
   }
 

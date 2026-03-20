@@ -96,6 +96,8 @@ import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintServiceImpl;
 import com.axelor.apps.purchase.service.purchase.request.PurchaseRequestToPoCreateService;
 import com.axelor.apps.purchase.service.purchase.request.PurchaseRequestToPoCreateServiceImpl;
+import com.axelor.apps.purchase.service.purchaseorderline.view.PurchaseOrderLineViewService;
+import com.axelor.apps.purchase.service.purchaseorderline.view.PurchaseOrderLineViewServiceImpl;
 import com.axelor.apps.purchase.service.split.PurchaseOrderSplitService;
 import com.axelor.apps.purchase.service.split.PurchaseOrderSplitServiceImpl;
 
@@ -112,6 +114,7 @@ public class PurchaseModule extends AxelorModule {
     bind(ProductServiceImpl.class).to(ProductServicePurchaseImpl.class);
     bind(PurchaseRequestRepository.class).to(PurchaseRequestManagementRepository.class);
     bind(PurchaseOrderLineService.class).to(PurchaseOrderLineServiceImpl.class);
+    bind(PurchaseOrderLineViewService.class).to(PurchaseOrderLineViewServiceImpl.class);
     bind(SupplierCatalogService.class).to(SupplierCatalogServiceImpl.class);
     bind(PurchaseOrderLineRepository.class).to(PurchaseOrderLinePurchaseRepository.class);
     bind(PurchaseOrderWorkflowService.class).to(PurchaseOrderWorkflowServiceImpl.class);

@@ -396,4 +396,20 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       }
     }
   }
+
+  @Override
+  public void updateEmployeeOnLines(Expense expense) {
+    Employee employee = expense.getEmployee();
+    if (employee == null) {
+      return;
+    }
+    updateEmployee(expense.getGeneralExpenseLineList(), employee);
+    updateEmployee(expense.getKilometricExpenseLineList(), employee);
+  }
+
+  protected void updateEmployee(List<ExpenseLine> lines, Employee employee) {
+    if (ObjectUtils.notEmpty(lines)) {
+      lines.forEach(line -> line.setEmployee(employee));
+    }
+  }
 }

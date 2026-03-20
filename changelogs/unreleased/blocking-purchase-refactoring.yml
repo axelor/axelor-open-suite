@@ -1,0 +1,9 @@
+---
+title: "Blocking: improved code organization for purchase blocking"
+module: axelor-purchase
+developer: |
+  The `PURCHASE_BLOCKING` constant has been moved from `axelor-base` to `axelor-purchase` module
+  for better modularity.
+
+  **Migration:** No action required. The entity package remains `com.axelor.apps.base.db.Blocking`,
+  so existing imports continue to work.

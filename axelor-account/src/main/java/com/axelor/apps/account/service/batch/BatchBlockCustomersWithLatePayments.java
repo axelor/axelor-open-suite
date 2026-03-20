@@ -147,7 +147,7 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
               customersToBlock.add(partner.getId());
               customersToBlock.addAll(
                   Query.of(Partner.class)
-                      .filter("self.parentPartner = :parentPartner")
+                      .filter("self.parentPartner.id = :parentPartner")
                       .bind("parentPartner", partner.getId())
                       .fetchStream()
                       .map(parentPartner -> parentPartner.getId())

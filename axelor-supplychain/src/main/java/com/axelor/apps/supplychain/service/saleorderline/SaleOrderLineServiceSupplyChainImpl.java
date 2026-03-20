@@ -220,7 +220,7 @@ public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineService
 
     Beans.get(StockMoveLineRepository.class)
         .all()
-        .filter("self.saleOrderLine = :saleOrderLineId")
+        .filter("self.saleOrderLine.id = :saleOrderLineId")
         .bind("saleOrderLineId", saleOrderLine.getId())
         .fetchStream()
         .filter(

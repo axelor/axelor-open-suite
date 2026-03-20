@@ -11,7 +11,7 @@
 
     <one-to-many name="accountingSituationList"
       ref="com.axelor.apps.account.db.AccountingSituation" mappedBy="partner"
-      title="Accounting situation"/>
+      title="Accounting situation" copy="false"/>
 
     <string name="invoiceSendingFormatSelect" title="Invoice sending media"
       selection="invoice.account.condition.invoice.sending.format.select"/>
@@ -35,7 +35,7 @@
     <!-- PAGE SEPA -->
     <one-to-many name="invoicingPaymentSituationList"
       ref="com.axelor.apps.account.db.InvoicingPaymentSituation" mappedBy="partner"
-      title="Invoicing/payment situations"/>
+      title="Invoicing/payment situations" copy="false"/>
 
     <string name="specificTaxNote" title="Specific tax note" large="true"/>
 

@@ -28,9 +28,14 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.meta.MetaFiles;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +58,7 @@ public class AccountingReportPrintServiceImpl implements AccountingReportPrintSe
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Override
-  public String print(AccountingReport accountingReport) throws AxelorException {
+  public String print(AccountingReport accountingReport) throws AxelorException, IOException {
 
     setPublicationDateTime(accountingReport);
 
@@ -78,7 +83,7 @@ public class AccountingReportPrintServiceImpl implements AccountingReportPrintSe
   }
 
   protected String getReportFileLink(AccountingReport accountingReport, String name)
-      throws AxelorException {
+      throws AxelorException, IOException {
     String file = "";
     if (accountingReport.getReportType().getTemplate() != null) {
       file = MetaFiles.getPath(accountingReport.getReportType().getTemplate()).toString();
@@ -92,19 +97,28 @@ public class AccountingReportPrintServiceImpl implements AccountingReportPrintSe
               : typeSelect.toString();
       file = String.format(IReport.ACCOUNTING_REPORT_TYPE, typeSelectStr);
     }
-    return ReportFactory.createReport(file, name + "-${date}")
-        .addParam("AccountingReportId", accountingReport.getId())
-        .addParam("__locale", ReportSettings.getPrintingLocale(null))
-        .addParam(
-            "Timezone",
-            accountingReport.getCompany() != null
-                ? accountingReport.getCompany().getTimezone()
-                : null)
-        .addParam("ExportTypeSelect", accountingReport.getExportTypeSelect())
-        .addFormat(accountingReport.getExportTypeSelect())
-        .toAttach(accountingReport)
-        .generate()
-        .getFileLink();
+    ReportSettings reportSettings =
+        ReportFactory.createReport(file, name + "-${date}")
+            .addParam("AccountingReportId", accountingReport.getId())
+            .addParam("__locale", ReportSettings.getPrintingLocale(null))
+            .addParam(
+                "Timezone",
+                accountingReport.getCompany() != null
+                    ? accountingReport.getCompany().getTimezone()
+                    : null)
+            .addParam("ExportTypeSelect", accountingReport.getExportTypeSelect())
+            .addFormat(accountingReport.getExportTypeSelect())
+            .toAttach(accountingReport)
+            .generate();
+
+    String fileName = reportSettings.getOutputName();
+    Path src = reportSettings.getFile().toPath();
+    Path dest =
+        Files.move(
+            src,
+            src.resolveSibling(fileName + "." + accountingReport.getExportTypeSelect()),
+            StandardCopyOption.REPLACE_EXISTING);
+    return PdfHelper.getFileLinkFromPdfFile(dest.toFile(), fileName);
   }
 
   @Override

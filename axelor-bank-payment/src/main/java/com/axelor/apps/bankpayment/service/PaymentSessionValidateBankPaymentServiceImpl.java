@@ -171,6 +171,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()
           && bankOrder.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
         try {
+          updatePaymentSessionStatus(paymentSession);
           bankOrderValidationService.confirm(bankOrder);
         } catch (JAXBException | IOException | DatatypeConfigurationException e) {
           throw new AxelorException(
@@ -193,14 +194,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       boolean isGlobal)
       throws AxelorException {
 
-    if (paymentSession.getBankOrder() != null
-        && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
-      paymentSessionBankOrderService.createOrUpdateBankOrderLineFromInvoiceTerm(
-          paymentSession,
-          invoiceTerm,
-          paymentSession.getBankOrder(),
-          invoiceTermLinkWithRefundList);
-    }
+    BigDecimal originalAmountPaid = invoiceTerm.getAmountPaid();
 
     paymentSession =
         super.processInvoiceTerm(
@@ -211,6 +205,18 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             invoiceTermLinkWithRefundList,
             out,
             isGlobal);
+
+    if (paymentSession.getBankOrder() != null
+        && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
+      BigDecimal postProcessAmountPaid = invoiceTerm.getAmountPaid();
+      invoiceTerm.setAmountPaid(originalAmountPaid);
+      paymentSessionBankOrderService.createOrUpdateBankOrderLineFromInvoiceTerm(
+          paymentSession,
+          invoiceTerm,
+          paymentSession.getBankOrder(),
+          invoiceTermLinkWithRefundList);
+      invoiceTerm.setAmountPaid(postProcessAmountPaid);
+    }
 
     return paymentSession;
   }
@@ -329,5 +335,12 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       return paymentSession.getBankOrder().getBankOrderSeq();
     }
     return super.getMoveOrigin(paymentSession);
+  }
+
+  @Transactional
+  protected void updatePaymentSessionStatus(PaymentSession paymentSession) {
+    paymentSession = paymentSessionRepo.find(paymentSession.getId());
+    paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_AWAITING_PAYMENT);
+    paymentSessionRepo.save(paymentSession);
   }
 }

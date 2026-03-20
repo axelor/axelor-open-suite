@@ -42,6 +42,7 @@ import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProdProductProductionRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.ManufOrderMessageService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
@@ -94,24 +95,10 @@ public class ManufOrderController {
       ManufOrder manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrderId);
       Beans.get(ManufOrderWorkflowService.class).start(manufOrder);
       response.setReload(true);
-      String message = "";
-      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
-        message = manufOrder.getMoCommentFromSaleOrder();
-      }
-
-      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
-        message =
-            message
-                .concat(System.lineSeparator())
-                .concat(manufOrder.getMoCommentFromSaleOrderLine());
-      }
-
-      if (!message.isEmpty()) {
-        message =
-            I18n.get(ITranslation.PRODUCTION_COMMENT)
-                .concat(System.lineSeparator())
-                .concat(message);
-        response.setInfo(message);
+      String startMessage =
+          Beans.get(ManufOrderMessageService.class).getManufOrderStartMessage(manufOrder);
+      if (!Strings.isNullOrEmpty(startMessage)) {
+        response.setInfo(startMessage);
         response.setCanClose(true);
       }
     } catch (Exception e) {
@@ -387,7 +374,8 @@ public class ManufOrderController {
         ManufOrder manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrderView.getId());
 
         if (manufOrderView.getPlannedStartDateT() != null) {
-          if (!manufOrderView.getPlannedStartDateT().isEqual(manufOrder.getPlannedStartDateT())) {
+          if (!Objects.equals(
+              manufOrderView.getPlannedStartDateT(), manufOrder.getPlannedStartDateT())) {
             Beans.get(ManufOrderPlanService.class)
                 .updatePlannedDates(manufOrder, manufOrderView.getPlannedStartDateT());
             response.setReload(true);
@@ -980,5 +968,12 @@ public class ManufOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void updateStockMovesEstimatedDate(ActionRequest request, ActionResponse response) {
+    ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+    Beans.get(ManufOrderPlanService.class).updateStockMovesEstimatedDate(manufOrder);
+    response.setValue("inStockMoveList", manufOrder.getInStockMoveList());
+    response.setValue("outStockMoveList", manufOrder.getOutStockMoveList());
   }
 }

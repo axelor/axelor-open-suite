@@ -18,12 +18,12 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
@@ -130,7 +130,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     analyticMoveLine.setAmount(
         currencyScaleService.getScaledValue(
             analyticMoveLine, analyticLineModel.getCompanyExTaxTotal()));
-    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
+    analyticMoveLine.setTypeSelect(analyticLineModel.getTypeSelect());
 
     return analyticMoveLine;
   }
@@ -173,16 +173,19 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   public boolean productAccountManageAnalytic(AnalyticLineModel analyticLineModel)
       throws AxelorException {
     Product product = analyticLineModel.getProduct();
+    if (product == null) {
+      return false;
+    }
+    Account account =
+        accountManagementAccountService.getProductAccount(
+            product,
+            analyticLineModel.getCompany(),
+            analyticLineModel.getFiscalPosition(),
+            analyticLineModel.getIsPurchase(),
+            false);
     return analyticToolService.isManageAnalytic(analyticLineModel.getCompany())
-        && product != null
-        && accountManagementAccountService
-            .getProductAccount(
-                product,
-                analyticLineModel.getCompany(),
-                analyticLineModel.getFiscalPosition(),
-                analyticLineModel.getIsPurchase(),
-                false)
-            .getAnalyticDistributionAuthorized();
+        && account != null
+        && account.getAnalyticDistributionAuthorized();
   }
 
   @Override
@@ -221,7 +224,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
             analyticLineModel.getAnalyticDistributionTemplate(),
             currencyScaleService.getCompanyScaledValue(
                 analyticLineModel.getCompany(), analyticLineModel.getCompanyExTaxTotal()),
-            AnalyticMoveLineRepository.STATUS_FORECAST_ORDER,
+            analyticLineModel.getTypeSelect(),
             appBaseService.getTodayDate(this.getCompany(analyticLineModel)));
 
     analyticLineModel.clearAnalyticMoveLineList();

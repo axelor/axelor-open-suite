@@ -155,6 +155,19 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
       billOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
     }
 
+    if (billOfMaterial == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProductionExceptionMessage.MRP_BOM_REQUIRED),
+          product.getFullName());
+    }
+    if (billOfMaterial.getProdProcess() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProductionExceptionMessage.MRP_PROD_PROCESS_REQUIRED),
+          product.getName());
+    }
+
     if (isAsapScheduling) {
       plannedStartDateT = maturityDate.atStartOfDay();
     } else {
@@ -170,18 +183,6 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
           maturityDateTime.plusMinutes(
               getTotalDurationInMinutes(billOfMaterial.getProdProcess(), qty));
     }
-    if (billOfMaterial == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(ProductionExceptionMessage.MRP_BOM_REQUIRED),
-          product.getFullName());
-    }
-    if (billOfMaterial.getProdProcess() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(ProductionExceptionMessage.MRP_PROD_PROCESS_REQUIRED),
-          product.getName());
-    }
 
     ManufOrder manufOrder =
         manufOrderService.generateManufOrder(
@@ -196,6 +197,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
                 .ORIGIN_TYPE_MRP); // TODO compute the time to produce to put the manuf order at the
     // correct day
 
+    mrpLine = mrpLineRepo.find(mrpLine.getId());
     linkToOrder(mrpLine, manufOrder);
   }
 

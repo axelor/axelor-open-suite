@@ -1,5 +1,0 @@
----
-title: "Manufacturing: fixed the planning failure that occurred on subcontracted manufacturing orders."
-module: axelor-production
-developer: |
-  - `ManufOrderOutsourceServiceImpl` and `ManufOrderStockMoveServiceImpl` injects `StockMoveRepository`.

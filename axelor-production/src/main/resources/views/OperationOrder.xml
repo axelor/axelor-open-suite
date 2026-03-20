@@ -131,6 +131,9 @@
       <field name="prodProcessLine.outsourcing" hidden="true"/>
       <field name="manufOrder.outsourcing" hidden="true"/>
     </panel>
+    <panel-related field="prodProcessLine.hazardPhraseSet" name="safetyPanel"
+      title="Safety"
+      showIf="prodProcessLine &amp;&amp; prodProcessLine.hazardPhraseSet.length &gt; 0" colSpan="12"/>
     <panel name="datesPanel" title="Dates" colSpan="12" readonlyIf="statusSelect == 6">
       <panel name="plannedDates" title="Planned dates" colSpan="6">
         <field name="plannedStartDateT"
@@ -348,7 +351,6 @@
     <attribute for="machine" name="value" expr="eval: workCenter?.machine"/>
     <attribute name="hidden" for="machine"
       expr="eval: workCenter?.workCenterTypeSelect == 1"/>
-    <attribute for="employeeSet" name="value" expr="eval: workCenter?.hrEmployeeSet"/>
   </action-attrs>
 
   <action-attrs name="action-operation-order-attrs-set-work-center-domain">
@@ -364,7 +366,7 @@
       expr="eval: plannedEndDateT?.minusSeconds(plannedDuration)"
       if="plannedStartDateT != null &amp;&amp; plannedEndDateT != null &amp;&amp; plannedEndDateT.isBefore(plannedStartDateT)"/>
     <field name="plannedDuration"
-      expr="eval: com.axelor.apps.tool.date.DurationTool.getSecondsDuration(com.axelor.apps.tool.date.DurationTool.computeDuration(plannedStartDateT, plannedEndDateT))"
+      expr="eval: com.axelor.utils.helpers.date.DurationHelper.getSecondsDuration(com.axelor.utils.helpers.date.DurationHelper.computeDuration(plannedStartDateT, plannedEndDateT))"
       if="plannedStartDateT != null &amp;&amp; plannedEndDateT != null &amp;&amp; plannedEndDateT.isAfter(plannedStartDateT)"/>
   </action-record>
 

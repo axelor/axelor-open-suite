@@ -19,10 +19,6 @@
 package com.axelor.apps.hr.web.timesheet;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
@@ -33,25 +29,22 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
-import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.timesheet.TimesheetAttrsService;
+import com.axelor.apps.hr.service.timesheet.TimesheetBusinessService;
 import com.axelor.apps.hr.service.timesheet.TimesheetDomainService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLeaveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineGenerationService;
 import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeService;
 import com.axelor.apps.hr.service.timesheet.TimesheetRemoveService;
+import com.axelor.apps.hr.service.timesheet.TimesheetViewService;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
-import com.axelor.apps.hr.service.user.UserHrService;
-import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
-import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
@@ -62,13 +55,11 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.db.Wizard;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -93,56 +84,11 @@ public class TimesheetController {
     }
   }
 
-  @SuppressWarnings("unchecked")
   public void generateLines(ActionRequest request, ActionResponse response) throws AxelorException {
     try {
-      Timesheet timesheet = request.getContext().asType(Timesheet.class);
-      if (timesheet.getEmployee() == null) {
-        throw new AxelorException(
-            timesheet,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
-            AuthUtils.getUser().getName());
-      }
-
       Context context = request.getContext();
-
-      LocalDate fromGenerationDate = null;
-      if (context.get("fromGenerationDate") != null)
-        fromGenerationDate =
-            LocalDate.parse(
-                context.get("fromGenerationDate").toString(), DateTimeFormatter.ISO_DATE);
-      LocalDate toGenerationDate = null;
-      if (context.get("toGenerationDate") != null)
-        toGenerationDate =
-            LocalDate.parse(context.get("toGenerationDate").toString(), DateTimeFormatter.ISO_DATE);
-      BigDecimal logTime = BigDecimal.ZERO;
-      if (context.get("logTime") != null)
-        logTime = new BigDecimal(context.get("logTime").toString());
-
-      Map<String, Object> projectContext = (Map<String, Object>) context.get("project");
-      Project project = null;
-      if (projectContext != null) {
-        project =
-            Beans.get(ProjectRepository.class)
-                .find(((Integer) projectContext.get("id")).longValue());
-      }
-
-      Map<String, Object> productContext = (Map<String, Object>) context.get("product");
-      Product product = null;
-      if (productContext != null) {
-        product =
-            Beans.get(ProductRepository.class)
-                .find(((Integer) productContext.get("id")).longValue());
-      }
-      if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
-        product = Beans.get(UserHrService.class).getTimesheetProduct(timesheet.getEmployee(), null);
-      }
-
-      timesheet =
-          Beans.get(TimesheetLineGenerationService.class)
-              .generateLines(
-                  timesheet, fromGenerationDate, toGenerationDate, logTime, project, product);
+      Timesheet timesheet = context.asType(Timesheet.class);
+      timesheet = Beans.get(TimesheetLineGenerationService.class).generateLines(context, timesheet);
       response.setValue("timesheetLineList", timesheet.getTimesheetLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -150,68 +96,14 @@ public class TimesheetController {
   }
 
   public void editTimesheet(ActionRequest request, ActionResponse response) {
-    List<Timesheet> timesheetList =
-        Beans.get(TimesheetRepository.class)
-            .all()
-            .filter(
-                "self.employee.user.id = ?1 AND self.company = ?2 AND self.statusSelect = 1",
-                AuthUtils.getUser().getId(),
-                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
-            .fetch();
-    if (timesheetList.isEmpty()) {
-      response.setView(
-          ActionView.define(I18n.get("Timesheet"))
-              .model(Timesheet.class.getName())
-              .add("form", "complete-my-timesheet-form")
-              .context("_isEmployeeReadOnly", true)
-              .map());
-    } else if (timesheetList.size() == 1) {
-      response.setView(
-          ActionView.define(I18n.get("Timesheet"))
-              .model(Timesheet.class.getName())
-              .add("form", "complete-my-timesheet-form")
-              .param("forceEdit", "true")
-              .context("_showRecord", String.valueOf(timesheetList.get(0).getId()))
-              .context("_isEmployeeReadOnly", true)
-              .map());
-    } else {
-      response.setView(
-          ActionView.define(I18n.get("Timesheet"))
-              .model(Wizard.class.getName())
-              .add("form", "popup-timesheet-form")
-              .param("forceEdit", "true")
-              .param("popup", "true")
-              .param("show-toolbar", "false")
-              .param("show-confirm", "false")
-              .param("forceEdit", "true")
-              .param("popup-save", "false")
-              .map());
-    }
+    User user = AuthUtils.getUser();
+    response.setView(Beans.get(TimesheetViewService.class).buildEditTimesheetView(user));
   }
 
   public void allTimesheet(ActionRequest request, ActionResponse response) {
-
     User user = AuthUtils.getUser();
     Employee employee = user.getEmployee();
-
-    ActionViewBuilder actionView =
-        ActionView.define(I18n.get("Timesheets"))
-            .model(Timesheet.class.getName())
-            .add("grid", "all-timesheet-grid")
-            .add("form", "timesheet-form")
-            .param("search-filters", "timesheet-filters");
-
-    if (employee == null || !employee.getHrManager()) {
-      if (employee == null || employee.getManagerUser() == null) {
-        actionView
-            .domain("self.employee.user.id = :_userId OR self.employee.managerUser = :_user")
-            .context("_userId", user.getId());
-      } else {
-        actionView.domain("self.employee.managerUser = :_user").context("_user", user);
-      }
-    }
-
-    response.setView(actionView.map());
+    response.setView(Beans.get(TimesheetViewService.class).buildAllTimesheetView(user, employee));
   }
 
   public void allTimesheetLine(ActionRequest request, ActionResponse response) {
@@ -271,99 +163,33 @@ public class TimesheetController {
 
   public void editTimesheetSelected(ActionRequest request, ActionResponse response) {
     Map<?, ?> timesheetMap = (Map<?, ?>) request.getContext().get("timesheetSelect");
-    Timesheet timesheet =
-        Beans.get(TimesheetRepository.class).find(Long.valueOf((Integer) timesheetMap.get("id")));
+    Long timesheetId = Long.valueOf(timesheetMap.get("id").toString());
     response.setView(
-        ActionView.define(I18n.get("Timesheet"))
-            .model(Timesheet.class.getName())
-            .add("form", "complete-my-timesheet-form")
-            .param("forceEdit", "true")
-            .domain("self.id = " + timesheetMap.get("id"))
-            .context("_showRecord", String.valueOf(timesheet.getId()))
-            .context("_isEmployeeReadOnly", true)
-            .map());
+        Beans.get(TimesheetViewService.class).buildEditSelectedTimesheetView(timesheetId));
   }
 
   public void historicTimesheet(ActionRequest request, ActionResponse response) {
-
     User user = AuthUtils.getUser();
     Employee employee = user.getEmployee();
-
-    ActionViewBuilder actionView =
-        ActionView.define(I18n.get("Historic colleague Timesheets"))
-            .model(Timesheet.class.getName())
-            .add("grid", "timesheet-grid")
-            .add("form", "timesheet-form")
-            .param("search-filters", "timesheet-filters");
-
-    actionView.domain("(self.statusSelect = 3 OR self.statusSelect = 4)");
-
-    if (employee == null || !employee.getHrManager()) {
-      actionView
-          .domain(actionView.get().getDomain() + " AND self.employee.managerUser = :_user")
-          .context("_user", user);
-    }
-
-    response.setView(actionView.map());
+    response.setView(
+        Beans.get(TimesheetViewService.class).buildHistoricTimesheetView(user, employee));
   }
 
   public void historicTimesheetLine(ActionRequest request, ActionResponse response) {
-
     User user = AuthUtils.getUser();
     Employee employee = user.getEmployee();
-
-    ActionViewBuilder actionView =
-        ActionView.define(I18n.get("See timesheet lines"))
-            .model(TimesheetLine.class.getName())
-            .add("grid", "timesheet-line-grid")
-            .add("form", "timesheet-line-form");
-
-    actionView
-        .domain(
-            "self.timesheet.company = :_activeCompany AND (self.timesheet.statusSelect = 3 OR self.timesheet.statusSelect = 4)")
-        .context("_activeCompany", user.getActiveCompany());
-
-    if (employee == null || !employee.getHrManager()) {
-      actionView
-          .domain(
-              actionView.get().getDomain() + " AND self.timesheet.employee.managerUser = :_user")
-          .context("_user", user);
-    }
-
-    response.setView(actionView.map());
+    response.setView(
+        Beans.get(TimesheetViewService.class).buildHistoricTimesheetLineView(user, employee));
   }
 
   public void showSubordinateTimesheets(ActionRequest request, ActionResponse response) {
-
     User user = AuthUtils.getUser();
-    Company activeCompany = user.getActiveCompany();
-
-    ActionViewBuilder actionView =
-        ActionView.define(I18n.get("Timesheets to be Validated by your subordinates"))
-            .model(Timesheet.class.getName())
-            .add("grid", "timesheet-grid")
-            .add("form", "timesheet-form")
-            .param("search-filters", "timesheet-filters");
-
-    String domain =
-        "self.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
-
-    long nbTimesheets =
-        Query.of(Timesheet.class)
-            .filter(domain)
-            .bind("_user", user)
-            .bind("_activeCompany", activeCompany)
-            .count();
-
-    if (nbTimesheets == 0) {
+    Map<String, Object> actionView =
+        Beans.get(TimesheetViewService.class).buildSubordinateTimesheetsView(user);
+    if (actionView == null) {
       response.setNotify(I18n.get("No timesheet to be validated by your subordinates"));
     } else {
-      response.setView(
-          actionView
-              .domain(domain)
-              .context("_user", user)
-              .context("_activeCompany", activeCompany)
-              .map());
+      response.setView(actionView);
     }
   }
 
@@ -533,27 +359,10 @@ public class TimesheetController {
   }
 
   public void setShowActivity(ActionRequest request, ActionResponse response) {
-
     Timesheet timesheet = request.getContext().asType(Timesheet.class);
-
-    boolean showActivity = true;
-
-    if (timesheet.getEmployee() != null) {
-      User user = timesheet.getEmployee().getUser();
-      if (user != null) {
-        Company company = user.getActiveCompany();
-        if (company != null && company.getHrConfig() != null) {
-          showActivity =
-              !company.getHrConfig().getUseUniqueProductForTimesheet()
-                  && Beans.get(AppHumanResourceService.class).getAppTimesheet().getEnableActivity();
-        }
-      }
-    }
-
-    Integer dailyLimit = Beans.get(AppHumanResourceService.class).getAppTimesheet().getDailyLimit();
-
-    response.setValue("$dailyLimit", dailyLimit);
-    response.setValue("$showActivity", showActivity);
+    Map<String, Object> values =
+        Beans.get(TimesheetBusinessService.class).computeShowActivity(timesheet);
+    response.setValues(values);
   }
 
   public void openTimesheetEditor(ActionRequest request, ActionResponse response) {

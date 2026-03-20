@@ -32,6 +32,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderTaxService;
 import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.db.User;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -45,15 +46,52 @@ public class PurchaseOrderCreateServiceSupplychainImpl extends PurchaseOrderCrea
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AccountConfigService accountConfigService;
+  protected final AppSupplychainService appSupplychainService;
+  protected final IntercoService intercoService;
 
   @Inject
   public PurchaseOrderCreateServiceSupplychainImpl(
       PurchaseConfigService purchaseConfigService,
+      AccountConfigService accountConfigService,
       PurchaseOrderTypeSelectService purchaseOrderTypeSelectService,
       PurchaseOrderTaxService purchaseOrderTaxService,
-      AccountConfigService accountConfigService) {
+      AppSupplychainService appSupplychainService,
+      IntercoService intercoService) {
     super(purchaseConfigService, purchaseOrderTypeSelectService, purchaseOrderTaxService);
     this.accountConfigService = accountConfigService;
+    this.appSupplychainService = appSupplychainService;
+    this.intercoService = intercoService;
+  }
+
+  @Override
+  public PurchaseOrder createPurchaseOrder(
+      User buyerUser,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      LocalDate deliveryDate,
+      String internalReference,
+      String externalReference,
+      LocalDate orderDate,
+      PriceList priceList,
+      Partner supplierPartner,
+      TradingName tradingName)
+      throws AxelorException {
+    PurchaseOrder purchaseOrder =
+        super.createPurchaseOrder(
+            buyerUser,
+            company,
+            contactPartner,
+            currency,
+            deliveryDate,
+            internalReference,
+            externalReference,
+            orderDate,
+            priceList,
+            supplierPartner,
+            tradingName);
+    setIntercoOnPurchaseOrder(purchaseOrder, supplierPartner);
+    return purchaseOrder;
   }
 
   @Override
@@ -143,5 +181,12 @@ public class PurchaseOrderCreateServiceSupplychainImpl extends PurchaseOrderCrea
     purchaseOrder.setTradingName(tradingName);
 
     return purchaseOrder;
+  }
+
+  protected void setIntercoOnPurchaseOrder(PurchaseOrder purchaseOrder, Partner supplierPartner) {
+    if (appSupplychainService.getAppSupplychain().getIntercoFromPurchase()) {
+      Company intercoCompany = intercoService.findIntercoCompany(supplierPartner);
+      purchaseOrder.setInterco(intercoCompany != null);
+    }
   }
 }

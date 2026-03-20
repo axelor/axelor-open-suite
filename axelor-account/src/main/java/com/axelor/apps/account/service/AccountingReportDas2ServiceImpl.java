@@ -66,7 +66,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
 
   @Override
   public String printPreparatoryProcessDeclaration(AccountingReport accountingReport)
-      throws AxelorException {
+      throws AxelorException, IOException {
 
     processAccountingReportMoveLines(accountingReport);
 

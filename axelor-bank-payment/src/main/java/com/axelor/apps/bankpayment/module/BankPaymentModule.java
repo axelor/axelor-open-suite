@@ -261,8 +261,6 @@ public class BankPaymentModule extends AxelorModule {
 
     bind(PaymentSessionBankOrderService.class).to(PaymentSessionBankOrderServiceImpl.class);
 
-    bind(PaymentSessionValidateServiceImpl.class)
-        .to(PaymentSessionValidateBankPaymentServiceImpl.class);
     bind(PaymentSessionAccountRepository.class).to(PaymentSessionBankPaymentRepository.class);
 
     bind(BankStatementRemoveService.class).to(BankStatementRemoveServiceImpl.class);

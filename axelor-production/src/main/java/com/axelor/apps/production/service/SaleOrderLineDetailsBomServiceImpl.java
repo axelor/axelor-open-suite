@@ -29,7 +29,6 @@ import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class SaleOrderLineDetailsBomServiceImpl implements SaleOrderLineDetailsBomService {
 
@@ -67,10 +66,14 @@ public class SaleOrderLineDetailsBomServiceImpl implements SaleOrderLineDetailsB
       BillOfMaterial billOfMaterial, SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException {
 
+    List<SaleOrderLineDetails> currentDetailsList = saleOrderLine.getSaleOrderLineDetailsList();
     List<SaleOrderLineDetails> operationSolDetailsLineList =
-        saleOrderLine.getSaleOrderLineDetailsList().stream()
-            .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_OPERATION)
-            .collect(Collectors.toList());
+        currentDetailsList == null
+            ? new ArrayList<>()
+            : currentDetailsList.stream()
+                .filter(
+                    line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_OPERATION)
+                .toList();
     List<SaleOrderLineDetails> updatedSolDetailsLineList =
         createSaleOrderLineDetailsFromBom(billOfMaterial, saleOrder, saleOrderLine);
     updatedSolDetailsLineList.addAll(operationSolDetailsLineList);

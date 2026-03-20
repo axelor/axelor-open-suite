@@ -187,7 +187,10 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
       BigDecimal reconciledAmount)
       throws AxelorException {
     LocalDate bankOrderDate = null;
-    if (invoiceTerm.getAmountPaid().subtract(reconciledAmount).signum() == 0) {
+    BigDecimal bankOrderAmount = invoiceTerm.getAmountPaid().subtract(reconciledAmount);
+
+    // Skip if amount is zero or negative (isolated refund not reconciled with any invoice)
+    if (bankOrderAmount.signum() <= 0) {
       return;
     }
     if (this.isFileFormatMultiDate(paymentSession)) {
@@ -204,7 +207,7 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
             null,
             invoiceTerm.getMoveLine().getPartner(),
             this.getBankDetails(invoiceTerm),
-            invoiceTerm.getAmountPaid().subtract(reconciledAmount),
+            bankOrderAmount,
             paymentSession.getCurrency(),
             bankOrderDate,
             this.getReference(invoiceTerm),
@@ -213,8 +216,7 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
 
     bankOrder.addBankOrderLineListItem(bankOrderLine);
     bankOrderLine.setCompanyCurrencyAmount(
-        this.getAmountPaidInCompanyCurrency(
-            paymentSession, invoiceTerm, bankOrderLine, reconciledAmount));
+        this.getAmountPaidInCompanyCurrency(paymentSession, bankOrderAmount, bankOrderLine));
   }
 
   protected void updateBankOrderLine(
@@ -224,14 +226,14 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
       BigDecimal reconciledAmount)
       throws AxelorException {
 
-    if (invoiceTerm.getAmountPaid().subtract(reconciledAmount).signum() == 0) {
+    BigDecimal bankOrderAmount = invoiceTerm.getAmountPaid().subtract(reconciledAmount);
+
+    // FIX: Skip if amount is zero OR negative (isolated refund not reconciled)
+    if (bankOrderAmount.signum() == 0) {
       return;
     }
     this.updateReference(invoiceTerm, bankOrderLine);
-    bankOrderLine.setBankOrderAmount(
-        bankOrderLine
-            .getBankOrderAmount()
-            .add(invoiceTerm.getAmountPaid().subtract(reconciledAmount)));
+    bankOrderLine.setBankOrderAmount(bankOrderLine.getBankOrderAmount().add(bankOrderAmount));
     if (bankOrderLine.getBankOrderAmount().signum() == 0) {
       resetBankOrderLine(bankOrderLine);
       return;
@@ -241,7 +243,7 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
             .getCompanyCurrencyAmount()
             .add(
                 this.getAmountPaidInCompanyCurrency(
-                    paymentSession, invoiceTerm, bankOrderLine, reconciledAmount)));
+                    paymentSession, bankOrderAmount, bankOrderLine)));
     bankOrderLine.addBankOrderLineOriginListItem(
         bankOrderLineOriginService.createBankOrderLineOrigin(invoiceTerm));
   }
@@ -274,20 +276,17 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
   }
 
   protected BigDecimal getAmountPaidInCompanyCurrency(
-      PaymentSession paymentSession,
-      InvoiceTerm invoiceTerm,
-      BankOrderLine bankOrderLine,
-      BigDecimal reconciledAmount)
+      PaymentSession paymentSession, BigDecimal bankOrderAmount, BankOrderLine bankOrderLine)
       throws AxelorException {
     return BankOrderToolService.isMultiCurrency(bankOrderLine.getBankOrder())
         ? currencyService
             .getAmountCurrencyConvertedAtDate(
                 paymentSession.getCurrency(),
                 paymentSession.getCompany().getCurrency(),
-                invoiceTerm.getAmountPaid().subtract(reconciledAmount),
+                bankOrderAmount,
                 bankOrderLine.getBankOrderDate())
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
-        : invoiceTerm.getAmountPaid().subtract(reconciledAmount);
+        : bankOrderAmount;
   }
 
   @Transactional
