@@ -21,9 +21,11 @@ package com.axelor.apps.account.service.period;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.TraceBack;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.meta.CallMethod;
+import java.util.List;
 
 public interface PeriodServiceAccount {
 
@@ -34,4 +36,10 @@ public interface PeriodServiceAccount {
 
   @CallMethod
   public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;
+
+  List<Move> getMoves();
+
+  int getAnomalyCount();
+
+  List<TraceBack> getAnomalies(String moveIds, int anomalyCount);
 }
