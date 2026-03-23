@@ -1,0 +1,4 @@
+---
+title: "SaleOrder BIRT: huge performance uplift with large database"
+module: axelor-sale
+developer: "sale_order_line_proc was using a CASE which prevented PSQL to use index 'sale_sale_order_line_sale_order_idx'. So it was scanning the entire table and then filtering it in memory. Changed to a UNION ALL to permit the use of indexe"
