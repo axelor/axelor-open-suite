@@ -1,3 +1,21 @@
+## [8.2.39] (2026-03-19)
+
+### Fixes
+#### Account
+
+* Move: fixed Generate tax lines button visible for incompatible functional origins.
+* Payment session: fixed bill of exchange session with credit note compensation losing remaining invoice term amount.
+* Move/InvoiceTerm: fixed due date propagation for multiple invoice terms when editing move line due date.
+
+#### Bank Payment
+
+* Bank reconciliation: improved automatic reconciliation performance.
+* Payment session: fixed payment moves not generated when auto-confirm bank order is enabled with bank order confirmation accounting trigger.
+
+#### Human Resource
+
+* Expense: fixed distance computation in certain cases.
+
 ## [8.2.38] (2026-03-05)
 
 ### Fixes
@@ -2579,6 +2597,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.39]: https://github.com/axelor/axelor-open-suite/compare/v8.2.38...v8.2.39
 [8.2.38]: https://github.com/axelor/axelor-open-suite/compare/v8.2.37...v8.2.38
 [8.2.37]: https://github.com/axelor/axelor-open-suite/compare/v8.2.36...v8.2.37
 [8.2.36]: https://github.com/axelor/axelor-open-suite/compare/v8.2.35...v8.2.36
