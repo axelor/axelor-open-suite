@@ -24,6 +24,8 @@
         <![CDATA[return partner != null ? partner.getName() : "";]]>
     </string>
 
+    <string name="blockingComment" title="Comment" large="true"/>
+
     <extra-code>
           <![CDATA[
               public static final Integer REMINDER_BLOCKING = 1;
