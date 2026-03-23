@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed 1 cent gap between reverse charge tax lines."
+module: axelor-account
