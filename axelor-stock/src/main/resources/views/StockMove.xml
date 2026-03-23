@@ -600,6 +600,9 @@
           onClick="action-group-stock-stockmove-cancel-click"/>
         <button name="draftBtn" title="Draft" showIf="statusSelect == 4"
           onClick="action-stock-move-method-draft"/>
+        <field if="__config__.app.getApp('stock')?.getActivateStockMoveBarcodeGeneration()"
+          name="stockMoveBarcode" showTitle="false" colOffset="9" colSpan="3" widget="Image"
+          showIf="stockMoveBarcode"/>
       </panel>
     </panel>
 
