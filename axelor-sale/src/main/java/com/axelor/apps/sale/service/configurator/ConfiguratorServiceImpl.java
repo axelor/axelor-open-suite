@@ -294,8 +294,12 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         jsonIndicators,
         Product.class,
         product);
+    String existingCode = product.getId() != null ? product.getCode() : null;
     for (Entry<String, Object> entry : jsonIndicators.entrySet()) {
       setValue(product, entry.getKey(), entry.getValue());
+    }
+    if (existingCode != null) {
+      product.setCode(existingCode);
     }
 
     fetchManyToManyFields(product);
