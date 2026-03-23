@@ -1,0 +1,5 @@
+---
+title: "Move: added a warning when move lines are linked to a validated bank reconciliation."
+module: axelor-bank-payment
+developer: |
+ Added BankReconciliationLineRepository as parameter in the MoveAttrsBankPaymentServiceImpl constructor
