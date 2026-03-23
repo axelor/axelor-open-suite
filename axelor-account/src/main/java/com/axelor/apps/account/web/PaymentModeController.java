@@ -18,16 +18,20 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.service.AccountManagementCheckService;
 import com.axelor.apps.account.service.PaymentModeControlService;
 import com.axelor.apps.account.service.payment.PaymentModeInitService;
 import com.axelor.apps.account.service.payment.PaymentModeInterestRateService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.util.List;
 
 public class PaymentModeController {
 
@@ -67,5 +71,23 @@ public class PaymentModeController {
 
     Beans.get(PaymentModeInterestRateService.class).saveInterestRateToHistory(paymentMode);
     response.setReload(true);
+  }
+
+  @ErrorException
+  public void checkAccountManagementUniqueness(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    PaymentMode paymentMode = request.getContext().asType(PaymentMode.class);
+    List<AccountManagement> accountManagementList = paymentMode.getAccountManagementList();
+
+    if (accountManagementList == null || accountManagementList.isEmpty()) {
+      return;
+    }
+
+    AccountManagementCheckService accountManagementCheckService =
+        Beans.get(AccountManagementCheckService.class);
+
+    for (AccountManagement accountManagement : accountManagementList) {
+      accountManagementCheckService.checkDuplicateAccountManagement(accountManagement, paymentMode);
+    }
   }
 }
