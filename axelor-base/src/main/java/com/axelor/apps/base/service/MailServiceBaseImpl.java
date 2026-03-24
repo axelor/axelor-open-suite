@@ -306,7 +306,9 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
   @Override
   public void send(final MailMessage message) throws MailException {
-    if (!appBaseService.isApp("base") || !appBaseService.getAppBase().getActivateSendingEmail()) {
+    if (!appBaseService.isApp("base")
+        || !appBaseService.getAppBase().getActivateSendingEmail()
+        || !appBaseService.getAppBase().getActivateStreamEmailSending()) {
       return;
     }
     final EmailAccount emailAccount = mailAccountService.getDefaultSender();

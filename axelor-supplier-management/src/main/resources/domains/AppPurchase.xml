@@ -6,7 +6,8 @@
   <module name="studio" package="com.axelor.studio.db"/>
 
   <entity name="AppPurchase" cacheable="true">
-    <boolean name="supplierRequestMgt" title="Manage supplier consultations"/>
+    <boolean name="supplierRequestMgt" title="Manage supplier consultations"
+      help="This option enables the management of supplier consultation requests, allowing you to send quotation requests to multiple suppliers for the same product."/>
 
     <track>
       <field name="supplierRequestMgt" on="UPDATE"/>

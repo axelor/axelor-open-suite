@@ -100,6 +100,7 @@ import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockHistoryServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineFetchServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
+import com.axelor.apps.stock.service.StockMoveCurrencyServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveMergingServiceImpl;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
@@ -224,6 +225,7 @@ import com.axelor.apps.supplychain.service.StockLocationLineFetchServiceSupplych
 import com.axelor.apps.supplychain.service.StockLocationLineReservationService;
 import com.axelor.apps.supplychain.service.StockLocationLineReservationServiceImpl;
 import com.axelor.apps.supplychain.service.StockLocationLineServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.StockMoveCurrencyServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
@@ -248,6 +250,8 @@ import com.axelor.apps.supplychain.service.TrackingNumberSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.analytic.AnalyticMoveLineParentSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.analytic.AnalyticMoveLineRecordService;
+import com.axelor.apps.supplychain.service.analytic.AnalyticMoveLineRecordServiceImpl;
 import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -518,6 +522,7 @@ public class SupplychainModule extends AxelorModule {
         .to(PurchaseOrderFromSaleOrderLinesServiceImpl.class);
     bind(SaleOrderVersionServiceImpl.class).to(SaleOrderVersionSupplyChainServiceImpl.class);
     bind(AnalyticLineModelService.class).to(AnalyticLineModelServiceImpl.class);
+    bind(AnalyticMoveLineRecordService.class).to(AnalyticMoveLineRecordServiceImpl.class);
     bind(AnalyticAttrsSupplychainService.class).to(AnalyticAttrsSupplychainServiceImpl.class);
     bind(PartnerLinkSupplychainService.class).to(PartnerLinkSupplychainServiceImpl.class);
     bind(PartnerLinkServiceImpl.class).to(PartnerLinkSupplychainServiceImpl.class);
@@ -649,5 +654,6 @@ public class SupplychainModule extends AxelorModule {
         .to(LogisticalFormCreateServiceSupplychainImpl.class);
     bind(LogisticalFormComputeService.class).to(LogisticalFormComputeServiceImpl.class);
     bind(PackagingLineCreationService.class).to(PackagingLineCreationServiceImpl.class);
+    bind(StockMoveCurrencyServiceImpl.class).to(StockMoveCurrencyServiceSupplychainImpl.class);
   }
 }

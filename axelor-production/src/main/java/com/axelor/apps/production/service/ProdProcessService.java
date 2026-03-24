@@ -187,13 +187,23 @@ public class ProdProcessService {
       return null;
     }
 
-    long noOfPersonalizedProdProcess =
-        prodProcessRepo
-                .all()
-                .filter("self.product = :product AND self.isPersonalized = true")
-                .bind("product", prodProcess.getProduct())
-                .count()
-            + 1;
+    long noOfPersonalizedProdProcess;
+    if (prodProcess.getProduct() == null) {
+      noOfPersonalizedProdProcess =
+          prodProcessRepo
+                  .all()
+                  .filter("self.isEnabledForAllProducts = true AND self.isPersonalized = true")
+                  .count()
+              + 1;
+    } else {
+      noOfPersonalizedProdProcess =
+          prodProcessRepo
+                  .all()
+                  .filter("self.product = :product AND self.isPersonalized = true")
+                  .bind("product", prodProcess.getProduct())
+                  .count()
+              + 1;
+    }
     ProdProcess personalizedProdProcess = JPA.copy(prodProcess, deep);
     String name =
         personalizedProdProcess.getName()

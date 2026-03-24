@@ -30,6 +30,8 @@ import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormStockRepository;
 import com.axelor.apps.stock.db.repo.MassStockMoveManagementRepository;
+import com.axelor.apps.stock.db.repo.MassStockMoveNeedManagementRepository;
+import com.axelor.apps.stock.db.repo.MassStockMoveNeedRepository;
 import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
 import com.axelor.apps.stock.db.repo.PickedProductRepository;
 import com.axelor.apps.stock.db.repo.ProductCompanyStockRepository;
@@ -38,6 +40,8 @@ import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.db.repo.StockCorrectionStockRepository;
 import com.axelor.apps.stock.db.repo.StockHistoryLineManagementRepository;
 import com.axelor.apps.stock.db.repo.StockHistoryLineRepository;
+import com.axelor.apps.stock.db.repo.StockLocationLineHistoryManagementRepository;
+import com.axelor.apps.stock.db.repo.StockLocationLineHistoryRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -46,6 +50,8 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.db.repo.StockRulesManagementRepository;
+import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.db.repo.StoredProductRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberManagementRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
@@ -84,6 +90,8 @@ import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockLocationServiceImpl;
 import com.axelor.apps.stock.service.StockMoveCheckWapService;
 import com.axelor.apps.stock.service.StockMoveCheckWapServiceImpl;
+import com.axelor.apps.stock.service.StockMoveCurrencyService;
+import com.axelor.apps.stock.service.StockMoveCurrencyServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineStockLocationService;
@@ -192,6 +200,10 @@ public class StockModule extends AxelorModule {
     bind(StockProductRestService.class).to(StockProductRestServiceImpl.class);
     bind(InventoryUpdateService.class).to(InventoryUpdateServiceImpl.class);
     bind(StockHistoryLineRepository.class).to(StockHistoryLineManagementRepository.class);
+    bind(StockLocationLineHistoryRepository.class)
+        .to(StockLocationLineHistoryManagementRepository.class);
+    bind(StockRulesRepository.class).to(StockRulesManagementRepository.class);
+    bind(MassStockMoveNeedRepository.class).to(MassStockMoveNeedManagementRepository.class);
     bind(StockMoveCheckWapService.class).to(StockMoveCheckWapServiceImpl.class);
     bind(StockLocationLineHistoryService.class).to(StockLocationLineHistoryServiceImpl.class);
     bind(StockMoveMergingService.class).to(StockMoveMergingServiceImpl.class);
@@ -237,5 +249,6 @@ public class StockModule extends AxelorModule {
     bind(LogisticalFormCreateService.class).to(LogisticalFormCreateServiceImpl.class);
     bind(InventoryImportExportService.class).to(InventoryImportExportServiceImpl.class);
     bind(InventoryValidateService.class).to(InventoryValidateServiceImpl.class);
+    bind(StockMoveCurrencyService.class).to(StockMoveCurrencyServiceImpl.class);
   }
 }

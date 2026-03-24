@@ -1,5 +1,0 @@
----
-title: "Update Axelor Open Platform to 8.0.5"
-module: axelor-base
-developer: |
-  Dependency 'flying-saucer-pdf-openpdf:9.2.2' has been replaced by 'flying-saucer-pdf:10.0.6'

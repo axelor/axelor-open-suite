@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.accountingsituation.AccountingSituationSe
 import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
+import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
@@ -40,6 +41,7 @@ import java.util.List;
 
 public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
 
+  protected BankReconciliationLineRepository bankReconciliationLineRepository;
   protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;
 
   @Inject
@@ -50,6 +52,7 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
       UnreconcileService unReconcileService,
       AccountingSituationService accountingSituationService,
       AccountCustomerService accountCustomerService,
+      BankReconciliationLineRepository bankReconciliationLineRepository,
       BankStatementLineAFB120Repository bankStatementLineAFB120Repository) {
     super(
         moveRepo,
@@ -58,6 +61,7 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
         unReconcileService,
         accountingSituationService,
         accountCustomerService);
+    this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;
   }
 
@@ -67,7 +71,12 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
     String errorMessage = super.checkMoveLineBeforeRemove(moveLine);
 
     if (Beans.get(AppBankPaymentService.class).isApp("bank-payment")
-        && moveLine.getBankReconciledAmount().compareTo(BigDecimal.ZERO) > 0) {
+        && moveLine.getBankReconciledAmount().compareTo(BigDecimal.ZERO) > 0
+        && bankReconciliationLineRepository
+                .all()
+                .filter("self.moveLine.id = ?", moveLine.getId())
+                .count()
+            > 0) {
       errorMessage +=
           String.format(
               I18n.get(

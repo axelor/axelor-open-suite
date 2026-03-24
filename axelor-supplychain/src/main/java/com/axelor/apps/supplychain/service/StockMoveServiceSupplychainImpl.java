@@ -77,7 +77,9 @@ import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -182,9 +184,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
     Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
     if (ObjectUtils.notEmpty(saleOrderSet)) {
+      updateSaleOrderLinesDeliveryState(stockMove, !stockMove.getIsReversion());
       SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
       for (SaleOrder saleOrder : saleOrderSet) {
-        updateSaleOrderLinesDeliveryState(stockMove, !stockMove.getIsReversion());
         // Update linked saleOrder delivery state depending on BackOrder's existence
         if (newStockSeq != null) {
           saleOrder.setDeliveryState(SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
@@ -267,8 +269,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         stockMoveLineRepo
             .all()
             .filter(
-                "self.stockMove.id = :stockMoveId AND self.realQty = 0 AND self.id > :lastSeenId")
+                "self.stockMove.id = :stockMoveId AND self.realQty = 0 AND self.id > :lastSeenId AND self.saleOrderLine.typeSelect = :typeSelect")
             .bind("stockMoveId", stockMove.getId())
+            .bind("typeSelect", SaleOrderLineRepository.TYPE_NORMAL)
             .order("id");
 
     BatchProcessorHelper.builder()
@@ -280,6 +283,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   public void cancel(StockMove stockMove) throws AxelorException {
 
     cancelStockMove(stockMove);
+    stockMove = JpaModelHelper.ensureManaged(stockMove);
     Company company = JpaModelHelper.ensureManaged(stockMove.getCompany());
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
     Boolean supplierArrivalCancellationAutomaticMail =
@@ -340,9 +344,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   public void updateSaleOrderOnCancel(StockMove stockMove) throws AxelorException {
     Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
     SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
+    updateSaleOrderLinesDeliveryState(stockMove, stockMove.getIsReversion());
     for (SaleOrder so : saleOrderSet) {
 
-      updateSaleOrderLinesDeliveryState(stockMove, stockMove.getIsReversion());
       saleOrderStockService.updateDeliveryState(so);
 
       if (appSupplyChainService.getAppSupplychain().getTerminateSaleOrderOnDelivery()) {
@@ -370,8 +374,13 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   protected void updateSaleOrderLinesDeliveryState(StockMove stockMove, boolean qtyWasDelivered)
       throws AxelorException {
+    if (ObjectUtils.isEmpty(stockMove.getStockMoveLineList())) {
+      return;
+    }
+    Map<SaleOrderLine, BigDecimal> saleOrderLineQtyMap = new HashMap<>();
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-      if (stockMoveLine.getSaleOrderLine() != null) {
+      if (stockMoveLine.getSaleOrderLine() != null
+          && stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_NORMAL) {
         SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
 
         BigDecimal realQty =
@@ -381,22 +390,27 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
                 stockMoveLine.getRealQty(),
                 stockMoveLine.getRealQty().scale(),
                 saleOrderLine.getProduct());
+        saleOrderLineQtyMap.merge(saleOrderLine, realQty, BigDecimal::add);
+      }
+    }
 
-        if (stockMove.getTypeSelect() != StockMoveRepository.TYPE_INTERNAL) {
-          if (qtyWasDelivered) {
-            saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().add(realQty));
-          } else {
-            saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().subtract(realQty));
-          }
-        }
-        if (saleOrderLine.getDeliveredQty().signum() == 0) {
-          saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
-        } else if (saleOrderLine.getDeliveredQty().compareTo(saleOrderLine.getQty()) < 0) {
-          saleOrderLine.setDeliveryState(
-              SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
+    for (Map.Entry<SaleOrderLine, BigDecimal> entry : saleOrderLineQtyMap.entrySet()) {
+      SaleOrderLine saleOrderLine = entry.getKey();
+      BigDecimal realQty = entry.getValue();
+
+      if (stockMove.getTypeSelect() != StockMoveRepository.TYPE_INTERNAL) {
+        if (qtyWasDelivered) {
+          saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().add(realQty));
         } else {
-          saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED);
+          saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().subtract(realQty));
         }
+      }
+      if (saleOrderLine.getDeliveredQty().signum() == 0) {
+        saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
+      } else if (saleOrderLine.getDeliveredQty().compareTo(saleOrderLine.getQty()) < 0) {
+        saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
+      } else {
+        saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED);
       }
     }
   }
@@ -467,6 +481,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
             && appSupplychain.getAutoFillReceiptRealQty())) {
       newStockMoveLine.setRealQty(newStockMoveLine.getQty());
+    }
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+      newStockMoveLine.setRequestedReservedQty(BigDecimal.ZERO);
+      newStockMoveLine.setReservedQty(BigDecimal.ZERO);
     }
     return newStockMoveLine;
   }

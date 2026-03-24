@@ -36,6 +36,7 @@ public class CartResetServiceImpl implements CartResetService {
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void emptyCart(Cart cart) {
+    cart = cartRepository.find(cart.getId());
     if (!CollectionUtils.isEmpty(cart.getCartLineList())) {
       cart.getCartLineList().clear();
     }

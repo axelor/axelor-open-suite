@@ -20,6 +20,7 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.service.AccountManagementAttrsService;
+import com.axelor.apps.account.service.AccountManagementCheckService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ProductFamily;
@@ -73,5 +74,18 @@ public class AccountManagementController {
             .getCompanyDomain(accountManagement, productFamily);
 
     response.setAttr("company", "domain", domain);
+  }
+
+  @ErrorException
+  public void checkPaymentModeUniqueness(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    AccountManagement accountManagement = request.getContext().asType(AccountManagement.class);
+
+    if (accountManagement == null || accountManagement.getPaymentMode() == null) {
+      return;
+    }
+
+    Beans.get(AccountManagementCheckService.class)
+        .checkDuplicateAccountManagement(accountManagement, accountManagement.getPaymentMode());
   }
 }

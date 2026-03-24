@@ -104,7 +104,6 @@ public class PaymentVoucherLoadService {
             + "and (self.isPaid = FALSE OR self.amountRemaining != 0) "
             + "and (self.moveLine.move.company = :company OR self.invoice.company = :company) "
             + "and self.moveLine.account.useForPartnerBalance = true "
-            + "and self.moveLine.move.ignoreInDebtRecoveryOk = false "
             + "and (self.moveLine.move.statusSelect = :statusDaybook OR self.moveLine.move.statusSelect = :statusAccounted) "
             + "and (:tradingName IS NULL OR self.moveLine.move.tradingName = :tradingName OR self.invoice.tradingName = :tradingName) "
             + "and (self.invoice IS null or self.invoice.operationTypeSelect = :operationTypeSelect) "
@@ -492,5 +491,26 @@ public class PaymentVoucherLoadService {
             t.getInvoiceTerm().getInvoice() != null
                 ? t.getInvoiceTerm().getInvoice().getInvoiceDate()
                 : t.getInvoiceTerm().getMoveLine().getMove().getDate());
+  }
+
+  public void resetAndReloadElementToPay(PaymentVoucher paymentVoucher, Invoice invoice)
+      throws AxelorException {
+    resetImputation(paymentVoucher);
+    if (CollectionUtils.isEmpty(paymentVoucher.getPayVoucherDueElementList())) {
+      return;
+    }
+    PayVoucherDueElement payVoucherDueElement =
+        paymentVoucher.getPayVoucherDueElementList().stream()
+            .sorted(Comparator.comparing(it -> it.getInvoiceTerm().getSequence()))
+            .filter(
+                it ->
+                    invoice.equals(it.getMoveLine().getMove().getInvoice())
+                        && paymentVoucher.getCurrency().equals(it.getCurrency()))
+            .findFirst()
+            .orElse(null);
+    if (payVoucherDueElement != null) {
+      payVoucherDueElement.setSelected(true);
+      loadSelectedLines(paymentVoucher);
+    }
   }
 }

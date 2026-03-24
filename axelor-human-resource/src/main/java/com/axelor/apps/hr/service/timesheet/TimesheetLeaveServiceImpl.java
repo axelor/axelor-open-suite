@@ -163,6 +163,9 @@ public class TimesheetLeaveServiceImpl implements TimesheetLeaveService {
       BigDecimal totalLeaveHours =
           leaveRequestComputeLeaveHoursService.computeTotalLeaveHours(
               date, dayValueInHours, leaveList);
+      if (totalLeaveHours.compareTo(BigDecimal.ZERO) == 0) {
+        return;
+      }
       TimesheetLine timesheetLine =
           timesheetLineCreateService.createTimesheetLine(
               employee,

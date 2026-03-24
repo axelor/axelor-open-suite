@@ -251,7 +251,7 @@
     <view type="grid" name="intervention-grid"/>
     <view type="form" name="intervention-form"/>
     <domain>
-      :id in self.equipmentSet.id
+      :id MEMBER OF self.equipmentSet
     </domain>
   </action-view>
 

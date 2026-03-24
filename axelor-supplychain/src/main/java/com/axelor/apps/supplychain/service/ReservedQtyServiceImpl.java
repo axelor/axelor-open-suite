@@ -88,7 +88,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
 
     Query<StockMoveLine> query = getManagedStockMoveLineQuery(stockMove.getId());
 
-    BatchProcessorHelper helper = BatchProcessorHelper.builder().build();
+    BatchProcessorHelper helper = BatchProcessorHelper.builder().clearEveryNBatch(0).build();
 
     helper.<StockMoveLine, AxelorException>forEachByQuery(
         query,
@@ -129,7 +129,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
    */
   protected void changeRequestedQtyLowerThanQty(StockMoveLine stockMoveLine)
       throws AxelorException {
-    BigDecimal qty = stockMoveLine.getRealQty().max(BigDecimal.ZERO);
+    BigDecimal qty = stockMoveLine.getQty().max(BigDecimal.ZERO);
     BigDecimal requestedReservedQty = stockMoveLine.getRequestedReservedQty();
     if (requestedReservedQty.compareTo(qty) > 0) {
       Product product = stockMoveLine.getProduct();
@@ -619,6 +619,10 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine, int toStatus)
       throws AxelorException {
 
+    if (stockMoveLine.getStockMove() != null
+        && stockMoveLine.getStockMove().getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+      return;
+    }
     if (((toStatus == StockMoveRepository.STATUS_REALIZED)
             || toStatus == StockMoveRepository.STATUS_CANCELED)
         && stockLocationLine.getReservedQty().compareTo(stockLocationLine.getCurrentQty()) > 0) {
@@ -1064,8 +1068,8 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       Product product = stockMoveLine.getProduct();
       BigDecimal availableQtyToBeReservedStockMoveLine =
           convertUnitWithProduct(
-                  stockMoveLine.getUnit(),
                   stockLocationLine.getUnit(),
+                  stockMoveLine.getUnit(),
                   availableQtyToBeReserved,
                   product)
               .add(stockMoveLine.getReservedQty());

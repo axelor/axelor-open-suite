@@ -58,9 +58,9 @@ public class MoveExcessPaymentService {
   }
 
   /**
-   * Méthode permettant de récupérer les trop-perçus et une facture
+   * Method to retrieve excess payments for an invoice
    *
-   * @param invoice Une facture
+   * @param invoice An invoice
    * @return
    * @throws AxelorException
    */
@@ -72,11 +72,8 @@ public class MoveExcessPaymentService {
     List<MoveLine> advancePaymentMoveLines =
         Beans.get(InvoiceService.class).getMoveLinesFromAdvancePayments(invoice);
 
-    MoveLine moveLine = getOrignalInvoiceMoveLine(invoice);
-
-    if (moveLine != null) {
-      advancePaymentMoveLines.add(moveLine);
-    }
+    List<MoveLine> originalMoveLines = getOrignalInvoiceMoveLines(invoice);
+    advancePaymentMoveLines.addAll(originalMoveLines);
 
     if (accountConfig.getAutoReconcileOnInvoice()) {
       List<MoveLine> creditMoveLines =
@@ -91,8 +88,16 @@ public class MoveExcessPaymentService {
     return advancePaymentMoveLines;
   }
 
-  protected MoveLine getOrignalInvoiceMoveLine(Invoice invoice) {
-
+  /**
+   * Get all customer move lines from the original invoice that have remaining credit amounts. This
+   * method handles invoices with holdbacks which have multiple customer move lines (e.g., 4111 +
+   * 4117).
+   *
+   * @param invoice The refund invoice
+   * @return List of all customer move lines with remaining credit from the original invoice
+   */
+  protected List<MoveLine> getOrignalInvoiceMoveLines(Invoice invoice) {
+    List<MoveLine> moveLines = Lists.newArrayList();
     Invoice originalInvoice = invoice.getOriginalInvoice();
 
     if (originalInvoice != null && originalInvoice.getMove() != null) {
@@ -100,12 +105,12 @@ public class MoveExcessPaymentService {
         if (moveLine.getAccount().getUseForPartnerBalance()
             && moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
             && moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
-          return moveLine;
+          moveLines.add(moveLine);
         }
       }
     }
 
-    return null;
+    return moveLines;
   }
 
   public List<MoveLine> getAdvancePaymentMoveList(Invoice invoice) {

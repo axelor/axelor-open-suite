@@ -33,7 +33,9 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.ModelHelper;
 import jakarta.inject.Singleton;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Singleton
@@ -83,6 +85,36 @@ public class MetaJsonFieldProjectController {
     response.setValue("select", jsonField.getSelectionRef());
   }
 
+  public void onTypeSelectChange(ActionRequest request, ActionResponse response) {
+    String typeSelect = (String) request.getContext().get("typeSelect");
+
+    if (!"select".equals(typeSelect) && !"multiselect".equals(typeSelect)) {
+      response.setValue("selectionRef", null);
+      response.setValue("selection", null);
+    }
+  }
+
+  public void setTypeSelectReadonly(ActionRequest request, ActionResponse response) {
+    MetaJsonField jsonField = request.getContext().asType(MetaJsonField.class);
+
+    if (jsonField.getId() != null
+        && Beans.get(MetaJsonFieldProjectService.class).isMetaJsonFieldUsedOnTasks(jsonField)) {
+      response.setAttr("$typeSelect", "readonly", true);
+    }
+  }
+
+  public void saveSelection(ActionRequest request, ActionResponse response) {
+    MetaJsonField jsonField = request.getContext().asType(MetaJsonField.class);
+    MetaSelect selectionRef = jsonField.getSelectionRef();
+    if (selectionRef == null || selectionRef.getId() == null) {
+      return;
+    }
+    @SuppressWarnings("unchecked")
+    List<Map<String, Object>> items =
+        (List<Map<String, Object>>) request.getContext().get("selectionItems");
+    Beans.get(MetaJsonFieldProjectService.class).saveSelectionItems(selectionRef.getId(), items);
+  }
+
   public void computeFields(ActionRequest request, ActionResponse response) {
 
     MetaJsonField jsonField = request.getContext().asType(MetaJsonField.class);
@@ -105,8 +137,10 @@ public class MetaJsonFieldProjectController {
       widget = "MultiSelect";
     }
 
-    String selection =
-        Beans.get(MetaJsonFieldProjectService.class).computeSelectName(jsonField, typeSelect);
+    MetaJsonFieldProjectService metaJsonFieldProjectService =
+        Beans.get(MetaJsonFieldProjectService.class);
+
+    String selection = metaJsonFieldProjectService.computeSelectName(jsonField, typeSelect);
 
     if (selection != null && jsonField.getSelectionRef() == null) {
       MetaSelectRepository selectRepo = Beans.get(MetaSelectRepository.class);
@@ -116,6 +150,7 @@ public class MetaJsonFieldProjectController {
         select = new MetaSelect(selection);
         select.setModule("axelor-project");
       }
+      metaJsonFieldProjectService.saveSelection(select);
       jsonField.setSelectionRef(select);
     }
 
@@ -123,5 +158,11 @@ public class MetaJsonFieldProjectController {
     response.setValue("name", name);
     response.setValue("selection", selection);
     response.setValue("selectionRef", jsonField.getSelectionRef());
+    MetaSelect selRef = jsonField.getSelectionRef();
+    response.setValue(
+        "$selectionItems",
+        selRef != null && selRef.getItems() != null
+            ? new ArrayList<>(selRef.getItems())
+            : new ArrayList<>());
   }
 }

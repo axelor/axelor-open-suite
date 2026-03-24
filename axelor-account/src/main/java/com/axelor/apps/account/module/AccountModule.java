@@ -113,6 +113,8 @@ import com.axelor.apps.account.service.analytic.AnalyticGroupingService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupingServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticLineServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineComputeService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineComputeServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentService;
@@ -394,6 +396,8 @@ import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryServi
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryServiceImpl;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateService;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateServiceImpl;
+import com.axelor.apps.account.service.payment.PaymentModeInitService;
+import com.axelor.apps.account.service.payment.PaymentModeInitServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeInterestRateService;
 import com.axelor.apps.account.service.payment.PaymentModeInterestRateServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -494,6 +498,8 @@ public class AccountModule extends AxelorModule {
 
     bind(AccountManagementAttrsService.class).to(AccountManagementAttrsServiceImpl.class);
 
+    bind(AccountManagementCheckService.class).to(AccountManagementCheckServiceImpl.class);
+
     bind(AccountManagementServiceImpl.class).to(AccountManagementServiceAccountImpl.class);
 
     bind(AccountManagementAccountService.class).to(AccountManagementServiceAccountImpl.class);
@@ -536,6 +542,8 @@ public class AccountModule extends AxelorModule {
 
     bind(AnalyticMoveLineService.class).to(AnalyticMoveLineServiceImpl.class);
 
+    bind(AnalyticMoveLineComputeService.class).to(AnalyticMoveLineComputeServiceImpl.class);
+
     bind(InvoicePaymentRepository.class).to(InvoicePaymentManagementRepository.class);
 
     bind(InvoicePaymentValidateService.class).to(InvoicePaymentValidateServiceImpl.class);
@@ -563,6 +571,8 @@ public class AccountModule extends AxelorModule {
     bind(AccountingSituationAttrsService.class).to(AccountingSituationAttrsServiceImpl.class);
 
     bind(AccountingSituationCheckService.class).to(AccountingSituationCheckServiceImpl.class);
+
+    bind(PaymentModeInitService.class).to(PaymentModeInitServiceImpl.class);
 
     bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
 
@@ -807,8 +817,6 @@ public class AccountModule extends AxelorModule {
 
     bind(InvoiceDomainService.class).to(InvoiceDomainServiceImpl.class);
 
-    bind(AnalyticLineService.class).to(AnalyticLineServiceImpl.class);
-
     bind(AnalyticMoveLineGenerateRealService.class)
         .to(AnalyticMoveLineGenerateRealServiceImpl.class);
 
@@ -819,8 +827,6 @@ public class AccountModule extends AxelorModule {
     bind(MoveControlService.class).to(MoveControlServiceImpl.class);
 
     bind(PaymentVoucherCancelService.class).to(PaymentVoucherCancelServiceImpl.class);
-
-    bind(AccountingCutOffService.class).to(AccountingCutOffServiceImpl.class);
 
     bind(MoveLineQueryService.class).to(MoveLineQueryServiceImpl.class);
 

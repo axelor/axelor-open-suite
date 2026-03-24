@@ -312,7 +312,7 @@ public class MoveLineController {
   public void updateDueDates(ActionRequest request, ActionResponse response) {
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
     moveLine.setMove(this.getMove(request, moveLine));
-    if (moveLine.getMove() != null && moveLine.getMove().getOriginDate() != null) {
+    if (moveLine.getMove() != null) {
       LocalDate dueDate =
           Beans.get(InvoiceTermService.class)
               .getDueDate(moveLine.getInvoiceTermList(), moveLine.getMove().getOriginDate());

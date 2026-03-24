@@ -1,3 +1,0 @@
----
-title: "Invoice/TaxLine : fixed the refresh tax account information into refresh vat system information."
-module: axelor-account

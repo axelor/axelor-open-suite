@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
+import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -44,6 +45,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
@@ -109,6 +111,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected OrderInvoiceService orderInvoiceService;
   protected InvoiceTaxService invoiceTaxService;
   protected SaleOrderDeliveryAddressService saleOrderDeliveryAddressService;
+  protected PartnerAccountService partnerAccountService;
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
@@ -127,7 +130,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       CurrencyScaleService currencyScaleService,
       OrderInvoiceService orderInvoiceService,
       InvoiceTaxService invoiceTaxService,
-      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService) {
+      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
+      PartnerAccountService partnerAccountService) {
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
     this.appSupplychainService = appSupplychainService;
@@ -144,6 +148,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.orderInvoiceService = orderInvoiceService;
     this.invoiceTaxService = invoiceTaxService;
     this.saleOrderDeliveryAddressService = saleOrderDeliveryAddressService;
+    this.partnerAccountService = partnerAccountService;
   }
 
   @Override
@@ -394,15 +399,26 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     }
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
-          invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
-              invoice,
-              invoicingProduct,
-              percentToInvoice,
-              saleOrderLine,
-              null,
-              saleOrderLine.getExTaxTotal(),
-              saleOrderLine.getTaxLineSet());
+      InvoiceLineGeneratorSupplyChain invoiceLineGenerator = null;
+      if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL) {
+        invoiceLineGenerator =
+            invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
+                invoice,
+                invoicingProduct,
+                percentToInvoice,
+                saleOrderLine,
+                null,
+                saleOrderLine.getExTaxTotal(),
+                saleOrderLine.getTaxLineSet());
+      } else {
+        invoiceLineGenerator =
+            invoiceLineOrderService.getInvoiceLineGeneratorForTitleLines(
+                invoice,
+                saleOrderLine.getProductName(),
+                saleOrderLine,
+                null,
+                saleOrderLine.getQty());
+      }
       createdInvoiceLineList.addAll(invoiceLineGenerator.creates());
     }
 
@@ -594,6 +610,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       public Invoice generate() throws AxelorException {
         Invoice invoice = super.createInvoiceHeader();
         invoice.setHeadOfficeAddress(saleOrder.getClientPartner().getHeadOfficeAddress());
+        if (appBaseService.getAppBase().getActivatePartnerRelations()) {
+          invoice.setThirdPartyPayerPartner(
+              partnerAccountService.getPayedByPartner(invoice.getPartner()));
+        }
         return invoice;
       }
     };
@@ -682,7 +702,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     if (appSupplychainService.getAppSupplychain().getCompleteSaleOrderOnInvoicing()
         && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) == 0
-        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
+        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED
+        && saleOrder.getSaleOrderTypeSelect() != SaleOrderRepository.SALE_ORDER_TYPE_SUBSCRIPTION) {
       saleOrderWorkflowService.completeSaleOrder(saleOrder);
     }
   }

@@ -20,6 +20,7 @@ package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.service.purchase.request.PurchaseRequestToPoCreateService;
@@ -73,11 +74,17 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
   public Map<String, Object> getDefaultValues(PurchaseRequest purchaseRequest, Company company)
       throws AxelorException {
     Map<String, Object> values = new HashMap<>();
+    User user = AuthUtils.getUser();
     if (company == null) {
-      company = Optional.of(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
+      company = Optional.ofNullable(user).map(User::getActiveCompany).orElse(null);
     }
     purchaseRequest.setCompany(company);
     values.put("company", purchaseRequest.getCompany());
+    if (user != null) {
+      TradingName tradingName = user.getTradingName();
+      values.put("tradingName", tradingName);
+      purchaseRequest.setTradingName(tradingName);
+    }
     return values;
   }
 

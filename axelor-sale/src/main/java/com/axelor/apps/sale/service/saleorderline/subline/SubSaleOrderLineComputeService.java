@@ -26,4 +26,7 @@ public interface SubSaleOrderLineComputeService {
 
   void computeSumSubLineList(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
+
+  void updateSubSaleOrderLineList(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
 }

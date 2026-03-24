@@ -472,6 +472,7 @@
           <field name="description" colSpan="12" height="8" showTitle="false" widget="Html"/>
         </panel>
       </panel>
+      <panel-include view="incl-blocking-partner-form"/>
       <panel name="eventPanel" title="Events" showIf="id != null &amp;&amp; !isEmployee"
         if-module="axelor-crm" hidden="true" if="__config__.app.isApp('crm')">
         <button name="meetingBtn" title="Create a meeting" link="" icon="pencil-square"
@@ -1597,7 +1598,8 @@
     <view type="grid" name="move-line-grid"/>
     <view type="form" name="move-line-form"/>
     <view-param name="search-filters" value="move-line-filters"/>
-    <domain>self.partner.id = :partnerId AND self.account.useForPartnerBalance = true</domain>
+    <domain>self.partner.id = :partnerId AND self.account.useForPartnerBalance = true AND self.move
+      IS NOT NULL</domain>
     <context name="partnerId" expr="eval: id"/>
   </action-view>
 
@@ -1644,7 +1646,7 @@
     model="com.axelor.apps.base.db.Partner">
     <view type="grid" name="partner-grid"/>
     <view type="form" name="partner-form"/>
-    <domain>self.parentPartner = :id</domain>
+    <domain>self.parentPartner.id = :id</domain>
   </action-view>
 
   <action-record name="action-record-base-partner-set-business-card"

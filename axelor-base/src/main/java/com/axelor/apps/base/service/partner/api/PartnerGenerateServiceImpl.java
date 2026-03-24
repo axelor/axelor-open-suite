@@ -24,8 +24,8 @@ import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.MainActivity;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PartnerCategory;
+import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.MainActivityRepository;
@@ -61,6 +61,7 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
   protected final MainActivityRepository mainActivityRepository;
   protected final PartnerService partnerService;
   protected final AppBaseService appBaseService;
+  protected final AddressRepository addressRepository;
 
   @Inject
   public PartnerGenerateServiceImpl(
@@ -71,7 +72,8 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
       PartnerApiFetchService partnerApiFetchService,
       MainActivityRepository mainActivityRepository,
       PartnerService partnerService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      AddressRepository addressRepository) {
     this.partnerRepository = partnerRepository;
     this.partnerCategoryRepository = partnerCategoryRepository;
     this.countryRepository = countryRepository;
@@ -80,6 +82,7 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
     this.mainActivityRepository = mainActivityRepository;
     this.partnerService = partnerService;
     this.appBaseService = appBaseService;
+    this.addressRepository = addressRepository;
   }
 
   @Transactional(rollbackOn = Exception.class)
@@ -185,10 +188,8 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
     setAddressDetails(address, adresseEtablissement);
 
     if (isValidAddress(address)) {
-      PartnerAddress partnerAddress = new PartnerAddress();
-      partnerAddress.setPartner(partner);
-      partnerAddress.setAddress(address);
-      partner.addPartnerAddressListItem(partnerAddress);
+      addressRepository.save(address);
+      partnerService.addPartnerAddress(partner, address, true, true, true);
     }
   }
 

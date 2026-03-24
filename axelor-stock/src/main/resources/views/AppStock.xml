@@ -39,6 +39,11 @@
           requiredIf="activateStockLocationBarCodeGeneration &amp;&amp; !editStockLocationBarcodeType"
           colSpan="4"/>
       </panel>
+      <panel name="stockMoveBarcodePanel" title="Stock move" colSpan="12">
+        <field name="activateStockMoveBarcodeGeneration" widget="boolean-switch" colSpan="4"/>
+        <field name="stockMoveBarcodeTypeConfig" showIf="activateStockMoveBarcodeGeneration"
+          requiredIf="activateStockMoveBarcodeGeneration" colSpan="4"/>
+      </panel>
     </panel>
     <panel name="customsPanel" title="Customs">
       <field name="economicArea"/>

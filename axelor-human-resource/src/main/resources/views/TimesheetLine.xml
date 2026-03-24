@@ -56,6 +56,7 @@
     <field name="sequence" if="__config__.app.getApp('timesheet')?.displayTimesheetLineNumber"
       width="90"/>
     <field name="project" width="200" requiredIf="toInvoice"
+      onChange="action-timesheet-line-record-set-project-task"
       onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form"
       grid-view="project-grid"/>
     <field name="projectTask" width="200" form-view="project-task-form"
@@ -106,6 +107,7 @@
     onNew="action-timesheet-line-group-timesheet-grid-on-new" orderBy="date">
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="project" requiredIf="toInvoice"
+      onChange="action-timesheet-line-record-set-project-task"
       onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form"
       grid-view="project-grid"/>
     <field name="date"
@@ -179,7 +181,7 @@
     onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
     width="large">
     <panel name="overviewPanel" title="Overview">
-      <field name="project" onChange="action-timesheet-line-group-project-onchange"
+      <field name="project" onChange="action-timesheet-line-record-set-project-task"
         onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form"
         grid-view="project-grid"/>
       <field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"
@@ -228,7 +230,7 @@
     onNew="action-timesheet-line-group-project-form-on-new"
     onLoad="action-timesheet-line-group-onload" width="large">
     <panel name="overviewPanel" title="Overview">
-      <field name="project" onChange="action-timesheet-line-group-project-onchange"
+      <field name="project" onChange="action-timesheet-line-record-set-project-task"
         onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form"
         grid-view="project-grid"/>
       <field name="projectTask" domain="self.imputable IS TRUE"
@@ -519,7 +521,7 @@
     <view type="grid" name="timesheet-line-project-task-grid"/>
     <view type="form" name="timesheet-line-timesheet-project-task-form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.timesheet.statusSelect = 3 and self.projectTask = :id</domain>
+    <domain>self.timesheet.statusSelect = 3 and self.projectTask.id = :id</domain>
     <context name="_projectTaskId" expr="eval: id"/>
   </action-view>
 
@@ -528,7 +530,7 @@
     <view type="grid" name="timesheet-line-project-task-grid"/>
     <view type="form" name="timesheet-line-timesheet-project-task-form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.timesheet.statusSelect &lt; 3 and self.projectTask = :id</domain>
+    <domain>self.timesheet.statusSelect &lt; 3 and self.projectTask.id = :id</domain>
     <context name="_projectTaskId" expr="eval: id"/>
   </action-view>
 
@@ -537,7 +539,7 @@
     <view type="grid" name="timesheet-line-project-task-grid"/>
     <view type="form" name="timesheet-line-timesheet-project-task-form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.projectTask = :id</domain>
+    <domain>self.projectTask.id = :id</domain>
     <context name="_projectTaskId" expr="eval: id"/>
   </action-view>
 

@@ -7,10 +7,11 @@
     model="com.axelor.apps.stock.db.StockLocationLineHistory">
     <field name="dateT"/>
     <field name="wap"/>
-    <field name="qty" x-scale="2"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
     <field name="unit"/>
     <field name="typeSelect"/>
     <field name="origin"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <form name="stock-location-line-history-form" title="Stock location line history"

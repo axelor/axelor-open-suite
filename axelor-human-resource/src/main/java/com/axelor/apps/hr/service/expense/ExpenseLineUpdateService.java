@@ -57,4 +57,6 @@ public interface ExpenseLineUpdateService {
       throws AxelorException;
 
   void updateCurrencyOnLines(Expense expense);
+
+  void updateEmployeeOnLines(Expense expense);
 }

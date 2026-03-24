@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
@@ -40,18 +41,20 @@ public class StockCorrectionServiceSupplychainImpl extends StockCorrectionServic
       StockLocationLineService stockLocationLineService,
       AppBaseService baseService,
       StockMoveService stockMoveService,
-      StockCorrectionRepository stockCorrectionRepository,
       StockMoveLineService stockMoveLineService,
-      StockLocationLineFetchService stockLocationLineFetchService) {
+      StockCorrectionRepository stockCorrectionRepository,
+      StockLocationLineFetchService stockLocationLineFetchService,
+      InventoryRepository inventoryRepository) {
     super(
         stockConfigService,
         productCompanyService,
         stockLocationLineService,
         baseService,
         stockMoveService,
-        stockCorrectionRepository,
         stockMoveLineService,
-        stockLocationLineFetchService);
+        stockCorrectionRepository,
+        stockLocationLineFetchService,
+        inventoryRepository);
   }
 
   @Override

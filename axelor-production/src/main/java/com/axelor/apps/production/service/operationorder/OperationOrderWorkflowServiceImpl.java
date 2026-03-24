@@ -34,6 +34,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
@@ -55,6 +56,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected OperationOrderService operationOrderService;
   protected OperationOrderPlanningService operationOrderPlanningService;
+  protected ManufOrderRepository manufOrderRepo;
 
   @Inject
   public OperationOrderWorkflowServiceImpl(
@@ -66,7 +68,8 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
       ManufOrderWorkflowService manufOrderWorkflowService,
       OperationOrderService operationOrderService,
       OperationOrderPlanningService operationOrderPlanningService,
-      ManufOrderStockMoveService manufOrderStockMoveService) {
+      ManufOrderStockMoveService manufOrderStockMoveService,
+      ManufOrderRepository manufOrderRepo) {
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.operationOrderRepo = operationOrderRepo;
     this.operationOrderDurationRepo = operationOrderDurationRepo;
@@ -76,6 +79,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     this.operationOrderService = operationOrderService;
     this.operationOrderPlanningService = operationOrderPlanningService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
+    this.manufOrderRepo = manufOrderRepo;
   }
 
   /**
@@ -156,6 +160,8 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
         for (StockMove stockMove : operationOrder.getInStockMoveList()) {
           manufOrderStockMoveService.finishStockMove(stockMove);
         }
+        // Re-attach after potential JPA.clear() triggered by finishStockMove
+        operationOrder = JpaModelHelper.ensureManaged(operationOrder);
 
         StockMove newStockMove =
             operationOrderStockMoveService._createToConsumeStockMove(
@@ -238,6 +244,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void finish(OperationOrder operationOrder) throws AxelorException {
+    operationOrder = JpaModelHelper.ensureManaged(operationOrder);
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_FINISHED);
     operationOrder.setRealEndDateT(appProductionService.getTodayDateTime().toLocalDateTime());
 
@@ -245,6 +252,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     operationOrderPlanningService.computeDuration(operationOrder);
 
     operationOrderStockMoveService.finish(operationOrder);
+    operationOrder = JpaModelHelper.ensureManaged(operationOrder);
     operationOrderRepo.save(operationOrder);
     calculateHoursOfUse(operationOrder);
     manufOrderWorkflowService.setOperationOrderMaxPriority(operationOrder.getManufOrder());
@@ -284,8 +292,9 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
 
   @Override
   public void finishAndAllOpFinished(OperationOrder operationOrder) throws AxelorException {
-    ManufOrder manufOrder = operationOrder.getManufOrder();
+    Long manufOrderId = operationOrder.getManufOrder().getId();
     finishProcess(operationOrder);
+    ManufOrder manufOrder = manufOrderRepo.find(manufOrderId);
     manufOrderWorkflowService.sendFinishedMail(manufOrder);
   }
 

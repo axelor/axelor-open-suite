@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Connexion Google</title>
+    <meta charset="utf-8" />
+  </head>
+  <body scrolling="no">
+	<button id="signin_button" style="display: block; padding: 0; border: none; background: none;"><img src="GoogleSignIn.png"/></button>
+  	<pre id="content" style="white-space: pre-wrap;"></pre>
+  	
+    <script type="text/javascript">
+      var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/people/v1/rest"];
+      var SCOPES = "https://www.googleapis.com/auth/contacts.readonly";
+      var signInButton = document.getElementById('signin_button');
+      var Client_id;
+      var API_key;
+      var message_no_import;
+      var message_import_successful;
+      var message_auth_failed;
+
+      /**
+       *  On load, wait sign in button onClick and call handleAuthClick function
+       */
+      function handleClientLoad() {
+          signInButton.onclick = handleAuthClick;
+      }
+      
+      /**
+       * Retrieve Google Api's credentials and call initClient function
+       */
+      function handleAuthClick(event) {
+    	  var urlParams = new URLSearchParams(window.location.search);
+          $.ajax({
+        	  url: "../ws/synccontact/key/"+urlParams.get('id'),
+        	  type:"POST",
+        	  success: function(data){
+        		  API_key = data.key;
+        		  Client_id = data.clientid;
+        		  message_no_import = data.noImport;
+        	      message_import_successful = data.importSuccessful;
+        	      message_auth_failed = data.authFailed;
+        	      gapi.load('client:auth2', initClient);
+        	  }
+        	})    	  
+      }
+      
+      /**
+       *  Initialize Google API and call main import function and signOut immediately
+       */
+      function initClient() {
+        gapi.client.init({
+          apiKey: API_key,
+          clientId: Client_id,
+          discoveryDocs: DISCOVERY_DOCS,
+          scope: SCOPES
+        }).then(function () {
+        	gapi.auth2.getAuthInstance().signIn().then(() => {
+            	importContactGoogle();
+            }).then(() => {
+           		gapi.auth2.getAuthInstance().signOut();
+            });
+        }, function(error) {
+        	alert(message_auth_failed.concat(' :\n').concat(error.details));
+        });
+    	signInButton.onclick = handleAuthClick;
+      }
+
+      
+
+      /**
+       * Main process of retrieving contact from People API and send it to WS SyncContactService
+       */
+      function importContactGoogle() {
+        return gapi.client.people.people.connections.list({
+           'resourceName': 'people/me',
+           'pageSize': 200,
+           'personFields': 'names,emailAddresses,addresses,phoneNumbers,organizations'
+         }).then(function(response) {
+           var connections = response.result.connections;
+           if (connections.length > 0) {
+             var urlParams = new URLSearchParams(window.location.search);
+             $.ajax({
+            	  url: "../ws/synccontact/sync/" + urlParams.get('id'),
+            	  type:"POST",
+            	  data: JSON.stringify({'people': connections}),
+            	  contentType:"application/json; charset=utf-8",
+            	  dataType:"json",
+            	  success: function(){
+            		  alert(message_import_successful);
+            		  parent.location.reload();
+            	  }
+            	})
+           }else{
+        	   alert(message_no_import);
+           }
+         });
+      }
+    </script>
+    <script
+        src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+        crossorigin="anonymous">
+    </script>
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+  </body>
+</html>

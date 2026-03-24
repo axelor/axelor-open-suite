@@ -620,7 +620,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       domain =
           " self.productTypeSelect = 'storable' AND self.productSubTypeSelect IN ("
               + unitCostCalculation.getProductSubTypeSelect()
-              + ") AND (self.defaultBillOfMaterial.company IN ("
+              + ") AND (self.defaultBillOfMaterial.company.id IN ("
               + StringHelper.getIdListString(unitCostCalculation.getCompanySet())
               + ") OR self.id in ("
               + bomsProductsList

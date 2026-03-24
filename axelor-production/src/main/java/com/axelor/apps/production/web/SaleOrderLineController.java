@@ -31,12 +31,14 @@ import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
 import com.axelor.apps.production.service.SolBomUpdateService;
 import com.axelor.apps.production.service.SolDetailsBomUpdateService;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Singleton;
 
 @Singleton
@@ -124,10 +126,17 @@ public class SaleOrderLineController {
     SaleOrderLineDetailsBomService saleOrderLineDetailsBomService =
         Beans.get(SaleOrderLineDetailsBomService.class);
 
+    boolean isMultiLineDisplayType =
+        Beans.get(AppSaleService.class).getAppSale().getListDisplayTypeSelect()
+            == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI;
+
     if (billOfMaterial != null && saleOrder != null) {
-      if (!Beans.get(SolBomUpdateService.class).isUpdated(saleOrderLine)
-          || !Beans.get(SolDetailsBomUpdateService.class)
-              .isSolDetailsUpdated(saleOrderLine, saleOrderLine.getSaleOrderLineDetailsList())) {
+      boolean areLinesUpdated =
+          !Beans.get(SolBomUpdateService.class).isUpdated(saleOrderLine)
+              || !Beans.get(SolDetailsBomUpdateService.class)
+                  .isSolDetailsUpdated(saleOrderLine, saleOrderLine.getSaleOrderLineDetailsList());
+
+      if (areLinesUpdated && isMultiLineDisplayType) {
         response.setValue(
             "subSaleOrderLineList",
             saleOrderLineBomService.createSaleOrderLinesFromBom(billOfMaterial, saleOrder));
