@@ -1,0 +1,3 @@
+---
+title: "Production: fixed machine charge dashboard percentage precision by using seconds instead of truncated minutes."
+module: axelor-production
