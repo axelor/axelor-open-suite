@@ -1306,7 +1306,7 @@ class Container extends Component {
     userCriteria.push({
       fieldName: "id",
       operator: "in",
-      value: [user["user.id"]],
+      value: [user.user && user.user.id],
     });
     service
       .search(
@@ -1333,7 +1333,7 @@ class Container extends Component {
             this.setState({ user });
             this.setEmployeeData(user).then((res) => {
               this.setState(
-                { timeSheetUser: { id: user.id, name: user["user.name"] } },
+                { timeSheetUser: { id: user.id, name: user.user && user.user.name } },
                 () => {
                   this.fetchTimesheet(rowDates);
                 }
