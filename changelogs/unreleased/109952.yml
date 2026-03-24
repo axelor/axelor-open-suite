@@ -1,0 +1,3 @@
+---
+title: "Call tender: fixed error when generating purchase order without a company."
+module: axelor-purchase
