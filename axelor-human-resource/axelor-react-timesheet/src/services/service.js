@@ -79,7 +79,7 @@ class Services {
   }
 
   info() {
-    return fetch(`${this.state.baseURL}ws/app/info`, {
+    return fetch(`${this.state.baseURL}ws/public/app/info`, {
       method: "GET",
       credentials: "include",
       headers: this.getHeaders(),
