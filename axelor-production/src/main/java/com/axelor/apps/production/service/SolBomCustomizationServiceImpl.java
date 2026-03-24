@@ -74,6 +74,10 @@ public class SolBomCustomizationServiceImpl implements SolBomCustomizationServic
     if (billOfMaterial == null) {
       return null;
     }
+    billOfMaterial = billOfMaterialRepository.find(billOfMaterial.getId());
+    if (billOfMaterial == null) {
+      return null;
+    }
     BillOfMaterial personalizedBOM =
         billOfMaterialService.getCustomizedBom(billOfMaterial, depth, false);
 
