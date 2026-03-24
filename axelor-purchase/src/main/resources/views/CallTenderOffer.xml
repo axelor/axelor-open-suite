@@ -35,7 +35,7 @@
     <panel name="requestPanel" title="Requested">
       <field name="product" colSpan="6"/>
       <field name="supplierPartner" colSpan="6" form-view="partner-form"
-        grid-view="partner-grid"/>
+        grid-view="partner-grid" domain="self.isSupplier = true AND self.isContact = false"/>
       <field name="requestedQty" colSpan="6" x-scale="$nbDecimalDigitForQty"/>
       <field name="requestedUnit" colSpan="6"/>
     </panel>
