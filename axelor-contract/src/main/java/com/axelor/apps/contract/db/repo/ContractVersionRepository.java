@@ -23,6 +23,7 @@ import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.inject.Beans;
 import com.axelor.utils.ModelTool;
+import java.util.Comparator;
 import java.util.List;
 
 public class ContractVersionRepository extends AbstractContractVersionRepository {
@@ -62,9 +63,9 @@ public class ContractVersionRepository extends AbstractContractVersionRepository
     List<ContractLine> lines =
         ModelTool.copy(repository, currentVersion.getContractLineList(), true);
 
-    for (ContractLine line : lines) {
-      newVersion.addContractLineListItem(line);
-    }
+    lines.stream()
+        .sorted(Comparator.comparing(ContractLine::getSequence))
+        .forEach(newVersion::addContractLineListItem);
 
     newVersion.setIsTimeProratedInvoice(currentVersion.getIsTimeProratedInvoice());
     newVersion.setIsVersionProratedInvoice(currentVersion.getIsVersionProratedInvoice());
