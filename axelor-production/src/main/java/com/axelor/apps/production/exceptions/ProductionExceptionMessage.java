@@ -56,14 +56,10 @@ public final class ProductionExceptionMessage {
   /** Bill of Materials Service */
   public static final String BOM_1 = /*$$(*/ "Personalized" /*)*/;
 
-  public static final String BOM_MISSING_UNIT_ON_PRODUCT = /*$$(*/
-      "Please fill unit for product %s." /*)*/;
-
   /** Production Order Wizard and controller */
-  public static final String PRODUCTION_ORDER_1 = /*$$(*/ "Production's order created" /*)*/;
-
   public static final String PRODUCTION_ORDER_2 = /*$$(*/
       "Error during production's order's creation" /*)*/;
+
   public static final String PRODUCTION_ORDER_3 = /*$$(*/ "You must add a positive quantity" /*)*/;
   public static final String PRODUCTION_ORDER_4 = /*$$(*/ "You must select a nomenclature" /*)*/;
   public static final String PRODUCTION_ORDER_5 = /*$$(*/ "Invalid date" /*)*/;
@@ -161,8 +157,6 @@ public final class ProductionExceptionMessage {
       "Cannot make BOM obsolete that is not applicable" /*)*/;
 
   /** Configurator Controller */
-  public static final String BILL_OF_MATERIAL_GENERATED = /*$$(*/
-      "The bill of materials %s has been generated" /*)*/;
 
   /** Configurator Bom Service */
   public static final String CONFIGURATOR_BOM_TOO_MANY_CALLS = /*$$(*/
@@ -216,9 +210,6 @@ public final class ProductionExceptionMessage {
   public static final String MANUF_ORDER_EMAIL_NOT_SENT = /*$$(*/
       "Automatic email was not sent because no default email account and/or no valid email account was found : please create one." /*)*/;
 
-  public static final String MANUF_STOCK_MOVE_ERROR_1 = /*$$(*/
-      "All products has been consumed" /*)*/;
-
   public static final String UNIT_COST_CALCULATION_IMPORT_FAIL_ERROR = /*$$(*/
       "Data import failed" /*)*/;
 
@@ -236,8 +227,6 @@ public final class ProductionExceptionMessage {
 
   public static final String DUPLICATE_PRODUCT_SELECTED = /*$$(*/
       "Multiple same product selected in the list." /*)*/;
-
-  public static final String MO_CREATED = /*$$(*/ "%d MO created." /*)*/;
 
   // CostSheetLine service
   public static final String MISSING_PRODUCT_PURCHASE_CURRENCY = /*$$(*/
@@ -307,15 +296,9 @@ public final class ProductionExceptionMessage {
       "The condition formula to generate the prod product returns null value or is not consistent. Please correct on prod product configurator id : %s." /*)*/;
   public static final String CONFIGURATOR_PROD_PROCESS_COULD_NOT_CAST_INTO_STOCK_LOCATION = /*$$(*/
       "The result formula of '%s' in configurator prod process '%s' could not be converted in a Stock location, please verify the formula." /*)*/;
-  public static final String MANUF_ORDER_STOCK_MOVE_MISSING_OUTSOURCING_SOURCE_STOCK_LOCATION =
-      /*$$(*/
-      "The outsourcing receipt stock location is missing from the stock config" /*)*/;
   public static final String MANUF_ORDER_STOCK_MOVE_MISSING_SOURCE_STOCK_LOCATION =
       /*$$(*/
       "Stock location is missing from the prod process and in the component default stock location in stock configuration." /*)*/;
-  public static final String MANUF_ORDER_STOCK_MOVE_MISSING_OUTSOURCING_DEST_STOCK_LOCATION =
-      /*$$(*/
-      "The produced product stock location is missing in the prod process" /*)*/;
 
   public static final String GENERATE_MANUF_ORDER_BOM_DIVIDE_ZERO =
       /*$$(*/
@@ -337,9 +320,6 @@ public final class ProductionExceptionMessage {
 
   public static final String PURCHASE_ORDER_NO_HOURS_UNIT = /*$$(*/
       "Outsourcing purchase order cannot be generated. Please fill hours unit in your base configuration." /*)*/;
-
-  public static final String PURCHASE_ORDER_NO_END_UNIT = /*$$(*/
-      "Impossible to generate outsourcing purchase order. Please fill unit on your product." /*)*/;
 
   public static final String
       YOUR_SCHEDULING_CONFIGURATION_IS_AT_THE_LATEST_YOU_NEED_TO_FILL_THE_ESTIMATED_SHIPPING_DATE =
