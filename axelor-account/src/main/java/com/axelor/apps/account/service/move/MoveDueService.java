@@ -80,7 +80,8 @@ public class MoveDueService {
     return moveLines;
   }
 
-  public List<MoveLine> getInvoiceDue(Invoice invoice, boolean useOthersInvoiceDue)
+  public List<MoveLine> getInvoiceDue(
+      Invoice invoice, boolean useOthersInvoiceDue, Integer maxMoveLineOnAutoReconcile)
       throws AxelorException {
     Company company = invoice.getCompany();
     Partner partner = invoice.getPartner();
@@ -97,7 +98,8 @@ public class MoveDueService {
     List<? extends MoveLine> othersDebitMoveLines = null;
     if (useOthersInvoiceDue) {
       othersDebitMoveLines =
-          moveLineToolService.getMoveExcessDueList(false, company, invoice.getPartner(), invoice);
+          moveLineToolService.getMoveExcessDueList(
+              false, company, invoice.getPartner(), invoice, maxMoveLineOnAutoReconcile);
       debitMoveLines.addAll(othersDebitMoveLines);
     }
 

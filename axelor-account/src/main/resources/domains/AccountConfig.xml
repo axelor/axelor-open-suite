@@ -115,6 +115,8 @@
       help="You can indicate here the authorized amount for reconciliation gap tolerance."/>
 
     <boolean name="autoReconcileOnInvoice" title="Authorize auto reconcile on invoice"/>
+    <integer name="maxMoveLineOnAutoReconcile"
+      title="Maximum move line authorized on auto reconcile process" default="50" min="1"/>
     <boolean name="autoReconcileOnPayment" title="Authorize auto reconcile on payment"/>
 
     <!-- Default Payment Modes -->
