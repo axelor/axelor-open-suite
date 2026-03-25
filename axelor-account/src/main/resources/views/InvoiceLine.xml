@@ -137,6 +137,8 @@
           onChange="action-invoice-line-group-taxline-onchange" grid-view="tax-line-grid"
           form-view="tax-line-form"
           onSelect="action-invoice-line-method-compute-tax-line-set-on-select" widget="Tags"/>
+        <field name="ecoTaxAmount" colSpan="2"/>
+        <field name="ecoTaxMention" widget="html" x-lite="true" colSpan="12"/>
         <field name="exTaxTotal" colSpan="3" readonly="true"/>
         <field name="inTaxTotal" colSpan="3" readonly="true"/>
         <field name="$isReadOnly" hidden="true"/>
@@ -279,6 +281,8 @@
         <field name="taxLineSet" canEdit="false" canNew="false"
           onChange="action-invoice-line-group-taxline-onchange" grid-view="tax-line-grid"
           form-view="tax-line-form" widget="Tags"/>
+        <field name="ecoTaxAmount" colSpan="2"/>
+        <field name="ecoTaxMention" widget="html" x-lite="true" colSpan="12"/>
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
         <field name="invoice" hidden="true"/>
@@ -352,6 +356,7 @@
     <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
     <action name="action-invoice-line-method-set-scale"/>
     <action name="action-invoice-line-method-set-required-analytic-account"/>
+    <action name="action-record-account-invoice-line-set-default-eco-tax"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-qty-onchange">
@@ -439,6 +444,11 @@
       if="!taxLineSet &amp;&amp; account &amp;&amp; account.defaultTaxSet"/>
   </action-record>
 
+  <action-record name="action-record-account-invoice-line-set-default-eco-tax"
+    model="com.axelor.apps.account.db.InvoiceLine">
+    <field name="ecoTaxMention" expr="eval: product?.defaultEcoTaxMention"/>
+    <field name="ecoTaxAmount" expr="eval: product?.defaultEcoTaxAmount"/>
+  </action-record>
 
 
   <!-- ACTION METHOD -->
