@@ -22,7 +22,8 @@
   </calendar>
 
   <form name="quality-alert-form" title="Quality alerts"
-    model="com.axelor.apps.quality.db.QualityAlert" onNew="action-quality-alert-record-default">
+    model="com.axelor.apps.quality.db.QualityAlert" onNew="action-quality-alert-record-default"
+    onSave="action-quality-validate-dates">
     <panel name="statusSelectPanel" title="Status">
       <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
     </panel>
@@ -33,9 +34,9 @@
       <field name="responsible"/>
       <field name="rootCause"/>
       <field name="prioritySelect" widget="single-select"/>
-      <field name="startDate"/>
-      <field name="endDate"/>
-      <field name="deadLineDate"/>
+      <field name="startDate" onChange="action-quality-validate-start-date"/>
+      <field name="endDate" onChange="action-quality-validate-end-date"/>
+      <field name="deadLineDate" onChange="action-quality-validate-deadline-date"/>
       <field name="tagSet" widget="Tags" x-color-field="color" grid-view="tag-simplified-grid"
         form-view="tag-form" onSelect="action-quality-alert-attrs-set-quality-tag-domain"/>
     </panel>
