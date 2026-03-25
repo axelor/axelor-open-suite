@@ -1,0 +1,3 @@
+---
+title: "Purchase order: fixed trading name field being read-only when the purchase order was generated from a call for tenders."
+module: axelor-purchase

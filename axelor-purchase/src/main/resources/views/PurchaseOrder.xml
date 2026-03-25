@@ -176,13 +176,14 @@
         <field name="typeSelect" showTitle="false" colSpan="2" widget="SingleSelect"
           hidden="true"/>
         <field name="company.tradingNameList" hidden="true" colSpan="12"/>
+        <field name="callTender" hidden="true" colSpan="12"/>
         <field name="company" canEdit="false" colSpan="3" widget="SuggestBox"
           onChange="action-group-purchase-order-company-change-actions" form-view="company-form"
           grid-view="company-grid" readonlyIf="statusSelect >= 3 || supplierPartner != null"/>
         <field name="tradingName" canEdit="false" grid-view="trading-name-grid"
           form-view="trading-name-form"
           if="__config__.app.getApp('base')?.enableTradingNamesManagement" colSpan="3"
-          readonlyIf="!createdByInterco &amp;&amp;((purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3)"
+          readonlyIf="callTender == null &amp;&amp; !createdByInterco &amp;&amp;((purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3)"
           domain="self.company = :company"
           onChange="action-purchase-order-method-printing-settings-default-value,action-purchase-order-record-set-stock-location"
           requiredIf="company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0"/>
