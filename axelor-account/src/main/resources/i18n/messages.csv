@@ -3060,6 +3060,8 @@
 "Selected AnalyticAxis and AnalyticJournal doesn't belong to the select company.",,,
 "Selected AnalyticAxis doesn't belong to the select company.",,,
 "Selected AnalyticJournal doesn't belong to the select company.",,,
+"Selected credit",,,
+"Selected debit",,,
 "Selected move(s) successfully removed",,,
 "Selected on Session",,,
 "Selected payment voucher for deposit slip",,,

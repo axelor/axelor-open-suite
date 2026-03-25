@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="move-line-grid" orderBy="-date,-name" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine" canArchive="false" canDelete="false" canNew="false">
     <toolbar>
       <button name="accountingReconcileBtn" title="Accounting Reconcile"
         onClick="action-method-accounting-reconcile"/>
-      <button name="calculateBtn" title="Calculation of totals"
-        onClick="action-account-move-line-method-calculate-balance"/>
-      <button name="debitBtn" title="Debit :" onClick=""/>
-      <button name="creditBtn" title="Credit :" onClick=""/>
-      <button name="balanceBtn" title="Balance :" onClick=""/>
     </toolbar>
     <hilite color="info" if="$get('move.statusSelect') == 1"/>
     <hilite color="danger" if="$get('move.statusSelect') == 4"/>
@@ -52,6 +47,16 @@
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
     <field name="taxLineBeforeReverseSet" hidden="true"/>
+    <summary-bar>
+      <field name="debit" title="Selected debit" aggregate="sum" on="selection"/>
+      <field name="credit" title="Selected credit" aggregate="sum" on="selection"/>
+      <call action="com.axelor.apps.account.web.MoveLineController:fetchSummary">
+        <field name="$totalDebit" title="Total debit" type="decimal" align="end"/>
+        <field name="$totalCredit" title="Total credit" type="decimal" align="end"/>
+        <field name="$totalAmountRemaining" title="Amount remaining" type="decimal"
+          align="end"/>
+      </call>
+    </summary-bar>
   </grid>
 
   <grid name="move-line-account-grid" title="Move lines"
@@ -80,11 +85,6 @@
     <toolbar>
       <button name="accountingReconcileBtn" title="Accounting Reconcile"
         onClick="action-method-accounting-reconcile"/>
-      <button name="calculateBtn" title="Calculation of totals"
-        onClick="action-account-move-line-method-calculate-balance"/>
-      <button name="debitBtn" title="Debit :" onClick=""/>
-      <button name="creditBtn" title="Credit :" onClick=""/>
-      <button name="balanceBtn" title="Balance :" onClick=""/>
     </toolbar>
     <field name="name"/>
     <field name="date"/>
@@ -104,6 +104,16 @@
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
     <field name="taxLineBeforeReverseSet" hidden="true"/>
+    <summary-bar>
+      <field name="debit" title="Selected debit" aggregate="sum" on="selection"/>
+      <field name="credit" title="Selected credit" aggregate="sum" on="selection"/>
+      <call action="com.axelor.apps.account.web.MoveLineController:fetchSummary">
+        <field name="$totalDebit" title="Total debit" type="decimal" align="end"/>
+        <field name="$totalCredit" title="Total credit" type="decimal" align="end"/>
+        <field name="$totalAmountRemaining" title="Amount remaining" type="decimal"
+          align="end"/>
+      </call>
+    </summary-bar>
   </grid>
 
   <grid name="move-line-account-batch-auto-move-lettering-grid" title="Move lines reconciled"
@@ -794,9 +804,6 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="usherProcess"/>
   </action-method>
 
-  <action-method name="action-account-move-line-method-calculate-balance">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="showCalculatedBalance"/>
-  </action-method>
 
   <action-method
     name="action-move-line-method-analytic-distribution-template-onselect">
