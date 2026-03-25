@@ -56,6 +56,8 @@
     <many-to-many name="generatedPurchaseOrderProductSet"
       ref="com.axelor.apps.base.db.Product" title="Products for generated purchase order"/>
     <boolean name="isPersonalized" title="Personalized"/>
+    <many-to-many name="hazardPhraseSet" ref="com.axelor.apps.base.db.HazardPhrase"
+      title="Hazard phrases"/>
 
     <extra-code><![CDATA[
 
@@ -84,6 +86,7 @@
       <field name="isEnabledForAllProducts"/>
       <field name="launchQty"/>
       <field name="stockMoveRealizeOrderSelect"/>
+      <field name="hazardPhraseSet"/>
     </track>
   </entity>
 </domain-models>

@@ -6,7 +6,8 @@
   <module name="studio" package="com.axelor.studio.db"/>
 
   <entity name="AppBase" cacheable="true">
-    <boolean name="enableSiteManagementForStock" title="Enable site management for stock"/>
+    <boolean name="enableSiteManagementForStock" title="Enable site management for stock"
+      help="This feature enables site management for stock, a site representing a physical location whether it is an administrative building, a customer building, a warehouse, etc. The site can be linked to a stock location."/>
 
     <track>
       <field name="enableSiteManagementForStock" on="UPDATE"/>

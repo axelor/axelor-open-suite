@@ -163,7 +163,7 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
     Query<InvoiceTerm> invoiceTermQuery =
         invoiceTermRepo
             .all()
-            .filter("self.paymentSession = :paymentSession")
+            .filter("self.paymentSession = :paymentSession AND self.paymentAmount != 0")
             .bind("paymentSession", paymentSession)
             .order("id");
 
@@ -172,16 +172,18 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        offset++;
+
         if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || paymentSessionValidateService.shouldBeProcessed(invoiceTerm)) {
-
-          this.processInvoiceTermBillOfExchange(
-              paymentSession,
-              invoiceTerm,
-              moveDateMap,
-              paymentAmountMap,
-              invoiceTermLinkWithRefund);
+          offset++;
+          if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) != 0) {
+            this.processInvoiceTermBillOfExchange(
+                paymentSession,
+                invoiceTerm,
+                moveDateMap,
+                paymentAmountMap,
+                invoiceTermLinkWithRefund);
+          }
         } else {
           paymentSessionValidateService.releaseInvoiceTerm(invoiceTerm);
         }
@@ -333,20 +335,6 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
             paymentSessionValidateService.getMoveLineDescription(paymentSession),
             out);
 
-    Account counterPartAccount = accountConfigService.getBillOfExchReceivAccount(accountConfig);
-
-    MoveLine counterPartMoveLine =
-        paymentSessionValidateService.generateMoveLine(
-            move,
-            invoiceTermMoveLine.getPartner(),
-            counterPartAccount,
-            invoiceTerm.getAmountPaid(),
-            invoiceTermMoveLine.getOrigin(),
-            paymentSessionValidateService.getMoveLineDescription(paymentSession),
-            !out);
-
-    invoiceTerm.setPlacementMoveLine(counterPartMoveLine);
-
     move.setDescription(
         this.getMoveDescription(paymentSession, moveLine.getCurrencyAmount(), false));
 
@@ -358,8 +346,29 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
     List<InvoiceTerm> invoiceTermListToPay = moveLine.getInvoiceTermList();
     invoiceTermService.payInvoiceTerms(invoiceTermListToPay);
 
-    invoiceTermReplaceService.replaceInvoiceTerms(
-        invoiceTerm.getInvoice(), counterPartMoveLine.getInvoiceTermList(), List.of(invoiceTerm));
+    if (invoiceTerm.getAmountPaid().signum() != 0) {
+      Account counterPartAccount = accountConfigService.getBillOfExchReceivAccount(accountConfig);
+
+      MoveLine counterPartMoveLine =
+          paymentSessionValidateService.generateMoveLine(
+              move,
+              invoiceTermMoveLine.getPartner(),
+              counterPartAccount,
+              invoiceTerm.getAmountPaid(),
+              invoiceTermMoveLine.getOrigin(),
+              paymentSessionValidateService.getMoveLineDescription(paymentSession),
+              !out);
+
+      invoiceTerm.setPlacementMoveLine(counterPartMoveLine);
+
+      invoiceTermReplaceService.replaceInvoiceTerms(
+          invoiceTerm.getInvoice(),
+          counterPartMoveLine.getInvoiceTermList(),
+          List.of(invoiceTerm),
+          paymentSession);
+
+      counterPartMoveLine.getInvoiceTermList().forEach(it -> it.setPaymentAmount(BigDecimal.ZERO));
+    }
   }
 
   protected String getMoveDescription(
@@ -392,8 +401,11 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
     Move move =
         paymentAmountMap.size() == 1 ? paymentAmountMap.keySet().stream().findFirst().get() : null;
 
-    if (move == null) {
-
+    if (move != null) {
+      BigDecimal amount = paymentAmountMap.remove(move);
+      move = moveRepo.find(move.getId());
+      paymentAmountMap.put(move, amount);
+    } else {
       move =
           paymentSessionValidateService.createMove(
               paymentSession,

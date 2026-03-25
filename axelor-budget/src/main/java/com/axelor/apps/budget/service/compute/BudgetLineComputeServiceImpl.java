@@ -30,6 +30,7 @@ import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.Optional;
 
 public class BudgetLineComputeServiceImpl implements BudgetLineComputeService {
@@ -61,11 +62,21 @@ public class BudgetLineComputeServiceImpl implements BudgetLineComputeService {
       LocalDate defaultDate) {
     ComputeMethod computeMethod = this::updateBudgetLineAmountsWithNoPo;
     Invoice invoice = Optional.ofNullable(move).map(Move::getInvoice).orElse(null);
-    if (invoice != null && (invoice.getPurchaseOrder() != null || invoice.getSaleOrder() != null)) {
+    if (invoice != null && isLinkedToOrder(invoice)) {
       computeMethod = this::updateBudgetLineAmountsWithPo;
     }
 
     updateBudgetLineAmounts(budget, amount, fromDate, toDate, defaultDate, computeMethod);
+  }
+
+  protected boolean isLinkedToOrder(Invoice invoice) {
+    if (invoice.getPurchaseOrder() != null || invoice.getSaleOrder() != null) {
+      return true;
+    }
+    return invoice.getInvoiceLineList() != null
+        && invoice.getInvoiceLineList().stream()
+            .anyMatch(
+                line -> line.getPurchaseOrderLine() != null || line.getSaleOrderLine() != null);
   }
 
   @Override
@@ -111,11 +122,24 @@ public class BudgetLineComputeServiceImpl implements BudgetLineComputeService {
     if (fromDate != null && toDate != null) {
       computeBudgetLinesUsingDates(budget, amount, fromDate, toDate, computeMethod);
     } else {
-      BudgetLine budgetLine = budgetLineRepository.findCurrentByDate(budget, defaultDate);
+      BudgetLine budgetLine = findByCurrentDate(budget, defaultDate);
       if (budgetLine != null) {
         computeMethod.computeBudgetLineAmounts(budgetLine, amount);
       }
     }
+  }
+
+  protected BudgetLine findByCurrentDate(Budget budget, LocalDate defaultDate) {
+    return budget.getBudgetLineList().stream()
+        .filter(
+            line -> {
+              boolean startsBeforeOrOn = !line.getFromDate().isAfter(defaultDate);
+              boolean endsAfterOrOn =
+                  (line.getToDate() == null || !line.getToDate().isBefore(defaultDate));
+              return startsBeforeOrOn && endsAfterOrOn;
+            })
+        .max(Comparator.comparing(BudgetLine::getFromDate))
+        .orElse(null);
   }
 
   protected void computeBudgetLinesUsingDates(
@@ -130,7 +154,8 @@ public class BudgetLineComputeServiceImpl implements BudgetLineComputeService {
     BigDecimal missingAmount = amount;
 
     while (!date.isAfter(toDate)) {
-      BudgetLine budgetLine = budgetLineRepository.findCurrentByDate(budget, date);
+
+      BudgetLine budgetLine = findByCurrentDate(budget, date);
       if (budgetLine == null || totalDuration == 0) {
         break;
       }

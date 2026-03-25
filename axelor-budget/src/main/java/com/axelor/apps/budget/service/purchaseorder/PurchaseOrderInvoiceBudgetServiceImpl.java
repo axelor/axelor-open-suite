@@ -28,10 +28,11 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.address.AddressService;
-import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.invoice.InvoiceToolBudgetService;
 import com.axelor.apps.contract.service.PurchaseOrderInvoiceContractServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
@@ -43,6 +44,7 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderSer
 import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.common.ObjectUtils;
 import jakarta.inject.Inject;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
 
@@ -51,6 +53,7 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceC
   protected BudgetDistributionRepository budgetDistributionRepository;
   protected BudgetToolsService budgetToolsService;
   protected AppBudgetService appBudgetService;
+  protected InvoiceToolBudgetService invoiceToolBudgetService;
 
   @Inject
   public PurchaseOrderInvoiceBudgetServiceImpl(
@@ -70,7 +73,8 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceC
       InvoiceLineRepository invoiceLineRepository,
       BudgetDistributionRepository budgetDistributionRepository,
       BudgetToolsService budgetToolsService,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      InvoiceToolBudgetService invoiceToolBudgetService) {
     super(
         invoiceServiceSupplychain,
         invoiceService,
@@ -89,6 +93,7 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceC
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
+    this.invoiceToolBudgetService = invoiceToolBudgetService;
   }
 
   @Override
@@ -110,27 +115,27 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceC
 
     for (InvoiceLine invoiceLine : invoiceLineList) {
       if (invoiceLine.getPurchaseOrderLine() != null
-          && Objects.equals(invoiceLine.getPurchaseOrderLine(), purchaseOrderLine)) {
+          && Objects.equals(invoiceLine.getPurchaseOrderLine(), purchaseOrderLine)
+          && purchaseOrderLine.getCompanyExTaxTotal().signum() > 0) {
         invoiceLine.setBudget(purchaseOrderLine.getBudget());
         invoiceLine.setBudgetRemainingAmountToAllocate(
             purchaseOrderLine.getBudgetRemainingAmountToAllocate());
+
         invoiceLine.setBudgetFromDate(purchaseOrderLine.getBudgetFromDate());
         invoiceLine.setBudgetToDate(purchaseOrderLine.getBudgetToDate());
+        invoiceToolBudgetService.copyBudgetDistributionList(
+            purchaseOrderLine.getBudgetDistributionList(),
+            invoiceLine,
+            invoiceLine
+                .getCompanyExTaxTotal()
+                .divide(
+                    purchaseOrderLine.getCompanyExTaxTotal(),
+                    AppBaseService.COMPUTATION_SCALING,
+                    RoundingMode.HALF_UP));
 
-        if (!ObjectUtils.isEmpty(purchaseOrderLine.getBudgetDistributionList())) {
-          for (BudgetDistribution budgetDistribution :
-              purchaseOrderLine.getBudgetDistributionList()) {
-            BudgetDistribution copyBudgetDistribution = new BudgetDistribution();
-            copyBudgetDistribution.setBudget(budgetDistribution.getBudget());
-            copyBudgetDistribution.setAmount(budgetDistribution.getAmount());
-            copyBudgetDistribution.setBudgetAmountAvailable(
-                budgetDistribution.getBudgetAmountAvailable());
-            invoiceLine.addBudgetDistributionListItem(copyBudgetDistribution);
-          }
-          invoiceLine.setBudgetRemainingAmountToAllocate(
-              budgetToolsService.getBudgetRemainingAmountToAllocate(
-                  invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
-        }
+        invoiceLine.setBudgetRemainingAmountToAllocate(
+            budgetToolsService.getBudgetRemainingAmountToAllocate(
+                invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
       }
     }
     return invoiceLineList;

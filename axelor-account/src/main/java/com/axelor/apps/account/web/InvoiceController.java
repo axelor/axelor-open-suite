@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxNumber;
@@ -49,6 +50,7 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidatorSyncService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -63,11 +65,13 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.LocalizationRepository;
+import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PrintingTemplateRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
@@ -892,6 +896,30 @@ public class InvoiceController {
         Beans.get(InvoiceService.class).isSelectedPfpValidatorEqualsPartnerPfpValidator(invoice));
   }
 
+  public void syncPfpValidatorToInvoiceTerms(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    Beans.get(InvoiceTermPfpValidatorSyncService.class).syncPfpValidatorFromInvoiceToTerms(invoice);
+
+    response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+  }
+
+  public void syncPfpValidatorFromInvoiceTerms(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    InvoiceTermPfpValidatorSyncService syncService =
+        Beans.get(InvoiceTermPfpValidatorSyncService.class);
+
+    List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
+    if (!ObjectUtils.isEmpty(invoiceTermList)) {
+      InvoiceTerm firstTerm = invoiceTermList.get(0);
+      firstTerm.setInvoice(invoice);
+      if (syncService.syncPfpValidatorFromTermToInvoice(firstTerm)) {
+        response.setValue("pfpValidatorUser", invoice.getPfpValidatorUser());
+      }
+    }
+  }
+
   public void getInvoicePartnerDomain(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
@@ -1301,6 +1329,19 @@ public class InvoiceController {
     Beans.get(InvoiceService.class).updateThirdPartyPayerPartner(invoice);
 
     response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+  }
+
+  public void setThirdPartyPayerPartnerDomain(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    Partner partner = invoice.getPartner();
+    if (partner == null) {
+      response.setAttr("thirdPartyPayerPartner", "domain", "self.isThirdPartyPayer IS TRUE");
+      return;
+    }
+    String domain =
+        Beans.get(PartnerLinkService.class)
+            .computePartnerFilter(partner, PartnerLinkTypeRepository.TYPE_SELECT_PAYED_BY);
+    response.setAttr("thirdPartyPayerPartner", "domain", domain);
   }
 
   public void setInvoiceLinesScale(ActionRequest request, ActionResponse response) {

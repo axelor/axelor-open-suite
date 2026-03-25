@@ -37,6 +37,7 @@ import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowS
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
@@ -132,6 +133,15 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
 
     initFieldsNeededForPlan(manufOrder);
     planSchedulingDates(manufOrder);
+    // Re-attach after potential JPA.clear() from isConsProOnOperation stock move creation.
+    // Use find() instead of save()/merge() to avoid cascade explosion (32767 columns error):
+    // em.merge() on detached ManufOrder cascades through all collections (StockMoveLine
+    // extended in enterprise), generating a SQL query exceeding PostgreSQL column limits.
+    LocalDateTime plannedStartDateT = manufOrder.getPlannedStartDateT();
+    LocalDateTime plannedEndDateT = manufOrder.getPlannedEndDateT();
+    manufOrder = manufOrderRepo.find(manufOrder.getId());
+    manufOrder.setPlannedStartDateT(plannedStartDateT);
+    manufOrder.setPlannedEndDateT(plannedEndDateT);
     manufOrder = updateStatusToPlan(manufOrder);
     return manufOrderRepo.save(manufOrder);
   }
@@ -276,10 +286,13 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     } else if (manufOrder.getPlannedStartDateT() == null
         && manufOrder.getPlannedEndDateT() != null) {
       long duration = 0;
-      for (OperationOrder order : manufOrder.getOperationOrderList()) {
-        duration +=
-            operationOrderService.computeEntireCycleDuration(
-                order, order.getManufOrder().getQty()); // in seconds
+      List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
+      if (CollectionUtils.isNotEmpty(operationOrderList)) {
+        for (OperationOrder order : operationOrderList) {
+          duration +=
+              operationOrderService.computeEntireCycleDuration(
+                  order, order.getManufOrder().getQty()); // in seconds
+        }
       }
       // This is a estimation only, it will be updated later
       // It does not take into configuration such as machine planning etc...
@@ -371,5 +384,22 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     }
 
     manufOrder.setPlannedEndDateT(computePlannedEndDateT(manufOrder));
+  }
+
+  @Override
+  public void updateStockMovesEstimatedDate(ManufOrder manufOrder) {
+    updateEstimatedDate(manufOrder.getInStockMoveList(), manufOrder.getPlannedStartDateT());
+    updateEstimatedDate(manufOrder.getOutStockMoveList(), manufOrder.getPlannedEndDateT());
+  }
+
+  protected void updateEstimatedDate(List<StockMove> stockMoveList, LocalDateTime plannedDateT) {
+    if (CollectionUtils.isEmpty(stockMoveList) || plannedDateT == null) {
+      return;
+    }
+    for (StockMove stockMove : stockMoveList) {
+      if (stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
+        stockMove.setEstimatedDate(plannedDateT.toLocalDate());
+      }
+    }
   }
 }

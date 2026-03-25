@@ -190,9 +190,21 @@ public class PaymentServiceImpl implements PaymentService {
         if (creditMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0
             && debitMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
           i++;
+          BigDecimal reconciledAmount = BigDecimal.ZERO;
+          if (debitMoveLine.getMaxAmountToReconcile().compareTo(BigDecimal.ZERO) > 0) {
+            reconciledAmount =
+                debitMoveLine
+                    .getMaxAmountToReconcile()
+                    .min(creditMoveLine.getAmountRemaining().abs());
+          } else {
+            reconciledAmount =
+                creditMoveLine.getAmountRemaining().abs().min(debitMoveLine.getAmountRemaining());
+          }
           try {
             createReconcile(
                 debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
+            debitTotalRemaining = debitTotalRemaining.subtract(reconciledAmount);
+            creditTotalRemaining = creditTotalRemaining.subtract(reconciledAmount);
           } catch (Exception e) {
             if (dontThrow) {
               TraceBackService.trace(e);

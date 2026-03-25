@@ -38,6 +38,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineWarningService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.purchase.service.purchaseorderline.view.PurchaseOrderLineViewService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -462,5 +463,18 @@ public class PurchaseOrderLineController {
         "hidden",
         !Beans.get(PurchaseOrderLineWarningService.class)
             .checkSupplierCatalogUnit(purchaseOrderLine, purchaseOrder));
+  }
+
+  public void updateDeliveryPanelVisibility(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+
+      Map<String, Map<String, Object>> attrs =
+          Beans.get(PurchaseOrderLineViewService.class).hideDeliveryPanel(purchaseOrderLine);
+
+      response.setAttrs(attrs);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

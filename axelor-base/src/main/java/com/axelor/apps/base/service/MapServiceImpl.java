@@ -19,10 +19,12 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
 import com.axelor.studio.db.repo.AppBaseRepository;
+import com.google.common.base.Strings;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.UriBuilder;
 import java.lang.invoke.MethodHandles;
@@ -118,5 +120,28 @@ public class MapServiceImpl implements MapService {
       default:
         return false;
     }
+  }
+
+  @Override
+  public String getAddressString(Address address) {
+    if (address == null) {
+      return "";
+    }
+    if (appBaseService.getAppBase().getMapApiSelect()
+        == AppBaseRepository.MAP_API_OPEN_STREET_MAP) {
+
+      String streetName = address.getStreetName();
+      String city = address.getCity() != null ? address.getCity().getName() : "";
+      String zip = address.getZip();
+      String countrySubDivision = address.getCountrySubDivision();
+      String country = address.getCountry() != null ? address.getCountry().getName() : "";
+
+      return (!Strings.isNullOrEmpty(streetName) ? streetName : "")
+          + (!Strings.isNullOrEmpty(city) ? " " + city : "")
+          + (!Strings.isNullOrEmpty(countrySubDivision) ? " " + countrySubDivision : "")
+          + (!Strings.isNullOrEmpty(zip) ? " " + zip : "")
+          + (!Strings.isNullOrEmpty(country) ? " " + country : "");
+    }
+    return address.getFullName();
   }
 }

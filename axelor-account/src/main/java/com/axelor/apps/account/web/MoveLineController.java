@@ -21,7 +21,6 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
@@ -39,23 +38,20 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.db.Wizard;
+import com.axelor.rpc.Criteria;
 import jakarta.inject.Singleton;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -140,73 +136,31 @@ public class MoveLineController {
     }
   }
 
-  public void showCalculatedBalance(ActionRequest request, ActionResponse response) {
-    BigDecimal totalCredit = new BigDecimal(0), totalDebit = new BigDecimal(0), finalBalance;
-    @SuppressWarnings("unchecked")
-    List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
-
+  public void fetchSummary(ActionRequest request, ActionResponse response) {
     try {
-      if (idList != null && !idList.isEmpty()) {
-        MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
-        Company company = null;
-        boolean differentCompanies = false;
+      Criteria criteria = Criteria.parse(request);
+      List<MoveLine> moveLines =
+          criteria != null ? criteria.createQuery(MoveLine.class).fetch() : Collections.emptyList();
 
-        for (Integer id : idList) {
-          if (id != null) {
-            MoveLine moveLine = moveLineRepository.find(id.longValue());
-            if (moveLine != null && moveLine.getMove() != null) {
-              Integer statusSelect = moveLine.getMove().getStatusSelect();
-              if (statusSelect.equals(MoveRepository.STATUS_ACCOUNTED)
-                  || statusSelect.equals(MoveRepository.STATUS_DAYBOOK)
-                  || statusSelect.equals(MoveRepository.STATUS_SIMULATED)) {
-                totalCredit = totalCredit.add(moveLine.getCredit());
-                totalDebit = totalDebit.add(moveLine.getDebit());
-              }
+      BigDecimal totalDebit = BigDecimal.ZERO;
+      BigDecimal totalCredit = BigDecimal.ZERO;
+      BigDecimal totalAmountRemaining = BigDecimal.ZERO;
 
-              if (company == null && moveLine.getMove().getCompany() != null) {
-                company = moveLine.getMove().getCompany();
-              } else if (moveLine.getMove().getCompany() != null
-                  && company != moveLine.getMove().getCompany()) {
-                differentCompanies = true;
-              }
-            } else {
-              throw new AxelorException(
-                  TraceBackRepository.CATEGORY_NO_VALUE,
-                  I18n.get("Cannot find the move line with id: %s"),
-                  id.longValue());
-            }
-          } else {
-            throw new AxelorException(
-                MoveLine.class, TraceBackRepository.CATEGORY_NO_VALUE, I18n.get("One id is null"));
-          }
+      for (MoveLine moveLine : moveLines) {
+        if (moveLine.getDebit() != null) {
+          totalDebit = totalDebit.add(moveLine.getDebit());
         }
-        finalBalance = totalDebit.subtract(totalCredit);
-
-        if (!differentCompanies) {
-          CurrencyScaleService currencyScaleService = Beans.get(CurrencyScaleService.class);
-          int scale = currencyScaleService.getCompanyCurrencyScale(company);
-
-          totalCredit = totalCredit.setScale(scale, RoundingMode.HALF_UP);
-          totalDebit = totalDebit.setScale(scale, RoundingMode.HALF_UP);
-          finalBalance = finalBalance.setScale(scale, RoundingMode.HALF_UP);
+        if (moveLine.getCredit() != null) {
+          totalCredit = totalCredit.add(moveLine.getCredit());
         }
-
-        response.setView(
-            ActionView.define(I18n.get("Calculation"))
-                .model(Wizard.class.getName())
-                .add("form", "account-move-line-calculation-wizard-form")
-                .param("popup", "true")
-                .param("show-toolbar", "false")
-                .param("show-confirm", "false")
-                .param("width", "500")
-                .param("popup-save", "false")
-                .context("_credit", totalCredit)
-                .context("_debit", totalDebit)
-                .context("_balance", finalBalance)
-                .map());
-      } else {
-        response.setAlert(I18n.get(AccountExceptionMessage.NO_MOVE_LINE_SELECTED));
+        if (moveLine.getAmountRemaining() != null) {
+          totalAmountRemaining = totalAmountRemaining.add(moveLine.getAmountRemaining());
+        }
       }
+
+      response.setValue("$totalDebit", totalDebit);
+      response.setValue("$totalCredit", totalCredit);
+      response.setValue("$totalAmountRemaining", totalAmountRemaining);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -324,7 +278,7 @@ public class MoveLineController {
   public void updateDueDates(ActionRequest request, ActionResponse response) {
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
     moveLine.setMove(this.getMove(request, moveLine));
-    if (moveLine.getMove() != null && moveLine.getMove().getOriginDate() != null) {
+    if (moveLine.getMove() != null) {
       LocalDate dueDate =
           Beans.get(InvoiceTermService.class)
               .getDueDate(moveLine.getInvoiceTermList(), moveLine.getMove().getOriginDate());

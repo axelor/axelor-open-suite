@@ -11,7 +11,8 @@
       title="Expense Journal"/>
 
     <many-to-one name="expenseTaxAccount" ref="com.axelor.apps.account.db.Account"
-      title="Expense tax account"/>
+      title="Expense tax account"
+      help="Select the tax account that will be used for expense report accounting."/>
 
     <track>
       <field name="expenseJournal" on="UPDATE"/>

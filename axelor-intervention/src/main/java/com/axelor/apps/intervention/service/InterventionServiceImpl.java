@@ -198,6 +198,10 @@ public class InterventionServiceImpl implements InterventionService {
       }
       intervention.setEquipmentSet(
           new HashSet<>(equipmentRepository.findByContract(contract.getId())));
+
+      if (intervention.getAddress() == null && contract.getPartner() != null) {
+        intervention.setAddress(contract.getPartner().getMainAddress());
+      }
     }
   }
 

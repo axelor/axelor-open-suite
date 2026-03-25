@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.base.job;
 
+import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -69,8 +71,10 @@ public class BatchJob extends ThreadedJob {
     Map<String, Object> originalProperties =
         applyBeanPropertiesWithScriptHelper(batchModel, jobDetail.getJobDataMap());
 
+    Batch batch = null;
     try {
-      batchService.run(batchModel);
+      batch = batchService.run(batchModel);
+      updateBatchOrigin(batch);
     } catch (Exception e) {
       throw new UncheckedJobExecutionException(e);
     } finally {
@@ -117,5 +121,12 @@ public class BatchJob extends ThreadedJob {
         });
 
     return originalProperties;
+  }
+
+  protected void updateBatchOrigin(Batch batch) {
+    JPA.runInTransaction(
+        () -> {
+          batch.setActionLaunchOrigin(BatchRepository.ACTION_LAUNCH_ORIGIN_SCHEDULED);
+        });
   }
 }

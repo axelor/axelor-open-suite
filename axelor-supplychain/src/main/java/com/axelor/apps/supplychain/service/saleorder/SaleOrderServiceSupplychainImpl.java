@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -36,6 +37,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
@@ -48,6 +50,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
@@ -64,6 +67,7 @@ import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -101,7 +105,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       TrackingNumberSupplychainService trackingNumberSupplychainService,
       PartnerLinkSupplychainService partnerLinkSupplychainService,
       SaleInvoicingStateService saleInvoicingStateService,
-      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService,
+      SaleOrderOrderingStatusService saleOrderOrderingStatusService) {
     super(
         appBaseService,
         saleOrderLineRepo,
@@ -113,7 +118,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         saleOrderLineComplementaryProductService,
         saleOrderLinePackService,
         saleOrderLineDiscountService,
-        saleOrderLineComputeService);
+        saleOrderLineComputeService,
+        saleOrderOrderingStatusService);
     this.appSupplychainService = appSupplychainService;
     this.saleOrderStockService = saleOrderStockService;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
@@ -189,6 +195,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       }
       for (StockMove stockMove : stockMoves) {
         stockMoveService.cancel(stockMove, cancelReason);
+        stockMove = JpaModelHelper.ensureManaged(stockMove);
         stockMove.setArchived(true);
         for (StockMoveLine stockMoveline : stockMove.getStockMoveLineList()) {
           TrackingNumber trackingNumber = stockMoveline.getTrackingNumber();
@@ -435,5 +442,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     }
     return stockLocation != null && saleOrderA2C != null && !saleOrderA2C.equals(stockLocationA2C)
         || stockLocation == null && saleOrderA2C != null && !saleOrderA2C.equals(companyA2C);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty)
+      throws AxelorException, MalformedURLException {
+    saleOrder = super.addPack(saleOrder, pack, packQty);
+    this.setAdvancePayment(saleOrder);
+    return saleOrder;
   }
 }

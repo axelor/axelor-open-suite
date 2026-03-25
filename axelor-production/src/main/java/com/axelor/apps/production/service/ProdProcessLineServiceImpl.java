@@ -21,6 +21,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.utils.helpers.StringHelper;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Comparator;
@@ -62,5 +63,13 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
         .min(Comparator.comparingInt(ProdProcessLine::getPriority))
         .map(ProdProcessLine::getPriority)
         .orElse(null);
+  }
+
+  @Override
+  public String getHazardPhraseDomain(ProdProcess prodProcess) {
+    if (prodProcess == null || CollectionUtils.isEmpty(prodProcess.getHazardPhraseSet())) {
+      return "self IN (0)";
+    }
+    return "self.id IN (" + StringHelper.getIdListString(prodProcess.getHazardPhraseSet()) + ")";
   }
 }

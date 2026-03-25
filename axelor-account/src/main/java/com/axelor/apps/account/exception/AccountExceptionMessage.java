@@ -137,9 +137,9 @@ public final class AccountExceptionMessage {
   public static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
       "%d moves couldn't be deleted or archived, please check the logs." /*)*/;
 
-  /** Account management repostiroy */
+  /** Account management repository */
   public static final String ACCOUNT_MANAGEMENT_ALREADY_EXISTS = /*$$(*/
-      "A payment mode already exists with the same information." /*)*/;
+      "An account management already exists with the same information:</br>Bank details: %s</br>Payment mode: %s</br>Company: %s" /*)*/;
 
   /** Account management service */
   public static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
@@ -1427,9 +1427,6 @@ public final class AccountExceptionMessage {
 
   public static final String PAYMENT_SESSION_EMAIL_SENT = /*$$(*/ "%d email(s) sent." /*)*/;
 
-  public static final String PAYMENT_SESSION_INVALID_INVOICE_TERMS = /*$$(*/
-      "One or more invoice terms are presenting a financial discount calculation which is not applicable. Do you wish to proceed ?" /*)*/;
-
   public static final String PAYMENT_SESSION_GENERATED_MOVES = /*$$(*/
       "%d accounting move(s) successfully generated." /*)*/;
 
@@ -1866,4 +1863,7 @@ public final class AccountExceptionMessage {
 
   public static final String RECONCILE_GROUP_WRONG_COMPANY_ON_MOVE_LINES = /*$$(*/
       "Reconcile group %s contains move line(s) belonging to a different company than %s : %s" /*)*/;
+
+  public static final String PERIOD_CLOSE_MOVES_FAILED = /*$$(*/
+      "Period closure failed. Some move(s) could not be validated." /*)*/;
 }

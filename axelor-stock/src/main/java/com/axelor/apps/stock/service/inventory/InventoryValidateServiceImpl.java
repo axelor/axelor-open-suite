@@ -160,6 +160,9 @@ public class InventoryValidateServiceImpl implements InventoryValidateService {
         .<InventoryLine, AxelorException>forEachByQuery(
             query,
             inventoryLine -> {
+              if (computeDiff(inventoryLine, isEnteringStock).signum() <= 0) {
+                return;
+              }
               StockLocation realStockLocation = inventoryLine.getStockLocation();
               StockLocation fromStockLocation =
                   isEnteringStock ? virtualInvLocHolder[0] : realStockLocation;
@@ -300,47 +303,45 @@ public class InventoryValidateServiceImpl implements InventoryValidateService {
       throws AxelorException {
     Product product = inventoryLine.getProduct();
     TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
-    BigDecimal diff = inventoryLine.getRealQty().subtract(inventoryLine.getCurrentQty());
-    if (!isEnteringStock) {
-      diff = diff.negate();
+    BigDecimal diff = computeDiff(inventoryLine, isEnteringStock);
+    if (diff.signum() <= 0) {
+      return;
     }
-    if (diff.signum() > 0) {
 
-      StockLocationLine stockLocationLine =
-          stockLocationLineFetchService.getStockLocationLine(toStockLocation, product);
-      BigDecimal unitPrice = getAvgPrice(stockLocationLine);
-      if (!inventoryLineService.isPresentInStockLocation(inventoryLine)) {
-        unitPrice = inventoryLine.getPrice();
-      }
-
-      StockMoveLine stockMoveLine =
-          stockMoveLineService.createStockMoveLine(
-              product,
-              product.getName(),
-              product.getDescription(),
-              diff,
-              unitPrice,
-              unitPrice,
-              product.getUnit(),
-              stockMove,
-              StockMoveLineService.TYPE_NULL,
-              false,
-              BigDecimal.ZERO,
-              fromStockLocation,
-              toStockLocation);
-      if (stockMoveLine == null) {
-        throw new AxelorException(
-            inventoryLine.getInventory(),
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(StockExceptionMessage.INVENTORY_7)
-                + " "
-                + inventoryLine.getInventory().getInventorySeq());
-      }
-      if (trackingNumber != null && stockMoveLine.getTrackingNumber() == null) {
-        stockMoveLine.setTrackingNumber(trackingNumber);
-      }
-      stockMoveLineRepo.save(stockMoveLine);
+    StockLocationLine stockLocationLine =
+        stockLocationLineFetchService.getStockLocationLine(toStockLocation, product);
+    BigDecimal unitPrice = getAvgPrice(stockLocationLine);
+    if (!inventoryLineService.isPresentInStockLocation(inventoryLine)) {
+      unitPrice = inventoryLine.getPrice();
     }
+
+    StockMoveLine stockMoveLine =
+        stockMoveLineService.createStockMoveLine(
+            product,
+            product.getName(),
+            product.getDescription(),
+            diff,
+            unitPrice,
+            unitPrice,
+            product.getUnit(),
+            stockMove,
+            StockMoveLineService.TYPE_NULL,
+            false,
+            BigDecimal.ZERO,
+            fromStockLocation,
+            toStockLocation);
+    if (stockMoveLine == null) {
+      throw new AxelorException(
+          inventoryLine.getInventory(),
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(StockExceptionMessage.INVENTORY_7)
+              + " "
+              + inventoryLine.getInventory().getInventorySeq());
+    }
+    if (trackingNumber != null && stockMoveLine.getTrackingNumber() == null) {
+      stockMoveLine.setTrackingNumber(trackingNumber);
+    }
+    stockMoveLineRepo.save(stockMoveLine);
   }
 
   protected BigDecimal getAvgPrice(StockLocationLine stockLocationLine) {
@@ -351,6 +352,14 @@ public class InventoryValidateServiceImpl implements InventoryValidateService {
       avgPrice = BigDecimal.ZERO;
     }
     return avgPrice;
+  }
+
+  protected BigDecimal computeDiff(InventoryLine inventoryLine, boolean isEnteringStock) {
+    BigDecimal diff = inventoryLine.getRealQty().subtract(inventoryLine.getCurrentQty());
+    if (!isEnteringStock) {
+      diff = diff.negate();
+    }
+    return diff;
   }
 
   protected void checkMissingStockLocation(Inventory inventory) throws AxelorException {

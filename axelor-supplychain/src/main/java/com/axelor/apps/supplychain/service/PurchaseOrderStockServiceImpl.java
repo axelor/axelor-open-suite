@@ -51,6 +51,7 @@ import com.axelor.apps.stock.service.StockMoveLineStockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -61,12 +62,14 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.collect.Sets;
+import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,6 +100,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected TaxService taxService;
   protected AppStockService appStockService;
   protected StockMoveLineStockLocationService stockMoveLineStockLocationService;
+  protected StockMoveRepository stockMoveRepository;
+  protected AppSupplychainService appSupplychainService;
 
   @Inject
   public PurchaseOrderStockServiceImpl(
@@ -112,7 +117,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       ProductCompanyService productCompanyService,
       TaxService taxService,
       AppStockService appStockService,
-      StockMoveLineStockLocationService stockMoveLineStockLocationService) {
+      StockMoveLineStockLocationService stockMoveLineStockLocationService,
+      StockMoveRepository stockMoveRepository,
+      AppSupplychainService appSupplychainService) {
 
     this.unitConversionService = unitConversionService;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -127,6 +134,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.taxService = taxService;
     this.appStockService = appStockService;
     this.stockMoveLineStockLocationService = stockMoveLineStockLocationService;
+    this.stockMoveRepository = stockMoveRepository;
+    this.appSupplychainService = appSupplychainService;
   }
 
   /**
@@ -135,6 +144,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
    * @param purchaseOrder une commande
    * @throws AxelorException Aucune séquence de StockMove n'a été configurée
    */
+  @Transactional(rollbackOn = Exception.class)
   public List<Long> createStockMoveFromPurchaseOrder(PurchaseOrder purchaseOrder)
       throws AxelorException {
 
@@ -155,17 +165,24 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     Map<Pair<StockLocation, LocalDate>, List<PurchaseOrderLine>> purchaseOrderLineMap =
         getPurchaseOrderLineMap(purchaseOrder);
 
+    boolean isTitleLine = purchaseOrderLineMap.entrySet().size() == 1 ? true : false;
+
     for (Entry<Pair<StockLocation, LocalDate>, List<PurchaseOrderLine>> entry :
         purchaseOrderLineMap.entrySet()) {
 
       List<PurchaseOrderLine> purchaseOrderLineList = entry.getValue();
       Pair<StockLocation, LocalDate> pair = entry.getKey();
-      StockLocation stockLocation = pair.getLeft();
       LocalDate estimatedDeliveryDate = pair.getRight();
 
+      purchaseOrder = JpaModelHelper.ensureManaged(purchaseOrder);
+      StockLocation stockLocation = JpaModelHelper.ensureManaged(pair.getLeft());
       List<Long> stockMoveId =
           createStockMove(
-              purchaseOrder, stockLocation, estimatedDeliveryDate, purchaseOrderLineList);
+              purchaseOrder,
+              stockLocation,
+              estimatedDeliveryDate,
+              purchaseOrderLineList,
+              isTitleLine);
 
       if (stockMoveId != null && !stockMoveId.isEmpty()) {
 
@@ -179,7 +196,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       PurchaseOrder purchaseOrder,
       StockLocation stockLocation,
       LocalDate estimatedDeliveryDate,
-      List<PurchaseOrderLine> purchaseOrderLineList)
+      List<PurchaseOrderLine> purchaseOrderLineList,
+      boolean isTitleLine)
       throws AxelorException {
 
     List<Long> stockMoveIdList = new ArrayList<>();
@@ -269,18 +287,47 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
               .plusDays(supplychainConfig.getNumberOfDaysForPurchaseOrder().longValue()));
     }
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
-      BigDecimal qty =
-          purchaseOrderLineServiceSupplychainImpl.computeUndeliveredQty(purchaseOrderLine);
+    List<PurchaseOrderLine> purchaseOrderLines = new ArrayList<>(purchaseOrderLineList);
 
-      if (qty.signum() > 0 && !existActiveStockMoveForPurchaseOrderLine(purchaseOrderLine)) {
+    if (isTitleLine && appSupplychainService.getAppSupplychain().getIsTitleLineManaged()) {
+      purchaseOrderLines.addAll(
+          purchaseOrder.getPurchaseOrderLineList().stream()
+              .filter(line -> line.getIsTitleLine())
+              .collect(Collectors.toList()));
+    }
+    purchaseOrderLines.sort(Comparator.comparing(PurchaseOrderLine::getSequence));
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
+      purchaseOrderLine = JpaModelHelper.ensureManaged(purchaseOrderLine);
+
+      if (existActiveStockMoveForPurchaseOrderLine(purchaseOrderLine)) {
+        continue;
+      }
+      if (purchaseOrderLine.getProduct() != null) {
+        BigDecimal qty =
+            purchaseOrderLineServiceSupplychainImpl.computeUndeliveredQty(purchaseOrderLine);
+        if (qty.signum() > 0) {
+          StockMoveLine stockMoveLine =
+              createStockMoveLine(
+                  stockMove, qualityStockMove, purchaseOrderLine, qty, startLocation, endLocation);
+          if (stockMoveLine != null) {
+            stockMove.addStockMoveLineListItem(stockMoveLine);
+            stockMoveLine.setSequence(stockMove.getStockMoveLineList().size());
+          }
+        }
+      } else if (purchaseOrderLine.getIsTitleLine()) {
         StockMoveLine stockMoveLine =
-            this.createStockMoveLine(
-                stockMove, qualityStockMove, purchaseOrderLine, qty, startLocation, endLocation);
+            stockMoveLineServiceSupplychain.createStockMoveTitleLine(
+                stockMove, null, purchaseOrderLine);
         if (stockMoveLine != null) {
-          stockMoveLine.getStockMove().addStockMoveLineListItem(stockMoveLine);
+          stockMove.addStockMoveLineListItem(stockMoveLine);
+          stockMoveLine.setSequence(stockMove.getStockMoveLineList().size());
         }
       }
+    }
+    // Save qualityStockMove while associations are still managed
+    if (qualityStockMove.getStockMoveLineList() != null
+        && !qualityStockMove.getStockMoveLineList().isEmpty()) {
+      qualityStockMove = stockMoveRepository.save(qualityStockMove);
     }
     if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
       stockMoveService.plan(stockMove);
@@ -288,6 +335,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     }
     if (qualityStockMove.getStockMoveLineList() != null
         && !qualityStockMove.getStockMoveLineList().isEmpty()) {
+      qualityStockMove = JpaModelHelper.ensureManaged(qualityStockMove);
       stockMoveService.plan(qualityStockMove);
       stockMoveIdList.add(qualityStockMove.getId());
     }
@@ -552,8 +600,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             .fetch();
 
     for (StockMove stockMove : stockMoveList) {
-
-      stockMoveService.cancel(stockMove);
+      stockMoveService.cancel(JpaModelHelper.ensureManaged(stockMove));
     }
   }
 

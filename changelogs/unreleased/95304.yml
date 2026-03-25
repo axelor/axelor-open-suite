@@ -1,3 +1,0 @@
----
-title: "Quality: remove dependency on axelor-production and handle Manufacturing fields from the Production module."
-module: axelor-quality

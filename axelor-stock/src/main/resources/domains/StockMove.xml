@@ -129,6 +129,8 @@
 
     <many-to-one name="logisticalForm" title="Logistical form"
       ref="com.axelor.apps.stock.db.LogisticalForm"/>
+    <many-to-one name="stockMoveBarcode" title="Barcode"
+      ref="com.axelor.meta.db.MetaFile" copy="false"/>
 
     <unique-constraint columns="stockMoveSeq,company"/>
 

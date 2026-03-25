@@ -8,7 +8,7 @@
   <entity name="AccountConfig" cacheable="true">
 
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
-      required="true" unique="true"/>
+      required="true" unique="true" help="Company for which the configurations are set."/>
 
     <!-- JOURNAL -->
     <many-to-one name="customerSalesJournal" ref="com.axelor.apps.account.db.Journal"
@@ -44,55 +44,75 @@
       ref="com.axelor.apps.account.db.JournalType" title="Credit note journal type"/>
 
     <many-to-one name="supplierAdvancePaymentAccount"
-      ref="com.axelor.apps.account.db.Account" title="Supplier advance payment account"/>
+      ref="com.axelor.apps.account.db.Account" title="Supplier advance payment account"
+      help="Select the default supplier advance payment account."/>
 
     <!-- ACCOUNT -->
     <many-to-one name="customerAccount" ref="com.axelor.apps.account.db.Account"
-      title="Customer account"/>
+      title="Customer account"
+      help="Select the default customer account to use on sale invoices. It will also be used as parent account if automatic customer account creation is enabled."/>
     <many-to-one name="supplierAccount" ref="com.axelor.apps.account.db.Account"
-      title="Supplier account"/>
+      title="Supplier account"
+      help="Select the default supplier account to use on purchase invoices. It will also be used as parent account if automatic supplier account creation is enabled."/>
     <many-to-one name="doubtfulCustomerAccount" ref="com.axelor.apps.account.db.Account"
-      title="Doubtful customers account"/>
+      title="Doubtful customers account" help="Select the default doubtful customers account."/>
     <many-to-one name="employeeAccount" ref="com.axelor.apps.account.db.Account"
-      title="Employee account"/>
+      title="Employee account"
+      help="Select the default employee account to use on expense reports. It will also be used as parent account if automatic employee account creation is enabled."/>
     <many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account"
-      title="Irrecoverable account"/>
+      title="Irrecoverable account" help="Select the default irrecoverable account."/>
     <many-to-one name="cashPositionVariationDebitAccount"
-      ref="com.axelor.apps.account.db.Account" title="Cashier Debit Regulation account"/>
+      ref="com.axelor.apps.account.db.Account" title="Cashier Debit Regulation account"
+      help="Select the account that will be used for debit settlement gaps."/>
     <many-to-one name="cashPositionVariationCreditAccount"
-      ref="com.axelor.apps.account.db.Account" title="Cashier Credit Regulation account"/>
+      ref="com.axelor.apps.account.db.Account" title="Cashier Credit Regulation account"
+      help="Select the account that will be used for credit settlement gaps."/>
 
     <many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account"
-      title="Customer advance payment account"/>
-    <many-to-one name="factorDebitAccount" ref="com.axelor.apps.account.db.Account"/>
-    <many-to-one name="factorCreditAccount" ref="com.axelor.apps.account.db.Account"/>
+      title="Customer advance payment account"
+      help="Select the default customer advance payment account."/>
+    <many-to-one name="factorDebitAccount" ref="com.axelor.apps.account.db.Account"
+      help="Select the account that will be used to debit the factor in the factoring process."/>
+    <many-to-one name="factorCreditAccount" ref="com.axelor.apps.account.db.Account"
+      help="Select the account that will be used to credit the factor in the factoring process."/>
     <many-to-one name="yearOpeningAccount" ref="com.axelor.apps.account.db.Account"
       title="Year opening account"/>
     <many-to-one name="yearClosureAccount" ref="com.axelor.apps.account.db.Account"
       title="Year closure account"/>
     <many-to-one name="billOfExchReceivAccount" ref="com.axelor.apps.account.db.Account"
-      title="Bill of exchange receivable account"/>
+      title="Bill of exchange receivable account"
+      help="Select the default bill of exchange receivable account."/>
     <integer name="accountCodeNbrCharSelect" title="Account code nbr. char"
       selection="account.account.chart.code.nbr.char.select"/>
 
     <!-- Foreign exchange gains/losses -->
     <many-to-one name="foreignExchangeGainsAccount"
-      ref="com.axelor.apps.account.db.Account" title="Gains account"/>
+      ref="com.axelor.apps.account.db.Account" title="Gains account"
+      help="Select the gains account on which exchange rate differences are allocated when they are gains."/>
     <many-to-one name="foreignExchangeLossesAccount"
-      ref="com.axelor.apps.account.db.Account" title="Losses account"/>
+      ref="com.axelor.apps.account.db.Account" title="Losses account"
+      help="Select the losses account on which exchange rate differences are allocated when they are losses."/>
 
     <!-- Automatic account creation for partners -->
     <integer name="partnerAccountGenerationModeSelect"
       selection="account.create.mode.select" default="0"
-      title="Automatic partner account creation mode"/>
-    <string name="customerAccountPrefix" title="Autogenerated customer accounts' prefix"/>
-    <string name="supplierAccountPrefix" title="Autogenerated supplier accounts' prefix"/>
-    <string name="employeeAccountPrefix" title="Autogenerated employee accounts' prefix"/>
-    <many-to-one name="customerAccountSequence" ref="com.axelor.apps.base.db.Sequence"/>
-    <many-to-one name="supplierAccountSequence" ref="com.axelor.apps.base.db.Sequence"/>
-    <many-to-one name="employeeAccountSequence" ref="com.axelor.apps.base.db.Sequence"/>
+      title="Automatic partner account creation mode"
+      help="You can define the codification method for customer/supplier/employee accounts. If you choose No automatic creation, codification will be done manually for each account. If you choose Use a prefix, you can define a prefix that will be used automatically to codify accounts. If you choose Use a sequence, you can select a sequence that will be used for automatic codification of these accounts."/>
+    <string name="customerAccountPrefix" title="Autogenerated customer accounts' prefix"
+      help="Prefix to use for customer accounts, codes will be in the form [prefix]PARTNERNAME."/>
+    <string name="supplierAccountPrefix" title="Autogenerated supplier accounts' prefix"
+      help="Prefix to use for supplier accounts, codes will be in the form [prefix]PARTNERNAME."/>
+    <string name="employeeAccountPrefix" title="Autogenerated employee accounts' prefix"
+      help="Prefix to use for employee accounts, codes will be in the form [prefix]PARTNERNAME."/>
+    <many-to-one name="customerAccountSequence" ref="com.axelor.apps.base.db.Sequence"
+      help="Sequence to use for customer account codification."/>
+    <many-to-one name="supplierAccountSequence" ref="com.axelor.apps.base.db.Sequence"
+      help="Sequence to use for supplier account codification."/>
+    <many-to-one name="employeeAccountSequence" ref="com.axelor.apps.base.db.Sequence"
+      help="Sequence to use for employee account codification."/>
 
-    <decimal name="thresholdDistanceFromRegulation" title="Amount autorized"/>
+    <decimal name="thresholdDistanceFromRegulation" title="Amount autorized"
+      help="You can indicate here the authorized amount for reconciliation gap tolerance."/>
 
     <boolean name="autoReconcileOnInvoice" title="Authorize auto reconcile on invoice"/>
     <integer name="maxMoveLineOnAutoReconcile"
@@ -101,13 +121,16 @@
 
     <!-- Default Payment Modes -->
     <many-to-one name="inPaymentMode" ref="com.axelor.apps.account.db.PaymentMode"
-      title="Incoming Payment Mode"/>
+      title="Incoming Payment Mode"
+      help="You can define here the default incoming payment mode for the company. The incoming payment mode is the payment mode by which the company will receive payments."/>
     <many-to-one name="outPaymentMode" ref="com.axelor.apps.account.db.PaymentMode"
-      title="Outgoing Payment Mode"/>
+      title="Outgoing Payment Mode"
+      help="You can define here the default outgoing payment mode for the company. The outgoing payment mode is the payment mode by which the company will make payments."/>
 
     <!-- Default Payment Condition -->
     <many-to-one name="defPaymentCondition"
-      ref="com.axelor.apps.account.db.PaymentCondition" title="Default Payment Condition"/>
+      ref="com.axelor.apps.account.db.PaymentCondition" title="Default Payment Condition"
+      help="You can define here the default payment conditions for the company."/>
 
     <!-- Onglet CFONB -->
     <many-to-one name="cfonbConfig" ref="com.axelor.apps.account.db.CfonbConfig"
@@ -174,7 +197,8 @@
       title="Tax standard rate for clearance"/>
 
     <string name="irrecoverableReasonPassage" title="Irrecoverable shifting reason"
-      default="Manual shift into irrecoverable receivables"/>
+      default="Manual shift into irrecoverable receivables"
+      help="You must configure here the default reason for shifting invoices to irrecoverable. When an invoice is shifted to irrecoverable, this reason is automatically filled on the invoice."/>
     <many-to-one name="irrecoverableStandardRateTax"
       ref="com.axelor.apps.account.db.Tax" title="Tax standard rate for irrecoverables"/>
 
@@ -193,7 +217,8 @@
     <!-- Accounting config template -->
     <many-to-one name="accountingConfigTemplate"
       ref="com.axelor.apps.account.db.AccountingConfigTemplate"
-      title="Accounting configurations template"/>
+      title="Accounting configurations template"
+      help="Default chart of accounts used for this company."/>
     <boolean name="hasChartImported" title="Chart imported"/>
     <boolean name="isImportAccountChartOnly" title="Import account chart only"/>
     <boolean name="hasAccountingConfigTemplateImported"
@@ -202,7 +227,8 @@
       default="1"/>
 
     <!-- Accounting Daybook (Mode brouillard) -->
-    <boolean name="accountingDaybook" title="Accounting Daybook"/>
+    <boolean name="accountingDaybook" title="Accounting Daybook"
+      help="If you enable daybook mode, a new daybook step is added to the move entry which allows you to simply draft the entry. It is a provisional step for an entry awaiting validation."/>
 
     <!-- Sequence -->
     <many-to-one name="custInvSequence" ref="com.axelor.apps.base.db.Sequence"
@@ -263,13 +289,14 @@
     <!-- Account Report -->
     <integer name="lineMinBeforeLongReportGenerationMessageNumber"
       title="Number of lines minimum before long report generation message appears" min="0"
-      help="Minimal number of lines required to display a confirmation message when you try to export an accounting report. Value 0 is equal to no message"
+      help="Minimum number of lines required to display a confirmation message when exporting an accounting report. 0 means no message."
       default="10000"/>
 
     <!-- Move Line -->
-    <boolean name="isDescriptionRequired" title="Description required"/>
+    <boolean name="isDescriptionRequired" title="Description required"
+      help="If you enable this configuration, the description field must be mandatory on accounting move lines."/>
     <boolean name="isActivateSimulatedMove" title="Activate Simulated Moves ?"
-      help="Field used to activate the Simulated status on the Move entries. Simulated move have no direct accounting impact but can be optionally used on accounting reports to perform simulations."/>
+      help="Field used to activate the Simulated status on move entries. Simulated moves have no direct accounting impact but can be optionally used on accounting reports to perform simulations."/>
 
     <!-- Late payment blocking -->
     <boolean name="hasLatePaymentAccountBlocking" title="Late payment account blocking"/>
@@ -292,9 +319,10 @@
     <!-- DAS2 - N4DS -->
     <many-to-one ref="com.axelor.apps.base.db.Partner" name="dasContactPartner"
       title="Main partner DAS"
-      help="Field to store the main contact used in DAS declaration export. Also make sure this contact has a valid email address, otherwise it will be impossible to generate the declaration file. If this field is empty, it will be impossible to generate the file, an alert will be generated."/>
+      help="Field to store the main contact used in DADS declaration export. Also make sure this contact has a valid email address, otherwise it will be impossible to generate the declaration file. If this field is empty, it will be impossible to generate the file, an alert will be generated."/>
     <many-to-one ref="com.axelor.apps.account.db.JournalType"
-      name="dasReportJournalType" title="DAS2 report journal type"/>
+      name="dasReportJournalType" title="DAS2 report journal type"
+      help="Select the journal type used for DAS2 reports."/>
 
     <!-- Discount accounts -->
     <many-to-one name="purchFinancialDiscountAccount"
@@ -304,25 +332,30 @@
 
     <!-- Holdback accounts -->
     <many-to-one name="holdBackCustomerAccount" ref="com.axelor.apps.account.db.Account"
-      title="Holdback Customer account"/>
+      title="Holdback Customer account"
+      help="Select the customer account that will be used for holdback guarantees."/>
     <many-to-one name="holdBackSupplierAccount" ref="com.axelor.apps.account.db.Account"
-      title="Holdback Supplier account"/>
+      title="Holdback Supplier account"
+      help="Select the supplier account that will be used for holdback guarantees."/>
 
     <many-to-many ref="com.axelor.auth.db.Role"
       name="temporaryClosureAuthorizedRoleList" title="Temporary Closure Authorized Role"
-      help="Authorized roles for temporary closure"/>
+      help="You must select here the role(s) that users must have to be authorized for temporary closure."/>
     <many-to-many ref="com.axelor.auth.db.Role" name="closureAuthorizedRoleList"
-      title="Closure Authorized Role" help="Authorized roles for closure"/>
+      title="Closure Authorized Role"
+      help="You must select here the role(s) that users must have to be authorized for accounting closure."/>
     <many-to-many ref="com.axelor.auth.db.Role"
       name="moveOnTempClosureAuthorizedRoleList"
       title="Creation / Edition of move on temporary closed period authorized role"
-      help="Authorized roles for creation or edition of move on temporary closed period"/>
+      help="You must select here the role(s) that users must have to be authorized to create or edit moves on a temporarily closed period."/>
 
     <!-- Cut off accounts -->
     <many-to-one name="prepaidExpensesAccount" title="Prepaid expenses account"
-      ref="com.axelor.apps.account.db.Account"/>
+      ref="com.axelor.apps.account.db.Account"
+      help="Select the prepaid expenses account (usually 486) for end-of-year adjustments."/>
     <many-to-one name="deferredIncomesAccount" title="Deferred incomes account"
-      ref="com.axelor.apps.account.db.Account"/>
+      ref="com.axelor.apps.account.db.Account"
+      help="Select the deferred income account (usually 487) for end-of-year adjustments."/>
 
     <many-to-one ref="com.axelor.apps.account.db.Account" name="resultProfitAccount"
       title="Result account (profit)"/>
@@ -330,10 +363,10 @@
       title="Result account (loss)"/>
 
     <boolean name="hasAccountCodeFixedNbrChar" title="Has account code nbr. char"
-      help="If this checkbox is ticked, a fixed code length will be compulsory for non-regulatory accounts code. Else the code length definition and structure will be free with minimum controls."/>
+      help="If this checkbox is ticked, a fixed number of characters will be imposed for non-regulatory account codes. Otherwise the account code length definition will be free with minimum controls."/>
 
     <boolean name="accountAtPayment" title="Record daybook moves in payment session"
-      help="If this checkbox is ticked, daybook moves will be accounted in payment session"
+      help="If this checkbox is ticked, daybook moves will be accounted in the payment session."
       default="false"/>
 
     <boolean name="retrieveDaybookMovesInPaymentSession"

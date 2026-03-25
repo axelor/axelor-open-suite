@@ -1,0 +1,7 @@
+---
+title: "Period: improved anomaly management during the close process so that moves failing validation are reported instead of blocking the entire closure."
+module: axelor-account
+developer: |
+  - PeriodServiceAccountImpl: added TraceBackRepository in constructor.
+  - PeriodServiceAccount: added new public methods getMoves(), getAnomalyCount(), and getAnomalies(String moveIds, int anomalyCount).
+  - MoveValidateService: changed accountingMultiple(Query<Move>) return type from void to Pair<List<Move>, Integer>.

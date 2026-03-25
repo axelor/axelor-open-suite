@@ -148,7 +148,7 @@ public class GlobalBudgetViewController {
         String.format(
             "self.moveLine IS NOT NULL AND self.moveLine.move.invoice IS NOT NULL AND self.moveLine.move.statusSelect in (%d,%d) AND "
                 + "(self.moveLine.move.invoice.purchaseOrder IS NOT NULL OR self.moveLine.move.invoice.saleOrder IS NOT NULL) "
-                + "AND self.budget.id IN (:budgetList)",
+                + "AND self.budget.id IN (:budgetIdList)",
             MoveRepository.STATUS_DAYBOOK, MoveRepository.STATUS_ACCOUNTED);
 
     response.setView(

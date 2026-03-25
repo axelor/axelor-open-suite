@@ -28,7 +28,6 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.productionorder.manuforder.ManufOrderGenerationService;
@@ -46,7 +45,6 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
 
   protected UnitConversionService unitConversionService;
   protected ProductionConfigService productionConfigService;
-  protected BillOfMaterialService billOfMaterialService;
   protected ManufOrderService manufOrderService;
   protected ProductionOrderUpdateService productionOrderUpdateService;
   protected AppBaseService appBaseService;
@@ -57,7 +55,6 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
   public ProductionOrderSaleOrderMOGenerationServiceImpl(
       UnitConversionService unitConversionService,
       ProductionConfigService productionConfigService,
-      BillOfMaterialService billOfMaterialService,
       ManufOrderService manufOrderService,
       ProductionOrderUpdateService productionOrderUpdateService,
       AppBaseService appBaseService,
@@ -65,7 +62,6 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
       ManufOrderGenerationService manufOrderGenerationService) {
     this.unitConversionService = unitConversionService;
     this.productionConfigService = productionConfigService;
-    this.billOfMaterialService = billOfMaterialService;
     this.manufOrderService = manufOrderService;
     this.productionOrderUpdateService = productionOrderUpdateService;
     this.appBaseService = appBaseService;
