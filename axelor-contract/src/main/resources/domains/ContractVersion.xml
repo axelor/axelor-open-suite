@@ -86,7 +86,7 @@
 
     <decimal name="initialExTaxTotalPerYear" title="Initial ex tax total per year"
       readonly="true" copy="false" precision="20" scale="3"/>
-    <decimal name="yearlyExTaxTotalRevalued" title="Yearly ex tax total revalued "
+    <decimal name="yearlyExTaxTotalRevalued" title="Yearly ex tax total revalued"
       readonly="true" precision="20" scale="3"/>
 
     <decimal name="totalInvoicedAmount" title="Total invoiced amount" readonly="true"
