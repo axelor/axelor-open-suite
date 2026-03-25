@@ -27,6 +27,7 @@ import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.bankpayment.service.BankReconciliationToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
@@ -255,12 +256,18 @@ public class BankReconciliationBalanceComputationServiceImpl
           moveLineSet.add(moveLine);
         }
 
-        if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
+        if (BankReconciliationToolService.isForeignCurrency(brl.getBankReconciliation())) {
           movesOngoingReconciledBalance =
-              movesOngoingReconciledBalance.add(moveLine.getCredit().add(moveLine.getDebit()));
+              movesOngoingReconciledBalance.add(moveLine.getCurrencyAmount());
         } else {
-          movesOngoingReconciledBalance =
-              movesOngoingReconciledBalance.subtract(moveLine.getCredit().add(moveLine.getDebit()));
+          if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
+            movesOngoingReconciledBalance =
+                movesOngoingReconciledBalance.add(moveLine.getCredit().add(moveLine.getDebit()));
+          } else {
+            movesOngoingReconciledBalance =
+                movesOngoingReconciledBalance.subtract(
+                    moveLine.getCredit().add(moveLine.getDebit()));
+          }
         }
       }
     }
