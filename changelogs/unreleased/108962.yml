@@ -1,3 +1,0 @@
----
-title: "Move/InvoiceTerm: fixed due date propagation for multiple invoice terms when editing move line due date."
-module: axelor-account

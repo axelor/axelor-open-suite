@@ -235,6 +235,8 @@
   <action-attrs name="action-prod-process-line-attrs-default">
     <attribute name="hidden" for="toConsumeProdProductList"
       expr="eval: __parent__ != null ? !__parent__.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
+    <attribute name="scale" for="toConsumeProdProductList.qty"
+      expr="eval: __config__.app.getApp('production')?.nbDecimalDigitForBomQty"/>
     <attribute name="hidden" for="stockLocation"
       expr="eval: !__parent__?.isConsProOnOperation"/>
     <attribute name="required" for="workCenter"

@@ -715,6 +715,7 @@
 "Show reconciled move lines","Voir les écritures rapprochées",,
 "Some entries from the reconciliation have an empty moveLine and an account filled. The cash account is required to generate automatically the counterpart Move Lines for those entries.","Certaines entrée du rapprochement ont une ligne d'écriture non renseignée et un compte comptable renseigné. Le compte liquidité est requis pour générer automatiquement les écritures/lignes d'écritures pour ces entrées.",,
 "Some entries from the reconciliation have an empty moveLine and an account filled. The journal is required to generate automatically the Move/Move Lines for those entries.","Certaines entrées du rapprochement ont une ligne d'écriture non renseignée et un compte comptable renseigné. Le journal est requis pour générer automatiquement les écritures/lignes d'écritures pour ces entrées.",,
+"Some move lines are linked to a validated bank reconciliation and should not be modified.","Certaines lignes d'écriture sont liées à un rapprochement bancaire validé et ne devraient pas être modifiées.",,
 "Special instructions","Instructions spécifiques",,
 "Special instructions line1","Instructions spécifiques ligne 1",,
 "Special instructions line2","Instructions spécifiques ligne 2",,

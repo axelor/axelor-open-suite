@@ -108,11 +108,12 @@ public class TimesheetLineGenerationServiceImpl implements TimesheetLineGenerati
     if (productContext != null) {
       product = productRepository.find(((Integer) productContext.get("id")).longValue());
     }
-    if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
+    boolean showActivity = Boolean.TRUE.equals(context.get("showActivity"));
+    if (product == null && !showActivity) {
       product = userHrService.getTimesheetProduct(timesheet.getEmployee(), null);
     }
     return generateLines(
-        timesheet, fromGenerationDate, toGenerationDate, logTime, project, product);
+        timesheet, fromGenerationDate, toGenerationDate, logTime, project, product, showActivity);
   }
 
   @Override
@@ -122,7 +123,8 @@ public class TimesheetLineGenerationServiceImpl implements TimesheetLineGenerati
       LocalDate toGenerationDate,
       BigDecimal logTime,
       Project project,
-      Product product)
+      Product product,
+      boolean showActivity)
       throws AxelorException {
 
     Employee employee = timesheet.getEmployee();
@@ -139,7 +141,7 @@ public class TimesheetLineGenerationServiceImpl implements TimesheetLineGenerati
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(HumanResourceExceptionMessage.TIMESHEET_TO_DATE));
     }
-    if (product == null) {
+    if (product == null && showActivity) {
       throw new AxelorException(
           timesheet,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
