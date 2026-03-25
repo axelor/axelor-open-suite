@@ -28,7 +28,7 @@
         type="boolean"/>
     </panel>
 
-    <panel sidebar="true" name="actionsPanel" title="Actions" colSpan="12">
+    <panel sidebar="true" name="actionsPanel" title="Actions" colSpan="12" showIf="id">
       <panel name="mapBtnPanel" colSpan="12">
         <button-group hideIf="$popup()" readonlyIf="!id" colSpan="12">
           <button name="mapBtn" title="View map" icon="fa-map-marker"
