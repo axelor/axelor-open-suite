@@ -3322,6 +3322,7 @@
 "The account with the code %s cannot be found. The move line cannot be created.",,,
 "The accounting configurations have been imported successfully for the company %s.",,,
 "The accounting move line on the account %s can't have an amount equals to zero",,,
+"The amount in currency in %s is required when importing an entry line in a foreign currency (different from company currency).",,,
 "The amount remaining is below the threshold defined in configuration.",,,
 "The analytic account %s can't be found for company %s and analytic axis %s. Accounting entry %s can't be imported.",,,
 "The analytic accounting is required on the financial account %s. There should be a template or analytic accounts associated with such account and respecting the number of defined analytic axis. Accounting entry %s can't be imported.",,,

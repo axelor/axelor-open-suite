@@ -29,9 +29,9 @@ import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
@@ -43,7 +43,6 @@ import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -55,7 +54,7 @@ import org.apache.commons.collections.CollectionUtils;
 public class ImportMoveFecServiceImpl implements ImportMoveFecService {
 
   protected PeriodService periodService;
-  protected MoveLineToolService moveLineToolService;
+  protected ImportMoveLineCurrencyAmountService importMoveLineCurrencyAmountService;
   protected MoveRepository moveRepository;
   protected MoveLineRepository moveLineRepository;
   protected CurrencyRepository currencyRepository;
@@ -65,14 +64,14 @@ public class ImportMoveFecServiceImpl implements ImportMoveFecService {
   @Inject
   public ImportMoveFecServiceImpl(
       PeriodService periodService,
-      MoveLineToolService moveLineToolService,
+      ImportMoveLineCurrencyAmountService importMoveLineCurrencyAmountService,
       MoveRepository moveRepository,
       MoveLineRepository moveLineRepository,
       CurrencyRepository currencyRepository,
       JournalRepository journalRepository,
       AccountRepository accountRepository) {
     this.periodService = periodService;
-    this.moveLineToolService = moveLineToolService;
+    this.importMoveLineCurrencyAmountService = importMoveLineCurrencyAmountService;
     this.moveRepository = moveRepository;
     this.moveLineRepository = moveLineRepository;
     this.currencyRepository = currencyRepository;
@@ -126,9 +125,18 @@ public class ImportMoveFecServiceImpl implements ImportMoveFecService {
       }
       move.setPeriod(period);
 
-      if (values.get("Idevise") != null) {
-        move.setCurrency(currencyRepository.findByCode(values.get("Idevise").toString()));
-        move.setCurrencyCode(values.get("Idevise").toString());
+      Currency companyCurrency = company.getCurrency();
+      Object importedCurrency = values.get("Idevise");
+      if (importMoveLineCurrencyAmountService.isCompanyCurrency(
+          importedCurrency, companyCurrency)) {
+        move.setCurrency(companyCurrency);
+        if (companyCurrency != null) {
+          move.setCurrencyCode(companyCurrency.getCodeISO());
+        }
+      } else if (importedCurrency != null) {
+        String importedCurrencyValue = importedCurrency.toString().trim();
+        move.setCurrency(currencyRepository.findByCode(importedCurrencyValue));
+        move.setCurrencyCode(importedCurrencyValue);
       }
 
       Journal journal = null;
@@ -215,20 +223,11 @@ public class ImportMoveFecServiceImpl implements ImportMoveFecService {
     move.addMoveLineListItem(moveLine);
 
     setMovePartner(move, moveLine);
-
-    if (values.get("Montantdevise") == null || values.get("Montantdevise").equals("")) {
-      moveLine.setMove(move);
-      moveLineToolService.setCurrencyAmount(moveLine);
-    } else {
-      String currencyAmountStr = values.get("Montantdevise").toString().replace(',', '.');
-      BigDecimal currencyAmount = (new BigDecimal(currencyAmountStr)).abs();
-
-      if (moveLine.getDebit().signum() > 0) {
-        moveLine.setCurrencyAmount(currencyAmount);
-      } else {
-        moveLine.setCurrencyAmount(currencyAmount.negate());
-      }
-    }
+    moveLine.setMove(move);
+    String entryNumber =
+        values.get("EcritureNum") != null ? values.get("EcritureNum").toString() : null;
+    importMoveLineCurrencyAmountService.computeImportedCurrencyAmount(
+        moveLine, values.get("Idevise"), values.get("Montantdevise"), entryNumber, fecImport);
 
     return moveLine;
   }
