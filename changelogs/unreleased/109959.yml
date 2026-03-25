@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed unnecessary Mapper.toMap usage in copy and template creation."
+module: axelor-sale

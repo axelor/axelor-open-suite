@@ -419,7 +419,7 @@ public class SaleOrderController {
       SaleOrder copy =
           Beans.get(SaleOrderCreateService.class)
               .createSaleOrder(origin, wizardCurrency, wizardPriceList);
-      response.setValues(Mapper.toMap(copy));
+      response.setValues(copy);
     }
   }
 
@@ -429,7 +429,7 @@ public class SaleOrderController {
       String idCopy = context.get("_idCopy").toString();
       SaleOrder origin = Beans.get(SaleOrderRepository.class).find(Long.parseLong(idCopy));
       SaleOrder copy = Beans.get(SaleOrderCreateService.class).createTemplate(origin);
-      response.setValues(Mapper.toMap(copy));
+      response.setValues(copy);
     }
   }
 
