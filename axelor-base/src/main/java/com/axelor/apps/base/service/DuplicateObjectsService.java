@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,7 @@ public class DuplicateObjectsService {
     Object originalObjct = getOriginalObject(selectedIds, modelName);
 
     managePartnerAccountingSituations(duplicateObjects, originalObjct);
+    managePartnerEvents(duplicateObjects, originalObjct);
 
     List<MetaField> allField =
         metaFieldRepo
@@ -310,6 +312,36 @@ public class DuplicateObjectsService {
     }
 
     return finalQuery.getResultList();
+  }
+
+  protected void managePartnerEvents(List<Object> duplicateObjects, Object originalObject) {
+    if (!(originalObject instanceof Partner) || CollectionUtils.isEmpty(duplicateObjects)) {
+      return;
+    }
+    Partner originalPartner = (Partner) originalObject;
+    List<Long> duplicateIds =
+        duplicateObjects.stream()
+            .map(o -> (Long) Mapper.of(o.getClass()).get(o, "id"))
+            .collect(Collectors.toList());
+
+    JPA.em()
+        .createQuery(
+            "UPDATE com.axelor.apps.crm.db.Event self SET self.partner = :original WHERE self.partner IN (:duplicates)")
+        .setParameter("original", originalPartner)
+        .setParameter("duplicates", duplicateObjects)
+        .executeUpdate();
+    JPA.em()
+        .createQuery(
+            "UPDATE com.axelor.apps.crm.db.Event self SET self.contactPartner = :original WHERE self.contactPartner IN (:duplicates)")
+        .setParameter("original", originalPartner)
+        .setParameter("duplicates", duplicateObjects)
+        .executeUpdate();
+    JPA.em()
+        .createQuery(
+            "UPDATE com.axelor.apps.crm.db.Event self SET self.relatedToSelectId = :originalId WHERE self.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND self.relatedToSelectId IN (:duplicateIds)")
+        .setParameter("originalId", originalPartner.getId())
+        .setParameter("duplicateIds", duplicateIds)
+        .executeUpdate();
   }
 
   @SuppressWarnings("unchecked")
