@@ -23,11 +23,11 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
 
-public interface ImportMoveLineCurrencyAmountService {
+public interface ImportMoveLineAmountService {
 
   boolean isCompanyCurrency(Object importedCurrency, Currency companyCurrency);
 
-  void computeImportedCurrencyAmount(
+  void computeImportedAmounts(
       MoveLine moveLine,
       Object importedCurrency,
       Object importedCurrencyAmount,
