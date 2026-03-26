@@ -5,25 +5,28 @@
 
   <grid name="mgm-subcontractor-task-grid" title="Subcontractor Services"
     model="com.axelor.apps.businessproject.db.SubcontractorTask">
-    <field name="product"/>
     <field name="employee"/>
-    <field name="timeSpent"/>
+    <field name="product"/>
+    <field name="timeSpentMinutes"/>
     <field name="comments"/>
   </grid>
 
   <grid name="mgm-fremdleistung-project-subcontractor-task-grid" title="Subcontractor Services"
     model="com.axelor.apps.businessproject.db.SubcontractorTask">
     <field name="product"/>
-    <field name="timeSpent"/>
+    <field name="timeSpentMinutes"/>
     <field name="comments"/>
   </grid>
 
-  <form name="mgm-subcontractor-task-form" title="Subcontractor Service"
-    model="com.axelor.apps.businessproject.db.SubcontractorTask">
-    <panel name="mainPanel" title="Subcontractor Service Info">
+  <form name="mgm-subcontractor-task-form" title="Service"
+    onNew="mgm-action-method-business-project-set-subcontractor-task-defaults, mgm-action-method-set-subcontractor-employee-attrs"
+    onLoad="mgm-action-method-set-subcontractor-employee-attrs"
+    model="com.axelor.apps.businessproject.db.SubcontractorTask"
+    onSave="mgm-action-method-sync-time-spent">
+    <panel name="mainPanel" title="Service Info">
       <field name="product" required="true"
         domain="self.isActivity = true AND self.dtype = 'Product'"/>
-      <field name="timeSpent"/>
+      <field name="timeSpentMinutes"/>
       <field name="employee" readonly="false"/>
       <field name="project" hidden="true"/>
       <field name="subContractor" hidden="true"/>
@@ -31,12 +34,16 @@
     <panel name="commentsPanel" title="Comments">
       <field name="comments" showTitle="false" colSpan="12"/>
     </panel>
+    <panel name="hiddenFields" title="Hidden fields" hidden="true">
+      <field name="timeSpent"/>
+    </panel>
   </form>
 
-  <form name="mgm-fremdleistung-project-subcontractor-task-form" title="Subcontractor Service"
+  <form name="mgm-fremdleistung-project-subcontractor-task-form" title="Service"
     onNew="mgm-action-method-business-project-set-subcontractor-task-defaults"
-    model="com.axelor.apps.businessproject.db.SubcontractorTask">
-    <panel name="mainPanel" title="Subcontractor Service Info">
+    model="com.axelor.apps.businessproject.db.SubcontractorTask"
+    onSave="mgm-action-method-sync-time-spent">
+    <panel name="mainPanel" title="Service Info">
       <field name="product" required="true"
         domain="self.isActivity = true AND self.dtype = 'Product'"/>
       <field name="timeSpent"/>
@@ -46,6 +53,9 @@
     <panel name="commentsPanel" title="Comments">
       <field name="comments" showTitle="false" colSpan="12"/>
     </panel>
+    <panel name="hiddenFields" title="Hidden fields" hidden="true">
+      <field name="timeSpent"/>
+    </panel>
   </form>
 
   <action-method
@@ -54,11 +64,16 @@
       method="setSubcontractorTaskDefaults"/>
   </action-method>
 
+  <action-method name="mgm-action-method-set-subcontractor-employee-attrs">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="setSubcontractorTaskEmployeeFilter"/>
+  </action-method>
+
   <action-view
     name="mgm-action-business-project-fremdleistung-subcontractor-task-dashlet"
     model="com.axelor.apps.businessproject.db.SubcontractorTask" title="Subcontractor Service">
     <view type="grid" name="mgm-fremdleistung-project-subcontractor-task-grid"/>
-    <view type="form" name="mgm-fremdleistung-project-subcontractor-task-form"/>
+    <view type="form" name="mgm-subcontractor-task-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="show-toolbar" value="true"/>
     <domain>
@@ -66,5 +81,22 @@
     </domain>
     <context name="_projectId" expr="eval: __this__.id"/>
   </action-view>
+
+  <action-view name="mgm-action-business-project-subcontractor-task-dashlet"
+    model="com.axelor.apps.businessproject.db.SubcontractorTask" title="Service">
+    <view type="grid" name="mgm-subcontractor-task-grid"/>
+    <view type="form" name="mgm-subcontractor-task-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="true"/>
+    <domain>
+      self.project.id = :_projectId
+    </domain>
+    <context name="_projectId" expr="eval: __this__.id"/>
+  </action-view>
+
+  <action-method name="mgm-action-method-sync-time-spent">
+    <call class="com.axelor.apps.businessproject.web.SubcontractorTaskController"
+      method="syncTimeSpent"/>
+  </action-method>
 
 </object-views>

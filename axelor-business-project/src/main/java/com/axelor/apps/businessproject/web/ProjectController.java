@@ -563,6 +563,7 @@ public class ProjectController {
       response.setAttr("$totalTasksReported", "title", "Total Subcontractor Tasks");
       response.setAttr("validatedItemsPanel", "title", "Items");
       response.setAttr("$totalHoursToBill", "hidden", true);
+      response.setAttr("$hoursMismatchWarning", "hidden", true);
     } else {
       response.setAttr("$totalTasksReported", "hidden", true);
       response.setAttr("$totalHoursReported", "hidden", true);
@@ -570,6 +571,7 @@ public class ProjectController {
       response.setAttr("projectSummaryPanel", "title", "");
       response.setAttr("validatedItemsPanel", "title", "Items");
       response.setAttr("$totalHoursToBill", "hidden", true);
+      response.setAttr("$hoursMismatchWarning", "hidden", true);
     }
   }
 
@@ -603,6 +605,28 @@ public class ProjectController {
       response.setValue("subcontractor", subcontractor);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setSubcontractorTaskEmployeeFilter(ActionRequest request, ActionResponse response) {
+    SubcontractorTask subcontractorTask = request.getContext().asType(SubcontractorTask.class);
+
+    if (subcontractorTask == null || subcontractorTask.getProject() == null) {
+      return;
+    }
+
+    Project project = projectRepository.find(subcontractorTask.getProject().getId());
+    ProjectType projectType = project.getProjectType();
+
+    if (projectType == null || !Boolean.TRUE.equals(projectType.getRequiresRecordInvoicingData())) {
+      return;
+    }
+
+    if (Objects.equals(
+        ProjectTypeBusinessProjectRepository.SUBCONTRACTOR_PROJECT_TYPE,
+        projectType.getSequence())) {
+      response.setAttr("employee", "hidden", true);
+      return;
     }
 
     // Set employee domain based on project members + assignedTo
@@ -706,7 +730,16 @@ public class ProjectController {
             new Object[] {
               "recordInvoicingDataPanel",
               "Record Invoicing Data",
-              Boolean.TRUE.equals(projectType.getRequiresRecordInvoicingData())
+              Objects.equals(
+                  ProjectTypeBusinessProjectRepository.SUBCONTRACTOR_PROJECT_TYPE,
+                  projectType.getSequence())
+            },
+            new Object[] {
+              "monatsRechnungrecordInvoicingDataPanel",
+              "Record Invoicing Data",
+              Objects.equals(
+                  ProjectTypeBusinessProjectRepository.MONTHLY_INVOICE_PROJECT_TYPE,
+                  projectType.getSequence())
             },
             new Object[] {
               "expenseReportsPanel",

@@ -11,17 +11,24 @@
     <integer name="sequence" title="Sequence" unique="true"/>
 
     <!-- Behavior flags -->
-    <boolean name="requiresTask" title="Requires Task" default="false"/>
-    <boolean name="requiresExpense" title="Requires Expense" default="false"/>
-    <boolean name="requiresTaskReport" title="Requires Task Report" default="false"/>
-    <boolean name="requiresValidation" title="Requires Validation" default="false"/>
-    <boolean name="requiresInvoicing" title="Requires Invoicing" default="true"/>
-    <boolean name="requiresConfirmation" title="Requires confirmation" default="false"/>
+    <boolean name="requiresTask" title="Requires Task" default="false"
+      help="Does this project type use tasks?"/>
+    <boolean name="requiresExpense" title="Requires Expense" default="false"
+      help="Does this project type use expenses?"/>
+    <boolean name="requiresTaskReport" title="Requires Task Report" default="false"
+      help="Does this project type use TaskReports?"/>
+    <boolean name="requiresValidation" title="Requires Validation" default="false"
+      help="Does this project type require validation of its approval items?"/>
+    <boolean name="requiresInvoicing" title="Requires Invoicing" default="true"
+      help="Is this project type invoiced?"/>
+    <boolean name="requiresConfirmation" title="Requires confirmation" default="false"
+      help="Does this project type require review confirmation before it can be invoiced"/>
     <boolean name="requiresRecordInvoicingData" title="Requires record invoicing data"
-      default="false"/>
+      default="false"
+      help="Does this project type need a record invoicing data tab (generally for subcontractor projects)"/>
 
     <integer name="defaultExpenseCategory" selection="hr.expense.category.select"
-      default="1"/>
+      default="1" help="The default expense category for this project type"/>
 
     <finder-method name="findBySequence" using="sequence"/>
   </entity>
