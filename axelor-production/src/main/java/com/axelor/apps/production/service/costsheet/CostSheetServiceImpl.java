@@ -471,7 +471,12 @@ public class CostSheetServiceImpl implements CostSheetService {
       BigDecimal nbCycles =
           prodProcessLineComputationService.getNbCycle(prodProcessLine, producedQty);
       BigDecimal durationHours =
-          prodProcessLineComputationService.getHourHumanDuration(prodProcessLine, nbCycles);
+          prodProcessLineComputationService
+              .getHumanDuration(prodProcessLine, nbCycles)
+              .divide(
+                  BigDecimal.valueOf(3600),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
 
       costSheetLineService.createWorkCenterHRCostSheetLine(
           workCenter,
