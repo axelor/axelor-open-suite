@@ -326,4 +326,6 @@ public interface InvoiceService {
   FiscalPosition manageFiscalPositionFromCompanyTaxNumber(Invoice invoice);
 
   TaxNumber getDefaultCompanyTaxNumber(Invoice invoice);
+
+  String computeInvoiceCategorySelect(Invoice invoice) throws AxelorException;
 }

@@ -345,6 +345,7 @@
                 <field name="statement" colSpan="8" height="1"/>
               </editor>
             </field>
+            <field name="defaultInvoiceCategorySelect"/>
           </panel>
           <field name="invoiceWatermark" widget="Image"/>
           <field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
