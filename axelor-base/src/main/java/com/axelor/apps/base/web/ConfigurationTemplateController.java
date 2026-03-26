@@ -30,7 +30,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.collect.Lists;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -88,7 +89,7 @@ public class ConfigurationTemplateController {
     Objects.requireNonNull(tClass);
     Objects.requireNonNull(items);
     if (ObjectUtils.isEmpty(items)) {
-      return Lists.newArrayList();
+      return new ArrayList<>();
     }
 
     Collection<Map<String, Object>> collection =
