@@ -130,18 +130,20 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void start(OperationOrder operationOrder) throws AxelorException {
+    operationOrder = JpaModelHelper.ensureManaged(operationOrder);
 
     if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
       startOperationOrderDuration(operationOrder, AuthUtils.getUser());
+      operationOrderRepo.save(operationOrder);
     } else {
       start(operationOrder, AuthUtils.getUser());
     }
-    operationOrderRepo.save(operationOrder);
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void start(OperationOrder operationOrder, User user) throws AxelorException {
+    operationOrder = JpaModelHelper.ensureManaged(operationOrder);
 
     if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS
         || !canStartOperationOrder(operationOrder)) {

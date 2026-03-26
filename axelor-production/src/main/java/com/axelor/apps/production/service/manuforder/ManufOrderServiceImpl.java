@@ -579,6 +579,13 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     manufOrder.clearToProduceProdProductList();
     this.createToConsumeProdProductList(manufOrder);
     this.createToProduceProdProductList(manufOrder);
+    if (manufOrder.getIsConsProOnOperation()) {
+      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+        operationOrder = JpaModelHelper.ensureManaged(operationOrder);
+        operationOrder.clearToConsumeProdProductList();
+        operationOrderService.createToConsumeProdProductList(operationOrder);
+      }
+    }
     updateRealQty(manufOrder, manufOrder.getQty());
     manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     LocalDateTime plannedStartDateT = manufOrder.getPlannedStartDateT();
