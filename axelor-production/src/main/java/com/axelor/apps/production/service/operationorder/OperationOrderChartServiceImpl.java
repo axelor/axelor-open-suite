@@ -178,8 +178,8 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
           && machine.getId().equals(machineInUse.getId())) {
         Company company = machine.getStockLocation().getCompany();
 
-        long numberOfMinutes = calculateNumberOfMinutesPerHour(operationOrder, itDateTime);
-        BigDecimal percentage = calculateMachineChargePercentagePerHour(numberOfMinutes);
+        long numberOfSeconds = calculateNumberOfSecondsPerHour(operationOrder, itDateTime);
+        BigDecimal percentage = calculateMachineChargePercentagePerHour(numberOfSeconds);
 
         companyChargeMap.put(
             company, companyChargeMap.getOrDefault(company, BigDecimal.ZERO).add(percentage));
@@ -200,8 +200,8 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
           && operationOrder.getWorkCenter().getMachine() != null) {
         Machine machine = operationOrder.getWorkCenter().getMachine();
 
-        long numberOfMinutes = calculateNumberOfMinutesPerHour(operationOrder, itDateTime);
-        BigDecimal percentage = calculateMachineChargePercentagePerHour(numberOfMinutes);
+        long numberOfSeconds = calculateNumberOfSecondsPerHour(operationOrder, itDateTime);
+        BigDecimal percentage = calculateMachineChargePercentagePerHour(numberOfSeconds);
 
         machineChargeMap.put(
             machine, machineChargeMap.getOrDefault(machine, BigDecimal.ZERO).add(percentage));
@@ -211,7 +211,7 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
     return machineChargeMap;
   }
 
-  protected long calculateNumberOfMinutesPerHour(
+  protected long calculateNumberOfSecondsPerHour(
       OperationOrder operationOrder, LocalDateTime itDateTime) {
     LocalDateTime start = operationOrder.getPlannedStartDateT();
     LocalDateTime end = operationOrder.getPlannedEndDateT();
@@ -224,14 +224,15 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
       end = itDateTime.plusHours(1);
     }
 
-    long numberOfMinutes = Duration.between(start, end).toMinutes();
-    return Math.min(numberOfMinutes, 60);
+    long numberOfSeconds = Duration.between(start, end).toSeconds();
+    return Math.min(numberOfSeconds, 3600);
   }
 
-  protected BigDecimal calculateMachineChargePercentagePerHour(long numberOfMinutes) {
-    return new BigDecimal(numberOfMinutes)
+  protected BigDecimal calculateMachineChargePercentagePerHour(long numberOfSeconds) {
+    return new BigDecimal(numberOfSeconds)
         .multiply(new BigDecimal(100))
-        .divide(new BigDecimal(60), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        .divide(
+            new BigDecimal(3600), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   protected void adjustChargePerHour(
@@ -320,8 +321,8 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
         if (operationOrder.getWorkCenter() != null
             && operationOrder.getWorkCenter().getMachine() != null) {
           Machine machine = operationOrder.getWorkCenter().getMachine();
-          long numberOfMinutes = getNumberOfMinutesMachineUsedTotal(itDateTime, operationOrder);
-          getNumberOfMinutesPerDay(itDateTime, map, operationOrder, machine, numberOfMinutes);
+          long numberOfSeconds = getNumberOfSecondsMachineUsedTotal(itDateTime, operationOrder);
+          calculatePercentagePerDay(itDateTime, map, operationOrder, machine, numberOfSeconds);
         }
       }
       String itDate = L10n.getInstance().format(itDateTime.toLocalDate());
@@ -351,35 +352,35 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
     return dataList;
   }
 
-  protected long getNumberOfMinutesMachineUsedTotal(
+  protected long getNumberOfSecondsMachineUsedTotal(
       LocalDateTime itDateTime, OperationOrder operationOrder) {
 
     LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
     LocalDateTime plannedEndDate = operationOrder.getPlannedEndDateT();
 
-    long numberOfMinutes = 0;
+    long numberOfSeconds = 0;
 
     if (plannedStartDate.isBefore(itDateTime)) {
-      numberOfMinutes = Math.min(Duration.between(itDateTime, plannedEndDate).toMinutes(), 60);
+      numberOfSeconds = Math.min(Duration.between(itDateTime, plannedEndDate).toSeconds(), 3600);
     } else if (plannedEndDate.isAfter(itDateTime.plusHours(1))) {
-      numberOfMinutes =
-          Math.min(Duration.between(plannedStartDate, itDateTime.plusHours(1)).toMinutes(), 60);
+      numberOfSeconds =
+          Math.min(Duration.between(plannedStartDate, itDateTime.plusHours(1)).toSeconds(), 3600);
     } else {
-      numberOfMinutes =
-          Math.min(Duration.between(plannedStartDate, plannedEndDate).toMinutes(), 60);
+      numberOfSeconds =
+          Math.min(Duration.between(plannedStartDate, plannedEndDate).toSeconds(), 3600);
     }
 
-    return numberOfMinutes;
+    return numberOfSeconds;
   }
 
-  protected void getNumberOfMinutesPerDay(
+  protected void calculatePercentagePerDay(
       LocalDateTime itDateTime,
       Map<Machine, BigDecimal> map,
       OperationOrder operationOrder,
       Machine machine,
-      long numberOfMinutes) {
+      long numberOfSeconds) {
 
-    long numberOfMinutesPerDay = 0;
+    long numberOfSecondsPerDay = 0;
 
     WorkCenter workCenter = operationOrder.getWorkCenter();
     Machine workCenterMachine = workCenter.getMachine();
@@ -392,29 +393,29 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
                   .toLocalDate());
 
       if (dayPlanning != null) {
-        numberOfMinutesPerDay =
-            calculateMinutes(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo())
-                + calculateMinutes(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo());
+        numberOfSecondsPerDay =
+            calculateSeconds(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo())
+                + calculateSeconds(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo());
       }
     }
 
-    if (numberOfMinutesPerDay == 0) {
-      numberOfMinutesPerDay = 60L * 24;
+    if (numberOfSecondsPerDay == 0) {
+      numberOfSecondsPerDay = 3600L * 24;
     }
 
     BigDecimal percentage =
-        new BigDecimal(numberOfMinutes)
+        new BigDecimal(numberOfSeconds)
             .multiply(new BigDecimal(100))
             .divide(
-                new BigDecimal(numberOfMinutesPerDay),
+                new BigDecimal(numberOfSecondsPerDay),
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                 RoundingMode.HALF_UP);
 
     map.merge(machine, percentage, BigDecimal::add);
   }
 
-  protected long calculateMinutes(LocalTime from, LocalTime to) {
-    return (from != null && to != null) ? Duration.between(from, to).toMinutes() : 0;
+  protected long calculateSeconds(LocalTime from, LocalTime to) {
+    return (from != null && to != null) ? Duration.between(from, to).toSeconds() : 0;
   }
 
   protected List<OperationOrder> getOperationOrdersInTimeRange(
