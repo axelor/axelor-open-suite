@@ -1463,6 +1463,9 @@ public final class AccountExceptionMessage {
   public static final String IMPORT_FEC_PERIOD_NOT_FOUND = /*$$(*/
       "No period found for the date %s and the company %s. The move cannot be created." /*)*/;
 
+  public static final String IMPORT_FEC_FOREIGN_CURRENCY_AMOUNT_REQUIRED = /*$$(*/
+      "The amount in currency in %s is required when importing an entry line in a foreign currency (different from company currency)." /*)*/;
+
   public static final String ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT = /*$$(*/
       "Please select a cash account in config of the payment mode %s" /*)*/;
 
