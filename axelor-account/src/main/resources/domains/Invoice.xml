@@ -81,6 +81,8 @@
       title="Ventilated by"/>
     <many-to-one name="fiscalPosition" title="Fiscal position"
       ref="com.axelor.apps.account.db.FiscalPosition"/>
+    <string name="invoiceCategorySelect" title="Invoice category"
+      selection="invoice.category.select"/>
 
     <!-- Invoice content -->
     <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice"
