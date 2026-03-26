@@ -1,0 +1,7 @@
+---
+title: "Production: fixed wrong stock move line generation in operation order when updating planned quantity."
+module: axelor-production
+developer: |
+  Constructor of `OperationOrderStockMoveServiceImpl` has two new parameters:
+  `StockMoveProductionService stockMoveProductionService`,
+  `OperationOrderService operationOrderService`
