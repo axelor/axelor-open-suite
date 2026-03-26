@@ -890,4 +890,10 @@
     <option value="import-FEC-config.xml">FEC</option>
     <option value="input-config-with-tva.xml">FEC with TVA</option>
   </selection>
+
+  <selection name="invoice.category.select">
+    <option value="goods">Goods invoice</option>
+    <option value="services">Services invoice</option>
+    <option value="mixed">Mixed invoice</option>
+  </selection>
 </object-views>
