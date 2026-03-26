@@ -63,8 +63,6 @@
       help="When enabled, allows you to input in hours (example: 7,50 hours instead of 007:30:00)."/>
 
     <boolean name="isCostPerProcessLine" title="Cost per process line"/>
-    <boolean name="employeeScheduling" title="Employee scheduling" default="false"/>
-
     <boolean name="allowPersonalizedBOM" title="Allow to personalize bill of material"
       default="true"/>
     <boolean name="allowPersonalizedProdProcess"
@@ -118,7 +116,6 @@
       <field name="operationContinuitySelect" on="UPDATE"/>
       <field name="generatePurchaseOrderOnMoPlanning" on="UPDATE"/>
       <field name="isCostPerProcessLine" on="UPDATE"/>
-      <field name="employeeScheduling" on="UPDATE"/>
       <field name="isBomLineGenerationInSODisabled" on="UPDATE"/>
       <field name="isProdProcessLineGenerationInSODisabled" on="UPDATE"/>
     </track>
