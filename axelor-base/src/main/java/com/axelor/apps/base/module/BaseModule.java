@@ -247,6 +247,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateServiceImpl;
+import com.axelor.apps.base.service.configuration.template.ConfigurationTemplateService;
+import com.axelor.apps.base.service.configuration.template.ConfigurationTemplateServiceImpl;
 import com.axelor.apps.base.service.connectormapper.ConnectorMapperCreateService;
 import com.axelor.apps.base.service.connectormapper.ConnectorMapperCreateServiceImpl;
 import com.axelor.apps.base.service.connectormapper.ConnectorMapperFetchService;
@@ -644,5 +646,6 @@ public class BaseModule extends AxelorModule {
     bind(MapToolService.class).to(MapToolServiceImpl.class);
     bind(PricingLogsObserver.class);
     bind(PriceListLineRepository.class).to(PriceListLineManagementRepository.class);
+    bind(ConfigurationTemplateService.class).to(ConfigurationTemplateServiceImpl.class);
   }
 }

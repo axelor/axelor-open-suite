@@ -738,4 +738,25 @@ public final class BaseExceptionMessage {
 
   public static final String SEQUENCE_MONTH_VALIDITY_ERROR = /*$$(*/
       "Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true" /*)*/;
+
+  public static final String CONFIG_IMPORT_MISSING_METAFILE = /*$$(*/
+      "Missing data file or binding file in the configuration template." /*)*/;
+
+  public static final String CONFIG_IMPORT_SUCCESS = /*$$(*/
+      "The config import has been loaded successfully" /*)*/;
+
+  public static final String CONFIG_IMPORT_ERROR = /*$$(*/
+      "Error in config import please check the log" /*)*/;
+
+  public static final String CONFIGURATION_TEMPLATE_NO_COMPANY_TO_CONFIGURE = /*$$(*/
+      "There is no company to configure."; /*)*/
+  ;
+
+  public static final String CONFIG_IMPORT_ERROR_FOR_COMPANY = /*$$(*/
+      "Error in config import please check the log for company %s."; /*)*/
+  ;
+
+  public static final String CONFIG_IMPORT_DONE = /*$$(*/
+      "Config import done with %s success and %s error."; /*)*/
+  ;
 }
