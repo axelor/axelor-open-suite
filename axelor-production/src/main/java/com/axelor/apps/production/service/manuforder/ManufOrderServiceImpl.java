@@ -578,6 +578,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     manufOrder.clearToProduceProdProductList();
     this.createToConsumeProdProductList(manufOrder);
     this.createToProduceProdProductList(manufOrder);
+    if (manufOrder.getIsConsProOnOperation()) {
+      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+        operationOrder.clearToConsumeProdProductList();
+        operationOrderService.createToConsumeProdProductList(operationOrder);
+      }
+    }
     updateRealQty(manufOrder, manufOrder.getQty());
     LocalDateTime plannedStartDateT = manufOrder.getPlannedStartDateT();
     manufOrderPlanService.updatePlannedDates(
