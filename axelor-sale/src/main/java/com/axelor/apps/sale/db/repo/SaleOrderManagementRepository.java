@@ -129,9 +129,10 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     MarginComputeService marginComputeService = Beans.get(MarginComputeService.class);
     if (saleOrderLineList != null) {
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      boolean considerZeroCost = Beans.get(AppSaleService.class).getAppSale().getConsiderZeroCost();
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         marginComputeService.computeSubMargin(
-            saleOrder, saleOrderLine, saleOrderLine.getExTaxTotal());
+            saleOrder, saleOrderLine, saleOrderLine.getExTaxTotal(), considerZeroCost);
       }
     }
   }
