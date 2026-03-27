@@ -579,7 +579,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       } else {
         for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
           Product subProduct = billOfMaterialLine.getProduct();
-          if (this.isMrpProduct(subProduct) && !billOfMaterialLine.getHasNoManageStock()) {
+          if (this.isMrpProduct(subProduct, billOfMaterialLine)) {
             MrpLine subProductMrpLine =
                 super.createProposalMrpLine(
                     mrp,
@@ -816,7 +816,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
         Product subProduct = billOfMaterialLine.getProduct();
 
-        if (this.isMrpProduct(subProduct) && !billOfMaterialLine.getHasNoManageStock()) {
+        if (this.isMrpProduct(subProduct, billOfMaterialLine)) {
           this.assignProductLevel(billOfMaterialLine, level);
 
           Company company = mrp.getStockLocation().getCompany();
@@ -971,5 +971,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           false);
       JPA.clear();
     }
+  }
+
+  protected boolean isMrpProduct(Product product, BillOfMaterialLine billOfMaterialLine) {
+    return isMrpProduct(product)
+        && (billOfMaterialLine == null || !billOfMaterialLine.getHasNoManageStock());
   }
 }
