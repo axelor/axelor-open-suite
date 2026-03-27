@@ -788,9 +788,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     String query = "SELECT SUM(self.companyExTaxTotal)" + " FROM InvoiceLine as self";
     query += " WHERE self.saleOrderLine.saleOrder.id = :saleOrderId";
-    query +=
-        " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect"
-            + " AND self.invoice.statusSelect = :statusVentilated";
+    query += " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect";
 
     // exclude invoices that are advance payments
     boolean invoiceIsNotAdvancePayment =
@@ -800,10 +798,16 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     if (invoiceIsNotAdvancePayment) {
       if (excludeCurrentInvoice) {
+        query += " AND self.invoice.statusSelect = :statusVentilated";
         query += " AND self.invoice.id <> :invoiceId";
       } else {
-        query += " AND self.invoice.id = :invoiceId";
+        // The current invoice may not yet be ventilated in DB at this point,
+        // so include it explicitly alongside already ventilated invoices.
+        query +=
+            " AND (self.invoice.statusSelect = :statusVentilated OR self.invoice.id = :invoiceId)";
       }
+    } else {
+      query += " AND self.invoice.statusSelect = :statusVentilated";
     }
 
     jakarta.persistence.Query q = JPA.em().createQuery(query, BigDecimal.class);
