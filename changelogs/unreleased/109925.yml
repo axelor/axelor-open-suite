@@ -1,0 +1,6 @@
+---
+title: "Sale order: improved performance when generating report with large database."
+module: axelor-sale
+developer: 
+  "sale_order_line_proc was using a CASE which prevented PSQL to use index 'sale_sale_order_line_sale_order_idx'. So it was scanning the entire table and then filtering it in memory. Changed to a UNION ALL to permit the use of indexes.
+   The rptdesign file needs to be replaced in the SaleOrder PDF BirtTemplate to get these changes."
