@@ -204,10 +204,7 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
   }
 
   protected void computeTax(SaleOrderLineTax saleOrderLineTax, Currency currency) {
-    BigDecimal exTaxBase =
-        saleOrderLineTax.getReverseCharged()
-            ? saleOrderLineTax.getExTaxBase().negate()
-            : saleOrderLineTax.getExTaxBase();
+    BigDecimal exTaxBase = saleOrderLineTax.getExTaxBase();
     BigDecimal taxTotal = BigDecimal.ZERO;
     int currencyScale = currencyScaleService.getCurrencyScale(currency);
 
@@ -230,6 +227,9 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
         }
       }
 
+      if (saleOrderLineTax.getReverseCharged()) {
+        taxTotal = taxTotal.negate();
+      }
       saleOrderLineTax.setTaxTotal(currencyScaleService.getScaledValue(taxTotal, currencyScale));
       saleOrderLineTax.setPercentageTaxTotal(saleOrderLineTax.getTaxTotal());
     }
