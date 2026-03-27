@@ -407,6 +407,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setIsPaid(false);
     invoiceTerm.setIsHoldBack(false);
     invoiceTerm.setPaymentMode(invoice.getPaymentMode());
+    invoiceTerm.setBankDetails(invoice.getBankDetails());
 
     BigDecimal invoiceTermPercentage = new BigDecimal(100);
     BigDecimal percentageSum = computePercentageSum(invoice);
@@ -432,6 +433,17 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
     invoiceTerm.setSequence(initInvoiceTermsSequence(invoice, invoiceTerm));
 
+    PaymentConditionLine nextPaymentConditionLine =
+        findNextPaymentConditionLine(
+            invoice.getPaymentCondition(), invoiceTerm, invoice.getInvoiceTermList());
+
+    if (nextPaymentConditionLine != null) {
+      invoiceTerm.setPaymentConditionLine(nextPaymentConditionLine);
+      invoiceTermDateComputeService.resetDueDate(invoiceTerm);
+      if (nextPaymentConditionLine.getIsHoldback()) {
+        invoiceTerm.setIsHoldBack(true);
+      }
+    }
     return invoiceTerm;
   }
 
@@ -473,20 +485,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     invoiceTerm.setAmountRemaining(amount);
     this.computeCompanyAmounts(invoiceTerm, false, false);
 
-    if (move != null
-        && move.getPaymentCondition() != null
-        && CollectionUtils.isNotEmpty(move.getPaymentCondition().getPaymentConditionLineList())) {
+    if (move != null) {
       PaymentConditionLine nextPaymentConditionLine =
-          move.getPaymentCondition().getPaymentConditionLineList().stream()
-              .filter(it -> it.getPaymentPercentage().compareTo(invoiceTerm.getPercentage()) == 0)
-              .findFirst()
-              .orElse(
-                  move.getPaymentCondition().getPaymentConditionLineList().size()
-                          > moveLine.getInvoiceTermList().size()
-                      ? move.getPaymentCondition()
-                          .getPaymentConditionLineList()
-                          .get(moveLine.getInvoiceTermList().size())
-                      : null);
+          findNextPaymentConditionLine(
+              move.getPaymentCondition(), invoiceTerm, moveLine.getInvoiceTermList());
 
       if (nextPaymentConditionLine != null) {
         invoiceTerm.setDueDate(this.computeDueDate(move, nextPaymentConditionLine));
@@ -1908,5 +1910,27 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     return date1.compareTo(date2);
+  }
+
+  protected PaymentConditionLine findNextPaymentConditionLine(
+      PaymentCondition paymentCondition,
+      InvoiceTerm invoiceTerm,
+      List<InvoiceTerm> invoiceTermList) {
+    if (paymentCondition == null
+        || CollectionUtils.isEmpty(paymentCondition.getPaymentConditionLineList())) {
+      return null;
+    }
+
+    int invoiceTermCount = CollectionUtils.isEmpty(invoiceTermList) ? 0 : invoiceTermList.size();
+    List<PaymentConditionLine> paymentConditionLineList =
+        paymentCondition.getPaymentConditionLineList();
+
+    return paymentConditionLineList.stream()
+        .filter(it -> it.getPaymentPercentage().compareTo(invoiceTerm.getPercentage()) == 0)
+        .findFirst()
+        .orElse(
+            paymentConditionLineList.size() > invoiceTermCount
+                ? paymentConditionLineList.get(invoiceTermCount)
+                : null);
   }
 }

@@ -1,0 +1,3 @@
+---
+title: "Invoice term: fixed missing move line link when creating a new invoice term on a ventilated invoice."
+module: axelor-account
