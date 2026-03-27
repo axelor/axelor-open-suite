@@ -121,13 +121,21 @@
 
     <panel-tabs name="mainPanelTab">
 
-      <panel name="overviewPanel" title="Overview"
-        onTabSelect="action-project-activity-dashboard-method-on-new,action-project-dashboard-method-on-new">
+      <panel name="overviewPanel" title="Overview">
         <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"/>
         <field name="company" form-view="company-form" grid-view="company-grid" colSpan="2"/>
         <field name="fromDate" colSpan="2"/>
         <field name="toDate" colSpan="2"/>
         <panel-include view="incl-project-overview-panel-form"/>
+      </panel>
+
+      <panel name="dashboardRootPanel" title="Dashboard"
+        onTabSelect="action-project-activity-dashboard-method-on-new,action-project-dashboard-method-on-new">
+        <panel-include view="project-dashboard-form"/>
+        <panel name="activityPanel" title="Activities" showIf="id" colSpan="12"
+          canCollapse="true" collapseIf="true">
+          <panel-include view="project-activity-dashboard-form"/>
+        </panel>
       </panel>
 
       <panel title="Tasks" name="taskPanel">
@@ -161,10 +169,6 @@
     <panel colSpan="12">
       <field name="description" colSpan="12" widget="html"/>
     </panel>
-    <panel name="dashboardPanel" title="Dashboard" showTitle="false" colSpan="12"
-      canCollapse="true" collapseIf="false">
-      <panel-include view="project-dashboard-form"/>
-    </panel>
     <panel name="sitePanel" title="Sites" canCollapse="true" colSpan="12" collapseIf="true"
       if="__config__.app.getApp('base')?.enableSiteManagementForProject">
       <field name="siteSet" showTitle="false" colSpan="12" grid-view="site-project-grid"
@@ -172,10 +176,6 @@
         domain="(self.typeSelect = 1 AND self.isUsableOnProject = true AND self.company = :company)
           OR (self.typeSelect = 2 AND self.isUsableOnProject = true AND self.company = :company AND self.partner = :clientPartner)"
         canEdit="false"/>
-    </panel>
-    <panel title="Activities" name="activityPanel" canCollapse="true" collapseIf="true"
-      colSpan="12" showIf="id">
-      <panel-include view="project-activity-dashboard-form"/>
     </panel>
   </form>
 
@@ -551,8 +551,6 @@
   <action-group name="action-project-on-load-group">
     <action name="action-project-attrs-on-new-load"/>
     <action name="action-project-method-task-status-management-selection-in"/>
-    <action name="action-project-activity-dashboard-method-on-new"/>
-    <action name="action-project-dashboard-method-on-new"/>
     <action name="action-attrs-project-show-log-time-panel"/>
   </action-group>
 
