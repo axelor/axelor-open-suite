@@ -108,11 +108,12 @@ public class TimesheetLineGenerationServiceImpl implements TimesheetLineGenerati
     if (productContext != null) {
       product = productRepository.find(((Integer) productContext.get("id")).longValue());
     }
-    if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
+    boolean showActivity = Boolean.TRUE.equals(context.get("showActivity"));
+    if (product == null && !showActivity) {
       product = userHrService.getTimesheetProduct(timesheet.getEmployee(), null);
     }
     return generateLines(
-        timesheet, fromGenerationDate, toGenerationDate, logTime, project, product);
+        timesheet, fromGenerationDate, toGenerationDate, logTime, project, product, showActivity);
   }
 
   @Override
