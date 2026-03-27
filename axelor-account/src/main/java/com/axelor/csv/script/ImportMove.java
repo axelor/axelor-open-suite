@@ -31,9 +31,9 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveValidateService;
-import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -65,7 +65,6 @@ public class ImportMove {
   @Inject private MoveRepository moveRepository;
   @Inject private MoveLineRepository moveLineRepo;
   @Inject private MoveValidateService moveValidateService;
-  @Inject private MoveLineToolService moveLineToolService;
   @Inject private AppAccountService appAccountService;
   @Inject private PeriodService periodService;
   @Inject private FECImportRepository fecImportRepository;
@@ -149,11 +148,7 @@ public class ImportMove {
         }
         move.setPeriod(period);
 
-        if (values.get("Idevise") != null) {
-          move.setCurrency(
-              Beans.get(CurrencyRepository.class).findByCode(values.get("Idevise").toString()));
-          move.setCurrencyCode(values.get("Idevise").toString());
-        }
+        setMoveCurrency(move, values.get("Idevise"));
 
         Journal journal = null;
         if (values.get("JournalCode") != null) {
@@ -219,20 +214,13 @@ public class ImportMove {
       move.addMoveLineListItem(moveLine);
 
       setMovePartner(move, moveLine);
-
-      if (values.get("Montantdevise") == null || values.get("Montantdevise").equals("")) {
-        moveLine.setMove(move);
-        moveLineToolService.setCurrencyAmount(moveLine);
-      } else {
-        String currencyAmountStr = values.get("Montantdevise").toString().replace(',', '.');
-        BigDecimal currencyAmount = (new BigDecimal(currencyAmountStr)).abs();
-
-        if (moveLine.getDebit().signum() > 0) {
-          moveLine.setCurrencyAmount(currencyAmount);
-        } else {
-          moveLine.setCurrencyAmount(currencyAmount.negate());
-        }
-      }
+      moveLine.setMove(move);
+      computeImportedCurrencyAmount(
+          moveLine,
+          values.get("Idevise"),
+          values.get("Montantdevise"),
+          values.get("EcritureNum") != null ? values.get("EcritureNum").toString() : null,
+          fecImport);
     } catch (AxelorException e) {
       TraceBackService.trace(e);
       throw e;
@@ -260,6 +248,120 @@ public class ImportMove {
         move.setPartner(null);
       }
     }
+  }
+
+  protected void setMoveCurrency(Move move, Object importedCurrency) {
+    Currency companyCurrency = move.getCompany().getCurrency();
+
+    if (isCompanyCurrency(importedCurrency, companyCurrency)) {
+      move.setCurrency(companyCurrency);
+      if (companyCurrency != null) {
+        move.setCurrencyCode(companyCurrency.getCodeISO());
+      }
+    } else if (importedCurrency != null) {
+      String importedCurrencyValue = importedCurrency.toString().trim();
+      move.setCurrency(Beans.get(CurrencyRepository.class).findByCode(importedCurrencyValue));
+      move.setCurrencyCode(importedCurrencyValue);
+    }
+  }
+
+  protected void computeImportedCurrencyAmount(
+      MoveLine moveLine,
+      Object importedCurrency,
+      Object importedCurrencyAmount,
+      String entryNumber,
+      FECImport fecImport)
+      throws AxelorException {
+    if (moveLine == null) {
+      return;
+    }
+
+    if (isZero(moveLine.getDebit()) && isZero(moveLine.getCredit())) {
+      moveLine.setCurrencyAmount(BigDecimal.ZERO);
+      return;
+    }
+
+    BigDecimal currencyAmount =
+        getCurrencyAmount(
+            moveLine, importedCurrency, importedCurrencyAmount, entryNumber, fecImport);
+    moveLine.setCurrencyAmount(applyCurrencyAmountSign(moveLine, currencyAmount));
+  }
+
+  protected BigDecimal getCurrencyAmount(
+      MoveLine moveLine,
+      Object importedCurrency,
+      Object importedCurrencyAmount,
+      String entryNumber,
+      FECImport fecImport)
+      throws AxelorException {
+    BigDecimal currencyAmount = parseCurrencyAmount(importedCurrencyAmount);
+    if (!isZero(currencyAmount)) {
+      return currencyAmount.abs();
+    }
+
+    if (isCompanyCurrency(importedCurrency, getCompanyCurrency(moveLine))) {
+      return getSourceAmount(moveLine).abs();
+    }
+
+    throw new AxelorException(
+        fecImport,
+        TraceBackRepository.CATEGORY_MISSING_FIELD,
+        I18n.get(AccountExceptionMessage.IMPORT_FEC_FOREIGN_CURRENCY_AMOUNT_REQUIRED),
+        entryNumber);
+  }
+
+  protected BigDecimal parseCurrencyAmount(Object importedCurrencyAmount) {
+    if (importedCurrencyAmount == null || StringUtils.isBlank(importedCurrencyAmount.toString())) {
+      return null;
+    }
+
+    String currencyAmount = importedCurrencyAmount.toString().trim();
+    return new BigDecimal(currencyAmount.replace(',', '.'));
+  }
+
+  protected Currency getCompanyCurrency(MoveLine moveLine) {
+    return Optional.ofNullable(moveLine)
+        .map(MoveLine::getMove)
+        .map(Move::getCompany)
+        .map(Company::getCurrency)
+        .orElse(null);
+  }
+
+  protected boolean isCompanyCurrency(Object importedCurrency, Currency companyCurrency) {
+    if (companyCurrency == null) {
+      return false;
+    }
+
+    if (importedCurrency == null) {
+      return true;
+    }
+
+    String currencyCode = importedCurrency.toString().trim();
+    if (StringUtils.isEmpty(currencyCode) || "0".equals(currencyCode)) {
+      return true;
+    }
+
+    return currencyCode.equalsIgnoreCase(companyCurrency.getCode())
+        || currencyCode.equalsIgnoreCase(companyCurrency.getCodeISO())
+        || currencyCode.equalsIgnoreCase(companyCurrency.getName());
+  }
+
+  protected BigDecimal applyCurrencyAmountSign(MoveLine moveLine, BigDecimal absoluteAmount) {
+    BigDecimal amount = absoluteAmount.abs();
+
+    if (!isZero(moveLine.getDebit())) {
+      return moveLine.getDebit().signum() > 0 ? amount : amount.negate();
+    }
+
+    return moveLine.getCredit().signum() < 0 ? amount : amount.negate();
+  }
+
+  protected BigDecimal getSourceAmount(MoveLine moveLine) {
+    return !isZero(moveLine.getDebit()) ? moveLine.getDebit() : moveLine.getCredit();
+  }
+
+  protected boolean isZero(BigDecimal amount) {
+    return amount == null || amount.signum() == 0;
   }
 
   protected Company getCompany(Map<String, Object> values) {
