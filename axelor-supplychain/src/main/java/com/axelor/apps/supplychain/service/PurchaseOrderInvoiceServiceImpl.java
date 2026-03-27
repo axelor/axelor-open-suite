@@ -285,15 +285,20 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             + " FROM InvoiceLine as self"
             + " WHERE ((self.purchaseOrderLine.purchaseOrder.id = :purchaseOrderId AND self.invoice.purchaseOrder IS NULL)"
             + " OR self.invoice.purchaseOrder.id = :purchaseOrderId )"
-            + " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect"
-            + " AND self.invoice.statusSelect = :statusVentilated";
+            + " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect";
 
     if (currentInvoiceId != null) {
       if (excludeCurrentInvoice) {
+        query += " AND self.invoice.statusSelect = :statusVentilated";
         query += " AND self.invoice.id <> :invoiceId";
       } else {
-        query += " AND self.invoice.id = :invoiceId";
+        // The current invoice may not yet be ventilated in DB at this point,
+        // so include it explicitly alongside already ventilated invoices.
+        query +=
+            " AND (self.invoice.statusSelect = :statusVentilated OR self.invoice.id = :invoiceId)";
       }
+    } else {
+      query += " AND self.invoice.statusSelect = :statusVentilated";
     }
 
     Query q = JPA.em().createQuery(query, BigDecimal.class);
