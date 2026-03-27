@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Tag;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -72,7 +73,7 @@ public class TagServiceImpl implements TagService {
   }
 
   @Override
-  public String getTagDomain(String metaModelName, Company company) {
+  public String getTagDomain(String metaModelName, Company company, TradingName tradingName) {
     if (StringUtils.isEmpty(metaModelName)) {
       return "self.id = 0";
     }
@@ -81,9 +82,10 @@ public class TagServiceImpl implements TagService {
     Query resultQuery =
         JPA.em()
             .createQuery(
-                "SELECT self.id FROM Tag self WHERE (self.concernedModelSet IS EMPTY OR :metaModel MEMBER OF self.concernedModelSet) AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)");
+                "SELECT self.id FROM Tag self WHERE (self.concernedModelSet IS EMPTY OR :metaModel MEMBER OF self.concernedModelSet) AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet) AND (self.tradingNameSet IS EMPTY OR :tradingName MEMBER OF self.tradingNameSet)");
     resultQuery.setParameter("metaModel", metaModel);
     resultQuery.setParameter("company", company);
+    resultQuery.setParameter("tradingName", tradingName);
 
     if (ObjectUtils.isEmpty(resultQuery.getResultList())) {
       return "self.id = 0";
