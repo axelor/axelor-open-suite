@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed operation quantity returning 0 for semi-finished product when exploding multi-level BOM."
+module: axelor-production
