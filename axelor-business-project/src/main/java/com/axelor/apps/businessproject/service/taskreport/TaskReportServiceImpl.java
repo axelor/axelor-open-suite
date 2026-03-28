@@ -158,6 +158,8 @@ public class TaskReportServiceImpl implements TaskReportService {
       line.setProduct(task.getProduct());
       line.setDate(date);
       line.setStartTime(report.getStartTime());
+      line.setBreakTime(report.getBreakTimeHours());
+      line.setBreakTimeMinutes(report.getBreakTimeMinutes());
       line.setEndTime(report.getEndTime());
       line.setDirtAllowance(report.getDirtAllowance());
       line.setToInvoice(true);
@@ -193,6 +195,8 @@ public class TaskReportServiceImpl implements TaskReportService {
     line.setProduct(task.getProduct());
     line.setDate(date);
     line.setStartTime(report.getStartTime());
+    line.setBreakTime(report.getBreakTimeHours());
+    line.setBreakTimeMinutes(report.getBreakTimeMinutes());
     line.setEndTime(report.getEndTime());
     line.setDirtAllowance(report.getDirtAllowance());
 
@@ -205,12 +209,6 @@ public class TaskReportServiceImpl implements TaskReportService {
       line.setDuration(null);
       line.setHoursDuration(null);
       line.setDurationForCustomer(null);
-    }
-
-    if (report.getBreakTimeMinutes() != null) {
-      line.setBreakTimeMinutes(report.getBreakTimeMinutes());
-    } else {
-      line.setBreakTimeMinutes(null);
     }
 
     timesheetLineRepository.save(line);

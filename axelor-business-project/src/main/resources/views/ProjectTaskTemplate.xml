@@ -214,7 +214,11 @@
         form-view="user-form" grid-view="user-grid" widget="TagSelect" required="true"/>
 
       <field name="invoicingProgress" readonly="true" colSpan="4" showIf="invoicingType == 4"/>
-      <field name="description" colSpan="12" widget="html"/>
+
+      <panel name="taskDescriptionPanel" title="Description" showFrame="true" colSpan="12">
+        <field name="description" colSpan="12" showTitle="false"/>
+      </panel>
+
 
       <field name="isTemplate" hidden="true"/>
       <field name="templateTaskId" hidden="true"/>

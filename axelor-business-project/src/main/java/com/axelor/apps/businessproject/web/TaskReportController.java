@@ -289,4 +289,8 @@ public class TaskReportController {
       Beans.get(TimesheetLineRemoveService.class).removeTimesheetLine(tsl);
     }
   }
+
+  public void cancelDelete(ActionRequest request, ActionResponse response) {
+    response.setReload(true);
+  }
 }

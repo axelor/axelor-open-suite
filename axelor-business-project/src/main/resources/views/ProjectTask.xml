@@ -406,7 +406,10 @@
         showIf="templateTaskId &amp;&amp; !isTemplate" onClick="action-project-task-view-template"
         if="__user__.group?.code == 'admins' || __user__.group?.code == 'CUSTOM-OM'"/>
       <field name="invoicingProgress" readonly="true" colSpan="4" showIf="invoicingType == 4"/>
-      <field name="description" colSpan="12" widget="html"/>
+
+      <panel name="taskDescriptionPanel" title="Description" showFrame="true" colSpan="12">
+        <field name="description" colSpan="12" showTitle="false"/>
+      </panel>
 
       <field name="isTemplate" hidden="true"/>
       <field name="templateTaskId" hidden="true"/>

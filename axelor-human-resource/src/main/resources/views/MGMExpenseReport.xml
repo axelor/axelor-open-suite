@@ -26,12 +26,12 @@
     <field name="projectTask"/>
     <field name="expenseProduct"/>
     <field name="expenseDate"/>
-    <field name="totalAmount" aggregate="sum"/>
+    <field name="totalAmount" title="Total to Refund" aggregate="sum"/>
     <field name="totalTax" aggregate="sum"/>
     <field name="toInvoice"/>
+    <field name="expense.statusSelect"/>
     <field name="justificationMetaFile" widget="binary-link"/>
     <field name="comments"/>
-    <field name="expense.statusSelect"/>
   </grid>
 
   <grid name="mgm-fees-expense-line-grid" title="Expense lines"
@@ -40,9 +40,9 @@
     <field name="expenseDate"/>
     <field name="totalAmountToInvoice" aggregate="sum"/>
     <field name="toInvoice"/>
+    <field name="expense.statusSelect"/>
     <field name="justificationMetaFile" widget="binary-link"/>
     <field name="comments"/>
-    <field name="expense.statusSelect"/>
   </grid>
 
   <form name="mgm-expense-form" title="Project Expenses" model="com.axelor.apps.hr.db.Expense"
@@ -209,8 +209,7 @@
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
       <field name="expenseProduct" edit-icon="false" canEdit="false"
         onSelect="mgm-action-expense-line-attrs-set-product-domain" widget="SuggestBox"
-        form-view="product-expense-form" grid-view="product-expense-grid"
-        onChange="action-expense-line-group-expense-product-on-change"/>
+        form-view="product-expense-form" grid-view="product-expense-grid"/>
       <field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
       <field name="untaxedAmount"
         onChange="mgm-action-expense-line-record-apply-standard-tax,mgm-action-expense-line-record-calculate-totals"/>
@@ -263,8 +262,7 @@
       <field name="project" hidden="true"/>
       <field name="expenseProduct" edit-icon="false" canEdit="false"
         onSelect="mgm-action-expense-line-attrs-set-product-domain" widget="SuggestBox"
-        form-view="product-expense-form" grid-view="product-expense-grid"
-        onChange="action-expense-line-group-expense-product-on-change"/>
+        form-view="product-expense-form" grid-view="product-expense-grid"/>
       <field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
       <field name="untaxedAmount" colSpan="6"
         onChange="mgm-fees-action-expense-line-record-calculate-totals"/>
@@ -360,13 +358,6 @@
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="customCompute"/>
   </action-method>
 
-  <action-record name="mgm-action-expense-line-record-fetch-tax"
-    model="com.axelor.apps.hr.db.ExpenseLine">
-    <field name="totalTax"
-      expr="eval: expenseProduct?.accountManagementList?.find{ it.company == (expense?.company ?: __user__.activeCompany) }?.saleTaxSet?.find{ it != null }?.taxRate ?: 0"
-      if="eval: expenseProduct != null"/>
-  </action-record>
-
   <action-record name="mgm-action-expense-line-record-calculate-totals"
     model="com.axelor.apps.hr.db.ExpenseLine">
     <field name="totalAmount" expr="eval: (untaxedAmount ?: 0) + (totalTax ?: 0)"/>
@@ -383,8 +374,6 @@
         ((untaxedAmount ?: 0) * (1 + (fee ?: 0) / 100.0))
       )"/>
   </action-record>
-
-
 
   <action-record name="mgm-action-expense-line-record-apply-standard-tax"
     model="com.axelor.apps.hr.db.ExpenseLine">
@@ -421,11 +410,9 @@
     <view name="mgm-expense-form" type="form"/>
     <view-param name="can-new" value="true"/>
     <view-param name="can-edit" value="true"/>
-    <domain>self.project.id = :id</domain>
-    <context name="_projectRef" expr="eval: __self__"/>
-    <context name="_projectId" expr="eval: __self__.id"/>
-    <context name="_projectCompany" expr="eval: company"/>
-    <context name="_projectCurrency" expr="eval: currency"/>
+    <domain>self.project.id = :_projectId</domain>
+    <context name="_projectId" expr="eval: id"/>
+
   </action-view>
 
   <action-view name="mgm-action-project-expense-add"
@@ -437,15 +424,10 @@
     <view-param name="popup-save" value="true"/>
     <view-param name="show-confirm" value="true"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_projectRef" expr="eval: _projectRef"/>
-    <context name="_projectCompany" expr="eval: _projectCompany"/>
-    <context name="_projectCurrency" expr="eval: _projectCurrency"/>
-    <context name="_projectId" expr="eval: _projectRef?.id"/>
+    <context name="_projectRef" expr="eval: __parent__"/>
+    <context name="_projectCompany" expr="eval: __parent__.company"/>
+    <context name="_projectCurrency" expr="eval: __parent__.currency"/>
+    <context name="_projectId" expr="eval: __parent__.id"/>
   </action-view>
 
-  <action-group name="mgm-action-expense-line-group-product-change">
-    <action name="action-expense-line-group-expense-product-on-change"/>
-    <action name="mgm-action-expense-line-record-fetch-tax"/>
-    <action name="mgm-action-expense-line-record-calculate-all-totals"/>
-  </action-group>
 </object-views>

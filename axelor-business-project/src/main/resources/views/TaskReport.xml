@@ -202,17 +202,18 @@
   <action-validate name="action-task-report-validate-deleted-tmr-tsl-state">
     <error
       message="A timesheet line linked to a deleted task member report entry has already been invoiced and cannot be deleted. Please review your changes."
-      if="tslDeleteWarningState == 'invoiced'"/>
+      if="tslDeleteWarningState == 'invoiced'" action="action-method-cancel-tmr-deletion"/>
     <error
       message="A timesheet line linked to a deleted task member report is already validated. Please invalidate the timesheet line before removing the entry."
-      if="tslDeleteWarningState == 'validated'"/>
+      if="tslDeleteWarningState == 'validated'" action="action-method-cancel-tmr-deletion"/>
     <error
       message="A timesheet line linked to a deleted task member report is referenced in an invoicing project. Please remove it from the invoicing project before deleting this entry."
-      if="tslDeleteWarningState == 'referenced_in_invoicing_project'"/>
+      if="tslDeleteWarningState == 'referenced_in_invoicing_project'"
+      action="action-method-cancel-tmr-deletion"/>
     <alert
       message="Removing this task member report will also delete the associated timesheet line. Do you want to continue?"
       if="tslDeleteWarningState == 'deletable'" confirm-btn-title="Continue"
-      cancel-btn-title="Cancel"/>
+      cancel-btn-title="Cancel" action="action-method-cancel-tmr-deletion"/>
   </action-validate>
 
   <action-method name="action-task-report-method-preview">
@@ -356,6 +357,9 @@
   </action-record>
 
   <action-group name="action-task-report-group-on-save">
+    <action name="action-task-report-check-deleted-tmr-tsl-state"/>
+    <action name="action-task-report-validate-deleted-tmr-tsl-state"/>
+    <action name="action-task-report-method-delete-tmr-timesheet-lines"/>
     <action name="mgm-action-update-total-work-hours"/>
     <action name="mgm-action-sync-dirt-allowance-status"/>
     <action name="action-task-report-validate"/>
@@ -395,5 +399,10 @@
     <action name="action-validate-task-member-report-no-time-overlap"/>
     <action name="action-task-report-on-change-time"/>
   </action-group>
+
+  <action-method name="action-method-cancel-tmr-deletion">
+    <call class="com.axelor.apps.businessproject.web.TaskReportController"
+      method="cancelDelete"/>
+  </action-method>
 
 </object-views>
