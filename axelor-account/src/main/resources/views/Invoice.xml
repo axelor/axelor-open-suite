@@ -3064,8 +3064,7 @@
 
   <action-validate name="action-invoice-validate-check-invoice-category">
     <error message="Please select an invoice category before ventilating."
-      if="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; operationSubTypeSelect == 1 &amp;&amp; invoiceCategorySelect == null"
-      action-id="action-invoice-validate-check-invoice-category"/>
+      if="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; operationSubTypeSelect == 1 &amp;&amp; invoiceCategorySelect == null"/>
   </action-validate>
 
 </object-views>
