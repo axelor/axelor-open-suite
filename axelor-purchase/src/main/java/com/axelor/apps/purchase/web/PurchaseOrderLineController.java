@@ -93,7 +93,9 @@ public class PurchaseOrderLineController {
 
       purchaseOrderLine.setPurchaseOrder(purchaseOrder);
       service.fill(purchaseOrderLine, purchaseOrder);
-      response.setValues(purchaseOrderLine);
+      Map<String, Object> values = Mapper.toMap(purchaseOrderLine);
+      values.remove("purchaseOrder");
+      response.setValues(values);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
