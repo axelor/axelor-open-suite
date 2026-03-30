@@ -65,6 +65,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -447,6 +448,9 @@ public class MrpLineServiceImpl implements MrpLineService {
   @Override
   public List<MrpLine> getMrpLineListCopy(List<MrpLine> mrpLineList) {
     List<MrpLine> copyMrpLineList = new ArrayList<>();
+    mrpLineList =
+        mrpLineRepo.findByIds(
+            mrpLineList.stream().map(MrpLine::getId).collect(Collectors.toList()));
     for (MrpLine mrpLine : mrpLineList) {
       copyMrpLineList.add(mrpLineRepo.copy(mrpLine, true));
     }
