@@ -473,15 +473,6 @@
     <view type="form" name="stop-reason-form"/>
   </action-view>
 
-  <menuitem name="referential-conf-sync-contact" parent="referential-conf"
-    title="Contact synchronisation" action="referential.conf.sync.contact" order="1600"/>
-
-  <action-view name="referential.conf.sync.contact" title="Contact synchronisation"
-    model="com.axelor.apps.base.db.SyncContact">
-    <view type="grid" name="sync-contact-grid"/>
-    <view type="form" name="sync-contact-form"/>
-  </action-view>
-
   <menuitem name="referential-conf-partner-link-types" parent="referential-conf"
     if="__config__.app.getApp('base')?.activatePartnerRelations" title="Partner relations type"
     action="referential.conf.partner.link.types" order="400"/>

@@ -33,12 +33,12 @@ import com.axelor.rpc.Context;
 import com.axelor.text.GroovyTemplates;
 import com.axelor.text.StringTemplates;
 import com.axelor.text.Templates;
-import com.google.api.client.util.Maps;
 import com.google.common.base.CaseFormat;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import org.slf4j.Logger;
@@ -91,7 +91,7 @@ public class AddressTemplateServiceImpl implements AddressTemplateService {
         templates = new StringTemplates(TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
       }
 
-      Map<String, Object> templatesContext = Maps.newHashMap();
+      Map<String, Object> templatesContext = new HashMap<>();
       Class<?> klass = EntityHelper.getEntityClass(address);
       Context context = new Context(Mapper.toMap(address), klass);
       templatesContext.put(
