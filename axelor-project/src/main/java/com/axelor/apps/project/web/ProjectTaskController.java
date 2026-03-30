@@ -20,8 +20,10 @@ package com.axelor.apps.project.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Timer;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TimerRepository;
+import com.axelor.apps.base.service.TagService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -41,6 +43,8 @@ import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.TimerProjectTaskService;
 import com.axelor.apps.project.service.taskLink.ProjectTaskLinkService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
@@ -289,8 +293,19 @@ public class ProjectTaskController {
   public void setTagDomain(ActionRequest request, ActionResponse response) throws AxelorException {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
+    TradingName tradingName =
+        Optional.ofNullable(AuthUtils.getUser()).map(User::getTradingName).orElse(null);
     response.setAttr(
-        "tagSet", "domain", Beans.get(ProjectTaskAttrsService.class).getTagDomain(projectTask));
+        "tagSet",
+        "domain",
+        Beans.get(TagService.class)
+            .getTagDomain(
+                "ProjectTask",
+                Optional.of(projectTask)
+                    .map(ProjectTask::getProject)
+                    .map(Project::getCompany)
+                    .orElse(null),
+                tradingName));
   }
 
   @ErrorException
