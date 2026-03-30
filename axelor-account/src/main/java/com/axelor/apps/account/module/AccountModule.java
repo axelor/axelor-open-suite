@@ -254,8 +254,6 @@ import com.axelor.apps.account.service.invoice.attributes.InvoiceTermPaymentAttr
 import com.axelor.apps.account.service.invoice.attributes.InvoiceTermPaymentAttrsServiceImpl;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
-import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
-import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementServiceImpl;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupService;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupServiceImpl;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxRecordService;
@@ -838,8 +836,6 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetLineGenerationService.class).to(FixedAssetLineGenerationServiceImpl.class);
 
     bind(AccountCustomerService.class).to(AccountCustomerServiceImpl.class);
-
-    bind(InvoiceProductStatementService.class).to(InvoiceProductStatementServiceImpl.class);
 
     bind(MoveLineAttrsService.class).to(MoveLineAttrsServiceImpl.class);
 

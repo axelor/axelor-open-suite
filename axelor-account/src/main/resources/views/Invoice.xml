@@ -640,7 +640,8 @@
         <field name="invoiceCategorySelect"
           showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; operationSubTypeSelect == 1"
           requiredIf="invoiceLineList &amp;&amp; invoiceLineList.length != 0" widget="singleSelect"
-          colSpan="2"/>
+          readonlyIf="statusSelect &gt;= 3"
+          colSpan="2" onChange="action-invoice-method-generate-category-note"/>
         <panel name="cutOffPanel" title="Cut off period" itemSpan="4"
           readonlyIf="statusSelect == 3" if="__config__.app.getApp('account').manageCutOffPeriod">
           <field name="cutOffStartDate"
@@ -806,11 +807,6 @@
           if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
           <field name="legalNotice" requiredIf="financialDiscount" widget="html" colSpan="12"
             showTitle="false"/>
-        </panel>
-        <field name="company.accountConfig.displayItemsCategoriesOnPrinting" hidden="true"/>
-        <panel name="invoiceProductStatementPanel" title="Invoice Product Statement"
-          colSpan="12" showIf="company.accountConfig.displayItemsCategoriesOnPrinting">
-          <field name="invoiceProductStatement" readonly="true" showTitle="false" colSpan="12"/>
         </panel>
       </panel>
       <panel name="automaticMailPanel" title="Automatic mail"
@@ -1294,7 +1290,8 @@
         <field name="invoiceCategorySelect"
           showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; operationSubTypeSelect == 1"
           requiredIf="invoiceLineList &amp;&amp; invoiceLineList.length != 0" widget="singleSelect"
-          colSpan="2"/>
+          readonlyIf="statusSelect &gt;= 3"
+          colSpan="2" onChange="action-invoice-method-generate-category-note"/>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
           readonlyIf="statusSelect == 3 || partner == null" colSpan="12"
@@ -1775,6 +1772,7 @@
   <action-group name="action-invoice-group-before-ventilate">
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="action-invoice-validate-check-pfp-validator-user"/>
+    <action name="action-invoice-validate-check-invoice-category"/>
     <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
     <action name="action-invoice-method-check-not-imputed-refunds"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
@@ -3035,5 +3033,20 @@
     <view type="form" name="invoice-form"/>
     <domain>self.latePaymentInterestSourceInvoice.id = :id</domain>
   </action-view>
+
+  <action-method name="action-invoice-method-set-invoice-notes">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="generateInvoiceNote"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-generate-category-note">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="generateInvoiceCategoryNote"/>
+  </action-method>
+
+  <action-validate name="action-invoice-validate-check-invoice-category">
+    <error message="Please select an invoice category before ventilating."
+      if="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; operationSubTypeSelect == 1 &amp;&amp; invoiceCategorySelect == null"
+      action-id="action-invoice-validate-check-invoice-category"/>
+  </action-validate>
 
 </object-views>
