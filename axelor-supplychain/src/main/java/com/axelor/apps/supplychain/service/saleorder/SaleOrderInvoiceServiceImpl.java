@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.PartnerAccountService;
@@ -77,8 +78,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -387,27 +390,38 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       return createdInvoiceLineList;
     }
 
+    Map<String, BigDecimal> taxKeyToExTaxTotal = new LinkedHashMap<>();
+    Map<String, SaleOrderLine> taxKeyToLine = new LinkedHashMap<>();
+    Map<String, Set<TaxLine>> taxKeyToTaxLineSet = new LinkedHashMap<>();
+
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      InvoiceLineGeneratorSupplyChain invoiceLineGenerator = null;
-      if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL) {
-        invoiceLineGenerator =
-            invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
-                invoice,
-                invoicingProduct,
-                percentToInvoice,
-                saleOrderLine,
-                null,
-                saleOrderLine.getExTaxTotal(),
-                saleOrderLine.getTaxLineSet());
-      } else {
-        invoiceLineGenerator =
-            invoiceLineOrderService.getInvoiceLineGeneratorForTitleLines(
-                invoice,
-                saleOrderLine.getProductName(),
-                saleOrderLine,
-                null,
-                saleOrderLine.getQty());
+      if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL) {
+        continue;
       }
+      Set<TaxLine> taxLineSet = saleOrderLine.getTaxLineSet();
+      String taxKey =
+          ObjectUtils.isEmpty(taxLineSet)
+              ? ""
+              : taxLineSet.stream()
+                  .map(tl -> String.valueOf(tl.getId()))
+                  .sorted()
+                  .collect(Collectors.joining(","));
+      taxKeyToExTaxTotal.merge(taxKey, saleOrderLine.getExTaxTotal(), BigDecimal::add);
+      taxKeyToLine.putIfAbsent(taxKey, saleOrderLine);
+      taxKeyToTaxLineSet.putIfAbsent(taxKey, taxLineSet);
+    }
+
+    for (Map.Entry<String, BigDecimal> entry : taxKeyToExTaxTotal.entrySet()) {
+      String key = entry.getKey();
+      InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
+          invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
+              invoice,
+              invoicingProduct,
+              percentToInvoice,
+              taxKeyToLine.get(key),
+              null,
+              entry.getValue(),
+              taxKeyToTaxLineSet.get(key));
       createdInvoiceLineList.addAll(invoiceLineGenerator.creates());
     }
 
