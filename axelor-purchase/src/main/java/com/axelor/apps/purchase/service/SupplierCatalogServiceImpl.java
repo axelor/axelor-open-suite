@@ -33,7 +33,6 @@ import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.ContextTool;
@@ -42,12 +41,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 public class SupplierCatalogServiceImpl implements SupplierCatalogService {
 
@@ -56,21 +52,24 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   protected CurrencyService currencyService;
   protected ProductCompanyService productCompanyService;
   protected PurchaseOrderLineService purchaseOrderLineService;
+  protected SupplierCatalogRepository supplierCatalogRepository;
   protected TaxService taxService;
 
   @Inject
   public SupplierCatalogServiceImpl(
-      AppPurchaseService appBaseService,
+      AppBaseService appBaseService,
       AppPurchaseService appPurchaseService,
       CurrencyService currencyService,
       ProductCompanyService productCompanyService,
       PurchaseOrderLineService purchaseOrderLineService,
+      SupplierCatalogRepository supplierCatalogRepository,
       TaxService taxService) {
     this.appBaseService = appBaseService;
     this.appPurchaseService = appPurchaseService;
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
     this.purchaseOrderLineService = purchaseOrderLineService;
+    this.supplierCatalogRepository = supplierCatalogRepository;
     this.taxService = taxService;
   }
 
@@ -95,7 +94,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
     }
     if (supplierCatalogList != null && !supplierCatalogList.isEmpty()) {
       SupplierCatalog supplierCatalog =
-          Beans.get(SupplierCatalogRepository.class)
+          supplierCatalogRepository
               .all()
               .filter(
                   "self.product = ?1 AND self.minQty <= ?2 AND self.supplierPartner = ?3 ORDER BY self.minQty DESC",
@@ -127,29 +126,36 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   public SupplierCatalog getSupplierCatalog(
       Product product, Partner supplierPartner, Company company) throws AxelorException {
 
-    if (product == null) {
+    if (product == null || supplierPartner == null) {
       return null;
     }
 
-    List<SupplierCatalog> supplierCatalogList =
-        supplierPartner.getSupplierCatalogList().stream()
-            .filter(catalog -> catalog.getProduct().equals(product))
-            .collect(Collectors.toList());
-
-    if (appPurchaseService.getAppPurchase().getManageSupplierCatalog()
-        && CollectionUtils.isNotEmpty(supplierCatalogList)) {
-      if (supplierCatalogList.stream().anyMatch(catalog -> catalog.getUpdateDate() != null)) {
-        return supplierCatalogList.stream()
-            .filter(catalog -> catalog.getUpdateDate() != null)
-            .max(Comparator.comparing(SupplierCatalog::getUpdateDate))
-            .orElse(null);
-      } else {
-        return supplierCatalogList.stream()
-            .min(Comparator.comparing(SupplierCatalog::getMinQty))
-            .orElse(null);
-      }
+    if (!appPurchaseService.getAppPurchase().getManageSupplierCatalog()) {
+      return null;
     }
-    return null;
+
+    SupplierCatalog supplierCatalog =
+        supplierCatalogRepository
+            .all()
+            .filter(
+                "self.product = :product AND self.supplierPartner = :supplierPartner "
+                    + "AND self.updateDate IS NOT NULL")
+            .bind("product", product)
+            .bind("supplierPartner", supplierPartner)
+            .order("-updateDate")
+            .fetchOne();
+
+    if (supplierCatalog != null) {
+      return supplierCatalog;
+    }
+
+    return supplierCatalogRepository
+        .all()
+        .filter("self.product = :product AND self.supplierPartner = :supplierPartner")
+        .bind("product", product)
+        .bind("supplierPartner", supplierPartner)
+        .order("minQty")
+        .fetchOne();
   }
 
   @Override
