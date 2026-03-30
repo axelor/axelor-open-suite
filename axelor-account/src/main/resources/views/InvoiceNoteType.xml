@@ -3,14 +3,14 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
-  <grid name="invoice-note-grid" title="Invoice notes"
-    model="com.axelor.apps.account.db.InvoiceNote">
+  <grid name="invoice-note-type-grid" title="Invoice note types"
+    model="com.axelor.apps.account.db.InvoiceNoteType">
     <field name="code"/>
     <field name="name"/>
   </grid>
 
-  <form name="invoice-note-form" title="Invoice note"
-    model="com.axelor.apps.account.db.InvoiceNote">
+  <form name="invoice-note-type-form" title="Invoice note type"
+    model="com.axelor.apps.account.db.InvoiceNoteType">
     <panel name="generalPanel">
       <field name="code"/>
       <field name="name"/>
