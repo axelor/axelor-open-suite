@@ -1,0 +1,3 @@
+---
+title: "Purchase orders: fixed slowdown when adding many order lines."
+module: axelor-purchase
