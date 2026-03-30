@@ -1,0 +1,3 @@
+---
+title: "Stock move: fixed missing fiscal position on invoices generated from direct stock moves and backorders."
+module: axelor-supplychain
