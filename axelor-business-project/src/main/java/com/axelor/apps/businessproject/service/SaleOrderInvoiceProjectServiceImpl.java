@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -51,14 +52,19 @@ import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
+import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
 import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceContractServiceImpl {
 
@@ -205,18 +211,59 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceContract
       Product invoicingProduct,
       BigDecimal percentToInvoice)
       throws AxelorException {
-    List<InvoiceLine> invoiceLineList =
-        super.createInvoiceLines(invoice, saleOrderLineList, invoicingProduct, percentToInvoice);
     if (!appBusinessProjectService.isApp("business-project")) {
-      return invoiceLineList;
+      return super.createInvoiceLines(
+          invoice, saleOrderLineList, invoicingProduct, percentToInvoice);
     }
-    for (InvoiceLine invoiceLine : invoiceLineList) {
-      SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
-      if (saleOrderLine != null
-          && saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL) {
-        invoiceLine.setProject(saleOrderLine.getProject());
+
+    List<InvoiceLine> createdInvoiceLineList = new ArrayList<>();
+    if (ObjectUtils.isEmpty(saleOrderLineList)) {
+      return createdInvoiceLineList;
+    }
+
+    Map<String, BigDecimal> groupKeyToExTaxTotal = new LinkedHashMap<>();
+    Map<String, SaleOrderLine> groupKeyToLine = new LinkedHashMap<>();
+    Map<String, Set<TaxLine>> groupKeyToTaxLineSet = new LinkedHashMap<>();
+
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL) {
+        continue;
       }
+      Set<TaxLine> taxLineSet = saleOrderLine.getTaxLineSet();
+      String taxKey =
+          ObjectUtils.isEmpty(taxLineSet)
+              ? ""
+              : taxLineSet.stream()
+                  .map(tl -> String.valueOf(tl.getId()))
+                  .sorted()
+                  .collect(Collectors.joining(","));
+      long projectId = saleOrderLine.getProject() != null ? saleOrderLine.getProject().getId() : 0;
+      String groupKey = taxKey + "|" + projectId;
+
+      groupKeyToExTaxTotal.merge(groupKey, saleOrderLine.getExTaxTotal(), BigDecimal::add);
+      groupKeyToLine.putIfAbsent(groupKey, saleOrderLine);
+      groupKeyToTaxLineSet.putIfAbsent(groupKey, taxLineSet);
     }
-    return invoiceLineList;
+
+    for (Map.Entry<String, BigDecimal> entry : groupKeyToExTaxTotal.entrySet()) {
+      String key = entry.getKey();
+      SaleOrderLine representativeLine = groupKeyToLine.get(key);
+      InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
+          invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
+              invoice,
+              invoicingProduct,
+              percentToInvoice,
+              representativeLine,
+              null,
+              entry.getValue(),
+              groupKeyToTaxLineSet.get(key));
+      List<InvoiceLine> generatedLines = invoiceLineGenerator.creates();
+      for (InvoiceLine invoiceLine : generatedLines) {
+        invoiceLine.setProject(representativeLine.getProject());
+      }
+      createdInvoiceLineList.addAll(generatedLines);
+    }
+
+    return createdInvoiceLineList;
   }
 }
