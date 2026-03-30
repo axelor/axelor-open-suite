@@ -22,8 +22,7 @@ import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.i18n.I18n;
-import jakarta.inject.Inject;
-
+import com.google.inject.Inject;
 
 public class InvoiceNoteServiceImpl implements InvoiceNoteService {
 
@@ -50,7 +49,7 @@ public class InvoiceNoteServiceImpl implements InvoiceNoteService {
       return;
     }
     InvoiceNoteType noteTypeREG =
-            InvoiceNoteCreationHelper.getOrCreateInvoiceNoteType("REG", I18n.get("Invoice category"));
+        InvoiceNoteCreationHelper.getOrCreateInvoiceNoteType("REG", I18n.get("Invoice category"));
     invoice.getInvoiceNoteList().removeIf(n -> noteTypeREG.equals(n.getInvoiceNoteType()));
   }
 }
