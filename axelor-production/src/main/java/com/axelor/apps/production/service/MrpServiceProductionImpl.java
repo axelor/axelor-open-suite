@@ -864,6 +864,65 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       throws AxelorException {
     super.completeProjectedStock(mrp, product, company, stockLocation);
     this.createManufOrderMrpLines();
+    this.createConsumingManufOrderMrpLines();
     return mrp;
+  }
+
+  /**
+   * Find ManufOrders that consume products in {@link #productMap} but produce a different product,
+   * and create MRP lines for them. This ensures projected stock for a BOM component shows the
+   * planned consumption from manufacturing orders.
+   */
+  protected void createConsumingManufOrderMrpLines() throws AxelorException {
+
+    MrpLineType manufOrderMrpLineType =
+        mrpLineTypeService.getMrpLineType(
+            MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER, mrp.getMrpTypeSelect());
+
+    if (manufOrderMrpLineType == null) {
+      return;
+    }
+
+    MrpLineType manufOrderNeedMrpLineType =
+        mrpLineTypeService.getMrpLineType(
+            MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER_NEED, mrp.getMrpTypeSelect());
+
+    String statusSelect = manufOrderMrpLineType.getStatusSelect();
+    List<Integer> statusList = StringHelper.getIntegerList(statusSelect);
+
+    if (statusList.isEmpty()) {
+      statusList.add(ManufOrderRepository.STATUS_FINISHED);
+    }
+
+    List<ManufOrder> manufOrderList =
+        manufOrderRepository
+            .all()
+            .filter(
+                "(self.id IN (SELECT sml.consumedManufOrder.id FROM StockMoveLine sml "
+                    + "WHERE sml.product.id IN (?1) "
+                    + "AND sml.stockMove.statusSelect = ?2 "
+                    + "AND sml.consumedManufOrder IS NOT NULL) "
+                    + "OR self.id IN (SELECT sml2.consumedOperationOrder.manufOrder.id "
+                    + "FROM StockMoveLine sml2 "
+                    + "WHERE sml2.product.id IN (?1) "
+                    + "AND sml2.stockMove.statusSelect = ?2 "
+                    + "AND sml2.consumedOperationOrder IS NOT NULL)) "
+                    + "AND self.product.id NOT IN (?1) "
+                    + "AND self.statusSelect IN (?3) "
+                    + "AND self.prodProcess.stockLocation IN (?4)",
+                this.productMap.keySet(),
+                StockMoveRepository.STATUS_PLANNED,
+                statusList,
+                this.stockLocationList)
+            .fetch();
+
+    for (ManufOrder manufOrder : manufOrderList) {
+      this.createManufOrderMrpLines(
+          mrpRepository.find(mrp.getId()),
+          manufOrderRepository.find(manufOrder.getId()),
+          mrpLineTypeRepository.find(manufOrderMrpLineType.getId()),
+          mrpLineTypeRepository.find(manufOrderNeedMrpLineType.getId()));
+      JPA.clear();
+    }
   }
 }
