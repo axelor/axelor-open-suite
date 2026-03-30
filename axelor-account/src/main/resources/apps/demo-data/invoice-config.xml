@@ -115,4 +115,14 @@
       eval="printTemplateSet_importId.split('\\|') as List" update="true"/>
   </input>
 
+  <input file="account_invoiceNoteType.csv" separator=";" search="self.code = :code"
+    type="com.axelor.apps.account.db.InvoiceNoteType">
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
+
 </csv-inputs>
