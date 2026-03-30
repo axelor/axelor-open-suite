@@ -58,6 +58,7 @@ import com.axelor.apps.account.service.invoice.InvoiceVatLiabilityService;
 import com.axelor.apps.account.service.invoice.LatePaymentInterestInvoiceService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupService;
+import com.axelor.apps.account.service.note.InvoiceNoteService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -1568,8 +1569,12 @@ public class InvoiceController {
   @ErrorException
   public void generateInvoiceNote(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
-    Beans.get(InvoiceNoteService.class).generateInvoiceNote(invoice);
-    response.setValues(invoice);
+    try {
+      Beans.get(InvoiceNoteService.class).generateInvoiceNote(invoice);
+      response.setValues(invoice);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   @ErrorException

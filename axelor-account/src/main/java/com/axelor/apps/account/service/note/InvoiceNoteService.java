@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.invoice;
+package com.axelor.apps.account.service.note;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.AxelorException;
 
 public interface InvoiceNoteService {
-  void generateInvoiceNote(Invoice invoice);
+  void generateInvoiceNote(Invoice invoice) throws AxelorException;
 
   void generateInvoiceCategoryNote(Invoice invoice) throws AxelorException;
 }
