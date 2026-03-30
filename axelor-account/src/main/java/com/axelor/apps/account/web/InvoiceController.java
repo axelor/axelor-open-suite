@@ -1566,6 +1566,21 @@ public class InvoiceController {
   }
 
   @ErrorException
+  public void generateInvoiceNote(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    Beans.get(InvoiceNoteService.class).generateInvoiceNote(invoice);
+    response.setValues(invoice);
+  }
+
+  @ErrorException
+  public void generateInvoiceCategoryNote(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    Beans.get(InvoiceNoteService.class).generateInvoiceCategoryNote(invoice);
+    response.setValues(invoice);
+  }
+
+  @ErrorException
   public void setBankDetailsDomain(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     String domain =
