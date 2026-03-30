@@ -1,0 +1,8 @@
+---
+title: "InvoiceNote: updated management of invoice category."
+module: axelor-account
+developer: |
+  - AccountConfig: New field defaultInvoiceCategory.
+  - Invoice: new field invoiceCategory, computed according to invoice lines product type.
+  - AccountConfig: modified typeList mechanism (in InvoiceProductStatement) to use new selection.
+  - Invoice: deleted invoiceProductStatement and replaced it by a new mention in invoiceNoteList with code 'REG'.
