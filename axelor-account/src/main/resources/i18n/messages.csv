@@ -2914,6 +2914,7 @@
 "Register payment",,,
 "Regulatory account",,,
 "Regulatory flagged accounts can't be deleted. If for any reason, such operation must be achieved, please contact your system administrator or integrator.",,,
+"Regulatory information",,,
 "Reimbursed",,,
 "Reimbursed amount",,,
 "Reimbursement",,,
