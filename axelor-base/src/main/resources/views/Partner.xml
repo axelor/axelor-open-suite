@@ -142,12 +142,14 @@
   <form name="partner-customer-form" title="Customer" model="com.axelor.apps.base.db.Partner"
     onNew="action-group-base-partner-onnew"
     onLoad="action-group-partner-onload,action-partner-attrs-hide-customer-recovery"
-    onSave="action-partner-validate-partner-stock-settings-list" width="large">
+    onSave="action-partner-validate-partner-stock-settings-list,action-partner-group-onsave"
+    width="large">
     <panel-include view="partner-form"/>
   </form>
 
   <form name="partner-supplier-form" title="Supplier" model="com.axelor.apps.base.db.Partner"
-    onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload" width="large">
+    onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload"
+    onSave="action-partner-group-onsave" width="large">
     <panel-include view="partner-form"/>
   </form>
 
