@@ -1872,4 +1872,12 @@ public final class AccountExceptionMessage {
 
   public static final String PERIOD_CLOSE_MOVES_FAILED = /*$$(*/
       "Period closure failed. Some move(s) could not be validated." /*)*/;
+
+  public static String MISSING_CASH_DISCOUNT_MENTION =
+      /*$$(*/ "There is no legal notice on financial discount for the invoice %s and the default option to print 'no financial discount applied' is not checked in the config. This legal notice is required, please fix either." /*)*/;
+  public static String MISSING_LEGAL_NOTE =
+      /*$$(*/ "There is no legal note on the invoice %s . This field is required, please fix it." /*)*/;
+  public static String MISSING_PENALTY_RATE_NOTE =
+      /*$$(*/ "There is no penalty rate note on the invoice %s . This field is required, please fix it." /*)*/;
+  public static String UNKNOWN_SCOPE_VALUE = /*$$(*/ "Unknown scope value %s" /*)*/;
 }
