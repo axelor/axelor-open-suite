@@ -84,6 +84,10 @@
     canNew="false" onNew="mgm-action-project-expense-group-form-onNew"
     canDelete="ventilated == false" canAttach="false" canArchive="false"
     onDelete="mgm-action-method-refresh-tab">
+    <toolbar>
+      <button name="projectFilesBtn" title="Project Files" showIf="project &amp;&amp; id"
+        icon="fa-paperclip" onClick="action-method-project-find-project-files"/>
+    </toolbar>
     <menubar>
       <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
         <item name="printAll" title="Print report and files"

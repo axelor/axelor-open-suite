@@ -1,5 +1,6 @@
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.project.db.Project;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.meta.db.MetaFile;
 
@@ -41,4 +42,25 @@ public interface ProjectFilesService {
    * @param metaFile the MetaFile to delete
    */
   void cancelFileUpload(MetaFile metaFile);
+
+  /**
+   * Checks if a model class has a field with the given name and type.
+   *
+   * @param modelClassName the fully qualified class name of the model
+   * @param fieldType the expected type of the field
+   * @param fieldName the name of the field to look up
+   * @return {@code true} if the field exists and matches the given type, {@code false} otherwise
+   */
+  boolean modelHasField(String modelClassName, Class<?> fieldType, String fieldName);
+
+  /**
+   * Uploads metaFile to the project's files by attaching it to the model.
+   *
+   * @param project Project
+   * @param modelId Model ID to upload file to
+   * @param modelClassName Model className
+   * @param metaFile Metafile to be uploaded
+   */
+  void uploadToProjectFiles(
+      Project project, Long modelId, String modelClassName, MetaFile metaFile);
 }

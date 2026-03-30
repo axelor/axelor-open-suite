@@ -1,7 +1,11 @@
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.project.db.Project;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.inject.Beans;
@@ -47,6 +51,19 @@ public class ProjectFilesServiceImpl implements ProjectFilesService {
     log.debug("Attached file '{}' to {} [ID: {}]", metaFile.getFileName(), modelClassName, modelId);
   }
 
+  public void uploadToProjectFiles(
+      Project project, Long modelId, String modelClassName, MetaFile metaFile) {
+    attachMetaFileToModel(modelId, modelClassName, metaFile);
+
+    // if the model the file is uploaded to is related to an employee,
+    // the file will be uploaded to the employee's folder and not to the project files
+    // we then decide to attach the file directly to the project but since the file is needed
+    // to appear in the employee's data reason we do the double upload
+    if (modelHasField(modelClassName, Employee.class, "employee")) {
+      attachMetaFileToModel(project.getId(), project.getClass().getName(), metaFile);
+    }
+  }
+
   @Override
   public boolean fileExistsInProjectFiles(DMSFile projectFilesHome, String filename) {
     return dmsFileRepository
@@ -76,6 +93,25 @@ public class ProjectFilesServiceImpl implements ProjectFilesService {
   public void cancelFileUpload(MetaFile metaFile) {
     if (metaFile != null) {
       metaFileRepository.remove(metaFile);
+    }
+  }
+
+  @Override
+  @SuppressWarnings("all")
+  public boolean modelHasField(String modelClassName, Class<?> fieldType, String fieldName) {
+    try {
+      Class<? extends Model> clazz = (Class<? extends Model>) Class.forName(modelClassName);
+      Mapper mapper = Mapper.of(clazz);
+      Property property = mapper.getProperty(fieldName);
+
+      if (property == null) {
+        return false;
+      }
+
+      return fieldType.isAssignableFrom(property.getJavaType());
+    } catch (ClassNotFoundException e) {
+      log.error("Model class not found: {}", modelClassName, e);
+      return false;
     }
   }
 

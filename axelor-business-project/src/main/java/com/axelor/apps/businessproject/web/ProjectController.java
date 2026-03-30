@@ -468,7 +468,7 @@ public class ProjectController {
         metaFile = projectFilesService.renameMetaFileToAvailableName(metaFile, projectFilesHome);
       }
 
-      projectFilesService.attachMetaFileToModel(modelId, model, metaFile);
+      projectFilesService.uploadToProjectFiles(project, modelId, model, metaFile);
 
       response.setCanClose(true);
       response.setNotify(I18n.get("File uploaded successfully"));
