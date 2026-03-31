@@ -42,6 +42,7 @@ import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -60,6 +61,14 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
 
   private static final String CONFIG_FILE_PATH =
       "/data-import/import-configurator-creator-config.xml";
+
+  /**
+   * MetaJsonField expression fields that may contain attribute name references and must be updated
+   * after import. Other string fields (title, help, widget, model, etc.) must not be modified.
+   */
+  private static final Set<String> EXPRESSION_FIELDS =
+      Set.of(
+          "showIf", "hideIf", "requiredIf", "readonlyIf", "domain", "defaultValue", "widgetAttrs");
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
@@ -175,7 +184,7 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
     try {
       List<Field> fieldsToUpdate =
           Arrays.stream(attribute.getClass().getDeclaredFields())
-              .filter(field -> field.getType().equals(String.class))
+              .filter(field -> EXPRESSION_FIELDS.contains(field.getName()))
               .collect(Collectors.toList());
       for (Field field : fieldsToUpdate) {
         Mapper mapper = Mapper.of(attribute.getClass());
@@ -200,7 +209,9 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
     StringBuffer result = new StringBuffer();
 
     while (matcher.find()) {
-      matcher.appendReplacement(result, matcher.group().replaceAll("_\\d+", "_" + id));
+      String matched = matcher.group();
+      String fixed = matched.substring(0, matched.lastIndexOf('_')) + "_" + id;
+      matcher.appendReplacement(result, Matcher.quoteReplacement(fixed));
     }
 
     matcher.appendTail(result);
