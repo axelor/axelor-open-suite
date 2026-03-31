@@ -42,10 +42,10 @@
       <field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"
         onSelect="action-method-move-template-line-set-partner-domain"/>
       <field name="debit" readonlyIf="credit > 0"
-        onChange="action-move-template-line-record-update-need-to-check-validity"
+        onChange="action-move-template-line-group-debit-credit-onchange"
         x-scale="companyCurrencyDecimals" required="true"/>
       <field name="credit" readonlyIf="debit > 0"
-        onChange="action-move-template-line-record-update-need-to-check-validity"
+        onChange="action-move-template-line-group-debit-credit-onchange"
         x-scale="companyCurrencyDecimals" required="true"/>
       <field name="product" canEdit="false" onChange="action-move-template-line-get-account"
         form-view="product-form" grid-view="product-grid" domain="self.dtype = 'Product'"/>
@@ -53,12 +53,60 @@
         onSelect="action-move-template-line-method-account-onselect" grid-view="account-grid"
         form-view="account-form" onChange="action-move-template-line-group-account-onchange"/>
       <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
+    </panel>
+    <panel name="analyticDistributionPanel" title="Analytic distribution"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
+      hideIf="!account || !account.analyticDistributionAuthorized">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
-        form-view="analytic-distribution-template-form"/>
-      <field name="isValid" readonly="true" hidden="true"/>
-      <field name="account.analyticDistributionAuthorized" hidden="true"/>
-      <field name="companyCurrencyDecimals" hidden="true"/>
+        form-view="analytic-distribution-template-form"
+        onChange="action-move-template-line-method-analytic-distribution-template-onchange"
+        onSelect="action-move-template-line-method-analytic-distribution-template-onselect"
+        readonlyIf="!account.analyticDistributionAuthorized"
+        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)"/>
+      <panel name="analyticAccountPanel" colSpan="12"
+        readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate || account.company.accountConfig.analyticDistributionTypeSelect != 1">
+        <field name="axis1AnalyticAccount"
+          onSelect="action-move-template-line-attrs-set-domain-axis"
+          onChange="action-move-template-line-method-analytic-axis-onchange"
+          form-view="analytic-account-form" grid-view="analytic-account-grid"/>
+        <field name="axis2AnalyticAccount"
+          onSelect="action-move-template-line-attrs-set-domain-axis"
+          onChange="action-move-template-line-method-analytic-axis-onchange"
+          form-view="analytic-account-form" grid-view="analytic-account-grid"/>
+        <field name="axis3AnalyticAccount"
+          onSelect="action-move-template-line-attrs-set-domain-axis"
+          onChange="action-move-template-line-method-analytic-axis-onchange"
+          form-view="analytic-account-form" grid-view="analytic-account-grid"/>
+        <field name="axis4AnalyticAccount"
+          onSelect="action-move-template-line-attrs-set-domain-axis"
+          onChange="action-move-template-line-method-analytic-axis-onchange"
+          form-view="analytic-account-form" grid-view="analytic-account-grid"/>
+        <field name="axis5AnalyticAccount"
+          onSelect="action-move-template-line-attrs-set-domain-axis"
+          onChange="action-move-template-line-method-analytic-axis-onchange"
+          form-view="analytic-account-form" grid-view="analytic-account-grid"/>
+      </panel>
+      <panel-related name="analyticMoveLineListPanelCanNew"
+        field="analyticMoveLineList" colSpan="12" grid-view="analytic-move-line-distribution-grid"
+        form-view="analytic-move-line-distribution-form"
+        showIf="$analyticDistributionTypeSelect == 1"
+        readonlyIf="account.company.accountConfig.analyticDistributionTypeSelect != 1"
+        onChange="action-move-template-line-group-analytic-move-line-onchange" canNew="true"/>
+      <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
+        colSpan="12" grid-view="analytic-move-line-distribution-grid"
+        form-view="analytic-move-line-distribution-form"
+        showIf="$analyticDistributionTypeSelect != 1"
+        readonlyIf="account.company.accountConfig.analyticDistributionTypeSelect != 1"
+        canNew="false"/>
+    </panel>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="isValid" readonly="true"/>
+      <field name="account.analyticDistributionAuthorized"/>
+      <field name="companyCurrencyDecimals"/>
+      <field name="account.analyticDistributionRequiredOnMoveLines"/>
+      <field name="account.company.accountConfig.analyticDistributionTypeSelect"/>
+      <field name="$analyticDistributionTypeSelect" type="integer"/>
     </panel>
   </form>
 
@@ -81,11 +129,59 @@
       <field name="hasPartnerToDebit" showIf="debitCreditSelect == 'D'"/>
       <field name="hasPartnerToCredit" showIf="debitCreditSelect == 'C'"/>
       <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
+    </panel>
+    <panel name="analyticDistributionPanel" title="Analytic distribution"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
+      hideIf="!account || !account.analyticDistributionAuthorized">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
-        form-view="analytic-distribution-template-form"/>
-      <field name="isValid" readonly="true" hidden="true"/>
-      <field name="account.analyticDistributionAuthorized" hidden="true"/>
+        form-view="analytic-distribution-template-form"
+        onChange="action-move-template-line-method-analytic-distribution-template-onchange"
+        onSelect="action-move-template-line-method-analytic-distribution-template-onselect"
+        readonlyIf="!account.analyticDistributionAuthorized"
+        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)"/>
+      <panel name="analyticAccountPanel" colSpan="12"
+        readonlyIf="!account.analyticDistributionAuthorized || !account || analyticDistributionTemplate || account.company.accountConfig.analyticDistributionTypeSelect != 1">
+        <field name="axis1AnalyticAccount"
+          onSelect="action-move-template-line-attrs-set-domain-axis"
+          onChange="action-move-template-line-method-analytic-axis-onchange"
+          form-view="analytic-account-form" grid-view="analytic-account-grid"/>
+        <field name="axis2AnalyticAccount"
+          onSelect="action-move-template-line-attrs-set-domain-axis"
+          onChange="action-move-template-line-method-analytic-axis-onchange"
+          form-view="analytic-account-form" grid-view="analytic-account-grid"/>
+        <field name="axis3AnalyticAccount"
+          onSelect="action-move-template-line-attrs-set-domain-axis"
+          onChange="action-move-template-line-method-analytic-axis-onchange"
+          form-view="analytic-account-form" grid-view="analytic-account-grid"/>
+        <field name="axis4AnalyticAccount"
+          onSelect="action-move-template-line-attrs-set-domain-axis"
+          onChange="action-move-template-line-method-analytic-axis-onchange"
+          form-view="analytic-account-form" grid-view="analytic-account-grid"/>
+        <field name="axis5AnalyticAccount"
+          onSelect="action-move-template-line-attrs-set-domain-axis"
+          onChange="action-move-template-line-method-analytic-axis-onchange"
+          form-view="analytic-account-form" grid-view="analytic-account-grid"/>
+      </panel>
+      <panel-related name="analyticMoveLineListPanelCanNew"
+        field="analyticMoveLineList" colSpan="12" grid-view="analytic-move-line-distribution-grid"
+        form-view="analytic-move-line-distribution-form"
+        showIf="$analyticDistributionTypeSelect == 1"
+        readonlyIf="account.company.accountConfig.analyticDistributionTypeSelect != 1"
+        onChange="action-move-template-line-group-analytic-move-line-onchange" canNew="true"/>
+      <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
+        colSpan="12" grid-view="analytic-move-line-distribution-grid"
+        form-view="analytic-move-line-distribution-form"
+        showIf="$analyticDistributionTypeSelect != 1"
+        readonlyIf="account.company.accountConfig.analyticDistributionTypeSelect != 1"
+        canNew="false"/>
+    </panel>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="isValid" readonly="true"/>
+      <field name="account.analyticDistributionAuthorized"/>
+      <field name="account.analyticDistributionRequiredOnMoveLines"/>
+      <field name="account.company.accountConfig.analyticDistributionTypeSelect"/>
+      <field name="$analyticDistributionTypeSelect" type="integer"/>
     </panel>
   </form>
 
@@ -95,6 +191,12 @@
     <action name="action-move-template-line-record-account-onchange"/>
     <action name="action-move-template-attrs-set-hidden-analytic-distribution-template"/>
     <action name="action-move-template-attrs-set-tax-attrs"/>
+    <action name="action-move-template-line-method-account-onchange"/>
+  </action-group>
+
+  <action-group name="action-move-template-line-group-debit-credit-onchange">
+    <action name="action-move-template-line-record-update-need-to-check-validity"/>
+    <action name="action-move-template-line-method-compute-analytic-distribution"/>
   </action-group>
 
   <action-group name="action-move-template-line-group-in-amount-onnew-onload">
@@ -102,12 +204,14 @@
     <action name="action-move-template-attrs-set-hidden-analytic-distribution-template"/>
     <action name="action-move-template-attrs-set-tax-attrs"/>
     <action name="action-move-template-line-attrs-set-number-of-decimals"/>
+    <action name="action-move-template-line-method-on-load-analytic-distribution"/>
   </action-group>
 
   <action-group name="action-move-template-line-group-in-percentage-onnew-onload">
     <action name="action-move-template-attrs-set-hidden-analytic-distribution-template"/>
     <action name="action-move-template-attrs-set-tax-attrs"/>
     <action name="action-move-template-line-attrs-set-number-of-decimals"/>
+    <action name="action-move-template-line-method-on-load-analytic-distribution"/>
   </action-group>
 
   <!-- ACTION RECORD -->
@@ -183,9 +287,57 @@
     <call class="com.axelor.apps.account.web.MoveTemplateController" method="filterPartner"/>
   </action-method>
 
+  <action-method name="action-move-template-line-method-account-onchange">
+    <call class="com.axelor.apps.account.web.MoveTemplateLineController"
+      method="accountOnChange"/>
+  </action-method>
+
   <action-method name="action-move-template-line-method-account-onselect">
     <call class="com.axelor.apps.account.web.MoveTemplateLineController"
       method="accountOnSelect"/>
+  </action-method>
+
+  <action-method
+    name="action-move-template-line-method-analytic-distribution-template-onchange">
+    <call class="com.axelor.apps.account.web.MoveTemplateLineController"
+      method="analyticDistributionTemplateOnChange"/>
+  </action-method>
+
+  <action-method name="action-move-template-line-method-analytic-axis-onchange">
+    <call class="com.axelor.apps.account.web.MoveTemplateLineController"
+      method="analyticAxisOnChange"/>
+  </action-method>
+
+  <action-method name="action-move-template-line-attrs-set-domain-axis">
+    <call class="com.axelor.apps.account.web.MoveTemplateLineController"
+      method="setAxisDomains"/>
+  </action-method>
+
+  <action-method
+    name="action-move-template-line-method-analytic-distribution-template-onselect">
+    <call class="com.axelor.apps.account.web.MoveTemplateLineController"
+      method="analyticDistributionTemplateOnSelect"/>
+  </action-method>
+
+  <action-group name="action-move-template-line-group-analytic-move-line-onchange">
+    <action name="action-move-template-line-method-analytic-move-line-onchange"/>
+    <action name="action-analytic-move-line-attrs-valid-analytic-move-line-list"/>
+    <action name="action-analytic-move-line-condition-valid-analytic-move-line-list"/>
+  </action-group>
+
+  <action-method name="action-move-template-line-method-analytic-move-line-onchange">
+    <call class="com.axelor.apps.account.web.MoveTemplateLineController"
+      method="analyticMoveLineOnChange"/>
+  </action-method>
+
+  <action-method name="action-move-template-line-method-on-load-analytic-distribution">
+    <call class="com.axelor.apps.account.web.MoveTemplateLineController"
+      method="onLoadAnalyticDistribution"/>
+  </action-method>
+
+  <action-method name="action-move-template-line-method-compute-analytic-distribution">
+    <call class="com.axelor.apps.account.web.MoveTemplateLineController"
+      method="computeAnalyticDistribution"/>
   </action-method>
 
 </object-views>

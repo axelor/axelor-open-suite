@@ -16,35 +16,34 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.moveline;
+package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
-public interface MoveLineComputeAnalyticService {
+public interface AnalyticLineComputeService {
 
-  MoveLine computeAnalyticDistribution(MoveLine moveLine);
+  AnalyticLine computeAnalyticDistribution(
+      AnalyticLine analyticLine, BigDecimal amount, LocalDate date);
 
-  void computeAnalyticDistribution(MoveLine moveLine, Move move) throws AxelorException;
+  AnalyticLine createAnalyticDistributionWithTemplate(
+      AnalyticLine analyticLine, BigDecimal amount, LocalDate date);
 
-  MoveLine createAnalyticDistributionWithTemplate(MoveLine moveLine);
-
-  MoveLine createAnalyticDistributionWithTemplate(MoveLine moveLine, Move move)
+  AnalyticLine analyzeAnalyticLine(
+      AnalyticLine analyticLine, Company company, BigDecimal amount, LocalDate date)
       throws AxelorException;
 
-  void updateAccountTypeOnAnalytic(MoveLine moveLine, List<AnalyticMoveLine> analyticMoveLineList);
+  AnalyticLine clearAnalyticAccounting(AnalyticLine analyticLine);
 
-  void generateAnalyticMoveLines(MoveLine moveLine);
+  AnalyticLine clearAnalyticAccountingIfEmpty(AnalyticLine analyticLine);
 
-  MoveLine selectDefaultDistributionTemplate(MoveLine moveLine, Move move) throws AxelorException;
+  void updateAccountTypeOnAnalytic(
+      AnalyticLine analyticLine, List<AnalyticMoveLine> analyticMoveLineList);
 
-  MoveLine analyzeMoveLine(MoveLine moveLine, Company company) throws AxelorException;
-
-  MoveLine clearAnalyticAccounting(MoveLine moveLine);
-
-  MoveLine clearAnalyticAccountingIfEmpty(MoveLine moveLine);
+  void copyAnalyticMoveLines(AnalyticLine oldLine, AnalyticLine newLine, BigDecimal newLineAmount);
 }

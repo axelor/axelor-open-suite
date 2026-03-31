@@ -41,6 +41,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
+import com.axelor.apps.account.service.analytic.AnalyticLineComputeService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -104,6 +105,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineRecordService moveLineRecordService;
   protected AccountManagementService accountManagementService;
+  protected AnalyticLineComputeService analyticLineComputeService;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -125,7 +127,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       AnalyticLineService analyticLineService,
       CurrencyScaleService currencyScaleService,
       MoveLineRecordService moveLineRecordService,
-      AccountManagementService accountManagementService) {
+      AccountManagementService accountManagementService,
+      AnalyticLineComputeService analyticLineComputeService) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -145,6 +148,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.currencyScaleService = currencyScaleService;
     this.moveLineRecordService = moveLineRecordService;
     this.accountManagementService = accountManagementService;
+    this.analyticLineComputeService = analyticLineComputeService;
   }
 
   /**
@@ -873,7 +877,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       return;
     }
 
-    moveLineComputeAnalyticService.copyAnalyticsDataFromMoveLine(
+    moveLineComputeAnalyticService.clearAnalyticAccounting(newMoveLine);
+    analyticLineComputeService.copyAnalyticMoveLines(
         oldMoveLine, newMoveLine, newMoveLine.getCredit().max(newMoveLine.getDebit()));
   }
 

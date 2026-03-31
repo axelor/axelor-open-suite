@@ -206,6 +206,9 @@
       if="__parent__?._model == 'com.axelor.apps.account.db.InvoiceLine' "
       expr="eval: AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE"/>
     <attribute for="typeSelect" name="value"
+      if="__parent__?._model == 'com.axelor.apps.account.db.MoveTemplateLine'"
+      expr="eval: AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING"/>
+    <attribute for="typeSelect" name="value"
       if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrderLine'"
       expr="eval: AnalyticMoveLineRepository.STATUS_FORECAST_ORDER"/>
     <attribute for="typeSelect" name="value"

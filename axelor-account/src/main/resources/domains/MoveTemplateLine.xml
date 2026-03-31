@@ -5,7 +5,8 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="MoveTemplateLine" cacheable="true">
+  <entity name="MoveTemplateLine" cacheable="true"
+    implements="com.axelor.apps.account.db.repo.AnalyticLine">
     <many-to-one name="moveTemplate" title="Move template" ref="MoveTemplate"/>
     <string name="name" title="Label"/>
     <string name="debitCreditSelect" title="Debit/Credit"
@@ -15,6 +16,19 @@
     <many-to-one name="analyticDistributionTemplate"
       title="Analytic distribution template"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+    <one-to-many name="analyticMoveLineList"
+      ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines"
+      mappedBy="moveTemplateLine"/>
+    <many-to-one name="axis1AnalyticAccount" title="Cpte Ana. AXIS1"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis2AnalyticAccount" title="Cpte Ana. AXIS2"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis3AnalyticAccount" title="Cpte Ana. AXIS3"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis4AnalyticAccount" title="Cpte Ana. AXIS4"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis5AnalyticAccount" title="Cpte Ana. AXIS5"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
     <decimal name="debit" title="Debit" precision="20" scale="3"/>
     <decimal name="credit" title="Credit" precision="20" scale="3"/>
     <decimal name="percentage" title="Percentage" precision="20" scale="2" min="0" max="100"/>
@@ -23,6 +37,18 @@
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <many-to-one name="tax" ref="com.axelor.apps.account.db.Tax" title="Tax"/>
     <boolean name="isValid" title="Valid"/>
+
+    <decimal name="lineAmount" transient="true" scale="3" precision="20">
+    	<![CDATA[
+			if (this.credit != null && this.credit.signum() > 0) {
+				return this.credit;
+			}
+			if (this.debit != null && this.debit.signum() > 0) {
+				return this.debit;
+			}
+			return BigDecimal.ZERO;
+	    ]]>
+    </decimal>
 
     <finder-method name="findByAccount" using="account" all="true"/>
 

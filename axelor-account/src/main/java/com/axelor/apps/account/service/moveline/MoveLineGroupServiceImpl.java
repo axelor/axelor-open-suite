@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticAxisService;
+import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
@@ -69,6 +70,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   protected FiscalPositionService fiscalPositionService;
   protected TaxService taxService;
   protected AnalyticAxisService analyticAxisService;
+  protected AnalyticGroupService analyticGroupService;
 
   @Inject
   public MoveLineGroupServiceImpl(
@@ -88,7 +90,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       FiscalPositionService fiscalPositionService,
       TaxService taxService,
-      AnalyticAxisService analyticAxisService) {
+      AnalyticAxisService analyticAxisService,
+      AnalyticGroupService analyticGroupService) {
 
     this.moveLineService = moveLineService;
     this.moveLineDefaultService = moveLineDefaultService;
@@ -107,6 +110,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     this.fiscalPositionService = fiscalPositionService;
     this.taxService = taxService;
     this.analyticAxisService = analyticAxisService;
+    this.analyticGroupService = analyticGroupService;
   }
 
   @Override
@@ -263,7 +267,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineComputeAnalyticService.clearAnalyticAccounting(moveLine);
     }
 
-    return createAnalyticValuesMap(moveLine);
+    return analyticGroupService.createAnalyticValuesMap(moveLine);
   }
 
   @Override
@@ -534,7 +538,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
             .map(AnalyticMoveLine::getAnalyticAxis)
             .collect(Collectors.toList()));
 
-    return createAnalyticValuesMap(moveLine);
+    return analyticGroupService.createAnalyticValuesMap(moveLine);
   }
 
   @Override
@@ -542,7 +546,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       throws AxelorException {
     analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
 
-    return createAnalyticValuesMap(moveLine);
+    return analyticGroupService.createAnalyticValuesMap(moveLine);
   }
 
   @Override
@@ -553,19 +557,6 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineAttrsService.addAnalyticAccountRequired(moveLine, move, attrsMap);
 
     return attrsMap;
-  }
-
-  protected Map<String, Object> createAnalyticValuesMap(MoveLine moveLine) {
-    Map<String, Object> valuesMap = new HashMap<>();
-
-    valuesMap.put("axis1AnalyticAccount", moveLine.getAxis1AnalyticAccount());
-    valuesMap.put("axis2AnalyticAccount", moveLine.getAxis2AnalyticAccount());
-    valuesMap.put("axis3AnalyticAccount", moveLine.getAxis3AnalyticAccount());
-    valuesMap.put("axis4AnalyticAccount", moveLine.getAxis4AnalyticAccount());
-    valuesMap.put("axis5AnalyticAccount", moveLine.getAxis5AnalyticAccount());
-    valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
-
-    return valuesMap;
   }
 
   @Override

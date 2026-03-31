@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.analytic.AnalyticLineComputeService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -93,6 +94,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected MoveLineRepository moveLineRepository;
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
+  protected AnalyticLineComputeService analyticLineComputeService;
   protected int counter = 0;
 
   @Inject
@@ -118,7 +120,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       TaxAccountToolService taxAccountToolService,
       MoveLineRepository moveLineRepository,
       CurrencyScaleService currencyScaleService,
-      MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService,
+      AnalyticLineComputeService analyticLineComputeService) {
     this.moveCreateService = moveCreateService;
     this.moveToolService = moveToolService;
     this.moveLineToolService = moveLineToolService;
@@ -141,6 +144,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.moveLineRepository = moveLineRepository;
     this.currencyScaleService = currencyScaleService;
     this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
+    this.analyticLineComputeService = analyticLineComputeService;
   }
 
   @Override
@@ -466,14 +470,9 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
           cutOffMoveLineMap.put(moveLineAccount, cutOffMoveLine);
         }
 
-        List<AnalyticMoveLine> analyticMoveLineList =
-            CollectionUtils.isEmpty(cutOffMoveLine.getAnalyticMoveLineList())
-                ? new ArrayList<>()
-                : new ArrayList<>(cutOffMoveLine.getAnalyticMoveLineList());
-        cutOffMoveLine.clearAnalyticMoveLineList();
-
         // Copy analytic move lines
-        moveLineComputeAnalyticService.copyAnalyticsDataFromMoveLine(
+        moveLineComputeAnalyticService.clearAnalyticAccounting(cutOffMoveLine);
+        analyticLineComputeService.copyAnalyticMoveLines(
             moveLine, cutOffMoveLine, amountInCurrency.abs());
       }
     }

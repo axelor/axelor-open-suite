@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
+import com.axelor.apps.account.service.analytic.AnalyticLineComputeService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
@@ -83,6 +84,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected MoveLineToolService moveLineToolService;
   protected MoveRecordUpdateService moveRecordUpdateService;
+  protected AnalyticLineComputeService analyticLineComputeService;
 
   protected List<String> exceptionsList;
 
@@ -101,7 +103,8 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
       MoveLineTaxService moveLineTaxService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       MoveRecordUpdateService moveRecordUpdateService,
-      MoveLineToolService moveLineToolService) {
+      MoveLineToolService moveLineToolService,
+      AnalyticLineComputeService analyticLineComputeService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -117,6 +120,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.moveRecordUpdateService = moveRecordUpdateService;
     this.moveLineToolService = moveLineToolService;
+    this.analyticLineComputeService = analyticLineComputeService;
 
     this.exceptionsList = Lists.newArrayList();
   }
@@ -260,18 +264,24 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
                 moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
               }
             }
-            List<AnalyticMoveLine> analyticMoveLineList =
-                CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
-                    ? new ArrayList<>()
-                    : new ArrayList<>(moveLine.getAnalyticMoveLineList());
-            moveLine.clearAnalyticMoveLineList();
-            moveLine.setAnalyticDistributionTemplate(
-                moveTemplateLine.getAnalyticDistributionTemplate());
+            if (!CollectionUtils.isEmpty(moveTemplateLine.getAnalyticMoveLineList())) {
+              moveLineComputeAnalyticService.clearAnalyticAccounting(moveLine);
+              analyticLineComputeService.copyAnalyticMoveLines(
+                  moveTemplateLine, moveLine, moveLine.getDebit().add(moveLine.getCredit()));
+            } else {
+              List<AnalyticMoveLine> analyticMoveLineList =
+                  CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+                      ? new ArrayList<>()
+                      : new ArrayList<>(moveLine.getAnalyticMoveLineList());
+              moveLine.clearAnalyticMoveLineList();
+              moveLine.setAnalyticDistributionTemplate(
+                  moveTemplateLine.getAnalyticDistributionTemplate());
 
-            moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+              moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
 
-            if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
-              moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+              if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+                moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+              }
             }
 
             analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
@@ -370,22 +380,29 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
               }
             }
 
-            List<AnalyticMoveLine> analyticMoveLineList =
-                CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
-                    ? new ArrayList<>()
-                    : new ArrayList<>(moveLine.getAnalyticMoveLineList());
-            moveLine.clearAnalyticMoveLineList();
-            moveLine.setAnalyticDistributionTemplate(
-                moveTemplateLine.getAnalyticDistributionTemplate());
+            if (!CollectionUtils.isEmpty(moveTemplateLine.getAnalyticMoveLineList())) {
+              moveLineComputeAnalyticService.clearAnalyticAccounting(moveLine);
+              analyticLineComputeService.copyAnalyticMoveLines(
+                  moveTemplateLine, moveLine, moveLine.getDebit().add(moveLine.getCredit()));
+            } else {
+              List<AnalyticMoveLine> analyticMoveLineList =
+                  CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+                      ? new ArrayList<>()
+                      : new ArrayList<>(moveLine.getAnalyticMoveLineList());
+              moveLine.clearAnalyticMoveLineList();
+              moveLine.setAnalyticDistributionTemplate(
+                  moveTemplateLine.getAnalyticDistributionTemplate());
+
+              moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+              moveLineToolService.setDecimals(moveLine, move);
+
+              if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+                moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+              }
+            }
 
             moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
             moveRecordUpdateService.updateDueDate(move, false, false);
-            moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
-            moveLineToolService.setDecimals(moveLine, move);
-
-            if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
-              moveLine.setAnalyticMoveLineList(analyticMoveLineList);
-            }
             analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
             counter++;
           } else {
