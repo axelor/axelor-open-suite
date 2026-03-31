@@ -1,0 +1,5 @@
+---
+title: "Sale order: fixed an error occurring when personalizing bill of material from sale order."
+module: axelor-production
+developer: |
+  Added UnitRepository to BomLineCreationServiceImpl constructor.

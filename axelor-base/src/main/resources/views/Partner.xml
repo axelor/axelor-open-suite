@@ -142,12 +142,14 @@
   <form name="partner-customer-form" title="Customer" model="com.axelor.apps.base.db.Partner"
     onNew="action-group-base-partner-onnew"
     onLoad="action-group-partner-onload,action-partner-attrs-hide-customer-recovery"
-    onSave="action-partner-validate-partner-stock-settings-list" width="large">
+    onSave="action-partner-validate-partner-stock-settings-list,action-partner-group-onsave"
+    width="large">
     <panel-include view="partner-form"/>
   </form>
 
   <form name="partner-supplier-form" title="Supplier" model="com.axelor.apps.base.db.Partner"
-    onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload" width="large">
+    onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload"
+    onSave="action-partner-group-onsave" width="large">
     <panel-include view="partner-form"/>
   </form>
 
@@ -1813,7 +1815,7 @@
 
   <action-attrs name="action-partner-attrs-set-partner-tag-domain">
     <attribute name="domain" for="tagSet"
-      expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} IN (self.concernedModelSet.id) OR self.concernedModelSet IS EMPTY) AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
+      expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} IN (self.concernedModelSet.id) OR self.concernedModelSet IS EMPTY) AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${((companySet?.collect{it.id} ?: []) + [0]).join(',')}))) AND (self.tradingNameSet IS EMPTY OR EXISTS(SELECT 1 FROM TradingName tn WHERE tn MEMBER OF self.tradingNameSet AND tn.id IN (${((tradingNameSet?.collect{it.id} ?: []) + [0]).join(',')}))) &quot;"/>
   </action-attrs>
 
   <action-view name="action-partner-view-wizard-api-sirene-configuration"

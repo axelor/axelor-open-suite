@@ -48,8 +48,6 @@ class Services {
       restURL: `${baseURL}ws/rest/`,
       actionURL: `${baseURL}ws/action/`,
       baseURL,
-      actionName:
-        "com.axelor.apps.hr.service.timesheet.TimesheetFetchService:getCurrentOrCreateTimesheet()",
     };
   }
 
@@ -58,24 +56,6 @@ class Services {
       ...headers,
       "X-CSRF-Token": readCookie("CSRF-TOKEN"),
     };
-  }
-
-  doLogin(userName, password) {
-    const url = `${this.state.baseURL}login.jsp`;
-    const data = {
-      username: userName,
-      password: password,
-    };
-    return fetch(url, {
-      method: "POST",
-      headers,
-      credentials: "include",
-      body: JSON.stringify({ ...data }),
-    }).then((res) => {
-      const token = res.headers.get("csrf-token");
-      token && (document.cookie = `CSRF-TOKEN=${token}`);
-      return res;
-    });
   }
 
   info() {
@@ -151,7 +131,6 @@ class Services {
     return new Promise((resolve, reject) => {
       if (entity && id) {
         request
-          //.post(`${this.state.actionURL}${this.state.actionName}`)
           .post(`${this.state.restURL}${entity}/${id}/fetch`)
           .withCredentials()
           .send({

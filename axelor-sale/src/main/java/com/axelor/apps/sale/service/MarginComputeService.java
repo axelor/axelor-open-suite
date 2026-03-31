@@ -31,4 +31,8 @@ public interface MarginComputeService {
 
   void computeSubMargin(SaleOrder saleOrder, MarginLine marginLine, BigDecimal totalPrice)
       throws AxelorException;
+
+  void computeSubMargin(
+      SaleOrder saleOrder, MarginLine marginLine, BigDecimal totalPrice, boolean considerZeroCost)
+      throws AxelorException;
 }

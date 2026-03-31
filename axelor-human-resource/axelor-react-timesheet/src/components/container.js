@@ -32,7 +32,7 @@ import {
 import TimeSheet from "./timeSheet";
 import "./main.css";
 import Service from "./../services/service";
-import { translate } from "./cellComponent";
+import { translate } from "../utils/translate";
 import { connect } from "react-redux";
 import { changeMode, changeKeyPress } from "./../store/redux";
 import Snackbar from "./snackbar.js";
@@ -1409,7 +1409,7 @@ class Container extends Component {
         this.setState({ HRConfig: data[0] });
       }
     });
-    service.info().then((res) => {
+    service.info().then((info) => {
       this.setState(
         {
           params: {
@@ -1417,11 +1417,11 @@ class Container extends Component {
             showActivity,
             dailyLimit,
           },
-          user: res,
+          user: info.user,
           mode: this.props.mode,
         },
         () => {
-          this.refreshData(res);
+          this.refreshData(info.user);
         }
       );
     });

@@ -157,6 +157,8 @@ import com.axelor.apps.account.service.fecimport.ImportFECTypeService;
 import com.axelor.apps.account.service.fecimport.ImportFECTypeServiceImpl;
 import com.axelor.apps.account.service.fecimport.ImportMoveFecService;
 import com.axelor.apps.account.service.fecimport.ImportMoveFecServiceImpl;
+import com.axelor.apps.account.service.fecimport.ImportMoveLineAmountService;
+import com.axelor.apps.account.service.fecimport.ImportMoveLineAmountServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
@@ -957,6 +959,8 @@ public class AccountModule extends AxelorModule {
     bind(ImportFECTypeService.class).to(ImportFECTypeServiceImpl.class);
 
     bind(ImportMoveFecService.class).to(ImportMoveFecServiceImpl.class);
+
+    bind(ImportMoveLineAmountService.class).to(ImportMoveLineAmountServiceImpl.class);
 
     bind(FixedAssetLineRepository.class).to(FixedAssetLineManagementRepository.class);
 

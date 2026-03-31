@@ -61,6 +61,11 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
           Optional.ofNullable(billOfMaterialLine.getPriority())
               .map(priority -> priority / 10)
               .orElse(0));
+
+      saleOrderLine.setQtyToProduce(
+          saleOrderLineProductionService.computeQtyToProduce(
+              saleOrderLine, saleOrderLine.getParentSaleOrderLine()));
+
       // computing the line will generate sub lines.
       saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
 
@@ -68,10 +73,6 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
       if (billOfMaterial != null) {
         saleOrderLine.setSaleSupplySelect(SaleOrderLineRepository.SALE_SUPPLY_PRODUCE);
       }
-
-      saleOrderLine.setQtyToProduce(
-          saleOrderLineProductionService.computeQtyToProduce(
-              saleOrderLine, saleOrderLine.getParentSaleOrderLine()));
 
       return saleOrderLine;
     }
