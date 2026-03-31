@@ -1588,6 +1588,7 @@
 "No active company for this user, please define an active company.",,,
 "No address found with this country, zip and street name. City name is required to create a new city.",,,
 "No city found",,,
+"No country found for: %s.",,,
 "No currency conversion found from '%s' to '%s' for date %s",,,
 "No discount",,,
 "No duplicate finder field configured.",,,

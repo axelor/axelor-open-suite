@@ -473,7 +473,6 @@
     <view type="form" name="stop-reason-form"/>
   </action-view>
 
-
   <menuitem name="referential-conf-partner-link-types" parent="referential-conf"
     if="__config__.app.getApp('base')?.activatePartnerRelations" title="Partner relations type"
     action="referential.conf.partner.link.types" order="400"/>

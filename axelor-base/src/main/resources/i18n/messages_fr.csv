@@ -1588,6 +1588,7 @@
 "No active company for this user, please define an active company.","Aucune société active pour cet utilisateur, merci de définir une société active.",,
 "No address found with this country, zip and street name. City name is required to create a new city.","Aucune adresse n'a été trouvée pour ce pays, ce code postal et ce nom de rue. Merci de remplir le nom de la ville.",,
 "No city found","Aucune ville trouvée.",,
+"No country found for: %s.","Aucun pays trouvé pour: %s.",,
 "No currency conversion found from '%s' to '%s' for date %s","Aucune conversion trouvée de la devise '%s' à la devise '%s' à la date du %s",,
 "No discount","Aucune remise",,
 "No duplicate finder field configured.","Aucun champ de vérification de doublons configuré.",,
