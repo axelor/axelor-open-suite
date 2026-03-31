@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockCorrection;
 import com.axelor.apps.stock.db.StockCorrectionReason;
 import com.axelor.apps.stock.db.StockLocation;
@@ -32,8 +33,9 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
-import com.axelor.apps.stock.db.repo.InventoryRepository;
+import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -43,7 +45,9 @@ import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class StockCorrectionServiceImpl implements StockCorrectionService {
 
@@ -55,7 +59,8 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   protected StockMoveLineService stockMoveLineService;
   protected StockCorrectionRepository stockCorrectionRepository;
   protected StockLocationLineFetchService stockLocationLineFetchService;
-  protected InventoryRepository inventoryRepository;
+  protected InventoryLineRepository inventoryLineRepository;
+  protected StockLocationService stockLocationService;
 
   @Inject
   public StockCorrectionServiceImpl(
@@ -67,7 +72,8 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       StockMoveLineService stockMoveLineService,
       StockCorrectionRepository stockCorrectionRepository,
       StockLocationLineFetchService stockLocationLineFetchService,
-      InventoryRepository inventoryRepository) {
+      InventoryLineRepository inventoryLineRepository,
+      StockLocationService stockLocationService) {
     this.stockConfigService = stockConfigService;
     this.productCompanyService = productCompanyService;
     this.stockLocationLineService = stockLocationLineService;
@@ -76,7 +82,8 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     this.stockMoveLineService = stockMoveLineService;
     this.stockCorrectionRepository = stockCorrectionRepository;
     this.stockLocationLineFetchService = stockLocationLineFetchService;
-    this.inventoryRepository = inventoryRepository;
+    this.inventoryLineRepository = inventoryLineRepository;
+    this.stockLocationService = stockLocationService;
   }
 
   @Override
@@ -406,13 +413,33 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
 
   protected void checkOngoingInventory(StockCorrection stockCorrection) throws AxelorException {
     StockLocation stockLocation = stockCorrection.getStockLocation();
-    if (inventoryRepository
+    Product product = stockCorrection.getProduct();
+
+    if (stockLocation == null
+        || product == null
+        || stockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL) {
+      return;
+    }
+    Set<Long> stockLocationIds = new HashSet<>();
+    stockLocationIds.add(stockLocation.getId());
+    Set<Long> locationIds =
+        stockLocationService.getLocationAndAllParentLocationsIdsOrderedFromTheClosestToTheFurthest(
+            stockLocation);
+    if (locationIds != null) {
+      stockLocationIds.addAll(locationIds);
+    }
+    InventoryLine inventoryLine =
+        inventoryLineRepository
             .all()
-            .filter("self.stockLocation = :stockLocation AND self.statusSelect = :statusSelect")
-            .bind("stockLocation", stockLocation)
-            .bind("statusSelect", InventoryRepository.STATUS_IN_PROGRESS)
-            .count()
-        > 0) {
+            .filter(
+                "self.inventory.isStockMoveBlocked = true"
+                    + " AND self.inventory.stockLocation.id IN (:stockLocationIds)"
+                    + " AND self.product.id = :productId")
+            .bind("stockLocationIds", stockLocationIds)
+            .bind("productId", product.getId())
+            .fetchOne();
+
+    if (inventoryLine != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(StockExceptionMessage.STOCK_CORRECTION_VALIDATE_ERROR));

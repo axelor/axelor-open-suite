@@ -68,6 +68,8 @@
 "Barcode type that will be used by default on tracking numbers.","Type de code-barre qui sera utilisé par défaut sur les numéros de suivi.",,
 "Barter","Troc",,
 "Batchs",,,
+"Block all stock movements on the selected stock location and its sub locations.","Bloque tous les mouvements de stock sur l'emplacement de stock sélectionné et ses sous emplacements.",,
+"Block stock moves?","Bloquer les mouvements de stocks?",,
 "Both source location address and delivery (to) address are required to define the delivery itinerary","Les champs Emplacement source et A l'adresse sont requis pour définir l'itinéraire de livraison.",,
 "Buyer","Acheteur",,
 "Buyer/Seller","Acheteur/Vendeur",,

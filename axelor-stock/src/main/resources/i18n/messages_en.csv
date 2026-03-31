@@ -68,6 +68,8 @@
 "Barcode type that will be used by default on tracking numbers.",,,
 "Barter",,,
 "Batchs",,,
+"Block all stock movements on the selected stock location and its sub locations.",,,
+"Block stock moves?",,,
 "Both source location address and delivery (to) address are required to define the delivery itinerary",,,
 "Buyer",,,
 "Buyer/Seller",,,
