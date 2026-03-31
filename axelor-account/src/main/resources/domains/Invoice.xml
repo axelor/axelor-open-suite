@@ -324,6 +324,10 @@
 	    public static final int PFP_STATUS_VALIDATED = 2;
 	    public static final int PFP_STATUS_LITIGATION = 3;
 
+	    // INVOICE CATEGORY SELECT
+	    public static final String CATEGORY_GOODS_INVOICE = "goods";
+	    public static final String CATEGORY_SERVICES_INVOICE = "services";
+	    public static final String CATEGORY_MIXED_INVOICE = "mixed";
 	]]></extra-code>
 
     <track>
