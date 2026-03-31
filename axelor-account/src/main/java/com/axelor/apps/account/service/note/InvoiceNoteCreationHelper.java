@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service.note;
 
 import com.axelor.apps.account.db.*;
-import com.axelor.apps.account.db.repo.InvoiceNoteRepository;
 import com.axelor.apps.account.db.repo.InvoiceNoteTypeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -30,13 +29,10 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.helpers.SelectHelper;
 import com.google.common.base.Strings;
-import com.google.inject.persist.Transactional;
-import java.util.Optional;
 
 public class InvoiceNoteCreationHelper {
-  private InvoiceNoteCreationHelper() {
+  protected InvoiceNoteCreationHelper() {
     throw new IllegalStateException("Utility class");
   }
 
@@ -45,7 +41,6 @@ public class InvoiceNoteCreationHelper {
         .anyMatch(n -> n.getInvoiceNoteType().equals(noteType));
   }
 
-  @Transactional(rollbackOn = Exception.class)
   protected static InvoiceNoteType getOrCreateInvoiceNoteType(
       String noteType, String noteTypeName) {
     InvoiceNoteType invoiceNoteType =
@@ -57,19 +52,16 @@ public class InvoiceNoteCreationHelper {
     return invoiceNoteType;
   }
 
-  @Transactional(rollbackOn = Exception.class)
   protected static InvoiceNote createInvoiceNote(InvoiceNoteType noteType, String noteContent) {
     InvoiceNote invoiceNote = new InvoiceNote();
     invoiceNote.setInvoiceNoteType(noteType);
     invoiceNote.setNote(noteContent);
-    return Beans.get(InvoiceNoteRepository.class).save(invoiceNote);
+    return invoiceNote;
   }
 
-  protected static void generateAABNote(Invoice invoice, Company company) throws AxelorException {
+  protected static void generateFinancialDiscountNote(Invoice invoice, Company company)
+      throws AxelorException {
     InvoiceNoteType noteTypeAAB = getOrCreateInvoiceNoteType("AAB", I18n.get("Cash discount"));
-    if (noteAlreadyExist(noteTypeAAB, invoice)) {
-      return;
-    }
     if (invoice.getFinancialDiscount() != null
         && !StringUtils.isBlank(invoice.getFinancialDiscount().getLegalNotice())) {
       String noteContent = invoice.getFinancialDiscount().getLegalNotice();
@@ -90,12 +82,9 @@ public class InvoiceNoteCreationHelper {
         invoice.getInvoiceId());
   }
 
-  protected static void generateAAINote(Invoice invoice, Company company) {
+  protected static void generateGeneralInformationNote(Invoice invoice, Company company) {
     InvoiceNoteType noteTypeAAI =
         getOrCreateInvoiceNoteType("AAI", I18n.get("General Information"));
-    if (noteAlreadyExist(noteTypeAAI, invoice)) {
-      return;
-    }
     String noteContent = "";
     if (!StringUtils.isBlank(company.getAccountConfig().getTermsAndConditions())) {
       noteContent = company.getAccountConfig().getTermsAndConditions();
@@ -109,12 +98,9 @@ public class InvoiceNoteCreationHelper {
     }
   }
 
-  protected static void generateABLNote(Invoice invoice, Company company) {
+  protected static void generateSellerLegalInformationNote(Invoice invoice, Company company) {
     InvoiceNoteType noteTypeABL =
         getOrCreateInvoiceNoteType("ABL", I18n.get("Seller legal information"));
-    if (noteAlreadyExist(noteTypeABL, invoice)) {
-      return;
-    }
     if (!StringUtils.isBlank(company.getLegalInformation())) {
       String noteContent = company.getLegalInformation();
       InvoiceNote invoiceNote = createInvoiceNote(noteTypeABL, noteContent);
@@ -122,25 +108,10 @@ public class InvoiceNoteCreationHelper {
     }
   }
 
-  protected static String getValueOfInvoiceScope(Integer scopeSelect) throws AxelorException {
-    Optional<String> scope =
-        SelectHelper.getOptionalTitleFromIntegerValue(
-            "e.invoicing.invoice.electronic.data.scope.select", scopeSelect);
-    if (scope.isPresent()) {
-      return scope.get();
-    }
-    throw new AxelorException(
-        TraceBackRepository.CATEGORY_INCONSISTENCY,
-        AccountExceptionMessage.UNKNOWN_SCOPE_VALUE,
-        scopeSelect);
-  }
-
-  protected static void generatePMTNote(Invoice invoice, Company company) throws AxelorException {
+  protected static void generateLumpSumIndemnityNote(Invoice invoice, Company company)
+      throws AxelorException {
     InvoiceNoteType noteTypePMT =
         getOrCreateInvoiceNoteType("PMT", I18n.get("Lump sum indemnity for recovery costs"));
-    if (noteAlreadyExist(noteTypePMT, invoice)) {
-      return;
-    }
     String noteContent = company.getAccountConfig().getSaleInvoiceLegalNote();
     if (StringUtils.isBlank(noteContent)) {
       throw new AxelorException(
@@ -150,12 +121,10 @@ public class InvoiceNoteCreationHelper {
     invoice.addInvoiceNoteListItem(invoiceNote);
   }
 
-  protected static void generatePMDNote(Invoice invoice, Company company) throws AxelorException {
+  protected static void generateLateInterestChargesNote(Invoice invoice, Company company)
+      throws AxelorException {
     InvoiceNoteType noteTypePMD =
-        getOrCreateInvoiceNoteType("PMT", I18n.get("Late interest charges"));
-    if (noteAlreadyExist(noteTypePMD, invoice)) {
-      return;
-    }
+        getOrCreateInvoiceNoteType("PMD", I18n.get("Late interest charges"));
     String noteContent = company.getAccountConfig().getPenaltyRateNote();
     if (StringUtils.isBlank(noteContent)) {
       throw new AxelorException(
@@ -165,11 +134,9 @@ public class InvoiceNoteCreationHelper {
     invoice.addInvoiceNoteListItem(invoiceNote);
   }
 
-  protected static void generateREGNote(Invoice invoice, Company company) throws AxelorException {
+  protected static void generateLegalFormAndCapitalNote(Invoice invoice, Company company) {
     InvoiceNoteType noteTypeREG = getOrCreateInvoiceNoteType("REG", I18n.get("Legal informations"));
-    if (noteAlreadyExist(noteTypeREG, invoice)) {
-      return;
-    }
+
     String noteContent = company.getLegalFormAndCapital();
     if (StringUtils.isBlank(noteContent)) {
       return;
@@ -178,11 +145,9 @@ public class InvoiceNoteCreationHelper {
     invoice.addInvoiceNoteListItem(invoiceNote);
   }
 
-  protected static void generateSURNote(Invoice invoice) throws AxelorException {
+  protected static void generateSupplierNote(Invoice invoice) {
     InvoiceNoteType noteTypeSUR = getOrCreateInvoiceNoteType("SUR", I18n.get("Supplier note"));
-    if (noteAlreadyExist(noteTypeSUR, invoice)) {
-      return;
-    }
+
     String noteContent = invoice.getNote();
     if (StringUtils.isBlank(noteContent)) {
       return;
@@ -191,16 +156,8 @@ public class InvoiceNoteCreationHelper {
     invoice.addInvoiceNoteListItem(invoiceNote);
   }
 
-  protected static void generateFinancialDiscountNote(Invoice invoice) throws AxelorException {
-    generateAABNote(invoice, invoice.getCompany());
-  }
-
-  protected static void generateREGNote(Invoice invoice) throws AxelorException {
+  protected static void generateInvoiceCategoryNote(Invoice invoice) throws AxelorException {
     InvoiceNoteType noteTypeREG = getOrCreateInvoiceNoteType("REG", I18n.get("Invoice category"));
-
-    if (noteAlreadyExist(noteTypeREG, invoice)) {
-      return;
-    }
 
     AccountConfig accountConfig =
         Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
@@ -219,14 +176,8 @@ public class InvoiceNoteCreationHelper {
         .map(InvoiceProductStatement::getStatement)
         .ifPresent(
             statement -> {
-              InvoiceNote invoiceNote = new InvoiceNote();
-              invoiceNote.setInvoiceNoteType(noteTypeREG);
-              invoiceNote.setNote(statement);
+              InvoiceNote invoiceNote = createInvoiceNote(noteTypeREG, statement);
               invoice.addInvoiceNoteListItem(invoiceNote);
             });
-  }
-
-  protected static void generateInvoiceCategoryNote(Invoice invoice) throws AxelorException {
-    generateREGNote(invoice);
   }
 }

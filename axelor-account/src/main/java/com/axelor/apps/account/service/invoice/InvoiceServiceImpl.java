@@ -271,7 +271,13 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected void validateProcess(Invoice invoice) throws AxelorException {
     log.debug("Invoice validation");
 
+    String savedInvoiceCategory = invoice.getInvoiceCategorySelect();
+
     compute(invoice);
+
+    if (savedInvoiceCategory != null) {
+      invoice.setInvoiceCategorySelect(savedInvoiceCategory);
+    }
 
     validateFactory.getValidator(invoice).process();
 
