@@ -31,6 +31,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewServiceImpl;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
+import com.axelor.apps.supplychain.service.config.OutSmGenerationService;
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineViewSupplychainService;
 import com.axelor.auth.AuthUtils;
 import jakarta.inject.Inject;
@@ -43,6 +44,7 @@ public class SaleOrderLineViewServiceSupplychainImpl extends SaleOrderLineViewSe
 
   protected AnalyticAttrsService analyticAttrsService;
   protected SaleOrderLineViewSupplychainService saleOrderLineViewSupplychainService;
+  protected OutSmGenerationService outSmGenerationService;
 
   @Inject
   public SaleOrderLineViewServiceSupplychainImpl(
@@ -50,10 +52,12 @@ public class SaleOrderLineViewServiceSupplychainImpl extends SaleOrderLineViewSe
       AppSaleService appSaleService,
       ProductMultipleQtyService productMultipleQtyService,
       AnalyticAttrsService analyticAttrsService,
-      SaleOrderLineViewSupplychainService saleOrderLineViewSupplychainService) {
+      SaleOrderLineViewSupplychainService saleOrderLineViewSupplychainService,
+      OutSmGenerationService outSmGenerationService) {
     super(appBaseService, appSaleService, productMultipleQtyService);
     this.analyticAttrsService = analyticAttrsService;
     this.saleOrderLineViewSupplychainService = saleOrderLineViewSupplychainService;
+    this.outSmGenerationService = outSmGenerationService;
   }
 
   @Override
@@ -72,26 +76,27 @@ public class SaleOrderLineViewServiceSupplychainImpl extends SaleOrderLineViewSe
 
   public Map<String, Map<String, Object>> hideDeliveryPanel(SaleOrderLine saleOrderLine) {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    String productTypeSelect =
-        Optional.ofNullable(saleOrderLine.getProduct())
-            .map(Product::getProductTypeSelect)
-            .orElse("");
-    boolean hidePanels = false;
-    if (productTypeSelect.equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
-      hidePanels =
-          Optional.ofNullable(AuthUtils.getUser().getActiveCompany())
-              .map(Company::getSupplyChainConfig)
-              .map(SupplyChainConfig::getHasOutSmForStorableProduct)
-              .orElse(false);
+    SupplyChainConfig config =
+        Optional.ofNullable(AuthUtils.getUser().getActiveCompany())
+            .map(Company::getSupplyChainConfig)
+            .orElse(null);
+
+    boolean showPanel = false;
+    if (config != null && outSmGenerationService.isOnlyForManagedLines(config)) {
+      showPanel = Boolean.TRUE.equals(saleOrderLine.getManagedInStockMove());
+    } else {
+      String productTypeSelect =
+          Optional.ofNullable(saleOrderLine.getProduct())
+              .map(Product::getProductTypeSelect)
+              .orElse("");
+      if (productTypeSelect.equals(ProductRepository.PRODUCT_TYPE_STORABLE) && config != null) {
+        showPanel = outSmGenerationService.isGeneratedForStorable(config);
+      } else if (productTypeSelect.equals(ProductRepository.PRODUCT_TYPE_SERVICE)
+          && config != null) {
+        showPanel = outSmGenerationService.isGeneratedForServices(config);
+      }
     }
-    if (productTypeSelect.equals(ProductRepository.PRODUCT_TYPE_SERVICE)) {
-      hidePanels =
-          Optional.ofNullable(AuthUtils.getUser().getActiveCompany())
-              .map(Company::getSupplyChainConfig)
-              .map(SupplyChainConfig::getHasOutSmForNonStorableProduct)
-              .orElse(false);
-    }
-    attrs.put("deliveryPanel", Map.of(HIDDEN_ATTR, !hidePanels));
+    attrs.put("deliveryPanel", Map.of(HIDDEN_ATTR, !showPanel));
     return attrs;
   }
 }

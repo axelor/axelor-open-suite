@@ -229,6 +229,8 @@ import com.axelor.apps.supplychain.service.StockLocationLineServiceSupplychainIm
 import com.axelor.apps.supplychain.service.StockMoveCurrencyServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.StockMoveLineChildrenService;
+import com.axelor.apps.supplychain.service.StockMoveLineChildrenServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineStockLocationServiceSupplychainImpl;
@@ -267,6 +269,8 @@ import com.axelor.apps.supplychain.service.cart.CartStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.cartline.CartLineAvailabilityService;
 import com.axelor.apps.supplychain.service.cartline.CartLineAvailabilityServiceImpl;
 import com.axelor.apps.supplychain.service.cartline.CartLineProductSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.config.OutSmGenerationService;
+import com.axelor.apps.supplychain.service.config.OutSmGenerationServiceImpl;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigServiceImpl;
 import com.axelor.apps.supplychain.service.declarationofexchanges.DeclarationOfExchangesService;
@@ -456,6 +460,7 @@ public class SupplychainModule extends AxelorModule {
     bind(SupplychainBatchRepository.class).to(SupplychainBatchSupplychainRepository.class);
     bind(SubscriptionInvoiceService.class).to(SubscriptionInvoiceServiceImpl.class);
     bind(TimetableService.class).to(TimetableServiceImpl.class);
+    bind(StockMoveLineChildrenService.class).to(StockMoveLineChildrenServiceImpl.class);
     bind(StockMoveLineServiceSupplychain.class).to(StockMoveLineServiceSupplychainImpl.class);
     bind(StockLocationUtilsServiceImpl.class).to(StockLocationUtilsServiceSupplychainImpl.class);
     bind(StockLocationUtilsServiceSupplychain.class)
@@ -659,5 +664,6 @@ public class SupplychainModule extends AxelorModule {
     bind(LogisticalFormComputeService.class).to(LogisticalFormComputeServiceImpl.class);
     bind(PackagingLineCreationService.class).to(PackagingLineCreationServiceImpl.class);
     bind(StockMoveCurrencyServiceImpl.class).to(StockMoveCurrencyServiceSupplychainImpl.class);
+    bind(OutSmGenerationService.class).to(OutSmGenerationServiceImpl.class);
   }
 }

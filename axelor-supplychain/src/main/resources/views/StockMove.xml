@@ -100,6 +100,10 @@
           action="save,action-supplychain-stock-move-method-fill-real-quantities"/>
       </insert>
     </extend>
+    <extend target="//panel-related[@name='stockMoveLineListPanel']">
+      <attribute name="onChange"
+        value="action-stock-move-line-change-group, action-supplychain-stock-move-method-propagate-real-qty-to-child-lines"/>
+    </extend>
   </form>
 
   <action-attrs name="action-stock-move-attrs-fill-ctx">
@@ -280,6 +284,12 @@
   <action-method name="action-supplychain-stock-move-method-fill-real-quantities">
     <call class="com.axelor.apps.supplychain.web.StockMoveController"
       method="fillRealQuantities"/>
+  </action-method>
+
+  <action-method
+    name="action-supplychain-stock-move-method-propagate-real-qty-to-child-lines">
+    <call class="com.axelor.apps.supplychain.web.StockMoveController"
+      method="propagateRealQtyToChildLines"/>
   </action-method>
 
   <action-method
