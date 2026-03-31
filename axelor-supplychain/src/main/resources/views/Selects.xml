@@ -153,6 +153,14 @@
     <option value="1">Estimated shipping date</option>
   </selection>
 
+  <selection name="supplychain.out.sm.generation.select">
+    <option value="0">None</option>
+    <option value="1">Storable products</option>
+    <option value="2">Services</option>
+    <option value="3">All products</option>
+    <option value="4">Managed lines only</option>
+  </selection>
+
   <selection name="supplychain.mrp.line.off.of.sales.select">
     <option value="0">One-off sales included</option>
     <option value="1">One-off sales excluded</option>

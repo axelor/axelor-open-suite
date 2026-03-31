@@ -9,6 +9,11 @@
 
     <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
       title="Sales order line"/>
+    <many-to-one name="parentStockMoveLine" ref="com.axelor.apps.stock.db.StockMoveLine"
+      title="Parent stock move line"/>
+    <one-to-many name="childStockMoveLineList"
+      ref="com.axelor.apps.stock.db.StockMoveLine" mappedBy="parentStockMoveLine"
+      orphanRemoval="false" title="Child stock move lines"/>
     <many-to-one name="purchaseOrderLine"
       ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order line"/>
 
@@ -22,6 +27,8 @@
 
     <!-- Is not used in view but needed for java service -->
     <boolean name="isMergedStockMoveLine" transient="true"/>
+
+    <boolean name="realQtyChangedByUser" transient="true"/>
 
     <datetime name="reservationDateTime" readonly="true"/>
 

@@ -37,8 +37,10 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineUtils;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -220,7 +222,10 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         case SaleOrderLineRepository.TYPE_NORMAL:
           if (manageAnalytic) {
             invoiceLineAnalyticService.setInvoiceLineAnalyticInfo(
-                invoiceLine, invoice, new AnalyticLineModel(saleOrderLine, null));
+                invoiceLine,
+                invoice,
+                new AnalyticLineModel(
+                    saleOrderLine, SaleOrderLineUtils.getParentSol(saleOrderLine).getSaleOrder()));
           }
           break;
 
@@ -346,7 +351,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     AnalyticLineModel analyticLineModel = null;
 
     if (saleOrderLine != null) {
-      analyticLineModel = new AnalyticLineModel(saleOrderLine, null);
+      SaleOrder effectiveSaleOrder = SaleOrderLineUtils.getParentSol(saleOrderLine).getSaleOrder();
+      analyticLineModel = new AnalyticLineModel(saleOrderLine, effectiveSaleOrder);
     } else if (purchaseOrderLine != null) {
       analyticLineModel = new AnalyticLineModel(purchaseOrderLine, null);
     }

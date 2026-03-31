@@ -55,8 +55,10 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -74,6 +76,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   protected SaleOrderLinePackService saleOrderLinePackService;
   protected SaleOrderLineDiscountService saleOrderLineDiscountService;
   protected SaleOrderLineComputeService saleOrderLineComputeService;
+  protected SaleOrderOrderingStatusService saleOrderOrderingStatusService;
 
   @Inject
   public SaleOrderServiceImpl(
@@ -87,7 +90,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       SaleOrderLineComplementaryProductService saleOrderLineComplementaryProductService,
       SaleOrderLinePackService saleOrderLinePackService,
       SaleOrderLineDiscountService saleOrderLineDiscountService,
-      SaleOrderLineComputeService saleOrderLineComputeService) {
+      SaleOrderLineComputeService saleOrderLineComputeService,
+      SaleOrderOrderingStatusService saleOrderOrderingStatusService) {
     this.appBaseService = appBaseService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.saleOrderRepo = saleOrderRepo;
@@ -99,6 +103,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     this.saleOrderLinePackService = saleOrderLinePackService;
     this.saleOrderLineDiscountService = saleOrderLineDiscountService;
     this.saleOrderLineComputeService = saleOrderLineComputeService;
+    this.saleOrderOrderingStatusService = saleOrderOrderingStatusService;
   }
 
   @Override
@@ -149,6 +154,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validateChanges(SaleOrder saleOrder) throws AxelorException {
+    syncGeneratedOrderOrderedQty(saleOrder);
     checkUnauthorizedDiscounts(saleOrder);
   }
 
@@ -235,6 +241,117 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         }
       }
     }
+  }
+
+  protected void syncGeneratedOrderOrderedQty(SaleOrder saleOrder) throws AxelorException {
+    if (saleOrder == null || saleOrder.getOriginSaleQuotation() == null) {
+      return;
+    }
+
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (CollectionUtils.isEmpty(saleOrderLineList)
+        || saleOrderLineList.stream().noneMatch(l -> l.getOriginSaleQuotationLine() != null)) {
+      return;
+    }
+
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      saleOrderLine.setOrderedQty(getQtyOrZero(saleOrderLine.getQty()));
+    }
+
+    SaleOrder originSaleQuotation = saleOrder.getOriginSaleQuotation();
+
+    Map<Long, BigDecimal> orderedQtyByOriginSaleQuotationLineId =
+        getOrderedQtyByOriginSaleQuotationLineId(
+            getGeneratedSaleOrderLineList(originSaleQuotation));
+    checkOriginSaleQuotationOrderedQty(originSaleQuotation, orderedQtyByOriginSaleQuotationLineId);
+    updateOriginSaleQuotationOrderedQty(originSaleQuotation, orderedQtyByOriginSaleQuotationLineId);
+
+    saleOrderOrderingStatusService.updateOrderingStatus(saleOrder);
+    saleOrderOrderingStatusService.updateOrderingStatus(originSaleQuotation);
+  }
+
+  protected List<SaleOrderLine> getGeneratedSaleOrderLineList(SaleOrder originSaleQuotation) {
+    return saleOrderLineRepo
+        .all()
+        .filter(
+            "self.originSaleQuotationLine.saleOrder = :originSaleQuotation "
+                + "AND self.saleOrder.statusSelect IN (:statusSelectList)")
+        .bind("originSaleQuotation", originSaleQuotation)
+        .bind(
+            "statusSelectList",
+            List.of(
+                SaleOrderRepository.STATUS_ORDER_CONFIRMED,
+                SaleOrderRepository.STATUS_ORDER_COMPLETED))
+        .fetch();
+  }
+
+  protected Map<Long, BigDecimal> getOrderedQtyByOriginSaleQuotationLineId(
+      List<SaleOrderLine> generatedSaleOrderLineList) {
+    Map<Long, BigDecimal> orderedQtyByOriginSaleQuotationLineId = new HashMap<>();
+
+    for (SaleOrderLine generatedSaleOrderLine : generatedSaleOrderLineList) {
+      SaleOrderLine originSaleQuotationLine = generatedSaleOrderLine.getOriginSaleQuotationLine();
+      if (originSaleQuotationLine == null) {
+        continue;
+      }
+      orderedQtyByOriginSaleQuotationLineId.merge(
+          originSaleQuotationLine.getId(),
+          getQtyOrZero(generatedSaleOrderLine.getQty()),
+          BigDecimal::add);
+    }
+    return orderedQtyByOriginSaleQuotationLineId;
+  }
+
+  protected void checkOriginSaleQuotationOrderedQty(
+      SaleOrder originSaleQuotation, Map<Long, BigDecimal> orderedQtyByOriginSaleQuotationLineId)
+      throws AxelorException {
+    if (originSaleQuotation == null
+        || CollectionUtils.isEmpty(originSaleQuotation.getSaleOrderLineList())) {
+      return;
+    }
+
+    for (SaleOrderLine originSaleQuotationLine : originSaleQuotation.getSaleOrderLineList()) {
+      BigDecimal orderedQty =
+          originSaleQuotationLine.getId() == null
+              ? BigDecimal.ZERO
+              : orderedQtyByOriginSaleQuotationLineId.getOrDefault(
+                  originSaleQuotationLine.getId(), BigDecimal.ZERO);
+
+      if (isOriginSaleQuotationOrderedQtyExceeded(originSaleQuotationLine, orderedQty)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SaleExceptionMessage.SALE_QUOTATION_TOTAL_ORDERED_QTY_EXCEEDED),
+            getQtyOrZero(originSaleQuotationLine.getQty()),
+            originSaleQuotationLine.getProduct() != null
+                ? originSaleQuotationLine.getProduct().getName()
+                : originSaleQuotationLine.getProductName());
+      }
+    }
+  }
+
+  protected boolean isOriginSaleQuotationOrderedQtyExceeded(
+      SaleOrderLine originSaleQuotationLine, BigDecimal orderedQty) {
+    return orderedQty.compareTo(getQtyOrZero(originSaleQuotationLine.getQty())) > 0;
+  }
+
+  protected void updateOriginSaleQuotationOrderedQty(
+      SaleOrder originSaleQuotation, Map<Long, BigDecimal> orderedQtyByOriginSaleQuotationLineId) {
+    if (originSaleQuotation == null
+        || CollectionUtils.isEmpty(originSaleQuotation.getSaleOrderLineList())) {
+      return;
+    }
+
+    for (SaleOrderLine originSaleQuotationLine : originSaleQuotation.getSaleOrderLineList()) {
+      originSaleQuotationLine.setOrderedQty(
+          originSaleQuotationLine.getId() == null
+              ? BigDecimal.ZERO
+              : orderedQtyByOriginSaleQuotationLineId.getOrDefault(
+                  originSaleQuotationLine.getId(), BigDecimal.ZERO));
+    }
+  }
+
+  protected BigDecimal getQtyOrZero(BigDecimal qty) {
+    return qty != null ? qty : BigDecimal.ZERO;
   }
 
   @Transactional(rollbackOn = Exception.class)

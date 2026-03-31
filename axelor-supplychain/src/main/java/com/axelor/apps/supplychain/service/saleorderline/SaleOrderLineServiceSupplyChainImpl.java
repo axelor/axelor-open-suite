@@ -48,6 +48,7 @@ import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.persistence.TypedQuery;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -95,10 +96,24 @@ public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineService
   }
 
   @Override
+  public BigDecimal computeQtyToDeliver(SaleOrderLine saleOrderLine) {
+    BigDecimal qty = saleOrderLine.getQty();
+    SaleOrderLine parent = saleOrderLine.getParentSaleOrderLine();
+    if (parent == null) {
+      return qty;
+    }
+    return qty.multiply(computeQtyToDeliver(parent)).setScale(10, RoundingMode.HALF_UP);
+  }
+
+  @Override
   public BigDecimal computeUndeliveredQty(SaleOrderLine saleOrderLine) {
     Preconditions.checkNotNull(saleOrderLine);
 
-    BigDecimal undeliveryQty = saleOrderLine.getQty().subtract(saleOrderLine.getDeliveredQty());
+    BigDecimal refQty =
+        saleOrderLine.getQtyToDeliver() != null && saleOrderLine.getQtyToDeliver().signum() > 0
+            ? saleOrderLine.getQtyToDeliver()
+            : saleOrderLine.getQty();
+    BigDecimal undeliveryQty = refQty.subtract(saleOrderLine.getDeliveredQty());
 
     if (undeliveryQty.signum() > 0) {
       return undeliveryQty;
@@ -134,9 +149,13 @@ public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineService
 
   @Override
   public void updateDeliveryState(SaleOrderLine saleOrderLine) {
+    BigDecimal refQty =
+        saleOrderLine.getQtyToDeliver() != null && saleOrderLine.getQtyToDeliver().signum() > 0
+            ? saleOrderLine.getQtyToDeliver()
+            : saleOrderLine.getQty();
     if (saleOrderLine.getDeliveredQty().signum() == 0) {
       saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
-    } else if (saleOrderLine.getDeliveredQty().compareTo(saleOrderLine.getQty()) < 0) {
+    } else if (saleOrderLine.getDeliveredQty().compareTo(refQty) < 0) {
       saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
     } else {
       saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED);

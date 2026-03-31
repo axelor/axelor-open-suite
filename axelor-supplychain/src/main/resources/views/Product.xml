@@ -94,6 +94,14 @@
         <field name="isReturnable" hidden="true" showIf="isPackaging" colSpan="4"/>
       </insert>
     </extend>
+    <extend target="//panel[@name='adrPanel']">
+      <insert position="before">
+        <panel name="deliveryConfigPanel" title="Delivery" colSpan="12">
+          <field name="managedInStockMove"
+            help="When 'Generate out. moves for managed lines only' is active, new sale order lines with this product will be included in delivery notes by default."/>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <action-group name="action-group-supplychain-update-indicators">
