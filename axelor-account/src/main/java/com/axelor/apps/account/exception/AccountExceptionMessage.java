@@ -1313,6 +1313,9 @@ public final class AccountExceptionMessage {
   public static final String CAN_NOT_IMPORT_MOVE_ALREADY_EXIST = /*$$(*/
       "The import failed: the move %s already exist." /*)*/;
 
+  public static final String IMPORT_FEC_FOREIGN_CURRENCY_AMOUNT_REQUIRED = /*$$(*/
+      "The amount in currency in %s is required when importing an entry line in a foreign currency (different from company currency)." /*)*/;
+
   public static final String FIXED_ASSET_ANALYTIC_ACCOUNT_MISSING = /*$$(*/
       "Please fill analytic accounts in all analytic distribution lines." /*)*/;
 
