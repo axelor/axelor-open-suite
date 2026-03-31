@@ -1,0 +1,3 @@
+---
+title: "Accounting entries: fixed the imported amount in currency during FEC imports."
+module: axelor-account
