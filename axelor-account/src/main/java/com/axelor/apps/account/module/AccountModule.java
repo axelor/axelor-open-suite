@@ -147,6 +147,8 @@ import com.axelor.apps.account.service.fecimport.FECImportService;
 import com.axelor.apps.account.service.fecimport.FECImportServiceImpl;
 import com.axelor.apps.account.service.fecimport.ImportFECTypeService;
 import com.axelor.apps.account.service.fecimport.ImportFECTypeServiceImpl;
+import com.axelor.apps.account.service.fecimport.ImportMoveLineAmountService;
+import com.axelor.apps.account.service.fecimport.ImportMoveLineAmountServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
@@ -997,5 +999,7 @@ public class AccountModule extends AxelorModule {
     bind(PaymentScheduleRepository.class).to(PaymentScheduleAccountRepository.class);
 
     bind(MovePfpToolService.class).to(MovePfpToolServiceImpl.class);
+
+    bind(ImportMoveLineAmountService.class).to(ImportMoveLineAmountServiceImpl.class);
   }
 }
