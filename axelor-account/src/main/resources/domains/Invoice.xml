@@ -330,6 +330,10 @@
 	    public static final int VAT_LIABILITY_STANDARD_REGIME = 1;
 	    public static final int VAT_LIABILITY_OPTION_ON_DELIVERIES = 2;
 
+	    // INVOICE CATEGORY SELECT
+	    public static final String CATEGORY_GOODS_INVOICE = "goods";
+	    public static final String CATEGORY_SERVICES_INVOICE = "services";
+	    public static final String CATEGORY_MIXED_INVOICE = "mixed";
 	]]></extra-code>
 
     <track>
