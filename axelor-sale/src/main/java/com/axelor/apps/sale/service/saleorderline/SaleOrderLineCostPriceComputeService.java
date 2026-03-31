@@ -27,4 +27,6 @@ import java.util.Map;
 public interface SaleOrderLineCostPriceComputeService {
   Map<String, Object> computeSubTotalCostPrice(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, Product product) throws AxelorException;
+
+  void computeTotalCost(SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException;
 }
