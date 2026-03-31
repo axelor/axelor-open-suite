@@ -1,0 +1,5 @@
+---
+title: "Accounting entries: fixed the imported amount in currency during FEC imports."
+module: axelor-account
+developer: |
+ Changed the ImportMoveFecServiceImpl constructor, replacing the MoveLineToolService by ImportMoveLineCurrencyAmountService

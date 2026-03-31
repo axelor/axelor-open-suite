@@ -661,10 +661,12 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       LocalDate orderDate,
       LocalDate estimatedDate,
       PaymentCondition paymentCondition) {
+    LocalDate baseDate;
     if (expectedRealisationDate != null) {
-      return expectedRealisationDate;
+      baseDate = expectedRealisationDate;
+    } else {
+      baseDate = (estimatedDate != null) ? estimatedDate : orderDate;
     }
-    LocalDate baseDate = (estimatedDate != null) ? estimatedDate : orderDate;
     LocalDate newEstimatedDate = baseDate.plusDays(forecastRecapLineType.getEstimatedDuration());
 
     return PaymentConditionToolService.getMaxDueDate(paymentCondition, newEstimatedDate);
@@ -1108,16 +1110,17 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       ForecastRecapLineType forecastRecapLineType,
       PurchaseOrder purchaseOrder,
       PurchaseOrderLine purchaseOrderLine) {
+    LocalDate baseDate;
     if (purchaseOrderLine.getEstimatedReceiptDate() != null) {
-      return purchaseOrderLine.getEstimatedReceiptDate();
+      baseDate = purchaseOrderLine.getEstimatedReceiptDate();
+    } else if (purchaseOrder.getExpectedRealisationDate() != null) {
+      baseDate = purchaseOrder.getExpectedRealisationDate();
+    } else {
+      baseDate =
+          (purchaseOrder.getEstimatedReceiptDate() != null)
+              ? purchaseOrder.getEstimatedReceiptDate()
+              : purchaseOrder.getOrderDate();
     }
-    if (purchaseOrder.getExpectedRealisationDate() != null) {
-      return purchaseOrder.getExpectedRealisationDate();
-    }
-    LocalDate baseDate =
-        (purchaseOrder.getEstimatedReceiptDate() != null)
-            ? purchaseOrder.getEstimatedReceiptDate()
-            : purchaseOrder.getOrderDate();
     LocalDate newEstimatedDate = baseDate.plusDays(forecastRecapLineType.getEstimatedDuration());
     PaymentCondition paymentCondition = purchaseOrder.getPaymentCondition();
     return PaymentConditionToolService.getMaxDueDate(paymentCondition, newEstimatedDate);

@@ -1,0 +1,3 @@
+---
+title: "Accounting report: fixed general balance report displays empty account name and code for moves at new status."
+module: axelor-account

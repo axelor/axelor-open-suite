@@ -25,6 +25,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
+import com.axelor.apps.production.service.StockMoveProductionService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveLineService;
 import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
@@ -45,6 +46,7 @@ import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -58,6 +60,8 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
   protected ManufOrderOutsourceService manufOrderOutsourceService;
   protected ManufOrderGetStockMoveService manufOrderGetStockMoveService;
   protected ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService;
+  protected StockMoveProductionService stockMoveProductionService;
+  protected OperationOrderService operationOrderService;
 
   @Inject
   public OperationOrderStockMoveServiceImpl(
@@ -68,7 +72,9 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
       ManufOrderStockMoveService manufOrderStockMoveService,
       ManufOrderOutsourceService manufOrderOutsourceService,
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
-      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService,
+      StockMoveProductionService stockMoveProductionService,
+      OperationOrderService operationOrderService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockLocationRepo = stockLocationRepo;
@@ -77,6 +83,8 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
     this.manufOrderOutsourceService = manufOrderOutsourceService;
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
+    this.stockMoveProductionService = stockMoveProductionService;
+    this.operationOrderService = operationOrderService;
   }
 
   @Override
@@ -360,13 +368,22 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
     // find planned stock move
     Optional<StockMove> stockMoveOpt =
         manufOrderGetStockMoveService.getPlannedStockMove(operationOrder.getInStockMoveList());
+
     if (!stockMoveOpt.isPresent()) {
-      return;
+      // After a partial finish, the consumed stock move is REALIZED.
+      // Create a new planned stock move for the remaining quantity.
+      StockMove newStockMove =
+          operationOrderService.getConsumedStockMoveFromOperationOrder(operationOrder);
+      if (newStockMove == null) {
+        return;
+      }
+      operationOrder = JpaModelHelper.ensureManaged(operationOrder);
+      stockMoveOpt = Optional.of(newStockMove);
     }
 
     StockMove stockMove = stockMoveOpt.get();
 
-    stockMoveService.cancel(stockMove);
+    stockMoveProductionService.cancelFromManufOrder(stockMove);
 
     operationOrder = JpaModelHelper.ensureManaged(operationOrder);
     // clear all lists from planned lines
@@ -385,6 +402,19 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
       BigDecimal qty =
           manufOrderStockMoveService.getFractionQty(
               operationOrder.getManufOrder(), prodProduct, qtyToUpdate);
+      BigDecimal realizedQty =
+          operationOrder.getConsumedStockMoveLineList().stream()
+              .filter(
+                  sml ->
+                      sml.getProduct() != null
+                          && sml.getProduct().equals(prodProduct.getProduct())
+                          && sml.getStockMove() != null
+                          && sml.getStockMove().getStatusSelect()
+                              == StockMoveRepository.STATUS_REALIZED)
+              .map(StockMoveLine::getRealQty)
+              .filter(Objects::nonNull)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+      qty = qty.subtract(realizedQty).max(BigDecimal.ZERO);
       manufOrderCreateStockMoveLineService._createStockMoveLine(
           prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty, null, null);
       // Update consumed StockMoveLineList with created stock move lines

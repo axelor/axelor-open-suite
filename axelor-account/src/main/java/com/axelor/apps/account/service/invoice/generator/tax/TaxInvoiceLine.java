@@ -314,14 +314,15 @@ public class TaxInvoiceLine extends TaxGenerator {
     }
 
     // Dans la devise de la facture
-    BigDecimal exTaxBase =
-        (invoiceLineTax.getReverseCharged())
-            ? invoiceLineTax.getExTaxBase().negate()
-            : invoiceLineTax.getExTaxBase();
     BigDecimal taxTotal =
         invoiceTaxComputeService.computeTaxAmount(
-            invoiceLineTax, exTaxBase, taxValue, invoiceLineTax.getInTaxTotal());
-
+            invoiceLineTax,
+            invoiceLineTax.getExTaxBase(),
+            taxValue,
+            invoiceLineTax.getInTaxTotal());
+    if (invoiceLineTax.getReverseCharged()) {
+      taxTotal = taxTotal.negate();
+    }
     if (!ObjectUtils.isEmpty(updatedInvoiceLineTaxList)) {
       for (InvoiceLineTax updatedInvoiceLineTax : updatedInvoiceLineTaxList) {
         if (invoiceLineTaxToolService.isManageByAmount(invoiceLineTax)
@@ -346,16 +347,17 @@ public class TaxInvoiceLine extends TaxGenerator {
     invoiceLineTax.setInTaxTotal(invoiceLineTax.getExTaxBase().add(taxTotal));
 
     // Dans la devise de la société
-    BigDecimal companyExTaxBase =
-        (invoiceLineTax.getReverseCharged())
-            ? invoiceLineTax.getCompanyExTaxBase().negate()
-            : invoiceLineTax.getCompanyExTaxBase();
-
-    invoiceLineTax.setCompanyTaxTotal(
+    BigDecimal companyTaxTotal =
         invoiceTaxComputeService.computeTaxAmount(
-            invoiceLineTax, companyExTaxBase, taxValue, invoiceLineTax.getCompanyInTaxTotal()));
-    invoiceLineTax.setCompanyInTaxTotal(
-        invoiceLineTax.getCompanyExTaxBase().add(invoiceLineTax.getCompanyTaxTotal()));
+            invoiceLineTax,
+            invoiceLineTax.getCompanyExTaxBase(),
+            taxValue,
+            invoiceLineTax.getCompanyInTaxTotal());
+    if (invoiceLineTax.getReverseCharged()) {
+      companyTaxTotal = companyTaxTotal.negate();
+    }
+    invoiceLineTax.setCompanyTaxTotal(companyTaxTotal);
+    invoiceLineTax.setCompanyInTaxTotal(invoiceLineTax.getCompanyExTaxBase().add(companyTaxTotal));
 
     invoiceLineTaxList.add(invoiceLineTax);
 
