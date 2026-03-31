@@ -29,6 +29,7 @@
     <field name="typeSelect" hidden="true"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       onChange="action-group-account-account-management-onchange-common" canEdit="false"
+      onSelect="action-account-management-method-set-company-domain"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="purchaseTaxVatSystem1Account"
       domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
