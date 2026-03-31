@@ -84,7 +84,19 @@
           <field name="supplierPartner" showIf="saleSupplySelect == 2"
             onSelect="action-sale-order-line-method-supplier-partner-domain"
             form-view="partner-form" grid-view="partner-grid"/>
+          <field name="managedInStockMove" showIf="typeSelect != 1"/>
         </panel>
+      </insert>
+    </extend>
+
+    <extend target="//panel[@name='deliveryPanel']/field[@name='deliveredQty']">
+      <attribute name="hidden" value="false"/>
+    </extend>
+
+    <extend target="//panel[@name='deliveryPanel']/field[@name='deliveredQty']">
+      <insert position="after">
+        <field name="qtyToDeliver" readonly="true" showIf="qtyToDeliver"
+          x-scale="$nbDecimalDigitForQty"/>
       </insert>
     </extend>
   </form>
@@ -402,5 +414,6 @@
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="deliveryBlockingByUser" expr="eval: isDeliveryBlocking ? __user__ : null"/>
   </action-record>
+
 
 </object-views>

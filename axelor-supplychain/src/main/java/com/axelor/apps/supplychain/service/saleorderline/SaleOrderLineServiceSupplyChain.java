@@ -32,6 +32,15 @@ public interface SaleOrderLineServiceSupplyChain {
   BigDecimal getAllocatedStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
 
   /**
+   * Compute the quantity to deliver for a sale order line, considering the hierarchy of parent
+   * lines. qtyToDeliver = line.qty × product of all ancestor qtys.
+   *
+   * @param saleOrderLine
+   * @return
+   */
+  BigDecimal computeQtyToDeliver(SaleOrderLine saleOrderLine);
+
+  /**
    * Compute undelivered quantity.
    *
    * @param saleOrderLine

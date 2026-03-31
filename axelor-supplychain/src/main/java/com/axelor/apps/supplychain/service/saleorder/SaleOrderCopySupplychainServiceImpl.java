@@ -58,6 +58,7 @@ public class SaleOrderCopySupplychainServiceImpl implements SaleOrderCopySupplyc
         saleOrderLine.setInvoiced(null);
         saleOrderLine.setIsInvoiceControlled(null);
         saleOrderLine.setReservedQty(BigDecimal.ZERO);
+        saleOrderLine.setQtyToDeliver(BigDecimal.ZERO);
       }
     }
   }

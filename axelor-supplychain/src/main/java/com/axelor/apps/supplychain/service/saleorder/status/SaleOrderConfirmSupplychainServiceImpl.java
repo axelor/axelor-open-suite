@@ -33,12 +33,15 @@ import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainServi
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmSupplychainService {
@@ -51,6 +54,7 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
   protected IntercoService intercoService;
   protected StockMoveRepository stockMoveRepository;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
+  protected SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain;
 
   @Inject
   public SaleOrderConfirmSupplychainServiceImpl(
@@ -61,7 +65,8 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
       SaleOrderStockService saleOrderStockService,
       IntercoService intercoService,
       StockMoveRepository stockMoveRepository,
-      AccountingSituationSupplychainService accountingSituationSupplychainService) {
+      AccountingSituationSupplychainService accountingSituationSupplychainService,
+      SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain) {
     this.appSupplychainService = appSupplychainService;
     this.analyticToolSupplychainService = analyticToolSupplychainService;
     this.partnerSupplychainService = partnerSupplychainService;
@@ -70,6 +75,7 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
     this.intercoService = intercoService;
     this.stockMoveRepository = stockMoveRepository;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
+    this.saleOrderLineServiceSupplyChain = saleOrderLineServiceSupplyChain;
   }
 
   @Override
@@ -90,6 +96,8 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
 
       saleOrder.setEstimatedShippingDate(estimatedShippingDate);
     }
+
+    setQtyToDeliverRecursively(saleOrder.getSaleOrderLineList());
 
     analyticToolSupplychainService.checkSaleOrderLinesAnalyticDistribution(saleOrder);
 
@@ -121,6 +129,16 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
     accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
 
     return "";
+  }
+
+  protected void setQtyToDeliverRecursively(List<SaleOrderLine> lines) {
+    if (ObjectUtils.isEmpty(lines)) {
+      return;
+    }
+    for (SaleOrderLine line : lines) {
+      line.setQtyToDeliver(saleOrderLineServiceSupplyChain.computeQtyToDeliver(line));
+      setQtyToDeliverRecursively(line.getSubSaleOrderLineList());
+    }
   }
 
   protected String getStockMoveGeneratedNotifyMessage(
