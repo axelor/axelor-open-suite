@@ -213,7 +213,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     MetaFiles metaFiles = Beans.get(MetaFiles.class);
 
     try (InputStream is = new FileInputStream(file)) {
-      bankOrder.setGeneratedMetaFile(metaFiles.attach(is, file.getName(), bankOrder).getMetaFile());
+      bankOrder.setGeneratedMetaFile(metaFiles.upload(is, file.getName()));
     }
 
     return file;
