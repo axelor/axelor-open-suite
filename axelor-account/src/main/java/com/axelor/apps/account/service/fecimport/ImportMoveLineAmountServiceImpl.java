@@ -32,11 +32,10 @@ import com.axelor.i18n.I18n;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-public class ImportMoveLineCurrencyAmountServiceImpl
-    implements ImportMoveLineCurrencyAmountService {
+public class ImportMoveLineAmountServiceImpl implements ImportMoveLineAmountService {
 
   @Override
-  public void computeImportedCurrencyAmount(
+  public void computeImportedAmounts(
       MoveLine moveLine,
       Object importedCurrency,
       Object importedCurrencyAmount,
@@ -47,15 +46,16 @@ public class ImportMoveLineCurrencyAmountServiceImpl
       return;
     }
 
-    if (isZero(moveLine.getDebit()) && isZero(moveLine.getCredit())) {
+    normalizeDebitCredit(moveLine);
+
+    if (moveLine.getDebit().signum() == 0 && moveLine.getCredit().signum() == 0) {
       moveLine.setCurrencyAmount(BigDecimal.ZERO);
       return;
     }
 
-    BigDecimal currencyAmount =
+    moveLine.setCurrencyAmount(
         getCurrencyAmount(
-            moveLine, importedCurrency, importedCurrencyAmount, entryNumber, fecImport);
-    moveLine.setCurrencyAmount(applySign(moveLine, currencyAmount));
+            moveLine, importedCurrency, importedCurrencyAmount, entryNumber, fecImport));
   }
 
   @Override
@@ -93,13 +93,27 @@ public class ImportMoveLineCurrencyAmountServiceImpl
       String entryNumber,
       FECImport fecImport)
       throws AxelorException {
+    BigDecimal absoluteCurrencyAmount =
+        getAbsoluteCurrencyAmount(
+            moveLine, importedCurrency, importedCurrencyAmount, entryNumber, fecImport);
+
+    return isDebitLine(moveLine) ? absoluteCurrencyAmount : absoluteCurrencyAmount.negate();
+  }
+
+  protected BigDecimal getAbsoluteCurrencyAmount(
+      MoveLine moveLine,
+      Object importedCurrency,
+      Object importedCurrencyAmount,
+      String entryNumber,
+      FECImport fecImport)
+      throws AxelorException {
     BigDecimal currencyAmount = parseCurrencyAmount(importedCurrencyAmount);
-    if (!isZero(currencyAmount)) {
+    if (currencyAmount != null && currencyAmount.signum() != 0) {
       return currencyAmount.abs();
     }
 
     if (isCompanyCurrency(importedCurrency, getCompanyCurrency(moveLine))) {
-      return getSourceAmount(moveLine).abs();
+      return getAccountingAmount(moveLine).abs();
     }
 
     throw new AxelorException(
@@ -115,25 +129,31 @@ public class ImportMoveLineCurrencyAmountServiceImpl
       return null;
     }
 
-    String currencyAmount = importedCurrencyAmount.toString().trim();
-    return new BigDecimal(currencyAmount.replace(',', '.'));
+    String currencyAmountValue = importedCurrencyAmount.toString().trim();
+    return new BigDecimal(currencyAmountValue.replace(',', '.'));
   }
 
-  protected BigDecimal applySign(MoveLine moveLine, BigDecimal absoluteAmount) {
-    BigDecimal amount = absoluteAmount.abs();
+  protected void normalizeDebitCredit(MoveLine moveLine) {
+    BigDecimal debit = moveLine.getDebit();
+    BigDecimal credit = moveLine.getCredit();
 
-    if (!isZero(moveLine.getDebit())) {
-      return moveLine.getDebit().signum() > 0 ? amount : amount.negate();
+    if (debit.signum() < 0 && credit.signum() == 0) {
+      moveLine.setDebit(BigDecimal.ZERO);
+      moveLine.setCredit(debit.abs());
+      return;
     }
 
-    return moveLine.getCredit().signum() < 0 ? amount : amount.negate();
+    if (credit.signum() < 0 && debit.signum() == 0) {
+      moveLine.setCredit(BigDecimal.ZERO);
+      moveLine.setDebit(credit.abs());
+    }
   }
 
-  protected BigDecimal getSourceAmount(MoveLine moveLine) {
-    return !isZero(moveLine.getDebit()) ? moveLine.getDebit() : moveLine.getCredit();
+  protected BigDecimal getAccountingAmount(MoveLine moveLine) {
+    return isDebitLine(moveLine) ? moveLine.getDebit() : moveLine.getCredit();
   }
 
-  protected boolean isZero(BigDecimal amount) {
-    return amount == null || amount.signum() == 0;
+  protected boolean isDebitLine(MoveLine moveLine) {
+    return moveLine.getDebit().signum() != 0;
   }
 }
