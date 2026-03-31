@@ -54,7 +54,7 @@ import org.apache.commons.collections.CollectionUtils;
 public class ImportMoveFecServiceImpl implements ImportMoveFecService {
 
   protected PeriodService periodService;
-  protected ImportMoveLineCurrencyAmountService importMoveLineCurrencyAmountService;
+  protected ImportMoveLineAmountService importMoveLineAmountService;
   protected MoveRepository moveRepository;
   protected MoveLineRepository moveLineRepository;
   protected CurrencyRepository currencyRepository;
@@ -64,14 +64,14 @@ public class ImportMoveFecServiceImpl implements ImportMoveFecService {
   @Inject
   public ImportMoveFecServiceImpl(
       PeriodService periodService,
-      ImportMoveLineCurrencyAmountService importMoveLineCurrencyAmountService,
+      ImportMoveLineAmountService importMoveLineAmountService,
       MoveRepository moveRepository,
       MoveLineRepository moveLineRepository,
       CurrencyRepository currencyRepository,
       JournalRepository journalRepository,
       AccountRepository accountRepository) {
     this.periodService = periodService;
-    this.importMoveLineCurrencyAmountService = importMoveLineCurrencyAmountService;
+    this.importMoveLineAmountService = importMoveLineAmountService;
     this.moveRepository = moveRepository;
     this.moveLineRepository = moveLineRepository;
     this.currencyRepository = currencyRepository;
@@ -127,8 +127,7 @@ public class ImportMoveFecServiceImpl implements ImportMoveFecService {
 
       Currency companyCurrency = company.getCurrency();
       Object importedCurrency = values.get("Idevise");
-      if (importMoveLineCurrencyAmountService.isCompanyCurrency(
-          importedCurrency, companyCurrency)) {
+      if (importMoveLineAmountService.isCompanyCurrency(importedCurrency, companyCurrency)) {
         move.setCurrency(companyCurrency);
         if (companyCurrency != null) {
           move.setCurrencyCode(companyCurrency.getCodeISO());
@@ -226,7 +225,7 @@ public class ImportMoveFecServiceImpl implements ImportMoveFecService {
     moveLine.setMove(move);
     String entryNumber =
         values.get("EcritureNum") != null ? values.get("EcritureNum").toString() : null;
-    importMoveLineCurrencyAmountService.computeImportedCurrencyAmount(
+    importMoveLineAmountService.computeImportedAmounts(
         moveLine, values.get("Idevise"), values.get("Montantdevise"), entryNumber, fecImport);
 
     return moveLine;
