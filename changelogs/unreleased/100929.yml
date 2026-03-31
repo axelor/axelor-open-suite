@@ -1,0 +1,3 @@
+---
+title: "Birt: fixed missing currency unit display on unit price and tax table columns in sale order, invoice, and purchase order reports."
+module: axelor-supplychain
