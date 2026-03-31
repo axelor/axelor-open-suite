@@ -21,6 +21,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -44,8 +45,14 @@ public class SaleOrderLineCostPriceComputeProductionServiceImpl
       AppSaleService appSaleService,
       ProductCompanyService productCompanyService,
       CurrencyScaleService currencyScaleService,
-      SaleOrderLineProductService saleOrderLineProductService) {
-    super(appSaleService, productCompanyService, currencyScaleService, saleOrderLineProductService);
+      SaleOrderLineProductService saleOrderLineProductService,
+      CurrencyService currencyService) {
+    super(
+        appSaleService,
+        productCompanyService,
+        currencyScaleService,
+        saleOrderLineProductService,
+        currencyService);
   }
 
   @Override
