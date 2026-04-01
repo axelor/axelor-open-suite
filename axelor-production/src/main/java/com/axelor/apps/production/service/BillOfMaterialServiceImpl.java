@@ -72,8 +72,6 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
   protected BillOfMaterialLineService billOfMaterialLineService;
 
-  protected BillOfMaterialService billOfMaterialService;
-
   protected CostSheetService costSheetService;
 
   protected AppProductionService appProductionService;
@@ -85,7 +83,6 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       ProductRepository productRepo,
       ProductCompanyService productCompanyService,
       BillOfMaterialLineService billOfMaterialLineService,
-      BillOfMaterialService billOfMaterialService,
       CostSheetService costSheetService,
       AppProductionService appProductionService) {
     this.billOfMaterialRepo = billOfMaterialRepo;
@@ -93,7 +90,6 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     this.productRepo = productRepo;
     this.productCompanyService = productCompanyService;
     this.billOfMaterialLineService = billOfMaterialLineService;
-    this.billOfMaterialService = billOfMaterialService;
     this.costSheetService = costSheetService;
     this.appProductionService = appProductionService;
   }
@@ -333,7 +329,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
           && ((bomChild != null && CollectionUtils.isEmpty(bomChild.getBillOfMaterialLineList()))
               || bomChild == null)
           && bomLineChild.getProduct() != null) {
-        bomChild = billOfMaterialService.getBOM(bomLineChild.getProduct(), bom.getCompany());
+        bomChild = getBOM(bomLineChild.getProduct(), bom.getCompany());
       }
 
       if (bomLineChild != null && !processedBomLine.contains(bomLineChild.getId())) {
