@@ -351,6 +351,10 @@ public class InventoryService {
   public QueryBuilder<StockLocationLine> buildSllFilterQuery(Inventory inventory) {
 
     QueryBuilder<StockLocationLine> qb = QueryBuilder.of(StockLocationLine.class);
+
+    qb.add("self.product.inventoryTypeSelect = :inventoryTypeSelect")
+        .bind("inventoryTypeSelect", inventory.getTypeSelect());
+
     if (inventory.getIncludeSubStockLocation()) {
       Set<StockLocation> all = new HashSet<>();
       all.add(inventory.getStockLocation());

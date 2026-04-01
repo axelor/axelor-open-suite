@@ -1,0 +1,3 @@
+---
+title: "Inventory: added product's inventory type filter when filling/editing inventory lines."
+module: axelor-stock
