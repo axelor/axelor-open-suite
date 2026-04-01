@@ -419,6 +419,8 @@ from InvoiceTerm as self
       AND _invoice.invoice_date BETWEEN
       DATE(:fromDate) AND DATE(:toDate)
       AND _invoice.operation_type_select IN (3,4)
+      AND
+      coalesce(_invoice_line.is_show_total, false) = false
       GROUP BY
       _month_no, _category.name
       ORDER BY
