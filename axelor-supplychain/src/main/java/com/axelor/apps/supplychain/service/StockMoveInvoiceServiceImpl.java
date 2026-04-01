@@ -469,7 +469,28 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       }
     }
 
+    linkParentChildInvoiceLines(invoiceLineList);
+
     return invoiceLineList;
+  }
+
+  protected void linkParentChildInvoiceLines(List<InvoiceLine> invoiceLineList) {
+    Map<Long, InvoiceLine> solIdToInvoiceLine = new HashMap<>();
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      if (invoiceLine.getSaleOrderLine() != null) {
+        solIdToInvoiceLine.put(invoiceLine.getSaleOrderLine().getId(), invoiceLine);
+      }
+    }
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
+      if (saleOrderLine != null && saleOrderLine.getParentSaleOrderLine() != null) {
+        InvoiceLine parentInvoiceLine =
+            solIdToInvoiceLine.get(saleOrderLine.getParentSaleOrderLine().getId());
+        if (parentInvoiceLine != null) {
+          invoiceLine.setParentLine(parentInvoiceLine);
+        }
+      }
+    }
   }
 
   @Override
