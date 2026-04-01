@@ -467,7 +467,8 @@
               grid-view="team-grid" if="__config__.app.getApp('base')?.getTeamManagement()"
               hideIf="isEmployee"/>
             <field name="companySet" colSpan="12" widget="Tags" canNew="false"
-              form-view="company-form" grid-view="company-grid"/>
+              form-view="company-form" grid-view="company-grid"
+              onChange="action-partner-method-filter-tag-set-on-company-change"/>
           </panel>
         </panel>
         <panel name="notesPanel" title="Notes" colSpan="12">
@@ -1863,4 +1864,10 @@
       'com.axelor.apps.base.db.Partner'</domain>
     <context name="partnerId" expr="eval:__self__?.id"/>
   </action-view>
+
+  <action-method name="action-partner-method-filter-tag-set-on-company-change">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="filterTagSetOnCompanyChange"/>
+  </action-method>
+
 </object-views>

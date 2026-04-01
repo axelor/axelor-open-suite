@@ -300,7 +300,8 @@
       <field name="team" canEdit="false" colSpan="6" form-view="team-form"
         grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
       <field name="company" colSpan="6" form-view="company-form" grid-view="company-grid"
-        if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+        if="__config__.app.getApp('base')?.getEnableMultiCompany()"
+        onChange="action-lead-method-filter-tag-set-on-company-change"/>
       <field name="agency" colSpan="6" form-view="agency-form" grid-view="agency-grid"
         if="__config__.app.getApp('crm')?.getAgenciesManagement()"/>
       <field name="contactDate" colSpan="6"/>
@@ -667,4 +668,9 @@
     <attribute name="domain" for="tagSet"
       expr="eval: &quot; (${__repo__(MetaModel).findByName('Lead')?.id} IN (self.concernedModelSet.id) OR self.concernedModelSet IS EMPTY) AND (:company IS NULL OR :company MEMBER OF self.companySet OR self.companySet IS EMPTY) AND (self.tradingNameSet IS EMPTY OR EXISTS(SELECT 1 FROM TradingName tn WHERE tn MEMBER OF self.tradingNameSet AND tn.id = ${__user__?.tradingName?.id ?: 0})) &quot;"/>
   </action-attrs>
+
+  <action-method name="action-lead-method-filter-tag-set-on-company-change">
+    <call class="com.axelor.apps.crm.web.LeadController" method="filterTagSetOnCompanyChange"/>
+  </action-method>
+
 </object-views>
