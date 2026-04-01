@@ -45,7 +45,7 @@ public class InvoiceNoteServiceImpl implements InvoiceNoteService {
   }
 
   protected void clearExistingCategoryNotes(Invoice invoice) {
-    if (invoice.getInvoiceNoteList() == null) {
+    if (invoice.getInvoiceNoteList() == null || invoice.getInvoiceNoteList().isEmpty()) {
       return;
     }
     InvoiceNoteType noteTypeREG =
