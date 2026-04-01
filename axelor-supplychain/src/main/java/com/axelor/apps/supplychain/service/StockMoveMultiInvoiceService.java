@@ -72,4 +72,7 @@ public interface StockMoveMultiInvoiceService {
 
   public void checkForAlreadyInvoicedStockMove(List<StockMove> stockMoveList)
       throws AxelorException;
+
+  String getStockMoveDomain(int primaryType, int reversionType, boolean primaryIsNonReversion)
+      throws AxelorException;
 }
