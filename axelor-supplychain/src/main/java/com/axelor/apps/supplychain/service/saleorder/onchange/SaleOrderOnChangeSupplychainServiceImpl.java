@@ -46,6 +46,7 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineFiscalPositionSer
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.repo.PartnerStockSettingsRepository;
+import com.axelor.apps.supplychain.service.pricing.PricingSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderIntercoService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
@@ -67,6 +68,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
   protected SaleOrderStockLocationService saleOrderStockLocationService;
   protected AppBaseService appBaseService;
   protected SaleOrderTaxNumberService saleOrderTaxNumberService;
+  protected PricingSupplychainService pricingSupplychainService;
 
   @Inject
   public SaleOrderOnChangeSupplychainServiceImpl(
@@ -90,7 +92,8 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
       SaleOrderIntercoService saleOrderIntercoService,
       SaleOrderStockLocationService saleOrderStockLocationService,
       AppBaseService appBaseService1,
-      SaleOrderTaxNumberService saleOrderTaxNumberService) {
+      SaleOrderTaxNumberService saleOrderTaxNumberService,
+      PricingSupplychainService pricingSupplychainService) {
     super(
         partnerService,
         saleOrderUserService,
@@ -113,6 +116,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
     this.saleOrderStockLocationService = saleOrderStockLocationService;
     this.appBaseService = appBaseService1;
     this.saleOrderTaxNumberService = saleOrderTaxNumberService;
+    this.pricingSupplychainService = pricingSupplychainService;
   }
 
   @Override
@@ -129,6 +133,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
     values.putAll(setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder));
     values.putAll(getIsIspmRequired(saleOrder));
     values.putAll(getFiscalPosition(saleOrder));
+    values.putAll(computeFiscalPositionPricing(saleOrder));
     values.putAll(updateLinesAfterFiscalPositionChange(saleOrder));
     values.putAll(getComputeSaleOrderMap(saleOrder));
     return values;
@@ -302,6 +307,14 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
     values.put("mainInvoicingAddressStr", saleOrder.getMainInvoicingAddressStr());
     values.put("deliveryAddress", saleOrder.getDeliveryAddress());
     values.put("deliveryAddressStr", saleOrder.getDeliveryAddressStr());
+    return values;
+  }
+
+  protected Map<String, Object> computeFiscalPositionPricing(SaleOrder saleOrder)
+      throws AxelorException {
+    Map<String, Object> values = new HashMap<>();
+    pricingSupplychainService.computeFiscalPositionPricing(saleOrder, saleOrder.getCompany());
+    values.put("fiscalPosition", saleOrder.getFiscalPosition());
     return values;
   }
 

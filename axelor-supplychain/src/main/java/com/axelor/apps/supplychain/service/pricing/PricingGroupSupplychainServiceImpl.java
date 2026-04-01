@@ -16,19 +16,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.contract.service.pricing;
+package com.axelor.apps.supplychain.service.pricing;
 
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.pricing.PricingGenericService;
-import com.axelor.apps.supplychain.service.pricing.PricingGroupSupplychainServiceImpl;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.service.PricingGroupSaleServiceImpl;
 import jakarta.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class PricingGroupContractServiceImpl extends PricingGroupSupplychainServiceImpl {
+public class PricingGroupSupplychainServiceImpl extends PricingGroupSaleServiceImpl {
 
   @Inject
-  public PricingGroupContractServiceImpl(PricingGenericService pricingGenericService) {
+  public PricingGroupSupplychainServiceImpl(PricingGenericService pricingGenericService) {
     super(pricingGenericService);
   }
 
@@ -36,8 +38,14 @@ public class PricingGroupContractServiceImpl extends PricingGroupSupplychainServ
   public String getConcernedModelDomain(Pricing pricing) {
     String domain = super.getConcernedModelDomain(pricing);
 
-    if (PricingRepository.PRICING_TYPE_SELECT_CONTRACT_YEB_YER.equals(pricing.getTypeSelect())) {
-      domain = String.format("self.name = '%s'", InvoiceLine.class.getSimpleName());
+    if (PricingRepository.PRICING_TYPE_SELECT_FISCAL_POSITION_PRICING.equals(
+        pricing.getTypeSelect())) {
+      domain =
+          String.format(
+              "self.name IN (%s)",
+              List.of(SaleOrder.class.getSimpleName()).stream()
+                  .map(str -> String.format("'%s'", str))
+                  .collect(Collectors.joining(",")));
     }
 
     return domain;

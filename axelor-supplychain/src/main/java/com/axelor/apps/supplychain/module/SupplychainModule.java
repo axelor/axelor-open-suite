@@ -307,7 +307,9 @@ import com.axelor.apps.supplychain.service.pricing.FreightCarrierApplyPricingSer
 import com.axelor.apps.supplychain.service.pricing.FreightCarrierApplyPricingServiceImpl;
 import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingService;
 import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingServiceImpl;
-import com.axelor.apps.supplychain.service.pricing.PricingGroupSupplyChainServiceImpl;
+import com.axelor.apps.supplychain.service.pricing.PricingGroupSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.pricing.PricingSupplychainService;
+import com.axelor.apps.supplychain.service.pricing.PricingSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.purchaseorderline.view.PurchaseOrderLineViewServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderAdvancePaymentFetchService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderAdvancePaymentFetchServiceImpl;
@@ -545,6 +547,8 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderLineComputeSupplychainServiceImpl.class);
     bind(SaleOrderLineProductServiceImpl.class)
         .to(SaleOrderLineProductSupplychainServiceImpl.class);
+    bind(PricingGroupSaleServiceImpl.class).to(PricingGroupSupplychainServiceImpl.class);
+    bind(PricingSupplychainService.class).to(PricingSupplychainServiceImpl.class);
     bind(SaleOrderLineProductSupplychainService.class)
         .to(SaleOrderLineProductSupplychainServiceImpl.class);
     bind(SaleOrderLineOnChangeServiceImpl.class)
@@ -599,7 +603,6 @@ public class SupplychainModule extends AxelorModule {
     bind(ShippingService.class).to(ShippingServiceImpl.class);
     bind(FreightCarrierPricingService.class).to(FreightCarrierPricingServiceImpl.class);
     bind(SaleOrderCopySupplychainService.class).to(SaleOrderCopySupplychainServiceImpl.class);
-    bind(PricingGroupSaleServiceImpl.class).to(PricingGroupSupplyChainServiceImpl.class);
     bind(FreightCarrierApplyPricingService.class).to(FreightCarrierApplyPricingServiceImpl.class);
     bind(SaleOrderSplitServiceImpl.class).to(SaleOrderSplitSupplychainServiceImpl.class);
     bind(SaleOrderAdvancePaymentFetchService.class)
