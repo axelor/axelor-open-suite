@@ -660,6 +660,8 @@
       </panel>
       <panel name="invoiceTaxPanel" title="Tax" showTitle="false"
         readonlyIf="statusSelect != 1">
+        <field name="vatLiabilitySelect" colSpan="4" readonly="true"
+          help="Computed from the partner's accounting situation VAT system configuration"/>
         <panel-related name="invoiceLineTaxListPanel" readonlyIf="statusSelect != 1"
           field="invoiceLineTaxList" canRemove="false" canNew="false"
           onChange="action-invoice-method-compute,action-invoice-method-generate-invoice-terms"
@@ -1683,6 +1685,7 @@
     <action name="action-invoice-record-operationsubtype-reset"/>
     <action name="action-invoice-method-payment-mode-condition"/>
     <action name="action-invoice-record-partner-change"/>
+    <action name="action-invoice-method-compute-vat-liability"/>
     <action name="action-invoice-method-get-default-bank-details"/>
   </action-group>
 
@@ -1695,6 +1698,7 @@
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
     <action name="action-invoice-method-set-default-company-tax-number"/>
+    <action name="action-invoice-method-compute-vat-liability"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-partner-onchange">
@@ -1706,6 +1710,7 @@
 
   <action-group name="action-group-account-invoice-partner-onchange-client">
     <action name="action-invoice-record-partner-change"/>
+    <action name="action-invoice-method-compute-vat-liability"/>
     <action name="action-invoice-method-payment-mode-condition"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
@@ -2499,6 +2504,10 @@
 
   <action-method name="action-invoice-method-generate-invoice-terms">
     <call class="com.axelor.apps.account.web.InvoiceController" method="computeInvoiceTerms"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-compute-vat-liability">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="computeVatLiability"/>
   </action-method>
 
   <action-method name="action-invoice-method-compute-invoice-terms-due-dates">

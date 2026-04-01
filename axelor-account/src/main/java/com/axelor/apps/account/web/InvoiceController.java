@@ -35,7 +35,27 @@ import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.*;
+import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
+import com.axelor.apps.account.service.invoice.BankDetailsServiceAccount;
+import com.axelor.apps.account.service.invoice.InvoiceControlService;
+import com.axelor.apps.account.service.invoice.InvoiceDomainService;
+import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
+import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
+import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
+import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.note.InvoiceNoteService;
+import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidatorSyncService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.InvoiceVatLiabilityService;
+import com.axelor.apps.account.service.invoice.LatePaymentInterestInvoiceService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupService;
 import com.axelor.apps.account.service.note.InvoiceNoteService;
@@ -1569,6 +1589,17 @@ public class InvoiceController {
       Beans.get(InvoiceTermDateComputeService.class).fillWithInvoiceDueDate(invoice);
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeVatLiability(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      Integer vatLiability =
+          Beans.get(InvoiceVatLiabilityService.class).computeVatLiability(invoice);
+      response.setValue("vatLiabilitySelect", vatLiability);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

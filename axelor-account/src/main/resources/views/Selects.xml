@@ -777,6 +777,11 @@
     <option value="2">Option on deliveries</option>
   </selection>
 
+  <selection name='iaccount.vat.liability.invoice.select'>
+    <option value="1">Standard regime</option>
+    <option value="2">Option on deliveries</option>
+  </selection>
+
   <selection name='iaccount.vat.system.moveline.select'>
     <option value="0"></option>
     <option value="1">vat.Delivery</option>

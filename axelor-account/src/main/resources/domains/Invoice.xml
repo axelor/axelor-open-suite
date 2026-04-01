@@ -83,6 +83,8 @@
       ref="com.axelor.apps.account.db.FiscalPosition"/>
     <string name="invoiceCategorySelect" title="Invoice category"
       selection="invoice.category.select"/>
+    <integer name="vatLiabilitySelect" title="VAT Liability"
+      selection="iaccount.vat.liability.invoice.select" default="1"/>
 
     <!-- Invoice content -->
     <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice"
@@ -328,6 +330,10 @@
 	    public static final String CATEGORY_GOODS_INVOICE = "goods";
 	    public static final String CATEGORY_SERVICES_INVOICE = "services";
 	    public static final String CATEGORY_MIXED_INVOICE = "mixed";
+
+	    // VAT LIABILITY
+	    public static final int VAT_LIABILITY_STANDARD_REGIME = 1;
+	    public static final int VAT_LIABILITY_OPTION_ON_DELIVERIES = 2;
 	]]></extra-code>
 
     <track>
@@ -374,6 +380,7 @@
       <field name="reasonOfRefusalToPay" on="UPDATE"/>
       <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
       <field name="companyTaxNumber" on="UPDATE"/>
+      <field name="vatLiabilitySelect" on="UPDATE"/>
       <message if="true" on="CREATE">Invoice created</message>
       <message if="statusSelect == 2" tag="important">Validated</message>
       <message if="statusSelect == 3" tag="success">Ventilated</message>

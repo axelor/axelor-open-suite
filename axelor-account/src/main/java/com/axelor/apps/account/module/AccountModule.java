@@ -246,6 +246,8 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceVatLiabilityService;
+import com.axelor.apps.account.service.invoice.InvoiceVatLiabilityServiceImpl;
 import com.axelor.apps.account.service.invoice.LatePaymentInterestInvoiceService;
 import com.axelor.apps.account.service.invoice.LatePaymentInterestInvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
@@ -525,6 +527,8 @@ public class AccountModule extends AxelorModule {
     bind(PaymentVoucherRepository.class).to(PaymentVoucherManagementRepository.class);
 
     bind(InvoiceService.class).to(InvoiceServiceImpl.class);
+
+    bind(InvoiceVatLiabilityService.class).to(InvoiceVatLiabilityServiceImpl.class);
 
     bind(InvoicePrintService.class).to(InvoicePrintServiceImpl.class);
 
