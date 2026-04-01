@@ -138,7 +138,7 @@
           form-view="tax-line-form"
           onSelect="action-invoice-line-method-compute-tax-line-set-on-select" widget="TagSelect"/>
         <field name="ecoTaxAmount" colSpan="2"/>
-        <field name="ecoTaxMention" widget="html" x-lite="true" colSpan="12"/>
+        <field name="ecoTaxMention" colSpan="4"/>
         <field name="exTaxTotal" colSpan="3" readonly="true"/>
         <field name="inTaxTotal" colSpan="3" readonly="true"/>
         <field name="$isReadOnly" hidden="true"/>
@@ -282,7 +282,7 @@
           onChange="action-invoice-line-group-taxline-onchange" grid-view="tax-line-grid"
           form-view="tax-line-form" widget="TagSelect"/>
         <field name="ecoTaxAmount" colSpan="2"/>
-        <field name="ecoTaxMention" widget="html" x-lite="true" colSpan="12"/>
+        <field name="ecoTaxMention" colSpan="4"/>
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
         <field name="invoice" hidden="true"/>
