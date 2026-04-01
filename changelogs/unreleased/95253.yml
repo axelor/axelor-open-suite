@@ -1,0 +1,3 @@
+---
+title: "Invoice chart: fixed the turn over displayed on chart 'Customer Turnover history by month (on invoices)' which wrongly includes end of pack line when show total is true."
+module: axelor-account
