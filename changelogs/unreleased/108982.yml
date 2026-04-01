@@ -1,0 +1,5 @@
+---
+title: "Mass stock move invoicing: fixed partial stock move invoicing."
+module: axelor-stock
+developer: |
+ Added SupplyChainConfigService and StockMoveRepository as parameter in StockMoveMultiInvoiceServiceImpl constructor
