@@ -3,12 +3,14 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
-  <form name="invoice-line-form" model="com.axelor.apps.account.db.InvoiceLine" title="Invoice line">
+  <form name="invoice-line-form" model="com.axelor.apps.account.db.InvoiceLine"
+    title="Invoice line">
     <extend target="//panel-tabs[@name='mainPanelTab']">
       <insert position="after">
         <panel-related name="subInvoiceLinesPanel" field="subLineList"
-          title="Sub invoice lines" showIf="id &amp;&amp; subLineList &amp;&amp; subLineList.length > 0"
-          colSpan="12" canNew="false" canEdit="false" canDelete="false" editable="false">
+          title="Sub invoice lines"
+          showIf="id &amp;&amp; subLineList &amp;&amp; subLineList.length > 0" colSpan="12"
+          canNew="false" canEdit="false" canDelete="false" editable="false">
           <field name="productName" readonly="true"/>
           <field name="qty" readonly="true" x-scale="$nbDecimalDigitForQty"/>
           <field name="unit" readonly="true"/>

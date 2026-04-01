@@ -281,6 +281,17 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     for (SaleOrderLine saleOrderLine : saleOrderLines) {
       if (!saleOrderLine.getManagedInStockMove() || saleOrderLine.getProduct() == null) {
+        if (!CollectionUtils.isEmpty(saleOrderLine.getSubSaleOrderLineList())
+            && hasAnyManagedChild(saleOrderLine)) {
+          StockMoveLine titleLine =
+              stockMoveLineSupplychainService.createStockMoveTitleLine(
+                  stockMove, saleOrderLine, null);
+          if (titleLine != null) {
+            stockMove.addStockMoveLineListItem(titleLine);
+            titleLine.setSequence(stockMove.getStockMoveLineList().size());
+            saleOrderLineToStockMoveLine.put(saleOrderLine.getId(), titleLine);
+          }
+        }
         continue;
       }
       if (existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
@@ -305,6 +316,21 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     }
 
     linkParentStockMoveLines(stockMove, saleOrderLineToStockMoveLine);
+  }
+
+  protected boolean hasAnyManagedChild(SaleOrderLine saleOrderLine) {
+    if (CollectionUtils.isEmpty(saleOrderLine.getSubSaleOrderLineList())) {
+      return false;
+    }
+    for (SaleOrderLine child : saleOrderLine.getSubSaleOrderLineList()) {
+      if (child.getManagedInStockMove()) {
+        return true;
+      }
+      if (hasAnyManagedChild(child)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   protected void linkParentStockMoveLines(
