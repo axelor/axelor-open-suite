@@ -1,0 +1,3 @@
+---
+title: "Invoice/Order: fixed warning message wrongly displayed when no tax is needed."
+module: axelor-account
