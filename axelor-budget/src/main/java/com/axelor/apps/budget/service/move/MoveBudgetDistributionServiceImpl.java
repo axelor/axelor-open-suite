@@ -73,7 +73,8 @@ public class MoveBudgetDistributionServiceImpl implements MoveBudgetDistribution
                 .map(MoveLine::getMove)
                 .map(Move::getStatusSelect)
                 .orElse(MoveRepository.STATUS_NEW)
-        || moveLine.getId() == null) {
+        || moveLine.getId() == null
+        || !moveLine.getIsBudgetImputed()) {
       return;
     }
 
