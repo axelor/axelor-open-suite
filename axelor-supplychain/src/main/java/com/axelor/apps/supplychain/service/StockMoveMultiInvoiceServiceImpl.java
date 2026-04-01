@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
@@ -41,9 +42,11 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -51,8 +54,10 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,6 +80,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected final AppStockService appStockService;
   protected final SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain;
   protected final PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService;
+  protected final SupplyChainConfigService supplyChainConfigService;
+  protected final StockMoveRepository stockMoveRepository;
 
   @Inject
   public StockMoveMultiInvoiceServiceImpl(
@@ -84,7 +91,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       StockMoveInvoiceService stockMoveInvoiceService,
       AppStockService appStockService,
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
-      PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService) {
+      PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
+      SupplyChainConfigService supplyChainConfigService,
+      StockMoveRepository stockMoveRepository) {
     this.invoiceRepository = invoiceRepository;
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
@@ -92,11 +101,12 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     this.appStockService = appStockService;
     this.saleOrderMergingServiceSupplyChain = saleOrderMergingServiceSupplyChain;
     this.purchaseOrderMergingSupplychainService = purchaseOrderMergingSupplychainService;
+    this.supplyChainConfigService = supplyChainConfigService;
+    this.stockMoveRepository = stockMoveRepository;
   }
 
   @Override
   public Entry<List<Long>, String> generateMultipleInvoices(List<Long> stockMoveIdList) {
-    StockMoveRepository stockMoveRepository = Beans.get(StockMoveRepository.class);
     List<Long> invoiceIdList = new ArrayList<>();
 
     StringBuilder stockMovesInError = new StringBuilder();
@@ -768,6 +778,17 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     if (stockMove.getInvoiceSet() != null
         && stockMove.getInvoiceSet().stream()
             .anyMatch(invoice -> invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED)) {
+      Company company = stockMove.getCompany();
+      if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+              && supplyChainConfigService
+                  .getSupplyChainConfig(company)
+                  .getActivateOutStockMovePartialInvoicing())
+          || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+              && supplyChainConfigService
+                  .getSupplyChainConfig(company)
+                  .getActivateIncStockMovePartialInvoicing())) {
+        return;
+      }
       String templateMessage;
       if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
         templateMessage = SupplychainExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS;
@@ -968,5 +989,45 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     }
     invoice.setNote(notes.toString());
     invoice.setProformaComments(proformaComments.toString());
+  }
+
+  @Override
+  public String getStockMoveDomain(
+      int primaryType, int reversionType, boolean primaryIsNonReversion) throws AxelorException {
+    List<StockMove> stockMoveList =
+        stockMoveRepository
+            .all()
+            .filter(
+                "self.statusSelect = :realized "
+                    + "AND ((self.typeSelect = :primaryType AND self.isReversion = :isReversion) "
+                    + "OR (self.typeSelect = :reversionType AND self.isReversion = :notIsReversion)) "
+                    + "AND self.invoicingStatusSelect IN :invoicingStatuses")
+            .bind("realized", StockMoveRepository.STATUS_REALIZED)
+            .bind("primaryType", primaryType)
+            .bind("reversionType", reversionType)
+            .bind("isReversion", !primaryIsNonReversion)
+            .bind("notIsReversion", primaryIsNonReversion)
+            .bind(
+                "invoicingStatuses",
+                List.of(
+                    StockMoveRepository.STATUS_NOT_INVOICED,
+                    StockMoveRepository.STATUS_PARTIALLY_INVOICED,
+                    StockMoveRepository.STATUS_DELAYED_INVOICE))
+            .fetch();
+
+    List<StockMove> filteredStockMoves = new ArrayList<StockMove>();
+    for (StockMove stockMove : stockMoveList) {
+      BigDecimal totalRealQty =
+          ObjectUtils.isEmpty(stockMove.getStockMoveLineList())
+              ? BigDecimal.ZERO
+              : stockMove.getStockMoveLineList().stream()
+                  .map(StockMoveLine::getRealQty)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add);
+      if (stockMoveInvoiceService.computeNonCanceledInvoiceQty(stockMove).compareTo(totalRealQty)
+          < 0) {
+        filteredStockMoves.add(stockMove);
+      }
+    }
+    return "self.id IN (" + StringHelper.getIdListString(filteredStockMoves) + ")";
   }
 }
