@@ -9,7 +9,7 @@
       <insert position="after">
         <field name="defaultEcoTaxAmount" colSpan="2" showIf="productTypeSelect != 'service'"/>
         <field name="defaultEcoTaxMention" showIf="productTypeSelect != 'service'"
-          widget="html" x-lite="true" colSpan="12"/>
+          colSpan="10"/>
       </insert>
     </extend>
   </form>
