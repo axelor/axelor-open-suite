@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -52,6 +53,7 @@ public class MassEntryServiceImpl implements MassEntryService {
   protected MassEntryMoveCreateService massEntryMoveCreateService;
   protected MoveRepository moveRepository;
   protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
+  protected MoveLineMassEntryRepository moveLineMassEntryRepository;
 
   @Inject
   public MassEntryServiceImpl(
@@ -61,7 +63,8 @@ public class MassEntryServiceImpl implements MassEntryService {
       MoveLineMassEntryService moveLineMassEntryService,
       MassEntryMoveCreateService massEntryMoveCreateService,
       MoveRepository moveRepository,
-      MoveLineMassEntryRecordService moveLineMassEntryRecordService) {
+      MoveLineMassEntryRecordService moveLineMassEntryRecordService,
+      MoveLineMassEntryRepository moveLineMassEntryRepository) {
     this.massEntryToolService = massEntryToolService;
     this.massEntryVerificationService = massEntryVerificationService;
     this.moveToolService = moveToolService;
@@ -69,6 +72,7 @@ public class MassEntryServiceImpl implements MassEntryService {
     this.massEntryMoveCreateService = massEntryMoveCreateService;
     this.moveRepository = moveRepository;
     this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
+    this.moveLineMassEntryRepository = moveLineMassEntryRepository;
   }
 
   @Override
@@ -217,11 +221,9 @@ public class MassEntryServiceImpl implements MassEntryService {
   public Map<List<Long>, String> validateMassEntryMove(Move move) {
     Map<List<Long>, String> resultMap = new HashMap<>();
     String errors = "";
-    List<Move> moveList;
     List<Long> moveIdList = new ArrayList<>();
-    List<Integer> temporaryErrorIdList = new ArrayList<>();
-    int i = 0;
     move = moveRepository.find(move.getId());
+    Long massEntryMoveId = move.getId();
 
     if (massEntryToolService.verifyJournalAuthorizeNewMove(
             move.getMoveLineMassEntryList(), move.getJournal())
@@ -234,19 +236,21 @@ public class MassEntryServiceImpl implements MassEntryService {
       for (Integer x : uniqueIdList) {
         Move element = massEntryMoveCreateService.createMoveFromMassEntryList(move, x);
         String moveTemporaryMoveNumber = element.getReference();
+        int temporaryMoveNumber = Integer.parseInt(moveTemporaryMoveNumber);
         try {
           element.setReference(null);
 
           Move generatedMove = massEntryMoveCreateService.generateMassEntryMove(element);
           moveIdList.add(generatedMove.getId());
 
-          for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
-            if (Objects.equals(
-                Integer.parseInt(moveTemporaryMoveNumber), moveLine.getTemporaryMoveNumber())) {
-              moveLine.setMoveStatusSelect(generatedMove.getStatusSelect());
-              moveLine.setTemporaryMoveNumber(Math.toIntExact(generatedMove.getId()));
-            }
-          }
+          Map<String, Object> updateMap = new HashMap<>();
+          updateMap.put("moveStatusSelect", generatedMove.getStatusSelect());
+          updateMap.put("temporaryMoveNumber", Math.toIntExact(generatedMove.getId()));
+          List<Long> moveLineIds = getMoveLineMassEntryIds(temporaryMoveNumber, massEntryMoveId);
+          Query.of(MoveLineMassEntry.class)
+              .filter("self.id in :ids")
+              .bind("ids", moveLineIds)
+              .update(updateMap);
 
         } catch (Exception e) {
           TraceBackService.trace(e);
@@ -254,29 +258,41 @@ public class MassEntryServiceImpl implements MassEntryService {
             errors = errors.concat(", ");
           }
           errors = errors.concat(moveTemporaryMoveNumber);
-          temporaryErrorIdList.add(Integer.parseInt(moveTemporaryMoveNumber));
+          List<Long> moveLineIds = getMoveLineMassEntryIds(temporaryMoveNumber, massEntryMoveId);
+          Query.of(MoveLineMassEntry.class)
+              .filter("self.id in :ids")
+              .bind("ids", moveLineIds)
+              .update("moveStatusSelect", MoveRepository.STATUS_NEW);
         } finally {
           JPA.clear();
-          move = moveRepository.find(move.getId());
+          move = moveRepository.find(massEntryMoveId);
         }
       }
 
-      for (int tempMoveNumber : temporaryErrorIdList) {
-        for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
-          if (Objects.equals(tempMoveNumber, moveLine.getTemporaryMoveNumber())) {
-            moveLine.setMoveStatusSelect(MoveRepository.STATUS_NEW);
-          }
-        }
-      }
       if (errors.length() == 0) {
-        move.setMassEntryStatusSelect(MoveRepository.MASS_ENTRY_STATUS_VALIDATED);
+        Query.of(Move.class)
+            .filter("self.id = :id")
+            .bind("id", massEntryMoveId)
+            .update("massEntryStatusSelect", MoveRepository.MASS_ENTRY_STATUS_VALIDATED);
       }
     }
 
-    moveRepository.save(move);
     resultMap.put(moveIdList, errors);
 
     return resultMap;
+  }
+
+  protected List<Long> getMoveLineMassEntryIds(int temporaryMoveNumber, Long moveId) {
+    return moveLineMassEntryRepository
+        .all()
+        .filter(
+            "self.temporaryMoveNumber = ? AND self.moveMassEntry = ?", temporaryMoveNumber, moveId)
+        .order("id")
+        .select("id")
+        .fetch(0, 0)
+        .stream()
+        .map(m -> (Long) m.get("id"))
+        .collect(Collectors.toList());
   }
 
   protected void generatedTaxAndCounterPart(
