@@ -1,0 +1,3 @@
+---
+title: "Sale: fixed circular self-injection of ProductRestService in ProductRestServiceImpl."
+module: axelor-sale
