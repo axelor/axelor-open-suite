@@ -367,36 +367,36 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     applyEmergencyFlag(line);
 
     BigDecimal nightHoursRaw = calculateNightHours(line);
+    BigDecimal breakTime = line.getBreakTime() != null ? line.getBreakTime() : BigDecimal.ZERO;
 
-    Map<String, BigDecimal> extraChargeBreakdown =
-        calculateExtraChargeBreakdown(line, nightHoursRaw);
-
-    BigDecimal nightHoursAfterBreak = nightHoursRaw;
-    if (line.getBreakTime() != null && nightHoursRaw.compareTo(BigDecimal.ZERO) > 0) {
-      nightHoursAfterBreak = nightHoursRaw.subtract(line.getBreakTime());
-      if (nightHoursAfterBreak.compareTo(BigDecimal.ZERO) < 0) {
-        nightHoursAfterBreak = BigDecimal.ZERO;
+    // resolve break time deduction from night hours first (if any), then normal hours if break
+    // exceeds night hours
+    BigDecimal nightHoursBillable;
+    if (nightHoursRaw.compareTo(BigDecimal.ZERO) > 0) {
+      nightHoursBillable = nightHoursRaw.subtract(breakTime);
+      if (nightHoursBillable.compareTo(BigDecimal.ZERO) < 0) {
+        nightHoursBillable = BigDecimal.ZERO;
       }
-
-      if (extraChargeBreakdown.containsKey(ExtrachargeType.NIGHT.name())) {
-        extraChargeBreakdown.put(ExtrachargeType.NIGHT.name(), nightHoursAfterBreak);
-      }
+    } else {
+      nightHoursBillable = BigDecimal.ZERO;
     }
 
-    line.setNightHours(nightHoursAfterBreak);
-    line.setIsNightShift(nightHoursAfterBreak.compareTo(BigDecimal.ZERO) > 0);
+    // bill break down
+    Map<String, BigDecimal> extraChargeBreakdown =
+        calculateExtraChargeBreakdown(line, nightHoursBillable);
 
-    // Serialize extra charge breakdown to JSON
+    // set night hours fields
+    line.setNightHours(nightHoursBillable);
+    line.setIsNightShift(nightHoursBillable.compareTo(BigDecimal.ZERO) > 0);
+
     try {
       String extraChargeBreakdownString = OBJECT_MAPPER.writeValueAsString(extraChargeBreakdown);
       line.setExtraChargeBreakdown(extraChargeBreakdownString);
     } catch (JsonProcessingException e) {
       log.error("Error serializing extra charge breakdown to JSON: {}", e.getMessage());
-      // Set to empty JSON object on error
       line.setExtraChargeBreakdown("{}");
     }
 
-    // Keep normal duration as-is
     line.setHoursDuration(line.getDuration());
     line.setDurationForCustomer(line.getDuration());
   }
@@ -565,39 +565,59 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
    * hours that qualify as extra charges.
    *
    * @param line The timesheet line to analyze
-   * @param nightHours The night hours (should be RAW hours before break subtraction)
+   * @param nightHoursBillable The night hours (should be RAW hours before break subtraction)
    * @return Map of extra charge types to hours
    */
   private Map<String, BigDecimal> calculateExtraChargeBreakdown(
-      TimesheetLine line, BigDecimal nightHours) {
+      TimesheetLine line, BigDecimal nightHoursBillable) {
     Map<String, BigDecimal> breakdown = new HashMap<>();
 
-    // Calculate Saturday hours overlap
-    BigDecimal saturdayHours = calculateDayTypeOverlap(line, DayOfWeek.SATURDAY);
-    if (saturdayHours.compareTo(BigDecimal.ZERO) > 0) {
-      breakdown.put(ExtrachargeType.SATURDAY.name(), saturdayHours);
+    // Billable hours is the net duration (break already excluded)
+    BigDecimal billableHours = line.getDuration() != null ? line.getDuration() : BigDecimal.ZERO;
+
+    // Raw clock duration (used only for computing proportions per day-type)
+    Duration rawDuration = Duration.between(line.getStartTime(), line.getEndTime());
+    if (rawDuration.isNegative()) rawDuration = rawDuration.plusDays(1);
+    BigDecimal rawHours =
+        BigDecimal.valueOf(rawDuration.toMinutes() / 60.0).setScale(6, RoundingMode.HALF_UP);
+
+    // Saturday
+    BigDecimal saturdayRaw = calculateDayTypeOverlap(line, DayOfWeek.SATURDAY);
+    BigDecimal saturdayBillable = scaleToBillableHours(saturdayRaw, rawHours, billableHours);
+    if (saturdayBillable.compareTo(BigDecimal.ZERO) > 0) {
+      breakdown.put(ExtrachargeType.SATURDAY.name(), saturdayBillable);
     }
 
-    // Calculate Sunday hours overlap
-    BigDecimal sundayHours = calculateDayTypeOverlap(line, DayOfWeek.SUNDAY);
-    if (sundayHours.compareTo(BigDecimal.ZERO) > 0) {
-      breakdown.put(ExtrachargeType.SUNDAY.name(), sundayHours);
+    // Sunday
+    BigDecimal sundayRaw = calculateDayTypeOverlap(line, DayOfWeek.SUNDAY);
+    BigDecimal sundayBillable = scaleToBillableHours(sundayRaw, rawHours, billableHours);
+    if (sundayBillable.compareTo(BigDecimal.ZERO) > 0) {
+      breakdown.put(ExtrachargeType.SUNDAY.name(), sundayBillable);
     }
 
-    // Calculate holiday hours overlap
-    BigDecimal holidayHours = calculateHolidayOverlap(line);
-    if (holidayHours.compareTo(BigDecimal.ZERO) > 0) {
-      breakdown.put(ExtrachargeType.HOLIDAY.name(), holidayHours);
-      // holiday overrides weekend
+    // Holiday
+    BigDecimal holidayRaw = calculateHolidayOverlap(line);
+    BigDecimal holidayBillable = scaleToBillableHours(holidayRaw, rawHours, billableHours);
+    if (holidayBillable.compareTo(BigDecimal.ZERO) > 0) {
+      breakdown.put(ExtrachargeType.HOLIDAY.name(), holidayBillable);
+      // Holiday overrides weekend
       breakdown.remove(ExtrachargeType.SATURDAY.name());
       breakdown.remove(ExtrachargeType.SUNDAY.name());
     }
 
-    if (nightHours.compareTo(BigDecimal.ZERO) > 0) {
-      breakdown.put(ExtrachargeType.NIGHT.name(), nightHours);
+    // Night hours already have break deducted — add directly
+    if (nightHoursBillable.compareTo(BigDecimal.ZERO) > 0) {
+      breakdown.put(ExtrachargeType.NIGHT.name(), nightHoursBillable);
     }
 
     return breakdown;
+  }
+
+  private BigDecimal scaleToBillableHours(
+      BigDecimal rawOverlap, BigDecimal rawHours, BigDecimal billableHours) {
+    if (rawOverlap.compareTo(BigDecimal.ZERO) == 0) return BigDecimal.ZERO;
+    if (rawHours.compareTo(BigDecimal.ZERO) == 0) return BigDecimal.ZERO;
+    return rawOverlap.multiply(billableHours).divide(rawHours, 2, RoundingMode.HALF_UP);
   }
 
   /**
