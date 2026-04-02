@@ -1,3 +1,0 @@
----
-title: "Sale/Purchase order: fixed advance payment invoice generated with multiple lines instead of a single one in case of same taxes."
-module: axelor-supplychain

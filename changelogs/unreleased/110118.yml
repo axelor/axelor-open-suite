@@ -1,5 +1,0 @@
----
-title: "Purchase order lines: fixed the slowdown when selecting a product."
-module: axelor-purchase
-developer: |
-  Changed the SupplierCatalogServiceImpl constructor to use AppBaseService appBaseService and inject SupplierCatalogRepository.
