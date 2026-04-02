@@ -265,6 +265,17 @@ public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineService
     return saleOrderLineMap;
   }
 
+  @Override
+  public void initQtyToDeliverForAll(List<SaleOrderLine> lines) {
+    if (ObjectUtils.isEmpty(lines)) {
+      return;
+    }
+    for (SaleOrderLine line : lines) {
+      line.setQtyToDeliver(computeQtyToDeliver(line));
+      initQtyToDeliverForAll(line.getSubSaleOrderLineList());
+    }
+  }
+
   protected BigDecimal getInvoicedQty(SaleOrderLine saleOrderLine) {
 
     TypedQuery<BigDecimal> query =
