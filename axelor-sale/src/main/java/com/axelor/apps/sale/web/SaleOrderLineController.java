@@ -44,6 +44,7 @@ import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineInitValu
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
+import com.axelor.apps.sale.service.saleorderline.subline.SaleOrderLineCommercialBomService;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDomainService;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDummyService;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewService;
@@ -160,6 +161,10 @@ public class SaleOrderLineController {
         saleOrderLineMap.putAll(
             Beans.get(SaleOrderLineDummyService.class)
                 .getOnProductChangeDummies(saleOrderLine, saleOrder));
+        saleOrderLineMap.put(
+            "subSaleOrderLineList",
+            Beans.get(SaleOrderLineCommercialBomService.class)
+                .createSubLinesFromCommercialBom(saleOrderLine, saleOrder));
         response.setAttrs(
             Beans.get(SaleOrderLineViewService.class)
                 .getProductOnChangeAttrs(saleOrderLine, saleOrder));
