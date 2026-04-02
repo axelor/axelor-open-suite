@@ -1,0 +1,3 @@
+---
+title: "Payment session: fixed session total amount decreasing after validation with compensation."
+module: axelor-account
