@@ -397,6 +397,13 @@
           <field name="mainAddress" form-view="address-form" grid-view="address-grid"
             canNew="true" colSpan="12"/>
         </panel>
+        <panel name="LinkPanel" title="Link" showIf="!isContact &amp;&amp; isCustomer"
+          colSpan="12">
+          <field name="tradingNameSet" requiredIf="!isContact &amp;&amp; isCustomer"
+            colSpan="6" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
+            widget="Tags" onSelect="action-partner-attrs-set-trading-name-domain"
+            onChange="action-partner-method-filter-tag-set"/>
+        </panel>
         <panel name="postalAddressesPanel" title="Postal addresses" colSpan="12"
           hideIf="isEmployee">
           <static name="invoiceAndDeliveryAddressText" hidden="true" colSpan="12">
@@ -468,7 +475,7 @@
               hideIf="isEmployee"/>
             <field name="companySet" colSpan="12" widget="Tags" canNew="false"
               form-view="company-form" grid-view="company-grid"
-              onChange="action-partner-method-filter-tag-set-on-company-change"/>
+              onChange="action-partner-group-company-change"/>
           </panel>
         </panel>
         <panel name="notesPanel" title="Notes" colSpan="12">
@@ -1865,9 +1872,25 @@
     <context name="partnerId" expr="eval:__self__?.id"/>
   </action-view>
 
-  <action-method name="action-partner-method-filter-tag-set-on-company-change">
-    <call class="com.axelor.apps.base.web.PartnerController"
-      method="filterTagSetOnCompanyChange"/>
+  <action-method name="action-partner-method-filter-tag-set">
+    <call class="com.axelor.apps.base.web.PartnerController" method="filterTagSet"/>
   </action-method>
+
+  <action-group name="action-partner-group-company-change">
+    <action name="action-partner-record-change-trading-name-set"/>
+    <action name="action-partner-method-filter-tag-set"/>
+  </action-group>
+
+  <action-record name="action-partner-record-change-trading-name-set"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="tradingNameSet"
+      expr="eval: tradingNameSet?.findAll{ it.company == null || it.company?.id in companySet*.id }"
+      if="tradingNameSet &amp;&amp; tradingNameSet.size() > 0"/>
+  </action-record>
+
+  <action-attrs name="action-partner-attrs-set-trading-name-domain">
+    <attribute name="domain" for="tradingNameSet"
+      expr="eval: &quot; self.company IS NULL OR self.company.id IN (${((companySet ?: [])*.id+[0]).join(',')})&quot;"/>
+  </action-attrs>
 
 </object-views>
