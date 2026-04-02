@@ -303,7 +303,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         } else if (paymentSession.getStatusSelect()
                 == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || this.shouldBeProcessed(invoiceTerm)) {
-          offset++;
+          offset += invoiceTermList.size();
 
           if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) != 0) {
             this.processInvoiceTerm(
@@ -1290,6 +1290,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       InvoiceTerm invoiceTerm = invoiceTermRepo.find(entry.getKey());
       if (invoiceTerm != null) {
         invoiceTerm.setPaymentAmount(invoiceTerm.getPaymentAmount().subtract(entry.getValue()));
+        invoiceTerm.setAmountPaid(invoiceTerm.getPaymentAmount());
         invoiceTermRepo.save(invoiceTerm);
       }
     }
