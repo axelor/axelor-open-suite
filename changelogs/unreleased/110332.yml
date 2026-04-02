@@ -1,0 +1,5 @@
+---
+title: "BankDetails: add field InvoiceNoteType."
+module: axelor-account
+developer: |
+  - Invoice: removed specificNoteOnInvoiceToDisplayPanel and added bank detail note computation in note lists on ventilation.

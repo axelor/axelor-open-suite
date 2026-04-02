@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.InvoiceProductStatement;
 import com.axelor.apps.account.db.repo.InvoiceNoteTypeRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -185,6 +186,23 @@ public class InvoiceNoteCreationHelper {
       return;
     }
     InvoiceNote invoiceNote = createInvoiceNote(noteTypeREG, noteContent);
+    invoice.addInvoiceNoteListItem(invoiceNote);
+  }
+
+  protected static void generateBankDetailsNote(Invoice invoice) throws AxelorException {
+    BankDetails bankDetails = invoice.getCompanyBankDetails();
+    if (bankDetails == null || StringUtils.isBlank(bankDetails.getSpecificNoteOnInvoice())) {
+      return;
+    }
+    if (bankDetails.getInvoiceNoteType() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          AccountExceptionMessage.MISSING_BANK_DETAILS_NOTE_TYPE,
+          bankDetails,
+          bankDetails.getSpecificNoteOnInvoice());
+    }
+    InvoiceNote invoiceNote =
+        createInvoiceNote(bankDetails.getInvoiceNoteType(), bankDetails.getSpecificNoteOnInvoice());
     invoice.addInvoiceNoteListItem(invoiceNote);
   }
 
