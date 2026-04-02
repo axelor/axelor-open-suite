@@ -6,7 +6,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="CommercialBom" table="BASE_COMMERCIAL_BOM">
+  <entity name="CommercialBom">
 
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
       required="true"/>
