@@ -1,3 +1,0 @@
----
-title: "Sale: optimized margin computation by caching considerZeroCost flag outside loops."
-module: axelor-sale

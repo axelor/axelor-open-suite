@@ -1,9 +1,0 @@
----
-title: "Production: fixed machine charge dashboard percentage precision by using seconds instead of truncated minutes."
-module: axelor-production
-developer: |
- Changed some OperationOrderChartServiceImpl method's names.
- - calculateNumberOfMinutesPerHour in calculateNumberOfSecondsPerHour
- - getNumberOfMinutesMachineUsedTotal in getNumberOfSecondsMachineUsedTotal
- - getNumberOfMinutesPerDay in calculatePercentagePerDay
- - calculateMinutes in calculateSeconds

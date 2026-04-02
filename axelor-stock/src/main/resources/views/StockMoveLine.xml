@@ -61,6 +61,7 @@
     <field name="trackingNumber"
       canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('$trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isSaleTrackingManaged'))"
       onSelect="action-stock-move-line-attrs-tracking-number-domain"
+      onChange="action-stock-move-line-method-fill-stock-location-from-tracking-number"
       form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"
       readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') > 2"/>
     <field name="$trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
@@ -230,7 +231,7 @@
       <field name="stockMove.company.stockConfig.customsMassUnit" colSpan="3"/>
       <field name="trackingNumber"
         canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('$trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isSaleTrackingManaged'))"
-        onChange="action-stock-move-line-record-product"
+        onChange="action-stock-move-line-record-product,action-stock-move-line-method-fill-stock-location-from-tracking-number"
         form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"
         onSelect="action-stock-move-line-attrs-tracking-number-domain"
         readonlyIf="$get('stockMove.statusSelect') > 2"/>
@@ -794,6 +795,12 @@
     <call class="com.axelor.apps.stock.web.StockMoveLineController" method="fillStockLocation"/>
   </action-method>
 
+  <action-method
+    name="action-stock-move-line-method-fill-stock-location-from-tracking-number">
+    <call class="com.axelor.apps.stock.web.StockMoveLineController"
+      method="fillStockLocationFromTrackingNumber"/>
+  </action-method>
+
   <action-record name="action-stock-move-line-record-product"
     model="com.axelor.apps.stock.db.StockMoveLine">
     <field name="product" expr="eval: trackingNumber.product"
@@ -821,7 +828,10 @@
                EXISTS (
                   SELECT sll.id FROM StockLocationLine sll
                     WHERE sll.trackingNumber.id = self.id
-                    AND sll.detailsStockLocation.id = ${fromStockLocation?.id}
+                    AND (sll.futureQty != 0 OR sll.currentQty != 0)
+                    AND (sll.detailsStockLocation.id = ${fromStockLocation?.id}
+                         OR (sll.detailsStockLocation.parentStockLocation.id = ${fromStockLocation?.id}
+                             AND sll.detailsStockLocation.usableOnSaleOrder = true))
                )
                OR NOT EXISTS (
                  SELECT stockLocationLine.id FROM StockLocationLine stockLocationLine
