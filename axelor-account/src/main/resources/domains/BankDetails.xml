@@ -11,6 +11,8 @@
     <many-to-one name="bankAccount" ref="com.axelor.apps.account.db.Account"
       title="Bank accounting account"/>
     <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"/>
+    <many-to-one name="invoiceNoteType" title="Invoice note type"
+      ref="com.axelor.apps.account.db.InvoiceNoteType"/>
 
     <track>
       <field name="bankAccount" on="UPDATE"/>

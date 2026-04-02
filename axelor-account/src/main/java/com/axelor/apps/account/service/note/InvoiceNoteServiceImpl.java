@@ -53,6 +53,8 @@ public class InvoiceNoteServiceImpl implements InvoiceNoteService {
     InvoiceNoteCreationHelper.generateSupplierNote(invoice);
 
     InvoiceNoteCreationHelper.generateFinancialDiscountNote(invoice, invoice.getCompany());
+
+    InvoiceNoteCreationHelper.generateBankDetailsNote(invoice);
   }
 
   @Override

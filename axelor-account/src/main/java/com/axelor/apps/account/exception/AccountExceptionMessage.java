@@ -1874,4 +1874,6 @@ public final class AccountExceptionMessage {
   public static String MISSING_PENALTY_RATE_NOTE =
       /*$$(*/ "There is no penalty rate note on the invoice %s . This field is required, please fix it." /*)*/;
   public static String UNKNOWN_SCOPE_VALUE = /*$$(*/ "Unknown scope value %s" /*)*/;
+  public static String MISSING_BANK_DETAILS_NOTE_TYPE = /*$$(*/
+      "Bank detail %s doesn't have a note type defined for note %s." /*)*/;
 }

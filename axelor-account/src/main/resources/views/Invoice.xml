@@ -798,11 +798,6 @@
           title="Comment to display on proforma" colSpan="12">
           <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
         </panel>
-        <panel name="specificNoteOnInvoiceToDisplayPanel" title="Bank details specific note"
-          colSpan="12" hidden="true" showIf="companyBankDetails.specificNoteOnInvoice">
-          <field name="companyBankDetails.specificNoteOnInvoice" widget="html" colSpan="12"
-            showTitle="false"/>
-        </panel>
         <panel name="legalNoticePanel" title="Legal Notice" colSpan="12"
           if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
           <field name="legalNotice" requiredIf="financialDiscount" widget="html" colSpan="12"
