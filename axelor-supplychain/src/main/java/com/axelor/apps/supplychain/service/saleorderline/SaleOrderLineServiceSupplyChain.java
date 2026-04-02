@@ -98,4 +98,12 @@ public interface SaleOrderLineServiceSupplyChain {
   void updateStockMoveReservationDateTime(SaleOrderLine saleOrderLine) throws AxelorException;
 
   Map<String, Object> updateRequestedReservedQty(SaleOrderLine saleOrderLine);
+
+  /**
+   * Initialize qtyToDeliver recursively for all lines and their sub-lines. Called at order
+   * confirmation.
+   *
+   * @param lines root-level sale order lines
+   */
+  void initQtyToDeliverForAll(List<SaleOrderLine> lines);
 }

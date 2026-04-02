@@ -392,6 +392,8 @@ import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSup
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineSublineService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineSublineServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewServiceSupplychain;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineOnSaleSupplyChangeService;
@@ -456,6 +458,7 @@ public class SupplychainModule extends AxelorModule {
     bind(IntercoService.class).to(IntercoServiceImpl.class);
     bind(StockLocationLineServiceImpl.class).to(StockLocationLineServiceSupplychainImpl.class);
     bind(SaleOrderLineServiceSupplyChain.class).to(SaleOrderLineServiceSupplyChainImpl.class);
+    bind(SaleOrderLineSublineService.class).to(SaleOrderLineSublineServiceImpl.class);
     bind(SupplyChainConfigService.class).to(SupplyChainConfigServiceImpl.class);
     bind(SupplychainBatchRepository.class).to(SupplychainBatchSupplychainRepository.class);
     bind(SubscriptionInvoiceService.class).to(SubscriptionInvoiceServiceImpl.class);
