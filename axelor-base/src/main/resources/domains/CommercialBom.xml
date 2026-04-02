@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models
+  https://axelor.com/xml/ns/domain-models/domain-models_8.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="CommercialBom" table="BASE_COMMERCIAL_BOM">
+
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
+      required="true"/>
+    <decimal name="qty" title="Quantity" default="1" precision="20" scale="10"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <one-to-many name="commercialBomList" ref="com.axelor.apps.base.db.CommercialBom"
+      title="Components" mappedBy="parentCommercialBom"/>
+    <many-to-one name="parentCommercialBom" ref="com.axelor.apps.base.db.CommercialBom"
+      title="Parent BOM"/>
+
+  </entity>
+
+</domain-models>
