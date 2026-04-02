@@ -462,4 +462,19 @@ public class StockMoveLineController {
     Beans.get(StockMoveLineService.class).qtyOnChange(stockMoveLine, stockMove);
     response.setValue("companyPurchasePrice", stockMoveLine.getCompanyPurchasePrice());
   }
+
+  public void fillStockLocationFromTrackingNumber(ActionRequest request, ActionResponse response) {
+    try {
+      StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+      StockMove stockMove = getStockMove(request, stockMoveLine);
+      if (stockMove != null) {
+        Beans.get(StockMoveLineStockLocationService.class)
+            .fillStockLocationFromTrackingNumber(stockMoveLine, stockMove);
+        response.setValue("fromStockLocation", stockMoveLine.getFromStockLocation());
+        response.setValue("toStockLocation", stockMoveLine.getToStockLocation());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

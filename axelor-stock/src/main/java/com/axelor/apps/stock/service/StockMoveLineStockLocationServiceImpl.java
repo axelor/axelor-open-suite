@@ -23,29 +23,35 @@ import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.DefaultStockLocationBySite;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class StockMoveLineStockLocationServiceImpl implements StockMoveLineStockLocationService {
 
   protected AppBaseService appBaseService;
   protected AppStockService appStockService;
   protected StockLocationService stockLocationService;
+  protected StockLocationLineFetchService stockLocationLineFetchService;
 
   @Inject
   public StockMoveLineStockLocationServiceImpl(
       AppBaseService appBaseService,
       AppStockService appStockService,
-      StockLocationService stockLocationService) {
+      StockLocationService stockLocationService,
+      StockLocationLineFetchService stockLocationLineFetchService) {
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
     this.stockLocationService = stockLocationService;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
   }
 
   @Override
@@ -177,5 +183,61 @@ public class StockMoveLineStockLocationServiceImpl implements StockMoveLineStock
         stockLocationList.stream()
             .map(location -> location.getId().toString())
             .collect(Collectors.joining(",")));
+  }
+
+  @Override
+  public void fillStockLocationFromTrackingNumber(
+      StockMoveLine stockMoveLine, StockMove stockMove) {
+    if (!appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine()) {
+      return;
+    }
+    TrackingNumber trackingNumber = stockMoveLine.getTrackingNumber();
+    Product product = stockMoveLine.getProduct();
+    if (trackingNumber == null || product == null) {
+      return;
+    }
+    Integer typeSelect = stockMove.getTypeSelect();
+    StockLocation parentStockLocation = null;
+
+    if (typeSelect == StockMoveRepository.TYPE_OUTGOING) {
+      parentStockLocation = stockMove.getFromStockLocation();
+    } else if (typeSelect == StockMoveRepository.TYPE_INCOMING) {
+      parentStockLocation = stockMove.getToStockLocation();
+    }
+    if (parentStockLocation == null) {
+      return;
+    }
+    List<StockLocationLine> detailStockLocationLines =
+        stockLocationLineFetchService.getDetailLocationLines(product, trackingNumber);
+
+    if (CollectionUtils.isEmpty(detailStockLocationLines)) {
+      return;
+    }
+    StockLocation stockLocation = null;
+    for (StockLocationLine line : detailStockLocationLines) {
+      StockLocation detailStockLocation = line.getDetailsStockLocation();
+      if (detailStockLocation == null
+          || (line.getCurrentQty().signum() == 0 && line.getFutureQty().signum() == 0)) {
+        continue;
+      }
+      if (isStockLocationMatchingParent(detailStockLocation, parentStockLocation)) {
+        stockLocation = detailStockLocation;
+        break;
+      }
+    }
+    if (stockLocation == null) {
+      return;
+    }
+    if (typeSelect == StockMoveRepository.TYPE_OUTGOING) {
+      stockMoveLine.setFromStockLocation(stockLocation);
+    } else if (typeSelect == StockMoveRepository.TYPE_INCOMING) {
+      stockMoveLine.setToStockLocation(stockLocation);
+    }
+  }
+
+  protected boolean isStockLocationMatchingParent(
+      StockLocation detailStockLocation, StockLocation parentStockLocation) {
+    return detailStockLocation.equals(parentStockLocation)
+        || parentStockLocation.equals(detailStockLocation.getParentStockLocation());
   }
 }
