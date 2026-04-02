@@ -1,3 +1,0 @@
----
-title: "Bank order: fixed an issue where bank order file was accessible via DMSFile."
-module: axelor-bank-payment

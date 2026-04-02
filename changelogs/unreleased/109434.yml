@@ -1,3 +1,0 @@
----
-title: "Production: fixed an issue where using 'Consume in stock moves' on a Manufacturing Order could also realize finished-product stock moves."
-module: axelor-production
