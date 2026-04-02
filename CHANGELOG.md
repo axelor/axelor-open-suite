@@ -1,3 +1,38 @@
+## [8.2.40] (2026-04-02)
+
+### Fixes
+#### Account
+
+* Payment session: fixed session total amount decreasing after validation with compensation.
+* Payment voucher: fixed moves with 'ignore in debt recovery' not appearing in invoice terms retrieval.
+* Mass entry: fixed the issue where mass entry move status is not updated after validation.
+* Invoice chart: fixed the turn over displayed on chart 'Customer Turnover history by month (on invoices)' which wrongly includes end of pack line when show total is true.
+
+#### Bank Payment
+
+* Move: added a warning when move lines are linked to a validated bank reconciliation.
+
+#### Budget
+
+* Budget: fixed the duplicated budget imputation when adding a budget on move linked to an invoice.
+
+#### Contract
+
+* Contract version: fixed duration selections to exclude unrelated values.
+* Contract: fixed contract lines order not preserved on new version creation.
+
+#### Human Resource
+
+* Timesheet: fixed editor labels not being translated.
+* Timesheet: fixed missing New and Delete buttons in the timesheet line editor.
+
+
+### Developer
+
+#### Bank Payment
+
+Added BankReconciliationLineRepository as parameter in the MoveAttrsBankPaymentServiceImpl constructor
+
 ## [8.2.39] (2026-03-19)
 
 ### Fixes
@@ -2597,6 +2632,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.40]: https://github.com/axelor/axelor-open-suite/compare/v8.2.39...v8.2.40
 [8.2.39]: https://github.com/axelor/axelor-open-suite/compare/v8.2.38...v8.2.39
 [8.2.38]: https://github.com/axelor/axelor-open-suite/compare/v8.2.37...v8.2.38
 [8.2.37]: https://github.com/axelor/axelor-open-suite/compare/v8.2.36...v8.2.37
