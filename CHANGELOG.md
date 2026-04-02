@@ -1,3 +1,58 @@
+## [7.2.64] (2026-04-02)
+
+### Fixes
+#### Base
+
+* Partner: fixed IBAN validation not enforced on supplier and customer forms.
+
+#### Account
+
+* Payment voucher: fixed moves with 'ignore in debt recovery' not appearing in invoice terms retrieval.
+* Invoice chart: fixed the turn over displayed on chart 'Customer Turnover history by month (on invoices)' which wrongly includes end of pack line when show total is true.
+
+#### Bank Payment
+
+* Bank order: fixed an issue where bank order file was accessible via DMSFile.
+
+#### Contract
+
+* Contract version: fixed duration selections to exclude unrelated values.
+* Contract: fixed contract lines order not preserved on new version creation.
+
+#### Production
+
+* Production: fixed an issue where using 'Consume in stock moves' on a Manufacturing Order could also realize finished-product stock moves.
+* Manufacturing order: fixed an issue where cost sheet generated had a wrong status.
+
+#### Purchase
+
+* Purchase orders: fixed slowdown when adding many order lines.
+* Purchase order lines: fixed the slowdown when selecting a product.
+
+#### Sale
+
+* Configurator: fixed unique constraint violation when importing a configurator with numeric attribute names.
+
+#### Stock
+
+* Mass stock move invoicing: fixed partial stock move invoicing.
+
+#### Supply Chain
+
+* Sale/Purchase order: fixed invoiced amount not cumulating when ventilating multiple invoices.
+* Stock move: fixed missing fiscal position on invoices generated from direct stock moves and backorders.
+
+
+### Developer
+
+#### Purchase
+
+Changed the SupplierCatalogServiceImpl constructor to use AppBaseService appBaseService and inject SupplierCatalogRepository.
+
+#### Stock
+
+Added SupplyChainConfigService and StockMoveRepository as parameter in StockMoveMultiInvoiceServiceImpl constructor
+
 ## [7.2.63] (2026-03-19)
 
 ### Fixes
@@ -2964,6 +3019,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.64]: https://github.com/axelor/axelor-open-suite/compare/v7.2.63...v7.2.64
 [7.2.63]: https://github.com/axelor/axelor-open-suite/compare/v7.2.62...v7.2.63
 [7.2.62]: https://github.com/axelor/axelor-open-suite/compare/v7.2.61...v7.2.62
 [7.2.61]: https://github.com/axelor/axelor-open-suite/compare/v7.2.60...v7.2.61
