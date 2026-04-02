@@ -1,3 +1,0 @@
----
-title: "Budget: fixed the duplicated budget imputation when adding a budget on move linked to an invoice."
-module: axelor-budget

@@ -1,3 +1,0 @@
----
-title: "Configurator: fixed product code being overwritten on sale order line regeneration."
-module: axelor-sale
