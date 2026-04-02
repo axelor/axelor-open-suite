@@ -1,3 +1,0 @@
----
-title: "Production: fixed circular self-injection of BillOfMaterialService in BillOfMaterialServiceImpl."
-module: axelor-production

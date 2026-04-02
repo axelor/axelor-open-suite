@@ -1,3 +1,149 @@
+## [8.3.32] (2026-04-02)
+
+### Fixes
+#### Base
+
+* Tag: fixed tag domain not filtering by trading name.
+* Partner: fixed IBAN validation not enforced on supplier and customer forms.
+* Address: fixed possible npe on save of address.
+* Address: fixed actionPanel visiblity when creating new record.
+
+#### Account
+
+* Payment session: fixed session total amount decreasing after validation with compensation.
+* Payment voucher: fixed moves with 'ignore in debt recovery' not appearing in invoice terms retrieval.
+* Mass entry: fixed the issue where mass entry move status is not updated after validation.
+* Accounting report: fixed general balance report displays empty account name and code for moves at new status.
+* Accounting report: fixed domain filtering on journal, account and partner fields for custom multi-company reports.
+* Invoice: fixed 1 cent gap between reverse charge tax lines.
+* Invoice: fixed tax total computation difference with sale order in ATI mode.
+* Invoice/Order: fixed warning message wrongly displayed when no tax is needed.
+* Accounting entries imported from FEC files now normalize negative debit or credit values.
+* Invoice term: fixed missing move line link when creating a new invoice term on a ventilated invoice.
+* Period: improved anomaly management during the close process so that moves failing validation are reported instead of blocking the entire closure.
+* Accounting entries: fixed the imported amount in currency during FEC imports.
+* Invoice chart: fixed the turn over displayed on chart 'Customer Turnover history by month (on invoices)' which wrongly includes end of pack line when show total is true.
+
+#### Bank Payment
+
+* BankReconciliation: fixed ending balance computation to use currency amount instead of debit/credit when reconciling in a foreign currency.
+* Move: added a warning when move lines are linked to a validated bank reconciliation.
+* Bank order: fixed an issue where bank order file was accessible via DMSFile.
+* Accounting report / Bank reconciliation statement: fixed bank statement lines not displayed on the report when issued from a csv bank statement.
+
+#### Budget
+
+* Budget: fixed the duplicated budget imputation when adding a budget on move linked to an invoice.
+
+#### Cash Management
+
+* Forecast recap: always apply estimated duration and payment condition on orders.
+
+#### Contract
+
+* Contract version: fixed duration selections to exclude unrelated values.
+* Contract: fixed contract lines order not preserved on new version creation.
+
+#### CRM
+
+* Catalog: fixed an issue where the email form was not displayed after sending an email from a catalog.
+
+#### Human Resource
+
+* Timesheet: fixed editor labels not being translated.
+* Timesheet: fixed missing New and Delete buttons in the timesheet line editor.
+* Project planning time: fixed synchronization issue between project planning time and calendar event.
+
+#### Production
+
+* Production: fixed an issue where using 'Consume in stock moves' on a Manufacturing Order could also realize finished-product stock moves.
+* Production: fixed machine charge dashboard percentage precision by using seconds instead of truncated minutes.
+* Sale order: fixed an error occurring when personalizing bill of material from sale order.
+* Sale order: fixed operation quantity returning 0 for semi-finished product when exploding multi-level BOM.
+* Manufacturing order: fixed an issue where cost sheet generated had a wrong status.
+* Production: fixed circular self-injection of BillOfMaterialService in BillOfMaterialServiceImpl.
+* Stock details by product: fixed projected stock not showing manufacturing order component consumptions.
+* Cost sheet: fixed human resource cost not scaled by number of cycles when using per-hour cost type.
+* Production: fixed wrong stock move line generation in operation order when updating planned quantity.
+
+#### Purchase
+
+* Purchase order lines: fixed the slowdown when selecting a product.
+
+#### Quality
+
+* Quality control / Quality Alert: fixed inconsistent date issue.
+
+#### Sale
+
+* Sale order: improved performance when generating report with large database.
+* Configurator: fixed unique constraint violation when importing a configurator with numeric attribute names.
+* Sale: fixed circular self-injection of ProductRestService in ProductRestServiceImpl.
+* Sale: optimized margin computation by caching considerZeroCost flag outside loops.
+* Configurator: fixed product code being overwritten on sale order line regeneration.
+
+#### Stock
+
+* Mass stock move invoicing: fixed partial stock move invoicing.
+
+#### Supply Chain
+
+* Birt: fixed missing currency unit display on unit price and tax table columns in sale order, invoice, and purchase order reports.
+* Sale/Purchase order: fixed advance payment invoice generated with multiple lines instead of a single one in case of same taxes.
+* Sale/Purchase order: fixed invoiced amount not cumulating when ventilating multiple invoices.
+* Stock move: fixed missing fiscal position on invoices generated from direct stock moves and backorders.
+
+
+### Developer
+
+#### Base
+
+TagService#getTagDomain now takes an additional TradingName parameter.
+
+#### Account
+
+- PeriodServiceAccountImpl: added TraceBackRepository in constructor.
+- PeriodServiceAccount: added new public methods getMoves(), getAnomalyCount(), and getAnomalies(String moveIds, int anomalyCount).
+- MoveValidateService: changed accountingMultiple(Query<Move>) return type from void to Pair<List<Move>, Integer>.
+
+#### Bank Payment
+
+Added BankReconciliationLineRepository as parameter in the MoveAttrsBankPaymentServiceImpl constructor
+
+#### CRM
+
+- CatalogService: changed sendEmail(Catalog, Template, List<Partner>) return type from void to Message.
+
+#### Production
+
+Changed some OperationOrderChartServiceImpl method's names.
+- calculateNumberOfMinutesPerHour in calculateNumberOfSecondsPerHour
+- getNumberOfMinutesMachineUsedTotal in getNumberOfSecondsMachineUsedTotal
+- getNumberOfMinutesPerDay in calculatePercentagePerDay
+- calculateMinutes in calculateSeconds
+
+---
+
+Added UnitRepository to BomLineCreationServiceImpl constructor.
+
+---
+
+Constructor of `OperationOrderStockMoveServiceImpl` has two new parameters:
+`StockMoveProductionService stockMoveProductionService`,
+`OperationOrderService operationOrderService`
+
+#### Purchase
+
+Changed the SupplierCatalogServiceImpl constructor to use AppBaseService appBaseService and inject SupplierCatalogRepository.
+
+#### Sale
+
+sale_order_line_proc was using a CASE which prevented PSQL to use index 'sale_sale_order_line_sale_order_idx'. So it was scanning the entire table and then filtering it in memory. Changed to a UNION ALL to permit the use of indexes. The rptdesign file needs to be replaced in the SaleOrder PDF BirtTemplate to get these changes.
+
+#### Stock
+
+Added SupplyChainConfigService and StockMoveRepository as parameter in StockMoveMultiInvoiceServiceImpl constructor
+
 ## [8.3.31] (2026-03-19)
 
 ### Fixes
@@ -3004,6 +3150,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.32]: https://github.com/axelor/axelor-open-suite/compare/v8.3.31...v8.3.32
 [8.3.31]: https://github.com/axelor/axelor-open-suite/compare/v8.3.30...v8.3.31
 [8.3.30]: https://github.com/axelor/axelor-open-suite/compare/v8.3.29...v8.3.30
 [8.3.29]: https://github.com/axelor/axelor-open-suite/compare/v8.3.28...v8.3.29
