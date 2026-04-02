@@ -1,3 +1,18 @@
+## [8.1.44] (2026-04-02)
+
+### Fixes
+#### Account
+
+* Invoice chart: fixed the turn over displayed on chart 'Customer Turnover history by month (on invoices)' which wrongly includes end of pack line when show total is true.
+
+#### Human Resource
+
+* Project planning time: fixed synchronization issue between project planning time and calendar event.
+
+#### Production
+
+* Stock details by product: fixed projected stock not showing manufacturing order component consumptions.
+
 ## [8.1.43] (2026-03-19)
 
 ### Fixes
@@ -2035,6 +2050,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.44]: https://github.com/axelor/axelor-open-suite/compare/v8.1.43...v8.1.44
 [8.1.43]: https://github.com/axelor/axelor-open-suite/compare/v8.1.42...v8.1.43
 [8.1.42]: https://github.com/axelor/axelor-open-suite/compare/v8.1.41...v8.1.42
 [8.1.41]: https://github.com/axelor/axelor-open-suite/compare/v8.1.40...v8.1.41
