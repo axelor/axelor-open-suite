@@ -58,6 +58,7 @@ import com.axelor.apps.supplychain.service.config.OutSmGenerationService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineBlockingSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineSublineService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Sets;
@@ -99,6 +100,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected final SaleOrderLineBlockingSupplychainService saleOrderLineBlockingSupplychainService;
   protected AppStockService appStockService;
   protected StockMoveLineStockLocationService stockMoveLineStockLocationService;
+  protected SaleOrderLineSublineService saleOrderLineSublineService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -120,7 +122,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
       SaleOrderLineBlockingSupplychainService saleOrderLineBlockingSupplychainService,
       AppStockService appStockService,
-      StockMoveLineStockLocationService stockMoveLineStockLocationService) {
+      StockMoveLineStockLocationService stockMoveLineStockLocationService,
+      SaleOrderLineSublineService saleOrderLineSublineService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockConfigService = stockConfigService;
@@ -140,6 +143,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.saleOrderLineBlockingSupplychainService = saleOrderLineBlockingSupplychainService;
     this.appStockService = appStockService;
     this.stockMoveLineStockLocationService = stockMoveLineStockLocationService;
+    this.saleOrderLineSublineService = saleOrderLineSublineService;
   }
 
   @Override
@@ -253,36 +257,21 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     return fromStockLocation;
   }
 
-  protected List<SaleOrderLine> collectAllSaleOrderLinesRecursively(
-      List<SaleOrderLine> saleOrderLines) {
-    List<SaleOrderLine> result = new ArrayList<>();
-    List<SaleOrderLine> sorted =
-        saleOrderLines.stream()
-            .sorted(Comparator.comparing(SaleOrderLine::getSequence))
-            .collect(Collectors.toList());
-    for (SaleOrderLine line : sorted) {
-      result.add(line);
-      if (!CollectionUtils.isEmpty(line.getSubSaleOrderLineList())) {
-        result.addAll(collectAllSaleOrderLinesRecursively(line.getSubSaleOrderLineList()));
-      }
-    }
-    return result;
-  }
-
   protected void populateManagedLinesStockMove(
       StockMove stockMove,
       SaleOrder saleOrder,
       List<SaleOrderLine> saleOrderLineList,
       StockLocation toStockLocation)
       throws AxelorException {
-    List<SaleOrderLine> saleOrderLines = collectAllSaleOrderLinesRecursively(saleOrderLineList);
+    List<SaleOrderLine> saleOrderLines =
+        saleOrderLineSublineService.collectAllLinesRecursively(saleOrderLineList);
 
     Map<Long, StockMoveLine> saleOrderLineToStockMoveLine = new HashMap<>();
 
     for (SaleOrderLine saleOrderLine : saleOrderLines) {
       if (!saleOrderLine.getManagedInStockMove() || saleOrderLine.getProduct() == null) {
         if (!CollectionUtils.isEmpty(saleOrderLine.getSubSaleOrderLineList())
-            && hasAnyManagedChild(saleOrderLine)) {
+            && saleOrderLineSublineService.hasAnyManagedChild(saleOrderLine)) {
           StockMoveLine titleLine =
               stockMoveLineSupplychainService.createStockMoveTitleLine(
                   stockMove, saleOrderLine, null);
@@ -315,39 +304,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       }
     }
 
-    linkParentStockMoveLines(stockMove, saleOrderLineToStockMoveLine);
-  }
-
-  protected boolean hasAnyManagedChild(SaleOrderLine saleOrderLine) {
-    if (CollectionUtils.isEmpty(saleOrderLine.getSubSaleOrderLineList())) {
-      return false;
-    }
-    for (SaleOrderLine child : saleOrderLine.getSubSaleOrderLineList()) {
-      if (child.getManagedInStockMove()) {
-        return true;
-      }
-      if (hasAnyManagedChild(child)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  protected void linkParentStockMoveLines(
-      StockMove stockMove, Map<Long, StockMoveLine> saleOrderLineToStockMoveLine) {
-    if (stockMove.getStockMoveLineList() == null) {
-      return;
-    }
-    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-      SaleOrderLine sol = stockMoveLine.getSaleOrderLine();
-      if (sol != null && sol.getParentSaleOrderLine() != null) {
-        StockMoveLine parentSml =
-            saleOrderLineToStockMoveLine.get(sol.getParentSaleOrderLine().getId());
-        if (parentSml != null) {
-          stockMoveLine.setParentStockMoveLine(parentSml);
-        }
-      }
-    }
+    saleOrderLineSublineService.linkParentStockMoveLines(stockMove, saleOrderLineToStockMoveLine);
   }
 
   protected void populateStandardStockMove(
@@ -483,7 +440,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     }
 
     for (SaleOrderLine saleOrderLine :
-        collectAllSaleOrderLinesRecursively(saleOrder.getSaleOrderLineList())) {
+        saleOrderLineSublineService.collectAllLinesRecursively(saleOrder.getSaleOrderLineList())) {
 
       if (this.isStockMoveProduct(saleOrderLine)) {
         return true;
