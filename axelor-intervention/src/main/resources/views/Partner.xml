@@ -11,7 +11,8 @@
           colSpan="12">
           <field name="tradingNameSet" requiredIf="isContact != true &amp;&amp; isCustomer"
             colSpan="6" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
-            widget="Tags" onSelect="action-partner-attrs-set-trading-name-domain"/>
+            widget="Tags" onSelect="action-partner-attrs-set-trading-name-domain"
+            onChange="action-partner-method-filter-tag-set-on-company-change"/>
         </panel>
       </insert>
     </extend>
@@ -31,7 +32,8 @@
     </extend>
 
     <extend target="//field[@name='companySet']">
-      <attribute name="onChange" value="action-partner-record-change-trading-name-set"/>
+      <attribute name="onChange"
+        value="action-partner-record-change-trading-name-set,action-partner-method-filter-tag-set-on-company-change"/>
     </extend>
   </form>
 

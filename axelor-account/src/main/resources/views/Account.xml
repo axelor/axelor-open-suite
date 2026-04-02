@@ -376,6 +376,7 @@
   <action-group name="action-account-group-company-onChange">
     <action name="action-account-record-clean-analytic"/>
     <action name="action-account-validate"/>
+    <action name="action-account-method-filter-tag-set-on-company-change"/>
   </action-group>
 
   <action-group name="action-account-group-analytic-distribution-onChange">
@@ -643,6 +644,11 @@
 
   <action-method name="action-account-method-copy-account">
     <call class="com.axelor.apps.account.web.AccountController" method="copyAccount"/>
+  </action-method>
+
+  <action-method name="action-account-method-filter-tag-set-on-company-change">
+    <call class="com.axelor.apps.account.web.AccountController"
+      method="filterTagSetOnCompanyChange"/>
   </action-method>
 
 </object-views>
