@@ -1,0 +1,5 @@
+---
+title: "Production: fixed an issue where the real quantity could be changed on service product lines linked to a subcontracting purchase order."
+module: axelor-production
+developer: |
+  Added action-stock-move-line-group-real-qty-onchange override in axelor-production StockMoveLine views.
