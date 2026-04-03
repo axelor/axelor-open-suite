@@ -1161,4 +1161,39 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
 
     return Optional.ofNullable(query.getSingleResult()).orElse(BigDecimal.ZERO);
   }
+
+  @Override
+  public List<ForecastRecap> getOverlappingForecastRecaps(ForecastRecap forecastRecap) {
+    if (forecastRecap.getFromDate() == null
+        || forecastRecap.getToDate() == null
+        || forecastRecap.getCompany() == null) {
+      return Collections.emptyList();
+    }
+    String filter =
+        "self.id != :id "
+            + "AND self.company = :company "
+            + "AND self.isReport = :isReport "
+            + "AND self.fromDate <= :toDate "
+            + "AND self.toDate >= :fromDate";
+
+    Set<BankDetails> bankDetailsSet = forecastRecap.getBankDetailsSet();
+    if (!CollectionUtils.isEmpty(bankDetailsSet)) {
+      filter +=
+          " AND EXISTS (SELECT 1 FROM self.bankDetailsSet bankDetails WHERE bankDetails IN :bankDetailsSet)";
+    }
+    Query<ForecastRecap> query =
+        forecastRecapRepo
+            .all()
+            .filter(filter)
+            .bind("id", forecastRecap.getId())
+            .bind("company", forecastRecap.getCompany())
+            .bind("isReport", forecastRecap.getIsReport())
+            .bind("toDate", forecastRecap.getToDate())
+            .bind("fromDate", forecastRecap.getFromDate());
+
+    if (!CollectionUtils.isEmpty(bankDetailsSet)) {
+      query.bind("bankDetailsSet", bankDetailsSet);
+    }
+    return query.fetch();
+  }
 }

@@ -31,4 +31,6 @@ public final class CashManagementExceptionMessage {
       "The company %s doesn't have any configured sequence for Forecast" /*)*/;
   public static final String UNSUPPORTED_LINE_TYPE_FORECAST_RECAP_LINE_TYPE = /*$$(*/
       "Value %s is not supported for forecast recap line type." /*)*/;
+  public static final String FORECAST_RECAP_OVERLAPPING = /*$$(*/
+      "An existing forecast recap/report already covers part of this period for the same company and bank accounts (%s). Data may appear duplicated in the treasury dashboard." /*)*/;
 }
