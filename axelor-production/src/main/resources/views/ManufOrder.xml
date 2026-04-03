@@ -269,15 +269,6 @@
           title="Update planned quantities (Components and FP)" colSpan="12"
           showIf="statusSelect != 6 &amp;&amp; !isPermanent &amp;&amp; typeSelect != 2"
           onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
-        <field name="planOnlyMissingQuantities" widget="boolean-switch" colSpan="12"/>
-        <button name="multiLevelPlanningBtn" title="Multi-level planning" colSpan="12"
-          showIf="statusSelect != 6 &amp;&amp; !isPermanent"
-          onClick="save,action-manuf-order-multi-level-planing-popup-form-view" css="btn-custom"/>
-        <field name="parentMO"/>
-        <button name="openMultilevelMOTreeBtn" title="Open MO tree"
-          onClick="save,action-manuf-order-view-mo-tree" colSpan="12" css="btn-custom"/>
-        <panel-dashlet name="childMOPanelDashlet"
-          action="action-manuf-order-view-all-child-mo" colSpan="12" title="Children MO"/>
         <panel-related name="toConsumeProdProductListPanel"
           field="toConsumeProdProductList" readonly="true" colSpan="12"
           grid-view="prod-product-consume-manuf-order-grid" form-view="prod-product-form"
@@ -374,6 +365,17 @@
         grid-view="production-order-grid"/>
       <panel-dashlet name="mergedManufOrderDashlet" title="Merged MO" readonly="true"
         colSpan="12" action="action-manuf-order-view-merged-manuf-orders"/>
+      <panel name="multiLevelPanel" title="Multi-level">
+        <field name="planOnlyMissingQuantities" widget="boolean-switch" colSpan="12"/>
+        <button name="multiLevelPlanningBtn" title="Multi-level planning" colSpan="12"
+          showIf="statusSelect != 6 &amp;&amp; !isPermanent"
+          onClick="save,action-manuf-order-multi-level-planing-popup-form-view" css="btn-custom"/>
+        <field name="parentMO" colSpan="12"/>
+        <button name="openMultilevelMOTreeBtn" title="Open MO tree"
+          onClick="save,action-manuf-order-view-mo-tree" colSpan="12" css="btn-custom"/>
+        <panel-dashlet name="childMOPanelDashlet"
+          action="action-manuf-order-view-all-child-mo" colSpan="12" title="Children MO"/>
+      </panel>
       <panel name="notePanel" title="Note">
         <field name="note" colSpan="12" showTitle="false"/>
         <panel name="moCommentFromSaleOrderPanel" title="MO's comment from sale order"
@@ -466,13 +468,24 @@
     model="com.axelor.apps.production.db.ManufOrder"
     onLoad="action-manuf-order-method-multi-level-on-load">
     <panel name="mainPanel" colSpan="12">
-      <field name="$components" title="Products" type="one-to-many" canView="false"
-        readonly="true" target="com.axelor.apps.production.db.ProdProduct"
-        grid-view="prod-product-multi-level-manuf-order-grid" colSpan="12"/>
-      <button name="generateMO" title="Generate MO."
-        onClick="action-manuf-order-method-generate-multi-level" colSpan="4" colOffset="8"/>
+      <field name="$draftManufOrderList" title="Manufacturing orders" type="one-to-many"
+        target="com.axelor.apps.production.db.ManufOrder"
+        grid-view="multi-level-draft-manuf-order-grid" canNew="false" canEdit="false"
+        canRemove="false" colSpan="12"/>
+      <button title="Plan selected orders" name="planSelectedOrders" colSpan="12"
+        onClick="action-manuf-order-validate-order-selection,com.axelor.apps.production.web.ManufOrderController:removeUnselectedMOs"/>
     </panel>
   </form>
+
+  <grid name="multi-level-draft-manuf-order-grid" title="Manufacturing orders"
+    model="com.axelor.apps.production.db.ManufOrder" x-selector="checkbox" canNew="false"
+    canEdit="false" canDelete="false">
+    <field name="parentMO.product" title="Parent product" form-view="product-form"
+      grid-view="product-grid"/>
+    <field name="product" form-view="product-form" grid-view="product-grid"/>
+    <field name="qty" x-scale="2"/>
+    <field name="unit"/>
+  </grid>
 
   <grid name="draft-generated-manuf-order-grid" title="Manufacturing orders"
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" canNew="false"
@@ -484,20 +497,6 @@
 
   </grid>
 
-  <form model="com.axelor.utils.db.Wizard" title="Draft orders"
-    name="multi-level-generated-draft-manuf-order-wizard-form"
-    onNew="action-manuf-order-attrs-multi-level-wizard-onnew">
-    <panel name="mainPanel">
-      <field name="$draftManufOrderList" type="one-to-many" title="Manufacturing orders"
-        target="com.axelor.apps.production.db.ManufOrder" canNew="false" canEdit="false"
-        canRemove="false" colSpan="12" grid-view="generated-manuf-order-grid"/>
-
-      <button title="Plan selected orders and discard others" name="planSelectedOrders"
-        colSpan="12"
-        onClick="action-manuf-order-validate-order-selection,com.axelor.apps.production.web.ManufOrderController:removeUnselectedMOs,close"/>
-    </panel>
-  </form>
-
 
   <grid name="generated-manuf-order-grid" title="Manufacturing orders"
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" canNew="false"
@@ -506,8 +505,6 @@
     <field name="product" form-view="product-form" grid-view="product-grid"/>
     <field name="qty" x-scale="2"/>
     <field name="unit"/>
-    <button name="openManufOrderBtn" title="Manufacturing Order" icon="file-text"
-      onClick="action-manuf-order-view-open-form-view-onclick,close"/>
   </grid>
 
 
@@ -539,21 +536,11 @@
   </action-method>
 
 
-  <action-attrs name="action-manuf-order-attrs-multi-level-wizard-onnew">
-    <attribute name="value" for="$draftManufOrderList" expr="eval:_moList"/>
-  </action-attrs>
-
   <action-validate name="action-manuf-order-validate-order-selection">
     <error message="Please select at least one MO"
       if="draftManufOrderList &amp;&amp; !draftManufOrderList.any{it.get('selected')}"/>
   </action-validate>
 
-  <action-view name="action-manuf-order-view-open-form-view-onclick"
-    title="Manufacturing Order" model="com.axelor.apps.production.db.ManufOrder">
-    <view type="form" name="manuf-order-form"/>
-    <view type="grid" name="manuf-order-grid"/>
-    <context name="_showRecord" expr="eval: id"/>
-  </action-view>
   <action-view name="action-manuf-order-update-real-qty-popup-form-view"
     title="Update real quantities (Components and FP)"
     model="com.axelor.apps.production.db.ManufOrder">
@@ -635,11 +622,6 @@
   <action-method name="action-manuf-order-method-multi-level-on-load">
     <call class="com.axelor.apps.production.web.ManufOrderController"
       method="multiLevelManufOrderOnLoad"/>
-  </action-method>
-
-  <action-method name="action-manuf-order-method-generate-multi-level">
-    <call class="com.axelor.apps.production.web.ManufOrderController"
-      method="generateMultiLevelManufOrder"/>
   </action-method>
 
   <action-record name="action-manuf-order-record-isConsProOnOperation"

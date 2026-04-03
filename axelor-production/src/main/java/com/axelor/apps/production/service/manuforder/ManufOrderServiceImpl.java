@@ -88,11 +88,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -1133,6 +1135,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   @Transactional(rollbackOn = {Exception.class})
   public List<Long> planSelectedOrdersAndDiscardOthers(List<Map<String, Object>> manufOrders)
       throws AxelorException {
+    validateNoOrphanChildSelected(manufOrders);
+
     List<Long> ids = new ArrayList<>();
     // Maps each draft MO's BOM ID to the ID of the real ManufOrder generated from it.
     // Used to resolve parent links for grandchildren, whose draft parentMO has id=null
@@ -1203,6 +1207,35 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       ids.add(generated.getId());
     }
     return ids;
+  }
+
+  protected void validateNoOrphanChildSelected(List<Map<String, Object>> manufOrders)
+      throws AxelorException {
+    Set<Long> selectedBomIds = new HashSet<>();
+    for (Map<String, Object> mo : manufOrders) {
+      if (!Boolean.TRUE.equals(mo.get("selected"))) continue;
+      Map<?, ?> bom = (Map<?, ?>) mo.get("billOfMaterial");
+      if (bom != null && bom.get("id") != null) {
+        selectedBomIds.add(Long.valueOf(bom.get("id").toString()));
+      }
+    }
+    for (Map<String, Object> mo : manufOrders) {
+      if (!Boolean.TRUE.equals(mo.get("selected"))) continue;
+      Map<?, ?> parentMOMap = (Map<?, ?>) mo.get("parentMO");
+      if (parentMOMap == null || parentMOMap.get("id") != null) continue;
+      Map<?, ?> parentBom = (Map<?, ?>) parentMOMap.get("billOfMaterial");
+      if (parentBom == null || parentBom.get("id") == null) continue;
+      Long parentBomId = Long.valueOf(parentBom.get("id").toString());
+      if (!selectedBomIds.contains(parentBomId)) {
+        Map<?, ?> product = (Map<?, ?>) mo.get("product");
+        Object fullName = product != null ? product.get("fullName") : null;
+        String productName = fullName != null ? fullName.toString() : "";
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(ProductionExceptionMessage.CHILD_MO_SELECTED_WITHOUT_PARENT),
+            productName);
+      }
+    }
   }
 
   protected void setParentMo(
