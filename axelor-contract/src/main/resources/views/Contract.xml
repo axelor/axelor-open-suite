@@ -441,10 +441,9 @@
             <field name="currentContractVersion" showTitle="false" colSpan="12"
               x-show-icons="false">
               <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                <panel colSpan="6">
+                <panel colSpan="12">
                   <field name="automaticInvoicing" colSpan="4" widget="boolean-switch"/>
-                  <field name="invoicingMomentSelect" hidden="true"
-                    showIf="automaticInvoicing" colSpan="4" requiredIf="automaticInvoicing"/>
+                  <field name="invoicingMomentSelect" colSpan="4"/>
                   <field name="numberOfDays"
                     showIf="invoicingMomentSelect == 3 || invoicingMomentSelect == 4" colSpan="4"/>
                 </panel>
@@ -711,10 +710,9 @@
             <field name="paymentCondition" colSpan="6" widget="SuggestBox" canEdit="false"
               form-view="payment-condition-form" grid-view="payment-condition-grid"/>
           </panel>
-          <panel colSpan="6">
+          <panel colSpan="12">
             <field name="automaticInvoicing" colSpan="4" widget="boolean-switch"/>
-            <field name="invoicingMomentSelect" hidden="true" showIf="automaticInvoicing"
-              colSpan="4"/>
+            <field name="invoicingMomentSelect" colSpan="4"/>
             <field name="numberOfDays" colSpan="4"/>
           </panel>
           <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
