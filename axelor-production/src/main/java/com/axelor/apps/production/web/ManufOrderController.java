@@ -47,6 +47,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
+import com.axelor.apps.production.service.manuforder.ManufOrderMultiLevelPlanningService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyService;
@@ -611,7 +612,8 @@ public class ManufOrderController {
               .distinct()
               .collect(Collectors.toList());
       List<ManufOrder> moList =
-          Beans.get(ManufOrderService.class).generateAllSubManufOrder(productList, mo);
+          Beans.get(ManufOrderMultiLevelPlanningService.class)
+              .generateAllSubManufOrder(productList, mo);
       response.setValue("$draftManufOrderList", moList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -699,7 +701,8 @@ public class ManufOrderController {
       }
       List<Map<String, Object>> manufOrders = (List<Map<String, Object>>) object;
       List<Long> ids =
-          Beans.get(ManufOrderService.class).planSelectedOrdersAndDiscardOthers(manufOrders);
+          Beans.get(ManufOrderMultiLevelPlanningService.class)
+              .planSelectedOrdersAndDiscardOthers(manufOrders);
       if (ObjectUtils.isEmpty(ids)) {
         ids.add(0L);
       }
