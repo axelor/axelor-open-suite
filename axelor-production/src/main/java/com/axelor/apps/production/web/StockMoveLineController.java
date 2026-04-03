@@ -75,8 +75,7 @@ public class StockMoveLineController {
           .checkServiceOutsourcingRealQty(stockMoveLine);
     } catch (AxelorException e) {
       if (stockMoveLine.getId() != null) {
-        StockMoveLine dbLine =
-            Beans.get(StockMoveLineRepository.class).find(stockMoveLine.getId());
+        StockMoveLine dbLine = Beans.get(StockMoveLineRepository.class).find(stockMoveLine.getId());
         if (dbLine != null) {
           response.setValue("realQty", dbLine.getQty());
         }

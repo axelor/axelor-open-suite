@@ -159,8 +159,7 @@
     <action name="action-stock-move-line-method-set-available-status"/>
     <action name="action-stock-move-line-record-set-qty-remaining-to-package"
       if="__config__.app.isApp('supplychain')"/>
-    <action
-      name="action-production-stock-move-line-check-service-outsourcing-real-qty"
+    <action name="action-production-stock-move-line-check-service-outsourcing-real-qty"
       if="__config__.app.isApp('production')"/>
   </action-group>
 
