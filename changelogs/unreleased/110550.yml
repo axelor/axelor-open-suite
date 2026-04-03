@@ -1,0 +1,3 @@
+---
+title: "Address: remove geocoding call from repository save to prevent latency and failures on bulk/API saves."
+module: axelor-base
