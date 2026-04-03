@@ -268,18 +268,19 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     Map<Long, StockMoveLine> saleOrderLineToStockMoveLine = new HashMap<>();
 
     for (SaleOrderLine saleOrderLine : saleOrderLines) {
-      if (!saleOrderLine.getManagedInStockMove() || saleOrderLine.getProduct() == null) {
-        if (!CollectionUtils.isEmpty(saleOrderLine.getSubSaleOrderLineList())
-            && saleOrderLineSublineService.hasAnyManagedChild(saleOrderLine)) {
-          StockMoveLine titleLine =
-              stockMoveLineSupplychainService.createStockMoveTitleLine(
-                  stockMove, saleOrderLine, null);
-          if (titleLine != null) {
-            stockMove.addStockMoveLineListItem(titleLine);
-            titleLine.setSequence(stockMove.getStockMoveLineList().size());
-            saleOrderLineToStockMoveLine.put(saleOrderLine.getId(), titleLine);
-          }
+      boolean hasChildren = !CollectionUtils.isEmpty(saleOrderLine.getSubSaleOrderLineList());
+      if (hasChildren && saleOrderLineSublineService.hasAnyManagedChild(saleOrderLine)) {
+        StockMoveLine titleLine =
+            stockMoveLineSupplychainService.createStockMoveTitleLine(
+                stockMove, saleOrderLine, null);
+        if (titleLine != null) {
+          stockMove.addStockMoveLineListItem(titleLine);
+          titleLine.setSequence(stockMove.getStockMoveLineList().size());
+          saleOrderLineToStockMoveLine.put(saleOrderLine.getId(), titleLine);
         }
+        continue;
+      }
+      if (!saleOrderLine.getManagedInStockMove() || saleOrderLine.getProduct() == null) {
         continue;
       }
       if (existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
