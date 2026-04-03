@@ -36,7 +36,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineUtils;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -415,7 +414,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   }
 
   protected Pair<String, LocalDate> getDeliveryInformation(SaleOrderLine saleOrderLine) {
-    SaleOrder effectiveSaleOrder = SaleOrderLineUtils.getParentSol(saleOrderLine).getSaleOrder();
+    SaleOrder effectiveSaleOrder = saleOrderLine.getMainSaleOrder();
 
     String addressKey = saleOrderLine.getDeliveryAddressStr();
     if (addressKey == null && effectiveSaleOrder != null) {
@@ -609,7 +608,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       BigDecimal requestedReservedQty =
           saleOrderLine.getRequestedReservedQty().subtract(saleOrderLine.getDeliveredQty());
 
-      SaleOrder effectiveSaleOrder = SaleOrderLineUtils.getParentSol(saleOrderLine).getSaleOrder();
+      SaleOrder effectiveSaleOrder = saleOrderLine.getMainSaleOrder();
       BigDecimal companyUnitPriceUntaxed =
           (BigDecimal)
               productCompanyService.get(
@@ -685,8 +684,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
   @Override
   public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException {
-    return isStockMoveProduct(
-        saleOrderLine, SaleOrderLineUtils.getParentSol(saleOrderLine).getSaleOrder());
+    return isStockMoveProduct(saleOrderLine, saleOrderLine.getMainSaleOrder());
   }
 
   @Override
