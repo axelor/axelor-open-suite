@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed unnecessary Mapper.toMap usage on sale order line change."
+module: axelor-sale
