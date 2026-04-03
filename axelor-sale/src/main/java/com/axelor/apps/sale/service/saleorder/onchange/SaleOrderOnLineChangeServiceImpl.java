@@ -120,7 +120,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
       saleOrder.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
       saleOrder.setDiscountAmount(BigDecimal.ZERO);
     }
-    saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null);
+    saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null, null);
     saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderMarginService.computeMarginSaleOrder(saleOrder);
     return message;

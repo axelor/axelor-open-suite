@@ -139,6 +139,7 @@ public class SaleOrderLinePackServiceImpl implements SaleOrderLinePackService {
         return null;
     }
     saleOrderLine.setSaleOrder(saleOrder);
+    saleOrderLine.setMainSaleOrder(saleOrder);
     saleOrderLine.setSequence(sequence);
     return saleOrderLine;
   }

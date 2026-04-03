@@ -25,7 +25,6 @@ import com.axelor.apps.production.service.SaleOrderLineDetailsService;
 import com.axelor.apps.production.service.SolDetailsDurationService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -118,9 +117,10 @@ public class SaleOrderLineDetailsController {
   protected SaleOrder getSaleOrder(Context context) {
     SaleOrder saleOrder = ContextHelper.getOriginParent(context, SaleOrder.class);
     if (saleOrder == null) {
-      saleOrder =
-          SaleOrderLineUtils.getParentSol(context.getParent().asType(SaleOrderLine.class))
-              .getSaleOrder();
+      SaleOrderLine saleOrderLine = context.getParent().asType(SaleOrderLine.class);
+      if (saleOrderLine != null) {
+        saleOrder = saleOrderLine.getMainSaleOrder();
+      }
     }
     return saleOrder;
   }

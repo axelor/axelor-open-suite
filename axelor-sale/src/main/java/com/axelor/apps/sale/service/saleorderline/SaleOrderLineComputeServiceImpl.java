@@ -234,7 +234,8 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
   }
 
   @Override
-  public void computeLevels(List<SaleOrderLine> saleOrderLineList, String parentLevel) {
+  public void computeLevels(
+      List<SaleOrderLine> saleOrderLineList, String parentLevel, SaleOrder mainSaleOrder) {
     if (CollectionUtils.isEmpty(saleOrderLineList)) {
       return;
     }
@@ -245,8 +246,11 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
               ? String.valueOf(count)
               : String.format("%s.%s", parentLevel, count);
       saleOrderLine.setLevelIndicator(levelIndicator);
+      if (mainSaleOrder != null && !mainSaleOrder.equals(saleOrderLine.getMainSaleOrder())) {
+        saleOrderLine.setMainSaleOrder(mainSaleOrder);
+      }
       count++;
-      computeLevels(saleOrderLine.getSubSaleOrderLineList(), levelIndicator);
+      computeLevels(saleOrderLine.getSubSaleOrderLineList(), levelIndicator, mainSaleOrder);
     }
   }
 }
