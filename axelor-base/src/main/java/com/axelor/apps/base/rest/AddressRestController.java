@@ -59,7 +59,8 @@ public class AddressRestController {
     new SecurityCheck()
         .readAccess(Country.class)
         .readAccess(City.class)
-        .createAccess(Address.class);
+        .createAccess(Address.class)
+        .check();
     RequestValidator.validateBody(requestBody);
 
     try {
