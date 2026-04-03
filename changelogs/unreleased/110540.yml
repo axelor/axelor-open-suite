@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed freight carrier mode and carrier partner not copied from partner on sale order creation."
+module: axelor-sale
