@@ -51,9 +51,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineServiceSupplyChain {
@@ -97,12 +99,20 @@ public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineService
 
   @Override
   public BigDecimal computeQtyToDeliver(SaleOrderLine saleOrderLine) {
+    return computeQtyToDeliver(saleOrderLine, new HashSet<>());
+  }
+
+  protected BigDecimal computeQtyToDeliver(SaleOrderLine saleOrderLine, Set<Long> visited) {
+    Long id = saleOrderLine.getId();
+    if (id != null && !visited.add(id)) {
+      return BigDecimal.ONE;
+    }
     BigDecimal qty = saleOrderLine.getQty();
     SaleOrderLine parent = saleOrderLine.getParentSaleOrderLine();
     if (parent == null) {
       return qty;
     }
-    return qty.multiply(computeQtyToDeliver(parent)).setScale(10, RoundingMode.HALF_UP);
+    return qty.multiply(computeQtyToDeliver(parent, visited)).setScale(10, RoundingMode.HALF_UP);
   }
 
   @Override

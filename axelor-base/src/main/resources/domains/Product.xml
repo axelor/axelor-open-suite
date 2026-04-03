@@ -135,7 +135,7 @@
       title="Products per companies" mappedBy="product"/>
 
     <one-to-many name="commercialBomList" ref="com.axelor.apps.base.db.CommercialBom"
-      title="Commercial BOM" mappedBy="product"/>
+      title="Commercial BOM" mappedBy="parentProduct"/>
 
     <string name="dtype" insertable="false" updatable="false"/>
 

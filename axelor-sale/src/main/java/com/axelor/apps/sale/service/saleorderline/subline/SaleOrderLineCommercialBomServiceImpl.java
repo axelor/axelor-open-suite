@@ -22,8 +22,10 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CommercialBom;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
+import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,27 +35,31 @@ public class SaleOrderLineCommercialBomServiceImpl implements SaleOrderLineComme
 
   protected final SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
   protected final SaleOrderLineComputeService saleOrderLineComputeService;
+  protected final AppSaleService appSaleService;
 
   @Inject
   public SaleOrderLineCommercialBomServiceImpl(
       SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
-      SaleOrderLineComputeService saleOrderLineComputeService) {
+      SaleOrderLineComputeService saleOrderLineComputeService,
+      AppSaleService appSaleService) {
     this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
     this.saleOrderLineComputeService = saleOrderLineComputeService;
+    this.appSaleService = appSaleService;
   }
 
   @Override
   public List<SaleOrderLine> createSubLinesFromCommercialBom(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
+    if (appSaleService.getAppSale().getListDisplayTypeSelect()
+        != AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
+      return new ArrayList<>();
+    }
     if (saleOrderLine.getProduct() == null
         || CollectionUtils.isEmpty(saleOrderLine.getProduct().getCommercialBomList())) {
       return new ArrayList<>();
     }
-    List<CommercialBom> rootBoms =
-        saleOrderLine.getProduct().getCommercialBomList().stream()
-            .filter(bom -> bom.getParentCommercialBom() == null)
-            .toList();
-    return mapBomListToSubLines(rootBoms, saleOrderLine, saleOrder);
+    return mapBomListToSubLines(
+        saleOrderLine.getProduct().getCommercialBomList(), saleOrderLine, saleOrder);
   }
 
   protected List<SaleOrderLine> mapBomListToSubLines(
