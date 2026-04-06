@@ -541,7 +541,16 @@ public class ProjectController {
       response.setAttr("$totalDirtAllowance", "hidden", false);
       response.setAttr("$totalTasksReported", "title", "Total Number of Tasks Reported");
 
-    } else if (hasRecordInvoiceData) {
+      return;
+    }
+
+    response.setAttr("$totalDirtAllowance", "hidden", true);
+    response.setAttr("validatedItemsPanel", "title", "Items");
+    response.setAttr("$totalHoursToBill", "hidden", true);
+    response.setAttr("$hoursMismatchWarning", "hidden", true);
+    response.setAttr("taskDataReviewPanel", "hidden", true);
+
+    if (hasRecordInvoiceData) {
       List<SubcontractorTask> workLines =
           Beans.get(SubcontractorTaskRepository.class)
               .all()
@@ -556,22 +565,11 @@ public class ProjectController {
               .map(line -> line.getTimeSpent() != null ? line.getTimeSpent() : BigDecimal.ZERO)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+      response.setAttr("invoicingDataLineReviewPanel", "hidden", false);
+
       response.setValue("$totalTasksReported", workLineCount);
       response.setValue("$totalHoursReported", totalHours);
-      response.setAttr("projectSummaryPanel", "title", "Subcontractor Work");
-      response.setAttr("$totalDirtAllowance", "hidden", true);
       response.setAttr("$totalTasksReported", "title", "Total Subcontractor Tasks");
-      response.setAttr("validatedItemsPanel", "title", "Items");
-      response.setAttr("$totalHoursToBill", "hidden", true);
-      response.setAttr("$hoursMismatchWarning", "hidden", true);
-    } else {
-      response.setAttr("$totalTasksReported", "hidden", true);
-      response.setAttr("$totalHoursReported", "hidden", true);
-      response.setAttr("$totalDirtAllowance", "hidden", true);
-      response.setAttr("projectSummaryPanel", "title", "");
-      response.setAttr("validatedItemsPanel", "title", "Items");
-      response.setAttr("$totalHoursToBill", "hidden", true);
-      response.setAttr("$hoursMismatchWarning", "hidden", true);
     }
   }
 

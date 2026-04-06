@@ -321,11 +321,116 @@
       </panel>
       <!-- MGM-114 -->
       <panel title="5 Review and Confirmation" name="otherExpensesReportPanel">
-        <panel-dashlet name="otherExpensesReportDashlet"
-          title="Project extra expenses" canEdit="true" readonly="false"
-          action="mgm-action-project-extra-expense-line-dashlet" colSpan="12" canNew="true"
-          canDelete="true" x-show-bars="true"/>
-        <panel-include view="incl-project-summary-panel-form"/>
+
+        <panel name="extraExpenseDataReviewPanel" title="Project extra expenses review"
+          colSpan="12">
+          <panel-dashlet name="otherExpensesReportDashlet"
+            title="Review project extra expenses" canEdit="true" readonly="false"
+            action="mgm-action-project-extra-expense-line-dashlet" colSpan="12" canNew="true"
+            canDelete="true" x-show-bars="true"/>
+        </panel>
+
+        <panel name="taskDataReviewPanel" title="Tasks review" colSpan="12">
+          <panel-dashlet title="Review Task member reports"
+            name="taskMemberReportsReview" action="mgm-action-task-member-report-review"
+            canNew="false" canEdit="false" canSearch="true" colSpan="12"/>
+
+          <field name="$totalTasksReported" title="Total Number of Tasks reported"
+            readonly="true" depends="id" colSpan="4">
+            <viewer depends="$totalTasksReported"><![CDATA[
+    <span style="color: {{
+      !record.$totalTasksReported ? 'red' :
+      (typeof record.$totalTasksReported === 'string' && record.$totalTasksReported.includes('/')) ?
+        (parseInt(record.$totalTasksReported.split('/')[0]) < parseInt(record.$totalTasksReported.split('/')[1]) ? 'red' : 'green') :
+        (record.$totalTasksReported == 0 ? 'red' : 'inherit')
+    }}">
+      {{ record.$totalTasksReported || '0' }}
+    </span>
+  ]]></viewer>
+          </field>
+
+          <field name="$totalHoursReported" title="Total Number of hours reported"
+            readonly="true" depends="id" colSpan="4">
+            <viewer depends="$totalHoursReported"><![CDATA[
+                    <span style="color: {{ record.$totalHoursReported ? (record.$totalHoursReported == 0 ? 'red' : 'inherit') : 'red' }}">
+                        {{ record.$totalHoursReported || '0' }}
+                    </span>
+                ]]></viewer>
+          </field>
+
+          <field name="$totalHoursToBill" title="Total hours to bill" readonly="true"
+            colSpan="4">
+            <viewer depends="$totalHoursReported"><![CDATA[
+                    <span style="color: {{ record.$totalHoursToBill ? (record.$totalHoursToBill == 0 ? 'red' : 'inherit') : 'red' }}">
+                        {{ record.$totalHoursToBill || '0' }}
+                    </span>
+                ]]></viewer>
+          </field>
+          <field name="$totalDirtAllowance" title="Reported Dirt Allowance" readonly="true"
+            depends="id" colSpan="6">
+            <viewer depends="$totalDirtAllowance"><![CDATA[
+                <span style="color: {{ record.$totalDirtAllowance ? (record.$totalDirtAllowance == 0 ? 'red' : 'inherit') : 'red' }}">
+                    {{ record.$totalDirtAllowance || '0' }}
+                </span>
+            ]]></viewer>
+          </field>
+
+          <field name="$hoursMismatchWarning" showTitle="false" readonly="true" colSpan="12">
+            <viewer><![CDATA[
+                  <div ng-if="record.$totalHoursToBill != null && record.$totalHoursReported != null && (parseFloat(record.$totalHoursToBill) != parseFloat(record.$totalHoursReported))"
+                       style="color: #8a6d3b; background-color: #fcf8e3; border: 1px solid #faebcc; padding: 12px; border-radius: 4px; margin-top: 15px; display: flex;
+                          align-items: center; justify-content: center; font-size: 14px;">
+                    <i class="fa fa-exclamation-triangle" style="margin-right: 10px; font-size: 18px;"></i>
+                    <strong>Reported hours and billable hours do not match!</strong>
+                  </div>
+          ]]></viewer>
+          </field>
+        </panel>
+
+        <panel name="expenseDataReviewPanel" title="Expense lines review" colSpan="12">
+          <panel-dashlet title="Review expense lines" name="expenseLineReview"
+            action="mgm-action-view-project-expense-line-review" canNew="false" canEdit="false"
+            canSearch="true" colSpan="12"/>
+          <field name="$totalExpensesReported" title="Total Expenses to invoice reported"
+            readonly="true" depends="id" colSpan="6">
+            <viewer depends="$totalExpensesReported"><![CDATA[
+                    <span style="color: {{ record.$totalExpensesReported ? (record.$totalExpensesReported == 0 ? 'red' : 'inherit') : 'red' }}">
+                        {{ record.$totalExpensesReported || '0' }}
+                    </span>
+                ]]></viewer>
+          </field>
+        </panel>
+
+        <panel name="invoicingDataLineReviewPanel" title="Invoicing data review" colSpan="12"
+          hidden="true">
+          <field name="$totalTasksReported" title="Total Number of Tasks reported"
+            readonly="true" depends="id" colSpan="4">
+            <viewer depends="$totalTasksReported"><![CDATA[
+    <span style="color: {{
+      !record.$totalTasksReported ? 'red' :
+      (typeof record.$totalTasksReported === 'string' && record.$totalTasksReported.includes('/')) ?
+        (parseInt(record.$totalTasksReported.split('/')[0]) < parseInt(record.$totalTasksReported.split('/')[1]) ? 'red' : 'green') :
+        (record.$totalTasksReported == 0 ? 'red' : 'inherit')
+    }}">
+      {{ record.$totalTasksReported || '0' }}
+    </span>
+  ]]></viewer>
+          </field>
+
+          <field name="$totalHoursReported" title="Total Number of hours reported"
+            readonly="true" depends="id" colSpan="4">
+            <viewer depends="$totalHoursReported"><![CDATA[
+                    <span style="color: {{ record.$totalHoursReported ? (record.$totalHoursReported == 0 ? 'red' : 'inherit') : 'red' }}">
+                        {{ record.$totalHoursReported || '0' }}
+                    </span>
+                ]]></viewer>
+          </field>
+        </panel>
+
+        <panel name="confirmationPanel" title="Confirm the above information" colSpan="12">
+          <field name="isConfirmedForInvoicing"
+            onChange="mgm-action-group-business-project-confimred-project-on-change"/>
+        </panel>
       </panel>
 
       <panel title="Configurations" name="configurationsPanel"
@@ -771,79 +876,6 @@
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form" canEdit="false" canNew="false"
         domain="self.company = :company AND self.isSpecific = false"/>
-    </panel>
-  </form>
-
-  <form name="incl-project-summary-panel-form" model="com.axelor.apps.project.db.Project"
-    title="project summary">
-    <panel name="projectSummaryPanel" title="Dirt Allowance" colSpan="12">
-
-      <field name="$totalDirtAllowance" title="Reported Dirt Allowance" readonly="true"
-        depends="id" colSpan="6">
-        <viewer depends="$totalDirtAllowance"><![CDATA[
-                <span style="color: {{ record.$totalDirtAllowance ? (record.$totalDirtAllowance == 0 ? 'red' : 'inherit') : 'red' }}">
-                    {{ record.$totalDirtAllowance || '0' }}
-                </span>
-            ]]></viewer>
-      </field>
-
-      <panel name="validatedItemsPanel" title="Validated Items" colSpan="12">
-
-        <field name="$totalTasksReported" title="Total Number of Tasks reported"
-          readonly="true" depends="id" colSpan="4">
-          <viewer depends="$totalTasksReported"><![CDATA[
-    <span style="color: {{
-      !record.$totalTasksReported ? 'red' :
-      (typeof record.$totalTasksReported === 'string' && record.$totalTasksReported.includes('/')) ?
-        (parseInt(record.$totalTasksReported.split('/')[0]) < parseInt(record.$totalTasksReported.split('/')[1]) ? 'red' : 'green') :
-        (record.$totalTasksReported == 0 ? 'red' : 'inherit')
-    }}">
-      {{ record.$totalTasksReported || '0' }}
-    </span>
-  ]]></viewer>
-        </field>
-
-        <field name="$totalHoursReported" title="Total Number of hours reported"
-          readonly="true" depends="id" colSpan="4">
-          <viewer depends="$totalHoursReported"><![CDATA[
-                    <span style="color: {{ record.$totalHoursReported ? (record.$totalHoursReported == 0 ? 'red' : 'inherit') : 'red' }}">
-                        {{ record.$totalHoursReported || '0' }}
-                    </span>
-                ]]></viewer>
-        </field>
-
-        <field name="$totalHoursToBill" title="Total hours to bill" readonly="true"
-          colSpan="4">
-          <viewer depends="$totalHoursReported"><![CDATA[
-                    <span style="color: {{ record.$totalHoursToBill ? (record.$totalHoursToBill == 0 ? 'red' : 'inherit') : 'red' }}">
-                        {{ record.$totalHoursToBill || '0' }}
-                    </span>
-                ]]></viewer>
-        </field>
-
-        <field name="$totalExpensesReported" title="Total Expenses to invoice reported"
-          readonly="true" depends="id" colSpan="6">
-          <viewer depends="$totalExpensesReported"><![CDATA[
-                    <span style="color: {{ record.$totalExpensesReported ? (record.$totalExpensesReported == 0 ? 'red' : 'inherit') : 'red' }}">
-                        {{ record.$totalExpensesReported || '0' }}
-                    </span>
-                ]]></viewer>
-        </field>
-
-        <field name="$hoursMismatchWarning" showTitle="false" readonly="true" colSpan="12">
-          <viewer><![CDATA[
-                  <div ng-if="record.$totalHoursToBill != null && record.$totalHoursReported != null && (parseFloat(record.$totalHoursToBill) != parseFloat(record.$totalHoursReported))"
-                       style="color: #8a6d3b; background-color: #fcf8e3; border: 1px solid #faebcc; padding: 12px; border-radius: 4px; margin-top: 15px; display: flex;
-                          align-items: center; justify-content: center; font-size: 14px;">
-                    <i class="fa fa-exclamation-triangle" style="margin-right: 10px; font-size: 18px;"></i>
-                    <strong>Reported hours and billable hours do not match!</strong>
-                  </div>
-          ]]></viewer>
-        </field>
-
-      </panel>
-      <field name="isConfirmedForInvoicing"
-        onChange="mgm-action-group-business-project-confimred-project-on-change"/>
     </panel>
   </form>
 

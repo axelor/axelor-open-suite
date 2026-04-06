@@ -52,6 +52,22 @@
     <field name="comments"/>
   </grid>
 
+  <grid name="mgm-expense-line-review-grid" title="Review Expenses lines"
+    model="com.axelor.apps.hr.db.ExpenseLine">
+
+    <field name="expense.employee" title="Employee"/>
+    <field name="expenseProduct" title="Expense product"/>
+    <field name="expenseDate" title="Expense date"/>
+    <field name="untaxedAmount" aggregate="sum"/>
+    <field name="fee" title="Charged Fee (%)"/>
+    <field name="totalAmountToInvoice" aggregate="sum"/>
+    <field name="totalAmount" title="Total to refund" aggregate="sum"/>
+    <field name="toInvoice" title="To invoice" widget="boolean"/>
+    <field name="justificationMetaFile" widget="binary-link"/>
+    <field name="comments"/>
+    <field name="expense.statusSelect" title="Status" widget="single-select"/>
+  </grid>
+
   <form name="mgm-expense-form" title="Project Expenses" model="com.axelor.apps.hr.db.Expense"
     width="large"
     onSave="mgm-action-validate-warn-billing-item-edited-after-project-confirmation, mgm-action-expense-method-validate-and-compute"
@@ -216,7 +232,8 @@
       <field name="projectTask" edit-icon="false" canEdit="false"
         onSelect="custom-mgm-action-expense-line-method-compute-project-task-domain"
         onChange="action-expense-line-attrs-on-project-task-change"
-        form-view="business-project-task-form" grid-view="business-project-task-grid"/>
+        form-view="business-project-task-form" grid-view="business-project-task-grid"
+        hideIf="id &amp;&amp; expense.categorySelect == 1"/>
       <field name="site" form-view="site-form" grid-view="site-grid"
         onSelect="action-expense-line-attrs-set-site-domain"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
@@ -261,6 +278,7 @@
       <field name="expenseProduct.blockExpenseTax" hidden="true"/>
       <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"
         onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
+      <field name="expense.categorySelect" hidden="true"/>
     </panel>
   </form>
 
@@ -441,6 +459,14 @@
     <context name="_projectCompany" expr="eval: __parent__.company"/>
     <context name="_projectCurrency" expr="eval: __parent__.currency"/>
     <context name="_projectId" expr="eval: __parent__.id"/>
+  </action-view>
+
+  <action-view name="mgm-action-view-project-expense-line-review"
+    model="com.axelor.apps.hr.db.ExpenseLine" title="Review expenses">
+    <view name="mgm-expense-line-review-grid" type="grid"/>
+    <view name="mgm-expense-line-form" type="form"/>
+    <domain>self.project.id = :_projectId</domain>
+    <context name="_projectId" expr="eval: id"/>
   </action-view>
 
 </object-views>

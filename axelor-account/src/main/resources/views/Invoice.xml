@@ -1150,7 +1150,7 @@
       </panel>
       <panel name="referenceDocumentsPanel" title="Reference documents" itemSpan="6"
         canCollapse="true" collapseIf="true">
-        <field name="internalReference" title="Order Number" widget="string"/>
+        <field name="internalReference" widget="string"/>
         <field name="externalReference" title="Datev" widget="string"/>
         <!-- MGM-125 -->
         <field name="referenceNumber" title="Reference number" widget="string"
