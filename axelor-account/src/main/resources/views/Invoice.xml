@@ -31,7 +31,10 @@
       if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
     <hilite color="warning"
       if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
-    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
+    <!-- MGM-148, @dkouete: Enabling paid status in invoicing -->
+    <!--<hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/> -->
+    <hilite color="success"
+      if="statusSelect == 5 || (statusSelect == 3 &amp;&amp; amountRemaining == 0)"/>
     <field name="invoiceId" width="120"/>
     <field name="internalReference" width="120"/>
     <field name="externalReference" width="120"/>

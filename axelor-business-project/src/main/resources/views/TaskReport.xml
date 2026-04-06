@@ -7,10 +7,10 @@
   <grid name="task-report-grid" title="Task Reports"
     model="com.axelor.apps.businessproject.db.TaskReport" canEdit="true" canNew="false"
     canArchive="true" canDelete="true" onNew="action-business-project-add-task-report">
-    <field name="project" title="Order"/>
-    <field name="customer.simpleFullName" title="Customer"/>
+    <field name="project" title="Order" canView="true"/>
+    <field name="customer.simpleFullName" title="Customer" canView="true"/>
     <field name="taskDate" title="Date"/>
-    <field name="location"/>
+    <field name="location" canView="true"/>
     <field name="totalWorkHours"/>
   </grid>
 

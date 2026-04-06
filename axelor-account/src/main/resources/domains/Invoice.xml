@@ -300,6 +300,8 @@
 		public static final int STATUS_VALIDATED = 2;
 		public static final int STATUS_VENTILATED = 3;
 		public static final int STATUS_CANCELED = 4;
+		//MGM-148, @dkouete: Enabling paid status in invoicing
+		public static final int STATUS_PAID = 5;
 
 	    // OPERATION TYPE SUB SELECT
 	    public static final int OPERATION_SUB_TYPE_DEFAULT = 1;

@@ -37,6 +37,7 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.xml.datatype.DatatypeConfigurationException;
 
@@ -93,6 +94,16 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
         && !InvoiceToolService.isRefund(invoice)) {
       invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
     }
+
+    // MGM-148, @dkouete: Enabling paid status in invoicing: switch invoice to Paid once fully
+    // settled
+    if (invoice != null
+        && BigDecimal.ZERO.compareTo(invoice.getAmountRemaining()) == 0
+        && InvoiceRepository.STATUS_VENTILATED == invoice.getStatusSelect()) {
+
+      invoice.setStatusSelect(InvoiceRepository.STATUS_PAID);
+    }
+
     invoicePaymentRepository.save(invoicePayment);
   }
 

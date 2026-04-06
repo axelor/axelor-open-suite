@@ -158,9 +158,10 @@
     <panel name="overviewPanel" title="Overview">
       <field name="ticketNumber"
         if="__config__.app.getApp('project')?.isEnablePerProjectTaskSequence"/>
+      <!-- MGM-153 - gkouete: re enabling can View on project and project task to ease reviewer work -->
       <field name="project" colSpan="6" onChange="action-project-task-group-project-onchange"
         domain="self.projectStatus.isCompleted = false" required="true" form-view="project-form"
-        grid-view="project-grid" canView="false" readonlyIf="id != null || _project != null"/>
+        grid-view="project-grid" canView="true" readonlyIf="id != null || _project != null"/>
       <field if="__config__.app.isApp('business-project')" name="project.customerAddress"
         readonly="true" colSpan="6" showIf="project"
         domain="self IN (SELECT address FROM PartnerAddress where partner = :project.clientPartner)"

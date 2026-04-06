@@ -110,8 +110,9 @@
           <field name="personalExpenseAmount" hidden="true"/>
           <field name="advanceAmount" hidden="true"/>
         </panel>
+        <!-- MGM-153 - gkouete: re-enabling can View to ease reviewer work -->
         <panel name="projectPanel" itemSpan="12" colSpan="12">
-          <field name="project" readonlyIf="id != null" canView="false"
+          <field name="project" readonlyIf="id != null" canView="true"
             onSelect="action-expense-attrs-project-domain"/>
         </panel>
       </panel>

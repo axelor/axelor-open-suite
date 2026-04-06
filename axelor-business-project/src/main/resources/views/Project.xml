@@ -20,7 +20,7 @@
     <hilite if="priority.name == 'Urgent'" color="danger"/>
 
     <field name="fullName"/>
-    <field name="company" form-view="company-form" grid-view="company-grid" canView="false"
+    <field name="company" form-view="company-form" grid-view="company-grid" canView="true"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="fromDate"/>
@@ -177,9 +177,11 @@
           <field name="projectType" colSpan="6" hidden="true"/>
           <field name="fromDate" colSpan="6"/>
           <field name="toDate" onChange="action-project-group-to-date-onchange" colSpan="6"/>
+          <!-- MGM-153 - gkouete: re-enabling can View to ease reviewer work -->
           <field name="company" form-view="company-form" grid-view="company-grid" colSpan="6"
-            canEdit="false" canView="false" if-module="axelor-business-project"/>
-          <field name="clientPartner" canNew="true" canView="false"
+            canEdit="false" canView="true" if-module="axelor-business-project"/>
+          <!-- MGM-153 - gkouete: re-enabling can View to ease reviewer work -->
+          <field name="clientPartner" canNew="true" canView="true"
             domain="self.isCustomer = true AND :company member of self.companySet"
             onChange="action-project-method-get-partner-data" required="true"
             form-view="partner-form" grid-view="partner-grid" colSpan="6"

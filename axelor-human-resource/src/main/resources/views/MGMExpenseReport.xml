@@ -102,7 +102,8 @@
           <field name="advanceAmount" hidden="true"/>
           <field name="bankDetails" hidden="true"/>
         </panel>
-        <panel name="projectPanel" colSpan="12" itemSpan="12" hidden="true">
+        <!-- MGM-153 - gkouete: re enabling can View on project and project task to ease reviewer work -->
+        <panel name="projectPanel" colSpan="12" itemSpan="12" hidden="false">
           <field name="project" form-view="business-project-form" grid-view="project-grid"
             readonly="true" canView="true"/>
         </panel>
