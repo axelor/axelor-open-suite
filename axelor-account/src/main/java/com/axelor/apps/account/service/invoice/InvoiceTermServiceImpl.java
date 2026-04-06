@@ -691,10 +691,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal companyAmountRemaining;
 
       boolean isSameCurrencyRate = true;
+      Invoice invoice = invoiceTerm.getInvoice();
+
       if (invoicePayment != null) {
         isSameCurrencyRate =
             currencyService.isSameCurrencyRate(
-                invoiceTerm.getInvoice().getInvoiceDate(),
+                invoice != null ? invoice.getInvoiceDate() : null,
                 invoicePayment.getPaymentDate(),
                 invoiceTerm.getCurrency(),
                 invoiceTerm.getCompanyCurrency());
@@ -712,7 +714,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       if (amountRemaining.signum() <= 0 || companyAmountRemaining.signum() <= 0) {
         amountRemaining = BigDecimal.ZERO;
         invoiceTerm.setIsPaid(true);
-        Invoice invoice = invoiceTerm.getInvoice();
         if (invoice != null) {
           invoice.setDueDate(InvoiceToolService.getDueDate(invoice));
         }
