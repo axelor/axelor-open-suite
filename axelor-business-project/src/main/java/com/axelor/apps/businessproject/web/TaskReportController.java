@@ -37,6 +37,8 @@ public class TaskReportController {
 
   @Inject protected TaskMemberReportService taskMemberReportService;
 
+  @Inject protected TimeOverlapValidator timeOverlapValidator;
+
   public void previewTaskReport(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
@@ -158,21 +160,36 @@ public class TaskReportController {
   public void checkTimeOverlap(ActionRequest request, ActionResponse response) {
     TaskMemberReport report = request.getContext().asType(TaskMemberReport.class);
 
-    boolean hasOverlap =
-        Beans.get(TimeOverlapValidator.class)
-            .hasOverlap(
-                TaskMemberReport.class,
-                report.getStartTime(),
-                report.getEndTime(),
-                report.getEmployee().getId(),
-                report.getId(),
-                "startTime",
-                "endTime",
-                "employee");
+    if (report.getEmployee() == null
+        || report.getStartTime() == null
+        || report.getEndTime() == null) {
+      return;
+    }
 
-    if (hasOverlap) {
+    TaskMemberReport conflict =
+        timeOverlapValidator.findConflictingRecord(
+            TaskMemberReport.class,
+            report.getStartTime(),
+            report.getEndTime(),
+            report.getEmployee().getId(),
+            report.getId(),
+            "startTime",
+            "endTime",
+            "employee");
+
+    if (conflict != null) {
       response.setError(
-          I18n.get("This time range overlaps with an existing task report for this employee"));
+          String.format(
+              I18n.get(
+                  "This time range overlaps with an existing task report for the employee: %s for task: %s (time: %s - %s) on project: '%s'"),
+              conflict.getEmployee().getName(),
+              conflict.getTask() != null ? conflict.getTask().getName() : "N/A",
+              conflict.getStartTime().toLocalTime(),
+              conflict.getEndTime().toLocalTime(),
+              (conflict.getTask() != null && conflict.getTask().getProject() != null)
+                  ? conflict.getTask().getProject().getFullName()
+                  : "N/A"));
+
       response.setValue("startTime", null);
       response.setValue("endTime", null);
     }

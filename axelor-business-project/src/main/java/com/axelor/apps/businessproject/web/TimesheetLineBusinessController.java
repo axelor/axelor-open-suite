@@ -52,6 +52,8 @@ public class TimesheetLineBusinessController {
 
   @Inject protected EmployeeRepository employeeRepository;
 
+  @Inject protected TimeOverlapValidator timeOverlapValidator;
+
   public void setDefaultToInvoice(ActionRequest request, ActionResponse response) {
     try {
       TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
@@ -244,21 +246,34 @@ public class TimesheetLineBusinessController {
   public void checkTimeOverlap(ActionRequest request, ActionResponse response) {
     TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
 
-    boolean hasOverlap =
-        Beans.get(TimeOverlapValidator.class)
-            .hasOverlap(
-                TimesheetLine.class,
-                timesheetLine.getStartTime(),
-                timesheetLine.getEndTime(),
-                timesheetLine.getEmployee().getId(),
-                timesheetLine.getId(),
-                "startTime",
-                "endTime",
-                "employee");
+    if (timesheetLine.getEmployee() == null
+        || timesheetLine.getStartTime() == null
+        || timesheetLine.getEndTime() == null) {
+      return;
+    }
 
-    if (hasOverlap) {
+    TimesheetLine conflict =
+        timeOverlapValidator.findConflictingRecord(
+            TimesheetLine.class,
+            timesheetLine.getStartTime(),
+            timesheetLine.getEndTime(),
+            timesheetLine.getEmployee().getId(),
+            timesheetLine.getId(),
+            "startTime",
+            "endTime",
+            "employee");
+
+    if (conflict != null) {
       response.setError(
-          I18n.get("This time range overlaps with an existing timesheet line for this employee"));
+          String.format(
+              I18n.get(
+                  "This time range overlaps with an existing timesheet line for employee: %s on project: %s task: %s from %s to %s"),
+              conflict.getEmployee().getName(),
+              conflict.getProject() != null ? conflict.getProject().getFullName() : "N/A",
+              conflict.getProjectTask() != null ? conflict.getProjectTask().getName() : "N/A",
+              conflict.getStartTime().toLocalTime(),
+              conflict.getEndTime().toLocalTime()));
+
       response.setValue("startTime", null);
       response.setValue("endTime", null);
     }
