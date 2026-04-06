@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproject.db.ProjectType;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.ExtraExpenseLineRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
@@ -1108,5 +1109,43 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   @Override
   public boolean hasTask(Project project) {
     return project.getProjectTaskList() != null && !project.getProjectTaskList().isEmpty();
+  }
+
+  public void ensureSingleUserProjectConsistency(Project project) throws AxelorException {
+    if (project == null) return;
+
+    ProjectType projectType = project.getProjectType();
+
+    // If it is not a single user project type we have no business running the following checks on
+    // it
+    if (projectType == null || !Boolean.TRUE.equals(projectType.getIsSingleUserProject())) return;
+
+    User assignedTo = project.getAssignedTo();
+
+    if (assignedTo == null) {
+      if (project.getMembersUserSet() != null) {
+        project.getMembersUserSet().clear();
+      }
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          "Assigned To is required for single-user project: " + project.getFullName());
+    }
+
+    Set<User> members =
+        Optional.ofNullable(project.getMembersUserSet())
+            .orElseGet(
+                () -> {
+                  Set<User> newMemberUserSet = new HashSet<>();
+                  project.setMembersUserSet(newMemberUserSet);
+                  return newMemberUserSet;
+                });
+
+    if (members.size() == 1 && members.contains(assignedTo)) {
+      return;
+    }
+
+    // Single user projects should have only the user whom the project is assigned to as member
+    members.clear();
+    members.add(assignedTo);
   }
 }

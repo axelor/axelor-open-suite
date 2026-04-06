@@ -97,6 +97,9 @@
 
             public static final int TYPE_EXPENSE = 1;
 	  		public static final int TYPE_EXPENSE_DECLARATION = 2;
+
+	  		public static final int CATEGORY_SELECT_EMPLOYEE_EXPENSE = 1;
+	  		public static final int CATEGORY_SELECT_FEES_PROJECT_EXPENSE = 2;
 	  ]]>
     </extra-code>
   </entity>

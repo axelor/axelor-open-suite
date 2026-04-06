@@ -166,7 +166,6 @@
     <panel-tabs name="mainPanelTab">
 
       <panel name="overviewPanel" title="1 Overview"
-        hideIf="projectType.sequence == 3 || projectType.sequence == 4 "
         onTabSelect="action-project-activity-dashboard-method-on-new,action-project-dashboard-method-on-new">
         <panel name="generalInfoPanel" colSpan="12" title="General information"
           canCollapse="true" collapseIf="false">
@@ -214,8 +213,7 @@
         <field name="projectType.sequence" hidden="true"/>
       </panel>
 
-      <panel name="overviewPanelSubContractor" title="1 Overview"
-        showIf="projectType.sequence == 3 || projectType.sequence == 4"
+      <panel name="singleUserProjectOverviewPanel" title="1 Overview" hidden="true"
         onTabSelect="action-project-activity-dashboard-method-on-new,action-project-dashboard-method-on-new">
         <panel name="generalInfoPanel" colSpan="12" title="General information"
           canCollapse="true" collapseIf="false">
@@ -283,10 +281,10 @@
       </panel>
 
       <!-- MGM-106 Record invoicing data panel for freidleistung projects -->
-      <panel title="Record Invoicing Data" name="recordInvoicingDataPanel">
+      <panel title="Record Invoicing Data" name="recordInvoicingDataPanel" hidden="true">
         <panel name="subcontractorQualificationPanel" title="Qualifications" colSpan="12">
-          <panel-dashlet name="subcontractorTaskDashlet" title="Subcontractor Task"
-            action="mgm-action-business-project-fremdleistung-subcontractor-task-dashlet"
+          <panel-dashlet name="subcontractorTaskDashlet" title="Qualification"
+            action="mgm-action-subcontractor-business-project-subcontractor-task-dashlet"
             colSpan="12" canNew="true" x-show-bars="true" canDelete="true"/>
         </panel>
 
@@ -298,9 +296,10 @@
         </panel>
       </panel>
 
-      <panel title="Record Invoicing Data" name="monatsRechnungrecordInvoicingDataPanel">
+      <panel title="Record Invoicing Data" name="monthlyInvoiceRecordInvoicingDataPanel"
+        hidden="true">
         <panel name="subcontractorQualificationPanel" title="Qualifications" colSpan="12">
-          <panel-dashlet name="subcontractorTaskDashlet" title="Time spent"
+          <panel-dashlet name="subcontractorTaskDashlet" title="Qualification"
             action="mgm-action-business-project-subcontractor-task-dashlet" colSpan="12"
             canNew="true" x-show-bars="true" canDelete="true"/>
         </panel>
@@ -910,7 +909,6 @@
 
   <action-group name="mgm-action-group-project-form-on-load">
     <action name="action-business-project-project-group-on-load"/>
-    <action name="mgm-action-method-project-show-project-summary"/>
     <action name="mgm-business-projectaction-attrs-navigate-to-review-tab"/>
     <action name="mgm-action-migrate-project-type"/>
     <action name="mgm-action-method-set-dynamic-panel-attrs"/>
@@ -1090,7 +1088,7 @@
     <view-param name="popup-save" value="true"/>
     <view-param name="show-confirm" value="true"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_projectId" expr="eval: _id"/>
+    <context name="_projectId" expr="eval: __parent__?.id"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TASK"/>
   </action-view>

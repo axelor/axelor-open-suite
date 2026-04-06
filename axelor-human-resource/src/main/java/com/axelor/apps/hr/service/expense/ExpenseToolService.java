@@ -58,4 +58,16 @@ public interface ExpenseToolService {
 
   void addOrUpdateProjectExpenseLines(Expense expense, List<ExpenseLine> expenseLineList)
       throws AxelorException;
+
+  /**
+   * Validates the employee attached to an expense is valid based on the expense category. That is
+   * If the expense is one which does not require an employee it validates this does not happen. If
+   * the expense is one which does require an employee it validates the employee is present. It
+   * validates the employee set on an expense is part of the project which the expense is related
+   * to.
+   *
+   * @param expense Expense
+   * @throws AxelorException
+   */
+  void validateExpenseEmployee(Expense expense) throws AxelorException;
 }

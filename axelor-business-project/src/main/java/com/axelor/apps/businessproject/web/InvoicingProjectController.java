@@ -31,6 +31,7 @@ import com.axelor.apps.businessproject.service.ProjectGenerateInvoiceService;
 import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownDisplayService;
 import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownPrintService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -159,5 +160,17 @@ public class InvoicingProjectController {
       TraceBackService.trace(response, e);
       response.setError(I18n.get("Error generating PDF: ") + e.getMessage());
     }
+  }
+
+  public void setProjectTypeSequence(ActionRequest request, ActionResponse response) {
+    InvoicingProject invoicingProject = request.getContext().asType(InvoicingProject.class);
+    Project project = invoicingProject.getProject();
+    if (project == null) return;
+
+    project = Beans.get(ProjectRepository.class).find(project.getId());
+    int projectTypeSequence =
+        project.getProjectType() != null ? project.getProjectType().getSequence() : -1;
+
+    response.setValue("$projectTypeSequence", projectTypeSequence);
   }
 }

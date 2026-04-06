@@ -36,6 +36,8 @@ import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -43,10 +45,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -349,6 +348,64 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
       throws AxelorException {
     addExpenseLineToExpense(expense, expenseLine);
     expenseComputationService.compute(expense);
+  }
+
+  public void validateExpenseEmployee(Expense expense) throws AxelorException {
+    if (expense == null) return;
+
+    Project project =
+        Optional.ofNullable(expense.getProject())
+            .orElseThrow(
+                () ->
+                    new AxelorException(
+                        TraceBackRepository.CATEGORY_MISSING_FIELD,
+                        HumanResourceExceptionMessage.EXPENSE_PROJECT_REQUIRED));
+
+    project =
+        Optional.ofNullable(Beans.get(ProjectRepository.class).find(project.getId()))
+            .orElseThrow(
+                () ->
+                    new AxelorException(
+                        TraceBackRepository.CATEGORY_NO_VALUE, "Project not found"));
+
+    if (Objects.equals(
+        expense.getCategorySelect(), ExpenseRepository.CATEGORY_SELECT_FEES_PROJECT_EXPENSE)) {
+      expense.setEmployee(null);
+      return;
+    }
+
+    if (Objects.equals(
+        expense.getCategorySelect(), ExpenseRepository.CATEGORY_SELECT_EMPLOYEE_EXPENSE)) {
+      Employee employee =
+          Optional.ofNullable(expense.getEmployee())
+              .orElseThrow(
+                  () ->
+                      new AxelorException(
+                          TraceBackRepository.CATEGORY_MISSING_FIELD,
+                          HumanResourceExceptionMessage.EXPENSE_EMPLOYEE_REQUIRED));
+
+      User user =
+          Optional.ofNullable(employee.getUser())
+              .orElseThrow(
+                  () ->
+                      new AxelorException(
+                          TraceBackRepository.CATEGORY_NO_VALUE,
+                          HumanResourceExceptionMessage.NO_USER_FOR_EMPLOYEE,
+                          employee.getName()));
+
+      boolean isValidMember =
+          (project.getAssignedTo() != null && project.getAssignedTo().equals(user))
+              || (project.getMembersUserSet() != null
+                  && project.getMembersUserSet().contains(user));
+
+      if (!isValidMember) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            HumanResourceExceptionMessage.EXPENSE_EMPLOYEE_NOT_IN_PROJECT,
+            employee.getName(),
+            project.getFullName());
+      }
+    }
   }
 
   protected void updateMoveDate(Expense expense) {

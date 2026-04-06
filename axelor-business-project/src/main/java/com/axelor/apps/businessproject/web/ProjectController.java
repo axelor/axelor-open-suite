@@ -31,7 +31,6 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.*;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
-import com.axelor.apps.businessproject.db.repo.ProjectTypeBusinessProjectRepository;
 import com.axelor.apps.businessproject.db.repo.ProjectTypeRepository;
 import com.axelor.apps.businessproject.db.repo.SubcontractorTaskRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
@@ -49,7 +48,6 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.dms.db.DMSFile;
@@ -66,7 +64,6 @@ import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -395,24 +392,35 @@ public class ProjectController {
   public void openTaskFormIfEmpty(ActionRequest request, ActionResponse response) {
     Project project = request.getContext().asType(Project.class);
 
-    if (project.getId() != null) {
-      project = projectRepository.find(project.getId());
-      long taskCount =
-          project.getProjectTaskList().stream().filter(task -> !task.getIsTemplate()).count();
+    if (project == null || project.getId() == null || project.getProjectType() == null) {
+      return;
+    }
 
-      if (taskCount == 0) {
-        response.setView(
-            ActionView.define("action-view-business-project-task-new-task-form")
-                .model(ProjectTask.class.getName())
-                .add("form", "custom-mgm-business-project-task-template-form")
-                .param("popup", "reload")
-                .param("show-toolbar", "false")
-                .param("show-confirm", "true")
-                .param("popup-save", "true")
-                .context("_projectId", project.getId())
-                .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
-                .map());
-      }
+    project = projectRepository.find(project.getId());
+    ProjectType projectType =
+        Beans.get(ProjectTypeRepository.class).find(project.getProjectType().getId());
+
+    if (!Boolean.TRUE.equals(projectType.getRequiresTask())) {
+      return;
+    }
+
+    long taskCount =
+        project.getProjectTaskList().stream()
+            .filter(task -> !Boolean.TRUE.equals(task.getIsTemplate()))
+            .count();
+
+    if (taskCount == 0) {
+      response.setView(
+          ActionView.define("action-view-business-project-task-new-task-form")
+              .model(ProjectTask.class.getName())
+              .add("form", "custom-mgm-business-project-task-template-form")
+              .param("popup", "reload")
+              .param("show-toolbar", "false")
+              .param("show-confirm", "true")
+              .param("popup-save", "true")
+              .context("_projectId", project.getId())
+              .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
+              .map());
     }
   }
 
@@ -584,70 +592,6 @@ public class ProjectController {
     }
   }
 
-  public void setSubcontractorTaskDefaults(ActionRequest request, ActionResponse response) {
-    long projectId = ((Number) request.getContext().get("_projectId")).longValue();
-
-    if (projectId == 0L) {
-      return;
-    }
-
-    Project project = projectRepository.find(projectId);
-    if (project == null) {
-      return;
-    }
-
-    response.setValue("project", project);
-
-    try {
-      Partner subcontractor = projectService.getSubcontractor(project);
-      response.setValue("subcontractor", subcontractor);
-    } catch (AxelorException e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setSubcontractorTaskEmployeeFilter(ActionRequest request, ActionResponse response) {
-    SubcontractorTask subcontractorTask = request.getContext().asType(SubcontractorTask.class);
-
-    if (subcontractorTask == null || subcontractorTask.getProject() == null) {
-      return;
-    }
-
-    Project project = projectRepository.find(subcontractorTask.getProject().getId());
-    ProjectType projectType = project.getProjectType();
-
-    if (projectType == null || !Boolean.TRUE.equals(projectType.getRequiresRecordInvoicingData())) {
-      return;
-    }
-
-    if (Objects.equals(
-        ProjectTypeBusinessProjectRepository.SUBCONTRACTOR_PROJECT_TYPE,
-        projectType.getSequence())) {
-      response.setAttr("employee", "hidden", true);
-      return;
-    }
-
-    // Set employee domain based on project members + assignedTo
-    Set<User> members =
-        new HashSet<>(
-            Optional.ofNullable(project.getMembersUserSet()).orElse(Collections.emptySet()));
-    if (project.getAssignedTo() != null) {
-      members.add(project.getAssignedTo());
-    }
-
-    String employeeIds =
-        members.stream()
-            .map(User::getEmployee)
-            .filter(Objects::nonNull)
-            .map(e -> String.valueOf(e.getId()))
-            .collect(Collectors.joining(","));
-
-    response.setAttr(
-        "employee",
-        "domain",
-        employeeIds.isEmpty() ? "self.id IN (null)" : "self.id IN (" + employeeIds + ")");
-  }
-
   public void getBilledHours(ActionRequest request, ActionResponse response) {
 
     Project project = getProjectFromRequest(request);
@@ -691,7 +635,7 @@ public class ProjectController {
 
     Integer typeSelect = project.getProjectTypeSelect();
     if (typeSelect == null) {
-      typeSelect = ProjectTypeBusinessProjectRepository.STANDARD_PROJECT_TYPE;
+      typeSelect = ProjectTypeRepository.STANDARD_PROJECT_TYPE;
     }
 
     ProjectType matched =
@@ -718,6 +662,16 @@ public class ProjectController {
     List<Object[]> panels =
         List.of(
             new Object[] {
+              "overviewPanel",
+              "Overview",
+              !Boolean.TRUE.equals(projectType.getIsSingleUserProject())
+            },
+            new Object[] {
+              "singleUserProjectOverviewPanel",
+              "Overview",
+              Boolean.TRUE.equals(projectType.getIsSingleUserProject())
+            },
+            new Object[] {
               "taskTreePanel", "Tasks", Boolean.TRUE.equals(projectType.getRequiresTask())
             },
             new Object[] {
@@ -727,15 +681,13 @@ public class ProjectController {
               "recordInvoicingDataPanel",
               "Record Invoicing Data",
               Objects.equals(
-                  ProjectTypeBusinessProjectRepository.SUBCONTRACTOR_PROJECT_TYPE,
-                  projectType.getSequence())
+                  ProjectTypeRepository.SUBCONTRACTOR_PROJECT_TYPE, projectType.getSequence())
             },
             new Object[] {
-              "monatsRechnungrecordInvoicingDataPanel",
+              "monthlyInvoiceRecordInvoicingDataPanel",
               "Record Invoicing Data",
               Objects.equals(
-                  ProjectTypeBusinessProjectRepository.MONTHLY_INVOICE_PROJECT_TYPE,
-                  projectType.getSequence())
+                  ProjectTypeRepository.MONTHLY_INVOICE_PROJECT_TYPE, projectType.getSequence())
             },
             new Object[] {
               "expenseReportsPanel",
@@ -751,12 +703,12 @@ public class ProjectController {
               "invoicingPanel", "Invoicing", Boolean.TRUE.equals(projectType.getRequiresInvoicing())
             });
 
-    int tab = 1;
+    int tab = 0;
     for (Object[] panel : panels) {
       boolean visible = (boolean) panel[2];
       response.setAttr((String) panel[0], "hidden", !visible);
       if (visible) {
-        response.setAttr((String) panel[0], "title", ++tab + " " + panel[1]);
+        response.setAttr((String) panel[0], "title", I18n.get(++tab + " " + panel[1]));
       }
     }
   }

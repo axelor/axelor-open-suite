@@ -455,4 +455,13 @@ public final class HumanResourceExceptionMessage {
 
   public static final String TIMESHEET_LINE_REQUIRES_QUALIFICATION_FOR_VALIDATION = /*$$(*/
       "Please select an activity type before validating this timesheet line." /*)*/;
+
+  public static final String EXPENSE_PROJECT_REQUIRED = /*$$(*/
+      "Project is required on expense." /*)*/;
+
+  public static final String EXPENSE_EMPLOYEE_REQUIRED = /*$$(*/
+      "Employee is required for this type of expense." /*)*/;
+
+  public static final String EXPENSE_EMPLOYEE_NOT_IN_PROJECT = /*$$(*/
+      "Employee %s is not part of the project '%s'." /*)*/;
 }

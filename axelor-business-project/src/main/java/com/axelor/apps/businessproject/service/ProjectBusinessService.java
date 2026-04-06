@@ -101,4 +101,13 @@ public interface ProjectBusinessService extends ProjectService {
   boolean hasTask(Project project);
 
   boolean allExpensesSentOrValidated(Project project);
+
+  /**
+   * Ensures consistency for single-user projects. If not a single-user project, does nothing. If
+   * single-user project, assignedTo must exist and membersUserSet must contain only that user.
+   *
+   * @param project
+   * @throws AxelorException
+   */
+  void ensureSingleUserProjectConsistency(Project project) throws AxelorException;
 }

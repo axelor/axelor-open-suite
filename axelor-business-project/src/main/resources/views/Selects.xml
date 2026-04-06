@@ -132,11 +132,6 @@
     <option value="2">Cumulative Project</option>
   </selection>
 
-  <selection name="hr.expense.category.select">
-    <option value="1">Employee Expense</option>
-    <option value="2">Fees / Project Expense</option>
-  </selection>
-
   <selection name="business.project.extra.expense.line.type.select">
     <option value="1">Travel expenses</option>
     <option value="2">Tools usage</option>

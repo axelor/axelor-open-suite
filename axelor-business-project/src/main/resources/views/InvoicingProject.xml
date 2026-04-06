@@ -23,8 +23,8 @@
   <form name="invoicing-project-form" title="Invoicing business project"
     model="com.axelor.apps.businessproject.db.InvoicingProject"
     onNew="action-invoicing-project-group-on-new, action-check-extra-expenses, save"
-    onLoad="action-invoicing-project-attrs-title-project, action-check-extra-expenses" width="large"
-    canDelete="!invoice" canAttach="false">
+    onLoad="action-group-invoicing-project-on-load" width="large" canDelete="!invoice"
+    canAttach="false">
 
     <toolbar>
       <button name="projectFilesBtn" title="Project Files" icon="fa-paperclip"
@@ -48,6 +48,7 @@
       <!-- <button name="seeLinkedTimesheetLinesBtn" title="See Linked Timesheet Lines" -->
       <!-- onClick="action-invoicing-project-show-timesheet-lines" hidden="true" -->
       <!-- showIf="invoice != null"/> -->
+      <field name="$projectTypeSequence" hidden="true"/>
     </panel>
 
     <panel name="commentsPanel">
@@ -73,12 +74,18 @@
           showIf="logTimesSet &amp;&amp; logTimesSet.length &gt; 0" readonlyIf="invoice"
           name="logTimesSetPanel"/>
 
-        <panel-related title="Subcontractor tasks" field="subcontractorTaskSet"
-          colSpan="12" canNew="false" canEdit="false" canSelect="false"
-          grid-view="mgm-fremdleistung-project-subcontractor-task-grid"
-          form-view="mgm-fremdleistung-project-subcontractor-task-form"
-          showIf="subcontractorTaskSet &amp;&amp; subcontractorTaskSet.length &gt; 0"
+        <panel-related title="Qualification" field="subcontractorTaskSet" colSpan="12"
+          canNew="false" canEdit="false" canSelect="false"
+          grid-view="mgm-subcontractor-project-subcontractor-task-grid"
+          form-view="mgm-subcontractor-project-subcontractor-task-form"
+          showIf="$projectTypeSequence == 3 &amp;&amp; subcontractorTaskSet &amp;&amp; subcontractorTaskSet.length &gt; 0"
           readonlyIf="invoice" name="subcontractorTaskSetPanel"/>
+
+        <panel-related title="Qualification" field="subcontractorTaskSet" colSpan="12"
+          canNew="false" canEdit="false" canSelect="false" grid-view="mgm-subcontractor-task-grid"
+          form-view="mgm-subcontractor-task-form"
+          showIf="$projectTypeSequence == 4 &amp;&amp; subcontractorTaskSet &amp;&amp; subcontractorTaskSet.length &gt; 0"
+          readonlyIf="invoice" name="invoicingDataLinePanel"/>
 
         <panel-related title="Expenses" field="expenseLineSet" colSpan="12"
           canNew="false" canEdit="false" canSelect="false" form-view="expense-line-form"
@@ -135,6 +142,12 @@
     <action name="action-invoicing-project-method-fill-in" if="project != null"/>
   </action-group>
 
+  <action-group name="action-group-invoicing-project-on-load">
+    <action name="action-invoicing-project-attrs-title-project"/>
+    <action name="action-check-extra-expenses"/>
+    <action name="action-method-invoicing-project-set-project-type-sequence"/>
+  </action-group>
+
   <action-method name="action-invoicing-project-method-generate-invoice">
     <call class="com.axelor.apps.businessproject.web.InvoicingProjectController"
       method="generateInvoice"/>
@@ -148,6 +161,11 @@
   <action-method name="action-check-extra-expenses">
     <call method="checkHasInvoicableExpenses"
       class="com.axelor.apps.businessproject.web.TaskReportController"/>
+  </action-method>
+
+  <action-method name="action-method-invoicing-project-set-project-type-sequence">
+    <call class="com.axelor.apps.businessproject.web.InvoicingProjectController"
+      method="setProjectTypeSequence"/>
   </action-method>
 
   <action-attrs name="action-invoicing-project-attrs-title-project">

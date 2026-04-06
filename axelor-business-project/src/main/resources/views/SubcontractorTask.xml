@@ -3,22 +3,24 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
-  <grid name="mgm-subcontractor-task-grid" title="Subcontractor Services"
+  <grid name="mgm-subcontractor-task-grid" title="Qualification"
     model="com.axelor.apps.businessproject.db.SubcontractorTask">
     <field name="employee"/>
     <field name="product"/>
     <field name="timeSpentMinutes"/>
+    <field name="timeSpent" aggregate="sum"/>
     <field name="comments"/>
   </grid>
 
-  <grid name="mgm-fremdleistung-project-subcontractor-task-grid" title="Subcontractor Services"
+  <grid name="mgm-subcontractor-project-subcontractor-task-grid" title="Qualification"
     model="com.axelor.apps.businessproject.db.SubcontractorTask">
     <field name="product"/>
     <field name="timeSpentMinutes"/>
+    <field name="timeSpent" aggregate="sum"/>
     <field name="comments"/>
   </grid>
 
-  <form name="mgm-subcontractor-task-form" title="Service"
+  <form name="mgm-subcontractor-task-form" title="Qualification"
     onNew="mgm-action-method-business-project-set-subcontractor-task-defaults, mgm-action-method-set-subcontractor-employee-attrs"
     onLoad="mgm-action-method-set-subcontractor-employee-attrs"
     model="com.axelor.apps.businessproject.db.SubcontractorTask"
@@ -39,14 +41,14 @@
     </panel>
   </form>
 
-  <form name="mgm-fremdleistung-project-subcontractor-task-form" title="Service"
+  <form name="mgm-subcontractor-project-subcontractor-task-form" title="Qualification"
     onNew="mgm-action-method-business-project-set-subcontractor-task-defaults"
     model="com.axelor.apps.businessproject.db.SubcontractorTask"
     onSave="mgm-action-validate-warn-billing-item-edited-after-project-confirmation, mgm-action-method-sync-time-spent">
     <panel name="mainPanel" title="Service Info">
       <field name="product" required="true"
         domain="self.isActivity = true AND self.dtype = 'Product'"/>
-      <field name="timeSpent"/>
+      <field name="timeSpentMinutes"/>
       <field name="project" hidden="true"/>
       <field name="subcontractor" hidden="true"/>
     </panel>
@@ -60,20 +62,20 @@
 
   <action-method
     name="mgm-action-method-business-project-set-subcontractor-task-defaults">
-    <call class="com.axelor.apps.businessproject.web.ProjectController"
+    <call class="com.axelor.apps.businessproject.web.SubcontractorTaskController"
       method="setSubcontractorTaskDefaults"/>
   </action-method>
 
   <action-method name="mgm-action-method-set-subcontractor-employee-attrs">
-    <call class="com.axelor.apps.businessproject.web.ProjectController"
+    <call class="com.axelor.apps.businessproject.web.SubcontractorTaskController"
       method="setSubcontractorTaskEmployeeFilter"/>
   </action-method>
 
   <action-view
-    name="mgm-action-business-project-fremdleistung-subcontractor-task-dashlet"
-    model="com.axelor.apps.businessproject.db.SubcontractorTask" title="Subcontractor Service">
-    <view type="grid" name="mgm-fremdleistung-project-subcontractor-task-grid"/>
-    <view type="form" name="mgm-subcontractor-task-form"/>
+    name="mgm-action-subcontractor-business-project-subcontractor-task-dashlet"
+    model="com.axelor.apps.businessproject.db.SubcontractorTask" title="Qualification">
+    <view type="grid" name="mgm-subcontractor-project-subcontractor-task-grid"/>
+    <view type="form" name="mgm-subcontractor-project-subcontractor-task-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="show-toolbar" value="true"/>
     <domain>
@@ -83,7 +85,7 @@
   </action-view>
 
   <action-view name="mgm-action-business-project-subcontractor-task-dashlet"
-    model="com.axelor.apps.businessproject.db.SubcontractorTask" title="Service">
+    model="com.axelor.apps.businessproject.db.SubcontractorTask" title="Qualification">
     <view type="grid" name="mgm-subcontractor-task-grid"/>
     <view type="form" name="mgm-subcontractor-task-form"/>
     <view-param name="popup" value="true"/>

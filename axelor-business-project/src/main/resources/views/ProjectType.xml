@@ -26,6 +26,7 @@
       <field name="requiresValidation" colSpan="6"/>
       <field name="requiresInvoicing" colSpan="6"/>
       <field name="requiresRecordInvoicingData"/>
+      <field name="isSingleUserProject"/>
     </panel>
     <panel name="configurations" title="Mapping configurations" colSpan="12">
       <field name="defaultExpenseCategory" colSpan="6"/>
