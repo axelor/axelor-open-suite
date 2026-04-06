@@ -18,7 +18,7 @@ public class BusinessProjectManagementRepository extends ProjectHRRepository {
     if (isNew) {
       Boolean createTaskReport =
           project.getProjectType() != null
-              ? project.getProjectType().getRequiresTaskReport()
+              ? project.getProjectType().getRequiresTask()
               : Boolean.FALSE;
       if (Boolean.TRUE.equals(createTaskReport)) {
         log.debug("Creating Task Report for project: " + project.getName());

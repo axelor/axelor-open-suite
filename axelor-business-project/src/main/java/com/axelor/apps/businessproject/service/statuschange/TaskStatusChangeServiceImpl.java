@@ -13,6 +13,7 @@ import com.axelor.apps.businessproject.service.taskreport.TaskMemberReportServic
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -39,16 +40,22 @@ public class TaskStatusChangeServiceImpl implements TaskStatusChangeService {
   protected TaskMemberReportService taskMemberReportRepo =
       Beans.get(TaskMemberReportServiceImpl.class);
   @Inject protected ProjectTaskBusinessProjectService projectTaskService;
+  protected AppProjectService appProjectService;
 
   @Inject
   public TaskStatusChangeServiceImpl(
-      TaskStatusBusinessProjectRepository taskStatusRepo, ProjectTaskRepository projectTaskRepo) {
+      TaskStatusBusinessProjectRepository taskStatusRepo,
+      ProjectTaskRepository projectTaskRepo,
+      AppProjectService appProjectService) {
     this.taskStatusRepo = taskStatusRepo;
     this.projectTaskRepo = projectTaskRepo;
+    this.appProjectService = appProjectService;
   }
 
   @Override
   public void handleTaskReportSaved(TaskReport taskReport) throws AxelorAlertException {
+    if (isAutomaticStatusManagementDisabled()) return;
+
     List<TaskMemberReport> memberReports = getTaskMemberReports(taskReport);
     TaskStatus feedbackStatus = getTaskStatus(TASK_STATUS_FEEDBACK);
 
@@ -73,6 +80,8 @@ public class TaskStatusChangeServiceImpl implements TaskStatusChangeService {
 
   @Override
   public void handleTaskReportDeleted(TaskReport taskReport) throws AxelorAlertException {
+    if (isAutomaticStatusManagementDisabled()) return;
+
     List<TaskMemberReport> memberReports = getTaskMemberReports(taskReport);
     TaskStatus inProgressStatus = getTaskStatus(TASK_STATUS_IN_PROGRESS);
 
@@ -87,6 +96,8 @@ public class TaskStatusChangeServiceImpl implements TaskStatusChangeService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void setTaskStatusFeedback(ProjectTask task) throws AxelorAlertException {
+    if (isAutomaticStatusManagementDisabled()) return;
+
     TaskStatus feedbackStatus = getTaskStatus(TASK_STATUS_FEEDBACK);
 
     if (!Objects.equals(task.getStatus(), feedbackStatus)) {
@@ -96,6 +107,8 @@ public class TaskStatusChangeServiceImpl implements TaskStatusChangeService {
   }
 
   private void handleUnreportedTasks(TaskReport taskReport) throws AxelorAlertException {
+    if (isAutomaticStatusManagementDisabled()) return;
+
     if (taskReport == null
         || taskReport.getProject() == null
         || taskReport.getProject().getProjectTaskList() == null) {
@@ -115,6 +128,8 @@ public class TaskStatusChangeServiceImpl implements TaskStatusChangeService {
   }
 
   private void revertUnreportedTaskStatus(ProjectTask task, TaskStatus inProgressStatus) {
+    if (isAutomaticStatusManagementDisabled()) return;
+
     task.setStatus(inProgressStatus);
     projectTaskRepo.save(task);
     log.info("Task {} status reverted to In Progress", task.getId());
@@ -122,6 +137,8 @@ public class TaskStatusChangeServiceImpl implements TaskStatusChangeService {
 
   @Override
   public void changeTaskStatusToDone(ProjectTask task) throws AxelorAlertException {
+    if (isAutomaticStatusManagementDisabled()) return;
+
     TaskStatus doneStatus = getTaskStatus(TASK_STATUS_DONE);
 
     task.setStatus(doneStatus);
@@ -131,6 +148,8 @@ public class TaskStatusChangeServiceImpl implements TaskStatusChangeService {
 
   @Override
   public void revertTaskStatusOnTimesheetLineCancel(ProjectTask task) throws AxelorAlertException {
+    if (isAutomaticStatusManagementDisabled()) return;
+
     if (task == null) return;
 
     // If the task has no task member report it's state should be reverted to in progress
@@ -164,5 +183,9 @@ public class TaskStatusChangeServiceImpl implements TaskStatusChangeService {
           statusName);
     }
     return taskStatus;
+  }
+
+  protected boolean isAutomaticStatusManagementDisabled() {
+    return !Boolean.TRUE.equals(appProjectService.getAppProject().getManageStatusAutomatically());
   }
 }

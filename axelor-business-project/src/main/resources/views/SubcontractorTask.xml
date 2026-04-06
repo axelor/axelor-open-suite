@@ -22,7 +22,7 @@
     onNew="mgm-action-method-business-project-set-subcontractor-task-defaults, mgm-action-method-set-subcontractor-employee-attrs"
     onLoad="mgm-action-method-set-subcontractor-employee-attrs"
     model="com.axelor.apps.businessproject.db.SubcontractorTask"
-    onSave="mgm-action-method-sync-time-spent">
+    onSave="mgm-action-validate-warn-billing-item-edited-after-project-confirmation, mgm-action-method-sync-time-spent">
     <panel name="mainPanel" title="Service Info">
       <field name="product" required="true"
         domain="self.isActivity = true AND self.dtype = 'Product'"/>
@@ -42,7 +42,7 @@
   <form name="mgm-fremdleistung-project-subcontractor-task-form" title="Service"
     onNew="mgm-action-method-business-project-set-subcontractor-task-defaults"
     model="com.axelor.apps.businessproject.db.SubcontractorTask"
-    onSave="mgm-action-method-sync-time-spent">
+    onSave="mgm-action-validate-warn-billing-item-edited-after-project-confirmation, mgm-action-method-sync-time-spent">
     <panel name="mainPanel" title="Service Info">
       <field name="product" required="true"
         domain="self.isActivity = true AND self.dtype = 'Product'"/>

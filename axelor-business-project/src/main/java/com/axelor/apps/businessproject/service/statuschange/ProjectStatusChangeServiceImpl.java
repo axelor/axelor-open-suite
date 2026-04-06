@@ -4,22 +4,19 @@ import static com.axelor.apps.businessproject.exception.BusinessProjectException
 
 import com.axelor.apps.base.AxelorAlertException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.businessproject.db.ProjectType;
 import com.axelor.apps.businessproject.db.repo.ProjectStatusBusinessProjectRepository;
 import com.axelor.apps.businessproject.db.repo.SubcontractorTaskRepository;
 import com.axelor.apps.businessproject.db.repo.TaskStatusBusinessProjectRepository;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
-import com.axelor.apps.businessproject.service.taskreport.TaskMemberReportService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectStatus;
-import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.List;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +38,7 @@ public class ProjectStatusChangeServiceImpl extends TaskStatusChangeServiceImpl
   protected TaskStatusBusinessProjectRepository taskStatusRepo;
   protected ProjectTaskRepository projectTaskRepo;
   protected ProjectBusinessService projectService;
+  protected AppProjectService appProjectService;
 
   @Inject
   public ProjectStatusChangeServiceImpl(
@@ -48,8 +46,9 @@ public class ProjectStatusChangeServiceImpl extends TaskStatusChangeServiceImpl
       ProjectRepository projectRepo,
       TaskStatusBusinessProjectRepository taskStatusRepo,
       ProjectTaskRepository projectTaskRepo,
-      ProjectBusinessService projectService) {
-    super(taskStatusRepo, projectTaskRepo);
+      ProjectBusinessService projectService,
+      AppProjectService appProjectService) {
+    super(taskStatusRepo, projectTaskRepo, appProjectService);
     this.projectStatusRepository = projectStatusRepository;
     this.projectRepo = projectRepo;
     this.projectService = projectService;
@@ -58,19 +57,34 @@ public class ProjectStatusChangeServiceImpl extends TaskStatusChangeServiceImpl
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateProjectStatus(Project project) throws AxelorAlertException {
+    if (isAutomaticStatusManagementDisabled()) {
+      log.debug("Automatic project status update is disabled in configuration.");
+      return;
+    }
+
     if (project == null) return;
     initProjectStatus(project);
 
     // If a project's status is one of the Completed statuses then we only move forward
     if (project.getProjectStatus().getIsCompleted()) return;
 
-    String appropriateStatus = determineAppropriateStatus(project);
-    Boolean isReadyForReview = projectService.isProjectReadyForReview(project);
+    // NOTE: The call order of the for to readyForReview and the determination of the project status
+    // is important
 
+    Boolean isReadyForReview = projectService.isProjectReadyForReview(project);
     if (!Objects.equals(project.getIsReadyForReview(), isReadyForReview)) {
       project.setIsReadyForReview(isReadyForReview);
+      log.debug("project is ready for review: {}", project.getIsReadyForReview());
     }
-    log.debug("project is ready for review: {}", project.getIsReadyForReview());
+
+    // If a confirmed project fails the ready to invoice condition, it for sure should not be
+    // confirmed
+    if (Boolean.TRUE.equals(project.getIsConfirmedForInvoicing())
+        && !projectService.readyToInvoice(project)) {
+      project.setIsConfirmedForInvoicing(Boolean.FALSE);
+    }
+
+    String appropriateStatus = determineAppropriateStatus(project);
     if (!Objects.equals(appropriateStatus, project.getProjectStatus().getName())) {
       setStatus(project, appropriateStatus);
     }
@@ -100,6 +114,10 @@ public class ProjectStatusChangeServiceImpl extends TaskStatusChangeServiceImpl
 
   @Override
   public void setInvoicedStatus(Project project) throws AxelorAlertException {
+    if (isAutomaticStatusManagementDisabled()) {
+      log.debug("Automatic status update is disabled in configuration.");
+      return;
+    }
     if (project == null) return;
     initProjectStatus(project);
 
@@ -110,9 +128,14 @@ public class ProjectStatusChangeServiceImpl extends TaskStatusChangeServiceImpl
 
   @Override
   public void setPaidStatus(Project project) throws AxelorAlertException {
+    if (isAutomaticStatusManagementDisabled()) {
+      log.debug("Automatic status update is disabled in configuration.");
+      return;
+    }
     setStatus(project, PROJECT_STATUS_PAID);
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected void setStatus(Project project, String statusName) throws AxelorAlertException {
     if (project == null) return;
 
@@ -174,44 +197,48 @@ public class ProjectStatusChangeServiceImpl extends TaskStatusChangeServiceImpl
     return PROJECT_STATUS_NEW;
   }
 
+  /**
+   * Determines if a project is ready for validation. A project is ready for validation if it has at
+   * least one task or expense and all present tasks are reported and all present expenses are sent.
+   * Or if it has already been marked as ready for review and not yet confirmed for invoicing,
+   *
+   * @param project the project to check
+   * @return true if the project is ready for validation, false otherwise
+   */
   protected boolean readyForValidation(Project project) {
     if (project == null) {
       return false;
     }
 
-    ProjectType projectType = project.getProjectType();
+    boolean hasTaskOrExpense =
+        projectService.hasTask(project) || projectService.hasExpense(project);
 
-    boolean allExpensesSent = projectService.allExpensesSent(project);
+    boolean taskConditionMet =
+        !projectService.hasTask(project) || projectService.allTaskReported(project);
 
-    if (projectType != null && Boolean.TRUE.equals(projectType.getRequiresTask())) {
-      List<ProjectTask> tasks = project.getProjectTaskList();
-      if (tasks == null || tasks.isEmpty()) {
-        return false;
-      }
+    boolean expenseConditionMet =
+        !projectService.hasExpense(project) || projectService.allExpensesSentOrValidated(project);
 
-      boolean allTaskReported =
-          project.getProjectTaskList().stream()
-              .filter(task -> !Boolean.TRUE.equals(task.getIsTemplate()))
-              .allMatch(task -> Beans.get(TaskMemberReportService.class).hasTaskMemberReport(task));
+    boolean readyForReviewConditionMet =
+        Boolean.TRUE.equals(project.getIsReadyForReview())
+            && !Boolean.TRUE.equals(project.getIsConfirmedForInvoicing());
 
-      return allExpensesSent && allTaskReported;
-    }
-
-    return allExpensesSent;
+    return (hasTaskOrExpense && taskConditionMet && expenseConditionMet)
+        || readyForReviewConditionMet;
   }
 
+  /**
+   * Determines if a project is ready to be in progress. For a project to be in progress, it must
+   * have at least one billable item or an item of work
+   *
+   * @param project
+   * @return
+   * @throws AxelorAlertException
+   */
   protected boolean readyForInProgress(Project project) throws AxelorAlertException {
-    if (project == null || project.getProjectTaskList() == null) {
+    if (project == null) {
       return false;
     }
-
-    String taskNewStatus = getTaskStatus(TASK_STATUS_NEW).getName();
-
-    // Project should be in progress if any task is not New
-    boolean anyTaskStarted =
-        project.getProjectTaskList().stream()
-            .filter(task -> !Boolean.TRUE.equals(task.getIsTemplate()))
-            .anyMatch(task -> !taskNewStatus.equals(task.getStatus().getName()));
 
     boolean hasSubcontractorTasks =
         Beans.get(SubcontractorTaskRepository.class)
@@ -222,7 +249,7 @@ public class ProjectStatusChangeServiceImpl extends TaskStatusChangeServiceImpl
             > 0;
 
     return projectService.hasExtraExpenses(project)
-        || anyTaskStarted
+        || projectService.hasTask(project)
         || hasSubcontractorTasks
         || projectService.hasExpense(project);
   }

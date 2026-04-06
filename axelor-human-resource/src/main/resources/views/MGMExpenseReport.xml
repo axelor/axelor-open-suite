@@ -46,9 +46,10 @@
   </grid>
 
   <form name="mgm-expense-form" title="Project Expenses" model="com.axelor.apps.hr.db.Expense"
-    width="large" onSave="mgm-action-expense-method-validate-and-compute" canNew="false"
-    onNew="mgm-action-project-expense-group-form-onNew" canDelete="ventilated == false"
-    canAttach="false">
+    width="large"
+    onSave="mgm-action-validate-warn-billing-item-edited-after-project-confirmation, mgm-action-expense-method-validate-and-compute"
+    canNew="false" onNew="mgm-action-project-expense-group-form-onNew"
+    canDelete="ventilated == false" canAttach="false" onDelete="">
     <toolbar>
       <button name="projectFilesBtn" title="Project Files" showIf="project &amp;&amp; id"
         icon="fa-paperclip" onClick="action-method-project-find-project-files"/>

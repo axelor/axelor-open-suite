@@ -855,6 +855,7 @@
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
     <action name="action-project-attrs-sale-order-panel-display"/>
     <action name="action-record-business-project-set-default-priority"/>
+    <action name="action-attrs-business-project-set-status-editability"/>
   </action-group>
 
   <action-group name="action-business-project-project-group-on-load">
@@ -881,6 +882,7 @@
     <action name="mgm-business-projectaction-attrs-navigate-to-review-tab"/>
     <action name="mgm-action-migrate-project-type"/>
     <action name="mgm-action-method-set-dynamic-panel-attrs"/>
+    <action name="action-attrs-business-project-set-status-editability"/>
   </action-group>
 
   <action-record name="action-set-default-project-priority"
@@ -965,6 +967,13 @@
         &amp;&amp; __repo__(TaskReport).all().filter('self.project.id = ?1', id).count() == 0"/>
   </action-validate>
 
+  <action-validate
+    name="mgm-action-validate-warn-billing-item-edited-after-project-confirmation">
+    <alert
+      message="This project has already been confirmed for invoicing. Adding or modifying items at this stage may invalidate the current confirmation and the project will need to go through the review and confirmation process again before it can be invoiced. Please ensure this action is intentional before proceeding."
+      if="project?.isConfirmedForInvoicing" confirm-btn-title="Continue" cancel-btn-title="Cancel"/>
+  </action-validate>
+
   <action-attrs id="business-project-action-project-project-default"
     name="action-project-project-default" model="com.axelor.apps.project.db.Project">
     <attribute name="value" for="typeSelect" expr="eval:'project'"/>
@@ -998,6 +1007,11 @@
   <action-attrs name="mgm-business-projectaction-attrs-navigate-to-review-tab">
     <attribute for="otherExpensesReportPanel" name="active" if="eval: _fromDashboard"
       expr="eval: true"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-business-project-set-status-editability">
+    <attribute name="readonly" for="projectStatus"
+      expr="eval: __config__.app.getApp('project')?.manageStatusAutomatically"/>
   </action-attrs>
 
   <action-record name="action-project-null-toDate"

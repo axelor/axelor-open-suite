@@ -723,9 +723,7 @@ public class ProjectController {
               "taskTreePanel", "Tasks", Boolean.TRUE.equals(projectType.getRequiresTask())
             },
             new Object[] {
-              "taskReportsPanel",
-              "Task Report",
-              Boolean.TRUE.equals(projectType.getRequiresTaskReport())
+              "taskReportsPanel", "Task Report", Boolean.TRUE.equals(projectType.getRequiresTask())
             },
             new Object[] {
               "recordInvoicingDataPanel",

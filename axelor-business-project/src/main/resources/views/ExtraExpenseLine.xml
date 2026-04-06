@@ -45,7 +45,8 @@
 
   <form name="mgm-extra-expense-line-business-project-form" title="Extra Expense Line"
     model="com.axelor.apps.businessproject.db.ExtraExpenseLine" width="large"
-    onNew="mgm-action-method-extra-expense-set-defaults-on-new">
+    onNew="mgm-action-method-extra-expense-set-defaults-on-new"
+    onSave="mgm-action-validate-warn-billing-item-edited-after-project-confirmation">
     <panel showFrame="false">
       <field name="expenseProduct" form-view="product-expense-form"
         grid-view="product-expense-grid"

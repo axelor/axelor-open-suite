@@ -29,13 +29,13 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.businessproject.db.ProjectType;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.ExtraExpenseLineRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
+import com.axelor.apps.businessproject.service.taskreport.TaskMemberReportService;
 import com.axelor.apps.businessproject.service.taskreport.TaskReportService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -314,11 +314,15 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
   @Override
   public boolean readyToInvoice(Project project) {
-    return (hasExpense(project) || hasTimesheetLine(project))
-        && (allExpensesValidated(project)
-            && allTasksHaveTimesheetLines(project)
-            && allTimesheetLinesValidated(project)
-            && project.getIsConfirmedForInvoicing());
+    if (project == null) return false;
+
+    boolean expenseConditionMet = !hasExpense(project) || allExpensesValidated(project);
+    boolean timesheetConditionMet =
+        !hasTask(project)
+            || (allTasksHaveTimesheetLines(project) && allTimesheetLinesValidated(project));
+    boolean isConfirmed = Boolean.TRUE.equals(project.getIsConfirmedForInvoicing());
+
+    return isConfirmed && expenseConditionMet && timesheetConditionMet;
   }
 
   @Override
@@ -382,18 +386,15 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
   @Override
   public Boolean isProjectReadyForReview(Project project) {
-    if (project == null || project.getProjectType() == null) return Boolean.FALSE;
-    ProjectType projectType = project.getProjectType();
+    if (project == null) return Boolean.FALSE;
 
-    if (!Boolean.TRUE.equals(projectType.getRequiresValidation())) {
-      return Boolean.TRUE;
-    }
+    boolean hasApprovalItem = hasTimesheetLine(project) || hasExpense(project);
+    boolean timesheetLineConditionMet =
+        !hasTask(project)
+            || (allTasksHaveTimesheetLines(project) && allTimesheetLinesValidated(project));
+    boolean expenseConditionMet = !hasExpense(project) || allExpensesValidated(project);
 
-    if (!Boolean.TRUE.equals(projectType.getRequiresTask())) {
-      return allExpensesValidated(project);
-    }
-
-    return (allTimesheetLinesValidated(project) && allExpensesValidated(project));
+    return hasApprovalItem && timesheetLineConditionMet && expenseConditionMet;
   }
 
   @Override
@@ -405,9 +406,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             .bind("projectId", project.getId())
             .fetch();
 
-    if (expenses.isEmpty()) {
-      return Boolean.FALSE;
-    }
     return expenses.stream()
         .allMatch(
             expense ->
@@ -440,6 +438,21 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             .bind("projectId", project.getId())
             .count()
         > 0;
+  }
+
+  @Override
+  public boolean allExpensesSentOrValidated(Project project) {
+    if (project == null) return false;
+
+    return expenseRepository
+            .all()
+            .filter("self.project.id = :projectId AND self.statusSelect NOT IN (:statuses)")
+            .bind("projectId", project.getId())
+            .bind(
+                "statuses",
+                List.of(ExpenseRepository.STATUS_CONFIRMED, ExpenseRepository.STATUS_VALIDATED))
+            .count()
+        == 0;
   }
 
   protected boolean hasTimesheetLine(Project project) {
@@ -1071,5 +1084,29 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     log.debug("Subcontractor ... {}", subcontractor.getFullName());
 
     return subcontractor;
+  }
+
+  /**
+   * Checks if all tasks for a project have already been reported. If a project does not have any
+   * task, it considers that its task are yet to be reported.
+   *
+   * @param project project
+   * @return false if all task for project have not been reported yet or if project has no task else
+   *     returns true
+   */
+  @Override
+  public boolean allTaskReported(Project project) {
+    if (project == null || project.getProjectTaskList() == null) {
+      return false;
+    }
+
+    return project.getProjectTaskList().stream()
+        .filter(task -> !Boolean.TRUE.equals(task.getIsTemplate()))
+        .allMatch(task -> Beans.get(TaskMemberReportService.class).hasTaskMemberReport(task));
+  }
+
+  @Override
+  public boolean hasTask(Project project) {
+    return project.getProjectTaskList() != null && !project.getProjectTaskList().isEmpty();
   }
 }

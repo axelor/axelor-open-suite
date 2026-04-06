@@ -15,10 +15,8 @@
       help="Does this project type use tasks?"/>
     <boolean name="requiresExpense" title="Requires Expense" default="false"
       help="Does this project type use expenses?"/>
-    <boolean name="requiresTaskReport" title="Requires Task Report" default="false"
-      help="Does this project type use TaskReports?"/>
     <boolean name="requiresValidation" title="Requires Validation" default="false"
-      help="Does this project type require validation of its approval items?"/>
+      help="Does this project type have any item which requires validation?"/>
     <boolean name="requiresInvoicing" title="Requires Invoicing" default="true"
       help="Is this project type invoiced?"/>
     <boolean name="requiresConfirmation" title="Requires confirmation" default="false"

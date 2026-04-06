@@ -357,6 +357,7 @@
   </action-record>
 
   <action-group name="action-task-report-group-on-save">
+    <action name="mgm-action-validate-warn-billing-item-edited-after-project-confirmation"/>
     <action name="action-task-report-check-deleted-tmr-tsl-state"/>
     <action name="action-task-report-validate-deleted-tmr-tsl-state"/>
     <action name="action-task-report-method-delete-tmr-timesheet-lines"/>
@@ -384,6 +385,7 @@
   </action-group>
 
   <action-group name="action-task-member-report-group-onChange">
+    <action name="mgm-action-validate-warn-billing-item-edited-after-project-confirmation"/>
     <action name="action-task-report-check-deleted-tmr-tsl-state"/>
     <action name="action-task-report-validate-deleted-tmr-tsl-state"/>
     <action name="action-task-report-method-delete-tmr-timesheet-lines"/>
