@@ -16,6 +16,7 @@
     <field name="sentDateTime"/>
     <field name="period"/>
     <field name="totalAmountToInvoice" aggregate="sum"/>
+    <field name="inTaxTotal" title="Total to refund"/>
     <field name="statusSelect"/>
     <field name="ventilated"/>
   </grid>
@@ -26,6 +27,9 @@
     <field name="projectTask"/>
     <field name="expenseProduct"/>
     <field name="expenseDate"/>
+    <field name="untaxedAmount" aggregate="sum"/>
+    <field name="fee" title="Charged Fee (%)"/>
+    <field name="totalAmountToInvoice" aggregate="sum"/>
     <field name="totalAmount" title="Total to Refund" aggregate="sum"/>
     <field name="totalTax" aggregate="sum"/>
     <field name="toInvoice"/>
@@ -38,7 +42,10 @@
     model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate">
     <field name="expenseProduct"/>
     <field name="expenseDate"/>
+    <field name="untaxedAmount" aggregate="sum"/>
+    <field name="fee" title="Charged Fee (%)"/>
     <field name="totalAmountToInvoice" aggregate="sum"/>
+    <field name="totalAmount" title="Total to Refund" aggregate="sum"/>
     <field name="toInvoice"/>
     <field name="expense.statusSelect"/>
     <field name="justificationMetaFile" widget="binary-link"/>
