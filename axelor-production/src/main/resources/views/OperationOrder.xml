@@ -43,6 +43,7 @@
     <field name="manufOrder.prodProcess" hidden="true"/>
     <field name="manufOrder.prodProcess.operationContinuity" hidden="true"/>
     <field name="manufOrder.operationOrderMaxPriority" hidden="true"/>
+    <field name="manufOrder.isConsProOnOperation" hidden="true"/>
     <button name="planBtn" icon="calendar" onClick="action-operation-order-method-plan"
       readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
     <button name="startBtn" icon="play-fill"
@@ -50,6 +51,9 @@
       readonlyIf="(statusSelect != 3 &amp;&amp; statusSelect != 5) || ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; !((!$get('prodProcessLine.optional') &amp;&amp; priority == $get('manufOrder.operationOrderMaxPriority')) || ($get('prodProcessLine.optional') &amp;&amp; priority &lt; $get('manufOrder.operationOrderMaxPriority'))))"/>
     <button name="pauseBtn" icon="pause-fill"
       onClick="action-operation-order-group-pause,save" readonlyIf="statusSelect != 4"/>
+    <button name="consumeStockMoveBtn" icon="check" title="Consume in stock moves"
+      onClick="action-operation-order-method-consume-stock-move" readonlyIf="statusSelect != 4"
+      hideIf="!$get('manufOrder.isConsProOnOperation')"/>
     <button name="finishBtn" icon="power" onClick="action-operation-order-group-finish"
       readonlyIf="statusSelect != 4"/>
     <button name="cancelBtn" icon="x-circle-fill"
@@ -77,6 +81,7 @@
     <field name="outsourcing" hidden="true"/>
     <field name="manufOrder.prodProcess.operationContinuity" hidden="true"/>
     <field name="manufOrder.operationOrderMaxPriority" hidden="true"/>
+    <field name="manufOrder.isConsProOnOperation" hidden="true"/>
     <button name="planBtn" icon="calendar" onClick="save,action-operation-order-method-plan"
       readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
     <button name="startBtn" icon="play-fill"
@@ -84,6 +89,9 @@
       readonlyIf="(statusSelect != 3 &amp;&amp; statusSelect != 5) || ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; !((!$get('prodProcessLine.optional') &amp;&amp; priority == $get('manufOrder.operationOrderMaxPriority')) || ($get('prodProcessLine.optional') &amp;&amp; priority &lt; $get('manufOrder.operationOrderMaxPriority'))))"/>
     <button name="pauseBtn" icon="pause-fill"
       onClick="save,action-operation-order-group-pause,save" readonlyIf="statusSelect != 4"/>
+    <button name="consumeStockMoveBtn" icon="check" title="Consume in stock moves"
+      onClick="save,action-operation-order-method-consume-stock-move" readonlyIf="statusSelect != 4"
+      hideIf="!$get('manufOrder.isConsProOnOperation')"/>
     <button name="finishBtn" icon="power" onClick="action-operation-order-group-finish"
       readonlyIf="statusSelect != 4"/>
     <button name="cancelBtn" icon="x-circle-fill"
@@ -198,6 +206,7 @@
       <field name="manufOrder.prodProcess" hidden="true"/>
       <field name="manufOrder.prodProcess.operationContinuity" hidden="true"/>
       <field name="manufOrder.operationOrderMaxPriority" hidden="true"/>
+      <field name="manufOrder.isConsProOnOperation" hidden="true"/>
       <button name="planBtn" title="Plan" icon="calendar" colSpan="12"
         hideIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"
         onClick="save,action-operation-order-method-plan" hidden="true"/>
@@ -207,6 +216,9 @@
       <button name="cancelBtn" title="Cancel" icon="x-circle-fill"
         showIf="statusSelect != 2 &amp;&amp; statusSelect != 6" colSpan="12"
         onClick="save,action-operation-order-group-cancel,save" hidden="true"/>
+      <button name="consumeStockMoveBtn" icon="check" title="Consume in stock moves"
+        colSpan="12" showIf="statusSelect == 4 &amp;&amp; $get('manufOrder.isConsProOnOperation')"
+        onClick="save,action-operation-order-method-consume-stock-move" hidden="true"/>
       <button name="finishBtn" title="Finish" icon="power" showIf="statusSelect == 4"
         colSpan="12" onClick="save,action-operation-order-group-finish" hidden="true"/>
       <button name="finishPart" icon="power" title="Partial Finish" colSpan="12"
@@ -270,6 +282,11 @@
   <action-method name="action-operation-order-method-part-finish">
     <call class="com.axelor.apps.production.web.OperationOrderController"
       method="partialFinish"/>
+  </action-method>
+
+  <action-method name="action-operation-order-method-consume-stock-move">
+    <call class="com.axelor.apps.production.web.OperationOrderController"
+      method="consumeInStockMoves"/>
   </action-method>
 
   <action-method name="action-operation-order-method-cancel">

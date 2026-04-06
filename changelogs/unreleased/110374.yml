@@ -1,0 +1,3 @@
+---
+title: "Production: fixed consume in stock moves button not working when consuming products by operation phase."
+module: axelor-production
