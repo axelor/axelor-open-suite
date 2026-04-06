@@ -446,4 +446,13 @@ public final class HumanResourceExceptionMessage {
       "There is already a project planning time in these dates." /*)*/;
   public static final String PROJECT_PLANNING_TIME_UPDATE = /*$$(*/
       "A project planning time already exists. Do you want to update it?" /*)*/;
+
+  public static final String TIMESHEET_LINE_REQUIRES_PROJECT_FOR_VALIDATION = /*$$(*/
+      "Please select a project before validating this timesheet line." /*)*/;
+
+  public static final String TIMESHEET_LINE_REQUIRES_PROJECT_TASK_FOR_VALIDATION = /*$$(*/
+      "Please select a task before validating this timesheet line." /*)*/;
+
+  public static final String TIMESHEET_LINE_REQUIRES_QUALIFICATION_FOR_VALIDATION = /*$$(*/
+      "Please select an activity type before validating this timesheet line." /*)*/;
 }

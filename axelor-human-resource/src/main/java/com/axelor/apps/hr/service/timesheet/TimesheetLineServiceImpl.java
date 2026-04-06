@@ -404,6 +404,28 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void validateLine(TimesheetLine line) throws AxelorAlertException {
+    if (line == null) return;
+
+    if (line.getProject() == null) {
+      throw new AxelorAlertException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_LINE_REQUIRES_PROJECT_FOR_VALIDATION));
+    }
+
+    if (line.getProjectTask() == null) {
+      throw new AxelorAlertException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(
+              HumanResourceExceptionMessage.TIMESHEET_LINE_REQUIRES_PROJECT_TASK_FOR_VALIDATION));
+    }
+
+    if (line.getProduct() == null) {
+      throw new AxelorAlertException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(
+              HumanResourceExceptionMessage.TIMESHEET_LINE_REQUIRES_QUALIFICATION_FOR_VALIDATION));
+    }
+
     line.setIsValidated(true);
     line.setValidationDateTime(LocalDateTime.now());
     line.setValidatedBy(AuthUtils.getUser());
