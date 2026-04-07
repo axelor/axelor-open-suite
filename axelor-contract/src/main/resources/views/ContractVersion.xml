@@ -148,7 +148,7 @@
                 onSelect="action-contract-version-attrs-payment-condition-set-domain"/>
               <field name="automaticInvoicing" colSpan="3" widget="boolean-switch"
                 hidden="true" showIf="contract.contractTypeSelect == 1"/>
-              <field name="invoicingMomentSelect" showIf="automaticInvoicing" colSpan="3"/>
+              <field name="invoicingMomentSelect" colSpan="3"/>
             </panel>
             <panel name="invoicingDetailsPanel" colSpan="12">
               <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"
