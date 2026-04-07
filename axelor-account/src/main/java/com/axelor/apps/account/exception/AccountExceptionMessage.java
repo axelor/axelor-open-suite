@@ -1456,6 +1456,9 @@ public final class AccountExceptionMessage {
   public static final String IMPORT_FEC_PERIOD_NOT_FOUND = /*$$(*/
       "No period found for the date %s and the company %s. The move cannot be created." /*)*/;
 
+  public static final String IMPORT_FEC_CURRENCY_MISSING_FALLBACK = /*$$(*/
+      "Please fill the column currency with the ISO3 Code of the currency used in the CSV file for each line (while AOS uses one currency by entry) or fill the currency field onto the company settings." /*)*/;
+
   public static final String ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT = /*$$(*/
       "Please select a cash account in config of the payment mode %s" /*)*/;
 

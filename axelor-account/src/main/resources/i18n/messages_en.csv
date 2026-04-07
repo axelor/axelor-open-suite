@@ -2661,6 +2661,7 @@
 "Please fill input lines",,,
 "Please fill printing settings on following invoices: %s",,,
 "Please fill printing settings on invoice %s.",,,
+"Please fill the column currency with the ISO3 Code of the currency used in the CSV file for each line (while AOS uses one currency by entry) or fill the currency field onto the company settings.",,,
 "Please input values between 1 to 100",,,
 "Please make sure that the account %s being used can be reconciled and used for partner balance.",,,
 "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance.",,,
