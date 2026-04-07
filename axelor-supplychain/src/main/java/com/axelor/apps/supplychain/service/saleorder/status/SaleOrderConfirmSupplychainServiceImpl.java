@@ -32,6 +32,7 @@ import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainServi
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppSupplychain;
@@ -48,6 +49,7 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
   protected IntercoService intercoService;
   protected StockMoveRepository stockMoveRepository;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
+  protected SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain;
 
   @Inject
   public SaleOrderConfirmSupplychainServiceImpl(
@@ -58,7 +60,8 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
       SaleOrderStockService saleOrderStockService,
       IntercoService intercoService,
       StockMoveRepository stockMoveRepository,
-      AccountingSituationSupplychainService accountingSituationSupplychainService) {
+      AccountingSituationSupplychainService accountingSituationSupplychainService,
+      SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain) {
     this.appSupplychainService = appSupplychainService;
     this.analyticToolSupplychainService = analyticToolSupplychainService;
     this.partnerSupplychainService = partnerSupplychainService;
@@ -67,6 +70,7 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
     this.intercoService = intercoService;
     this.stockMoveRepository = stockMoveRepository;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
+    this.saleOrderLineServiceSupplyChain = saleOrderLineServiceSupplyChain;
   }
 
   @Override
@@ -92,6 +96,8 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
     }
     if (appSupplychain.getCustomerStockMoveGenerationAuto()) {
       saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
+    } else {
+      saleOrderLineServiceSupplyChain.updateDeliveryStates(saleOrder.getSaleOrderLineList());
     }
     int intercoSaleCreatingStatus = appSupplychain.getIntercoSaleCreatingStatusSelect();
     if (saleOrder.getInterco()
