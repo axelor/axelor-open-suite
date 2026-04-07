@@ -692,9 +692,15 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       boolean isSameCurrencyRate = true;
       if (invoicePayment != null) {
+        LocalDate referenceDate =
+            invoiceTerm.getInvoice() != null
+                ? invoiceTerm.getInvoice().getInvoiceDate()
+                : (invoiceTerm.getMoveLine() != null
+                    ? invoiceTerm.getMoveLine().getDate()
+                    : invoiceTerm.getDueDate());
         isSameCurrencyRate =
             currencyService.isSameCurrencyRate(
-                invoiceTerm.getInvoice().getInvoiceDate(),
+                referenceDate,
                 invoicePayment.getPaymentDate(),
                 invoiceTerm.getCurrency(),
                 invoiceTerm.getCompanyCurrency());
