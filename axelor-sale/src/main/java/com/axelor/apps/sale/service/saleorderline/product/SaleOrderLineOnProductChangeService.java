@@ -48,6 +48,7 @@ public interface SaleOrderLineOnProductChangeService {
    * @param saleOrderLine a sale order line with a product
    * @return a map containing all updated fields with their new values.
    */
-  Map<String, Object> computeLineFromProduct(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+  Map<String, Object> computeLineFromProduct(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSaleOrderLine)
       throws AxelorException;
 }

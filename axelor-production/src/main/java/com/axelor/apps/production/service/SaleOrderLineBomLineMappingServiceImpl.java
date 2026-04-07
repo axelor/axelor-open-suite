@@ -68,7 +68,8 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
               saleOrderLine, saleOrderLine.getParentSaleOrderLine()));
 
       // computing the line will generate sub lines.
-      saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
+      saleOrderLineOnProductChangeService.computeLineFromProduct(
+          saleOrder, saleOrderLine, saleOrderLine.getParentSaleOrderLine());
 
       BillOfMaterial billOfMaterial = billOfMaterialLine.getBillOfMaterial();
       if (billOfMaterial != null) {

@@ -153,10 +153,16 @@ public class SaleOrderLineController {
       SaleOrderLineProductService saleOrderLineProductService =
           Beans.get(SaleOrderLineProductService.class);
 
+      Context parent = context.getParent();
+      SaleOrderLine parentSaleOrderLine =
+          parent != null && parent.getContextClass().equals(SaleOrderLine.class)
+              ? parent.asType(SaleOrderLine.class)
+              : null;
+
       try {
         Map<String, Object> saleOrderLineMap =
             Beans.get(SaleOrderLineOnProductChangeService.class)
-                .computeLineFromProduct(saleOrder, saleOrderLine);
+                .computeLineFromProduct(saleOrder, saleOrderLine, parentSaleOrderLine);
         saleOrderLineMap.putAll(
             Beans.get(SaleOrderLineDummyService.class)
                 .getOnProductChangeDummies(saleOrderLine, saleOrder));
