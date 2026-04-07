@@ -1466,6 +1466,9 @@ public final class AccountExceptionMessage {
   public static final String IMPORT_FEC_FOREIGN_CURRENCY_AMOUNT_REQUIRED = /*$$(*/
       "The amount in currency in %s is required when importing an entry line in a foreign currency (different from company currency)." /*)*/;
 
+  public static final String IMPORT_FEC_CURRENCY_MISSING_FALLBACK = /*$$(*/
+      "Please fill the column currency with the ISO3 Code of the currency used in the CSV file for each line (while AOS uses one currency by entry) or fill the currency field onto the company settings." /*)*/;
+
   public static final String ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT = /*$$(*/
       "Please select a cash account in config of the payment mode %s" /*)*/;
 
