@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+  http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+
+  <selection name="production.batch.action.select"
+    id="maintenance.production.batch.action.select">
+    <option value="1">Compute work in progress valuation</option>
+    <option value="2">Fill SOP real values</option>
+    <option value="3">Generate production order for sale orders</option>
+    <option value="4">Generate preventive maintenance requests</option>
+  </selection>
+
+  <form name="production-batch-form" id="maintenance-production-batch-form-ext"
+    title="Production Batch" model="com.axelor.apps.production.db.ProductionBatch"
+    extension="true">
+
+    <extend target="//panel[@name='actionsPanel']">
+      <insert position="inside">
+        <button name="generatePreventiveMtnRequestsBtn"
+          title="Generate preventive maintenance requests"
+          showIf="actionSelect == 4"
+          onClick="save,action-production-batch-method-run-batch"/>
+      </insert>
+    </extend>
+
+  </form>
+
+</object-views>
