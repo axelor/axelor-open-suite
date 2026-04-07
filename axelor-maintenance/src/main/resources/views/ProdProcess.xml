@@ -49,7 +49,11 @@
     ]]></viewer>
       </field>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-      <field name="machineType" form-view="machine-type-form" grid-view="machine-type-grid"/>
+      <field name="machineType" form-view="machine-type-form" grid-view="machine-type-grid"
+        readonlyIf="machine != null" requiredIf="machine == null"/>
+      <field name="machine" colSpan="6" form-view="maintenance-machine-form"
+        grid-view="machine-grid" domain="self.machineType = :machineType OR :machineType IS NULL"
+        onChange="action-maintenance-prod-process-record-machine-onchange"/>
       <field name="company" widget="SuggestBox" canEdit="false" form-view="company-form"
         grid-view="company-grid"/>
       <field if="__config__.app.getApp('production')?.getManageWorkshop()"
@@ -63,6 +67,25 @@
         height="15" field="prodProcessLineList" form-view="prod-process-line-form"
         grid-view="prod-process-line-grid"
         onChange="action-prod-process-record-count-number-of-phases"/>
+      <panel name="detailsPanel" title="Details">
+        <field name="stockLocation" colSpan="4" canEdit="false"
+          domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3"
+          form-view="stock-location-form" grid-view="stock-location-grid"/>
+        <field name="stockMoveRealizeOrderSelect" colSpan="4"/>
+        <field name="isConsProOnOperation" colSpan="4"/>
+        <panel name="outsourcePanel" title="Outsourcing" colSpan="12"
+          if="__config__.app.getApp('production')?.getManageOutsourcing()">
+          <field name="outsourcing" colSpan="4"/>
+          <field name="outsourcable" colSpan="4"/>
+          <field name="prodProcessLinesOutsourcable" colSpan="4" showIf="outsourcable"/>
+          <field name="subcontractor" colSpan="4" showIf="outsourcing"
+            form-view="partner-form" grid-view="partner-grid" domain="self.isSubcontractor = true"/>
+          <field name="generatePurchaseOrderOnMoPlanning" colSpan="4" showIf="outsourcing"/>
+          <field name="generatedPurchaseOrderProductSet" colSpan="8" showIf="outsourcing"
+            widget="TagSelect" form-view="product-form" grid-view="product-grid"/>
+        </panel>
+        <field name="operationContinuity" colSpan="4"/>
+      </panel>
       <panel-dashlet name="viewBillOfMaterialsPanel" title="Bills of material"
         action="action-prod-process-view-bill-of-materials"/>
     </panel-tabs>
@@ -98,6 +121,23 @@
       expr="eval: __repo__(ManufOrder).TYPE_MAINTENANCE"/>
     <attribute name="value" for="isEnabledForAllProducts" expr="eval: true"/>
   </action-attrs>
+
+  <action-record name="action-maintenance-prod-process-record-machine-onchange"
+    model="com.axelor.apps.production.db.ProdProcess">
+    <field name="machineType" expr="eval: machine?.machineType" if="machine != null"/>
+  </action-record>
+
+  <!-- Skip prod process validation for maintenance prod processes -->
+  <action-group name="action-prod-process-method-validate-prod-process"
+    id="maintenance-action-prod-process-method-validate-prod-process">
+    <action name="action-maintenance-prod-process-method-validate-prod-process"
+      if="typeSelect != 3"/>
+  </action-group>
+
+  <action-method name="action-maintenance-prod-process-method-validate-prod-process">
+    <call class="com.axelor.apps.production.web.ProdProcessController"
+      method="validateProdProcess"/>
+  </action-method>
 
   <action-method name="action-production-process-print">
     <call class="com.axelor.apps.maintenance.web.ProdProcessController" method="print"/>

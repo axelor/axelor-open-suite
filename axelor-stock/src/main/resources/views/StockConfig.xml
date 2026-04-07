@@ -34,6 +34,11 @@
         domain="self.isOutsourcingLocation = true AND self.typeSelect = 3 AND self.company = :company"
         colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"
         if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageOutsourcing()"/>
+      <field name="maintenanceVirtualStockLocation" colSpan="4"
+        domain="self.usableOnProduction = True AND self.typeSelect = 3 AND self.company = :company"
+        form-view="stock-location-form" grid-view="stock-location-grid"
+        if-module="axelor-maintenance" if="__config__.app.isApp('production')"
+        help="This configuration allows you to define the default virtual maintenance location for the company. This location will be used for maintenance of production machines."/>
     </panel>
     <panel name="stockMoveInfoPanel" title="Stock move information">
       <panel colSpan="12" name="subStockMoveInfoPanel">
@@ -70,6 +75,11 @@
           domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3"
           colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"
           if-module="axelor-production" if="__config__.app.isApp('production')"/>
+        <field name="maintenanceComponentsStockLocation" colSpan="4"
+          domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3"
+          form-view="stock-location-form" grid-view="stock-location-grid"
+          if-module="axelor-maintenance" if="__config__.app.isApp('production')"
+          help="This configuration allows you to define the default stock location for the company's components used for maintenance of production machines."/>
         <field name="cartStockLocation"
           if="__config__.app.getApp('stock')?.isMassStockMoveManaged"
           domain="self.typeSelect != 3 AND self.company = :company" colSpan="4"/>

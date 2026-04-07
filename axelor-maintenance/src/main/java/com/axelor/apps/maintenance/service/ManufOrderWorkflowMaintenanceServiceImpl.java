@@ -25,11 +25,13 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
@@ -39,13 +41,14 @@ import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceIm
 import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
-import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 
 public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflowServiceImpl {
+
+  protected CostSheetService costSheetService;
 
   @Inject
   public ManufOrderWorkflowMaintenanceServiceImpl(
@@ -64,7 +67,8 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
       ManufOrderOutsourceService manufOrderOutsourceService,
       OperationOrderOutsourceService operationOrderOutsourceService,
       ProductService productService,
-      ManufOrderTrackingNumberService manufOrderTrackingNumberService) {
+      ManufOrderTrackingNumberService manufOrderTrackingNumberService,
+      CostSheetService costSheetService) {
     super(
         operationOrderWorkflowService,
         manufOrderStockMoveService,
@@ -82,6 +86,28 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
         operationOrderOutsourceService,
         productService,
         manufOrderTrackingNumberService);
+    this.costSheetService = costSheetService;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void start(ManufOrder manufOrder) throws AxelorException {
+    if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
+      super.start(manufOrder);
+      return;
+    }
+
+    manufOrderService.checkApplicableManufOrder(manufOrder);
+
+    manufOrder.setRealStartDateT(appProductionService.getTodayDateTime().toLocalDateTime());
+
+    int beforeOrAfterConfig = manufOrder.getProdProcess().getStockMoveRealizeOrderSelect();
+    if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
+      manufOrderStockMoveService.consumeInStockMoves(manufOrder);
+    }
+
+    manufOrder.setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
+    manufOrderRepo.save(manufOrder);
   }
 
   @Override
@@ -107,13 +133,26 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
       }
     }
 
-    manufOrder.setRealEndDateT(
-        Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
+    // Realize IN stock moves (maintenance: IN only, no OUT)
+    manufOrderStockMoveService.finish(manufOrder);
+
+    // Re-fetch to avoid LazyInitializationException after stock move finish
+    manufOrder = manufOrderRepo.find(manufOrder.getId());
+
+    // Compute cost price on finish
+    costSheetService.computeCostPrice(
+        manufOrder,
+        CostSheetRepository.CALCULATION_END_OF_PRODUCTION,
+        appBaseService.getTodayDate(manufOrder.getCompany()));
+
+    manufOrder.setRealEndDateT(appProductionService.getTodayDateTime().toLocalDateTime());
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_FINISHED);
-    manufOrder.setEndTimeDifference(
-        new BigDecimal(
-            ChronoUnit.MINUTES.between(
-                manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
+    if (manufOrder.getPlannedEndDateT() != null && manufOrder.getRealEndDateT() != null) {
+      manufOrder.setEndTimeDifference(
+          new BigDecimal(
+              ChronoUnit.MINUTES.between(
+                  manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
+    }
     manufOrderRepo.save(manufOrder);
     return true;
   }
