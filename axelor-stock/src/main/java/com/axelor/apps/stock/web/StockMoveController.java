@@ -547,6 +547,7 @@ public class StockMoveController {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
       Beans.get(StockMoveService.class).setAvailableStatus(stockMove);
+      response.setValue("availableStatusSelect", stockMove.getAvailableStatusSelect());
       response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
