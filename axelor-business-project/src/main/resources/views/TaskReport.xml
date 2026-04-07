@@ -149,15 +149,17 @@
     model="com.axelor.apps.businessproject.db.TaskMemberReport">
     <panel colSpan="12" canCollapse="true" collapseIf="false">
       <field name="task" title="Task" widget="Select"
-        onChange="action-task-member-report-on-change-task" required="true" colSpan="4"/>
+        onSelect="action-validate-task-member-report-no-time-overlap"
+        onChange="action-task-member-report-on-change-task,action-validate-task-member-report-no-time-overlap"
+        required="true" colSpan="4"/>
       <field name="employee" title="Employee" readonly="true" colSpan="4" canView="false"/>
       <field name="dirtAllowance" widget="checkbox" colSpan="4"/>
       <field name="startTime" required="true"
-        onChange="action-task-report-on-change-time, action-task-member-report-validate-start-time-after-end-time, action-validate-task-member-report-no-time-overlap"/>
+        onChange="action-validate-task-member-report-no-time-overlap,action-task-report-on-change-time,action-task-member-report-validate-start-time-after-end-time"/>
       <field name="breakTimeMinutes" title="Break Time (minutes)"
         onChange="action-task-member-report-sync-minutes-to-hours,action-task-report-on-change-time"/>
       <field name="endTime" required="true"
-        onChange="action-task-report-on-change-time, action-task-member-report-validate-start-time-after-end-time, action-validate-task-member-report-no-time-overlap"/>
+        onChange="action-validate-task-member-report-no-time-overlap,action-task-report-on-change-time,action-task-member-report-validate-start-time-after-end-time"/>
       <field name="taskCategory" title="Task Category" readonly="true" canView="false"/>
       <field name="workHours"/>
       <field name="task.product" showIf="_reviewing" canView="false"/>
@@ -414,7 +416,6 @@
 
   <action-group name="action-group-task-member-report-on-save">
     <action name="action-task-member-report-validate-start-time-after-end-time"/>
-    <action name="action-validate-task-member-report-no-time-overlap"/>
     <action name="action-task-report-on-change-time"/>
   </action-group>
 
