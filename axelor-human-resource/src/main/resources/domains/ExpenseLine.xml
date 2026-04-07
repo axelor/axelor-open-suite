@@ -12,15 +12,20 @@
     <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask"
       title="Project task"/>
     <many-to-one name="expenseProduct" ref="com.axelor.apps.base.db.Product"
-      title="Expense Type" required="true"/>
+      title="Expense Type"/>
     <date name="expenseDate" title="Expense date" required="true"/>
     <decimal name="untaxedAmount" title="Untaxed amount"/>
     <decimal name="totalTax" title="Total tax" min="0"/>
     <decimal name="totalAmount" title="Total Amount" min="0" required="true"/>
     <decimal name="totalAmountToInvoice" title="Total to invoice" min="0"/>
-    <decimal name="fee" title="Fee (%)" precision="6" scale="2" default="0"/>
+    <decimal name="fee" title="Charged Fee (%)" precision="6" scale="2" default="0"/>
     <boolean name="invoiceFeeOnly" title="Invoice fee only" default="false"/>
     <boolean name="showChargedFee" title="Show charged fee" default="false"/>
+    <boolean name="isIndividualItem" title="Detailed item?" default="false"/>
+    <string name="itemProductName" title="Product Name"/>
+    <decimal name="itemQty" title="Quantity" default="1" scale="2" precision="20"/>
+    <many-to-one name="itemUnit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <decimal name="itemUnitPrice" title="Unit Price" scale="2" precision="20"/>
     <string name="comments" title="Comments" large="true"/>
     <boolean name="toInvoice"/>
     <boolean name="invoiced" readonly="true"/>

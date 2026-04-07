@@ -221,10 +221,14 @@
   </form>
 
   <form name="mgm-expense-line-form" title="Expense line" canAttach="false"
-    model="com.axelor.apps.hr.db.ExpenseLine" onNew="mgm-action-expense-line-default-onNew"
+    model="com.axelor.apps.hr.db.ExpenseLine"
+    onNew="mgm-action-expense-line-default-onNew,mgm-action-individual-item-expense-line-record-expense-product"
     onSave="action-expense-line-validate-expenseDate" width="large">
 
     <panel name="mainPanel" title="Main" colSpan="12" readonlyIf="expense.statusSelect &gt; 1">
+      <field name="isIndividualItem" widget="boolean-switch" hidden="true"/>
+      <field name="isIndividualItem" widget="boolean-switch"
+        onChange="mgm-action-expense-line-compute-totals"/>
       <field name="project" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
         form-view="business-project-form" grid-view="project-grid" readonly="true"
@@ -237,16 +241,24 @@
       <field name="site" form-view="site-form" grid-view="site-grid"
         onSelect="action-expense-line-attrs-set-site-domain"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
-      <field name="expenseProduct" edit-icon="false" canEdit="false"
-        onSelect="mgm-action-expense-line-attrs-set-product-domain" widget="SuggestBox"
-        form-view="product-expense-form" grid-view="product-expense-grid"/>
+      <field name="expenseProduct" edit-icon="false" canEdit="false" colSpan="12"
+        if="__user__.group.code == 'admins'" onChange="mgm-action-expense-line-update-product-name"
+        onSelect="mgm-action-expense-line-attrs-set-product-domain" widget="SuggestBox"/>
+      <field name="itemProductName" required="true" colSpan="6"/>
       <field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
-      <field name="untaxedAmount"
-        onChange="mgm-action-expense-line-record-apply-standard-tax,mgm-action-expense-line-record-calculate-totals"/>
+      <panel name="individualItemPanel" colSpan="12" title="Item Details"
+        showIf="isIndividualItem" showTitle="false">
+        <field name="itemQty" colSpan="4" onChange="mgm-action-expense-line-compute-totals"/>
+        <field name="itemUnit" colSpan="4" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="itemUnitPrice" colSpan="4"
+          onChange="mgm-action-expense-line-compute-totals"/>
+      </panel>
+      <field name="untaxedAmount" readonlyIf="isIndividualItem"
+        onChange="mgm-action-expense-line-compute-totals"/>
       <field name="totalTax" title="Total tax (€)"
         onChange="mgm-action-expense-line-record-calculate-totals" colSpan="6"/>
       <field name="fee" title="Fee (%)" colSpan="6"
-        onChange="mgm-action-expense-line-record-calculate-totals"/>
+        onChange="mgm-action-expense-line-compute-totals"/>
       <field name="totalAmountToInvoice" readonly="true" colSpan="6"/>
       <field name="showChargedFee" title="Do you want to show charged fee on the invoice ?"
         colSpan="6"/>
@@ -283,24 +295,32 @@
   </form>
 
   <form name="mgm-fees-expense-line-form" canAttach="false" title="Expense line"
-    model="com.axelor.apps.hr.db.ExpenseLine" onNew="mgm-fees-action-expense-line-default-onNew"
+    model="com.axelor.apps.hr.db.ExpenseLine"
+    onNew="mgm-fees-action-expense-line-default-onNew,mgm-action-individual-item-expense-line-record-expense-product"
     onSave="action-expense-line-validate-expenseDate" width="large">
     <panel name="mainPanel" title="Main" colSpan="12" readonlyIf="expense.statusSelect &gt; 1">
       <field name="project" edit-icon="false" canEdit="false"
         onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
         form-view="business-project-form" grid-view="project-grid" readonly="true"
         requiredIf="toInvoice"/>
-      <field name="project" hidden="true"/>
-      <field name="expenseProduct" edit-icon="false" canEdit="false"
-        onSelect="mgm-action-expense-line-attrs-set-product-domain" widget="SuggestBox"
-        form-view="product-expense-form" grid-view="product-expense-grid"/>
+      <field name="isIndividualItem" widget="boolean-switch"
+        onChange="mgm-action-fee-line-compute-totals"/>
+      <field name="expenseProduct" edit-icon="false" canEdit="false" colSpan="12"
+        if="__user__.group.code == 'admins'" onChange="mgm-action-expense-line-update-product-name"
+        onSelect="mgm-action-expense-line-attrs-set-product-domain" widget="SuggestBox"/>
+      <field name="itemProductName" required="true" colSpan="6"/>
       <field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
-      <field name="untaxedAmount" colSpan="6"
-        onChange="mgm-fees-action-expense-line-record-calculate-totals"/>
+      <panel name="individualItemPanel" colSpan="12" title="Item Details"
+        showIf="isIndividualItem" showTitle="false">
+        <field name="itemQty" colSpan="4" onChange="mgm-action-fee-line-compute-totals"/>
+        <field name="itemUnit" colSpan="4" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="itemUnitPrice" colSpan="4" onChange="mgm-action-fee-line-compute-totals"/>
+      </panel>
+      <field name="untaxedAmount" colSpan="6" readonlyIf="isIndividualItem"
+        onChange="mgm-action-fee-line-compute-totals"/>
       <field name="fee" title="Fee (%)" colSpan="6"
-        onChange="mgm-fees-action-expense-line-record-calculate-totals"/>
-      <field name="invoiceFeeOnly" colSpan="6"
-        onChange="mgm-fees-action-expense-line-record-calculate-totals"/>
+        onChange="mgm-action-fee-line-compute-totals"/>
+      <field name="invoiceFeeOnly" colSpan="6" onChange="mgm-action-fee-line-compute-totals"/>
       <field name="totalAmountToInvoice" readonly="true" colSpan="6"/>
       <field name="showChargedFee" title="Do you want to show charged fee on the invoice ?"
         colSpan="6" hideIf="invoiceFeeOnly"/>
@@ -335,12 +355,17 @@
     <action name="mgm-action-project-expense-line-record-fill-project"/>
   </action-group>
 
+  <action-group name="mgm-individual-item-action-project-expense-line-group-onnew">
+    <action name="mgm-fees-action-expense-line-default-onNew"/>
+    <action name="mgm-action-individual-item-expense-line-record-expense-product"/>
+  </action-group>
+
   <action-record name="mgm-action-project-expense-record-default"
     model="com.axelor.apps.hr.db.Expense">
     <field name="project" expr="eval: _projectRef"/>
     <field name="company" expr="eval: _projectCompany"/>
     <field name="currency" expr="eval: _projectCurrency"/>
-    <field name="companyCbSelect" expr="eval: __user__.employee?.companyCbSelect"/>
+    <field name="companyCbSelect" expr="eval: 1"/>
     <field name="bankDetails"
       expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany?.defaultBankDetails"/>
     <field name="employee" expr="eval: __user__.employee"
@@ -392,8 +417,6 @@
   <action-record name="mgm-action-expense-line-record-calculate-totals"
     model="com.axelor.apps.hr.db.ExpenseLine">
     <field name="totalAmount" expr="eval: (untaxedAmount ?: 0) + (totalTax ?: 0)"/>
-    <field name="totalAmountToInvoice"
-      expr="eval: (untaxedAmount ?: 0) + ((untaxedAmount ?: 0) * ((fee ?: 0) / 100.0))"/>
   </action-record>
 
   <action-record name="mgm-fees-action-expense-line-record-calculate-totals"
@@ -406,9 +429,56 @@
       )"/>
   </action-record>
 
+  <action-record name="mgm-action-individual-item-expense-line-record-expense-product"
+    model="com.axelor.apps.hr.db.ExpenseLine">
+    <field name="expenseProduct"
+      expr="eval: __repo__(Product).all().filter('self.code = ?1', 'ME').fetchOne()"/>
+    <field name="itemProductName"
+      expr="eval: __repo__(Product).all().filter('self.code = ?1', 'ME').fetchOne()?.name"/>
+  </action-record>
+
+  <action-record name="mgm-action-expense-line-update-product-name"
+    model="com.axelor.apps.hr.db.ExpenseLine">
+    <field name="itemProductName" expr="eval: expenseProduct?.name"/>
+  </action-record>
+
   <action-record name="mgm-action-expense-line-record-apply-standard-tax"
     model="com.axelor.apps.hr.db.ExpenseLine">
     <field name="totalTax" expr="eval: (untaxedAmount ?: 0) * 0.19"/>
+  </action-record>
+
+  <action-record name="mgm-action-expense-line-compute-totals"
+    model="com.axelor.apps.hr.db.ExpenseLine">
+    <field name="untaxedAmount" expr="eval: (itemUnitPrice ?: 0) * (itemQty ?: 0)"
+      if="isIndividualItem"/>
+    <field name="totalTax"
+      expr="eval: {
+      var base = isIndividualItem ? ((itemUnitPrice ?: 0) * (itemQty ?: 0)) : (untaxedAmount ?: 0);
+      return base * 0.19;
+  }"/>
+    <field name="totalAmount"
+      expr="eval: {
+      var base = isIndividualItem ? ((itemUnitPrice ?: 0) * (itemQty ?: 0)) : (untaxedAmount ?: 0);
+      return base * 1.19;
+  }"/>
+    <field name="totalAmountToInvoice"
+      expr="eval: {
+      var base = isIndividualItem ? ((itemUnitPrice ?: 0) * (itemQty ?: 0)) : (untaxedAmount ?: 0);
+      return base * (1 + (fee ?: 0) / 100.0);
+  }"/>
+  </action-record>
+
+  <action-record name="mgm-action-fee-line-compute-totals"
+    model="com.axelor.apps.hr.db.ExpenseLine">
+    <field name="untaxedAmount" expr="eval: (itemUnitPrice ?: 0) * (itemQty ?: 0)"
+      if="isIndividualItem"/>
+
+    <field name="totalAmountToInvoice"
+      expr="eval: {
+      var base = isIndividualItem ? ((itemUnitPrice ?: 0) * (itemQty ?: 0)) : (untaxedAmount ?: 0);
+      var feeRate = (fee ?: 0) / 100.0;
+      return invoiceFeeOnly ? (base * feeRate) : (base * (1 + feeRate));
+  }"/>
   </action-record>
 
   <action-attrs name="mgm-action-expense-attrs-hide-button-readonly-field">

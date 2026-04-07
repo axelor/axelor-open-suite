@@ -63,10 +63,10 @@ public class ExpenseInvoiceLineServiceImpl implements ExpenseInvoiceLineService 
           new InvoiceLineGenerator(
               invoice,
               product,
-              product.getName(),
-              expenseLine.getTotalAmountToInvoice(),
-              expenseLine.getTotalAmountToInvoice(),
-              expenseLine.getTotalAmountToInvoice(),
+              expenseLine.getItemProductName(),
+              expenseLine.getUntaxedAmount(),
+              expenseLine.getUntaxedAmount(),
+              expenseLine.getUntaxedAmount(),
               expenseLine.getComments(),
               BigDecimal.ONE,
               product.getUnit(),
@@ -74,8 +74,8 @@ public class ExpenseInvoiceLineServiceImpl implements ExpenseInvoiceLineService 
               priority,
               BigDecimal.ZERO,
               PriceListLineRepository.AMOUNT_TYPE_NONE,
-              expenseLine.getTotalAmountToInvoice(),
-              expenseLine.getTotalAmountToInvoice(),
+              expenseLine.getUntaxedAmount(),
+              expenseLine.getUntaxedAmount(),
               false) {
 
             @Override
@@ -94,10 +94,10 @@ public class ExpenseInvoiceLineServiceImpl implements ExpenseInvoiceLineService 
           new InvoiceLineGenerator(
               invoice,
               product,
-              product.getName(),
-              expenseLine.getTotalAmountToInvoice(),
-              expenseLine.getTotalAmountToInvoice(),
-              expenseLine.getTotalAmountToInvoice(),
+              expenseLine.getItemProductName(),
+              expenseLine.getUntaxedAmount(),
+              expenseLine.getUntaxedAmount(),
+              expenseLine.getUntaxedAmount(),
               expenseLine.getComments(),
               BigDecimal.ONE,
               product.getUnit(),
@@ -105,8 +105,8 @@ public class ExpenseInvoiceLineServiceImpl implements ExpenseInvoiceLineService 
               priority,
               BigDecimal.ZERO,
               PriceListLineRepository.AMOUNT_TYPE_NONE,
-              expenseLine.getTotalAmountToInvoice(),
-              expenseLine.getTotalAmountToInvoice(),
+              expenseLine.getUntaxedAmount(),
+              expenseLine.getUntaxedAmount(),
               false) {
 
             @Override

@@ -18,12 +18,14 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.businessproject.service.extracharges.ExtraChargeConstants;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineServiceImpl;
@@ -32,7 +34,10 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,41 +82,34 @@ public class ExpenseInvoiceLineServiceProjectImpl extends ExpenseInvoiceLineServ
   public List<InvoiceLine> createInvoiceLine(Invoice invoice, ExpenseLine expenseLine, int priority)
       throws AxelorException {
 
-    if (Boolean.TRUE.equals(expenseLine.getShowChargedFee())) {
-      List<InvoiceLine> lines = new ArrayList<>();
-      BigDecimal originalFee = expenseLine.getFee();
-      BigDecimal originalTotalAmountToInvoice = expenseLine.getTotalAmountToInvoice();
+    List<InvoiceLine> lines = new ArrayList<>();
 
-      try {
-        log.debug("Generating base line (temporarily zeroing fee)");
-        expenseLine.setFee(BigDecimal.ZERO);
-        expenseLine.setTotalAmountToInvoice(expenseLine.getUntaxedAmount());
-        lines.addAll(super.createInvoiceLine(invoice, expenseLine, priority));
-      } finally {
-        expenseLine.setFee(originalFee);
-        expenseLine.setTotalAmountToInvoice(originalTotalAmountToInvoice);
-      }
-
-      if (originalFee != null && originalFee.compareTo(BigDecimal.ZERO) > 0) {
-        log.debug("Generating charged fee line for fee: {}", originalFee);
-        InvoiceLine chargedFeeLine = createChargedFeeLine(invoice, expenseLine, priority + 1);
-        if (chargedFeeLine != null) {
-          lines.add(chargedFeeLine);
-        } else {
-          log.error("Failed to create charged fee line (Product might be missing)");
-        }
-      }
-      return lines;
+    if (Boolean.TRUE.equals(expenseLine.getIsIndividualItem())) {
+      log.debug(
+          "Creating individual item expense invoice line for expense line with ID: {}",
+          expenseLine.getId());
+      lines.addAll(createIndividualExpenseItemLine(invoice, expenseLine, priority));
+    } else {
+      lines.addAll(super.createInvoiceLine(invoice, expenseLine, priority));
     }
 
-    return super.createInvoiceLine(invoice, expenseLine, priority);
+    // We no longer check showChargedFee but if fee is applied
+    if (expenseLine.getFee() != null && expenseLine.getFee().compareTo(BigDecimal.ZERO) > 0) {
+      log.debug("Fee detected ({}). Generating charged fee line.", expenseLine.getFee());
+
+      InvoiceLine chargedFeeLine = addChargedFeeLine(invoice, expenseLine);
+      if (chargedFeeLine != null) {
+        lines.add(chargedFeeLine);
+      }
+    }
+
+    return lines;
   }
 
-  private InvoiceLine createChargedFeeLine(Invoice invoice, ExpenseLine expenseLine, int priority)
+  private InvoiceLine addChargedFeeLine(Invoice invoice, ExpenseLine expenseLine)
       throws AxelorException {
 
     String productCode = ExtraChargeConstants.EXPENSE_CHARGED_FEE_INVOICE_LINE_SOURCE_TYPE;
-    log.debug("Searching for fee product with code: {}", productCode);
     Product chargedFeeProduct =
         Beans.get(ProductRepository.class)
             .all()
@@ -120,20 +118,29 @@ public class ExpenseInvoiceLineServiceProjectImpl extends ExpenseInvoiceLineServ
             .fetchOne();
 
     if (chargedFeeProduct == null) {
-      log.error("Product with code '{}' not found in database.", productCode);
+      log.error("Fee Product '{}' missing. Cannot create fee line.", productCode);
       return null;
     }
 
-    BigDecimal qty = expenseLine.getFee().divide(new BigDecimal(100), 4, RoundingMode.HALF_UP);
-    BigDecimal unitPrice = expenseLine.getUntaxedAmount();
+    BigDecimal qty =
+        expenseLine
+            .getFee()
+            .divide(new BigDecimal(100), 4, RoundingMode.HALF_UP)
+            .setScale(2, RoundingMode.HALF_UP);
+    BigDecimal unitPrice = expenseLine.getUntaxedAmount().setScale(2, RoundingMode.HALF_UP);
 
     InvoiceLine line = new InvoiceLine();
     line.setInvoice(invoice);
     line.setProduct(chargedFeeProduct);
     line.setProductName(chargedFeeProduct.getName());
-    if (expenseLine.getExpenseProduct() != null) {
+    mapAccountingAndTaxes(line, chargedFeeProduct, invoice);
+
+    if (expenseLine.getItemProductName() != null) {
+      line.setDescription(expenseLine.getItemProductName());
+    } else {
       line.setDescription(expenseLine.getExpenseProduct().getName());
     }
+
     line.setQty(qty);
     line.setPrice(unitPrice);
     line.setUnit(chargedFeeProduct.getUnit());
@@ -145,5 +152,82 @@ public class ExpenseInvoiceLineServiceProjectImpl extends ExpenseInvoiceLineServ
         qty,
         unitPrice);
     return line;
+  }
+
+  private List<InvoiceLine> createIndividualExpenseItemLine(
+      Invoice invoice, ExpenseLine expenseLine, int priority) throws AxelorException {
+
+    List<InvoiceLine> lines = new ArrayList<>();
+    InvoiceLine line = new InvoiceLine();
+    line.setInvoice(invoice);
+
+    // set product info
+    Product product = resolveExpenseProduct(expenseLine);
+    line.setProduct(product);
+    mapAccountingAndTaxes(line, product, invoice);
+
+    line.setProductName(expenseLine.getItemProductName());
+    line.setQty(expenseLine.getItemQty().setScale(2, RoundingMode.HALF_UP));
+    line.setUnit(expenseLine.getItemUnit());
+    line.setPrice(expenseLine.getItemUnitPrice().setScale(2, RoundingMode.HALF_UP));
+    line.setSourceType(ExtraChargeConstants.EXPENSE_INVOICE_LINE_SOURCE_TYPE);
+    lines.add(line);
+
+    return lines;
+  }
+
+  private void mapAccountingAndTaxes(InvoiceLine line, Product product, Invoice invoice) {
+    Company company = invoice.getCompany();
+
+    // Try Product first
+    AccountManagement am = findAccountManagement(product.getAccountManagementList(), company);
+
+    // Fallback to Product Family if the product itself isn't configured
+    if (am == null && product.getProductFamily() != null) {
+      am = findAccountManagement(product.getProductFamily().getAccountManagementList(), company);
+    }
+
+    if (am != null) {
+      line.setAccount(am.getSaleAccount());
+      if (CollectionUtils.isNotEmpty(am.getSaleTaxSet())) {
+        Set<TaxLine> taxLines = new HashSet<>();
+        for (Tax tax : am.getSaleTaxSet()) {
+          Beans.get(TaxLineRepository.class)
+              .all()
+              .filter("self.tax = :tax")
+              .bind("tax", tax)
+              .fetch()
+              .stream()
+              .findFirst()
+              .ifPresent(taxLines::add);
+        }
+        line.setTaxLineSet(taxLines);
+      }
+    }
+  }
+
+  private AccountManagement findAccountManagement(List<AccountManagement> amList, Company company) {
+    if (CollectionUtils.isEmpty(amList)) return null;
+    return amList.stream().filter(am -> am.getCompany().equals(company)).findFirst().orElse(null);
+  }
+
+  private Product resolveExpenseProduct(ExpenseLine expenseLine) throws AxelorException {
+    Product product = expenseLine.getExpenseProduct();
+
+    if (product == null) {
+      log.warn("Expense Product missing for line {}, using fallback", expenseLine.getId());
+
+      product =
+          Beans.get(ProductRepository.class)
+              .findByCode(ExtraChargeConstants.INDIVIDUAL_ITEM_PRODUCT_CODE);
+
+      if (product == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            "No product found for code %s",
+            ExtraChargeConstants.INDIVIDUAL_ITEM_PRODUCT_CODE);
+      }
+    }
+    return product;
   }
 }

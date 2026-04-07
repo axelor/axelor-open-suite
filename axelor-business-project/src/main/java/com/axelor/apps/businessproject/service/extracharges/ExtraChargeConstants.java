@@ -17,6 +17,7 @@ public final class ExtraChargeConstants {
   public static final String EMERGENCY_PRODUCT_CODE = "EMERGENCY";
   public static final String DIRT_ALLOWANCE = "DIRTALLOWANCE";
   public static final String NIGHTSHIFT_PRODUCT_CODE = "NIGHTSHIFT";
+  public static final String INDIVIDUAL_ITEM_PRODUCT_CODE = "ME";
 
   public static final String TIMESHEET_INVOICE_LINE_SOURCE_TYPE = "TIMESHEET";
   public static final String EXPENSE_INVOICE_LINE_SOURCE_TYPE = "EXPENSE";
