@@ -44,7 +44,7 @@ import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderStockMoveServiceMaintenanceImpl extends ManufOrderStockMoveServiceImpl {
