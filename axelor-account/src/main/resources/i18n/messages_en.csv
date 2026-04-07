@@ -1848,6 +1848,7 @@
 "IFRS first depreciation date",,,
 "IFRS first depreciation date cannot be before Acquisition date.",,,
 "If activated, then all eligible transactions (deliveries/arrivals) related to this tax number will be taken into account in the declaration of exchanges. If not, transactions will be ignored.",,,
+"If checked, due dates on invoice terms can be set manually. Otherwise, they are computed automatically from the payment condition lines.",,,
 "If the current line is computed in a percentage type column, the given line will be used to divide the current value.",,,
 "If this checkbox is ticked, a fixed number of characters will be imposed for non-regulatory account codes. Otherwise the account code length definition will be free with minimum controls.",,,
 "If this checkbox is ticked, daybook moves will be accounted in the payment session.",,,
