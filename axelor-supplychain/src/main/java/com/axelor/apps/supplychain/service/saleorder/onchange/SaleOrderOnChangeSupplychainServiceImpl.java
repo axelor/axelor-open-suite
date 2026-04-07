@@ -179,7 +179,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
       FreightCarrierMode freightCarrierMode = clientPartner.getFreightCarrierMode();
       if (freightCarrierMode != null) {
         saleOrder.setFreightCarrierMode(freightCarrierMode);
-        values.put("freightCarriedMode", saleOrder.getFreightCarrierMode());
+        values.put("freightCarrierMode", saleOrder.getFreightCarrierMode());
         saleOrder.setCarrierPartner(freightCarrierMode.getCarrierPartner());
         values.put("carrierPartner", saleOrder.getCarrierPartner());
       }
