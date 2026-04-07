@@ -45,7 +45,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class OperationOrderStockMoveServiceMaintenanceImpl
     extends OperationOrderStockMoveServiceImpl {
