@@ -137,7 +137,7 @@ public class FECImporter extends Importer {
   }
 
   protected void addMoveFromMoveLine(Model bean) {
-    if (bean.getClass().equals(MoveLine.class)) {
+    if (bean != null && bean.getClass().equals(MoveLine.class)) {
       MoveLine moveLine = (MoveLine) bean;
       if (moveLine.getMove() != null) {
         Move move = moveLine.getMove();

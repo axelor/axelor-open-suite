@@ -53,10 +53,12 @@ import com.google.inject.persist.Transactional;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -69,14 +71,17 @@ public class ImportMove {
   @Inject private PeriodService periodService;
   @Inject private FECImportRepository fecImportRepository;
   @Inject private ImportMoveLineAmountService importMoveLineAmountService;
+  @Inject private CurrencyRepository currencyRepository;
 
   private String lastImportDate;
+  private final Set<String> failedEntryReferences = new HashSet<>();
 
   @Transactional(rollbackOn = {Exception.class})
   public Object importFECMove(Object bean, Map<String, Object> values) throws AxelorException {
     assert bean instanceof MoveLine;
     MoveLine moveLine = (MoveLine) bean;
     FECImport fecImport = null;
+    String importReference = null;
     try {
       if (values.get("FECImport") != null) {
         fecImport = fecImportRepository.find(((FECImport) values.get("FECImport")).getId());
@@ -100,7 +105,11 @@ public class ImportMove {
                 .getTodayDateTime(company)
                 .format(DateTimeFormatter.ofPattern("yyyyMMddHH:mm:ss"));
       }
-      String importReference = String.format("#%s@%s", csvReference, lastImportDate);
+      importReference = String.format("#%s@%s", csvReference, lastImportDate);
+
+      if (failedEntryReferences.contains(importReference)) {
+        return null;
+      }
 
       MoveLine mvLine =
           moveLineRepo
@@ -149,7 +158,9 @@ public class ImportMove {
         }
         move.setPeriod(period);
 
-        setMoveCurrency(move, values.get("Idevise"));
+        Currency currency = getMoveCurrency(values.get("Idevise"), company, fecImport);
+        move.setCurrency(currency);
+        move.setCurrencyCode(currency.getCodeISO());
 
         Journal journal = null;
         if (values.get("JournalCode") != null) {
@@ -219,9 +230,15 @@ public class ImportMove {
       importMoveLineAmountService.computeImportedAmounts(
           moveLine, values.get("Idevise"), values.get("Montantdevise"), csvReference, fecImport);
     } catch (AxelorException e) {
+      if (importReference != null) {
+        failedEntryReferences.add(importReference);
+      }
       TraceBackService.trace(e);
       throw e;
     } catch (Exception e) {
+      if (importReference != null) {
+        failedEntryReferences.add(importReference);
+      }
       TraceBackService.trace(e);
       throw new AxelorException(
           fecImport, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
@@ -247,19 +264,22 @@ public class ImportMove {
     }
   }
 
-  protected void setMoveCurrency(Move move, Object importedCurrency) {
-    Currency companyCurrency = move.getCompany().getCurrency();
-
+  protected Currency getMoveCurrency(Object importedCurrency, Company company, FECImport fecImport)
+      throws AxelorException {
+    Currency companyCurrency = company.getCurrency();
     if (importMoveLineAmountService.isCompanyCurrency(importedCurrency, companyCurrency)) {
-      move.setCurrency(companyCurrency);
-      if (companyCurrency != null) {
-        move.setCurrencyCode(companyCurrency.getCodeISO());
-      }
-    } else if (importedCurrency != null) {
-      String importedCurrencyValue = importedCurrency.toString().trim();
-      move.setCurrency(Beans.get(CurrencyRepository.class).findByCode(importedCurrencyValue));
-      move.setCurrencyCode(importedCurrencyValue);
+      return companyCurrency;
     }
+    if (importedCurrency != null && StringUtils.notBlank(importedCurrency.toString())) {
+      Currency currency = currencyRepository.findByCode(importedCurrency.toString().trim());
+      if (currency != null) {
+        return currency;
+      }
+    }
+    throw new AxelorException(
+        fecImport,
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(AccountExceptionMessage.IMPORT_FEC_CURRENCY_MISSING_FALLBACK));
   }
 
   protected Company getCompany(Map<String, Object> values) {
