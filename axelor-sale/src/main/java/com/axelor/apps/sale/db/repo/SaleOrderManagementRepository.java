@@ -29,6 +29,7 @@ import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCopyService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
@@ -75,6 +76,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       }
       computeSeq(saleOrder);
       computeFullName(saleOrder);
+      syncAddressStr(saleOrder);
 
       if (appSale.getManagePartnerComplementaryProduct()) {
         Beans.get(SaleOrderService.class).manageComplementaryProductSOLines(saleOrder);
@@ -123,6 +125,12 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     } catch (Exception e) {
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  protected void syncAddressStr(SaleOrder saleOrder) {
+    Beans.get(SaleOrderService.class).computeAddressStr(saleOrder);
+    Beans.get(SaleOrderDeliveryAddressService.class)
+        .updateSaleOrderLinesDeliveryAddressStr(saleOrder);
   }
 
   protected void computeSubMargin(SaleOrder saleOrder) throws AxelorException {
