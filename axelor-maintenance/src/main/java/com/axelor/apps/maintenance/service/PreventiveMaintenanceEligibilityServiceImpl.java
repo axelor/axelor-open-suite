@@ -23,7 +23,7 @@ import com.axelor.apps.maintenance.db.repo.EquipementMaintenanceRepository;
 import com.axelor.apps.maintenance.db.repo.MaintenanceRequestRepository;
 import com.axelor.apps.production.db.ProductionBatch;
 import com.axelor.db.Query;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class PreventiveMaintenanceEligibilityServiceImpl
     implements PreventiveMaintenanceEligibilityService {

@@ -24,7 +24,7 @@ import com.axelor.apps.maintenance.db.EquipementMaintenance;
 import com.axelor.apps.maintenance.db.MaintenanceRequest;
 import com.axelor.apps.maintenance.db.repo.MaintenanceRequestRepository;
 import com.axelor.apps.production.db.Machine;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
