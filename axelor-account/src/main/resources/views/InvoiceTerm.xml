@@ -344,7 +344,7 @@
         <panel name="pfpEmailPanel" colSpan="6">
           <button name="sendPfpNotifyEmailBtn" title="Send a notify email" hidden="true"
             showIf="pfpValidateStatusSelect == 1 &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; invoice.statusSelect > 1"
-            colSpan="12" onClick="save"/>
+            colSpan="12" onClick="save,action-send-by-email-with-template"/>
         </panel>
         <field name="moveLine.move.company.accountConfig.isManagePassedForPayment"
           hidden="true"/>
@@ -515,7 +515,7 @@
         <panel name="pfpEmailPanel">
           <button name="sendPfpNotifyEmailBtn" title="Send a notify email" hidden="true"
             showIf="pfpValidateStatusSelect == 1 &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; invoice.statusSelect > 1"
-            colSpan="6" onClick="save"/>
+            colSpan="6" onClick="save,action-send-by-email-with-template"/>
           <spacer colSpan="2"/>
           <field name="originInvoiceTerm" readonly="true" colSpan="4"
             showIf="originInvoiceTerm"/>
@@ -867,7 +867,7 @@
         <panel name="pfpEmailPanel" colSpan="6">
           <button name="sendPfpNotifyEmailBtn" title="Send a notify email" hidden="true"
             showIf="pfpValidateStatusSelect == 1 &amp;&amp; !$isSelectedPfpValidatorEqualsPartnerPfpValidator  &amp;&amp; invoice.statusSelect > 1"
-            colSpan="12" onClick="save"/>
+            colSpan="12" onClick="save,action-send-by-email-with-template"/>
         </panel>
         <field name="moveLine.move.company.accountConfig.isManagePassedForPayment"
           hidden="true"/>
