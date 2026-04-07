@@ -36,8 +36,7 @@
       </panel>
       <field name="nextMtnDate"/>
       <field name="createMtnRequestSelect" showIf="machine != null"/>
-      <field name="lastMtnOperatingHoursRef" readonly="true"
-        showIf="machine != null"/>
+      <field name="lastMtnOperatingHoursRef" readonly="true" showIf="machine != null"/>
       <field name="mtnProcedure" colSpan="12" widget="html"/>
       <field name="mtnFile" widget="binary-link"/>
     </panel>
