@@ -28,7 +28,7 @@ import com.axelor.apps.production.service.batch.BatchStrategy;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class BatchGeneratePreventiveMaintenanceRequest extends BatchStrategy {

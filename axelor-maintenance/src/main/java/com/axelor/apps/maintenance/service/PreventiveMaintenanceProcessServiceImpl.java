@@ -24,8 +24,8 @@ import com.axelor.apps.maintenance.db.EquipementMaintenance;
 import com.axelor.apps.maintenance.db.repo.EquipementMaintenanceRepository;
 import com.axelor.apps.maintenance.db.repo.MaintenanceRequestRepository;
 import com.axelor.apps.production.db.ProductionBatch;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+!import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
