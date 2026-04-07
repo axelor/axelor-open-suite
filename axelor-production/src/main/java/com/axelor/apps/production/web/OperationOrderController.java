@@ -171,6 +171,18 @@ public class OperationOrderController {
     }
   }
 
+  public void consumeInStockMoves(ActionRequest request, ActionResponse response) {
+    try {
+      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+      operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
+
+      Beans.get(OperationOrderStockMoveService.class).finish(operationOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void cancel(ActionRequest request, ActionResponse response) {
     try {
       OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
