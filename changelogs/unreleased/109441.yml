@@ -1,0 +1,8 @@
+---
+title: "MRP: fixed calculation staying stuck in started status when an error occurs."
+module: axelor-supplychain
+developer: |
+  - MrpService.saveErrorInMrp(Mrp, Exception) signature changed to saveErrorInMrp(Mrp, Throwable).
+  - MrpServiceImpl.call() now throws Exception instead of AxelorException.
+  - MrpServiceImpl.onRunnerException(Exception) signature changed to onRunnerException(Throwable).
+  - MrpJob.runCalculationWithExceptionManagement(Mrp) now throws Exception instead of AxelorException.
