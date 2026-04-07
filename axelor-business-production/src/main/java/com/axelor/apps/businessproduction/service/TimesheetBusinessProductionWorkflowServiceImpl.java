@@ -19,19 +19,20 @@
 package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.businessproject.service.TimesheetWorkflowBusinessProjectServiceImpl;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowCheckService;
-import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowServiceImpl;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.inject.Beans;
 import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class TimesheetBusinessProductionWorkflowServiceImpl extends TimesheetWorkflowServiceImpl {
+public class TimesheetBusinessProductionWorkflowServiceImpl
+    extends TimesheetWorkflowBusinessProjectServiceImpl {
 
   @Inject
   public TimesheetBusinessProductionWorkflowServiceImpl(
