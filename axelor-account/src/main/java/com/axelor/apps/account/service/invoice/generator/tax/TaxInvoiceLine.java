@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceJournalService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -133,18 +134,23 @@ public class TaxInvoiceLine extends TaxGenerator {
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
       for (TaxLine taxLine : taxLineSet) {
         if (taxLine.getValue().signum() != 0) {
-          vatSystem =
-              taxAccountToolService.calculateVatSystem(
-                  invoice.getPartner(),
-                  invoice.getCompany(),
-                  invoiceLine.getAccount(),
-                  (invoice.getOperationTypeSelect()
-                          == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-                      || invoice.getOperationTypeSelect()
-                          == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND),
-                  (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
-                      || invoice.getOperationTypeSelect()
-                          == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
+          if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+            vatSystem = MoveLineRepository.VAT_CASH_PAYMENTS;
+          } else {
+            vatSystem =
+                taxAccountToolService.calculateVatSystem(
+                    invoice.getPartner(),
+                    invoice.getCompany(),
+                    invoiceLine.getAccount(),
+                    (invoice.getOperationTypeSelect()
+                            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+                        || invoice.getOperationTypeSelect()
+                            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND),
+                    (invoice.getOperationTypeSelect()
+                            == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+                        || invoice.getOperationTypeSelect()
+                            == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
+          }
 
           imputedAccount = getImputedAccount(invoiceLine, taxLine, vatSystem);
         } else {
