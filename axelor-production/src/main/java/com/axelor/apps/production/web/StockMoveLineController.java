@@ -25,9 +25,11 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.StockMoveLineOutsourcingService;
 import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
@@ -64,6 +66,22 @@ public class StockMoveLineController {
     response.setValue("companyPurchasePrice", stockMoveLine.getCompanyPurchasePrice());
     response.setValue("unitPriceUntaxed", stockMoveLine.getUnitPriceUntaxed());
     response.setValue("unitPriceTaxed", stockMoveLine.getUnitPriceTaxed());
+  }
+
+  public void checkServiceOutsourcingRealQty(ActionRequest request, ActionResponse response) {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    try {
+      Beans.get(StockMoveLineOutsourcingService.class)
+          .checkServiceOutsourcingRealQty(stockMoveLine);
+    } catch (AxelorException e) {
+      if (stockMoveLine.getId() != null) {
+        StockMoveLine dbLine = Beans.get(StockMoveLineRepository.class).find(stockMoveLine.getId());
+        if (dbLine != null) {
+          response.setValue("realQty", dbLine.getQty());
+        }
+      }
+      TraceBackService.trace(response, e);
+    }
   }
 
   /**
