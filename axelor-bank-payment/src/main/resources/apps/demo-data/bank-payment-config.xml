@@ -46,6 +46,8 @@
 
   <input file="account_accountingReportType.csv" separator=";"
     search="self.importId = :importId" type="com.axelor.apps.account.db.AccountingReportType"
-    update="true"/>
+    update="true">
+    <bind to="company" column="company" search="self.importId = :company"/>
+  </input>
 
 </csv-inputs>

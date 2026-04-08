@@ -325,6 +325,7 @@
   <input file="account_accountingReportType.csv" separator=";"
     type="com.axelor.apps.account.db.AccountingReportType" search="self.importId = :importId">
     <bind to="name" column="name"/>
+    <bind column="typeSelect" to="typeSelect"/>
     <bind to="reportExportTypeSelect" eval="'1'"/>
     <bind to="reportTitle" column="name"/>
     <bind to="company" column="company" search="self.importId = :company"

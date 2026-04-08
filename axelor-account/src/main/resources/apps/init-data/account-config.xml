@@ -24,6 +24,8 @@
     <bind to="reportExportTypeSelect" column="docType"/>
     <bind to="typeSelect" column="type"/>
     <bind to="company" column="company" search="self.importId = :company" update="true"/>
+    <bind to="comparison" column="comparison"/>
+    <bind to="reportTitle" column="name" if="type == '3000' || type == '23' || type == '24'"/>
   </input>
 
   <input file="account_analyticLevel.csv" separator=";" search="self.nbr = :nbr"

@@ -6,6 +6,8 @@
   <input file="account_accountingReportType.csv" separator=";"
     search="self.importId = :importId" type="com.axelor.apps.account.db.AccountingReportType">
     <bind to="company" column="company" search="self.importId = :company" update="true"/>
+    <bind to="reportTitle" column="name"
+      if="typeSelect == '3000' || typeSelect == '23' || typeSelect == '24'"/>
   </input>
 
 </csv-inputs>
