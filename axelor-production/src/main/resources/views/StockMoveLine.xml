@@ -146,6 +146,23 @@
     <call class="com.axelor.apps.production.web.StockMoveLineController" method="compute"/>
   </action-method>
 
+  <action-method
+    name="action-production-stock-move-line-check-service-outsourcing-real-qty">
+    <call class="com.axelor.apps.production.web.StockMoveLineController"
+      method="checkServiceOutsourcingRealQty"/>
+  </action-method>
+
+  <action-group name="action-stock-move-line-group-real-qty-onchange"
+    id="action-production-stock-move-line-group-real-qty-onchange">
+    <action name="action-stock-move-line-method-qty-onchange"/>
+    <action name="action-stock-move-line-record-total-net-mass"/>
+    <action name="action-stock-move-line-method-set-available-status"/>
+    <action name="action-stock-move-line-record-set-qty-remaining-to-package"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-production-stock-move-line-check-service-outsourcing-real-qty"
+      if="__config__.app.isApp('production')"/>
+  </action-group>
+
   <action-attrs name="action-stock-move-line-attrs-load-qty-title"
     model="com.axelor.apps.stock.db.StockMoveLine">
     <attribute for="qty" name="title"
