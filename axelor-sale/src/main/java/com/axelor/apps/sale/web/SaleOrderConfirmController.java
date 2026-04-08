@@ -26,6 +26,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderSplitDummyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderSplitService;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderDummyService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineSplitService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -117,11 +118,12 @@ public class SaleOrderConfirmController {
     List<Map<String, Object>> saleOrderLineListContext = new ArrayList<>();
     SaleOrder saleOrder = context.asType(SaleOrder.class);
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
-    SaleOrderSplitService saleOrderSplitService = Beans.get(SaleOrderSplitService.class);
+    SaleOrderLineSplitService saleOrderLineSplitService =
+        Beans.get(SaleOrderLineSplitService.class);
     BigDecimal currentlyTotalOrdered = BigDecimal.ZERO;
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       Map<String, Object> map = Mapper.toMap(saleOrderLine);
-      BigDecimal qtyToOrder = saleOrderSplitService.getQtyToOrderLeft(saleOrderLine);
+      BigDecimal qtyToOrder = saleOrderLineSplitService.getQtyToOrderLeft(saleOrderLine);
       map.put("$qtyToOrder", qtyToOrder);
       BigDecimal price =
           saleOrder.getInAti() ? saleOrderLine.getInTaxPrice() : saleOrderLine.getPrice();

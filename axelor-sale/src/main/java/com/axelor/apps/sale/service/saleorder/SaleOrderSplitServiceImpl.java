@@ -29,6 +29,7 @@ import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineOnChangeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineSplitService;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.persist.Transactional;
@@ -49,6 +50,7 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
   protected final SaleOrderComputeService saleOrderComputeService;
   protected final AppBaseService appBaseService;
   protected final SaleOrderOrderingStatusService saleOrderOrderingStatusService;
+  protected final SaleOrderLineSplitService saleOrderLineSplitService;
 
   @Inject
   public SaleOrderSplitServiceImpl(
@@ -59,7 +61,8 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
       SaleOrderConfirmService saleOrderConfirmService,
       SaleOrderComputeService saleOrderComputeService,
       AppBaseService appBaseService,
-      SaleOrderOrderingStatusService saleOrderOrderingStatusService) {
+      SaleOrderOrderingStatusService saleOrderOrderingStatusService,
+      SaleOrderLineSplitService saleOrderLineSplitService) {
     this.saleOrderRepository = saleOrderRepository;
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.saleOrderLineOnChangeService = saleOrderLineOnChangeService;
@@ -68,6 +71,7 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
     this.saleOrderComputeService = saleOrderComputeService;
     this.appBaseService = appBaseService;
     this.saleOrderOrderingStatusService = saleOrderOrderingStatusService;
+    this.saleOrderLineSplitService = saleOrderLineSplitService;
   }
 
   @Transactional(rollbackOn = {AxelorException.class})
@@ -125,7 +129,7 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
   protected void updateOriginSol(
       SaleOrderLine saleOrderLineToCopy, BigDecimal qtyToOrder, AppBase appBase)
       throws AxelorException {
-    BigDecimal qtyToOrderLeft = getQtyToOrderLeft(saleOrderLineToCopy);
+    BigDecimal qtyToOrderLeft = saleOrderLineSplitService.getQtyToOrderLeft(saleOrderLineToCopy);
     if (qtyToOrderLeft.compareTo(qtyToOrder) < 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -156,11 +160,6 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.SALE_QUOTATION_ALL_ALREADY_ORDERED));
     }
-  }
-
-  @Override
-  public BigDecimal getQtyToOrderLeft(SaleOrderLine saleOrderLine) {
-    return saleOrderLine.getQty().subtract(saleOrderLine.getOrderedQty());
   }
 
   protected void checkBeforeConfirm(SaleOrder saleOrder, Map<Long, BigDecimal> qtyToOrderMap)
