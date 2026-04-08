@@ -822,8 +822,8 @@
     <bind column="typeSelect" to="typeSelect"
       check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingReportType', 'typeSelect', typeSelect)"
       check-message="Invalid typeSelect"/>
-    <bind to="reportExportTypeSelect" eval="'1'"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingReportType', 'reportExportTypeSelect', '1')"
+    <bind to="reportExportTypeSelect" column="reportExportTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingReportType', 'reportExportTypeSelect', reportExportTypeSelect)"
       check-message="Invalid reportExportTypeSelect"/>
     <bind to="reportTitle" column="name"/>
     <bind to="company" column="company" search="self.importId = :company"
