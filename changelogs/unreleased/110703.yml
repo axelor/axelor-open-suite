@@ -1,0 +1,3 @@
+---
+title: "Timetable: fixed error while generating an invoice from the menu form, when the timetable is not related to the order."
+module: axelor-supplychain

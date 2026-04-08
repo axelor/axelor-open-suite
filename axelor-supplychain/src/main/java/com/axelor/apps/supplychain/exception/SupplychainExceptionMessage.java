@@ -212,6 +212,9 @@ public final class SupplychainExceptionMessage {
   public static final String TIMETABLE_SALE_ORDER_NOT_CONFIRMED = /*$$(*/
       "Please confirm the sale order before invoicing." /*)*/;
 
+  public static final String TIMETABLE_NOT_LINKED_TO_ORDER = /*$$(*/
+      "Timetables can only be invoiced from a sale order or a purchase order." /*)*/;
+
   /** Ventilate State Service */
   public static final String VENTILATE_STATE_MISSING_ADVANCE_ACCOUNT = /*$$(*/
       "Please configure the advance payment account for the company %s" /*)*/;
