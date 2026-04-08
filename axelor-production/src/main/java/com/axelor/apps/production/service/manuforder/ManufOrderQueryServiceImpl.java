@@ -25,11 +25,12 @@ import java.util.List;
 
 public class ManufOrderQueryServiceImpl implements ManufOrderQueryService {
 
-  protected final ManufOrderService manufOrderService;
+  protected final ManufOrderMultiLevelPlanningService manufOrderMultiLevelPlanningService;
 
   @Inject
-  public ManufOrderQueryServiceImpl(ManufOrderService manufOrderService) {
-    this.manufOrderService = manufOrderService;
+  public ManufOrderQueryServiceImpl(
+      ManufOrderMultiLevelPlanningService manufOrderMultiLevelPlanningService) {
+    this.manufOrderMultiLevelPlanningService = manufOrderMultiLevelPlanningService;
   }
 
   @Override
@@ -40,7 +41,7 @@ public class ManufOrderQueryServiceImpl implements ManufOrderQueryService {
   }
 
   protected void collectDescendantIds(ManufOrder manufOrder, List<Long> ids) {
-    for (ManufOrder child : manufOrderService.getChildrenManufOrder(manufOrder)) {
+    for (ManufOrder child : manufOrderMultiLevelPlanningService.getChildrenManufOrder(manufOrder)) {
       ids.add(child.getId());
       collectDescendantIds(child, ids);
     }

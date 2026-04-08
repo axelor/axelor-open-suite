@@ -47,6 +47,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
+import com.axelor.apps.production.service.manuforder.ManufOrderMultiLevelPlanningService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyService;
@@ -65,7 +66,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.db.Wizard;
 import com.axelor.utils.service.TranslationService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -75,7 +75,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -590,7 +589,7 @@ public class ManufOrderController {
               && Boolean.parseBoolean(request.getContext().get("_showOnlyMissingQty").toString());
       ProdProductProductionRepository prodProductProductionRepository =
           Beans.get(ProdProductProductionRepository.class);
-      List<ProdProduct> prodProducts =
+      List<Product> productList =
           mo.getToConsumeProdProductList().stream()
               .filter(
                   prodProduct ->
@@ -609,62 +608,13 @@ public class ManufOrderController {
                                       prodProduct.getUnit())
                                   .compareTo(BigDecimal.ZERO)
                               > 0)
+              .map(ProdProduct::getProduct)
+              .distinct()
               .collect(Collectors.toList());
-      response.setValue("$components", prodProducts);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
-   * Called from multi-level-planing-wizard-form, on clicking "Generate MO" button.
-   *
-   * @param request
-   * @param response
-   */
-  @SuppressWarnings("unchecked")
-  public void generateMultiLevelManufOrder(ActionRequest request, ActionResponse response) {
-    try {
-      Long moId = Long.valueOf(request.getContext().get("id").toString());
-      ManufOrder mo = Beans.get(ManufOrderRepository.class).find(moId);
-      ProdProductRepository prodProductRepository = Beans.get(ProdProductRepository.class);
-      List<ProdProduct> prodProductList =
-          ((List<LinkedHashMap<String, Object>>) request.getContext().get("components"))
-              .stream()
-                  .filter(map -> (boolean) map.get("selected"))
-                  .map(map -> prodProductRepository.find(Long.valueOf(map.get("id").toString())))
-                  .collect(Collectors.toList());
-      if (prodProductList.isEmpty()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(ProductionExceptionMessage.NO_PRODUCT_SELECTED));
-      }
-
-      List<Product> selectedProductList = new ArrayList<>();
-
-      for (ProdProduct prod : prodProductList) {
-        if (selectedProductList.contains(prod.getProduct())) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(ProductionExceptionMessage.DUPLICATE_PRODUCT_SELECTED));
-        }
-        selectedProductList.add(prod.getProduct());
-      }
-
       List<ManufOrder> moList =
-          Beans.get(ManufOrderService.class).generateAllSubManufOrder(selectedProductList, mo);
-
-      response.setCanClose(true);
-      response.setView(
-          ActionView.define(I18n.get("Manufacturing orders"))
-              .model(Wizard.class.getName())
-              .add("form", "multi-level-generated-draft-manuf-order-wizard-form")
-              .param("popup", "true")
-              .param("popup-save", "false")
-              .param("show-toolbar", "false")
-              .param("show-confirm", "false")
-              .context("_moList", moList)
-              .map());
+          Beans.get(ManufOrderMultiLevelPlanningService.class)
+              .generateAllSubManufOrder(productList, mo);
+      response.setValue("$draftManufOrderList", moList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -751,10 +701,12 @@ public class ManufOrderController {
       }
       List<Map<String, Object>> manufOrders = (List<Map<String, Object>>) object;
       List<Long> ids =
-          Beans.get(ManufOrderService.class).planSelectedOrdersAndDiscardOthers(manufOrders);
+          Beans.get(ManufOrderMultiLevelPlanningService.class)
+              .planSelectedOrdersAndDiscardOthers(manufOrders);
       if (ObjectUtils.isEmpty(ids)) {
         ids.add(0L);
       }
+      response.setCanClose(true);
       response.setView(
           ActionView.define(I18n.get("Manufacturing orders"))
               .model(ManufOrder.class.getName())

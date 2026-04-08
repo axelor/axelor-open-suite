@@ -26,6 +26,7 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ManufOrderProductResponse;
 import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderMultiLevelPlanningService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveService;
 import com.axelor.apps.stock.db.StockMove;
@@ -49,6 +50,7 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
 
   protected ProductStockLocationService productStockLocationService;
   protected ManufOrderService manufOrderService;
+  protected ManufOrderMultiLevelPlanningService manufOrderMultiLevelPlanningService;
   protected StockMoveLineService stockMoveLineService;
   protected ManufOrderGetStockMoveService manufOrderGetStockMoveService;
   protected ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService;
@@ -57,11 +59,13 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
   public ManufOrderProductRestServiceImpl(
       ProductStockLocationService productStockLocationService,
       ManufOrderService manufOrderService,
+      ManufOrderMultiLevelPlanningService manufOrderMultiLevelPlanningService,
       StockMoveLineService stockMoveLineService,
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
       ManufOrderUpdateStockMoveService manufOrderUpdateStockMoveService) {
     this.productStockLocationService = productStockLocationService;
     this.manufOrderService = manufOrderService;
+    this.manufOrderMultiLevelPlanningService = manufOrderMultiLevelPlanningService;
     this.stockMoveLineService = stockMoveLineService;
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.manufOrderUpdateStockMoveService = manufOrderUpdateStockMoveService;
@@ -131,7 +135,8 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
   }
 
   protected ManufOrder getProductSubManufOrder(ManufOrder manufOrder, Product product) {
-    List<ManufOrder> childrenManufOrder = manufOrderService.getChildrenManufOrder(manufOrder);
+    List<ManufOrder> childrenManufOrder =
+        manufOrderMultiLevelPlanningService.getChildrenManufOrder(manufOrder);
     return getChildManufOrder(childrenManufOrder, product);
   }
 

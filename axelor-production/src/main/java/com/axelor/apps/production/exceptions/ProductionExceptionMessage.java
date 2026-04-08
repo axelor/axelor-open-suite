@@ -228,6 +228,9 @@ public final class ProductionExceptionMessage {
   public static final String DUPLICATE_PRODUCT_SELECTED = /*$$(*/
       "Multiple same product selected in the list." /*)*/;
 
+  public static final String CHILD_MO_SELECTED_WITHOUT_PARENT = /*$$(*/
+      "The manufacturing order for product '%s' cannot be planned without its parent order." /*)*/;
+
   // CostSheetLine service
   public static final String MISSING_PRODUCT_PURCHASE_CURRENCY = /*$$(*/
       "Purchase currency is missing for product %s, please configure it." /*)*/;

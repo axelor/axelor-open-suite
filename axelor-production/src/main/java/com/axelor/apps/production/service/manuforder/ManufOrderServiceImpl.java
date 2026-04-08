@@ -20,12 +20,9 @@ package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductVariantService;
@@ -66,9 +63,7 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
-import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
@@ -80,13 +75,11 @@ import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,7 +108,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   protected ProductCompanyService productCompanyService;
   protected ProductStockLocationService productStockLocationService;
   protected UnitConversionService unitConversionService;
-  protected PartnerRepository partnerRepository;
   protected BillOfMaterialService billOfMaterialService;
   protected StockMoveService stockMoveService;
   protected ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService;
@@ -137,7 +129,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       ProductCompanyService productCompanyService,
       ProductStockLocationService productStockLocationService,
       UnitConversionService unitConversionService,
-      PartnerRepository partnerRepository,
       BillOfMaterialService billOfMaterialService,
       StockMoveService stockMoveService,
       ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
@@ -156,7 +147,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.productCompanyService = productCompanyService;
     this.productStockLocationService = productStockLocationService;
     this.unitConversionService = unitConversionService;
-    this.partnerRepository = partnerRepository;
     this.billOfMaterialService = billOfMaterialService;
     this.stockMoveService = stockMoveService;
     this.manufOrderOutgoingStockMoveService = manufOrderOutgoingStockMoveService;
@@ -823,94 +813,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     return statusList;
   }
 
-  /**
-   * Called by generateMultiLevelManufOrder controller to generate all manuf order for a given bill
-   * of material list from a given manuf order.
-   *
-   * @param manufOrder
-   * @throws AxelorException
-   * @return
-   */
-  public List<ManufOrder> generateAllSubManufOrder(List<Product> productList, ManufOrder manufOrder)
-      throws AxelorException {
-    Integer depth = 0;
-    List<ManufOrder> moList = new ArrayList<>();
-    List<Pair<BillOfMaterial, BigDecimal>> childBomList =
-        getToConsumeSubBomList(manufOrder.getBillOfMaterial(), manufOrder, productList);
-    moList.addAll(this.generateChildMOs(manufOrder, childBomList, depth));
-    return moList;
-  }
-
-  public List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
-      BillOfMaterial billOfMaterial, ManufOrder mo, List<Product> productList)
-      throws AxelorException {
-    List<Pair<BillOfMaterial, BigDecimal>> bomList = new ArrayList<>();
-
-    for (BillOfMaterialLine boml : billOfMaterial.getBillOfMaterialLineList()) {
-      Product product = boml.getProduct();
-      if (productList != null && !productList.contains(product)) {
-        continue;
-      }
-
-      BigDecimal qtyReq =
-          computeToConsumeProdProductLineQuantity(
-              mo.getBillOfMaterial().getQty(), mo.getQty(), boml.getQty());
-
-      BillOfMaterial bom = boml.getBillOfMaterial();
-      if (bom != null) {
-        if (bom.getProdProcess() != null) {
-          bomList.add(Pair.of(bom, qtyReq));
-        }
-      } else {
-        BillOfMaterial defaultBOM = billOfMaterialService.getDefaultBOM(product, null);
-
-        if ((product.getProductSubTypeSelect()
-                    == ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT
-                || product.getProductSubTypeSelect()
-                    == ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)
-            && defaultBOM != null
-            && defaultBOM.getProdProcess() != null) {
-          bomList.add(Pair.of(defaultBOM, qtyReq));
-        }
-      }
-    }
-    return bomList;
-  }
-
-  protected ManufOrder createDraftManufOrder(
-      Product product,
-      BigDecimal qtyRequested,
-      int priority,
-      BillOfMaterial billOfMaterial,
-      LocalDateTime plannedStartDateT,
-      LocalDateTime plannedEndDateT)
-      throws AxelorException {
-
-    ProdProcess prodProcess = billOfMaterial.getProdProcess();
-    Company company = billOfMaterial.getCompany();
-
-    Unit unit = billOfMaterial.getUnit();
-    if (unit != null && !unit.equals(product.getUnit())) {
-      qtyRequested =
-          unitConversionService.convert(
-              product.getUnit(), unit, qtyRequested, qtyRequested.scale(), product);
-    }
-    return new ManufOrder(
-        qtyRequested,
-        company,
-        null,
-        priority,
-        false,
-        unit,
-        billOfMaterial,
-        product,
-        prodProcess,
-        plannedStartDateT,
-        plannedEndDateT,
-        ManufOrderRepository.STATUS_DRAFT,
-        prodProcess.getOutsourcing());
-  }
-
   @Transactional(rollbackOn = {Exception.class})
   public void merge(List<Long> ids) throws AxelorException {
     if (!canMerge(ids)) {
@@ -1118,152 +1020,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
 
     return true;
-  }
-
-  @Override
-  public List<ManufOrder> getChildrenManufOrder(ManufOrder manufOrder) {
-    return manufOrderRepo
-        .all()
-        .filter("self.parentMO = :manufOrder")
-        .bind("manufOrder", manufOrder)
-        .fetch();
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public List<Long> planSelectedOrdersAndDiscardOthers(List<Map<String, Object>> manufOrders)
-      throws AxelorException {
-    List<Long> ids = new ArrayList<>();
-    // Maps each draft MO's BOM ID to the ID of the real ManufOrder generated from it.
-    // Used to resolve parent links for grandchildren, whose draft parentMO has id=null
-    // but whose parentMO.billOfMaterial.id is preserved across the wizard round-trip.
-    // Storing IDs (not entity references) avoids detached-entity errors caused by JPA
-    // flush/clear operations inside generateManufOrder.
-    Map<Long, Long> bomIdToGeneratedMOId = new HashMap<>();
-
-    for (Map<String, Object> manufOrderMap : manufOrders) {
-      ManufOrder draftMO = Mapper.toBean(ManufOrder.class, manufOrderMap);
-
-      if (!(boolean) manufOrderMap.get("selected")) {
-        continue;
-      }
-
-      Product product = Beans.get(ProductRepository.class).find(draftMO.getProduct().getId());
-
-      BillOfMaterial billOfMaterial = draftMO.getBillOfMaterial();
-      Long draftBomId = billOfMaterial != null ? billOfMaterial.getId() : null;
-      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(draftBomId);
-
-      Partner clientPartner = draftMO.getClientPartner();
-      if (ObjectUtils.notEmpty(clientPartner)) {
-        clientPartner = partnerRepository.find(clientPartner.getId());
-      }
-
-      ManufOrder generated =
-          generateManufOrder(
-              product,
-              draftMO.getQty().multiply(billOfMaterial.getQty()),
-              draftMO.getPrioritySelect(),
-              IS_TO_INVOICE,
-              billOfMaterial,
-              draftMO.getPlannedStartDateT(),
-              draftMO.getPlannedEndDateT(),
-              ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
-
-      if (appProductionService.getAppProduction().getManageWorkshop()
-          && generated.getWorkshopStockLocation() == null) {
-        StockLocation parentWorkshop = null;
-        ManufOrder draftParentMO = draftMO.getParentMO();
-        if (draftParentMO != null) {
-          if (draftParentMO.getId() != null) {
-            ManufOrder dbParentMO = manufOrderRepo.find(draftParentMO.getId());
-            parentWorkshop = dbParentMO.getWorkshopStockLocation();
-          } else {
-            BillOfMaterial parentBom = draftParentMO.getBillOfMaterial();
-            if (parentBom != null) {
-              Long parentMOId = bomIdToGeneratedMOId.get(parentBom.getId());
-              if (parentMOId != null) {
-                ManufOrder generatedParentMO = manufOrderRepo.find(parentMOId);
-                parentWorkshop = generatedParentMO.getWorkshopStockLocation();
-              }
-            }
-          }
-        }
-        generated.setWorkshopStockLocation(parentWorkshop);
-      }
-
-      generated.setClientPartner(clientPartner);
-
-      setParentMo(draftMO, generated, bomIdToGeneratedMOId);
-
-      if (draftBomId != null) {
-        bomIdToGeneratedMOId.put(draftBomId, generated.getId());
-      }
-
-      ids.add(generated.getId());
-    }
-    return ids;
-  }
-
-  protected void setParentMo(
-      ManufOrder draftMO, ManufOrder generated, Map<Long, Long> bomIdToGeneratedMOId) {
-    // Set parentMO: for root children the draft parentMO has a real id (saved entity);
-    // for deeper levels the draft parentMO has id=null but its billOfMaterial.id identifies
-    // the previously generated ManufOrder that acts as the parent.
-    ManufOrder draftParentMO = draftMO.getParentMO();
-    if (draftParentMO != null && draftParentMO.getId() != null) {
-      generated.setParentMO(manufOrderRepo.find(draftParentMO.getId()));
-    } else if (draftParentMO != null) {
-      BillOfMaterial parentBom = draftParentMO.getBillOfMaterial();
-      if (parentBom != null) {
-        Long parentMOId = bomIdToGeneratedMOId.get(parentBom.getId());
-        if (parentMOId != null) {
-          generated.setParentMO(manufOrderRepo.find(parentMOId));
-        }
-      }
-    }
-  }
-
-  protected List<ManufOrder> generateChildMOs(
-      ManufOrder parentMO, List<Pair<BillOfMaterial, BigDecimal>> childBomList, Integer depth)
-      throws AxelorException {
-    List<ManufOrder> manufOrderList = new ArrayList<>();
-
-    // prevent infinite loop
-    if (depth >= 25) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(ProductionExceptionMessage.CHILD_BOM_TOO_MANY_ITERATION));
-    }
-    depth++;
-
-    for (Pair<BillOfMaterial, BigDecimal> childBomPair : childBomList) {
-      BillOfMaterial childBom = childBomPair.getLeft();
-      BigDecimal qtyRequested = childBomPair.getRight();
-
-      ManufOrder childMO =
-          createDraftManufOrder(
-              childBom.getProduct(),
-              qtyRequested,
-              parentMO.getPrioritySelect(),
-              childBom,
-              null,
-              parentMO.getPlannedStartDateT());
-
-      childMO.setManualMOSeq(this.getManualSequence());
-      childMO.setParentMO(parentMO);
-      childMO.setClientPartner(parentMO.getClientPartner());
-      manufOrderList.add(childMO);
-
-      manufOrderList.addAll(
-          this.generateChildMOs(
-              childMO, getToConsumeSubBomList(childMO.getBillOfMaterial(), childMO, null), depth));
-    }
-    return manufOrderList;
-  }
-
-  protected String getManualSequence() {
-    return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
   }
 
   @Override

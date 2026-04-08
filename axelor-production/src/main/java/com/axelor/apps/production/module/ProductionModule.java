@@ -233,6 +233,8 @@ import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveSe
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderMultiLevelPlanningService;
+import com.axelor.apps.production.service.manuforder.ManufOrderMultiLevelPlanningServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
@@ -343,6 +345,8 @@ public class ProductionModule extends AxelorModule {
     bind(ProductionOrderService.class).to(ProductionOrderServiceImpl.class);
     bind(BillOfMaterialService.class).to(BillOfMaterialServiceImpl.class);
     bind(ManufOrderService.class).to(ManufOrderServiceImpl.class);
+    bind(ManufOrderMultiLevelPlanningService.class)
+        .to(ManufOrderMultiLevelPlanningServiceImpl.class);
     bind(OperationOrderService.class).to(OperationOrderServiceImpl.class);
     bind(ProductionOrderService.class).to(ProductionOrderServiceImpl.class);
     bind(ProductionOrderWizardService.class).to(ProductionOrderWizardServiceImpl.class);
