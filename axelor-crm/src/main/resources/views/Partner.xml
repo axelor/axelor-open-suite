@@ -626,6 +626,7 @@
     <view type="cards" name="opportunity-cards"/>
     <view type="grid" name="opportunity-dashlet-grid"/>
     <view type="form" name="opportunity-form"/>
+    <view-param name="forceEdit" value="true"/>
     <domain>self.partner.id = :id</domain>
   </action-view>
 
@@ -634,6 +635,7 @@
     <view type="cards" name="opportunity-cards"/>
     <view type="grid" name="opportunity-dashlet-grid"/>
     <view type="form" name="opportunity-form"/>
+    <view-param name="forceEdit" value="true"/>
     <domain>self.contact.id = :id</domain>
   </action-view>
 
