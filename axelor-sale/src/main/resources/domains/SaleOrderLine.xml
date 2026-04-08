@@ -103,6 +103,8 @@
         return SaleOrderLineRepository.TYPE_NORMAL;
 	  ]]>
     </integer>
+    <decimal name="costTotal" title="Cost total"/>
+    <decimal name="costPrice" title="Unit cost in SO currency"/>
 
     <boolean name="isShowTotal" title="Show Total"/>
     <boolean name="isHideUnitAmounts" title="Hide Unit Amounts"/>

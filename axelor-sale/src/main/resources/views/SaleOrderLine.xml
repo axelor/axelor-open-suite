@@ -387,6 +387,8 @@
               </viewer>
             </field>
           </panel>
+          <field name="costPrice" onChange="action-sale-order-line-attrs-compute-cost-total"/>
+          <field name="costTotal" readonly="true"/>
           <label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
           <field name="discountsNeedReview" hidden="true"/>
           <field name="$qtyValid" hidden="true" colSpan="12" x-scale="$nbDecimalDigitForQty"/>
@@ -808,6 +810,10 @@
   <action-attrs name="action-sale-order-line-attrs-domain-delivery-address">
     <attribute name="domain" for="deliveryAddress"
       expr="eval: &quot;self.id IN (${(__parent__?.clientPartner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-attrs-compute-cost-total">
+    <attribute name="value" for="costTotal" expr="eval:qty*costPrice"/>
   </action-attrs>
 
 

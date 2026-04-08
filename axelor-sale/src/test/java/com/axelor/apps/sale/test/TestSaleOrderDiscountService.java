@@ -126,7 +126,8 @@ class TestSaleOrderDiscountService extends BaseTest {
         appSaleService,
         mock(ProductCompanyService.class),
         currencyScaleService,
-        mock(SaleOrderLineProductService.class));
+        mock(SaleOrderLineProductService.class),
+        currencyService);
   }
 
   protected SubSaleOrderLineComputeService createSubSaleOrderLineComputeService(
