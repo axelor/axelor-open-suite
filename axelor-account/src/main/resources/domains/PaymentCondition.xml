@@ -9,7 +9,8 @@
 
     <string name="name" title="Name" required="true" translatable="true"/>
     <string name="code" title="Code" required="true" unique="true"/>
-    <boolean name="isFree" title="Free"/>
+    <boolean name="isFree" title="Free"
+      help="If checked, due dates on invoice terms can be set manually. Otherwise, they are computed automatically from the payment condition lines."/>
     <decimal name="advancePaymentNeeded" default="0" title="Percentage of advance payment"/>
     <one-to-many name="paymentConditionLineList"
       ref="com.axelor.apps.account.db.PaymentConditionLine" mappedBy="paymentCondition"
