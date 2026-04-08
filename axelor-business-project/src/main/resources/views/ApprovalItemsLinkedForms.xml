@@ -165,13 +165,15 @@
         <panel name="inTaxTotalPanel" readonly="true">
           <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
             <viewer
-              depends="exTaxTotal,taxTotal,inTaxTotal,$totalToRefund,totalAmountToInvoice"><![CDATA[
+              depends="exTaxTotal,taxTotal,inTaxTotal,$totalToRefund,totalAmountToInvoice,chargedFeeAmount"><![CDATA[
                 <>
                   <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
                     <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
                     <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
                     <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
                     <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+                    <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Charged Fee')}</Box>
+                    <Box as="dd" m={0} px={3} py={1}>{$fmt('chargedFeeAmount')}</Box>
                     <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="bold">{_t('Total to Refund')}</Box>
                     <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold">{$fmt('inTaxTotal')}</Box>
                     <Box as="dt" m={0} px={3} py={1} color="info" borderTop>{_t('Total to Invoice')}</Box>

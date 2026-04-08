@@ -15,8 +15,11 @@
     <field name="employee"/>
     <field name="sentDateTime"/>
     <field name="period"/>
-    <field name="totalAmountToInvoice" aggregate="sum"/>
+    <field name="exTaxTotal"/>
+    <field name="taxTotal"/>
+    <field name="chargedFeeAmount"/>
     <field name="inTaxTotal" title="Total to refund"/>
+    <field name="totalAmountToInvoice" aggregate="sum"/>
     <field name="statusSelect"/>
     <field name="ventilated"/>
   </grid>
@@ -25,12 +28,13 @@
     model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
     onNew="action-expense-line-group-onnew">
     <field name="projectTask"/>
-    <field name="expenseProduct"/>
+    <field name="itemProductName"/>
     <field name="expenseDate"/>
     <field name="untaxedAmount" aggregate="sum"/>
-    <field name="fee" title="Charged Fee (%)"/>
-    <field name="totalAmountToInvoice" aggregate="sum"/>
+    <field name="fee" title="Fee (%)"/>
+    <field name="chargedFeeAmount" title="Charged Fee" aggregate="sum"/>
     <field name="totalAmount" title="Total to Refund" aggregate="sum"/>
+    <field name="totalAmountToInvoice" aggregate="sum"/>
     <field name="totalTax" aggregate="sum"/>
     <field name="toInvoice"/>
     <field name="expense.statusSelect"/>
@@ -40,12 +44,12 @@
 
   <grid name="mgm-fees-expense-line-grid" title="Expense lines"
     model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate">
-    <field name="expenseProduct"/>
+    <field name="itemProductName"/>
     <field name="expenseDate"/>
     <field name="untaxedAmount" aggregate="sum"/>
-    <field name="fee" title="Charged Fee (%)"/>
+    <field name="fee" title="Fee (%)"/>
+    <field name="chargedFeeAmount" title="Charged Fee" aggregate="sum"/>
     <field name="totalAmountToInvoice" aggregate="sum"/>
-    <field name="totalAmount" title="Total to Refund" aggregate="sum"/>
     <field name="toInvoice"/>
     <field name="expense.statusSelect"/>
     <field name="justificationMetaFile" widget="binary-link"/>
@@ -54,12 +58,13 @@
 
   <grid name="mgm-expense-line-review-grid" title="Review Expenses lines"
     model="com.axelor.apps.hr.db.ExpenseLine">
-
     <field name="expense.employee" title="Employee"/>
-    <field name="expenseProduct" title="Expense product"/>
+    <field name="expenseProduct"/>
+    <field name="itemProductName"/>
     <field name="expenseDate" title="Expense date"/>
     <field name="untaxedAmount" aggregate="sum"/>
-    <field name="fee" title="Charged Fee (%)"/>
+    <field name="fee" title="Fee (%)"/>
+    <field name="chargedFeeAmount" title="Charged fee amount"/>
     <field name="totalAmountToInvoice" aggregate="sum"/>
     <field name="totalAmount" title="Total to refund" aggregate="sum"/>
     <field name="toInvoice" title="To invoice" widget="boolean"/>
@@ -136,39 +141,44 @@
         <panel name="actionsPanel" itemSpan="12">
           <button name="sendExpensesBtn" title="Send Expenses" hidden="true"
             hideIf="statusSelect > 1" onClick="action-expense-group-send"/>
-          <button
-            if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
-            name="ventilateBtn" title="Ventilate" hidden="true"
-            onClick="save,action-expense-method-ventilate"/>
+          <!-- hide the ventilate button as it's not needed for now -->
+          <!-- <button -->
+          <!-- if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))" -->
+          <!-- name="ventilateBtn" title="Ventilate" hidden="true" -->
+          <!-- onClick="save,action-expense-method-ventilate"/> -->
           <button
             if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
-            name="validateBtn" title="Validate" onClick="action-expense-group-validate"/>
-          <button
-            if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
-            name="refuseBtn" title="Refuse" onClick="action-expense-group-refuse"/>
+            name="validateBtn" title="Validate" hideIf="statusSelect == 3"
+            onClick="action-expense-group-validate"/>
+          <!-- <button -->
+          <!-- if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))" -->
+          <!-- name="refuseBtn" title="Refuse" onClick="action-expense-group-refuse"/> -->
           <button
             if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT'].any(g -> __user__.group.code.contains(g)))"
             name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times-circle"
             onClick="action-expense-group-cancel"/>
           <button name="draftBtn" title="Return to draft status" showIf="statusSelect > 4 "
             onClick="action-expense-method-draft"/>
-          <button name="addPaymentBtn" title="Register payment"
-            showIf="ventilated &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2) &amp;&amp; companyCbSelect != 2"
-            onClick="save,action-expense-add-payment-form"/>
-          <button name="cancelPaymentBtn" title="Cancel payment"
-            showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3)"
-            onClick="save,action-expense-method-cancel-payment"/>
+          <!-- <button name="addPaymentBtn" title="Register payment" -->
+          <!-- showIf="ventilated &amp;&amp; statusSelect == 3 &amp;&amp; (paymentStatusSelect == 0 ||
+            paymentStatusSelect == 2) &amp;&amp; companyCbSelect != 2" -->
+          <!-- onClick="save,action-expense-add-payment-form"/> -->
+          <!-- <button name="cancelPaymentBtn" title="Cancel payment" -->
+          <!-- showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3)" -->
+          <!-- onClick="save,action-expense-method-cancel-payment"/> -->
         </panel>
         <panel name="inTaxTotalPanel" readonly="true">
           <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
             <viewer
-              depends="exTaxTotal,taxTotal,inTaxTotal,$totalToRefund,totalAmountToInvoice"><![CDATA[
+              depends="exTaxTotal,taxTotal,inTaxTotal,$totalToRefund,totalAmountToInvoice,chargedFeeAmount"><![CDATA[
                 <>
                   <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
                     <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
                     <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
                     <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
                     <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+                    <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Charged Fee')}</Box>
+                    <Box as="dd" m={0} px={3} py={1}>{$fmt('chargedFeeAmount')}</Box>
                     <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="bold">{_t('Total to Refund')}</Box>
                     <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold">{$fmt('inTaxTotal')}</Box>
                     <Box as="dt" m={0} px={3} py={1} color="info" borderTop>{_t('Total to Invoice')}</Box>
@@ -291,6 +301,8 @@
       <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"
         onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
       <field name="expense.categorySelect" hidden="true"/>
+
+      <field name="chargedFeeAmount" hidden="true"/>
     </panel>
   </form>
 
@@ -466,6 +478,7 @@
       var base = isIndividualItem ? ((itemUnitPrice ?: 0) * (itemQty ?: 0)) : (untaxedAmount ?: 0);
       return base * (1 + (fee ?: 0) / 100.0);
   }"/>
+    <field name="chargedFeeAmount" expr="eval: (untaxedAmount ?: 0) * ((fee ?: 0) / 100.0)"/>
   </action-record>
 
   <action-record name="mgm-action-fee-line-compute-totals"
@@ -479,6 +492,7 @@
       var feeRate = (fee ?: 0) / 100.0;
       return invoiceFeeOnly ? (base * feeRate) : (base * (1 + feeRate));
   }"/>
+    <field name="chargedFeeAmount" expr="eval: (untaxedAmount ?: 0) * ((fee ?: 0) / 100.0)"/>
   </action-record>
 
   <action-attrs name="mgm-action-expense-attrs-hide-button-readonly-field">

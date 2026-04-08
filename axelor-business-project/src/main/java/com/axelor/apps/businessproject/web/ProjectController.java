@@ -40,7 +40,9 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.statuschange.ProjectStatusChangeService;
 import com.axelor.apps.businessproject.service.taskreport.TaskReportService;
 import com.axelor.apps.businessproject.translation.ITranslation;
+import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -521,9 +523,43 @@ public class ProjectController {
     boolean hasRecordInvoiceData =
         projectType != null && Boolean.TRUE.equals(projectType.getRequiresRecordInvoicingData());
 
-    long expenseCount = projectService.getProjectExpenseCount(project);
-    response.setValue("$totalExpensesReported", expenseCount);
+    // Build Expense Summary
+    List<ExpenseLine> expenseLines =
+        Beans.get(ExpenseLineRepository.class)
+            .all()
+            .filter("self.project.id = :projectId")
+            .bind("projectId", project.getId())
+            .fetch();
 
+    BigDecimal netAmountTotal =
+        expenseLines.stream()
+            .map(
+                line -> line.getUntaxedAmount() != null ? line.getUntaxedAmount() : BigDecimal.ZERO)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    BigDecimal netAmountCharges =
+        expenseLines.stream()
+            .map(
+                line ->
+                    line.getChargedFeeAmount() != null
+                        ? line.getChargedFeeAmount()
+                        : BigDecimal.ZERO)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    BigDecimal netAmountToInvoice =
+        expenseLines.stream()
+            .map(
+                line ->
+                    line.getTotalAmountToInvoice() != null
+                        ? line.getTotalAmountToInvoice()
+                        : BigDecimal.ZERO)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    response.setValue("$netAmountTotal", netAmountTotal);
+    response.setValue("$netAmountCharges", netAmountCharges);
+    response.setValue("$netAmountToInvoice", netAmountToInvoice);
+
+    // Build task summary
     if (requiresTask) {
       TaskReport taskReport = taskReportService.getTaskReport(project);
 
@@ -545,19 +581,19 @@ public class ProjectController {
       response.setValue("$totalTasksReported", taskCount);
       response.setValue("$totalHoursReported", totalHours);
       response.setValue("$totalDirtAllowance", dirtAllowanceCount);
-      response.setAttr("projectSummaryPanel", "title", "Dirt Allowance");
+      response.setAttr("projectSummaryPanel", "title", I18n.get("Dirt Allowance"));
       response.setAttr("$totalDirtAllowance", "hidden", false);
-      response.setAttr("$totalTasksReported", "title", "Total Number of Tasks Reported");
+      response.setAttr("$totalTasksReported", "title", I18n.get("Total Number of Tasks Reported"));
 
       return;
     }
 
     response.setAttr("$totalDirtAllowance", "hidden", true);
-    response.setAttr("validatedItemsPanel", "title", "Items");
-    response.setAttr("$totalHoursToBill", "hidden", true);
+    response.setAttr("validatedItemsPanel", "title", I18n.get("Items"));
     response.setAttr("$hoursMismatchWarning", "hidden", true);
     response.setAttr("taskDataReviewPanel", "hidden", true);
 
+    // Build Monthly Invoicing and Subcontractor Project summary
     if (hasRecordInvoiceData) {
       List<SubcontractorTask> workLines =
           Beans.get(SubcontractorTaskRepository.class)
@@ -577,7 +613,8 @@ public class ProjectController {
 
       response.setValue("$totalTasksReported", workLineCount);
       response.setValue("$totalHoursReported", totalHours);
-      response.setAttr("$totalTasksReported", "title", "Total Subcontractor Tasks");
+      response.setValue("$totalHoursToBill", totalHours);
+      response.setAttr("$totalTasksReported", "title", I18n.get("Total tasks"));
     }
   }
 

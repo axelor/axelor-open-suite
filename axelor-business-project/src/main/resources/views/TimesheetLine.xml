@@ -35,6 +35,25 @@
       onClick="action-timesheet-line-method-update-to-invoice"/>
   </grid>
 
+  <grid name="timesheet-line-project-review-grid" title="Timesheet line review"
+    model="com.axelor.apps.hr.db.TimesheetLine">
+    <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
+    <field name="projectTask" onChange="action-timesheet-line-method-set-product"
+      form-view="project-task-form" grid-view="project-task-grid"/>
+    <field name="projectTask.projectTaskCategory" title="Task category"/>
+    <field name="startTime"/>
+    <field name="breakTimeMinutes" title="Break Time (min)"/>
+    <field name="endTime"/>
+    <field name="product"/>
+    <field name="dirtAllowance"/>
+    <field name="duration"/>
+    <field name="toInvoice"/>
+    <field name="invoiced"/>
+    <field name="isValidated"/>
+    <field name="comments"/>
+  </grid>
+
+
   <form name="timesheet-line-timesheet-project-task-form" title="Timesheet Line"
     model="com.axelor.apps.hr.db.TimesheetLine"
     id="business-timesheet-line-timesheet-project-task-form" extension="true">
@@ -62,6 +81,86 @@
       </insert>
     </extend>
   </form>
+
+  <form name="mgm-timesheet-line-review-form" title="Timesheet Line"
+    model="com.axelor.apps.hr.db.TimesheetLine" width="large" canNew="false" canAttach="false"
+    canArchive="false" canDelete="false" canEdit="false" canSave="false">
+    <toolbar>
+      <button name="projectFilesBtn" title="Project Files" showIf="project &amp;&amp; id"
+        icon="fa-paperclip" onClick="action-method-project-find-project-files"/>
+    </toolbar>
+    <panel name="mainPanel" colSpan="12">
+      <panel name="detailsPanel" colSpan="9">
+        <panel name="headPanel" colSpan="12" hidden="true">
+          <field name="isValidated" canView="false"/>
+        </panel>
+        <field name="project" canView="true" readonly="true" form-view="business-project-form"
+          grid-view="business-project-grid"/>
+        <field name="projectTask" canView="true" readonly="true"
+          form-view="business-project-task-form" grid-view="business-project-task-grid"/>
+        <field if="__config__.app.getApp('base')?.enableSiteManagementForProject" name="site"
+          onSelect="action-timesheet-line-attrs-set-site-domain" form-view="site-form"
+          grid-view="site-grid"/>
+        <field name="startTime" colSpan="6"
+          onChange="action-timesheet-line-validate-and-calculate" required="true"/>
+        <field name="endTime" colSpan="6"
+          onChange="action-timesheet-line-validate-and-calculate"/>
+        <field if="__config__.app.getApp('timesheet')?.enableActivity" name="product"
+          widget="SuggestBox" canEdit="false"
+          onSelect="action-hr-timesheet-line-attrs-domain-product" requiredIf="toInvoice"
+          form-view="product-activity-form" grid-view="product-activity-grid"/>
+        <field name="projectTask.projectTaskCategory"/>
+        <field name="breakTimeMinutes" title="Break Time (minutes)"
+          onChange="action-timesheet-line-sync-minutes-to-hours,action-timesheet-line-validate-and-calculate"/>
+        <field name="duration" colSpan="3"
+          onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
+        <label name="durationLabel" colSpan="3"/>
+        <field name="durationForCustomer" hidden="true" colSpan="3"/>
+        <label if="__config__.app.isApp('business-project')"
+          if-module="axelor-business-project" name="durationLabel" colSpan="1" hidden="true"/>
+        <field name="hoursDuration" hidden="true"/>
+        <field name="date" hidden="true"/>
+        <field name="timer" showIf="timer" form-view="ts-timer-form" grid-view="ts-timer-grid"/>
+        <field
+          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"
+          if-module="axelor-business-project" name="toInvoice" readonly="true"/>
+        <field
+          if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"
+          if-module="axelor-business-project" name="toInvoice"/>
+        <field name="comments"/>
+        <field if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"
+          name="enableEditor"/>
+        <field name="employee" hidden="true" canNew="false" canView="false" canEdit="false"
+          form-view="employee-form" grid-view="employee-grid"/>
+        <field name="breakTime" hidden="true"/>
+      </panel>
+      <panel name="actionsPanel" colSpan="3" itemSpan="12">
+        <field name="isValidated" showTitle="false" showIf="id" colSpan="12">
+          <viewer><![CDATA[
+      <><Badge bg={isValidated ? "success" : "warning"}>{isValidated ? _t('Validated') : _t('Waiting validation')}</Badge></>
+    ]]></viewer>
+        </field>
+      </panel>
+    </panel>
+    <panel name="timesheetPanel" colSpan="12" title="Related Timesheet">
+      <field name="timesheet" canEdit="false" form-view="timesheet-form"
+        grid-view="timesheet-grid" canView="false"/>
+      <field name="timesheet.company" canView="false"/>
+      <field name="timesheet.employee" canView="false"/>
+      <field if="__config__.app.getApp('timesheet')?.needValidation"
+        name="timesheet.statusSelect"/>
+    </panel>
+  </form>
+
+  <action-view name="mgm-action-task-time-spent-review"
+    model="com.axelor.apps.hr.db.TimesheetLine" title="Team Members' Reports Review">
+    <view type="grid" name="timesheet-line-project-review-grid"/>
+    <view type="form" name="mgm-timesheet-line-review-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <domain>self.project.id = :_projectId</domain>
+    <context name="_projectId" expr="eval: __this__.id"/>
+  </action-view>
 
   <action-group name="action-timesheet-line-group-business-project-task-form-on-new">
     <action name="action-timesheet-line-group-project-task-form-on-new"/>

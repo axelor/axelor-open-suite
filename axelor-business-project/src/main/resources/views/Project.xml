@@ -319,20 +319,20 @@
           canNew="true" x-show-bars="true"/>
       </panel>
       <!-- MGM-114 -->
-      <panel title="5 Review and Confirmation" name="otherExpensesReportPanel">
+      <panel title="5 Review and Confirmation" name="otherExpensesReportPanel"
+        onTabSelect="mgm-action-method-project-show-project-summary">
 
         <panel name="extraExpenseDataReviewPanel" title="Project extra expenses review"
           colSpan="12">
-          <panel-dashlet name="otherExpensesReportDashlet"
-            title="Review project extra expenses" canEdit="true" readonly="false"
-            action="mgm-action-project-extra-expense-line-dashlet" colSpan="12" canNew="true"
-            canDelete="true" x-show-bars="true"/>
+          <panel-dashlet name="otherExpensesReportDashlet" title="" canEdit="true"
+            readonly="false" action="mgm-action-project-extra-expense-line-dashlet" colSpan="12"
+            canNew="true" canDelete="true" x-show-bars="true"/>
         </panel>
 
         <panel name="taskDataReviewPanel" title="Tasks review" colSpan="12">
-          <panel-dashlet title="Review Task member reports"
-            name="taskMemberReportsReview" action="mgm-action-task-member-report-review"
-            canNew="false" canEdit="false" canSearch="true" colSpan="12"/>
+          <panel-dashlet title="" name="taskMemberReportsReview"
+            action="mgm-action-task-time-spent-review" canNew="false" canEdit="false"
+            canSearch="true" colSpan="12"/>
 
           <field name="$totalTasksReported" title="Total Number of Tasks reported"
             readonly="true" depends="id" colSpan="4">
@@ -387,42 +387,75 @@
         </panel>
 
         <panel name="expenseDataReviewPanel" title="Expense lines review" colSpan="12">
-          <panel-dashlet title="Review expense lines" name="expenseLineReview"
+          <panel-dashlet title="" name="expenseLineReview"
             action="mgm-action-view-project-expense-line-review" canNew="false" canEdit="false"
             canSearch="true" colSpan="12"/>
-          <field name="$totalExpensesReported" title="Total Expenses to invoice reported"
-            readonly="true" depends="id" colSpan="6">
-            <viewer depends="$totalExpensesReported"><![CDATA[
-                    <span style="color: {{ record.$totalExpensesReported ? (record.$totalExpensesReported == 0 ? 'red' : 'inherit') : 'red' }}">
-                        {{ record.$totalExpensesReported || '0' }}
-                    </span>
-                ]]></viewer>
+
+          <field name="$netAmountTotal" title="Net amount total" readonly="true" depends="id"
+            colSpan="3">
+            <viewer depends="$netAmountTotal"><![CDATA[
+      <span style="color: {{ record.$netAmountTotal ? (record.$netAmountTotal == 0 ? 'red' : 'inherit') : 'red' }}">
+        {{ record.$netAmountTotal || '0' }} €
+      </span>
+    ]]></viewer>
+          </field>
+
+          <field name="$netAmountCharges" title="Net amount charges" readonly="true"
+            depends="id" colSpan="3">
+            <viewer depends="$netAmountCharges"><![CDATA[
+      <span style="color: {{ record.$netAmountCharges ? (record.$netAmountCharges == 0 ? 'red' : 'inherit') : 'red' }}">
+        {{ record.$netAmountCharges || '0' }} €
+      </span>
+    ]]></viewer>
+          </field>
+
+          <field name="$netAmountToInvoice" title="Net amount to invoice" readonly="true"
+            depends="id" colSpan="3">
+            <viewer depends="$netAmountToInvoice"><![CDATA[
+      <span style="color: {{ record.$netAmountToInvoice ? (record.$netAmountToInvoice == 0 ? 'red' : 'inherit') : 'red' }}">
+        {{ record.$netAmountToInvoice || '0' }} €
+      </span>
+    ]]></viewer>
           </field>
         </panel>
 
         <panel name="invoicingDataLineReviewPanel" title="Invoicing data review" colSpan="12"
           hidden="true">
-          <field name="$totalTasksReported" title="Total Number of Tasks reported"
+          <panel-dashlet name="subcontractorProjectTaskReviewDashlet" title=""
+            action="mgm-action-business-project-fremdleistung-subcontractor-task-review-dashlet"
+            canNew="false" canEdit="false" canDelete="false" colSpan="12" x-show-bars="true"
+            showIf="projectType.sequence == 3"/>
+
+          <panel-dashlet name="monthlyInvoiceProjectTaskReviewDahshlet" title=""
+            action="mgm-action-business-project-subcontractor-task-review-dashlet" canNew="false"
+            canEdit="false" canDelete="false" colSpan="12" x-show-bars="true"
+            showIf="projectType.sequence == 4"/>
+
+          <field name="$totalTasksReported" title="Total Subcontractor Services"
             readonly="true" depends="id" colSpan="4">
             <viewer depends="$totalTasksReported"><![CDATA[
-    <span style="color: {{
-      !record.$totalTasksReported ? 'red' :
-      (typeof record.$totalTasksReported === 'string' && record.$totalTasksReported.includes('/')) ?
-        (parseInt(record.$totalTasksReported.split('/')[0]) < parseInt(record.$totalTasksReported.split('/')[1]) ? 'red' : 'green') :
-        (record.$totalTasksReported == 0 ? 'red' : 'inherit')
-    }}">
-      {{ record.$totalTasksReported || '0' }}
-    </span>
-  ]]></viewer>
+      <span style="color: {{ record.$totalTasksReported ? (record.$totalTasksReported == 0 ? 'red' : 'inherit') : 'red' }}">
+        {{ record.$totalTasksReported || '0' }}
+      </span>
+    ]]></viewer>
           </field>
 
-          <field name="$totalHoursReported" title="Total Number of hours reported"
-            readonly="true" depends="id" colSpan="4">
+          <field name="$totalHoursReported" title="Total time spent (hours)" readonly="true"
+            depends="id" colSpan="4">
             <viewer depends="$totalHoursReported"><![CDATA[
-                    <span style="color: {{ record.$totalHoursReported ? (record.$totalHoursReported == 0 ? 'red' : 'inherit') : 'red' }}">
-                        {{ record.$totalHoursReported || '0' }}
-                    </span>
-                ]]></viewer>
+      <span style="color: {{ record.$totalHoursReported ? (record.$totalHoursReported == 0 ? 'red' : 'inherit') : 'red' }}">
+        {{ record.$totalHoursReported || '0' }}
+      </span>
+    ]]></viewer>
+          </field>
+
+          <field name="$totalHoursToBill" title="Total hours to bill" readonly="true"
+            depends="id" colSpan="4">
+            <viewer depends="$totalHoursReported"><![CDATA[
+      <span style="color: {{ record.$totalHoursToBill ? (record.$totalHoursToBill == 0 ? 'red' : 'inherit') : 'red' }}">
+        {{ record.$totalHoursToBill || '0' }}
+      </span>
+    ]]></viewer>
           </field>
         </panel>
 

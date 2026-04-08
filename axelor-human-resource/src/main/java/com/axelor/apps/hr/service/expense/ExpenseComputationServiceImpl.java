@@ -43,6 +43,7 @@ public class ExpenseComputationServiceImpl implements ExpenseComputationService 
     BigDecimal exTaxTotal = BigDecimal.ZERO;
     BigDecimal taxTotal = BigDecimal.ZERO;
     BigDecimal inTaxTotal = BigDecimal.ZERO;
+    BigDecimal chargedFeeAmount = BigDecimal.ZERO;
     BigDecimal totalToInvoice = BigDecimal.ZERO;
     List<ExpenseLine> generalExpenseLineList = expense.getGeneralExpenseLineList();
     List<ExpenseLine> kilometricExpenseLineList = expense.getKilometricExpenseLineList();
@@ -52,6 +53,7 @@ public class ExpenseComputationServiceImpl implements ExpenseComputationService 
         exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
         taxTotal = taxTotal.add(expenseLine.getTotalTax());
         inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
+        chargedFeeAmount = chargedFeeAmount.add(expenseLine.getChargedFeeAmount());
         totalToInvoice = totalToInvoice.add(expenseLine.getTotalAmountToInvoice());
       }
     }
@@ -71,6 +73,7 @@ public class ExpenseComputationServiceImpl implements ExpenseComputationService 
     expense.setExTaxTotal(exTaxTotal);
     expense.setTaxTotal(taxTotal);
     expense.setInTaxTotal(inTaxTotal);
+    expense.setChargedFeeAmount(chargedFeeAmount);
     expense.setTotalAmountToInvoice(totalToInvoice);
     return expense;
   }

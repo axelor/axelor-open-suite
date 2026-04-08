@@ -19,6 +19,7 @@
     <decimal name="totalAmount" title="Total Amount" min="0" required="true"/>
     <decimal name="totalAmountToInvoice" title="Total to invoice" min="0"/>
     <decimal name="fee" title="Charged Fee (%)" precision="6" scale="2" default="0"/>
+    <decimal name="chargedFeeAmount" title="Charged Fee Amount" min="0"/>
     <boolean name="invoiceFeeOnly" title="Invoice fee only" default="false"/>
     <boolean name="showChargedFee" title="Show charged fee" default="false"/>
     <boolean name="isIndividualItem" title="Detailed item?" default="false"/>
