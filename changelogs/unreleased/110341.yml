@@ -1,0 +1,3 @@
+---
+title: "Purchase order: fixed NPE when installing purchase order demo data."
+module: axelor-purchase
