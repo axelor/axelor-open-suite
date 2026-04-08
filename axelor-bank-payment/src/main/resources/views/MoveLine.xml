@@ -63,9 +63,26 @@
     extension="true">
     <extend target="//field[@name='bankReconciledAmount']">
       <attribute name="onChange"
-        value="action-move-line-method-bank-reconciled-amount-onchange"/>
+        value="action-move-line-attrs-bank-reconciled-amount-set-readonly,action-move-line-method-bank-reconciled-amount-onchange"/>
+    </extend>
+    <extend
+      target="//panel[@name='bankReconciliationPanel']/field[@name='bankReconciledAmount']">
+      <insert position="after">
+        <button name="updateReconciledAmountBtn" title="Update reconciled amount"
+          showIf="move.statusSelect == 2 || move.statusSelect == 3"
+          onClick="action-move-line-attrs-bank-reconciled-amount-set-editable" colSpan="3"/>
+      </insert>
     </extend>
   </form>
+
+  <action-attrs name="action-move-line-attrs-bank-reconciled-amount-set-readonly">
+    <attribute name="readonly" for="bankReconciledAmount" expr="eval: true"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-line-attrs-bank-reconciled-amount-set-editable">
+    <attribute name="readonly" for="bankReconciledAmount" expr="eval: false"/>
+    <attribute name="focus" for="bankReconciledAmount" expr="eval: true"/>
+  </action-attrs>
 
   <action-method name="action-move-line-method-bank-reconciled-amount-onchange">
     <call class="com.axelor.apps.bankpayment.web.MoveLineController"
