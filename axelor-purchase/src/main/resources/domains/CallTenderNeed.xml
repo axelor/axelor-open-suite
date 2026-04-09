@@ -16,6 +16,7 @@
     <integer name="requestedDeliveryTime" title="Delivery time(days)"/>
     <integer name="typeSelect" selection="purchase.call.tender.need.type.select"
       title="Type"/>
+    <string name="description" title="Description" large="true"/>
     <many-to-one name="callTender" ref="com.axelor.apps.purchase.db.CallTender"/>
 
 

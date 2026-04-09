@@ -25,6 +25,7 @@
       <field name="requestedDate"/>
       <field name="typeSelect"/>
       <field name="requestedDeliveryTime"/>
+      <field name="description" colSpan="12" widget="html"/>
       <field name="$nbDecimalDigitForQty" hidden="true" x-dirty="false"/>
     </panel>
   </form>
