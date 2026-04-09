@@ -49,7 +49,7 @@
 						            ))}
 					            </TableBody>
 					            <TableCaption>
-							    	<Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("all.open.project.tasks")}>{_t('View all issues')}</Button>
+							    	<Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("all.open.project.tasks")}>{_t('View all tasks')}</Button>
 							    	{$isShowCalendarView && <span> | <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("action-project-dashboard-view-per-user-calendar")}>{_t('Calendar')}</Button></span>}
 							    	{$isShowGanttView && <span> | <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("action-project-dashboard-view-open-gantt")}>{_t('Gantt')}</Button></span>}
 					            </TableCaption>
