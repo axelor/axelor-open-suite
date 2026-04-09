@@ -172,7 +172,7 @@
           <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"
             onChange="action-business-project-group-project-status-on-change" colSpan="12"/>
           <field name="projectType" colSpan="6" required="true"
-            onChange="mgm-action-method-set-dynamic-panel-attrs" canView="false"/>
+            onChange="mgm-action-method-set-dynamic-panel-attrs" canView="false" x-order="sequence"/>
           <field name="projectType" colSpan="6" hidden="true"/>
           <field name="fromDate" colSpan="6"/>
           <field name="toDate" onChange="action-project-group-to-date-onchange" colSpan="6"/>
@@ -220,7 +220,7 @@
           <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"
             onChange="action-business-project-group-project-status-on-change" colSpan="12"/>
           <field name="projectType" colSpan="6" required="true"
-            onChange="mgm-action-method-set-dynamic-panel-attrs" canView="false"/>
+            onChange="mgm-action-method-set-dynamic-panel-attrs" canView="false" x-order="sequence"/>
           <field name="projectType" colSpan="6" hidden="true"/>
           <field name="fromDate" colSpan="6"/>
           <field name="toDate" onChange="action-project-group-to-date-onchange" colSpan="6"/>
@@ -287,13 +287,6 @@
             action="mgm-action-subcontractor-business-project-subcontractor-task-dashlet"
             colSpan="12" canNew="true" x-show-bars="true" canDelete="true"/>
         </panel>
-
-        <panel name="subcontractExpensesPanel" title="Extra expenses" colSpan="12">
-          <panel-dashlet name="subcontractExtraExpenseDashlet"
-            title="Project extra expenses" canEdit="true" readonly="false"
-            action="mgm-action-project-extra-expense-line-dashlet" colSpan="12" canNew="true"
-            x-show-bars="true" canDelete="true"/>
-        </panel>
       </panel>
 
       <panel title="Record Invoicing Data" name="monthlyInvoiceRecordInvoicingDataPanel"
@@ -303,13 +296,6 @@
             action="mgm-action-business-project-subcontractor-task-dashlet" colSpan="12"
             canNew="true" x-show-bars="true" canDelete="true"/>
         </panel>
-
-        <panel name="subcontractExpensesPanel" title="Extra expenses" colSpan="12">
-          <panel-dashlet name="subcontractExtraExpenseDashlet"
-            title="Project extra expenses" canEdit="true" readonly="false"
-            action="mgm-action-project-extra-expense-line-dashlet" colSpan="12" canNew="true"
-            x-show-bars="true" canDelete="true"/>
-        </panel>
       </panel>
 
       <!-- MGM-100 expense reporting -->
@@ -318,16 +304,16 @@
           canEdit="true" readonly="false" action="mgm-action-project-expense-dashlet" colSpan="12"
           canNew="true" x-show-bars="true"/>
       </panel>
-      <!-- MGM-114 -->
-      <panel title="5 Review and Confirmation" name="otherExpensesReportPanel"
-        onTabSelect="mgm-action-method-project-show-project-summary">
 
-        <panel name="extraExpenseDataReviewPanel" title="Project extra expenses review"
-          colSpan="12">
-          <panel-dashlet name="otherExpensesReportDashlet" title="" canEdit="true"
-            readonly="false" action="mgm-action-project-extra-expense-line-dashlet" colSpan="12"
-            canNew="true" canDelete="true" x-show-bars="true"/>
-        </panel>
+      <panel name="projectExtraExpensesPanel" title="Project extra expenses" colSpan="12">
+        <panel-dashlet name="projectExtraExpenses" title="Project extra expenses"
+          canEdit="true" readonly="false" action="mgm-action-project-extra-expense-line-dashlet"
+          colSpan="12" canNew="true" x-show-bars="true" canDelete="true"/>
+      </panel>
+
+      <!-- MGM-114 -->
+      <panel title="5 Review and Confirmation" name="reviewAndConfirmationPanel"
+        onTabSelect="mgm-action-method-project-show-project-summary">
 
         <panel name="taskDataReviewPanel" title="Tasks review" colSpan="12">
           <panel-dashlet title="" name="taskMemberReportsReview"
@@ -457,6 +443,13 @@
       </span>
     ]]></viewer>
           </field>
+        </panel>
+
+        <panel name="extraExpenseDataReviewPanel" title="Project extra expenses review"
+          colSpan="12">
+          <panel-dashlet name="projectExtraExpense" title="" canEdit="false"
+            readonly="true" action="mgm-action-project-extra-expense-line-review-dashlet"
+            colSpan="12" canNew="false" canDelete="false" x-show-bars="false"/>
         </panel>
 
         <panel name="confirmationPanel" title="Confirm the above information" colSpan="12">

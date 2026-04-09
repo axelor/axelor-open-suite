@@ -734,8 +734,9 @@ public class ProjectController {
               "Expense Report",
               Boolean.TRUE.equals(projectType.getRequiresExpense())
             },
+            new Object[] {"projectExtraExpensesPanel", "Project extra expenses", Boolean.TRUE},
             new Object[] {
-              "otherExpensesReportPanel",
+              "reviewAndConfirmationPanel",
               "Review and Confirmation",
               Boolean.TRUE.equals(projectType.getRequiresValidation())
             },
@@ -748,7 +749,7 @@ public class ProjectController {
       boolean visible = (boolean) panel[2];
       response.setAttr((String) panel[0], "hidden", !visible);
       if (visible) {
-        response.setAttr((String) panel[0], "title", I18n.get(++tab + " " + panel[1]));
+        response.setAttr((String) panel[0], "title", ++tab + " " + I18n.get((String) panel[1]));
       }
     }
   }
