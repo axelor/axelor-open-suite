@@ -117,7 +117,8 @@ public class MoveTemplateTaxServiceImpl implements MoveTemplateTaxService {
         }
         moveLine.setTaxRate(taxLine.getValue());
         moveLine.setTaxCode(tax.getCode());
-        moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
+        moveLine.setVatSystemSelect(
+            moveLineTaxService.getVatSystem(move, moveLine.getAccount(), moveLine.getPartner()));
       }
     }
   }
@@ -167,7 +168,9 @@ public class MoveTemplateTaxServiceImpl implements MoveTemplateTaxService {
     }
 
     if (vatSystemSelect == null) {
-      vatSystemSelect = moveLineTaxService.getVatSystem(move, null);
+      vatSystemSelect =
+          moveLineTaxService.getVatSystem(
+              move, taxTemplateLine.getAccount(), taxTemplateLine.getPartner());
     }
 
     final TaxLine finalTaxLine = taxLine;

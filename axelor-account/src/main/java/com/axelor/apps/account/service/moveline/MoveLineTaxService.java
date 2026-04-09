@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Partner;
 import java.util.List;
 
 public interface MoveLineTaxService {
@@ -52,7 +53,7 @@ public interface MoveLineTaxService {
 
   boolean isGenerateMoveLineForAutoTax(MoveLine moveLine);
 
-  int getVatSystem(Move move, MoveLine moveline) throws AxelorException;
+  int getVatSystem(Move move, Account account, Partner partner) throws AxelorException;
 
   void checkDuplicateTaxMoveLines(Move move) throws AxelorException;
 
