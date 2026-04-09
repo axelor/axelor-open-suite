@@ -47,7 +47,7 @@
       <field name="proposedPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     </panel>
     <panel name="commentPanel">
-      <field name="offerComment"/>
+      <field name="offerComment" colSpan="12" widget="text"/>
     </panel>
     <panel name="hiddenPanel" hidden="true">
       <field name="$nbDecimalDigitForQty" hidden="true" x-dirty="false"/>
