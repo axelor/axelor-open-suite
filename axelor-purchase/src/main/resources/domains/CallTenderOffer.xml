@@ -33,6 +33,7 @@
     <many-to-one name="requestedUnit" ref="com.axelor.apps.base.db.Unit"
       title="Requested unit"/>
     <date name="requestedDate" title="Requested date"/>
+    <integer name="requestedDeliveryTime" title="Delivery time(days)"/>
     <decimal name="proposedQty" title="Proposed quantity" precision="20" scale="10"/>
     <many-to-one name="proposedUnit" ref="com.axelor.apps.base.db.Unit"
       title="Proposed unit"/>
