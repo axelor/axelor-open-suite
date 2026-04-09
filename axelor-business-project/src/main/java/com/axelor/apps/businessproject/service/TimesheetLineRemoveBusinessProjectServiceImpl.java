@@ -1,6 +1,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorAlertException;
+import com.axelor.apps.businessproject.db.repo.ApprovalItemRepository;
 import com.axelor.apps.businessproject.service.approvalitem.ApprovalItemManagementService;
 import com.axelor.apps.businessproject.service.statuschange.ProjectStatusChangeService;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -27,7 +28,8 @@ public class TimesheetLineRemoveBusinessProjectServiceImpl extends TimesheetLine
   @Transactional
   public void removeTimesheetLine(TimesheetLine timesheetLine) {
     Project project = timesheetLine.getProject();
-    approvalItemManagementService.deleteApprovalItem(timesheetLine);
+    approvalItemManagementService.deleteApprovalItem(
+        timesheetLine, ApprovalItemRepository.TIMESHEET_LINE_APPROVAL_ITEM);
 
     super.removeTimesheetLine(timesheetLine);
 

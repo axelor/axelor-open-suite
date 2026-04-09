@@ -38,12 +38,13 @@ public class ApprovalItemManagementServiceImpl implements ApprovalItemManagement
     if (linkedItemToValidate == null) return null;
 
     // Update the relevant fields of the approval item if it already exists.
-    if (hasApprovalItem(linkedItemToValidate)) {
+    if (hasApprovalItem(linkedItemToValidate, approvalItemTypeSelect)) {
       log.debug(
           "Approval item for {} with id {} already exist updating it",
           approvalItemTypeSelect,
           linkedItemToValidate.getId());
-      return updateApprovalItem(linkedItemToValidate, itemDateTime, description, amount);
+      return updateApprovalItem(
+          linkedItemToValidate, itemDateTime, description, amount, approvalItemTypeSelect);
     }
 
     log.debug("Creating Approval Item for a {}", approvalItemTypeSelect);
@@ -69,8 +70,9 @@ public class ApprovalItemManagementServiceImpl implements ApprovalItemManagement
       Model linkedItemToValidate,
       LocalDateTime itemDateTime,
       String description,
-      BigDecimal amount) {
-    ApprovalItem approvalItem = getApprovalItem(linkedItemToValidate);
+      BigDecimal amount,
+      String approvalItemTypeSelect) {
+    ApprovalItem approvalItem = getApprovalItem(linkedItemToValidate, approvalItemTypeSelect);
     if (approvalItem == null) return null;
 
     boolean hasChanged = false;
@@ -103,12 +105,12 @@ public class ApprovalItemManagementServiceImpl implements ApprovalItemManagement
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void deleteApprovalItem(Model itemToValidate) {
+  public void deleteApprovalItem(Model itemToValidate, String approvalItemTypeSelect) {
     if (itemToValidate == null) {
       return;
     }
 
-    ApprovalItem approvalItem = getApprovalItem(itemToValidate);
+    ApprovalItem approvalItem = getApprovalItem(itemToValidate, approvalItemTypeSelect);
 
     if (approvalItem != null) {
       log.debug(
@@ -120,11 +122,13 @@ public class ApprovalItemManagementServiceImpl implements ApprovalItemManagement
   }
 
   @Override
-  public boolean hasApprovalItem(Model itemToValidate) {
+  public boolean hasApprovalItem(Model itemToValidate, String approvalItemTypeSelect) {
     return approvalItemRepository
             .all()
-            .filter("self.linkedItemToValidateId = :itemToValidateId")
+            .filter(
+                "self.linkedItemToValidateId = :itemToValidateId AND self.itemTypeSelect = :itemTypeSelect")
             .bind("itemToValidateId", itemToValidate.getId())
+            .bind("itemTypeSelect", approvalItemTypeSelect)
             .count()
         > 0;
   }
@@ -149,11 +153,13 @@ public class ApprovalItemManagementServiceImpl implements ApprovalItemManagement
     approvalItem.setAmount(amount);
   }
 
-  protected ApprovalItem getApprovalItem(Model itemToValidate) {
+  protected ApprovalItem getApprovalItem(Model itemToValidate, String approvalItemTypeSelect) {
     return approvalItemRepository
         .all()
-        .filter("self.linkedItemToValidateId = :itemToValidateId")
+        .filter(
+            "self.linkedItemToValidateId = :itemToValidateId AND self.itemTypeSelect = :itemTypeSelect")
         .bind("itemToValidateId", itemToValidate.getId())
+        .bind("itemTypeSelect", approvalItemTypeSelect)
         .fetchOne();
   }
 }

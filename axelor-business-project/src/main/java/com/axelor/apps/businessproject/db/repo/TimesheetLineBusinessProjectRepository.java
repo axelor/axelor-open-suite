@@ -34,8 +34,10 @@ public class TimesheetLineBusinessProjectRepository extends TimesheetLineHRRepos
     // If a Timesheet Line is already validated, it should not have an Approval Item
     // As it is no longer relevant and should be deleted
     if (timesheetLine.getIsValidated()) {
-      if (approvalItemManagementService.hasApprovalItem(timesheetLine)) {
-        approvalItemManagementService.deleteApprovalItem(timesheetLine);
+      if (approvalItemManagementService.hasApprovalItem(
+          timesheetLine, ApprovalItemRepository.TIMESHEET_LINE_APPROVAL_ITEM)) {
+        approvalItemManagementService.deleteApprovalItem(
+            timesheetLine, ApprovalItemRepository.TIMESHEET_LINE_APPROVAL_ITEM);
       }
     } else {
       approvalItemManagementService.createApprovalItem(
@@ -63,6 +65,7 @@ public class TimesheetLineBusinessProjectRepository extends TimesheetLineHRRepos
   public void remove(TimesheetLine timesheetLine) {
     super.remove(timesheetLine);
 
-    approvalItemManagementService.deleteApprovalItem(timesheetLine);
+    approvalItemManagementService.deleteApprovalItem(
+        timesheetLine, ApprovalItemRepository.TIMESHEET_LINE_APPROVAL_ITEM);
   }
 }
