@@ -100,6 +100,8 @@ import com.axelor.apps.production.service.ProdProductAttrsServiceImpl;
 import com.axelor.apps.production.service.ProdProductService;
 import com.axelor.apps.production.service.ProdProductServiceImpl;
 import com.axelor.apps.production.service.ProductionProductStockLocationServiceImpl;
+import com.axelor.apps.production.service.ProductionTrackingPreservationService;
+import com.axelor.apps.production.service.ProductionTrackingPreservationServiceImpl;
 import com.axelor.apps.production.service.PurchaseOrderDomainServiceProductionImpl;
 import com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionImpl;
 import com.axelor.apps.production.service.PurchaseOrderTypeSelectProductionServiceImpl;
@@ -412,6 +414,8 @@ public class ProductionModule extends AxelorModule {
     bind(ManufOrderCreateStockMoveService.class).to(ManufOrderCreateStockMoveServiceImpl.class);
     bind(ManufOrderCreateStockMoveLineService.class)
         .to(ManufOrderCreateStockMoveLineServiceImpl.class);
+    bind(ProductionTrackingPreservationService.class)
+        .to(ProductionTrackingPreservationServiceImpl.class);
     bind(ManufOrderUpdateStockMoveService.class).to(ManufOrderUpdateStockMoveServiceImpl.class);
     bind(OperationOrderStockMoveService.class).to(OperationOrderStockMoveServiceImpl.class);
     bind(OperationOrderPlanningInfiniteCapacityService.class)
