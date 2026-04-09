@@ -1,4 +1,4 @@
-package com.axelor.apps.businessproject.service.extracharges;
+package com.axelor.apps.businessproject.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import java.util.List;

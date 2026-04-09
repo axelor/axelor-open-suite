@@ -1,6 +1,7 @@
-package com.axelor.apps.businessproject.service.extracharges;
+package com.axelor.apps.businessproject.service.invoice;
 
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.businessproject.service.extracharges.ExtraChargeConstants;
 import java.util.ArrayList;
 import java.util.List;
 

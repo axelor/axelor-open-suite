@@ -1,4 +1,4 @@
-package com.axelor.apps.businessproject.service.extracharges;
+package com.axelor.apps.businessproject.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -6,8 +6,10 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
+import com.axelor.apps.businessproject.db.ProjectType;
 import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.repo.TaskMemberReportRepository;
+import com.axelor.apps.project.db.Project;
 import com.axelor.common.StringUtils;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
@@ -260,14 +262,32 @@ public class InvoiceBreakdownPrintServiceImpl implements InvoiceBreakdownPrintSe
     if (invoice == null || invoice.getProject() == null) {
       return "";
     }
+    Project project = invoice.getProject();
+    ProjectType projectType = project.getProjectType();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+    if (projectType != null && !projectType.getRequiresTask()) {
+
+      LocalDate fromDate = project.getFromDate();
+      LocalDate toDate = project.getToDate();
+
+      if (fromDate != null && toDate != null) {
+        return formatter.format(fromDate) + " – " + formatter.format(toDate);
+      } else if (fromDate != null) {
+        return formatter.format(fromDate);
+      }
+    }
 
     List<TaskMemberReport> reports =
         Beans.get(TaskMemberReportRepository.class)
             .all()
-            .filter("self.taskReport.project = ?1", invoice.getProject())
+            .filter("self.taskReport.project = ?1", project)
             .fetch();
 
     if (reports.isEmpty()) {
+      if (project.getFromDate() != null) {
+        return formatter.format(project.getFromDate());
+      }
       return "";
     }
 
@@ -275,19 +295,13 @@ public class InvoiceBreakdownPrintServiceImpl implements InvoiceBreakdownPrintSe
     LocalDate maxDate = null;
 
     for (TaskMemberReport report : reports) {
-
       if (report.getStartTime() != null) {
         LocalDate startDate = report.getStartTime().toLocalDate();
-        if (minDate == null || startDate.isBefore(minDate)) {
-          minDate = startDate;
-        }
+        if (minDate == null || startDate.isBefore(minDate)) minDate = startDate;
       }
-
       if (report.getEndTime() != null) {
         LocalDate endDate = report.getEndTime().toLocalDate();
-        if (maxDate == null || endDate.isAfter(maxDate)) {
-          maxDate = endDate;
-        }
+        if (maxDate == null || endDate.isAfter(maxDate)) maxDate = endDate;
       }
     }
 
@@ -295,13 +309,9 @@ public class InvoiceBreakdownPrintServiceImpl implements InvoiceBreakdownPrintSe
       return "";
     }
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-
-    if (minDate.equals(maxDate)) {
-      return formatter.format(minDate);
-    }
-
-    return formatter.format(minDate) + " – " + formatter.format(maxDate);
+    return minDate.equals(maxDate)
+        ? formatter.format(minDate)
+        : formatter.format(minDate) + " – " + formatter.format(maxDate);
   }
 
   private String metaFileToBase64Img(MetaFile metaFile) {
