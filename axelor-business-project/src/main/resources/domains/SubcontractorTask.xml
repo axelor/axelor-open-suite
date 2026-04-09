@@ -13,8 +13,8 @@
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <many-to-one name="subcontractor" ref="com.axelor.apps.base.db.Partner"
       title="Subcontractor"/>
-    <decimal name="timeSpent" title="Time spent (hours)"/>
-    <decimal name="timeSpentMinutes" title="Time spent (mins)"/>
+    <decimal name="timeSpent" title="Time spent (hours)" min="0"/>
+    <decimal name="timeSpentMinutes" title="Time spent (mins)" min="0"/>
     <string name="comments" title="Comments" large="true"/>
     <boolean name="toInvoice" title="To invoice" default="true"/>
     <boolean name="invoiced" title="Invoiced" default="false"/>

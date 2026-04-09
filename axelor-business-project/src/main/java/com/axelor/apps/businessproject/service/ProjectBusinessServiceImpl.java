@@ -1082,7 +1082,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
           project.getFullName());
     }
 
-    log.debug("Subcontractor ... {}", subcontractor.getFullName());
+    log.debug("Subcontractor... {}", subcontractor.getFullName());
 
     return subcontractor;
   }

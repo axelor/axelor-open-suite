@@ -22,15 +22,14 @@
     onNew="mgm-action-method-business-project-set-subcontractor-task-defaults, mgm-action-method-set-subcontractor-employee-attrs"
     onLoad="mgm-action-method-set-subcontractor-employee-attrs"
     model="com.axelor.apps.businessproject.db.SubcontractorTask"
-    onSave="mgm-action-validate-warn-billing-item-edited-after-project-confirmation"
+    onSave="mgm-action-validate-warn-billing-item-edited-after-project-confirmation, mgm-action-method-validate-recorded-data"
     canAttach="false">
     <panel name="mainPanel" title="Service Info">
       <field name="product" required="true"
         domain="self.isActivity = true AND self.dtype = 'Product'"/>
       <field name="timeSpent"/>
-      <field name="employee" readonly="false"/>
+      <field name="employee" readonly="false" required="true"/>
       <field name="project" hidden="true"/>
-      <field name="subContractor" hidden="true"/>
     </panel>
     <panel name="commentsPanel" title="Comments">
       <field name="comments" showTitle="false" colSpan="12"/>
@@ -40,14 +39,14 @@
   <form name="mgm-subcontractor-project-subcontractor-task-form" title="Qualification"
     onNew="mgm-action-method-business-project-set-subcontractor-task-defaults"
     model="com.axelor.apps.businessproject.db.SubcontractorTask"
-    onSave="mgm-action-validate-warn-billing-item-edited-after-project-confirmation"
+    onSave="mgm-action-validate-warn-billing-item-edited-after-project-confirmation, mgm-action-method-validate-recorded-data"
     canAttach="false">
     <panel name="mainPanel" title="Service Info">
       <field name="product" required="true"
         domain="self.isActivity = true AND self.dtype = 'Product'"/>
       <field name="timeSpent"/>
+      <field name="subcontractor" readonly="true" canView="false"/>
       <field name="project" hidden="true"/>
-      <field name="subcontractor" hidden="true"/>
     </panel>
     <panel name="commentsPanel" title="Comments">
       <field name="comments" showTitle="false" colSpan="12"/>
@@ -63,6 +62,11 @@
   <action-method name="mgm-action-method-set-subcontractor-employee-attrs">
     <call class="com.axelor.apps.businessproject.web.SubcontractorTaskController"
       method="setSubcontractorTaskEmployeeFilter"/>
+  </action-method>
+
+  <action-method name="mgm-action-method-validate-recorded-data">
+    <call class="com.axelor.apps.businessproject.web.SubcontractorTaskController"
+      method="validateData"/>
   </action-method>
 
   <action-view

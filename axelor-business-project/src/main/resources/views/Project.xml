@@ -335,7 +335,7 @@
             canSearch="true" colSpan="12"/>
 
           <field name="$totalTasksReported" title="Total Number of Tasks reported"
-            readonly="true" depends="id" colSpan="4">
+            readonly="true" depends="id" colSpan="3">
             <viewer depends="$totalTasksReported"><![CDATA[
     <span style="color: {{
       !record.$totalTasksReported ? 'red' :
@@ -349,7 +349,7 @@
           </field>
 
           <field name="$totalHoursReported" title="Total Number of hours reported"
-            readonly="true" depends="id" colSpan="4">
+            readonly="true" depends="id" colSpan="3">
             <viewer depends="$totalHoursReported"><![CDATA[
                     <span style="color: {{ record.$totalHoursReported ? (record.$totalHoursReported == 0 ? 'red' : 'inherit') : 'red' }}">
                         {{ record.$totalHoursReported || '0' }}
@@ -358,7 +358,7 @@
           </field>
 
           <field name="$totalHoursToBill" title="Total hours to bill" readonly="true"
-            colSpan="4">
+            colSpan="3">
             <viewer depends="$totalHoursReported"><![CDATA[
                     <span style="color: {{ record.$totalHoursToBill ? (record.$totalHoursToBill == 0 ? 'red' : 'inherit') : 'red' }}">
                         {{ record.$totalHoursToBill || '0' }}
@@ -366,7 +366,7 @@
                 ]]></viewer>
           </field>
           <field name="$totalDirtAllowance" title="Reported Dirt Allowance" readonly="true"
-            depends="id" colSpan="6">
+            depends="id" colSpan="3">
             <viewer depends="$totalDirtAllowance"><![CDATA[
                 <span style="color: {{ record.$totalDirtAllowance ? (record.$totalDirtAllowance == 0 ? 'red' : 'inherit') : 'red' }}">
                     {{ record.$totalDirtAllowance || '0' }}

@@ -399,6 +399,9 @@ public class ProjectController {
     }
 
     project = projectRepository.find(project.getId());
+    if (project.getProjectType() == null) {
+      return;
+    }
     ProjectType projectType =
         Beans.get(ProjectTypeRepository.class).find(project.getProjectType().getId());
 

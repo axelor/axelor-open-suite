@@ -10,6 +10,7 @@ import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.db.User;
+import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class SubcontractorTaskController {
   @Inject ProjectRepository projectRepository;
   @Inject ProjectBusinessService projectService;
+  @Inject ProjectTypeRepository projectTypeRepository;
 
   public void syncTimeSpent(ActionRequest request, ActionResponse response) {
     SubcontractorTask task = request.getContext().asType(SubcontractorTask.class);
@@ -35,24 +37,42 @@ public class SubcontractorTaskController {
   }
 
   public void setSubcontractorTaskDefaults(ActionRequest request, ActionResponse response) {
-    long projectId = ((Number) request.getContext().get("_projectId")).longValue();
-
-    if (projectId == 0L) {
+    if (request.getContext().get("_projectId") == null) {
+      response.setError(
+          I18n.get("Please first save the project before proceeding"),
+          I18n.get("No project attached"));
       return;
     }
+    long projectId = ((Number) request.getContext().get("_projectId")).longValue();
 
     Project project = projectRepository.find(projectId);
     if (project == null) {
+      response.setError(
+          I18n.get("The project linked to this task could not be found. It may have been deleted."),
+          I18n.get("Project not found"));
       return;
     }
 
+    ProjectType projectType = project.getProjectType();
+    if (projectType == null) {
+      response.setError(
+          I18n.get(
+              "The project has no project type. Please select a project type for this project before proceeding"),
+          I18n.get("Project Type Not set"));
+      return;
+    }
+    projectType = projectTypeRepository.find(projectType.getId());
+
     response.setValue("project", project);
 
-    try {
-      Partner subcontractor = projectService.getSubcontractor(project);
-      response.setValue("subcontractor", subcontractor);
-    } catch (AxelorException e) {
-      TraceBackService.trace(response, e);
+    if (Objects.equals(
+        projectType.getSequence(), ProjectTypeRepository.SUBCONTRACTOR_PROJECT_TYPE)) {
+      try {
+        Partner subcontractor = projectService.getSubcontractor(project);
+        response.setValue("subcontractor", subcontractor);
+      } catch (AxelorException e) {
+        TraceBackService.trace(response, e);
+      }
     }
   }
 
@@ -95,5 +115,38 @@ public class SubcontractorTaskController {
         "employee",
         "domain",
         employeeIds.isEmpty() ? "self.id IN (null)" : "self.id IN (" + employeeIds + ")");
+
+    response.setValue("employee", project.getAssignedTo());
+  }
+
+  public void validateData(ActionRequest request, ActionResponse response) {
+    SubcontractorTask subcontractorTask = request.getContext().asType(SubcontractorTask.class);
+
+    if (subcontractorTask == null) {
+      return;
+    }
+    Project project = subcontractorTask.getProject();
+    if (project == null) {
+      response.setError(
+          I18n.get("A project is required to be attached to this task"),
+          I18n.get("No project attached"));
+      return;
+    }
+
+    ProjectType projectType = project.getProjectType();
+    if (projectType == null) {
+      response.setError(
+          I18n.get(
+              "The project has no project type. Please set a project type on the project before saving qualifications."),
+          I18n.get("Project Type Not Set"));
+      return;
+    }
+
+    if (Objects.equals(projectType.getSequence(), ProjectTypeRepository.SUBCONTRACTOR_PROJECT_TYPE)
+        && subcontractorTask.getSubcontractor() == null) {
+      response.setError(
+          I18n.get("Please select a subcontractor for the project this task is for"),
+          I18n.get("Subcontractor Not Set"));
+    }
   }
 }
