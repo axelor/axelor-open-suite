@@ -267,6 +267,24 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void deleteExpenses(List<Integer> ids) throws AxelorException {
+    for (Integer id : ids) {
+      Expense expense = expenseRepository.find(Long.valueOf(id));
+      if (expense != null) {
+        if (expense.getStatusSelect() == 1) {
+          expenseRepository.remove(expense);
+        } else {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get("Cannot delete expense %s because it is not in Draft status"),
+              expense.getExpenseSeq());
+        }
+      }
+    }
+  }
+
+  @Override
   public void addExpenseLineToExpense(Expense expense, ExpenseLine expenseLine)
       throws AxelorException {
     checkCurrency(expense, expenseLine);

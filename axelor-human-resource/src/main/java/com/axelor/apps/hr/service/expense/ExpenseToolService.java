@@ -59,6 +59,8 @@ public interface ExpenseToolService {
   void addOrUpdateProjectExpenseLines(Expense expense, List<ExpenseLine> expenseLineList)
       throws AxelorException;
 
+  void deleteExpenses(List<Integer> ids) throws AxelorException;
+
   /**
    * Validates the employee attached to an expense is valid based on the expense category. That is
    * If the expense is one which does not require an employee it validates this does not happen. If

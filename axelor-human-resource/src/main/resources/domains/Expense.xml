@@ -62,8 +62,7 @@
 
     <!-- MGM Customisation: Make Expenses project specific -->
     <one-to-one name="project" ref="com.axelor.apps.project.db.Project" title="project"/>
-    <integer name="categorySelect" title="Category" selection="hr.expense.category.select"
-      default="1"/>
+    <integer name="categorySelect" title="Category" selection="hr.expense.category.select"/>
 
     <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[

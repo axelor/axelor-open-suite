@@ -8,6 +8,9 @@
     <toolbar>
       <button name="addExpenseBtn" title="New Expense" colSpan="2" css="btn-custom text-left"
         icon="fa-plus" onClick="mgm-action-project-expense-add"/>
+      <button name="deleteExpenseBtn" title="Delete Expense" colSpan="2" css="btn-danger"
+        icon="fa-trash" onClick="mgm-action-method-delete-project-expense"
+        prompt="Are you sure you want to delete the selected expense(s)?"/>
     </toolbar>
     <hilite color="danger" if="statusSelect == 5"/>
     <hilite color="success" if="statusSelect == 3 || statusSelect == 4"/>
@@ -75,9 +78,10 @@
 
   <form name="mgm-expense-form" title="Project Expenses" model="com.axelor.apps.hr.db.Expense"
     width="large"
-    onSave="mgm-action-validate-warn-billing-item-edited-after-project-confirmation, mgm-action-expense-method-validate-and-compute"
+    onSave="mgm-action-validate-warn-billing-item-edited-after-project-confirmation,mgm-action-expense-method-validate-and-compute"
     canNew="false" onNew="mgm-action-project-expense-group-form-onNew"
-    canDelete="ventilated == false" canAttach="false" onDelete="">
+    onLoad="mgm-action-expense-attrs-hide-button-readonly-field" canDelete="ventilated == false"
+    canAttach="false" onDelete="">
     <toolbar>
       <button name="projectFilesBtn" title="Project Files" showIf="project &amp;&amp; id"
         icon="fa-paperclip" onClick="action-method-project-find-project-files"/>
@@ -111,21 +115,22 @@
         <panel name="generalInfoPanel" colSpan="12">
           <!-- <field name="typeSelect" readonlyIf="_isExpenseDeclaration || statusSelect > 1"/> -->
           <field name="typeSelect" readonly="true"/>
-          <field name="categorySelect" onChange="action-mgm-expense-attrs-category-change"/>
+          <field name="categorySelect"
+            onChange="action-mgm-expense-record-category-change-logic" required="true"/>
           <field name="company" canEdit="false" readonly="true" form-view="company-form"
             grid-view="company-grid"/>
           <field name="employee" canNew="false" canView="false"
-            requiredIf="categorySelect == 1" hideIf="categorySelect == 2" form-view="employee-form"
+            requiredIf="categorySelect == 1" showIf="categorySelect == 1" form-view="employee-form"
             grid-view="employee-grid" onChange="action-expense-record-employee-onchange"
             domain="self.user IN (SELECT m FROM Project p JOIN p.membersUserSet m WHERE p = :project) OR self.user IN (SELECT p.assignedTo FROM Project p WHERE p = :project)"/>
           <field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period"
             form-view="period-form" grid-view="period-grid" canView="false"/>
-          <field name="companyCbSelect" hideIf="categorySelect == 2"
+          <field name="companyCbSelect" showIf="categorySelect == 1"
             onChange="action-expense-attrs-expense-company-cb" readonlyIf="statusSelect != 1"/>
-          <field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1"
-            readonlyIf="statusSelect != 1"/>
-          <field name="employee.companyCbDetails" hidden="true"
-            showIf="employee != null &amp;&amp; companyCbSelect &gt; 1"/>
+          <!-- <field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1" -->
+          <!-- readonlyIf="statusSelect != 1"/> -->
+          <!-- <field name="employee.companyCbDetails" hidden="true" -->
+          <!-- showIf="employee != null &amp;&amp; companyCbSelect &gt; 1"/> -->
           <field name="currency" hidden="true"/>
           <field name="personalExpenseAmount" hidden="true"/>
           <field name="advanceAmount" hidden="true"/>
@@ -203,7 +208,7 @@
           onNew="mgm-action-project-expense-line-group-onnew" colSpan="12"
           field="generalExpenseLineList" form-view="mgm-expense-line-form"
           grid-view="mgm-expense-line-grid"
-          onChange="action-expense-method-compute,mgm-action-expense-method-sum-invoice-total"/>
+          onChange="mgm-employee-expense-line-group-on-change-action"/>
       </panel>
       <panel name="feeExpensePanelMainPanel" title="General expenses"
         showIf="categorySelect == 2">
@@ -213,7 +218,8 @@
         <panel-related name="feeExpenseLineListPanel" title="Project fees"
           onNew="mgm-fees-action-project-expense-line-group-onnew" colSpan="12"
           field="generalExpenseLineList" form-view="mgm-fees-expense-line-form"
-          grid-view="mgm-fees-expense-line-grid" onChange="action-expense-method-compute"/>
+          grid-view="mgm-fees-expense-line-grid"
+          onChange="mgm-fees-expense-line-group-on-change-action"/>
       </panel>
     </panel-tabs>
     <panel name="followupPanel" title="Follow-up" showIf="sentDateTime" colSpan="12"
@@ -246,8 +252,7 @@
       <field name="projectTask" edit-icon="false" canEdit="false"
         onSelect="custom-mgm-action-expense-line-method-compute-project-task-domain"
         onChange="action-expense-line-attrs-on-project-task-change"
-        form-view="business-project-task-form" grid-view="business-project-task-grid"
-        hideIf="id &amp;&amp; expense.categorySelect == 1"/>
+        form-view="business-project-task-form" grid-view="business-project-task-grid"/>
       <field name="site" form-view="site-form" grid-view="site-grid"
         onSelect="action-expense-line-attrs-set-site-domain"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
@@ -367,9 +372,15 @@
     <action name="mgm-action-project-expense-line-record-fill-project"/>
   </action-group>
 
-  <action-group name="mgm-individual-item-action-project-expense-line-group-onnew">
-    <action name="mgm-fees-action-expense-line-default-onNew"/>
-    <action name="mgm-action-individual-item-expense-line-record-expense-product"/>
+  <action-group name="mgm-employee-expense-line-group-on-change-action">
+    <action name="action-expense-method-compute"/>
+    <action name="mgm-action-expense-method-sum-invoice-total"/>
+    <action name="mgm-action-expense-attrs-hide-button-readonly-field"/>
+  </action-group>
+
+  <action-group name="mgm-fees-expense-line-group-on-change-action">
+    <action name="action-expense-method-compute"/>
+    <action name="mgm-action-expense-attrs-hide-button-readonly-field"/>
   </action-group>
 
   <action-record name="mgm-action-project-expense-record-default"
@@ -377,11 +388,6 @@
     <field name="project" expr="eval: _projectRef"/>
     <field name="company" expr="eval: _projectCompany"/>
     <field name="currency" expr="eval: _projectCurrency"/>
-    <field name="companyCbSelect" expr="eval: 1"/>
-    <field name="bankDetails"
-      expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany?.defaultBankDetails"/>
-    <field name="employee" expr="eval: __user__.employee"
-      if="eval: _projectRef != null &amp;&amp; (_projectRef.assignedTo?.id == __user__.id || __repo__(Project).all().filter('self.id = ?1 AND ?2 MEMBER OF self.membersUserSet', _projectRef.id, __user__).fetchOne() != null)"/>
     <field name="period"
       expr="eval: __repo__(Period).all().filter(
     'self.fromDate &lt;= ?1
@@ -393,9 +399,9 @@
     _projectCompany).fetchOne()"/>
     <field name="typeSelect"
       expr="eval: _isExpenseDeclaration ? com.axelor.apps.hr.db.repo.ExpenseRepository.TYPE_EXPENSE_DECLARATION : com.axelor.apps.hr.db.repo.ExpenseRepository.TYPE_EXPENSE"/>
-    <field name="categorySelect"
-      expr="eval: __repo__(Project).all().filter('self.id = ?1', _projectId).fetchOne()?.projectType?.defaultExpenseCategory"
-      if="_projectId != null"/>
+    <!-- <field name="categorySelect" -->
+    <!-- expr="eval: __repo__(Project).all().filter('self.id = ?1', _projectId).fetchOne()?.projectType?.defaultExpenseCategory" -->
+    <!-- if="_projectId != null"/> -->
     <field name="statusSelect" expr="eval: 1"/>
   </action-record>
 
@@ -424,6 +430,11 @@
 
   <action-method name="mgm-action-expense-method-validate-and-compute">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="customCompute"/>
+  </action-method>
+
+  <action-method name="mgm-action-method-delete-project-expense">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController"
+      method="deleteProjectExpense"/>
   </action-method>
 
   <action-record name="mgm-action-expense-line-record-calculate-totals"
@@ -495,9 +506,24 @@
     <field name="chargedFeeAmount" expr="eval: (untaxedAmount ?: 0) * ((fee ?: 0) / 100.0)"/>
   </action-record>
 
+  <action-record name="action-mgm-expense-record-category-change-logic"
+    model="com.axelor.apps.hr.db.Expense">
+    <field name="companyCbSelect" expr="eval: 2" if="categorySelect == 1"/>
+    <field name="bankDetails"
+      expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany?.defaultBankDetails"
+      if="categorySelect == 1"/>
+    <field name="employee" expr="eval: __user__.employee"
+      if="categorySelect == 1 &amp;&amp; _projectRef != null &amp;&amp; (_projectRef.assignedTo?.id == __user__.id || __repo__(Project).all().filter('self.id = ?1 AND ?2 MEMBER OF self.membersUserSet', _projectRef.id, __user__).fetchOne() != null)"/>
+    <field name="employee" expr="eval: null" if="categorySelect != 1"/>
+    <field name="companyCbSelect" expr="eval: null" if="categorySelect != 1"/>
+    <field name="bankDetails" expr="eval: null" if="categorySelect != 1"/>
+  </action-record>
+
   <action-attrs name="mgm-action-expense-attrs-hide-button-readonly-field">
-    <attribute name="hidden" for="ventilateBtn"
-      expr="eval: !__user__.employee?.hrManager || statusSelect != 3 || ventilated || _isExpenseDeclaration"/>
+    <attribute name="readonly" for="categorySelect"
+      expr="eval: generalExpenseLineList?.size() > 0"/>
+    <attribute name="readonly" for="employee"
+      expr="eval: generalExpenseLineList?.size() > 0"/>
     <attribute name="hidden" for="validateBtn" expr="eval: !(statusSelect == 2)"/>
     <attribute name="hidden" for="refuseBtn"
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; user?.employee?.managerUser == null) || __user__ == employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
