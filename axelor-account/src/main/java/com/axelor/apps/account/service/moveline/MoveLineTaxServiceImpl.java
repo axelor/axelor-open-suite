@@ -414,12 +414,12 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   }
 
   @Override
-  public int getVatSystem(Move move, MoveLine moveline) throws AxelorException {
-    Partner partner = move.getPartner() != null ? move.getPartner() : moveline.getPartner();
+  public int getVatSystem(Move move, Account account, Partner partner) throws AxelorException {
+    partner = move.getPartner() != null ? move.getPartner() : partner;
     return taxAccountToolService.calculateVatSystem(
         partner,
         move.getCompany(),
-        moveline.getAccount(),
+        account,
         (move.getJournal().getJournalType().getTechnicalTypeSelect()
             == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE),
         (move.getJournal().getJournalType().getTechnicalTypeSelect()

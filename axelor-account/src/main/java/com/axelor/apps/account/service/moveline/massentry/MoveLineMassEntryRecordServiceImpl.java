@@ -209,7 +209,8 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
 
   @Override
   public void setVatSystemSelect(MoveLineMassEntry moveLine, Move move) throws AxelorException {
-    moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
+    moveLine.setVatSystemSelect(
+        moveLineTaxService.getVatSystem(move, moveLine.getAccount(), moveLine.getPartner()));
   }
 
   @Override
