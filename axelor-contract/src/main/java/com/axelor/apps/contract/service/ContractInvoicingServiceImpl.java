@@ -559,7 +559,11 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
     if (contract.getCurrentContractVersion().getIsConsumptionBeforeEndDate()) {
       consumptionLineList =
           consumptionLineList.stream()
-              .filter(line -> line.getLineDate().isBefore(contract.getInvoicePeriodEndDate()))
+              .filter(
+                  line ->
+                      line.getLineDate() != null
+                          && contract.getInvoicePeriodEndDate() != null
+                          && line.getLineDate().isBefore(contract.getInvoicePeriodEndDate()))
               .collect(Collectors.toList());
     }
 

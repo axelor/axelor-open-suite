@@ -1,0 +1,3 @@
+---
+title: "Contract: fixed error when 'Only invoice consumption before Invoice period end Date' is enabled and 'Periodic Invoicing' is disabled while invoicing contract."
+module: axelor-contract
