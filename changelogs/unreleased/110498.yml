@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed NPE error when adding a pack while editable tree view is activated."
+module: axelor-production
