@@ -1,0 +1,5 @@
+---
+title: "Cash Management: fixed forecast recap using actual delivery date instead of estimated date for purchase order lines."
+module: axelor-cash-management
+developer: |
+  ForecastRecapServiceImpl constructor now requires UnitConversionService and StockMoveLineRepository.
