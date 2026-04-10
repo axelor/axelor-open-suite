@@ -6,8 +6,8 @@
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="InvoiceNoteType">
-    <string name="code" title="Invoice note type code"/>
-    <string name="name" title="Invoice note type name"/>
+    <string name="code" title="Code" required="true"/>
+    <string name="name" title="Name" required="true"/>
   </entity>
 
 </domain-models>

@@ -155,7 +155,7 @@
     <many-to-one name="printedPDF" ref="com.axelor.meta.db.MetaFile"/>
     <boolean name="groupProductsOnPrintings" title="Group products on printings"/>
     <one-to-many name="invoiceNoteList" ref="InvoiceNote" mappedBy="invoice"
-      title="Invoice note list"/>
+      title="Invoice note list" copy="false"/>
 
     <!-- Totals & Status -->
 
