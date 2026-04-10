@@ -28,6 +28,7 @@ import com.axelor.apps.purchase.db.CallTenderSupplier;
 import com.axelor.apps.purchase.db.repo.CallTenderOfferRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.i18n.I18n;
+import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateMessageService;
@@ -61,27 +62,17 @@ public class CallTenderMailServiceImpl implements CallTenderMailService {
 
     var offersGroupBySupplier =
         callTender.getCallTenderOfferList().stream()
-            .filter(offer -> offer.getStatusSelect().equals(CallTenderOfferRepository.STATUS_DRAFT))
+            .filter(
+                offer ->
+                    offer.getOfferMail() != null
+                        && offer.getOfferMail().getEmailMessage() != null
+                        && offer.getStatusSelect().equals(CallTenderOfferRepository.STATUS_DRAFT))
             .collect(Collectors.groupingBy(CallTenderOffer::getSupplierPartner));
 
     for (List<CallTenderOffer> offerList : offersGroupBySupplier.values()) {
-      // Offer list should not be empty there
-      // We will pick one randomly as it should be the same mail
       var anyOffer = offerList.get(0);
       CallTenderMail offerMail = anyOffer.getOfferMail();
-      var messageToSend =
-          templateMessageService.generateMessage(anyOffer, offerMail.getMailTemplate());
-      // Add all contacts to email address
-      var contacts =
-          getContactPartnerList(
-              anyOffer.getSupplierPartner(), callTender.getCallTenderSupplierList());
-      contacts.stream()
-          .map(Partner::getEmailAddress)
-          .filter(Objects::nonNull)
-          .forEach(messageToSend::addToEmailAddressSetItem);
-      messageService.attachMetaFiles(messageToSend, Set.of(offerMail.getMetaFile()));
-      var sentMessage = messageService.sendByEmail(messageToSend);
-      offerMail.setSentMessage(sentMessage);
+      messageService.sendByEmail(offerMail.getEmailMessage());
     }
   }
 
@@ -126,19 +117,40 @@ public class CallTenderMailServiceImpl implements CallTenderMailService {
     }
   }
 
+  protected Message generateEmailMessage(
+      CallTenderOffer anyOffer, CallTender callTender, CallTenderMail offerMail)
+      throws ClassNotFoundException, MessagingException {
+
+    Message emailMessage =
+        templateMessageService.generateMessage(anyOffer, offerMail.getMailTemplate());
+
+    var contacts =
+        getContactPartnerList(
+            anyOffer.getSupplierPartner(), callTender.getCallTenderSupplierList());
+    contacts.stream()
+        .map(Partner::getEmailAddress)
+        .filter(Objects::nonNull)
+        .forEach(emailMessage::addToEmailAddressSetItem);
+
+    if (offerMail.getMetaFile() != null) {
+      messageService.attachMetaFiles(emailMessage, Set.of(offerMail.getMetaFile()));
+    }
+
+    return emailMessage;
+  }
+
+  @Transactional(rollbackOn = Exception.class)
   @Override
-  public void sendCallTenderOffers(CallTender callTender)
-      throws AxelorException, IOException, MessagingException, ClassNotFoundException {
+  public void generateCallTenderEmails(CallTender callTender)
+      throws AxelorException, IOException, ClassNotFoundException, MessagingException {
     Objects.requireNonNull(callTender);
 
     if (callTender.getCallTenderOfferList() == null) {
       return;
     }
 
-    // Get template
     var template = callTender.getCallForTenderMailTemplate();
 
-    // Generate callTenderMail
     var offerToGenerateMailGroupBySupplier =
         callTender.getCallTenderOfferList().stream()
             .filter(offer -> offer.getOfferMail() == null)
@@ -150,6 +162,21 @@ public class CallTenderMailServiceImpl implements CallTenderMailService {
 
     for (List<CallTenderOffer> offerList : offerToGenerateMailGroupBySupplier.values()) {
       generateOfferMail(offerList, template);
+
+      var anyOffer = offerList.get(0);
+      CallTenderMail offerMail = anyOffer.getOfferMail();
+      Message emailMessage = generateEmailMessage(anyOffer, callTender, offerMail);
+      offerMail.setEmailMessage(emailMessage);
+    }
+  }
+
+  @Override
+  public void sendCallTenderOffers(CallTender callTender)
+      throws ClassNotFoundException, MessagingException {
+    Objects.requireNonNull(callTender);
+
+    if (callTender.getCallTenderOfferList() == null) {
+      return;
     }
 
     sendMails(callTender);
@@ -159,7 +186,8 @@ public class CallTenderMailServiceImpl implements CallTenderMailService {
   @Transactional(rollbackOn = Exception.class)
   protected void updateOffersStatus(CallTender callTender) {
     callTender.getCallTenderOfferList().stream()
-        .filter(offer -> offer.getOfferMail().getSentMessage() != null)
+        .filter(
+            offer -> offer.getOfferMail() != null && offer.getOfferMail().getEmailMessage() != null)
         .forEach(offer -> offer.setStatusSelect(CallTenderOfferRepository.STATUS_SENT));
   }
 }

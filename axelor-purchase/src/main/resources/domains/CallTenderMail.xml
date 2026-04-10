@@ -9,14 +9,14 @@
 
     <many-to-one name="mailTemplate" title="Mail template"
       ref="com.axelor.message.db.Template"/>
-    <many-to-one name="sentMessage" title="Sent message"
+    <many-to-one name="emailMessage" title="Email message"
       ref="com.axelor.message.db.Message"/>
     <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="Attachment"
       copy="false"/>
 
     <track on="UPDATE">
       <field name="mailTemplate"/>
-      <field name="sentMessage"/>
+      <field name="emailMessage"/>
       <field name="metaFile"/>
     </track>
   </entity>
