@@ -45,16 +45,16 @@ public class CallTenderMailServiceImpl implements CallTenderMailService {
 
   protected final MessageService messageService;
   protected final TemplateMessageService templateMessageService;
-  protected final CallTenderCsvService callTenderCsvService;
+  protected final CallTenderExcelService callTenderExcelService;
 
   @Inject
   public CallTenderMailServiceImpl(
       MessageService messageService,
       TemplateMessageService templateMessageService,
-      CallTenderCsvService callTenderCsvService) {
+      CallTenderExcelService callTenderExcelService) {
     this.messageService = messageService;
     this.templateMessageService = templateMessageService;
-    this.callTenderCsvService = callTenderCsvService;
+    this.callTenderExcelService = callTenderExcelService;
   }
 
   @Override
@@ -108,9 +108,11 @@ public class CallTenderMailServiceImpl implements CallTenderMailService {
     var callTenderMail = new CallTenderMail();
     callTenderMail.setMailTemplate(template);
 
-    // Generate csv here
-    var csv = callTenderCsvService.generateCsvFile(offerList);
-    callTenderMail.setMetaFile(csv);
+    // Generate excel and attach only if attachFileEmail is checked
+    if (Boolean.TRUE.equals(offerList.get(0).getCallTender().getAttachFileEmail())) {
+      var excelFile = callTenderExcelService.generateExcelFile(offerList);
+      callTenderMail.setMetaFile(excelFile);
+    }
 
     for (CallTenderOffer offer : offerList) {
       offer.setOfferMail(callTenderMail);
