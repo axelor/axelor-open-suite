@@ -116,7 +116,9 @@ public class SubcontractorTaskController {
         "domain",
         employeeIds.isEmpty() ? "self.id IN (null)" : "self.id IN (" + employeeIds + ")");
 
-    response.setValue("employee", project.getAssignedTo());
+    if (project.getAssignedTo() != null) {
+      response.setValue("employee", project.getAssignedTo().getEmployee());
+    }
   }
 
   public void validateData(ActionRequest request, ActionResponse response) {

@@ -24,7 +24,6 @@
     <field name="inTaxTotal" title="Total to refund"/>
     <field name="totalAmountToInvoice" aggregate="sum"/>
     <field name="statusSelect"/>
-    <field name="ventilated"/>
   </grid>
 
   <grid name="mgm-expense-line-grid" title="Expense lines"
@@ -62,7 +61,6 @@
   <grid name="mgm-expense-line-review-grid" title="Review Expenses lines"
     model="com.axelor.apps.hr.db.ExpenseLine">
     <field name="expense.employee" title="Employee"/>
-    <field name="expenseProduct"/>
     <field name="itemProductName"/>
     <field name="expenseDate" title="Expense date"/>
     <field name="untaxedAmount" aggregate="sum"/>
@@ -184,8 +182,10 @@
                     <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
                     <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Charged Fee')}</Box>
                     <Box as="dd" m={0} px={3} py={1}>{$fmt('chargedFeeAmount')}</Box>
+                    {categorySelect != 2 && <>
                     <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="bold">{_t('Total to Refund')}</Box>
                     <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold">{$fmt('inTaxTotal')}</Box>
+                    </>}
                     <Box as="dt" m={0} px={3} py={1} color="info" borderTop>{_t('Total to Invoice')}</Box>
                     <Box as="dd" m={0} px={3} py={1} color="info" fontWeight="bold" borderTop>{$fmt('totalAmountToInvoice')}</Box>
                   </Box>

@@ -104,11 +104,10 @@
     <context name="_projectId" expr="eval: id"/>
   </action-view>
 
-  <action-view
-    name="mgm-action-business-project-fremdleistung-subcontractor-task-review-dashlet"
+  <action-view name="mgm-action-subcontractor-business-project-task-review-dashlet"
     model="com.axelor.apps.businessproject.db.SubcontractorTask" title="Service">
-    <view type="grid" name="mgm-fremdleistung-project-subcontractor-task-grid"/>
-    <view type="form" name="mgm-fremdleistung-project-subcontractor-task-form"/>
+    <view type="grid" name="mgm-subcontractor-project-subcontractor-task-grid"/>
+    <view type="form" name="mgm-subcontractor-project-subcontractor-task-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="show-toolbar" value="false"/>
     <domain>self.project.id = :_projectId</domain>

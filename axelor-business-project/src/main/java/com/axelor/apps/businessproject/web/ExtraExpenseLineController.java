@@ -6,14 +6,18 @@ import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseLineServ
 import com.axelor.apps.businessproject.service.taskreport.TaskReportService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExtraExpenseLineController {
 
+  private static final Logger log = LoggerFactory.getLogger(ExtraExpenseLineController.class);
   @Inject protected ExtraExpenseLineService extraExpenseLineService;
 
   public void setExtraExpenseLineTypeSelect(ActionRequest request, ActionResponse response) {
@@ -28,6 +32,13 @@ public class ExtraExpenseLineController {
 
   public void setExtraExpenseLineDefaults(ActionRequest request, ActionResponse response) {
     Project project = request.getContext().getParent().asType(Project.class);
+
+    if (project == null || project.getId() == null) {
+      response.setError(
+          I18n.get("Please first save the project before proceeding"),
+          I18n.get("No project attached"));
+      return;
+    }
 
     project = Beans.get(ProjectRepository.class).find(project.getId());
     TaskReport taskReport = Beans.get(TaskReportService.class).getTaskReport(project);

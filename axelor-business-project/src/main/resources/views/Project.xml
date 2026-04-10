@@ -305,14 +305,14 @@
           canNew="true" x-show-bars="true"/>
       </panel>
 
-      <panel name="projectExtraExpensesPanel" title="Project extra expenses" colSpan="12">
+      <panel name="projectExtraExpensesPanel" title="5 Project extra expenses" colSpan="12">
         <panel-dashlet name="projectExtraExpenses" title="Project extra expenses"
           canEdit="true" readonly="false" action="mgm-action-project-extra-expense-line-dashlet"
           colSpan="12" canNew="true" x-show-bars="true" canDelete="true"/>
       </panel>
 
       <!-- MGM-114 -->
-      <panel title="5 Review and Confirmation" name="reviewAndConfirmationPanel"
+      <panel title="6 Review and Confirmation" name="reviewAndConfirmationPanel"
         onTabSelect="mgm-action-method-project-show-project-summary">
 
         <panel name="taskDataReviewPanel" title="Tasks review" colSpan="12">
@@ -408,8 +408,8 @@
         <panel name="invoicingDataLineReviewPanel" title="Invoicing data review" colSpan="12"
           hidden="true">
           <panel-dashlet name="subcontractorProjectTaskReviewDashlet" title=""
-            action="mgm-action-business-project-fremdleistung-subcontractor-task-review-dashlet"
-            canNew="false" canEdit="false" canDelete="false" colSpan="12" x-show-bars="true"
+            action="mgm-action-subcontractor-business-project-task-review-dashlet" canNew="false"
+            canEdit="false" canDelete="false" colSpan="12" x-show-bars="true"
             showIf="projectType.sequence == 3"/>
 
           <panel-dashlet name="monthlyInvoiceProjectTaskReviewDahshlet" title=""
@@ -579,7 +579,7 @@
         if="__user__.group.code == 'admins'"/>
       <!--- MGM-66: display panel to only selected group e.g admins -->
       <panel onTabSelect="mgm-action-business-project-set-default-invoice-flags"
-        title="6 Invoicing" name="invoicingPanel"
+        title="7 Invoicing" name="invoicingPanel"
         if="!(['CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))">
         <panel-include view="custom-mgm-incl-project-invoicing-panel-content"/>
       </panel>
@@ -1061,7 +1061,7 @@
   </action-attrs>
 
   <action-attrs name="mgm-business-projectaction-attrs-navigate-to-review-tab">
-    <attribute for="otherExpensesReportPanel" name="active" if="eval: _fromDashboard"
+    <attribute for="reviewAndConfirmationPanel" name="active" if="eval: _fromDashboard"
       expr="eval: true"/>
   </action-attrs>
 

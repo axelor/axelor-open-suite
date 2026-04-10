@@ -58,7 +58,7 @@
       <field name="totalAmount" readonly="true"/>
       <field name="toInvoice"/>
       <field name="project" form-view="business-project-form"
-        grid-view="business-project-grid" readonly="true" canView="false"/>
+        grid-view="business-project-grid" readonly="true" canView="false" required="true"/>
       <field name="extraExpenseLineTypeSelect" readonly="true" hidden="true"/>
     </panel>
     <panel name="comments">
