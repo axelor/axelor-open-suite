@@ -146,17 +146,12 @@ public class InvoiceNoteCreationHelper {
     invoice.addInvoiceNoteListItem(invoiceNote);
   }
 
-  protected static void generateBankDetailsNote(Invoice invoice) throws AxelorException {
+  protected static void generateBankDetailsNote(Invoice invoice) {
     BankDetails bankDetails = invoice.getCompanyBankDetails();
-    if (bankDetails == null || StringUtils.isBlank(bankDetails.getSpecificNoteOnInvoice())) {
+    if (bankDetails == null
+        || StringUtils.isBlank(bankDetails.getSpecificNoteOnInvoice())
+        || bankDetails.getInvoiceNoteType() == null) {
       return;
-    }
-    if (bankDetails.getInvoiceNoteType() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          AccountExceptionMessage.MISSING_BANK_DETAILS_NOTE_TYPE,
-          bankDetails,
-          bankDetails.getSpecificNoteOnInvoice());
     }
     InvoiceNote invoiceNote =
         createInvoiceNote(bankDetails.getInvoiceNoteType(), bankDetails.getSpecificNoteOnInvoice());
