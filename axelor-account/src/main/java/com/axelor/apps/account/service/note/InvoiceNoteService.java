@@ -23,6 +23,4 @@ import com.axelor.apps.base.AxelorException;
 
 public interface InvoiceNoteService {
   void generateInvoiceNote(Invoice invoice) throws AxelorException;
-
-  void generateInvoiceCategoryNote(Invoice invoice) throws AxelorException;
 }

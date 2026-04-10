@@ -46,7 +46,6 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.move.MoveToolService;
-import com.axelor.apps.account.service.note.InvoiceNoteService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.AxelorMessageException;
@@ -116,7 +115,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected AppBaseService appBaseService;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermPfpService invoiceTermPfpService;
-  protected InvoiceNoteService invoiceNoteService;
   protected TemplateMessageService templateMessageService;
   protected InvoiceTermFilterService invoiceTermFilterService;
   protected InvoicePrintService invoicePrintService;
@@ -136,7 +134,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
-      InvoiceNoteService invoiceNoteService,
       TemplateMessageService templateMessageService,
       InvoiceTermFilterService invoiceTermFilterService,
       InvoicePrintService invoicePrintService,
@@ -154,7 +151,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.appBaseService = appBaseService;
-    this.invoiceNoteService = invoiceNoteService;
     this.templateMessageService = templateMessageService;
     this.invoiceTermFilterService = invoiceTermFilterService;
     this.invoicePrintService = invoicePrintService;
@@ -208,13 +204,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       invoiceMap.put("advancePaymentInvoiceSet", invoice1.getAdvancePaymentInvoiceSet());
     }
 
-    String invoiceCategory = computeInvoiceCategorySelect(invoice1);
-    invoice1.setInvoiceCategorySelect(invoiceCategory);
-    invoiceMap.put("invoiceCategorySelect", invoiceCategory);
-
-    invoiceNoteService.generateInvoiceCategoryNote(invoice1);
-    invoiceMap.put("invoiceNoteList", invoice1.getInvoiceNoteList());
-
     return invoiceMap;
   }
 
@@ -265,6 +254,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         && invoice.getInvoiceAutomaticMailOnValidate()) {
       sendMail(invoice, invoice.getInvoiceMessageTemplateOnValidate());
     }
+    setInvoiceCategory(invoice);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -1323,7 +1313,14 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public String computeInvoiceCategorySelect(Invoice invoice) throws AxelorException {
+  @Transactional
+  public void setInvoiceCategory(Invoice invoice) throws AxelorException {
+    String invoiceCategory = computeInvoiceCategorySelect(invoice);
+    invoice.setInvoiceCategorySelect(invoiceCategory);
+    invoiceRepo.save(invoice);
+  }
+
+  protected String computeInvoiceCategorySelect(Invoice invoice) throws AxelorException {
     int operationType = invoice.getOperationTypeSelect();
     int operationSubType = invoice.getOperationSubTypeSelect();
 

@@ -112,7 +112,6 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         invoiceTermService,
         invoiceTermPfpService,
         appBaseService,
-        invoiceNoteService,
         templateMessageService,
         invoiceTermFilterService,
         invoicePrintService,

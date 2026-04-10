@@ -640,8 +640,7 @@
         <field name="invoiceCategorySelect"
           showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; operationSubTypeSelect == 1"
           requiredIf="invoiceLineList &amp;&amp; invoiceLineList.length != 0" widget="singleSelect"
-          readonlyIf="statusSelect &gt;= 3" colSpan="2"
-          onChange="action-invoice-method-generate-category-note"/>
+          readonlyIf="statusSelect &gt;= 3" colSpan="2"/>
         <panel name="cutOffPanel" title="Cut off period" itemSpan="4"
           readonlyIf="statusSelect == 3" if="__config__.app.getApp('account').manageCutOffPeriod">
           <field name="cutOffStartDate"
@@ -1291,9 +1290,8 @@
         <spacer colSpan="10"/>
         <field name="invoiceCategorySelect"
           showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; operationSubTypeSelect == 1"
-          requiredIf="invoiceLineList &amp;&amp; invoiceLineList.length != 0" widget="singleSelect"
-          readonlyIf="statusSelect &gt;= 3" colSpan="2"
-          onChange="action-invoice-method-generate-category-note"/>
+          requiredIf="invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; statusSelect &gt;= 2"
+          widget="singleSelect" readonlyIf="statusSelect &gt;= 3" colSpan="2"/>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
           readonlyIf="statusSelect == 3 || partner == null" colSpan="12"
