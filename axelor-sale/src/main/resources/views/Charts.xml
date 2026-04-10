@@ -705,21 +705,38 @@
     <dataset type="jpql">
       SELECT
       SUM(self.exTaxTotal) AS _amount,
-      item.title AS _partner
+      (CASE WHEN
+      (translation.message IS
+      NULL OR translation.message = '') THEN item.title
+      ELSE
+      translation.message
+      END) AS _partner
       FROM
       SaleOrderLine self,
       MetaSelectItem item
+      LEFT JOIN MetaTranslation translation
+      ON translation.key
+      = item.title
+      AND translation.language = :_language
       WHERE
       self.saleOrder.statusSelect in (3,4)
       AND
-      DATE(self.saleOrder.confirmationDateTime) BETWEEN DATE(:fromDate) AND DATE(:toDate)
+      DATE(self.saleOrder.confirmationDateTime) BETWEEN
+      DATE(:fromDate) AND DATE(:toDate)
       AND
       self.saleOrder.company = :activeCompany
-      AND item.select.name='partner.partner.type.select'
       AND
-      CAST(item.value as int) = self.saleOrder.clientPartner.partnerTypeSelect
+      item.select.name='partner.partner.type.select'
+      AND
+      CAST(item.value as int) =
+      self.saleOrder.clientPartner.partnerTypeSelect
       GROUP BY
-      item.title
+      (CASE WHEN
+      (translation.message IS NULL OR
+      translation.message = '') THEN item.title
+      ELSE
+      translation.message
+      END)
     </dataset>
     <category key="_partner" type="text" title="Partner Type"/>
     <series key="_amount" type="donut" title="Turnover"/>
