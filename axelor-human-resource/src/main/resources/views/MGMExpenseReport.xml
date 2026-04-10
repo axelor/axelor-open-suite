@@ -275,8 +275,8 @@
       <field name="fee" title="Fee (%)" colSpan="6"
         onChange="mgm-action-expense-line-compute-totals"/>
       <field name="totalAmountToInvoice" readonly="true" colSpan="6"/>
-      <field name="showChargedFee" title="Do you want to show charged fee on the invoice ?"
-        colSpan="6"/>
+      <field name="showChargedFee" showIf="fee > 1"
+        title="Do you want to show charged fee on the invoice ?" colSpan="6"/>
       <field name="totalAmount" title="Total to refund" readonly="true" colSpan="6">
         <hilite color="danger"
           if="expenseProduct != null &amp;&amp; $get('expenseProduct.amountLimit') != 0 &amp;&amp; $get('expenseProduct.amountLimit') &lt; totalAmount"/>
@@ -337,10 +337,11 @@
         onChange="mgm-action-fee-line-compute-totals"/>
       <field name="fee" title="Fee (%)" colSpan="6"
         onChange="mgm-action-fee-line-compute-totals"/>
-      <field name="invoiceFeeOnly" colSpan="6" onChange="mgm-action-fee-line-compute-totals"/>
+      <field name="invoiceFeeOnly" showIf="fee > 1" colSpan="6"
+        onChange="mgm-action-fee-line-compute-totals"/>
       <field name="totalAmountToInvoice" readonly="true" colSpan="6"/>
-      <field name="showChargedFee" title="Do you want to show charged fee on the invoice ?"
-        colSpan="6" hideIf="invoiceFeeOnly"/>
+      <field name="showChargedFee" showIf="fee > 1"
+        title="Do you want to show charged fee on the invoice ?" colSpan="6" hideIf="invoiceFeeOnly"/>
       <field name="toInvoice" hidden="true"/>
       <field name="justificationMetaFile" widget="binary-link"
         onChange="action-expense-line-group-justification-line-onchange"/>
