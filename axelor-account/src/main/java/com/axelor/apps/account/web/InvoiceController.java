@@ -1521,19 +1521,14 @@ public class InvoiceController {
   public void generateInvoiceNote(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      Beans.get(InvoiceNoteService.class).generateInvoiceNote(invoice);
-      response.setValues(invoice);
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+        Beans.get(InvoiceNoteService.class).generateInvoiceNote(invoice);
+        response.setValues(invoice);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  @ErrorException
-  public void generateInvoiceCategoryNote(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-    Beans.get(InvoiceNoteService.class).generateInvoiceCategoryNote(invoice);
-    response.setValues(invoice);
   }
 
   @ErrorException

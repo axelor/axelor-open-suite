@@ -60,8 +60,6 @@ public class ImportInvoice {
       invoice = invoiceTermService.computeInvoiceTerms(invoice);
     }
 
-    invoiceNoteService.generateInvoiceCategoryNote(invoice);
-
     return invoice;
   }
 }
