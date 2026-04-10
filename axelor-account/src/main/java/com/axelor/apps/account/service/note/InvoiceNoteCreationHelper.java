@@ -20,19 +20,21 @@ package com.axelor.apps.account.service.note;
 
 import com.axelor.apps.account.db.*;
 import com.axelor.apps.account.db.repo.InvoiceNoteTypeRepository;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InvoiceNoteCreationHelper {
+
+  protected static final Logger logger = LoggerFactory.getLogger(InvoiceNoteCreationHelper.class);
+
   protected InvoiceNoteCreationHelper() {
     throw new IllegalStateException("Utility class");
   }
@@ -42,17 +44,6 @@ public class InvoiceNoteCreationHelper {
         .anyMatch(n -> n.getInvoiceNoteType().equals(noteType));
   }
 
-  protected static InvoiceNoteType getOrCreateInvoiceNoteType(
-      String noteType, String noteTypeName) {
-    InvoiceNoteType invoiceNoteType =
-        Beans.get(InvoiceNoteTypeRepository.class).findByCode(noteType);
-    if (invoiceNoteType == null) {
-      invoiceNoteType = new InvoiceNoteType(noteType, noteTypeName);
-      Beans.get(InvoiceNoteTypeRepository.class).save(invoiceNoteType);
-    }
-    return invoiceNoteType;
-  }
-
   protected static InvoiceNote createInvoiceNote(InvoiceNoteType noteType, String noteContent) {
     InvoiceNote invoiceNote = new InvoiceNote();
     invoiceNote.setInvoiceNoteType(noteType);
@@ -60,9 +51,13 @@ public class InvoiceNoteCreationHelper {
     return invoiceNote;
   }
 
-  protected static void generateFinancialDiscountNote(Invoice invoice, Company company)
-      throws AxelorException {
-    InvoiceNoteType noteTypeAAB = getOrCreateInvoiceNoteType("AAB", I18n.get("Cash discount"));
+  protected static void generateFinancialDiscountNote(Invoice invoice, Company company) {
+    InvoiceNoteType noteTypeAAB = Beans.get(InvoiceNoteTypeRepository.class).findByCode("AAB");
+    if (noteTypeAAB == null) {
+      logger.warn("Note type AAB doesn't exist");
+      return;
+    }
+
     if (invoice.getFinancialDiscount() != null
         && !StringUtils.isBlank(invoice.getFinancialDiscount().getLegalNotice())) {
       String noteContent = invoice.getFinancialDiscount().getLegalNotice();
@@ -70,22 +65,23 @@ public class InvoiceNoteCreationHelper {
       invoice.addInvoiceNoteListItem(invoiceNote);
       return;
     }
-    if (invoice.getPartner().getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_COMPANY
-        && company.getAccountConfig().getDisplayNoFinancialDiscountAppliedOnPrinting()) {
+    if (company.getAccountConfig().getDisplayNoFinancialDiscountAppliedOnPrinting()) {
       String noteContent = I18n.get("No discount will be granted for early payment.");
       InvoiceNote invoiceNote = createInvoiceNote(noteTypeAAB, noteContent);
       invoice.addInvoiceNoteListItem(invoiceNote);
       return;
     }
-    throw new AxelorException(
-        TraceBackRepository.CATEGORY_NO_VALUE,
-        AccountExceptionMessage.MISSING_CASH_DISCOUNT_MENTION,
-        invoice.getInvoiceId());
+    logger.info(
+        "No content to display for note AAB, financial discount. Note creation was skipped");
   }
 
   protected static void generateGeneralInformationNote(Invoice invoice, Company company) {
-    InvoiceNoteType noteTypeAAI =
-        getOrCreateInvoiceNoteType("AAI", I18n.get("General Information"));
+    InvoiceNoteType noteTypeAAI = Beans.get(InvoiceNoteTypeRepository.class).findByCode("AAI");
+    if (noteTypeAAI == null) {
+      logger.warn("Note type AAI doesn't exist");
+      return;
+    }
+
     String noteContent = "";
     if (!StringUtils.isBlank(company.getAccountConfig().getTermsAndConditions())) {
       noteContent = company.getAccountConfig().getTermsAndConditions();
@@ -93,53 +89,78 @@ public class InvoiceNoteCreationHelper {
         noteContent += "\n" + company.getAccountConfig().getInvoiceClientBox();
       }
     }
-    if (!StringUtils.isBlank(noteContent)) {
-      InvoiceNote invoiceNote = createInvoiceNote(noteTypeAAI, noteContent);
-      invoice.addInvoiceNoteListItem(invoiceNote);
+    if (StringUtils.isBlank(noteContent)) {
+      logger.info(
+          "No content to display for note AAI, general information. Note creation was skipped");
+      return;
     }
+    InvoiceNote invoiceNote = createInvoiceNote(noteTypeAAI, noteContent);
+    invoice.addInvoiceNoteListItem(invoiceNote);
   }
 
   protected static void generateSellerLegalInformationNote(Invoice invoice, Company company) {
-    InvoiceNoteType noteTypeABL =
-        getOrCreateInvoiceNoteType("ABL", I18n.get("Seller legal information"));
-    if (!StringUtils.isBlank(company.getLegalInformation())) {
-      String noteContent = company.getLegalInformation();
-      InvoiceNote invoiceNote = createInvoiceNote(noteTypeABL, noteContent);
-      invoice.addInvoiceNoteListItem(invoiceNote);
+    InvoiceNoteType noteTypeABL = Beans.get(InvoiceNoteTypeRepository.class).findByCode("ABL");
+    if (noteTypeABL == null) {
+      logger.warn("Note type ABL doesn't exist");
+      return;
     }
+
+    String noteContent = company.getLegalInformation();
+    if (StringUtils.isBlank(noteContent)) {
+      logger.info(
+          "No content to display for note ABL, seller information. Note creation was skipped");
+      return;
+    }
+
+    InvoiceNote invoiceNote = createInvoiceNote(noteTypeABL, noteContent);
+    invoice.addInvoiceNoteListItem(invoiceNote);
   }
 
-  protected static void generateLumpSumIndemnityNote(Invoice invoice, Company company)
-      throws AxelorException {
-    InvoiceNoteType noteTypePMT =
-        getOrCreateInvoiceNoteType("PMT", I18n.get("Lump sum indemnity for recovery costs"));
+  protected static void generateLumpSumIndemnityNote(Invoice invoice, Company company) {
+    InvoiceNoteType noteTypePMT = Beans.get(InvoiceNoteTypeRepository.class).findByCode("PMT");
+    if (noteTypePMT == null) {
+      logger.warn("Note type PMT doesn't exist");
+      return;
+    }
+
     String noteContent = company.getAccountConfig().getSaleInvoiceLegalNote();
     if (StringUtils.isBlank(noteContent)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE, AccountExceptionMessage.MISSING_LEGAL_NOTE);
+      logger.info(
+          "No content to display for note PMT, lump sum indemnity. Note creation was skipped");
+      return;
     }
     InvoiceNote invoiceNote = createInvoiceNote(noteTypePMT, noteContent);
     invoice.addInvoiceNoteListItem(invoiceNote);
   }
 
-  protected static void generateLateInterestChargesNote(Invoice invoice, Company company)
-      throws AxelorException {
-    InvoiceNoteType noteTypePMD =
-        getOrCreateInvoiceNoteType("PMD", I18n.get("Late interest charges"));
+  protected static void generateLateInterestChargesNote(Invoice invoice, Company company) {
+    InvoiceNoteType noteTypePMD = Beans.get(InvoiceNoteTypeRepository.class).findByCode("PMD");
+    if (noteTypePMD == null) {
+      logger.warn("Note type PMD doesn't exist");
+      return;
+    }
+
     String noteContent = company.getAccountConfig().getPenaltyRateNote();
     if (StringUtils.isBlank(noteContent)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE, AccountExceptionMessage.MISSING_PENALTY_RATE_NOTE);
+      logger.info(
+          "No content to display for note PMD, late interest charges. Note creation was skipped");
+      return;
     }
     InvoiceNote invoiceNote = createInvoiceNote(noteTypePMD, noteContent);
     invoice.addInvoiceNoteListItem(invoiceNote);
   }
 
   protected static void generateLegalFormAndCapitalNote(Invoice invoice, Company company) {
-    InvoiceNoteType noteTypeREG = getOrCreateInvoiceNoteType("REG", I18n.get("Legal informations"));
+    InvoiceNoteType noteTypeREG = Beans.get(InvoiceNoteTypeRepository.class).findByCode("REG");
+    if (noteTypeREG == null) {
+      logger.warn("Note type REG doesn't exist");
+      return;
+    }
 
     String noteContent = company.getLegalFormAndCapital();
     if (StringUtils.isBlank(noteContent)) {
+      logger.info(
+          "No content to display for note REG, legal form and capital. Note creation was skipped");
       return;
     }
     InvoiceNote invoiceNote = createInvoiceNote(noteTypeREG, noteContent);
@@ -164,10 +185,16 @@ public class InvoiceNoteCreationHelper {
   }
 
   protected static void generateSupplierNote(Invoice invoice) {
-    InvoiceNoteType noteTypeSUR = getOrCreateInvoiceNoteType("SUR", I18n.get("Supplier note"));
+    InvoiceNoteType noteTypeSUR = Beans.get(InvoiceNoteTypeRepository.class).findByCode("SUR");
+    if (noteTypeSUR == null) {
+      logger.warn("Note type SUR doesn't exist");
+      return;
+    }
 
     String noteContent = invoice.getNote();
     if (StringUtils.isBlank(noteContent)) {
+      logger.info(
+          "No content to display for note SUR, supplier information. Note creation was skipped");
       return;
     }
     InvoiceNote invoiceNote = createInvoiceNote(noteTypeSUR, noteContent);
@@ -175,7 +202,11 @@ public class InvoiceNoteCreationHelper {
   }
 
   protected static void generateInvoiceCategoryNote(Invoice invoice) throws AxelorException {
-    InvoiceNoteType noteTypeREG = getOrCreateInvoiceNoteType("REG", I18n.get("Invoice category"));
+    InvoiceNoteType noteTypeREG = Beans.get(InvoiceNoteTypeRepository.class).findByCode("REG");
+    if (noteTypeREG == null) {
+      logger.warn("Note type REG doesn't exist");
+      return;
+    }
 
     AccountConfig accountConfig =
         Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
@@ -185,6 +216,7 @@ public class InvoiceNoteCreationHelper {
 
     String invoiceCategory = invoice.getInvoiceCategorySelect();
     if (Strings.isNullOrEmpty(invoiceCategory)) {
+      logger.info("No invoice category defined. Note creation was skipped");
       return;
     }
 

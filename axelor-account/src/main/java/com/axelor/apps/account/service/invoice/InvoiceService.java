@@ -327,5 +327,5 @@ public interface InvoiceService {
 
   TaxNumber getDefaultCompanyTaxNumber(Invoice invoice);
 
-  String computeInvoiceCategorySelect(Invoice invoice) throws AxelorException;
+  void setInvoiceCategory(Invoice invoice) throws AxelorException;
 }
