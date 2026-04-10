@@ -31,7 +31,9 @@
     <panel name="actionPanel" showTitle="false" sidebar="true">
       <button name="generateCallTenderBtn" title="Generate call for tenders"
         onClick="save,action-call-tender-method-generate-call-tender-offers" colSpan="12"/>
-      <button name="sendCallTendersBtn" title="Send call for tenders"
+      <button name="generateCallTenderEmailsBtn" title="Generate emails"
+        onClick="save,action-call-tender-method-generate-call-tender-emails" colSpan="12"/>
+      <button name="sendCallTendersBtn" title="Send emails"
         onClick="save,action-call-tender-method-send-call-tender-offers" colSpan="12"/>
       <button name="generatePurchaseOrderBtn" title="Generate purchase order"
         onClick="action-call-tender-group-generate-purchase-order" colSpan="12"/>
@@ -65,6 +67,11 @@
     <context name="callTender" expr="eval: __self__"/>
   </action-view>
 
+
+  <action-method name="action-call-tender-method-generate-call-tender-emails">
+    <call class="com.axelor.apps.purchase.web.CallTenderController"
+      method="generateCallTenderEmails"/>
+  </action-method>
 
   <action-method name="action-call-tender-method-send-call-tender-offers">
     <call class="com.axelor.apps.purchase.web.CallTenderController"
