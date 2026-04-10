@@ -372,39 +372,6 @@
           </field>
         </panel>
 
-        <panel name="expenseDataReviewPanel" title="Expense lines review" colSpan="12">
-          <panel-dashlet title="" name="expenseLineReview"
-            action="mgm-action-view-project-expense-line-review" canNew="false" canEdit="false"
-            canSearch="true" colSpan="12"/>
-
-          <field name="$netAmountTotal" title="Net amount total" readonly="true" depends="id"
-            colSpan="3">
-            <viewer depends="$netAmountTotal"><![CDATA[
-      <span style="color: {{ record.$netAmountTotal ? (record.$netAmountTotal == 0 ? 'red' : 'inherit') : 'red' }}">
-        {{ record.$netAmountTotal || '0' }} €
-      </span>
-    ]]></viewer>
-          </field>
-
-          <field name="$netAmountCharges" title="Net amount charges" readonly="true"
-            depends="id" colSpan="3">
-            <viewer depends="$netAmountCharges"><![CDATA[
-      <span style="color: {{ record.$netAmountCharges ? (record.$netAmountCharges == 0 ? 'red' : 'inherit') : 'red' }}">
-        {{ record.$netAmountCharges || '0' }} €
-      </span>
-    ]]></viewer>
-          </field>
-
-          <field name="$netAmountToInvoice" title="Net amount to invoice" readonly="true"
-            depends="id" colSpan="3">
-            <viewer depends="$netAmountToInvoice"><![CDATA[
-      <span style="color: {{ record.$netAmountToInvoice ? (record.$netAmountToInvoice == 0 ? 'red' : 'inherit') : 'red' }}">
-        {{ record.$netAmountToInvoice || '0' }} €
-      </span>
-    ]]></viewer>
-          </field>
-        </panel>
-
         <panel name="invoicingDataLineReviewPanel" title="Invoicing data review" colSpan="12"
           hidden="true">
           <panel-dashlet name="subcontractorProjectTaskReviewDashlet" title=""
@@ -440,6 +407,39 @@
             <viewer depends="$totalHoursReported"><![CDATA[
       <span style="color: {{ record.$totalHoursToBill ? (record.$totalHoursToBill == 0 ? 'red' : 'inherit') : 'red' }}">
         {{ record.$totalHoursToBill || '0' }}
+      </span>
+    ]]></viewer>
+          </field>
+        </panel>
+
+        <panel name="expenseDataReviewPanel" title="Expense lines review" colSpan="12">
+          <panel-dashlet title="" name="expenseLineReview"
+            action="mgm-action-view-project-expense-line-review" canNew="false" canEdit="false"
+            canSearch="true" colSpan="12"/>
+
+          <field name="$netAmountTotal" title="Net amount total" readonly="true" depends="id"
+            colSpan="3">
+            <viewer depends="$netAmountTotal"><![CDATA[
+      <span style="color: {{ record.$netAmountTotal ? (record.$netAmountTotal == 0 ? 'red' : 'inherit') : 'red' }}">
+        {{ record.$netAmountTotal || '0' }} €
+      </span>
+    ]]></viewer>
+          </field>
+
+          <field name="$netAmountCharges" title="Net amount charges" readonly="true"
+            depends="id" colSpan="3">
+            <viewer depends="$netAmountCharges"><![CDATA[
+      <span style="color: {{ record.$netAmountCharges ? (record.$netAmountCharges == 0 ? 'red' : 'inherit') : 'red' }}">
+        {{ record.$netAmountCharges || '0' }} €
+      </span>
+    ]]></viewer>
+          </field>
+
+          <field name="$netAmountToInvoice" title="Net amount to invoice" readonly="true"
+            depends="id" colSpan="3">
+            <viewer depends="$netAmountToInvoice"><![CDATA[
+      <span style="color: {{ record.$netAmountToInvoice ? (record.$netAmountToInvoice == 0 ? 'red' : 'inherit') : 'red' }}">
+        {{ record.$netAmountToInvoice || '0' }} €
       </span>
     ]]></viewer>
           </field>
