@@ -149,7 +149,8 @@
               hideIf="isEmployee" colSpan="6" canEdit="false" form-view="team-form"
               grid-view="team-grid"/>
             <field name="companySet" colSpan="12" widget="Tags" canNew="false"
-              form-view="company-form" grid-view="company-grid"/>
+              form-view="company-form" grid-view="company-grid"
+              onChange="action-partner-group-company-change"/>
             <field if="__config__.app.getApp('crm')?.getAgenciesManagement()" name="agency"/>
           </panel>
         </panel>
