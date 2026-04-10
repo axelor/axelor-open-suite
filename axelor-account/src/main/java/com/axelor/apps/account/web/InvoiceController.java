@@ -1593,7 +1593,7 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       Integer vatLiability =
           Beans.get(InvoiceVatLiabilityService.class).computeVatLiability(invoice);
-      response.setValue("vatLiabilitySelect", vatLiability);
+      response.setValue("vatSystemSelect", vatLiability);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

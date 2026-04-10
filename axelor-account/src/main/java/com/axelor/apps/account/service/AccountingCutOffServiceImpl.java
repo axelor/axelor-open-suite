@@ -520,7 +520,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
       Integer vatLiability = null;
       if (move.getInvoice() != null) {
-        vatLiability = move.getInvoice().getVatLiabilitySelect();
+        vatLiability = move.getInvoice().getVatSystemSelect();
       }
       if (vatLiability == null) {
         vatLiability =

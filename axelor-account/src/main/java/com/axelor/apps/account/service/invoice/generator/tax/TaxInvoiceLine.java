@@ -139,7 +139,7 @@ public class TaxInvoiceLine extends TaxGenerator {
           } else {
             vatSystem =
                     taxAccountToolService.calculateVatSystem(
-                            invoice.getVatLiabilitySelect(), invoiceLine.getAccount());
+                            invoice.getVatSystemSelect(), invoiceLine.getAccount());
           }
 
           imputedAccount = getImputedAccount(invoiceLine, taxLine, vatSystem);

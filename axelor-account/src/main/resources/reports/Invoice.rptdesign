@@ -689,11 +689,11 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <text-property name="heading">legal_notice</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">vatLiabilitySelect</property>
-                    <property name="alias">vatLiabilitySelect</property>
+                    <property name="columnName">vatSystemSelect</property>
+                    <property name="alias">vatSystemSelect</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">vatLiabilitySelect</text-property>
-                    <text-property name="heading">vatLiabilitySelect</text-property>
+                    <text-property name="displayName">vatSystemSelect</text-property>
+                    <text-property name="heading">vatSystemSelect</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">display_siren</property>
@@ -1106,7 +1106,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     </structure>
                     <structure>
                         <property name="position">67</property>
-                        <property name="name">vatLiabilitySelect</property>
+                        <property name="name">vatSystemSelect</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
@@ -1556,8 +1556,8 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </structure>
                 <structure>
                     <property name="position">67</property>
-                    <property name="name">vatLiabilitySelect</property>
-                    <property name="nativeName">vatLiabilitySelect</property>
+                    <property name="name">vatSystemSelect</property>
+                    <property name="nativeName">vatSystemSelect</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
@@ -4548,7 +4548,7 @@ RETURNS table(
     "isStockMoveEmpty" boolean,
     "displayStockMoveOnInvoicePrinting" boolean,
     "legal_notice" text,
-    "vatLiabilitySelect" int,
+    "vatSystemSelect" int,
     "display_siren" boolean,
     "invoice_product_statement" varchar,
     "displayItemsCategoriesOnPrinting" boolean,
@@ -4630,7 +4630,7 @@ select distinct
     InvoiceStockMove is not null as "isStockMoveEmpty",
     Invoice.display_stock_move_on_invoice_printing as "displayStockMoveOnInvoicePrinting",
 	Invoice.legal_notice as "legal_notice",
-	Invoice.vat_liability_select as "vatLiabilitySelect",
+	Invoice.vat_liability_select as "vatSystemSelect",
 	(SELECT display_partner_siren_on_invoice_printing FROM account_account_config WHERE company = Company.id) as "display_siren",
 	(SELECT ips.statement::varchar FROM account_invoice_product_statement ips WHERE ips.account_config = (SELECT id FROM account_account_config WHERE company = Invoice.company) AND ips.type_list = Invoice.invoice_category_select LIMIT 1) as invoice_product_statement,
 	AccountConfig.display_items_categories_on_printing as "displayItemsCategoriesOnPrinting",
@@ -4730,7 +4730,7 @@ select distinct
     InvoiceStockMove is not null as "isStockMoveEmpty",
     Invoice.display_stock_move_on_invoice_printing as "displayStockMoveOnInvoicePrinting",
 	Invoice.legal_notice as "legal_notice",
-	Invoice.vat_liability_select as "vatLiabilitySelect",
+	Invoice.vat_liability_select as "vatSystemSelect",
 	(SELECT display_partner_siren_on_invoice_printing FROM account_account_config WHERE company = Company.id) as "display_siren",
 	(SELECT ips.statement::varchar FROM account_invoice_product_statement ips WHERE ips.account_config = (SELECT id FROM account_account_config WHERE company = Invoice.company) AND ips.type_list = Invoice.invoice_category_select LIMIT 1) as invoice_product_statement,
 	AccountConfig.display_items_categories_on_printing as "displayItemsCategoriesOnPrinting",
@@ -5494,9 +5494,9 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">vatLiabilitySelect</property>
-                    <text-property name="displayName">vatLiabilitySelect</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["vatLiabilitySelect"]</expression>
+                    <property name="name">vatSystemSelect</property>
+                    <text-property name="displayName">vatSystemSelect</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["vatSystemSelect"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
@@ -9901,9 +9901,9 @@ else{ 1.00 }
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">vatLiabilitySelect</property>
-                    <text-property name="displayName">vatLiabilitySelect</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["vatLiabilitySelect"]</expression>
+                    <property name="name">vatSystemSelect</property>
+                    <text-property name="displayName">vatSystemSelect</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["vatSystemSelect"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
@@ -10876,7 +10876,7 @@ else{ 1.00 }
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row._outer["vatLiabilitySelect"] != 2</expression>
+                                                <expression name="valueExpr" type="javascript">row._outer["vatSystemSelect"] != 2</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="paramBindings">
@@ -12281,9 +12281,9 @@ else {'Invoice.totalTaxes'}</value>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
-                                    <property name="name">vatLiabilitySelect</property>
-                                    <text-property name="displayName">vatLiabilitySelect</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["vatLiabilitySelect"]</expression>
+                                    <property name="name">vatSystemSelect</property>
+                                    <text-property name="displayName">vatSystemSelect</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["vatSystemSelect"]</expression>
                                     <property name="dataType">integer</property>
                                 </structure>
                                 <structure>
@@ -13863,9 +13863,9 @@ else {'Invoice.totalTaxes'}</value>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">vatLiabilitySelect</property>
-                    <text-property name="displayName">vatLiabilitySelect</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["vatLiabilitySelect"]</expression>
+                    <property name="name">vatSystemSelect</property>
+                    <text-property name="displayName">vatSystemSelect</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["vatSystemSelect"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>

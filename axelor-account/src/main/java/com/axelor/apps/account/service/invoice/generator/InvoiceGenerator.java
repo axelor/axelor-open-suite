@@ -225,7 +225,7 @@ public abstract class InvoiceGenerator {
       invoice.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
     }
 
-    invoice.setVatLiabilitySelect(
+    invoice.setVatSystemSelect(
         Beans.get(InvoiceVatLiabilityService.class).computeVatLiability(invoice));
 
     if (paymentCondition == null) {
