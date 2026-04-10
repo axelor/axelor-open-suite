@@ -1,5 +1,5 @@
 ---
-title: "Invoice: add vatLiabilitySelect field"
+title: "Invoice: add vatSystemSelect field"
 module: axelor-account
 developer:
-  "add vatLiabilitySelect field on invoices and simplified computation process using previous partner.accountingSituation.vatSystemSelect"
+  "add vatSystemSelect field on invoices and simplified computation process using previous partner.accountingSituation.vatSystemSelect"

@@ -654,7 +654,7 @@
       </panel>
       <panel name="invoiceTaxPanel" title="Tax" showTitle="false"
         readonlyIf="statusSelect != 1">
-        <field name="vatLiabilitySelect" colSpan="4" readonly="true"
+        <field name="vatSystemSelect" colSpan="4" readonly="true"
           help="Computed from the partner's accounting situation VAT system configuration"/>
         <panel-related name="invoiceLineTaxListPanel" readonlyIf="statusSelect != 1"
           field="invoiceLineTaxList" canRemove="false" canNew="false"

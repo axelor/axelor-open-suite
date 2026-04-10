@@ -81,7 +81,7 @@
       title="Ventilated by"/>
     <many-to-one name="fiscalPosition" title="Fiscal position"
       ref="com.axelor.apps.account.db.FiscalPosition"/>
-    <integer name="vatLiabilitySelect" title="VAT Liability"
+    <integer name="vatSystemSelect" title="VAT system"
       selection="iaccount.vat.liability.invoice.select" default="1"/>
 
     <!-- Invoice content -->
@@ -375,7 +375,7 @@
       <field name="reasonOfRefusalToPay" on="UPDATE"/>
       <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
       <field name="companyTaxNumber" on="UPDATE"/>
-      <field name="vatLiabilitySelect" on="UPDATE"/>
+      <field name="vatSystemSelect" on="UPDATE"/>
       <message if="true" on="CREATE">Invoice created</message>
       <message if="statusSelect == 2" tag="important">Validated</message>
       <message if="statusSelect == 3" tag="success">Ventilated</message>

@@ -25,7 +25,7 @@ import com.axelor.apps.base.db.Partner;
 
 public interface TaxAccountToolService {
 
-  int calculateVatSystem(Integer vatLiabilitySelect, Account account) throws AxelorException;
+  int calculateVatSystem(Integer vatSystemSelect, Account account) throws AxelorException;
 
   Integer resolveVatLiabilityFromAccountingSituation(
       Partner partner, Company company, Account account, boolean isExpense, boolean isSale)

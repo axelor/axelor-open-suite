@@ -43,16 +43,15 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
   }
 
   @Override
-  public int calculateVatSystem(Integer vatLiabilitySelect, Account account)
-      throws AxelorException {
-    if (vatLiabilitySelect == null) {
+  public int calculateVatSystem(Integer vatSystemSelect, Account account) throws AxelorException {
+    if (vatSystemSelect == null) {
       if (account != null) {
         return account.getVatSystemSelect();
       }
       return MoveLineRepository.VAT_SYSTEM_DEFAULT;
     }
 
-    switch (vatLiabilitySelect) {
+    switch (vatSystemSelect) {
       case InvoiceRepository.VAT_LIABILITY_STANDARD_REGIME:
         if (account != null) {
           return account.getVatSystemSelect();

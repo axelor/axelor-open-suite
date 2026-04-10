@@ -134,7 +134,7 @@ public class TaxInvoiceLine extends TaxGenerator {
         if (taxLine.getValue().signum() != 0) {
           vatSystem =
               taxAccountToolService.calculateVatSystem(
-                  invoice.getVatLiabilitySelect(), invoiceLine.getAccount());
+                  invoice.getVatSystemSelect(), invoiceLine.getAccount());
 
           imputedAccount = getImputedAccount(invoiceLine, taxLine, vatSystem);
         } else {
