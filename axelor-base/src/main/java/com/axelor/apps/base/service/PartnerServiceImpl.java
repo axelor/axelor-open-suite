@@ -62,6 +62,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -207,7 +208,8 @@ public class PartnerServiceImpl implements PartnerService {
    * @param partner
    * @throws AxelorException
    */
-  protected void updatePartnerAddress(Partner partner) throws AxelorException {
+  @Override
+  public void updatePartnerAddress(Partner partner) throws AxelorException {
     Address address = partner.getMainAddress();
 
     if (!partner.getIsContact() && !partner.getIsEmployee()) {
@@ -730,5 +732,16 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     return message;
+  }
+
+  @Override
+  public void setDefaultPartnerAddress(Partner partner) {
+    List<PartnerAddress> partnerAddressList = partner.getPartnerAddressList();
+    if (CollectionUtils.isNotEmpty(partnerAddressList) && partnerAddressList.size() == 1) {
+      PartnerAddress partnerAddress = partnerAddressList.get(0);
+      partnerAddress.setIsDefaultAddr(true);
+      partnerAddress.setIsDeliveryAddr(true);
+      partnerAddress.setIsInvoicingAddr(true);
+    }
   }
 }
