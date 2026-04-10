@@ -46,8 +46,10 @@ public class ExpenseBusinessProjectRepository extends ExpenseHRRepository {
     // If an Expense's status is not the CONFIRMED status it should not have an Approval Item
     // As it is either not ready for validation or no longer needs validation
     if (!Objects.equals(expense.getStatusSelect(), ExpenseRepository.STATUS_CONFIRMED)) {
-      if (approvalItemManagementService.hasApprovalItem(expense)) {
-        approvalItemManagementService.deleteApprovalItem(expense);
+      if (approvalItemManagementService.hasApprovalItem(
+          expense, ApprovalItemRepository.EXPENSE_APPROVAL_ITEM)) {
+        approvalItemManagementService.deleteApprovalItem(
+            expense, ApprovalItemRepository.EXPENSE_APPROVAL_ITEM);
       }
     } else {
       Project project = expense.getProject();
@@ -80,6 +82,7 @@ public class ExpenseBusinessProjectRepository extends ExpenseHRRepository {
       throw new PersistenceException(e.getMessage(), e);
     }
 
-    approvalItemManagementService.deleteApprovalItem(expense);
+    approvalItemManagementService.deleteApprovalItem(
+        expense, ApprovalItemRepository.EXPENSE_APPROVAL_ITEM);
   }
 }

@@ -20,7 +20,7 @@
     <hilite if="priority.name == 'Urgent'" color="danger"/>
 
     <field name="fullName"/>
-    <field name="company" form-view="company-form" grid-view="company-grid" canView="false"
+    <field name="company" form-view="company-form" grid-view="company-grid" canView="true"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="fromDate"/>
@@ -58,7 +58,7 @@
 
   <form name="business-project-form" title="Business project"
     model="com.axelor.apps.project.db.Project" width="large"
-    onLoad="mgm-action-group-project-form-on-load"
+    onLoad="mgm-action-group-project-form-on-load,mgm-action-project-calculate-hour-check"
     onNew="action-business-project-project-group-on-new" onSave="action-project-group-on-save"
     canAttach="false">
     <!-- MGM-80 @gkouete- showing planning and financial data not required -->
@@ -171,13 +171,16 @@
           canCollapse="true" collapseIf="false">
           <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"
             onChange="action-business-project-group-project-status-on-change" colSpan="12"/>
-          <field name="projectTypeSelect" colSpan="6"/>
-          <field name="projectTypeSelect" colSpan="6" hidden="true"/>
+          <field name="projectType" colSpan="6" required="true"
+            onChange="mgm-action-method-set-dynamic-panel-attrs" canView="false" x-order="sequence"/>
+          <field name="projectType" colSpan="6" hidden="true"/>
           <field name="fromDate" colSpan="6"/>
           <field name="toDate" onChange="action-project-group-to-date-onchange" colSpan="6"/>
+          <!-- MGM-153 - gkouete: re-enabling can View to ease reviewer work -->
           <field name="company" form-view="company-form" grid-view="company-grid" colSpan="6"
-            canEdit="false" canView="false" if-module="axelor-business-project"/>
-          <field name="clientPartner" canNew="true" canView="false"
+            canEdit="false" canView="true" if-module="axelor-business-project"/>
+          <!-- MGM-153 - gkouete: re-enabling can View to ease reviewer work -->
+          <field name="clientPartner" canNew="true" canView="true"
             domain="self.isCustomer = true AND :company member of self.companySet"
             onChange="action-project-method-get-partner-data" required="true"
             form-view="partner-form" grid-view="partner-grid" colSpan="6"
@@ -206,12 +209,61 @@
         <field name="priority"/>
         <field name="priority.technicalTypeSelect" hidden="true"/>
         <panel-include view="incl-project-overview-panel-form"/>
+        <field name="projectTypeSelect" colSpan="6" hidden="true"/>
+        <field name="projectType.sequence" hidden="true"/>
+      </panel>
+
+      <panel name="singleUserProjectOverviewPanel" title="1 Overview" hidden="true"
+        onTabSelect="action-project-activity-dashboard-method-on-new,action-project-dashboard-method-on-new">
+        <panel name="generalInfoPanel" colSpan="12" title="General information"
+          canCollapse="true" collapseIf="false">
+          <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"
+            onChange="action-business-project-group-project-status-on-change" colSpan="12"/>
+          <field name="projectType" colSpan="6" required="true"
+            onChange="mgm-action-method-set-dynamic-panel-attrs" canView="false" x-order="sequence"/>
+          <field name="projectType" colSpan="6" hidden="true"/>
+          <field name="fromDate" colSpan="6"/>
+          <field name="toDate" onChange="action-project-group-to-date-onchange" colSpan="6"/>
+          <field name="company" form-view="company-form" grid-view="company-grid" colSpan="6"
+            canEdit="false" canView="false" if-module="axelor-business-project"/>
+          <field name="clientPartner" canNew="true" canView="false"
+            domain="self.isCustomer = true AND :company member of self.companySet"
+            onChange="action-project-method-get-partner-data" required="true"
+            form-view="partner-form" grid-view="partner-grid" colSpan="6"
+            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+          <field name="contactPartner" onSelect="action-attrs-domain-on-contact-partner"
+            form-view="partner-form" grid-view="partner-grid" colSpan="6"
+            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+          <field name="customerAddress" grid-view="address-grid" form-view="address-form"
+            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+            domain="self IN (SELECT pa.address FROM PartnerAddress pa WHERE pa.partner = :clientPartner AND pa.isDeliveryAddr = true)"
+            colSpan="6"/>
+          <field name="contactPerson" colSpan="6" canEdit="true"/>
+          <field name="referenceNumber"/>
+          <field name="currency" colSpan="6" if="__config__.app.isApp('business-project')"
+            if-module="axelor-business-project" canEdit="false" canView="false" hidden="true"/>
+          <button name="projectFilesBtn" title="Project Files" hidden="true"
+            onClick="action-method-project-find-project-files" colSpan="4" link=""/>
+        </panel>
+        <!-- MGM-80: Adding team member selection to the overview -->
+        <field name="assignedTo" title="Assigned to" canNew="false" canView="false"
+          canEdit="false" onChange="action-attrs-project-add-member" form-view="user-form"
+          grid-view="user-grid" colSpan="6"/>
+        <field name="subcontractor" domain="self.isSupplier = true" colSpan="6"
+          required="true" showIf="projectType.sequence == 3"/>
+        <!-- MGM-84 adding priority on the project level -->
+        <field name="priority" hidden="true"/>
+        <field name="membersUserSet" colSpan="6" widget="TagSelect" canNew="false"
+          form-view="user-form" grid-view="user-grid" canEdit="false" hidden="true"/>
+        <field name="priority.technicalTypeSelect" hidden="true"/>
+        <panel-include view="incl-project-overview-panel-form"/>
+        <field name="projectTypeSelect" colSpan="6" hidden="true"/>
+        <field name="projectType.sequence" hidden="true"/>
       </panel>
 
       <!-- MGM-80: Moving task panel next to overview to get configs done faster -->
       <panel title="2 Tasks" name="taskTreePanel"
-        onTabSelect="action-method-business-project-open-task-form-for-empty-task-list"
-        showIf="projectTypeSelect == 0 || projectTypeSelect == 2">
+        onTabSelect="action-method-business-project-open-task-form-for-empty-task-list">
         <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
           showTitle="false" height="200%" colSpan="12"
           action="action-view-show-business-project-task" x-show-bars="true" canSearch="true"/>
@@ -222,44 +274,188 @@
       </panel>
 
       <!-- MGM-66 task reports -->
-      <panel title="3 Task Report" name="taskReportsPanel"
-        showIf="projectTypeSelect == 0 || projectTypeSelect == 2">
+      <panel title="3 Task Report" name="taskReportsPanel">
         <panel-dashlet name="taskReportsDashlet" title="Task Reports"
           action="action-task-report-dashlet" colSpan="12" canNew="true" x-show-bars="true"
           reload-dotted="true"/>
       </panel>
 
+      <!-- MGM-106 Record invoicing data panel for freidleistung projects -->
+      <panel title="Record Invoicing Data" name="recordInvoicingDataPanel" hidden="true">
+        <panel name="subcontractorQualificationPanel" title="Qualifications" colSpan="12">
+          <panel-dashlet name="subcontractorTaskDashlet" title="Qualification"
+            action="mgm-action-subcontractor-business-project-subcontractor-task-dashlet"
+            colSpan="12" canNew="true" x-show-bars="true" canDelete="true"/>
+        </panel>
+      </panel>
+
+      <panel title="Record Invoicing Data" name="monthlyInvoiceRecordInvoicingDataPanel"
+        hidden="true">
+        <panel name="subcontractorQualificationPanel" title="Qualifications" colSpan="12">
+          <panel-dashlet name="subcontractorTaskDashlet" title="Qualification"
+            action="mgm-action-business-project-subcontractor-task-dashlet" colSpan="12"
+            canNew="true" x-show-bars="true" canDelete="true"/>
+        </panel>
+      </panel>
+
       <!-- MGM-100 expense reporting -->
-      <panel title="4 Expense Report" name="expenseReportsPanel"
-        showIf="projectTypeSelect == 0 || projectTypeSelect == 2">
+      <panel title="4 Expense Report" name="expenseReportsPanel">
         <panel-dashlet name="projectExpenseDashlet" title="Project Expenses"
           canEdit="true" readonly="false" action="mgm-action-project-expense-dashlet" colSpan="12"
           canNew="true" x-show-bars="true"/>
       </panel>
-      <panel title="2 Expense Report" name="expenseReportsPanel"
-        showIf="projectTypeSelect == 1">
-        <panel-dashlet name="projectExpenseDashlet" title="Project Expenses"
-          canEdit="true" readonly="false" action="mgm-action-project-expense-dashlet" colSpan="12"
-          canNew="true" x-show-bars="true"/>
+
+      <panel name="projectExtraExpensesPanel" title="5 Project extra expenses" colSpan="12">
+        <panel-dashlet name="projectExtraExpenses" title="Project extra expenses"
+          canEdit="true" readonly="false" action="mgm-action-project-extra-expense-line-dashlet"
+          colSpan="12" canNew="true" x-show-bars="true" canDelete="true"/>
       </panel>
 
       <!-- MGM-114 -->
-      <panel title="5 Review and Confirmation" name="otherExpensesReportPanel"
-        showIf="projectTypeSelect == 0 || projectTypeSelect == 2">
-        <panel-dashlet name="otherExpensesReportDashlet"
-          title="Project extra expenses" canEdit="true" readonly="false"
-          action="mgm-action-project-extra-expense-line-dashlet" colSpan="12" canNew="true"
-          canDelete="true" x-show-bars="true"/>
-        <panel-include view="incl-project-summary-panel-form"/>
-      </panel>
+      <panel title="6 Review and Confirmation" name="reviewAndConfirmationPanel"
+        onTabSelect="mgm-action-method-project-show-project-summary">
 
-      <panel title="3 Review and Confirmation" name="otherExpensesReportPanel"
-        showIf="projectTypeSelect == 1">
-        <panel-dashlet name="otherExpensesReportDashlet"
-          title="Project extra expenses" canEdit="true" readonly="false"
-          action="mgm-action-project-extra-expense-line-dashlet" colSpan="12" canNew="true"
-          x-show-bars="true"/>
-        <panel-include view="incl-project-summary-panel-form"/>
+        <panel name="taskDataReviewPanel" title="Tasks review" colSpan="12">
+          <panel-dashlet title="" name="taskMemberReportsReview"
+            action="mgm-action-task-time-spent-review" canNew="false" canEdit="false"
+            canSearch="true" colSpan="12"/>
+
+          <field name="$totalTasksReported" title="Total Number of Tasks reported"
+            readonly="true" depends="id" colSpan="3">
+            <viewer depends="$totalTasksReported"><![CDATA[
+    <span style="color: {{
+      !record.$totalTasksReported ? 'red' :
+      (typeof record.$totalTasksReported === 'string' && record.$totalTasksReported.includes('/')) ?
+        (parseInt(record.$totalTasksReported.split('/')[0]) < parseInt(record.$totalTasksReported.split('/')[1]) ? 'red' : 'green') :
+        (record.$totalTasksReported == 0 ? 'red' : 'inherit')
+    }}">
+      {{ record.$totalTasksReported || '0' }}
+    </span>
+  ]]></viewer>
+          </field>
+
+          <field name="$totalHoursReported" title="Total Number of hours reported"
+            readonly="true" depends="id" colSpan="3">
+            <viewer depends="$totalHoursReported"><![CDATA[
+                    <span style="color: {{ record.$totalHoursReported ? (record.$totalHoursReported == 0 ? 'red' : 'inherit') : 'red' }}">
+                        {{ record.$totalHoursReported || '0' }}
+                    </span>
+                ]]></viewer>
+          </field>
+
+          <field name="$totalHoursToBill" title="Total hours to bill" readonly="true"
+            colSpan="3">
+            <viewer depends="$totalHoursReported"><![CDATA[
+                    <span style="color: {{ record.$totalHoursToBill ? (record.$totalHoursToBill == 0 ? 'red' : 'inherit') : 'red' }}">
+                        {{ record.$totalHoursToBill || '0' }}
+                    </span>
+                ]]></viewer>
+          </field>
+          <field name="$totalDirtAllowance" title="Reported Dirt Allowance" readonly="true"
+            depends="id" colSpan="3">
+            <viewer depends="$totalDirtAllowance"><![CDATA[
+                <span style="color: {{ record.$totalDirtAllowance ? (record.$totalDirtAllowance == 0 ? 'red' : 'inherit') : 'red' }}">
+                    {{ record.$totalDirtAllowance || '0' }}
+                </span>
+            ]]></viewer>
+          </field>
+
+          <field name="$hoursMismatchWarning" showTitle="false" readonly="true" colSpan="12">
+            <viewer><![CDATA[
+                  <div ng-if="record.$totalHoursToBill != null && record.$totalHoursReported != null && (parseFloat(record.$totalHoursToBill) != parseFloat(record.$totalHoursReported))"
+                       style="color: #8a6d3b; background-color: #fcf8e3; border: 1px solid #faebcc; padding: 12px; border-radius: 4px; margin-top: 15px; display: flex;
+                          align-items: center; justify-content: center; font-size: 14px;">
+                    <i class="fa fa-exclamation-triangle" style="margin-right: 10px; font-size: 18px;"></i>
+                    <strong>Reported hours and billable hours do not match!</strong>
+                  </div>
+          ]]></viewer>
+          </field>
+        </panel>
+
+        <panel name="expenseDataReviewPanel" title="Expense lines review" colSpan="12">
+          <panel-dashlet title="" name="expenseLineReview"
+            action="mgm-action-view-project-expense-line-review" canNew="false" canEdit="false"
+            canSearch="true" colSpan="12"/>
+
+          <field name="$netAmountTotal" title="Net amount total" readonly="true" depends="id"
+            colSpan="3">
+            <viewer depends="$netAmountTotal"><![CDATA[
+      <span style="color: {{ record.$netAmountTotal ? (record.$netAmountTotal == 0 ? 'red' : 'inherit') : 'red' }}">
+        {{ record.$netAmountTotal || '0' }} €
+      </span>
+    ]]></viewer>
+          </field>
+
+          <field name="$netAmountCharges" title="Net amount charges" readonly="true"
+            depends="id" colSpan="3">
+            <viewer depends="$netAmountCharges"><![CDATA[
+      <span style="color: {{ record.$netAmountCharges ? (record.$netAmountCharges == 0 ? 'red' : 'inherit') : 'red' }}">
+        {{ record.$netAmountCharges || '0' }} €
+      </span>
+    ]]></viewer>
+          </field>
+
+          <field name="$netAmountToInvoice" title="Net amount to invoice" readonly="true"
+            depends="id" colSpan="3">
+            <viewer depends="$netAmountToInvoice"><![CDATA[
+      <span style="color: {{ record.$netAmountToInvoice ? (record.$netAmountToInvoice == 0 ? 'red' : 'inherit') : 'red' }}">
+        {{ record.$netAmountToInvoice || '0' }} €
+      </span>
+    ]]></viewer>
+          </field>
+        </panel>
+
+        <panel name="invoicingDataLineReviewPanel" title="Invoicing data review" colSpan="12"
+          hidden="true">
+          <panel-dashlet name="subcontractorProjectTaskReviewDashlet" title=""
+            action="mgm-action-subcontractor-business-project-task-review-dashlet" canNew="false"
+            canEdit="false" canDelete="false" colSpan="12" x-show-bars="true"
+            showIf="projectType.sequence == 3"/>
+
+          <panel-dashlet name="monthlyInvoiceProjectTaskReviewDahshlet" title=""
+            action="mgm-action-business-project-subcontractor-task-review-dashlet" canNew="false"
+            canEdit="false" canDelete="false" colSpan="12" x-show-bars="true"
+            showIf="projectType.sequence == 4"/>
+
+          <field name="$totalTasksReported" title="Total Subcontractor Services"
+            readonly="true" depends="id" colSpan="4">
+            <viewer depends="$totalTasksReported"><![CDATA[
+      <span style="color: {{ record.$totalTasksReported ? (record.$totalTasksReported == 0 ? 'red' : 'inherit') : 'red' }}">
+        {{ record.$totalTasksReported || '0' }}
+      </span>
+    ]]></viewer>
+          </field>
+
+          <field name="$totalHoursReported" title="Total time spent (hours)" readonly="true"
+            depends="id" colSpan="4">
+            <viewer depends="$totalHoursReported"><![CDATA[
+      <span style="color: {{ record.$totalHoursReported ? (record.$totalHoursReported == 0 ? 'red' : 'inherit') : 'red' }}">
+        {{ record.$totalHoursReported || '0' }}
+      </span>
+    ]]></viewer>
+          </field>
+
+          <field name="$totalHoursToBill" title="Total hours to bill" readonly="true"
+            depends="id" colSpan="4">
+            <viewer depends="$totalHoursReported"><![CDATA[
+      <span style="color: {{ record.$totalHoursToBill ? (record.$totalHoursToBill == 0 ? 'red' : 'inherit') : 'red' }}">
+        {{ record.$totalHoursToBill || '0' }}
+      </span>
+    ]]></viewer>
+          </field>
+        </panel>
+
+        <panel name="extraExpenseDataReviewPanel" title="Project extra expenses review"
+          colSpan="12">
+          <panel-dashlet name="projectExtraExpense" title="" canEdit="false"
+            readonly="true" action="mgm-action-project-extra-expense-line-review-dashlet"
+            colSpan="12" canNew="false" canDelete="false" x-show-bars="false"/>
+        </panel>
+
+        <panel name="confirmationPanel" title="Confirm the above information" colSpan="12">
+          <field name="isConfirmedForInvoicing"
+            onChange="mgm-action-group-business-project-confimred-project-on-change"/>
+        </panel>
       </panel>
 
       <panel title="Configurations" name="configurationsPanel"
@@ -378,25 +574,13 @@
         <panel-dashlet name="saleOrderLinePanelDashlet"
           action="action-project-dashlet-sale-order-line" colSpan="12"/>
       </panel>
-      <!-- MGM-66 -->
-      <!-- <panel-include view="incl-wiki-panel-form"/> -->
-      <!-- MGM-80 @gkouete: No need to show the log time panel -->
-      <!-- <panel title="Log Times" name="logTimesPanel" if-module="axelor-human-resource" if="__config__.app.isApp('timesheet')">
-        <panel-include view="incl-log-times-panel-form"/> </panel> -->
-      <!--- MGM-66: display panel to only selected group e.g admins -->
+
       <panel-include view="incl-project-roadmap-panel-form"
         if="__user__.group.code == 'admins'"/>
       <!--- MGM-66: display panel to only selected group e.g admins -->
       <panel onTabSelect="mgm-action-business-project-set-default-invoice-flags"
-        title="6 Invoicing" name="invoicingPanel"
-        if="!(['CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
-        showIf="projectTypeSelect == 0 || projectTypeSelect == 2">
-        <panel-include view="custom-mgm-incl-project-invoicing-panel-content"/>
-      </panel>
-      <panel onTabSelect="mgm-action-business-project-set-default-invoice-flags"
-        title="4 Invoicing" name="invoicingPanel"
-        if="!(['CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
-        showIf="projectTypeSelect == 1">
+        title="7 Invoicing" name="invoicingPanel"
+        if="!(['CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))">
         <panel-include view="custom-mgm-incl-project-invoicing-panel-content"/>
       </panel>
     </panel-tabs>
@@ -720,55 +904,6 @@
     </panel>
   </form>
 
-  <form name="incl-project-summary-panel-form" model="com.axelor.apps.project.db.Project"
-    title="project summary">
-    <panel name="projectSummaryPanel" title="Dirt Allowance" colSpan="12">
-
-      <field name="$totalDirtAllowance" title="Reported Dirt Allowance" readonly="true"
-        depends="id" colSpan="6">
-        <viewer depends="$totalDirtAllowance"><![CDATA[
-                <span style="color: {{ record.$totalDirtAllowance ? (record.$totalDirtAllowance == 0 ? 'red' : 'inherit') : 'red' }}">
-                    {{ record.$totalDirtAllowance || '0' }}
-                </span>
-            ]]></viewer>
-      </field>
-
-      <panel name="validatedItemsPanel" title="Validated Items" colSpan="12">
-
-        <field name="$totalTasksReported" title="Total Number of Tasks reported"
-          readonly="true" depends="id" colSpan="6">
-          <viewer depends="$totalTasksReported"><![CDATA[
-    <span style="color: {{ !record.$totalTasksReported || parseInt(record.$totalTasksReported.split('/')[0]) < parseInt(record.$totalTasksReported.split('/')[1]) ? 'red' : 'green' }}">
-        {{ record.$totalTasksReported || '0/0' }}
-    </span>
-  ]]></viewer>
-        </field>
-
-        <field name="$totalHoursReported" title="Total Number of hours reported"
-          readonly="true" depends="id" colSpan="6">
-          <viewer depends="$totalHoursReported"><![CDATA[
-                    <span style="color: {{ record.$totalHoursReported ? (record.$totalHoursReported == 0 ? 'red' : 'inherit') : 'red' }}">
-                        {{ record.$totalHoursReported || '0' }}
-                    </span>
-                ]]></viewer>
-        </field>
-
-        <field name="$totalExpensesReported" title="Total Expenses to invoice reported"
-          readonly="true" depends="id" colSpan="6">
-          <viewer depends="$totalExpensesReported"><![CDATA[
-                    <span style="color: {{ record.$totalExpensesReported ? (record.$totalExpensesReported == 0 ? 'red' : 'inherit') : 'red' }}">
-                        {{ record.$totalExpensesReported || '0' }}
-                    </span>
-                ]]></viewer>
-        </field>
-
-      </panel>
-
-      <field name="isConfirmedForInvoicing"
-        onChange="mgm-action-group-business-project-confimred-project-on-change"/>
-    </panel>
-  </form>
-
   <action-group name="action-business-project-project-group-on-new">
     <action name="action-project-group-on-new-project"/>
     <action name="action-attrs-project-set-project-type"
@@ -777,6 +912,7 @@
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
     <action name="action-project-attrs-sale-order-panel-display"/>
     <action name="action-record-business-project-set-default-priority"/>
+    <action name="action-attrs-business-project-set-status-editability"/>
   </action-group>
 
   <action-group name="action-business-project-project-group-on-load">
@@ -799,8 +935,10 @@
 
   <action-group name="mgm-action-group-project-form-on-load">
     <action name="action-business-project-project-group-on-load"/>
-    <action name="mgm-action-method-project-show-project-summary"/>
     <action name="mgm-business-projectaction-attrs-navigate-to-review-tab"/>
+    <action name="mgm-action-migrate-project-type"/>
+    <action name="mgm-action-method-set-dynamic-panel-attrs"/>
+    <action name="action-attrs-business-project-set-status-editability"/>
   </action-group>
 
   <action-record name="action-set-default-project-priority"
@@ -823,6 +961,10 @@
   <action-method name="action-project-method-generate-purchase-quotation">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="generatePurchaseQuotation"/>
+  </action-method>
+
+  <action-method name="mgm-action-project-calculate-hour-check">
+    <call class="com.axelor.apps.businessproject.web.ProjectController" method="getBilledHours"/>
   </action-method>
 
   <action-method name="action-project-method-get-partner-data">
@@ -848,6 +990,16 @@
       method="updateProjectStatus"/>
   </action-method>
 
+  <action-method name="mgm-action-migrate-project-type">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="migrateProjectType"/>
+  </action-method>
+
+  <action-method name="mgm-action-method-set-dynamic-panel-attrs">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="setDynamicPanelAttrs"/>
+  </action-method>
+
   <action-group name="mgm-action-group-business-project-confimred-project-on-change">
     <action name="action-project-group-on-save"/>
     <action name="save"/>
@@ -866,7 +1018,16 @@
 
   <action-validate name="action-business-project-validate-task-report-exists">
     <error message="You can not set a project without a Task Report to done"
-      if="id != null &amp;&amp; __repo__(TaskReport).all().filter('self.project.id = ?1', id).count() == 0"/>
+      if="id != null
+        &amp;&amp; projectType?.requiresTaskReport
+        &amp;&amp; __repo__(TaskReport).all().filter('self.project.id = ?1', id).count() == 0"/>
+  </action-validate>
+
+  <action-validate
+    name="mgm-action-validate-warn-billing-item-edited-after-project-confirmation">
+    <alert
+      message="This project has already been confirmed for invoicing. Adding or modifying items at this stage may invalidate the current confirmation and the project will need to go through the review and confirmation process again before it can be invoiced. Please ensure this action is intentional before proceeding."
+      if="project?.isConfirmedForInvoicing" confirm-btn-title="Continue" cancel-btn-title="Cancel"/>
   </action-validate>
 
   <action-attrs id="business-project-action-project-project-default"
@@ -900,8 +1061,13 @@
   </action-attrs>
 
   <action-attrs name="mgm-business-projectaction-attrs-navigate-to-review-tab">
-    <attribute for="otherExpensesReportPanel" name="active" if="eval: _fromDashboard"
+    <attribute for="reviewAndConfirmationPanel" name="active" if="eval: _fromDashboard"
       expr="eval: true"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-business-project-set-status-editability">
+    <attribute name="readonly" for="projectStatus"
+      expr="eval: __config__.app.getApp('project')?.manageStatusAutomatically"/>
   </action-attrs>
 
   <action-record name="action-project-null-toDate"
@@ -948,7 +1114,7 @@
     <view-param name="popup-save" value="true"/>
     <view-param name="show-confirm" value="true"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_projectId" expr="eval: _id"/>
+    <context name="_projectId" expr="eval: __parent__?.id"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TASK"/>
   </action-view>

@@ -78,6 +78,10 @@
     <many-to-many name="projectFolderSet"
       ref="com.axelor.apps.businessproject.db.ProjectFolder" title="Project Folders"/>
 
+    <!-- MGM-106 Added to satisfy the requirement for subcontractor project types -->
+    <many-to-one name="subcontractor" ref="com.axelor.apps.base.db.Partner"
+      title="Subcontractor"/>
+
     <!-- planification fields -->
     <!-- MGM-69 -->
     <integer name="spentTimeCostComputationMethod" default="2"
@@ -135,6 +139,8 @@
     <!-- MGM-110 -->
     <integer name="projectTypeSelect" title="Project type"
       selection="business.project.project.type.select" default="0"/>
+    <many-to-one name="projectType" title="Project type"
+      ref="com.axelor.apps.businessproject.db.ProjectType"/>
 
     <!-- Analytic fields -->
     <many-to-one name="analyticDistributionTemplate"

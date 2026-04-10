@@ -19,7 +19,11 @@
       </replace>
     </extend>
 
+    <extend target="//panel[@name='customFieldConfigPanel']">
+      <insert position="before">
+        <field name="manageStatusAutomatically" widget="boolean-switch"/>
+      </insert>
+    </extend>
   </form>
-
 
 </object-views>

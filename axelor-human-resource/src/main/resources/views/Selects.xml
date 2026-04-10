@@ -273,4 +273,9 @@
     <option value="02-night">Night Shift</option>
   </selection>
 
+  <selection name="hr.expense.category.select">
+    <option value="1">Employee Expense</option>
+    <option value="2">Fees / Project Expense</option>
+  </selection>
+
 </object-views>

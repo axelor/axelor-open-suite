@@ -201,6 +201,24 @@ public class ExpenseController {
             .map());
   }
 
+  public void deleteProjectExpense(ActionRequest request, ActionResponse response) {
+    try {
+      @SuppressWarnings("unchecked")
+      List<Integer> ids = (List<Integer>) request.getContext().get("_ids");
+
+      if (ids == null || ids.isEmpty()) {
+        response.setError("Please select at least one expense to delete");
+        return;
+      }
+
+      Beans.get(ExpenseToolService.class).deleteExpenses(ids);
+      response.setNotify("Expense(s) deleted successfully");
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void validateExpense(ActionRequest request, ActionResponse response) {
 
     User user = AuthUtils.getUser();
@@ -214,7 +232,6 @@ public class ExpenseController {
             .param("search-filters", "expense-filters");
 
     Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
-
     response.setView(actionView.map());
   }
 

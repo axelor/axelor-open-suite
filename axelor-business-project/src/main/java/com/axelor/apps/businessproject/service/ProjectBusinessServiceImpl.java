@@ -29,10 +29,14 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproject.db.ProjectType;
 import com.axelor.apps.businessproject.db.TaskReport;
+import com.axelor.apps.businessproject.db.repo.ExtraExpenseLineRepository;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
+import com.axelor.apps.businessproject.service.taskreport.TaskMemberReportService;
 import com.axelor.apps.businessproject.service.taskreport.TaskReportService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -92,6 +96,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected SaleOrderStockLocationService saleOrderStockLocationService;
   protected ProjectTimeUnitService projectTimeUnitService;
   protected SaleOrderGeneratorService saleOrderGeneratorService;
+  protected ExpenseRepository expenseRepository;
 
   public static final int BIG_DECIMAL_SCALE = 2;
   public static final String FA_LEVEL_UP = "arrow-90deg-up";
@@ -117,7 +122,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       UnitConversionForProjectService unitConversionForProjectService,
       SaleOrderStockLocationService saleOrderStockLocationService,
       ProjectTimeUnitService projectTimeUnitService,
-      SaleOrderGeneratorService saleOrderGeneratorService) {
+      SaleOrderGeneratorService saleOrderGeneratorService,
+      ExpenseRepository expenseRepository) {
     super(
         projectRepository,
         projectStatusRepository,
@@ -137,6 +143,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     this.saleOrderStockLocationService = saleOrderStockLocationService;
     this.projectTimeUnitService = projectTimeUnitService;
     this.saleOrderGeneratorService = saleOrderGeneratorService;
+    this.expenseRepository = expenseRepository;
   }
 
   @Override
@@ -308,11 +315,15 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
   @Override
   public boolean readyToInvoice(Project project) {
-    return (hasExpense(project) || hasTimesheetLine(project))
-        && (allExpensesValidated(project)
-            && allTasksHaveTimesheetLines(project)
-            && allTimesheetLinesValidated(project)
-            && project.getIsConfirmedForInvoicing());
+    if (project == null) return false;
+
+    boolean expenseConditionMet = !hasExpense(project) || allExpensesValidated(project);
+    boolean timesheetConditionMet =
+        !hasTask(project)
+            || (allTasksHaveTimesheetLines(project) && allTimesheetLinesValidated(project));
+    boolean isConfirmed = Boolean.TRUE.equals(project.getIsConfirmedForInvoicing());
+
+    return isConfirmed && expenseConditionMet && timesheetConditionMet;
   }
 
   @Override
@@ -329,7 +340,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     if (project == null) return false;
 
     List<Expense> expenses =
-        Beans.get(ExpenseRepository.class)
+        expenseRepository
             .all()
             .filter("self.project.id = :projectId")
             .bind("projectId", project.getId())
@@ -367,7 +378,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
   @Override
   public long getProjectExpenseCount(Project project) {
-    return Beans.get(ExpenseRepository.class)
+    return expenseRepository
         .all()
         .filter("self.project.id = :projectId")
         .bind("projectId", project.getId())
@@ -376,13 +387,40 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
   @Override
   public Boolean isProjectReadyForReview(Project project) {
-    if (project == null) return false;
+    if (project == null) return Boolean.FALSE;
 
-    if (Objects.equals(project.getProjectTypeSelect(), ProjectRepository.FEES_PROJECT_TYPE)) {
-      return allExpensesValidated(project);
-    }
+    boolean hasApprovalItem = hasTimesheetLine(project) || hasExpense(project);
+    boolean timesheetLineConditionMet =
+        !hasTask(project)
+            || (allTasksHaveTimesheetLines(project) && allTimesheetLinesValidated(project));
+    boolean expenseConditionMet = !hasExpense(project) || allExpensesValidated(project);
 
-    return (allTimesheetLinesValidated(project) && allExpensesValidated(project));
+    return hasApprovalItem && timesheetLineConditionMet && expenseConditionMet;
+  }
+
+  @Override
+  public Boolean allExpensesSent(Project project) {
+    List<Expense> expenses =
+        expenseRepository
+            .all()
+            .filter("self.project.id = :projectId")
+            .bind("projectId", project.getId())
+            .fetch();
+
+    return expenses.stream()
+        .allMatch(
+            expense ->
+                Objects.equals(expense.getStatusSelect(), ExpenseRepository.STATUS_CONFIRMED));
+  }
+
+  @Override
+  public Boolean hasExtraExpenses(Project project) {
+    return Beans.get(ExtraExpenseLineRepository.class)
+            .all()
+            .filter("self.project.id = :projectId")
+            .bind("projectId", project.getId())
+            .count()
+        > 0;
   }
 
   protected List<TimesheetLine> getAllTimesheetLines(Project project) {
@@ -393,13 +431,29 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         .fetch();
   }
 
-  protected boolean hasExpense(Project project) {
-    return Beans.get(ExpenseRepository.class)
+  @Override
+  public boolean hasExpense(Project project) {
+    return expenseRepository
             .all()
             .filter("self.project.id = :projectId")
             .bind("projectId", project.getId())
             .count()
         > 0;
+  }
+
+  @Override
+  public boolean allExpensesSentOrValidated(Project project) {
+    if (project == null) return false;
+
+    return expenseRepository
+            .all()
+            .filter("self.project.id = :projectId AND self.statusSelect NOT IN (:statuses)")
+            .bind("projectId", project.getId())
+            .bind(
+                "statuses",
+                List.of(ExpenseRepository.STATUS_CONFIRMED, ExpenseRepository.STATUS_VALIDATED))
+            .count()
+        == 0;
   }
 
   protected boolean hasTimesheetLine(Project project) {
@@ -1012,5 +1066,86 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     if (hasChanged) {
       JpaRepository.of(TaskReport.class).persist(taskReport);
     }
+  }
+
+  @Override
+  public Partner getSubcontractor(Project project) throws AxelorException {
+    if (project == null || project.getSubcontractor() == null) return null;
+
+    Partner subcontractor = project.getSubcontractor();
+
+    if (!Boolean.TRUE.equals(subcontractor.getIsSupplier())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          BusinessProjectExceptionMessage.BUSINESS_PROJECT_SUBCONTRACTOR_IS_NOT_A_SUPPLIER,
+          subcontractor.getFullName(),
+          project.getFullName());
+    }
+
+    log.debug("Subcontractor... {}", subcontractor.getFullName());
+
+    return subcontractor;
+  }
+
+  /**
+   * Checks if all tasks for a project have already been reported. If a project does not have any
+   * task, it considers that its task are yet to be reported.
+   *
+   * @param project project
+   * @return false if all task for project have not been reported yet or if project has no task else
+   *     returns true
+   */
+  @Override
+  public boolean allTaskReported(Project project) {
+    if (project == null || project.getProjectTaskList() == null) {
+      return false;
+    }
+
+    return project.getProjectTaskList().stream()
+        .filter(task -> !Boolean.TRUE.equals(task.getIsTemplate()))
+        .allMatch(task -> Beans.get(TaskMemberReportService.class).hasTaskMemberReport(task));
+  }
+
+  @Override
+  public boolean hasTask(Project project) {
+    return project.getProjectTaskList() != null && !project.getProjectTaskList().isEmpty();
+  }
+
+  public void ensureSingleUserProjectConsistency(Project project) throws AxelorException {
+    if (project == null) return;
+
+    ProjectType projectType = project.getProjectType();
+
+    // If it is not a single user project type we have no business running the following checks on
+    // it
+    if (projectType == null || !Boolean.TRUE.equals(projectType.getIsSingleUserProject())) return;
+
+    User assignedTo = project.getAssignedTo();
+
+    if (assignedTo == null) {
+      if (project.getMembersUserSet() != null) {
+        project.getMembersUserSet().clear();
+      }
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          "Assigned To is required for single-user project: " + project.getFullName());
+    }
+
+    Set<User> members =
+        Optional.ofNullable(project.getMembersUserSet())
+            .orElseGet(
+                () -> {
+                  Set<User> newMemberUserSet = new HashSet<>();
+                  project.setMembersUserSet(newMemberUserSet);
+                  return newMemberUserSet;
+                });
+
+    if (members.size() == 1 && members.contains(assignedTo)) {
+      return;
+    }
+
+    // Single user projects should have only the user whom the project is assigned to as member
+    members.clear();
+    members.add(assignedTo);
   }
 }

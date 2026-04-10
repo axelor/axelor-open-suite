@@ -44,12 +44,14 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.db.ExtraExpenseLine;
 import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.businessproject.db.SubcontractorTask;
 import com.axelor.apps.businessproject.db.repo.ExtraExpenseLineRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseInvoiceService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
+import com.axelor.apps.businessproject.service.subcontractortask.SubcontractorTaskInvoiceService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineService;
@@ -88,6 +90,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
 
   protected ExpenseInvoiceLineService expenseInvoiceLineService;
   protected ExtraExpenseInvoiceService extraExpenseInvoiceService;
+  protected SubcontractorTaskInvoiceService subcontractorTaskInvoiceService;
 
   protected InvoicingProjectStockMovesService invoicingProjectStockMovesService;
   protected InvoiceLineService invoiceLineService;
@@ -121,7 +124,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       InvoiceLineAnalyticService invoiceLineAnalyticService,
       AnalyticLineService analyticLineService,
       PartnerAccountService partnerAccountService,
-      TaxNumberRepository taxNumberRepository) {
+      TaxNumberRepository taxNumberRepository,
+      SubcontractorTaskInvoiceService subcontractorTaskInvoiceService) {
     this.invoicingProjectService = invoicingProjectService;
     this.partnerService = partnerService;
     this.invoicingProjectRepo = invoicingProjectRepo;
@@ -140,6 +144,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     this.analyticLineService = analyticLineService;
     this.partnerAccountService = partnerAccountService;
     this.taxNumberRepository = taxNumberRepository;
+    this.subcontractorTaskInvoiceService = subcontractorTaskInvoiceService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -276,7 +281,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
         && invoicingProject.getExpenseLineSet().isEmpty()
         && invoicingProject.getProjectTaskSet().isEmpty()
         && invoicingProject.getStockMoveLineSet().isEmpty()
-        && getProjectExtraExpense(invoicingProject.getProject()).isEmpty()) {
+        && getProjectExtraExpense(invoicingProject.getProject()).isEmpty()
+        && invoicingProject.getSubcontractorTaskSet().isEmpty()) {
       throw new AxelorException(
           invoicingProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -299,6 +305,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     List<TimesheetLine> timesheetLineList = new ArrayList<>(folder.getLogTimesSet());
     List<ExpenseLine> expenseLineList = new ArrayList<>(folder.getExpenseLineSet());
     List<ProjectTask> projectTaskList = new ArrayList<>(folder.getProjectTaskSet());
+    List<SubcontractorTask> subcontractorTaskList =
+        new ArrayList<>(folder.getSubcontractorTaskSet());
 
     // extra expenses
     List<ExtraExpenseLine> extraExpenseLineList = getProjectExtraExpense(folder.getProject());
@@ -325,6 +333,10 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     invoiceLineList.addAll(
         extraExpenseInvoiceService.createInvoiceLines(
             invoice, extraExpenseLineList, folder.getExtraExpenseLineSetPrioritySelect()));
+
+    invoiceLineList.addAll(
+        subcontractorTaskInvoiceService.createInvoiceLines(
+            invoice, subcontractorTaskList, folder.getSubcontractorTaskSetPrioritySelect()));
 
     Collections.sort(invoiceLineList, new InvoiceLineComparator());
 

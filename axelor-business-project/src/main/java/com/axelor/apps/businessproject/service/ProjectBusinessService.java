@@ -19,6 +19,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -48,6 +49,16 @@ public interface ProjectBusinessService extends ProjectService {
 
   Project findProjectFromModel(String modelClassName, Long modelId);
 
+  /**
+   * Determines if a project is ready to invoice. A project is ready to invoice if it has been
+   * confirmed for invoicing and all present items are fully validated. If the project has expenses,
+   * they must all be validated. If the project has tasks, all tasks must have timesheet lines and
+   * all timesheet lines must be validated. A project with neither expenses nor tasks only needs to
+   * be confirmed.
+   *
+   * @param project the project to check
+   * @return true if the project is ready to invoice, false otherwise
+   */
   boolean readyToInvoice(Project project);
 
   boolean allTimesheetLinesValidated(Project project);
@@ -60,5 +71,43 @@ public interface ProjectBusinessService extends ProjectService {
 
   long getProjectExpenseCount(Project project);
 
+  /**
+   * Determines if a project is ready for review. A project is ready for review if it has at least
+   * one approval item (timesheet lines or expenses) and all present items are fully validated.
+   *
+   * @param project the project to check
+   * @return true if the project is ready for review, false otherwise
+   */
   Boolean isProjectReadyForReview(Project project);
+
+  Partner getSubcontractor(Project project) throws AxelorException;
+
+  Boolean allExpensesSent(Project project);
+
+  Boolean hasExtraExpenses(Project project);
+
+  boolean hasExpense(Project project);
+
+  /**
+   * Checks if all tasks for a project have already been reported. If a project does not have any
+   * task, it considers that its task are yet to be reported.
+   *
+   * @param project project
+   * @return false if all task for project have not been reported yet or if project has no task else
+   *     returns true
+   */
+  boolean allTaskReported(Project project);
+
+  boolean hasTask(Project project);
+
+  boolean allExpensesSentOrValidated(Project project);
+
+  /**
+   * Ensures consistency for single-user projects. If not a single-user project, does nothing. If
+   * single-user project, assignedTo must exist and membersUserSet must contain only that user.
+   *
+   * @param project
+   * @throws AxelorException
+   */
+  void ensureSingleUserProjectConsistency(Project project) throws AxelorException;
 }

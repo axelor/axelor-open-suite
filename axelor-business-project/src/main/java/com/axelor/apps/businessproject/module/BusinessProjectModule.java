@@ -36,14 +36,14 @@ import com.axelor.apps.businessproject.service.approvalitem.ApprovalItemManageme
 import com.axelor.apps.businessproject.service.approvalitem.ApprovalItemManagementServiceImpl;
 import com.axelor.apps.businessproject.service.config.BusinessProjectConfigService;
 import com.axelor.apps.businessproject.service.config.BusinessProjectConfigServiceImpl;
-import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownDisplayService;
-import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownDisplayServiceImpl;
-import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownPrintService;
-import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownPrintServiceImpl;
 import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseInvoiceService;
 import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseLineService;
 import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseLineServiceImpl;
+import com.axelor.apps.businessproject.service.invoice.InvoiceBreakdownDisplayService;
+import com.axelor.apps.businessproject.service.invoice.InvoiceBreakdownDisplayServiceImpl;
+import com.axelor.apps.businessproject.service.invoice.InvoiceBreakdownPrintService;
+import com.axelor.apps.businessproject.service.invoice.InvoiceBreakdownPrintServiceImpl;
 import com.axelor.apps.businessproject.service.invoice.InvoiceMergingServiceBusinessProjectImpl;
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectService;
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectServiceImpl;
@@ -66,6 +66,8 @@ import com.axelor.apps.businessproject.service.statuschange.ProjectStatusChangeS
 import com.axelor.apps.businessproject.service.statuschange.ProjectStatusChangeServiceImpl;
 import com.axelor.apps.businessproject.service.statuschange.TaskStatusChangeService;
 import com.axelor.apps.businessproject.service.statuschange.TaskStatusChangeServiceImpl;
+import com.axelor.apps.businessproject.service.subcontractortask.SubcontractorTaskInvoiceService;
+import com.axelor.apps.businessproject.service.subcontractortask.SubcontractorTaskInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.taskreport.*;
 import com.axelor.apps.contract.service.ContractInvoicingServiceImpl;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
@@ -212,5 +214,8 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ProjectFilesService.class).to(ProjectFilesServiceImpl.class);
     bind(TaskMemberReportCreateService.class).to(TaskMemberReportCreateServiceImpl.class);
     bind(ExtraExpenseLineService.class).to(ExtraExpenseLineServiceImpl.class);
+    bind(SubcontractorTaskInvoiceService.class).to(SubcontractorTaskInvoiceServiceImpl.class);
+    bind(ExtraExpenseLineRepository.class).to(ExtraExpenseLineBusinessProjectRepository.class);
+    bind(SubcontractorTaskRepository.class).to(SubcontractorTaskBusinessProjectRepository.class);
   }
 }

@@ -29,10 +29,10 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.dms.DMSFileService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.businessproject.db.InvoicingProject;
-import com.axelor.apps.businessproject.db.TaskMemberReport;
-import com.axelor.apps.businessproject.db.TaskReport;
+import com.axelor.apps.businessproject.db.*;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
+import com.axelor.apps.businessproject.db.repo.ProjectTypeRepository;
+import com.axelor.apps.businessproject.db.repo.SubcontractorTaskRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.*;
 import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateService;
@@ -40,6 +40,10 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.statuschange.ProjectStatusChangeService;
 import com.axelor.apps.businessproject.service.taskreport.TaskReportService;
 import com.axelor.apps.businessproject.translation.ITranslation;
+import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -61,9 +65,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,6 +79,7 @@ public class ProjectController {
   @Inject protected DMSFileService dmsFileService;
   @Inject protected MetaFileRepository metaFileRepository;
   @Inject protected TaskReportService taskReportService;
+  @Inject protected ProjectRepository projectRepository;
 
   public void generateQuotation(ActionRequest request, ActionResponse response) {
     try {
@@ -103,7 +106,7 @@ public class ProjectController {
               .add("form", "purchase-order-form")
               .add("grid", "purchase-order-quotation-grid")
               .param("search-filters", "purchase-order-filters")
-              .context("_project", Beans.get(ProjectRepository.class).find(project.getId()))
+              .context("_project", projectRepository.find(project.getId()))
               .map());
     }
   }
@@ -123,7 +126,7 @@ public class ProjectController {
   public void showInvoicingProjects(ActionRequest request, ActionResponse response) {
 
     Project project = request.getContext().asType(Project.class);
-    project = Beans.get(ProjectRepository.class).find(project.getId());
+    project = projectRepository.find(project.getId());
     InvoicingProjectService invoicingProjectService = Beans.get(InvoicingProjectService.class);
     InvoicingProjectRepository invoicingProjectRepository =
         Beans.get(InvoicingProjectRepository.class);
@@ -320,7 +323,7 @@ public class ProjectController {
       return;
     }
 
-    Project project = Beans.get(ProjectRepository.class).find(Long.valueOf(projectId.toString()));
+    Project project = projectRepository.find(Long.valueOf(projectId.toString()));
     Company company = (Company) request.getContext().get("company");
     Partner clientPartner = (Partner) request.getContext().get("clientPartner");
     if (clientPartner == null || company == null) {
@@ -391,24 +394,38 @@ public class ProjectController {
   public void openTaskFormIfEmpty(ActionRequest request, ActionResponse response) {
     Project project = request.getContext().asType(Project.class);
 
-    if (project.getId() != null) {
-      project = Beans.get(ProjectRepository.class).find(project.getId());
-      long taskCount =
-          project.getProjectTaskList().stream().filter(task -> !task.getIsTemplate()).count();
+    if (project == null || project.getId() == null || project.getProjectType() == null) {
+      return;
+    }
 
-      if (taskCount == 0) {
-        response.setView(
-            ActionView.define("action-view-business-project-task-new-task-form")
-                .model(ProjectTask.class.getName())
-                .add("form", "custom-mgm-business-project-task-template-form")
-                .param("popup", "reload")
-                .param("show-toolbar", "false")
-                .param("show-confirm", "true")
-                .param("popup-save", "true")
-                .context("_projectId", project.getId())
-                .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
-                .map());
-      }
+    project = projectRepository.find(project.getId());
+    if (project.getProjectType() == null) {
+      return;
+    }
+    ProjectType projectType =
+        Beans.get(ProjectTypeRepository.class).find(project.getProjectType().getId());
+
+    if (!Boolean.TRUE.equals(projectType.getRequiresTask())) {
+      return;
+    }
+
+    long taskCount =
+        project.getProjectTaskList().stream()
+            .filter(task -> !Boolean.TRUE.equals(task.getIsTemplate()))
+            .count();
+
+    if (taskCount == 0) {
+      response.setView(
+          ActionView.define("action-view-business-project-task-new-task-form")
+              .model(ProjectTask.class.getName())
+              .add("form", "custom-mgm-business-project-task-template-form")
+              .param("popup", "reload")
+              .param("show-toolbar", "false")
+              .param("show-confirm", "true")
+              .param("popup-save", "true")
+              .context("_projectId", project.getId())
+              .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
+              .map());
     }
   }
 
@@ -464,7 +481,7 @@ public class ProjectController {
         metaFile = projectFilesService.renameMetaFileToAvailableName(metaFile, projectFilesHome);
       }
 
-      projectFilesService.attachMetaFileToModel(modelId, model, metaFile);
+      projectFilesService.uploadToProjectFiles(project, modelId, model, metaFile);
 
       response.setCanClose(true);
       response.setNotify(I18n.get("File uploaded successfully"));
@@ -503,30 +520,105 @@ public class ProjectController {
     Project project = getProjectFromRequest(request);
     if (project == null) return;
 
-    TaskReport taskReport = taskReportService.getTaskReport(project);
+    ProjectType projectType = project.getProjectType();
+    boolean requiresTask =
+        projectType != null && Boolean.TRUE.equals(projectType.getRequiresTask());
+    boolean hasRecordInvoiceData =
+        projectType != null && Boolean.TRUE.equals(projectType.getRequiresRecordInvoicingData());
 
-    String taskCount =
-        taskReport != null ? taskReportService.getReportedTaskCount(taskReport) : "0/0";
+    // Build Expense Summary
+    List<ExpenseLine> expenseLines =
+        Beans.get(ExpenseLineRepository.class)
+            .all()
+            .filter("self.project.id = :projectId")
+            .bind("projectId", project.getId())
+            .fetch();
 
-    BigDecimal totalHours = BigDecimal.ZERO;
+    BigDecimal netAmountTotal =
+        expenseLines.stream()
+            .map(
+                line -> line.getUntaxedAmount() != null ? line.getUntaxedAmount() : BigDecimal.ZERO)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-    long dirtAllowanceCount = 0;
+    BigDecimal netAmountCharges =
+        expenseLines.stream()
+            .map(
+                line ->
+                    line.getChargedFeeAmount() != null
+                        ? line.getChargedFeeAmount()
+                        : BigDecimal.ZERO)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-    if (taskReport != null && taskReport.getTaskMemberReports() != null) {
-      totalHours = taskReport.getTotalWorkHours();
-      for (TaskMemberReport tmr : taskReport.getTaskMemberReports()) {
-        if (Boolean.TRUE.equals(tmr.getDirtAllowance())) {
-          dirtAllowanceCount++;
+    BigDecimal netAmountToInvoice =
+        expenseLines.stream()
+            .map(
+                line ->
+                    line.getTotalAmountToInvoice() != null
+                        ? line.getTotalAmountToInvoice()
+                        : BigDecimal.ZERO)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    response.setValue("$netAmountTotal", netAmountTotal);
+    response.setValue("$netAmountCharges", netAmountCharges);
+    response.setValue("$netAmountToInvoice", netAmountToInvoice);
+
+    // Build task summary
+    if (requiresTask) {
+      TaskReport taskReport = taskReportService.getTaskReport(project);
+
+      String taskCount =
+          taskReport != null ? taskReportService.getReportedTaskCount(taskReport) : "0/0";
+
+      BigDecimal totalHours = BigDecimal.ZERO;
+      long dirtAllowanceCount = 0;
+
+      if (taskReport != null && taskReport.getTaskMemberReports() != null) {
+        totalHours = taskReport.getTotalWorkHours();
+        for (TaskMemberReport tmr : taskReport.getTaskMemberReports()) {
+          if (Boolean.TRUE.equals(tmr.getDirtAllowance())) {
+            dirtAllowanceCount++;
+          }
         }
       }
+
+      response.setValue("$totalTasksReported", taskCount);
+      response.setValue("$totalHoursReported", totalHours);
+      response.setValue("$totalDirtAllowance", dirtAllowanceCount);
+      response.setAttr("projectSummaryPanel", "title", I18n.get("Dirt Allowance"));
+      response.setAttr("$totalDirtAllowance", "hidden", false);
+      response.setAttr("$totalTasksReported", "title", I18n.get("Total Number of Tasks Reported"));
+
+      return;
     }
 
-    long expenseCount = projectService.getProjectExpenseCount(project);
+    response.setAttr("$totalDirtAllowance", "hidden", true);
+    response.setAttr("validatedItemsPanel", "title", I18n.get("Items"));
+    response.setAttr("$hoursMismatchWarning", "hidden", true);
+    response.setAttr("taskDataReviewPanel", "hidden", true);
 
-    response.setValue("$totalTasksReported", taskCount);
-    response.setValue("$totalHoursReported", totalHours);
-    response.setValue("$totalDirtAllowance", dirtAllowanceCount);
-    response.setValue("$totalExpensesReported", expenseCount);
+    // Build Monthly Invoicing and Subcontractor Project summary
+    if (hasRecordInvoiceData) {
+      List<SubcontractorTask> workLines =
+          Beans.get(SubcontractorTaskRepository.class)
+              .all()
+              .filter("self.project.id = :projectId")
+              .bind("projectId", project.getId())
+              .fetch();
+
+      long workLineCount = workLines.size();
+
+      BigDecimal totalHours =
+          workLines.stream()
+              .map(line -> line.getTimeSpent() != null ? line.getTimeSpent() : BigDecimal.ZERO)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+      response.setAttr("invoicingDataLineReviewPanel", "hidden", false);
+
+      response.setValue("$totalTasksReported", workLineCount);
+      response.setValue("$totalHoursReported", totalHours);
+      response.setValue("$totalHoursToBill", totalHours);
+      response.setAttr("$totalTasksReported", "title", I18n.get("Total tasks"));
+    }
   }
 
   public void updateProjectStatus(ActionRequest request, ActionResponse response) {
@@ -540,10 +632,125 @@ public class ProjectController {
     }
   }
 
+  public void getBilledHours(ActionRequest request, ActionResponse response) {
+
+    Project project = getProjectFromRequest(request);
+    if (project == null) return;
+
+    List<TimesheetLine> lines =
+        Beans.get(TimesheetLineRepository.class)
+            .all()
+            .filter("self.project.id = :projectId AND self.isValidated = true")
+            .bind("projectId", project.getId())
+            .fetch();
+
+    BigDecimal totalHoursToBill = BigDecimal.ZERO;
+    if (lines != null) {
+      for (TimesheetLine line : lines) {
+        if (line.getHoursDuration() != null) {
+          totalHoursToBill = totalHoursToBill.add(line.getHoursDuration());
+        }
+      }
+    }
+
+    // use a scale of 2 decimal places (0 becomes 0.00)
+    totalHoursToBill = totalHoursToBill.setScale(2, java.math.RoundingMode.HALF_UP);
+    response.setValue("$totalHoursToBill", totalHoursToBill);
+  }
+
   private Project getProjectFromRequest(ActionRequest request) {
     Project project = request.getContext().asType(Project.class);
 
     if (project == null || project.getId() == null) return null;
-    return Beans.get(ProjectRepository.class).find(project.getId());
+
+    return projectRepository.find(project.getId());
+  }
+
+  public void migrateProjectType(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+
+    if (project.getProjectType() != null) {
+      return;
+    }
+
+    Integer typeSelect = project.getProjectTypeSelect();
+    if (typeSelect == null) {
+      typeSelect = ProjectTypeRepository.STANDARD_PROJECT_TYPE;
+    }
+
+    ProjectType matched =
+        Beans.get(ProjectTypeRepository.class)
+            .all()
+            .filter("self.sequence = :sel")
+            .bind("sel", typeSelect)
+            .fetchOne();
+
+    if (matched != null) {
+      response.setValue("projectType", matched);
+    }
+  }
+
+  /** Set the appropriate names for the project form panel based on the project type. */
+  public void setDynamicPanelAttrs(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+    ProjectType projectType = project.getProjectType();
+
+    if (projectType == null) {
+      return;
+    }
+
+    List<Object[]> panels =
+        List.of(
+            new Object[] {
+              "overviewPanel",
+              "Overview",
+              !Boolean.TRUE.equals(projectType.getIsSingleUserProject())
+            },
+            new Object[] {
+              "singleUserProjectOverviewPanel",
+              "Overview",
+              Boolean.TRUE.equals(projectType.getIsSingleUserProject())
+            },
+            new Object[] {
+              "taskTreePanel", "Tasks", Boolean.TRUE.equals(projectType.getRequiresTask())
+            },
+            new Object[] {
+              "taskReportsPanel", "Task Report", Boolean.TRUE.equals(projectType.getRequiresTask())
+            },
+            new Object[] {
+              "recordInvoicingDataPanel",
+              "Record Invoicing Data",
+              Objects.equals(
+                  ProjectTypeRepository.SUBCONTRACTOR_PROJECT_TYPE, projectType.getSequence())
+            },
+            new Object[] {
+              "monthlyInvoiceRecordInvoicingDataPanel",
+              "Record Invoicing Data",
+              Objects.equals(
+                  ProjectTypeRepository.MONTHLY_INVOICE_PROJECT_TYPE, projectType.getSequence())
+            },
+            new Object[] {
+              "expenseReportsPanel",
+              "Expense Report",
+              Boolean.TRUE.equals(projectType.getRequiresExpense())
+            },
+            new Object[] {"projectExtraExpensesPanel", "Project extra expenses", Boolean.TRUE},
+            new Object[] {
+              "reviewAndConfirmationPanel",
+              "Review and Confirmation",
+              Boolean.TRUE.equals(projectType.getRequiresValidation())
+            },
+            new Object[] {
+              "invoicingPanel", "Invoicing", Boolean.TRUE.equals(projectType.getRequiresInvoicing())
+            });
+
+    int tab = 0;
+    for (Object[] panel : panels) {
+      boolean visible = (boolean) panel[2];
+      response.setAttr((String) panel[0], "hidden", !visible);
+      if (visible) {
+        response.setAttr((String) panel[0], "title", ++tab + " " + I18n.get((String) panel[1]));
+      }
+    }
   }
 }

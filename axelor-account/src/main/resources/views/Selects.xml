@@ -288,12 +288,13 @@
     <option value="D">Debit</option>
     <option value="C">Credit</option>
   </selection>
-
+  <!-- MGM-148, @dkouete: Enabling paid status in invoicing -->
   <selection name="iaccount.invoice.status.select">
     <option value="1" color="cyan">Draft</option>
     <option value="2" color="green">Validated</option>
     <option value="3" color="teal">Ventilated</option>
     <option value="4" color="red">Canceled</option>
+    <option value="5" color="green">Paid</option>
   </selection>
 
   <selection name="iaccount.reimbursement.status.select">

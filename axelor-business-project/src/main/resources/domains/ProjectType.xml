@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="business-project" package="com.axelor.apps.businessproject.db"/>
+
+  <entity name="ProjectType">
+
+    <string name="name" title="Name" required="true" translatable="true"/>
+    <integer name="sequence" title="Sequence" unique="true"/>
+
+    <!-- Behavior flags -->
+    <boolean name="requiresTask" title="Requires Task" default="false"
+      help="Does this project type use tasks?"/>
+    <boolean name="requiresExpense" title="Requires Expense" default="false"
+      help="Does this project type use expenses?"/>
+    <boolean name="requiresValidation" title="Requires Validation" default="false"
+      help="Does this project type have any item which requires validation?"/>
+    <boolean name="requiresInvoicing" title="Requires Invoicing" default="true"
+      help="Is this project type invoiced?"/>
+    <boolean name="requiresConfirmation" title="Requires confirmation" default="false"
+      help="Does this project type require review confirmation before it can be invoiced"/>
+    <boolean name="requiresRecordInvoicingData" title="Requires record invoicing data"
+      default="false"
+      help="Does this project type need a record invoicing data tab (generally for subcontractor projects)"/>
+    <boolean name="isSingleUserProject" title="Single user project" default="false"
+      help="When enabled, this project type is dedicated to a single user. Only the 'Assigned to' field is relevant, and will always have as only member the 'Assigned to' user."/>
+
+    <integer name="defaultExpenseCategory" selection="hr.expense.category.select"
+      default="1" help="The default expense category for this project type"/>
+
+    <finder-method name="findBySequence" using="sequence"/>
+
+    <extra-code><![CDATA[
+
+  public static final int STANDARD_PROJECT_TYPE = 0;
+  public static final int FEES_PROJECT_TYPE = 1;
+  public static final int CUMULATIVE_PROJECT_TYPE = 2;
+  public static final int SUBCONTRACTOR_PROJECT_TYPE = 3;
+  public static final int MONTHLY_INVOICE_PROJECT_TYPE = 4;
+		]]></extra-code>
+  </entity>
+
+</domain-models>

@@ -19,6 +19,8 @@
       title="Expense Lines"/>
     <many-to-many name="projectTaskSet" ref="com.axelor.apps.project.db.ProjectTask"
       title="Tasks"/>
+    <many-to-many name="subcontractorTaskSet" title="Subcontractor Tasks"
+      ref="com.axelor.apps.businessproject.db.SubcontractorTask"/>
     <many-to-many name="stockMoveLineSet" ref="com.axelor.apps.stock.db.StockMoveLine"
       title="Deliveries"/>
     <integer name="logTimesSetPrioritySelect" selection="invoicing.project.priority.select"
@@ -28,6 +30,8 @@
     <integer name="purchaseOrderLineSetPrioritySelect"
       selection="invoicing.project.priority.select" title="Purchase order lines Priority"
       default="2"/>
+    <integer name="subcontractorTaskSetPrioritySelect"
+      selection="invoicing.project.priority.select" title="Subcontractor task priority" default="8"/>
     <integer name="expenseLineSetPrioritySelect"
       selection="invoicing.project.priority.select" title="Expense Lines Priority" default="4"/>
     <integer name="projectSetPrioritySelect" selection="invoicing.project.priority.select"

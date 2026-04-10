@@ -31,6 +31,11 @@
         form-view="project-status-form" domain="self.isCompleted = true"/>
     </panel>
 
+    <panel name="projectTypeMgtPanel" title="Project type managment panel">
+      <field name="defaultProjectType" grid-view="project-type-grid"
+        form-view="project-type-form"/>
+    </panel>
+
     <panel name="taskStatusMgtPanel" title="Task status management">
       <field name="defaultTaskStatusSet" canEdit="false" widget="TagSelect" colSpan="12"
         onChange="action-app-project-method-manage-completed-task-status"/>

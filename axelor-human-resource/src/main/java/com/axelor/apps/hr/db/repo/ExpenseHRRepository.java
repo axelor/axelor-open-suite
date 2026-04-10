@@ -48,6 +48,7 @@ public class ExpenseHRRepository extends ExpenseRepository {
   @Override
   public Expense save(Expense expense) {
     try {
+      Beans.get(ExpenseToolService.class).validateExpenseEmployee(expense);
       expense = super.save(expense);
       Beans.get(ExpenseToolService.class).setDraftSequence(expense);
       if (expense.getStatusSelect() == ExpenseRepository.STATUS_DRAFT) {

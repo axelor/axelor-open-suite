@@ -149,4 +149,7 @@ public final class BusinessProjectExceptionMessage {
 
   public static final String PROJECT_BUSINESS_PROJECT_PROJECT_STATUS_NOT_FOUND = /*$$(*/
       "Project status '%s' is missing from the system. Please contact your administrator to configure this status." /*)*/;
+
+  public static final String BUSINESS_PROJECT_SUBCONTRACTOR_IS_NOT_A_SUPPLIER = /*$$(*/
+      "Partner '%s' is not a supplier and cannot be used as a subcontractor on project '%s'." /*)*/;
 }

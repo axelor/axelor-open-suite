@@ -43,26 +43,30 @@ public interface ApprovalItemManagementService {
    * @param itemDateTime the updated date time
    * @param description Updated description
    * @param amount Updated amount
+   * @param approvalItemTypeSelect the dedicated selection type for the validation item
    * @return Updated Approval Item
    */
   ApprovalItem updateApprovalItem(
       Model linkedItemToValidate,
       LocalDateTime itemDateTime,
       String description,
-      BigDecimal amount);
+      BigDecimal amount,
+      String approvalItemTypeSelect);
 
   /**
    * Deletes the corresponding approval item for the itemToValidate passed to it.
    *
    * @param itemToValidate Validation item for which to delete its corresponding approval item
+   * @param approvalItemTypeSelect the dedicated selection type for the validation item
    */
-  void deleteApprovalItem(Model itemToValidate);
+  void deleteApprovalItem(Model itemToValidate, String approvalItemTypeSelect);
 
   /**
    * Checks if a Validation item has an existing corresponding Approval Item
    *
    * @param itemToValidate Validation Item to check for
+   * @param approvalItemTypeSelect the dedicated selection type for the validation item
    * @return True if a corresponding Approval Item exists else False
    */
-  boolean hasApprovalItem(Model itemToValidate);
+  boolean hasApprovalItem(Model itemToValidate, String approvalItemTypeSelect);
 }

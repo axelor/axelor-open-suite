@@ -9,9 +9,16 @@
 
     <many-to-one name="completedPaidProjectStatus" title="Completed paid project status"
       ref="com.axelor.apps.project.db.ProjectStatus"/>
+    <many-to-one name="defaultProjectType" title="Default project type"
+      ref="com.axelor.apps.businessproject.db.ProjectType"/>
+
+    <boolean name="manageStatusAutomatically" title="Enable automatic status change"
+      help="When enabled project and task statuses will be updated automatically" default="false"/>
 
     <track>
       <field name="completedPaidProjectStatus" on="UPDATE"/>
+      <field name="defaultProjectType" on="UPDATE"/>
+      <field name="manageStatusAutomatically" on="UPDATE"/>
     </track>
   </entity>
 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="business-project" package="com.axelor.apps.businessproject.db"/>
+
+  <entity name="SubcontractorTask">
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product"
+      title="Qualification"/>
+    <many-to-one name="employee" title="Employee" ref="com.axelor.apps.hr.db.Employee"
+      readonly="true"/>
+    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <many-to-one name="subcontractor" ref="com.axelor.apps.base.db.Partner"
+      title="Subcontractor"/>
+    <decimal name="timeSpent" title="Time spent (hours)" min="0"/>
+    <decimal name="timeSpentMinutes" title="Time spent (mins)" min="0"/>
+    <string name="comments" title="Comments" large="true"/>
+    <boolean name="toInvoice" title="To invoice" default="true"/>
+    <boolean name="invoiced" title="Invoiced" default="false"/>
+  </entity>
+
+</domain-models>

@@ -37,7 +37,7 @@
   </grid>
 
   <grid name="timesheet-line-project-task-grid" title="Log Times"
-    model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
+    model="com.axelor.apps.hr.db.TimesheetLine" editable="false"
     onNew="action-timesheet-line-group-project-grid-on-new" orderBy="-date">
     <!-- @nsalifu: hide this buttons to prevent creating time spent manually within task time spent. -->
     <!-- <toolbar> -->
@@ -244,14 +244,16 @@
         <panel name="headPanel" colSpan="12" hidden="true">
           <field name="isValidated" canView="false"/>
         </panel>
+        <!-- MGM-153 - gkouete: re-enabling can View to ease reviewer work -->
         <field name="project" canView="true" canEdit="false"
           onChange="action-timesheet-line-group-project-onchange"
-          onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form"
-          grid-view="project-grid"/>
+          onSelect="action-timesheet-line-attrs-domain-project" form-view="business-project-form"
+          grid-view="business-project-grid" readonly="true"/>
         <field name="projectTask" canView="true" canEdit="false"
           onChange="action-timesheet-line-group-project-task-on-change"
-          onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form"
-          grid-view="project-task-grid"/>
+          onSelect="action-timesheet-line-attrs-domain-project-task"
+          form-view="business-project-task-form" grid-view="business-project-task-grid"
+          readonly="true"/>
         <field if="__config__.app.getApp('base')?.enableSiteManagementForProject" name="site"
           onSelect="action-timesheet-line-attrs-set-site-domain" form-view="site-form"
           grid-view="site-grid"/>
@@ -297,7 +299,7 @@
     <panel name="timesheetPanel" colSpan="12" title="Related Timesheet">
       <field name="timesheet" canEdit="false" form-view="timesheet-form"
         grid-view="timesheet-grid" canView="false"/>
-      <field name="timesheet.company" canView="false"/>
+      <field name="timesheet.company" canView="true"/>
       <field name="timesheet.employee" canView="false"/>
       <field if="__config__.app.getApp('timesheet')?.needValidation"
         name="timesheet.statusSelect"/>
@@ -309,7 +311,8 @@
     onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
     onSave="action-timesheet-line-method-update-operation-order">
     <panel name="mainPanel">
-      <field name="timesheet.company"/>
+      <!-- MGM-153 - gkouete: re-enabling can View to ease reviewer work 1 -->
+      <field name="timesheet.company" canView="true"/>
       <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
       <field name="timesheet.employee"/>
       <field name="timesheet.statusSelect"
@@ -338,9 +341,10 @@
     onNew="action-timesheet-line-group-project-form-on-new"
     onLoad="action-timesheet-line-group-onload" width="large">
     <panel name="overviewPanel" title="Overview">
+      <!-- MGM-153 - gkouete: re-enabling can View to ease reviewer work 2 -->
       <field name="project" onChange="action-timesheet-line-group-project-onchange"
         onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form"
-        grid-view="project-grid"/>
+        grid-view="project-grid" canView="true"/>
       <field name="projectTask" onChange="action-timesheet-line-method-set-product"/>
       <field name="date" onChange="action-timesheet-line-method-check-daily-limit"/>
       <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
@@ -378,14 +382,16 @@
         onChange="action-timesheet-line-validate-and-calculate, action-validate-timesheet-line-project-task-no-time-overlap"/>
       <field name="endTime" colSpan="6"
         onChange="action-timesheet-line-validate-and-calculate, action-validate-timesheet-line-project-task-no-time-overlap"/>
+      <!-- MGM-153 - gkouete: re-enabling can View to ease reviewer work 3: time spent from task -->
       <field name="project" readonlyIf="_project" colSpan="6"
         onChange="action-timesheet-line-record-set-project-task"
         onSelect="action-timesheet-line-attrs-domain-project" required="true"
-        form-view="project-form" grid-view="project-grid" canEdit="false" canView="false"/>
+        form-view="project-form" grid-view="project-grid" canEdit="false" canView="true"/>
+      <!-- MGM-153 - gkouete: re-enabling can View to ease reviewer work 3: time spent from task -->
       <field name="projectTask" readonlyIf="_projectTask" colSpan="6"
         onChange="action-timesheet-line-method-set-product,action-timesheet-line-record-set-project"
         domain="(:project IS NULL OR self.project = :project) AND self.project.manageTimeSpent = true"
-        form-view="project-task-form" grid-view="project-task-grid" canEdit="false" canView="false"/>
+        form-view="project-task-form" grid-view="project-task-grid" canEdit="false" canView="true"/>
       <field name="projectTask.projectTaskCategory" colSpan="6"
         form-view="project-task-category-form" grid-view="project-task-category-grid"/>
       <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
@@ -402,7 +408,7 @@
         form-view="employee-form" grid-view="employee-grid"/>
       <field name="timesheet" form-view="timesheet-form" readonly="false"
         onSelect="action-timesheet-line-method-set-timesheet-domain"
-        validIf="timesheet.employee.id == employee.id" colSpan="6"/>
+        validIf="timesheet.employee.id == employee.id" colSpan="6" canView="false"/>
       <field name="comments" colSpan="12"/>
       <field name="date" onChange="action-timesheet-line-method-set-timesheet" hidden="true"/>
       <field name="enableEditor" if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"

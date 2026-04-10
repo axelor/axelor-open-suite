@@ -140,8 +140,8 @@
 
   <form name="incl-project-overview-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
-    <panel colSpan="12">
-      <field name="description" colSpan="12" widget="html"/>
+    <panel colSpan="12" name="projectDescriptionPanel" title="Description" showFrame="true">
+      <field name="description" colSpan="12" showTitle="false"/>
     </panel>
     <!-- MGM-80: dashboard not relevant for common users, admin only -->
     <panel name="dashboardPanel" title="Dashboard" showTitle="false" colSpan="12"

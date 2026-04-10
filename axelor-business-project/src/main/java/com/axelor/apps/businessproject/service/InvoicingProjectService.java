@@ -30,8 +30,10 @@ import com.axelor.apps.base.service.printing.template.PrintingTemplateHelper;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.businessproject.db.SubcontractorTask;
 import com.axelor.apps.businessproject.db.repo.BusinessProjectBatchRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
+import com.axelor.apps.businessproject.db.repo.SubcontractorTaskRepository;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
@@ -181,6 +183,10 @@ public class InvoicingProjectService {
     taskQueryMap.put("invoicingTypePackage", ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
     taskQueryMap.put("invoicingTypeProgress", ProjectTaskRepository.INVOICING_TYPE_ON_PROGRESS);
 
+    StringBuilder subcontractorTaskQueryBuilder = new StringBuilder(commonQuery);
+    Map<String, Object> subcontractorTaskQueryMap = new HashMap<>();
+    subcontractorTaskQueryMap.put("project", project);
+
     if (invoicingProject.getDeadlineDate() != null) {
       solQueryBuilder.append(" AND self.saleOrder.creationDate <= :deadlineDate");
       solQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
@@ -232,6 +238,15 @@ public class InvoicingProjectService {
                 .bind(taskQueryMap)
                 .fetch());
 
+    invoicingProject
+        .getSubcontractorTaskSet()
+        .addAll(
+            Beans.get(SubcontractorTaskRepository.class)
+                .all()
+                .filter(subcontractorTaskQueryBuilder.toString())
+                .bind(subcontractorTaskQueryMap)
+                .fetch());
+
     Set<StockMoveLine> stockMoveLineSet =
         invoicingProjectStockMovesService.processDeliveredSaleOrderLines(saleOrderLineList);
     invoicingProject.getStockMoveLineSet().addAll(stockMoveLineSet);
@@ -245,6 +260,7 @@ public class InvoicingProjectService {
     invoicingProject.setExpenseLineSet(new HashSet<ExpenseLine>());
     invoicingProject.setProjectTaskSet(new HashSet<ProjectTask>());
     invoicingProject.setStockMoveLineSet(new HashSet<StockMoveLine>());
+    invoicingProject.setSubcontractorTaskSet(new HashSet<SubcontractorTask>());
   }
 
   public Company getRootCompany(Project project) {
@@ -277,6 +293,9 @@ public class InvoicingProjectService {
     toInvoiceCount += Beans.get(TimesheetLineRepository.class).all().filter(query, project).count();
 
     toInvoiceCount += Beans.get(ProjectTaskRepository.class).all().filter(query, project).count();
+
+    toInvoiceCount +=
+        Beans.get(SubcontractorTaskRepository.class).all().filter(query, project).count();
 
     return toInvoiceCount;
   }
@@ -340,7 +359,8 @@ public class InvoicingProjectService {
         && invoicingProject.getPurchaseOrderLineSet().isEmpty()
         && invoicingProject.getLogTimesSet().isEmpty()
         && invoicingProject.getExpenseLineSet().isEmpty()
-        && invoicingProject.getProjectTaskSet().isEmpty()) {
+        && invoicingProject.getProjectTaskSet().isEmpty()
+        && invoicingProject.getSubcontractorTaskSet().isEmpty()) {
 
       return invoicingProject;
     }

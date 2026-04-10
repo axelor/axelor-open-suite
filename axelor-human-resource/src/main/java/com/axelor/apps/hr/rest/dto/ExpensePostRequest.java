@@ -28,7 +28,6 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -60,6 +59,8 @@ public class ExpensePostRequest extends RequestPostStructure {
   private Integer companyCbSelect;
 
   private List<Long> expenseLineIdList;
+
+  private List<ExpenseLinePostRequest> newLines;
 
   public Long getCompanyId() {
     return companyId;
@@ -125,6 +126,14 @@ public class ExpensePostRequest extends RequestPostStructure {
     this.expenseLineIdList = expenseLineIdList;
   }
 
+  public List<ExpenseLinePostRequest> getNewLines() {
+    return newLines;
+  }
+
+  public void setNewLines(List<ExpenseLinePostRequest> newLines) {
+    this.newLines = newLines;
+  }
+
   public Company fetchCompany() {
     if (companyId == null || companyId == 0L) {
       return null;
@@ -169,13 +178,34 @@ public class ExpensePostRequest extends RequestPostStructure {
   }
 
   public List<ExpenseLine> fetchExpenseLines() {
-    if (CollectionUtils.isEmpty(expenseLineIdList)) {
-      return Collections.emptyList();
+    List<ExpenseLine> expenseLineList = new ArrayList<>();
+
+    // Fetch lines by ID if provided
+    if (CollectionUtils.isNotEmpty(expenseLineIdList)) {
+      for (Long id : expenseLineIdList) {
+        expenseLineList.add(ObjectFinder.find(ExpenseLine.class, id, ObjectFinder.NO_VERSION));
+      }
     }
 
-    List<ExpenseLine> expenseLineList = new ArrayList<>();
-    for (Long id : expenseLineIdList) {
-      expenseLineList.add(ObjectFinder.find(ExpenseLine.class, id, ObjectFinder.NO_VERSION));
+    // Create new lines from DTOs
+    if (CollectionUtils.isNotEmpty(newLines)) {
+      for (ExpenseLinePostRequest lineDto : newLines) {
+        ExpenseLine line = new ExpenseLine();
+
+        if (lineDto.getExpenseLineId() != null && lineDto.getExpenseLineId() > 0) {
+          line.setId(lineDto.getExpenseLineId());
+        }
+
+        line.setExpenseProduct(lineDto.fetchExpenseProduct());
+        line.setExpenseDate(lineDto.getExpenseDate());
+        line.setUntaxedAmount(lineDto.getUntaxedAmount());
+        line.setTotalTax(lineDto.getTotalTax());
+        line.setComments(lineDto.getComments());
+        line.setProjectTask(lineDto.fetchProjectTask());
+        line.setJustificationMetaFile(lineDto.fetchjustificationMetaFile());
+
+        expenseLineList.add(line);
+      }
     }
     return expenseLineList;
   }

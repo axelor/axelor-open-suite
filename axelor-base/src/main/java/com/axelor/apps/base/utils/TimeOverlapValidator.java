@@ -39,4 +39,15 @@ public interface TimeOverlapValidator {
       String startTimeField,
       String endTimeField,
       String employeeField);
+
+  /** Find a single conflicting record, if any */
+  <T extends Model> T findConflictingRecord(
+      Class<T> entityClass,
+      LocalDateTime startTime,
+      LocalDateTime endTime,
+      Long employeeId,
+      Long currentRecordId,
+      String startTimeField,
+      String endTimeField,
+      String employeeField);
 }

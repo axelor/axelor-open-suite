@@ -24,6 +24,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Singleton
@@ -42,6 +43,7 @@ public class ExpenseComputationServiceImpl implements ExpenseComputationService 
     BigDecimal exTaxTotal = BigDecimal.ZERO;
     BigDecimal taxTotal = BigDecimal.ZERO;
     BigDecimal inTaxTotal = BigDecimal.ZERO;
+    BigDecimal chargedFeeAmount = BigDecimal.ZERO;
     BigDecimal totalToInvoice = BigDecimal.ZERO;
     List<ExpenseLine> generalExpenseLineList = expense.getGeneralExpenseLineList();
     List<ExpenseLine> kilometricExpenseLineList = expense.getKilometricExpenseLineList();
@@ -51,6 +53,7 @@ public class ExpenseComputationServiceImpl implements ExpenseComputationService 
         exTaxTotal = exTaxTotal.add(expenseLine.getUntaxedAmount());
         taxTotal = taxTotal.add(expenseLine.getTotalTax());
         inTaxTotal = inTaxTotal.add(expenseLine.getTotalAmount());
+        chargedFeeAmount = chargedFeeAmount.add(expenseLine.getChargedFeeAmount());
         totalToInvoice = totalToInvoice.add(expenseLine.getTotalAmountToInvoice());
       }
     }
@@ -70,8 +73,35 @@ public class ExpenseComputationServiceImpl implements ExpenseComputationService 
     expense.setExTaxTotal(exTaxTotal);
     expense.setTaxTotal(taxTotal);
     expense.setInTaxTotal(inTaxTotal);
+    expense.setChargedFeeAmount(chargedFeeAmount);
     expense.setTotalAmountToInvoice(totalToInvoice);
     return expense;
+  }
+
+  @Override
+  public void computeLine(ExpenseLine line) {
+    line.setToInvoice(true);
+    line.setEmployee(line.getExpense().getEmployee());
+    line.setProject(line.getExpense().getProject());
+
+    if (line.getCurrency() != null && line.getExpense() != null) {
+      line.setExpense(line.getExpense());
+    }
+
+    if (line.getUntaxedAmount() != null) {
+      BigDecimal untaxed = line.getUntaxedAmount();
+
+      // Check if tax is not provided by the user
+      if (line.getTotalTax() == null || line.getTotalTax().compareTo(BigDecimal.ZERO) == 0) {
+        BigDecimal calculatedTax =
+            untaxed.multiply(new BigDecimal("0.19")).setScale(2, RoundingMode.HALF_UP);
+        line.setTotalTax(calculatedTax);
+      }
+
+      line.setTotalAmount(untaxed.add(line.getTotalTax()));
+    }
+
+    line.setTotalAmountToInvoice(line.getTotalAmount());
   }
 
   @Override

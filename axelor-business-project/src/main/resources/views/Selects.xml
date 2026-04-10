@@ -23,6 +23,8 @@
     <option value="4">4</option>
     <option value="5">5</option>
     <option value="6">6</option>
+    <option value="7">6</option>
+    <option value="8">8</option>
   </selection>
 
   <selection name="business.project.charging.back.purchases.select">
@@ -128,11 +130,6 @@
     <option value="0">Standard Project</option>
     <option value="1">Fees Project</option>
     <option value="2">Cumulative Project</option>
-  </selection>
-
-  <selection name="hr.expense.category.select">
-    <option value="1">Employee Expense</option>
-    <option value="2">Fees / Project Expense</option>
   </selection>
 
   <selection name="business.project.extra.expense.line.type.select">

@@ -69,4 +69,28 @@ public class TimeOverlapValidatorImpl implements TimeOverlapValidator {
             employeeField)
         .isEmpty();
   }
+
+  @Override
+  public <T extends Model> T findConflictingRecord(
+      Class<T> entityClass,
+      LocalDateTime startTime,
+      LocalDateTime endTime,
+      Long employeeId,
+      Long currentRecordId,
+      String startTimeField,
+      String endTimeField,
+      String employeeField) {
+    List<T> conflicts =
+        findOverlapping(
+            entityClass,
+            startTime,
+            endTime,
+            employeeId,
+            currentRecordId,
+            startTimeField,
+            endTimeField,
+            employeeField);
+
+    return conflicts.isEmpty() ? null : conflicts.get(0);
+  }
 }

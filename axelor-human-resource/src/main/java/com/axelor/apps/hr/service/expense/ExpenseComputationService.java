@@ -19,10 +19,13 @@
 package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.db.ExpenseLine;
 import java.math.BigDecimal;
 
 public interface ExpenseComputationService {
   public Expense compute(Expense expense);
+
+  void computeLine(ExpenseLine line);
 
   public BigDecimal computePersonalExpenseAmount(Expense expense);
 

@@ -126,12 +126,15 @@ public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepositor
   public void remove(ProjectTask task) {
     Project project = task.getProject();
     super.remove(task);
+    // Important to flush before continuing if not the task won't be deleted
+    JPA.flush();
 
     // When a task is deleted the project status needs to be updated to reflect this change
     // That is if it is not a template task
-    if (task.getIsTemplate()) {
+    if (!Boolean.TRUE.equals(task.getIsTemplate())) {
       try {
         Beans.get(ProjectStatusChangeService.class).updateProjectStatus(project);
+        Beans.get(TaskReportService.class).updateAllTaskReported(task);
       } catch (AxelorAlertException e) {
         throw new PersistenceException(e.getMessage(), e);
       }

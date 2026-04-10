@@ -27,6 +27,7 @@
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
     <decimal name="totalAmountToInvoice" title="Total to invoice" scale="2" precision="20"
       readonly="true"/>
+    <decimal name="chargedFeeAmount" title="Charged Fee Amount" min="0"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>
     <date name="moveDate" title="Move Date"/>
     <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated by"
@@ -61,8 +62,7 @@
 
     <!-- MGM Customisation: Make Expenses project specific -->
     <one-to-one name="project" ref="com.axelor.apps.project.db.Project" title="project"/>
-    <integer name="categorySelect" title="Category" selection="hr.expense.category.select"
-      default="1"/>
+    <integer name="categorySelect" title="Category" selection="hr.expense.category.select"/>
 
     <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
@@ -97,6 +97,9 @@
 
             public static final int TYPE_EXPENSE = 1;
 	  		public static final int TYPE_EXPENSE_DECLARATION = 2;
+
+	  		public static final int CATEGORY_SELECT_EMPLOYEE_EXPENSE = 1;
+	  		public static final int CATEGORY_SELECT_FEES_PROJECT_EXPENSE = 2;
 	  ]]>
     </extra-code>
   </entity>

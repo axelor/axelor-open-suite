@@ -31,7 +31,10 @@
       if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
     <hilite color="warning"
       if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
-    <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
+    <!-- MGM-148, @dkouete: Enabling paid status in invoicing -->
+    <!--<hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/> -->
+    <hilite color="success"
+      if="statusSelect == 5 || (statusSelect == 3 &amp;&amp; amountRemaining == 0)"/>
     <field name="invoiceId" width="120"/>
     <field name="internalReference" width="120"/>
     <field name="externalReference" width="120"/>
@@ -1147,7 +1150,7 @@
       </panel>
       <panel name="referenceDocumentsPanel" title="Reference documents" itemSpan="6"
         canCollapse="true" collapseIf="true">
-        <field name="internalReference" title="Order Number" widget="string"/>
+        <field name="internalReference" widget="string"/>
         <field name="externalReference" title="Datev" widget="string"/>
         <!-- MGM-125 -->
         <field name="referenceNumber" title="Reference number" widget="string"
@@ -2151,10 +2154,11 @@
   </action-record>
 
   <!-- ACTION ATTRS -->
-
+  <!-- MGM-174, @gkouete: Updating project status if invoice is paid. Hiding the cancel button if status
+    is 5 which equals paid -->
   <action-attrs name="action-invoice-attrs-hide-cancel-button">
     <attribute name="hidden" for="cancelBtn"
-      expr="((operationSubTypeSelect == 2) &amp;&amp; statusSelect == 2) || statusSelect == 4 || statusSelect == 3"/>
+      expr="((operationSubTypeSelect == 2) &amp;&amp; statusSelect == 2) || statusSelect == 4 || statusSelect == 3 || statusSelect == 5"/>
   </action-attrs>
 
   <action-attrs name="action-set-partner-domain">
@@ -2302,10 +2306,12 @@
       if="invoiceLineTaxList == null || invoiceLineTaxList.isEmpty()"/>
   </action-validate>
 
+  <!-- // MGM-174, @gkouete: Updating project status if invoice is paid. Extending the error msg to consider
+    paid status as well -->
   <action-validate
     name="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice">
     <error
-      message="It is not possible to go back to validate status or cancel a ventilated invoice."
+      message="It is not possible to go back to validate status or cancel a ventilated or paid invoice."
       if="statusSelect == 3"/>
   </action-validate>
 
