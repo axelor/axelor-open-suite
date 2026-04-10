@@ -1182,6 +1182,8 @@
   <action-group name="action-partner-group-onsave">
     <action name="action-partner-iban-check-on-save"/>
     <action name="action-partner-method-check-if-registration-code-already-exists" if="!id"/>
+    <action name="action-partner-method-update-partner-address"/>
+    <action name="action-partner-method-check-registration-code-if-required"/>
     <action name="save"/>
     <action name="action-partner-method-set-user-partner"/>
   </action-group>
@@ -1576,6 +1578,15 @@
 
   <action-method name="action-method-partner-check-registration-code">
     <call class="com.axelor.apps.base.web.PartnerController" method="checkRegistrationCode"/>
+  </action-method>
+
+  <action-method name="action-partner-method-update-partner-address">
+    <call class="com.axelor.apps.base.web.PartnerController" method="updatePartnerAddress"/>
+  </action-method>
+
+  <action-method name="action-partner-method-check-registration-code-if-required">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="checkRegistrationCodeIfRequired"/>
   </action-method>
 
   <action-method name="action-partner-method-set-positive-balance">
