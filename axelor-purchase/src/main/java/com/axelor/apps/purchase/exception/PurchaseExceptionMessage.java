@@ -110,4 +110,9 @@ public final class PurchaseExceptionMessage {
   public static final String PURCHASE_ORDER_FINISHED = /*$$(*/
       "This purchase order is finished." /*)*/;
   public static final String CALL_FOR_TENDER_NO_PO_SELECTED = /*$$(*/ "No selected offer." /*)*/;
+
+  public static final String CALL_FOR_TENDER_IMPORT_EMPTY_FILE = /*$$(*/
+      "The import file is empty." /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_INVALID_FORMAT = /*$$(*/
+      "The import file format is invalid. Expected Excel file with columns: Product code, Product name, Description, Qty, Unit, Date, Delivery time, Unit price, Comment." /*)*/;
 }
