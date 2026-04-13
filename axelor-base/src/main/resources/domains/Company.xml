@@ -15,6 +15,9 @@
     <one-to-many name="companyDepartmentList" title="Company departments"
       ref="com.axelor.apps.base.db.CompanyDepartment" mappedBy="company"/>
 
+    <string name="legalInformation" title="Legal information"/>
+    <string name="legalFormAndCapital" title="Legal form and capital"/>
+
     <string name="notes" large="true" title="Notes"/>
     <many-to-one name="logo" ref="com.axelor.meta.db.MetaFile" title="Logo"
       help="The default logo, used in BIRT printings."/>

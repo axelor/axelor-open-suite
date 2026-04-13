@@ -20,6 +20,14 @@ package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 
-public interface InvoiceNoteService {
-  void generateInvoiceNote(Invoice invoice);
+public interface InvoiceVatLiabilityService {
+
+  /**
+   * Computes the VAT liability select value for an invoice based on the partner's or company's
+   * accounting situation.
+   *
+   * @param invoice the invoice to compute VAT liability for
+   * @return the VAT liability select value, or null if it cannot be determined
+   */
+  Integer computeVatLiability(Invoice invoice);
 }

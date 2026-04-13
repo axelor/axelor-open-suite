@@ -1872,4 +1872,6 @@ public final class AccountExceptionMessage {
 
   public static final String PERIOD_CLOSE_MOVES_FAILED = /*$$(*/
       "Period closure failed. Some move(s) could not be validated." /*)*/;
+  public static String MISSING_BANK_DETAILS_NOTE_TYPE = /*$$(*/
+      "Bank detail %s doesn't have a note type defined for note %s." /*)*/;
 }

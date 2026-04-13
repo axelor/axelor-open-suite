@@ -5,11 +5,9 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="InvoiceNote">
-    <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
-    <many-to-one name="invoiceNoteType" ref="com.axelor.apps.account.db.InvoiceNoteType"
-      title="Note type"/>
-    <string name="note" title="Note" large="true"/>
+  <entity name="InvoiceNoteType">
+    <string name="code" title="Code" required="true"/>
+    <string name="name" title="Name" required="true"/>
   </entity>
 
 </domain-models>

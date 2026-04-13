@@ -138,18 +138,8 @@ public class TaxInvoiceLine extends TaxGenerator {
             vatSystem = MoveLineRepository.VAT_CASH_PAYMENTS;
           } else {
             vatSystem =
-                taxAccountToolService.calculateVatSystem(
-                    invoice.getPartner(),
-                    invoice.getCompany(),
-                    invoiceLine.getAccount(),
-                    (invoice.getOperationTypeSelect()
-                            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-                        || invoice.getOperationTypeSelect()
-                            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND),
-                    (invoice.getOperationTypeSelect()
-                            == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
-                        || invoice.getOperationTypeSelect()
-                            == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
+                    taxAccountToolService.calculateVatSystem(
+                            invoice.getVatSystemSelect(), invoiceLine.getAccount());
           }
 
           imputedAccount = getImputedAccount(invoiceLine, taxLine, vatSystem);

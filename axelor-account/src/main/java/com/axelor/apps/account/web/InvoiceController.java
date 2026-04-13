@@ -44,7 +44,6 @@ import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
-import com.axelor.apps.account.service.invoice.InvoiceNoteService;
 import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
@@ -54,9 +53,11 @@ import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidatorSyncServic
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.InvoiceVatLiabilityService;
 import com.axelor.apps.account.service.invoice.LatePaymentInterestInvoiceService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupService;
+import com.axelor.apps.account.service.note.InvoiceNoteService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -1544,8 +1545,15 @@ public class InvoiceController {
   @ErrorException
   public void generateInvoiceNote(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
-    Beans.get(InvoiceNoteService.class).generateInvoiceNote(invoice);
-    response.setValues(invoice);
+    try {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+        Beans.get(InvoiceNoteService.class).generateInvoiceNote(invoice);
+        response.setValues(invoice);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   @ErrorException
@@ -1575,6 +1583,17 @@ public class InvoiceController {
       Beans.get(InvoiceTermDateComputeService.class).fillWithInvoiceDueDate(invoice);
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeVatLiability(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      Integer vatLiability =
+          Beans.get(InvoiceVatLiabilityService.class).computeVatLiability(invoice);
+      response.setValue("vatSystemSelect", vatLiability);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

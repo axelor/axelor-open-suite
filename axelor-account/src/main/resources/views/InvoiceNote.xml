@@ -5,17 +5,16 @@
 
   <grid name="invoice-note-grid" title="Invoice notes"
     model="com.axelor.apps.account.db.InvoiceNote">
-    <field name="name"/>
-    <field name="type"/>
+    <field name="invoiceNoteType.code"/>
+    <field name="invoiceNoteType.name"/>
     <field name="note"/>
   </grid>
 
   <form name="invoice-note-form" title="Invoice note"
     model="com.axelor.apps.account.db.InvoiceNote">
     <panel name="generalPanel">
-      <field name="name"/>
-      <field name="type"/>
-      <field name="note"/>
+      <field name="invoiceNoteType" required="true"/>
+      <field name="note" colSpan="12" required="true"/>
     </panel>
   </form>
 

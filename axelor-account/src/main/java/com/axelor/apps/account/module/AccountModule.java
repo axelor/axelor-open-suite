@@ -218,8 +218,6 @@ import com.axelor.apps.account.service.invoice.InvoiceMergingService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceMergingViewService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingViewServiceImpl;
-import com.axelor.apps.account.service.invoice.InvoiceNoteService;
-import com.axelor.apps.account.service.invoice.InvoiceNoteServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoicePfpValidateServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -248,6 +246,8 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceVatLiabilityService;
+import com.axelor.apps.account.service.invoice.InvoiceVatLiabilityServiceImpl;
 import com.axelor.apps.account.service.invoice.LatePaymentInterestInvoiceService;
 import com.axelor.apps.account.service.invoice.LatePaymentInterestInvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
@@ -258,8 +258,6 @@ import com.axelor.apps.account.service.invoice.attributes.InvoiceTermPaymentAttr
 import com.axelor.apps.account.service.invoice.attributes.InvoiceTermPaymentAttrsServiceImpl;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
-import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
-import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementServiceImpl;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupService;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupServiceImpl;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxRecordService;
@@ -390,6 +388,8 @@ import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecor
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordServiceImpl;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryServiceImpl;
+import com.axelor.apps.account.service.note.InvoiceNoteService;
+import com.axelor.apps.account.service.note.InvoiceNoteServiceImpl;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateService;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeInterestRateService;
@@ -527,6 +527,8 @@ public class AccountModule extends AxelorModule {
     bind(PaymentVoucherRepository.class).to(PaymentVoucherManagementRepository.class);
 
     bind(InvoiceService.class).to(InvoiceServiceImpl.class);
+
+    bind(InvoiceVatLiabilityService.class).to(InvoiceVatLiabilityServiceImpl.class);
 
     bind(InvoicePrintService.class).to(InvoicePrintServiceImpl.class);
 
@@ -843,8 +845,6 @@ public class AccountModule extends AxelorModule {
 
     bind(AccountCustomerService.class).to(AccountCustomerServiceImpl.class);
 
-    bind(InvoiceProductStatementService.class).to(InvoiceProductStatementServiceImpl.class);
-
     bind(MoveLineAttrsService.class).to(MoveLineAttrsServiceImpl.class);
 
     bind(MoveLineCheckService.class).to(MoveLineCheckServiceImpl.class);
@@ -1029,7 +1029,6 @@ public class AccountModule extends AxelorModule {
     bind(MassEntryCheckService.class).to(MassEntryCheckServiceImpl.class);
     bind(MassEntryMoveUpdateService.class).to(MassEntryMoveUpdateServiceImpl.class);
     bind(MassEntryMoveValidateService.class).to(MassEntryMoveValidateServiceImpl.class);
-    bind(InvoiceNoteService.class).to(InvoiceNoteServiceImpl.class);
     bind(MoveGroupOnChangeService.class).to(MoveGroupOnChangeServiceImpl.class);
     bind(BankDetailsDomainServiceAccount.class).to(BankDetailsDomainServiceAccountImpl.class);
     bind(BankDetailsServiceAccount.class).to(BankDetailsServiceAccountImpl.class);
@@ -1039,5 +1038,7 @@ public class AccountModule extends AxelorModule {
     bind(InvoicePaymentAlertService.class).to(InvoicePaymentAlertServiceImpl.class);
 
     bind(MovePfpToolService.class).to(MovePfpToolServiceImpl.class);
+
+    bind(InvoiceNoteService.class).to(InvoiceNoteServiceImpl.class);
   }
 }

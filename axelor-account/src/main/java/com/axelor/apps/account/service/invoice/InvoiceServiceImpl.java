@@ -45,7 +45,6 @@ import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
-import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.AxelorException;
@@ -56,9 +55,11 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
@@ -114,7 +115,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected AppBaseService appBaseService;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermPfpService invoiceTermPfpService;
-  protected InvoiceProductStatementService invoiceProductStatementService;
   protected TemplateMessageService templateMessageService;
   protected InvoiceTermFilterService invoiceTermFilterService;
   protected InvoicePrintService invoicePrintService;
@@ -134,7 +134,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
-      InvoiceProductStatementService invoiceProductStatementService,
       TemplateMessageService templateMessageService,
       InvoiceTermFilterService invoiceTermFilterService,
       InvoicePrintService invoicePrintService,
@@ -152,7 +151,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.appBaseService = appBaseService;
-    this.invoiceProductStatementService = invoiceProductStatementService;
     this.templateMessageService = templateMessageService;
     this.invoiceTermFilterService = invoiceTermFilterService;
     this.invoicePrintService = invoicePrintService;
@@ -206,10 +204,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       invoiceMap.put("advancePaymentInvoiceSet", invoice1.getAdvancePaymentInvoiceSet());
     }
 
-    invoice1.setInvoiceProductStatement(
-        invoiceProductStatementService.getInvoiceProductStatement(invoice1));
-    invoiceMap.put("invoiceProductStatement", invoice1.getInvoiceProductStatement());
-
     return invoiceMap;
   }
 
@@ -260,6 +254,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         && invoice.getInvoiceAutomaticMailOnValidate()) {
       sendMail(invoice, invoice.getInvoiceMessageTemplateOnValidate());
     }
+    setInvoiceCategory(invoice);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -1315,5 +1310,61 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       }
     }
     return taxNumber;
+  }
+
+  @Override
+  @Transactional
+  public void setInvoiceCategory(Invoice invoice) throws AxelorException {
+    String invoiceCategory = computeInvoiceCategorySelect(invoice);
+    invoice.setInvoiceCategorySelect(invoiceCategory);
+    invoiceRepo.save(invoice);
+  }
+
+  protected String computeInvoiceCategorySelect(Invoice invoice) throws AxelorException {
+    int operationType = invoice.getOperationTypeSelect();
+    int operationSubType = invoice.getOperationSubTypeSelect();
+
+    if ((operationType != InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            && operationType != InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+        || operationSubType != InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT) {
+      return null;
+    }
+
+    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+
+    if (CollectionUtils.isEmpty(invoiceLineList)) {
+      return getDefaultInvoiceCategorySelect(invoice);
+    }
+
+    Set<String> productTypes = new HashSet<>();
+
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      Product product = invoiceLine.getProduct();
+
+      if (product == null || Strings.isNullOrEmpty(product.getProductTypeSelect())) {
+        return getDefaultInvoiceCategorySelect(invoice);
+      }
+
+      productTypes.add(product.getProductTypeSelect());
+    }
+
+    if (productTypes.size() == 1) {
+      String type = productTypes.iterator().next();
+
+      if (ProductRepository.PRODUCT_TYPE_STORABLE.equals(type)) {
+        return "goods";
+      }
+
+      if (ProductRepository.PRODUCT_TYPE_SERVICE.equals(type)) {
+        return "services";
+      }
+    }
+
+    return getDefaultInvoiceCategorySelect(invoice);
+  }
+
+  protected String getDefaultInvoiceCategorySelect(Invoice invoice) throws AxelorException {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(invoice.getCompany());
+    return accountConfig.getDefaultInvoiceCategorySelect();
   }
 }

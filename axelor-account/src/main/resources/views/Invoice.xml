@@ -636,6 +636,11 @@
 
     <panel-tabs name="mainPanelTab" hideIf="partner == null">
       <panel name="invoiceContentPanel" title="Content" showTitle="false" itemSpan="12">
+        <spacer colSpan="10"/>
+        <field name="invoiceCategorySelect"
+          showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; operationSubTypeSelect == 1"
+          requiredIf="invoiceLineList &amp;&amp; invoiceLineList.length != 0" widget="singleSelect"
+          readonlyIf="statusSelect &gt;= 3" colSpan="2"/>
         <panel name="cutOffPanel" title="Cut off period" itemSpan="4"
           readonlyIf="statusSelect == 3" if="__config__.app.getApp('account').manageCutOffPeriod">
           <field name="cutOffStartDate"
@@ -654,6 +659,8 @@
       </panel>
       <panel name="invoiceTaxPanel" title="Tax" showTitle="false"
         readonlyIf="statusSelect != 1">
+        <field name="vatSystemSelect" colSpan="4" readonly="true"
+          help="Computed from the partner's accounting situation VAT system configuration"/>
         <panel-related name="invoiceLineTaxListPanel" readonlyIf="statusSelect != 1"
           field="invoiceLineTaxList" canRemove="false" canNew="false"
           onChange="action-invoice-method-compute,action-invoice-method-generate-invoice-terms"
@@ -792,20 +799,10 @@
           title="Comment to display on proforma" colSpan="12">
           <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
         </panel>
-        <panel name="specificNoteOnInvoiceToDisplayPanel" title="Bank details specific note"
-          colSpan="12" hidden="true" showIf="companyBankDetails.specificNoteOnInvoice">
-          <field name="companyBankDetails.specificNoteOnInvoice" widget="html" colSpan="12"
-            showTitle="false"/>
-        </panel>
         <panel name="legalNoticePanel" title="Legal Notice" colSpan="12"
           if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
           <field name="legalNotice" requiredIf="financialDiscount" widget="html" colSpan="12"
             showTitle="false"/>
-        </panel>
-        <field name="company.accountConfig.displayItemsCategoriesOnPrinting" hidden="true"/>
-        <panel name="invoiceProductStatementPanel" title="Invoice Product Statement"
-          colSpan="12" showIf="company.accountConfig.displayItemsCategoriesOnPrinting">
-          <field name="invoiceProductStatement" readonly="true" showTitle="false" colSpan="12"/>
         </panel>
       </panel>
       <panel name="automaticMailPanel" title="Automatic mail"
@@ -1285,6 +1282,11 @@
 
     <panel-tabs name="invoiceDetails">
       <panel name="invoiceContentPanel" title="Invoice content" showTitle="false">
+        <spacer colSpan="10"/>
+        <field name="invoiceCategorySelect"
+          showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; operationSubTypeSelect == 1"
+          requiredIf="invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; statusSelect &gt;= 2"
+          widget="singleSelect" readonlyIf="statusSelect &gt;= 3" colSpan="2"/>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
           readonlyIf="statusSelect == 3 || partner == null" colSpan="12"
@@ -1676,6 +1678,7 @@
     <action name="action-invoice-record-operationsubtype-reset"/>
     <action name="action-invoice-method-payment-mode-condition"/>
     <action name="action-invoice-record-partner-change"/>
+    <action name="action-invoice-method-compute-vat-liability"/>
     <action name="action-invoice-method-get-default-bank-details"/>
   </action-group>
 
@@ -1688,6 +1691,7 @@
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
     <action name="action-invoice-method-set-default-company-tax-number"/>
+    <action name="action-invoice-method-compute-vat-liability"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-partner-onchange">
@@ -1699,6 +1703,7 @@
 
   <action-group name="action-group-account-invoice-partner-onchange-client">
     <action name="action-invoice-record-partner-change"/>
+    <action name="action-invoice-method-compute-vat-liability"/>
     <action name="action-invoice-method-payment-mode-condition"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
@@ -1765,6 +1770,7 @@
   <action-group name="action-invoice-group-before-ventilate">
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="action-invoice-validate-check-pfp-validator-user"/>
+    <action name="action-invoice-validate-check-invoice-category"/>
     <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
     <action name="action-invoice-method-check-not-imputed-refunds"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
@@ -2014,6 +2020,9 @@
     <field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings"
       if="__user__.activeCompany != null"/>
     <field name="tradingName" expr="eval: __user__?.tradingName"/>
+    <field name="invoiceCategorySelect"
+      expr="eval: __user__?.activeCompany?.accountConfig?.defaultInvoiceCategorySelect"
+      if="(_operationTypeSelect == 1 || _operationTypeSelect == 3) &amp;&amp; (!_operationSubTypeSelect || _operationSubTypeSelect == 1)"/>
   </action-record>
 
   <action-record name="action-invoice-record-partner-change"
@@ -2488,6 +2497,10 @@
 
   <action-method name="action-invoice-method-generate-invoice-terms">
     <call class="com.axelor.apps.account.web.InvoiceController" method="computeInvoiceTerms"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-compute-vat-liability">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="computeVatLiability"/>
   </action-method>
 
   <action-method name="action-invoice-method-compute-invoice-terms-due-dates">
@@ -3027,5 +3040,10 @@
   <action-method name="action-invoice-method-set-invoice-notes">
     <call class="com.axelor.apps.account.web.InvoiceController" method="generateInvoiceNote"/>
   </action-method>
+
+  <action-validate name="action-invoice-validate-check-invoice-category">
+    <error message="Please select an invoice category before ventilating."
+      if="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; operationSubTypeSelect == 1 &amp;&amp; invoiceCategorySelect == null"/>
+  </action-validate>
 
 </object-views>
