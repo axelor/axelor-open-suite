@@ -439,7 +439,7 @@
                     <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT MoveLine.name as moveLineName,
+            <xml-property name="queryText"><![CDATA[SELECT DISTINCT MoveLine.name as moveLineName,
 MoveLine.date_val as moveLineDate,
 Account.code as accountCode,
 Account.name as accountName, 
@@ -516,6 +516,12 @@ AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or Ac
     or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
     or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account)
 AND(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner)
+AND NOT EXISTS (
+	SELECT 1 FROM account_invoice_payment ip
+	JOIN account_invoice inv ON inv.id = ip.invoice
+	WHERE ip.move = Move.id
+	AND inv.operation_sub_type_select = 2
+	AND inv.operation_type_select = 2)
 order by MoveLine.date_val ASC, MoveLine.name ASC]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
@@ -1017,6 +1023,12 @@ AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or Ac
     or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
     or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account) 
 AND(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner)
+AND NOT EXISTS (
+	SELECT 1 FROM account_invoice_payment ip
+	JOIN account_invoice inv ON inv.id = ip.invoice
+	WHERE ip.move = Move.id
+	AND inv.operation_sub_type_select = 2
+	AND inv.operation_type_select = 2)
 GROUP BY Tax.id ,TaxPaymentMoveLine.tax_rate, FiscalPosition.code,Currency.number_of_decimals
 order by Tax.code ASC]]></xml-property>
         </oda-data-set>
@@ -1227,9 +1239,6 @@ left outer join account_account as ParentAccount5 on (ParentAccount4.parent_acco
 left outer join account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
 LEFT JOIN account_account_type as AccountType on (Account.account_type = AccountType.id)
 LEFT JOIN account_move as Move on (MoveLine.move = Move.id)
-LEFT JOIN account_move_line as MoveLineTax on Move.id = MoveLineTax.move
-left join account_account as AccountTax on (MoveLineTax.account  = AccountTax.id )
-left join account_account_type as AccountTaxType on (AccountTax.account_type = AccountTaxType.id)
 left outer join base_company as Company on (AccountingReport.company = Company.id)
 left outer join base_currency as Currency on (Currency.id = Company.currency)
 
@@ -1240,8 +1249,15 @@ where AccountingReport.id = ?
 AND Account.use_for_partner_balance = true
 AND Account.reconcile_ok = true
 AND  Move.ignore_in_accounting_ok = false
-AND AccountTaxType.technical_type_select like 'tax'
-AND MoveLineTax.vat_system_select = 2
+AND EXISTS (
+    SELECT 1
+    FROM account_move_line AS MoveLineTax
+    LEFT JOIN account_account AS AccountTax ON MoveLineTax.account = AccountTax.id
+    LEFT JOIN account_account_type AS AccountTaxType ON AccountTax.account_type = AccountTaxType.id
+    WHERE MoveLineTax.move = Move.id
+    AND AccountTaxType.technical_type_select LIKE 'tax'
+    AND MoveLineTax.vat_system_select = 2
+  )
 AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 and MoveLine.amount_remaining != 0
 and MoveLine.date_val >= AccountingReport.date_from
