@@ -6,7 +6,6 @@
 "Address";"addressL6";"1";"true";"address.fullAddress"
 "Address";"room";"1";"true";"address.streetAddress"
 "Address";"floor";"1";"true";"address.streetAddress"
-"Address";"department";"1";"true";"address.streetAddress"
 "Address";"subDepartment";"1";"true";"address.streetAddress"
 "Address";"streetName";"1";"true";"address.streetAddress"
 "Address";"buildingName";"1";"true";"address.streetAddress"

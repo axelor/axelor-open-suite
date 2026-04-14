@@ -210,7 +210,6 @@
                   onChange="action-group-base-address-country-change" required="true"
                   form-view="country-form" grid-view="country-grid"/>
                 <panel name="countryHiddenPanel" hideIf="country == null" colSpan="12">
-                  <field name="department" x-bind="{{department|uppercase}}" colSpan="12"/>
                   <field name="subDepartment" colSpan="12"
                     x-bind="{{subDepartment|uppercase}}"/>
                   <field name="room" x-bind="{{room|uppercase}}" colSpan="12"/>
