@@ -1573,7 +1573,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     BigDecimal availableQtyForProduct = BigDecimal.ZERO;
     Unit targetUnit = getStockUnit(stockMoveLine);
 
-    if (stockMoveLine.getProduct() != null) {
+    if (stockMoveLine.getProduct() != null && stockLocation != null) {
       TrackingNumberConfiguration trackingNumberConfiguration =
           (TrackingNumberConfiguration)
               productCompanyService.get(
