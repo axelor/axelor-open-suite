@@ -62,6 +62,7 @@ public interface ITranslation {
       "Invoice.invoiceCreditAdvPaymentNo"; /*)*/
   public static final String INVOICE_INVOICE_BALANCE_NO = /*$$(*/ "Invoice.invoiceBalanceNo"; /*)*/
   public static final String INVOICE_DRAFT_INVOICE_NO = /*$$(*/ "Invoice.draftInvoiceNo"; /*)*/
+  public static final String INVOICE_DRAFT_REFUND_NO = /*$$(*/ "Invoice.draftRefundNo"; /*)*/
   public static final String INVOICE_REFUND_NO = /*$$(*/ "Invoice.refundNo"; /*)*/
   public static final String INVOICE_DISCOUNT_AMOUNT = /*$$(*/ "Invoice.discountAmount"; /*)*/
   public static final String INVOICE_ADVANCE_PAYMENT = /*$$(*/ "Invoice.advancePayment"; /*)*/
