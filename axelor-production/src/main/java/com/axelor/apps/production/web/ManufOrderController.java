@@ -47,6 +47,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
+import com.axelor.apps.production.service.manuforder.ManufOrderCostService;
 import com.axelor.apps.production.service.manuforder.ManufOrderMultiLevelPlanningService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
@@ -941,5 +942,18 @@ public class ManufOrderController {
     Beans.get(ManufOrderPlanService.class).updateStockMovesEstimatedDate(manufOrder);
     response.setValue("inStockMoveList", manufOrder.getInStockMoveList());
     response.setValue("outStockMoveList", manufOrder.getOutStockMoveList());
+  }
+
+  public void computeRealCosts(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      if (manufOrder.getId() == null) {
+        return;
+      }
+      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      response.setValues(Beans.get(ManufOrderCostService.class).getRealCostValues(manufOrder));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
