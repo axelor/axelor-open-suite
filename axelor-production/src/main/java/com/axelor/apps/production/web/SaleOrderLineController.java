@@ -30,7 +30,9 @@ import com.axelor.apps.production.service.SaleOrderLineDetailsProdProcessService
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
 import com.axelor.apps.production.service.SolBomUpdateService;
 import com.axelor.apps.production.service.SolDetailsBomUpdateService;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
 import com.axelor.i18n.I18n;
@@ -40,6 +42,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Singleton;
+import java.util.List;
 
 @Singleton
 public class SaleOrderLineController {
@@ -115,8 +118,8 @@ public class SaleOrderLineController {
   }
 
   public void bomOnChange(ActionRequest request, ActionResponse response) throws Exception {
-    var saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-    var saleOrder = saleOrderLine.getSaleOrder();
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
 
     if (saleOrder == null) {
       saleOrder = SaleOrderLineContextHelper.getSaleOrder(request.getContext(), saleOrderLine);
@@ -130,6 +133,13 @@ public class SaleOrderLineController {
         Beans.get(AppSaleService.class).getAppSale().getListDisplayTypeSelect()
             == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI;
 
+    // Check if the line had a BOM before the change
+    boolean hadBomBefore = false;
+    if (saleOrderLine.getId() != null) {
+      SaleOrderLine oldLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      hadBomBefore = oldLine != null && oldLine.getBillOfMaterial() != null;
+    }
+
     if (billOfMaterial != null && saleOrder != null) {
       boolean areLinesUpdated =
           !Beans.get(SolBomUpdateService.class).isUpdated(saleOrderLine)
@@ -137,9 +147,21 @@ public class SaleOrderLineController {
                   .isSolDetailsUpdated(saleOrderLine, saleOrderLine.getSaleOrderLineDetailsList());
 
       if (areLinesUpdated && isMultiLineDisplayType) {
-        response.setValue(
-            "subSaleOrderLineList",
-            saleOrderLineBomService.createSaleOrderLinesFromBom(billOfMaterial, saleOrder));
+        List<SaleOrderLine> newSubLines =
+            saleOrderLineBomService.createSaleOrderLinesFromBom(billOfMaterial, saleOrder);
+        if (hadBomBefore) {
+          // Had a BOM before -> replace all sublines
+          response.setValue("subSaleOrderLineList", newSubLines);
+        } else {
+          // No BOM before -> keep existing sublines and add new ones
+          List<SaleOrderLine> existingSubLines = saleOrderLine.getSubSaleOrderLineList();
+          if (existingSubLines != null) {
+            existingSubLines.addAll(newSubLines);
+            response.setValue("subSaleOrderLineList", existingSubLines);
+          } else {
+            response.setValue("subSaleOrderLineList", newSubLines);
+          }
+        }
         response.setValue(
             "saleOrderLineDetailsList",
             saleOrderLineDetailsBomService.getUpdatedSaleOrderLineDetailsFromBom(
