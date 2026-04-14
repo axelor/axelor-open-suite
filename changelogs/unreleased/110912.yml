@@ -1,0 +1,3 @@
+---
+title: "Accounting chart: fixed FRA_PCG tax import leaving activeTaxLine null due to incomplete importIds in account_tax.csv."
+module: axelor-account
