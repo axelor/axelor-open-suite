@@ -362,14 +362,9 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
     SaleOrderLine saleOrderLine;
     if (configurator.getConfiguratorCreator().getGenerateProduct()) {
-      // generate sale order line from product
-      generateProduct(configurator, jsonAttributes, jsonIndicators, saleOrder.getId());
-      BigDecimal qty = getFormulaQty(configurator, jsonAttributes);
-
       saleOrderLine =
-          saleOrderLineGeneratorService.createSaleOrderLine(
-              saleOrder, configurator.getProduct(), qty);
-
+          createSaleOrderLineFromGeneratedProduct(
+              configurator, saleOrder, jsonAttributes, jsonIndicators);
     } else {
       saleOrderLine =
           generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
@@ -379,6 +374,18 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     saleOrderLineRepository.save(saleOrderLine);
     saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderRepository.save(saleOrder);
+  }
+
+  protected SaleOrderLine createSaleOrderLineFromGeneratedProduct(
+      Configurator configurator,
+      SaleOrder saleOrder,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators)
+      throws AxelorException {
+    generateProduct(configurator, jsonAttributes, jsonIndicators, saleOrder.getId());
+    BigDecimal qty = getFormulaQty(configurator, jsonAttributes);
+    return saleOrderLineGeneratorService.createSaleOrderLine(
+        saleOrder, configurator.getProduct(), qty);
   }
 
   protected BigDecimal getFormulaQty(Configurator configurator, JsonContext jsonAttributes) {
