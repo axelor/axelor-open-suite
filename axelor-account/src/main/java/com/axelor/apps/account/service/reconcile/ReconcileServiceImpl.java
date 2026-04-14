@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -316,14 +317,24 @@ public class ReconcileServiceImpl implements ReconcileService {
     Move debitMove = reconcile.getDebitMoveLine().getMove();
     Move creditMove = reconcile.getCreditMoveLine().getMove();
 
-    if (debitMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT) {
+    if (debitMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT
+        && creditMove.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT
+        && !isAdvancePaymentInvoiceMove(creditMove)) {
       moveLineTaxService.generateTaxPaymentMoveLineList(
           reconcile.getDebitMoveLine(), reconcile.getCreditMoveLine(), reconcile);
     }
-    if (creditMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT) {
+    if (creditMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT
+        && debitMove.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT
+        && !isAdvancePaymentInvoiceMove(debitMove)) {
       moveLineTaxService.generateTaxPaymentMoveLineList(
           reconcile.getCreditMoveLine(), reconcile.getDebitMoveLine(), reconcile);
     }
+  }
+
+  protected boolean isAdvancePaymentInvoiceMove(Move move) {
+    return move.getInvoice() != null
+        && move.getInvoice().getOperationSubTypeSelect()
+            == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE;
   }
 
   /**

@@ -3273,6 +3273,7 @@
 "The account code field allows to add every account whose code will fulfill the given regular expression.",,,
 "The account of a product could not be determined or is not filled. Please fill the missing account on invoice line %s",,,
 "The account with the code %s cannot be found. The move line cannot be created.",,,
+"The accounting account for the advance payment product is subject to the VAT on deliveries regime. However, legally, the VAT related to the advance payment becomes due upon receipt of payment. Do you wish to continue or modify the VAT system of the account before validating?",,,
 "The accounting configurations have been imported successfully for the company %s.",,,
 "The accounting move line on the account %s can't have an amount equals to zero",,,
 "The amount in currency in %s is required when importing an entry line in a foreign currency (different from company currency).",,,

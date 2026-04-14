@@ -1845,4 +1845,7 @@ public final class AccountExceptionMessage {
 
   public static final String PERIOD_CLOSE_MOVES_FAILED = /*$$(*/
       "Period closure failed. Some move(s) could not be validated." /*)*/;
+
+  public static final String INVOICE_VAT_SYSTEM_DELIVERY_ON_ADVANCE_PAYMENT_PRODUCT = /*$$(*/
+      "The accounting account for the advance payment product is subject to the VAT on deliveries regime. However, legally, the VAT related to the advance payment becomes due upon receipt of payment. Do you wish to continue or modify the VAT system of the account before validating?" /*)*/;
 }
