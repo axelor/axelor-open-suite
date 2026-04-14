@@ -715,6 +715,16 @@
     <view-param name="search-filters" value="tax-filters"/>
   </action-view>
 
+  <menuitem name="account-conf-financial-vat-exemption-reason"
+    parent="account-conf-financial" title="VAT exemption reasons"
+    action="account.conf.financial.vat.exemption.reason" order="1025"/>
+
+  <action-view name="account.conf.financial.vat.exemption.reason"
+    title="VAT exemption reasons" model="com.axelor.apps.account.db.VatExemptionReason">
+    <view type="grid" name="vat-exemption-reason-grid"/>
+    <view type="form" name="vat-exemption-reason-form"/>
+  </action-view>
+
   <menuitem name="account-conf-financial-tax-type" parent="account-conf-financial"
     title="Tax types" action="account.conf.financial.tax.type" order="1050"/>
 
