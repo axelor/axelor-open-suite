@@ -5080,7 +5080,11 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
                                             <value type="javascript">if (row["status_select"] == "1") {
-                                                    'Invoice.draftInvoiceNo'
+                                                    if (row["operation_type_select"] == "2" || row["operation_type_select"] == "4") {
+                                                        'Invoice.draftRefundNo'
+                                                    } else {
+                                                        'Invoice.draftInvoiceNo'
+                                                    }
                                                 } else if(row["status_select"] == "2") {
                                                     if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                         'Invoice.purchaseInvoiceAdvPaymentNo'
@@ -5089,7 +5093,11 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                                                     }else if ((row["operation_type_select"] == "2" || row["operation_type_select"] == "4") &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                         'Invoice.invoiceCreditAdvPaymentNo'
                                                     } else {
-                                                        'Invoice.draftInvoiceNo'
+                                                        if (row["operation_type_select"] == "2" || row["operation_type_select"] == "4") {
+                                                            'Invoice.draftRefundNo'
+                                                        } else {
+                                                            'Invoice.draftInvoiceNo'
+                                                        }
                                                     }
                                                 } else if(row["status_select"] == "3") {
                                                     if (row["operation_type_select"] == "1") {
@@ -5741,7 +5749,11 @@ this.height=row["logo_height"];]]></method>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
                                     <value type="javascript">if (row["status_select"] == "1") {
-                                            'Invoice.draftInvoiceNo'
+                                            if (row["operation_type_select"] == "2" || row["operation_type_select"] == "4") {
+                                                'Invoice.draftRefundNo'
+                                            } else {
+                                                'Invoice.draftInvoiceNo'
+                                            }
                                         } else if(row["status_select"] == "2") {
                                             if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                 'Invoice.purchaseInvoiceAdvPaymentNo'
@@ -5750,7 +5762,11 @@ this.height=row["logo_height"];]]></method>
                                             } else if ((row["operation_type_select"] == "2" || row["operation_type_select"] == "4") &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                 'Invoice.invoiceCreditAdvPaymentNo'
                                             } else {
-                                                'Invoice.draftInvoiceNo'
+                                                if (row["operation_type_select"] == "2" || row["operation_type_select"] == "4") {
+                                                    'Invoice.draftRefundNo'
+                                                } else {
+                                                    'Invoice.draftInvoiceNo'
+                                                }
                                             }
                                         } else if(row["status_select"] == "3") {
                                             if (row["operation_type_select"] == "1") {
@@ -6434,7 +6450,11 @@ row["message_key"]
                                 <simple-property-list name="expression">
                                     <value type="javascript">
                                         if (row["status_select"] == "1") {
-                                            'Invoice.draftInvoiceNo'
+                                            if (row["operation_type_select"] == "2" || row["operation_type_select"] == "4") {
+                                                'Invoice.draftRefundNo'
+                                            } else {
+                                                'Invoice.draftInvoiceNo'
+                                            }
                                         } else if(row["status_select"] == "2") {
                                             if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                 'Invoice.purchaseInvoiceAdvPaymentNo'
@@ -6443,7 +6463,11 @@ row["message_key"]
                                             } else if ((row["operation_type_select"] == "2" || row["operation_type_select"] == "4") &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                 'Invoice.invoiceCreditAdvPaymentNo'
                                             } else {
-                                                'Invoice.draftInvoiceNo'
+                                                if (row["operation_type_select"] == "2" || row["operation_type_select"] == "4") {
+                                                    'Invoice.draftRefundNo'
+                                                } else {
+                                                    'Invoice.draftInvoiceNo'
+                                                }
                                             }
                                         } else if(row["status_select"] == "3") {
                                             if (row["operation_type_select"] == "1") {
