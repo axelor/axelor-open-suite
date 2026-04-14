@@ -30,6 +30,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.Inject;
 import java.util.List;
@@ -72,8 +73,9 @@ public class PurchaseOrderEditStockMoveServiceImpl implements PurchaseOrderEditS
         throw new AxelorException(
             appSupplychain,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            SupplychainExceptionMessage
-                .SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_PURCHASE_ORDER);
+            I18n.get(
+                SupplychainExceptionMessage
+                    .SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_PURCHASE_ORDER));
       }
       for (StockMove stockMove : allStockMoves) {
         stockMoveService.cancel(stockMove, cancelReason);
