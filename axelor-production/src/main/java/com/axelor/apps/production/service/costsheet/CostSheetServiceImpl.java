@@ -585,6 +585,17 @@ public class CostSheetServiceImpl implements CostSheetService {
       BigDecimal costPrice = costAmount.multiply(producedQty);
       costSheetLineService.createWorkCenterHRCostSheetLine(
           workCenter, priority, bomLevel, parentCostSheetLine, producedQty, costPrice, pieceUnit);
+    } else if (hrCostType == WorkCenterRepository.COST_TYPE_PER_CYCLE) {
+      BigDecimal nbCycles =
+          prodProcessLineComputationService.getNbCycle(prodProcessLine, producedQty);
+      costSheetLineService.createWorkCenterHRCostSheetLine(
+          workCenter,
+          priority,
+          bomLevel,
+          parentCostSheetLine,
+          nbCycles,
+          costAmount.multiply(nbCycles),
+          cycleUnit);
     }
   }
 
@@ -1183,6 +1194,11 @@ public class CostSheetServiceImpl implements CostSheetService {
                 operationOrder, parentCostSheetLine, previousCostSheetDate, ratio);
       }
       unit = hourUnit;
+    } else if (costType == WorkCenterRepository.COST_TYPE_PER_CYCLE) {
+      consumptionQty =
+          prodProcessLineComputationService.computeNbCycle(
+              producedQty, workCenter.getMaxCapacityPerCycle());
+      unit = cycleUnit;
     }
 
     this.computeRealHumanResourceCost(
@@ -1267,7 +1283,7 @@ public class CostSheetServiceImpl implements CostSheetService {
           bomLevel,
           parentCostSheetLine,
           prodProcessLineComputationService.computeNbCycle(
-              workCenter.getMaxCapacityPerCycle(), producedQty),
+              producedQty, workCenter.getMaxCapacityPerCycle()),
           costAmount,
           cycleUnit);
     } else if (costType == WorkCenterRepository.COST_TYPE_PER_HOUR) {
