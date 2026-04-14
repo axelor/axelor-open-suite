@@ -278,6 +278,7 @@
 "Termination","Clôture",,
 "Termination demand date","Date de demande de résiliation",,
 "The company %s doesn't have any configured sequence for contracts","La séquence pour les contrats est manquante pour la société %s ",,
+"The first period end date cannot be earlier than the supposed activation date.","La date de fin de la première période de facturation ne peut pas être antérieure à la date d'activation prévisionnelle.",,
 "The next contract field is not set on the current contract version.","Le champ contrat suivant n'est pas défini sur cette version du contrat.",,
 "There is an error in the formula.","Il y a une erreur dans la formule.",,
 "There is no contract associated with this version.","Il n’existe aucun contrat associé à cette version.",,

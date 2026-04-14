@@ -256,5 +256,23 @@
       method="checkSupposedActivationDate"/>
   </action-method>
 
+  <action-validate name="action-contract-version-validate-supposed-activation-date">
+    <error
+      message="The first period end date cannot be earlier than the supposed activation date."
+      if="supposedActivationDate != null &amp;&amp; __parent__ != null &amp;&amp; __parent__.firstPeriodEndDate != null &amp;&amp;  __parent__.firstPeriodEndDate &lt; supposedActivationDate"
+      action="action-contract-version-record-reset-supposed-activation-date"/>
+  </action-validate>
+
+  <action-record name="action-contract-version-record-reset-supposed-activation-date"
+    model="com.axelor.apps.contract.db.Contract">
+    <field name="supposedActivationDate" expr="eval: null"/>
+  </action-record>
+
+  <action-group name="action-contract-version-group-supposed-activation-date-onchange">
+    <action name="action-contract-version-validate-supposed-activation-date"/>
+    <action name="ction-method-contract-version-check-supposed-activation-date"/>
+    <action name="save"/>
+    <action name="action-method-contract-version-update-contract-lines"/>
+  </action-group>
 
 </object-views>
