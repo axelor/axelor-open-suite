@@ -1,0 +1,3 @@
+---
+title: "Analytic: fixed analytic percentage validation bypass when saving a move in edit mode."
+module: axelor-account
