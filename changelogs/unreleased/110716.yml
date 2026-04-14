@@ -1,0 +1,5 @@
+---
+title: "Production: fixed automatic production order not generated for sale order lines created via product configurator."
+module: axelor-production
+developer: |
+  SaleOrderLineProductionService added to ConfiguratorServiceProductionImpl constructor.

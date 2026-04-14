@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.service.BillOfMaterialRemoveService;
+import com.axelor.apps.production.service.SaleOrderLineProductionService;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -54,6 +55,7 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
   protected final ConfiguratorBomService configuratorBomService;
   protected final BillOfMaterialRemoveService billOfMaterialRemoveService;
+  protected final SaleOrderLineProductionService saleOrderLineProductionService;
 
   @Inject
   public ConfiguratorServiceProductionImpl(
@@ -73,7 +75,8 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       ProductCompanyRepository productCompanyRepository,
       ConfiguratorBomService configuratorBomService,
       ConfiguratorRepository configuratorRepository,
-      BillOfMaterialRemoveService billOfMaterialRemoveService) {
+      BillOfMaterialRemoveService billOfMaterialRemoveService,
+      SaleOrderLineProductionService saleOrderLineProductionService) {
     super(
         appBaseService,
         configuratorFormulaService,
@@ -92,6 +95,7 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
         configuratorRepository);
     this.configuratorBomService = configuratorBomService;
     this.billOfMaterialRemoveService = billOfMaterialRemoveService;
+    this.saleOrderLineProductionService = saleOrderLineProductionService;
   }
 
   @Override
@@ -131,7 +135,7 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
     }
   }
 
-  /** In this implementation, we also create a bill of material. */
+  /** In this implementation, we also create a bill of material and set qtyToProduce. */
   @Override
   protected SaleOrderLine generateSaleOrderLine(
       Configurator configurator,
@@ -148,6 +152,8 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
           .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, null, configurator)
           .ifPresent(saleOrderLine::setBillOfMaterial);
     }
+    saleOrderLine.setQtyToProduce(
+        saleOrderLineProductionService.computeQtyToProduce(saleOrderLine, null));
     return saleOrderLine;
   }
 
@@ -186,5 +192,20 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
     }
 
     return defaultBillOfMaterial;
+  }
+
+  @Override
+  protected SaleOrderLine createSaleOrderLineFromGeneratedProduct(
+      Configurator configurator,
+      SaleOrder saleOrder,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators)
+      throws AxelorException {
+    SaleOrderLine saleOrderLine =
+        super.createSaleOrderLineFromGeneratedProduct(
+            configurator, saleOrder, jsonAttributes, jsonIndicators);
+    saleOrderLine.setQtyToProduce(
+        saleOrderLineProductionService.computeQtyToProduce(saleOrderLine, null));
+    return saleOrderLine;
   }
 }
