@@ -2019,6 +2019,7 @@
 "Invoice.discountAmount",,,
 "Invoice.documentRef",,,
 "Invoice.draftInvoiceNo",,,
+"Invoice.draftRefundNo",,,
 "Invoice.dueDate",,,
 "Invoice.expenseProduct",,,
 "Invoice.expenseTaxAmount",,,
