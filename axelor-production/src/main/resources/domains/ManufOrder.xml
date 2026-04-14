@@ -70,6 +70,13 @@
     <one-to-many name="costSheetList" ref="com.axelor.apps.production.db.CostSheet"
       title="Cost sheet" mappedBy="manufOrder"/>
     <decimal name="costPrice" title="Cost price" precision="20" scale="10"/>
+    <decimal name="materialCost" title="Material cost" precision="20" scale="10"/>
+    <decimal name="laborCost" title="Labor cost" precision="20" scale="10"/>
+    <decimal name="subcontractingCost" title="Subcontracting cost" precision="20" scale="10"/>
+    <decimal name="realCost" title="Total real cost" precision="20" scale="10"/>
+    <decimal name="theoreticalCost" title="Theoretical cost" precision="20" scale="10"/>
+    <decimal name="varianceAmount" title="Variance amount" precision="20" scale="10"/>
+    <decimal name="variancePercent" title="Variance (%)" precision="20" scale="10"/>
 
     <!-- Champ pointé ? -->
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess"

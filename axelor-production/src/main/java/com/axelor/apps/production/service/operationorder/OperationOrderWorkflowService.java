@@ -68,8 +68,9 @@ public interface OperationOrderWorkflowService {
    * Resumes the given {@link OperationOrder} and sets its resuming time
    *
    * @param operationOrder An operation order
+   * @throws AxelorException
    */
-  void resume(OperationOrder operationOrder);
+  void resume(OperationOrder operationOrder) throws AxelorException;
 
   /**
    * Ends the given {@link OperationOrder} and sets its stopping time<br>

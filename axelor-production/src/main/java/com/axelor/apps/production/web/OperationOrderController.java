@@ -26,6 +26,7 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.OperationOrderHazardPhraseService;
+import com.axelor.apps.production.service.manuforder.ManufOrderCostService;
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
@@ -47,12 +48,16 @@ public class OperationOrderController {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public void computeDuration(ActionRequest request, ActionResponse response) {
+    try {
+      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+      operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
 
-    OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
-    operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
-
-    Beans.get(OperationOrderPlanningService.class).computeDuration(operationOrder);
-    response.setReload(true);
+      Beans.get(OperationOrderPlanningService.class).computeDuration(operationOrder);
+      Beans.get(ManufOrderCostService.class).computeLaborCost(operationOrder.getManufOrder());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void alertPlannedEndDateOverflow(ActionRequest request, ActionResponse response) {

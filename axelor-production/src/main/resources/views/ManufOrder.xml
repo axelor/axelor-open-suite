@@ -263,6 +263,15 @@
         </panel>
 
       </panel>
+      <panel name="realCostPanel" title="Real cost" readonly="true" itemSpan="3">
+        <field name="materialCost"/>
+        <field name="laborCost"/>
+        <field name="subcontractingCost"/>
+        <field name="realCost"/>
+        <field name="theoreticalCost"/>
+        <field name="varianceAmount"/>
+        <field name="variancePercent"/>
+      </panel>
       <panel name="consumedProductsPanel" title="Consumed products"
         hideIf="isConsProOnOperation || statusSelect &lt; 3">
         <button name="updatePlannedQtyBtn"
@@ -980,6 +989,19 @@
   <action-attrs name="action-manuf-order-attrs-price-digits">
     <attribute name="scale" for="costPrice"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="materialCost"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="laborCost"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="subcontractingCost"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="realCost"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="theoreticalCost"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="varianceAmount"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="variancePercent" expr="eval: 2"/>
     <attribute name="value" for="$totalPlannedDuration"
       expr="eval: operationOrderList.collect{it->it.plannedDuration}.sum()"
       if="operationOrderList != null &amp;&amp; !operationOrderList.isEmpty()"/>

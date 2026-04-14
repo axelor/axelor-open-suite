@@ -122,6 +122,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected ManufOrderGetStockMoveService manufOrderGetStockMoveService;
   protected ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService;
+  protected ManufOrderCostService manufOrderCostService;
 
   @Inject
   public ManufOrderServiceImpl(
@@ -143,7 +144,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
-      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService,
+      ManufOrderCostService manufOrderCostService) {
     this.sequenceService = sequenceService;
     this.operationOrderService = operationOrderService;
     this.manufOrderPlanService = manufOrderPlanService;
@@ -163,6 +165,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
+    this.manufOrderCostService = manufOrderCostService;
   }
 
   @Override
@@ -595,6 +598,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             ? plannedStartDateT
             : appProductionService.getTodayDateTime().toLocalDateTime());
 
+    manufOrderCostService.computeRealCosts(manufOrder);
     manufOrderRepo.save(manufOrder);
   }
 

@@ -30,7 +30,7 @@ public interface ManufOrderWorkflowService {
 
   void pause(ManufOrder manufOrder) throws AxelorException;
 
-  void resume(ManufOrder manufOrder);
+  void resume(ManufOrder manufOrder) throws AxelorException;
 
   boolean finish(ManufOrder manufOrder) throws AxelorException;
 
