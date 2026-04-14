@@ -297,9 +297,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
         if (compensatedRefundIds.contains(invoiceTerm.getId())) {
-          invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
-          invoiceTerm.setAmountPaid(BigDecimal.ZERO);
-          invoiceTermRepo.save(invoiceTerm);
+          if (!this.generatePaymentsFirst(paymentSession)) {
+            invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
+            invoiceTerm.setAmountPaid(BigDecimal.ZERO);
+            invoiceTermRepo.save(invoiceTerm);
+          }
         } else if (paymentSession.getStatusSelect()
                 == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || this.shouldBeProcessed(invoiceTerm)) {
@@ -323,7 +325,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       JPA.clear();
     }
 
-    this.updatePaymentAmountsAfterCompensation(invoiceTermLinkWithRefund);
+    this.updatePaymentAmountsAfterCompensation(
+        invoiceTermLinkWithRefund,
+        paymentSession.getAccountingTriggerSelect()
+            == PaymentSessionRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
   }
 
   @Override
@@ -1278,7 +1283,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   @Transactional(rollbackOn = {Exception.class})
   protected void updatePaymentAmountsAfterCompensation(
-      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund) {
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund,
+      boolean updateAmountPaid) {
     if (CollectionUtils.isEmpty(invoiceTermLinkWithRefund)) {
       return;
     }
@@ -1293,7 +1299,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       InvoiceTerm invoiceTerm = invoiceTermRepo.find(entry.getKey());
       if (invoiceTerm != null) {
         invoiceTerm.setPaymentAmount(invoiceTerm.getPaymentAmount().subtract(entry.getValue()));
-        invoiceTerm.setAmountPaid(invoiceTerm.getPaymentAmount());
+        if (updateAmountPaid) {
+          invoiceTerm.setAmountPaid(invoiceTerm.getPaymentAmount());
+        }
         invoiceTermRepo.save(invoiceTerm);
       }
     }
