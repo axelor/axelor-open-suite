@@ -61,11 +61,11 @@ import org.slf4j.LoggerFactory;
 
 public class AdvancedImportServiceImpl implements AdvancedImportService {
 
-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private static final String forSelectUseValues = "values";
-  private static final String forSelectUseTitles = "titles";
-  private static final String forSelectUseTranslatedTitles = "translated titles";
+  protected static final String forSelectUseValues = "values";
+  protected static final String forSelectUseTitles = "titles";
+  protected static final String forSelectUseTranslatedTitles = "translated titles";
 
   private Inflector inflector = Inflector.getInstance();
 

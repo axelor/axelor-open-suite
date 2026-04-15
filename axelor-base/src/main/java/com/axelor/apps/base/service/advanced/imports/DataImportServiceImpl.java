@@ -78,20 +78,20 @@ import org.slf4j.LoggerFactory;
 
 public class DataImportServiceImpl implements DataImportService {
 
-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private static final char CSV_SEPRATOR = ';';
-  private static final String INPUT_CALLABLE =
+  protected static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected static final char CSV_SEPRATOR = ';';
+  protected static final String INPUT_CALLABLE =
       "com.axelor.csv.script.ImportAdvancedImport:importGeneral";
-  private static final String BIND_CALLABLE_DATE =
+  protected static final String BIND_CALLABLE_DATE =
       "call:com.axelor.csv.script.ImportDateTime:importDate";
-  private static final String BIND_CALLABLE_DATE_TIME =
+  protected static final String BIND_CALLABLE_DATE_TIME =
       "call:com.axelor.csv.script.ImportDateTime:importDateTime";
-  private static final String BIND_CALLABLE_META_FILE =
+  protected static final String BIND_CALLABLE_META_FILE =
       "call:com.axelor.csv.script.ImportAdvancedImport:importPicture";
-  private static final String MANY_TO_MANY = "ManyToMany";
-  private static final String SPLIT = ".split('\\\\";
-  private static final String AS_LIST = "') as List";
-  private static final String REPLACE_SYMBOL = "$";
+  protected static final String MANY_TO_MANY = "ManyToMany";
+  protected static final String SPLIT = ".split('\\\\";
+  protected static final String AS_LIST = "') as List";
+  protected static final String REPLACE_SYMBOL = "$";
 
   private CSVInput csvInput;
 

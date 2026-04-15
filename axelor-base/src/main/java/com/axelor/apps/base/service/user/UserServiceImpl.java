@@ -75,23 +75,23 @@ public class UserServiceImpl implements UserService {
 
   public static final String DEFAULT_LOCALIZATION_CODE = "en_GB";
 
-  private static final String PATTERN_ACCESS_RESTRICTION =
+  protected static final String PATTERN_ACCESS_RESTRICTION =
       "(((?=.*[a-z])(?=.*[A-Z])(?=.*\\d))|((?=.*[a-z])(?=.*[A-Z])(?=.*\\W))|((?=.*[a-z])(?=.*\\d)(?=.*\\W))|((?=.*[A-Z])(?=.*\\d)(?=.*\\W))).{8,}";
-  private static final Pattern PATTERN =
+  protected static final Pattern PATTERN =
       Pattern.compile(
           MoreObjects.firstNonNull(
               AppSettings.get().get("user.password.pattern"), PATTERN_ACCESS_RESTRICTION));
 
-  private static final String PATTERN_DESCRIPTION =
+  protected static final String PATTERN_DESCRIPTION =
       PATTERN.pattern().equals(PATTERN_ACCESS_RESTRICTION)
           ? BaseExceptionMessage.USER_PATTERN_MISMATCH_ACCES_RESTRICTION
           : BaseExceptionMessage.USER_PATTERN_MISMATCH_CUSTOM;
 
-  private static final String GEN_CHARS =
+  protected static final String GEN_CHARS =
       "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
-  private static final Pair<Integer, Integer> GEN_BOUNDS = Pair.of(12, 22);
-  private static final int GEN_LOOP_LIMIT = 1000;
-  private static final SecureRandom random = new SecureRandom();
+  protected static final Pair<Integer, Integer> GEN_BOUNDS = Pair.of(12, 22);
+  protected static final int GEN_LOOP_LIMIT = 1000;
+  protected static final SecureRandom random = new SecureRandom();
 
   @Inject
   public UserServiceImpl(

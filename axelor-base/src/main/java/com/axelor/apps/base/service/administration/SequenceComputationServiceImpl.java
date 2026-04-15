@@ -52,15 +52,15 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class SequenceComputationServiceImpl implements SequenceComputationService {
 
-  private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  private static final String PATTERN_FULL_YEAR = "%YYYY";
-  private static final String PATTERN_YEAR = "%YY";
-  private static final String PATTERN_MONTH = "%M";
-  private static final String PATTERN_FULL_MONTH = "%FM";
-  private static final String PATTERN_DAY = "%D";
-  private static final String PATTERN_WEEK = "%WY";
-  private static final String PADDING_LETTER = "A";
-  private static final String PADDING_DIGIT = "0";
+  protected static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  protected static final String PATTERN_FULL_YEAR = "%YYYY";
+  protected static final String PATTERN_YEAR = "%YY";
+  protected static final String PATTERN_MONTH = "%M";
+  protected static final String PATTERN_FULL_MONTH = "%FM";
+  protected static final String PATTERN_DAY = "%D";
+  protected static final String PATTERN_WEEK = "%WY";
+  protected static final String PADDING_LETTER = "A";
+  protected static final String PADDING_DIGIT = "0";
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 

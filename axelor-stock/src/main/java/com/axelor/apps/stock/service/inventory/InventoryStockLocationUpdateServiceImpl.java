@@ -42,7 +42,7 @@ import org.apache.commons.collections.CollectionUtils;
 public class InventoryStockLocationUpdateServiceImpl
     implements InventoryStockLocationUpdateService {
 
-  private static final int DEFAULT_PRODUCT_PAGE_SIZE = 10;
+  protected static final int DEFAULT_PRODUCT_PAGE_SIZE = 10;
 
   protected final StockLocationLineRepository stockLocationLineRepository;
   protected final InventoryLineRepository inventoryLineRepository;

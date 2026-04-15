@@ -59,14 +59,14 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
     this.configuratorCreatorService = configuratorCreatorService;
   }
 
-  private static final String CONFIG_FILE_PATH =
+  protected static final String CONFIG_FILE_PATH =
       "/data-import/import-configurator-creator-config.xml";
 
   /**
    * MetaJsonField expression fields that may contain attribute name references and must be updated
    * after import. Other string fields (title, help, widget, model, etc.) must not be modified.
    */
-  private static final Set<String> EXPRESSION_FIELDS =
+  protected static final Set<String> EXPRESSION_FIELDS =
       Set.of(
           "showIf", "hideIf", "requiredIf", "readonlyIf", "domain", "defaultValue", "widgetAttrs");
 
