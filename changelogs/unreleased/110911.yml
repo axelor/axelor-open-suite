@@ -1,0 +1,3 @@
+---
+title: "Payment mode: fixed payment mode import files by removing reference to the removed invoiceLabel field."
+module: axelor-account
