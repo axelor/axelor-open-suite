@@ -236,18 +236,4 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
 
     moveLine.setBankReconciledAmount(bankReconciledAmount);
   }
-
-  @Override
-  @Transactional
-  public BankReconciliationLine setSelected(BankReconciliationLine bankReconciliationLineContext) {
-    BankReconciliationLine bankReconciliationLine =
-        bankReconciliationLineRepository.find(bankReconciliationLineContext.getId());
-    if (bankReconciliationLine.getIsSelectedBankReconciliation() != null) {
-      bankReconciliationLine.setIsSelectedBankReconciliation(
-          !bankReconciliationLineContext.getIsSelectedBankReconciliation());
-    } else {
-      bankReconciliationLine.setIsSelectedBankReconciliation(true);
-    }
-    return bankReconciliationLineRepository.save(bankReconciliationLine);
-  }
 }
