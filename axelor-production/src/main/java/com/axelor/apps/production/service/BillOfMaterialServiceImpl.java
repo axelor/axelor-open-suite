@@ -34,10 +34,11 @@ import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
+import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -54,8 +55,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -597,7 +600,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   @Override
   public Map<BillOfMaterial, BigDecimal> getSubBillOfMaterialMapWithLineQty(
       BillOfMaterial billOfMaterial) {
-    billOfMaterial = JpaModelHelper.ensureManaged(billOfMaterial);
+    billOfMaterial = ensureManaged(billOfMaterial);
 
     if (billOfMaterial.getBillOfMaterialLineList() != null) {
       return billOfMaterial.getBillOfMaterialLineList().stream()
@@ -607,5 +610,17 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     }
 
     return new HashMap<>();
+  }
+
+  public static <T extends Model> T ensureManaged(T model) {
+    if (model == null || model.getId() == null) {
+      return model;
+    }
+    EntityManager em = JPA.em();
+    if (em.contains(model)) {
+      return model instanceof HibernateProxy ? EntityHelper.getEntity(model) : model;
+    }
+    Class<T> type = EntityHelper.getEntityClass(model);
+    return em.find(type, model.getId());
   }
 }
