@@ -1,0 +1,3 @@
+---
+title: "Permission assistant: fixed invalid imported permissions when the condition is left empty."
+module: axelor-base
