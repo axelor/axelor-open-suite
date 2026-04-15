@@ -18,12 +18,24 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
 
 public interface PurchaseOrderAcknowledgmentService {
 
   AcknowledgmentData computeAcknowledgmentData(PurchaseOrderLine purchaseOrderLine);
+
+  Map<LocalDate, BigDecimal> computeAcknowledgmentForecastMap(
+      PurchaseOrderLine purchaseOrderLine,
+      BigDecimal unitInTaxAmount,
+      BigDecimal invoicedAmount,
+      long estimatedDurationDays,
+      PaymentCondition paymentCondition,
+      LocalDate fromDate,
+      LocalDate toDate);
 
   record AcknowledgmentData(LocalDate maxDeliveryDate, boolean qtyExceeded) {}
 }

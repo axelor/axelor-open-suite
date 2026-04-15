@@ -18,12 +18,19 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.service.PaymentConditionToolService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.supplychain.db.PurchaseOrderAcknowledgment;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -60,5 +67,64 @@ public class PurchaseOrderAcknowledgmentServiceImpl implements PurchaseOrderAckn
 
     return new AcknowledgmentData(
         maxDeliveryDate, acknowledgedQty.compareTo(purchaseOrderLine.getQty()) > 0);
+  }
+
+  @Override
+  public Map<LocalDate, BigDecimal> computeAcknowledgmentForecastMap(
+      PurchaseOrderLine purchaseOrderLine,
+      BigDecimal unitInTaxAmount,
+      BigDecimal invoicedAmount,
+      long estimatedDurationDays,
+      PaymentCondition paymentCondition,
+      LocalDate fromDate,
+      LocalDate toDate) {
+
+    List<PurchaseOrderAcknowledgment> ackList =
+        purchaseOrderLine.getPurchaseOrderAcknowledgmentList();
+    if (CollectionUtils.isEmpty(ackList)) {
+      return Collections.emptyMap();
+    }
+
+    BigDecimal totalAckQty =
+        ackList.stream()
+            .map(PurchaseOrderAcknowledgment::getQty)
+            .filter(q -> q != null && q.signum() > 0)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    if (totalAckQty.signum() == 0) {
+      return Collections.emptyMap();
+    }
+
+    BigDecimal netTotal =
+        totalAckQty.multiply(unitInTaxAmount).subtract(invoicedAmount).max(BigDecimal.ZERO);
+    if (netTotal.signum() == 0) {
+      return Collections.emptyMap();
+    }
+
+    Map<LocalDate, BigDecimal> result = new HashMap<>();
+    for (PurchaseOrderAcknowledgment ack : ackList) {
+      BigDecimal ackQty = ack.getQty();
+      if (ackQty.signum() == 0) {
+        continue;
+      }
+      LocalDate deliveryDate = ack.getDeliveryDate();
+      if (deliveryDate == null) {
+        continue;
+      }
+      LocalDate adjustedDate =
+          PaymentConditionToolService.getMaxDueDate(
+              paymentCondition, deliveryDate.plusDays(estimatedDurationDays));
+      if (adjustedDate == null || adjustedDate.isBefore(fromDate) || adjustedDate.isAfter(toDate)) {
+        continue;
+      }
+      BigDecimal ackAmount =
+          netTotal
+              .multiply(ackQty)
+              .divide(totalAckQty, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+      if (ackAmount.signum() == 0) {
+        continue;
+      }
+      result.merge(adjustedDate, ackAmount, BigDecimal::add);
+    }
+    return result;
   }
 }
