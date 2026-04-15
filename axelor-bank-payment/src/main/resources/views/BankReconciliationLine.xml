@@ -73,8 +73,8 @@
     title="Bank reconciliation Lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine"
     canDelete="false" editable="false" canNew="false">
     <button onClick="save,action-bank-reconciliation-line-record-set-selected,save"
-            name="select" title="Select / Unselect" icon="fa-check-circle"
-            showIf="!isSelectedBankReconciliation"/>
+      name="select" title="Select / Unselect" icon="fa-check-circle"
+      showIf="!isSelectedBankReconciliation"/>
     <button onClick="save,action-bank-reconciliation-line-record-set-selected,save"
       name="unselect" title="Select / Unselect" icon="fa-minus-circle"
       showIf="isSelectedBankReconciliation"/>

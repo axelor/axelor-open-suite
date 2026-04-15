@@ -95,20 +95,20 @@
       <panel-related name="bankReconciliationLineListPanel" colSpan="12"
         field="bankReconciliationLineList" form-view="bank-reconciliation-line-form"
         grid-view="bank-reconciliation-line-bank-reconciliation-grid" editable="true"
-                     x-can-copy="true" readonlyIf="statusSelect == 2" orderBy="effectDate" height="12"/>
+        x-can-copy="true" readonlyIf="statusSelect == 2" orderBy="effectDate" height="12"/>
       <panel name="reconcileBtnPanel" readonlyIf="statusSelect == 2" colSpan="12">
         <button name="autoReconcileBtn" title="Auto reconcile"
-                showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0" colSpan="3"
-                onClick="action-bank-reconciliation-method-automatic-reconciliation,action-bank-reconciliation-method-check-multiple-move-line"/>
+          showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0" colSpan="3"
+          onClick="action-bank-reconciliation-method-automatic-reconciliation,action-bank-reconciliation-method-check-multiple-move-line"/>
         <button name="multipleReconcileBtn" title="Multiple reconciles" colSpan="3"
-                onClick="save,action-bank-reconciliation-validate-lines-selected,action-bank-reconciliation-view-multiple-reconcile-wizard"/>
+          onClick="save,action-bank-reconciliation-validate-lines-selected,action-bank-reconciliation-view-multiple-reconcile-wizard"/>
         <button name="unreconcileBtn" title="Unreconcile selected" colSpan="3"
-                onClick="save,action-bank-reconciliation-method-unreconcile"/>
+          onClick="save,action-bank-reconciliation-method-unreconcile"/>
         <button name="reconcileBtn" title="Reconcile selected" colSpan="3"
-                onClick="action-group-bank-reconciliation-reconcile"/>
+          onClick="action-group-bank-reconciliation-reconcile"/>
       </panel>
       <button name="computeBalances" title="Compute balances" colSpan="3"
-              onClick="save,action-bank-reconciliation-method-compute-balances" css="btn-success"/>
+        onClick="save,action-bank-reconciliation-method-compute-balances" css="btn-success"/>
       <label name="selectionBankReconciliationLinesLabel"
         title="Selection total for bank reconciliation lines" css="label-bold" colSpan="2"/>
       <field name="$selectionBankReconciliationLines" showTitle="false" readonly="true"
