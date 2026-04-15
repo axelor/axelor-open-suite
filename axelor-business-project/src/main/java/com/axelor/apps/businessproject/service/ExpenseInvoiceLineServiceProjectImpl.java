@@ -84,13 +84,20 @@ public class ExpenseInvoiceLineServiceProjectImpl extends ExpenseInvoiceLineServ
 
     List<InvoiceLine> lines = new ArrayList<>();
 
-    if (Boolean.TRUE.equals(expenseLine.getIsIndividualItem())) {
-      log.debug(
-          "Creating individual item expense invoice line for expense line with ID: {}",
-          expenseLine.getId());
-      lines.addAll(createIndividualExpenseItemLine(invoice, expenseLine, priority));
+    // Only create standard lines if invoiceFeeOnly is NOT true
+    if (!Boolean.TRUE.equals(expenseLine.getInvoiceFeeOnly())) {
+      if (Boolean.TRUE.equals(expenseLine.getIsIndividualItem())) {
+        log.debug(
+            "Creating individual item expense invoice line for expense line with ID: {}",
+            expenseLine.getId());
+        lines.addAll(createIndividualExpenseItemLine(invoice, expenseLine, priority));
+      } else {
+        lines.addAll(super.createInvoiceLine(invoice, expenseLine, priority));
+      }
     } else {
-      lines.addAll(super.createInvoiceLine(invoice, expenseLine, priority));
+      log.debug(
+          "invoiceFeeOnly is true for expense line ID: {}. Skipping standard product line.",
+          expenseLine.getId());
     }
 
     // We no longer check showChargedFee but if fee is applied
