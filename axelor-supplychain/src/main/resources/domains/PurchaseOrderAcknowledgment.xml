@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.1.xsd">
+
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+
+  <entity name="PurchaseOrderAcknowledgment">
+
+    <many-to-one name="purchaseOrderLine"
+      ref="com.axelor.apps.purchase.db.PurchaseOrderLine" required="true"/>
+    <string name="reference" title="ARC No."/>
+    <date name="receptionDate" title="Reception Date"/>
+    <decimal name="qty" title="Confirmed Qty" precision="20" scale="10"/>
+    <date name="deliveryDate" title="Confirmed Delivery Date"/>
+    <string name="note" title="Note" large="true"/>
+
+  </entity>
+
+</domain-models>

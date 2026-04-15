@@ -26,10 +26,14 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
+import com.axelor.apps.supplychain.service.PurchaseOrderAcknowledgmentService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.inject.Beans;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
+import java.time.LocalDate;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementRepository {
 
@@ -57,6 +61,7 @@ public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementR
         purchaseOrderLine.setReceivedQty(null);
         purchaseOrderLine.setAmountInvoiced(null);
         purchaseOrderLine.setInvoiced(null);
+        purchaseOrderLine.setPurchaseOrderAcknowledgmentList(null);
       }
     }
 
@@ -66,11 +71,38 @@ public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementR
   @Override
   public PurchaseOrder save(PurchaseOrder purchaseOrder) {
     try {
+      updateEstimatedReceiptDatesFromAcknowledgments(purchaseOrder);
       Beans.get(PurchaseOrderSupplychainService.class).checkAnalyticAxisByCompany(purchaseOrder);
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
     return super.save(purchaseOrder);
+  }
+
+  protected void updateEstimatedReceiptDatesFromAcknowledgments(PurchaseOrder purchaseOrder) {
+    if (purchaseOrder == null) {
+      return;
+    }
+
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    if (CollectionUtils.isEmpty(purchaseOrderLineList)) {
+      return;
+    }
+
+    PurchaseOrderAcknowledgmentService acknowledgmentService =
+        Beans.get(PurchaseOrderAcknowledgmentService.class);
+
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+      if (purchaseOrderLine.getEstimatedReceiptDate() != null) {
+        continue;
+      }
+      PurchaseOrderAcknowledgmentService.AcknowledgmentData acknowledgmentData =
+          acknowledgmentService.computeAcknowledgmentData(purchaseOrderLine);
+      LocalDate maxDeliveryDate = acknowledgmentData.maxDeliveryDate();
+      if (maxDeliveryDate != null) {
+        purchaseOrderLine.setEstimatedReceiptDate(maxDeliveryDate);
+      }
+    }
   }
 }

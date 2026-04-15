@@ -53,6 +53,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
+import com.axelor.apps.supplychain.service.PurchaseOrderAcknowledgmentService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -93,6 +94,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   protected TimetableRepository timetableRepo;
   protected InvoiceTermRepository invoiceTermRepo;
   protected JournalService journalService;
+  protected PurchaseOrderAcknowledgmentService purchaseOrderAcknowledgmentService;
 
   protected Map<Integer, List<Integer>> invoiceStatusMap;
 
@@ -104,7 +106,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       ForecastRecapRepository forecastRecapRepo,
       TimetableRepository timetableRepo,
       InvoiceTermRepository invoiceTermRepo,
-      JournalService journalService) {
+      JournalService journalService,
+      PurchaseOrderAcknowledgmentService purchaseOrderAcknowledgmentService) {
     this.appBaseService = appBaseService;
     this.currencyService = currencyService;
     this.forecastRecapLineTypeRepo = forecastRecapLineTypeRepo;
@@ -112,6 +115,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     this.timetableRepo = timetableRepo;
     this.invoiceTermRepo = invoiceTermRepo;
     this.journalService = journalService;
+    this.purchaseOrderAcknowledgmentService = purchaseOrderAcknowledgmentService;
   }
 
   @Override
@@ -1084,6 +1088,39 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     LocalDate toDate = forecastRecap.getToDate();
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+      if (!CollectionUtils.isEmpty(purchaseOrderLine.getPurchaseOrderAcknowledgmentList())) {
+        BigDecimal orderedQty = purchaseOrderLine.getQty();
+        if (orderedQty.signum() == 0) {
+          continue;
+        }
+        BigDecimal unitInTaxAmount =
+            purchaseOrderLine
+                .getInTaxTotal()
+                .divide(orderedQty, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        Map<LocalDate, BigDecimal> ackMap =
+            purchaseOrderAcknowledgmentService.computeAcknowledgmentForecastMap(
+                purchaseOrderLine,
+                unitInTaxAmount,
+                getSumAmountInvoicesForPoLine(purchaseOrderLine),
+                forecastRecapLineType.getEstimatedDuration(),
+                purchaseOrder.getPaymentCondition(),
+                fromDate,
+                toDate);
+        for (Map.Entry<LocalDate, BigDecimal> entry : ackMap.entrySet()) {
+          map.merge(
+              entry.getKey(),
+              currencyService
+                  .getAmountCurrencyConvertedAtDate(
+                      purchaseOrder.getCurrency(),
+                      purchaseOrder.getCompany().getCurrency(),
+                      entry.getValue(),
+                      appBaseService.getTodayDate(forecastRecap.getCompany()))
+                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+              BigDecimal::add);
+        }
+        continue;
+      }
+
       LocalDate lineDate =
           getPurchaseOrderLineDate(forecastRecapLineType, purchaseOrder, purchaseOrderLine);
       if (lineDate == null || lineDate.isBefore(fromDate) || lineDate.isAfter(toDate)) {
