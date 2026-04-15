@@ -13,6 +13,9 @@
     <one-to-many name="analyticMoveLineList"
       ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines"
       mappedBy="purchaseOrderLine"/>
+    <one-to-many name="purchaseOrderAcknowledgmentList" title="Acknowledgments"
+      ref="com.axelor.apps.supplychain.db.PurchaseOrderAcknowledgment" mappedBy="purchaseOrderLine"
+      orderBy="deliveryDate"/>
     <many-to-one name="analyticDistributionTemplate"
       title="Analytic distribution template"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>

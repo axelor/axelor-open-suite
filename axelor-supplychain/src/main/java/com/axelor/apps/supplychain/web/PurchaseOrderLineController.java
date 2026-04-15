@@ -32,6 +32,7 @@ import com.axelor.apps.sale.service.cart.CartProductService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.apps.supplychain.service.PurchaseOrderAcknowledgmentService;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.i18n.I18n;
@@ -40,6 +41,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.ContextHelper;
 import jakarta.inject.Singleton;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -235,6 +237,29 @@ public class PurchaseOrderLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onAcknowledgmentListChange(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+      PurchaseOrderAcknowledgmentService.AcknowledgmentData acknowledgmentData =
+          Beans.get(PurchaseOrderAcknowledgmentService.class)
+              .computeAcknowledgmentData(purchaseOrderLine);
+
+      LocalDate maxDeliveryDate = acknowledgmentData.maxDeliveryDate();
+      if (maxDeliveryDate != null) {
+        response.setValue("estimatedReceiptDate", maxDeliveryDate);
+      }
+
+      if (!acknowledgmentData.qtyExceeded()) {
+        return;
+      }
+
+      response.setInfo(
+          I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_ACKNOWLEDGMENT_QTY_EXCEEDED));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+
+  <grid name="purchase-order-acknowledgment-grid" title="Acknowledgments"
+    model="com.axelor.apps.supplychain.db.PurchaseOrderAcknowledgment">
+    <field name="reference"/>
+    <field name="receptionDate"/>
+    <field name="qty"/>
+    <field name="deliveryDate"/>
+    <field name="note"/>
+  </grid>
+
+  <form name="purchase-order-acknowledgment-form" title="Acknowledgment"
+    model="com.axelor.apps.supplychain.db.PurchaseOrderAcknowledgment">
+    <panel name="identificationPanel" title="Identification" colSpan="12">
+      <field name="reference"/>
+      <field name="receptionDate"/>
+    </panel>
+    <panel name="deliveryPanel" title="Delivery" colSpan="12">
+      <field name="qty"/>
+      <field name="deliveryDate"/>
+      <field name="note" colSpan="12"/>
+    </panel>
+  </form>
+
+</object-views>
