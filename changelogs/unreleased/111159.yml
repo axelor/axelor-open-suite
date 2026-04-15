@@ -1,0 +1,3 @@
+---
+title: "Accounting batch: fixed SemanticException when running close/open accounts batch."
+module: axelor-account
