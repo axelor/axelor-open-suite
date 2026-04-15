@@ -27,6 +27,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.project.db.Project;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.constraints.Min;
@@ -57,6 +58,9 @@ public class ExpensePostRequest extends RequestPostStructure {
 
   @Min(0)
   private Integer companyCbSelect;
+
+  @Min(0)
+  private BigDecimal withdrawnCash;
 
   private List<Long> expenseLineIdList;
 
@@ -116,6 +120,14 @@ public class ExpensePostRequest extends RequestPostStructure {
 
   public void setCompanyCbSelect(Integer companyCbSelect) {
     this.companyCbSelect = companyCbSelect;
+  }
+
+  public BigDecimal getWithdrawnCash() {
+    return withdrawnCash;
+  }
+
+  public void setWithdrawnCash(BigDecimal withdrawnCash) {
+    this.withdrawnCash = withdrawnCash;
   }
 
   public List<Long> getExpenseLineIdList() {
@@ -198,11 +210,20 @@ public class ExpensePostRequest extends RequestPostStructure {
 
         line.setExpenseProduct(lineDto.fetchExpenseProduct());
         line.setExpenseDate(lineDto.getExpenseDate());
-        line.setUntaxedAmount(lineDto.getUntaxedAmount());
         line.setTotalTax(lineDto.getTotalTax());
+        line.setUsedCompanyCard(lineDto.getUsedCompanyCard());
         line.setComments(lineDto.getComments());
         line.setProjectTask(lineDto.fetchProjectTask());
+        line.setIsIndividualItem(lineDto.getIsIndividualItem());
+        line.setItemProductName(lineDto.getItemProductName());
+        line.setItemQty(lineDto.getItemQty());
+        line.setItemUnitPrice(lineDto.getItemUnitPrice());
+        line.setItemUnit(lineDto.fetchUnit());
         line.setJustificationMetaFile(lineDto.fetchjustificationMetaFile());
+
+        if (!Boolean.TRUE.equals(lineDto.getIsIndividualItem())) {
+          line.setUntaxedAmount(lineDto.getUntaxedAmount());
+        }
 
         expenseLineList.add(line);
       }

@@ -64,6 +64,13 @@ public class ExpenseResponse extends ResponseStructure {
     public BigDecimal untaxedAmount;
     public BigDecimal totalTax;
     public BigDecimal totalAmount;
+    public Boolean usedCompanyCard;
+    public Boolean isIndividualItem;
+    public String itemProductName;
+    public Long itemUnit;
+    public BigDecimal itemQty;
+    public BigDecimal itemUnitPrice;
+
     public String comments;
     public Long justificationFileId;
 
@@ -74,6 +81,12 @@ public class ExpenseResponse extends ResponseStructure {
       this.untaxedAmount = line.getUntaxedAmount();
       this.totalTax = line.getTotalTax();
       this.totalAmount = line.getTotalAmount();
+      this.usedCompanyCard = line.getUsedCompanyCard();
+      this.isIndividualItem = line.getIsIndividualItem();
+      this.itemProductName = line.getItemProductName();
+      this.itemUnit = line.getItemUnit() != null ? line.getItemUnit().getId() : null;
+      this.itemQty = line.getItemQty();
+      this.itemUnitPrice = line.getItemUnitPrice();
       this.justificationFileId =
           line.getJustificationMetaFile() != null ? line.getJustificationMetaFile().getId() : null;
       this.comments = line.getComments();

@@ -88,6 +88,15 @@ public class ExpenseComputationServiceImpl implements ExpenseComputationService 
       line.setExpense(line.getExpense());
     }
 
+    if (Boolean.TRUE.equals(line.getIsIndividualItem())) {
+      BigDecimal qty = line.getItemQty() != null ? line.getItemQty() : BigDecimal.ZERO;
+      BigDecimal unitPrice =
+          line.getItemUnitPrice() != null ? line.getItemUnitPrice() : BigDecimal.ZERO;
+
+      // calculate: untaxed amount from details
+      line.setUntaxedAmount(qty.multiply(unitPrice).setScale(2, RoundingMode.HALF_UP));
+    }
+
     if (line.getUntaxedAmount() != null) {
       BigDecimal untaxed = line.getUntaxedAmount();
 

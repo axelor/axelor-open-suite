@@ -111,6 +111,7 @@ public class ExpenseCreateServiceImpl implements ExpenseCreateService {
 
     Expense expense = expenseToolService.getOrCreateExpense(employee, project);
     expenseToolService.addOrUpdateProjectExpenseLines(expense, expenseLines);
+    expenseComputationService.compute(expense);
 
     return expense;
   }

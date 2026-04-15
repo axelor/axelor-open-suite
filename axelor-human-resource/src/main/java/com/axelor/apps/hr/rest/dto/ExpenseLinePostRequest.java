@@ -21,6 +21,7 @@ package com.axelor.apps.hr.rest.dto;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.project.db.Project;
@@ -98,6 +99,18 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
   private Long companyId;
 
   private Boolean toInvoice;
+
+  private Boolean usedCompanyCard;
+
+  private Boolean isIndividualItem;
+
+  private String itemProductName;
+
+  private BigDecimal itemQty;
+
+  private BigDecimal itemUnitPrice;
+
+  private Long itemUnit;
 
   private Long projectTaskId;
   private List<Long> invitedCollaboratorList;
@@ -262,6 +275,54 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
     this.toInvoice = toInvoice;
   }
 
+  public Boolean getUsedCompanyCard() {
+    return usedCompanyCard;
+  }
+
+  public void setUsedCompanyCard(Boolean usedCompanyCard) {
+    this.usedCompanyCard = usedCompanyCard;
+  }
+
+  public Boolean getIsIndividualItem() {
+    return isIndividualItem;
+  }
+
+  public void setIndividualItem(Boolean individualItem) {
+    isIndividualItem = individualItem;
+  }
+
+  public String getItemProductName() {
+    return itemProductName;
+  }
+
+  public void setItemProductName(String itemProductName) {
+    this.itemProductName = itemProductName;
+  }
+
+  public BigDecimal getItemQty() {
+    return itemQty;
+  }
+
+  public void setItemQty(BigDecimal itemQty) {
+    this.itemQty = itemQty;
+  }
+
+  public BigDecimal getItemUnitPrice() {
+    return itemUnitPrice;
+  }
+
+  public void setItemUnitPrice(BigDecimal itemUnitPrice) {
+    this.itemUnitPrice = itemUnitPrice;
+  }
+
+  public Long getItemUnit() {
+    return itemUnit;
+  }
+
+  public void setItemUnit(Long itemUnit) {
+    this.itemUnit = itemUnit;
+  }
+
   public Long getProjectTaskId() {
     return projectTaskId;
   }
@@ -325,5 +386,10 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
       return null;
     }
     return ObjectFinder.find(ProjectTask.class, projectTaskId, ObjectFinder.NO_VERSION);
+  }
+
+  public Unit fetchUnit() {
+    if (itemUnit == null || itemUnit == 0L) return null;
+    return ObjectFinder.find(Unit.class, itemUnit, ObjectFinder.NO_VERSION);
   }
 }

@@ -44,6 +44,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -140,6 +141,7 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
 
     if (expense == null) {
       expense = new Expense();
+      expense.setCategorySelect(1);
       expense.setEmployee(employee);
       expense.setProject(project);
       Company company = null;
@@ -241,6 +243,13 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
           managedLine.setTotalTax(incomingLine.getTotalTax());
           managedLine.setComments(incomingLine.getComments());
           managedLine.setJustificationMetaFile(incomingLine.getJustificationMetaFile());
+          managedLine.setUsedCompanyCard(incomingLine.getUsedCompanyCard());
+          // Detailed Item Support
+          managedLine.setIsIndividualItem(incomingLine.getIsIndividualItem());
+          managedLine.setItemProductName(incomingLine.getItemProductName());
+          managedLine.setItemQty(incomingLine.getItemQty());
+          managedLine.setItemUnit(incomingLine.getItemUnit());
+          managedLine.setItemUnitPrice(incomingLine.getItemUnitPrice());
 
           expenseComputationService.computeLine(managedLine);
 
@@ -263,6 +272,7 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
       }
     }
 
+    this.syncCompanyCardTotals(expense);
     expenseRepository.save(expense);
   }
 
@@ -461,5 +471,25 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
                 .fetchOne());
       }
     }
+  }
+
+  private void syncCompanyCardTotals(Expense expense) {
+    BigDecimal totalWithdrawn = BigDecimal.ZERO;
+    boolean hasCompanyCardUse = false;
+
+    // Iterate through ALL lines (not just the new ones) to ensure total accuracy
+    if (expense.getGeneralExpenseLineList() != null) {
+      for (ExpenseLine line : expense.getGeneralExpenseLineList()) {
+        if (Boolean.TRUE.equals(line.getUsedCompanyCard())) {
+          hasCompanyCardUse = true;
+          if (line.getTotalAmount() != null) {
+            totalWithdrawn = totalWithdrawn.add(line.getTotalAmount());
+          }
+        }
+      }
+    }
+
+    expense.setWithdrawnCash(totalWithdrawn);
+    expense.setCompanyCbSelect(hasCompanyCardUse ? 2 : 1);
   }
 }
