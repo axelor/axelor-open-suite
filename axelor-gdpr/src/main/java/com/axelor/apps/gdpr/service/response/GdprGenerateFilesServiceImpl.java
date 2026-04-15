@@ -401,6 +401,10 @@ public class GdprGenerateFilesServiceImpl implements GdprGenerateFilesService {
     }
 
     if (!Strings.isNullOrEmpty(field.getRelationship())) {
+      if ("OneToMany".equals(field.getRelationship())
+          || "ManyToMany".equals(field.getRelationship())) {
+        return null;
+      }
       MetaModel metaModel =
           metaModelRepository.all().filter("self.name = ?", field.getTypeName()).fetchOne();
 
