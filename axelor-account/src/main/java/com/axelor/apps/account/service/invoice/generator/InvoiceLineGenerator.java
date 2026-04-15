@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.AxelorException;
@@ -44,6 +43,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
+import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -69,7 +69,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   protected UnitConversionRepository unitConversionRepo;
   protected AppBaseService appBaseService;
   protected AppAccountService appAccountService;
-  protected InvoiceLineService invoiceLineService;
+  protected OrderLineTaxService orderLineTaxService;
   protected AccountManagementAccountService accountManagementService;
   protected ProductCompanyService productCompanyService;
   protected CurrencyScaleService currencyScaleService;
@@ -107,7 +107,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.unitConversionRepo = Beans.get(UnitConversionRepository.class);
     this.appBaseService = Beans.get(AppBaseService.class);
     this.appAccountService = Beans.get(AppAccountService.class);
-    this.invoiceLineService = Beans.get(InvoiceLineService.class);
+    this.orderLineTaxService = Beans.get(OrderLineTaxService.class);
     this.accountManagementService = Beans.get(AccountManagementAccountService.class);
     this.productCompanyService = Beans.get(ProductCompanyService.class);
     this.currencyScaleService = Beans.get(CurrencyScaleService.class);
@@ -239,6 +239,9 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
             .getTaxEquivFromOrToTaxSet(invoice.getFiscalPosition(), taxLineSet);
 
     invoiceLine.setTaxEquiv(taxEquiv);
+    invoiceLine.setVatExemptionReason(
+        orderLineTaxService.resolveVatExemptionReason(
+            invoice.getFiscalPosition(), taxEquiv, invoice.getPartner()));
   }
 
   /**

@@ -18,11 +18,13 @@
  */
 package com.axelor.apps.sale.service.saleorderline.tax;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.google.inject.Inject;
@@ -35,13 +37,16 @@ public class SaleOrderLineTaxServiceImpl implements SaleOrderLineTaxService {
 
   protected AccountManagementService accountManagementService;
   protected FiscalPositionService fiscalPositionService;
+  protected OrderLineTaxService orderLineTaxService;
 
   @Inject
   public SaleOrderLineTaxServiceImpl(
       AccountManagementService accountManagementService,
-      FiscalPositionService fiscalPositionService) {
+      FiscalPositionService fiscalPositionService,
+      OrderLineTaxService orderLineTaxService) {
     this.accountManagementService = accountManagementService;
     this.fiscalPositionService = fiscalPositionService;
+    this.orderLineTaxService = orderLineTaxService;
   }
 
   @Override
@@ -60,17 +65,24 @@ public class SaleOrderLineTaxServiceImpl implements SaleOrderLineTaxService {
   public Map<String, Object> setTaxEquiv(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.put("taxEquiv", null);
+    saleOrderLineMap.put("vatExemptionReason", null);
     saleOrderLine.setTaxEquiv(null);
+    saleOrderLine.setVatExemptionReason(null);
     if (saleOrder == null
         || saleOrder.getClientPartner() == null
         || CollectionUtils.isEmpty(saleOrderLine.getTaxLineSet())) {
       return saleOrderLineMap;
     }
+    FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
     TaxEquiv taxEquiv =
         fiscalPositionService.getTaxEquivFromTaxLines(
-            saleOrder.getFiscalPosition(), saleOrderLine.getTaxLineSet());
+            fiscalPosition, saleOrderLine.getTaxLineSet());
     saleOrderLine.setTaxEquiv(taxEquiv);
+    saleOrderLine.setVatExemptionReason(
+        orderLineTaxService.resolveVatExemptionReason(
+            fiscalPosition, taxEquiv, saleOrder.getClientPartner()));
     saleOrderLineMap.put("taxEquiv", taxEquiv);
+    saleOrderLineMap.put("vatExemptionReason", saleOrderLine.getVatExemptionReason());
     return saleOrderLineMap;
   }
 }
