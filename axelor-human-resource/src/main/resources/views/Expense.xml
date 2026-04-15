@@ -395,7 +395,7 @@
       expr="eval: statusSelect == 3 || statusSelect == 4 || statusSelect == 6 || ventilated"
       if="!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0"/>
     <attribute name="hidden" for="addPaymentBtn"
-      expr="eval: !(ventilated &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2) &amp;&amp; companyCbSelect != 2) || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0)"/>
+      expr="eval: !(ventilated &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)) || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0)"/>
     <attribute name="hidden" for="cancelPaymentBtn"
       expr="eval: !(paymentStatusSelect == 1 || paymentStatusSelect == 3) || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0)"/>
   </action-attrs>
