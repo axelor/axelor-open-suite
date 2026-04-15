@@ -148,14 +148,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   @Override
   public StockLocation getDefaultOutStockLocation(ManufOrder manufOrder, Company company)
       throws AxelorException {
-    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
-    StockLocation stockLocation =
-        getDefaultStockLocation(manufOrder.getProdProcess(), STOCK_LOCATION_OUT);
-    if (stockLocation == null) {
-      return stockConfigProductionService.getFinishedProductsDefaultStockLocation(
-          manufOrder.getWorkshopStockLocation(), stockConfig);
-    }
-    return stockLocation;
+    return getProducedProductStockLocation(manufOrder, company);
   }
 
   /**
@@ -408,12 +401,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
 
   public StockLocation getProducedProductStockLocation(ManufOrder manufOrder, Company company)
       throws AxelorException {
-
-    if (manufOrder.getOutsourcing()) {
-      return _getReceiptOutsourcingStockLocation(manufOrder, company);
-    } else {
-      return _getProducedProductStockLocation(manufOrder, company);
-    }
+    return _getProducedProductStockLocation(manufOrder, company);
   }
 
   @Override
@@ -429,12 +417,6 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
           stockConfigProductionService.getResidualProductsDefaultStockLocation(stockConfig);
     }
     return residualProductStockLocation;
-  }
-
-  protected StockLocation _getReceiptOutsourcingStockLocation(
-      ManufOrder manufOrder, Company company) throws AxelorException {
-    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
-    return stockConfigProductionService.getReceiptDefaultStockLocation(stockConfig);
   }
 
   protected StockLocation _getProducedProductStockLocation(ManufOrder manufOrder, Company company)
