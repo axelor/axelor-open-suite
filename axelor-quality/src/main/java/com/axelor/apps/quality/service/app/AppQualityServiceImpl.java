@@ -32,9 +32,9 @@ import java.util.List;
 
 public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQualityService {
 
-  private AppQualityRepository appQualityRepo;
-  private CompanyRepository companyRepository;
-  private QualityConfigRepository qualityConfigRepository;
+  protected AppQualityRepository appQualityRepo;
+  protected CompanyRepository companyRepository;
+  protected QualityConfigRepository qualityConfigRepository;
 
   @Inject
   public AppQualityServiceImpl(

@@ -24,7 +24,7 @@ import jakarta.inject.Inject;
 
 public class AppSupplierPortalServiceImpl implements AppSupplierPortalService {
 
-  private AppSupplierPortalRepository appSupplierPortalRepo;
+  protected AppSupplierPortalRepository appSupplierPortalRepo;
 
   @Inject
   public AppSupplierPortalServiceImpl(AppSupplierPortalRepository appSupplierPortalRepo) {

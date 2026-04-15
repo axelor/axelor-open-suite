@@ -36,8 +36,8 @@ import org.apache.commons.io.FilenameUtils;
 
 public class BirtTemplateViewServiceImpl implements BirtTemplateViewService {
 
-  private BirtTemplateRepository birtTemplateRepo;
-  private MetaFiles metaFiles;
+  protected BirtTemplateRepository birtTemplateRepo;
+  protected MetaFiles metaFiles;
 
   @Inject
   public BirtTemplateViewServiceImpl(BirtTemplateRepository birtTemplateRepo, MetaFiles metaFiles) {

@@ -43,9 +43,9 @@ import java.util.Map;
 public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
     implements AppHumanResourceService {
 
-  private AppTimesheetRepository appTimesheetRepo;
-  private AppLeaveRepository appLeaveRepo;
-  private AppExpenseRepository appExpenseRepo;
+  protected AppTimesheetRepository appTimesheetRepo;
+  protected AppLeaveRepository appLeaveRepo;
+  protected AppExpenseRepository appExpenseRepo;
 
   protected CompanyRepository companyRepo;
 
