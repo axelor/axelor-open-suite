@@ -561,7 +561,7 @@
         </field>
         <field name="invoiceTermList" colSpan="12" form-view="invoice-term-related-form"
           grid-view="invoice-term-move-line-invoice-grid"
-          onChange="action-move-line-method-update-due-dates"/>
+          onChange="action-group-moveline-invoice-term-list-onchange"/>
       </panel>
       <panel name="generateFixedAssetPanel" title="Generate fixed asset">
         <field name="$generateFixedAsset" title="Generate a fixed asset from this line ?"

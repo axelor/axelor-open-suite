@@ -292,6 +292,14 @@ public class InvoiceTermController {
       Beans.get(InvoiceTermPfpValidateService.class)
           .initPftPartialValidation(originalInvoiceTerm, grantedAmount, partialReason);
 
+      Boolean fromInvoiceTerm =
+          request.getContext().get("fromInvoiceTerm") != null
+              && (Boolean) request.getContext().get("fromInvoiceTerm");
+      if (fromInvoiceTerm) {
+        Beans.get(InvoiceTermPfpService.class)
+            .generateInvoiceTermsAfterPfpPartial(List.of(originalInvoiceTerm));
+      }
+
       response.setCanClose(true);
 
     } catch (Exception e) {

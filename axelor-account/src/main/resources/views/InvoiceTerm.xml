@@ -749,7 +749,7 @@
 
   <form name="invoice-term-pfp-partial-reason-wizard" title="PFP Partial Acceptance"
     model="com.axelor.apps.account.db.InvoiceTerm"
-    onLoad="action-invoice-term-attrs-set-initial-pfp-amount">
+    onLoad="action-invoice-term-attrs-set-initial-pfp-amount-and-from-invoice-term">
     <panel name="mainPanel">
       <field name="$grantedAmount" title="Granted amount" type="decimal" required="true"
         validIf="$grantedAmount > 0 &amp;&amp; $number($grantedAmount) &lt; $number(amount)"/>
@@ -757,6 +757,7 @@
       <button name="pfpPartialReasonConfirmBtn" title="Confirm Partial PFP" colSpan="12"
         onClick="action-invoice-term-method-pfp-partial-reason-confirm-btn"/>
       <field name="amount" hidden="true"/>
+      <field name="$fromInvoiceTerm" hidden="true"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
@@ -1049,6 +1050,7 @@
     <view-param name="popup-save" value="false"/>
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval: __this__.id"/>
+    <context name="_fromParent" expr="eval: __parent__ != null"/>
   </action-view>
 
   <action-view name="action-invoice-term-view-payment-session-dashlet"
@@ -1087,8 +1089,10 @@
       if="!partner?.bankDetailsList?.isEmpty() || !partner?.bankDetailsList?.isEmpty()"/>
   </action-attrs>
 
-  <action-attrs name="action-invoice-term-attrs-set-initial-pfp-amount"
+  <action-attrs
+    name="action-invoice-term-attrs-set-initial-pfp-amount-and-from-invoice-term"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <attribute name="value" for="$grantedAmount" expr="eval: amountRemaining"/>
+    <attribute name="value" for="$fromInvoiceTerm" expr="eval: !_fromParent"/>
   </action-attrs>
 </object-views>
