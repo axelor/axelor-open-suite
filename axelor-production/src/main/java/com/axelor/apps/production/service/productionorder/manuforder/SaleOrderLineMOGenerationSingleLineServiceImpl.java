@@ -133,6 +133,9 @@ public class SaleOrderLineMOGenerationSingleLineServiceImpl
                   saleOrderLine.getSaleOrder().getStockLocation(), childBom.getProduct());
           qtyToProduce = qtyToProduce.subtract(availableQty);
         }
+        if (qtyToProduce.signum() < 0) {
+          qtyToProduce = BigDecimal.ONE;
+        }
         ManufOrder manufOrder =
             manufOrderGenerationService.generateManufOrder(
                 childBom.getProduct(),
