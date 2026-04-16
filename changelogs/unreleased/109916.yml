@@ -1,3 +1,0 @@
----
-title: "Invoice: fix VAT system forced to payment on advance payment invoice tax lines."
-module: axelor-account

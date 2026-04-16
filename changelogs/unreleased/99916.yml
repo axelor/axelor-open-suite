@@ -1,3 +1,0 @@
----
-title: "FEC Import: fixed missing currency on imported moves when Idevise column is empty."
-module: axelor-account

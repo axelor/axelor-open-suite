@@ -1,5 +1,0 @@
----
-title: "Supplychain: invoices generated from a stock move of a purchase order are now correctly generated with the purchase order and advance payments of the purchase order."
-module: axelor-supplychain
-developer: |
-  Added InvoiceService in the StockMoveInvoiceBudgetServiceImpl constructor

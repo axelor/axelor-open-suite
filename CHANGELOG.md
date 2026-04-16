@@ -1,3 +1,163 @@
+## [8.5.16] (2026-04-16)
+
+### Fixes
+#### Base
+
+* Role: fixed the form view not properly extending axelor-core view.
+* Birt template config line: removed remaining data init.
+* Permission assistant: fixed invalid imported permissions when the condition is left empty.
+* Company: removed non-existing fields from demo data.
+* Partner: block save when registration code is required for companies but empty.
+* REST API: fixed an issue where some unauthorized actions were not blocked correctly.
+* Base: fixed active company, trading name and active project quick menus displaying items in random order instead of alphabetical.
+* Product: fixed duplicating a product copies price list content into existing price lists.
+* Update Axelor Open Platform to 7.4.10
+
+#### Account
+
+* Accounting report type: fixed missing company records in demo data.
+* Account: fixed payment session eligible terms including incompatible payment mode types.
+* Mass entry: fixed error when trying to delete a move of type mass entry.
+* FEC Import: fixed missing currency on imported moves when Idevise column is empty.
+* Accounting report: fixed Aged balance report to use only validated invoice payments.
+* Invoice: fix VAT system forced to payment on advance payment invoice tax lines.
+* Accounting chart: fixed FRA_PCG tax import leaving activeTaxLine null due to incomplete importIds in account_tax.csv.
+* Accounting situation: Fix missing debt recovery field on partner.
+* Invoice: fixed company bank details not being auto-filled when selecting a factorized customer.
+* Analytic: fixed analytic percentage validation bypass when saving a move in edit mode.
+* Account: fixed NPE when sorting invoices with null date or id in notification process.
+* Invoice : fixed VAT on advance payments are not included in cash VAT declaration report.
+* Invoice term: fixed NPE on invoice term payment update when invoice term is not linked to an invoice.
+* Payment session: fixed incorrect total displayed and compensation not applied with Bank Order Confirmation trigger.
+* Invoice term: fixed Send notify email button not opening the email wizard on PFP form views.
+* PFP: fix partial validation not creating a new invoice term when validated from the invoice term view.
+* Account: fixed wrong designation on the BIRT report from draft credit note.
+* Payment condition: added help on isFree field.
+* Payment mode: fixed payment mode import files by removing reference to the removed invoiceLabel field.
+
+#### Bank Payment
+
+* Bank order: fixed impossible to cancel a bank order if the associated payment session has a refund.
+
+#### Budget
+
+* Budget: fixed mismatch between Realized with/without PO form amounts and listing filters.
+
+#### Cash Management
+
+* Forecast dashboard: fix chronological ordering of months across years in 'chart.forecast.in.out.total' chart.
+* Forecast recap: apply payment terms on purchase and sale orders.
+* Forecast recap: added non-blocking warning when overlapping forecast recaps/reports are detected for the same company, period and bank details.
+
+#### Contract
+
+* Contract: fixed error when 'Only invoice consumption before Invoice period end Date' is enabled and 'Periodic Invoicing' is disabled while invoicing contract.
+* Contract: added validation to prevent the first period end date from being earlier than the supposed activation date.
+* Contract: display the invoice moment field regardless of the automatic invoicing field.
+
+#### CRM
+
+* Prospect: fixed lost conversion error.
+* Partner: fixed partner merge issue when duplicated partner is having events.
+
+#### GDPR
+
+* GDPR Request: fixed duplicate rows generated in CSV export due to collection fields.
+
+#### Human Resource
+
+* Expense: show the payment button on expense with company card.
+
+#### Production
+
+* Manufacturing order: fixed outsourced produced stock moves targeting the wrong stock location.
+* Production: fixed automatic production order not generated for sale order lines created via product configurator.
+* Sale order: fixed sublines being cleared when changing supply method on a sale order line without a bill of material.
+* Production: fixed consume in stock moves button not working when consuming products by operation phase.
+* Production: fixed LazyInitializationException when confirming sale order with automatic manufacturing order planning enabled.
+* Sale order: fixed NPE error when adding a pack while editable tree view is activated.
+* Production: fixed an error when creating a new consumed product from a manufacturing order.
+* Production: fixed an issue where the real quantity could be changed on service product lines linked to a subcontracting purchase order.
+* Configurator: fixed old bill of material not being deleted when regenerating a product.
+
+#### Project
+
+* Project: fixed dashboard tasks button label to 'View all tasks'.
+
+#### Purchase
+
+* Purchase order: fixed trading name field being read-only in the outsourcing purchase order.
+
+#### Quality
+
+* Quality: fixed EN demo-data import error on QIResolutionDecision.
+
+#### Sale
+
+* Sale order: fixed stock allocation sale order line duplication issue.
+* Sale order: fixed freight carrier mode and carrier partner not copied from partner on sale order creation.
+* Partner: fixed archived customers/prospects displayed on the map.
+* Sale order: fixed deliveryAddressStr not recomputed on save when address content changes.
+* Dashboard: fixed chart labels for translated select values.
+* Sale order: fixed unnecessary Mapper.toMap usage on sale order line change.
+
+#### Stock
+
+* Stock location: changed stock location value from transient to formula field.
+* Product: fixed quantity for external stock location in stock chart in product form view.
+* Stock: refresh stock move availability badge after line update.
+* Stock move: fixed an error when changing a stock move line type to title.
+* Stock: fixed NPE on fromStockLocation when duplicating stock move.
+
+#### Supply Chain
+
+* Purchase order: fixed missing translation on cancel reason error message.
+* Timetable: fixed error while generating an invoice from the menu form, when the timetable is not related to the order.
+* MRP: fixed calculation staying stuck in started status when an error occurs.
+* Supplychain: invoices generated from a stock move of a purchase order are now correctly generated with the purchase order and advance payments of the purchase order.
+* Sale order: fixed delivery state on lines not initialized after order confirmation when automatic stock move generation is disabled.
+
+
+### Developer
+
+#### Base
+
+Several REST controllers now execute their SecurityCheck chain correctly before continuing.
+
+Custom code or integrations that relied on these endpoints succeeding despite missing access rights
+will no longer work after this fix.
+
+If a custom process was incorrectly using these API flows without the required permissions,
+it must be updated to grant the proper access rights or to call the process with an authorized user.
+
+#### Account
+
+- InvoicePaymentMoveCreateServiceImpl and InvoicePaymentMoveCreateServiceImpl consturctors are updated to introduce MoveLineTaxService
+
+---
+
+-- migration script
+DELETE FROM meta_action WHERE name = 'action-invoice-term-attrs-set-initial-pfp-amount';
+
+#### Production
+
+SaleOrderLineProductionService added to ConfiguratorServiceProductionImpl constructor.
+
+---
+
+Added action-stock-move-line-group-real-qty-onchange override in axelor-production StockMoveLine views.
+
+#### Supply Chain
+
+- MrpService.saveErrorInMrp(Mrp, Exception) signature changed to saveErrorInMrp(Mrp, Throwable).
+- MrpServiceImpl.call() now throws Exception instead of AxelorException.
+- MrpServiceImpl.onRunnerException(Exception) signature changed to onRunnerException(Throwable).
+- MrpJob.runCalculationWithExceptionManagement(Mrp) now throws Exception instead of AxelorException.
+
+---
+
+Added InvoiceService in the StockMoveInvoiceBudgetServiceImpl constructor
+
 ## [8.5.15] (2026-04-02)
 
 ### Fixes
@@ -1927,6 +2087,7 @@ Removed CommonInvoiceService.createInvoiceLinesFromOrder Changed the parameter o
 * Bill of material: added default value for calculation quantity.
 * Manuf order: fixed relation with production order.
 
+[8.5.16]: https://github.com/axelor/axelor-open-suite/compare/v8.5.15...v8.5.16
 [8.5.15]: https://github.com/axelor/axelor-open-suite/compare/v8.5.14...v8.5.15
 [8.5.14]: https://github.com/axelor/axelor-open-suite/compare/v8.5.13...v8.5.14
 [8.5.13]: https://github.com/axelor/axelor-open-suite/compare/v8.5.12...v8.5.13

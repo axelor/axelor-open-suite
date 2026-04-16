@@ -1,3 +1,0 @@
----
-title: "Sale order: fixed deliveryAddressStr not recomputed on save when address content changes."
-module: axelor-sale

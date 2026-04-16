@@ -1,3 +1,0 @@
----
-title: "Payment session: fixed incorrect total displayed and compensation not applied with Bank Order Confirmation trigger."
-module: axelor-account

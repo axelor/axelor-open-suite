@@ -1,3 +1,0 @@
----
-title: "Bank order: fixed impossible to cancel a bank order if the associated payment session has a refund."
-module: axelor-bank-payment
