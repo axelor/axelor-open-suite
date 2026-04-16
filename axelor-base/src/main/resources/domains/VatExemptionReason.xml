@@ -9,7 +9,7 @@
 
     <string name="code" title="Code" required="true" unique="true" namecolumn="true"/>
     <string name="name" title="Name" required="true"/>
-    <string name="note" title="Note" large="true"/>
+    <string name="note" title="Note" large="true" required="true"/>
 
     <track>
       <field name="code"/>
