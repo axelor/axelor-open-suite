@@ -34,6 +34,8 @@ import com.axelor.ui.QuickMenuCreator;
 import com.axelor.ui.QuickMenuItem;
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -86,7 +88,10 @@ public class ActiveCompanyUpdateQuickMenuCreator implements QuickMenuCreator {
     Company activeCompany = user.getActiveCompany();
     String action = UserController.class.getName() + ":" + "setActiveCompany";
 
-    for (Company company : companies) {
+    List<Company> companyList = new ArrayList<>(companies);
+    Collections.sort(companyList, Comparator.comparing(Company::getName));
+
+    for (Company company : companyList) {
       QuickMenuItem item =
           new QuickMenuItem(
               company.getName(),
