@@ -637,8 +637,8 @@
     <panel-tabs name="mainPanelTab" hideIf="partner == null">
       <panel name="invoiceContentPanel" title="Content" showTitle="false" itemSpan="12">
         <field name="invoiceCategorySelect"
-          showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; operationSubTypeSelect == 1 &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting &amp;&amp; statusSelect >= 2"
-          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; operationSubTypeSelect == 1 &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; statusSelect >= 2 &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
+          showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting &amp;&amp; statusSelect >= 2"
+          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; statusSelect >= 2 &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
           readonlyIf="statusSelect &gt;= 3" colSpan="2"/>
         <field name="company.accountConfig.displayItemsCategoriesOnPrinting" hidden="true"/>
         <panel name="cutOffPanel" title="Cut off period" itemSpan="4"
@@ -1288,8 +1288,8 @@
     <panel-tabs name="invoiceDetails">
       <panel name="invoiceContentPanel" title="Invoice content" showTitle="false">
         <field name="invoiceCategorySelect"
-          showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; operationSubTypeSelect == 1 &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting &amp;&amp; statusSelect >= 2"
-          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; operationSubTypeSelect == 1 &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; statusSelect >= 2 &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
+          showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting &amp;&amp; statusSelect >= 2"
+          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; statusSelect >= 2 &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
           readonlyIf="statusSelect &gt;= 3" colSpan="2"/>
         <field name="company.accountConfig.displayItemsCategoriesOnPrinting" hidden="true"/>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
@@ -2027,7 +2027,7 @@
     <field name="tradingName" expr="eval: __user__?.tradingName"/>
     <field name="invoiceCategorySelect"
       expr="eval: __user__?.activeCompany?.accountConfig?.defaultInvoiceCategorySelect"
-      if="(_operationTypeSelect == 1 || _operationTypeSelect == 3) &amp;&amp; (!_operationSubTypeSelect || _operationSubTypeSelect == 1)"/>
+      if="(_operationTypeSelect == 1 || _operationTypeSelect == 3) &amp;&amp; (!_operationSubTypeSelect || _operationSubTypeSelect == 1 || operationSubTypeSelect == 3)"/>
   </action-record>
 
   <action-record name="action-invoice-record-partner-change"
@@ -3062,7 +3062,7 @@
 
   <action-validate name="action-invoice-validate-check-invoice-category">
     <error message="Please select an invoice category before ventilating."
-      if="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; operationSubTypeSelect == 1 &amp;&amp; invoiceCategorySelect == null"/>
+      if="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceCategorySelect == null"/>
   </action-validate>
 
 </object-views>

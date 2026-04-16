@@ -1326,7 +1326,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     if ((operationType != InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
             && operationType != InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-        || operationSubType != InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT) {
+        || (operationSubType != InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT
+            && operationSubType != InvoiceRepository.OPERATION_SUB_TYPE_BALANCE)) {
       return null;
     }
 
