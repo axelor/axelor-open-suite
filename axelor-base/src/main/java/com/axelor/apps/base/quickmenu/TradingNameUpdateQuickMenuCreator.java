@@ -35,6 +35,8 @@ import com.axelor.ui.QuickMenuCreator;
 import com.axelor.ui.QuickMenuItem;
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,7 +89,9 @@ public class TradingNameUpdateQuickMenuCreator implements QuickMenuCreator {
 
     String action = UserController.class.getName() + ":" + "setTradingName";
 
-    for (TradingName tradingName : activeCompany.getTradingNameList()) {
+    List<TradingName> tradingNameList = activeCompany.getTradingNameList();
+    Collections.sort(tradingNameList, Comparator.comparing(TradingName::getName));
+    for (TradingName tradingName : tradingNameList) {
       QuickMenuItem item =
           new QuickMenuItem(
               tradingName.getName(),
