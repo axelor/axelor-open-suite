@@ -14,3 +14,41 @@
 <p>Best regards<br/>
 $PurchaseOrder.buyerUser.partner.firstName$ $PurchaseOrder.buyerUser.partner.name$</p>
 ";"$PurchaseOrder.contactPartner.emailAddress.address$";;;2
+"Relance fournisseur pour lignes de commande en retard";"Partner";2;;;;"false";;"Lignes de commande en retard";"<p>Madame, Monsieur $Partner.simpleFullName$,</p>
+
+<p>Nous vous contactons concernant les lignes de commande suivantes partiellement ou totalement non livrées au-delà de la date de réception estimée. Nous vous remercions de bien vouloir nous confirmer le nouveau calendrier de livraison ou nous informer de tout retard :</p>
+
+<table style=""border-collapse: collapse; width: 100%"" border=""1"">
+  <thead>
+    <tr style=""background-color: #f5f5f5"">
+      <th style=""padding: 8px; text-align: left"">Commande</th>
+      <th style=""padding: 8px; text-align: left"">Contact</th>
+      <th style=""padding: 8px; text-align: left"">Produit</th>
+      <th style=""padding: 8px; text-align: right"">Qté commandée</th>
+      <th style=""padding: 8px; text-align: right"">Qté reçue</th>
+      <th style=""padding: 8px; text-align: right"">Qté restante</th>
+      <th style=""padding: 8px; text-align: center"">Date de réception estimée</th>
+      <th style=""padding: 8px; text-align: right"">Jours de retard</th>
+    </tr>
+  </thead>
+  <tbody>
+$overdueLines:{ l |
+    <tr>
+      <td style=""padding: 8px; text-align: left"">$l.line.purchaseOrder.purchaseOrderSeq$</td>
+      <td style=""padding: 8px; text-align: left"">$if(l.line.purchaseOrder.contactPartner)$$l.line.purchaseOrder.contactPartner.simpleFullName$$endif$</td>
+      <td style=""padding: 8px; text-align: left"">$l.line.productName$</td>
+      <td style=""padding: 8px; text-align: right"">$l.line.qty; format=""%,10.2f""$$if(l.line.unit)$ $l.line.unit.labelToPrinting$$endif$</td>
+      <td style=""padding: 8px; text-align: right"">$l.line.receivedQty; format=""%,10.2f""$$if(l.line.unit)$ $l.line.unit.labelToPrinting$$endif$</td>
+      <td style=""padding: 8px; text-align: right"">$l.remainingQty; format=""%,10.2f""$$if(l.line.unit)$ $l.line.unit.labelToPrinting$$endif$</td>
+      <td style=""padding: 8px; text-align: center"">$l.line.estimatedReceiptDate; format=""dd/MM/yyyy""$</td>
+      <td style=""padding: 8px; text-align: right"">$l.daysOverdue$</td>
+    </tr>
+}$
+  </tbody>
+</table>
+
+<p>N’hésitez pas à nous contacter si vous avez des questions.</p>
+
+<p>Cordialement,<br/>
+$Company.name$</p>
+";"$Partner.emailAddress.address$";;;2

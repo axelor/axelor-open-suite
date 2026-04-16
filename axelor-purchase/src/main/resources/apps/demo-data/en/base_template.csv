@@ -14,3 +14,41 @@
 <p>Best regards<br/>
 $PurchaseOrder.buyerUser.partner.firstName$ $PurchaseOrder.buyerUser.partner.name$</p>
 ";"$PurchaseOrder.contactPartner.emailAddress.address$";;;2
+"Supplier reminder for overdue purchase order lines";"Partner";1;;;;"false";;"Overdue purchase order lines";"<p>Dear $Partner.simpleFullName$,</p>
+
+<p>We are writing to follow up on the following overdue purchase order lines. Please confirm the revised delivery schedule or advise us of any delays:</p>
+
+<table style=""border-collapse: collapse; width: 100%"" border=""1"">
+  <thead>
+    <tr style=""background-color: #f5f5f5"">
+      <th style=""padding: 8px; text-align: left"">Purchase Order</th>
+      <th style=""padding: 8px; text-align: left"">Contact</th>
+      <th style=""padding: 8px; text-align: left"">Product</th>
+      <th style=""padding: 8px; text-align: right"">Ordered Qty</th>
+      <th style=""padding: 8px; text-align: right"">Received Qty</th>
+      <th style=""padding: 8px; text-align: right"">Remaining Qty</th>
+      <th style=""padding: 8px; text-align: center"">Estimated Receipt Date</th>
+      <th style=""padding: 8px; text-align: right"">Days Overdue</th>
+    </tr>
+  </thead>
+  <tbody>
+$overdueLines:{ l |
+    <tr>
+      <td style=""padding: 8px; text-align: left"">$l.line.purchaseOrder.purchaseOrderSeq$</td>
+      <td style=""padding: 8px; text-align: left"">$if(l.line.purchaseOrder.contactPartner)$$l.line.purchaseOrder.contactPartner.simpleFullName$$endif$</td>
+      <td style=""padding: 8px; text-align: left"">$l.line.productName$</td>
+      <td style=""padding: 8px; text-align: right"">$l.line.qty; format=""%,10.2f""$$if(l.line.unit)$ $l.line.unit.labelToPrinting$$endif$</td>
+      <td style=""padding: 8px; text-align: right"">$l.line.receivedQty; format=""%,10.2f""$$if(l.line.unit)$ $l.line.unit.labelToPrinting$$endif$</td>
+      <td style=""padding: 8px; text-align: right"">$l.remainingQty; format=""%,10.2f""$$if(l.line.unit)$ $l.line.unit.labelToPrinting$$endif$</td>
+      <td style=""padding: 8px; text-align: center"">$l.line.estimatedReceiptDate; format=""dd/MM/yyyy""$</td>
+      <td style=""padding: 8px; text-align: right"">$l.daysOverdue$</td>
+    </tr>
+}$
+  </tbody>
+</table>
+
+<p>Please do not hesitate to contact us if you have any questions.</p>
+
+<p>Best regards,<br/>
+$Company.name$</p>
+";"$Partner.emailAddress.address$";;;2

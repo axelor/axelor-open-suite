@@ -39,6 +39,9 @@
     <many-to-one name="purchaseOrderPrintTemplate" title="Purchase order template"
       ref="com.axelor.apps.base.db.PrintingTemplate"
       help="You can define here the default printing template for the company purchase quotations/orders."/>
+    <many-to-one name="supplierReminderTemplate"
+      title="Supplier reminder email template" ref="com.axelor.message.db.Template"
+      help="Email template used to send reminders to suppliers for overdue purchase order lines."/>
 
     <extra-code>
       <![CDATA[
@@ -63,6 +66,7 @@
       <field name="isAnalyticDistributionRequired" on="UPDATE"/>
       <field name="displayPriceOnQuotationRequest" on="UPDATE"/>
       <field name="purchaseOrderPrintTemplate" on="UPDATE"/>
+      <field name="supplierReminderTemplate" on="UPDATE"/>
     </track>
   </entity>
 

@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintServi
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.db.Model;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.EmailAddressRepository;
 import com.axelor.message.db.repo.MessageRepository;
@@ -55,6 +56,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected PrintingTemplatePrintService printTemplatePrintService;
+  protected Map<String, Object> extraTemplatesContext;
 
   @Inject
   public TemplateMessageServiceBaseImpl(
@@ -125,5 +127,31 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
       return Beans.get(MetaFiles.class)
           .upload(is, fileName + "." + FilenameUtils.getExtension(file.getName()));
     }
+  }
+
+  public Message generateMessage(
+      Model model, Template template, Map<String, Object> extraTemplatesContext)
+      throws ClassNotFoundException {
+    this.extraTemplatesContext = extraTemplatesContext;
+    try {
+      return generateMessage(model, template);
+    } finally {
+      this.extraTemplatesContext = null;
+    }
+  }
+
+  @Override
+  protected Map<String, Object> initAndComputeTemplatesContext(
+      Long objectId,
+      String model,
+      String tag,
+      Template template,
+      Map<String, Object> templatesContext)
+      throws ClassNotFoundException {
+    super.initAndComputeTemplatesContext(objectId, model, tag, template, templatesContext);
+    if (extraTemplatesContext != null) {
+      templatesContext.putAll(extraTemplatesContext);
+    }
+    return templatesContext;
   }
 }
