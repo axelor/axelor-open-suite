@@ -2662,7 +2662,7 @@
 "Users list","Utilisateurs",,
 "Users/Companies","Utilisateurs/Sociétés",,
 "VAT",,,
-"VAT Exemption Reason is filled based on the fiscal position configuration. If this partner has a specific exemption reason text, you need to create a new VAT Exemption Reason specific to this partner with a different note","le motif d'exonération de TVA est repris depuis la position fiscal. Si le tiers a un motif d'exonération spécifique, il convient de créer un nouveau motif et de renseigner dans la note la mention spécifique au client",,
+"VAT Exemption Reason is filled based on the fiscal position configuration. If this partner has a specific exemption reason text, you need to create a new VAT Exemption Reason specific to this partner with a different note","Le motif d'exonération de TVA est repris depuis la position fiscale. Si le tiers a un motif d'exonération spécifique, il convient de créer un nouveau motif et de renseigner dans la note la mention spécifique au client",,
 "VAT Regularization","TVA à régulariser",,
 "VAT exemption reason","Motif d'exonération de TVA",,
 "VAT exemption reasons","Motifs d'exonération de TVA",,
