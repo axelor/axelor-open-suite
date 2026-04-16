@@ -79,7 +79,7 @@
     onSave="mgm-action-validate-warn-billing-item-edited-after-project-confirmation,mgm-action-expense-method-validate-and-compute"
     canNew="false" onNew="mgm-action-project-expense-group-form-onNew"
     onLoad="mgm-action-expense-attrs-hide-button-readonly-field" canDelete="ventilated == false"
-    canAttach="false" onDelete="">
+    canAttach="false" readonlyIf="statusSelect == 3 || statusSelect == 4">
     <toolbar>
       <button name="projectFilesBtn" title="Project Files" showIf="project &amp;&amp; id"
         icon="fa-paperclip" onClick="action-method-project-find-project-files"/>
@@ -207,7 +207,7 @@
         <panel-related name="employeeExpenseLineListPanel" title="Employee expenses"
           onNew="mgm-action-project-expense-line-group-onnew" colSpan="12"
           field="generalExpenseLineList" form-view="mgm-expense-line-form"
-          grid-view="mgm-expense-line-grid"
+          grid-view="mgm-expense-line-grid" readonlyIf="statusSelect == 3 || statusSelect == 4"
           onChange="mgm-employee-expense-line-group-on-change-action"/>
       </panel>
       <panel name="feeExpensePanelMainPanel" title="General expenses"
@@ -218,7 +218,7 @@
         <panel-related name="feeExpenseLineListPanel" title="Project fees"
           onNew="mgm-fees-action-project-expense-line-group-onnew" colSpan="12"
           field="generalExpenseLineList" form-view="mgm-fees-expense-line-form"
-          grid-view="mgm-fees-expense-line-grid"
+          grid-view="mgm-fees-expense-line-grid" readonlyIf="statusSelect == 3 || statusSelect == 4"
           onChange="mgm-fees-expense-line-group-on-change-action"/>
       </panel>
     </panel-tabs>
