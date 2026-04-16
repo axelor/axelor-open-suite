@@ -1,3 +1,0 @@
----
-title: "Stock: fixed NPE on fromStockLocation when duplicating stock move."
-module: axelor-stock

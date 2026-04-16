@@ -1,3 +1,0 @@
----
-title: "Production: fixed an error when creating a new consumed product from a manufacturing order."
-module: axelor-production

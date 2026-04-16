@@ -1,3 +1,0 @@
----
-title: "Invoice term: fixed NPE on invoice term payment update when invoice term is not linked to an invoice."
-module: axelor-account

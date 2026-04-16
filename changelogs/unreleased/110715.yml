@@ -1,3 +1,0 @@
----
-title: "Production: fixed LazyInitializationException when confirming sale order with automatic manufacturing order planning enabled."
-module: axelor-production

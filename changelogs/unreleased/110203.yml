@@ -1,6 +1,0 @@
----
-title: "PFP: fix partial validation not creating a new invoice term when validated from the invoice term view."
-module: axelor-account
-developer: |
-  -- migration script
-  DELETE FROM meta_action WHERE name = 'action-invoice-term-attrs-set-initial-pfp-amount';
