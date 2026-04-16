@@ -67,4 +67,25 @@
       data-form="purchase-order-form">Purchase order</option>
   </selection>
 
+  <selection name="ipurchase.batch.action.select">
+    <option value="10">Supplier reminder for overdue lines</option>
+  </selection>
+
+  <selection name="batch.batch.type.select" id="purchase.batch.batch.type.select">
+    <option value="1200">Purchase batch</option>
+  </selection>
+
+  <selection name="trace.back.origin.select" id="purchase.trace.back.origin.select">
+    <option value="supplierReminder">Supplier reminder</option>
+  </selection>
+
+  <selection name="meta.schedule.job.select" id="purchase.meta.schedule.job.select">
+    <option value="com.axelor.apps.purchase.job.SupplierReminderJob">com.axelor.apps.purchase.job.SupplierReminderJob</option>
+  </selection>
+
+  <selection name="meta.schedule.batch.service.select"
+    id="purchase.meta.schedule.batch.service.select">
+    <option value="com.axelor.apps.purchase.service.batch.PurchaseBatchService">com.axelor.apps.purchase.service.batch.PurchaseBatchService</option>
+  </selection>
+
 </object-views>

@@ -142,6 +142,9 @@
         <item name="cancelReceiptItem" title="Cancel receipt"
           showIf="statusSelect &gt;= 3 &amp;&amp; supplierPartner != null"
           action="save,action-purchase-order-method-cancel-receipt"/>
+        <item name="sendSupplierReminderItem" title="Send supplier reminder"
+          showIf="statusSelect &gt;= 3 &amp;&amp; supplierPartner != null"
+          action="save,action-purchase-order-method-send-supplier-reminder"/>
       </menu>
     </menubar>
     <panel name="overviewPanel">
@@ -1125,6 +1128,11 @@
 
   <action-method name="action-purchase-order-method-validate-changes">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="validateChanges"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-send-supplier-reminder">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
+      method="sendSupplierReminder"/>
   </action-method>
 
 </object-views>

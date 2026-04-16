@@ -1,0 +1,4 @@
+"name";"value"
+"overdueLines";"import java.time.LocalDate
+def todayDate = LocalDate.now()
+__repo__(com.axelor.apps.purchase.db.PurchaseOrderLine).all().filter('self.purchaseOrder.supplierPartner.id = :partnerId AND self.estimatedReceiptDate IS NOT NULL AND self.estimatedReceiptDate < :today AND self.receivedQty < self.qty AND self.isTitleLine = false AND self.purchaseOrder.statusSelect >= :status').bind('partnerId', id).bind('today', todayDate).bind('status', 3).fetch()"

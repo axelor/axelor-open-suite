@@ -33,6 +33,11 @@
     <panel name="printingsPanel" title="Printings" colSpan="12">
       <field name="purchaseOrderPrintTemplate"/>
     </panel>
+    <panel name="supplierReminderPanel" title="Supplier reminder" colSpan="12">
+      <field name="supplierReminderTemplate" colSpan="6"
+        domain="self.metaModel.fullName = 'com.axelor.apps.purchase.db.PurchaseOrder'"
+        form-view="template-form" grid-view="template-grid"/>
+    </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>

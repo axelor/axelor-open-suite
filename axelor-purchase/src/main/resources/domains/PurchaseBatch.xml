@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.1.xsd">
+
+  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+
+  <entity name="PurchaseBatch">
+
+    <string name="code" unique="true" namecolumn="true" title="Code"/>
+    <integer name="actionSelect" title="Action" selection="ipurchase.batch.action.select"
+      default="10"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true"/>
+    <integer name="fetchLimit" title="Fetch limit"/>
+    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch"
+      mappedBy="purchaseBatch" title="Batches"/>
+
+    <extra-code><![CDATA[
+      public static final int ACTION_SUPPLIER_REMINDER = 10;
+
+      public static final String CODE_BATCH_SUPPLIER_REMINDER = "P_SUP_REM";
+    ]]></extra-code>
+
+  </entity>
+
+</domain-models>

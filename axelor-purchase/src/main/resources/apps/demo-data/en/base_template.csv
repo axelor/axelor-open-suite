@@ -14,3 +14,35 @@
 <p>Best regards<br/>
 $PurchaseOrder.buyerUser.partner.firstName$ $PurchaseOrder.buyerUser.partner.name$</p>
 ";"$PurchaseOrder.contactPartner.emailAddress.address$";;;2
+"Supplier reminder for overdue purchase order lines";"Partner";1;;;;"false";"overdueLines";"Overdue purchase order lines";"<p>Dear $Partner.simpleFullName$,</p>
+
+<p>We are writing to follow up on the following overdue purchase order lines. Please confirm the revised delivery schedule or advise us of any delays:</p>
+
+<table style=""border-collapse: collapse; width: 100%"" border=""1"">
+  <thead>
+    <tr style=""background-color: #f5f5f5"">
+      <th style=""padding: 8px; text-align: left"">Purchase Order</th>
+      <th style=""padding: 8px; text-align: left"">Product</th>
+      <th style=""padding: 8px; text-align: right"">Ordered Qty</th>
+      <th style=""padding: 8px; text-align: right"">Received Qty</th>
+      <th style=""padding: 8px; text-align: center"">Estimated Receipt Date</th>
+    </tr>
+  </thead>
+  <tbody>
+$overdueLines:{ line |
+    <tr>
+      <td style=""padding: 8px"">$line.purchaseOrder.purchaseOrderSeq$</td>
+      <td style=""padding: 8px"">$line.productName$</td>
+      <td style=""padding: 8px; text-align: right"">$line.qty; format=""%,10.2f""$$if(line.unit)$ $line.unit.labelToPrinting$$endif$</td>
+      <td style=""padding: 8px; text-align: right"">$line.receivedQty; format=""%,10.2f""$$if(line.unit)$ $line.unit.labelToPrinting$$endif$</td>
+      <td style=""padding: 8px; text-align: center"">$line.estimatedReceiptDate; format=""dd/MM/yyyy""$</td>
+    </tr>
+}$
+  </tbody>
+</table>
+
+<p>Please do not hesitate to contact us should you have any questions.</p>
+
+<p>Best regards,<br/>
+$__user__.activeCompany.name$</p>
+";"$Partner.emailAddress.address$";;;2
