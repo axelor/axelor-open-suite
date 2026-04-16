@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class FECImporter extends Importer {
 
@@ -264,6 +265,9 @@ public class FECImporter extends Importer {
 
     } catch (Exception e) {
       move.setStatusSelect(MoveRepository.STATUS_NEW);
+      if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
+        move.getMoveLineList().forEach(ml -> ml.setReconcileGroup(null));
+      }
       listener.handle(move, e);
     }
     return null;

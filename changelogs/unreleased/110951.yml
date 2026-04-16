@@ -1,0 +1,3 @@
+---
+title: "FEC Import: fixed reconcile group imported when validation is not activated or anomaly encountered."
+module: axelor-account
