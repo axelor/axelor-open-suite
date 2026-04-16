@@ -1,5 +1,0 @@
----
-title: "Invoice : fixed VAT on advance payments are not included in cash VAT declaration report."
-module: axelor-account
-developer: |
-   - InvoicePaymentMoveCreateServiceImpl and InvoicePaymentMoveCreateServiceImpl consturctors are updated to introduce MoveLineTaxService

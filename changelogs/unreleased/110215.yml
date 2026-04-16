@@ -1,3 +1,0 @@
----
-title: "Forecast recap: added non-blocking warning when overlapping forecast recaps/reports are detected for the same company, period and bank details."
-module: axelor-cash-management

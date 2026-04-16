@@ -1,3 +1,0 @@
----
-title: "Contract: added validation to prevent the first period end date from being earlier than the supposed activation date."
-module: axelor-contract
