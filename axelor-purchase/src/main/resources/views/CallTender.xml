@@ -12,6 +12,14 @@
 
   <form name="call-tender-form" model="com.axelor.apps.purchase.db.CallTender"
     title="Call for tender">
+    <toolbar>
+      <button name="productAttrPrintBtn"
+        onClick="save,action-call-tender-view-product-attributes-by-suppliers"
+        title="Show product attributes"/>
+      <button name="supplierResponsePrintBtn"
+        onClick="save,action-call-tender-view-supplier-respond-by-product"
+        title="Suppliers' respond by product"/>
+    </toolbar>
     <panel name="headerPanel" showTitle="false">
       <field name="callTenderSeq" showTitle="false" colSpan="12" readonly="true">
         <viewer><![CDATA[
@@ -121,6 +129,18 @@
     <view type="grid" name="purchase-order-grid"/>
     <view type="form" name="purchase-order-form"/>
     <domain>self.callTender.id = :_callTenderId</domain>
+    <context name="_callTenderId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-call-tender-view-product-attributes-by-suppliers"
+    title="Product attributes by supplier">
+    <view type="custom" name="call-tender-product-attributes-by-suppliers"/>
+    <context name="_callTenderId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-call-tender-view-supplier-respond-by-product"
+    title="Suppliers' respond by product">
+    <view type="custom" name="call-tender-supplier-respond-by-product"/>
     <context name="_callTenderId" expr="eval: id"/>
   </action-view>
 
