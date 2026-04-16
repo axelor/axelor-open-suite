@@ -1,3 +1,0 @@
----
-title: "Account: fixed NPE when sorting invoices with null date or id in notification process."
-module: axelor-account

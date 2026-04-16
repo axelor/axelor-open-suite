@@ -1,3 +1,55 @@
+## [7.2.65] (2026-04-16)
+
+### Fixes
+#### Base
+
+* Role: fixed the form view not properly extending axelor-core view.
+* Permission assistant: fixed invalid imported permissions when the condition is left empty.
+* Product: fixed duplicating a product copies price list content into existing price lists.
+
+#### Account
+
+* Account: fixed payment session eligible terms including incompatible payment mode types.
+* Account: fixed NPE when sorting invoices with null date or id in notification process.
+
+#### Cash Management
+
+* Forecast dashboard: fix chronological ordering of months across years in 'chart.forecast.in.out.total' chart.
+
+#### CRM
+
+* Prospect: fixed lost conversion error.
+
+#### GDPR
+
+* GDPR Request: fixed duplicate rows generated in CSV export due to collection fields.
+
+#### Production
+
+* Production: fixed an error when creating a new consumed product from a manufacturing order.
+
+#### Quality
+
+* Quality: fixed EN demo-data import error on QIResolutionDecision.
+
+#### Sale
+
+* Partner: fixed archived customers/prospects displayed on the map.
+
+#### Supply Chain
+
+* MRP: fixed calculation staying stuck in started status when an error occurs.
+
+
+### Developer
+
+#### Supply Chain
+
+- MrpService.saveErrorInMrp(Mrp, Exception) signature changed to saveErrorInMrp(Mrp, Throwable).
+- MrpServiceImpl.call() now throws Exception instead of AxelorException.
+- MrpServiceImpl.onRunnerException(Exception) signature changed to onRunnerException(Throwable).
+- MrpJob.runCalculationWithExceptionManagement(Mrp) now throws Exception instead of AxelorException.
+
 ## [7.2.64] (2026-04-02)
 
 ### Fixes
@@ -3019,6 +3071,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.65]: https://github.com/axelor/axelor-open-suite/compare/v7.2.64...v7.2.65
 [7.2.64]: https://github.com/axelor/axelor-open-suite/compare/v7.2.63...v7.2.64
 [7.2.63]: https://github.com/axelor/axelor-open-suite/compare/v7.2.62...v7.2.63
 [7.2.62]: https://github.com/axelor/axelor-open-suite/compare/v7.2.61...v7.2.62
