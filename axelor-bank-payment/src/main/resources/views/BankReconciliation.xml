@@ -246,6 +246,12 @@
       expr="eval: LocalDate.parse(todayDate).with(java.time.temporal.TemporalAdjusters.lastDayOfMonth())"/>
   </action-record>
 
+  <action-group name="action-group-bank-reconciliation-reconcile">
+    <action name="save"/>
+    <action name="action-bank-reconciliation-method-reconcile-selected"/>
+    <action name="action-bank-reconciliation-method-check-multiple-move-line"/>
+  </action-group>
+
   <action-record model="com.axelor.apps.bankpayment.db.BankReconciliation"
     name="action-bank-reconciliation-set-currency">
     <field name="currency" expr="eval: company?.currency"/>

@@ -199,7 +199,8 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
   @Override
   public void checkIncompleteLine(BankReconciliationLine bankReconciliationLine)
       throws AxelorException {
-    if (ObjectUtils.isEmpty(bankReconciliationLine.getMoveLine())) {
+    if (ObjectUtils.isEmpty(bankReconciliationLine.getMoveLine())
+        && ObjectUtils.isEmpty(bankReconciliationLine.getPostedNbr())) {
       if (ObjectUtils.notEmpty(bankReconciliationLine.getAccount())) {
         if (bankReconciliationLine.getBankReconciliation().getJournal() == null) {
           throw new AxelorException(
@@ -235,5 +236,19 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
     MoveLine moveLine = bankReconciliationLine.getMoveLine();
 
     moveLine.setBankReconciledAmount(bankReconciledAmount);
+  }
+
+  @Override
+  @Transactional
+  public BankReconciliationLine setSelected(BankReconciliationLine bankReconciliationLineContext) {
+    BankReconciliationLine bankReconciliationLine =
+        bankReconciliationLineRepository.find(bankReconciliationLineContext.getId());
+    if (bankReconciliationLine.getIsSelectedBankReconciliation() != null) {
+      bankReconciliationLine.setIsSelectedBankReconciliation(
+          !bankReconciliationLineContext.getIsSelectedBankReconciliation());
+    } else {
+      bankReconciliationLine.setIsSelectedBankReconciliation(true);
+    }
+    return bankReconciliationLineRepository.save(bankReconciliationLine);
   }
 }
