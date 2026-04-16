@@ -109,19 +109,28 @@ public class TaskReportController {
   public void setReportedAllProjectTaskFlag(ActionRequest request, ActionResponse response) {
     TaskReport taskReport = request.getContext().asType(TaskReport.class);
 
-    taskReport = Beans.get(TaskReportRepository.class).find(taskReport.getId());
-    boolean allTasksReported = taskReportService.allTasksReported(taskReport);
+    if (taskReport.getId() != null) {
+      taskReport = Beans.get(TaskReportRepository.class).find(taskReport.getId());
+    }
 
-    response.setValue("reportedAllTasks", allTasksReported);
+    if (taskReport != null && taskReport.getProject() != null) {
+      boolean allTasksReported = taskReportService.allTasksReported(taskReport);
+      response.setValue("reportedAllTasks", allTasksReported);
+    }
   }
 
   /** Update reported task count per total project task count */
   public void updateReportedTaskCount(ActionRequest request, ActionResponse response) {
     TaskReport taskReport = request.getContext().asType(TaskReport.class);
 
-    String reportedTaskCount = taskReportService.getReportedTaskCount(taskReport);
+    if (taskReport.getId() != null) {
+      taskReport = Beans.get(TaskReportRepository.class).find(taskReport.getId());
+    }
 
-    response.setValue("reportedTaskCount", reportedTaskCount);
+    if (taskReport != null) {
+      String reportedTaskCount = taskReportService.getReportedTaskCount(taskReport);
+      response.setValue("reportedTaskCount", reportedTaskCount);
+    }
   }
 
   /** Filter tasks for task member report dropdown */
