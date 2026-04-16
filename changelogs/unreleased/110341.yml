@@ -1,3 +1,3 @@
 ---
-title: "Purchase order: fixed NPE when installing purchase order demo data."
+title: "Purchase order: fixed an error occurring when installing purchase order demo data."
 module: axelor-purchase
