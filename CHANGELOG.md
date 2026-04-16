@@ -1,3 +1,39 @@
+## [8.2.41] (2026-04-16)
+
+### Fixes
+#### Base
+
+* Updated axelor-studio to version 3.3.17.
+
+#### Account
+
+* Mass entry: fixed error when trying to delete a move of type mass entry.
+* PFP: fix partial validation not creating a new invoice term when validated from the invoice term view.
+
+#### Bank Payment
+
+* Bank order: fixed impossible to cancel a bank order if the associated payment session has a refund.
+
+#### Contract
+
+* Contract: added validation to prevent the first period end date from being earlier than the supposed activation date.
+
+#### Project
+
+* Project: fixed dashboard tasks button label to 'View all tasks'.
+
+#### Sale
+
+* Dashboard: fixed chart labels for translated select values.
+
+
+### Developer
+
+#### Account
+
+-- migration script
+DELETE FROM meta_action WHERE name = 'action-invoice-term-attrs-set-initial-pfp-amount';
+
 ## [8.2.40] (2026-04-02)
 
 ### Fixes
@@ -2632,6 +2668,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.41]: https://github.com/axelor/axelor-open-suite/compare/v8.2.40...v8.2.41
 [8.2.40]: https://github.com/axelor/axelor-open-suite/compare/v8.2.39...v8.2.40
 [8.2.39]: https://github.com/axelor/axelor-open-suite/compare/v8.2.38...v8.2.39
 [8.2.38]: https://github.com/axelor/axelor-open-suite/compare/v8.2.37...v8.2.38
