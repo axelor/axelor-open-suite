@@ -1,0 +1,3 @@
+---
+title: "GDPR Request: fixed duplicate rows generated in CSV export due to collection fields."
+module: axelor-gdpr

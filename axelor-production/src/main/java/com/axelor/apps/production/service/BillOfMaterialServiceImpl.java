@@ -34,6 +34,7 @@ import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -72,8 +73,6 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
   protected BillOfMaterialLineService billOfMaterialLineService;
 
-  protected BillOfMaterialService billOfMaterialService;
-
   protected CostSheetService costSheetService;
 
   protected AppProductionService appProductionService;
@@ -85,7 +84,6 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       ProductRepository productRepo,
       ProductCompanyService productCompanyService,
       BillOfMaterialLineService billOfMaterialLineService,
-      BillOfMaterialService billOfMaterialService,
       CostSheetService costSheetService,
       AppProductionService appProductionService) {
     this.billOfMaterialRepo = billOfMaterialRepo;
@@ -93,7 +91,6 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     this.productRepo = productRepo;
     this.productCompanyService = productCompanyService;
     this.billOfMaterialLineService = billOfMaterialLineService;
-    this.billOfMaterialService = billOfMaterialService;
     this.costSheetService = costSheetService;
     this.appProductionService = appProductionService;
   }
@@ -333,7 +330,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
           && ((bomChild != null && CollectionUtils.isEmpty(bomChild.getBillOfMaterialLineList()))
               || bomChild == null)
           && bomLineChild.getProduct() != null) {
-        bomChild = billOfMaterialService.getBOM(bomLineChild.getProduct(), bom.getCompany());
+        bomChild = getBOM(bomLineChild.getProduct(), bom.getCompany());
       }
 
       if (bomLineChild != null && !processedBomLine.contains(bomLineChild.getId())) {
@@ -600,6 +597,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   @Override
   public Map<BillOfMaterial, BigDecimal> getSubBillOfMaterialMapWithLineQty(
       BillOfMaterial billOfMaterial) {
+    billOfMaterial = JpaModelHelper.ensureManaged(billOfMaterial);
 
     if (billOfMaterial.getBillOfMaterialLineList() != null) {
       return billOfMaterial.getBillOfMaterialLineList().stream()

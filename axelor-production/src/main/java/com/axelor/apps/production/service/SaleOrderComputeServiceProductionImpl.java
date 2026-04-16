@@ -21,6 +21,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
@@ -64,6 +65,9 @@ public class SaleOrderComputeServiceProductionImpl extends SaleOrderComputeServi
     }
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL) {
+        continue;
+      }
       subSaleOrderLineComputeService.computeSumSubLineList(saleOrderLine, saleOrder);
     }
 

@@ -58,6 +58,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -155,14 +156,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   @Override
   public StockLocation getDefaultOutStockLocation(ManufOrder manufOrder, Company company)
       throws AxelorException {
-    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
-    StockLocation stockLocation =
-        getDefaultStockLocation(manufOrder.getProdProcess(), STOCK_LOCATION_OUT);
-    if (stockLocation == null) {
-      return stockConfigProductionService.getFinishedProductsDefaultStockLocation(
-          manufOrder.getWorkshopStockLocation(), stockConfig);
-    }
-    return stockLocation;
+    return getProducedProductStockLocation(manufOrder, company);
   }
 
   /**
@@ -427,12 +421,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
 
   public StockLocation getProducedProductStockLocation(ManufOrder manufOrder, Company company)
       throws AxelorException {
-
-    if (manufOrder.getOutsourcing()) {
-      return _getReceiptOutsourcingStockLocation(manufOrder, company);
-    } else {
-      return _getProducedProductStockLocation(manufOrder, company);
-    }
+    return _getProducedProductStockLocation(manufOrder, company);
   }
 
   @Override
@@ -448,12 +437,6 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
           stockConfigProductionService.getResidualProductsDefaultStockLocation(stockConfig);
     }
     return residualProductStockLocation;
-  }
-
-  protected StockLocation _getReceiptOutsourcingStockLocation(
-      ManufOrder manufOrder, Company company) throws AxelorException {
-    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
-    return stockConfigProductionService.getReceiptDefaultStockLocation(stockConfig);
   }
 
   protected StockLocation _getProducedProductStockLocation(ManufOrder manufOrder, Company company)
@@ -497,13 +480,17 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   }
 
   @Override
-  public void updatePrices(ManufOrder manufOrder, BigDecimal costPrice) throws AxelorException {
+  public void updatePrices(ManufOrder manufOrder, BigDecimal costPrice, Set<Long> stockMoveIds)
+      throws AxelorException {
     List<StockMove> outStockMoveList = manufOrder.getOutStockMoveList();
     if (ObjectUtils.isEmpty(outStockMoveList)) {
       return;
     }
     for (StockMove stockMove : outStockMoveList) {
       stockMove = JpaModelHelper.ensureManaged(stockMove);
+      if (!stockMoveIds.contains(stockMove.getId())) {
+        continue;
+      }
       updatePrices(stockMove, costPrice);
       BigDecimal exTaxTotal = stockMoveToolService.compute(stockMove);
       stockMove = JpaModelHelper.ensureManaged(stockMove);

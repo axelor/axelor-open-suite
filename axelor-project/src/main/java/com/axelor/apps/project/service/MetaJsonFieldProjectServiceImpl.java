@@ -21,16 +21,34 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.common.Inflector;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaSelect;
+import com.axelor.meta.db.MetaSelectItem;
+import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.AppProject;
+import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class MetaJsonFieldProjectServiceImpl implements MetaJsonFieldProjectService {
+
+  protected final ProjectTaskRepository projectTaskRepository;
+  protected final MetaSelectRepository metaSelectRepository;
+
+  @Inject
+  public MetaJsonFieldProjectServiceImpl(
+      ProjectTaskRepository projectTaskRepository, MetaSelectRepository metaSelectRepository) {
+    this.projectTaskRepository = projectTaskRepository;
+    this.metaSelectRepository = metaSelectRepository;
+  }
 
   @Override
   public String computeSelectName(MetaJsonField jsonField, String typeSelect) {
@@ -88,5 +106,63 @@ public class MetaJsonFieldProjectServiceImpl implements MetaJsonFieldProjectServ
     contextValues.put("modelField", modelField);
 
     return contextValues;
+  }
+
+  @Override
+  public boolean isMetaJsonFieldUsedOnTasks(MetaJsonField jsonField) {
+    String fieldName = jsonField.getName();
+    String modelField = jsonField.getModelField();
+
+    if (StringUtils.isEmpty(fieldName) || StringUtils.isEmpty(modelField)) {
+      return false;
+    }
+
+    return projectTaskRepository
+            .all()
+            .filter("CAST(self." + modelField + " AS string) LIKE :fieldPattern")
+            .bind("fieldPattern", "%\"" + fieldName + "\"%")
+            .count()
+        > 0;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void saveSelection(MetaSelect metaSelect) {
+    metaSelectRepository.save(metaSelect);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void saveSelectionItems(Long metaSelectId, List<Map<String, Object>> items) {
+    MetaSelect select = metaSelectRepository.find(metaSelectId);
+    if (select == null) {
+      return;
+    }
+
+    List<MetaSelectItem> currentItems = new ArrayList<>(select.getItems());
+    for (MetaSelectItem item : currentItems) {
+      select.removeItem(item);
+    }
+
+    if (items != null) {
+      int order = 0;
+      for (Map<String, Object> itemMap : items) {
+        String itemTitle = (String) itemMap.get("title");
+        if (StringUtils.isEmpty(itemTitle)) {
+          continue;
+        }
+        MetaSelectItem item = new MetaSelectItem();
+        item.setTitle(itemTitle);
+        String value = (String) itemMap.get("value");
+        item.setValue(StringUtils.notEmpty(value) ? value : itemTitle);
+        item.setColor((String) itemMap.get("color"));
+        item.setOrder(
+            itemMap.get("order") != null ? ((Number) itemMap.get("order")).intValue() : order);
+        select.addItem(item);
+        order++;
+      }
+    }
+
+    metaSelectRepository.save(select);
   }
 }

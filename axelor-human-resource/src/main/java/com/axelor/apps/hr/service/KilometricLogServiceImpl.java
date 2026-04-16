@@ -66,7 +66,7 @@ public class KilometricLogServiceImpl implements KilometricLogService {
     kilometricLog.setDistanceTravelled(
         expenseLineList.stream()
             .filter(
-                line -> line.getExpense().getStatusSelect() == ExpenseRepository.STATUS_VALIDATED)
+                line -> line.getExpense().getStatusSelect() != ExpenseRepository.STATUS_CANCELED)
             .map(ExpenseLine::getDistance)
             .reduce(BigDecimal.ZERO, BigDecimal::add));
   }

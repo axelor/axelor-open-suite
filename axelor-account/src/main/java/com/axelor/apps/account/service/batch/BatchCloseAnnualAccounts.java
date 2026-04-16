@@ -484,13 +484,13 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                 .map(account -> account.getId())
                 .map(id -> id.toString())
                 .collect(Collectors.joining(","));
-        query = "self.account in (" + idListStr + ") AND ";
+        query = "self.account.id in (" + idListStr + ") AND ";
       }
       query =
           query.concat(
               "self.move.statusSelect = "
                   + MoveRepository.STATUS_ACCOUNTED
-                  + " AND self.move.period.year = "
+                  + " AND self.move.period.year.id = "
                   + accountingBatch.getYear().getId());
       Query qIncome =
           JPA.em()

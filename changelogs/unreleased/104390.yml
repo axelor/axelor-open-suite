@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed sublines being cleared when changing supply method on a sale order line without a bill of material."
+module: axelor-production

@@ -20,10 +20,11 @@ package com.axelor.apps.account.service.invoice.tax;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLineTax;
-import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class InvoiceTaxComputeServiceImpl implements InvoiceTaxComputeService {
 
@@ -78,8 +79,9 @@ public class InvoiceTaxComputeServiceImpl implements InvoiceTaxComputeService {
       BigDecimal inTaxTotal) {
     Invoice invoice = invoiceLineTax.getInvoice();
     BigDecimal taxAmount =
-        InvoiceLineManagement.computeAmount(
-            exTaxBase, taxValue, currencyScaleService.getScale(invoice), null);
+        exTaxBase
+            .multiply(taxValue)
+            .setScale(AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
 
     if (invoice != null) {
       BigDecimal diff = taxAmount.subtract(inTaxTotal.subtract(exTaxBase)).abs();
@@ -87,7 +89,6 @@ public class InvoiceTaxComputeServiceImpl implements InvoiceTaxComputeService {
         return inTaxTotal.subtract(exTaxBase);
       }
     }
-
-    return taxAmount;
+    return taxAmount.setScale(currencyScaleService.getScale(invoice), RoundingMode.HALF_UP);
   }
 }

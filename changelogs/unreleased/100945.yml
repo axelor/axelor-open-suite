@@ -1,0 +1,11 @@
+---
+title: "REST API: fixed an issue where some unauthorized actions were not blocked correctly."
+module: axelor-base
+developer: |
+  Several REST controllers now execute their SecurityCheck chain correctly before continuing.
+
+  Custom code or integrations that relied on these endpoints succeeding despite missing access rights
+  will no longer work after this fix.
+
+  If a custom process was incorrectly using these API flows without the required permissions,
+  it must be updated to grant the proper access rights or to call the process with an authorized user.

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -60,6 +60,11 @@
     <option value="3" color="green">Replied</option>
     <option value="4" color="teal">Selected</option>
     <option value="5" color="red">Rejected</option>
+  </selection>
+
+  <selection name="message.related.to.select" id="purchase.message.related.to.select">
+    <option value="com.axelor.apps.purchase.db.PurchaseOrder" data-grid="purchase-order-grid"
+      data-form="purchase-order-form">Purchase order</option>
   </selection>
 
 </object-views>

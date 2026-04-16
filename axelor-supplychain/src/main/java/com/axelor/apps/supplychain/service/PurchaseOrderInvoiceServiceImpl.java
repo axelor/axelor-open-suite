@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
@@ -69,8 +70,11 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -317,15 +321,20 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             + " FROM InvoiceLine as self"
             + " WHERE ((self.purchaseOrderLine.purchaseOrder.id = :purchaseOrderId AND self.invoice.purchaseOrder IS NULL)"
             + " OR self.invoice.purchaseOrder.id = :purchaseOrderId )"
-            + " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect"
-            + " AND self.invoice.statusSelect = :statusVentilated";
+            + " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect";
 
     if (currentInvoiceId != null) {
       if (excludeCurrentInvoice) {
+        query += " AND self.invoice.statusSelect = :statusVentilated";
         query += " AND self.invoice.id <> :invoiceId";
       } else {
-        query += " AND self.invoice.id = :invoiceId";
+        // The current invoice may not yet be ventilated in DB at this point,
+        // so include it explicitly alongside already ventilated invoices.
+        query +=
+            " AND (self.invoice.statusSelect = :statusVentilated OR self.invoice.id = :invoiceId)";
       }
+    } else {
+      query += " AND self.invoice.statusSelect = :statusVentilated";
     }
 
     Query q = JPA.em().createQuery(query, BigDecimal.class);
@@ -679,27 +688,38 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       return createdInvoiceLineList;
     }
 
+    Map<String, BigDecimal> taxKeyToExTaxTotal = new LinkedHashMap<>();
+    Map<String, PurchaseOrderLine> taxKeyToLine = new LinkedHashMap<>();
+    Map<String, Set<TaxLine>> taxKeyToTaxLineSet = new LinkedHashMap<>();
+
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
-      InvoiceLineGeneratorSupplyChain invoiceLineGenerator = null;
-      if (!purchaseOrderLine.getIsTitleLine()) {
-        invoiceLineGenerator =
-            invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
-                invoice,
-                invoicingProduct,
-                percentToInvoice,
-                null,
-                purchaseOrderLine,
-                purchaseOrderLine.getExTaxTotal(),
-                purchaseOrderLine.getTaxLineSet());
-      } else {
-        invoiceLineGenerator =
-            invoiceLineOrderService.getInvoiceLineGeneratorForTitleLines(
-                invoice,
-                purchaseOrderLine.getProductName(),
-                null,
-                purchaseOrderLine,
-                purchaseOrderLine.getQty());
+      if (purchaseOrderLine.getIsTitleLine()) {
+        continue;
       }
+      Set<TaxLine> taxLineSet = purchaseOrderLine.getTaxLineSet();
+      String taxKey =
+          ObjectUtils.isEmpty(taxLineSet)
+              ? ""
+              : taxLineSet.stream()
+                  .map(tl -> String.valueOf(tl.getId()))
+                  .sorted()
+                  .collect(Collectors.joining(","));
+      taxKeyToExTaxTotal.merge(taxKey, purchaseOrderLine.getExTaxTotal(), BigDecimal::add);
+      taxKeyToLine.putIfAbsent(taxKey, purchaseOrderLine);
+      taxKeyToTaxLineSet.putIfAbsent(taxKey, taxLineSet);
+    }
+
+    for (Map.Entry<String, BigDecimal> entry : taxKeyToExTaxTotal.entrySet()) {
+      String key = entry.getKey();
+      InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
+          invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
+              invoice,
+              invoicingProduct,
+              percentToInvoice,
+              null,
+              taxKeyToLine.get(key),
+              entry.getValue(),
+              taxKeyToTaxLineSet.get(key));
       createdInvoiceLineList.addAll(invoiceLineGenerator.creates());
     }
     return createdInvoiceLineList;

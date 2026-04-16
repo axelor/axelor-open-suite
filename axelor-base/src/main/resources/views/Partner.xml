@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner"
     orderBy="name">
@@ -142,12 +142,14 @@
   <form name="partner-customer-form" title="Customer" model="com.axelor.apps.base.db.Partner"
     onNew="action-group-base-partner-onnew"
     onLoad="action-group-partner-onload,action-partner-attrs-hide-customer-recovery"
-    onSave="action-partner-validate-partner-stock-settings-list" width="large">
+    onSave="action-partner-validate-partner-stock-settings-list,action-partner-group-onsave"
+    width="large">
     <panel-include view="partner-form"/>
   </form>
 
   <form name="partner-supplier-form" title="Supplier" model="com.axelor.apps.base.db.Partner"
-    onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload" width="large">
+    onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload"
+    onSave="action-partner-group-onsave" width="large">
     <panel-include view="partner-form"/>
   </form>
 
@@ -1176,6 +1178,8 @@
   <action-group name="action-partner-group-onsave">
     <action name="action-partner-iban-check-on-save"/>
     <action name="action-partner-method-check-if-registration-code-already-exists" if="!id"/>
+    <action name="action-partner-method-update-partner-address"/>
+    <action name="action-partner-method-check-registration-code-if-required"/>
     <action name="save"/>
     <action name="action-partner-method-set-user-partner"/>
   </action-group>
@@ -1580,6 +1584,15 @@
     <call class="com.axelor.apps.base.web.PartnerController" method="checkRegistrationCode"/>
   </action-method>
 
+  <action-method name="action-partner-method-update-partner-address">
+    <call class="com.axelor.apps.base.web.PartnerController" method="updatePartnerAddress"/>
+  </action-method>
+
+  <action-method name="action-partner-method-check-registration-code-if-required">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="checkRegistrationCodeIfRequired"/>
+  </action-method>
+
   <action-method name="action-partner-method-set-positive-balance">
     <call class="com.axelor.apps.base.web.PartnerController" method="setPositiveBalance"/>
   </action-method>
@@ -1645,7 +1658,7 @@
     model="com.axelor.apps.base.db.Partner">
     <view type="grid" name="partner-grid"/>
     <view type="form" name="partner-form"/>
-    <domain>self.parentPartner = :id</domain>
+    <domain>self.parentPartner.id = :id</domain>
   </action-view>
 
   <action-record name="action-record-base-partner-set-business-card"
@@ -1812,7 +1825,7 @@
 
   <action-attrs name="action-partner-attrs-set-partner-tag-domain">
     <attribute name="domain" for="tagSet"
-      expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} IN (self.concernedModelSet.id) OR self.concernedModelSet IS EMPTY) AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
+      expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} IN (self.concernedModelSet.id) OR self.concernedModelSet IS EMPTY) AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${((companySet?.collect{it.id} ?: []) + [0]).join(',')}))) AND (self.tradingNameSet IS EMPTY OR EXISTS(SELECT 1 FROM TradingName tn WHERE tn MEMBER OF self.tradingNameSet AND tn.id IN (${((tradingNameSet?.collect{it.id} ?: []) + [0]).join(',')}))) &quot;"/>
   </action-attrs>
 
   <action-view name="action-partner-view-wizard-api-sirene-configuration"

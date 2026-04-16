@@ -99,6 +99,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected StockLocationLineHistoryService stockLocationLineHistoryService;
   protected StockLocationLineFetchService stockLocationLineFetchService;
   protected TrackingNumberCreateService trackingNumberCreateService;
+  protected StockMoveService stockMoveService;
 
   @Inject
   public StockMoveLineServiceImpl(
@@ -115,7 +116,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       ShippingCoefService shippingCoefService,
       StockLocationLineHistoryService stockLocationLineHistoryService,
       StockLocationLineFetchService stockLocationLineFetchService,
-      TrackingNumberCreateService trackingNumberCreateService) {
+      TrackingNumberCreateService trackingNumberCreateService,
+      StockMoveService stockMoveService) {
     this.trackingNumberService = trackingNumberService;
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
@@ -130,6 +132,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     this.stockLocationLineHistoryService = stockLocationLineHistoryService;
     this.stockLocationLineFetchService = stockLocationLineFetchService;
     this.trackingNumberCreateService = trackingNumberCreateService;
+    this.stockMoveService = stockMoveService;
   }
 
   @Override
@@ -545,7 +548,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (stockLocationLineList != null) {
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
 
-        BigDecimal qty = stockLocationLine.getFutureQty();
+        BigDecimal qty =
+            unitConversionService.convert(
+                stockLocationLine.getUnit(),
+                stockMoveLine.getUnit(),
+                stockLocationLine.getFutureQty(),
+                appBaseService.getNbDecimalDigitForQty(),
+                product);
         if (stockMoveLine.getQty().compareTo(qty) > 0) {
           this.splitStockMoveLine(stockMoveLine, qty, stockLocationLine.getTrackingNumber());
         } else {
@@ -1667,6 +1676,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     } else {
       stockMoveLineRepository.remove(stockMoveLine);
     }
+
+    StockMove stockMove = stockMoveLine.getStockMove();
+    stockMoveService.updateLocations(stockMove, stockMove.getStatusSelect());
   }
 
   @Override
@@ -1676,16 +1688,15 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     BigDecimal availableQtyForProduct = BigDecimal.ZERO;
     Unit targetUnit = getStockUnit(stockMoveLine);
 
-    TrackingNumberConfiguration trackingNumberConfiguration =
-        (TrackingNumberConfiguration)
-            productCompanyService.get(
-                stockMoveLine.getProduct(),
-                "trackingNumberConfiguration",
-                Optional.ofNullable(stockMoveLine.getStockMove())
-                    .map(StockMove::getCompany)
-                    .orElse(null));
-
-    if (stockMoveLine.getProduct() != null) {
+    if (stockMoveLine.getProduct() != null && stockLocation != null) {
+      TrackingNumberConfiguration trackingNumberConfiguration =
+          (TrackingNumberConfiguration)
+              productCompanyService.get(
+                  stockMoveLine.getProduct(),
+                  "trackingNumberConfiguration",
+                  Optional.ofNullable(stockMoveLine.getStockMove())
+                      .map(StockMove::getCompany)
+                      .orElse(null));
       if (trackingNumberConfiguration != null) {
 
         if (stockMoveLine.getTrackingNumber() != null) {
@@ -1699,7 +1710,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           }
         }
 
-        if (availableQty.compareTo(stockMoveLine.getRealQty()) < 0) {
+        if (availableQty.compareTo(stockMoveLine.getQty()) < 0) {
           StockLocationLine stockLocationLineForProduct =
               stockLocationLineFetchService.getStockLocationLine(
                   stockLocation, stockMoveLine.getProduct());
@@ -1791,19 +1802,18 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             .equals(ProductRepository.PRODUCT_TYPE_SERVICE)) {
       BigDecimal availableQty = stockMoveLine.getAvailableQty();
       BigDecimal availableQtyForProduct = stockMoveLine.getAvailableQtyForProduct();
-      BigDecimal realQty = stockMoveLine.getRealQty();
+      BigDecimal qty = stockMoveLine.getQty();
 
-      if (availableQty.compareTo(realQty) >= 0 || !stockMoveLine.getProduct().getStockManaged()) {
+      if (availableQty.compareTo(qty) >= 0 || !stockMoveLine.getProduct().getStockManaged()) {
         stockMoveLine.setAvailableStatus(I18n.get("Available"));
         stockMoveLine.setAvailableStatusSelect(StockMoveLineRepository.STATUS_AVAILABLE);
         availabilityMap.put("availability", stockMoveLine.getAvailableStatus());
-      } else if (availableQtyForProduct.compareTo(realQty) >= 0) {
+      } else if (availableQtyForProduct.compareTo(qty) >= 0) {
         stockMoveLine.setAvailableStatus(I18n.get("Av. for product"));
         stockMoveLine.setAvailableStatusSelect(
             StockMoveLineRepository.STATUS_AVAILABLE_FOR_PRODUCT);
         availabilityMap.put("availability", stockMoveLine.getAvailableStatus());
-      } else if (availableQty.compareTo(realQty) < 0
-          && availableQtyForProduct.compareTo(realQty) < 0) {
+      } else if (availableQty.compareTo(qty) < 0 && availableQtyForProduct.compareTo(qty) < 0) {
         BigDecimal missingQty = computeMissingQty(stockMoveLine);
         stockMoveLine.setAvailableStatus(
             I18n.get("Missing")
@@ -1829,9 +1839,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                     .orElse(null));
 
     if (trackingNumberConfiguration != null) {
-      return stockMoveLine.getAvailableQtyForProduct().subtract(stockMoveLine.getRealQty());
+      return stockMoveLine.getAvailableQtyForProduct().subtract(stockMoveLine.getQty());
     } else {
-      return stockMoveLine.getAvailableQty().subtract(stockMoveLine.getRealQty());
+      return stockMoveLine.getAvailableQty().subtract(stockMoveLine.getQty());
     }
   }
 

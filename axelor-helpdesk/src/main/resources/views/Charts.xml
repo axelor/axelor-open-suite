@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <chart name="chart.ticket.no.of.solved.my.ticket" title="My tickets"
     onInit="action.ticket.chart.set.date.1m">
@@ -547,7 +547,7 @@
 	        SELECT COUNT(self.id) * 100. / (SELECT COUNT(self2.id) FROM Ticket self2 WHERE self2.ticketType.id = :id) AS _percentage,
 	            self.ticketStatus.name AS _status
 	        FROM Ticket self
-	        WHERE self.ticketType = :id
+	        WHERE self.ticketType.id = :id
 	        GROUP BY self.ticketStatus.name
 	        ORDER BY self.ticketStatus.name
         ]]>
