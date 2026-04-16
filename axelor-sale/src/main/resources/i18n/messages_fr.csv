@@ -566,6 +566,7 @@
 "SaleOrder.duration","Durée de validité",,
 "SaleOrder.endOfValidityDate","Date de fin de validité",,
 "SaleOrder.estimatedDeliveryDate","Date d'expédition estimée",,
+"SaleOrder.exemptionReason","Motif d'exonération",,
 "SaleOrder.invoicingAddrs","Adresse de facturation",,
 "SaleOrder.isIspmRequired","Norme NIMP15 requise",,
 "SaleOrder.no","Devis N° ",,
