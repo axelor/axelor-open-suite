@@ -510,6 +510,10 @@
     <bind to="importOrigin" eval="_dataFileName"/>
     <bind to="company" search="self.id = :_companyId" update="true"/>
     <bind to="tax" search="self.code = :tax_code" update="true"/>
+    <bind search="self.code in :saleTaxSet" to="saleTaxSet" column="saleTaxSet"
+      eval="saleTaxSet.split('\\|') as List"/>
+    <bind search="self.code in :purchaseTaxSet" to="purchaseTaxSet" column="purchaseTaxSet"
+      eval="purchaseTaxSet.split('\\|') as List"/>
     <bind search="self.code = :cashAccount_code and self.company.id = :_companyId"
       to="cashAccount" update="true" if="cashAccount_code"/>
     <bind search="self.code = :saleTaxVatSystem1Account_code and self.company.id = :_companyId"
