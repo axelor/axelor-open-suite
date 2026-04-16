@@ -282,6 +282,7 @@
           if="expenseProduct != null &amp;&amp; $get('expenseProduct.amountLimit') != 0 &amp;&amp; $get('expenseProduct.amountLimit') &lt; totalAmount"/>
       </field>
       <field name="justificationMetaFile" widget="binary-link"
+        requiredIf="_parent.companyCbSelect == 1"
         onChange="action-expense-line-group-justification-line-onchange"/>
       <field name="toInvoice" colSpan="3"/>
       <field name="invoiced" showTitle="false"
