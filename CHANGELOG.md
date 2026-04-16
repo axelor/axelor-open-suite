@@ -1,3 +1,32 @@
+## [8.3.33] (2026-04-16)
+
+### Fixes
+#### Account
+
+* FEC Import: fixed missing currency on imported moves when Idevise column is empty.
+
+#### Bank Payment
+
+* Bank order: fixed impossible to cancel a bank order if the associated payment session has a refund.
+
+#### Contract
+
+* Contract: added validation to prevent the first period end date from being earlier than the supposed activation date.
+
+#### Human Resource
+
+* Expense: show the payment button on expense with company card.
+* Timesheet: fixed cancel button visibility and editability when related invoice is ventilated.
+
+#### Production
+
+* Manufacturing order: fixed outsourced produced stock moves targeting the wrong stock location.
+* Sale order: fixed NPE error when adding a pack while editable tree view is activated.
+
+#### Stock
+
+* Stock: fixed NPE on fromStockLocation when duplicating stock move.
+
 ## [8.3.32] (2026-04-02)
 
 ### Fixes
@@ -3150,6 +3179,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.33]: https://github.com/axelor/axelor-open-suite/compare/v8.3.32...v8.3.33
 [8.3.32]: https://github.com/axelor/axelor-open-suite/compare/v8.3.31...v8.3.32
 [8.3.31]: https://github.com/axelor/axelor-open-suite/compare/v8.3.30...v8.3.31
 [8.3.30]: https://github.com/axelor/axelor-open-suite/compare/v8.3.29...v8.3.30
