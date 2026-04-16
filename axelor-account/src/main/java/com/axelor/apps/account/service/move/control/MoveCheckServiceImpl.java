@@ -302,6 +302,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
             moveLine.getAnalyticMoveLineList().stream()
                 .map(AnalyticMoveLine::getAnalyticAxis)
                 .collect(Collectors.toList()));
+        moveLineCheckService.checkAnalyticMoveLinesPercentage(moveLine);
       }
     }
   }

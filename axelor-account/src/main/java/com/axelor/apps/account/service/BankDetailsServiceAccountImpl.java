@@ -18,12 +18,15 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.BankDetailsServiceAccount;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.AxelorException;
@@ -120,6 +123,16 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl
       List<BankDetails> authorizedBankDetails =
           Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
 
+      if (partner != null
+          && Boolean.TRUE.equals(partner.getFactorizedCustomer())
+          && Boolean.TRUE.equals(appAccountService.getAppAccount().getManageFactors())
+          && (Integer.valueOf(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+                  .equals(operationTypeSelect)
+              || Integer.valueOf(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
+                  .equals(operationTypeSelect))) {
+        return getDefaultCompanyBankDetailsFromFactorPartner(company);
+      }
+
       if ((partner == null || !partner.getFactorizedCustomer())
           && candidateBankDetails != null
           && authorizedBankDetails.contains(candidateBankDetails)
@@ -165,6 +178,19 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl
       candidateBankDetails = accountingSituation.getCompanyOutBankDetails();
     }
     return candidateBankDetails;
+  }
+
+  protected BankDetails getDefaultCompanyBankDetailsFromFactorPartner(Company company)
+      throws AxelorException {
+    AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
+    Partner factorPartner = accountConfig.getFactorPartner();
+    if (factorPartner != null) {
+      return factorPartner.getBankDetailsList().stream()
+          .filter(bankDetails -> bankDetails.getIsDefault() && bankDetails.getActive())
+          .findFirst()
+          .orElse(null);
+    }
+    return null;
   }
 
   @Override

@@ -216,6 +216,8 @@
     <context name="todayDate" expr="eval:__config__.date"/>
     <context name="activeCompany"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+    <context name="_language"
+      expr="eval: __user__.getLanguage()?.tokenize('-')?.first()?.toLowerCase()"/>
   </action-view>
 
   <action-view title="Turnover per customer category"

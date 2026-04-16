@@ -30,6 +30,7 @@
 "<h4>Forecasts in out total</h4>","<h4>Prévisionnel de trésorerie</h4>",,
 "Actualize","Actualiser",,
 "Amount","Montant",,
+"An existing forecast recap/report already covers part of this period for the same company and bank accounts (%s). Data may appear duplicated in the treasury dashboard.","Un récapitulatif ou un rapport de prévisions existant couvre déjà une partie de cette période pour la même entreprise et les mêmes comptes bancaires (%s). Les données peuvent apparaître en double dans le tableau de bord de la trésorerie.",,
 "Balance",,,
 "Balance by bank details","Solde par RIB",,
 "Bank","Banque",,

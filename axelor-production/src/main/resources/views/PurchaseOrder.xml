@@ -35,6 +35,11 @@
       </insert>
     </extend>
 
+    <extend target="//field[@name='tradingName']">
+      <attribute name="readonlyIf"
+        value="callTender == null &amp;&amp; !createdByInterco &amp;&amp; !outsourcingOrder &amp;&amp;((purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3)"/>
+    </extend>
+
     <extend target="//field[@name='purchaseOrderSeq']">
       <attribute name="colSpan" value="6"/>
     </extend>

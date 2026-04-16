@@ -213,6 +213,7 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void finish(OperationOrder operationOrder) throws AxelorException {
 
     List<StockMove> stockMoveList = operationOrder.getInStockMoveList();

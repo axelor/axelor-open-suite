@@ -41,12 +41,16 @@ public abstract class RegistrationNumberValidator {
   protected abstract boolean computeRegistrationCodeValidity(String registrationCode);
 
   public boolean isRegistrationCodeValid(Partner partner) {
+    RegistrationNumberTemplate registrationNumberTemplate = getRegistrationNumberTemplate(partner);
     if (partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_COMPANY
-        || Strings.isNullOrEmpty(partner.getRegistrationCode())
-        || partner.getMainAddress() == null) {
+        || partner.getMainAddress() == null
+        || registrationNumberTemplate == null) {
       return true;
     }
 
+    if (Strings.isNullOrEmpty(partner.getRegistrationCode())) {
+      return !registrationNumberTemplate.getIsRequiredForCompanies();
+    }
     try {
       checkRegistrationCode(partner);
     } catch (AxelorException e) {
@@ -65,12 +69,7 @@ public abstract class RegistrationNumberValidator {
     }
 
     registrationCode = registrationCode.replace(" ", "");
-    RegistrationNumberTemplate registrationNumberTemplate =
-        Optional.of(partner)
-            .map(Partner::getMainAddress)
-            .map(Address::getCountry)
-            .map(Country::getRegistrationNumberTemplate)
-            .orElse(null);
+    RegistrationNumberTemplate registrationNumberTemplate = getRegistrationNumberTemplate(partner);
     if (registrationNumberTemplate == null) {
       return;
     }
@@ -160,5 +159,13 @@ public abstract class RegistrationNumberValidator {
                   - 1);
     }
     return siren;
+  }
+
+  protected RegistrationNumberTemplate getRegistrationNumberTemplate(Partner partner) {
+    return Optional.of(partner)
+        .map(Partner::getMainAddress)
+        .map(Address::getCountry)
+        .map(Country::getRegistrationNumberTemplate)
+        .orElse(null);
   }
 }

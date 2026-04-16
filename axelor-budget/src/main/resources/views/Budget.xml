@@ -355,7 +355,8 @@
     <view-param name="show-confirm" value="true"/>
     <domain><![CDATA[self.budget.id= :_budgetId AND
       self.moveLine IS NOT NULL AND self.moveLine.move.statusSelect in (2,3) AND
-      (self.moveLine.move.invoice IS NULL OR (self.moveLine.move.invoice.purchaseOrder is null AND self.moveLine.move.invoice.saleOrder is null))]]></domain>
+      (self.moveLine.move.invoice IS NULL OR (self.moveLine.move.invoice.purchaseOrder is null AND self.moveLine.move.invoice.saleOrder is null
+      AND NOT EXISTS (SELECT 1 FROM InvoiceLine il WHERE il.invoice = self.moveLine.move.invoice AND (il.purchaseOrderLine IS NOT NULL OR il.saleOrderLine IS NOT NULL))))]]></domain>
     <context name="_budgetId" expr="eval: id"/>
   </action-view>
   <action-view
@@ -368,7 +369,8 @@
     <domain><![CDATA[self.budget.id= :_budgetId AND
       self.moveLine IS NOT NULL AND self.moveLine.move.statusSelect in (2,3) AND
       (self.moveLine.move.invoice.purchaseOrder is not null OR
-      self.moveLine.move.invoice.saleOrder is not null)]]>
+      self.moveLine.move.invoice.saleOrder is not null OR
+      EXISTS (SELECT 1 FROM InvoiceLine il WHERE il.invoice = self.moveLine.move.invoice AND (il.purchaseOrderLine IS NOT NULL OR il.saleOrderLine IS NOT NULL)))]]>
     </domain>
     <context name="_budgetId" expr="eval: id"/>
   </action-view>

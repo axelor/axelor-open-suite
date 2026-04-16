@@ -592,4 +592,34 @@ public class PartnerController {
       response.setValue("tagSet", newTagSet);
     }
   }
+
+  public void updatePartnerAddress(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      PartnerService partnerService = Beans.get(PartnerService.class);
+      partnerService.setDefaultPartnerAddress(partner);
+      partnerService.updatePartnerAddress(partner);
+      response.setValue("mainAddress", partner.getMainAddress());
+      response.setValue("partnerAddressList", partner.getPartnerAddressList());
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void checkRegistrationCodeIfRequired(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      if (!Strings.isNullOrEmpty(partner.getRegistrationCode())) {
+        return;
+      }
+      RegistrationNumberValidator validator =
+          Beans.get(PartnerRegistrationValidatorFactoryService.class)
+              .getRegistrationNumberValidator(partner);
+      if (validator != null && !validator.isRegistrationCodeValid(partner)) {
+        response.setError(I18n.get(BaseExceptionMessage.REGISTRATION_CODE_EMPTY_FOR_COMPANIES));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
 }

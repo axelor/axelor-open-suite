@@ -16,24 +16,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.cash.management.service;
+package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.cash.management.db.ForecastRecap;
-import java.util.List;
+import com.axelor.apps.stock.db.StockMoveLine;
 
-public interface ForecastRecapService {
+public interface StockMoveLineOutsourcingService {
 
-  void reset(ForecastRecap forecastRecap);
-
-  void finish(ForecastRecap forecastRecap);
-
-  void populate(ForecastRecap forecastRecap) throws AxelorException;
-
-  void computeForecastRecapLineBalance(ForecastRecap forecastRecap);
-
-  ForecastRecap computeStartingBalanceForReporting(ForecastRecap forecastRecap)
-      throws AxelorException;
-
-  List<ForecastRecap> getOverlappingForecastRecaps(ForecastRecap forecastRecap);
+  /**
+   * Checks that the real quantity of a service product line linked to an outsourcing purchase order
+   * has not been changed. Throws an {@link AxelorException} if {@code realQty} differs from the
+   * planned {@code qty}.
+   *
+   * @param stockMoveLine the stock move line from the form context (carries the new realQty value)
+   */
+  void checkServiceOutsourcingRealQty(StockMoveLine stockMoveLine) throws AxelorException;
 }

@@ -18,7 +18,49 @@
       selection="stock.stock.location.type.select"/>
     <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"/>
     <boolean name="includeOutOfStock" title="Include out of stocks products" default="false"/>
-    <decimal name="stockLocationValue" title="Stock location value" transient="true"/>
+    <decimal name="stockLocationValue" title="Stock location value" formula="true"
+      precision="20" scale="2">
+      <![CDATA[
+        SELECT COALESCE(SUM(history.qty *
+            CASE
+                WHEN cfg.stock_valuation_type_select = 1 THEN
+                    CASE WHEN EXISTS(
+                        SELECT 1 FROM studio_app_base_company_specific_product_fields_set cpf
+                        LEFT JOIN meta_field mf ON mf.id = cpf.company_specific_product_fields_set
+                        WHERE mf.name = 'avgPrice'
+                    ) THEN COALESCE(
+                        (SELECT pc.avg_price FROM base_product pc WHERE pc.company = loc.company AND pc.product = sll.product),
+                        p.avg_price
+                    ) ELSE p.avg_price END
+                WHEN cfg.stock_valuation_type_select = 2 THEN history.cost_price
+                WHEN cfg.stock_valuation_type_select = 3 THEN history.sale_price
+                WHEN cfg.stock_valuation_type_select = 4 THEN
+                    CASE WHEN EXISTS(
+                        SELECT 1 FROM studio_app_base_company_specific_product_fields_set cpf
+                        LEFT JOIN meta_field mf ON mf.id = cpf.company_specific_product_fields_set
+                        WHERE mf.name = 'lastPurchasePrice'
+                    ) THEN COALESCE(
+                        (SELECT pc.last_purchase_price FROM base_product pc WHERE pc.company = loc.company AND pc.product = sll.product),
+                        p.last_purchase_price
+                    ) ELSE p.last_purchase_price END
+                WHEN cfg.stock_valuation_type_select = 5 THEN history.wap
+                ELSE sll.avg_price
+            END
+        ), 0)
+        FROM stock_stock_location_line sll
+        LEFT JOIN stock_stock_location_line_history history
+            ON history.stock_location_line = sll.id
+            AND history.datet = (
+                SELECT MAX(h2.datet) FROM stock_stock_location_line_history h2
+                WHERE h2.stock_location_line = sll.id
+            )
+        LEFT JOIN stock_stock_location loc ON loc.id = sll.stock_location
+        LEFT JOIN base_product p ON p.id = sll.product
+        LEFT JOIN stock_stock_config cfg ON cfg.company = loc.company
+        WHERE sll.stock_location = id
+        AND history.qty != 0
+      ]]>
+    </decimal>
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
       title="Trading Name"/>
     <boolean name="includeVirtualSubLocation" title="Include virtual sub location"/>
