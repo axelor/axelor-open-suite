@@ -30,6 +30,7 @@
 "<h4>Forecasts in out total</h4>",,,
 "Actualize",,,
 "Amount",,,
+"An existing forecast recap/report already covers part of this period for the same company and bank accounts (%s). Data may appear duplicated in the treasury dashboard.",,,
 "Balance",,,
 "Balance by bank details",,,
 "Bank",,,
