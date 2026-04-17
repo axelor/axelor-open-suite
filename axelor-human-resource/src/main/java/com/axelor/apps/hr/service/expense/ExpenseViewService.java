@@ -18,14 +18,10 @@
  */
 package com.axelor.apps.hr.service.expense;
 
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.hr.db.Expense;
-import java.util.List;
+import com.axelor.apps.base.AxelorException;
+import java.util.Map;
 
-public interface ExpenseFetchMoveService {
-  Move getExpenseMove(Expense expense);
+public interface ExpenseViewService {
 
-  Move getExpensePaymentMove(Expense expense);
-
-  List<Move> findAllMovesByExpense(Expense expense);
+  Map<String, Object> showMoves(Long expenseId) throws AxelorException;
 }
