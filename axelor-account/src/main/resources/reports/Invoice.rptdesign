@@ -751,6 +751,27 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <text-property name="displayName">displayExpenseOnPrinting</text-property>
                     <text-property name="heading">displayExpenseOnPrinting</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">PenaltyRateNote</property>
+                    <property name="alias">PenaltyRateNote</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">PenaltyRateNote</text-property>
+                    <text-property name="heading">PenaltyRateNote</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">legalFormAndCapital</property>
+                    <property name="alias">legalFormAndCapital</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">legalFormAndCapital</text-property>
+                    <text-property name="heading">legalFormAndCapital</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">legalInformation</property>
+                    <property name="alias">legalInformation</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">legalInformation</text-property>
+                    <text-property name="heading">legalInformation</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -1146,6 +1167,21 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                         <property name="position">76</property>
                         <property name="name">displayExpenseOnPrinting</property>
                         <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">78</property>
+                        <property name="name">PenaltyRateNote</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">79</property>
+                        <property name="name">legalFormAndCapital</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">80</property>
+                        <property name="name">legalInformation</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1606,6 +1642,24 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <property name="name">displayExpenseOnPrinting</property>
                     <property name="nativeName">displayExpenseOnPrinting</property>
                     <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">78</property>
+                    <property name="name">PenaltyRateNote</property>
+                    <property name="nativeName">PenaltyRateNote</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">79</property>
+                    <property name="name">legalFormAndCapital</property>
+                    <property name="nativeName">legalFormAndCapital</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">80</property>
+                    <property name="name">legalInformation</property>
+                    <property name="nativeName">legalInformation</property>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[WITH Invoice AS (
@@ -2815,7 +2869,7 @@ RETURNS table(inv_id bigint, product_name varchar, description text,
     "productCategory" bigint, "showTotal" boolean, "hideUnitAmounts" boolean,
     "PackHideUnitAmounts" boolean,number_of_decimals int,invoice_line_id bigint, 
     "coefficient" numeric, "ExpenseDate" date,"groupingPeriodSelect" varchar, "previousProgress" numeric, "newProgress" numeric,
-    "display_previous_progress" bigint, "display_new_progress" bigint, "previous_project_invoice_date" date) as
+    "display_previous_progress" bigint, "display_new_progress" bigint, "previous_project_invoice_date" date, "eco_tax_mention" varchar) as
 $func$
 DECLARE
 sql_query text;    
@@ -2882,15 +2936,16 @@ InvoiceLine.is_hide_unit_amounts as hideUnitAmounts,
 (SELECT is_hide_unit_amounts from account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice AND ILine.type_select IN (2,3) AND ILine.sequence > InvoiceLine.sequence order by ILine.sequence limit 1) as "PackHideUnitAmounts",  
 Currency.number_of_decimals,  
 InvoiceLine.id as invoice_line_id,  
-InvoiceLine.coefficient,' ||  
+InvoiceLine.coefficient,' ||
 ExpenseDate ||  
 groupingPeriodSelect ||  
 previousProgress ||  
 newProgress ||  
 display_previous_progress ||  
 display_new_progress ||  
-previous_project_invoice_date ||  
-' from account_invoice_line as InvoiceLine  
+previous_project_invoice_date ||
+',InvoiceLine.eco_tax_mention
+ from account_invoice_line as InvoiceLine  
 inner join account_invoice as Invoice on (InvoiceLine.invoice = Invoice.id)  
 left outer join base_product as Product on (InvoiceLine.product = Product.id)  
 left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)  
@@ -3160,6 +3215,13 @@ else if(row["groupingPeriodSelect"] == "week"){
                     <text-property name="displayName">previous_project_invoice_date</text-property>
                     <text-property name="heading">previous_project_invoice_date</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">eco_tax_mention</property>
+                    <property name="alias">eco_tax_mention</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">eco_tax_mention</text-property>
+                    <text-property name="heading">eco_tax_mention</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -3338,6 +3400,11 @@ else if(row["groupingPeriodSelect"] == "week"){
                     </structure>
                     <structure>
                         <property name="position">33</property>
+                        <property name="name">eco_tax_mention</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">34</property>
                         <property name="name">expense_date</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -3569,6 +3636,13 @@ else if(row["groupingPeriodSelect"] == "week"){
                     <property name="dataType">date</property>
                     <property name="nativeDataType">0</property>
                 </structure>
+                <structure>
+                    <property name="position">33</property>
+                    <property name="name">eco_tax_mention</property>
+                    <property name="nativeName">eco_tax_mention</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[WITH INV AS (
     select * from invoice_line_proc(cast(? as bigint))
@@ -3606,7 +3680,8 @@ select
     INV."newProgress",
     INV."display_previous_progress",
     INV."display_new_progress",
-    INV."previous_project_invoice_date"
+    INV."previous_project_invoice_date",
+    INV."eco_tax_mention"
     from INV
     LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
     LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
@@ -3656,7 +3731,8 @@ select
     SUM(INV."newProgress") as "newProgress",
     SUM(INV."display_previous_progress") as "display_previous_progress",
     SUM(INV."display_new_progress") as "display_new_progress",
-    MAX(INV."previous_project_invoice_date") as "previous_project_invoice_date"
+    MAX(INV."previous_project_invoice_date") as "previous_project_invoice_date",
+    NULL as eco_tax_mention
     from INV
     LEFT JOIN base_product_category as ProductCategory on (INV."productCategory" = ProductCategory.id)
     LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
@@ -3710,7 +3786,8 @@ select
     SUM(INV."newProgress") as "newProgress",
     SUM(INV."display_previous_progress") as "display_previous_progress",
     SUM(INV."display_new_progress") as "display_new_progress",
-    MAX(INV."previous_project_invoice_date") as "previous_project_invoice_date"
+    MAX(INV."previous_project_invoice_date") as "previous_project_invoice_date",
+    NULL as eco_tax_mention
 from INV
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
@@ -4590,7 +4667,10 @@ RETURNS table(
     "invoiceCoefficientEnabled" boolean,
     "isExpenseLineOnInvoiceGrouped" boolean,
     "groupingPeriodSelect" varchar,
-    "displayExpenseOnPrinting" boolean
+    "displayExpenseOnPrinting" boolean,
+    "PenaltyRateNote" text,
+    "legalFormAndCapital" varchar,
+    "legalInformation" varchar
 ) AS
 $func$
 BEGIN
@@ -4672,7 +4752,10 @@ select distinct
 	AccountConfig.is_invoice_coefficient_enabled as "invoiceCoefficientEnabled",
 	false::boolean as "isExpenseLineOnInvoiceGrouped",
 	''::varchar as "groupingPeriodSelect",
-	false::boolean as "displayExpenseOnPrinting"
+	false::boolean as "displayExpenseOnPrinting",
+	AccountConfig.penalty_rate_note as "PenaltyRateNote",
+	Company.legal_form_and_capital as "legalFormAndCapital",
+	Company.legal_information as "legalInformation"
 from account_invoice as Invoice
 left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join studio_app_sale as AppSale on true
@@ -4772,7 +4855,10 @@ select distinct
 	AccountConfig.is_invoice_coefficient_enabled as "invoiceCoefficientEnabled",
 	Invoice.is_expense_line_on_invoice_grouped as "isExpenseLineOnInvoiceGrouped",
 	Invoice.grouping_period_select as "groupingPeriodSelect",
-	Invoice.display_expense_on_printing as "displayExpenseOnPrinting"
+	Invoice.display_expense_on_printing as "displayExpenseOnPrinting",
+	AccountConfig.penalty_rate_note as "PenaltyRateNote",
+	Company.legal_form_and_capital as "legalFormAndCapital",
+	Company.legal_information as "legalInformation"
 from account_invoice as Invoice
 left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join studio_app_sale as AppSale on true
@@ -4996,6 +5082,18 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                             <expression name="expression" type="javascript">dataSetRow["operation_sub_type_select"]</expression>
                             <property name="dataType">integer</property>
                         </structure>
+                        <structure>
+                            <property name="name">legalFormAndCapital</property>
+                            <text-property name="displayName">legalFormAndCapital</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["legalFormAndCapital"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">legalInformation</property>
+                            <text-property name="displayName">legalInformation</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["legalInformation"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
                     </list-property>
                     <column id="3693"/>
                     <column id="3714">
@@ -5033,7 +5131,7 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                                 <property name="fontSize">xx-small</property>
                                 <property name="textAlign">left</property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["footer"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="HTML">var out = ""; if (row["legalFormAndCapital"]) { out += '<p align="CENTER">' + row["legalFormAndCapital"] + '</p>'; } if (row["legalInformation"]) { out += '<p align="CENTER">' + row["legalInformation"] + '</p>'; } out;</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                         <cell id="3713">
@@ -5401,6 +5499,24 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <property name="name">SaleLegalNote</property>
                     <text-property name="displayName">SaleLegalNote</text-property>
                     <expression name="expression" type="javascript">dataSetRow["SaleLegalNote"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">PenaltyRateNote</property>
+                    <text-property name="displayName">PenaltyRateNote</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["PenaltyRateNote"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">legalFormAndCapital</property>
+                    <text-property name="displayName">legalFormAndCapital</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["legalFormAndCapital"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">legalInformation</property>
+                    <text-property name="displayName">legalInformation</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["legalInformation"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -7248,6 +7364,12 @@ row["partnerFirstName"]
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
+                                <property name="name">eco_tax_mention</property>
+                                <text-property name="displayName">eco_tax_mention</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["eco_tax_mention"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
                                 <property name="name">qty</property>
                                 <text-property name="displayName">qty</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["qty"]</expression>
@@ -8600,12 +8722,12 @@ row["partnerFirstName"]
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row["typeselect"] != 0 || row["description"] == null</expression>
+                                                <expression name="valueExpr" type="javascript">row["typeselect"] != 0 || (row["description"] == null &amp;&amp; (row["eco_tax_mention"] == null || row["eco_tax_mention"] == ""))</expression>
                                             </structure>
                                         </list-property>
                                         <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I></SUB></br>]]></text-property>
+                                        <text-property name="content"><![CDATA[<SUB><I><VALUE-OF format="HTML">var out = (row["description"] != null) ? row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"") : ""; if (row["eco_tax_mention"] != null &amp;&amp; row["eco_tax_mention"] != "") { out += "<br/>" + row["eco_tax_mention"]; } out;</VALUE-OF></I></SUB></br>]]></text-property>
                                     </text>
                                     <text id="5730">
                                         <property name="fontSize">8pt</property>
@@ -9826,6 +9948,24 @@ else{ 1.00 }
                     <property name="name">SaleLegalNote</property>
                     <text-property name="displayName">SaleLegalNote</text-property>
                     <expression name="expression" type="javascript">dataSetRow["SaleLegalNote"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">PenaltyRateNote</property>
+                    <text-property name="displayName">PenaltyRateNote</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["PenaltyRateNote"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">legalFormAndCapital</property>
+                    <text-property name="displayName">legalFormAndCapital</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["legalFormAndCapital"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">legalInformation</property>
+                    <text-property name="displayName">legalInformation</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["legalInformation"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -12281,6 +12421,24 @@ else {'Invoice.totalTaxes'}</value>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
+                                    <property name="name">PenaltyRateNote</property>
+                                    <text-property name="displayName">PenaltyRateNote</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["PenaltyRateNote"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">legalFormAndCapital</property>
+                                    <text-property name="displayName">legalFormAndCapital</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["legalFormAndCapital"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">legalInformation</property>
+                                    <text-property name="displayName">legalInformation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["legalInformation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
                                     <property name="name">DisplayDelAddr</property>
                                     <text-property name="displayName">DisplayDelAddr</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["DisplayDelAddr"]</expression>
@@ -13377,6 +13535,51 @@ else {'Invoice.totalTaxes'}</value>
                                 </cell>
                                 <cell id="5091"/>
                             </row>
+                            <row id="109477">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["operation_type_select"] != 3 || !row["PenaltyRateNote"]</expression>
+                                    </structure>
+                                </list-property>
+                                <cell id="109478">
+                                    <property name="colSpan">8</property>
+                                    <property name="rowSpan">1</property>
+                                    <text id="109479">
+                                        <property name="fontSize">8pt</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'value:'+row["PenaltyRateNote"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["translation"] != null) {
+	row["translation"]
+} else {
+	row._outer["PenaltyRateNote"]
+}</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="109480"/>
+                            </row>
                             <row id="5092">
                                 <property name="height">0.6085416666666666cm</property>
                                 <cell id="5093"/>
@@ -13812,6 +14015,24 @@ else {'Invoice.totalTaxes'}</value>
                     <property name="name">SaleLegalNote</property>
                     <text-property name="displayName">SaleLegalNote</text-property>
                     <expression name="expression" type="javascript">dataSetRow["SaleLegalNote"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">PenaltyRateNote</property>
+                    <text-property name="displayName">PenaltyRateNote</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["PenaltyRateNote"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">legalFormAndCapital</property>
+                    <text-property name="displayName">legalFormAndCapital</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["legalFormAndCapital"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">legalInformation</property>
+                    <text-property name="displayName">legalInformation</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["legalInformation"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
