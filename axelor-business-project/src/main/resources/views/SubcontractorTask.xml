@@ -19,8 +19,7 @@
   </grid>
 
   <form name="mgm-subcontractor-task-form" title="Qualification"
-    onNew="mgm-action-method-business-project-set-subcontractor-task-defaults, mgm-action-method-set-subcontractor-employee-attrs"
-    onLoad="mgm-action-method-set-subcontractor-employee-attrs"
+    onNew="mgm-action-method-business-project-set-subcontractor-task-defaults"
     model="com.axelor.apps.businessproject.db.SubcontractorTask"
     onSave="mgm-action-validate-warn-billing-item-edited-after-project-confirmation, mgm-action-method-validate-recorded-data"
     canAttach="false">

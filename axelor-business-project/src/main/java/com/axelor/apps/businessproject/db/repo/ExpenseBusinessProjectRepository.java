@@ -63,7 +63,7 @@ public class ExpenseBusinessProjectRepository extends ExpenseHRRepository {
           "",
           currencyName,
           expense.getSentDateTime(),
-          expense.getInTaxTotal());
+          expense.getTotalAmountToInvoice());
     }
 
     return savedExpense;

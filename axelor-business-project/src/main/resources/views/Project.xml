@@ -938,7 +938,6 @@
     <action name="mgm-business-projectaction-attrs-navigate-to-review-tab"/>
     <action name="mgm-action-migrate-project-type"/>
     <action name="mgm-action-method-set-dynamic-panel-attrs"/>
-    <action name="action-attrs-business-project-set-status-editability"/>
   </action-group>
 
   <action-record name="action-set-default-project-priority"

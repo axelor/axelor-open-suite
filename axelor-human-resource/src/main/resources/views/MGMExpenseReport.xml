@@ -178,8 +178,10 @@
                   <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
                     <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
                     <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
+                    {categorySelect != 2 && <>
                     <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
                     <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+                    </>}
                     <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Charged Fee')}</Box>
                     <Box as="dd" m={0} px={3} py={1}>{$fmt('chargedFeeAmount')}</Box>
                     {categorySelect != 2 && <>
