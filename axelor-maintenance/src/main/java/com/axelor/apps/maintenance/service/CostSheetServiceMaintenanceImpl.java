@@ -19,34 +19,22 @@
 package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
-import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.ProdProcessLineComputationService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetLineService;
 import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
-import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
@@ -54,11 +42,9 @@ import java.util.ArrayList;
  *
  * <p>For maintenance BOMs and ManufOrders, the "produced product" line is excluded from the cost
  * sheet since maintenance does not produce a finished product. Only component, human resource, and
- * machine cost lines are kept.
+ * machine cost lines are kept, valued at component cost price.
  */
 public class CostSheetServiceMaintenanceImpl extends CostSheetServiceImpl {
-
-  protected boolean maintenanceContext;
 
   @Inject
   public CostSheetServiceMaintenanceImpl(
@@ -68,7 +54,8 @@ public class CostSheetServiceMaintenanceImpl extends CostSheetServiceImpl {
       BillOfMaterialRepository billOfMaterialRepo,
       CostSheetLineService costSheetLineService,
       UnitConversionService unitConversionService,
-      StockMoveLineRepository stockMoveLineRepository) {
+      StockMoveLineRepository stockMoveLineRepository,
+      ManufOrderRepository manufOrderRepo) {
     super(
         prodProcessLineComputationService,
         appProductionService,
@@ -76,257 +63,117 @@ public class CostSheetServiceMaintenanceImpl extends CostSheetServiceImpl {
         billOfMaterialRepo,
         costSheetLineService,
         unitConversionService,
-        stockMoveLineRepository);
+        stockMoveLineRepository,
+        manufOrderRepo);
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public CostSheet computeCostPrice(
-      BillOfMaterial billOfMaterial, int origin, UnitCostCalculation unitCostCalculation)
-      throws AxelorException {
-
-    if (billOfMaterial.getTypeSelect() == null
-        || billOfMaterial.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
-      return super.computeCostPrice(billOfMaterial, origin, unitCostCalculation);
+  protected CostSheetLine createAndAddRootCostSheetLine(
+      BillOfMaterial billOfMaterial, BigDecimal calculationQty) throws AxelorException {
+    if (!isMaintenance(billOfMaterial)) {
+      return super.createAndAddRootCostSheetLine(billOfMaterial, calculationQty);
     }
-
-    return computeMaintenanceBomCostPrice(billOfMaterial, origin, unitCostCalculation);
+    CostSheetLine rootCostSheetLine = new CostSheetLine();
+    costSheet.addCostSheetLineListItem(rootCostSheetLine);
+    return rootCostSheetLine;
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public CostSheet computeCostPrice(
-      ManufOrder manufOrder, int calculationTypeSelect, LocalDate calculationDate)
-      throws AxelorException {
-
-    if (manufOrder.getTypeSelect() == null
-        || manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
-      return super.computeCostPrice(manufOrder, calculationTypeSelect, calculationDate);
+  protected CostSheetLine createAndAddRootCostSheetLine(
+      ManufOrder manufOrder, BigDecimal producedQty) throws AxelorException {
+    if (!isMaintenance(manufOrder)) {
+      return super.createAndAddRootCostSheetLine(manufOrder, producedQty);
     }
-
-    return computeMaintenanceManufOrderCostPrice(
-        manufOrder, calculationTypeSelect, calculationDate);
+    CostSheetLine rootCostSheetLine = new CostSheetLine();
+    costSheet.addCostSheetLineListItem(rootCostSheetLine);
+    return rootCostSheetLine;
   }
 
-  protected CostSheet computeMaintenanceBomCostPrice(
-      BillOfMaterial billOfMaterial, int origin, UnitCostCalculation unitCostCalculation)
-      throws AxelorException {
-
-    this.init();
-
-    billOfMaterial.addCostSheetListItem(costSheet);
-
-    BigDecimal calculationQty = billOfMaterial.getCalculationQty();
-    if (calculationQty.compareTo(BigDecimal.ZERO) == 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_WRONG_CALCULATION_QTY));
+  @Override
+  protected Product getComponentValuationOverrideProduct(BillOfMaterial billOfMaterial) {
+    if (!isMaintenance(billOfMaterial)) {
+      return super.getComponentValuationOverrideProduct(billOfMaterial);
     }
+    return buildMaintenanceValuationProduct();
+  }
 
-    costSheet.setCalculationTypeSelect(CostSheetRepository.CALCULATION_BILL_OF_MATERIAL);
-    costSheet.setCalculationDate(appBaseService.getTodayDate(billOfMaterial.getCompany()));
-    costSheet.setCalculationQty(calculationQty);
-
-    Company company = billOfMaterial.getCompany();
-    if (company != null && company.getCurrency() != null) {
-      costSheet.setCurrency(company.getCurrency());
+  @Override
+  protected Product getComponentValuationOverrideProduct(ManufOrder manufOrder) {
+    if (!isMaintenance(manufOrder)) {
+      return super.getComponentValuationOverrideProduct(manufOrder);
     }
+    return buildMaintenanceValuationProduct();
+  }
 
-    CostSheetLine tempRoot = new CostSheetLine();
-    costSheet.addCostSheetLineListItem(tempRoot);
-
-    this.maintenanceContext = true;
-    try {
-      this._computeCostPrice(company, billOfMaterial, 0, tempRoot, origin, unitCostCalculation);
-    } finally {
-      this.maintenanceContext = false;
+  @Override
+  protected BigDecimal computeManufOrderProducedRatio(
+      ManufOrder manufOrder, BigDecimal producedQty) throws AxelorException {
+    if (!isMaintenance(manufOrder)) {
+      return super.computeManufOrderProducedRatio(manufOrder, producedQty);
     }
+    return BigDecimal.ONE;
+  }
 
-    costSheet.getCostSheetLineList().remove(tempRoot);
-    if (tempRoot.getCostSheetLineList() != null) {
-      for (CostSheetLine child : new ArrayList<>(tempRoot.getCostSheetLineList())) {
+  @Override
+  protected void computeResidualProduct(BillOfMaterial billOfMaterial) throws AxelorException {
+    if (!isMaintenance(billOfMaterial)) {
+      super.computeResidualProduct(billOfMaterial);
+    }
+  }
+
+  @Override
+  protected void computeRealResidualProduct(ManufOrder manufOrder) throws AxelorException {
+    if (!isMaintenance(manufOrder)) {
+      super.computeRealResidualProduct(manufOrder);
+    }
+  }
+
+  @Override
+  protected void finalizeRootCostSheetLine(
+      CostSheetLine rootCostSheetLine, BillOfMaterial billOfMaterial) {
+    if (!isMaintenance(billOfMaterial)) {
+      super.finalizeRootCostSheetLine(rootCostSheetLine, billOfMaterial);
+      return;
+    }
+    promoteChildrenAndDiscardRoot(rootCostSheetLine);
+  }
+
+  @Override
+  protected void finalizeRootCostSheetLine(
+      CostSheetLine rootCostSheetLine, ManufOrder manufOrder) {
+    if (!isMaintenance(manufOrder)) {
+      super.finalizeRootCostSheetLine(rootCostSheetLine, manufOrder);
+      return;
+    }
+    promoteChildrenAndDiscardRoot(rootCostSheetLine);
+  }
+
+  protected boolean isMaintenance(BillOfMaterial billOfMaterial) {
+    return billOfMaterial.getTypeSelect() != null
+        && billOfMaterial.getTypeSelect() == ManufOrderRepository.TYPE_MAINTENANCE;
+  }
+
+  protected boolean isMaintenance(ManufOrder manufOrder) {
+    return manufOrder.getTypeSelect() != null
+        && manufOrder.getTypeSelect() == ManufOrderRepository.TYPE_MAINTENANCE;
+  }
+
+  protected Product buildMaintenanceValuationProduct() {
+    Product valuationProduct = new Product();
+    valuationProduct.setBomCompValuMethodSelect(
+        ProductRepository.COMPONENTS_VALUATION_METHOD_COST);
+    valuationProduct.setManufOrderCompValuMethodSelect(
+        ProductRepository.COMPONENTS_VALUATION_METHOD_COST);
+    return valuationProduct;
+  }
+
+  protected void promoteChildrenAndDiscardRoot(CostSheetLine rootCostSheetLine) {
+    costSheet.getCostSheetLineList().remove(rootCostSheetLine);
+    if (rootCostSheetLine.getCostSheetLineList() != null) {
+      for (CostSheetLine child : new ArrayList<>(rootCostSheetLine.getCostSheetLineList())) {
         child.setParentCostSheetLine(null);
         costSheet.addCostSheetLineListItem(child);
       }
     }
-
-    BigDecimal qtyRatio = getQtyRatio(billOfMaterial);
-    BigDecimal costPrice =
-        this.computeCostPrice(costSheet)
-            .divide(qtyRatio, appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
-    costSheet.setCostPrice(costPrice);
-    billOfMaterial.setCostPrice(costPrice);
-    billOfMaterialRepo.save(billOfMaterial);
-
-    return costSheet;
-  }
-
-  protected CostSheet computeMaintenanceManufOrderCostPrice(
-      ManufOrder manufOrder, int calculationTypeSelect, LocalDate calculationDate)
-      throws AxelorException {
-
-    this.init();
-
-    manufOrder.addCostSheetListItem(costSheet);
-
-    costSheet.setCalculationTypeSelect(calculationTypeSelect);
-    costSheet.setCalculationDate(
-        calculationDate != null
-            ? calculationDate
-            : appBaseService.getTodayDate(manufOrder.getCompany()));
-
-    costSheet.setManufOrderProducedRatio(BigDecimal.ONE);
-
-    Company company = manufOrder.getCompany();
-    if (company != null && company.getCurrency() != null) {
-      costSheet.setCurrency(company.getCurrency());
-    }
-
-    CostSheetLine tempRoot = new CostSheetLine();
-    costSheet.addCostSheetLineListItem(tempRoot);
-
-    this.maintenanceContext = true;
-    try {
-      this.computeRealCostPrice(manufOrder, 0, tempRoot, null);
-    } finally {
-      this.maintenanceContext = false;
-    }
-
-    costSheet.getCostSheetLineList().remove(tempRoot);
-    if (tempRoot.getCostSheetLineList() != null) {
-      for (CostSheetLine child : new ArrayList<>(tempRoot.getCostSheetLineList())) {
-        child.setParentCostSheetLine(null);
-        costSheet.addCostSheetLineListItem(child);
-      }
-    }
-
-    BigDecimal costPrice = this.computeCostPrice(costSheet);
-    costSheet.setCostPrice(costPrice);
-    manufOrder.setCostPrice(costPrice);
-    Beans.get(ManufOrderRepository.class).save(manufOrder);
-
-    return costSheet;
-  }
-
-  @Override
-  protected void _computeCostPrice(
-      Company company,
-      BillOfMaterial billOfMaterial,
-      int bomLevel,
-      CostSheetLine parentCostSheetLine,
-      int origin,
-      UnitCostCalculation unitCostCalculation,
-      BigDecimal calculationQty)
-      throws AxelorException {
-
-    bomLevel++;
-
-    this._computeToConsumeProduct(
-        company,
-        billOfMaterial,
-        bomLevel,
-        parentCostSheetLine,
-        origin,
-        unitCostCalculation,
-        getQtyRatio(billOfMaterial, billOfMaterial.getQty(), calculationQty));
-
-    Unit pieceUnit;
-    if (billOfMaterial.getProduct() != null) {
-      pieceUnit = billOfMaterial.getProduct().getUnit();
-    } else {
-      pieceUnit = billOfMaterial.getUnit();
-    }
-
-    this._computeProcess(
-        billOfMaterial.getProdProcess(), calculationQty, pieceUnit, bomLevel, parentCostSheetLine);
-  }
-
-  @Override
-  protected void _computeToConsumeProduct(
-      Company company,
-      BillOfMaterial billOfMaterial,
-      int bomLevel,
-      CostSheetLine parentCostSheetLine,
-      int origin,
-      UnitCostCalculation unitCostCalculation,
-      BigDecimal qtyRatio)
-      throws AxelorException {
-
-    if (!maintenanceContext) {
-      super._computeToConsumeProduct(
-          company,
-          billOfMaterial,
-          bomLevel,
-          parentCostSheetLine,
-          origin,
-          unitCostCalculation,
-          qtyRatio);
-      return;
-    }
-
-    Product defaultValuationProduct = new Product();
-    defaultValuationProduct.setBomCompValuMethodSelect(
-        ProductRepository.COMPONENTS_VALUATION_METHOD_COST);
-    defaultValuationProduct.setManufOrderCompValuMethodSelect(
-        ProductRepository.COMPONENTS_VALUATION_METHOD_COST);
-    parentCostSheetLine.setProduct(defaultValuationProduct);
-
-    try {
-      super._computeToConsumeProduct(
-          company,
-          billOfMaterial,
-          bomLevel,
-          parentCostSheetLine,
-          origin,
-          unitCostCalculation,
-          qtyRatio);
-    } finally {
-      parentCostSheetLine.setProduct(null);
-    }
-  }
-
-  @Override
-  protected void computeRealCostPrice(
-      ManufOrder manufOrder,
-      int bomLevel,
-      CostSheetLine parentCostSheetLine,
-      LocalDate previousCostSheetDate)
-      throws AxelorException {
-
-    if (!maintenanceContext) {
-      super.computeRealCostPrice(manufOrder, bomLevel, parentCostSheetLine, previousCostSheetDate);
-      return;
-    }
-
-    bomLevel++;
-
-    Product defaultValuationProduct = new Product();
-    defaultValuationProduct.setBomCompValuMethodSelect(
-        ProductRepository.COMPONENTS_VALUATION_METHOD_COST);
-    defaultValuationProduct.setManufOrderCompValuMethodSelect(
-        ProductRepository.COMPONENTS_VALUATION_METHOD_COST);
-    parentCostSheetLine.setProduct(defaultValuationProduct);
-
-    try {
-      this.computeConsumedProduct(manufOrder, bomLevel, parentCostSheetLine, previousCostSheetDate);
-      this.computeOutSourcedProduct(manufOrder, bomLevel, parentCostSheetLine);
-    } finally {
-      parentCostSheetLine.setProduct(null);
-    }
-
-    BigDecimal producedQty = parentCostSheetLine.getConsumptionQty();
-
-    Unit pieceUnit = null;
-    if (manufOrder.getBillOfMaterial() != null) {
-      pieceUnit = manufOrder.getBillOfMaterial().getUnit();
-    }
-
-    this.computeRealProcess(
-        manufOrder.getOperationOrderList(),
-        pieceUnit,
-        producedQty,
-        bomLevel,
-        parentCostSheetLine,
-        previousCostSheetDate);
   }
 }
