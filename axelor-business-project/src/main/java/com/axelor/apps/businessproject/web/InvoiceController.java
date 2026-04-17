@@ -30,6 +30,9 @@ import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryCo
 import com.axelor.apps.businessproject.service.InvoiceServiceProject;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectService;
+import com.axelor.apps.businessproject.service.invoice.breakdown.BreakdownDisplayLine;
+import com.axelor.apps.businessproject.service.invoice.breakdown.display.InvoiceBreakdownDisplayService;
+import com.axelor.apps.businessproject.service.invoice.breakdown.print.InvoiceBreakdownPrintService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -39,10 +42,15 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.io.File;
+import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class InvoiceController {
+
+  private static final Logger log = LoggerFactory.getLogger(InvoiceController.class);
 
   public void updateLines(ActionRequest request, ActionResponse response) throws AxelorException {
     try {
@@ -108,6 +116,48 @@ public class InvoiceController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void generateBreakdown(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    if (invoice.getId() != null) {
+      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    }
+    log.debug("Generating Breakdown of invoice lines for invoice {}", invoice.getId());
+
+    List<BreakdownDisplayLine> breakdownDisplayLine =
+        Beans.get(InvoiceBreakdownDisplayService.class).generateBreakdownFromInvoice(invoice);
+    String html =
+        Beans.get(
+                com.axelor.apps.businessproject.service.invoice.breakdown.print
+                    .InvoiceBreakdownPrintService.class)
+            .buildHtmlFromData(breakdownDisplayLine);
+    log.debug("Finished building view for invoice line breakdown");
+
+    // Set HTML in response
+    response.setValue("$breakdownHtml", html);
+  }
+
+  public void downloadInvoiceBreakdownPdf(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      if (invoice.getId() != null) {
+        invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+      }
+
+      String fileLink =
+          Beans.get(InvoiceBreakdownPrintService.class).printInvoiceBreakdown(invoice);
+
+      String title = I18n.get("Invoice Breakdown");
+
+      response.setView(ActionView.define(title).add("html", fileLink).map());
+
+    } catch (Exception e) {
+      log.error("Error generating PDF breakdown", e);
+      TraceBackService.trace(response, e);
+      response.setError(I18n.get("Error generating PDF: ") + e.getMessage());
     }
   }
 }

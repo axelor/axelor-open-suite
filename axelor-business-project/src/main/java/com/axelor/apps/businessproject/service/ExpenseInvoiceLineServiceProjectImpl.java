@@ -100,6 +100,12 @@ public class ExpenseInvoiceLineServiceProjectImpl extends ExpenseInvoiceLineServ
           expenseLine.getId());
     }
 
+    lines.forEach(
+        line -> {
+          line.setSourceType(ExtraChargeConstants.EXPENSE_INVOICE_LINE_SOURCE_TYPE);
+          line.setSourceIds(expenseLine.getId().toString());
+        });
+
     // We no longer check showChargedFee but if fee is applied
     if (expenseLine.getFee() != null && expenseLine.getFee().compareTo(BigDecimal.ZERO) > 0) {
       log.debug("Fee detected ({}). Generating charged fee line.", expenseLine.getFee());
@@ -152,6 +158,7 @@ public class ExpenseInvoiceLineServiceProjectImpl extends ExpenseInvoiceLineServ
     line.setPrice(unitPrice);
     line.setUnit(chargedFeeProduct.getUnit());
     line.setSourceType(ExtraChargeConstants.EXPENSE_CHARGED_FEE_INVOICE_LINE_SOURCE_TYPE);
+    line.setSourceIds(expenseLine.getId().toString());
 
     log.debug(
         "Successfully created a charged fee InvoiceLine with sourceType: {}, Qty: {}, and Unit: {}",

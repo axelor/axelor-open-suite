@@ -16,20 +16,22 @@ public final class ExtraChargeConstants {
   public static final String HOLIDAY_PRODUCT_CODE = "HOLIDAY";
   public static final String EMERGENCY_PRODUCT_CODE = "EMERGENCY";
   public static final String DIRT_ALLOWANCE = "DIRTALLOWANCE";
-  public static final String NIGHTSHIFT_PRODUCT_CODE = "NIGHTSHIFT";
+  public static final String NIGHT_SHIFT_PRODUCT_CODE = "NIGHTSHIFT";
   public static final String INDIVIDUAL_ITEM_PRODUCT_CODE = "ME";
 
   public static final String TIMESHEET_INVOICE_LINE_SOURCE_TYPE = "TIMESHEET";
   public static final String EXPENSE_INVOICE_LINE_SOURCE_TYPE = "EXPENSE";
   public static final String EXPENSE_CHARGED_FEE_INVOICE_LINE_SOURCE_TYPE = "CFEE";
-  public static final String EXTRACHARGE_INVOICE_LINE_SOURCE_TYPE = "EXTRACHARGE";
+  public static final String EXTRA_CHARGE_INVOICE_LINE_SOURCE_TYPE = "EXTRACHARGE";
+  public static final String EXTRA_EXPENSE_INVOICE_LINE_SOURCE_TYPE = "EXTRA_EXPENSE";
 
   public static final List<String> INVOICE_LINE_SOURCE_TYPES =
       List.of(
           TIMESHEET_INVOICE_LINE_SOURCE_TYPE,
           EXPENSE_INVOICE_LINE_SOURCE_TYPE,
-          EXTRACHARGE_INVOICE_LINE_SOURCE_TYPE,
-          EXPENSE_CHARGED_FEE_INVOICE_LINE_SOURCE_TYPE);
+          EXTRA_CHARGE_INVOICE_LINE_SOURCE_TYPE,
+          EXPENSE_CHARGED_FEE_INVOICE_LINE_SOURCE_TYPE,
+          EXTRA_EXPENSE_INVOICE_LINE_SOURCE_TYPE);
   public static final List<String> EXTRA_CHARGE_CODES_EXCEPT_NIGHT =
       List.of(
           SATURDAY_PRODUCT_CODE,
@@ -48,7 +50,7 @@ public final class ExtraChargeConstants {
       case HOLIDAY:
         return HOLIDAY_PRODUCT_CODE;
       case NIGHT:
-        return NIGHTSHIFT_PRODUCT_CODE;
+        return NIGHT_SHIFT_PRODUCT_CODE;
       default:
         throw new IllegalArgumentException("Unknow Extra Charge: " + type);
     }

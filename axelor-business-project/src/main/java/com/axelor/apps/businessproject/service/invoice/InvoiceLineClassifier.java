@@ -40,7 +40,7 @@ public class InvoiceLineClassifier {
   public List<InvoiceLine> getExtraChargeLines(List<InvoiceLine> lines) {
     List<InvoiceLine> result = new ArrayList<>();
     for (InvoiceLine line : lines) {
-      if (ExtraChargeConstants.EXTRACHARGE_INVOICE_LINE_SOURCE_TYPE.equals(line.getSourceType())) {
+      if (ExtraChargeConstants.EXTRA_CHARGE_INVOICE_LINE_SOURCE_TYPE.equals(line.getSourceType())) {
         result.add(line);
       }
     }

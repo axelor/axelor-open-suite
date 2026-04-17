@@ -108,7 +108,7 @@ public class InvoiceBreakdownDisplayServiceImpl implements InvoiceBreakdownDispl
                     line.getProductCode() != null
                         && line.getProductCode()
                             .toUpperCase(Locale.ROOT)
-                            .contains(ExtraChargeConstants.NIGHTSHIFT_PRODUCT_CODE))
+                            .contains(ExtraChargeConstants.NIGHT_SHIFT_PRODUCT_CODE))
             .findFirst();
 
     if (nightExtraChargeOpt.isEmpty()) {
@@ -464,8 +464,8 @@ public class InvoiceBreakdownDisplayServiceImpl implements InvoiceBreakdownDispl
       return ExtraChargeConstants.SUNDAY_PRODUCT_CODE;
     if (code.contains(ExtraChargeConstants.HOLIDAY_PRODUCT_CODE))
       return ExtraChargeConstants.HOLIDAY_PRODUCT_CODE;
-    if (code.contains(ExtraChargeConstants.NIGHTSHIFT_PRODUCT_CODE))
-      return ExtraChargeConstants.NIGHTSHIFT_PRODUCT_CODE;
+    if (code.contains(ExtraChargeConstants.NIGHT_SHIFT_PRODUCT_CODE))
+      return ExtraChargeConstants.NIGHT_SHIFT_PRODUCT_CODE;
     // Emergency doesn't store duration in breakdown, uses full line duration
     return null;
   }

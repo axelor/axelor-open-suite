@@ -40,13 +40,13 @@ import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseInvoiceS
 import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseLineService;
 import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseLineServiceImpl;
-import com.axelor.apps.businessproject.service.invoice.InvoiceBreakdownDisplayService;
-import com.axelor.apps.businessproject.service.invoice.InvoiceBreakdownDisplayServiceImpl;
-import com.axelor.apps.businessproject.service.invoice.InvoiceBreakdownPrintService;
-import com.axelor.apps.businessproject.service.invoice.InvoiceBreakdownPrintServiceImpl;
 import com.axelor.apps.businessproject.service.invoice.InvoiceMergingServiceBusinessProjectImpl;
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectService;
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.invoice.breakdown.display.InvoiceBreakdownDisplayService;
+import com.axelor.apps.businessproject.service.invoice.breakdown.display.InvoiceBreakdownDisplayServiceImpl;
+import com.axelor.apps.businessproject.service.invoice.breakdown.print.InvoiceBreakdownPrintService;
+import com.axelor.apps.businessproject.service.invoice.breakdown.print.InvoiceBreakdownPrintServiceImpl;
 import com.axelor.apps.businessproject.service.observer.SaleOrderLineProjectObserver;
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorSaleService;
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorSaleServiceImpl;
@@ -196,11 +196,11 @@ public class BusinessProjectModule extends AxelorModule {
     bind(TaskReportExpenseService.class).to(TaskReportExpenseServiceImpl.class);
     bind(ExtraExpenseInvoiceService.class).to(ExtraExpenseInvoiceServiceImpl.class);
     bind(TaskReportRepository.class).to(TaskReportBusinessRepository.class);
-    bind(InvoiceBreakdownDisplayService.class).to(InvoiceBreakdownDisplayServiceImpl.class);
+    //    bind(InvoiceBreakdownDisplayService.class).to(InvoiceBreakdownDisplayServiceImpl.class);
     bind(TaskReportService.class).to(TaskReportServiceImpl.class);
     bind(TaskAssignmentNotificationRule.class).asEagerSingleton();
     bind(ProjectHRRepository.class).to(BusinessProjectManagementRepository.class);
-    bind(InvoiceBreakdownPrintService.class).to(InvoiceBreakdownPrintServiceImpl.class);
+    //    bind(InvoiceBreakdownPrintService.class).to(InvoiceBreakdownPrintServiceImpl.class);
     bind(TaskStatusChangeService.class).to(TaskStatusChangeServiceImpl.class);
     bind(TaskMemberReportService.class).to(TaskMemberReportServiceImpl.class);
     bind(ProjectStatusChangeService.class).to(ProjectStatusChangeServiceImpl.class);
@@ -217,5 +217,7 @@ public class BusinessProjectModule extends AxelorModule {
     bind(SubcontractorTaskInvoiceService.class).to(SubcontractorTaskInvoiceServiceImpl.class);
     bind(ExtraExpenseLineRepository.class).to(ExtraExpenseLineBusinessProjectRepository.class);
     bind(SubcontractorTaskRepository.class).to(SubcontractorTaskBusinessProjectRepository.class);
+    bind(InvoiceBreakdownDisplayService.class).to(InvoiceBreakdownDisplayServiceImpl.class);
+    bind(InvoiceBreakdownPrintService.class).to(InvoiceBreakdownPrintServiceImpl.class);
   }
 }

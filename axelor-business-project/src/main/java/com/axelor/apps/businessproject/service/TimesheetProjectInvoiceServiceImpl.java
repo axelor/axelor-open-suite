@@ -308,7 +308,7 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
         priority,
         project,
         sourceTimesheetLines,
-        ExtraChargeConstants.EXTRACHARGE_INVOICE_LINE_SOURCE_TYPE,
+        ExtraChargeConstants.EXTRA_CHARGE_INVOICE_LINE_SOURCE_TYPE,
         dateRange);
   }
 
@@ -345,7 +345,7 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
         priority,
         project,
         sourceTimesheetLines,
-        ExtraChargeConstants.EXTRACHARGE_INVOICE_LINE_SOURCE_TYPE,
+        ExtraChargeConstants.EXTRA_CHARGE_INVOICE_LINE_SOURCE_TYPE,
         dateRange);
   }
 
@@ -379,7 +379,7 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
         priority,
         project,
         sourceTimesheetLines,
-        ExtraChargeConstants.EXTRACHARGE_INVOICE_LINE_SOURCE_TYPE,
+        ExtraChargeConstants.EXTRA_CHARGE_INVOICE_LINE_SOURCE_TYPE,
         dateRange);
   }
 

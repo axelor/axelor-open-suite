@@ -1,0 +1,333 @@
+package com.axelor.apps.businessproject.service.invoice.breakdown.print;
+
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.PrintingTemplate;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
+import com.axelor.apps.businessproject.db.ProjectType;
+import com.axelor.apps.businessproject.db.TaskMemberReport;
+import com.axelor.apps.businessproject.db.repo.TaskMemberReportRepository;
+import com.axelor.apps.businessproject.service.invoice.breakdown.BreakdownDisplayLine;
+import com.axelor.apps.businessproject.service.invoice.breakdown.display.InvoiceBreakdownDisplayService;
+import com.axelor.apps.project.db.Project;
+import com.axelor.common.StringUtils;
+import com.axelor.dms.db.DMSFile;
+import com.axelor.dms.db.repo.DMSFileRepository;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.helpers.file.PdfHelper;
+import com.itextpdf.html2pdf.ConverterProperties;
+import com.itextpdf.html2pdf.HtmlConverter;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class InvoiceBreakdownPrintServiceImpl implements InvoiceBreakdownPrintService {
+
+  private static final Logger log = LoggerFactory.getLogger(InvoiceBreakdownPrintServiceImpl.class);
+
+  @Override
+  public String printInvoiceBreakdown(Invoice invoice) throws Exception {
+    log.debug("Generating PDF breakdown for invoice {}", invoice.getId());
+
+    PrintingTemplate template =
+        Beans.get(AccountConfigService.class)
+            .getInvoiceBreakdownPrintTemplate(invoice.getCompany());
+
+    List<BreakdownDisplayLine> displayData =
+        Beans.get(InvoiceBreakdownDisplayService.class).generateBreakdownFromInvoice(invoice);
+
+    String bodyHtml = buildHtmlFromData(displayData);
+    String fullHtml = wrapHtml(bodyHtml, invoice);
+    byte[] pdfBytes = convertHtmlToPdf(fullHtml);
+
+    String fileName = getFileName(invoice, template);
+    log.debug("Filename {}", fileName);
+
+    MetaFiles metaFiles = Beans.get(MetaFiles.class);
+
+    // Create temp file to write breakdown content
+    Path tempFile = MetaFiles.createTempFile(null, ".pdf");
+    try (FileOutputStream fos = new FileOutputStream(tempFile.toFile())) {
+      fos.write(pdfBytes);
+    }
+
+    if (template.getToAttach()) {
+      if (template.getOverrideAttachment()) {
+        // Delete all existing invoice breakdown attachments
+        List<DMSFile> existingBreakdowns = findExistingAttachments(invoice, fileName);
+        for (DMSFile existing : existingBreakdowns) {
+          metaFiles.delete(existing);
+        }
+      }
+      MetaFile metaFile = metaFiles.upload(new FileInputStream(tempFile.toFile()), fileName);
+      metaFiles.attach(metaFile, fileName, invoice);
+    }
+
+    return PdfHelper.getFileLinkFromPdfFile(tempFile.toFile(), fileName);
+  }
+
+  @Override
+  public String buildHtmlFromData(List<BreakdownDisplayLine> lines) {
+    StringBuilder html = new StringBuilder();
+    html.append("<table style='width: 100%; border-collapse: collapse;'>");
+    html.append("<thead><tr>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>#</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
+        .append(I18n.get("Description"))
+        .append("</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
+        .append(I18n.get("Quantity"))
+        .append("</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
+        .append(I18n.get("Unit"))
+        .append("</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
+        .append(I18n.get("Price"))
+        .append("</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
+        .append(I18n.get("Amount"))
+        .append("</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
+        .append(I18n.get("Billing Details"))
+        .append("</th>");
+    html.append("</tr></thead><tbody>");
+
+    for (BreakdownDisplayLine line : lines) {
+
+      // Spacing line. empty visual separator
+      if (line.getLineType() == BreakdownDisplayLine.LineType.SPACING) {
+        html.append("<tr style='height: 15px;'>");
+        html.append("<td colspan='7' style='border: none;'>&nbsp;</td>");
+        html.append("</tr>");
+        continue;
+      }
+
+      // Total line, bold, no sequence
+      if (line.getLineType() == BreakdownDisplayLine.LineType.TOTAL) {
+        html.append("<tr style='font-weight: bold;'>");
+        html.append("<td style='padding: 10px; border: 1px solid #ddd;'></td>");
+        html.append("<td style='padding: 10px; border: 1px solid #ddd;'>")
+            .append(line.getDescription())
+            .append("</td>");
+        html.append("<td style='padding: 10px; border: 1px solid #ddd;'></td>");
+        html.append("<td style='padding: 10px; border: 1px solid #ddd;'></td>");
+        html.append("<td style='padding: 10px; border: 1px solid #ddd;'></td>");
+        html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>")
+            .append(formatValue(line.getAmount()))
+            .append("</td>");
+        html.append("<td style='padding: 10px; border: 1px solid #ddd;'></td>");
+        html.append("</tr>");
+        continue;
+      }
+
+      // Regular line
+      html.append("<tr>");
+      html.append("<td style='padding: 10px; border: 1px solid #ddd;'>")
+          .append(line.getSequence() != null ? line.getSequence() : "")
+          .append("</td>");
+      html.append("<td style='padding: 10px; border: 1px solid #ddd;'>")
+          .append(line.getDescription())
+          .append("</td>");
+      html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>")
+          .append(formatValue(line.getQuantity()))
+          .append("</td>");
+      html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>")
+          .append(line.getUnit())
+          .append("</td>");
+      html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>")
+          .append(formatValue(line.getPrice()))
+          .append("</td>");
+      html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>")
+          .append(formatValue(line.getAmount()))
+          .append("</td>");
+      html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>")
+          .append(line.getBillingDetails() != null ? line.getBillingDetails() : "")
+          .append("</td>");
+      html.append("</tr>");
+    }
+
+    html.append("</tbody></table>");
+    return html.toString();
+  }
+
+  private String wrapHtml(String bodyHtml, Invoice invoice) {
+    LocalDate invoiceDate =
+        invoice.getInvoiceDate() != null ? invoice.getInvoiceDate() : LocalDate.now();
+
+    String performancePeriod = getPerformancePeriod(invoice);
+
+    StringBuilder html = new StringBuilder();
+    html.append("<html><head><meta charset='UTF-8'/>");
+    html.append("<style>");
+    html.append("body { font-family: Arial, sans-serif; font-size: 14px; }");
+    html.append(".page-header { position: running(header); }");
+    html.append(
+        ".page-footer { position: running(footer); font-size: 14px; margin-bottom: 8px; text-align: end; padding-top: 6px; }");
+    html.append("@page {");
+    html.append("  margin: 200px 40px 50px 40px;");
+    html.append("  @top-left { content: element(header); }");
+    html.append("  @bottom-center { content: element(footer); }");
+    html.append("}");
+    html.append(".pageNumber::before { content: counter(page); }");
+    html.append(".totalPages::before { content: counter(pages); }");
+    html.append("table { width: 100%; border-collapse: collapse; margin-top: 10px; }");
+    html.append("th, td { border: 5px solid #ddd; padding: 6px; }");
+    html.append("th { background-color: #f5f5f5; }");
+    html.append(
+        ".page-header div:first-child { font-size: 16px; font-weight: bold; margin-bottom: 10px; }");
+    html.append(".page-header div:nth-child(2) { font-size: 16px; line-height: 1.6; }");
+    html.append("</style></head><body>");
+
+    // Header
+    html.append("<div class='page-header'>");
+    html.append("<div style='font-size:20px; font-weight:bold; margin-bottom:6px;'>")
+        .append(I18n.get("Invoice Breakdown"))
+        .append("</div>");
+    html.append("<div style='line-height:1.4;'>");
+    html.append("<strong>")
+        .append(I18n.get("Order Code"))
+        .append(":</strong> ")
+        .append(invoice.getProject().getCode())
+        .append("<br/>");
+    html.append("<strong>")
+        .append(I18n.get("Order Title"))
+        .append(":</strong> ")
+        .append(invoice.getProject().getName())
+        .append("<br/>");
+    if (invoice.getReferenceNumber() != null
+        && StringUtils.notEmpty(invoice.getReferenceNumber())) {
+      html.append("<strong>")
+          .append(I18n.get("Reference number"))
+          .append(":</strong> ")
+          .append(invoice.getReferenceNumber())
+          .append("<br/>");
+    }
+    html.append("<strong>")
+        .append(I18n.get("Creation Date"))
+        .append(":</strong> ")
+        .append(invoiceDate)
+        .append("<br/>");
+    html.append("<strong>")
+        .append(I18n.get("Customer"))
+        .append(":</strong> ")
+        .append(invoice.getPartner().getName())
+        .append("<br/>");
+    html.append("<strong>")
+        .append(I18n.get("Customer cost center"))
+        .append(":</strong> ")
+        .append(invoice.getPartner().getCustomerCostCenter())
+        .append("<br/>");
+    html.append("<strong>")
+        .append(I18n.get("Performance Period"))
+        .append(":</strong> ")
+        .append(performancePeriod);
+    html.append("</div></div>");
+
+    // Footer
+    html.append("<div class='page-footer'>");
+    html.append(I18n.get("Page"))
+        .append(" <span class='pageNumber'></span> / <span class='totalPages'></span>");
+    html.append("</div>");
+
+    // Content
+    html.append(bodyHtml);
+    html.append("</body></html>");
+
+    return html.toString();
+  }
+
+  private String getPerformancePeriod(Invoice invoice) {
+    if (invoice == null || invoice.getProject() == null) {
+      return "";
+    }
+    Project project = invoice.getProject();
+    ProjectType projectType = project.getProjectType();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+    if (projectType != null && !projectType.getRequiresTask()) {
+      LocalDate fromDate = project.getFromDate();
+      LocalDate toDate = project.getToDate();
+      if (fromDate != null && toDate != null) {
+        return formatter.format(fromDate) + " – " + formatter.format(toDate);
+      } else if (fromDate != null) {
+        return formatter.format(fromDate);
+      }
+    }
+
+    List<TaskMemberReport> reports =
+        Beans.get(TaskMemberReportRepository.class)
+            .all()
+            .filter("self.taskReport.project = ?1", project)
+            .fetch();
+
+    if (reports.isEmpty()) {
+      return project.getFromDate() != null ? formatter.format(project.getFromDate()) : "";
+    }
+
+    LocalDate minDate = null;
+    LocalDate maxDate = null;
+
+    for (TaskMemberReport report : reports) {
+      if (report.getStartTime() != null) {
+        LocalDate startDate = report.getStartTime().toLocalDate();
+        if (minDate == null || startDate.isBefore(minDate)) minDate = startDate;
+      }
+      if (report.getEndTime() != null) {
+        LocalDate endDate = report.getEndTime().toLocalDate();
+        if (maxDate == null || endDate.isAfter(maxDate)) maxDate = endDate;
+      }
+    }
+
+    if (minDate == null || maxDate == null) return "";
+
+    return minDate.equals(maxDate)
+        ? formatter.format(minDate)
+        : formatter.format(minDate) + " – " + formatter.format(maxDate);
+  }
+
+  /** Formats numeric values to 2 decimal places, returns empty string for null */
+  private String formatValue(Object value) {
+    if (value == null) return "";
+    if (value instanceof BigDecimal) {
+      return String.format("%.2f", (BigDecimal) value);
+    }
+    return value.toString();
+  }
+
+  private byte[] convertHtmlToPdf(String html) throws Exception {
+    try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+      ConverterProperties props = new ConverterProperties();
+      props.setCharset("UTF-8");
+      HtmlConverter.convertToPdf(html, os, props);
+      return os.toByteArray();
+    }
+  }
+
+  private List<DMSFile> findExistingAttachments(Invoice invoice, String fileName) {
+    return Beans.get(DMSFileRepository.class)
+        .all()
+        .filter(
+            "self.relatedId = ?1 AND self.relatedModel = ?2 AND self.fileName = ?3",
+            invoice.getId(),
+            Invoice.class.getName(),
+            fileName)
+        .fetch();
+  }
+
+  private String getFileName(Invoice invoice, PrintingTemplate template) throws AxelorException {
+    return Beans.get(PrintingTemplatePrintService.class)
+        .getPrintFileName(template, new PrintingGenFactoryContext(invoice));
+  }
+}

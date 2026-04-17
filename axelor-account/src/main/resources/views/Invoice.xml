@@ -1914,7 +1914,7 @@
   </action-group>
 
   <action-method name="action-invoice-generate-breakdown">
-    <call class="com.axelor.apps.businessproject.web.InvoicingProjectController"
+    <call class="com.axelor.apps.businessproject.web.InvoiceController"
       method="generateBreakdown"/>
   </action-method>
 
@@ -2373,10 +2373,10 @@
     <call class="com.axelor.apps.account.web.InvoiceController" method="setPaymentVisibility"/>
   </action-method>
 
-  <action-method name="action-invoice-generate-breakdown">
-    <call class="com.axelor.apps.businessproject.web.InvoicingProjectController"
-      method="generateBreakdown"/>
-  </action-method>
+  <!-- <action-method name="action-invoice-generate-breakdown"> -->
+  <!-- <call class="com.axelor.apps.businessproject.web.InvoicingProjectController" -->
+  <!-- method="generateBreakdown"/> -->
+  <!-- </action-method> -->
 
   <action-validate name="action-invoice-validate-regenerate-invoice">
     <alert
@@ -3038,7 +3038,7 @@
   </action-method>
 
   <action-method name="action-invoice-breakdown-pdf">
-    <call class="com.axelor.apps.businessproject.web.InvoicingProjectController"
+    <call class="com.axelor.apps.businessproject.web.InvoiceController"
       method="downloadInvoiceBreakdownPdf"/>
   </action-method>
 
