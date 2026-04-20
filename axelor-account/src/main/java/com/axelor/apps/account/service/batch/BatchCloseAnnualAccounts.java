@@ -123,7 +123,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   }
 
   protected void testCloseAnnualBatchFields(BigDecimal resultMoveAmount) throws AxelorException {
-    if (CollectionUtils.isEmpty(accountingBatch.getClosureAccountSet())) {
+    if (accountingBatch.getCloseYear()
+        && CollectionUtils.isEmpty(accountingBatch.getClosureAccountSet())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_1),
