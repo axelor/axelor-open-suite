@@ -21,7 +21,9 @@ package com.axelor.apps.supplierportal.service.app;
 import com.axelor.studio.db.AppSupplierPortal;
 import com.axelor.studio.db.repo.AppSupplierPortalRepository;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
+@Singleton
 public class AppSupplierPortalServiceImpl implements AppSupplierPortalService {
 
   private AppSupplierPortalRepository appSupplierPortalRepo;

@@ -25,8 +25,10 @@ import com.axelor.apps.gdpr.exception.GdprExceptionMessage;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppGdpr;
+import jakarta.inject.Singleton;
 import java.util.Objects;
 
+@Singleton
 public class AppGdprServiceImpl implements AppGdprService {
   @Override
   public AppGdpr getAppGDPR() {
