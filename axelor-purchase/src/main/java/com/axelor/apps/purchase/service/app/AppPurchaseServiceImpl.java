@@ -64,7 +64,7 @@ public class AppPurchaseServiceImpl extends AppBaseServiceImpl implements AppPur
 
   @Override
   public AppPurchase getAppPurchase() {
-    return appPurchaseRepo.all().fetchOne();
+    return appPurchaseRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override
