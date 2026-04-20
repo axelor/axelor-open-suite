@@ -21,9 +21,11 @@ package com.axelor.apps.purchase.service;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.CallTenderAttrConfig;
 import com.axelor.apps.purchase.db.CallTenderNeed;
 import com.axelor.apps.purchase.db.CallTenderOffer;
+import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -47,6 +49,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormat;
@@ -69,11 +72,16 @@ public class CallTenderExcelServiceImpl implements CallTenderExcelService {
 
   protected final AppBaseService appBaseService;
   protected final MetaFiles metaFiles;
+  protected final SupplierCatalogRepository supplierCatalogRepository;
 
   @Inject
-  public CallTenderExcelServiceImpl(AppBaseService appBaseService, MetaFiles metaFiles) {
+  public CallTenderExcelServiceImpl(
+      AppBaseService appBaseService,
+      MetaFiles metaFiles,
+      SupplierCatalogRepository supplierCatalogRepository) {
     this.appBaseService = appBaseService;
     this.metaFiles = metaFiles;
+    this.supplierCatalogRepository = supplierCatalogRepository;
   }
 
   @Override
@@ -116,6 +124,113 @@ public class CallTenderExcelServiceImpl implements CallTenderExcelService {
 
     try (FileInputStream inStream = new FileInputStream(file)) {
       return metaFiles.upload(inStream, fileName);
+    }
+  }
+
+  @Override
+  public MetaFile generateTemplate(CallTender callTender, Partner supplier) throws IOException {
+
+    String fileName =
+        StringHelper.cutTooLongString(
+            String.format(
+                "CFT%s-template-%s",
+                callTender.getName(),
+                DateTimeFormatter.ofPattern("ddMMyyyyhhmm")
+                    .format(appBaseService.getTodayDateTime())));
+
+    File file = File.createTempFile(fileName, ".xlsx");
+    fileName += ".xlsx";
+
+    List<CallTenderNeed> needList =
+        callTender.getCallTenderNeedList() != null
+            ? new ArrayList<>(callTender.getCallTenderNeedList())
+            : new ArrayList<>();
+
+    if (supplier != null && supplier.getId() != null) {
+      Set<Long> catalogProductIds =
+          supplierCatalogRepository
+              .all()
+              .filter("self.supplierPartner.id = :supplierId")
+              .bind("supplierId", supplier.getId())
+              .fetch()
+              .stream()
+              .map(sc -> sc.getProduct().getId())
+              .collect(Collectors.toSet());
+      needList.removeIf(
+          need ->
+              need.getProduct() == null || !catalogProductIds.contains(need.getProduct().getId()));
+    }
+
+    List<MetaJsonField> customFields = collectCustomFieldsFromNeeds(needList);
+
+    try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+      Sheet sheet = workbook.createSheet("Call Tender");
+
+      CellStyle headerStyle = createHeaderStyle(workbook);
+      CellStyle textStyle = createTextStyle(workbook);
+      createHeaderRow(sheet, headerStyle, customFields);
+      createNeedDataRows(sheet, needList, customFields, textStyle);
+      autoSizeColumns(sheet, customFields.size());
+
+      try (FileOutputStream fos = new FileOutputStream(file)) {
+        workbook.write(fos);
+      }
+    }
+
+    try (FileInputStream inStream = new FileInputStream(file)) {
+      return metaFiles.upload(inStream, fileName);
+    }
+  }
+
+  protected void createNeedDataRows(
+      Sheet sheet,
+      List<CallTenderNeed> needList,
+      List<MetaJsonField> customFields,
+      CellStyle textStyle) {
+
+    int rowNum = 1;
+    for (CallTenderNeed need : needList) {
+      Row row = sheet.createRow(rowNum++);
+      row.createCell(COL_PRODUCT_CODE).setCellValue(need.getProduct().getCode());
+      row.createCell(COL_PRODUCT_NAME).setCellValue(need.getProduct().getName());
+      row.createCell(COL_DESCRIPTION)
+          .setCellValue(Optional.ofNullable(need.getDescription()).orElse(""));
+      row.createCell(COL_QTY).setCellValue(need.getRequestedQty().doubleValue());
+      row.createCell(COL_UNIT)
+          .setCellValue(Optional.ofNullable(need.getUnit()).map(unit -> unit.getName()).orElse(""));
+
+      Cell dateCell = row.createCell(COL_DATE);
+      dateCell.setCellValue(
+          Optional.ofNullable(need.getRequestedDate()).map(LocalDate::toString).orElse(""));
+      dateCell.setCellStyle(textStyle);
+
+      Cell deliveryTimeCell = row.createCell(COL_DELIVERY_TIME);
+      deliveryTimeCell.setCellValue(
+          Optional.ofNullable(need.getRequestedDeliveryTime()).map(String::valueOf).orElse(""));
+      deliveryTimeCell.setCellStyle(textStyle);
+
+      row.createCell(COL_UNIT_PRICE).setCellValue("");
+
+      writeNeedCustomFieldCells(row, need, customFields, textStyle);
+
+      row.createCell(COL_CUSTOM_FIELDS_START + customFields.size()).setCellValue("");
+    }
+  }
+
+  protected void writeNeedCustomFieldCells(
+      Row row, CallTenderNeed need, List<MetaJsonField> customFields, CellStyle textStyle) {
+
+    Map<String, Object> attrs = parseAttrs(need.getAttrs());
+    for (int i = 0; i < customFields.size(); i++) {
+      MetaJsonField field = customFields.get(i);
+      Cell cell = row.createCell(COL_CUSTOM_FIELDS_START + i);
+      if (belongsToNeed(field, need)) {
+        Object value = attrs.get(field.getName());
+        cell.setCellValue(value == null ? "" : value.toString());
+      } else {
+        cell.setCellValue("");
+      }
+      cell.setCellStyle(textStyle);
     }
   }
 
@@ -227,11 +342,20 @@ public class CallTenderExcelServiceImpl implements CallTenderExcelService {
   }
 
   protected List<MetaJsonField> collectCustomFields(List<CallTenderOffer> offerList) {
+    return collectCustomFieldsFromConfigs(
+        offerList.stream().map(this::resolveNeedConfig).collect(Collectors.toList()));
+  }
+
+  protected List<MetaJsonField> collectCustomFieldsFromNeeds(List<CallTenderNeed> needList) {
+    return collectCustomFieldsFromConfigs(
+        needList.stream().map(this::resolveNeedConfig).collect(Collectors.toList()));
+  }
+
+  protected List<MetaJsonField> collectCustomFieldsFromConfigs(List<CallTenderAttrConfig> configs) {
     Set<Long> seenConfigIds = new HashSet<>();
     Map<Long, MetaJsonField> uniqueFields = new LinkedHashMap<>();
 
-    for (CallTenderOffer offer : offerList) {
-      CallTenderAttrConfig config = resolveNeedConfig(offer);
+    for (CallTenderAttrConfig config : configs) {
       if (config == null
           || !seenConfigIds.add(config.getId())
           || config.getCustomFieldList() == null) {
