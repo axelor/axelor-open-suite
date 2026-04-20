@@ -61,6 +61,8 @@ public class CallTenderOfferServiceImpl implements CallTenderOfferService {
     callTenderOffer.setRequestedUnit(need.getUnit());
     callTenderOffer.setStatusSelect(CallTenderOfferRepository.STATUS_DRAFT);
     callTenderOffer.setSupplierPartner(supplier.getSupplierPartner());
+    callTenderOffer.setCallTenderAttrConfig(need.getCallTenderAttrConfig());
+    callTenderOffer.setAttrs(need.getAttrs());
     return callTenderOffer;
   }
 
