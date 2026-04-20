@@ -56,13 +56,15 @@ public class BatchGeneratePreventiveMaintenanceRequest extends BatchStrategy {
 
     while (!(equipmentList = query.order("id").fetch(getFetchLimit(), offset)).isEmpty()) {
       for (EquipementMaintenance equipment : equipmentList) {
-        ++offset;
         try {
           if (processService.processEquipment(equipment, productionBatch)) {
             incrementDone();
+          } else {
+            ++offset;
           }
         } catch (Exception e) {
           incrementAnomaly();
+          ++offset;
           TraceBackService.trace(e, "Preventive maintenance request generation", batch.getId());
         }
       }
