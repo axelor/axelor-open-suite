@@ -20,6 +20,7 @@ package com.axelor.apps.contract.batch;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractBatch;
@@ -134,9 +135,19 @@ public class BatchContractInvoicing extends BatchStrategy {
             invoice.addBatchSetItem(batchRepo.find(batch.getId()));
             incrementDone(contractsList);
           }
+        } catch (AxelorException e) {
+          incrementAnomaly(contractsList);
+          TraceBackService.trace(
+              new AxelorException(e, contractsList.get(0), e.getCategory()),
+              "Contract invoicing batch",
+              batch.getId());
         } catch (Exception e) {
           incrementAnomaly(contractsList);
-          TraceBackService.trace(e, "Contract invoicing batch", batch.getId());
+          TraceBackService.trace(
+              new AxelorException(
+                  e, contractsList.get(0), TraceBackRepository.CATEGORY_INCONSISTENCY),
+              "Contract invoicing batch",
+              batch.getId());
         }
       }
       if (offset % getFetchLimit() == 0) {
