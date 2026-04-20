@@ -266,7 +266,8 @@
     <view type="grid" name="invoice-supplier-grid"/>
     <view type="form" name="invoice-form"/>
     <view-param name="search-filters" value="supplier-invoices-filters"/>
-    <domain>self.operationTypeSelect = 1 and self.statusSelect = 3 and self.amountRemaining != 0 and
+    <domain>self.operationTypeSelect = 1 and (self.statusSelect = 3 or (self.statusSelect = 2 and
+      self.operationSubTypeSelect = 2)) and self.amountRemaining != 0 and
       self.pfpValidateStatusSelect in :_pfpStatus</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
     <context name="todayDate" expr="eval:__config__.date"/>

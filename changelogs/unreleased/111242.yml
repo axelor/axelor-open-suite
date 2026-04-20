@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed 'Suppl. Invoices to pay' to include validated advance payment invoices too."
+module: axelor-account
