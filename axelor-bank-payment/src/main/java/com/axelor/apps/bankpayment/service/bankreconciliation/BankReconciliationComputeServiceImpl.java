@@ -123,6 +123,8 @@ public class BankReconciliationComputeServiceImpl implements BankReconciliationC
                 .getMoveLine()
                 .getDebit()
                 .subtract(bankReconciliationLine.getMoveLine().getCredit());
+      } else if (bankReconciliationLine.getPostedNbr() != null) {
+        amount = bankReconciliationLine.getCredit().subtract(bankReconciliationLine.getDebit());
       }
       endingBalance = endingBalance.add(amount);
     }
