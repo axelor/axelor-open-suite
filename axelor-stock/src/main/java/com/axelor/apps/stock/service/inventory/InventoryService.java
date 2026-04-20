@@ -304,9 +304,7 @@ public class InventoryService {
     Query<StockLocationLine> prePass =
         buildSllFilterQuery(inventory)
             .add("self.trackingNumber IS NOT NULL")
-            .add("self.detailsStockLocation = :stockLocation")
             .add("self.id > :lastSeenId")
-            .bind("stockLocation", inventory.getStockLocation())
             .build()
             .order("id");
 

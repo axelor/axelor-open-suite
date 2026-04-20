@@ -1,0 +1,3 @@
+---
+title: "Inventory: fixed duplicate inventory lines when including sub-locations with tracked products."
+module: axelor-stock
