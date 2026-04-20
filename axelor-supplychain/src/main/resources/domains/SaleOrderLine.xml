@@ -63,6 +63,9 @@
       title="Delivery blocking done by"/>
     <string name="commentDeliveryBlocking" title="Blocking comment for delivery" large="true"/>
 
+    <many-to-one name="callTenderAttrConfig"
+      ref="com.axelor.apps.purchase.db.CallTenderAttrConfig"
+      title="Call tender attribute configuration"/>
 
 
     <extra-code>
