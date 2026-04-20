@@ -259,8 +259,8 @@ public class CostSheetServiceImpl implements CostSheetService {
     return rootCostSheetLine;
   }
 
-  protected BigDecimal computeManufOrderProducedRatio(
-      ManufOrder manufOrder, BigDecimal producedQty) throws AxelorException {
+  protected BigDecimal computeManufOrderProducedRatio(ManufOrder manufOrder, BigDecimal producedQty)
+      throws AxelorException {
     BigDecimal totalToProduceQty = getTotalToProduceQty(manufOrder);
     if (totalToProduceQty.compareTo(BigDecimal.ZERO) == 0) {
       return BigDecimal.ZERO;
@@ -281,8 +281,7 @@ public class CostSheetServiceImpl implements CostSheetService {
     // No-op by default; subclasses may post-process (e.g. promote children up).
   }
 
-  protected void finalizeRootCostSheetLine(
-      CostSheetLine rootCostSheetLine, ManufOrder manufOrder) {
+  protected void finalizeRootCostSheetLine(CostSheetLine rootCostSheetLine, ManufOrder manufOrder) {
     // No-op by default; subclasses may post-process (e.g. promote children up).
   }
 

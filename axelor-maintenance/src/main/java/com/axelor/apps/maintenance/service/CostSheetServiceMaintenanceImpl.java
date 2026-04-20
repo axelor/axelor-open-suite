@@ -106,8 +106,8 @@ public class CostSheetServiceMaintenanceImpl extends CostSheetServiceImpl {
   }
 
   @Override
-  protected BigDecimal computeManufOrderProducedRatio(
-      ManufOrder manufOrder, BigDecimal producedQty) throws AxelorException {
+  protected BigDecimal computeManufOrderProducedRatio(ManufOrder manufOrder, BigDecimal producedQty)
+      throws AxelorException {
     if (!isMaintenance(manufOrder)) {
       return super.computeManufOrderProducedRatio(manufOrder, producedQty);
     }
@@ -139,8 +139,7 @@ public class CostSheetServiceMaintenanceImpl extends CostSheetServiceImpl {
   }
 
   @Override
-  protected void finalizeRootCostSheetLine(
-      CostSheetLine rootCostSheetLine, ManufOrder manufOrder) {
+  protected void finalizeRootCostSheetLine(CostSheetLine rootCostSheetLine, ManufOrder manufOrder) {
     if (!isMaintenance(manufOrder)) {
       super.finalizeRootCostSheetLine(rootCostSheetLine, manufOrder);
       return;
@@ -160,8 +159,7 @@ public class CostSheetServiceMaintenanceImpl extends CostSheetServiceImpl {
 
   protected Product buildMaintenanceValuationProduct() {
     Product valuationProduct = new Product();
-    valuationProduct.setBomCompValuMethodSelect(
-        ProductRepository.COMPONENTS_VALUATION_METHOD_COST);
+    valuationProduct.setBomCompValuMethodSelect(ProductRepository.COMPONENTS_VALUATION_METHOD_COST);
     valuationProduct.setManufOrderCompValuMethodSelect(
         ProductRepository.COMPONENTS_VALUATION_METHOD_COST);
     return valuationProduct;
