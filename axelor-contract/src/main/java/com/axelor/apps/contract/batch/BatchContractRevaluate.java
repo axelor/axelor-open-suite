@@ -129,8 +129,16 @@ public class BatchContractRevaluate extends BatchStrategy {
       processContract(newContract, idsOk, idsReevaluated);
       contractService.activeNextVersion(
           newContract, appBaseService.getTodayDate(newContract.getCompany()));
+    } catch (AxelorException e) {
+      TraceBackService.trace(
+          new AxelorException(e, contract, e.getCategory()), null, batch.getId());
+      idsFail.add(contract);
+      incrementAnomaly();
     } catch (Exception e) {
-      TraceBackService.trace(e, null, batch.getId());
+      TraceBackService.trace(
+          new AxelorException(e, contract, TraceBackRepository.CATEGORY_INCONSISTENCY),
+          null,
+          batch.getId());
       idsFail.add(contract);
       incrementAnomaly();
     }
