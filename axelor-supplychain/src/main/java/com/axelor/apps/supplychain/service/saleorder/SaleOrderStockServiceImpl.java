@@ -48,6 +48,7 @@ import com.axelor.apps.stock.service.StockMoveLineStockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -163,7 +164,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       String deliveryAddressStr = key.getLeft();
       LocalDate estimatedDeliveryDate = key.getRight();
 
-      List<SaleOrderLine> saleOrderLineList = entry.getValue();
+      List<SaleOrderLine> saleOrderLineList =
+          entry.getValue().stream().map(JpaModelHelper::ensureManaged).toList();
 
       Optional<StockMove> stockMoveOpt =
           createStockMove(saleOrder, deliveryAddressStr, estimatedDeliveryDate, saleOrderLineList);
