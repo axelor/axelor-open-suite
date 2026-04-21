@@ -79,6 +79,8 @@
 
     <panel-tabs name="mainPanelTab" hideIf="$popup()">
       <panel name="informationsPanel" title="Information">
+        <field name="legalInformation" widget="html" x-lite="true" colSpan="12"/>
+        <field name="legalFormAndCapital" widget="html" x-lite="true" colSpan="12"/>
         <field name="notes" colSpan="12"/>
         <field name="companyDepartmentList" grid-view="company-department-company-grid"
           form-view="company-department-company-form" canSelect="true" domain="self.company IS NULL"

@@ -1,0 +1,10 @@
+---
+title: "Company: new legal information fields"
+module: axelor-base
+developer: |
+  - Company: New fields legalInformation and legalFormAndCapital.
+
+  Script to run : 
+  ALTER TABLE base_company                                                                                                                                    
+      ADD COLUMN IF NOT EXISTS legal_information VARCHAR(255),                                                                                                
+      ADD COLUMN IF NOT EXISTS legal_form_and_capital VARCHAR(255);
