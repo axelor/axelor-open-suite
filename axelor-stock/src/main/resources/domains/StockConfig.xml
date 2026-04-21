@@ -36,11 +36,6 @@
     <many-to-one name="outsourcingReceiptStockLocation"
       ref="com.axelor.apps.stock.db.StockLocation" title="Outsourcing receipt stock location"/>
 
-    <many-to-one name="maintenanceComponentsStockLocation"
-      ref="com.axelor.apps.stock.db.StockLocation" title="Maintenance components stock location"/>
-    <many-to-one name="maintenanceVirtualStockLocation"
-      ref="com.axelor.apps.stock.db.StockLocation" title="Maintenance virtual stock location"/>
-
     <many-to-one name="customsMassUnit" ref="com.axelor.apps.base.db.Unit"
       title="Unit of mass"
       help="This configuration defines the unit of mass used for customs controls. This is not a default value that can be overridden, it is a common value for all moves that can only be modified via this field."/>
