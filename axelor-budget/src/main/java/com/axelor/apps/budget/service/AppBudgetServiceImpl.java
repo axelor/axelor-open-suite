@@ -60,7 +60,7 @@ public class AppBudgetServiceImpl extends AppBaseServiceImpl implements AppBudge
 
   @Override
   public AppBudget getAppBudget() {
-    return appBudgetRepo.all().fetchOne();
+    return appBudgetRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

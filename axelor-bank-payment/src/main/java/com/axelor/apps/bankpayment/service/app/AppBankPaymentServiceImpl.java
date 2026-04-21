@@ -71,7 +71,7 @@ public class AppBankPaymentServiceImpl extends AppBaseServiceImpl implements App
 
   @Override
   public AppBankPayment getAppBankPayment() {
-    return appBankPaymentRepo.all().fetchOne();
+    return appBankPaymentRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override
