@@ -74,11 +74,16 @@ public class SaleOrderLineSublineServiceImpl implements SaleOrderLineSublineServ
     }
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
       SaleOrderLine sol = stockMoveLine.getSaleOrderLine();
-      if (sol != null && sol.getParentSaleOrderLine() != null) {
-        StockMoveLine parentSml =
-            saleOrderLineToStockMoveLine.get(sol.getParentSaleOrderLine().getId());
-        if (parentSml != null) {
-          stockMoveLine.setParentStockMoveLine(parentSml);
+      if (sol != null) {
+        if (sol.getLevelIndicator() != null) {
+          stockMoveLine.setLevelIndicator(sol.getLevelIndicator());
+        }
+        if (sol.getParentSaleOrderLine() != null) {
+          StockMoveLine parentSml =
+              saleOrderLineToStockMoveLine.get(sol.getParentSaleOrderLine().getId());
+          if (parentSml != null) {
+            stockMoveLine.setParentStockMoveLine(parentSml);
+          }
         }
       }
     }

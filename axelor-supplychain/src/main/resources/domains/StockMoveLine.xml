@@ -30,6 +30,8 @@
 
     <boolean name="realQtyChangedByUser" transient="true"/>
 
+    <string name="levelIndicator" title="Level"/>
+
     <datetime name="reservationDateTime" readonly="true"/>
 
     <decimal name="qtyRemainingToPackage" title="Qty remaining to package" default="0"
