@@ -31,6 +31,7 @@ import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -63,6 +64,7 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
   protected SaleOrderLineTaxService saleOrderLineTaxService;
   protected ProductCompanyService productCompanyService;
   protected CurrencyScaleService currencyScaleService;
+  protected OrderLineTaxService orderLineTaxService;
 
   @Inject
   public SaleOrderLineProductServiceImpl(
@@ -77,7 +79,8 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
       SaleOrderLinePriceService saleOrderLinePriceService,
       SaleOrderLineTaxService saleOrderLineTaxService,
       ProductCompanyService productCompanyService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      OrderLineTaxService orderLineTaxService) {
     this.appSaleService = appSaleService;
     this.appBaseService = appBaseService;
     this.saleOrderLineComplementaryProductService = saleOrderLineComplementaryProductService;
@@ -90,6 +93,7 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     this.saleOrderLineTaxService = saleOrderLineTaxService;
     this.productCompanyService = productCompanyService;
     this.currencyScaleService = currencyScaleService;
+    this.orderLineTaxService = orderLineTaxService;
   }
 
   @Override
@@ -260,13 +264,18 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
               saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
 
       saleOrderLine.setTaxEquiv(taxEquiv);
+      saleOrderLine.setVatExemptionReason(
+          orderLineTaxService.resolveVatExemptionReason(
+              fiscalPosition, taxEquiv, saleOrder.getClientPartner()));
     } else {
       saleOrderLine.setTaxLineSet(Sets.newHashSet());
       saleOrderLine.setTaxEquiv(null);
+      saleOrderLine.setVatExemptionReason(null);
     }
 
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.put("taxEquiv", taxEquiv);
+    saleOrderLineMap.put("vatExemptionReason", saleOrderLine.getVatExemptionReason());
     saleOrderLineMap.put("taxLineSet", taxLineSet);
     return saleOrderLineMap;
   }

@@ -11,6 +11,8 @@
     <string name="code" title="Code" required="true"/>
     <boolean name="customerSpecificNote" title="Customer specific note"/>
     <string name="customerSpecificNoteText" title="Customer specific note" large="true"/>
+    <many-to-one name="vatExemptionReason"
+      ref="com.axelor.apps.account.db.VatExemptionReason" title="VAT exemption reason"/>
 
     <one-to-many name="taxEquivList" ref="com.axelor.apps.account.db.TaxEquiv"
       title="Tax equivalences" mappedBy="fiscalPosition"/>

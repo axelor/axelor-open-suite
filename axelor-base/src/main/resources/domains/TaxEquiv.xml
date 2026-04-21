@@ -17,6 +17,8 @@
     <boolean name="reverseCharge" title="Reverse Charge"/>
     <many-to-many name="reverseChargeTaxSet" ref="com.axelor.apps.account.db.Tax"
       title="Reverse Charge Tax"/>
+    <many-to-one name="vatExemptionReason"
+      ref="com.axelor.apps.account.db.VatExemptionReason" title="VAT exemption reason"/>
 
   </entity>
 

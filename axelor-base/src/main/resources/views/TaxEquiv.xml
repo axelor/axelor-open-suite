@@ -11,7 +11,7 @@
   </grid>
 
   <form name="tax-equiv-form" title="Tax equivalence"
-    model="com.axelor.apps.account.db.TaxEquiv" onLoad="action-tax-equiv-group-onload">
+    model="com.axelor.apps.account.db.TaxEquiv">
     <panel name="mainPanel">
       <field name="fromTaxSet" form-view="tax-form" grid-view="tax-grid" required="true"
         onSelect="action-tax-equiv-attrs-from-tax-domain" widget="TagSelect"/>
@@ -21,13 +21,11 @@
       <field name="reverseChargeTaxSet" form-view="tax-form" grid-view="tax-grid"
         showIf="reverseCharge" requiredIf="reverseCharge"
         onSelect="action-tax-equiv-attrs-reverse-charge-tax-domain" widget="TagSelect"/>
-      <field name="specificNote" colSpan="12" hidden="true"/>
+      <field name="vatExemptionReason" form-view="vat-exemption-reason-form"
+        grid-view="vat-exemption-reason-grid"/>
+      <field name="specificNote" colSpan="12" showIf="specificNote"/>
     </panel>
   </form>
-
-  <action-group name="action-tax-equiv-group-onload">
-    <action name="action-tax-equiv-attrs-hide-specific-note"/>
-  </action-group>
 
   <action-record name="action-tax-equiv-record-empty-taxes"
     model="com.axelor.apps.account.db.TaxEquiv">
@@ -35,11 +33,6 @@
       if="reverseCharge &amp;&amp; (fromTaxSet?.collect{tax -> tax.activeTaxLine?.value}.findAll().sort() != toTaxSet?.collect{tax -> tax.activeTaxLine?.value}.findAll().sort())"/>
     <field name="reverseChargeTaxSet" expr="eval: null" if="!reverseCharge"/>
   </action-record>
-
-  <action-attrs name="action-tax-equiv-attrs-hide-specific-note">
-    <attribute for="specificNote" name="hidden"
-      expr="eval: __parent__?.customerSpecificNote"/>
-  </action-attrs>
 
   <action-attrs name="action-tax-equiv-attrs-from-tax-domain">
     <attribute name="domain" for="fromTaxSet" if="reverseCharge"

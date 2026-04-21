@@ -46,7 +46,7 @@ public class PurchaseOrderLineTaxComputeServiceImpl implements PurchaseOrderLine
   }
 
   public void computeAndAddTaxToList(
-      Map<TaxLine, PurchaseOrderLineTax> map,
+      Map<?, PurchaseOrderLineTax> map,
       List<PurchaseOrderLineTax> purchaseOrderLineTaxList,
       Currency currency,
       List<PurchaseOrderLineTax> currentPurchaseOrderLineTaxList) {
