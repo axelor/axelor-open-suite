@@ -2021,6 +2021,7 @@
 "Invoice.draftInvoiceNo","PROFORMA INVOICE N°",,
 "Invoice.draftRefundNo","PROFORMA CREDIT NOTE N°",,
 "Invoice.dueDate","Due Date",,
+"Invoice.exemptionReason","Exemption Reason",,
 "Invoice.expenseProduct","Expense type",,
 "Invoice.expenseTaxAmount",,,
 "Invoice.expenseTitle","Expense details",,

@@ -565,6 +565,7 @@
 "SaleOrder.duration",,,
 "SaleOrder.endOfValidityDate",,,
 "SaleOrder.estimatedDeliveryDate",,,
+"SaleOrder.exemptionReason",,,
 "SaleOrder.invoicingAddrs",,,
 "SaleOrder.isIspmRequired",,,
 "SaleOrder.no",,,
