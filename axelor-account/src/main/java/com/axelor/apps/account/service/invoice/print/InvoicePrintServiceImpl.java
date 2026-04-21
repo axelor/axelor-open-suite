@@ -123,7 +123,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     if (ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(fileName))) {
       Path path = PdfHelper.printCopiesToFile(file, copyNumber).toPath();
       fileCopies =
-          Files.move(path, path.resolveSibling(fileName), StandardCopyOption.REPLACE_EXISTING)
+          Files.move(file.toPath(), path.resolveSibling(fileName), StandardCopyOption.REPLACE_EXISTING)
               .toFile();
     }
     return fileCopies;
