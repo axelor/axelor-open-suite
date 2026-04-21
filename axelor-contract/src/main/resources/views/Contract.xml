@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract"
     orderBy="-contractId" groupBy="statusSelect">
@@ -216,7 +216,7 @@
             <panel name="activationPanel">
               <panel hideIf="statusSelect >= 3" colSpan="12" itemSpan="12">
                 <field name="supposedActivationDate"
-                  onChange="action-method-contract-version-check-supposed-activation-date,save,action-method-contract-version-update-contract-lines"/>
+                  onChange="action-contract-version-group-supposed-activation-date-onchange"/>
                 <field name="supposedEndDate"/>
               </panel>
               <panel hidden="true" readonly="true" showIf="statusSelect >= 3" colSpan="12">
@@ -238,7 +238,8 @@
         </field>
         <field name="firstPeriodEndDate" title="First period invoicing end date" hidden="true"
           showIf="statusSelect == 1 &amp;&amp; isInvoicingManagement &amp;&amp; currentContractVersion.isPeriodicInvoicing"
-          colSpan="12" requiredIf="$get('currentContractVersion.isPeriodicInvoicing')"/>
+          colSpan="12" requiredIf="$get('currentContractVersion.isPeriodicInvoicing')"
+          onChange="action-contract-validate-first-period-end-date"/>
       </panel>
     </panel>
     <panel name="nextVersionPanel" title="Next amendment" sidebar="true" showIf="nextVersion"
@@ -248,7 +249,7 @@
           <panel name="activationPanel">
             <panel hideIf="statusSelect >= 3" colSpan="12" itemSpan="12">
               <field name="supposedActivationDate"
-                onChange="action-method-contract-version-check-supposed-activation-date,save,action-method-contract-version-update-contract-lines"/>
+                onChange="action-contract-version-group-supposed-activation-date-onchange"/>
               <field name="supposedEndDate"/>
             </panel>
             <panel hidden="true" readonly="true" showIf="statusSelect >= 3" colSpan="12">
@@ -271,7 +272,8 @@
 
       <field name="firstPeriodEndDate" title="First period invoicing end date" hidden="true"
         showIf="statusSelect == 1 &amp;&amp; isInvoicingManagement &amp;&amp; currentContractVersion.isPeriodicInvoicing"
-        colSpan="12" requiredIf="$get('currentContractVersion.isPeriodicInvoicing')"/>
+        colSpan="12" requiredIf="$get('currentContractVersion.isPeriodicInvoicing')"
+        onChange="action-contract-validate-first-period-end-date"/>
     </panel>
     <panel title="Notes" sidebar="true" name="notesPanel" canCollapse="true">
       <field name="note" showTitle="false"/>
@@ -441,10 +443,9 @@
             <field name="currentContractVersion" showTitle="false" colSpan="12"
               x-show-icons="false">
               <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                <panel colSpan="6">
+                <panel colSpan="12">
                   <field name="automaticInvoicing" colSpan="4" widget="boolean-switch"/>
-                  <field name="invoicingMomentSelect" hidden="true"
-                    showIf="automaticInvoicing" colSpan="4" requiredIf="automaticInvoicing"/>
+                  <field name="invoicingMomentSelect" colSpan="4"/>
                   <field name="numberOfDays"
                     showIf="invoicingMomentSelect == 3 || invoicingMomentSelect == 4" colSpan="4"/>
                 </panel>
@@ -711,10 +712,9 @@
             <field name="paymentCondition" colSpan="6" widget="SuggestBox" canEdit="false"
               form-view="payment-condition-form" grid-view="payment-condition-grid"/>
           </panel>
-          <panel colSpan="6">
+          <panel colSpan="12">
             <field name="automaticInvoicing" colSpan="4" widget="boolean-switch"/>
-            <field name="invoicingMomentSelect" hidden="true" showIf="automaticInvoicing"
-              colSpan="4"/>
+            <field name="invoicingMomentSelect" colSpan="4"/>
             <field name="numberOfDays" colSpan="4"/>
           </panel>
           <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
@@ -995,5 +995,17 @@
     <attribute name="title" for="isInvoicingManagement"
       expr="eval: com.axelor.i18n.I18n.get('Product management')" if="contractTypeSelect == 2"/>
   </action-attrs>
+
+  <action-validate name="action-contract-validate-first-period-end-date">
+    <error
+      message="The first period end date cannot be earlier than the supposed activation date."
+      if="firstPeriodEndDate != null &amp;&amp; currentContractVersion != null &amp;&amp; currentContractVersion.supposedActivationDate != null &amp;&amp; firstPeriodEndDate &lt; currentContractVersion.supposedActivationDate"
+      action="action-contract-record-reset-first-period-end-date"/>
+  </action-validate>
+
+  <action-record name="action-contract-record-reset-first-period-end-date"
+    model="com.axelor.apps.contract.db.Contract">
+    <field name="firstPeriodEndDate" expr="eval: null"/>
+  </action-record>
 
 </object-views>

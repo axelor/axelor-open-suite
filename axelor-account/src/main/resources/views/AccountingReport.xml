@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <!-- ACCOUNTING REPORT -->
 
@@ -114,13 +114,13 @@
             showIf="reportType.typeSelect == 19 || reportType.typeSelect == 20"/>
           <field name="journal"
             hideIf="[0,1,2,3,5,10,12,13,14,15,16,17,18,19,20,21,22,23,24,3000].indexOf(reportType.typeSelect) != -1"
-            domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
+            onSelect="action-accounting-report-attrs-journal-domain" form-view="journal-form"
             grid-view="journal-grid" canEdit="false" requiredIf="reportType.typeSelect == 11"
             onChange="action-accounting-report-record-move-status-select"/>
           <field name="journalSet" if-module="axelor-bank-payment"
             if="__config__.app.isApp('bank-payment')" requiredIf="reportType.typeSelect == 18"
             widget="Tags" canNew="false" showIf="reportType.typeSelect == 18" colSpan="12"
-            domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
+            onSelect="action-accounting-report-attrs-journal-set-domain" form-view="journal-form"
             grid-view="journal-grid" canEdit="false"/>
           <field name="paymentMode" grid-view="payment-mode-grid"
             form-view="payment-mode-form"
@@ -132,7 +132,7 @@
           <field name="partnerSet"
             hideIf="[12,15,16,17,18,19,20,21,22,23,24,2000,2001,3000].indexOf(reportType.typeSelect) != -1"
             colSpan="12" form-view="partner-form" grid-view="partner-grid" widget="Tags"
-            canNew="false" domain=":company member of self.companySet AND self.isContact = false"/>
+            canNew="false" onSelect="action-accounting-report-attrs-partner-set-domain"/>
           <field name="accountTypeSet" colSpan="12" showIf="reportType.typeSelect == 6"
             widget="Tags" canNew="false" form-view="account-type-form" grid-view="account-type-grid"/>
           <field name="bankDetailsSet" if-module="axelor-bank-payment"
@@ -411,8 +411,35 @@
 
   <action-attrs name="action-accounting-report-attrs-accountset-domain"
     model="com.axelor.apps.account.db.AccountingReport">
-    <attribute for="accountSet" name="domain"
-      expr="eval: &quot; self.company = :company AND ((${reportType?.typeSelect} = 18 AND self.accountType.technicalTypeSelect = 'cash') OR (${reportType?.typeSelect} &lt;&gt; 18 AND (${reportType?.typeSelect} &lt;&gt; 6 OR self.useForPartnerBalance = true))) &quot;"/>
+    <attribute for="accountSet" name="domain" if="!_isCustom"
+      expr="eval: &quot; (self.company = :company OR self.company IS NULL) AND ((${reportType?.typeSelect} = 18 AND self.accountType.technicalTypeSelect = 'cash') OR (${reportType?.typeSelect} &lt;&gt; 18 AND (${reportType?.typeSelect} &lt;&gt; 6 OR self.useForPartnerBalance = true))) &quot;"/>
+    <attribute for="accountSet" name="domain" if="_isCustom"
+      expr="eval: &quot; (self.company IN :companySet OR self.company IS NULL) AND ((${reportType?.typeSelect} = 18 AND self.accountType.technicalTypeSelect = 'cash') OR (${reportType?.typeSelect} &lt;&gt; 18 AND (${reportType?.typeSelect} &lt;&gt; 6 OR self.useForPartnerBalance = true))) &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-accounting-report-attrs-journal-domain">
+    <attribute name="domain" for="journal"
+      expr="eval: &quot; self.statusSelect = 1 AND (self.company = :company OR self.company IS NULL) &quot;"
+      if="!_isCustom"/>
+    <attribute name="domain" for="journal"
+      expr="eval: &quot; self.statusSelect = 1 AND (self.company IN :companySet OR self.company IS NULL) &quot;"
+      if="_isCustom"/>
+  </action-attrs>
+
+  <action-attrs name="action-accounting-report-attrs-journal-set-domain">
+    <attribute name="domain" for="journalSet"
+      expr="eval: &quot; self.statusSelect = 1 AND (self.company = :company OR self.company IS NULL) &quot;"
+      if="!_isCustom"/>
+    <attribute name="domain" for="journalSet"
+      expr="eval: &quot; self.statusSelect = 1 AND (self.company IN :companySet OR self.company IS NULL) &quot;"
+      if="_isCustom"/>
+  </action-attrs>
+
+  <action-attrs name="action-accounting-report-attrs-partner-set-domain">
+    <attribute name="domain" for="partnerSet" if="!_isCustom"
+      expr="eval: &quot; self.isContact = false AND (:company member of self.companySet OR self.companySet IS EMPTY) &quot;"/>
+    <attribute name="domain" for="partnerSet" if="_isCustom"
+      expr="eval: &quot; self.isContact = false AND (EXISTS(SELECT c FROM Company c WHERE c MEMBER OF self.companySet AND c IN :companySet) OR self.companySet IS EMPTY) &quot;"/>
   </action-attrs>
 
   <action-attrs name="action-accounting-report-attrs-display-anomalies">
@@ -422,7 +449,7 @@
 
   <action-attrs name="action-accounting-report-attrs-set-partner-tag-domain">
     <attribute name="domain" for="partnerTagSet"
-      expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} IN (self.concernedModelSet.id) OR self.concernedModelSet IS EMPTY) AND (:company IS NULL OR :company MEMBER OF self.companySet OR self.companySet IS EMPTY) &quot;"/>
+      expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} IN (self.concernedModelSet.id) OR self.concernedModelSet IS EMPTY) AND (:company IS NULL OR :company MEMBER OF self.companySet OR self.companySet IS EMPTY) AND (self.tradingNameSet IS EMPTY OR EXISTS(SELECT 1 FROM TradingName tn WHERE tn MEMBER OF self.tradingNameSet AND tn.id = ${__user__?.tradingName?.id ?: 0})) &quot;"/>
   </action-attrs>
 
   <action-attrs name="action-accounting-report-attrs-analytic-account-set-domain">

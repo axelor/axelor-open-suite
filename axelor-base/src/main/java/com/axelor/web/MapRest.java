@@ -189,7 +189,12 @@ public class MapRest {
     ObjectNode mainNode = nodeFactory.objectNode();
     try {
       List<? extends Partner> customers =
-          partnerRepo.all().filter("self.isCustomer = true AND self.isContact=?", false).fetch();
+          partnerRepo
+              .all()
+              .filter(
+                  "self.isCustomer = true AND self.isContact = ? AND (self.archived IS NULL OR self.archived = false)",
+                  false)
+              .fetch();
 
       ArrayNode arrayNode = nodeFactory.arrayNode();
 
@@ -237,7 +242,12 @@ public class MapRest {
 
     try {
       List<? extends Partner> customers =
-          partnerRepo.all().filter("self.isProspect = true AND self.isContact=?", false).fetch();
+          partnerRepo
+              .all()
+              .filter(
+                  "self.isProspect = true AND self.isContact = ? AND (self.archived IS NULL OR self.archived = false)",
+                  false)
+              .fetch();
       ArrayNode arrayNode = nodeFactory.arrayNode();
 
       for (Partner prospect : customers) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
 
   <form id="production-purchase-order-form" name="purchase-order-form" title="Supplier RFQ/PO"
@@ -33,6 +33,11 @@
           <field name="outsourcingOrder" hidden="true"/>
         </panel>
       </insert>
+    </extend>
+
+    <extend target="//field[@name='tradingName']">
+      <attribute name="readonlyIf"
+        value="callTender == null &amp;&amp; !createdByInterco &amp;&amp; !outsourcingOrder &amp;&amp;((purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3)"/>
     </extend>
 
     <extend target="//field[@name='purchaseOrderSeq']">

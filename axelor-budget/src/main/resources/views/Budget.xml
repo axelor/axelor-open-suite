@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="budget-grid" title="Budget Line" model="com.axelor.apps.budget.db.Budget"
     orderBy="budgetLevel.id,code">
@@ -355,7 +355,8 @@
     <view-param name="show-confirm" value="true"/>
     <domain><![CDATA[self.budget.id= :_budgetId AND
       self.moveLine IS NOT NULL AND self.moveLine.move.statusSelect in (2,3) AND
-      (self.moveLine.move.invoice IS NULL OR (self.moveLine.move.invoice.purchaseOrder is null AND self.moveLine.move.invoice.saleOrder is null))]]></domain>
+      (self.moveLine.move.invoice IS NULL OR (self.moveLine.move.invoice.purchaseOrder is null AND self.moveLine.move.invoice.saleOrder is null
+      AND NOT EXISTS (SELECT 1 FROM InvoiceLine il WHERE il.invoice = self.moveLine.move.invoice AND (il.purchaseOrderLine IS NOT NULL OR il.saleOrderLine IS NOT NULL))))]]></domain>
     <context name="_budgetId" expr="eval: id"/>
   </action-view>
   <action-view
@@ -368,7 +369,8 @@
     <domain><![CDATA[self.budget.id= :_budgetId AND
       self.moveLine IS NOT NULL AND self.moveLine.move.statusSelect in (2,3) AND
       (self.moveLine.move.invoice.purchaseOrder is not null OR
-      self.moveLine.move.invoice.saleOrder is not null)]]>
+      self.moveLine.move.invoice.saleOrder is not null OR
+      EXISTS (SELECT 1 FROM InvoiceLine il WHERE il.invoice = self.moveLine.move.invoice AND (il.purchaseOrderLine IS NOT NULL OR il.saleOrderLine IS NOT NULL)))]]>
     </domain>
     <context name="_budgetId" expr="eval: id"/>
   </action-view>

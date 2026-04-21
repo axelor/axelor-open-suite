@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="purchase-order-line-tax-grid" title="PO Tax lines"
     model="com.axelor.apps.purchase.db.PurchaseOrderLineTax">
@@ -12,6 +12,7 @@
     <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="exTaxBase" x-scale="purchaseOrder.currency.numberOfDecimals"/>
     <field name="taxTotal" x-scale="purchaseOrder.currency.numberOfDecimals"/>
+    <field name="vatExemptionReason"/>
   </grid>
 
   <form name="purchase-order-line-tax-form" title="PO Tax line"
@@ -33,6 +34,8 @@
         readonly="true"/>
       <field name="percentageTaxTotal" showIf="taxLine.tax.manageByAmount"
         x-scale="purchaseOrder.currency.numberOfDecimals" readonly="true"/>
+      <field name="vatExemptionReason" form-view="vat-exemption-reason-form"
+        grid-view="vat-exemption-reason-grid" readonly="true"/>
       <field name="purchaseOrder" hidden="true"/>
       <field name="purchaseOrder.currency" hidden="true"/>
       <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>

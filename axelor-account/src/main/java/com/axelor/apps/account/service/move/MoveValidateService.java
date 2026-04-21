@@ -23,6 +23,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.db.Query;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface MoveValidateService {
 
@@ -72,7 +73,7 @@ public interface MoveValidateService {
 
   void freezeFieldsOnMoveLines(Move move) throws AxelorException;
 
-  void accountingMultiple(Query<Move> moveListQuery) throws AxelorException;
+  Pair<List<Move>, Integer> accountingMultiple(Query<Move> moveListQuery);
 
   void checkMoveLinesPartner(Move move) throws AxelorException;
 

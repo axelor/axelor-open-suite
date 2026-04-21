@@ -773,7 +773,7 @@ public class SaleOrderController {
         response.setInfo(alert);
       }
 
-      response.setValues(Mapper.toMap(saleOrder));
+      response.setValues(saleOrder);
       response.setAttrs(Beans.get(SaleOrderGroupService.class).onChangeSaleOrderLine(saleOrder));
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -21,6 +21,7 @@ package com.axelor.apps.sale.service.saleorderline.tax;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.VatExemptionReason;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -51,6 +52,9 @@ import org.slf4j.LoggerFactory;
 public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreateTaxLineService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  private record TaxLineTaxExemptionKey(TaxLine taxLine, VatExemptionReason vatExemptionReason) {}
+
   protected OrderLineTaxService orderLineTaxService;
   protected CurrencyScaleService currencyScaleService;
   protected TaxService taxService;
@@ -87,7 +91,7 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
     currentSaleOrderLineTaxList.addAll(saleOrder.getSaleOrderLineTaxList());
     saleOrder.clearSaleOrderLineTaxList();
 
-    Map<TaxLine, SaleOrderLineTax> map = new HashMap<>();
+    Map<TaxLineTaxExemptionKey, SaleOrderLineTax> map = new HashMap<>();
     Set<String> specificNotes = new HashSet<>();
     boolean customerSpecificNote = orderLineTaxService.isCustomerSpecificNote(saleOrder);
 
@@ -101,10 +105,7 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
     computeAndAddTaxToList(
         map, saleOrderLineTaxList, saleOrder.getCurrency(), currentSaleOrderLineTaxList);
     orderLineTaxService.setSpecificNotes(
-        customerSpecificNote,
-        saleOrder,
-        specificNotes,
-        saleOrder.getClientPartner().getSpecificTaxNote());
+        customerSpecificNote, saleOrder, specificNotes, saleOrder.getClientPartner());
 
     return saleOrderLineTaxList;
   }
@@ -112,7 +113,7 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
   protected void getOrCreateLines(
       SaleOrder saleOrder,
       SaleOrderLine saleOrderLine,
-      Map<TaxLine, SaleOrderLineTax> map,
+      Map<TaxLineTaxExemptionKey, SaleOrderLineTax> map,
       boolean customerSpecificNote,
       Set<String> specificNotes)
       throws AxelorException {
@@ -146,13 +147,15 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
   protected void getOrCreateLine(
       SaleOrder saleOrder,
       SaleOrderLine saleOrderLine,
-      Map<TaxLine, SaleOrderLineTax> map,
+      Map<TaxLineTaxExemptionKey, SaleOrderLineTax> map,
       TaxLine taxLine,
       boolean reverseCharged) {
     if (taxLine != null) {
       LOG.debug("Tax {}", taxLine);
-      if (map.containsKey(taxLine)) {
-        SaleOrderLineTax saleOrderLineTax = map.get(taxLine);
+      TaxLineTaxExemptionKey key =
+          new TaxLineTaxExemptionKey(taxLine, saleOrderLine.getVatExemptionReason());
+      if (map.containsKey(key)) {
+        SaleOrderLineTax saleOrderLineTax = map.get(key);
         saleOrderLineTax.setReverseCharged(reverseCharged);
         saleOrderLineTax.setExTaxBase(
             currencyScaleService.getScaledValue(
@@ -163,7 +166,7 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
       } else {
         SaleOrderLineTax saleOrderLineTax =
             createSaleOrderLineTax(saleOrder, saleOrderLine, taxLine, reverseCharged);
-        map.put(taxLine, saleOrderLineTax);
+        map.put(key, saleOrderLineTax);
       }
     }
   }
@@ -178,11 +181,12 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
     saleOrderLineTax.setTaxLine(taxLine);
     saleOrderLineTax.setTaxType(
         Optional.ofNullable(taxLine.getTax()).map(Tax::getTaxType).orElse(null));
+    saleOrderLineTax.setVatExemptionReason(saleOrderLine.getVatExemptionReason());
     return saleOrderLineTax;
   }
 
   protected void computeAndAddTaxToList(
-      Map<TaxLine, SaleOrderLineTax> map,
+      Map<TaxLineTaxExemptionKey, SaleOrderLineTax> map,
       List<SaleOrderLineTax> saleOrderLineTaxList,
       Currency currency,
       List<SaleOrderLineTax> currentSaleOrderLineTaxList) {
@@ -204,10 +208,7 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
   }
 
   protected void computeTax(SaleOrderLineTax saleOrderLineTax, Currency currency) {
-    BigDecimal exTaxBase =
-        saleOrderLineTax.getReverseCharged()
-            ? saleOrderLineTax.getExTaxBase().negate()
-            : saleOrderLineTax.getExTaxBase();
+    BigDecimal exTaxBase = saleOrderLineTax.getExTaxBase();
     BigDecimal taxTotal = BigDecimal.ZERO;
     int currencyScale = currencyScaleService.getCurrencyScale(currency);
 
@@ -230,6 +231,9 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
         }
       }
 
+      if (saleOrderLineTax.getReverseCharged()) {
+        taxTotal = taxTotal.negate();
+      }
       saleOrderLineTax.setTaxTotal(currencyScaleService.getScaledValue(taxTotal, currencyScale));
       saleOrderLineTax.setPercentageTaxTotal(saleOrderLineTax.getTaxTotal());
     }

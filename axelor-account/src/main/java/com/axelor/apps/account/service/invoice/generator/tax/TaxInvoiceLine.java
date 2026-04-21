@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceJournalService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -36,10 +37,12 @@ import com.axelor.apps.account.service.invoice.tax.InvoiceTaxComputeService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.account.util.TaxConfiguration;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -112,13 +115,29 @@ public class TaxInvoiceLine extends TaxGenerator {
             invoiceLines.stream()
                 .map(InvoiceLine::getTaxEquiv)
                 .filter(Objects::nonNull)
-                .map(TaxEquiv::getSpecificNote)
+                .map(
+                    taxEquiv -> {
+                      String vatNote =
+                          taxEquiv.getVatExemptionReason() != null
+                              ? taxEquiv.getVatExemptionReason().getNote()
+                              : null;
+                      return StringUtils.notEmpty(vatNote) ? vatNote : taxEquiv.getSpecificNote();
+                    })
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.joining("\n")));
       }
     } else {
-      invoice.setSpecificNotes(invoice.getPartner().getSpecificTaxNote());
+      Partner invoicePartner = invoice.getPartner();
+      String partnerNote =
+          invoicePartner != null && invoicePartner.getVatExemptionReason() != null
+              ? invoicePartner.getVatExemptionReason().getNote()
+              : null;
+      String fpNote =
+          Optional.ofNullable(fiscalPosition)
+              .map(FiscalPosition::getCustomerSpecificNoteText)
+              .orElse(null);
+      invoice.setSpecificNotes(StringUtils.notEmpty(partnerNote) ? partnerNote : fpNote);
     }
 
     return finalizeInvoiceLineTaxes(map, updatedInvoiceLineTaxList);
@@ -133,18 +152,23 @@ public class TaxInvoiceLine extends TaxGenerator {
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
       for (TaxLine taxLine : taxLineSet) {
         if (taxLine.getValue().signum() != 0) {
-          vatSystem =
-              taxAccountToolService.calculateVatSystem(
-                  invoice.getPartner(),
-                  invoice.getCompany(),
-                  invoiceLine.getAccount(),
-                  (invoice.getOperationTypeSelect()
-                          == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-                      || invoice.getOperationTypeSelect()
-                          == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND),
-                  (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
-                      || invoice.getOperationTypeSelect()
-                          == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
+          if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+            vatSystem = MoveLineRepository.VAT_CASH_PAYMENTS;
+          } else {
+            vatSystem =
+                taxAccountToolService.calculateVatSystem(
+                    invoice.getPartner(),
+                    invoice.getCompany(),
+                    invoiceLine.getAccount(),
+                    (invoice.getOperationTypeSelect()
+                            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+                        || invoice.getOperationTypeSelect()
+                            == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND),
+                    (invoice.getOperationTypeSelect()
+                            == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+                        || invoice.getOperationTypeSelect()
+                            == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
+          }
 
           imputedAccount = getImputedAccount(invoiceLine, taxLine, vatSystem);
         } else {
@@ -199,7 +223,9 @@ public class TaxInvoiceLine extends TaxGenerator {
       Map<TaxConfiguration, InvoiceLineTax> map) {
     LOG.debug("Tax {}", taxLine);
 
-    TaxConfiguration taxConfiguration = new TaxConfiguration(taxLine, imputedAccount, vatSystem);
+    TaxConfiguration taxConfiguration =
+        new TaxConfiguration(
+            taxLine, imputedAccount, vatSystem, invoiceLine.getVatExemptionReason());
     InvoiceLineTax invoiceLineTax = map.get(taxConfiguration);
 
     if (invoiceLineTax != null) {
@@ -218,7 +244,9 @@ public class TaxInvoiceLine extends TaxGenerator {
       Account imputedAccount,
       int vatSystem,
       Map<TaxConfiguration, InvoiceLineTax> map) {
-    TaxConfiguration taxConfiguration = new TaxConfiguration(taxLineRC, imputedAccount, vatSystem);
+    TaxConfiguration taxConfiguration =
+        new TaxConfiguration(
+            taxLineRC, imputedAccount, vatSystem, invoiceLine.getVatExemptionReason());
     InvoiceLineTax invoiceLineTaxRC = map.get(taxConfiguration);
     if (invoiceLineTaxRC != null) {
       updateInvoiceLineTax(invoiceLine, invoiceLineTaxRC, vatSystem);
@@ -269,6 +297,7 @@ public class TaxInvoiceLine extends TaxGenerator {
     invoiceLineTax.setCoefficient(invoiceLine.getCoefficient());
     invoiceLineTax.setTaxType(
         Optional.ofNullable(taxLine.getTax()).map(Tax::getTaxType).orElse(null));
+    invoiceLineTax.setVatExemptionReason(invoiceLine.getVatExemptionReason());
 
     return invoiceLineTax;
   }
@@ -314,14 +343,15 @@ public class TaxInvoiceLine extends TaxGenerator {
     }
 
     // Dans la devise de la facture
-    BigDecimal exTaxBase =
-        (invoiceLineTax.getReverseCharged())
-            ? invoiceLineTax.getExTaxBase().negate()
-            : invoiceLineTax.getExTaxBase();
     BigDecimal taxTotal =
         invoiceTaxComputeService.computeTaxAmount(
-            invoiceLineTax, exTaxBase, taxValue, invoiceLineTax.getInTaxTotal());
-
+            invoiceLineTax,
+            invoiceLineTax.getExTaxBase(),
+            taxValue,
+            invoiceLineTax.getInTaxTotal());
+    if (invoiceLineTax.getReverseCharged()) {
+      taxTotal = taxTotal.negate();
+    }
     if (!ObjectUtils.isEmpty(updatedInvoiceLineTaxList)) {
       for (InvoiceLineTax updatedInvoiceLineTax : updatedInvoiceLineTaxList) {
         if (invoiceLineTaxToolService.isManageByAmount(invoiceLineTax)
@@ -346,16 +376,17 @@ public class TaxInvoiceLine extends TaxGenerator {
     invoiceLineTax.setInTaxTotal(invoiceLineTax.getExTaxBase().add(taxTotal));
 
     // Dans la devise de la société
-    BigDecimal companyExTaxBase =
-        (invoiceLineTax.getReverseCharged())
-            ? invoiceLineTax.getCompanyExTaxBase().negate()
-            : invoiceLineTax.getCompanyExTaxBase();
-
-    invoiceLineTax.setCompanyTaxTotal(
+    BigDecimal companyTaxTotal =
         invoiceTaxComputeService.computeTaxAmount(
-            invoiceLineTax, companyExTaxBase, taxValue, invoiceLineTax.getCompanyInTaxTotal()));
-    invoiceLineTax.setCompanyInTaxTotal(
-        invoiceLineTax.getCompanyExTaxBase().add(invoiceLineTax.getCompanyTaxTotal()));
+            invoiceLineTax,
+            invoiceLineTax.getCompanyExTaxBase(),
+            taxValue,
+            invoiceLineTax.getCompanyInTaxTotal());
+    if (invoiceLineTax.getReverseCharged()) {
+      companyTaxTotal = companyTaxTotal.negate();
+    }
+    invoiceLineTax.setCompanyTaxTotal(companyTaxTotal);
+    invoiceLineTax.setCompanyInTaxTotal(invoiceLineTax.getCompanyExTaxBase().add(companyTaxTotal));
 
     invoiceLineTaxList.add(invoiceLineTax);
 

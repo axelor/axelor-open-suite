@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -36,6 +37,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -43,9 +45,12 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.CallMethod;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -416,5 +421,89 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     }
 
     return accountRepository.all().filter(domain).bind(params).fetch();
+  }
+
+  @Override
+  protected Set<Tax> getProductTax(
+      Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase)
+      throws AxelorException {
+    Set<Tax> generalTaxSet = this.getProductTax(product, company, isPurchase);
+    Set<Tax> taxSet = fiscalPositionService.getTaxSet(fiscalPosition, generalTaxSet);
+
+    if (CollectionUtils.isNotEmpty(taxSet)) {
+      return taxSet;
+    }
+
+    if (isTaxRequired(product, company, fiscalPosition, isPurchase, false)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.ACCOUNT_MANAGEMENT_3),
+          product.getCode(),
+          company.getName());
+    }
+
+    return Set.of();
+  }
+
+  @Override
+  protected Set<Tax> getProductTax(Product product, Company company, boolean isPurchase)
+      throws AxelorException {
+    Set<Tax> taxSet = this.getProductTax(product, company, isPurchase, CONFIG_OBJECT_PRODUCT);
+
+    if (CollectionUtils.isNotEmpty(taxSet)) {
+      return taxSet;
+    }
+
+    if (isTaxRequired(product, company, null, isPurchase, false)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.ACCOUNT_MANAGEMENT_3),
+          product.getCode(),
+          company.getName());
+    }
+
+    return Set.of();
+  }
+
+  @Override
+  public Set<TaxLine> getTaxLineSet(
+      LocalDate date,
+      Product product,
+      Company company,
+      FiscalPosition fiscalPosition,
+      boolean isPurchase)
+      throws AxelorException {
+    Set<Tax> taxSet = this.getProductTax(product, company, fiscalPosition, isPurchase);
+
+    if (CollectionUtils.isEmpty(taxSet)) {
+      return Set.of();
+    }
+
+    Set<TaxLine> taxLineSet = taxService.getTaxLineSet(taxSet, date);
+
+    if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      return taxLineSet;
+    }
+
+    if (isTaxRequired(product, company, fiscalPosition, isPurchase, false)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.ACCOUNT_MANAGEMENT_2),
+          product.getCode());
+    }
+
+    return Set.of();
+  }
+
+  protected boolean isTaxRequired(
+      Product product,
+      Company company,
+      FiscalPosition fiscalPosition,
+      boolean isPurchase,
+      boolean fixedAsset)
+      throws AxelorException {
+    Account account = getProductAccount(product, company, fiscalPosition, isPurchase, false);
+
+    return account != null && account.getIsTaxRequiredOnMoveLine();
   }
 }

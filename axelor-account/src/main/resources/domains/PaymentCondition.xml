@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -9,7 +9,8 @@
 
     <string name="name" title="Name" required="true" translatable="true"/>
     <string name="code" title="Code" required="true" unique="true"/>
-    <boolean name="isFree" title="Free"/>
+    <boolean name="isFree" title="Free"
+      help="If checked, due dates on invoice terms can be set manually. Otherwise, they are computed automatically from the payment condition lines."/>
     <decimal name="advancePaymentNeeded" default="0" title="Percentage of advance payment"/>
     <one-to-many name="paymentConditionLineList"
       ref="com.axelor.apps.account.db.PaymentConditionLine" mappedBy="paymentCondition"

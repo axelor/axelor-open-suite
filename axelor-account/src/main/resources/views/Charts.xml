@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <custom name="report-top-3-suppliers" title="Top 3 supplier" css="report-box">
     <dataset type="jpql"><![CDATA[
@@ -419,6 +419,8 @@ from InvoiceTerm as self
       AND _invoice.invoice_date BETWEEN
       DATE(:fromDate) AND DATE(:toDate)
       AND _invoice.operation_type_select IN (3,4)
+      AND
+      coalesce(_invoice_line.is_show_total, false) = false
       GROUP BY
       _month_no, _category.name
       ORDER BY

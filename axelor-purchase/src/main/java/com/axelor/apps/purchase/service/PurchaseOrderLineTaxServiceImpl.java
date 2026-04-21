@@ -21,8 +21,8 @@ package com.axelor.apps.purchase.service;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.VatExemptionReason;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -47,6 +47,9 @@ import org.slf4j.LoggerFactory;
 public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  private record TaxLineTaxExemptionKey(TaxLine taxLine, VatExemptionReason vatExemptionReason) {}
+
   protected OrderLineTaxService orderLineTaxService;
   protected TaxService taxService;
   protected AppBaseService appBaseService;
@@ -83,7 +86,7 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
     currentPurchaseOrderLineTaxList.addAll(purchaseOrder.getPurchaseOrderLineTaxList());
     purchaseOrder.clearPurchaseOrderLineTaxList();
 
-    Map<TaxLine, PurchaseOrderLineTax> map = new HashMap<>();
+    Map<TaxLineTaxExemptionKey, PurchaseOrderLineTax> map = new HashMap<>();
     Set<String> specificNotes = new HashSet<>();
     boolean customerSpecificNote = orderLineTaxService.isCustomerSpecificNote(purchaseOrder);
 
@@ -101,12 +104,7 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
         purchaseOrder.getCurrency(),
         currentPurchaseOrderLineTaxList);
     orderLineTaxService.setSpecificNotes(
-        customerSpecificNote,
-        purchaseOrder,
-        specificNotes,
-        Optional.ofNullable(purchaseOrder.getSupplierPartner())
-            .map(Partner::getSpecificTaxNote)
-            .orElse(""));
+        customerSpecificNote, purchaseOrder, specificNotes, purchaseOrder.getSupplierPartner());
 
     return purchaseOrderLineTaxList;
   }
@@ -114,7 +112,7 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
   protected void getOrCreateLines(
       PurchaseOrder purchaseOrder,
       PurchaseOrderLine purchaseOrderLine,
-      Map<TaxLine, PurchaseOrderLineTax> map,
+      Map<TaxLineTaxExemptionKey, PurchaseOrderLineTax> map,
       boolean customerSpecificNote,
       Set<String> specificNotes)
       throws AxelorException {
@@ -151,12 +149,14 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
       PurchaseOrder purchaseOrder,
       PurchaseOrderLine purchaseOrderLine,
       TaxLine taxLine,
-      Map<TaxLine, PurchaseOrderLineTax> map,
+      Map<TaxLineTaxExemptionKey, PurchaseOrderLineTax> map,
       boolean reverseCharged) {
     if (taxLine != null) {
       LOG.debug("VAT {}", taxLine);
-      if (map.containsKey(taxLine)) {
-        PurchaseOrderLineTax purchaseOrderLineVat = map.get(taxLine);
+      TaxLineTaxExemptionKey key =
+          new TaxLineTaxExemptionKey(taxLine, purchaseOrderLine.getVatExemptionReason());
+      if (map.containsKey(key)) {
+        PurchaseOrderLineTax purchaseOrderLineVat = map.get(key);
         purchaseOrderLineVat.setReverseCharged(reverseCharged);
         purchaseOrderLineVat.setExTaxBase(
             purchaseOrderLineVat.getExTaxBase().add(purchaseOrderLine.getExTaxTotal()));
@@ -166,7 +166,7 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
       } else {
         PurchaseOrderLineTax purchaseOrderLineTax =
             createPurchaseOrderLineTax(purchaseOrder, purchaseOrderLine, taxLine, reverseCharged);
-        map.put(taxLine, purchaseOrderLineTax);
+        map.put(key, purchaseOrderLineTax);
       }
     }
   }
@@ -184,6 +184,7 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
     purchaseOrderLineTax.setTaxLine(taxLine);
     purchaseOrderLineTax.setTaxType(
         Optional.ofNullable(taxLine.getTax()).map(Tax::getTaxType).orElse(null));
+    purchaseOrderLineTax.setVatExemptionReason(purchaseOrderLine.getVatExemptionReason());
     return purchaseOrderLineTax;
   }
 
