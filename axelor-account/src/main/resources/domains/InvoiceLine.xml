@@ -28,6 +28,8 @@
       title="Taxes"/>
     <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
       title="Tax Equiv"/>
+    <many-to-one name="vatExemptionReason"
+      ref="com.axelor.apps.account.db.VatExemptionReason" title="VAT exemption reason"/>
     <date name="cutOffStartDate" title="From date"/>
     <date name="cutOffEndDate" title="To date"/>
 

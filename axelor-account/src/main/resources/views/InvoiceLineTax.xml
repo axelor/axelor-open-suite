@@ -11,6 +11,7 @@
     <field name="taxTotal" aggregate="sum"/>
     <field name="vatSystemSelect"/>
     <field name="imputedAccount"/>
+    <field name="vatExemptionReason"/>
   </grid>
 
   <form name="invoice-line-tax-form" title="Tax Line"
@@ -31,6 +32,8 @@
       <field name="percentageTaxTotal" showIf="taxLine.tax.manageByAmount" readonly="true"/>
       <field name="imputedAccount" readonly="true"/>
       <field name="vatSystemSelect" readonly="true"/>
+      <field name="vatExemptionReason" form-view="vat-exemption-reason-form"
+        grid-view="vat-exemption-reason-grid" readonly="true"/>
       <field name="taxLine.tax.manageByAmount" hidden="true"/>
       <field name="invoice.statusSelect" hidden="true"/>
     </panel>

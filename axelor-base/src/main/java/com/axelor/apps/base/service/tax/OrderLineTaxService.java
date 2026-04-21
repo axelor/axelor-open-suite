@@ -18,7 +18,11 @@
  */
 package com.axelor.apps.base.service.tax;
 
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.VatExemptionReason;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.interfaces.OrderLineTax;
 import com.axelor.apps.base.interfaces.PricedOrder;
 import com.axelor.apps.base.interfaces.PricedOrderLine;
@@ -35,7 +39,7 @@ public interface OrderLineTaxService {
       boolean customerSpecificNote,
       PricedOrder pricedOrder,
       Set<String> specificNotes,
-      String partnerNote);
+      Partner partner);
 
   void addTaxEquivSpecificNote(
       PricedOrderLine pricedOrderLine, boolean customerSpecificNote, Set<String> specificNotes);
@@ -43,4 +47,7 @@ public interface OrderLineTaxService {
   boolean isManageByAmount(OrderLineTax orderLineTax);
 
   BigDecimal computeInTaxTotal(OrderLineTax orderLineTax, Currency currency);
+
+  VatExemptionReason resolveVatExemptionReason(
+      FiscalPosition fiscalPosition, TaxEquiv taxEquiv, Partner partner);
 }
