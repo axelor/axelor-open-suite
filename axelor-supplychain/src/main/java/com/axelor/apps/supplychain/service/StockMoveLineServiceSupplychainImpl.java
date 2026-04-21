@@ -716,6 +716,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         createStockMoveLine(productName, StockMoveLineRepository.TYPE_TITLE, stockMove);
     stockMoveLine.setSaleOrderLine(saleOrderLine);
     stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
+    if (saleOrderLine != null && saleOrderLine.getLevelIndicator() != null) {
+      stockMoveLine.setLevelIndicator(saleOrderLine.getLevelIndicator());
+    }
     return stockMoveLine;
   }
 }
