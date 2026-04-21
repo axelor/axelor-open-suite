@@ -21,7 +21,6 @@
 
     <field name="fullName"/>
     <field name="projectType"/>
-    <field name="toDate"/>
     <field name="company" form-view="company-form" grid-view="company-grid" canView="true"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
