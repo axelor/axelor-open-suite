@@ -2021,6 +2021,7 @@
 "Invoice.draftInvoiceNo",,,
 "Invoice.draftRefundNo",,,
 "Invoice.dueDate",,,
+"Invoice.exemptionReason",,,
 "Invoice.expenseProduct",,,
 "Invoice.expenseTaxAmount",,,
 "Invoice.expenseTitle",,,
