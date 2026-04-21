@@ -5,8 +5,7 @@
 
   <grid name="sale-config-grid" title="Sale configurations"
     model="com.axelor.apps.sale.db.SaleConfig">
-    <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"/>
   </grid>
 
   <form name="sale-config-form" title="Sale configuration"
