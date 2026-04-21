@@ -147,16 +147,13 @@ public class CostSheetServiceImpl implements CostSheetService {
       costSheet.setCurrency(company.getCurrency());
     }
 
-    Product valuationOverride = getComponentValuationOverrideProduct(billOfMaterial);
-
     this._computeCostPrice(
         billOfMaterial.getCompany(),
         billOfMaterial,
         0,
         rootCostSheetLine,
         origin,
-        unitCostCalculation,
-        valuationOverride);
+        unitCostCalculation);
 
     this.computeResidualProduct(billOfMaterial);
 
@@ -206,10 +203,7 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     costSheet.setManufOrderProducedRatio(computeManufOrderProducedRatio(manufOrder, producedQty));
 
-    Product valuationOverride = getComponentValuationOverrideProduct(manufOrder);
-
-    this.computeRealCostPrice(
-        manufOrder, 0, rootCostSheetLine, previousCostSheetDate, valuationOverride);
+    this.computeRealCostPrice(manufOrder, 0, rootCostSheetLine, previousCostSheetDate);
 
     this.computeRealResidualProduct(manufOrder);
 
@@ -268,12 +262,11 @@ public class CostSheetServiceImpl implements CostSheetService {
     return producedQty.divide(totalToProduceQty, 5, RoundingMode.HALF_UP);
   }
 
-  protected Product getComponentValuationOverrideProduct(BillOfMaterial billOfMaterial) {
-    return null;
-  }
-
-  protected Product getComponentValuationOverrideProduct(ManufOrder manufOrder) {
-    return null;
+  protected int resolveComponentValuationMethod(int origin, CostSheetLine parentCostSheetLine) {
+    Product parentProduct = parentCostSheetLine.getProduct();
+    return origin == CostSheetService.ORIGIN_MANUF_ORDER
+        ? parentProduct.getManufOrderCompValuMethodSelect()
+        : parentProduct.getBomCompValuMethodSelect();
   }
 
   protected void finalizeRootCostSheetLine(
@@ -353,8 +346,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       int bomLevel,
       CostSheetLine parentCostSheetLine,
       int origin,
-      UnitCostCalculation unitCostCalculation,
-      Product valuationOverride)
+      UnitCostCalculation unitCostCalculation)
       throws AxelorException {
     _computeCostPrice(
         company,
@@ -363,8 +355,7 @@ public class CostSheetServiceImpl implements CostSheetService {
         parentCostSheetLine,
         origin,
         unitCostCalculation,
-        billOfMaterial.getCalculationQty(),
-        valuationOverride);
+        billOfMaterial.getCalculationQty());
   }
 
   protected void _computeCostPrice(
@@ -374,8 +365,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       CostSheetLine parentCostSheetLine,
       int origin,
       UnitCostCalculation unitCostCalculation,
-      BigDecimal calculationQty,
-      Product valuationOverride)
+      BigDecimal calculationQty)
       throws AxelorException {
 
     bomLevel++;
@@ -388,8 +378,7 @@ public class CostSheetServiceImpl implements CostSheetService {
         parentCostSheetLine,
         origin,
         unitCostCalculation,
-        getQtyRatio(billOfMaterial, billOfMaterial.getQty(), calculationQty),
-        valuationOverride);
+        getQtyRatio(billOfMaterial, billOfMaterial.getQty(), calculationQty));
 
     // Cout des operations
     this._computeProcess(
@@ -414,66 +403,60 @@ public class CostSheetServiceImpl implements CostSheetService {
       CostSheetLine parentCostSheetLine,
       int origin,
       UnitCostCalculation unitCostCalculation,
-      BigDecimal qtyRatio,
-      Product valuationOverride)
+      BigDecimal qtyRatio)
       throws AxelorException {
 
-    Product originalProduct = parentCostSheetLine.getProduct();
-    if (valuationOverride != null) {
-      parentCostSheetLine.setProduct(valuationOverride);
+    if (billOfMaterial.getBillOfMaterialLineList() == null) {
+      return;
     }
-    try {
-      if (billOfMaterial.getBillOfMaterialLineList() != null) {
 
-        for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
+    int valuationMethod = resolveComponentValuationMethod(origin, parentCostSheetLine);
 
-          Product product = billOfMaterialLine.getProduct();
-          BigDecimal qty = billOfMaterialLine.getQty().multiply(qtyRatio);
-          if (product != null) {
+    for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
 
-            CostSheetLine costSheetLine =
-                costSheetLineService.createConsumedProductCostSheetLine(
-                    company,
-                    product,
-                    billOfMaterialLine.getUnit(),
-                    bomLevel,
-                    parentCostSheetLine,
-                    qty,
-                    origin,
-                    unitCostCalculation);
-
-            BigDecimal wasteRate = billOfMaterialLine.getWasteRate();
-
-            if (wasteRate != null && wasteRate.compareTo(BigDecimal.ZERO) > 0) {
-              costSheetLineService.createConsumedProductWasteCostSheetLine(
-                  company,
-                  product,
-                  billOfMaterialLine.getUnit(),
-                  bomLevel,
-                  parentCostSheetLine,
-                  qty,
-                  wasteRate,
-                  origin,
-                  unitCostCalculation);
-            }
-
-            if (billOfMaterialLine.getBillOfMaterial() != null) {
-              this._computeCostPrice(
-                  company,
-                  billOfMaterialLine.getBillOfMaterial(),
-                  bomLevel,
-                  costSheetLine,
-                  origin,
-                  unitCostCalculation,
-                  qty,
-                  valuationOverride);
-            }
-          }
-        }
+      Product product = billOfMaterialLine.getProduct();
+      BigDecimal qty = billOfMaterialLine.getQty().multiply(qtyRatio);
+      if (product == null) {
+        continue;
       }
-    } finally {
-      if (valuationOverride != null) {
-        parentCostSheetLine.setProduct(originalProduct);
+
+      CostSheetLine costSheetLine =
+          costSheetLineService.createConsumedProductCostSheetLine(
+              company,
+              product,
+              billOfMaterialLine.getUnit(),
+              bomLevel,
+              parentCostSheetLine,
+              qty,
+              origin,
+              unitCostCalculation,
+              valuationMethod);
+
+      BigDecimal wasteRate = billOfMaterialLine.getWasteRate();
+
+      if (wasteRate != null && wasteRate.compareTo(BigDecimal.ZERO) > 0) {
+        costSheetLineService.createConsumedProductWasteCostSheetLine(
+            company,
+            product,
+            billOfMaterialLine.getUnit(),
+            bomLevel,
+            parentCostSheetLine,
+            qty,
+            wasteRate,
+            origin,
+            unitCostCalculation,
+            valuationMethod);
+      }
+
+      if (billOfMaterialLine.getBillOfMaterial() != null) {
+        this._computeCostPrice(
+            company,
+            billOfMaterialLine.getBillOfMaterial(),
+            bomLevel,
+            costSheetLine,
+            origin,
+            unitCostCalculation,
+            qty);
       }
     }
   }
@@ -652,24 +635,18 @@ public class CostSheetServiceImpl implements CostSheetService {
       ManufOrder manufOrder,
       int bomLevel,
       CostSheetLine parentCostSheetLine,
-      LocalDate previousCostSheetDate,
-      Product valuationOverride)
+      LocalDate previousCostSheetDate)
       throws AxelorException {
 
     bomLevel++;
 
-    Product originalProduct = parentCostSheetLine.getProduct();
-    if (valuationOverride != null) {
-      parentCostSheetLine.setProduct(valuationOverride);
-    }
-    try {
-      this.computeConsumedProduct(manufOrder, bomLevel, parentCostSheetLine, previousCostSheetDate);
-      this.computeOutSourcedProduct(manufOrder, bomLevel, parentCostSheetLine);
-    } finally {
-      if (valuationOverride != null) {
-        parentCostSheetLine.setProduct(originalProduct);
-      }
-    }
+    int valuationMethod =
+        resolveComponentValuationMethod(CostSheetService.ORIGIN_MANUF_ORDER, parentCostSheetLine);
+
+    this.computeConsumedProduct(
+        manufOrder, bomLevel, parentCostSheetLine, previousCostSheetDate, valuationMethod);
+    this.computeOutSourcedProduct(manufOrder, bomLevel, parentCostSheetLine);
+
     BigDecimal producedQty = parentCostSheetLine.getConsumptionQty();
     this.computeRealProcess(
         manufOrder.getOperationOrderList(),
@@ -763,7 +740,8 @@ public class CostSheetServiceImpl implements CostSheetService {
       ManufOrder manufOrder,
       int bomLevel,
       CostSheetLine parentCostSheetLine,
-      LocalDate previousCostSheetDate)
+      LocalDate previousCostSheetDate,
+      int valuationMethod)
       throws AxelorException {
 
     BigDecimal ratio = costSheet.getManufOrderProducedRatio();
@@ -777,7 +755,8 @@ public class CostSheetServiceImpl implements CostSheetService {
             parentCostSheetLine,
             operation.getConsumedStockMoveLineList(),
             operation.getToConsumeProdProductList(),
-            ratio);
+            ratio,
+            valuationMethod);
       }
     } else {
 
@@ -787,7 +766,8 @@ public class CostSheetServiceImpl implements CostSheetService {
           parentCostSheetLine,
           manufOrder.getConsumedStockMoveLineList(),
           manufOrder.getToConsumeProdProductList(),
-          ratio);
+          ratio,
+          valuationMethod);
     }
   }
 
@@ -797,7 +777,8 @@ public class CostSheetServiceImpl implements CostSheetService {
       CostSheetLine parentCostSheetLine,
       List<StockMoveLine> consumedStockMoveLineList,
       List<ProdProduct> toConsumeProdProductList,
-      BigDecimal ratio)
+      BigDecimal ratio,
+      int valuationMethod)
       throws AxelorException {
 
     CostSheet parentCostSheet = parentCostSheetLine.getCostSheet();
@@ -830,7 +811,8 @@ public class CostSheetServiceImpl implements CostSheetService {
           parentCostSheetLine,
           realQty,
           CostSheetService.ORIGIN_MANUF_ORDER,
-          null);
+          null,
+          valuationMethod);
     }
   }
 
