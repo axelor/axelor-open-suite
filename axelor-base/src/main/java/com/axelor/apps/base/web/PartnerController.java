@@ -495,7 +495,7 @@ public class PartnerController {
   public void setContactPartnerDomain(ActionRequest request, ActionResponse response) {
     Partner partner = request.getContext().asType(Partner.class);
     response.setAttr(
-        "contactPartner",
+        "contactPartnerSet",
         "domain",
         String.format(
             "self.id IN (%s)",
