@@ -67,7 +67,7 @@ public class AppProjectServiceImpl extends AppBaseServiceImpl implements AppProj
 
   @Override
   public AppProject getAppProject() {
-    return appProjectRepo.all().fetchOne();
+    return appProjectRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

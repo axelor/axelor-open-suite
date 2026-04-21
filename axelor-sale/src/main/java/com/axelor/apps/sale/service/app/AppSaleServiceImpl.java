@@ -64,7 +64,7 @@ public class AppSaleServiceImpl extends AppBaseServiceImpl implements AppSaleSer
 
   @Override
   public AppSale getAppSale() {
-    return appSaleRepo.all().fetchOne();
+    return appSaleRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

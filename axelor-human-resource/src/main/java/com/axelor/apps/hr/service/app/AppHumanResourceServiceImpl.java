@@ -79,17 +79,17 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
 
   @Override
   public AppTimesheet getAppTimesheet() {
-    return appTimesheetRepo.all().fetchOne();
+    return appTimesheetRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override
   public AppLeave getAppLeave() {
-    return appLeaveRepo.all().fetchOne();
+    return appLeaveRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override
   public AppExpense getAppExpense() {
-    return appExpenseRepo.all().fetchOne();
+    return appExpenseRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override
