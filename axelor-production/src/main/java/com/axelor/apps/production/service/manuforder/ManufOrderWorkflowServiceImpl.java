@@ -213,14 +213,14 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       }
     }
     manufOrder = JpaModelHelper.ensureManaged(manufOrder);
-    // Capture planned outgoing stock move IDs before finish() realizes them,
-    // to avoid re-processing stock moves already realized in previous partial finishes.
+    // Capture planned outgoing stock move IDs to avoid re-processing stock moves already realized
+    // in previous partial finishes.
     Set<Long> plannedOutMoveIds =
         manufOrder.getOutStockMoveList().stream()
             .filter(sm -> sm.getStatusSelect() != StockMoveRepository.STATUS_REALIZED)
             .map(StockMove::getId)
             .collect(Collectors.toSet());
-    manufOrder = manufOrderStockMoveService.finish(manufOrder);
+    manufOrder = manufOrderStockMoveService.finishInStockMoves(manufOrder);
 
     // create cost sheet
     CostSheet costSheet =
@@ -251,8 +251,13 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       productCompanyService.set(
           product, "lastProductionPrice", manufOrder.getBillOfMaterial().getCostPrice(), company);
     }
+    // Set correct cost prices on planned OUT moves before realization so the WAP is computed
+    // with the real cost price (not the estimated price) during finishOutStockMoves.
     manufOrderStockMoveService.updatePrices(manufOrder, costPrice, plannedOutMoveIds);
+    manufOrder = manufOrderStockMoveService.finishOutStockMoves(manufOrder);
     manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+    product = JpaModelHelper.ensureManaged(product);
+    company = JpaModelHelper.ensureManaged(company);
 
     manufOrder.setRealEndDateT(
         Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
@@ -351,22 +356,25 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         }
       }
     }
-    // Capture planned outgoing stock move IDs before partialFinish() realizes them,
-    // to avoid re-processing stock moves already realized in previous partial finishes.
+    // Capture planned outgoing stock move IDs to avoid re-processing stock moves already realized
+    // in previous partial finishes.
     Set<Long> plannedOutMoveIds =
         manufOrder.getOutStockMoveList().stream()
             .filter(sm -> sm.getStatusSelect() != StockMoveRepository.STATUS_REALIZED)
             .map(StockMove::getId)
             .collect(Collectors.toSet());
-    manufOrder = manufOrderStockMoveService.partialFinish(manufOrder);
+    manufOrder = manufOrderStockMoveService.partialFinishIn(manufOrder);
     CostSheet costSheet =
         Beans.get(CostSheetService.class)
             .computeCostPrice(
                 manufOrder,
                 CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
                 Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
+    // Set correct cost prices on planned OUT moves before realization so the WAP is computed
+    // with the real cost price (not the estimated price) during partialFinishOut.
     manufOrderStockMoveService.updatePrices(
         manufOrder, computeOneUnitProductionPrice(manufOrder, costSheet), plannedOutMoveIds);
+    manufOrderStockMoveService.partialFinishOut(manufOrder);
     return sendPartialFinishMail(manufOrder);
   }
 

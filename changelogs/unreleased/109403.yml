@@ -1,0 +1,5 @@
+---
+title: "Manufacturing order: fixed double WAP computation and duplicate stock location line history entry when finishing a manufacturing order."
+module: axelor-production
+developer: |
+  ManufOrderStockMoveService: added finishInStockMoves, finishOutStockMoves, partialFinishIn, partialFinishOut methods.
