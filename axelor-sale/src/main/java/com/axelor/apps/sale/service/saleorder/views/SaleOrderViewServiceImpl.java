@@ -89,6 +89,7 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
     MapTools.addMap(attrs, hideContactPartner(saleOrder));
     MapTools.addMap(attrs, hideDiscount());
     saleOrderAttrsService.setSaleOrderGlobalDiscountDummies(saleOrder, attrs);
+    saleOrderAttrsService.setDiscountsNeedReview(saleOrder, attrs);
     return attrs;
   }
 

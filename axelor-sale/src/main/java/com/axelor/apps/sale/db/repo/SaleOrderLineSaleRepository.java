@@ -23,7 +23,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderSplitService;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.util.Map;
@@ -46,30 +45,50 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
         && (context.get("id") != null || context.get("_field_ids") != null)) {
       Long id = (Long) json.get("id");
       if (id != null) {
-        SaleOrderLine saleOrderLine = find(id);
+        BigDecimal qty = (BigDecimal) json.getOrDefault("qty", BigDecimal.ZERO);
+        BigDecimal orderedQty = (BigDecimal) json.getOrDefault("orderedQty", BigDecimal.ZERO);
+        json.put("$qtyToOrderLeft", qty.subtract(orderedQty));
+
+        SaleOrder directSaleOrder = getDirectSaleOrder(json, context);
+
         json.put(
             "$hasWarning",
-            saleOrderLine.getSaleOrder() != null
-                && (saleOrderLine.getSaleOrder().getStatusSelect()
-                        == SaleOrderRepository.STATUS_DRAFT_QUOTATION
-                    || (saleOrderLine.getSaleOrder().getStatusSelect()
+            directSaleOrder != null
+                && (directSaleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION
+                    || (directSaleOrder.getStatusSelect()
                             == SaleOrderRepository.STATUS_ORDER_CONFIRMED
-                        && saleOrderLine.getSaleOrder().getOrderBeingEdited()))
-                && saleOrderLine.getDiscountsNeedReview());
+                        && directSaleOrder.getOrderBeingEdited()))
+                && Boolean.TRUE.equals(json.get("discountsNeedReview")));
 
-        SaleOrder saleOrder =
-            saleOrderLine.getSaleOrder() != null
-                ? saleOrderLine.getSaleOrder()
-                : saleOrderLine.getOldVersionSaleOrder();
+        SaleOrder currencySaleOrder =
+            directSaleOrder != null ? directSaleOrder : getOldVersionSaleOrder(json);
         json.put(
-            "$currencyNumberOfDecimals", Beans.get(CurrencyScaleService.class).getScale(saleOrder));
-
-        json.put(
-            "$qtyToOrderLeft",
-            Beans.get(SaleOrderSplitService.class).getQtyToOrderLeft(saleOrderLine));
+            "$currencyNumberOfDecimals",
+            Beans.get(CurrencyScaleService.class).getScale(currencySaleOrder));
       }
     }
     return super.populate(json, context);
+  }
+
+  @SuppressWarnings("unchecked")
+  protected SaleOrder getDirectSaleOrder(Map<String, Object> json, Map<String, Object> context) {
+    if (SaleOrder.class.getName().equals(context.get("_model")) && context.get("id") != null) {
+      return Beans.get(SaleOrderRepository.class).find((Long) context.get("id"));
+    }
+    Map<String, Object> saleOrderMap = (Map<String, Object>) json.get("saleOrder");
+    if (saleOrderMap != null && saleOrderMap.get("id") != null) {
+      return Beans.get(SaleOrderRepository.class).find((Long) saleOrderMap.get("id"));
+    }
+    return null;
+  }
+
+  @SuppressWarnings("unchecked")
+  protected SaleOrder getOldVersionSaleOrder(Map<String, Object> json) {
+    Map<String, Object> oldVersionMap = (Map<String, Object>) json.get("oldVersionSaleOrder");
+    if (oldVersionMap != null && oldVersionMap.get("id") != null) {
+      return Beans.get(SaleOrderRepository.class).find((Long) oldVersionMap.get("id"));
+    }
+    return null;
   }
 
   @Override
