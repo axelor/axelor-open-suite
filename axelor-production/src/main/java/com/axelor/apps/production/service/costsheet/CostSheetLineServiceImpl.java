@@ -223,13 +223,38 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       throws AxelorException {
 
     Product parentProduct = parentCostSheetLine.getProduct();
+    int valuationMethod =
+        origin == CostSheetService.ORIGIN_MANUF_ORDER
+            ? parentProduct.getManufOrderCompValuMethodSelect()
+            : parentProduct.getBomCompValuMethodSelect();
+    return createConsumedProductCostSheetLine(
+        company,
+        product,
+        unit,
+        bomLevel,
+        parentCostSheetLine,
+        consumptionQty,
+        origin,
+        unitCostCalculation,
+        valuationMethod);
+  }
+
+  public CostSheetLine createConsumedProductCostSheetLine(
+      Company company,
+      Product product,
+      Unit unit,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal consumptionQty,
+      int origin,
+      UnitCostCalculation unitCostCalculation,
+      int valuationMethod)
+      throws AxelorException {
 
     BigDecimal costPrice = null;
     switch (origin) {
       case CostSheetService.ORIGIN_MANUF_ORDER:
-        costPrice =
-            this.getComponentCostPrice(
-                product, parentProduct.getManufOrderCompValuMethodSelect(), company);
+        costPrice = this.getComponentCostPrice(product, valuationMethod, company);
         break;
 
       case CostSheetService.ORIGIN_BULK_UNIT_COST_CALCULATION:
@@ -245,16 +270,12 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
           }
         }
 
-        costPrice =
-            this.getComponentCostPrice(
-                product, parentProduct.getBomCompValuMethodSelect(), company);
+        costPrice = this.getComponentCostPrice(product, valuationMethod, company);
         break;
       // If we didn't have a computed price in cost calculation session, so we compute the price
       // from its bill of materials
       case CostSheetService.ORIGIN_BILL_OF_MATERIAL:
-        costPrice =
-            this.getComponentCostPrice(
-                product, parentProduct.getBomCompValuMethodSelect(), company);
+        costPrice = this.getComponentCostPrice(product, valuationMethod, company);
         break;
 
       default:
@@ -420,6 +441,31 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       throws AxelorException {
 
     Product parentProduct = parentCostSheetLine.getProduct();
+    return createConsumedProductWasteCostSheetLine(
+        company,
+        product,
+        unit,
+        bomLevel,
+        parentCostSheetLine,
+        consumptionQty,
+        wasteRate,
+        origin,
+        unitCostCalculation,
+        parentProduct.getBomCompValuMethodSelect());
+  }
+
+  public CostSheetLine createConsumedProductWasteCostSheetLine(
+      Company company,
+      Product product,
+      Unit unit,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal consumptionQty,
+      BigDecimal wasteRate,
+      int origin,
+      UnitCostCalculation unitCostCalculation,
+      int valuationMethod)
+      throws AxelorException {
 
     BigDecimal qty =
         consumptionQty
@@ -444,15 +490,11 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
           }
         }
 
-        costPrice =
-            this.getComponentCostPrice(
-                product, parentProduct.getBomCompValuMethodSelect(), company);
+        costPrice = this.getComponentCostPrice(product, valuationMethod, company);
         break;
 
       case CostSheetService.ORIGIN_BILL_OF_MATERIAL:
-        costPrice =
-            this.getComponentCostPrice(
-                product, parentProduct.getBomCompValuMethodSelect(), company);
+        costPrice = this.getComponentCostPrice(product, valuationMethod, company);
         break;
 
       default:

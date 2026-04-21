@@ -19,7 +19,6 @@
 package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -90,19 +89,18 @@ public class CostSheetServiceMaintenanceImpl extends CostSheetServiceImpl {
   }
 
   @Override
-  protected Product getComponentValuationOverrideProduct(BillOfMaterial billOfMaterial) {
-    if (!isMaintenance(billOfMaterial)) {
-      return super.getComponentValuationOverrideProduct(billOfMaterial);
+  protected int resolveComponentValuationMethod(int origin, CostSheetLine parentCostSheetLine) {
+    if (costSheet != null
+        && costSheet.getManufOrder() != null
+        && isMaintenance(costSheet.getManufOrder())) {
+      return ProductRepository.COMPONENTS_VALUATION_METHOD_COST;
     }
-    return buildMaintenanceValuationProduct();
-  }
-
-  @Override
-  protected Product getComponentValuationOverrideProduct(ManufOrder manufOrder) {
-    if (!isMaintenance(manufOrder)) {
-      return super.getComponentValuationOverrideProduct(manufOrder);
+    if (costSheet != null
+        && costSheet.getBillOfMaterial() != null
+        && isMaintenance(costSheet.getBillOfMaterial())) {
+      return ProductRepository.COMPONENTS_VALUATION_METHOD_COST;
     }
-    return buildMaintenanceValuationProduct();
+    return super.resolveComponentValuationMethod(origin, parentCostSheetLine);
   }
 
   @Override
@@ -155,14 +153,6 @@ public class CostSheetServiceMaintenanceImpl extends CostSheetServiceImpl {
   protected boolean isMaintenance(ManufOrder manufOrder) {
     return manufOrder.getTypeSelect() != null
         && manufOrder.getTypeSelect() == ManufOrderRepository.TYPE_MAINTENANCE;
-  }
-
-  protected Product buildMaintenanceValuationProduct() {
-    Product valuationProduct = new Product();
-    valuationProduct.setBomCompValuMethodSelect(ProductRepository.COMPONENTS_VALUATION_METHOD_COST);
-    valuationProduct.setManufOrderCompValuMethodSelect(
-        ProductRepository.COMPONENTS_VALUATION_METHOD_COST);
-    return valuationProduct;
   }
 
   protected void promoteChildrenAndDiscardRoot(CostSheetLine rootCostSheetLine) {
