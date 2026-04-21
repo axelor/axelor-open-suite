@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.hr.db.Expense;
 import com.google.inject.Inject;
+import java.util.List;
 
 public class ExpenseFetchMoveServiceImpl implements ExpenseFetchMoveService {
   protected MoveRepository moveRepository;
@@ -47,5 +48,14 @@ public class ExpenseFetchMoveServiceImpl implements ExpenseFetchMoveService {
         .filter("self.expensePayment.id = :expenseId")
         .bind("expenseId", expense.getId())
         .fetchOne();
+  }
+
+  @Override
+  public List<Move> findAllMovesByExpense(Expense expense) {
+    return moveRepository
+        .all()
+        .filter("self.expense.id = :expenseId OR self.expensePayment.id = :expenseId")
+        .bind("expenseId", expense.getId())
+        .fetch();
   }
 }

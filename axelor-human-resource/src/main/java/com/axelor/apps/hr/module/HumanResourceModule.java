@@ -163,6 +163,8 @@ import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseViewService;
+import com.axelor.apps.hr.service.expense.ExpenseViewServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
 import com.axelor.apps.hr.service.expense.ExpenseWorkflowServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseService;
@@ -395,6 +397,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseVentilateService.class).to(ExpenseVentilateServiceImpl.class);
     bind(ExpenseToolService.class).to(ExpenseToolServiceImpl.class);
     bind(ExpenseComputationService.class).to(ExpenseComputationServiceImpl.class);
+    bind(ExpenseViewService.class).to(ExpenseViewServiceImpl.class);
     bind(EmployeeFileDMSService.class).to(EmployeeFileDMSServiceImpl.class);
     bind(ExpenseProofFileService.class).to(ExpenseProofFileServiceImpl.class);
     bind(LeaveLineService.class).to(LeaveLineServiceImpl.class);

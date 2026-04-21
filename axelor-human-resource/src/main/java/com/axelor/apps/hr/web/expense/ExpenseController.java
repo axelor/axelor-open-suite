@@ -70,6 +70,7 @@ import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
+import com.axelor.apps.hr.service.expense.ExpenseViewService;
 import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.auth.AuthUtils;
@@ -774,5 +775,14 @@ public class ExpenseController {
       throws AxelorException {
     Expense expense = request.getContext().asType(Expense.class);
     Beans.get(ExpenseAnalyticService.class).checkAnalyticAxisByCompany(expense);
+  }
+
+  public void showRelatedMoves(ActionRequest request, ActionResponse response) {
+    try {
+      Expense expense = request.getContext().asType(Expense.class);
+      response.setView(Beans.get(ExpenseViewService.class).showMoves(expense.getId()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
+    }
   }
 }
