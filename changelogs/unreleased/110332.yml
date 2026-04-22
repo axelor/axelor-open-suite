@@ -3,3 +3,15 @@ title: "BankDetails: add field InvoiceNoteType."
 module: axelor-account
 developer: |
   - Invoice: removed specificNoteOnInvoiceToDisplayPanel and added bank detail note computation in note lists on ventilation.
+
+  Script to run: 
+  ALTER TABLE base_bank_details
+    ADD COLUMN IF NOT EXISTS invoice_note_type BIGINT;
+
+  ALTER TABLE base_bank_details
+    DROP CONSTRAINT IF EXISTS fk_base_bank_details_invoice_note_type;
+
+  ALTER TABLE base_bank_details
+    ADD CONSTRAINT fk_base_bank_details_invoice_note_type
+    FOREIGN KEY (invoice_note_type)
+    REFERENCES account_invoice_note_type(id);
