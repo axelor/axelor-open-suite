@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="sale-order-line-tax-grid" title="SO Tax lines"
     model="com.axelor.apps.sale.db.SaleOrderLineTax">
@@ -12,6 +12,7 @@
     <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="exTaxBase" x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="taxTotal" aggregate="sum" x-scale="saleOrder.currency.numberOfDecimals"/>
+    <field name="vatExemptionReason"/>
   </grid>
 
   <form name="sale-order-line-tax-form" title="SO Tax line"
@@ -31,6 +32,8 @@
       <field name="inTaxTotal" x-scale="saleOrder.currency.numberOfDecimals" readonly="true"/>
       <field name="percentageTaxTotal" showIf="taxLine.tax.manageByAmount"
         x-scale="saleOrder.currency.numberOfDecimals" readonly="true"/>
+      <field name="vatExemptionReason" form-view="vat-exemption-reason-form"
+        grid-view="vat-exemption-reason-grid" readonly="true"/>
       <field name="saleOrder" hidden="true"/>
       <field name="saleOrder.currency" hidden="true"/>
       <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>

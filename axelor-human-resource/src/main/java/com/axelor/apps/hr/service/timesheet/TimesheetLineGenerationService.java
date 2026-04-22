@@ -33,7 +33,8 @@ public interface TimesheetLineGenerationService {
       LocalDate toGenerationDate,
       BigDecimal logTime,
       Project project,
-      Product product)
+      Product product,
+      boolean showActivity)
       throws AxelorException;
 
   void checkEmptyPeriod(Timesheet timesheet) throws AxelorException;

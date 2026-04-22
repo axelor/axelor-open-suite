@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
     <field name="name"/>
@@ -79,6 +79,8 @@
 
     <panel-tabs name="mainPanelTab" hideIf="$popup()">
       <panel name="informationsPanel" title="Information">
+        <field name="legalInformation" widget="html" x-lite="true" colSpan="12"/>
+        <field name="legalFormAndCapital" widget="html" x-lite="true" colSpan="12"/>
         <field name="notes" colSpan="12"/>
         <field name="companyDepartmentList" grid-view="company-department-company-grid"
           form-view="company-department-company-form" canSelect="true" domain="self.company IS NULL"

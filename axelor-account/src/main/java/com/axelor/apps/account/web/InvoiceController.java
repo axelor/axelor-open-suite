@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxNumber;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.BankDetailsDomainServiceAccount;
@@ -53,6 +54,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidatorSyncServic
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.InvoiceVatLiabilityService;
 import com.axelor.apps.account.service.invoice.LatePaymentInterestInvoiceService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupService;
@@ -1321,6 +1323,35 @@ public class InvoiceController {
     }
   }
 
+  public void checkAdvanceVatSystemOnValidate(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      if (!invoice.getOperationSubTypeSelect().equals(InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+          || InvoiceToolService.isPurchase(invoice)
+          || CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+        return;
+      }
+
+      boolean hasVatOnDeliveriesAccount =
+          invoice.getInvoiceLineList().stream()
+              .anyMatch(
+                  line ->
+                      line != null
+                          && line.getAccount() != null
+                          && line.getAccount().getVatSystemSelect() != null
+                          && line.getAccount().getVatSystemSelect()
+                              == AccountRepository.VAT_SYSTEM_GOODS);
+
+      if (hasVatOnDeliveriesAccount) {
+        response.setAlert(
+            I18n.get(
+                AccountExceptionMessage.INVOICE_VAT_SYSTEM_DELIVERY_ON_ADVANCE_PAYMENT_PRODUCT));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   @ErrorException
   public void updateThirdPartyPayerPartner(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
@@ -1561,6 +1592,17 @@ public class InvoiceController {
       Beans.get(InvoiceTermDateComputeService.class).fillWithInvoiceDueDate(invoice);
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeVatLiability(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      Integer vatLiability =
+          Beans.get(InvoiceVatLiabilityService.class).computeVatLiability(invoice);
+      response.setValue("vatSystemSelect", vatLiability);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

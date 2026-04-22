@@ -67,6 +67,19 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleReposit
     return super.populate(json, context);
   }
 
+  @Override
+  public SaleOrderLine copy(SaleOrderLine entity, boolean deep) {
+    SaleOrderLine copy = super.copy(entity, deep);
+    copy.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
+    copy.setInvoicingState(SaleOrderLineRepository.INVOICING_STATE_NOT_INVOICED);
+    copy.setDeliveredQty(null);
+    copy.setAmountInvoiced(null);
+    copy.setInvoiced(null);
+    copy.setIsInvoiceControlled(null);
+    copy.setReservedQty(BigDecimal.ZERO);
+    return copy;
+  }
+
   protected boolean availabilityIsNotManaged(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     return saleOrder == null
         || saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL

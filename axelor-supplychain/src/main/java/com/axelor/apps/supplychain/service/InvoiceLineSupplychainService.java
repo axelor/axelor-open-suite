@@ -41,6 +41,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
@@ -74,6 +75,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       ProductPriceService productPriceService,
       FiscalPositionService fiscalPositionService,
       InvoiceLineCheckService invoiceLineCheckService,
+      OrderLineTaxService orderLineTaxService,
       InvoiceLineSupplierCatalogService invoiceLineSupplierCatalogService) {
     super(
         currencyService,
@@ -91,7 +93,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         currencyScaleService,
         productPriceService,
         fiscalPositionService,
-        invoiceLineCheckService);
+        invoiceLineCheckService,
+        orderLineTaxService);
     this.supplierCatalogService = supplierCatalogService;
     this.invoiceLineSupplierCatalogService = invoiceLineSupplierCatalogService;
   }

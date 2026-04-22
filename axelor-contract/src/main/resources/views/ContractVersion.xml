@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="contract-version-next-grid" title="Amendments"
     model="com.axelor.apps.contract.db.ContractVersion">
@@ -148,14 +148,15 @@
                 onSelect="action-contract-version-attrs-payment-condition-set-domain"/>
               <field name="automaticInvoicing" colSpan="3" widget="boolean-switch"
                 hidden="true" showIf="contract.contractTypeSelect == 1"/>
-              <field name="invoicingMomentSelect" showIf="automaticInvoicing" colSpan="3"/>
+              <field name="invoicingMomentSelect" colSpan="3"/>
             </panel>
             <panel name="invoicingDetailsPanel" colSpan="12">
               <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"
                 readonlyIf="!nextContract.currentContractVersion.isPeriodicInvoicing" hidden="true"
                 showIf="contract.contractTypeSelect == 1"/>
               <panel showIf="isPeriodicInvoicing" colSpan="9" name="subInvoicingDetailsPanel">
-                <field name="invoicingDuration" colSpan="4"/>
+                <field name="invoicingDuration" domain="self.applicationTypeSelect = 2"
+                  colSpan="4"/>
                 <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                 <field name="isVersionProratedInvoice" hidden="true"
                   showIf="isTimeProratedInvoice" widget="boolean-switch" colSpan="4"/>
@@ -170,21 +171,22 @@
         <panel if="__config__.app.getApp('contract')?.isRenewalManagement" title="Renewal"
           colSpan="12" name="renewalDetailsPanel">
           <field name="isTacitRenewal" colSpan="3" widget="boolean-switch"/>
-          <field name="renewalDuration" colSpan="3" requiredIf="isTacitRenewal"/>
+          <field name="renewalDuration" domain="self.applicationTypeSelect = 2" colSpan="3"
+            requiredIf="isTacitRenewal"/>
           <field name="isAutoEnableVersionOnRenew" colSpan="6" hidden="true"
             showIf="isTacitRenewal" widget="boolean-switch"/>
         </panel>
         <panel title="Engagement" colSpan="6" name="engagementPanel">
           <field name="isWithEngagement" colSpan="6" widget="boolean-switch"/>
-          <field name="engagementDuration" showIf="isWithEngagement" colSpan="6" canNew="true"
-            requiredIf="isWithEngagement"/>
+          <field name="engagementDuration" domain="self.applicationTypeSelect = 2"
+            showIf="isWithEngagement" colSpan="6" canNew="true" requiredIf="isWithEngagement"/>
           <field name="engagementStartFromVersion" showIf="isWithEngagement" colSpan="12"
             requiredIf="isWithEngagement" widget="boolean-switch"/>
         </panel>
         <panel title="Prior notice" colSpan="6" name="priorNoticePanel">
           <field name="isWithPriorNotice" widget="boolean-switch"/>
-          <field name="priorNoticeDuration" showIf="isWithPriorNotice" canNew="true"
-            requiredIf="isWithPriorNotice"/>
+          <field name="priorNoticeDuration" domain="self.applicationTypeSelect = 2"
+            showIf="isWithPriorNotice" canNew="true" requiredIf="isWithPriorNotice"/>
         </panel>
       </panel>
       <panel name="contractVersionFileListPanel" title="Files">
@@ -254,5 +256,23 @@
       method="checkSupposedActivationDate"/>
   </action-method>
 
+  <action-validate name="action-contract-version-validate-supposed-activation-date">
+    <error
+      message="The first period end date cannot be earlier than the supposed activation date."
+      if="supposedActivationDate != null &amp;&amp; __parent__ != null &amp;&amp; __parent__.firstPeriodEndDate != null &amp;&amp;  __parent__.firstPeriodEndDate &lt; supposedActivationDate"
+      action="action-contract-version-record-reset-supposed-activation-date"/>
+  </action-validate>
+
+  <action-record name="action-contract-version-record-reset-supposed-activation-date"
+    model="com.axelor.apps.contract.db.Contract">
+    <field name="supposedActivationDate" expr="eval: null"/>
+  </action-record>
+
+  <action-group name="action-contract-version-group-supposed-activation-date-onchange">
+    <action name="action-contract-version-validate-supposed-activation-date"/>
+    <action name="ction-method-contract-version-check-supposed-activation-date"/>
+    <action name="save"/>
+    <action name="action-method-contract-version-update-contract-lines"/>
+  </action-group>
 
 </object-views>

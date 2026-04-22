@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -81,6 +81,8 @@
       title="Ventilated by"/>
     <many-to-one name="fiscalPosition" title="Fiscal position"
       ref="com.axelor.apps.account.db.FiscalPosition"/>
+    <integer name="vatSystemSelect" title="VAT system"
+      selection="iaccount.vat.liability.invoice.select" default="1"/>
 
     <!-- Invoice content -->
     <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice"
@@ -323,6 +325,10 @@
 	    public static final int PFP_STATUS_VALIDATED = 2;
 	    public static final int PFP_STATUS_LITIGATION = 3;
 
+	    // VAT LIABILITY
+	    public static final int VAT_LIABILITY_STANDARD_REGIME = 1;
+	    public static final int VAT_LIABILITY_OPTION_ON_DELIVERIES = 2;
+
 	]]></extra-code>
 
     <track>
@@ -369,6 +375,7 @@
       <field name="reasonOfRefusalToPay" on="UPDATE"/>
       <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
       <field name="companyTaxNumber" on="UPDATE"/>
+      <field name="vatSystemSelect" on="UPDATE"/>
       <message if="true" on="CREATE">Invoice created</message>
       <message if="statusSelect == 2" tag="important">Validated</message>
       <message if="statusSelect == 3" tag="success">Ventilated</message>

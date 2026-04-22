@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <dashboard name="project-my-projects" title="My projects">
     <dashlet action="action-project-db-my-tasks-to-do"/>
@@ -49,7 +49,7 @@
 						            ))}
 					            </TableBody>
 					            <TableCaption>
-							    	<Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("all.open.project.tasks")}>{_t('View all issues')}</Button>
+							    	<Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("all.open.project.tasks")}>{_t('View all tasks')}</Button>
 							    	{$isShowCalendarView && <span> | <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("action-project-dashboard-view-per-user-calendar")}>{_t('Calendar')}</Button></span>}
 							    	{$isShowGanttView && <span> | <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("action-project-dashboard-view-open-gantt")}>{_t('Gantt')}</Button></span>}
 					            </TableCaption>

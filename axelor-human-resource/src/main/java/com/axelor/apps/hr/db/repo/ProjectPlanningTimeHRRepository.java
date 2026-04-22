@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.hr.db.repo;
 
+import com.axelor.apps.base.db.ICalendarEvent;
+import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
@@ -33,6 +35,8 @@ public class ProjectPlanningTimeHRRepository extends ProjectPlanningTimeReposito
   @Inject private ProjectPlanningTimeService planningTimeService;
 
   @Inject private ProjectRepository projectRepo;
+
+  @Inject private ICalendarEventRepository iCalendarEventRepository;
 
   @Override
   public ProjectPlanningTime save(ProjectPlanningTime projectPlanningTime) {
@@ -52,6 +56,12 @@ public class ProjectPlanningTimeHRRepository extends ProjectPlanningTimeReposito
 
     Project project = projectPlanningTime.getProject();
     ProjectTask task = projectPlanningTime.getProjectTask();
+
+    if (projectPlanningTime.getIcalendarEvent() != null) {
+      ICalendarEvent event = projectPlanningTime.getIcalendarEvent();
+      projectPlanningTime.setIcalendarEvent(null);
+      iCalendarEventRepository.remove(iCalendarEventRepository.find(event.getId()));
+    }
 
     super.remove(projectPlanningTime);
 

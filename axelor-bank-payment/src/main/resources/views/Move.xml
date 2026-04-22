@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+
+  <form name="move-form" title="Move" model="com.axelor.apps.account.db.Move"
+    id="move-bank-payment-form" extension="true">
+    <extend target="//panel-related[@name='moveLineListPanel']">
+      <insert position="before">
+        <field name="$bankReconciliationTag" showTitle="false" hidden="true" readonly="true"
+          colSpan="12">
+          <viewer>
+            <![CDATA[<><Badge style={{ backgroundColor: "#EF9D3F" }}>{_t('Some move lines are linked to a validated bank reconciliation and should not be modified.')}</Badge></>]]>
+          </viewer>
+        </field>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>

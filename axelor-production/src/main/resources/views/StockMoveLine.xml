@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="stock-move-line-consumed-production-grid" title="Stock move lines"
     orderBy="stockMove.statusSelect,product.code,trackingNumber.trackingNumberSeq"
@@ -85,7 +85,7 @@
       <field name="product" canEdit="false"
         domain="self.expense = false AND self.dtype = 'Product'"
         onChange="action-group-stock-stockmoveline-product-onchange"
-        onSelect="action-stock-move-line-attrs-product-domain" form-view="product-form"
+        onSelect="action-stock-move-line-method-product-domain" form-view="product-form"
         grid-view="product-grid" readonlyIf="id"/>
       <field name="productModel" canEdit="false"
         domain="self.isModel = true AND self.dtype = 'Product'" form-view="product-form"
@@ -145,6 +145,23 @@
     id="action-production-stock-move-line-compute-price">
     <call class="com.axelor.apps.production.web.StockMoveLineController" method="compute"/>
   </action-method>
+
+  <action-method
+    name="action-production-stock-move-line-check-service-outsourcing-real-qty">
+    <call class="com.axelor.apps.production.web.StockMoveLineController"
+      method="checkServiceOutsourcingRealQty"/>
+  </action-method>
+
+  <action-group name="action-stock-move-line-group-real-qty-onchange"
+    id="action-production-stock-move-line-group-real-qty-onchange">
+    <action name="action-stock-move-line-method-qty-onchange"/>
+    <action name="action-stock-move-line-record-total-net-mass"/>
+    <action name="action-stock-move-line-method-set-available-status"/>
+    <action name="action-stock-move-line-record-set-qty-remaining-to-package"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-production-stock-move-line-check-service-outsourcing-real-qty"
+      if="__config__.app.isApp('production')"/>
+  </action-group>
 
   <action-attrs name="action-stock-move-line-attrs-load-qty-title"
     model="com.axelor.apps.stock.db.StockMoveLine">

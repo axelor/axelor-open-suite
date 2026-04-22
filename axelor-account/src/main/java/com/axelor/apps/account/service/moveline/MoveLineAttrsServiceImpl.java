@@ -36,7 +36,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
-import com.google.common.collect.Lists;
 import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -355,8 +354,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     boolean vatSystemSelectReadonly =
         moveLine.getAccount().getUseForPartnerBalance()
             || !moveLine.getAccount().getIsTaxAuthorizedOnMoveLine()
-            || !Lists.newArrayList(MoveRepository.STATUS_NEW, MoveRepository.STATUS_SIMULATED)
-                .contains(move.getStatusSelect());
+            || move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED;
 
     this.addAttr("vatSystemSelect", "readonly", vatSystemSelectReadonly, attrsMap);
   }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.1.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
@@ -9,12 +9,15 @@
     implements="com.axelor.apps.base.interfaces.PricedOrder,com.axelor.apps.base.interfaces.Currenciable,com.axelor.apps.base.interfaces.ShippableOrder">
 
     <string name="fullName" namecolumn="true">
-  	<![CDATA[
-  		if(purchaseOrderSeq==null){
-  			return " ";
-  		}
-  		return purchaseOrderSeq + "-" + supplierPartner.getName();
-  	]]>
+	<![CDATA[
+		if (purchaseOrderSeq == null) {
+			return " ";
+		}
+		if (supplierPartner == null) {
+			return purchaseOrderSeq;
+		}
+		return purchaseOrderSeq + "-" + supplierPartner.getName();
+	]]>
     </string>
     <string name="purchaseOrderSeq" title="Ref." readonly="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"

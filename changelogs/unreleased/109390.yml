@@ -1,3 +1,0 @@
----
-title: "Stock move: fixed error when opening a stock move with no linked sale or purchase orders."
-module: axelor-supplychain

@@ -22,11 +22,15 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductCompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
+import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialRemoveService;
+import com.axelor.apps.production.service.SaleOrderLineProductionService;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -43,6 +47,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineGeneratorService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
+import com.axelor.db.JPA;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
@@ -54,6 +60,7 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
   protected final ConfiguratorBomService configuratorBomService;
   protected final BillOfMaterialRemoveService billOfMaterialRemoveService;
+  protected final SaleOrderLineProductionService saleOrderLineProductionService;
 
   @Inject
   public ConfiguratorServiceProductionImpl(
@@ -73,7 +80,8 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       ProductCompanyRepository productCompanyRepository,
       ConfiguratorBomService configuratorBomService,
       ConfiguratorRepository configuratorRepository,
-      BillOfMaterialRemoveService billOfMaterialRemoveService) {
+      BillOfMaterialRemoveService billOfMaterialRemoveService,
+      SaleOrderLineProductionService saleOrderLineProductionService) {
     super(
         appBaseService,
         configuratorFormulaService,
@@ -92,6 +100,26 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
         configuratorRepository);
     this.configuratorBomService = configuratorBomService;
     this.billOfMaterialRemoveService = billOfMaterialRemoveService;
+    this.saleOrderLineProductionService = saleOrderLineProductionService;
+  }
+
+  @Override
+  public void regenerateSaleOrderLine(
+      Configurator configurator,
+      SaleOrder saleOrder,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      SaleOrderLine saleOrderLine)
+      throws AxelorException {
+    boolean linkedToManufOrder =
+        isLinkedToManufOrder(configurator.getProduct().getDefaultBillOfMaterial());
+    super.regenerateSaleOrderLine(
+        configurator, saleOrder, jsonAttributes, jsonIndicators, saleOrderLine);
+    if (linkedToManufOrder) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.CAN_NOT_REGENERATE_BOM_AS_ALREADY_IN_PRODUCTION));
+    }
   }
 
   @Override
@@ -104,11 +132,13 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       throws AxelorException {
     BillOfMaterial oldBillOfMaterial = product.getDefaultBillOfMaterial();
     super.regenerateProduct(configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
-    // Removing
-    try {
-      billOfMaterialRemoveService.removeBomAndProdProcess(oldBillOfMaterial);
-    } catch (AxelorException e) {
-      TraceBackService.trace(e);
+    if (!isLinkedToManufOrder(oldBillOfMaterial)) {
+      try {
+        detachBomFromSaleOrderLine(configurator, oldBillOfMaterial);
+        billOfMaterialRemoveService.removeBomAndProdProcess(oldBillOfMaterial);
+      } catch (AxelorException e) {
+        TraceBackService.trace(e);
+      }
     }
   }
 
@@ -124,14 +154,14 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
     super.processGenerationProduct(
         configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
     ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
-    if (configuratorBOM != null) {
+    if (configuratorBOM != null && !isLinkedToManufOrder(product.getDefaultBillOfMaterial())) {
       configuratorBomService
           .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, product, configurator)
           .ifPresent(product::setDefaultBillOfMaterial);
     }
   }
 
-  /** In this implementation, we also create a bill of material. */
+  /** In this implementation, we also create a bill of material and set qtyToProduce. */
   @Override
   protected SaleOrderLine generateSaleOrderLine(
       Configurator configurator,
@@ -148,6 +178,8 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
           .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, null, configurator)
           .ifPresent(saleOrderLine::setBillOfMaterial);
     }
+    saleOrderLine.setQtyToProduce(
+        saleOrderLineProductionService.computeQtyToProduce(saleOrderLine, null));
     return saleOrderLine;
   }
 
@@ -186,5 +218,49 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
     }
 
     return defaultBillOfMaterial;
+  }
+
+  protected void detachBomFromSaleOrderLine(
+      Configurator configurator, BillOfMaterial billOfMaterial) {
+    if (billOfMaterial == null || configurator == null) {
+      return;
+    }
+    saleOrderLineRepository
+        .all()
+        .filter("self.configurator = :configurator AND self.billOfMaterial = :billOfMaterial")
+        .bind("configurator", configurator)
+        .bind("billOfMaterial", billOfMaterial)
+        .fetch()
+        .forEach(
+            sol -> {
+              sol.setBillOfMaterial(null);
+              sol.setProdProcess(null);
+            });
+  }
+
+  protected boolean isLinkedToManufOrder(BillOfMaterial billOfMaterial) {
+    if (billOfMaterial == null) {
+      return false;
+    }
+    return JPA.all(ManufOrder.class)
+            .filter("self.billOfMaterial = :billOfMaterial")
+            .bind("billOfMaterial", billOfMaterial)
+            .count()
+        > 0;
+  }
+
+  @Override
+  protected SaleOrderLine createSaleOrderLineFromGeneratedProduct(
+      Configurator configurator,
+      SaleOrder saleOrder,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators)
+      throws AxelorException {
+    SaleOrderLine saleOrderLine =
+        super.createSaleOrderLineFromGeneratedProduct(
+            configurator, saleOrder, jsonAttributes, jsonIndicators);
+    saleOrderLine.setQtyToProduce(
+        saleOrderLineProductionService.computeQtyToProduce(saleOrderLine, null));
+    return saleOrderLine;
   }
 }

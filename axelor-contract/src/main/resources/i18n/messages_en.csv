@@ -277,6 +277,7 @@
 "Termination",,,
 "Termination demand date",,,
 "The company %s doesn't have any configured sequence for contracts",,,
+"The first period end date cannot be earlier than the supposed activation date.",,,
 "The next contract field is not set on the current contract version.",,,
 "There is an error in the formula.",,,
 "There is no contract associated with this version.",,,
