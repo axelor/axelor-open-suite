@@ -16,18 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.util;
+package com.axelor.apps.account.service.invoice;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.account.db.Invoice;
 
-public interface TaxAccountToolService {
+public interface InvoiceVatLiabilityService {
 
-  int calculateVatSystem(Integer vatSystemSelect, Account account) throws AxelorException;
-
-  Integer resolveVatLiabilityFromAccountingSituation(
-      Partner partner, Company company, Account account, boolean isExpense, boolean isSale)
-      throws AxelorException;
+  /**
+   * Computes the VAT liability select value for an invoice based on the partner's or company's
+   * accounting situation.
+   *
+   * @param invoice the invoice to compute VAT liability for
+   * @return the VAT liability select value, or null if it cannot be determined
+   */
+  Integer computeVatLiability(Invoice invoice);
 }
