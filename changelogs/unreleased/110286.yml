@@ -1,5 +1,42 @@
 ---
 title: "Invoice: add vatSystemSelect field"
 module: axelor-account
-developer:
-  "add vatSystemSelect field on invoices and simplified computation process using previous partner.accountingSituation.vatSystemSelect"
+developer: |
+  add vatSystemSelect field on invoices and simplified computation process using previous partner.accountingSituation.vatSystemSelect
+
+  - Invoice: New field vatSystemSelect.
+  
+  Script to run: 
+  -- 1. Add vat_system_select column on account_invoice
+  ALTER TABLE account_invoice
+      ADD COLUMN IF NOT EXISTS vat_system_select INTEGER;
+
+  -- 2. Backfill supplier invoices (operation_type_select IN (1, 2))
+  -- from AccountingSituation of the invoice's partner
+  UPDATE account_invoice inv
+  SET vat_system_select = sit.vat_system_select
+  FROM account_accounting_situation sit
+  WHERE sit.partner = inv.partner
+    AND sit.company = inv.company
+    AND sit.vat_system_select IN (1, 2)
+    AND inv.operation_type_select IN (1, 2)
+    AND inv.status_select IN (1, 2, 3)
+    AND inv.vat_system_select IS NULL;
+
+  -- 3. Backfill customer invoices (operation_type_select IN (3, 4))
+  -- from AccountingSituation of the company's partner
+  UPDATE account_invoice inv
+  SET vat_system_select = sit.vat_system_select
+  FROM account_accounting_situation sit, base_company c
+  WHERE c.id = inv.company
+    AND sit.partner = c.partner
+    AND sit.company = inv.company
+    AND sit.vat_system_select IN (1, 2)
+    AND inv.operation_type_select IN (3, 4)
+    AND inv.status_select IN (1, 2, 3)
+    AND inv.vat_system_select IS NULL;
+
+  -- 4. Fallback: default to 1 (Standard regime) for unresolvable invoices
+  UPDATE account_invoice
+  SET vat_system_select = 1
+  WHERE vat_system_select IS NULL OR vat_system_select = 0;
