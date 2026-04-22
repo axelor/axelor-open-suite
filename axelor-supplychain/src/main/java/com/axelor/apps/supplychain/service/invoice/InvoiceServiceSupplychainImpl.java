@@ -41,6 +41,8 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -82,13 +84,13 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       CancelFactory cancelFactory,
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
-      com.axelor.apps.base.service.PartnerService partnerService,
+      PartnerService partnerService,
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
-      com.axelor.apps.base.service.app.AppBaseService appBaseService,
+      AppBaseService appBaseService,
       TemplateMessageService templateMessageService,
       InvoiceTermFilterService invoiceTermFilterService,
       InvoicePrintService invoicePrintService,

@@ -756,6 +756,16 @@
     <bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
   </input>
 
+  <input file="account_invoiceNoteType.csv" separator=";" search="self.code = :code"
+    type="com.axelor.apps.account.db.InvoiceNoteType">
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
+
   <input file="base_bankDetails.csv" separator=";" type="com.axelor.apps.base.db.BankDetails"
     search="self.importId = :importId">
     <bind column="iban" to="iban"
