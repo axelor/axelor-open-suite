@@ -154,7 +154,7 @@
     <boolean name="groupProductsOnPrintings" title="Group products on printings"/>
     <string name="invoiceProductStatement" title="Print statement for products"/>
     <one-to-many name="invoiceNoteList" ref="InvoiceNote" mappedBy="invoice"
-      title="Invoice note list"/>
+      title="Invoice note list" copy="false"/>
 
     <!-- Totals & Status -->
 
