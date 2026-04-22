@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <form id="account-period-form" name="period-form" title="Period"
     model="com.axelor.apps.base.db.Period" extension="true">
@@ -109,13 +109,6 @@
       expr="eval: !(keepJournalsOpenOnPeriod &amp;&amp; openedJournalSet != null &amp;&amp; !openedJournalSet.isEmpty())"/>
   </action-attrs>
 
-  <action-method name="action-period-method-search-moves">
-    <call class="com.axelor.apps.account.web.PeriodController" method="searchPeriodMoves"/>
-  </action-method>
-
-  <action-method name="action-period-method-close-continue">
-    <call class="com.axelor.apps.account.web.PeriodController" method="continueClose"/>
-  </action-method>
 
   <action-group name="action-period-group-close" id="account-action-period-group-close">
     <action name="save"/>
@@ -150,6 +143,36 @@
 
   <action-method name="action-method-period-call-service">
     <call class="com.axelor.apps.account.web.PeriodController" method="callClosePeriodService"/>
+  </action-method>
+
+  <form name="period-move-anomaly-wizard-form" title="Moves with anomalies"
+    model="com.axelor.utils.db.Wizard" onNew="action-period-anomaly-wizard-record-default">
+    <panel>
+      <label name="errorLabel"
+        title="Period closure failed. Some move(s) could not be validated." css="label-danger bold"
+        colSpan="12"/>
+      <field name="$moveCount" type="integer" title="Moves" readonly="true" colSpan="2"/>
+      <button name="showMovesBtn" title="Moves"
+        onClick="action-period-method-show-moves,close" colSpan="3"/>
+      <spacer colSpan="2"/>
+      <field name="$anomalyCount" type="integer" title="Anomalies" readonly="true" colSpan="2"/>
+      <button name="showAnomaliesBtn" title="Anomalies"
+        onClick="action-period-method-show-anomalies,close" colSpan="3"/>
+    </panel>
+  </form>
+
+  <action-record name="action-period-anomaly-wizard-record-default"
+    model="com.axelor.utils.db.Wizard">
+    <field name="$moveCount" expr="eval: _moveCount"/>
+    <field name="$anomalyCount" expr="eval: _anomalyCount"/>
+  </action-record>
+
+  <action-method name="action-period-method-show-anomalies">
+    <call class="com.axelor.apps.account.web.PeriodController" method="showAnomalies"/>
+  </action-method>
+
+  <action-method name="action-period-method-show-moves">
+    <call class="com.axelor.apps.account.web.PeriodController" method="showMoves"/>
   </action-method>
 
   <action-validate name="action-account-period-validate-need-confirmation">

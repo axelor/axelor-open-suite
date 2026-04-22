@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="purchase-order-line-purchase-order-grid" title="PO lines"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -209,6 +209,8 @@
             hidden="true"/>
           <field name="$currency.numberOfDecimals" hidden="true"/>
           <field name="fixedAssets" widget="boolean-switch"/>
+          <field name="vatExemptionReason" readonly="true" hideIf="!vatExemptionReason"
+            form-view="vat-exemption-reason-form" grid-view="vat-exemption-reason-grid" colSpan="6"/>
           <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
             form-view="tax-equiv-form"/>
           <panel name="descriptionPanel" title="Description" colSpan="12">

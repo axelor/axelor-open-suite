@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="sale-order-quotation-grid" title="Sale quotations"
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
@@ -1855,6 +1855,11 @@
       if="__config__.app.getApp('sale')?.getSalespersonSelect() == 1"/>
     <field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"
       if="__config__.app.isApp('supplychain') &amp;&amp; clientPartner?.shipmentMode != null"/>
+    <field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"
+      if="__config__.app.isApp('supplychain')"/>
+    <field name="carrierPartner"
+      expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"
+      if="__config__.app.isApp('supplychain')"/>
   </action-record>
 
   <action-record name="action-sale-order-record-hide-discount"

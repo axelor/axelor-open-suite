@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="sale-order-line-grid" title="SO lines"
     model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence">
@@ -435,7 +435,7 @@
             if-module="axelor-supplychain"
             if="__config__.app.getApp('supplychain')?.getManageStockReservation()">
             <button name="requestQty" title="Request reservation"
-              showIf="product &amp;&amp; product.productTypeSelect != 'service' &amp;&amp; !isQtyRequested"
+              showIf="id &amp;&amp; product &amp;&amp; product.productTypeSelect != 'service' &amp;&amp; !isQtyRequested"
               onClick="save,action-method-sale-order-line-request-qty"/>
           </panel>
           <panel name="cancelReservedQtyBtnqPanel" colSpan="12" if-module="axelor-supplychain"
@@ -457,6 +457,8 @@
           showIf="product &amp;&amp; product.productTypeSelect != 'service'" type="decimal"
           title="Total stock" if-module="axelor-supplychain"
           if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
+        <field name="vatExemptionReason" readonly="true" hideIf="!vatExemptionReason"
+          form-view="vat-exemption-reason-form" grid-view="vat-exemption-reason-grid"/>
         <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
           form-view="tax-equiv-form"/>
         <field name="selectedComplementaryProductList"
@@ -590,6 +592,8 @@
       <field name="inTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"/>
       <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
         form-view="tax-equiv-form"/>
+      <field name="vatExemptionReason" readonly="true" hideIf="!vatExemptionReason"
+        form-view="vat-exemption-reason-form" grid-view="vat-exemption-reason-grid"/>
       <field name="$currency" hidden="true" type="many-to-one"
         target="com.axelor.apps.base.db.Currency"/>
       <field name="$currency.numberOfDecimals" hidden="true"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="invoice-line-tax-grid" title="Tax Lines"
     model="com.axelor.apps.account.db.InvoiceLineTax">
@@ -11,6 +11,7 @@
     <field name="taxTotal" aggregate="sum"/>
     <field name="vatSystemSelect"/>
     <field name="imputedAccount"/>
+    <field name="vatExemptionReason"/>
   </grid>
 
   <form name="invoice-line-tax-form" title="Tax Line"
@@ -31,6 +32,8 @@
       <field name="percentageTaxTotal" showIf="taxLine.tax.manageByAmount" readonly="true"/>
       <field name="imputedAccount" readonly="true"/>
       <field name="vatSystemSelect" readonly="true"/>
+      <field name="vatExemptionReason" form-view="vat-exemption-reason-form"
+        grid-view="vat-exemption-reason-grid" readonly="true"/>
       <field name="taxLine.tax.manageByAmount" hidden="true"/>
       <field name="invoice.statusSelect" hidden="true"/>
     </panel>

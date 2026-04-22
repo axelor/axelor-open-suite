@@ -84,6 +84,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   protected SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain;
   protected PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService;
   protected UnitConversionService unitConversionService;
+  protected InvoiceService invoiceService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -100,7 +101,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       AppStockService appStockService,
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
       PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
-      UnitConversionService unitConversionService) {
+      UnitConversionService unitConversionService,
+      InvoiceService invoiceService) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
@@ -115,6 +117,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     this.saleOrderMergingServiceSupplyChain = saleOrderMergingServiceSupplyChain;
     this.purchaseOrderMergingSupplychainService = purchaseOrderMergingSupplychainService;
     this.unitConversionService = unitConversionService;
+    this.invoiceService = invoiceService;
   }
 
   @Override
@@ -240,7 +243,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       // fill default advance payment invoice
       if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
         invoice.setAdvancePaymentInvoiceSet(
-            Beans.get(InvoiceService.class).getDefaultAdvancePaymentInvoice(invoice));
+            invoiceService.getDefaultAdvancePaymentInvoice(invoice));
       }
 
       invoiceRepository.save(invoice);
@@ -309,6 +312,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       invoice.setInternalReference(
           fillInternalReferenceInvoiceFromInStockMove(stockMove, purchaseOrderSet));
 
+      if (purchaseOrderSet.size() == 1) {
+        invoice.setPurchaseOrder(purchaseOrder);
+      }
+
       invoice.setAddressStr(
           Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
 
@@ -319,6 +326,12 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
           invoice.setStockMoveSet(stockMoveSet);
         }
         stockMoveSet.add(stockMove);
+      }
+
+      // fill default advance payment invoice
+      if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+        invoice.setAdvancePaymentInvoiceSet(
+            invoiceService.getDefaultAdvancePaymentInvoice(invoice));
       }
 
       invoiceRepository.save(invoice);

@@ -46,7 +46,7 @@ public class PurchaseOrderLineTaxComputeServiceImpl implements PurchaseOrderLine
   }
 
   public void computeAndAddTaxToList(
-      Map<TaxLine, PurchaseOrderLineTax> map,
+      Map<?, PurchaseOrderLineTax> map,
       List<PurchaseOrderLineTax> purchaseOrderLineTaxList,
       Currency currency,
       List<PurchaseOrderLineTax> currentPurchaseOrderLineTaxList) {
@@ -130,10 +130,7 @@ public class PurchaseOrderLineTaxComputeServiceImpl implements PurchaseOrderLine
     BigDecimal taxTotal = BigDecimal.ZERO;
 
     // Dans la devise de la commande
-    BigDecimal exTaxBase =
-        purchaseOrderLineTax.getReverseCharged()
-            ? purchaseOrderLineTax.getExTaxBase().negate()
-            : purchaseOrderLineTax.getExTaxBase();
+    BigDecimal exTaxBase = purchaseOrderLineTax.getExTaxBase();
 
     if (taxLine != null) {
       taxTotal =
@@ -154,6 +151,9 @@ public class PurchaseOrderLineTaxComputeServiceImpl implements PurchaseOrderLine
       }
     }
 
+    if (purchaseOrderLineTax.getReverseCharged()) {
+      taxTotal = taxTotal.negate();
+    }
     return taxTotal;
   }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="tracking-number-grid" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber">
@@ -271,11 +271,11 @@
 
   <action-group name="action-tracking-number-stock-move-line-group-on-new">
     <action name="action-tracking-number-attrs-product-stock-move-line"/>
-    <action name="action-tracking-number-record-from-stock-move-line"/>
     <action name="action-tracking-number-attrs-set-scale"/>
     <action name="action-tracking-number-record-set-supplier"/>
     <action name="action-tracking-number-record-set-origin"/>
     <action name="action-tracking-number-method-set-product-tracking-number-configuration"/>
+    <action name="action-tracking-number-record-set-fields-from-tn-config"/>
   </action-group>
 
   <action-group name="action-tracking-number-group-on-change-product">
@@ -287,6 +287,14 @@
     model="com.axelor.apps.stock.db.TrackingNumber">
     <field name="unitMass" expr="eval: product?.unitMass"/>
     <field name="metricMass" expr="eval: product?.metricMass"/>
+  </action-record>
+
+  <action-record name="action-tracking-number-record-set-fields-from-tn-config"
+    model="com.axelor.apps.stock.db.TrackingNumber">
+    <field name="isPerishable" expr="eval: productTrackingNumberConfiguration?.isPerishable"/>
+    <field name="hasWarranty" expr="eval: productTrackingNumberConfiguration?.hasWarranty"/>
+    <field name="checkExpirationDateAtStockMoveRealization"
+      expr="eval: productTrackingNumberConfiguration?.checkExpirationDateAtStockMoveRealization"/>
   </action-record>
 
   <action-group name="action-tracking-number-group-on-load">
@@ -335,6 +343,8 @@
   <action-group name="action-tracking-number-group-on-new">
     <action name="action-tracking-number-attrs-set-scale"/>
     <action name="action-tracking-number-record-product"/>
+    <action name="action-tracking-number-method-set-product-tracking-number-configuration"/>
+    <action name="action-tracking-number-record-set-fields-from-tn-config"/>
     <action name="action-tracking-number-record-set-origin"/>
   </action-group>
 

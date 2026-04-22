@@ -20,6 +20,7 @@ package com.axelor.apps.stock.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TraceBack;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -35,6 +36,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveCheckWapService;
+import com.axelor.apps.stock.service.StockMoveCurrencyService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -550,6 +552,7 @@ public class StockMoveController {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
       Beans.get(StockMoveService.class).setAvailableStatus(stockMove);
+      response.setValue("availableStatusSelect", stockMove.getAvailableStatusSelect());
       response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -760,5 +763,19 @@ public class StockMoveController {
     }
     Integer id = (Integer) selected.get(0).get("id");
     return Beans.get(LogisticalFormRepository.class).find(id.longValue());
+  }
+
+  public void setCurrencyInfo(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    StockMoveCurrencyService stockMoveCurrencyService = Beans.get(StockMoveCurrencyService.class);
+    boolean isMultiCurrency = stockMoveCurrencyService.isMultiCurrency(stockMove);
+    response.setValue("$isMultiCurrency", isMultiCurrency);
+    if (!isMultiCurrency) {
+      Currency currency = stockMoveCurrencyService.getCurrency(stockMove);
+      if (currency != null) {
+        response.setValue("$currencySymbol", currency.getSymbol());
+        response.setValue("$currencyNumberOfDecimals", currency.getNumberOfDecimals());
+      }
+    }
   }
 }

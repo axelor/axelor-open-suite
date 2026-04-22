@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="move-grid" orderBy="-date" canArchive="false" title="Account moves"
     model="com.axelor.apps.account.db.Move" canDelete="false">
@@ -291,8 +291,15 @@
           showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes(journal.journalType.technicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; (functionalOriginSelect == 3 || functionalOriginSelect == 4 || functionalOriginSelect == 7))"
           onClick="action-move-group-generate-counterpart"/>
         <button colSpan="3" name="autoTaxLineGenerateBtn" css="btn-custom text-left"
-          icon="plus-lg" title="Generate tax lines" showIf="[1,2,5].includes(statusSelect)"
+          icon="plus-lg" title="Generate tax lines"
+          showIf="[1,2,5].includes(statusSelect) &amp;&amp; journal != null &amp;&amp; [1,2,4].includes(journal.journalType.technicalTypeSelect) &amp;&amp; [3,4,7].includes(functionalOriginSelect)"
           onClick="action-move-method-generate-tax-lines"/>
+        <field name="$invoicingTag" showTitle="false" hidden="true" showIf="invoice != null"
+          readonly="true" colSpan="12">
+          <viewer>
+            <![CDATA[<><Badge style={{ backgroundColor: "#EF9D3F" }}>{_t('Warning: this move comes from an invoice, and modifying it may cause errors during its accounting.')}</Badge></>]]>
+          </viewer>
+        </field>
         <panel-related name="moveLineListPanel"
           showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; journal &amp;&amp; currency &amp;&amp; company &amp;&amp; date &amp;&amp; period"
           colSpan="12" height="20" field="moveLineList" form-view="move-line-move-form"
@@ -866,7 +873,7 @@
     title="Related cut off moves" model="com.axelor.apps.account.db.Move">
     <view type="grid" name="move-grid"/>
     <view type="form" name="move-form"/>
-    <domain>self.cutOffOriginMove = :id</domain>
+    <domain>self.cutOffOriginMove.id = :id</domain>
   </action-view>
 
   <action-view name="action-move-view-refusal-to-pay" title="Cancellation"

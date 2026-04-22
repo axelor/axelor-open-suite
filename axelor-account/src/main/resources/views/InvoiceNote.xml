@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="invoice-note-grid" title="Invoice notes"
     model="com.axelor.apps.account.db.InvoiceNote">
-    <field name="name"/>
-    <field name="type"/>
+    <field name="invoiceNoteType.code"/>
+    <field name="invoiceNoteType.name"/>
     <field name="note"/>
   </grid>
 
   <form name="invoice-note-form" title="Invoice note"
     model="com.axelor.apps.account.db.InvoiceNote">
     <panel name="generalPanel">
-      <field name="name"/>
-      <field name="type"/>
-      <field name="note"/>
+      <field name="invoiceNoteType" required="true"/>
+      <field name="note" colSpan="12" required="true"/>
     </panel>
   </form>
 

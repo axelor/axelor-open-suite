@@ -16,10 +16,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.invoice;
+package com.axelor.apps.stock.service;
 
-import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.stock.db.StockMove;
 
-public interface InvoiceNoteService {
-  void generateInvoiceNote(Invoice invoice);
+public class StockMoveCurrencyServiceImpl implements StockMoveCurrencyService {
+
+  @Override
+  public Currency getCurrency(StockMove stockMove) {
+    if (stockMove.getCompany() != null) {
+      return stockMove.getCompany().getCurrency();
+    }
+    return null;
+  }
+
+  @Override
+  public boolean isMultiCurrency(StockMove stockMove) {
+    return false;
+  }
 }

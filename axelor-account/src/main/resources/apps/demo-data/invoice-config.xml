@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_8.1.xsd">
 
   <input file="account_invoice.csv" separator=";" type="com.axelor.apps.account.db.Invoice"
     call="com.axelor.csv.script.ImportInvoice:importInvoice" search="self.importId = :importId">
@@ -110,6 +110,16 @@
     <bind column="printTemplateSet_importId" to="printTemplateSet"
       search="self.importId in :printTemplateSet_importId"
       eval="printTemplateSet_importId.split('\\|') as List" update="true"/>
+  </input>
+
+  <input file="account_invoiceNoteType.csv" separator=";" search="self.code = :code"
+    type="com.axelor.apps.account.db.InvoiceNoteType">
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
   </input>
 
 </csv-inputs>

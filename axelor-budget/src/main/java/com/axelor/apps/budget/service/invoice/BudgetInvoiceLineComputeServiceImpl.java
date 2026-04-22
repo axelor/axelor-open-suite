@@ -37,6 +37,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.compute.BudgetDistributionComputeService;
@@ -74,7 +75,8 @@ public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineSupplychainS
       InvoiceLineSupplierCatalogService invoiceLineSupplierCatalogService,
       BudgetToolsService budgetToolsService,
       AppBudgetService appBudgetService,
-      BudgetDistributionComputeService budgetDistributionComputeService) {
+      BudgetDistributionComputeService budgetDistributionComputeService,
+      OrderLineTaxService orderLineTaxService) {
     super(
         currencyService,
         priceListService,
@@ -93,6 +95,7 @@ public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineSupplychainS
         productPriceService,
         fiscalPositionService,
         invoiceLineCheckService,
+        orderLineTaxService,
         invoiceLineSupplierCatalogService);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;

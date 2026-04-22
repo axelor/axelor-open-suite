@@ -104,4 +104,18 @@ public class FinancialDiscountServiceImpl implements FinancialDiscountService {
       return accountConfigService.getSaleFinancialDiscountAccount(accountConfig);
     }
   }
+
+  @Override
+  public Account getFinancialDiscountAccountOrNull(Company company, boolean isPurchase) {
+    try {
+      AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+      if (isPurchase) {
+        return accountConfig.getPurchFinancialDiscountAccount();
+      } else {
+        return accountConfig.getSaleFinancialDiscountAccount();
+      }
+    } catch (AxelorException e) {
+      return null;
+    }
+  }
 }

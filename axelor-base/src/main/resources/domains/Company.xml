@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -14,6 +14,9 @@
     <many-to-one name="parent" ref="Company" title="Parent company" massUpdate="true"/>
     <one-to-many name="companyDepartmentList" title="Company departments"
       ref="com.axelor.apps.base.db.CompanyDepartment" mappedBy="company"/>
+
+    <string name="legalInformation" title="Legal information"/>
+    <string name="legalFormAndCapital" title="Legal form and capital"/>
 
     <string name="notes" large="true" title="Notes"/>
     <many-to-one name="logo" ref="com.axelor.meta.db.MetaFile" title="Logo"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="work-center-grid" title="Work centers"
     model="com.axelor.apps.production.db.WorkCenter">
@@ -160,7 +160,6 @@
   <action-record name="action-work-center-record-type-select-onchange"
     model="com.axelor.apps.production.db.WorkCenter">
     <field name="machine" expr="eval: null" if="workCenterTypeSelect == 1"/>
-    <field name="hrSkillSet" expr="eval: null" if="workCenterTypeSelect == 2"/>
     <field name="hrCostTypeSelect,hrDurationPerCycle" expr="eval: 0"
       if="workCenterTypeSelect == 2"/>
     <field name="hrCostAmount" expr="eval: 0.00" if="workCenterTypeSelect == 2"/>
@@ -173,4 +172,3 @@
   </search-filters>
 
 </object-views>
-

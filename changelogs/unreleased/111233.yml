@@ -1,0 +1,3 @@
+---
+title: "Contract: filled ref/refId on traceback so the failing contract is identified when a batch raises an error."
+module: axelor-contract

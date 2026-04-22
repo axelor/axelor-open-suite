@@ -99,7 +99,9 @@ import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockHistoryServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineFetchServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
+import com.axelor.apps.stock.service.StockMoveCurrencyServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
+import com.axelor.apps.stock.service.StockMoveLineStockLocationServiceImpl;
 import com.axelor.apps.stock.service.StockMoveMergingServiceImpl;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
@@ -222,10 +224,12 @@ import com.axelor.apps.supplychain.service.StockLocationLineFetchServiceSupplych
 import com.axelor.apps.supplychain.service.StockLocationLineReservationService;
 import com.axelor.apps.supplychain.service.StockLocationLineReservationServiceImpl;
 import com.axelor.apps.supplychain.service.StockLocationLineServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.StockMoveCurrencyServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.StockMoveLineStockLocationServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveMergingServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveMultiInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveMultiInvoiceServiceImpl;
@@ -550,6 +554,8 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderStockLocationService.class).to(SaleOrderStockLocationServiceImpl.class);
     bind(StockLocationLineFetchServiceImpl.class)
         .to(StockLocationLineFetchServiceSupplychainImpl.class);
+    bind(StockMoveLineStockLocationServiceImpl.class)
+        .to(StockMoveLineStockLocationServiceSupplychainImpl.class);
     bind(SaleOrderFinalizeServiceImpl.class).to(SaleOrderFinalizeSupplychainServiceImpl.class);
     bind(SaleOrderLineViewSupplychainService.class)
         .to(SaleOrderLineViewSupplychainServiceImpl.class);
@@ -645,5 +651,6 @@ public class SupplychainModule extends AxelorModule {
         .to(LogisticalFormCreateServiceSupplychainImpl.class);
     bind(LogisticalFormComputeService.class).to(LogisticalFormComputeServiceImpl.class);
     bind(PackagingLineCreationService.class).to(PackagingLineCreationServiceImpl.class);
+    bind(StockMoveCurrencyServiceImpl.class).to(StockMoveCurrencyServiceSupplychainImpl.class);
   }
 }

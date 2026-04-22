@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <!-- VUE GENERALE -->
 
@@ -654,6 +654,8 @@
       </panel>
       <panel name="invoiceTaxPanel" title="Tax" showTitle="false"
         readonlyIf="statusSelect != 1">
+        <field name="vatSystemSelect" colSpan="4" readonly="true"
+          help="Computed from the partner's accounting situation VAT system configuration"/>
         <panel-related name="invoiceLineTaxListPanel" readonlyIf="statusSelect != 1"
           field="invoiceLineTaxList" canRemove="false" canNew="false"
           onChange="action-invoice-method-compute,action-invoice-method-generate-invoice-terms"
@@ -661,7 +663,7 @@
       </panel>
       <panel name="invoiceTermsPanel" title="Terms" showTitle="true"
         if="__config__.app.getApp('account').allowMultiInvoiceTerms"
-        showIf="invoiceTermList != null">
+        showIf="invoiceTermList != null &amp;&amp; operationSubTypeSelect != 2">
         <button name="showInvoiceTermsBtn" title="Show related invoice term(s)"
           onClick="save,action-invoice-view-show-related-invoice-terms"
           readonlyIf="!invoiceTermList.length"/>
@@ -1311,7 +1313,7 @@
 
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="validateBtn" title="Validate" showIf="statusSelect == 1"
-        onClick="action-invoice-method-validate-invoice-terms-before-save,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
+        onClick="action-invoice-group-validate-onclick"/>
       <button name="ventilateBtn" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
         onClick="action-invoice-group-ventilate"
@@ -1676,6 +1678,7 @@
     <action name="action-invoice-record-operationsubtype-reset"/>
     <action name="action-invoice-method-payment-mode-condition"/>
     <action name="action-invoice-record-partner-change"/>
+    <action name="action-invoice-method-compute-vat-liability"/>
     <action name="action-invoice-method-get-default-bank-details"/>
   </action-group>
 
@@ -1688,6 +1691,7 @@
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
     <action name="action-invoice-method-set-default-company-tax-number"/>
+    <action name="action-invoice-method-compute-vat-liability"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-partner-onchange">
@@ -1699,6 +1703,7 @@
 
   <action-group name="action-group-account-invoice-partner-onchange-client">
     <action name="action-invoice-record-partner-change"/>
+    <action name="action-invoice-method-compute-vat-liability"/>
     <action name="action-invoice-method-payment-mode-condition"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
@@ -1770,7 +1775,6 @@
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
     <action name="action-invoice-method-check-analytic-axis"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
-    <action name="action-invoice-method-set-invoice-notes"/>
   </action-group>
 
   <action-group name="action-invoice-group-pfp-validate">
@@ -1815,6 +1819,7 @@
     <action name="action-invoice-method-check-analytic-axis"/>
     <action name="save"/>
     <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
+    <action name="action-invoice-method-validate-advance-vat-system"/>
     <action name="action-invoice-method-generate-invoice-terms" if="!invoiceTermList"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="save"/>
@@ -2293,6 +2298,11 @@
     <call class="com.axelor.apps.account.web.InvoiceController" method="computeAddressStr"/>
   </action-method>
 
+  <action-method name="action-invoice-method-validate-advance-vat-system">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="checkAdvanceVatSystemOnValidate"/>
+  </action-method>
+
   <action-method name="action-method-invoice-compute-delivery-address-str">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="computeDeliveryAddressStr"/>
@@ -2488,6 +2498,10 @@
 
   <action-method name="action-invoice-method-generate-invoice-terms">
     <call class="com.axelor.apps.account.web.InvoiceController" method="computeInvoiceTerms"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-compute-vat-liability">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="computeVatLiability"/>
   </action-method>
 
   <action-method name="action-invoice-method-compute-invoice-terms-due-dates">
@@ -3024,8 +3038,12 @@
     <domain>self.latePaymentInterestSourceInvoice.id = :id</domain>
   </action-view>
 
-  <action-method name="action-invoice-method-set-invoice-notes">
-    <call class="com.axelor.apps.account.web.InvoiceController" method="generateInvoiceNote"/>
-  </action-method>
+  <action-group name="action-invoice-group-validate-onclick">
+    <action name="action-invoice-method-validate-invoice-terms-before-save"/>
+    <action name="save"/>
+    <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
+    <action name="action-invoice-method-validate-advance-vat-system"/>
+    <action name="action-invoice-method-validate"/>
+  </action-group>
 
 </object-views>

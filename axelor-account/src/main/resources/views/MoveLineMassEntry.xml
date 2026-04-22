@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="move-line-mass-entry-move-grid"
     model="com.axelor.apps.account.db.MoveLineMassEntry" title="Move lines" canArchive="false"
@@ -146,7 +146,7 @@
     <field name="vatSystemSelect"
       onChange="action-move-line-mass-entry-record-set-is-edited-vat-system"
       validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax' || !account.isTaxAuthorizedOnMoveLine"
-      readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || ![1,5].includes(move.statusSelect)"
+      readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
       requiredIf="account.accountType.technicalTypeSelect == 'tax' &amp;&amp; !account.useForPartnerBalance &amp;&amp; account.isTaxAuthorizedOnMoveLine"/>
     <field name="moveStatusSelect" widget="single-select"/>
     <field name="isOtherCurrency" hidden="true"/>

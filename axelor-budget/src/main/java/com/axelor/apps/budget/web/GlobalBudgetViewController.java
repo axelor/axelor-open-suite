@@ -147,7 +147,8 @@ public class GlobalBudgetViewController {
     String domain =
         String.format(
             "self.moveLine IS NOT NULL AND self.moveLine.move.invoice IS NOT NULL AND self.moveLine.move.statusSelect in (%d,%d) AND "
-                + "(self.moveLine.move.invoice.purchaseOrder IS NOT NULL OR self.moveLine.move.invoice.saleOrder IS NOT NULL) "
+                + "(self.moveLine.move.invoice.purchaseOrder IS NOT NULL OR self.moveLine.move.invoice.saleOrder IS NOT NULL "
+                + "OR EXISTS (SELECT 1 FROM InvoiceLine il WHERE il.invoice = self.moveLine.move.invoice AND (il.purchaseOrderLine IS NOT NULL OR il.saleOrderLine IS NOT NULL))) "
                 + "AND self.budget.id IN (:budgetIdList)",
             MoveRepository.STATUS_DAYBOOK, MoveRepository.STATUS_ACCOUNTED);
 
@@ -175,7 +176,8 @@ public class GlobalBudgetViewController {
         String.format(
             "self.moveLine IS NOT NULL AND self.moveLine.move.statusSelect in (%d,%d) AND "
                 + "(self.moveLine.move.invoice IS NULL OR "
-                + "(self.moveLine.move.invoice.purchaseOrder is null AND self.moveLine.move.invoice.saleOrder is null))"
+                + "(self.moveLine.move.invoice.purchaseOrder is null AND self.moveLine.move.invoice.saleOrder is null "
+                + "AND NOT EXISTS (SELECT 1 FROM InvoiceLine il WHERE il.invoice = self.moveLine.move.invoice AND (il.purchaseOrderLine IS NOT NULL OR il.saleOrderLine IS NOT NULL)))) "
                 + "AND self.budget.id IN (:budgetIdList)",
             MoveRepository.STATUS_DAYBOOK, MoveRepository.STATUS_ACCOUNTED);
 

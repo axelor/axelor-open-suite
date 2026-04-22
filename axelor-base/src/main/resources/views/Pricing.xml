@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid model="com.axelor.apps.base.db.Pricing" title="Pricing" name="pricing-grid"
     groupBy="concernedModel" orderBy="company,product,productCategory,startDate,name">
@@ -283,7 +283,7 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="popup" value="reload"/>
     <view-param name="showArchived" value="true"/>
-    <domain>self.currentPricing = :id </domain>
+    <domain>self.currentPricing.id = :id </domain>
   </action-view>
 
   <action-method name="action-pricing-method-check-dates">

@@ -130,12 +130,9 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
   @Override
   public void updateDueDate(Move move, boolean paymentConditionChange, boolean dateChange) {
     if (moveInvoiceTermService.displayDueDate(move)) {
-      if (move.getDueDate() == null || paymentConditionChange) {
-        boolean isDateChange = dateChange || paymentConditionChange;
-        LocalDate dueDate = moveInvoiceTermService.computeDueDate(move, true, isDateChange);
-
-        move.setDueDate(dueDate);
-      }
+      boolean isDateChange = dateChange || paymentConditionChange;
+      LocalDate dueDate = moveInvoiceTermService.computeDueDate(move, true, isDateChange);
+      move.setDueDate(dueDate);
     } else {
       move.setDueDate(null);
     }

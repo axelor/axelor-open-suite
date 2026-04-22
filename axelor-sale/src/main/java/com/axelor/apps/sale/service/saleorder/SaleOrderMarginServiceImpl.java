@@ -59,10 +59,11 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
     BigDecimal totalGrossMargin = BigDecimal.ZERO;
 
     if (saleOrder.getSaleOrderLineList() != null && !saleOrder.getSaleOrderLineList().isEmpty()) {
+      boolean considerZeroCost = appSaleService.getAppSale().getConsiderZeroCost();
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
         if (saleOrderLine.getProduct() == null
             || (saleOrderLine.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0
-                && !appSaleService.getAppSale().getConsiderZeroCost())) {
+                && !considerZeroCost)) {
           continue;
         }
         totalGrossMargin = totalGrossMargin.add(saleOrderLine.getSubTotalGrossMargin());
