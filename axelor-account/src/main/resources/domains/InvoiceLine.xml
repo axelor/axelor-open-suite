@@ -121,6 +121,9 @@
     <decimal name="coefficient" title="Coefficient" scale="12" precision="20" default="1"
       min="0" max="1" nullable="true"/>
 
+    <decimal name="ecoTaxAmount" title="Eco-tax amount" min="0"/>
+    <string name="ecoTaxMention" title="Eco-tax mention"/>
+
     <extra-imports>
       import com.axelor.apps.account.db.repo.InvoiceLineRepository;
     </extra-imports>
