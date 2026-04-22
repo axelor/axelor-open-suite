@@ -43,6 +43,9 @@
     <bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)"
       column="dueDate"/>
     <bind to="companyBankDetails" eval="__repo__(Company).all().fetchOne()?.defaultBankDetails"/>
+    <bind column="invoiceCategorySelect" to="invoiceCategorySelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.Invoice', 'invoiceCategorySelect', invoiceCategorySelect)"
+      check-message="Invalid invoiceCategorySelect"/>
   </input>
 
   <input file="account_invoiceLine.csv" separator=";"

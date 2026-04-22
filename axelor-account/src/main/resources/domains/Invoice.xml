@@ -83,6 +83,8 @@
       ref="com.axelor.apps.account.db.FiscalPosition"/>
     <integer name="vatSystemSelect" title="VAT system"
       selection="iaccount.vat.liability.invoice.select" default="1"/>
+    <string name="invoiceCategorySelect" title="Invoice category"
+      selection="invoice.category.select"/>
 
     <!-- Invoice content -->
     <one-to-many name="invoiceLineList" ref="InvoiceLine" mappedBy="invoice"
@@ -152,7 +154,6 @@
     <string name="specificNotes" title="Specific notes" large="true"/>
     <many-to-one name="printedPDF" ref="com.axelor.meta.db.MetaFile"/>
     <boolean name="groupProductsOnPrintings" title="Group products on printings"/>
-    <string name="invoiceProductStatement" title="Print statement for products"/>
     <one-to-many name="invoiceNoteList" ref="InvoiceNote" mappedBy="invoice"
       title="Invoice note list" copy="false"/>
 
@@ -329,6 +330,10 @@
 	    public static final int VAT_LIABILITY_STANDARD_REGIME = 1;
 	    public static final int VAT_LIABILITY_OPTION_ON_DELIVERIES = 2;
 
+	    // INVOICE CATEGORY SELECT
+	    public static final String CATEGORY_GOODS_INVOICE = "goods";
+	    public static final String CATEGORY_SERVICES_INVOICE = "services";
+	    public static final String CATEGORY_MIXED_INVOICE = "mixed";
 	]]></extra-code>
 
     <track>

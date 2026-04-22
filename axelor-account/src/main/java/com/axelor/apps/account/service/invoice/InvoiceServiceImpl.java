@@ -45,7 +45,6 @@ import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
-import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.AxelorException;
@@ -114,11 +113,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected AppBaseService appBaseService;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermPfpService invoiceTermPfpService;
-  protected InvoiceProductStatementService invoiceProductStatementService;
   protected TemplateMessageService templateMessageService;
   protected InvoiceTermFilterService invoiceTermFilterService;
   protected InvoicePrintService invoicePrintService;
   protected InvoiceTermPfpToolService invoiceTermPfpToolService;
+  protected InvoiceCategoryService invoiceCategoryService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -134,11 +133,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
-      InvoiceProductStatementService invoiceProductStatementService,
       TemplateMessageService templateMessageService,
       InvoiceTermFilterService invoiceTermFilterService,
       InvoicePrintService invoicePrintService,
-      InvoiceTermPfpToolService invoiceTermPfpToolService) {
+      InvoiceTermPfpToolService invoiceTermPfpToolService,
+      InvoiceCategoryService invoiceCategoryService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -152,11 +151,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.appBaseService = appBaseService;
-    this.invoiceProductStatementService = invoiceProductStatementService;
     this.templateMessageService = templateMessageService;
     this.invoiceTermFilterService = invoiceTermFilterService;
     this.invoicePrintService = invoicePrintService;
     this.invoiceTermPfpToolService = invoiceTermPfpToolService;
+    this.invoiceCategoryService = invoiceCategoryService;
   }
 
   // WKF
@@ -205,10 +204,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
       invoiceMap.put("advancePaymentInvoiceSet", invoice1.getAdvancePaymentInvoiceSet());
     }
-
-    invoice1.setInvoiceProductStatement(
-        invoiceProductStatementService.getInvoiceProductStatement(invoice1));
-    invoiceMap.put("invoiceProductStatement", invoice1.getInvoiceProductStatement());
 
     return invoiceMap;
   }
@@ -260,6 +255,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         && invoice.getInvoiceAutomaticMailOnValidate()) {
       sendMail(invoice, invoice.getInvoiceMessageTemplateOnValidate());
     }
+    invoiceCategoryService.setInvoiceCategory(invoice);
   }
 
   @Transactional(rollbackOn = {Exception.class})

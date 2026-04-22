@@ -12,7 +12,7 @@
   <form title="Invoice product statement" name="invoice-product-statement-form"
     model="com.axelor.apps.account.db.InvoiceProductStatement">
     <panel name="mainPanel">
-      <field name="typeList" widget="MultiSelect"/>
+      <field name="typeList"/>
       <field name="statement"/>
     </panel>
   </form>
