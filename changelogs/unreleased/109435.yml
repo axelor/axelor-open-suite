@@ -1,3 +1,15 @@
 ---
 title: "Invoice line: new field eco-tax amount and mention, with default defined on product."
 module: axelor-account
+developer: |
+  - Product: New fields defaultEcoTaxAmount and defaultEcoTaxMention.
+  - InvoiceLine: New fields ecoTaxAmount and ecoTaxMention.
+
+  Script to run : 
+  ALTER TABLE base_product
+    ADD COLUMN IF NOT EXISTS default_eco_tax_amount DECIMAL(20,10),
+    ADD COLUMN IF NOT EXISTS default_eco_tax_mention VARCHAR(255);
+
+  ALTER TABLE account_invoice_line
+    ADD COLUMN IF NOT EXISTS eco_tax_amount DECIMAL(20,10),
+    ADD COLUMN IF NOT EXISTS eco_tax_mention VARCHAR(255);
