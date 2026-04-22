@@ -79,14 +79,17 @@ public class MrpJob implements Job {
   /*
    * Might have to move this method to a more appropriate service.
    */
-  protected void runCalculationWithExceptionManagement(Mrp mrp) throws AxelorException {
+  protected void runCalculationWithExceptionManagement(Mrp mrp) throws Exception {
     MrpService mrpService = Beans.get(MrpService.class);
     try {
       mrpService.runCalculation(mrp);
-    } catch (Exception e) {
+    } catch (Throwable t) {
       mrpService.reset(mrp);
-      mrpService.saveErrorInMrp(mrp, e);
-      throw e;
+      mrpService.saveErrorInMrp(mrp, t);
+      if (t instanceof Error) {
+        throw (Error) t;
+      }
+      throw (Exception) t;
     }
   }
 }

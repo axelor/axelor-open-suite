@@ -26,7 +26,7 @@
   <form name="quality-control-form" title="Quality audits"
     model="com.axelor.apps.quality.db.QualityControl"
     onNew="action-quality-control-group-onnew-actions"
-    onLoad="action-quality-control-group-onload-actions">
+    onLoad="action-quality-control-group-onload-actions" onSave="action-quality-validate-dates">
     <toolbar>
       <button name="printBtn" title="Print"
         onClick="save,action-quality-control-validate-printing-settings,action-method-print-template"
@@ -46,9 +46,9 @@
         onChange="action-quality-control-record-set-printing-setting-on-project-change"/>
       <field name="responsible"/>
       <field name="team" domain="self.typeSelect = 'quality'"/>
-      <field name="startDate"/>
-      <field name="endDate"/>
-      <field name="deadLineDate"/>
+      <field name="startDate" onChange="action-quality-validate-start-date"/>
+      <field name="endDate" onChange="action-quality-validate-end-date"/>
+      <field name="deadLineDate" onChange="action-quality-validate-deadline-date"/>
     </panel>
     <panel name="actionsPanel" sidebar="true" hideIf="statusSelect == 6">
       <button name="planBtn" title="Plan" showIf="statusSelect == 1 || statusSelect == 2"
@@ -248,6 +248,35 @@
     <error message="Please fill printing settings on quality control" if="!printingSettings"/>
   </action-validate>
 
+  <action-validate name="action-quality-validate-dates">
+    <error message="The start date cannot be later than the end date."
+      if="startDate != null &amp;&amp; endDate != null &amp;&amp; startDate.isAfter(endDate)"/>
+    <error message="The start date cannot be later than the deadline."
+      if="startDate != null &amp;&amp; deadLineDate != null &amp;&amp; startDate.isAfter(deadLineDate)"/>
+    <error message="The end date cannot be later than the deadline."
+      if="endDate != null &amp;&amp; deadLineDate != null &amp;&amp; endDate.isAfter(deadLineDate)"/>
+  </action-validate>
+
+  <action-validate name="action-quality-validate-start-date">
+    <error message="The start date cannot be later than the end date."
+      if="startDate != null &amp;&amp; endDate != null &amp;&amp; startDate.isAfter(endDate)"/>
+    <error message="The start date cannot be later than the deadline."
+      if="startDate != null &amp;&amp; deadLineDate != null &amp;&amp; startDate.isAfter(deadLineDate)"/>
+  </action-validate>
+
+  <action-validate name="action-quality-validate-end-date">
+    <error message="The start date cannot be later than the end date."
+      if="startDate != null &amp;&amp; endDate != null &amp;&amp; startDate.isAfter(endDate)"/>
+    <error message="The end date cannot be later than the deadline."
+      if="endDate != null &amp;&amp; deadLineDate != null &amp;&amp; endDate.isAfter(deadLineDate)"/>
+  </action-validate>
+
+  <action-validate name="action-quality-validate-deadline-date">
+    <error message="The start date cannot be later than the deadline."
+      if="startDate != null &amp;&amp; deadLineDate != null &amp;&amp; startDate.isAfter(deadLineDate)"/>
+    <error message="The end date cannot be later than the deadline."
+      if="endDate != null &amp;&amp; deadLineDate != null &amp;&amp; endDate.isAfter(deadLineDate)"/>
+  </action-validate>
 
   <search-filters name="quality-control-filters"
     model="com.axelor.apps.quality.db.QualityControl" title="Quality control filters">

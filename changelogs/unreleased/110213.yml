@@ -1,3 +1,0 @@
----
-title: "Stock move: fixed an error preventing realization of a stock move with reserved sale order lines."
-module: axelor-supplychain

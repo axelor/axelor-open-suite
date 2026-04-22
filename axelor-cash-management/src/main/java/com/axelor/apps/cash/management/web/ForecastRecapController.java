@@ -31,6 +31,9 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.lang.invoke.MethodHandles;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,8 +49,22 @@ public class ForecastRecapController {
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(CashManagementExceptionMessage.FORECAST_COMPANY));
       }
-      Beans.get(ForecastRecapService.class)
-          .populate(Beans.get(ForecastRecapRepository.class).find(forecastRecap.getId()));
+      ForecastRecapService forecastRecapService = Beans.get(ForecastRecapService.class);
+      ForecastRecapRepository forecastRecapRepository = Beans.get(ForecastRecapRepository.class);
+
+      forecastRecapService.populate(forecastRecapRepository.find(forecastRecap.getId()));
+
+      List<ForecastRecap> forecastRecapList =
+          forecastRecapService.getOverlappingForecastRecaps(
+              forecastRecapRepository.find(forecastRecap.getId()));
+      if (!CollectionUtils.isEmpty(forecastRecapList)) {
+        response.setAlert(
+            String.format(
+                I18n.get(CashManagementExceptionMessage.FORECAST_RECAP_OVERLAPPING),
+                forecastRecapList.stream()
+                    .map(ForecastRecap::getForecastRecapSeq)
+                    .collect(Collectors.joining(", "))));
+      }
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -42,7 +42,6 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.rpc.filter.Filter;
 import com.axelor.utils.helpers.NamingHelper;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -58,7 +57,6 @@ import java.util.Optional;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -207,13 +205,10 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
     Class<?> klass = Class.forName(metaModel.getFullName());
     Mapper mapper = Mapper.of(klass);
-    List<MetaSelect> metaSelectList =
-        metaSelectRepo
-            .all()
-            .filter("self.name = ?", mapper.getProperty(fieldName[index]).getSelection())
-            .fetch();
+    MetaSelect metaSelect =
+        metaSelectRepo.findByName(mapper.getProperty(fieldName[index]).getSelection());
 
-    if (CollectionUtils.isNotEmpty(metaSelectList)) {
+    if (metaSelect != null) {
       isSelectionField = true;
       String alias = "self";
       msi++;
@@ -221,7 +216,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       if (!isNormalField && index != 0) {
         alias = aliasName;
       }
-      addSelectionField(fieldName[index], alias, StringHelper.getIdListString(metaSelectList));
+      addSelectionField(fieldName[index], alias, String.valueOf(metaSelect.getId()));
     }
   }
 

@@ -266,7 +266,8 @@
     <view type="grid" name="invoice-supplier-grid"/>
     <view type="form" name="invoice-form"/>
     <view-param name="search-filters" value="supplier-invoices-filters"/>
-    <domain>self.operationTypeSelect = 1 and self.statusSelect = 3 and self.amountRemaining != 0 and
+    <domain>self.operationTypeSelect = 1 and (self.statusSelect = 3 or (self.statusSelect = 2 and
+      self.operationSubTypeSelect = 2)) and self.amountRemaining != 0 and
       self.pfpValidateStatusSelect in :_pfpStatus</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
     <context name="todayDate" expr="eval:__config__.date"/>
@@ -713,6 +714,16 @@
     <view type="grid" name="tax-grid"/>
     <view type="form" name="tax-form"/>
     <view-param name="search-filters" value="tax-filters"/>
+  </action-view>
+
+  <menuitem name="account-conf-financial-vat-exemption-reason"
+    parent="account-conf-financial" title="VAT exemption reasons"
+    action="account.conf.financial.vat.exemption.reason" order="1025"/>
+
+  <action-view name="account.conf.financial.vat.exemption.reason"
+    title="VAT exemption reasons" model="com.axelor.apps.account.db.VatExemptionReason">
+    <view type="grid" name="vat-exemption-reason-grid"/>
+    <view type="form" name="vat-exemption-reason-form"/>
   </action-view>
 
   <menuitem name="account-conf-financial-tax-type" parent="account-conf-financial"

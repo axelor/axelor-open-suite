@@ -1,3 +1,0 @@
----
-title: "Configurator: fixed unique constraint violation when importing a configurator with numeric attribute names."
-module: axelor-sale

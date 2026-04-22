@@ -1,4 +1,0 @@
----
-title: "Timesheet: fixed missing New and Delete buttons in the timesheet line editor."
-type: fix
-module: axelor-human-resource

@@ -135,7 +135,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   }
 
   protected void testCloseAnnualBatchFields(BigDecimal resultMoveAmount) throws AxelorException {
-    if (CollectionUtils.isEmpty(accountingBatch.getClosureAccountSet())) {
+    if (accountingBatch.getCloseYear()
+        && CollectionUtils.isEmpty(accountingBatch.getClosureAccountSet())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_1),
@@ -484,13 +485,13 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                 .map(account -> account.getId())
                 .map(id -> id.toString())
                 .collect(Collectors.joining(","));
-        query = "self.account in (" + idListStr + ") AND ";
+        query = "self.account.id in (" + idListStr + ") AND ";
       }
       query =
           query.concat(
               "self.move.statusSelect = "
                   + MoveRepository.STATUS_ACCOUNTED
-                  + " AND self.move.period.year = "
+                  + " AND self.move.period.year.id = "
                   + accountingBatch.getYear().getId());
       Query qIncome =
           JPA.em()

@@ -1313,7 +1313,7 @@
 
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="validateBtn" title="Validate" showIf="statusSelect == 1"
-        onClick="action-invoice-method-validate-invoice-terms-before-save,save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
+        onClick="action-invoice-group-validate-onclick"/>
       <button name="ventilateBtn" title="Ventilate"
         showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2"
         onClick="action-invoice-group-ventilate"
@@ -1820,6 +1820,7 @@
     <action name="action-invoice-method-check-analytic-axis"/>
     <action name="save"/>
     <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
+    <action name="action-invoice-method-validate-advance-vat-system"/>
     <action name="action-invoice-method-generate-invoice-terms" if="!invoiceTermList"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="save"/>
@@ -2296,6 +2297,11 @@
   <action-method name="action-method-invoice-address-str"
     model="com.axelor.apps.account.db.Invoice">
     <call class="com.axelor.apps.account.web.InvoiceController" method="computeAddressStr"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-validate-advance-vat-system">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="checkAdvanceVatSystemOnValidate"/>
   </action-method>
 
   <action-method name="action-method-invoice-compute-delivery-address-str">
@@ -3036,5 +3042,13 @@
   <action-method name="action-invoice-method-set-invoice-notes">
     <call class="com.axelor.apps.account.web.InvoiceController" method="generateInvoiceNote"/>
   </action-method>
+
+  <action-group name="action-invoice-group-validate-onclick">
+    <action name="action-invoice-method-validate-invoice-terms-before-save"/>
+    <action name="save"/>
+    <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
+    <action name="action-invoice-method-validate-advance-vat-system"/>
+    <action name="action-invoice-method-validate"/>
+  </action-group>
 
 </object-views>

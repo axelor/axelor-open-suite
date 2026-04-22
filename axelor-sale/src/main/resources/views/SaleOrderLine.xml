@@ -435,7 +435,7 @@
             if-module="axelor-supplychain"
             if="__config__.app.getApp('supplychain')?.getManageStockReservation()">
             <button name="requestQty" title="Request reservation"
-              showIf="product &amp;&amp; product.productTypeSelect != 'service' &amp;&amp; !isQtyRequested"
+              showIf="id &amp;&amp; product &amp;&amp; product.productTypeSelect != 'service' &amp;&amp; !isQtyRequested"
               onClick="save,action-method-sale-order-line-request-qty"/>
           </panel>
           <panel name="cancelReservedQtyBtnqPanel" colSpan="12" if-module="axelor-supplychain"
@@ -457,6 +457,8 @@
           showIf="product &amp;&amp; product.productTypeSelect != 'service'" type="decimal"
           title="Total stock" if-module="axelor-supplychain"
           if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
+        <field name="vatExemptionReason" readonly="true" hideIf="!vatExemptionReason"
+          form-view="vat-exemption-reason-form" grid-view="vat-exemption-reason-grid"/>
         <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
           form-view="tax-equiv-form"/>
         <field name="selectedComplementaryProductList"
@@ -590,6 +592,8 @@
       <field name="inTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"/>
       <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
         form-view="tax-equiv-form"/>
+      <field name="vatExemptionReason" readonly="true" hideIf="!vatExemptionReason"
+        form-view="vat-exemption-reason-form" grid-view="vat-exemption-reason-grid"/>
       <field name="$currency" hidden="true" type="many-to-one"
         target="com.axelor.apps.base.db.Currency"/>
       <field name="$currency.numberOfDecimals" hidden="true"/>

@@ -1,0 +1,3 @@
+---
+title: "Accounting batch: fixed opening-only close/open accounts batch failing when generate result move is enabled."
+module: axelor-account

@@ -140,6 +140,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     BigDecimal totalAmount = BigDecimal.ZERO;
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       totalAmount = totalAmount.add(invoiceTerm.getAmount());
+      if (invoiceTerm.getPfpfPartialValidationOk()) {
+        totalAmount = totalAmount.add(invoiceTerm.getRemainingPfpAmount());
+      }
     }
     return invoice.getInTaxTotal().compareTo(totalAmount) == 0;
   }
@@ -158,14 +161,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     BigDecimal sum = BigDecimal.ZERO;
     if (CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
       for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+        BigDecimal amount = invoiceTerm.getAmount();
+        if (invoiceTerm.getPfpfPartialValidationOk()) {
+          amount = amount.add(invoiceTerm.getRemainingPfpAmount());
+        }
         sum =
             sum.add(
-                invoiceTerm
-                    .getAmount()
-                    .divide(
-                        invoice.getInTaxTotal(),
-                        AppBaseService.COMPUTATION_SCALING,
-                        RoundingMode.HALF_UP));
+                amount.divide(
+                    invoice.getInTaxTotal(),
+                    AppBaseService.COMPUTATION_SCALING,
+                    RoundingMode.HALF_UP));
       }
     }
 
@@ -692,9 +697,15 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       boolean isSameCurrencyRate = true;
       if (invoicePayment != null) {
+        LocalDate referenceDate =
+            invoiceTerm.getInvoice() != null
+                ? invoiceTerm.getInvoice().getInvoiceDate()
+                : (invoiceTerm.getMoveLine() != null
+                    ? invoiceTerm.getMoveLine().getDate()
+                    : invoiceTerm.getDueDate());
         isSameCurrencyRate =
             currencyService.isSameCurrencyRate(
-                invoiceTerm.getInvoice().getInvoiceDate(),
+                referenceDate,
                 invoicePayment.getPaymentDate(),
                 invoiceTerm.getCurrency(),
                 invoiceTerm.getCompanyCurrency());

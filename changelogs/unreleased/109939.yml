@@ -1,3 +1,0 @@
----
-title: "Sale/Purchase order: fixed invoiced amount not cumulating when ventilating multiple invoices."
-module: axelor-supplychain

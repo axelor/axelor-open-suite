@@ -803,6 +803,7 @@
 "Timetable template lines","Lignes de modèle d’échéancier",,
 "Timetable templates","Modèles d'échéancier",,
 "Timetables","Echéanciers",,
+"Timetables can only be invoiced from a sale order or a purchase order.","Les échéanciers ne peuvent être facturés qu'à partir d'une commande client ou d'une commande fournisseur.",,
 "Title","Libellé",,
 "To Date","Date de fin",,
 "To process","A traiter",,

@@ -48,8 +48,8 @@
     onInit="action-chart-attrs-show-search-fields">
     <dataset type="jpql"><![CDATA[
 
-		SELECT self.amount as amount,
-		MONTH(self.estimatedDate) as month
+		SELECT SUM(self.amount) as amount,
+		TO_CHAR(self.estimatedDate,'Mon yy') as month
 		FROM
 			ForecastRecapLine AS self
 		INNER JOIN self.forecastRecap AS recap ON recap.isReport = true
@@ -57,10 +57,12 @@
 		AND (:bankDetails is null OR :bankDetails MEMBER OF recap.bankDetailsSet)
 		AND (recap.userRecap = :_user OR :_user is null)
 		AND self.estimatedDate BETWEEN :fromDate AND :toDate
+		GROUP BY YEAR(self.estimatedDate), MONTH(self.estimatedDate), TO_CHAR(self.estimatedDate,'Mon yy')
+		ORDER BY YEAR(self.estimatedDate), MONTH(self.estimatedDate)
 
 	   ]]></dataset>
-    <category key="month" type="month" title="Month"/>
-    <series key="amount" type="bar" title="Amount" aggregate="sum"/>
+    <category key="month" type="text" title="Month"/>
+    <series key="amount" type="bar" title="Amount"/>
   </chart>
 
   <custom name="action-forecast-recap-view-balance-by-bank-details-dashlet-custom"

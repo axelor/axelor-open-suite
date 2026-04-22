@@ -1621,7 +1621,7 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Override
-  public Mrp call() throws AxelorException {
+  public Mrp call() throws Exception {
     final RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
     try (RequestScoper.CloseableScope ignored = scope.open()) {
       this.runCalculation(mrp);
@@ -1633,30 +1633,37 @@ public class MrpServiceImpl implements MrpService {
               I18n.get(SupplychainExceptionMessage.MRP_FINISHED_MESSAGE_BODY), mrp.getMrpSeq()),
           mrp.getId(),
           mrp.getClass());
-    } catch (Exception e) {
-      onRunnerException(e);
-      throw e;
+    } catch (Throwable t) {
+      onRunnerException(t);
+      if (t instanceof Error) {
+        throw (Error) t;
+      }
+      throw (Exception) t;
     }
     return mrp;
   }
 
   @Transactional
-  protected void onRunnerException(Exception e) {
-    TraceBackService.trace(e);
-    mailMessageService.sendNotification(
-        AuthUtils.getUser(),
-        String.format(
-            I18n.get(SupplychainExceptionMessage.MRP_ERROR_WHILE_COMPUTATION), mrp.getMrpSeq()),
-        e.getMessage(),
-        mrp.getId(),
-        mrp.getClass());
+  protected void onRunnerException(Throwable t) {
+    TraceBackService.trace(t);
     this.reset(mrpRepository.find(mrp.getId()));
-    this.saveErrorInMrp(mrpRepository.find(mrp.getId()), e);
+    this.saveErrorInMrp(mrpRepository.find(mrp.getId()), t);
+    try {
+      mailMessageService.sendNotification(
+          AuthUtils.getUser(),
+          String.format(
+              I18n.get(SupplychainExceptionMessage.MRP_ERROR_WHILE_COMPUTATION), mrp.getMrpSeq()),
+          t.getMessage(),
+          mrp.getId(),
+          mrp.getClass());
+    } catch (Exception notifException) {
+      TraceBackService.trace(notifException);
+    }
   }
 
   @Override
   @Transactional
-  public void saveErrorInMrp(Mrp mrp, Exception e) {
-    mrp.setErrorLog(e.getMessage());
+  public void saveErrorInMrp(Mrp mrp, Throwable t) {
+    mrp.setErrorLog(t.getMessage());
   }
 }

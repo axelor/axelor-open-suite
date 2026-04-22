@@ -209,6 +209,8 @@
             hidden="true"/>
           <field name="$currency.numberOfDecimals" hidden="true"/>
           <field name="fixedAssets" widget="boolean-switch"/>
+          <field name="vatExemptionReason" readonly="true" hideIf="!vatExemptionReason"
+            form-view="vat-exemption-reason-form" grid-view="vat-exemption-reason-grid" colSpan="6"/>
           <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
             form-view="tax-equiv-form"/>
           <panel name="descriptionPanel" title="Description" colSpan="12">

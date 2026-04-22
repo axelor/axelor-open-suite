@@ -1,3 +1,0 @@
----
-title: "BankReconciliation: fixed ending balance computation to use currency amount instead of debit/credit when reconciling in a foreign currency."
-module: axelor-bank-payment

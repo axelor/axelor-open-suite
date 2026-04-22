@@ -29,6 +29,8 @@
       title="Tax type"/>
     <many-to-one name="imputedAccount" title="Imputed account"
       ref="com.axelor.apps.account.db.Account"/>
+    <many-to-one name="vatExemptionReason"
+      ref="com.axelor.apps.account.db.VatExemptionReason" title="VAT exemption reason"/>
 
     <track>
       <field name="exTaxBase"/>
