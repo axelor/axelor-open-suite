@@ -23,8 +23,8 @@ import com.axelor.apps.account.db.repo.InvoiceNoteTypeRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

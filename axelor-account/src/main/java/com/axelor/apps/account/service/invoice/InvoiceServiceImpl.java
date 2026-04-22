@@ -55,11 +55,9 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
@@ -119,6 +117,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoiceTermFilterService invoiceTermFilterService;
   protected InvoicePrintService invoicePrintService;
   protected InvoiceTermPfpToolService invoiceTermPfpToolService;
+  protected InvoiceCategoryService invoiceCategoryService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -137,7 +136,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       TemplateMessageService templateMessageService,
       InvoiceTermFilterService invoiceTermFilterService,
       InvoicePrintService invoicePrintService,
-      InvoiceTermPfpToolService invoiceTermPfpToolService) {
+      InvoiceTermPfpToolService invoiceTermPfpToolService,
+      InvoiceCategoryService invoiceCategoryService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -155,6 +155,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceTermFilterService = invoiceTermFilterService;
     this.invoicePrintService = invoicePrintService;
     this.invoiceTermPfpToolService = invoiceTermPfpToolService;
+    this.invoiceCategoryService = invoiceCategoryService;
   }
 
   // WKF
@@ -254,7 +255,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         && invoice.getInvoiceAutomaticMailOnValidate()) {
       sendMail(invoice, invoice.getInvoiceMessageTemplateOnValidate());
     }
-    setInvoiceCategory(invoice);
+    invoiceCategoryService.setInvoiceCategory(invoice);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -1310,62 +1311,5 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       }
     }
     return taxNumber;
-  }
-
-  @Override
-  @Transactional
-  public void setInvoiceCategory(Invoice invoice) throws AxelorException {
-    String invoiceCategory = computeInvoiceCategorySelect(invoice);
-    invoice.setInvoiceCategorySelect(invoiceCategory);
-    invoiceRepo.save(invoice);
-  }
-
-  protected String computeInvoiceCategorySelect(Invoice invoice) throws AxelorException {
-    int operationType = invoice.getOperationTypeSelect();
-    int operationSubType = invoice.getOperationSubTypeSelect();
-
-    if ((operationType != InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-            && operationType != InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-        || (operationSubType != InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT
-            && operationSubType != InvoiceRepository.OPERATION_SUB_TYPE_BALANCE)) {
-      return null;
-    }
-
-    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
-
-    if (CollectionUtils.isEmpty(invoiceLineList)) {
-      return getDefaultInvoiceCategorySelect(invoice);
-    }
-
-    Set<String> productTypes = new HashSet<>();
-
-    for (InvoiceLine invoiceLine : invoiceLineList) {
-      Product product = invoiceLine.getProduct();
-
-      if (product == null || Strings.isNullOrEmpty(product.getProductTypeSelect())) {
-        return getDefaultInvoiceCategorySelect(invoice);
-      }
-
-      productTypes.add(product.getProductTypeSelect());
-    }
-
-    if (productTypes.size() == 1) {
-      String type = productTypes.iterator().next();
-
-      if (ProductRepository.PRODUCT_TYPE_STORABLE.equals(type)) {
-        return "goods";
-      }
-
-      if (ProductRepository.PRODUCT_TYPE_SERVICE.equals(type)) {
-        return "services";
-      }
-    }
-
-    return getDefaultInvoiceCategorySelect(invoice);
-  }
-
-  protected String getDefaultInvoiceCategorySelect(Invoice invoice) throws AxelorException {
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(invoice.getCompany());
-    return accountConfig.getDefaultInvoiceCategorySelect();
   }
 }

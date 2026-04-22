@@ -18,7 +18,11 @@
  */
 package com.axelor.apps.account.service.note;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceNote;
+import com.axelor.apps.account.db.InvoiceNoteType;
+import com.axelor.apps.account.db.InvoiceProductStatement;
 import com.axelor.apps.account.db.repo.InvoiceNoteTypeRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -27,6 +31,8 @@ import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +44,9 @@ public class InvoiceNoteCreationHelper {
   }
 
   protected static boolean noteAlreadyExist(InvoiceNoteType noteType, Invoice invoice) {
+    if (CollectionUtils.isEmpty(invoice.getInvoiceNoteList())) {
+      return false;
+    }
     return invoice.getInvoiceNoteList().stream()
         .anyMatch(n -> n.getInvoiceNoteType().equals(noteType));
   }
@@ -81,10 +90,18 @@ public class InvoiceNoteCreationHelper {
     }
 
     String noteContent = "";
-    if (!StringUtils.isBlank(company.getAccountConfig().getTermsAndConditions())) {
-      noteContent = company.getAccountConfig().getTermsAndConditions();
-      if (!StringUtils.isBlank(company.getAccountConfig().getInvoiceClientBox())) {
-        noteContent += "\n" + company.getAccountConfig().getInvoiceClientBox();
+    String termsAndConditions =
+        Optional.ofNullable(company.getAccountConfig())
+            .map(AccountConfig::getTermsAndConditions)
+            .orElse(null);
+    if (!StringUtils.isBlank(termsAndConditions)) {
+      noteContent = termsAndConditions;
+      String invoiceClientBox =
+          Optional.ofNullable(company.getAccountConfig())
+              .map(AccountConfig::getInvoiceClientBox)
+              .orElse(null);
+      if (!StringUtils.isBlank(invoiceClientBox)) {
+        noteContent += "\n" + invoiceClientBox;
       }
     }
     if (StringUtils.isBlank(noteContent)) {
@@ -121,7 +138,10 @@ public class InvoiceNoteCreationHelper {
       return;
     }
 
-    String noteContent = company.getAccountConfig().getSaleInvoiceLegalNote();
+    String noteContent =
+        Optional.ofNullable(company.getAccountConfig())
+            .map(AccountConfig::getSaleInvoiceLegalNote)
+            .orElse(null);
     if (StringUtils.isBlank(noteContent)) {
       logger.info(
           "No content to display for note PMT, lump sum indemnity. Note creation was skipped");
@@ -138,7 +158,10 @@ public class InvoiceNoteCreationHelper {
       return;
     }
 
-    String noteContent = company.getAccountConfig().getPenaltyRateNote();
+    String noteContent =
+        Optional.ofNullable(company.getAccountConfig())
+            .map(AccountConfig::getPenaltyRateNote)
+            .orElse(null);
     if (StringUtils.isBlank(noteContent)) {
       logger.info(
           "No content to display for note PMD, late interest charges. Note creation was skipped");
@@ -191,6 +214,11 @@ public class InvoiceNoteCreationHelper {
 
     AccountConfig accountConfig =
         Beans.get(AccountConfigService.class).getAccountConfig(invoice.getCompany());
+
+    if (accountConfig == null) {
+      return;
+    }
+
     if (!accountConfig.getDisplayItemsCategoriesOnPrinting()) {
       return;
     }
@@ -198,6 +226,11 @@ public class InvoiceNoteCreationHelper {
     String invoiceCategory = invoice.getInvoiceCategorySelect();
     if (Strings.isNullOrEmpty(invoiceCategory)) {
       logger.info("No invoice category defined. Note creation was skipped");
+      return;
+    }
+
+    if (CollectionUtils.isEmpty(accountConfig.getStatementsForItemsCategoriesList())) {
+      logger.info("No statements for items categories defined. Note creation was skipped");
       return;
     }
 
