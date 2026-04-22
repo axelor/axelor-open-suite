@@ -18,39 +18,49 @@
  */
 package com.axelor.apps.account.service.note;
 
-import com.axelor.apps.account.db.*;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceNoteTypeRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.i18n.I18n;
+import com.axelor.apps.base.db.Company;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InvoiceNoteServiceImpl implements InvoiceNoteService {
 
-  protected AccountConfigService accountConfigService;
+  protected final AccountConfigService accountConfigService;
+  protected final InvoiceNoteTypeRepository invoiceNoteTypeRepository;
+  protected final Logger LOG = LoggerFactory.getLogger(InvoiceNoteServiceImpl.class);
 
   @Inject
-  public InvoiceNoteServiceImpl(AccountConfigService accountConfigService) {
+  public InvoiceNoteServiceImpl(
+      AccountConfigService accountConfigService,
+      InvoiceNoteTypeRepository invoiceNoteTypeRepository) {
     this.accountConfigService = accountConfigService;
+    this.invoiceNoteTypeRepository = invoiceNoteTypeRepository;
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public void generateInvoiceNote(Invoice invoice) throws AxelorException {
-    InvoiceNoteCreationHelper.generateFinancialDiscountNote(invoice);
-  }
+    Company company = invoice.getCompany();
 
-  @Override
-  public void generateInvoiceCategoryNote(Invoice invoice) throws AxelorException {
-    clearExistingCategoryNotes(invoice);
+    InvoiceNoteCreationHelper.generateGeneralInformationNote(invoice, company);
+
+    InvoiceNoteCreationHelper.generateSellerLegalInformationNote(invoice, company);
+
+    InvoiceNoteCreationHelper.generateLumpSumIndemnityNote(invoice, company);
+
+    InvoiceNoteCreationHelper.generateLateInterestChargesNote(invoice, company);
+
+    InvoiceNoteCreationHelper.generateLegalFormAndCapitalNote(invoice, company);
+
+    InvoiceNoteCreationHelper.generateSupplierNote(invoice);
+
+    InvoiceNoteCreationHelper.generateFinancialDiscountNote(invoice, invoice.getCompany());
+
     InvoiceNoteCreationHelper.generateInvoiceCategoryNote(invoice);
-  }
-
-  protected void clearExistingCategoryNotes(Invoice invoice) {
-    if (invoice.getInvoiceNoteList() == null || invoice.getInvoiceNoteList().isEmpty()) {
-      return;
-    }
-    InvoiceNoteType noteTypeREG =
-        InvoiceNoteCreationHelper.getOrCreateInvoiceNoteType(
-            "REG", I18n.get("Regulatory information"));
-    invoice.getInvoiceNoteList().removeIf(n -> noteTypeREG.equals(n.getInvoiceNoteType()));
   }
 }
