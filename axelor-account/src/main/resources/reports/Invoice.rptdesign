@@ -689,18 +689,11 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <text-property name="heading">legal_notice</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">supplierVatSystemSelect</property>
-                    <property name="alias">supplierVatSystemSelect</property>
+                    <property name="columnName">vatSystemSelect</property>
+                    <property name="alias">vatSystemSelect</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">supplierVatSystemSelect</text-property>
-                    <text-property name="heading">supplierVatSystemSelect</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">companyVatSystemSelect</property>
-                    <property name="alias">companyVatSystemSelect</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">companyVatSystemSelect</text-property>
-                    <text-property name="heading">companyVatSystemSelect</text-property>
+                    <text-property name="displayName">vatSystemSelect</text-property>
+                    <text-property name="heading">vatSystemSelect</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">display_siren</property>
@@ -1113,56 +1106,51 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     </structure>
                     <structure>
                         <property name="position">67</property>
-                        <property name="name">supplierVatSystemSelect</property>
+                        <property name="name">vatSystemSelect</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">68</property>
-                        <property name="name">companyVatSystemSelect</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">69</property>
                         <property name="name">display_siren</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">70</property>
+                        <property name="position">69</property>
                         <property name="name">invoice_product_statement</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">71</property>
+                        <property name="position">70</property>
                         <property name="name">displayItemsCategoriesOnPrinting</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">72</property>
+                        <property name="position">71</property>
                         <property name="name">tableFontSize</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">73</property>
+                        <property name="position">72</property>
                         <property name="name">number_of_decimals</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">74</property>
+                        <property name="position">73</property>
                         <property name="name">invoiceCoefficientEnabled</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">75</property>
+                        <property name="position">74</property>
                         <property name="name">isExpenseLineOnInvoiceGrouped</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">76</property>
+                        <property name="position">75</property>
                         <property name="name">groupingPeriodSelect</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">77</property>
+                        <property name="position">76</property>
                         <property name="name">displayExpenseOnPrinting</property>
                         <property name="dataType">integer</property>
                     </structure>
@@ -1568,66 +1556,60 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </structure>
                 <structure>
                     <property name="position">67</property>
-                    <property name="name">supplierVatSystemSelect</property>
-                    <property name="nativeName">supplierVatSystemSelect</property>
+                    <property name="name">vatSystemSelect</property>
+                    <property name="nativeName">vatSystemSelect</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="position">68</property>
-                    <property name="name">companyVatSystemSelect</property>
-                    <property name="nativeName">companyVatSystemSelect</property>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="position">69</property>
                     <property name="name">display_siren</property>
                     <property name="nativeName">display_siren</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">70</property>
+                    <property name="position">69</property>
                     <property name="name">invoice_product_statement</property>
                     <property name="nativeName">invoice_product_statement</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">71</property>
+                    <property name="position">70</property>
                     <property name="name">displayItemsCategoriesOnPrinting</property>
                     <property name="nativeName">displayItemsCategoriesOnPrinting</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">72</property>
+                    <property name="position">71</property>
                     <property name="name">tableFontSize</property>
                     <property name="nativeName">tableFontSize</property>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="position">73</property>
+                    <property name="position">72</property>
                     <property name="name">number_of_decimals</property>
                     <property name="nativeName">number_of_decimals</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">74</property>
+                    <property name="position">73</property>
                     <property name="name">invoiceCoefficientEnabled</property>
                     <property name="nativeName">invoiceCoefficientEnabled</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">75</property>
+                    <property name="position">74</property>
                     <property name="name">isExpenseLineOnInvoiceGrouped</property>
                     <property name="nativeName">isExpenseLineOnInvoiceGrouped</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">76</property>
+                    <property name="position">75</property>
                     <property name="name">groupingPeriodSelect</property>
                     <property name="nativeName">groupingPeriodSelect</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">77</property>
+                    <property name="position">76</property>
                     <property name="name">displayExpenseOnPrinting</property>
                     <property name="nativeName">displayExpenseOnPrinting</property>
                     <property name="dataType">integer</property>
@@ -4606,8 +4588,7 @@ RETURNS table(
     "isStockMoveEmpty" boolean,
     "displayStockMoveOnInvoicePrinting" boolean,
     "legal_notice" text,
-    "supplierVatSystemSelect" int,
-    "companyVatSystemSelect" int,
+    "vatSystemSelect" int,
     "display_siren" boolean,
     "invoice_product_statement" varchar,
     "displayItemsCategoriesOnPrinting" boolean,
@@ -4689,8 +4670,7 @@ select distinct
     InvoiceStockMove is not null as "isStockMoveEmpty",
     Invoice.display_stock_move_on_invoice_printing as "displayStockMoveOnInvoicePrinting",
 	Invoice.legal_notice as "legal_notice",
-	SupplierAccountingSituation.vat_system_select as "supplierVatSystemSelect",
-	CompanyAccountingSituation.vat_system_select as "companyVatSystemSelect",
+	Invoice.vat_liability_select as "vatSystemSelect",
 	(SELECT display_partner_siren_on_invoice_printing FROM account_account_config WHERE company = Company.id) as "display_siren",
 	Invoice.invoice_product_statement,
 	AccountConfig.display_items_categories_on_printing as "displayItemsCategoriesOnPrinting",
@@ -4720,8 +4700,6 @@ left outer join base_trading_name as TradingName on (TradingName.id = Invoice.tr
 left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
 left outer join account_invoice as OriginalInvoice on (Invoice.original_invoice = OriginalInvoice.id)
 left outer join account_invoice_stock_move_set as InvoiceStockMove on (InvoiceStockMove.invoice_set = Invoice.id)
-left outer join account_accounting_situation as SupplierAccountingSituation on (Partner.id = SupplierAccountingSituation.partner and Invoice.company = SupplierAccountingSituation.company)
-left outer join account_accounting_situation as CompanyAccountingSituation on (CompanyPartner.id = CompanyAccountingSituation.partner and Invoice.company = CompanyAccountingSituation.company)
 where Invoice.id = InvoiceId;
 ELSE
 return query
@@ -4792,8 +4770,7 @@ select distinct
     InvoiceStockMove is not null as "isStockMoveEmpty",
     Invoice.display_stock_move_on_invoice_printing as "displayStockMoveOnInvoicePrinting",
 	Invoice.legal_notice as "legal_notice",
-	SupplierAccountingSituation.vat_system_select as "supplierVatSystemSelect",
-	CompanyAccountingSituation.vat_system_select as "companyVatSystemSelect",
+	Invoice.vat_liability_select as "vatSystemSelect",
 	(SELECT display_partner_siren_on_invoice_printing FROM account_account_config WHERE company = Company.id) as "display_siren",
 	Invoice.invoice_product_statement,
 	AccountConfig.display_items_categories_on_printing as "displayItemsCategoriesOnPrinting",
@@ -4823,8 +4800,6 @@ left outer join base_trading_name as TradingName on (TradingName.id = Invoice.tr
 left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
 left outer join account_invoice as OriginalInvoice on (Invoice.original_invoice = OriginalInvoice.id)
 left outer join account_invoice_stock_move_set as InvoiceStockMove on (InvoiceStockMove.invoice_set = Invoice.id)
-left outer join account_accounting_situation as SupplierAccountingSituation on (Partner.id = SupplierAccountingSituation.partner and Invoice.company = SupplierAccountingSituation.company)
-left outer join account_accounting_situation as CompanyAccountingSituation on (CompanyPartner.id = CompanyAccountingSituation.partner and Invoice.company = CompanyAccountingSituation.company)
 where Invoice.id = InvoiceId;
 END IF;
 END;
@@ -5567,15 +5542,9 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">supplierVatSystemSelect</property>
-                    <text-property name="displayName">supplierVatSystemSelect</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["supplierVatSystemSelect"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">companyVatSystemSelect</property>
-                    <text-property name="displayName">companyVatSystemSelect</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["companyVatSystemSelect"]</expression>
+                    <property name="name">vatSystemSelect</property>
+                    <text-property name="displayName">vatSystemSelect</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["vatSystemSelect"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
@@ -9996,15 +9965,9 @@ else{ 1.00 }
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">supplierVatSystemSelect</property>
-                    <text-property name="displayName">supplierVatSystemSelect</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["supplierVatSystemSelect"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">companyVatSystemSelect</property>
-                    <text-property name="displayName">companyVatSystemSelect</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["companyVatSystemSelect"]</expression>
+                    <property name="name">vatSystemSelect</property>
+                    <text-property name="displayName">vatSystemSelect</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["vatSystemSelect"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
@@ -11067,8 +11030,7 @@ else{ 1.00 }
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">((row._outer["operation_type_select"] == 1 || row._outer["operation_type_select"] == 2) &amp;&amp; row._outer["supplierVatSystemSelect"] != 2)
-                                                    || ((row._outer["operation_type_select"] == 3 || row._outer["operation_type_select"] ==  4) &amp;&amp; row._outer["companyVatSystemSelect"] != 2)</expression>
+                                                <expression name="valueExpr" type="javascript">row._outer["vatSystemSelect"] != 2</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="paramBindings">
@@ -12473,15 +12435,9 @@ else {'Invoice.totalTaxes'}</value>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
-                                    <property name="name">supplierVatSystemSelect</property>
-                                    <text-property name="displayName">supplierVatSystemSelect</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["supplierVatSystemSelect"]</expression>
-                                    <property name="dataType">integer</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">companyVatSystemSelect</property>
-                                    <text-property name="displayName">companyVatSystemSelect</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["companyVatSystemSelect"]</expression>
+                                    <property name="name">vatSystemSelect</property>
+                                    <text-property name="displayName">vatSystemSelect</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["vatSystemSelect"]</expression>
                                     <property name="dataType">integer</property>
                                 </structure>
                                 <structure>
@@ -14061,15 +14017,9 @@ else {'Invoice.totalTaxes'}</value>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">supplierVatSystemSelect</property>
-                    <text-property name="displayName">supplierVatSystemSelect</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["supplierVatSystemSelect"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">companyVatSystemSelect</property>
-                    <text-property name="displayName">companyVatSystemSelect</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["companyVatSystemSelect"]</expression>
+                    <property name="name">vatSystemSelect</property>
+                    <text-property name="displayName">vatSystemSelect</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["vatSystemSelect"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>

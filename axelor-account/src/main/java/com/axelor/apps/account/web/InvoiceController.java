@@ -55,6 +55,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidatorSyncServic
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.InvoiceVatLiabilityService;
 import com.axelor.apps.account.service.invoice.LatePaymentInterestInvoiceService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupService;
@@ -1605,6 +1606,17 @@ public class InvoiceController {
       Beans.get(InvoiceTermDateComputeService.class).fillWithInvoiceDueDate(invoice);
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeVatLiability(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      Integer vatLiability =
+          Beans.get(InvoiceVatLiabilityService.class).computeVatLiability(invoice);
+      response.setValue("vatSystemSelect", vatLiability);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
@@ -42,7 +43,32 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
   }
 
   @Override
-  public int calculateVatSystem(
+  public int calculateVatSystem(Integer vatSystemSelect, Account account) throws AxelorException {
+    if (vatSystemSelect == null) {
+      if (account != null) {
+        return account.getVatSystemSelect();
+      }
+      return MoveLineRepository.VAT_SYSTEM_DEFAULT;
+    }
+
+    switch (vatSystemSelect) {
+      case InvoiceRepository.VAT_LIABILITY_STANDARD_REGIME:
+        if (account != null) {
+          return account.getVatSystemSelect();
+        }
+        return MoveLineRepository.VAT_CASH_PAYMENTS;
+      case InvoiceRepository.VAT_LIABILITY_OPTION_ON_DELIVERIES:
+        return MoveLineRepository.VAT_COMMON_SYSTEM;
+      default:
+        if (account != null) {
+          return account.getVatSystemSelect();
+        }
+        return MoveLineRepository.VAT_SYSTEM_DEFAULT;
+    }
+  }
+
+  @Override
+  public Integer resolveVatLiabilityFromAccountingSituation(
       Partner partner, Company company, Account account, boolean isExpense, boolean isSale)
       throws AxelorException {
     AccountingSituation accountingSituation = null;
@@ -55,21 +81,15 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
           accountingSituationRepository.findByCompanyAndPartner(company, company.getPartner());
     }
     if (accountingSituation != null) {
-      if (account != null
-          && accountingSituation.getVatSystemSelect()
-              == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
-        return account.getVatSystemSelect();
+      if (accountingSituation.getVatSystemSelect()
+          == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
+        return InvoiceRepository.VAT_LIABILITY_STANDARD_REGIME;
       } else if (accountingSituation.getVatSystemSelect()
           == AccountingSituationRepository.VAT_DELIVERY) {
-        return MoveLineRepository.VAT_COMMON_SYSTEM;
-      } else if (accountingSituation.getVatSystemSelect()
-          == AccountingSituationRepository.VAT_COMMON_SYSTEM) {
-        return MoveLineRepository.VAT_CASH_PAYMENTS;
+        return InvoiceRepository.VAT_LIABILITY_OPTION_ON_DELIVERIES;
       }
-    } else if (account != null) {
-      return account.getVatSystemSelect();
     }
-    return MoveLineRepository.VAT_SYSTEM_DEFAULT;
+    return null;
   }
 
   public void checkExpenseVatSystemPreconditions(Partner partner, Company company, Account account)
