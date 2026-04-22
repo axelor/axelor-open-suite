@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceCategoryService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
@@ -36,13 +37,10 @@ import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
-import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -84,18 +82,18 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       CancelFactory cancelFactory,
       InvoiceRepository invoiceRepo,
       AppAccountService appAccountService,
-      PartnerService partnerService,
+      com.axelor.apps.base.service.PartnerService partnerService,
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       MoveToolService moveToolService,
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
-      AppBaseService appBaseService,
-      InvoiceProductStatementService invoiceProductStatementService,
+      com.axelor.apps.base.service.app.AppBaseService appBaseService,
       TemplateMessageService templateMessageService,
       InvoiceTermFilterService invoiceTermFilterService,
       InvoicePrintService invoicePrintService,
       InvoiceTermPfpToolService invoiceTermPfpToolService,
+      InvoiceCategoryService invoiceCategoryService,
       InvoiceLineRepository invoiceLineRepo,
       IntercoService intercoService,
       StockMoveRepository stockMoveRepository) {
@@ -112,11 +110,11 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         invoiceTermService,
         invoiceTermPfpService,
         appBaseService,
-        invoiceProductStatementService,
         templateMessageService,
         invoiceTermFilterService,
         invoicePrintService,
-        invoiceTermPfpToolService);
+        invoiceTermPfpToolService,
+        invoiceCategoryService);
     this.invoiceLineRepo = invoiceLineRepo;
     this.intercoService = intercoService;
     this.stockMoveRepository = stockMoveRepository;

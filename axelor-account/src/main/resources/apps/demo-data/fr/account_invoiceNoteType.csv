@@ -3,7 +3,7 @@
 2;"AAI";"Information générale"
 3;"ABL";"Informations légales du vendeur (RCS,SIREN, APE)"
 4;"ACC";"Clause de subrogation (affacturage)"
-5;"ADN";"Type de transaction"
+5;"ADN";"Permet d'indiquer le fait que la facture relève des obligations B2G en France"
 6;"BAR";"Nature du traitement"
 7;"BAQ";"Motif d'exemption de TVA"
 8;"BLU";"Eco-participation (DEEE)"

@@ -385,6 +385,10 @@
     <many-to-one name="saleInvoicesDetailsPrintTemplate"
       title="Sale invoices details template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
+    <string name="defaultInvoiceCategorySelect" title="Default invoice category"
+      selection="invoice.category.select"
+      help="This field defines the default value assigned to the invoice nature when it contains both goods lines and service lines (or lines without an associated product)."/>
+
     <finder-method name="findByCompany" using="company"/>
 
     <extra-code><![CDATA[

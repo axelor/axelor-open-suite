@@ -196,6 +196,8 @@ import com.axelor.apps.account.service.invoice.AdvancePaymentMoveLineCreateServi
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundServiceImpl;
 import com.axelor.apps.account.service.invoice.BankDetailsServiceAccount;
+import com.axelor.apps.account.service.invoice.InvoiceCategoryService;
+import com.axelor.apps.account.service.invoice.InvoiceCategoryServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceControlServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
@@ -258,8 +260,6 @@ import com.axelor.apps.account.service.invoice.attributes.InvoiceTermPaymentAttr
 import com.axelor.apps.account.service.invoice.attributes.InvoiceTermPaymentAttrsServiceImpl;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
-import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
-import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementServiceImpl;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupService;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupServiceImpl;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxRecordService;
@@ -390,6 +390,8 @@ import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecor
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordServiceImpl;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryServiceImpl;
+import com.axelor.apps.account.service.note.InvoiceNoteService;
+import com.axelor.apps.account.service.note.InvoiceNoteServiceImpl;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateService;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeInterestRateService;
@@ -845,8 +847,6 @@ public class AccountModule extends AxelorModule {
 
     bind(AccountCustomerService.class).to(AccountCustomerServiceImpl.class);
 
-    bind(InvoiceProductStatementService.class).to(InvoiceProductStatementServiceImpl.class);
-
     bind(MoveLineAttrsService.class).to(MoveLineAttrsServiceImpl.class);
 
     bind(MoveLineCheckService.class).to(MoveLineCheckServiceImpl.class);
@@ -1040,5 +1040,8 @@ public class AccountModule extends AxelorModule {
     bind(InvoicePaymentAlertService.class).to(InvoicePaymentAlertServiceImpl.class);
 
     bind(MovePfpToolService.class).to(MovePfpToolServiceImpl.class);
+
+    bind(InvoiceNoteService.class).to(InvoiceNoteServiceImpl.class);
+    bind(InvoiceCategoryService.class).to(InvoiceCategoryServiceImpl.class);
   }
 }

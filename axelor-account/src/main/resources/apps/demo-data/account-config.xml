@@ -568,6 +568,9 @@
     <bind column="analyticDistributionTypeSelect" to="analyticDistributionTypeSelect"
       check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountConfig', 'analyticDistributionTypeSelect', analyticDistributionTypeSelect)"
       check-message="Invalid analyticDistributionTypeSelect"/>
+    <bind column="defaultInvoiceCategorySelect" to="defaultInvoiceCategorySelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountConfig', 'defaultInvoiceCategorySelect', defaultInvoiceCategorySelect)"
+      check-message="Invalid defaultInvoiceCategorySelect"/>
   </input>
 
   <input file="account_accountConfig_misc.csv" separator=";"
