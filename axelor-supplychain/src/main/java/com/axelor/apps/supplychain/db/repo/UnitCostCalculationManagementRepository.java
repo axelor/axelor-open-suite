@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.db.repo;
+package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.production.db.UnitCostCalculation;
+import com.axelor.apps.supplychain.db.UnitCostCalculation;
 import com.google.common.base.Strings;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;

@@ -3,12 +3,12 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.1.xsd">
 
-  <module name="production" package="com.axelor.apps.production.db"/>
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
   <entity name="UnitCostCalculation">
 
     <string name="unitCostCalcSeq" title="Calculation number"/>
-    <integer name="statusSelect" selection="production.cost.calculations.status.select"/>
+    <integer name="statusSelect" selection="supplychain.cost.calculations.status.select"/>
     <string name="name" title="Name"/>
     <string name="description" title="Description" large="true" multiline="true"/>
     <boolean name="allBomLevels" title="Calculate all BOM levels" default="true"/>
@@ -25,7 +25,7 @@
     <many-to-many name="productFamilySet" ref="com.axelor.apps.base.db.ProductFamily"
       title="Product families"/>
     <one-to-many name="unitCostCalcLineList"
-      ref="com.axelor.apps.production.db.UnitCostCalcLine" title="Results"
+      ref="com.axelor.apps.supplychain.db.UnitCostCalcLine" title="Results"
       mappedBy="unitCostCalculation"/>
 
     <extra-code><![CDATA[
