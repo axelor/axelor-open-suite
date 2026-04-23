@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+
+  <grid name="purchase-batch-grid" title="Purchase batches"
+    model="com.axelor.apps.purchase.db.PurchaseBatch">
+    <field name="actionSelect"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="createdOn"/>
+    <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
+  </grid>
+
+  <form onLoad="action-purchase-batch-attrs-action-select"
+    onNew="action-purchase-batch-record-on-new" name="purchase-batch-form" title="Purchase Batch"
+    model="com.axelor.apps.purchase.db.PurchaseBatch" width="large">
+    <panel name="mainPanel">
+      <field name="actionSelect" onChange="action-purchase-batch-attrs-action-select"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"
+        onChange="action-base-batch-condition-check-unique-code"/>
+      <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
+        grid-view="company-grid"/>
+      <field name="fetchLimit"
+        help="Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used."/>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel name="informationPanel" title="Information">
+        <field name="createdOn" title="Created on"/>
+        <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
+        <panel-dashlet name="batchListPanel" colSpan="12"
+          action="action-batch-method-show-batches" canSearch="true"/>
+      </panel>
+    </panel-tabs>
+    <panel name="actionsPanel" title="Actions" sidebar="true">
+      <button name="supplierReminderBatchBtn" title="Supplier reminder batch"
+        onClick="save,action-purchase-batch-method-run-batch" hidden="true"
+        showIf="actionSelect == 10"/>
+    </panel>
+  </form>
+
+  <action-record name="action-purchase-batch-record-on-new"
+    model="com.axelor.apps.purchase.db.PurchaseBatch">
+    <field name="createdOn" expr="eval:__config__.app.getTodayDateTime(null)"/>
+    <field name="createdOn"
+      expr="eval:__config__.app.getTodayDateTime(__user__.activeCompany)"
+      if="__user__.activeCompany != null"/>
+    <field name="createdOn"
+      expr="eval:__config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
+    <field name="createdBy" expr="eval:__user__"/>
+    <field name="company" expr="eval:__user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
+  </action-record>
+
+  <action-method name="action-purchase-batch-method-run-batch">
+    <call class="com.axelor.apps.purchase.web.PurchaseBatchController" method="runBatch"/>
+  </action-method>
+
+  <search-filters name="purchase-batch-filters"
+    model="com.axelor.apps.purchase.db.PurchaseBatch" title="Purchase batch filters">
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+  </search-filters>
+
+</object-views>

@@ -14,3 +14,35 @@
 <p>Best regards<br/>
 $PurchaseOrder.buyerUser.partner.firstName$ $PurchaseOrder.buyerUser.partner.name$</p>
 ";"$PurchaseOrder.contactPartner.emailAddress.address$";;;2
+"Relance fournisseur pour lignes de commande en retard";"Partner";2;;;;"false";"overdueLines";"Lignes de commande en retard";"<p>Madame, Monsieur $Partner.simpleFullName$,</p>
+
+<p>Nous vous contactons concernant les lignes de commande suivantes partiellement ou totalement non livrées au-delà de la date de réception estimée. Nous vous remercions de bien vouloir nous confirmer le nouveau calendrier de livraison ou nous informer de tout retard :</p>
+
+<table style=""border-collapse: collapse; width: 100%"" border=""1"">
+  <thead>
+    <tr style=""background-color: #f5f5f5"">
+      <th style=""padding: 8px; text-align: left"">Commande</th>
+      <th style=""padding: 8px; text-align: left"">Produit</th>
+      <th style=""padding: 8px; text-align: right"">Qté commandée</th>
+      <th style=""padding: 8px; text-align: right"">Qté reçue</th>
+      <th style=""padding: 8px; text-align: center"">Date de réception estimée</th>
+    </tr>
+  </thead>
+  <tbody>
+$overdueLines:{ line |
+    <tr>
+      <td style=""padding: 8px"">$line.purchaseOrder.purchaseOrderSeq$</td>
+      <td style=""padding: 8px"">$line.productName$</td>
+      <td style=""padding: 8px; text-align: right"">$line.qty; format=""%,10.2f""$$if(line.unit)$ $line.unit.labelToPrinting$$endif$</td>
+      <td style=""padding: 8px; text-align: right"">$line.receivedQty; format=""%,10.2f""$$if(line.unit)$ $line.unit.labelToPrinting$$endif$</td>
+      <td style=""padding: 8px; text-align: center"">$line.estimatedReceiptDate; format=""dd/MM/yyyy""$</td>
+    </tr>
+}$
+  </tbody>
+</table>
+
+<p>N’hésitez pas à nous contacter pour toute question relative à ces commandes.</p>
+
+<p>Cordialement,<br/>
+$__user__.activeCompany.name$</p>
+";"$Partner.emailAddress.address$";;;2

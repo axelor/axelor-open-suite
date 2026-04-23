@@ -41,6 +41,12 @@
 
   <grid model="com.axelor.apps.purchase.db.PurchaseOrderLine" title="PO lines"
     name="purchase-order-line-grid" canNew="false" canDelete="false" canEdit="false">
+    <menubar>
+      <menu name="purchaseOrderLineToolsMenu" title="Tools" icon="wrench" showTitle="true">
+        <item name="sendSupplierReminderItem" title="Send supplier reminder"
+          action="action-purchase-order-line-method-send-supplier-reminder"/>
+      </menu>
+    </menubar>
     <field name="$hasWarning" hidden="true"/>
     <button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true"
       icon="exclamation-triangle"/>
@@ -654,6 +660,11 @@
     name="action-purchase-order-line-attrs-display-different-unit-message">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController"
       method="differentUnitMessage"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-line-method-send-supplier-reminder">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController"
+      method="sendSupplierReminder"/>
   </action-method>
 
 </object-views>

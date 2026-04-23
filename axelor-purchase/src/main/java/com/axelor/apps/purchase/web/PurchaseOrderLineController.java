@@ -34,12 +34,16 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineWarningService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
+import com.axelor.apps.purchase.service.SupplierReminderService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.purchase.service.purchaseorderline.view.PurchaseOrderLineViewService;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -47,6 +51,7 @@ import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
 import jakarta.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -473,6 +478,46 @@ public class PurchaseOrderLineController {
           Beans.get(PurchaseOrderLineViewService.class).hideDeliveryPanel(purchaseOrderLine);
 
       response.setAttrs(attrs);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void sendSupplierReminder(ActionRequest request, ActionResponse response) {
+    try {
+      List<Object> selectedIds = (List<Object>) request.getContext().get("_ids");
+      if (CollectionUtils.isEmpty(selectedIds)) {
+        response.setAlert(
+            I18n.get(PurchaseExceptionMessage.PURCHASE_SUPPLIER_REMINDER_NO_LINES_SELECTED));
+        return;
+      }
+
+      List<Long> purchaseOrderLineIds =
+          selectedIds.stream()
+              .map(id -> Long.parseLong(id.toString()))
+              .collect(Collectors.toList());
+
+      List<PurchaseOrderLine> purchaseOrderLineList =
+          Beans.get(PurchaseOrderLineRepository.class)
+              .all()
+              .filter("self.id IN :ids")
+              .bind("ids", purchaseOrderLineIds)
+              .fetch();
+
+      SupplierReminderService supplierReminderService = Beans.get(SupplierReminderService.class);
+      List<PurchaseOrderLine> overduePurchaseOrderLineList =
+          supplierReminderService.getOverdueLines(purchaseOrderLineList);
+
+      if (CollectionUtils.isEmpty(overduePurchaseOrderLineList)) {
+        response.setInfo(
+            I18n.get(PurchaseExceptionMessage.PURCHASE_SUPPLIER_REMINDER_NO_OVERDUE_LINES));
+        return;
+      }
+
+      supplierReminderService.sendReminders(overduePurchaseOrderLineList);
+      response.setInfo(I18n.get("Supplier reminder email(s) sent successfully."));
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

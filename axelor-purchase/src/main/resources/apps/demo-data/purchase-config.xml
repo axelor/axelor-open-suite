@@ -142,6 +142,9 @@
       column="orderDate"/>
   </input>
 
+  <input file="base_template_context.csv" separator=";"
+    type="com.axelor.message.db.TemplateContext" search="self.name = :name"/>
+
   <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
     <bind column="name" to="name"
@@ -156,9 +159,21 @@
     <bind column="language" to="language"
       check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.message.db.Template', 'language', language)"
       check-message="Invalid language"/>
+    <bind to="templateContextList" search="self.name = :templateContext"
+      if="templateContext != null &amp;&amp; !templateContext.empty"/>
     <bind column="printTemplateSet_importId" to="printTemplateSet"
       search="self.importId in :printTemplateSet_importId"
       eval="printTemplateSet_importId.split('\\|') as List" update="true"/>
+  </input>
+
+  <input file="purchase_purchaseBatch.csv" separator=";"
+    type="com.axelor.apps.purchase.db.PurchaseBatch" search="self.code = :code">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+    <bind column="actionSelect" to="actionSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.purchase.db.PurchaseBatch', 'actionSelect', actionSelect)"
+      check-message="Invalid actionSelect"/>
   </input>
 
 </csv-inputs>

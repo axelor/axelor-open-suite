@@ -207,4 +207,14 @@
     <domain>self.concernedModel.name != 'InvoiceLine'</domain>
   </action-view>
 
+  <menuitem name="admin-root-batch-purchase" parent="admin-root-batch"
+    if="__config__.app.isApp('purchase')" if-module="axelor-purchase" title="Purchase batches"
+    action="admin.root.batch.purchase" order="1700"/>
+
+  <action-view name="admin.root.batch.purchase" title="Purchase batches"
+    model="com.axelor.apps.purchase.db.PurchaseBatch">
+    <view type="grid" name="purchase-batch-grid"/>
+    <view type="form" name="purchase-batch-form"/>
+  </action-view>
+
 </object-views>
