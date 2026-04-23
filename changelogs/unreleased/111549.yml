@@ -1,0 +1,3 @@
+---
+title: "Sale: fixed performance issue in sale order line loading caused by repeated DI resolution."
+module: axelor-sale
