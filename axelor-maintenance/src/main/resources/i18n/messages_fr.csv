@@ -125,6 +125,8 @@
 "Start","Débuter",,
 "Start date",,,
 "State",,,
+"This configuration allows you to define the default stock location for the company's components used for maintenance of production machines.","Cette configuration permet de définir l'emplacement de stock par défaut de la société des composants utilisés pour la maintenance des machines de production.",,
+"This configuration allows you to define the default virtual maintenance location for the company. This location will be used for maintenance of production machines.","Cette configuration permet de définir l'emplacement virtuel de maintenance par défaut de la société. Cet emplacement sera utilisé dans le cadre de la maintenance des machines de production.",,
 "Total Lead Duration","Durée totale de délai",,
 "Total Planned Duration",,,
 "Total Real Duration",,,

@@ -192,7 +192,8 @@
             grid-view="in-stock-move-manuf-order-grid" hideIf="isConsProOnOperation" colSpan="12"/>
         </panel>
       </panel>
-      <panel name="consumedProductsPanel" title="Consumed products" showIf="statusSelect >= 3">
+      <panel name="consumedProductsPanel" title="Consumed products"
+        showIf="!isConsProOnOperation &amp;&amp; statusSelect &gt;= 3">
         <button name="updatePlannedQtyBtn"
           title="Update planned quantities (Components and FP)"
           showIf="isConsProOnOperation &amp;&amp; statusSelect != 6 &amp;&amp; typeSelect != 2"
