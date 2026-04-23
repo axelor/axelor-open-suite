@@ -68,7 +68,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -554,8 +554,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
         "costPrice",
         unitCostCalcLine
             .getCostToApply()
-            .setScale(
-                appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP),
+            .setScale(appProductionService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP),
         unitCostCalcLine.getCompany());
 
     productService.updateSalePrice(product, unitCostCalcLine.getCompany());
