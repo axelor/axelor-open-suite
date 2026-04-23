@@ -88,6 +88,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected OperationOrderOutsourceService operationOrderOutsourceService;
   protected ProductService productService;
   protected ManufOrderTrackingNumberService manufOrderTrackingNumberService;
+  protected ManufOrderCostService manufOrderCostService;
 
   @Inject
   public ManufOrderWorkflowServiceImpl(
@@ -106,7 +107,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       ManufOrderOutsourceService manufOrderOutsourceService,
       OperationOrderOutsourceService operationOrderOutsourceService,
       ProductService productService,
-      ManufOrderTrackingNumberService manufOrderTrackingNumberService) {
+      ManufOrderTrackingNumberService manufOrderTrackingNumberService,
+      ManufOrderCostService manufOrderCostService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.manufOrderRepo = manufOrderRepo;
@@ -123,6 +125,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.operationOrderOutsourceService = operationOrderOutsourceService;
     this.productService = productService;
     this.manufOrderTrackingNumberService = manufOrderTrackingNumberService;
+    this.manufOrderCostService = manufOrderCostService;
   }
 
   @Override
@@ -142,6 +145,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     manufOrder.setRealStartDateT(
         Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
+    manufOrderCostService.computeRealCosts(manufOrder);
     manufOrderRepo.save(manufOrder);
     Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
   }
@@ -158,12 +162,13 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     }
 
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_STANDBY);
+    manufOrderCostService.computeLaborCost(manufOrder);
     manufOrderRepo.save(manufOrder);
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void resume(ManufOrder manufOrder) {
+  public void resume(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_STANDBY) {
@@ -173,6 +178,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     }
 
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
+    manufOrderCostService.computeLaborCost(manufOrder);
     manufOrderRepo.save(manufOrder);
   }
 
@@ -265,6 +271,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
     manufOrderOutgoingStockMoveService.setManufOrderOnOutgoingMove(manufOrder);
     manufOrderTrackingNumberService.setParentTrackingNumbers(manufOrder);
+    manufOrderCostService.computeRealCosts(manufOrder);
 
     Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
     manufOrderRepo.save(manufOrder);
@@ -367,6 +374,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
                 Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
     manufOrderStockMoveService.updatePrices(
         manufOrder, computeOneUnitProductionPrice(manufOrder, costSheet), plannedOutMoveIds);
+    manufOrderCostService.computeRealCosts(manufOrder);
     return sendPartialFinishMail(manufOrder);
   }
 

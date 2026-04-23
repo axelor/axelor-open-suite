@@ -60,6 +60,7 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
   protected ManufOrderOutsourceService manufOrderOutsourceService;
   protected AppBaseService appBaseService;
   protected AppProductionService appProductionService;
+  protected ManufOrderCostService manufOrderCostService;
 
   @Inject
   public ManufOrderCreatePurchaseOrderServiceImpl(
@@ -70,7 +71,8 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
       OperationOrderOutsourceService operationOrderOutsourceService,
       ManufOrderOutsourceService manufOrderOutsourceService,
       AppBaseService appBaseService,
-      AppProductionService appProductionService) {
+      AppProductionService appProductionService,
+      ManufOrderCostService manufOrderCostService) {
     this.purchaseOrderService = purchaseOrderService;
     this.purchaseOrderCreateService = purchaseOrderCreateService;
     this.stockConfigProductionService = stockConfigProductionService;
@@ -79,6 +81,7 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
     this.manufOrderOutsourceService = manufOrderOutsourceService;
     this.appBaseService = appBaseService;
     this.appProductionService = appProductionService;
+    this.manufOrderCostService = manufOrderCostService;
   }
 
   @Override
@@ -148,6 +151,7 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
       purchaseOrderService.computePurchaseOrder(purchaseOrder);
     }
 
+    manufOrderCostService.computeSubcontractingCost(manufOrder);
     manufOrderRepository.save(manufOrder);
   }
 

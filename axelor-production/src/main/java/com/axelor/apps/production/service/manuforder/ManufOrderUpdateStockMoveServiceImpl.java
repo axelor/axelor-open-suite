@@ -35,17 +35,20 @@ public class ManufOrderUpdateStockMoveServiceImpl implements ManufOrderUpdateSto
   protected ManufOrderService manufOrderService;
   protected StockMoveService stockMoveService;
   protected final StockMoveProductionService stockMoveProductionService;
+  protected ManufOrderCostService manufOrderCostService;
 
   @Inject
   public ManufOrderUpdateStockMoveServiceImpl(
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
       ManufOrderService manufOrderService,
       StockMoveService stockMoveService,
-      StockMoveProductionService stockMoveProductionService) {
+      StockMoveProductionService stockMoveProductionService,
+      ManufOrderCostService manufOrderCostService) {
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.manufOrderService = manufOrderService;
     this.stockMoveService = stockMoveService;
     this.stockMoveProductionService = stockMoveProductionService;
+    this.manufOrderCostService = manufOrderCostService;
   }
 
   @Override
@@ -59,6 +62,7 @@ public class ManufOrderUpdateStockMoveServiceImpl implements ManufOrderUpdateSto
     updateStockMoveFromManufOrder(
         consumedStockMoveLineList,
         manufOrderGetStockMoveService.getConsumedStockMoveFromManufOrder(manufOrder));
+    manufOrderCostService.computeMaterialCost(manufOrder);
   }
 
   @Override

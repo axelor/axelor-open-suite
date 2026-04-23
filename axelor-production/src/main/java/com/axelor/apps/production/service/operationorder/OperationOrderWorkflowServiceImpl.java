@@ -30,6 +30,7 @@ import com.axelor.apps.production.db.repo.OperationOrderDurationRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.manuforder.ManufOrderCostService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.stock.db.StockMove;
@@ -57,6 +58,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   protected OperationOrderService operationOrderService;
   protected OperationOrderPlanningService operationOrderPlanningService;
   protected ManufOrderRepository manufOrderRepo;
+  protected ManufOrderCostService manufOrderCostService;
 
   @Inject
   public OperationOrderWorkflowServiceImpl(
@@ -69,7 +71,8 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
       OperationOrderService operationOrderService,
       OperationOrderPlanningService operationOrderPlanningService,
       ManufOrderStockMoveService manufOrderStockMoveService,
-      ManufOrderRepository manufOrderRepo) {
+      ManufOrderRepository manufOrderRepo,
+      ManufOrderCostService manufOrderCostService) {
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.operationOrderRepo = operationOrderRepo;
     this.operationOrderDurationRepo = operationOrderDurationRepo;
@@ -80,6 +83,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     this.operationOrderPlanningService = operationOrderPlanningService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.manufOrderRepo = manufOrderRepo;
+    this.manufOrderCostService = manufOrderCostService;
   }
 
   /**
@@ -173,6 +177,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
         operationOrder.addInStockMoveListItem(newStockMove);
       }
     }
+    manufOrderCostService.computeRealCosts(operationOrder.getManufOrder());
     operationOrderRepo.save(operationOrder);
 
     if (operationOrder.getManufOrder().getStatusSelect()
@@ -196,6 +201,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     stopOperationOrderDuration(operationOrder);
 
     pauseManufOrder(operationOrder);
+    manufOrderCostService.computeLaborCost(operationOrder.getManufOrder());
     operationOrderRepo.save(operationOrder);
   }
 
@@ -219,6 +225,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
       operationOrder.setStatusSelect(OperationOrderRepository.STATUS_STANDBY);
     }
     pauseManufOrder(operationOrder);
+    manufOrderCostService.computeLaborCost(operationOrder.getManufOrder());
     operationOrderRepo.save(operationOrder);
   }
 
@@ -226,14 +233,16 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
    * Resumes the given {@link OperationOrder} and sets its resuming time
    *
    * @param operationOrder An operation order
+   * @throws AxelorException
    */
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void resume(OperationOrder operationOrder) {
+  public void resume(OperationOrder operationOrder) throws AxelorException {
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_IN_PROGRESS);
 
     startOperationOrderDuration(operationOrder, AuthUtils.getUser());
     operationOrder.getManufOrder().setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
+    manufOrderCostService.computeLaborCost(operationOrder.getManufOrder());
     operationOrderRepo.save(operationOrder);
   }
 
@@ -255,6 +264,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
 
     operationOrderStockMoveService.finish(operationOrder);
     operationOrder = JpaModelHelper.ensureManaged(operationOrder);
+    manufOrderCostService.computeRealCosts(operationOrder.getManufOrder());
     operationOrderRepo.save(operationOrder);
     calculateHoursOfUse(operationOrder);
     manufOrderWorkflowService.setOperationOrderMaxPriority(operationOrder.getManufOrder());
@@ -326,6 +336,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
           .forEach(stockMoveLine -> stockMoveLine.setConsumedOperationOrder(null));
     }
     operationOrderStockMoveService.cancel(operationOrder);
+    manufOrderCostService.computeRealCosts(operationOrder.getManufOrder());
 
     operationOrderRepo.save(operationOrder);
     manufOrderWorkflowService.setOperationOrderMaxPriority(operationOrder.getManufOrder());
