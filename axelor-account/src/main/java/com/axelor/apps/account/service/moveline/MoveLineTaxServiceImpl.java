@@ -64,7 +64,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
 public class MoveLineTaxServiceImpl implements MoveLineTaxService {
-  private static final int RETURNED_SCALE = 6;
+  protected static final int RETURNED_SCALE = 6;
   protected MoveLineRepository moveLineRepository;
   protected TaxPaymentMoveLineService taxPaymentMoveLineService;
   protected AppBaseService appBaseService;

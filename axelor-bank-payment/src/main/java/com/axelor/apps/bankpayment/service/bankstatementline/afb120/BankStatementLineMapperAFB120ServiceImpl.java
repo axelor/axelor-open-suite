@@ -45,7 +45,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
   protected static final String MOVEMENT_OPERATION_CODE = "04";
   protected static final String COMPLEMENT_MOVEMENT_OPERATION_CODE = "05";
   protected static final String NEW_BALANCE_OPERATION_CODE = "07";
-  private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("ddMMyy");
+  protected static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("ddMMyy");
 
   @Inject
   public BankStatementLineMapperAFB120ServiceImpl(

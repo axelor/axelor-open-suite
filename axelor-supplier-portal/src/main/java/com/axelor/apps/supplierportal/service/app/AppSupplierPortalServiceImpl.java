@@ -26,7 +26,7 @@ import jakarta.inject.Singleton;
 @Singleton
 public class AppSupplierPortalServiceImpl implements AppSupplierPortalService {
 
-  private AppSupplierPortalRepository appSupplierPortalRepo;
+  protected AppSupplierPortalRepository appSupplierPortalRepo;
 
   @Inject
   public AppSupplierPortalServiceImpl(AppSupplierPortalRepository appSupplierPortalRepo) {

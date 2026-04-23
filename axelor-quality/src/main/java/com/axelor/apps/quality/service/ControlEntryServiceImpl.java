@@ -34,7 +34,7 @@ public class ControlEntryServiceImpl implements ControlEntryService {
     this.controlEntrySampleService = controlEntrySampleService;
   }
 
-  private static final String DEFAULT_SAMPLE_NAME = "-";
+  protected static final String DEFAULT_SAMPLE_NAME = "-";
 
   @Override
   @Transactional(rollbackOn = {Exception.class})

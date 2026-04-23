@@ -46,10 +46,10 @@ import org.slf4j.LoggerFactory;
 
 public class AddressTemplateServiceImpl implements AddressTemplateService {
 
-  private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected final String EMPTY_LINE_REMOVAL_REGEX = "(?m)^\\s*$(\\n|\\r\\n)";
-  private static final char TEMPLATE_DELIMITER = '$';
+  protected static final char TEMPLATE_DELIMITER = '$';
   protected GroovyTemplates groovyTemplates;
 
   @Inject
