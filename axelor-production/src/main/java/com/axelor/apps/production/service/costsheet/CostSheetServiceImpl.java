@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -606,37 +607,43 @@ public class CostSheetServiceImpl implements CostSheetService {
       return;
     }
 
-    List<StockMoveLine> receivedLines =
-        stockMoveLineRepository
-            .all()
-            .filter(
-                "self.purchaseOrderLine IN :polList"
-                    + " AND self.stockMove.statusSelect = :realized"
-                    + " AND self.stockMove.typeSelect = :incoming")
-            .bind("polList", eligiblePoLines)
-            .bind("realized", StockMoveRepository.STATUS_REALIZED)
-            .bind("incoming", StockMoveRepository.TYPE_INCOMING)
-            .fetch();
+    BigDecimal ratio = costSheet.getManufOrderProducedRatio();
+    Map<String, List<PurchaseOrderLine>> poLinesByProductType =
+        eligiblePoLines.stream()
+            .filter(poLine -> poLine.getProduct() != null)
+            .collect(Collectors.groupingBy(poLine -> poLine.getProduct().getProductTypeSelect()));
+    List<PurchaseOrderLine> servicePoLines =
+        poLinesByProductType.getOrDefault(ProductRepository.PRODUCT_TYPE_SERVICE, List.of());
+    List<PurchaseOrderLine> storablePoLines =
+        poLinesByProductType.getOrDefault(ProductRepository.PRODUCT_TYPE_STORABLE, List.of());
+    Map<OutsourceKey, BigDecimal[]> outsourcedProductByKey = new HashMap<>();
 
-    Map<OutsourceKey, BigDecimal[]> receivedByKey = new HashMap<>();
-    for (StockMoveLine sml : receivedLines) {
-      OutsourceKey key = new OutsourceKey(sml.getPurchaseOrderLine());
-      BigDecimal[] totals =
-          receivedByKey.computeIfAbsent(
-              key, k -> new BigDecimal[] {BigDecimal.ZERO, BigDecimal.ZERO});
-      BigDecimal unitPrice =
-          sml.getCompanyUnitPriceUntaxed() != null
-              ? sml.getCompanyUnitPriceUntaxed()
-              : BigDecimal.ZERO;
-      totals[0] = totals[0].add(sml.getRealQty());
-      totals[1] = totals[1].add(sml.getRealQty().multiply(unitPrice));
+    for (PurchaseOrderLine poLine : servicePoLines) {
+      addServiceOutsourcedProduct(outsourcedProductByKey, poLine, ratio);
     }
 
-    BigDecimal ratio = costSheet.getManufOrderProducedRatio();
-    for (Entry<OutsourceKey, BigDecimal[]> entry : receivedByKey.entrySet()) {
+    if (!storablePoLines.isEmpty()) {
+      List<StockMoveLine> receivedLines =
+          stockMoveLineRepository
+              .all()
+              .filter(
+                  "self.purchaseOrderLine IN :polList"
+                      + " AND self.stockMove.statusSelect = :realized"
+                      + " AND self.stockMove.typeSelect = :incoming")
+              .bind("polList", storablePoLines)
+              .bind("realized", StockMoveRepository.STATUS_REALIZED)
+              .bind("incoming", StockMoveRepository.TYPE_INCOMING)
+              .fetch();
+
+      for (StockMoveLine stockMoveLine : receivedLines) {
+        addStorableOutsourcedProduct(outsourcedProductByKey, stockMoveLine, ratio);
+      }
+    }
+
+    for (Entry<OutsourceKey, BigDecimal[]> entry : outsourcedProductByKey.entrySet()) {
       OutsourceKey key = entry.getKey();
-      BigDecimal proratedQty = entry.getValue()[0].multiply(ratio);
-      BigDecimal proratedExTaxTotal = entry.getValue()[1].multiply(ratio);
+      BigDecimal proratedQty = entry.getValue()[0];
+      BigDecimal proratedExTaxTotal = entry.getValue()[1];
       costSheetLineService.createCostSheetLine(
           key.getProductName(),
           key.getProductCode(),
@@ -651,6 +658,34 @@ public class CostSheetServiceImpl implements CostSheetService {
           null,
           parentCostSheetLine);
     }
+  }
+
+  protected void addServiceOutsourcedProduct(
+      Map<OutsourceKey, BigDecimal[]> outsourcedProductByKey,
+      PurchaseOrderLine poLine,
+      BigDecimal ratio) {
+    OutsourceKey key = new OutsourceKey(poLine);
+    BigDecimal[] totals =
+        outsourcedProductByKey.computeIfAbsent(
+            key, k -> new BigDecimal[] {BigDecimal.ZERO, BigDecimal.ZERO});
+    totals[0] = totals[0].add(poLine.getQty().multiply(ratio));
+    totals[1] = totals[1].add(poLine.getCompanyExTaxTotal().multiply(ratio));
+  }
+
+  protected void addStorableOutsourcedProduct(
+      Map<OutsourceKey, BigDecimal[]> outsourcedProductByKey,
+      StockMoveLine stockMoveLine,
+      BigDecimal ratio) {
+    OutsourceKey key = new OutsourceKey(stockMoveLine.getPurchaseOrderLine());
+    BigDecimal[] totals =
+        outsourcedProductByKey.computeIfAbsent(
+            key, k -> new BigDecimal[] {BigDecimal.ZERO, BigDecimal.ZERO});
+    BigDecimal unitPrice =
+        stockMoveLine.getCompanyUnitPriceUntaxed() != null
+            ? stockMoveLine.getCompanyUnitPriceUntaxed()
+            : BigDecimal.ZERO;
+    totals[0] = totals[0].add(stockMoveLine.getRealQty().multiply(ratio));
+    totals[1] = totals[1].add(stockMoveLine.getRealQty().multiply(unitPrice).multiply(ratio));
   }
 
   protected List<PurchaseOrderLine> getEligiblePoLines(ManufOrder manufOrder) {
