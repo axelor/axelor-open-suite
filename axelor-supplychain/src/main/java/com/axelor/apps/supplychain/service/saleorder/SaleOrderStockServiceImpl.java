@@ -587,6 +587,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
                 saleOrderLine.getId(),
                 StockMoveRepository.STATUS_DRAFT,
                 StockMoveRepository.STATUS_PLANNED)
+            .autoFlush(false)
             .count();
 
     return stockMoveLineCount > 0;
