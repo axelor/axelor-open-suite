@@ -189,7 +189,8 @@ public class SFTPFileTransfertSession implements FileTransfertSession {
 
     String privateKeyFileName = null;
     if (fileSourceConnector.getKeyFile() != null) {
-      privateKeyFileName = fileSourceConnector.getKeyFile().getFileName();
+      privateKeyFileName =
+          MetaFiles.getPath(fileSourceConnector.getKeyFile()).toAbsolutePath().toString();
     }
     try {
       this.session =
