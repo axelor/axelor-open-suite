@@ -81,8 +81,9 @@
           <field name="subcontractor" colSpan="4" showIf="outsourcing"
             form-view="partner-form" grid-view="partner-grid" domain="self.isSubcontractor = true"/>
           <field name="generatePurchaseOrderOnMoPlanning" colSpan="4" showIf="outsourcing"/>
-          <field name="generatedPurchaseOrderProductSet" colSpan="8" showIf="outsourcing"
-            widget="TagSelect" form-view="product-form" grid-view="product-grid"/>
+          <field name="generatedPurchaseOrderProductSet" colSpan="8"
+            showIf="outsourcing &amp;&amp; generatePurchaseOrderOnMoPlanning" widget="TagSelect"
+            form-view="product-form" grid-view="product-grid"/>
         </panel>
         <field name="operationContinuity" colSpan="4"/>
       </panel>
