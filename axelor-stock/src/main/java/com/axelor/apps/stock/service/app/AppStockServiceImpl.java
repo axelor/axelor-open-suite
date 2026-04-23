@@ -26,8 +26,10 @@ import com.axelor.studio.db.AppStock;
 import com.axelor.studio.db.repo.AppStockRepository;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
+@Singleton
 public class AppStockServiceImpl implements AppStockService {
 
   @Inject private CompanyRepository companyRepo;
