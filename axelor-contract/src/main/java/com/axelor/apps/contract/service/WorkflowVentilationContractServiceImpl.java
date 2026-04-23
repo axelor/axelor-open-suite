@@ -33,6 +33,7 @@ import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
@@ -64,6 +65,7 @@ public class WorkflowVentilationContractServiceImpl
       AppBaseService appBaseService,
       SupplyChainConfigService supplyChainConfigService,
       StockMoveLineRepository stockMoveLineRepository,
+      StockMoveRepository stockMoveRepository,
       AppAccountService appAccountService,
       InvoiceFinancialDiscountService invoiceFinancialDiscountService,
       InvoiceTermService invoiceTermService,
@@ -84,6 +86,7 @@ public class WorkflowVentilationContractServiceImpl
         appBaseService,
         supplyChainConfigService,
         stockMoveLineRepository,
+        stockMoveRepository,
         appAccountService,
         invoiceFinancialDiscountService,
         invoiceTermService);

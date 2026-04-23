@@ -1,0 +1,3 @@
+---
+title: "Order/Stock move: fixed double invoicing possible when invoicing from Sale/Purchase order then from stock move."
+module: axelor-supplychain

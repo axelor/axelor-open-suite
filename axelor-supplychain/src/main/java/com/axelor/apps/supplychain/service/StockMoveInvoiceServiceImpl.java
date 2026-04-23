@@ -631,8 +631,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
 
-      BigDecimal qty =
-          stockMoveLine.getRealQty().subtract(computeNonCanceledInvoiceQty(stockMoveLine));
+      BigDecimal qtyInvoiced = stockMoveLine.getQtyInvoiced();
+      BigDecimal qty = stockMoveLine.getRealQty().subtract(qtyInvoiced);
       if (qty.compareTo(BigDecimal.ZERO) != 0) {
         Map<String, Object> stockMoveLineMap = new HashMap<>();
         stockMoveLineMap.put(
@@ -641,7 +641,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         stockMoveLineMap.put("productName", stockMoveLine.getProductName());
         stockMoveLineMap.put("remainingQty", qty);
         stockMoveLineMap.put("realQty", stockMoveLine.getRealQty());
-        stockMoveLineMap.put("qtyInvoiced", computeNonCanceledInvoiceQty(stockMoveLine));
+        stockMoveLineMap.put("qtyInvoiced", qtyInvoiced);
         stockMoveLineMap.put("qtyToInvoice", BigDecimal.ZERO);
         stockMoveLineMap.put("invoiceAll", false);
         stockMoveLineMap.put("stockMoveLineId", stockMoveLine.getId());
