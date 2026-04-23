@@ -1,0 +1,3 @@
+---
+title: "AppBase: fixed todayDateT field appearing twice on the form view."
+module: axelor-base
