@@ -247,7 +247,7 @@
     title="Cost calculations" action="manufacturing.root.cost.calculations" order="1400"/>
 
   <action-view name="manufacturing.root.cost.calculations" title="Cost calculations"
-    model="com.axelor.apps.production.db.UnitCostCalculation">
+    model="com.axelor.apps.supplychain.db.UnitCostCalculation">
     <view type="grid" name="cost-calculations-grid"/>
     <view type="form" name="cost-calculations-form"/>
   </action-view>

@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="cost-calculations-grid" title="Cost price calculation"
-    model="com.axelor.apps.production.db.UnitCostCalculation" orderBy="-statusSelect,-createdOn">
+    model="com.axelor.apps.supplychain.db.UnitCostCalculation" orderBy="-statusSelect,-createdOn">
     <field name="unitCostCalcSeq"/>
     <field name="name"/>
     <field name="calculationDateTime"/>
@@ -14,7 +14,7 @@
   </grid>
 
   <form name="cost-calculations-form" title="Cost price calculation"
-    model="com.axelor.apps.production.db.UnitCostCalculation" width="large"
+    model="com.axelor.apps.supplychain.db.UnitCostCalculation" width="large"
     onNew="action-unit-cost-calculation-record-default,action-unit-cost-calculation-attrs-set-company-required"
     onLoad="action-unit-cost-calculation-method-fill-company"
     onSave="save,action-unit-cost-calculation-method-fill-company-set">
@@ -96,7 +96,7 @@
   </form>
 
   <action-record name="action-unit-cost-calculation-record-default"
-    model="com.axelor.apps.production.db.UnitCostCalculation">
+    model="com.axelor.apps.supplychain.db.UnitCostCalculation">
     <field name="statusSelect" expr="eval:1"/>
   </action-record>
 
