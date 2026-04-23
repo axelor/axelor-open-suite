@@ -1,0 +1,3 @@
+---
+title: "File source connector: fixed SFTP private key path not resolved error."
+module: axelor-base
