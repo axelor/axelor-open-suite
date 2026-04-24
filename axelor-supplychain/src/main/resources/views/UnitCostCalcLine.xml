@@ -16,6 +16,25 @@
     <field name="costToApply" x-scale="2"/>
   </grid>
 
+  <grid name="depreciation-unit-cost-calc-line-grid" title="Results"
+    model="com.axelor.apps.supplychain.db.UnitCostCalcLine" editable="true" orderBy="product.code">
+    <hilite
+      if="($number(costToApply) &lt; $number(minRate)) || ($number(costToApply) &gt; $number(maxRate))"
+      background="red"/>
+    <field name="product.code"/>
+    <field name="product.name"/>
+    <field name="typeSelect" readonly="true"/>
+    <field name="qty" readonly="true"/>
+    <field name="previousCost" title="Stock unit value" readonly="true"/>
+    <field name="totalPrice" title="Total value" readonly="true"/>
+    <field name="computedCost" title="Computed value" readonly="true"/>
+    <field name="minRate" readonly="true"/>
+    <field name="maxRate" readonly="true"/>
+    <field name="costToApply" title="Rate to apply"
+      onChange="action-unit-cost-calc-line-group-cost-to-apply-onchange"/>
+    <field name="valuedGap" readonly="true"/>
+  </grid>
+
   <form name="unit-cost-calc-line-form" title="Results"
     model="com.axelor.apps.supplychain.db.UnitCostCalcLine" width="large"
     onLoad="action-unit-cost-calc-line-attrs-price-digits">
@@ -32,9 +51,58 @@
     </panel>
   </form>
 
+  <form name="depreciation-unit-cost-calc-line-form" title="Results"
+    model="com.axelor.apps.supplychain.db.UnitCostCalcLine" width="large"
+    onLoad="action-unit-cost-calc-line-attrs-price-digits">
+    <panel name="mainPanel">
+      <field name="unitCostCalculation" hidden="true"/>
+      <field name="product" readonly="true"/>
+      <field name="typeSelect" readonly="true"/>
+      <field name="qty" readonly="true"/>
+      <field name="totalPrice" title="Total value" readonly="true"/>
+      <field name="previousCost" title="Stock unit value" readonly="true"/>
+      <field name="computedCost" title="Computed value" readonly="true"/>
+      <field name="valuedGap" readonly="true"/>
+      <field name="minRate" readonly="true" x-scale="2"/>
+      <field name="maxRate" readonly="true" x-scale="2"/>
+      <field name="costToApply" title="Rate to apply"
+        onChange="action-unit-cost-calc-line-group-cost-to-apply-onchange"/>
+
+    </panel>
+  </form>
+
   <action-attrs name="action-unit-cost-calc-line-attrs-price-digits">
-    <attribute name="scale" for="previousCost,computedCost,costToApply"
+    <attribute name="scale"
+      for="previousCost,computedCost,costToApply,minRate,maxRate,totalPrice,valuedGap"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="qty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
+
+  <action-condition name="action-unit-cost-calc-line-condition-check-cost-to-apply">
+    <check field="costToApply" error="Check min or max rate"
+      if="eval: (costToApply &lt; minRate) || (costToApply &gt; maxRate)"/>
+  </action-condition>
+
+  <action-record name="action-unit-cost-calc-line-record-compute-valued-gap"
+    model="com.axelor.apps.supplychain.db.UnitCostCalcLine">
+    <field name="computedCost"
+      expr="eval: (previousCost != null &amp;&amp; costToApply != null)
+        ? (typeSelect == 2
+            ? previousCost * (1 + costToApply / 100)
+            : previousCost * (1 - costToApply / 100))
+        : previousCost"/>
+    <field name="valuedGap"
+      expr="eval: (qty != null &amp;&amp; previousCost != null &amp;&amp; costToApply != null)
+        ? (typeSelect == 2
+            ? qty * previousCost * (costToApply / 100)
+            : -1 * qty * previousCost * (costToApply / 100))
+        : java.math.BigDecimal.ZERO"/>
+  </action-record>
+
+  <action-group name="action-unit-cost-calc-line-group-cost-to-apply-onchange">
+    <action name="action-unit-cost-calc-line-condition-check-cost-to-apply"/>
+    <action name="action-unit-cost-calc-line-record-compute-valued-gap"/>
+  </action-group>
 
 </object-views>

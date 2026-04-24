@@ -14,6 +14,52 @@
 "%s requested reserved",,,
 "%s sale order",,,
 "%s stock location",,,
+"<>
+          <p>Write a <b>Groovy</b> expression that returns <code>true</code> when a product
+            should be classified in this category. The first category whose formula matches
+            (ordered by id) is assigned to the product by the batch
+            <b>""Update stock history""</b>.</p>
+          <table className=""table table-sm table-striped"">
+            <thead>
+              <tr>
+                <th>Variable</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>coverageInDays</code></td>
+                <td>BigDecimal</td>
+                <td>Stock coverage in days = currentStock / (salesLast12Months / 360)</td>
+              </tr>
+              <tr>
+                <td><code>salesLast12Months</code></td>
+                <td>BigDecimal</td>
+                <td>Sum of outgoing quantities over the last 12 months</td>
+              </tr>
+              <tr>
+                <td><code>currentStock</code></td>
+                <td>BigDecimal</td>
+                <td>Current total quantity (non-virtual stock locations)</td>
+              </tr>
+              <tr>
+                <td><code>stock6MonthsAgo</code></td>
+                <td>BigDecimal</td>
+                <td>Approximated stock quantity 6 months ago</td>
+              </tr>
+            </tbody>
+          </table>
+          <p><b>Examples</b></p>
+          <ul>
+            <li><code>coverageInDays &gt; 0 &amp;&amp; coverageInDays &lt; 60</code> - Fast movers</li>
+            <li><code>coverageInDays &gt;= 180 &amp;&amp; coverageInDays &lt; 365</code> - Slow movers</li>
+            <li><code>salesLast12Months == 0 &amp;&amp; currentStock &gt; 0</code> - Dead stock</li>
+            <li><code>stock6MonthsAgo &gt; 0 &amp;&amp; currentStock &gt; stock6MonthsAgo * 1.5</code> - Accumulating stock</li>
+          </ul>
+          <p><Badge bg=""info"">Tip</Badge> Ordering matters: put the most specific rules first.
+            The last one can use <code>true</code> as a catch-all fallback.</p>
+        </>",,,
 "<>This packaging is different from real packagings defined during shipping process. Design for only shipping cost estimation.</>",,,
 "A list of all product categories for which to run the batch (children categories are automatically included). All products will be processed if this list is left empty (note that the batch may take a long time to run if you have a lot of products).",,,
 "A list of sale order lines that will be processed. The lines that can be selected are the ones conforming to the following conditions :\nProduct is storable\nProduct is managed in stock\nProduct (and its category/family) is not excluded from mrp\nSale order/quotation has the same stockLocation or a subLocation\nIf MPS, product must be a finished product\nDelivered quantity of the line must be lower than total quantity\nThe line must conform to one or several of the mrp move types",,,
@@ -77,6 +123,7 @@
 "Available",,,
 "Available status",,,
 "Available stock",,,
+"Available variables",,,
 "Average product availability time in working days",,,
 "Average product delivery time in working days",,,
 "Batch update stock history :",,,
@@ -94,11 +141,15 @@
 "Both 'Generate invoice from sale order' and 'Generate invoice from stock move' are selected. It is recommended to select only one option at a time to avoid double invoicing.",,,
 "Building quantity",,,
 "Buyers",,,
+"Calculate all BOM levels",,,
 "Calculation End Date",,,
 "Calculation Start Date",,,
+"Calculation date",,,
 "Calculation ended",,,
 "Calculation in progress",,,
+"Calculation number",,,
 "Calculation started",,,
+"Calculation type",,,
 "Call for tenders",,,
 "Can only be cancelled from drafted or confirmed forecast.",,,
 "Can only be collected if validated.",,,
@@ -122,18 +173,24 @@
 "Change requested reserved qty",,,
 "Change reserved qty",,,
 "Changing the delivery partner updates the order’s delivery address. Would you like to update all lines with this new address?",,,
+"Check min or max rate",,,
 "Check stock compliance with stock rules",,,
 "Check stocks in a sale order",,,
 "Children packaging",,,
+"Choose one level: specific product, product category, product family, or stock rotation category",,,
 "Code",,,
 "Collected",,,
 "Comment",,,
 "Comments",,,
+"Companies",,,
 "Company",,,
 "Company for which the configurations are set.",,,
 "Complete sale order when all has been invoiced",,,
+"Comput. cost",,,
 "Compute sub stock locations",,,
+"Computed value",,,
 "Configuration",,,
+"Configuration Level",,,
 "Confirm",,,
 "Confirm Purchase order generation",,,
 "Confirmation",,,
@@ -145,6 +202,14 @@
 "Contact",,,
 "Contact partner",,,
 "Contract/Subscription",,,
+"Cost price calculation",,,
+"Cost review",,,
+"Cost review computed",,,
+"Cost review rate configuration",,,
+"Cost review updated",,,
+"Cost to apply",,,
+"Costs computed",,,
+"Costs updated",,,
 "Could not find MRP with sequence %s.",,,
 "Could not find eligible email template for stock rules: %s",,,
 "Could not find recipients for message generated from stock rules: %s",,,
@@ -168,9 +233,12 @@
 "Cumulative qty",,,
 "Current date",,,
 "Current date + days",,,
+"Current total inventory value (qty x previous cost).",,,
+"Current total quantity of the product across non-virtual stock locations.",,,
 "Cust. Invoices",,,
 "Customer",,,
 "Customer Stock Move to invoice",,,
+"Customer dedicated",,,
 "Customer deliveries filters",,,
 "Customer deliveries management",,,
 "Customer delivery",,,
@@ -192,6 +260,9 @@
 "Declarations of exchanges",,,
 "Default estimated date in stock move from purchase order",,,
 "Default estimated date in stock move from sale order",,,
+"Default rate",,,
+"Default rate to apply",,,
+"Default rate to apply when calculation runs",,,
 "Default stock location",,,
 "Delay",,,
 "Delay pricing",,,
@@ -210,6 +281,13 @@
 "Delivery or receipt state",,,
 "Delivery partner",,,
 "Delivery state",,,
+"Depreciation",,,
+"Depreciation rate",,,
+"Depreciation rate calculation",,,
+"Depreciation rate configuration",,,
+"Depreciation rate configurations",,,
+"Depreciation reduces the WAP, valorization increases it.",,,
+"Depreciation reduces the weighted average price. Valorization increases it.",,,
 "Description",,,
 "Direct order",,,
 "Direct order default stock location",,,
@@ -235,7 +313,9 @@
 "Expected realisation date",,,
 "Expected/Future Quantity",,,
 "Expedition",,,
+"Export",,,
 "Export directory is not configured.",,,
+"Failed to load depreciation rate import configuration.",,,
 "Fetch limit",,,
 "Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.",,,
 "Field fieldSelect is null for %s",,,
@@ -252,6 +332,7 @@
 "Forecasted supplier invoices",,,
 "Forecasts",,,
 "Format",,,
+"Formula",,,
 "Forwarder",,,
 "Freight Carrier",,,
 "Freight Carrier Delay",,,
@@ -288,6 +369,7 @@
 "Generate supply chain configurations",,,
 "Generate the invoice",,,
 "Generated sale order",,,
+"Groovy formula returning true if the product belongs to this category. Available variables: coverageInDays, salesLast12Months, currentStock, stock6MonthsAgo.",,,
 "Gross mass",,,
 "Growth coefficient",,,
 "Has carriage paid possibility",,,
@@ -303,16 +385,20 @@
 "If this configuration is enabled, when an availability request is made from a delivery note, a product stock check will be performed, and a warning message will appear if the stock quantities are insufficient.",,,
 "If you have enabled the stock configuration Separate shipment operations, it is then possible to request automatic allocation during an availability request. If so, a warning message will be displayed asking if you want to allocate the goods. If you refuse, only a reservation request will be made. This configuration is incompatible with the Auto request reserved qty option.",,,
 "Ignore end date",,,
+"Import",,,
+"Import CSV",,,
 "Include element without date",,,
 "Include elements with a date later than MRP end date.",,,
 "Include in DEB",,,
 "Include late sales",,,
+"Include only stock locations dedicated to customers",,,
 "Include sales with a planned delivery date in the past but which have not yet been delivered.",,,
 "Include title lines on stock move",,,
 "Incorrect product in the stock move %s",,,
 "Incoterm",,,
 "Indicators",,,
 "Information",,,
+"Input file",,,
 "Insurance date credit",,,
 "Interco",,,
 "Interco from invoice",,,
@@ -398,8 +484,14 @@
 "Mass Suppl. Stock Move Invoicing",,,
 "Mass invoicing",,,
 "Maturity",,,
+"Max. rate",,,
+"Maximum acceptable rate",,,
+"Maximum acceptable rate. Values above this will be flagged.",,,
 "Maximum level",,,
 "Min qty",,,
+"Min. rate",,,
+"Minimum acceptable rate",,,
+"Minimum acceptable rate. Values below this will be flagged.",,,
 "Missing",,,
 "Missing manuf order quantity",,,
 "Month",,,
@@ -468,12 +560,14 @@
 "Once this configuration is enabled, on delivery notes, real quantities are automatically filled based on planned quantities. If the configuration is disabled, real quantities must be filled manually upon shipment.",,,
 "Once this configuration is enabled, on receipt notes, real quantities are automatically filled based on planned quantities. If the configuration is disabled, real quantities must be filled manually upon receipt.",,,
 "One of the timetables has a percentage exceeding 100%.",,,
+"One or several rates are invalid.",,,
 "One or several stock move lines are not fully packaged.",,,
 "One-off sale outgoing quantity",,,
 "One-off sales",,,
 "One-off sales excluded",,,
 "One-off sales included",,,
 "One-off sales only",,,
+"Only CSV files are supported for import.",,,
 "Open sale order",,,
 "Operation choice",,,
 "Order %s",,,
@@ -536,11 +630,13 @@
 "Please select a forecasted invoice supplier account in the accounting batch",,,
 "Please select an element to run calculation",,,
 "Please select at least one line to generate a proposal.",,,
+"Please select at least one product, product category or product family.",,,
 "Please select one freight carrier pricing line.",,,
 "Please uncheck picking order edited box from this stock move from Cust. Shipment to prepare menu entry.",,,
 "Please validate the purchase order before invoicing.",,,
 "Please, select a currency for the order %s",,,
 "Please, select a supplier for the line %s",,,
+"Previous cost",,,
 "Price",,,
 "Pricing",,,
 "Pricing rules",,,
@@ -553,12 +649,17 @@
 "Product Type",,,
 "Product cannot be regenerated because delivered / invoiced sale order lines are using it.",,,
 "Product categories",,,
+"Product category",,,
+"Product category for this depreciation rate configuration",,,
 "Product code",,,
 "Product families",,,
+"Product family",,,
+"Product family for this depreciation rate configuration",,,
 "Product is missing.",,,
 "Product launches/withdrawal each month",,,
 "Product must be a packaging.",,,
 "Product stock for %s is not enough for availability request",,,
+"Product sub-types",,,
 "Product type",,,
 "Product type distribution",,,
 "Products",,,
@@ -588,9 +689,11 @@
 "Qty",,,
 "Qty remaining to package",,,
 "Qty to invoice",,,
+"Quantity",,,
 "Quantity cannot be lower than already delivered quantity on detail line %s.",,,
 "Quantity requested",,,
 "Quotations",,,
+"Rates",,,
 "Real Qty",,,
 "Real quantity",,,
 "Real/Current Quantity",,,
@@ -609,6 +712,7 @@
 "Result",,,
 "Results",,,
 "Returnable",,,
+"Rotation stock category",,,
 "Run calculation",,,
 "Run stock batch",,,
 "SO line",,,
@@ -656,11 +760,13 @@
 "Shipping cost",,,
 "Show Total",,,
 "Specific package",,,
+"Specific product for this depreciation rate configuration",,,
 "Standard",,,
 "Standard delay (days)",,,
 "Status",,,
 "Status considered to filter a purchase order",,,
 "Status considered to filter a sale order",,,
+"Status select",,,
 "Statuses to take into account",,,
 "Stock",,,
 "Stock Locations content",,,
@@ -684,6 +790,10 @@
 "Stock move(s) processed",,,
 "Stock moves",,,
 "Stock reservation feature cannot be active when we are managing stock locations on stock move line.",,,
+"Stock rotation categories",,,
+"Stock rotation category",,,
+"Stock rotation category (formula-based) for this depreciation rate configuration",,,
+"Stock unit value",,,
 "StockMove",,,
 "Subscription",,,
 "Subscription invoice generation report :",,,
@@ -728,6 +838,7 @@
 "The fiscal position must be the same for all purchase orders",,,
 "The fiscal position must be the same for all sale orders",,,
 "The following stock move lines are already associated with invoice lines and can not be splitted: %s",,,
+"The formula is not valid:",,,
 "The incoterm must be the same for all sale orders",,,
 "The incoterm must be the same for all sale orders.",,,
 "The interco configuration must be the same for all purchase orders",,,
@@ -819,6 +930,9 @@
 "Unit prices in A.T.I and in W.T. can't be mix",,,
 "Unselect",,,
 "Unsupported product type: %s",,,
+"Update costs",,,
+"Update costs date",,,
+"Update rates",,,
 "Update stock history",,,
 "Update stock history configuration",,,
 "Usable on purchase order",,,
@@ -829,6 +943,9 @@
 "Validate scenario",,,
 "Validated for invoicing",,,
 "Validation step for invoicing outgoing stock move",,,
+"Valorization",,,
+"Valuation difference after applying the rate: qty x (new cost - previous cost).",,,
+"Valued gap",,,
 "Verify product stock before availabity request",,,
 "Warn delay from supplier",,,
 "Warning : Estimated shipping date isn't updated due to pricing set on sale order.",,,
@@ -881,6 +998,8 @@
 "day(s)",,,
 "declarationOfExchanges.ProductType.product","Product",,
 "declarationOfExchanges.Service","Service",,
+"import.name",,,
+"import.verb",,,
 "mainPanel",,,
 "month(s)",,,
 "value:Delivered instead of",,,

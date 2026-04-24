@@ -436,4 +436,7 @@ public final class ProductionExceptionMessage {
 
   public static final String OUTSOURCING_SERVICE_PRODUCT_REAL_QTY_CHANGE_NOT_ALLOWED = /*$$(*/
       "The real quantity cannot be changed for service product '%s' on an outsourcing purchase order. Only full receipt is authorized." /*)*/;
+
+  public static final String DEPRECIATION_CALCULATION_INVALID_RATES = /*$$(*/
+      "One or several rates are invalid." /*)*/;
 }

@@ -25,11 +25,13 @@
     <extra-code><![CDATA[
       //origin
       public static final String ORIGIN_MANUAL_CORRECTION = "Manual correction";
+      public static final String ORIGIN_INVENTORY_DEPRECIATION = "Inventory depreciation";
       //Type select
       public static final String TYPE_SELECT_STOCK_MOVE = "stockMove";
       public static final String TYPE_SELECT_WAP_CORRECTION = "wapCorrection";
       public static final String TYPE_SELECT_CANCELATION = "cancelation";
       public static final String TYPE_SELECT_UPDATE_STOCK_LOCATION_FROM_PRODUCT = "updateStockLocationFromProduct";
+      public static final String TYPE_SELECT_INVENTORY_DEPRECIATION = "inventoryDepreciation";
     ]]></extra-code>
   </entity>
 

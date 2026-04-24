@@ -1,0 +1,6 @@
+"importId";"sequence";"code";"name";"color";"formula";"description"
+1;10;"NEW";"Nouveaux articles";"blue";"salesLast12Months == 0 && stock6MonthsAgo == 0 && currentStock > 0";"Produits tout juste introduits en stock : aucune vente passée et pas de stock il y a six mois."
+2;20;"FAST";"Rotation rapide";"green";"coverageInDays > 0 && coverageInDays < 60";"Produits à forte rotation avec moins de 2 mois de couverture de stock."
+3;30;"NORMAL";"Rotation normale";"indigo";"coverageInDays >= 60 && coverageInDays < 180";"Rotation régulière entre 2 et 6 mois de couverture."
+4;40;"SLOW";"Rotation lente";"orange";"coverageInDays >= 180 && coverageInDays < 365";"Rotation lente entre 6 et 12 mois de couverture."
+5;50;"DEAD";"Articles dormants";"red";"coverageInDays >= 365 || (salesLast12Months == 0 && currentStock > 0)";"Stock dormant : plus de 12 mois de couverture ou aucune vente sur la dernière année."

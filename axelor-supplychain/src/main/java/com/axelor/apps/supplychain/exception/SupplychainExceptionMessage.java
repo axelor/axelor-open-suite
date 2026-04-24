@@ -464,4 +464,19 @@ public final class SupplychainExceptionMessage {
 
   public static final String PACKAGING_LINE_STOCK_MOVE_LINE_NOT_VALID = /*$$(*/
       "This stock move line can not be chosen." /*)*/;
+
+  public static final String STOCK_ROTATION_CATEGORY_FORMULA_ERROR = /*$$(*/
+      "The formula is not valid: " /*)*/;
+
+  public static final String DEPRECIATION_CALCULATION_INVALID_RATES = /*$$(*/
+      "One or several rates are invalid." /*)*/;
+
+  public static final String DEPRECIATION_CHOOSE_FILTERS = /*$$(*/
+      "Please select at least one product, product category or product family." /*)*/;
+
+  public static final String DEPRECIATION_IMPORT_CSV_ERROR = /*$$(*/
+      "Only CSV files are supported for import." /*)*/;
+
+  public static final String DEPRECIATION_IMPORT_FAIL_ERROR = /*$$(*/
+      "Failed to load depreciation rate import configuration." /*)*/;
 }

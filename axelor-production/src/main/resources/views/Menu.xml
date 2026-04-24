@@ -250,6 +250,8 @@
     model="com.axelor.apps.supplychain.db.UnitCostCalculation">
     <view type="grid" name="cost-calculations-grid"/>
     <view type="form" name="cost-calculations-form"/>
+    <domain>self.typeSelect = 0</domain>
+    <context name="_typeSelect" expr="eval: 0"/>
   </action-view>
 
   <menuitem name="manufacturing-mps" parent="manufacturing-root" title="S&amp;OP/MPS"

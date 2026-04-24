@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+
+  <grid name="depreciation-rate-config-grid" title="Depreciation rate configurations"
+    model="com.axelor.apps.supplychain.db.DepreciationRateConfig" editable="true">
+    <field name="typeSelect"/>
+    <field name="product"
+      readonlyIf="productCategory || productFamily || stockRotationCategory"/>
+    <field name="productCategory"
+      readonlyIf="productFamily || stockRotationCategory || product"/>
+    <field name="productFamily"
+      readonlyIf="productCategory || stockRotationCategory || product"/>
+    <field name="stockRotationCategory"
+      readonlyIf="productCategory || productFamily || product"/>
+    <field name="minRate" x-scale="2"/>
+    <field name="maxRate" x-scale="2"/>
+    <field name="defaultRate" x-scale="2"/>
+  </grid>
+
+  <form name="depreciation-rate-config-form" title="Depreciation rate configuration"
+    model="com.axelor.apps.supplychain.db.DepreciationRateConfig" width="large">
+    <panel name="mainPanel" title="Configuration">
+      <panel name="typePanel" colSpan="12">
+        <field name="typeSelect" widget="NavSelect" required="true" colSpan="12"/>
+      </panel>
+      <panel name="levelPanel" colSpan="12" title="Configuration Level"
+        help="Choose one level: specific product, product category, product family, or stock rotation category">
+        <field name="product" grid-view="product-grid" form-view="product-form"
+          hideIf="productCategory || productFamily || stockRotationCategory" colSpan="12"/>
+        <field name="productCategory" grid-view="product-category-grid"
+          form-view="product-category-form"
+          hideIf="productFamily || stockRotationCategory || product" colSpan="12"/>
+        <field name="productFamily"
+          hideIf="productCategory || stockRotationCategory || product" colSpan="12"/>
+        <field name="stockRotationCategory" grid-view="stock-rotation-category-grid"
+          form-view="stock-rotation-category-form"
+          hideIf="productCategory || productFamily || product" colSpan="12"/>
+      </panel>
+      <panel name="ratesPanel" colSpan="12" title="Rates">
+        <field name="minRate" colSpan="4"
+          help="Minimum acceptable rate. Values below this will be flagged."/>
+        <field name="maxRate" colSpan="4"
+          help="Maximum acceptable rate. Values above this will be flagged."/>
+        <field name="defaultRate" colSpan="4"
+          help="Default rate to apply when calculation runs"/>
+      </panel>
+    </panel>
+  </form>
+
+</object-views>

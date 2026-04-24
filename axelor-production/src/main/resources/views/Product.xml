@@ -42,6 +42,7 @@
       <attribute name="onNew" value="action-product-group-production-onnew"/>
       <attribute name="onLoad" value="action-product-group-production-onload"/>
     </extend>
+
   </form>
 
   <action-view name="action-product-view-production-process"

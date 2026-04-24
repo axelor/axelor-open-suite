@@ -23,6 +23,20 @@
     <string name="labelNumber" title="Label number"/>
     <string name="hazardNumber" title="Hazard number"/>
 
+    <!-- Stock rotation category for depreciation rate calculation -->
+    <many-to-one name="stockRotationCategory"
+      ref="com.axelor.apps.supplychain.db.StockRotationCategory" title="Rotation stock category"
+      massUpdate="true"/>
+
+    <!-- If true, the stock rotation category is assigned automatically by the "Update stock history"
+      batch. If false, the user sets it manually and the batch skips this product. -->
+    <boolean name="autoAssignStockRotationCategory"
+      title="Auto-assign rotation stock category" default="true" massUpdate="true"/>
+
+    <!-- Revaluation rate applied on WAP: negative = depreciation, positive = valorization -->
+    <decimal name="revaluationRate" title="Revaluation rate" precision="20" scale="10"
+      massUpdate="true"/>
+
     <extra-code>
     	<![CDATA[
     		public static final int PACKAGING_GROUP_I = 1;
@@ -30,6 +44,12 @@
     		public static final int PACKAGING_GROUP_III = 3;
     	]]>
     </extra-code>
+
+    <track on="UPDATE">
+      <field name="stockRotationCategory"/>
+      <field name="autoAssignStockRotationCategory"/>
+      <field name="revaluationRate"/>
+    </track>
 
   </entity>
 
