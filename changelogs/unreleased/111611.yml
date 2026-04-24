@@ -1,0 +1,3 @@
+---
+title: "Stock location: fixed an error when saving a valued stock location."
+module: axelor-stock
