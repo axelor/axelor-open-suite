@@ -173,8 +173,8 @@
           action="action-invoice-method-mass-ventilation"
           prompt="Are you sure you want to ventilate all selected invoices ?"
           if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
-        <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
-          action="action-invoice-mergecustinvoices"/>
+        <item name="mergeCustCreditNotesItem" title="Merge Cust. Credit notes"
+          action="action-invoice-method-open-cust-credit-note-merge-wizard"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
           action="action-customer-invoice-line-menu"/>
         <item name="paySelectedInvoicesItem" title="Pay selected invoices"
@@ -294,8 +294,8 @@
           action="action-invoice-method-register-mass-payment-on-supplier-invoices"/>
         <item name="seeSupplInvoicesLinesItem" title="See suppl. invoices lines"
           action="action-supplier-invoice-line-menu"/>
-        <item name="mergeSupplInvoicesItem" title="Merge Suppl. Invoices"
-          action="action-invoice-mergesupplinvoices"/>
+        <item name="mergeSupplCreditNotesItem" title="Merge Suppl. Credit notes"
+          action="action-invoice-method-open-suppl-credit-note-merge-wizard"/>
       </menu>
     </menubar>
     <hilite color="primary" if="statusSelect == 1"/>
@@ -1604,6 +1604,38 @@
       target="com.axelor.apps.account.db.Invoice"/>
   </form>
 
+  <!-- CUSTOMER CREDIT NOTES MERGE -->
+  <form name="customer-credit-notes-merge-form" model="com.axelor.utils.db.Wizard"
+    title="Merge Cust. Credit notes" width="large"
+    onNew="action-invoice-record-set-credit-notes-to-merge">
+    <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
+      form-view="invoice-form" grid-view="invoice-grid" title="Cust. credit notes to merge"
+      colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice"
+      domain="self.statusSelect IN (1, 2) AND self.operationTypeSelect = 4" canNew="false"
+      canEdit="false"/>
+    <panel name="actionsPanel" sidebar="true" title="Actions">
+      <button name="generateMergedCustCreditNotesBtn"
+        title="Merge into single cust. credit note"
+        onClick="action-validate-invoice-check-selection,action-invoice-method-merge"/>
+    </panel>
+  </form>
+
+  <!-- SUPPLIER CREDIT NOTES MERGE -->
+  <form name="supplier-credit-notes-merge-form" model="com.axelor.utils.db.Wizard"
+    title="Merge Suppl. Credit notes" width="large"
+    onNew="action-invoice-record-set-credit-notes-to-merge">
+    <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
+      form-view="invoice-form" grid-view="invoice-grid" title="Suppl. credit notes to merge"
+      colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice"
+      domain="self.statusSelect IN (1, 2) AND self.operationTypeSelect = 2" canNew="false"
+      canEdit="false"/>
+    <panel name="actionsPanel" sidebar="true" title="Actions">
+      <button name="generateMergedSupplCreditNotesBtn"
+        title="Merge into single suppl. credit note"
+        onClick="action-validate-invoice-check-selection,action-invoice-method-merge"/>
+    </panel>
+  </form>
+
   <form name="invoice-refusal-to-pay-wizard-form" model="com.axelor.apps.account.db.Invoice"
     title="Invoice.refuseToPayWizard">
     <panel name="mainPanel">
@@ -2445,6 +2477,21 @@
   <action-method name="action-invoice-method-convert-selected-lines-to-merge-lines">
     <call class="com.axelor.apps.account.web.InvoiceMergingController"
       method="convertSelectedLinesToMergeLines"/>
+  </action-method>
+
+  <action-record name="action-invoice-record-set-credit-notes-to-merge"
+    model="com.axelor.utils.db.Wizard">
+    <field name="$invoiceToMerge" expr="eval: _invoiceToMerge"/>
+  </action-record>
+
+  <action-method name="action-invoice-method-open-cust-credit-note-merge-wizard">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController"
+      method="openCustCreditNoteMergeWizard"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-open-suppl-credit-note-merge-wizard">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController"
+      method="openSupplCreditNoteMergeWizard"/>
   </action-method>
 
   <action-method name="action-invoice-method-create-advance-payment-domain">
