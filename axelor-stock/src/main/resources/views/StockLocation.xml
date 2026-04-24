@@ -100,8 +100,7 @@
           <field name="typeSelect"
             onChange="action-stock-location-group-type-select-on-change" colSpan="12"/>
           <button name="$stockLocationValueBtn" title="Stock location value" colSpan="12"
-            hidden="true" showIf="isValued &amp;&amp; id &amp;&amp; $readonly()" onClick=""
-            widget="info-button"/>
+            hidden="true" showIf="isValued &amp;&amp; id" onClick="" widget="info-button"/>
           <field name="stockLocationValue" hidden="true"/>
         </panel>
         <panel name="barcodePanel" colSpan="12"
