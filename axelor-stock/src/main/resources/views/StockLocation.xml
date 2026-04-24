@@ -43,7 +43,8 @@
     <column name="company" type="reference"/>
 
     <node model="com.axelor.apps.stock.db.StockLocation"
-      domain="self.parentStockLocation is null" onClick="action-stock-location-view-show-form-view">
+      domain="self.parentStockLocation is null" draggable="true"
+      onClick="action-stock-location-view-show-form-view">
       <field as="name" name="name"/>
       <field name="typeSelect" as="typeSelect"/>
       <field name="company" as="company"/>
