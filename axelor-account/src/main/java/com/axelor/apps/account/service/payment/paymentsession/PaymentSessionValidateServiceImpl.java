@@ -303,7 +303,6 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         } else if (paymentSession.getStatusSelect()
                 == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || this.shouldBeProcessed(invoiceTerm)) {
-          offset += invoiceTermList.size();
 
           if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) != 0) {
             this.processInvoiceTerm(
@@ -320,6 +319,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         }
       }
 
+      offset += invoiceTermList.size();
       JPA.clear();
     }
 
