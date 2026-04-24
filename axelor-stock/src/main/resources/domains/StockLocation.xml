@@ -27,7 +27,7 @@
     <decimal name="stockLocationValue" title="Stock location value" formula="true"
       precision="20" scale="2">
       <![CDATA[
-        SELECT COALESCE(SUM(history.qty *
+        SELECT ROUND(COALESCE(SUM(history.qty *
             CASE
                 WHEN cfg.stock_valuation_type_select = 1 THEN
                     CASE WHEN EXISTS(
@@ -52,7 +52,7 @@
                 WHEN cfg.stock_valuation_type_select = 5 THEN history.wap
                 ELSE sll.avg_price
             END
-        ), 0)
+        ), 0), 2)
         FROM stock_stock_location_line sll
         LEFT JOIN stock_stock_location_line_history history
             ON history.stock_location_line = sll.id
