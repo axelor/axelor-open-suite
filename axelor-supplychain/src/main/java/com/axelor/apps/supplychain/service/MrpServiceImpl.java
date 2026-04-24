@@ -1472,8 +1472,8 @@ public class MrpServiceImpl implements MrpService {
 
   public boolean isMrpProduct(Product product) {
     return product != null
-        && !product.getExcludeFromMrp()
-        && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE);
+        && Boolean.FALSE.equals(product.getExcludeFromMrp())
+        && ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect());
   }
 
   protected void assignProductAndLevel(Set<Product> productList) throws AxelorException {
