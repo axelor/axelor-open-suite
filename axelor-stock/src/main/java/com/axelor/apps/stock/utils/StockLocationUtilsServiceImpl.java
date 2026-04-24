@@ -25,7 +25,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.db.JPA;
@@ -36,7 +35,6 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.Query;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 
@@ -128,67 +126,5 @@ public class StockLocationUtilsServiceImpl implements StockLocationUtilsService 
       }
     }
     return sumOfQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
-  }
-
-  @Override
-  public BigDecimal getStockLocationValue(StockLocation stockLocation) {
-    return getStockLocationValue(
-        stockLocation.getId(),
-        stockLocation.getCompany() != null ? stockLocation.getCompany().getId() : null);
-  }
-
-  @Override
-  public BigDecimal getStockLocationValue(Long stockLocationId, Long companyId) {
-    String purchasePriceQuery = getCompanySpecificQuery(companyId, "lastPurchasePrice");
-    String avgPriceQuery = getCompanySpecificQuery(companyId, "avgPrice");
-
-    Query query =
-        JPA.em()
-            .createQuery(
-                "SELECT SUM( history.qty * "
-                    + "CASE WHEN (location.company.stockConfig.stockValuationTypeSelect = 1) THEN "
-                    + avgPriceQuery
-                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 2) THEN (history.costPrice) "
-                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 3) THEN (history.salePrice) "
-                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 4) THEN  "
-                    + purchasePriceQuery
-                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 5) THEN (history.wap) "
-                    + "ELSE (self.avgPrice) END ) AS value "
-                    + "FROM StockLocationLine AS self "
-                    + "LEFT JOIN StockLocationLineHistory AS history "
-                    + "ON history.stockLocationLine = self "
-                    + "LEFT JOIN StockLocation AS location "
-                    + "ON location.id= self.stockLocation "
-                    + "WHERE self.stockLocation.id =:id "
-                    + "AND history.dateT = ("
-                    + "  SELECT MAX(h2.dateT)"
-                    + "  FROM StockLocationLineHistory h2"
-                    + "  WHERE h2.stockLocationLine = self"
-                    + ")"
-                    + "AND history.qty <> 0");
-    query.setParameter("id", stockLocationId);
-
-    List<?> result = query.getResultList();
-    return (result.get(0) == null || ((BigDecimal) result.get(0)).signum() == 0)
-        ? BigDecimal.ZERO
-        : ((BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_UP);
-  }
-
-  private String getCompanySpecificQuery(Long companyId, String price) {
-    String purchasePriceQuery = String.format("self.product.%s ", price);
-    if (companyId != null
-        && appBaseService.getAppBase().getCompanySpecificProductFieldsSet() != null
-        && appBaseService.getAppBase().getCompanySpecificProductFieldsSet().stream()
-            .anyMatch(it -> price.equals(it.getName()))) {
-      purchasePriceQuery =
-          " (SELECT productCompany."
-              + price
-              + " FROM ProductCompany productCompany "
-              + "WHERE productCompany.product.id = self.product.id "
-              + "AND productCompany.company.id = "
-              + companyId
-              + ") ";
-    }
-    return purchasePriceQuery;
   }
 }
