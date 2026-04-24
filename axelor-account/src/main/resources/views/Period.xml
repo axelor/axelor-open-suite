@@ -12,10 +12,10 @@
     </extend>
     <extend target="//panel-dashlet[@name='linkedAdjustingMovesPanel']">
       <insert position="after">
-        <panel-dashlet
+        <panel-dashlet name="openedJournalsDashlet"
           action="action-period-journal-view-get-all-journal-except-closed-journal"
           showIf="statusSelect == 1"/>
-        <panel-dashlet
+        <panel-dashlet name="closedJournalsDashlet"
           action="action-period-journal-view-get-all-journal-except-opened-journal"
           showIf="statusSelect == 4"/>
       </insert>
@@ -26,25 +26,23 @@
       <insert position="after">
         <field name="closeJournalsOnPeriod" showIf="statusSelect == 1" colSpan="12"
           onChange="action-account-period-attrs-show-journal-btn"/>
-        <field name="closedJournalSet" onChange="action-account-period-attrs-show-journal-btn"
+        <field name="closedJournalSet"
+          onChange="action-account-period-group-closed-journal-set-on-change"
           showIf="closeJournalsOnPeriod &amp;&amp; statusSelect == 1" colSpan="12" canEdit="false"
           canNew="false" onSelect="action-account-period-attrs-set-journal-set-domain"/>
-        <button
-          onClick="action-account-period-record-open-closed-journal,action-account-period-attrs-show-journal-btn"
+        <button onClick="action-account-period-group-open-closed-journal-btn"
           name="openClosedJournalBtn" title="Open closed journals on the period" hidden="true"
-          css="btn-success"
-          showIf="statusSelect == 1 &amp;&amp; closeJournalsOnPeriod &amp;&amp; closedJournalSet != null &amp;&amp; !closedJournalSet.isEmpty()"/>
+          css="btn-success"/>
         <field name="keepJournalsOpenOnPeriod" showIf="statusSelect == 4" colSpan="12"
           onChange="action-account-period-attrs-show-journal-btn"/>
-        <field name="openedJournalSet" onChange="action-account-period-attrs-show-journal-btn"
+        <field name="openedJournalSet"
+          onChange="action-account-period-group-opened-journal-set-on-change"
           showIf="keepJournalsOpenOnPeriod &amp;&amp; statusSelect == 4" colSpan="12"
           canEdit="false" canNew="false"
           onSelect="action-account-period-attrs-set-journal-set-domain"/>
-        <button
-          onClick="action-account-period-record-close-journal-still-open,action-account-period-attrs-show-journal-btn"
+        <button onClick="action-account-period-group-close-journal-still-open-btn"
           name="closeJournalStillOpenBtn" title="Close journals still open on the period"
-          hidden="true" css="btn-warning"
-          showIf="statusSelect == 4 &amp;&amp; keepJournalsOpenOnPeriod &amp;&amp; openedJournalSet != null &amp;&amp; !openedJournalSet.isEmpty()"/>
+          hidden="true" css="btn-warning"/>
       </insert>
     </extend>
     <extend target="//panel[@name='mainPanel']">
@@ -73,6 +71,7 @@
     <action name="action-method-period-show-buttons"/>
     <action name="action-method-account-set-readonly"/>
     <action name="action-method-account-readonly-if-period-in-move"/>
+    <action name="action-account-period-attrs-show-journal-btn"/>
   </action-group>
 
   <action-group id="account-action-period-group-close-temp"
@@ -104,9 +103,9 @@
 
   <action-attrs name="action-account-period-attrs-show-journal-btn">
     <attribute name="hidden" for="openClosedJournalBtn"
-      expr="eval: !(closeJournalsOnPeriod &amp;&amp; closedJournalSet != null &amp;&amp; !closedJournalSet.isEmpty())"/>
+      expr="eval: !(statusSelect == 1 &amp;&amp; closeJournalsOnPeriod &amp;&amp; closedJournalSet != null &amp;&amp; !closedJournalSet.isEmpty())"/>
     <attribute name="hidden" for="closeJournalStillOpenBtn"
-      expr="eval: !(keepJournalsOpenOnPeriod &amp;&amp; openedJournalSet != null &amp;&amp; !openedJournalSet.isEmpty())"/>
+      expr="eval: !(statusSelect == 4 &amp;&amp; keepJournalsOpenOnPeriod &amp;&amp; openedJournalSet != null &amp;&amp; !openedJournalSet.isEmpty())"/>
   </action-attrs>
 
 
@@ -179,4 +178,37 @@
     <alert
       message="The closure of a period will block the operations that can be carried out on the accounting journals for this period. The 'New' moves will be deleted, the 'Daybook' moves will be validated and the 'Simulated' moves will no longer be editable."/>
   </action-validate>
+
+  <action-group name="action-account-period-group-closed-journal-set-on-change">
+    <action name="action-account-period-attrs-show-journal-btn"/>
+    <action name="action-account-period-attrs-refresh-opened-journals-dashlet"/>
+  </action-group>
+
+  <action-group name="action-account-period-group-open-closed-journal-btn">
+    <action name="action-account-period-record-open-closed-journal"/>
+    <action name="save"/>
+    <action name="action-account-period-attrs-show-journal-btn"/>
+    <action name="action-account-period-attrs-refresh-opened-journals-dashlet"/>
+  </action-group>
+
+  <action-group name="action-account-period-group-opened-journal-set-on-change">
+    <action name="action-account-period-attrs-show-journal-btn"/>
+    <action name="action-account-period-attrs-refresh-closed-journals-dashlet"/>
+  </action-group>
+
+  <action-group name="action-account-period-group-close-journal-still-open-btn">
+    <action name="action-account-period-record-close-journal-still-open"/>
+    <action name="save"/>
+    <action name="action-account-period-attrs-show-journal-btn"/>
+    <action name="action-account-period-attrs-refresh-closed-journals-dashlet"/>
+  </action-group>
+
+  <action-attrs name="action-account-period-attrs-refresh-opened-journals-dashlet">
+    <attribute name="refresh" for="openedJournalsDashlet" expr="eval: true"/>
+  </action-attrs>
+
+  <action-attrs name="action-account-period-attrs-refresh-closed-journals-dashlet">
+    <attribute name="refresh" for="closedJournalsDashlet" expr="eval: true"/>
+  </action-attrs>
+
 </object-views>
