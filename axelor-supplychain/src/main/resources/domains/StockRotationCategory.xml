@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+
+  <entity name="StockRotationCategory">
+
+    <integer name="sequence" title="Sequence" default="0"
+      help="Evaluation order. Categories with a lower sequence are evaluated first; the first formula returning true is assigned."/>
+    <string name="code" title="Code" required="true" unique="true" index="true"/>
+    <string name="name" title="Name" required="true"/>
+    <string name="color" title="Color"
+      help="Color used to highlight this category when displayed on product forms."/>
+    <string name="formula" title="Formula" large="true"
+      help="Groovy formula returning true if the product belongs to this category. Available variables: coverageInDays, salesLast12Months, currentStock, stock6MonthsAgo."/>
+    <string name="description" title="Description" large="true"/>
+
+    <track>
+      <field name="sequence"/>
+      <field name="code"/>
+      <field name="name"/>
+      <field name="color"/>
+      <field name="formula"/>
+    </track>
+
+  </entity>
+
+</domain-models>

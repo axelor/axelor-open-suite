@@ -137,6 +137,7 @@
     <option value="wapCorrection">Wap correction</option>
     <option value="cancelation">Cancelation</option>
     <option value="updateStockLocationFromProduct">Update stock location from product</option>
+    <option value="inventoryDepreciation">Inventory depreciation</option>
   </selection>
 
   <selection name="stock.tracking.number.origin.move.type.select">

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+
+  <entity name="DepreciationRateConfig">
+
+    <!-- Valuation action type: depreciation (decrease WAP) or valorization (increase WAP) -->
+    <integer name="typeSelect" title="Type"
+      selection="supplychain.depreciation.rate.config.type.select" default="1" required="true"
+      help="Depreciation reduces the weighted average price. Valorization increases it."/>
+
+    <!-- Configuration can be at 4 levels: product, product category, product family, or stock rotation
+      category -->
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
+      help="Specific product for this depreciation rate configuration"/>
+
+    <many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory"
+      title="Product category" help="Product category for this depreciation rate configuration"/>
+
+    <many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily"
+      title="Product family" help="Product family for this depreciation rate configuration"/>
+
+    <many-to-one name="stockRotationCategory"
+      ref="com.axelor.apps.supplychain.db.StockRotationCategory" title="Rotation stock category"
+      help="Stock rotation category (formula-based) for this depreciation rate configuration"/>
+
+    <!-- Rate bounds -->
+    <decimal name="minRate" title="Min. rate" precision="20" scale="10"
+      help="Minimum acceptable rate"/>
+
+    <decimal name="maxRate" title="Max. rate" precision="20" scale="10"
+      help="Maximum acceptable rate"/>
+
+    <decimal name="defaultRate" title="Default rate" precision="20" scale="10"
+      help="Default rate to apply"/>
+
+    <extra-code><![CDATA[
+      // TYPE SELECT
+      public static final int TYPE_DEPRECIATION = 1;
+      public static final int TYPE_VALORIZATION = 2;
+    ]]></extra-code>
+
+    <track>
+      <field name="typeSelect"/>
+      <field name="product"/>
+      <field name="productCategory"/>
+      <field name="productFamily"/>
+      <field name="stockRotationCategory"/>
+      <field name="minRate"/>
+      <field name="maxRate"/>
+      <field name="defaultRate"/>
+    </track>
+
+  </entity>
+
+</domain-models>
