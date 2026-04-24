@@ -89,6 +89,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -595,9 +596,15 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       }
     }
 
+    int operationType =
+        invoiceList.stream()
+            .map(Invoice::getOperationTypeSelect)
+            .filter(Objects::nonNull)
+            .findFirst()
+            .orElse(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(
-            InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+            operationType,
             company,
             paymentCondition,
             paymentMode,
@@ -695,9 +702,15 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       }
     }
 
+    int operationType =
+        invoiceList.stream()
+            .map(Invoice::getOperationTypeSelect)
+            .filter(Objects::nonNull)
+            .findFirst()
+            .orElse(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(
-            InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
+            operationType,
             company,
             paymentCondition,
             paymentMode,
