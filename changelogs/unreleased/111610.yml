@@ -1,0 +1,9 @@
+---
+title: "Stock: fixed stock location form marked dirty when opened."
+module: axelor-stock
+developer: |
+  - StockLocationUtilsService: removed methods `getStockLocationValue(StockLocation)` and `getStockLocationValue(Long, Long)`.
+
+  Script to run:
+  DELETE FROM meta_action
+  WHERE name = 'action-stock-location-method-set-stock-location-value';
