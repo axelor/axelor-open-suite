@@ -1,0 +1,3 @@
+---
+title: "MRP: fixed NullPointerException in MRP processing when a product had a null productTypeSelect or excludeFromMrp."
+module: axelor-supplychain
