@@ -27,7 +27,6 @@ import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationAttrsService;
 import com.axelor.apps.stock.service.StockLocationDomainService;
 import com.axelor.apps.stock.service.StockLocationPrintService;
-import com.axelor.apps.stock.utils.StockLocationUtilsService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -109,16 +108,6 @@ public class StockLocationController {
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setStocklocationValue(ActionRequest request, ActionResponse response) {
-
-    StockLocation stockLocation = request.getContext().asType(StockLocation.class);
-    if (stockLocation.getIsValued()) {
-      response.setValue(
-          "stockLocationValue",
-          Beans.get(StockLocationUtilsService.class).getStockLocationValue(stockLocation));
     }
   }
 
