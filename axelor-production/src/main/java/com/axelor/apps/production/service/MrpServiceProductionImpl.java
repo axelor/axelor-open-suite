@@ -77,8 +77,10 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -88,6 +90,8 @@ import org.slf4j.LoggerFactory;
 public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected Set<Long> processedManufOrderIds;
 
   protected ManufOrderRepository manufOrderRepository;
 
@@ -173,7 +177,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     super.completeMrp(mrp);
 
     if (appProductionService.isApp("production")) {
+      this.processedManufOrderIds = new HashSet<>();
       this.createManufOrderMrpLines();
+      this.createConsumingManufOrderMrpLines();
       this.createMPSLines();
     }
   }
@@ -183,6 +189,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     super.fillMrpLinesForProductMap(productMap);
     if (appProductionService.isApp("production")) {
       this.createManufOrderMrpLines(productMap);
+      this.createConsumingManufOrderMrpLines(productMap);
       this.createMPSLines(productMap);
     }
   }
@@ -243,6 +250,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       MrpLineType manufOrderMrpLineType,
       MrpLineType manufOrderNeedMrpLineType)
       throws AxelorException {
+
+    if (processedManufOrderIds != null && !processedManufOrderIds.add(manufOrder.getId())) {
+      return;
+    }
 
     StockLocation stockLocation = manufOrder.getProdProcess().getStockLocation();
 
@@ -882,6 +893,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
    * planned consumption from manufacturing orders.
    */
   protected void createConsumingManufOrderMrpLines() throws AxelorException {
+    this.createConsumingManufOrderMrpLines(this.productMap);
+  }
+
+  protected void createConsumingManufOrderMrpLines(Map<Long, Integer> consumedProductMap)
+      throws AxelorException {
 
     MrpLineType manufOrderMrpLineType =
         mrpLineTypeService.getMrpLineType(
@@ -915,13 +931,14 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                     + "WHERE sml2.product.id IN (?1) "
                     + "AND sml2.stockMove.statusSelect = ?2 "
                     + "AND sml2.consumedOperationOrder IS NOT NULL)) "
-                    + "AND self.product.id NOT IN (?1) "
+                    + "AND self.product.id NOT IN (?5) "
                     + "AND self.statusSelect IN (?3) "
                     + "AND self.prodProcess.stockLocation IN (?4)",
-                this.productMap.keySet(),
+                consumedProductMap.keySet(),
                 StockMoveRepository.STATUS_PLANNED,
                 statusList,
-                this.stockLocationList)
+                this.stockLocationList,
+                this.productMap.keySet())
             .fetch();
 
     for (ManufOrder manufOrder : manufOrderList) {
