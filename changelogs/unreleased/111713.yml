@@ -1,0 +1,3 @@
+---
+title: "Move: fixed HibernateException on onLoad after generating counterpart when invoice terms are created."
+module: axelor-bank-payment
