@@ -293,32 +293,9 @@ public class InventoryService {
 
     final boolean[] anyScanned = {false};
     final boolean[] anyCreated = {false};
-    final Set<Long> trackedProductIdsAtInventoryLocation = new HashSet<>();
 
     final long inventoryId = inventory.getId();
     final Inventory[] inventoryHolder = {inventory};
-
-    BatchProcessorHelper batchHelper =
-        BatchProcessorHelper.builder().flushAfterBatch(false).build();
-
-    Query<StockLocationLine> prePass =
-        buildSllFilterQuery(inventory)
-            .add("self.trackingNumber IS NOT NULL")
-            .add("self.id > :lastSeenId")
-            .build()
-            .order("id");
-
-    batchHelper.<StockLocationLine, AxelorException>forEachByQuery(
-        prePass,
-        sll -> {
-          anyScanned[0] = true;
-          final Product product = sll.getProduct();
-          if (product != null) {
-            trackedProductIdsAtInventoryLocation.add(product.getId());
-          }
-        });
-
-    inventoryHolder[0] = inventoryRepo.find(inventoryId);
 
     Query<StockLocationLine> mainPass =
         buildSllFilterQuery(inventory).add("self.id > :lastSeenId").build().order("id");
@@ -333,7 +310,7 @@ public class InventoryService {
                 return;
               }
               if (sll.getTrackingNumber() != null
-                  || !trackedProductIdsAtInventoryLocation.contains(product.getId())) {
+                  || product.getTrackingNumberConfiguration() == null) {
                 this.createInventoryLine(inventoryHolder[0], sll);
                 anyCreated[0] = true;
               }
