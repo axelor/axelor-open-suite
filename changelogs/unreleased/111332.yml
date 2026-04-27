@@ -1,0 +1,3 @@
+---
+title: "Sale Order: fixed LazyInitializationException when generating stock moves for lines with different estimated shipping dates."
+module: axelor-supplychain
