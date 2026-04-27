@@ -1027,6 +1027,7 @@ join base_currency Currency on Move.currency = Currency.id
 left join account_account_config AccConf on AccConf.company = Move.company
 where DebtRecoveryHistory.id = ?
 and Currency.code is not null
+and InvoiceTerm.amount_remaining > 0
 and InvoiceTerm.due_date + INTERVAL '1 day' * coalesce(AccConf.mail_transit_time,1) < coalesce ((select today_datet from studio_app_base), NOW()) )
 order by InvoiceTerm.sequence]]></xml-property>
         </oda-data-set>
