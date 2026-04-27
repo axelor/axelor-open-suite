@@ -81,7 +81,8 @@
         <field name="processTimeout"/>
         <field name="enableMultiCompany" widget="boolean-switch"
           onChange="action-base-validate-multi-company-boolean"/>
-        <field name="showProductCompanies" widget="boolean-switch" colSpan="12"/>
+        <field name="showProductCompanies" widget="boolean-switch" colSpan="12"
+          onChange="action-app-base-record-set-company-specific-product-field-set"/>
         <field name="storeStreets" widget="boolean-switch"/>
         <field name="isSharedAddress" widget="boolean-switch"/>
         <field name="enableTaxNumbers" widget="boolean-switch"/>
@@ -258,4 +259,10 @@
     <attribute name="domain" for="productSequence"
       expr="eval: &quot; self.codeSelect = 'product' &quot;"/>
   </action-attrs>
+
+  <action-record name="action-app-base-record-set-company-specific-product-field-set"
+    model="com.axelor.studio.db.AppBase">
+    <field name="companySpecificProductFieldsSet" expr="eval: null" if="!showProductCompanies"/>
+  </action-record>
+
 </object-views>
