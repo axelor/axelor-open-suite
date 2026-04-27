@@ -1,0 +1,3 @@
+---
+title: "PriceList: fix typeSelect field not editable when creating from Referential"
+module: axelor-base
