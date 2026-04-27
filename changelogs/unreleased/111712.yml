@@ -1,0 +1,3 @@
+---
+title: "Move: fixed MappingException when changing payment condition on an unsaved duplicated move."
+module: axelor-account
