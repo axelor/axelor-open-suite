@@ -29,6 +29,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleRepository {
 
@@ -37,7 +38,10 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleReposit
     Long saleOrderLineId = (Long) json.get("id");
     SaleOrderLine saleOrderLine = find(saleOrderLineId);
 
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    SaleOrder saleOrder =
+        saleOrderLine.getSaleOrder() != null
+            ? saleOrderLine.getSaleOrder()
+            : saleOrderLine.getMainSaleOrder();
 
     if (this.availabilityIsNotManaged(saleOrderLine, saleOrder)) {
       return super.populate(json, context);
@@ -86,6 +90,7 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleReposit
         || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_CONFIRMED
         || saleOrder.getStockLocation() == null
         || saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED
+        || CollectionUtils.isNotEmpty(saleOrderLine.getSubSaleOrderLineList())
         || (saleOrderLine.getProduct() != null
             && saleOrderLine
                 .getProduct()
