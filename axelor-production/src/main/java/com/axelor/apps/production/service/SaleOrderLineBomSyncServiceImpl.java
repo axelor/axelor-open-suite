@@ -23,6 +23,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import java.util.ArrayList;
@@ -35,16 +36,16 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineBomSyncServiceImpl implements SaleOrderLineBomSyncService {
 
-  protected final AppSaleRepository appSaleRepository;
+  protected final AppSaleService appSaleService;
 
   @Inject
-  public SaleOrderLineBomSyncServiceImpl(AppSaleRepository appSaleRepository) {
-    this.appSaleRepository = appSaleRepository;
+  public SaleOrderLineBomSyncServiceImpl(AppSaleService appSaleService) {
+    this.appSaleService = appSaleService;
   }
 
   @Override
   public void removeBomLines(SaleOrderLine saleOrderLine) {
-    if (appSaleRepository.all().autoFlush(false).fetchOne().getListDisplayTypeSelect()
+    if (appSaleService.getAppSale().getListDisplayTypeSelect()
         != AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
       return;
     }
