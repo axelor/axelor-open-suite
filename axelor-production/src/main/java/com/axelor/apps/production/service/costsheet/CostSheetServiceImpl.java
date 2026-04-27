@@ -174,6 +174,17 @@ public class CostSheetServiceImpl implements CostSheetService {
   public CostSheet computeCostPrice(
       ManufOrder manufOrder, int calculationTypeSelect, LocalDate calculationDate)
       throws AxelorException {
+    return computeCostPrice(manufOrder, calculationTypeSelect, calculationDate, null);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public CostSheet computeCostPrice(
+      ManufOrder manufOrder,
+      int calculationTypeSelect,
+      LocalDate calculationDate,
+      BigDecimal overrideProducedQty)
+      throws AxelorException {
     this.init();
 
     List<CostSheet> costSheetList = manufOrder.getCostSheetList();
@@ -199,12 +210,14 @@ public class CostSheetServiceImpl implements CostSheetService {
             : appBaseService.getTodayDate(manufOrder.getCompany()));
 
     BigDecimal producedQty =
-        computeTotalProducedQty(
-            manufOrder.getProduct(),
-            manufOrder.getProducedStockMoveLineList(),
-            costSheet.getCalculationDate(),
-            previousCostSheetDate,
-            costSheet.getCalculationTypeSelect());
+        overrideProducedQty != null
+            ? overrideProducedQty
+            : computeTotalProducedQty(
+                manufOrder.getProduct(),
+                manufOrder.getProducedStockMoveLineList(),
+                costSheet.getCalculationDate(),
+                previousCostSheetDate,
+                costSheet.getCalculationTypeSelect());
 
     CostSheetLine producedCostSheetLine =
         costSheetLineService.createProducedProductCostSheetLine(

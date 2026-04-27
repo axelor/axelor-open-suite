@@ -3,3 +3,5 @@ title: "Manufacturing order: fixed double WAP computation and duplicate stock lo
 module: axelor-production
 developer: |
   ManufOrderStockMoveService: added finishInStockMoves, finishOutStockMoves, partialFinishIn, partialFinishOut methods.
+  CostSheetService: added computeCostPrice(ManufOrder, int, LocalDate, BigDecimal overrideProducedQty) overload, allowing callers to inject the produced quantity instead of relying on realized stock move lines (used by ManufOrder finish to keep the cost sheet accurate when OUT moves are still planned).
+  ManufOrderWorkflowServiceImpl: constructor now requires UnitConversionService.

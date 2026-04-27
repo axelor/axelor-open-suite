@@ -24,10 +24,12 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -88,6 +90,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected OperationOrderOutsourceService operationOrderOutsourceService;
   protected ProductService productService;
   protected ManufOrderTrackingNumberService manufOrderTrackingNumberService;
+  protected UnitConversionService unitConversionService;
 
   @Inject
   public ManufOrderWorkflowServiceImpl(
@@ -106,7 +109,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       ManufOrderOutsourceService manufOrderOutsourceService,
       OperationOrderOutsourceService operationOrderOutsourceService,
       ProductService productService,
-      ManufOrderTrackingNumberService manufOrderTrackingNumberService) {
+      ManufOrderTrackingNumberService manufOrderTrackingNumberService,
+      UnitConversionService unitConversionService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.manufOrderRepo = manufOrderRepo;
@@ -123,6 +127,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.operationOrderOutsourceService = operationOrderOutsourceService;
     this.productService = productService;
     this.manufOrderTrackingNumberService = manufOrderTrackingNumberService;
+    this.unitConversionService = unitConversionService;
   }
 
   @Override
@@ -222,13 +227,20 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             .collect(Collectors.toSet());
     manufOrder = manufOrderStockMoveService.finishInStockMoves(manufOrder);
 
+    // Compute the produced quantity from the still-PLANNED OUT moves captured above. Those
+    // moves haven't been realized yet, so the cost sheet's default producedQty (which only
+    // counts realized stock moves) would be 0. Passing the planned qty explicitly keeps both
+    // the produced cost sheet line and the manufOrderProducedRatio accurate.
+    BigDecimal producedQty = computePlannedProducedQty(manufOrder, plannedOutMoveIds);
+
     // create cost sheet
     CostSheet costSheet =
         Beans.get(CostSheetService.class)
             .computeCostPrice(
                 manufOrder,
                 CostSheetRepository.CALCULATION_END_OF_PRODUCTION,
-                Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
+                Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()),
+                producedQty);
 
     // update price in product
     Product product = manufOrder.getProduct();
@@ -364,18 +376,85 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             .map(StockMove::getId)
             .collect(Collectors.toSet());
     manufOrder = manufOrderStockMoveService.partialFinishIn(manufOrder);
+
+    // Compute the produced quantity for this partial batch from the still-PLANNED OUT moves.
+    // The cost sheet's default producedQty only counts realized stock moves, so it would
+    // return 0 here (current OUT moves not realized yet). Passing the planned qty keeps both
+    // the produced cost sheet line and the manufOrderProducedRatio accurate.
+    BigDecimal producedQty = computePlannedProducedQty(manufOrder, plannedOutMoveIds);
+
     CostSheet costSheet =
         Beans.get(CostSheetService.class)
             .computeCostPrice(
                 manufOrder,
                 CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
-                Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
+                Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()),
+                producedQty);
     // Set correct cost prices on planned OUT moves before realization so the WAP is computed
     // with the real cost price (not the estimated price) during partialFinishOut.
     manufOrderStockMoveService.updatePrices(
         manufOrder, computeOneUnitProductionPrice(manufOrder, costSheet), plannedOutMoveIds);
     manufOrderStockMoveService.partialFinishOut(manufOrder);
     return sendPartialFinishMail(manufOrder);
+  }
+
+  /**
+   * Compute the total qty of {@code manufOrder.product} expected to be produced in the OUT moves
+   * matching the given IDs (typically PLANNED moves about to be realized). Quantities are converted
+   * to the manuf order unit when needed.
+   */
+  protected BigDecimal computePlannedProducedQty(ManufOrder manufOrder, Set<Long> plannedOutMoveIds)
+      throws AxelorException {
+    if (plannedOutMoveIds == null || plannedOutMoveIds.isEmpty()) {
+      return BigDecimal.ZERO;
+    }
+    Product manufProduct = manufOrder.getProduct();
+    if (manufProduct == null) {
+      return BigDecimal.ZERO;
+    }
+    Unit targetUnit = manufOrder.getUnit();
+    BigDecimal totalQty = BigDecimal.ZERO;
+    for (StockMove stockMove : manufOrder.getOutStockMoveList()) {
+      if (!plannedOutMoveIds.contains(stockMove.getId())) {
+        continue;
+      }
+      totalQty = totalQty.add(sumPlannedQtyForProduct(stockMove, manufProduct, targetUnit));
+    }
+    return totalQty;
+  }
+
+  /** Sum the planned qty of the given product across all lines of the given stock move. */
+  protected BigDecimal sumPlannedQtyForProduct(
+      StockMove stockMove, Product product, Unit targetUnit) throws AxelorException {
+    List<StockMoveLine> lineList = stockMove.getStockMoveLineList();
+    if (lineList == null) {
+      return BigDecimal.ZERO;
+    }
+    BigDecimal totalQty = BigDecimal.ZERO;
+    for (StockMoveLine line : lineList) {
+      if (line.getProduct() == null
+          || !product.equals(line.getProduct())
+          || line.getQty() == null) {
+        continue;
+      }
+      totalQty = totalQty.add(convertToUnit(line.getQty(), line.getUnit(), targetUnit, product));
+    }
+    return totalQty;
+  }
+
+  /**
+   * Convert {@code qty} from {@code fromUnit} to {@code toUnit} for the given product. Returns
+   * {@code qty} unchanged if either unit is {@code null} or both are equal.
+   */
+  protected BigDecimal convertToUnit(BigDecimal qty, Unit fromUnit, Unit toUnit, Product product)
+      throws AxelorException {
+    if (qty == null) {
+      return BigDecimal.ZERO;
+    }
+    if (fromUnit == null || toUnit == null || fromUnit.equals(toUnit)) {
+      return qty;
+    }
+    return unitConversionService.convert(fromUnit, toUnit, qty, qty.scale(), product);
   }
 
   public boolean sendPartialFinishMail(ManufOrder manufOrder) {

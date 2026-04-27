@@ -48,6 +48,20 @@ public interface CostSheetService {
       ManufOrder manufOrder, int calculationTypeSelect, LocalDate calculationDate)
       throws AxelorException;
 
+  /**
+   * Same as {@link #computeCostPrice(ManufOrder, int, LocalDate)} but uses the given {@code
+   * overrideProducedQty} instead of computing the produced quantity from realized stock move lines.
+   * Useful when the OUT stock moves haven't been realized yet but the produced quantity is known
+   * (e.g. about to be realized with the resulting cost price). When {@code overrideProducedQty} is
+   * {@code null}, the default behavior applies.
+   */
+  CostSheet computeCostPrice(
+      ManufOrder manufOrder,
+      int calculationTypeSelect,
+      LocalDate calculationDate,
+      BigDecimal overrideProducedQty)
+      throws AxelorException;
+
   BigDecimal getQtyRatio(BillOfMaterial billOfMaterial) throws AxelorException;
 
   BigDecimal getQtyRatio(
