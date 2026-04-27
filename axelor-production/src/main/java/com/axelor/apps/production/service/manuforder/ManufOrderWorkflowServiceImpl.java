@@ -68,6 +68,7 @@ import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -225,6 +226,12 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             .filter(sm -> sm.getStatusSelect() != StockMoveRepository.STATUS_REALIZED)
             .map(StockMove::getId)
             .collect(Collectors.toSet());
+    // Capture stock move line IDs that already belong to a previously realized batch (consumed
+    // and produced). They must be excluded from the cost sheet about to be computed so the
+    // result is strictly batch-specific (avoids double-counting raw materials / finished units
+    // that were already accounted for in a prior partial cost sheet, even on the same day).
+    Set<Long> excludedConsumedLineIds = collectAlreadyAccountedLineIds(manufOrder, true);
+    Set<Long> excludedProducedLineIds = collectAlreadyAccountedLineIds(manufOrder, false);
     manufOrder = manufOrderStockMoveService.finishInStockMoves(manufOrder);
 
     // Compute the produced quantity from the still-PLANNED OUT moves captured above. Those
@@ -240,7 +247,9 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
                 manufOrder,
                 CostSheetRepository.CALCULATION_END_OF_PRODUCTION,
                 Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()),
-                producedQty);
+                producedQty,
+                excludedConsumedLineIds,
+                excludedProducedLineIds);
 
     // update price in product
     Product product = manufOrder.getProduct();
@@ -375,6 +384,11 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             .filter(sm -> sm.getStatusSelect() != StockMoveRepository.STATUS_REALIZED)
             .map(StockMove::getId)
             .collect(Collectors.toSet());
+    // Capture stock move line IDs that already belong to a previously realized batch so they are
+    // excluded from this batch's cost sheet (avoids double-counting on partial-then-final, even
+    // when both happen on the same day).
+    Set<Long> excludedConsumedLineIds = collectAlreadyAccountedLineIds(manufOrder, true);
+    Set<Long> excludedProducedLineIds = collectAlreadyAccountedLineIds(manufOrder, false);
     manufOrder = manufOrderStockMoveService.partialFinishIn(manufOrder);
 
     // Compute the produced quantity for this partial batch from the still-PLANNED OUT moves.
@@ -389,13 +403,41 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
                 manufOrder,
                 CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
                 Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()),
-                producedQty);
+                producedQty,
+                excludedConsumedLineIds,
+                excludedProducedLineIds);
     // Set correct cost prices on planned OUT moves before realization so the WAP is computed
     // with the real cost price (not the estimated price) during partialFinishOut.
     manufOrderStockMoveService.updatePrices(
         manufOrder, computeOneUnitProductionPrice(manufOrder, costSheet), plannedOutMoveIds);
     manufOrderStockMoveService.partialFinishOut(manufOrder);
     return sendPartialFinishMail(manufOrder);
+  }
+
+  /**
+   * Collect stock move line IDs that already belong to a stock move with status {@code REALIZED}
+   * before the current finish step. These represent quantities already accounted for in a prior
+   * cost sheet and must be excluded from the cost sheet about to be computed.
+   *
+   * @param manufOrder the manuf order being finished
+   * @param consumed {@code true} to collect from {@code consumedStockMoveLineList} (IN side),
+   *     {@code false} to collect from {@code producedStockMoveLineList} (OUT side)
+   */
+  protected Set<Long> collectAlreadyAccountedLineIds(ManufOrder manufOrder, boolean consumed) {
+    List<StockMoveLine> source =
+        consumed
+            ? manufOrder.getConsumedStockMoveLineList()
+            : manufOrder.getProducedStockMoveLineList();
+    if (source == null) {
+      return new HashSet<>();
+    }
+    return source.stream()
+        .filter(line -> line.getStockMove() != null)
+        .filter(
+            line -> line.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_REALIZED)
+        .map(StockMoveLine::getId)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toCollection(HashSet::new));
   }
 
   /**

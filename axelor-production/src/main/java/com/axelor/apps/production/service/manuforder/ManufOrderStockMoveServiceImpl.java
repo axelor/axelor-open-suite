@@ -530,6 +530,13 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
         stockMoveLine.setUnitPriceUntaxed(costPrice);
       }
       stockMoveLine.setCompanyUnitPriceUntaxed(costPrice);
+      // Persist the line explicitly: the caller (updatePrices(ManufOrder, ...)) calls
+      // stockMoveToolService.compute(stockMove) right after, which uses BatchProcessorHelper
+      // with flushAfterBatch=false and the default clearEveryNBatch=1. Without an explicit save,
+      // JPA.clear detaches the line before the in-memory price changes are flushed and they are
+      // lost (stockMoveRepository.save(stockMove) does not cascade through the mappedBy
+      // relationship).
+      stockMoveLineRepository.save(stockMoveLine);
     }
   }
 }
