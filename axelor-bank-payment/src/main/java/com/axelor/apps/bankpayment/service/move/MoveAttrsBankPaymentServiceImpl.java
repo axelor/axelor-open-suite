@@ -41,8 +41,12 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveAttrsBankPaymentServiceImpl extends MoveAttrsServiceImpl {
@@ -106,16 +110,20 @@ public class MoveAttrsBankPaymentServiceImpl extends MoveAttrsServiceImpl {
   public void addMoveLineListViewerHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
     super.addMoveLineListViewerHidden(move, attrsMap);
 
-    List<MoveLine> moveLineList = move.getMoveLineList();
+    List<Long> moveLineIdList =
+        Optional.ofNullable(move.getMoveLineList()).orElseGet(Collections::emptyList).stream()
+            .map(MoveLine::getId)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
     boolean isLinkedToValidatedBankReconciliation = false;
 
-    if (!CollectionUtils.isEmpty(moveLineList)) {
+    if (!CollectionUtils.isEmpty(moveLineIdList)) {
       isLinkedToValidatedBankReconciliation =
           bankReconciliationLineRepository
                   .all()
                   .filter(
-                      "self.moveLine IN :moveLineList AND self.bankReconciliation.statusSelect = :statusSelect")
-                  .bind("moveLineList", moveLineList)
+                      "self.moveLine.id IN :moveLineIdList AND self.bankReconciliation.statusSelect = :statusSelect")
+                  .bind("moveLineIdList", moveLineIdList)
                   .bind("statusSelect", BankReconciliationRepository.STATUS_VALIDATED)
                   .count()
               > 0;
