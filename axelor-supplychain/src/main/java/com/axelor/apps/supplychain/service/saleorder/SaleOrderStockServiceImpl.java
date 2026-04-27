@@ -72,6 +72,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -165,7 +166,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       LocalDate estimatedDeliveryDate = key.getRight();
 
       List<SaleOrderLine> saleOrderLineList =
-          entry.getValue().stream().map(JpaModelHelper::ensureManaged).toList();
+          entry.getValue().stream().map(JpaModelHelper::ensureManaged).collect(Collectors.toList());
 
       Optional<StockMove> stockMoveOpt =
           createStockMove(saleOrder, deliveryAddressStr, estimatedDeliveryDate, saleOrderLineList);
