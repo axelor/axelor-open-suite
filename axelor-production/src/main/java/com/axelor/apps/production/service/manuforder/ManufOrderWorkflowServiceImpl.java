@@ -254,7 +254,9 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     // update price in product
     Product product = manufOrder.getProduct();
     Company company = manufOrder.getCompany();
+
     BigDecimal costPrice = computeOneUnitProductionPrice(manufOrder, costSheet);
+    manufOrder.setCostPrice(computeCumulativeProductionCost(manufOrder));
 
     if (((Integer) productCompanyService.get(product, "realOrEstimatedPriceSelect", company))
         == ProductRepository.PRICE_METHOD_FORECAST) {
@@ -406,12 +408,33 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
                 producedQty,
                 excludedConsumedLineIds,
                 excludedProducedLineIds);
-    // Set correct cost prices on planned OUT moves before realization so the WAP is computed
-    // with the real cost price (not the estimated price) during partialFinishOut.
-    manufOrderStockMoveService.updatePrices(
-        manufOrder, computeOneUnitProductionPrice(manufOrder, costSheet), plannedOutMoveIds);
+
+    BigDecimal unitCostThisBatch = computeOneUnitProductionPrice(manufOrder, costSheet);
+    manufOrder.setCostPrice(computeCumulativeProductionCost(manufOrder));
+    manufOrderStockMoveService.updatePrices(manufOrder, unitCostThisBatch, plannedOutMoveIds);
     manufOrderStockMoveService.partialFinishOut(manufOrder);
     return sendPartialFinishMail(manufOrder);
+  }
+
+  /**
+   * Sum the cost price of every PARTIAL_END / END cost sheet attached to the manuf order. Used to
+   * expose the total production cost on {@code manufOrder.costPrice} regardless of how many partial
+   * finishes have happened, while individual cost sheets keep their batch-specific detail.
+   */
+  protected BigDecimal computeCumulativeProductionCost(ManufOrder manufOrder) {
+    if (manufOrder.getCostSheetList() == null) {
+      return BigDecimal.ZERO;
+    }
+    return manufOrder.getCostSheetList().stream()
+        .filter(
+            cs ->
+                cs.getCalculationTypeSelect()
+                        == CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION
+                    || cs.getCalculationTypeSelect()
+                        == CostSheetRepository.CALCULATION_END_OF_PRODUCTION)
+        .map(CostSheet::getCostPrice)
+        .filter(Objects::nonNull)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
   /**
