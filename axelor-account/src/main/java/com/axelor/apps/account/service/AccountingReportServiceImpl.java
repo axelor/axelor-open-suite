@@ -298,8 +298,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       if (journalType != null) {
         this.addParams("self.move.journal.journalType.id = ?%d", journalType.getId());
       }
-      String dateFromStr = "'" + accountingReport.getDateFrom().toString() + "'";
-      String dateToStr = "'" + accountingReport.getDateTo().toString() + "'";
+      String dateFromStr = "CAST('" + accountingReport.getDateFrom().toString() + "' AS date)";
+      String dateToStr = "CAST('" + accountingReport.getDateTo().toString() + "' AS date)";
       String reconcileDateConditionQuery =
           String.format(
               "reconcile.statusSelect = %s AND reconcile.effectiveDate >= %s AND reconcile.effectiveDate <= %s",
