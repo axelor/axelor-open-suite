@@ -818,6 +818,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
             <property name="orientation">landscape</property>
             <page-header>
                 <grid id="14">
+                    <property name="fontFamily">sans-serif</property>
                     <property name="textAlign">center</property>
                     <property name="width">100%</property>
                     <property name="dataSet">TranslateDS</property>
@@ -1223,6 +1224,7 @@ if (imgData != null) {
             </page-header>
             <page-footer>
                 <grid id="3692">
+                    <property name="fontFamily">sans-serif</property>
                     <property name="height">1.825625cm</property>
                     <property name="width">28.11929411764706cm</property>
                     <property name="dataSet">BankStatementLineDS</property>
@@ -1381,6 +1383,8 @@ if (imgData != null) {
     </page-setup>
     <body>
         <table id="3944">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">9pt</property>
             <property name="dataSet">BankStatementLineDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -1570,10 +1574,10 @@ if (imgData != null) {
                 </structure>
             </list-property>
             <column id="3993">
-                <property name="width">6%</property>
+                <property name="width">8%</property>
             </column>
             <column id="3994">
-                <property name="width">12%</property>
+                <property name="width">8%</property>
             </column>
             <column id="3995">
                 <property name="width">19%</property>
