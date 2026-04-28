@@ -1,0 +1,24 @@
+---
+title: "Bank reconciliation: fix validation, ending balance, and improve performance"
+module: axelor-bank-payment
+developer: |
+  Several issues in bank reconciliation have been fixed:
+  - Reconciliation lines that had already been partially reconciled (with a
+    posted number) but had no associated accounting move line were not marked
+    as posted during validation, causing incorrect behavior.
+  - The remaining amount to reconcile on bank statement lines was not
+    updated for those lines during validation.
+  - When a move line is reconciled without a linked bank statement line,
+    the reconciled amount on the move line is now correctly set.
+  - The ending balance was incorrectly calculated when lines had a posted
+    number but no move line; their amounts are now included in the computation.
+  - The incomplete line check no longer blocks lines that already have a
+    posted number.
+
+  Performance and UX improvements:
+  - The automatic balance recomputation triggered on every line change has
+    been removed to improve performance on large reconciliations.
+  - A dedicated "Compute balances" button (highlighted in green) is now
+    available to manually trigger balance recalculation.
+  - The "Reconcile selected" button now saves the record before executing
+    reconciliation to avoid data loss.
