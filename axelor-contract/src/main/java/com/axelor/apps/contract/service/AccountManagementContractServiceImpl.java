@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.google.inject.Inject;
+import java.util.Objects;
 
 public class AccountManagementContractServiceImpl extends AccountManagementServiceAccountImpl
     implements AccountManagementContractService {
@@ -86,7 +87,8 @@ public class AccountManagementContractServiceImpl extends AccountManagementServi
       boolean fixedAsset)
       throws AxelorException {
 
-    if (product.equals(accountConfigService.getAccountConfig(company).getYearEndBonusProduct())) {
+    if (Objects.equals(
+        product, accountConfigService.getAccountConfig(company).getYearEndBonusProduct())) {
       return null;
     }
 

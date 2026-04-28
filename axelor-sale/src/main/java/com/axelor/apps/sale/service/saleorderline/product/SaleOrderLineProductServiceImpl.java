@@ -184,6 +184,10 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
 
     Map<String, Object> saleOrderLineMap = new HashMap<>();
 
+    if (saleOrderLine.getProduct() == null) {
+      return saleOrderLineMap;
+    }
+
     // Populate fields from pricing scale before starting process of fillPrice
     if (appBaseService.getAppBase().getEnablePricingScale()) {
       saleOrderLinePricingService.computePricingScale(saleOrderLine, saleOrder);
