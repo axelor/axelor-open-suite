@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Inventory;
@@ -75,6 +76,7 @@ public class InventoryService {
   protected AppBaseService appBaseService;
   protected StockLocationRepository stockLocationRepository;
   protected InventoryValidateService inventoryValidateService;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public InventoryService(
@@ -87,7 +89,8 @@ public class InventoryService {
       StockLocationLineRepository stockLocationLineRepository,
       AppBaseService appBaseService,
       StockLocationRepository stockLocationRepository,
-      InventoryValidateService inventoryValidateService) {
+      InventoryValidateService inventoryValidateService,
+      ProductCompanyService productCompanyService) {
     this.inventoryLineRepository = inventoryLineRepository;
     this.inventoryLineService = inventoryLineService;
     this.sequenceService = sequenceService;
@@ -98,6 +101,7 @@ public class InventoryService {
     this.appBaseService = appBaseService;
     this.stockLocationRepository = stockLocationRepository;
     this.inventoryValidateService = inventoryValidateService;
+    this.productCompanyService = productCompanyService;
   }
 
   public Inventory createInventory(
@@ -296,6 +300,7 @@ public class InventoryService {
 
     final long inventoryId = inventory.getId();
     final Inventory[] inventoryHolder = {inventory};
+    final Company company = inventory.getCompany();
 
     Query<StockLocationLine> mainPass =
         buildSllFilterQuery(inventory).add("self.id > :lastSeenId").build().order("id");
@@ -310,7 +315,8 @@ public class InventoryService {
                 return;
               }
               if (sll.getTrackingNumber() != null
-                  || product.getTrackingNumberConfiguration() == null) {
+                  || productCompanyService.get(product, "trackingNumberConfiguration", company)
+                      == null) {
                 this.createInventoryLine(inventoryHolder[0], sll);
                 anyCreated[0] = true;
               }
