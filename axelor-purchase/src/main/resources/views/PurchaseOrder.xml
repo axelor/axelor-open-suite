@@ -14,7 +14,7 @@
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-purchase-order-method-convert-selected-lines-to-merge-lines"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
-          action="purchase-order-see-quotation-lines"/>
+          action="action-purchase-order-method-show-quotation-lines"/>
       </menu>
     </menubar>
     <field name="purchaseOrderSeq" width="120"/>
@@ -468,7 +468,7 @@
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-purchase-order-view-open-merge-form"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
-          action="purchase-order-see-quotation-lines"/>
+          action="action-purchase-order-method-show-quotation-lines"/>
       </menu>
     </menubar>
     <field name="purchaseOrderSeq"/>
@@ -874,13 +874,10 @@
   </action-view>
 
 
-  <action-view name="purchase-order-see-quotation-lines" title="See quotation lines"
-    model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-    <view type="grid" name="purchase-order-line-grid"/>
-    <view type="form" name="purchase-order-line-all-form"/>
-    <view-param name="search-filters" value="purchase-order-line-filters"/>
-    <domain>self.purchaseOrder.statusSelect in (1,2)</domain>
-  </action-view>
+  <action-method name="action-purchase-order-method-show-quotation-lines">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
+      method="showQuotationLines"/>
+  </action-method>
 
   <action-view name="purchase-order-see-purchase-order-lines"
     title="See purchase order lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">

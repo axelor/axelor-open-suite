@@ -14,7 +14,7 @@
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-sale-order-method-convert-selected-lines-to-merge-lines"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
-          action="action-view-open-quotation-lines"/>
+          action="action-sale-order-method-show-quotation-lines"/>
       </menu>
     </menubar>
     <hilite background="warning"
@@ -1477,7 +1477,7 @@
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-open-sale-quotation-merge-form"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
-          action="action-view-open-quotation-lines"/>
+          action="action-sale-order-method-show-quotation-lines"/>
       </menu>
     </menubar>
     <field name="saleOrderSeq"/>
@@ -2056,13 +2056,9 @@
     <context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
   </action-view>
 
-  <action-view name="action-view-open-quotation-lines" title="Quotation lines"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
-    <view type="grid" name="sale-order-line-menu-grid"/>
-    <view type="form" name="sale-order-line-all-form"/>
-    <view-param name="search-filters" value="sale-order-lines-filter"/>
-    <domain>self.saleOrder.statusSelect in (1,2)</domain>
-  </action-view>
+  <action-method name="action-sale-order-method-show-quotation-lines">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="showQuotationLines"/>
+  </action-method>
 
   <action-view name="action-view-open-sale-order-lines" title="Sale order lines"
     model="com.axelor.apps.sale.db.SaleOrderLine">
