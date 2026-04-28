@@ -1,0 +1,3 @@
+---
+title: "Stock: fixed demo data import failure caused by a missing carrier partner reference in stock_logisticalForm."
+module: axelor-stock
