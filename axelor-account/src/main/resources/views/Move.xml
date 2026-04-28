@@ -55,6 +55,7 @@
     <toolbar>
       <button name="deleteMovesBtn" title="Delete" icon="fa-trash"
         onClick="action-move-method-delete-multiple-moves"/>
+      <button name="printBtn" hidden="true" onClick=""/>
     </toolbar>
     <hilite color="info" if="statusSelect == 1"/>
     <hilite color="danger" if="statusSelect == 4"/>
@@ -405,6 +406,7 @@
     onSave="action-account-move-group-onsave" readonlyIf="massEntryStatusSelect == 2"
     canCopy="massEntryStatusSelect != 2">
     <toolbar>
+      <button name="printBtn" hidden="true" onClick=""/>
       <button name="controlMassEntryMoves" title="Control moves consistency"
         onClick="action-move-method-control-mass-entry-moves" colSpan="12" hidden="false"
         css="btn-primary"/>
