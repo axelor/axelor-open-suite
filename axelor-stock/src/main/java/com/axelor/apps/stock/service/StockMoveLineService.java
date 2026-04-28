@@ -139,8 +139,16 @@ public interface StockMoveLineService {
   public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product)
       throws AxelorException;
 
+  public void assignTrackingNumber(
+      StockMoveLine stockMoveLine, Product product, Set<Long> excludedTrackingNumberIds)
+      throws AxelorException;
+
   public List<? extends StockLocationLine> getStockLocationLines(
       Product product, StockLocation stockLocation) throws AxelorException;
+
+  public List<? extends StockLocationLine> getStockLocationLines(
+      Product product, StockLocation stockLocation, Set<Long> excludedTrackingNumberIds)
+      throws AxelorException;
 
   public StockMoveLine splitStockMoveLine(
       StockMoveLine stockMoveLine, BigDecimal qty, TrackingNumber trackingNumber)
