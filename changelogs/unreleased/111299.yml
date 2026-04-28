@@ -1,0 +1,5 @@
+---
+title: "Opportunity : fixed company bank details not auto-filled on opportunity and not carried over to sale order."
+module: axelor-cash-management
+developer: |
+  - CashManagementModule: Added binding of OpportunitySaleOrderSupplychainServiceImpl to OpportunitySaleOrderCashManagementServiceImpl.
