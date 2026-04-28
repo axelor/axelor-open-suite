@@ -52,7 +52,7 @@ public class CashManagementChartServiceImpl implements CashManagementChartServic
         forecastRepo
             .all()
             .filter(
-                "self.isReport = true AND (self.userRecap = :user OR :user is null) AND (:bankDetails is null OR :bankDetails MEMBER OF self.bankDetailsSet)")
+                "self.isReport = true AND (self.archived IS NULL OR self.archived = false) AND (self.userRecap = :user OR :user is null) AND (:bankDetails is null OR :bankDetails MEMBER OF self.bankDetailsSet)")
             .bind("user", user)
             .bind("bankDetails", bankDetails)
             .fetchOne();
