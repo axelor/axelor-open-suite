@@ -1,0 +1,3 @@
+---
+title: "Purchaser order: fixed migration script which is incorrectly setting amount invoiced to 0 on all purchase orders."
+module: axelor-purchase
