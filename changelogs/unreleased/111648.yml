@@ -1,0 +1,17 @@
+---
+title: "StockMove: reset fullySpreadOverLogisticalFormsFlag when a LogisticalForm is deleted or set back to draft."
+module: axelor-stock
+developer: |
+  -- Script
+  UPDATE stock_stock_move sm
+  SET fully_spread_over_logistical_forms_flag = FALSE
+  WHERE sm.fully_spread_over_logistical_forms_flag = TRUE
+    AND NOT EXISTS (
+      SELECT 1
+      FROM supplychain_packaging_line pl
+      JOIN supplychain_packaging pkg ON pkg.id = pl.packaging
+      JOIN stock_stock_move_line sml ON sml.id = pl.stock_move_line
+      JOIN stock_logistical_form lf ON lf.id = pkg.logistical_form
+      WHERE sml.stock_move = sm.id
+        AND lf.status_select = 3
+    );
