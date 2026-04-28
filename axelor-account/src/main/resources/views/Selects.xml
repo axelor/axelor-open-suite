@@ -777,6 +777,11 @@
     <option value="2">Option on deliveries</option>
   </selection>
 
+  <selection name='iaccount.vat.liability.invoice.select'>
+    <option value="1">Standard regime</option>
+    <option value="2">Option on deliveries</option>
+  </selection>
+
   <selection name='iaccount.vat.system.moveline.select'>
     <option value="0"></option>
     <option value="1">vat.Delivery</option>
@@ -884,5 +889,11 @@
   <selection name='account.import.fec.type.select'>
     <option value="import-FEC-config.xml">FEC</option>
     <option value="input-config-with-tva.xml">FEC with TVA</option>
+  </selection>
+
+  <selection name="invoice.category.select">
+    <option value="goods">Goods invoice</option>
+    <option value="services">Services invoice</option>
+    <option value="mixed">Mixed invoice</option>
   </selection>
 </object-views>

@@ -58,7 +58,8 @@
   <action-group name="action-group-base-pricelist-onnew">
     <action name="action-price-list-record-default"/>
     <action name="action-price-list-record-on-new"/>
-    <action name="action-price-list-attrs-readonly-type-select-true"/>
+    <action name="action-price-list-attrs-readonly-type-select-true"
+      if="__parent__ || _typeSelect != null"/>
     <action name="action-price-list-attrs-set-currency-readonly"/>
   </action-group>
 

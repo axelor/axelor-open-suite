@@ -30,6 +30,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -76,6 +77,7 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
       SaleOrderLineTaxService saleOrderLineTaxService,
       ProductCompanyService productCompanyService,
       CurrencyScaleService currencyScaleService,
+      OrderLineTaxService orderLineTaxService,
       BlockingService blockingService,
       AnalyticLineModelService analyticLineModelService,
       AppSupplychainService appSupplychainService,
@@ -95,7 +97,8 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
         saleOrderLinePriceService,
         saleOrderLineTaxService,
         productCompanyService,
-        currencyScaleService);
+        currencyScaleService,
+        orderLineTaxService);
     this.blockingService = blockingService;
     this.analyticLineModelService = analyticLineModelService;
     this.appSupplychainService = appSupplychainService;

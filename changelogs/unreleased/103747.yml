@@ -1,0 +1,144 @@
+---
+title: "InvoiceNote: updated modelisation to extract invoice type in a new separate object."
+module: axelor-account
+developer: |
+  Replace free-text name/type fields on InvoiceNote with a M2O reference
+  to a new InvoiceNoteType entity (code + name).
+  This standardizes note classification using UNTDID 4451 codes
+  (AAB, AAI, ABL, ACC, ADN, BAR, BAQ, BLU, PMT, PMD, REG, SUR)
+  for electronic invoicing compliance.
+
+  Steps:
+  1. Create account_invoice_note_type table with standard reference data
+  2. Add invoice_note_type FK column on account_invoice_note
+  3. Migrate existing records: match type → code, create new types for unmatched
+  4. Add invoice_note_type FK column on base_bank_details (#110332)
+  5. Drop old columns (name, type) from account_invoice_note
+
+  Script to run : 
+  -- 1. Create InvoiceNoteType table
+  CREATE TABLE IF NOT EXISTS account_invoice_note_type (
+    id BIGINT NOT NULL,
+    version INTEGER DEFAULT 0,
+    archived BOOLEAN,
+    created_on TIMESTAMP,
+    updated_on TIMESTAMP,
+    created_by BIGINT,
+    updated_by BIGINT,
+    import_id VARCHAR(255),
+    import_origin VARCHAR(255),
+    attrs JSONB,
+    code VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    CONSTRAINT account_invoice_note_type_pkey PRIMARY KEY (id)
+  );
+
+  CREATE SEQUENCE IF NOT EXISTS account_invoice_note_type_seq START WITH 1 INCREMENT BY 1;
+
+  -- Reset sequence to max existing id if table already has data
+  SELECT setval('account_invoice_note_type_seq',
+    GREATEST((SELECT COALESCE(MAX(id), 0) FROM account_invoice_note_type) + 1, 1), false);
+
+  -- 2. Insert standard UNTDID 4451 reference data
+  INSERT INTO account_invoice_note_type (id, version, code, name, created_on)
+  SELECT nextval('account_invoice_note_type_seq'), 0, v.code, v.name, NOW()
+  FROM (VALUES
+    ('AAB', 'Payment term'),
+    ('AAI', 'General information'),
+    ('ABL', 'Government information'),
+    ('ACC', 'Factor assignment clause'),
+    ('ADN', 'Type of transaction reason'),
+    ('BAR', 'Processing Instructions'),
+    ('BAQ', 'VAT exemption reason'),
+    ('BLU', 'Waste information'),
+    ('PMT', 'Payment information'),
+    ('PMD', 'Payment detail/remittance information'),
+    ('REG', 'Regulatory information'),
+    ('SUR', 'Supplier remarks')
+  ) AS v(code, name)
+  WHERE NOT EXISTS (
+    SELECT 1 FROM account_invoice_note_type t WHERE t.code = v.code
+  );
+
+  SELECT setval('account_invoice_note_type_seq',
+    GREATEST((SELECT COALESCE(MAX(id), 0) FROM account_invoice_note_type) + 1, 1), false);
+
+  -- 3. Add invoice_note_type FK column on account_invoice_note
+  ALTER TABLE account_invoice_note
+    ADD COLUMN IF NOT EXISTS invoice_note_type BIGINT;
+
+  -- 4. Migrate existing InvoiceNote records
+
+  -- 4a. Create InvoiceNoteType for unmatched non-null types
+  INSERT INTO account_invoice_note_type (id, version, code, name, created_on)
+  SELECT
+    nextval('account_invoice_note_type_seq'),
+    0,
+    sub.type,
+    COALESCE(sub.first_name, sub.type),
+    NOW()
+  FROM (
+    SELECT
+        n.type,
+        (SELECT n2.name
+         FROM account_invoice_note n2
+         WHERE n2.type = n.type
+           AND n2.name IS NOT NULL
+           AND n2.name <> ''
+         LIMIT 1) AS first_name
+    FROM account_invoice_note n
+    WHERE n.type IS NOT NULL
+      AND n.type <> ''
+      AND n.type NOT IN (SELECT code FROM account_invoice_note_type)
+    GROUP BY n.type
+  ) sub;
+
+  -- 4b. Link InvoiceNote records to their InvoiceNoteType
+  UPDATE account_invoice_note n
+  SET invoice_note_type = t.id
+  FROM account_invoice_note_type t
+  WHERE n.type IS NOT NULL
+  AND n.type != ''
+  AND n.type = t.code;
+
+  -- 4c. Log count of notes left with NULL invoice_note_type
+  -- (notes whose original `type` was NULL or empty).
+  DO $$
+  DECLARE
+    null_count BIGINT;
+  BEGIN
+    SELECT COUNT(*) INTO null_count
+    FROM account_invoice_note
+    WHERE invoice_note_type IS NULL;
+    IF null_count > 0 THEN
+        RAISE NOTICE
+            '[#109676] % InvoiceNote rows left without invoice_note_type (original type was NULL or empty)',
+            null_count;
+    END IF;
+  END $$;
+
+  -- 5. Add FK constraint
+  ALTER TABLE account_invoice_note
+    DROP CONSTRAINT IF EXISTS fk_account_invoice_note_invoice_note_type;
+
+  ALTER TABLE account_invoice_note
+    ADD CONSTRAINT fk_account_invoice_note_invoice_note_type
+    FOREIGN KEY (invoice_note_type)
+    REFERENCES account_invoice_note_type(id);
+
+  -- 6. Add invoice_note_type FK column on base_bank_details (#110332)
+  ALTER TABLE base_bank_details
+    ADD COLUMN IF NOT EXISTS invoice_note_type BIGINT;
+
+  ALTER TABLE base_bank_details
+    DROP CONSTRAINT IF EXISTS fk_base_bank_details_invoice_note_type;
+
+  ALTER TABLE base_bank_details
+    ADD CONSTRAINT fk_base_bank_details_invoice_note_type
+    FOREIGN KEY (invoice_note_type)
+    REFERENCES account_invoice_note_type(id);
+
+  -- 7. Drop old columns
+  ALTER TABLE account_invoice_note
+    DROP COLUMN IF EXISTS name,
+    DROP COLUMN IF EXISTS type;

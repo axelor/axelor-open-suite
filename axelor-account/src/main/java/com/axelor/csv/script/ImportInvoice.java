@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.note.InvoiceNoteService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.address.AddressService;
 import com.google.inject.persist.Transactional;
@@ -37,6 +38,8 @@ public class ImportInvoice {
   @Inject private InvoiceRepository invoiceRepo;
 
   @Inject private InvoiceTermService invoiceTermService;
+
+  @Inject private InvoiceNoteService invoiceNoteService;
 
   @Transactional(rollbackOn = {Exception.class})
   public Object importInvoice(Object bean, Map<String, Object> values) throws AxelorException {

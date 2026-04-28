@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <form name="incl-invoice-payment-partner-form" title="Partner"
-    model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-show-specific-tax-note">
+    model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-show-vat-exemption-reason">
     <panel name="mainPanel" colSpan="12">
       <field name="payNoticeSendingMethodSelect"/>
       <field name="invoiceSendingFormatSelect" hideIf="isEmployee"/>
@@ -28,11 +28,13 @@
         requiredIf="!isContact &amp;&amp; partnerTypeSelect != 2" form-view="currency-form"
         grid-view="currency-grid"/>
       <field name="fiscalPosition" canEdit="false" form-view="fiscal-position-form"
-        grid-view="fiscal-position-grid"
-        onChange="action-partner-attrs-show-specific-tax-note,action-partner-method-get-default-specific-tax-note"/>
-      <field name="specificTaxNote" colSpan="12" hidden="true"/>
+        grid-view="fiscal-position-grid" onChange="action-partner-group-fiscal-position-onchange"/>
+      <field name="vatExemptionReason" form-view="vat-exemption-reason-form"
+        grid-view="vat-exemption-reason-grid"/>
+      <field name="specificTaxNote" colSpan="12" showIf="specificTaxNote"/>
       <field name="das2Activity" form-view="das2-activity-form" grid-view="das2-activity-grid"
         hidden="true" showIf="isSupplier"/>
+      <field name="fiscalPosition.customerSpecificNote" hidden="true"/>
       <panel name="showInvoicesPanel" colSpan="6" hideIf="isEmployee">
         <button name="showAllInvoicesBtn" title="Show invoices"
           onClick="save,action-partner-view-partner-invoice"/>
@@ -201,10 +203,18 @@
       expr="eval: !isEmployee"/>
   </action-attrs>
 
-  <action-attrs name="action-partner-attrs-show-specific-tax-note">
-    <attribute for="specificTaxNote" name="hidden"
+  <action-attrs name="action-partner-attrs-show-vat-exemption-reason">
+    <attribute for="vatExemptionReason" name="hidden"
       expr="eval: fiscalPosition == null || !fiscalPosition.customerSpecificNote"/>
   </action-attrs>
+
+  <action-record name="action-partner-record-set-vat-exemption-reason"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="vatExemptionReason" expr="eval: fiscalPosition?.vatExemptionReason"
+      if="fiscalPosition != null &amp;&amp; fiscalPosition.customerSpecificNote"/>
+    <field name="vatExemptionReason" expr="eval: null"
+      if="fiscalPosition == null || !fiscalPosition.customerSpecificNote"/>
+  </action-record>
 
   <action-attrs name="action-partner-attrs-payment-condition-set-domain">
     <attribute name="domain" for="paymentCondition,outPaymentCondition"
@@ -220,5 +230,11 @@
     <context name="_partner" expr="eval: __self__"/>
     <context name="_showSingle" expr="eval:true"/>
   </action-view>
+
+  <action-group name="action-partner-group-fiscal-position-onchange">
+    <action name="action-partner-attrs-show-vat-exemption-reason"/>
+    <action name="action-partner-method-get-default-specific-tax-note"/>
+    <action name="action-partner-record-set-vat-exemption-reason"/>
+  </action-group>
 
 </object-views>

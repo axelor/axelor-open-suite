@@ -16,11 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.invoice.print;
+package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.base.AxelorException;
 
-public interface InvoiceProductStatementService {
-  String getInvoiceProductStatement(Invoice invoice) throws AxelorException;
+public interface InvoiceVatLiabilityService {
+
+  /**
+   * Computes the VAT liability select value for an invoice based on the partner's or company's
+   * accounting situation.
+   *
+   * @param invoice the invoice to compute VAT liability for
+   * @return the VAT liability select value, or null if it cannot be determined
+   */
+  Integer computeVatLiability(Invoice invoice);
 }

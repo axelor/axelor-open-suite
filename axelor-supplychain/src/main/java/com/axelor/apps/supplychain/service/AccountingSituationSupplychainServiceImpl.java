@@ -195,11 +195,10 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
       return;
     }
 
-    updateCustomerCreditFromSaleOrder(saleOrder);
     Partner partner = saleOrder.getClientPartner();
     for (AccountingSituation accountingSituation : partner.getAccountingSituationList()) {
       Company company = accountingSituation.getCompany();
-      boolean usedCreditExceeded = isUsedCreditExceeded(accountingSituation);
+      boolean usedCreditExceeded = isUsedCreditExceeded(accountingSituation, saleOrder);
       if (usedCreditExceeded) {
         saleOrder.setBlockedOnCustCreditExceed(true);
         if (!saleOrder.getManualUnblock()) {
@@ -222,11 +221,24 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
         > 0;
   }
 
+  protected boolean isUsedCreditExceeded(
+      AccountingSituation accountingSituation, SaleOrder saleOrder) {
+    BigDecimal usedCredit = accountingSituation.getUsedCredit();
+    if (accountingSituation.getCompany().equals(saleOrder.getCompany())) {
+      usedCredit =
+          usedCredit.add(saleOrder.getInTaxTotal().subtract(getInTaxInvoicedAmount(saleOrder)));
+    }
+    return usedCredit.compareTo(accountingSituation.getAcceptedCredit()) > 0;
+  }
+
   @Transactional(
       rollbackOn = {Exception.class},
       ignore = {BlockedSaleOrderException.class})
   @Override
   public void updateCustomerCreditFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
+    if (!appAccountService.getAppAccount().getManageCustomerCredit()) {
+      return;
+    }
     boolean isSeparationEnabled = appSaleService.getAppSale().getIsQuotationAndOrderSplitEnabled();
     Partner partner = saleOrder.getClientPartner();
     List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();

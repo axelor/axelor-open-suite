@@ -425,6 +425,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseVentilateService.class).to(ExpenseVentilateServiceImpl.class);
     bind(ExpenseToolService.class).to(ExpenseToolServiceImpl.class);
     bind(ExpenseComputationService.class).to(ExpenseComputationServiceImpl.class);
+    bind(ExpenseViewService.class).to(ExpenseViewServiceImpl.class);
     bind(EmployeeFileDMSService.class).to(EmployeeFileDMSServiceImpl.class);
     bind(ExpenseProofFileService.class).to(ExpenseProofFileServiceImpl.class);
     bind(LeaveLineService.class).to(LeaveLineServiceImpl.class);

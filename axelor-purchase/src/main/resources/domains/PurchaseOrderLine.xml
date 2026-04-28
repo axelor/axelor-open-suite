@@ -39,6 +39,8 @@
     <decimal name="inTaxTotal" title="Total A.T.I." precision="20" scale="3"/>
     <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
       title="Tax Equiv"/>
+    <many-to-one name="vatExemptionReason"
+      ref="com.axelor.apps.account.db.VatExemptionReason" title="VAT exemption reason"/>
 
     <string name="description" title="Description" large="true"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>

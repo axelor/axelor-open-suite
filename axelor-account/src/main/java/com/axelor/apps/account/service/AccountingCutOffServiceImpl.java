@@ -517,13 +517,21 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
       currencyTaxAmount = moveLineToolService.computeCurrencyAmountSign(currencyTaxAmount, isDebit);
 
+      Integer vatLiability = null;
+      if (move.getInvoice() != null) {
+        vatLiability = move.getInvoice().getVatSystemSelect();
+      }
+      if (vatLiability == null) {
+        vatLiability =
+            taxAccountToolService.resolveVatLiabilityFromAccountingSituation(
+                move.getPartner(),
+                move.getCompany(),
+                productMoveLine.getAccount(),
+                isPurchase,
+                !isPurchase);
+      }
       Integer vatSystem =
-          taxAccountToolService.calculateVatSystem(
-              move.getPartner(),
-              move.getCompany(),
-              productMoveLine.getAccount(),
-              isPurchase,
-              !isPurchase);
+          taxAccountToolService.calculateVatSystem(vatLiability, productMoveLine.getAccount());
 
       MoveLine moveLine = this.getMoveLineWithSameTax(move, taxAccount, taxLine, vatSystem);
 

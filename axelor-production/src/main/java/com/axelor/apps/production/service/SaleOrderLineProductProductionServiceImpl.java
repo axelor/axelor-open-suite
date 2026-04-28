@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
@@ -93,7 +94,8 @@ public class SaleOrderLineProductProductionServiceImpl
       SolBomUpdateService solBomUpdateService,
       SolDetailsBomUpdateService solDetailsBomUpdateService,
       SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService,
-      PublicHolidayService publicHolidayService) {
+      PublicHolidayService publicHolidayService,
+      OrderLineTaxService orderLineTaxService) {
     super(
         appSaleService,
         appBaseService,
@@ -107,6 +109,7 @@ public class SaleOrderLineProductProductionServiceImpl
         saleOrderLineTaxService,
         productCompanyService,
         currencyScaleService,
+        orderLineTaxService,
         blockingService,
         analyticLineModelService,
         appSupplychainService,

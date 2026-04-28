@@ -28,7 +28,7 @@ import java.util.Map;
 public interface PurchaseOrderLineTaxComputeService {
 
   void computeAndAddTaxToList(
-      Map<TaxLine, PurchaseOrderLineTax> map,
+      Map<?, PurchaseOrderLineTax> map,
       List<PurchaseOrderLineTax> purchaseOrderLineTaxList,
       Currency currency,
       List<PurchaseOrderLineTax> currentPurchaseOrderLineTaxList);

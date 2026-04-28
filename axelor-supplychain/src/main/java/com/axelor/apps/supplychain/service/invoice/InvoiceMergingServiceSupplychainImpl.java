@@ -157,7 +157,8 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
   @Override
   protected Invoice generateMergedInvoice(
       List<Invoice> invoicesToMerge, InvoiceMergingResult result) throws AxelorException {
-    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
+    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
+        || result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)) {
       return purchaseOrderInvoiceService.mergeInvoice(
           invoicesToMerge,
           getCommonFields(result).getCommonCompany(),
@@ -173,7 +174,8 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
           getCommonFields(result).getCommonOriginDate(),
           getCommonFields(result).getCommonPurchaseOrder());
     }
-    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)) {
+    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+        || result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)) {
       return saleOrderInvoiceService.mergeInvoice(
           invoicesToMerge,
           getCommonFields(result).getCommonCompany(),
@@ -187,6 +189,6 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
           getCommonFields(result).getCommonFiscalPosition(),
           getCommonFields(result).getCommonSaleOrder());
     }
-    return null;
+    return super.generateMergedInvoice(invoicesToMerge, result);
   }
 }

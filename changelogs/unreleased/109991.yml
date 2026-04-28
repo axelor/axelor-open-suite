@@ -1,0 +1,130 @@
+---
+title: "Vat exemption reason: added VAT exemption reason management on invoices, sale orders, and purchase orders."
+module: axelor-account
+developer: |
+  A new entity `VatExemptionReason` (table `account_vat_exemption_reason`) has been introduced in
+  axelor-base to store standard EU/FR VAT exemption codes (e.g. VATEX-EU-AE, VATEX-EU-IC, VATEX-EU-G).
+
+  The `vatExemptionReason` field (many-to-one to `VatExemptionReason`) has been added to the following entities:
+  - `TaxEquiv` (axelor-base) — statically assigned per tax equivalence rule
+  - `FiscalPosition` (axelor-base) — fallback reason when customerSpecificNote is true
+  - `Partner` (axelor-base) — partner-level override when customerSpecificNote is true
+  - `InvoiceLine` (axelor-account)
+  - `InvoiceLineTax` (axelor-account)
+  - `SaleOrderLine` (axelor-sale)
+  - `SaleOrderLineTax` (axelor-sale)
+  - `PurchaseOrderLine` (axelor-purchase)
+  - `PurchaseOrderLineTax` (axelor-purchase)
+
+  Resolution logic (implemented in `OrderLineTaxService.resolveVatExemptionReason`):
+  - If `fiscalPosition.customerSpecificNote` is true: use `partner.vatExemptionReason`, falling back to `fiscalPosition.vatExemptionReason` if the partner reason is null.
+  - Otherwise: use `taxEquiv.vatExemptionReason`.
+
+  The specific note displayed on the document is now sourced from `vatExemptionReason.note` when present,
+  falling back to `taxEquiv.specificNote`.
+
+  --- Constructor changes ---
+
+  `InvoiceLineServiceImpl` — new parameter `OrderLineTaxService orderLineTaxService` added at the end.
+
+  `InvoiceLineSupplychainService` (axelor-supplychain) — new parameter `OrderLineTaxService orderLineTaxService` added.
+
+  `SaleOrderLineTaxServiceImpl` — new parameter `OrderLineTaxService orderLineTaxService` added at the end.
+
+  `SaleOrderLineFiscalPositionServiceImpl` — new parameter `OrderLineTaxService orderLineTaxService` added at the end.
+
+  `SaleOrderLineProductServiceImpl` — new parameter `OrderLineTaxService orderLineTaxService` added at the end.
+
+  `SaleOrderLineProductSupplychainServiceImpl` (axelor-supplychain) — new parameter `OrderLineTaxService orderLineTaxService` added; forwarded to super().
+
+
+  --- New API ---
+
+  `OrderLineTaxService` (axelor-base):
+    VatExemptionReason resolveVatExemptionReason(FiscalPosition fiscalPosition, TaxEquiv taxEquiv, Partner partner);
+
+  --- Demo data ---
+
+  New file `account_taxExemptionReason.csv` (EN and FR) providing 11 standard EU/FR exemption reason records.
+  Existing file `account_taxEquiv.csv` (EN and FR) updated with a new `vatExemptionReason_code` column
+  linking each tax equivalence rule to the appropriate exemption code.
+
+  --- Migration script ---
+
+  -- Create VatExemptionReason table
+  CREATE TABLE account_vat_exemption_reason (
+    id                  BIGINT NOT NULL,
+    archived            BOOLEAN,
+    import_id           CHARACTER VARYING(255),
+    import_origin       CHARACTER VARYING(255),
+    process_instance_id CHARACTER VARYING(255),
+    version             INTEGER,
+    created_on          TIMESTAMP(6) WITHOUT TIME ZONE,
+    updated_on          TIMESTAMP(6) WITHOUT TIME ZONE,
+    attrs               JSONB,
+    code                CHARACTER VARYING(255) NOT NULL,
+    name                CHARACTER VARYING(255) NOT NULL,
+    note                TEXT NOT NULL,
+    created_by          BIGINT,
+    updated_by          BIGINT,
+    CONSTRAINT account_vat_exemption_reason_pkey PRIMARY KEY (id),
+    CONSTRAINT uk_45cls6n7anyc3uvtlrk30qwsg UNIQUE (import_id),
+    CONSTRAINT uk_mmety0ylwddkkoouqdjj2bweg UNIQUE (code),
+    CONSTRAINT fk_rj551obg6gydoq5rqbotlspqj FOREIGN KEY (created_by) REFERENCES auth_user(id),
+    CONSTRAINT fk_hntwiq8h6xox2gwgj1p5hcw8b FOREIGN KEY (updated_by) REFERENCES auth_user(id)
+  );
+  CREATE INDEX account_vat_exemption_reason_name_idx ON account_vat_exemption_reason (name);
+
+  -- Add vatExemptionReason column to TaxEquiv
+  ALTER TABLE account_tax_equiv
+    ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+    ADD CONSTRAINT fk_9oarhmr8lmiuk22aaum7mv1cr
+      FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
+
+  -- Add vatExemptionReason column to FiscalPosition
+  ALTER TABLE account_fiscal_position
+    ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+    ADD CONSTRAINT fk_9gk5x59ubme5j4ah5767nxq04
+      FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
+
+  -- Add vatExemptionReason column to Partner
+  ALTER TABLE base_partner
+    ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+    ADD CONSTRAINT fk_kdtmpwgucpdl237qmd7qmbsud
+      FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
+
+  -- Add vatExemptionReason column to InvoiceLine
+  ALTER TABLE account_invoice_line
+    ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+    ADD CONSTRAINT fk_8iumyh08vva5e12ghetgvrbtp
+      FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
+
+  -- Add vatExemptionReason column to InvoiceLineTax
+  ALTER TABLE account_invoice_line_tax
+    ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+    ADD CONSTRAINT fk_2qn28jl8wurud5ab05b11na99
+      FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
+
+  -- Add vatExemptionReason column to SaleOrderLine
+  ALTER TABLE sale_sale_order_line
+    ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+    ADD CONSTRAINT fk_pi3ws18w8qw11iuc9worbw7vp
+      FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
+
+  -- Add vatExemptionReason column to SaleOrderLineTax
+  ALTER TABLE sale_sale_order_line_tax
+    ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+    ADD CONSTRAINT fk_5sa3d2cd74unv4tpu9ga77nei
+      FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
+
+  -- Add vatExemptionReason column to PurchaseOrderLine
+  ALTER TABLE purchase_purchase_order_line
+    ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+    ADD CONSTRAINT fk_ssmlm5sg6syiqma2q9el7usao
+      FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
+
+  -- Add vatExemptionReason column to PurchaseOrderLineTax
+  ALTER TABLE purchase_purchase_order_line_tax
+    ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+    ADD CONSTRAINT fk_98soi4hx4knmlr57865ea152y
+      FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
