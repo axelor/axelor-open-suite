@@ -21,6 +21,7 @@ package com.axelor.apps.base.service.partner.api;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.City;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.MainActivity;
 import com.axelor.apps.base.db.Partner;
@@ -37,12 +38,14 @@ import com.axelor.apps.base.rest.dto.sirene.PartnerDataResponse;
 import com.axelor.apps.base.rest.dto.sirene.UniteLegaleResponse;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -87,13 +90,14 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
 
   @Transactional(rollbackOn = Exception.class)
   @Override
-  public void configurePartner(Partner partner, String siret) throws AxelorException {
+  public void configurePartner(Partner partner, String siret, Map<String, Boolean> partnerTypeData)
+      throws AxelorException {
     String result = partnerApiFetchService.fetch(siret);
     try {
       ObjectMapper objectMapper = new ObjectMapper();
       PartnerDataResponse partnerData = objectMapper.readValue(result, PartnerDataResponse.class);
 
-      setPartnerBasicDetails(partner, partnerData);
+      setPartnerBasicDetails(partner, partnerData, partnerTypeData);
       setPartnerCategoryAndType(partner, partnerData.getUniteLegale());
       setPartnerAddress(partner, partnerData.getAdresseEtablissement());
 
@@ -103,7 +107,8 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
     }
   }
 
-  protected void setPartnerBasicDetails(Partner partner, PartnerDataResponse partnerData)
+  protected void setPartnerBasicDetails(
+      Partner partner, PartnerDataResponse partnerData, Map<String, Boolean> partnerTypeData)
       throws AxelorException {
     safeSetString(
         partner::setRegistrationCode, partner::getRegistrationCode, partnerData.getSiret());
@@ -121,6 +126,14 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
       partner.setSiren(sirenNb);
       setPartnerTaxNumber(sirenNb, partner);
     }
+    Company activeCompany = AuthUtils.getUser().getActiveCompany();
+    if (activeCompany != null) {
+      partner.addCompanySetItem(activeCompany);
+      partner.setCurrency(activeCompany.getCurrency());
+    }
+    partner.setIsCustomer(partnerTypeData.get("isCustomer"));
+    partner.setIsSupplier(partnerTypeData.get("isSupplier"));
+    partner.setIsProspect(partnerTypeData.get("isProspect"));
   }
 
   protected void setPartnerTaxNumber(String sirenNb, Partner partner) {
