@@ -44,6 +44,8 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
 
   public static final int DEFAULT_SCALE = 2;
 
+  private static final BigDecimal MINUTES_PER_HOUR = BigDecimal.valueOf(60);
+
   public DayOfWeek getFirstDayOfWeek() {
     WeeklyPlanning planning =
         Beans.get(UserService.class).getUserActiveCompany().getWeeklyPlanning();
@@ -306,8 +308,18 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
       LocalDateTime dateTime, BigDecimal timeInHours, WeeklyPlanning weeklyPlanning) {
     DayPlanning dayPlanning = this.findDayPlanning(weeklyPlanning, dateTime.toLocalDate());
 
-    if (dayPlanning == null || !dateTime.toLocalTime().isBefore(dayPlanning.getMorningTo())) {
+    if (dayPlanning == null) {
       return dateTime.toLocalTime();
+    }
+
+    if (!dateTime.toLocalTime().isBefore(dayPlanning.getMorningTo())) {
+      LocalTime startTime = dateTime.toLocalTime();
+      if (dayPlanning.getAfternoonFrom() != null
+          && startTime.isBefore(dayPlanning.getAfternoonFrom())) {
+        startTime = dayPlanning.getAfternoonFrom();
+      }
+      long totalMinutes = timeInHours.multiply(MINUTES_PER_HOUR).longValue();
+      return startTime.plusMinutes(totalMinutes);
     }
 
     BigDecimal morningHoursCount =
@@ -319,11 +331,13 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
 
     if (timeInHours.compareTo(morningHoursCount) > 0) {
       timeInHours = timeInHours.subtract(morningHoursCount);
-      return dayPlanning.getAfternoonFrom().plusHours(timeInHours.longValue());
+      long totalMinutes = timeInHours.multiply(MINUTES_PER_HOUR).longValue();
+      return dayPlanning.getAfternoonFrom().plusMinutes(totalMinutes);
     } else {
+      long totalMinutes = timeInHours.multiply(MINUTES_PER_HOUR).longValue();
       return dateTime.toLocalTime().isBefore(dayPlanning.getMorningFrom())
-          ? dayPlanning.getMorningFrom().plusHours(timeInHours.longValue())
-          : dateTime.toLocalTime().plusHours(timeInHours.longValue());
+          ? dayPlanning.getMorningFrom().plusMinutes(totalMinutes)
+          : dateTime.toLocalTime().plusMinutes(totalMinutes);
     }
   }
 
