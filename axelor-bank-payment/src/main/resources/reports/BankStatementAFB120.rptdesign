@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -1263,6 +1263,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
             <property name="orientation">landscape</property>
             <page-header>
                 <grid id="14">
+                    <property name="fontFamily">sans-serif</property>
                     <property name="textAlign">center</property>
                     <property name="width">100%</property>
                     <property name="dataSet">TranslateDS</property>
@@ -1502,6 +1503,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
             </page-header>
             <page-footer>
                 <grid id="3801">
+                    <property name="fontFamily">sans-serif</property>
                     <column id="3802"/>
                     <column id="3803"/>
                     <column id="3804">
@@ -1512,21 +1514,21 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                         <cell id="3807"/>
                         <cell id="3808">
                             <grid id="3809">
-                                <column id="3810">
-                                    <property name="width">45%</property>
+                                <column id="3810"/>
+                                <column id="3811">
+                                    <property name="textAlign">center</property>
                                 </column>
-                                <column id="3811"/>
-                                <column id="3812">
-                                    <property name="width">45%</property>
-                                </column>
+                                <column id="3812"/>
                                 <row id="3813">
                                     <cell id="3814">
+                                        <property name="textAlign">right</property>
                                         <auto-text id="3815">
                                             <property name="textAlign">right</property>
                                             <property name="type">page-number</property>
                                         </auto-text>
                                     </cell>
                                     <cell id="3816">
+                                        <property name="textAlign">right</property>
                                         <text id="3817">
                                             <property name="textAlign">right</property>
                                             <property name="contentType">plain</property>
@@ -1534,6 +1536,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                                         </text>
                                     </cell>
                                     <cell id="3818">
+                                        <property name="textAlign">right</property>
                                         <auto-text id="3819">
                                             <property name="textAlign">right</property>
                                             <property name="type">total-page</property>
@@ -1549,6 +1552,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
     </page-setup>
     <body>
         <table id="3944">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">9pt</property>
             <property name="dataSet">BankStatementLineDS</property>
             <list-property name="boundDataColumns">
                 <structure>
