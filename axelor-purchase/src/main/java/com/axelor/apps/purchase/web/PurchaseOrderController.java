@@ -42,6 +42,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderDomainService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.PurchaseOrderViewService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
 import com.axelor.apps.purchase.service.attributes.PurchaseOrderAttrsService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
@@ -61,11 +62,13 @@ import jakarta.annotation.Nullable;
 import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -457,5 +460,28 @@ public class PurchaseOrderController {
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
     Beans.get(PurchaseOrderLineService.class).updatePurchaseOrderLineList(purchaseOrder);
     response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
+  }
+
+  public void showQuotationLines(ActionRequest request, ActionResponse response) {
+    try {
+      List<Long> ids = getSelectedIds(request);
+      response.setView(
+          Beans.get(PurchaseOrderViewService.class).buildQuotationLinesView(ids).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<Long> getSelectedIds(ActionRequest request) {
+    List<Integer> ids = (List<Integer>) request.getContext().get("_ids");
+    if (!ObjectUtils.isEmpty(ids)) {
+      return ids.stream().map(Integer::longValue).collect(Collectors.toList());
+    }
+    List<Long> allIds =
+        request.getCriteria().createQuery(PurchaseOrder.class).select("id").fetch(0, 0).stream()
+            .map(m -> (Long) m.get("id"))
+            .collect(Collectors.toList());
+    return allIds.isEmpty() ? Collections.singletonList(0L) : allIds;
   }
 }

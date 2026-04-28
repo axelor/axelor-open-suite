@@ -16,24 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder.views;
+package com.axelor.apps.purchase.service;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import java.util.List;
-import java.util.Map;
 
-public interface SaleOrderViewService {
+public interface PurchaseOrderViewService {
 
-  Map<String, Map<String, Object>> getOnNewAttrs(SaleOrder saleOrder) throws AxelorException;
-
-  Map<String, Map<String, Object>> getOnLoadAttrs(SaleOrder saleOrder) throws AxelorException;
-
-  Map<String, Map<String, Object>> getPartnerOnChangeAttrs(SaleOrder saleOrder)
-      throws AxelorException;
-
-  Map<String, Map<String, Object>> getCompanyAttrs(SaleOrder saleOrder) throws AxelorException;
-
-  ActionViewBuilder buildQuotationLinesView(List<Long> saleOrderIds);
+  ActionViewBuilder buildQuotationLinesView(List<Long> purchaseOrderIds);
 }

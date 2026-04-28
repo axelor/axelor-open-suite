@@ -26,17 +26,22 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.utils.MapTools;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppSale;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Inject;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SaleOrderViewServiceImpl implements SaleOrderViewService {
@@ -236,5 +241,22 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
                     && clientPartner.getPartnerTypeSelect()
                         == PartnerRepository.PARTNER_TYPE_INDIVIDUAL)));
     return attrs;
+  }
+
+  @Override
+  public ActionViewBuilder buildQuotationLinesView(List<Long> saleOrderIds) {
+    return ActionView.define(I18n.get("Quotation lines"))
+        .model(SaleOrderLine.class.getName())
+        .add("grid", "sale-order-line-menu-grid")
+        .add("form", "sale-order-line-all-form")
+        .param("search-filters", "sale-order-lines-filter")
+        .domain(
+            "self.saleOrder.id IN (:saleOrderIds) AND self.saleOrder.statusSelect IN (:statusList)")
+        .context("saleOrderIds", saleOrderIds)
+        .context(
+            "statusList",
+            Arrays.asList(
+                SaleOrderRepository.STATUS_DRAFT_QUOTATION,
+                SaleOrderRepository.STATUS_FINALIZED_QUOTATION));
   }
 }
