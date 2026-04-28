@@ -532,15 +532,19 @@ public class PartnerController {
       throws AxelorException {
     String siret = request.getContext().get("siretNumber").toString();
 
+    Map<String, Boolean> partnerTypeData = new HashMap<>();
     Object partnerId = request.getContext().get("_id");
     Partner partner;
     if (partnerId != null) {
       partner = JPA.find(Partner.class, Long.parseLong(partnerId.toString()));
     } else {
       partner = new Partner();
+      partnerTypeData.put("isCustomer", getBooleanContextValue(request, "_isCustomer"));
+      partnerTypeData.put("isSupplier", getBooleanContextValue(request, "_isSupplier"));
+      partnerTypeData.put("isProspect", getBooleanContextValue(request, "_isProspect"));
     }
 
-    Beans.get(PartnerGenerateService.class).configurePartner(partner, siret);
+    Beans.get(PartnerGenerateService.class).configurePartner(partner, siret, partnerTypeData);
 
     if (partnerId != null) {
       response.setValues(partner);
@@ -602,5 +606,12 @@ public class PartnerController {
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
+  }
+
+  protected boolean getBooleanContextValue(ActionRequest request, String key) {
+    return Optional.ofNullable(request.getContext().get(key))
+        .map(Object::toString)
+        .map(Boolean::parseBoolean)
+        .orElse(false);
   }
 }
