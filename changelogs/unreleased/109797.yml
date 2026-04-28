@@ -1,0 +1,3 @@
+---
+title: "ProjectPlanningTime: fixed projectPlanningTime's endDateTime computation issue"
+module: axelor-base

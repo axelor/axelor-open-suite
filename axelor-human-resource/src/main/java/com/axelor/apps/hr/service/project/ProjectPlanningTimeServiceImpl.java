@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.project.db.PlannedTimeValue;
@@ -301,7 +302,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         projectPlanningTime.getDisplayTimeUnit(),
         projectPlanningTime.getTimeUnit(),
         projectPlanningTime.getDisplayPlannedTime(),
-        projectPlanningTime.getDisplayPlannedTime().scale(),
+        AppBaseService.COMPUTATION_SCALING,
         projectPlanningTime.getProject());
   }
 
@@ -320,7 +321,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         projectPlanningTime.getDisplayTimeUnit(),
         projectPlanningTime.getTimeUnit(),
         plannedTime.get(),
-        plannedTime.get().scale(),
+        AppBaseService.COMPUTATION_SCALING,
         projectPlanningTime.getProject());
   }
 

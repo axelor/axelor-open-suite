@@ -35,7 +35,9 @@ import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 public class ProjectPlanningTimeComputeServiceImpl implements ProjectPlanningTimeComputeService {
@@ -156,10 +158,46 @@ public class ProjectPlanningTimeComputeServiceImpl implements ProjectPlanningTim
                     .orElse(null));
 
     LocalDateTime startDateTime = projectPlanningTime.getStartDateTime();
+    ZoneId targetZone =
+        Optional.ofNullable(project)
+            .map(Project::getCompany)
+            .map(Company::getTimezone)
+            .filter(tz -> !tz.isBlank())
+            .map(
+                tz -> {
+                  try {
+                    return ZoneId.of(tz);
+                  } catch (DateTimeException e) {
+                    return ZoneId.systemDefault();
+                  }
+                })
+            .orElse(ZoneId.systemDefault());
+
+    LocalDateTime wallClockStart = this.getZonedStartDateTime(startDateTime, targetZone);
+
+    LocalDateTime wallClockEnd;
     if (weeklyPlanning == null || timeInHours.signum() == 0) {
-      return startDateTime.plusHours(timeInHours.longValue());
+      long totalMinutes = timeInHours.multiply(BigDecimal.valueOf(60)).longValue();
+      wallClockEnd = wallClockStart.plusMinutes(totalMinutes);
+    } else {
+      wallClockEnd =
+          weeklyPlanningService.computeEndDateTime(wallClockStart, weeklyPlanning, timeInHours);
     }
 
-    return weeklyPlanningService.computeEndDateTime(startDateTime, weeklyPlanning, timeInHours);
+    return this.getServerEndDateTime(wallClockEnd, targetZone);
+  }
+
+  protected LocalDateTime getZonedStartDateTime(LocalDateTime startDateTime, ZoneId targetZone) {
+    return startDateTime
+        .atZone(ZoneId.systemDefault())
+        .withZoneSameInstant(targetZone)
+        .toLocalDateTime();
+  }
+
+  protected LocalDateTime getServerEndDateTime(LocalDateTime endDateTime, ZoneId targetZone) {
+    return endDateTime
+        .atZone(targetZone)
+        .withZoneSameInstant(ZoneId.systemDefault())
+        .toLocalDateTime();
   }
 }
