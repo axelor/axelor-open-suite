@@ -32,6 +32,15 @@ public interface SaleOrderLineServiceSupplyChain {
   BigDecimal getAllocatedStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
 
   /**
+   * Compute the quantity to deliver for a sale order line, considering the hierarchy of parent
+   * lines. qtyToDeliver = line.qty × product of all ancestor qtys.
+   *
+   * @param saleOrderLine
+   * @return
+   */
+  BigDecimal computeQtyToDeliver(SaleOrderLine saleOrderLine);
+
+  /**
    * Compute undelivered quantity.
    *
    * @param saleOrderLine
@@ -89,4 +98,12 @@ public interface SaleOrderLineServiceSupplyChain {
   void updateStockMoveReservationDateTime(SaleOrderLine saleOrderLine) throws AxelorException;
 
   Map<String, Object> updateRequestedReservedQty(SaleOrderLine saleOrderLine);
+
+  /**
+   * Initialize qtyToDeliver recursively for all lines and their sub-lines. Called at order
+   * confirmation.
+   *
+   * @param lines root-level sale order lines
+   */
+  void initQtyToDeliverForAll(List<SaleOrderLine> lines);
 }

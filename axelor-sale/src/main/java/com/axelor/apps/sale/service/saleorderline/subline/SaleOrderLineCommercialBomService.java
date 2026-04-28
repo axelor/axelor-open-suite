@@ -16,12 +16,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service.saleorderline;
+package com.axelor.apps.sale.service.saleorderline.subline;
 
-import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import java.util.List;
 
-public interface SaleOrderLineBlockingSupplychainService {
+public interface SaleOrderLineCommercialBomService {
 
-  boolean isDeliveryBlocked(SaleOrderLine saleOrderLine, Company company);
+  /**
+   * Creates sub sale order lines from the commercial BOM of the product on the given sale order
+   * line. Only root-level BOM entries (parentCommercialBom == null) are mapped; their children are
+   * mapped recursively as nested sub-lines.
+   *
+   * @return list of root sub-lines to set on subSaleOrderLineList, or an empty list if the product
+   *     has no commercial BOM
+   */
+  List<SaleOrderLine> createSubLinesFromCommercialBom(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
 }

@@ -58,6 +58,7 @@ import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.batch.BatchAccountingCutOffSupplyChain;
+import com.axelor.apps.supplychain.service.config.OutSmGenerationService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -84,6 +85,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   protected PriceListService priceListService;
   protected SupplychainBatchRepository supplychainBatchRepo;
   protected SupplyChainConfigService supplychainConfigService;
+  protected OutSmGenerationService outSmGenerationService;
   protected InvoiceLineRepository invoiceLineRepository;
 
   protected AppSupplychainService appSupplychainService;
@@ -106,6 +108,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       ProductCompanyService productCompanyService,
       SupplychainBatchRepository supplychainBatchRepo,
       SupplyChainConfigService supplychainConfigService,
+      OutSmGenerationService outSmGenerationService,
       StockLocationLineHistoryService stockLocationLineHistoryService,
       InvoiceLineRepository invoiceLineRepository,
       AppSupplychainService appSupplychainService,
@@ -131,6 +134,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     this.priceListService = priceListService;
     this.supplychainBatchRepo = supplychainBatchRepo;
     this.supplychainConfigService = supplychainConfigService;
+    this.outSmGenerationService = outSmGenerationService;
     this.invoiceLineRepository = invoiceLineRepository;
     this.appSupplychainService = appSupplychainService;
   }
@@ -614,7 +618,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     final boolean isOutMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING;
     final boolean isInMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING;
 
-    if ((isOutMove && supplyChainConfig.getHasOutSmForStorableProduct())
+    if ((isOutMove && outSmGenerationService.isGeneratedForStorable(supplyChainConfig))
         || (isInMove && supplyChainConfig.getHasInSmForStorableProduct())
         || stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL) {
       storableFilter =
@@ -629,7 +633,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         supplychainConfigService.getSupplyChainConfig(stockMove.getCompany());
     final boolean isOutMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING;
     final boolean isInMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING;
-    if ((isOutMove && supplyChainConfig.getHasOutSmForNonStorableProduct())
+    if ((isOutMove && outSmGenerationService.isGeneratedForServices(supplyChainConfig))
         || (isInMove && supplyChainConfig.getHasInSmForNonStorableProduct())
         || stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL) {
       return " self.productTypeSelect = '" + ProductRepository.PRODUCT_TYPE_SERVICE + "'";
@@ -712,6 +716,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         createStockMoveLine(productName, StockMoveLineRepository.TYPE_TITLE, stockMove);
     stockMoveLine.setSaleOrderLine(saleOrderLine);
     stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
+    if (saleOrderLine != null && saleOrderLine.getLevelIndicator() != null) {
+      stockMoveLine.setLevelIndicator(saleOrderLine.getLevelIndicator());
+    }
     return stockMoveLine;
   }
 }
