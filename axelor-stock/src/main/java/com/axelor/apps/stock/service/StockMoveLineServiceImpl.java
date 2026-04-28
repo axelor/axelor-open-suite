@@ -409,6 +409,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                 && !stockMove.getIsReversion()
             ? stockMove.getPartner()
             : null;
+    Integer maxSequence = 0;
     while (stockMoveLine.getQty().compareTo(qtyByTracking) > 0) {
 
       BigDecimal minQty = stockMoveLine.getQty().min(qtyByTracking);
@@ -424,9 +425,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                   stockMove.getOrigin(),
                   supplier));
       this.fillOriginTrackingNumber(newStockMoveLine);
-
+      maxSequence = newStockMoveLine.getSequence();
       generateTrakingNumberCounter++;
-
       if (generateTrakingNumberCounter == 1000) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -442,6 +442,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               stockMove.getOrigin(),
               supplier));
       fillOriginTrackingNumber(stockMoveLine);
+      stockMoveLine.setSequence(maxSequence + 1);
     }
   }
 
@@ -544,12 +545,27 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   @Override
   public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product)
       throws AxelorException {
+    assignTrackingNumber(stockMoveLine, product, new HashSet<>());
+  }
 
+  @Override
+  public void assignTrackingNumber(
+      StockMoveLine stockMoveLine, Product product, Set<Long> excludedTrackingNumberIds)
+      throws AxelorException {
+    Set<Long> trackingNumberIdsToExclude =
+        excludedTrackingNumberIds != null ? excludedTrackingNumberIds : new HashSet<>();
     List<? extends StockLocationLine> stockLocationLineList =
-        this.getStockLocationLines(product, stockMoveLine.getFromStockLocation());
+        this.getStockLocationLines(
+            product, stockMoveLine.getFromStockLocation(), trackingNumberIdsToExclude);
 
     if (stockLocationLineList != null) {
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
+        TrackingNumber trackingNumber = stockLocationLine.getTrackingNumber();
+        if (trackingNumber == null
+            || trackingNumber.getId() == null
+            || trackingNumberIdsToExclude.contains(trackingNumber.getId())) {
+          continue;
+        }
 
         BigDecimal qty =
             unitConversionService.convert(
@@ -559,9 +575,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                 appBaseService.getNbDecimalDigitForQty(),
                 product);
         if (stockMoveLine.getQty().compareTo(qty) > 0) {
-          this.splitStockMoveLine(stockMoveLine, qty, stockLocationLine.getTrackingNumber());
+          this.splitStockMoveLine(stockMoveLine, qty, trackingNumber);
         } else {
-          stockMoveLine.setTrackingNumber(stockLocationLine.getTrackingNumber());
+          stockMoveLine.setTrackingNumber(trackingNumber);
+        }
+        trackingNumberIdsToExclude.add(trackingNumber.getId());
+        if (stockMoveLine.getTrackingNumber() != null) {
           break;
         }
       }
@@ -571,6 +590,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   @Override
   public List<? extends StockLocationLine> getStockLocationLines(
       Product product, StockLocation stockLocation) throws AxelorException {
+    return getStockLocationLines(product, stockLocation, Collections.emptySet());
+  }
+
+  @Override
+  public List<? extends StockLocationLine> getStockLocationLines(
+      Product product, StockLocation stockLocation, Set<Long> excludedTrackingNumberIds)
+      throws AxelorException {
     TrackingNumberConfiguration trackingNumberConfiguration =
         (TrackingNumberConfiguration)
             productCompanyService.get(
@@ -587,7 +613,19 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                 stockLocation)
             .fetch();
 
-    return stockLocationLineList;
+    if (CollectionUtils.isEmpty(stockLocationLineList)
+        || CollectionUtils.isEmpty(excludedTrackingNumberIds)) {
+      return stockLocationLineList;
+    }
+
+    return stockLocationLineList.stream()
+        .filter(
+            stockLocationLine ->
+                stockLocationLine.getTrackingNumber() == null
+                    || stockLocationLine.getTrackingNumber().getId() == null
+                    || !excludedTrackingNumberIds.contains(
+                        stockLocationLine.getTrackingNumber().getId()))
+        .toList();
   }
 
   @Override

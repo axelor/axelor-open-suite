@@ -21,6 +21,7 @@ package com.axelor.apps.production.service.operationorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.service.ProductionTrackingPreservationService.PreservedTrackingNumbersByProduct;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.google.inject.persist.Transactional;
@@ -43,6 +44,14 @@ public interface OperationOrderStockMoveService {
       StockMove stockMove,
       StockLocation fromStockLocation,
       StockLocation toStockLocation)
+      throws AxelorException;
+
+  void createNewStockMoveLines(
+      OperationOrder operationOrder,
+      StockMove stockMove,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      PreservedTrackingNumbersByProduct preservedTrackingNumbersByProduct)
       throws AxelorException;
 
   void cancel(OperationOrder operationOrder) throws AxelorException;
