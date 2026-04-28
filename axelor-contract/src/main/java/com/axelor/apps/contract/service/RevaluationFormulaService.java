@@ -24,11 +24,12 @@ import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.IndexRevaluation;
 import com.axelor.apps.contract.db.RevaluationFormula;
 import com.axelor.apps.contract.service.utils.FormulaProcessingResults;
+import com.axelor.script.GroovyScriptHelper;
+import com.axelor.script.ScriptBindings;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
+import java.util.HashMap;
 import javax.script.ScriptException;
 
 public class RevaluationFormulaService {
@@ -79,9 +80,11 @@ public class RevaluationFormulaService {
     if (formula.contains(REVALUATION_LAST_REVALUATED_PRICE)) {
       formula = formula.replace(REVALUATION_LAST_REVALUATED_PRICE, "1");
     }
-    ScriptEngineManager mgr = new ScriptEngineManager();
-    ScriptEngine engine = mgr.getEngineByName("JavaScript");
-    engine.eval(formula);
+    try {
+      new GroovyScriptHelper(new ScriptBindings(new HashMap<>())).eval(formula);
+    } catch (Exception e) {
+      throw new ScriptException(e.getMessage());
+    }
   }
 
   @FunctionalInterface
