@@ -1,0 +1,3 @@
+---
+title: "Sale order : fixed error when adding a pack without any products while editable tree view is activated."
+module: axelor-sale
