@@ -22,7 +22,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.service.SaleOrderLineBomSyncServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.studio.db.repo.AppSaleRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.google.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -30,8 +30,8 @@ import org.apache.commons.collections.CollectionUtils;
 public class SaleOrderLineBomSyncServiceBusinessImpl extends SaleOrderLineBomSyncServiceImpl {
 
   @Inject
-  public SaleOrderLineBomSyncServiceBusinessImpl(AppSaleRepository appSaleRepository) {
-    super(appSaleRepository);
+  public SaleOrderLineBomSyncServiceBusinessImpl(AppSaleService appSaleService) {
+    super(appSaleService);
   }
 
   @Override
