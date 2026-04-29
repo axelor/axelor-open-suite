@@ -55,8 +55,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -301,6 +303,7 @@ public class InventoryService {
     final long inventoryId = inventory.getId();
     final Inventory[] inventoryHolder = {inventory};
     final Company company = inventory.getCompany();
+    final Map<Long, Boolean> productHasTrackingConfig = new HashMap<>();
 
     Query<StockLocationLine> mainPass =
         buildSllFilterQuery(inventory).add("self.id > :lastSeenId").build().order("id");
@@ -314,9 +317,14 @@ public class InventoryService {
               if (product == null) {
                 return;
               }
-              if (sll.getTrackingNumber() != null
-                  || productCompanyService.get(product, "trackingNumberConfiguration", company)
-                      == null) {
+              Boolean hasTrackingConfig = productHasTrackingConfig.get(product.getId());
+              if (hasTrackingConfig == null) {
+                hasTrackingConfig =
+                    productCompanyService.get(product, "trackingNumberConfiguration", company)
+                        != null;
+                productHasTrackingConfig.put(product.getId(), hasTrackingConfig);
+              }
+              if (sll.getTrackingNumber() != null || !hasTrackingConfig) {
                 this.createInventoryLine(inventoryHolder[0], sll);
                 anyCreated[0] = true;
               }
