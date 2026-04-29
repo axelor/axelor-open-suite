@@ -46,8 +46,6 @@ import com.axelor.apps.production.db.repo.StockMoveLineProductionRepository;
 import com.axelor.apps.production.db.repo.StockMoveProductionRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeManagementRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
-import com.axelor.apps.production.db.repo.UnitCostCalculationManagementRepository;
-import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.production.rest.ManufOrderProductRestService;
 import com.axelor.apps.production.rest.ManufOrderProductRestServiceImpl;
 import com.axelor.apps.production.rest.ManufOrderRestService;
@@ -318,6 +316,12 @@ import com.axelor.apps.supplychain.db.repo.MrpLineManagementRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
 import com.axelor.apps.supplychain.service.ConfiguratorCheckServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.DepRateCalculationCsvService;
+import com.axelor.apps.supplychain.service.DepRateCalculationCsvServiceImpl;
+import com.axelor.apps.supplychain.service.DepRateCalculationProductService;
+import com.axelor.apps.supplychain.service.DepRateCalculationProductServiceImpl;
+import com.axelor.apps.supplychain.service.DepRateCalculationService;
+import com.axelor.apps.supplychain.service.DepRateCalculationServiceImpl;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
@@ -370,7 +374,6 @@ public class ProductionModule extends AxelorModule {
     bind(RawMaterialRequirementRepository.class)
         .to(RawMaterialRequirementProductionRepository.class);
     bind(ProductionBatchRepository.class).to(ProductionBatchManagementRepository.class);
-    bind(UnitCostCalculationRepository.class).to(UnitCostCalculationManagementRepository.class);
     bind(UnitCostCalculationService.class).to(UnitCostCalculationServiceImpl.class);
     bind(UnitCostCalcLineService.class).to(UnitCostCalcLineServiceImpl.class);
     bind(ProductStockRepository.class).to(ProductProductionRepository.class);
@@ -542,5 +545,9 @@ public class ProductionModule extends AxelorModule {
     bind(OperationOrderHazardPhraseService.class).to(OperationOrderHazardPhraseServiceImpl.class);
     bind(ManufOrderMessageService.class).to(ManufOrderMessageServiceImpl.class);
     bind(ManufOrderQueryService.class).to(ManufOrderQueryServiceImpl.class);
+
+    bind(DepRateCalculationService.class).to(DepRateCalculationServiceImpl.class);
+    bind(DepRateCalculationProductService.class).to(DepRateCalculationProductServiceImpl.class);
+    bind(DepRateCalculationCsvService.class).to(DepRateCalculationCsvServiceImpl.class);
   }
 }

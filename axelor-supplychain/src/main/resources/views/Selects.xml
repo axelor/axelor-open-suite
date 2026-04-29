@@ -225,4 +225,26 @@
     <option value="2">MRP</option>
   </selection>
 
+  <selection name="supplychain.cost.calculations.status.select">
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Costs computed</option>
+    <option value="3" color="brown">Costs updated</option>
+  </selection>
+
+  <selection name="supplychain.unit.cost.calculation.type.select">
+    <option value="0">Cost price calculation</option>
+    <option value="1">Depreciation rate calculation</option>
+  </selection>
+
+  <selection name="supplychain.depreciation.rate.config.type.select">
+    <option value="1">Depreciation</option>
+    <option value="2">Valorization</option>
+  </selection>
+
+  <selection name="supplychain.cost.review.status.select">
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Cost review computed</option>
+    <option value="3" color="brown">Cost review updated</option>
+  </selection>
+
 </object-views>

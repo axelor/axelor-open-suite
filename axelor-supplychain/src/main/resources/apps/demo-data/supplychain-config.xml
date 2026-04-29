@@ -440,5 +440,27 @@
       check-message="Family name must not be null"/>
   </input>
 
+  <input file="supplychain_stockRotationCategory.csv" separator=";"
+    type="com.axelor.apps.supplychain.db.StockRotationCategory" search="self.importId = :importId">
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.supplychain.db.StockRotationCategory', 'importId', importId, 'code', code)"
+      check-message="Code must be unique"/>
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
+
+  <input file="supplychain_depreciationRateConfig.csv" separator=";"
+    type="com.axelor.apps.supplychain.db.DepreciationRateConfig" search="self.importId = :importId">
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.supplychain.db.DepreciationRateConfig', 'typeSelect', typeSelect)"
+      check-message="Invalid typeSelect"/>
+    <bind column="stockRotationCategory_importId" to="stockRotationCategory"
+      search="self.importId = :stockRotationCategory_importId" if="stockRotationCategory_importId"/>
+  </input>
+
 </csv-inputs>
 

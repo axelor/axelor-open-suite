@@ -16,16 +16,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service.costsheet;
+package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.production.db.CostSheet;
-import com.axelor.apps.supplychain.db.UnitCostCalcLine;
+import java.math.BigDecimal;
 
-public interface UnitCostCalcLineService {
+public interface ProductStockAnalysisService {
 
-  UnitCostCalcLine createUnitCostCalcLine(
-      Product product, Company company, int maxLevel, CostSheet costSheet) throws AxelorException;
+  /** Compute the stock coverage ratio in days: stock / (sales / 360). */
+  BigDecimal computeSlowOrFastMover(Product product);
+
+  /** Compute total sales quantity for a product over the last 12 months. */
+  BigDecimal computeSales(Product product);
+
+  /** Compute current total stock for a product across all stock locations. */
+  BigDecimal computeStocks(Product product);
+
+  /** Compute stock level 6 months ago for a product. */
+  BigDecimal computeStocks6MonthsAgo(Product product);
 }

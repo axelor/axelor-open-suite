@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.1.xsd">
+
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+
+  <entity name="UnitCostCalcLine">
+
+    <many-to-one name="unitCostCalculation"
+      ref="com.axelor.apps.supplychain.db.UnitCostCalculation" title="Cost price calculation"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <decimal name="previousCost" title="Previous cost" precision="20" scale="10"/>
+    <decimal name="computedCost" title="Comput. cost" precision="20" scale="10"/>
+    <decimal name="costToApply" title="Cost to apply" precision="20" scale="10"/>
+    <integer name="maxLevel" title="Maximum level"/>
+    <!-- Min and max rates for depreciation rate validation -->
+    <decimal name="minRate" title="Min. rate" precision="20" scale="10"
+      help="Minimum acceptable rate"/>
+    <decimal name="maxRate" title="Max. rate" precision="20" scale="10"
+      help="Maximum acceptable rate"/>
+    <!-- Depreciation totals -->
+    <integer name="typeSelect" title="Type"
+      selection="supplychain.depreciation.rate.config.type.select" default="1"
+      help="Depreciation reduces the WAP, valorization increases it."/>
+    <decimal name="qty" title="Quantity" precision="20" scale="10"
+      help="Current total quantity of the product across non-virtual stock locations."/>
+    <decimal name="totalPrice" title="Total price" precision="20" scale="10"
+      help="Current total inventory value (qty x previous cost)."/>
+    <decimal name="valuedGap" title="Valued gap" precision="20" scale="10"
+      help="Valuation difference after applying the rate: qty x (new cost - previous cost)."/>
+  </entity>
+</domain-models>

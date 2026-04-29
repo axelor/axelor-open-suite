@@ -131,6 +131,8 @@ import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchSupplychainRepository;
+import com.axelor.apps.supplychain.db.repo.UnitCostCalculationManagementRepository;
+import com.axelor.apps.supplychain.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.supplychain.rest.PartnerCreationServiceSupplychainImpl;
 import com.axelor.apps.supplychain.rest.StockProductRestServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.AccountCustomerServiceSupplyChainImpl;
@@ -183,6 +185,8 @@ import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerLinkSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.ProductStockAnalysisService;
+import com.axelor.apps.supplychain.service.ProductStockAnalysisServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
@@ -239,6 +243,8 @@ import com.axelor.apps.supplychain.service.StockMoveReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveReservedQtyServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.StockRotationCategoryService;
+import com.axelor.apps.supplychain.service.StockRotationCategoryServiceImpl;
 import com.axelor.apps.supplychain.service.StockRulesSupplychainService;
 import com.axelor.apps.supplychain.service.StockRulesSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SupplyChainConvertLeadWizardServiceImpl;
@@ -659,5 +665,8 @@ public class SupplychainModule extends AxelorModule {
     bind(LogisticalFormComputeService.class).to(LogisticalFormComputeServiceImpl.class);
     bind(PackagingLineCreationService.class).to(PackagingLineCreationServiceImpl.class);
     bind(StockMoveCurrencyServiceImpl.class).to(StockMoveCurrencyServiceSupplychainImpl.class);
+    bind(UnitCostCalculationRepository.class).to(UnitCostCalculationManagementRepository.class);
+    bind(StockRotationCategoryService.class).to(StockRotationCategoryServiceImpl.class);
+    bind(ProductStockAnalysisService.class).to(ProductStockAnalysisServiceImpl.class);
   }
 }

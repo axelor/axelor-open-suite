@@ -16,16 +16,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service.costsheet;
+package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.production.db.CostSheet;
-import com.axelor.apps.supplychain.db.UnitCostCalcLine;
+import com.axelor.apps.supplychain.db.UnitCostCalculation;
+import java.util.Set;
 
-public interface UnitCostCalcLineService {
+public interface DepRateCalculationProductService {
 
-  UnitCostCalcLine createUnitCostCalcLine(
-      Product product, Company company, int maxLevel, CostSheet costSheet) throws AxelorException;
+  Set<Product> getProducts(UnitCostCalculation unitCostCalculation) throws AxelorException;
+
+  /**
+   * Build the product set domain used on {@link UnitCostCalculation#getProductSet()} selection in
+   * the UI for a depreciation (or cost review) calculation. Filters storable managed products that
+   * have a stock rotation category assigned and that match the calculation's category/family
+   * filters.
+   */
+  String createDepreciationProductSetDomain(UnitCostCalculation unitCostCalculation);
 }

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+
+  <grid name="stock-rotation-category-grid" title="Stock rotation categories"
+    model="com.axelor.apps.supplychain.db.StockRotationCategory" orderBy="sequence,id">
+    <field name="sequence"/>
+    <field name="code"/>
+    <field name="name"/>
+    <field name="color" widget="ColorPicker"/>
+    <field name="description"/>
+  </grid>
+
+  <form name="stock-rotation-category-form" title="Stock rotation category"
+    model="com.axelor.apps.supplychain.db.StockRotationCategory"
+    onSave="action-stock-rotation-category-method-check-formula">
+    <panel name="mainPanel">
+      <field name="sequence"/>
+      <field name="code"/>
+      <field name="name"/>
+      <field name="color" widget="ColorPicker"/>
+    </panel>
+    <panel name="formulaPanel" title="Formula" colSpan="12">
+      <panel name="formulaHelpPanel" title="Available variables" colSpan="12"
+        canCollapse="true">
+        <static name="formulaHelpText" colSpan="12"><![CDATA[<>
+          <p>{_t('Write a Groovy expression that returns true when a product should be classified in this category. The first category matching (ordered by sequence) is assigned to the product by the batch "Update stock history".')}</p>
+          <table className="table table-sm table-striped">
+            <thead>
+              <tr>
+                <th>{_t('Variable')}</th>
+                <th>{_t('Description')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>coverageInDays</code></td>
+                <td>{_t('Stock coverage in days = currentStock / (salesLast12Months / 360)')}</td>
+              </tr>
+              <tr>
+                <td><code>salesLast12Months</code></td>
+                <td>{_t('Sum of outgoing quantities over the last 12 months')}</td>
+              </tr>
+              <tr>
+                <td><code>currentStock</code></td>
+                <td>{_t('Current total quantity (non-virtual stock locations)')}</td>
+              </tr>
+              <tr>
+                <td><code>stock6MonthsAgo</code></td>
+                <td>{_t('Approximated stock quantity 6 months ago')}</td>
+              </tr>
+            </tbody>
+          </table>
+          <p><b>{_t('Examples')}</b></p>
+          <ul>
+            <li><code>coverageInDays &gt; 0 &amp;&amp; coverageInDays &lt; 60</code> - {_t('Fast movers')}</li>
+            <li><code>coverageInDays &gt;= 180 &amp;&amp; coverageInDays &lt; 365</code> - {_t('Slow movers')}</li>
+            <li><code>salesLast12Months == 0 &amp;&amp; currentStock &gt; 0</code> - {_t('Dead stock')}</li>
+            <li><code>stock6MonthsAgo &gt; 0 &amp;&amp; currentStock &gt; stock6MonthsAgo * 1.5</code> - {_t('Accumulating stock')}</li>
+          </ul>
+          <p><Badge bg="info">{_t('Tip')}</Badge> {_t('Ordering matters: put the most specific rules first. The last one can use true as a catch-all fallback.')}</p>
+        </>]]></static>
+      </panel>
+      <field name="formula" colSpan="12" showTitle="false" widget="CodeEditor"
+        x-code-syntax="groovy" height="150"/>
+    </panel>
+    <panel name="descriptionPanel" title="Description" colSpan="12">
+      <field name="description" widget="html" colSpan="12" showTitle="false"/>
+    </panel>
+  </form>
+
+  <action-method name="action-stock-rotation-category-method-check-formula">
+    <call class="com.axelor.apps.supplychain.web.StockRotationCategoryController"
+      method="checkFormula"/>
+  </action-method>
+
+</object-views>

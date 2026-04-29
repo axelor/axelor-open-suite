@@ -16,16 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service.costsheet;
+package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.production.db.CostSheet;
-import com.axelor.apps.supplychain.db.UnitCostCalcLine;
+import com.axelor.apps.supplychain.db.UnitCostCalculation;
+import com.axelor.meta.db.MetaFile;
+import java.io.IOException;
 
-public interface UnitCostCalcLineService {
+public interface DepRateCalculationCsvService {
 
-  UnitCostCalcLine createUnitCostCalcLine(
-      Product product, Company company, int maxLevel, CostSheet costSheet) throws AxelorException;
+  MetaFile exportDepRateCalc(UnitCostCalculation unitCostCalculation, String fileName)
+      throws IOException;
+
+  void importDepRateCalc(MetaFile dataFile, UnitCostCalculation unitCostCalculation)
+      throws IOException, AxelorException;
 }
