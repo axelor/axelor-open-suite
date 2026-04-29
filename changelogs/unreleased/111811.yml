@@ -1,0 +1,3 @@
+---
+title: "Production: fixed configurator-generated ProdProcessLine not inheriting startingDuration, endingDuration, and setupDuration from the WorkCenter, leading to underestimated BOM cost prices."
+module: axelor-production
