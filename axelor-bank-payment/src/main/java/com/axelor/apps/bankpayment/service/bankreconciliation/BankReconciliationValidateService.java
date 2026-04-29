@@ -94,13 +94,39 @@ public class BankReconciliationValidateService {
 
       if (!bankReconciliationLine.getIsPosted()) {
 
-        if (bankReconciliationLine.getMoveLine() == null
+        if (bankReconciliationLine.getPostedNbr() != null
+            && bankReconciliationLine.getMoveLine() == null) {
+          bankReconciliationLine.setIsPosted(true);
+          if (bankReconciliationLine.getBankStatementLine() != null) {
+            BigDecimal amount =
+                bankReconciliationLine
+                    .getDebit()
+                    .subtract(bankReconciliationLine.getCredit())
+                    .abs();
+            BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
+            bankStatementLine.setAmountRemainToReconcile(
+                currencyScaleService.getScaledValue(
+                    bankReconciliationLine,
+                    bankStatementLine.getAmountRemainToReconcile().subtract(amount)));
+          }
+        } else if (bankReconciliationLine.getMoveLine() == null
             && bankReconciliationLine.getAccount() != null) {
           this.validate(bankReconciliationLine);
         } else if (bankReconciliationLine.getMoveLine() != null) {
           bankReconciliationLine.setIsPosted(true);
           bankReconciliationLineService.checkAmount(bankReconciliationLine);
           bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
+          if (bankReconciliationLine.getBankStatementLine() == null) {
+            BigDecimal amount =
+                bankReconciliationLine
+                    .getDebit()
+                    .subtract(bankReconciliationLine.getCredit())
+                    .abs();
+            bankReconciliationLine
+                .getMoveLine()
+                .setBankReconciledAmount(
+                    currencyScaleService.getScaledValue(bankReconciliationLine, amount));
+          }
         }
       }
     }
