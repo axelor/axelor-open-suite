@@ -35,10 +35,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
 import java.util.List;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 @RequestScoped
 public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidateService {
@@ -67,14 +64,10 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
    *
    * @param invoicePayment An invoice payment
    * @throws AxelorException
-   * @throws DatatypeConfigurationException
-   * @throws IOException
-   * @throws JAXBException
    */
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void validate(InvoicePayment invoicePayment, boolean force)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+  public void validate(InvoicePayment invoicePayment, boolean force) throws AxelorException {
 
     Invoice invoice = invoicePayment.getInvoice();
     validatePartnerAccount(invoice);
@@ -135,8 +128,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void validate(InvoicePayment invoicePayment)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+  public void validate(InvoicePayment invoicePayment) throws AxelorException {
     validate(invoicePayment, false);
   }
 }

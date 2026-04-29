@@ -45,11 +45,8 @@ import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.google.common.base.Strings;
 import jakarta.inject.Inject;
-import jakarta.xml.bind.JAXBException;
 import java.io.File;
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 public class BankOrderFile00100103Service extends BankOrderFileService {
@@ -69,15 +66,10 @@ public class BankOrderFile00100103Service extends BankOrderFileService {
    * Method to create an XML file for SEPA transfer pain.001.001.03
    *
    * @throws AxelorException
-   * @throws DatatypeConfigurationException
-   * @throws JAXBException
-   * @throws IOException
    */
   @Override
-  public File generateFile()
-      throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
-
-    DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
+  public File generateFile() throws AxelorException {
+    DatatypeFactory datatypeFactory = DatatypeFactory.newDefaultInstance();
 
     ObjectFactory factory = new ObjectFactory();
 

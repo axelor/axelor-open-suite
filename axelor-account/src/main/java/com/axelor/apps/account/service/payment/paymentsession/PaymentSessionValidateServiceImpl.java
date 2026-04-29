@@ -69,8 +69,6 @@ import com.google.common.collect.Sets;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.persistence.TypedQuery;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -82,7 +80,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -679,12 +676,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       invoicePayment.setMove(moveLine.getMove());
 
       if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING) {
-        try {
-          invoicePaymentValidateService.validate(invoicePayment, true);
-        } catch (JAXBException | IOException | DatatypeConfigurationException e) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
-        }
+        invoicePaymentValidateService.validate(invoicePayment, true);
       }
     }
 
