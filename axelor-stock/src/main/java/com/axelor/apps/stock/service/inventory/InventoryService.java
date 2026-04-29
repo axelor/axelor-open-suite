@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Inventory;
@@ -54,8 +55,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -75,6 +78,7 @@ public class InventoryService {
   protected AppBaseService appBaseService;
   protected StockLocationRepository stockLocationRepository;
   protected InventoryValidateService inventoryValidateService;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public InventoryService(
@@ -87,7 +91,8 @@ public class InventoryService {
       StockLocationLineRepository stockLocationLineRepository,
       AppBaseService appBaseService,
       StockLocationRepository stockLocationRepository,
-      InventoryValidateService inventoryValidateService) {
+      InventoryValidateService inventoryValidateService,
+      ProductCompanyService productCompanyService) {
     this.inventoryLineRepository = inventoryLineRepository;
     this.inventoryLineService = inventoryLineService;
     this.sequenceService = sequenceService;
@@ -98,6 +103,7 @@ public class InventoryService {
     this.appBaseService = appBaseService;
     this.stockLocationRepository = stockLocationRepository;
     this.inventoryValidateService = inventoryValidateService;
+    this.productCompanyService = productCompanyService;
   }
 
   public Inventory createInventory(
@@ -293,34 +299,11 @@ public class InventoryService {
 
     final boolean[] anyScanned = {false};
     final boolean[] anyCreated = {false};
-    final Set<Long> trackedProductIdsAtInventoryLocation = new HashSet<>();
 
     final long inventoryId = inventory.getId();
     final Inventory[] inventoryHolder = {inventory};
-
-    BatchProcessorHelper batchHelper =
-        BatchProcessorHelper.builder().flushAfterBatch(false).build();
-
-    Query<StockLocationLine> prePass =
-        buildSllFilterQuery(inventory)
-            .add("self.trackingNumber IS NOT NULL")
-            .add("self.detailsStockLocation = :stockLocation")
-            .add("self.id > :lastSeenId")
-            .bind("stockLocation", inventory.getStockLocation())
-            .build()
-            .order("id");
-
-    batchHelper.<StockLocationLine, AxelorException>forEachByQuery(
-        prePass,
-        sll -> {
-          anyScanned[0] = true;
-          final Product product = sll.getProduct();
-          if (product != null) {
-            trackedProductIdsAtInventoryLocation.add(product.getId());
-          }
-        });
-
-    inventoryHolder[0] = inventoryRepo.find(inventoryId);
+    final Company company = inventory.getCompany();
+    final Map<Long, Boolean> productHasTrackingConfig = new HashMap<>();
 
     Query<StockLocationLine> mainPass =
         buildSllFilterQuery(inventory).add("self.id > :lastSeenId").build().order("id");
@@ -334,8 +317,14 @@ public class InventoryService {
               if (product == null) {
                 return;
               }
-              if (sll.getTrackingNumber() != null
-                  || !trackedProductIdsAtInventoryLocation.contains(product.getId())) {
+              Boolean hasTrackingConfig = productHasTrackingConfig.get(product.getId());
+              if (hasTrackingConfig == null) {
+                hasTrackingConfig =
+                    productCompanyService.get(product, "trackingNumberConfiguration", company)
+                        != null;
+                productHasTrackingConfig.put(product.getId(), hasTrackingConfig);
+              }
+              if (sll.getTrackingNumber() != null || !hasTrackingConfig) {
                 this.createInventoryLine(inventoryHolder[0], sll);
                 anyCreated[0] = true;
               }
