@@ -1012,9 +1012,9 @@ when InvoiceTerm.invoice IS NULL THEN Move.origin
 end as IDCode,
 InvoiceTerm.due_date as DueDate,
 DATE_PART('day',  coalesce ((select today_datet from studio_app_base), NOW())-InvoiceTerm.due_date) as LatePaymentDays,
-InvoiceTerm.amount as Amount,
-(InvoiceTerm.amount - InvoiceTerm.amount_remaining) as AmountPaid,
-InvoiceTerm.amount_remaining as ToPay,
+case when Invoice.operation_type_select in (2, 4) then -InvoiceTerm.amount else InvoiceTerm.amount end as Amount,
+case when Invoice.operation_type_select in (2, 4) then -(InvoiceTerm.amount - InvoiceTerm.amount_remaining) else (InvoiceTerm.amount - InvoiceTerm.amount_remaining) end as AmountPaid,
+case when Invoice.operation_type_select in (2, 4) then -InvoiceTerm.amount_remaining else InvoiceTerm.amount_remaining end as ToPay,
 InvoiceTerm.sequence,
 Move.origin_date
 from account_debt_recovery_history DebtRecoveryHistory
@@ -1024,9 +1024,11 @@ join account_invoice_term InvoiceTerm  on DebtRecoveryInvoiceTermSet.invoice_ter
 join account_move_line MoveLine on MoveLine.id = InvoiceTerm.move_line
 join account_move Move on Move.id = MoveLine.move
 join base_currency Currency on Move.currency = Currency.id
+left join account_invoice Invoice on Invoice.id = InvoiceTerm.invoice
 left join account_account_config AccConf on AccConf.company = Move.company
 where DebtRecoveryHistory.id = ?
 and Currency.code is not null
+and InvoiceTerm.amount_remaining > 0
 and InvoiceTerm.due_date + INTERVAL '1 day' * coalesce(AccConf.mail_transit_time,1) < coalesce ((select today_datet from studio_app_base), NOW()) )
 order by InvoiceTerm.sequence]]></xml-property>
         </oda-data-set>
