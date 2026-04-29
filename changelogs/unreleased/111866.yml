@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed BIRT report failing with 'column does not exist' and duplicate column metadata after the vatLiabilitySelect/vatSystemSelect rename."
+module: axelor-account
