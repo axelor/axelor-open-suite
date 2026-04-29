@@ -38,12 +38,9 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.Query;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
-import javax.xml.datatype.DatatypeConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,14 +115,11 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
    * @param reimbursementList
    * @return
    * @throws AxelorException
-   * @throws DatatypeConfigurationException
-   * @throws IOException
-   * @throws JAXBException
    */
   @Transactional(rollbackOn = {Exception.class})
   protected BankOrder createBankOrder(
       AccountingBatch accountingBatch, List<Reimbursement> reimbursementList)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+      throws AxelorException {
     LocalDate bankOrderDate =
         accountingBatch.getDueDate() != null
             ? accountingBatch.getDueDate()
