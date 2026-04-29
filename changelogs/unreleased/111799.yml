@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed multiple quantities check skipped on a new sale order line."
+module: axelor-sale
