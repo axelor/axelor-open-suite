@@ -83,12 +83,35 @@
         <field name="maxCapacityPerCycleFormula" widget="CodeEditor"
           showIf="defMaxCapacityFormula" x-code-syntax="groovy" height="100" colSpan="12"/>
       </panel>
-      <panel name="otherDetailsPanel">
-        <field name="defDurationFormula" colSpan="12"/>
-        <field name="durationPerCycle" colSpan="6" widget="duration" x-big="true"
-          x-seconds="true" showIf="!defDurationFormula"/>
-        <field name="durationPerCycleFormula" widget="CodeEditor" showIf="defDurationFormula"
-          x-code-syntax="groovy" height="100" colSpan="12"/>
+      <panel name="otherDetailsPanel" colSpan="12">
+        <panel name="durationCyclePanel">
+          <field name="defDurationFormula" colSpan="12"/>
+          <field name="durationPerCycle" colSpan="6" widget="duration" x-big="true"
+            x-seconds="true" showIf="!defDurationFormula"/>
+          <field name="durationPerCycleFormula" widget="CodeEditor"
+            showIf="defDurationFormula" x-code-syntax="groovy" height="100" colSpan="12"/>
+        </panel>
+        <panel name="startingDurationPanel">
+          <field name="defStartingDurationFormula" colSpan="12"/>
+          <field name="startingDuration" widget="duration" x-big="true" x-seconds="true"
+            colSpan="6" showIf="!defStartingDurationFormula"/>
+          <field name="startingDurationFormula" widget="CodeEditor"
+            showIf="defStartingDurationFormula" x-code-syntax="groovy" height="100" colSpan="12"/>
+        </panel>
+        <panel name="endingDurationPanel">
+          <field name="defEndingDurationFormula" colSpan="12"/>
+          <field name="endingDuration" widget="duration" x-big="true" x-seconds="true"
+            colSpan="6" showIf="!defEndingDurationFormula"/>
+          <field name="endingDurationFormula" widget="CodeEditor"
+            showIf="defEndingDurationFormula" x-code-syntax="groovy" height="100" colSpan="12"/>
+        </panel>
+        <panel name="setupDurationPanel">
+          <field name="defSetupDurationFormula" colSpan="12"/>
+          <field name="setupDuration" widget="duration" x-big="true" x-seconds="true"
+            colSpan="6" showIf="!defSetupDurationFormula"/>
+          <field name="setupDurationFormula" widget="CodeEditor"
+            showIf="defSetupDurationFormula" x-code-syntax="groovy" height="100" colSpan="12"/>
+        </panel>
       </panel>
       <panel name="hrDurationPanel">
         <field name="defHrDurationFormula" colSpan="12"/>
