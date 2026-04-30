@@ -358,9 +358,11 @@
   </action-attrs>
 
   <action-attrs name="action-timesheet-line-attrs-set-duration-label">
-    <attribute name="title" for="durationLabel" if="__parent__"
+    <attribute name="title" for="durationLabel"
+      if="__parent__ != null &amp;&amp; __parent__?._model == 'com.axelor.apps.hr.db.Timesheet'"
       expr="eval: __parent__?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __parent__?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
-    <attribute name="title" for="durationLabel" if="!__parent__"
+    <attribute name="title" for="durationLabel"
+      if="__parent__ == null || __parent__?._model != 'com.axelor.apps.hr.db.Timesheet'"
       expr="eval: timesheet?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : timesheet?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
   </action-attrs>
 
