@@ -1,5 +1,0 @@
----
-title: "Sale order: use AppSaleService to fetch AppSale configuration."
-module: axelor-production
-developer: |
-  In `SaleOrderLineBomSyncServiceImpl`, replaced `AppSaleRepository` with `AppSaleService` in the constructor.

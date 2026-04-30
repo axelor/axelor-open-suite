@@ -1,5 +1,0 @@
----
-title: "Partner: fixed missing automatic completion of type, company and currency when creating a third party using Sirene API."
-module: axelor-base
-developer: |
-  - PartnerGenerateService: modified configurePartner method signature to include a new parameter Map<String, Boolean> partnerTypeData.

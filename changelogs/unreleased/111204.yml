@@ -1,3 +1,0 @@
----
-title: "Partner: fixed wrong field name in setContactPartnerDomain causing contactPartnerSet to allow selecting any partner."
-module: axelor-base

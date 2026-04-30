@@ -1,3 +1,0 @@
----
-title: "Message: fixed temporary email sending not being blocked when email sending is deactivated in the base app."
-module: axelor-base
