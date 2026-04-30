@@ -95,6 +95,8 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
       saleOrder.setEstimatedShippingDate(estimatedShippingDate);
     }
 
+    saleOrderLineServiceSupplyChain.initQtyToDeliverForAll(saleOrder.getSaleOrderLineList());
+
     analyticToolSupplychainService.checkSaleOrderLinesAnalyticDistribution(saleOrder);
 
     if (partnerSupplychainService.isBlockedPartnerOrParent(saleOrder.getClientPartner())) {

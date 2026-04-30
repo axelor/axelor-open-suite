@@ -10,11 +10,9 @@
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       unique="true" help="Company for which the configurations are set."/>
 
-    <boolean name="hasOutSmForStorableProduct" title="Generate out. moves for products"
-      default="true"
-      help="When this configuration is enabled, it will be possible to generate delivery notes via the stock module for storable products."/>
-    <boolean name="hasOutSmForNonStorableProduct" title="Generate out. moves for services"
-      help="When this configuration is enabled, it will be possible to generate delivery notes via the stock module for service-type products. Services will not be managed in stock but it will be possible to generate delivery notes for these services."/>
+    <integer name="outSmGenerationSelect" title="Generate out. moves for"
+      selection="supplychain.out.sm.generation.select" default="1"
+      help="Defines which sale order lines generate a delivery note line. 'Storable products' and 'Services' control product type filtering. 'Managed lines only' ignores product type and includes only lines with 'Managed in stock move' checked."/>
     <boolean name="hasInSmForStorableProduct" title="Generate inc. moves for products"
       help="When this configuration is enabled, it will be possible to generate receipt notes via the stock module for storable products."/>
     <boolean name="hasInSmForNonStorableProduct" title="Generate inc. moves for services"
@@ -76,13 +74,19 @@
       public static final int SALE_ORDER_CONFIRMATION_DATE = 0;
       public static final int SALE_ORDER_SHIPPING_DATE = 1;
 
+      // Out stock move generation select
+      public static final int OUT_SM_GENERATION_NONE = 0;
+      public static final int OUT_SM_GENERATION_STORABLE = 1;
+      public static final int OUT_SM_GENERATION_SERVICES = 2;
+      public static final int OUT_SM_GENERATION_ALL = 3;
+      public static final int OUT_SM_GENERATION_MANAGED_LINES = 4;
+
     ]]></extra-code>
 
     <track>
       <field name="company" on="UPDATE"/>
 
-      <field name="hasOutSmForStorableProduct" on="UPDATE"/>
-      <field name="hasOutSmForNonStorableProduct" on="UPDATE"/>
+      <field name="outSmGenerationSelect" on="UPDATE"/>
       <field name="hasInSmForStorableProduct" on="UPDATE"/>
       <field name="hasInSmForNonStorableProduct" on="UPDATE"/>
 

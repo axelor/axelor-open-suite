@@ -15,7 +15,11 @@
 
 
     <!-- Bon de livraison -->
+    <decimal name="qtyToDeliver" title="Qty to deliver" readonly="true" precision="20"
+      scale="10"/>
     <boolean name="isInvoiceControlled" title="Invoice controlled"/>
+    <boolean name="managedInStockMove" title="Managed in stock move"
+      help="When 'Generate out. moves for managed lines only' is active in configuration, only lines with this option checked will be included in the delivery note."/>
 
     <one-to-many name="analyticMoveLineList"
       ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic move lines"

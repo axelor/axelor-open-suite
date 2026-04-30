@@ -70,6 +70,8 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
       // computing the line will generate sub lines.
       saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
 
+      saleOrderLine.setManagedInStockMove(false);
+
       BillOfMaterial billOfMaterial = billOfMaterialLine.getBillOfMaterial();
       if (billOfMaterial != null) {
         saleOrderLine.setSaleSupplySelect(SaleOrderLineRepository.SALE_SUPPLY_PRODUCE);

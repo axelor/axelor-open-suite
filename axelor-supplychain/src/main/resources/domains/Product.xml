@@ -20,6 +20,8 @@
       selection="base.product.packaging.group.select" default="1"/>
     <boolean name="limitedQty" title="Limited qty"/>
     <boolean name="isReturnable" title="Returnable"/>
+    <boolean name="managedInStockMove" title="Managed in stock move by default"
+      default="true"/>
     <string name="labelNumber" title="Label number"/>
     <string name="hazardNumber" title="Hazard number"/>
 

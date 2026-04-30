@@ -63,6 +63,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -469,7 +470,37 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       }
     }
 
+    linkParentChildInvoiceLines(invoiceLineList);
+
     return invoiceLineList;
+  }
+
+  protected void linkParentChildInvoiceLines(List<InvoiceLine> invoiceLineList) {
+    Map<Long, InvoiceLine> solIdToInvoiceLine = new HashMap<>();
+    Map<SaleOrderLine, InvoiceLine> solInstanceToInvoiceLine = new IdentityHashMap<>();
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      SaleOrderLine sol = invoiceLine.getSaleOrderLine();
+      if (sol != null) {
+        solInstanceToInvoiceLine.put(sol, invoiceLine);
+        if (sol.getId() != null) {
+          solIdToInvoiceLine.put(sol.getId(), invoiceLine);
+        }
+      }
+    }
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
+      if (saleOrderLine == null || saleOrderLine.getParentSaleOrderLine() == null) {
+        continue;
+      }
+      SaleOrderLine parentSol = saleOrderLine.getParentSaleOrderLine();
+      InvoiceLine parentInvoiceLine =
+          parentSol.getId() != null
+              ? solIdToInvoiceLine.get(parentSol.getId())
+              : solInstanceToInvoiceLine.get(parentSol);
+      if (parentInvoiceLine != null) {
+        invoiceLine.setParentLine(parentInvoiceLine);
+      }
+    }
   }
 
   @Override
