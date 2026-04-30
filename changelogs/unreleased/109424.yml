@@ -1,9 +1,0 @@
----
-title: "AccountConfig: New field penaltyRateNote to separate penalty rate note from legal note"
-module: axelor-account
-developer: |
-  - AccountConfig: New field penaltyRateNote.
-
-  Script to run : 
-  ALTER TABLE account_account_config
-    ADD COLUMN IF NOT EXISTS penalty_rate_note TEXT;

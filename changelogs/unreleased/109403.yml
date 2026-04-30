@@ -1,7 +1,0 @@
----
-title: "Manufacturing order: fixed double WAP computation and duplicate stock location line history entry when finishing a manufacturing order."
-module: axelor-production
-developer: |
-  ManufOrderStockMoveService: added finishInStockMoves, finishOutStockMoves, partialFinishIn, partialFinishOut methods.
-  CostSheetService: added two computeCostPrice overloads accepting an overrideProducedQty (used by ManufOrder finish when OUT moves are still planned) and an additional pair of excludedConsumedLineIds / excludedProducedLineIds sets. The exclusion sets complement the date-based filter on previousCostSheetDate (which has off-by-one semantics) so the cost sheet stays strictly batch-specific even when partial and final finishes happen on the same day.
-  ManufOrderWorkflowServiceImpl: constructor now requires UnitConversionService.

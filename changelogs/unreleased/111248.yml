@@ -1,5 +1,0 @@
----
-title: "Inventory: fixed duplicate inventory lines for tracked products when filling lines."
-module: axelor-stock
-developer: |
-  Constructor of `InventoryService` now requires a `ProductCompanyService`.

@@ -1,3 +1,0 @@
----
-title: "StockMove: fixed NPE when we mass invoice and the stock move has an address null."
-module: axelor-stock

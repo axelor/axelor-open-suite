@@ -1,3 +1,0 @@
----
-title: "Base: fixed intermittent 'file could not be generated' error during sale order finalization by closing the FileInputStream after attach."
-module: axelor-base

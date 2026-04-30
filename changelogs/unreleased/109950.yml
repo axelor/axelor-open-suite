@@ -1,3 +1,0 @@
----
-title: "Call tender: fixed the currency error when generating a purchase order due to a contact being selected as supplier partner."
-module: axelor-purchase
