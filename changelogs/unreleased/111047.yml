@@ -1,3 +1,0 @@
----
-title: "MRP: included manufacturing orders consuming a product when MRP is filtered on raw materials, so projected stock reflects expected consumption."
-module: axelor-production

@@ -1,3 +1,129 @@
+## [8.4.25] (2026-04-30)
+
+### Fixes
+#### Base
+
+* Update studio dependency to 3.5.8.
+* Advanced export: fixed duplicated rows when a selection field is overridden.
+* File source connector: fixed SFTP private key path not resolved error.
+* Base: fixed batch history panel refresh after first save on a new record.
+* ProjectPlanningTime: fixed projectPlanningTime's endDateTime computation issue
+* Company: replaced the display of workshopList with a panel dashlet.
+* Base: fixed intermittent 'file could not be generated' error during sale order finalization by closing the FileInputStream after attach.
+* Base: fixed per-company configuration grids rendering empty when multi-company mode is disabled.
+* Partner: fixed missing automatic completion of type, company and currency when creating a third party using Sirene API.
+* PriceList: fix typeSelect field not editable when creating from Referential
+* AppService: add cacheable() on getApp queries to reduce DB load for app configuration lookups.
+
+#### Account
+
+* Accounting reports: fixed empty custom report generated on a newly created company.
+* Invoice: fixed 'Suppl. Invoices to pay' to include validated advance payment invoices too.
+* Accounting batch: fixed opening-only close/open accounts batch failing when generate result move is enabled.
+* Move: fixed MappingException when changing payment condition on an unsaved duplicated move.
+* Account: add dedicated merge action for customer and supplier credit notes.
+* Accounting report: fixed 'DADS report declaration preparatory process' report to work when company's customer account is not configured.
+* Payment Session: fixed pagination skipping invoice terms beyond the first page during session validation.
+* Account: hide print button in mass entry grid and form views.
+
+#### Bank Payment
+
+* Bank reconciliation: fix isPosted flag and ending balance calculation
+* Bank statement: fix column width and font in Birt reports.
+* Move: fixed HibernateException on onLoad after generating counterpart when invoice terms are created.
+
+#### Budget
+
+* Sale order: fixed same name panel in sale order form.
+
+#### Cash Management
+
+* Opportunity : fixed company bank details not auto-filled on opportunity and not carried over to sale order.
+* Forecast: exclude archived reports and summaries from dashboard.
+
+#### Contract
+
+* Contract: filled ref/refId on traceback so the failing contract is identified when a batch raises an error.
+
+#### Human Resource
+
+* HR: added button to display accounting moves linked to an expense.
+* Timesheet: fixed timesheet line unit display
+* HR batch: fixed french translation for leave reasons field in leave management batch.
+
+#### Production
+
+* Production: fixed NPE and incorrect form displayed when clicking a component node in the BOM tree view.
+* Sale order: use AppSaleService to fetch AppSale configuration.
+* MRP: included manufacturing orders consuming a product when MRP is filtered on raw materials, so projected stock reflects expected consumption.
+
+#### Purchase
+
+* Purchaser order: fixed migration script which is incorrectly setting amount invoiced to 0 on all purchase orders.
+* Purchase: allow editing trading name on draft purchase orders.
+
+#### Quality
+
+* Company: fixed french translation of Quality config button.
+
+#### Sale
+
+* Sale order: fixed multiple quantities check skipped on a new sale order line.
+* Sale: fixed performance issue in sale order line loading caused by repeated DI resolution.
+* Sale order line: fixed type selection in sale order line when pack management is disabled.
+* Sale order line: fixed delivery state hilite regardless of sale order status.
+* Sale order : fixed error when adding a pack without any products while editable tree view is activated.
+
+#### Stock
+
+* Stock location: fixed drag and drop in tree view.
+* Stock location: fixed an error when saving a valued stock location.
+* Stock location: fixed value indicator not displayed in edit mode.
+* StockMove: fixed NPE when we mass invoice and the stock move has an address null.
+* Stock: fixed stock location form marked dirty when opened.
+* Stock: fixed demo data import failure caused by a missing carrier partner reference in stock_logisticalForm.
+
+#### Supply Chain
+
+* Sale order: fixed customer credit overrun not being detected at quotation finalization when the current quotation pushes the total above the accepted credit.
+* Supplychain: fixed performance issue in sale order to stock move generation for orders with many lines.
+* MRP: fixed NullPointerException in MRP processing when a product had a null productTypeSelect or excludeFromMrp.
+
+
+### Developer
+
+#### Base
+
+- PartnerGenerateService: modified configurePartner method signature to include a new parameter Map<String, Boolean> partnerTypeData.
+
+#### Bank Payment
+
+During bank reconciliation validation, lines with a posted number (postedNbr)
+but no associated move line were not marked as posted (isPosted) and were
+incorrectly blocked by the incomplete line check.
+
+The ending balance was also miscalculated for these lines, as their
+credit/debit amounts were ignored when no move line was linked.
+
+Additionally, when a move line is reconciled without a bank statement line,
+the reconciled amount on the move line is now correctly set.
+
+#### Cash Management
+
+- CashManagementModule: Added binding of OpportunitySaleOrderSupplychainServiceImpl to OpportunitySaleOrderCashManagementServiceImpl.
+
+#### Production
+
+In `SaleOrderLineBomSyncServiceImpl`, replaced `AppSaleRepository` with `AppSaleService` in the constructor.
+
+#### Stock
+
+- StockLocationUtilsService: removed methods `getStockLocationValue(StockLocation)` and `getStockLocationValue(Long, Long)`.
+
+Script to run:
+DELETE FROM meta_action
+WHERE name = 'action-stock-location-method-set-stock-location-value';
+
 ## [8.4.24] (2026-04-16)
 
 ### Fixes
@@ -591,134 +717,6 @@ Script to remove the unused action :
 ---
 
 Added PartnerAccountService to SaleOrderInvoiceServiceImpl and services extending it.
-
-#### Bank Payment
-
--- migration script
-
--- Step 1: fix starting_balance and ending_balance for validated reconciliations
--- ending = bsl_initial + cumulative SUM(move line deltas), starting = same without current rec
-WITH
-reconciliation_data AS (
-    -- move line delta per validated reconciliation; rn=1 marks the first in each bank_details group
-    SELECT
-        br.id,
-        br.bank_details,
-        br.currency,
-        br.bank_statement,
-        br.include_other_bank_statements,
-        ROW_NUMBER() OVER (PARTITION BY br.bank_details ORDER BY br.id) AS rn,
-        COALESCE(
-            SUM(
-                CASE
-                    WHEN co.currency IS DISTINCT FROM br.currency THEN ml.currency_amount
-                    ELSE ml.debit - ml.credit
-                END
-            ),
-            0
-        ) AS ml_delta
-    FROM bankpayment_bank_reconciliation br
-    LEFT JOIN base_company co ON co.id = br.company
-    LEFT JOIN (
-        SELECT DISTINCT bank_reconciliation, move_line
-        FROM bankpayment_bank_reconciliation_line
-        WHERE move_line IS NOT NULL
-    ) brl ON brl.bank_reconciliation = br.id
-    LEFT JOIN account_move_line ml ON ml.id = brl.move_line
-    WHERE br.bank_details IS NOT NULL
-      AND br.status_select = 2
-    GROUP BY br.id, co.currency
-),
-initial_bsl AS (
-    -- initial bank statement balance for the first validated reconciliation per bank_details
-    SELECT
-        rd.bank_details,
-        (
-            SELECT bsl.credit - bsl.debit
-            FROM bankpayment_bank_statement_line_afb120 bsl
-            JOIN bankpayment_bank_statement bs ON bs.id = bsl.bank_statement
-            JOIN bankpayment_bank_statement br_bs ON br_bs.id = rd.bank_statement
-            WHERE bsl.bank_details = rd.bank_details
-              AND bsl.currency = rd.currency
-              AND bs.status_select = 2
-              AND bsl.line_type_select = 1
-              AND (
-                  (rd.include_other_bank_statements = false AND bsl.bank_statement = rd.bank_statement)
-                  OR
-                  (rd.include_other_bank_statements = true AND bs.bank_statement_file_format = br_bs.bank_statement_file_format)
-              )
-            ORDER BY bsl.operation_date ASC, bsl.sequence ASC
-            LIMIT 1
-        ) AS starting_balance
-    FROM reconciliation_data rd
-    WHERE rd.rn = 1
-),
-cumulative AS (
-    SELECT
-        rd.id,
-        ib.starting_balance AS bsl_initial,
-        SUM(rd.ml_delta) OVER (
-            PARTITION BY rd.bank_details ORDER BY rd.id
-            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-        ) AS cumulative_ml,
-        COALESCE(SUM(rd.ml_delta) OVER (
-            PARTITION BY rd.bank_details ORDER BY rd.id
-            ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING
-        ), 0) AS prev_cumulative_ml
-    FROM reconciliation_data rd
-    JOIN initial_bsl ib ON ib.bank_details = rd.bank_details
-)
-UPDATE bankpayment_bank_reconciliation br
-SET
-    starting_balance = c.bsl_initial + c.prev_cumulative_ml,
-    ending_balance   = c.bsl_initial + c.cumulative_ml
-FROM cumulative c
-WHERE br.id = c.id;
-
--- Step 2: fix starting_balance and ending_balance for non-validated subsequent reconciliations
-WITH non_validated_data AS (
-    SELECT
-        br.id,
-        (
-            SELECT br2.ending_balance
-            FROM bankpayment_bank_reconciliation br2
-            WHERE br2.bank_details = br.bank_details
-              AND br2.id < br.id
-              AND br2.status_select = 2
-            ORDER BY br2.id DESC
-            LIMIT 1
-        ) AS prev_ending,
-        COALESCE(
-            SUM(
-                CASE
-                    WHEN co.currency IS DISTINCT FROM br.currency THEN ml.currency_amount
-                    ELSE ml.debit - ml.credit
-                END
-            ),
-            0
-        ) AS ml_delta
-    FROM bankpayment_bank_reconciliation br
-    LEFT JOIN base_company co ON co.id = br.company
-    LEFT JOIN (
-        SELECT DISTINCT bank_reconciliation, move_line
-        FROM bankpayment_bank_reconciliation_line
-        WHERE move_line IS NOT NULL
-    ) brl ON brl.bank_reconciliation = br.id
-    LEFT JOIN account_move_line ml ON ml.id = brl.move_line
-    WHERE br.bank_details IS NOT NULL
-      AND br.status_select != 2
-      AND EXISTS (
-          SELECT 1 FROM bankpayment_bank_reconciliation br2
-          WHERE br2.bank_details = br.bank_details AND br2.id < br.id AND br2.status_select = 2
-      )
-    GROUP BY br.id, co.currency
-)
-UPDATE bankpayment_bank_reconciliation br
-SET
-    starting_balance = nvd.prev_ending,
-    ending_balance   = nvd.prev_ending + nvd.ml_delta
-FROM non_validated_data nvd
-WHERE br.id = nvd.id;
 
 #### Contract
 
@@ -1413,7 +1411,7 @@ SET amount_invoiced =
                       WHERE ((InvoiceLine.purchase_order_line IN (
                           SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
                       ) OR Invoice.purchase_order = PurchaseOrder.id)
-                      AND Invoice.operation_type_select = 1
+                      AND Invoice.operation_type_select = 3
                       AND Invoice.status_select = 3
                   ), 0)
                   -
@@ -1424,7 +1422,7 @@ SET amount_invoiced =
                       WHERE ((InvoiceLine.purchase_order_line IN (
                           SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
                       ) OR Invoice.purchase_order = PurchaseOrder.id)
-                      AND Invoice.operation_type_select = 2
+                      AND Invoice.operation_type_select = 4
                       AND Invoice.status_select = 3
                   ), 0)
               ) / PurchaseOrder.company_ex_tax_total
@@ -1437,7 +1435,7 @@ SET amount_invoiced =
               WHERE ((InvoiceLine.purchase_order_line IN (
                   SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
               ) OR Invoice.purchase_order = PurchaseOrder.id)
-              AND Invoice.operation_type_select = 1
+              AND Invoice.operation_type_select = 3
               AND Invoice.status_select = 3
           ), 0)
           -
@@ -1448,7 +1446,7 @@ SET amount_invoiced =
               WHERE ((InvoiceLine.purchase_order_line IN (
                   SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
               ) OR Invoice.purchase_order = PurchaseOrder.id)
-              AND Invoice.operation_type_select = 2
+              AND Invoice.operation_type_select = 4
               AND Invoice.status_select = 3
           ), 0)
     END
@@ -2845,6 +2843,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.25]: https://github.com/axelor/axelor-open-suite/compare/v8.4.24...v8.4.25
 [8.4.24]: https://github.com/axelor/axelor-open-suite/compare/v8.4.23...v8.4.24
 [8.4.23]: https://github.com/axelor/axelor-open-suite/compare/v8.4.22...v8.4.23
 [8.4.22]: https://github.com/axelor/axelor-open-suite/compare/v8.4.21...v8.4.22

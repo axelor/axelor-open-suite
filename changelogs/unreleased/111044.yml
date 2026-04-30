@@ -1,3 +1,0 @@
----
-title: "Production: fixed NPE and incorrect form displayed when clicking a component node in the BOM tree view."
-module: axelor-production
