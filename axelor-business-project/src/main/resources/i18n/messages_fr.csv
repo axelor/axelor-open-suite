@@ -608,6 +608,8 @@
 "You haven't select any element to invoice","Vous n'avez sélectionné aucun élément à facturer",,
 "You must add a sale order template","Merci de rentrer un modèle de devis",,
 "You must select a project/task","Veuillez sélectionner un(e) projet/tâche",,
+"_project","_projet",,
+"_task","_tâche",,
 "com.axelor.apps.businessproject.service.batch.BusinessProjectBatchService",,,
 "value:Canceled","Annulé",,
 "value:Done paid","Terminé payé",,

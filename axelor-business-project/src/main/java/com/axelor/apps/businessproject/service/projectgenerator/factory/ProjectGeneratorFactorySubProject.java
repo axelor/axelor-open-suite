@@ -74,7 +74,6 @@ public class ProjectGeneratorFactorySubProject implements ProjectGeneratorFactor
   public Project create(SaleOrder saleOrder) throws AxelorException {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsBusinessProject(true);
-    project = projectRepository.save(project);
     try {
       if (!appProjectService.getAppProject().getGenerateProjectSequence()) {
         project.setCode(sequenceService.getDraftSequenceNumber(project));
@@ -82,7 +81,9 @@ public class ProjectGeneratorFactorySubProject implements ProjectGeneratorFactor
     } catch (AxelorException e) {
       TraceBackService.trace(e);
     }
-    return project;
+    projectBusinessService.createProjectNameTranslations(
+        saleOrder.getFullName(), project.getCode() + " - " + saleOrder.getFullName());
+    return projectRepository.save(project);
   }
 
   @Override

@@ -33,4 +33,7 @@ public interface ITranslation {
 
   public static final String REPORTING_VALUES_FOR_PROJECT = /*$$(*/
       "Reporting values for project with id %s." /*)*/;
+
+  public static final String _PROJECT = /*$$(*/ "_project"; /*)*/
+  public static final String _TASK = /*$$(*/ "_task"; /*)*/
 }

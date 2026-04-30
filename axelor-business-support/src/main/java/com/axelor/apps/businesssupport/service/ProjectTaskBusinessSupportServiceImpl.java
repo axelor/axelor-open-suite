@@ -20,6 +20,7 @@ package com.axelor.apps.businesssupport.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.FrequencyRepository;
+import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.PartnerPriceListService;
@@ -38,6 +39,9 @@ import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.TaskTemplateService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.meta.db.repo.MetaTranslationRepository;
+import com.axelor.utils.service.TranslationService;
+import com.axelor.utils.service.translation.TranslationBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -61,7 +65,11 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
       ProjectTimeUnitService projectTimeUnitService,
-      TaskTemplateService taskTemplateService) {
+      TaskTemplateService taskTemplateService,
+      LanguageRepository languageRepository,
+      TranslationBaseService translationBaseService,
+      TranslationService translationService,
+      MetaTranslationRepository metaTranslationRepository) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -77,7 +85,11 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
         productCompanyService,
         timesheetLineRepository,
         projectTimeUnitService,
-        taskTemplateService);
+        taskTemplateService,
+        languageRepository,
+        translationBaseService,
+        translationService,
+        metaTranslationRepository);
   }
 
   @Override
