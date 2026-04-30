@@ -424,7 +424,8 @@
         <panel name="configSubPanel" title="Invoicing"
           if="__config__.app.getApp('contract')?.isInvoicingManagement" hidden="true"
           showIf="contractTypeSelect == 1 &amp;&amp; isInvoicingManagement" colSpan="12">
-          <field name="isGroupedInvoicing" widget="boolean-switch" colSpan="4"/>
+          <field name="isGroupedInvoicing" widget="boolean-switch" colSpan="4" hidden="true"
+            showIf="currentContractVersion.automaticInvoicing"/>
           <spacer/>
           <field name="isConsumptionManagement"
             if="__config__.app.getApp('contract')?.isConsumptionManagement" widget="boolean-switch"
