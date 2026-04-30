@@ -1,3 +1,0 @@
----
-title: "Supplychain: fixed performance issue in sale order to stock move generation for orders with many lines."
-module: axelor-supplychain

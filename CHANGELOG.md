@@ -1,3 +1,60 @@
+## [8.2.42] (2026-04-30)
+
+### Fixes
+#### Base
+
+* Update studio dependency to 3.3.18.
+* File source connector: fixed SFTP private key path not resolved error.
+* AppService: add cacheable() on getApp queries to reduce DB load for app configuration lookups.
+
+#### Account
+
+* Move: fixed MappingException when changing payment condition on an unsaved duplicated move.
+* Payment session: fixed incorrect total displayed and compensation not applied with Bank Order Confirmation trigger.
+* Accounting report: fixed 'DADS report declaration preparatory process' report to work when company's customer account is not configured.
+* Payment Session: fixed pagination skipping invoice terms beyond the first page during session validation.
+* Account: hide print button in mass entry grid and form views.
+
+#### Bank Payment
+
+* Bank statement: fix column width and font in Birt reports.
+* Move: fixed HibernateException on onLoad after generating counterpart when invoice terms are created.
+* Bank reconciliation: fix validation, ending balance, and improve performance
+
+#### Contract
+
+* Contract: filled ref/refId on traceback so the failing contract is identified when a batch raises an error.
+
+#### Supply Chain
+
+* Supplychain: fixed performance issue in sale order to stock move generation for orders with many lines.
+
+
+### Developer
+
+#### Bank Payment
+
+Several issues in bank reconciliation have been fixed:
+- Reconciliation lines that had already been partially reconciled (with a
+  posted number) but had no associated accounting move line were not marked
+  as posted during validation, causing incorrect behavior.
+- The remaining amount to reconcile on bank statement lines was not
+  updated for those lines during validation.
+- When a move line is reconciled without a linked bank statement line,
+  the reconciled amount on the move line is now correctly set.
+- The ending balance was incorrectly calculated when lines had a posted
+  number but no move line; their amounts are now included in the computation.
+- The incomplete line check no longer blocks lines that already have a
+  posted number.
+
+Performance and UX improvements:
+- The automatic balance recomputation triggered on every line change has
+  been removed to improve performance on large reconciliations.
+- A dedicated "Compute balances" button (highlighted in green) is now
+  available to manually trigger balance recalculation.
+- The "Reconcile selected" button now saves the record before executing
+  reconciliation to avoid data loss.
+
 ## [8.2.41] (2026-04-16)
 
 ### Fixes
@@ -126,134 +183,6 @@ Added BankReconciliationLineRepository as parameter in the MoveAttrsBankPaymentS
 ---
 
 Added PartnerAccountService to SaleOrderInvoiceServiceImpl and services extending it.
-
-#### Bank Payment
-
--- migration script
-
--- Step 1: fix starting_balance and ending_balance for validated reconciliations
--- ending = bsl_initial + cumulative SUM(move line deltas), starting = same without current rec
-WITH
-reconciliation_data AS (
-    -- move line delta per validated reconciliation; rn=1 marks the first in each bank_details group
-    SELECT
-        br.id,
-        br.bank_details,
-        br.currency,
-        br.bank_statement,
-        br.include_other_bank_statements,
-        ROW_NUMBER() OVER (PARTITION BY br.bank_details ORDER BY br.id) AS rn,
-        COALESCE(
-            SUM(
-                CASE
-                    WHEN co.currency IS DISTINCT FROM br.currency THEN ml.currency_amount
-                    ELSE ml.debit - ml.credit
-                END
-            ),
-            0
-        ) AS ml_delta
-    FROM bankpayment_bank_reconciliation br
-    LEFT JOIN base_company co ON co.id = br.company
-    LEFT JOIN (
-        SELECT DISTINCT bank_reconciliation, move_line
-        FROM bankpayment_bank_reconciliation_line
-        WHERE move_line IS NOT NULL
-    ) brl ON brl.bank_reconciliation = br.id
-    LEFT JOIN account_move_line ml ON ml.id = brl.move_line
-    WHERE br.bank_details IS NOT NULL
-      AND br.status_select = 2
-    GROUP BY br.id, co.currency
-),
-initial_bsl AS (
-    -- initial bank statement balance for the first validated reconciliation per bank_details
-    SELECT
-        rd.bank_details,
-        (
-            SELECT bsl.credit - bsl.debit
-            FROM bankpayment_bank_statement_line_afb120 bsl
-            JOIN bankpayment_bank_statement bs ON bs.id = bsl.bank_statement
-            JOIN bankpayment_bank_statement br_bs ON br_bs.id = rd.bank_statement
-            WHERE bsl.bank_details = rd.bank_details
-              AND bsl.currency = rd.currency
-              AND bs.status_select = 2
-              AND bsl.line_type_select = 1
-              AND (
-                  (rd.include_other_bank_statements = false AND bsl.bank_statement = rd.bank_statement)
-                  OR
-                  (rd.include_other_bank_statements = true AND bs.bank_statement_file_format = br_bs.bank_statement_file_format)
-              )
-            ORDER BY bsl.operation_date ASC, bsl.sequence ASC
-            LIMIT 1
-        ) AS starting_balance
-    FROM reconciliation_data rd
-    WHERE rd.rn = 1
-),
-cumulative AS (
-    SELECT
-        rd.id,
-        ib.starting_balance AS bsl_initial,
-        SUM(rd.ml_delta) OVER (
-            PARTITION BY rd.bank_details ORDER BY rd.id
-            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-        ) AS cumulative_ml,
-        COALESCE(SUM(rd.ml_delta) OVER (
-            PARTITION BY rd.bank_details ORDER BY rd.id
-            ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING
-        ), 0) AS prev_cumulative_ml
-    FROM reconciliation_data rd
-    JOIN initial_bsl ib ON ib.bank_details = rd.bank_details
-)
-UPDATE bankpayment_bank_reconciliation br
-SET
-    starting_balance = c.bsl_initial + c.prev_cumulative_ml,
-    ending_balance   = c.bsl_initial + c.cumulative_ml
-FROM cumulative c
-WHERE br.id = c.id;
-
--- Step 2: fix starting_balance and ending_balance for non-validated subsequent reconciliations
-WITH non_validated_data AS (
-    SELECT
-        br.id,
-        (
-            SELECT br2.ending_balance
-            FROM bankpayment_bank_reconciliation br2
-            WHERE br2.bank_details = br.bank_details
-              AND br2.id < br.id
-              AND br2.status_select = 2
-            ORDER BY br2.id DESC
-            LIMIT 1
-        ) AS prev_ending,
-        COALESCE(
-            SUM(
-                CASE
-                    WHEN co.currency IS DISTINCT FROM br.currency THEN ml.currency_amount
-                    ELSE ml.debit - ml.credit
-                END
-            ),
-            0
-        ) AS ml_delta
-    FROM bankpayment_bank_reconciliation br
-    LEFT JOIN base_company co ON co.id = br.company
-    LEFT JOIN (
-        SELECT DISTINCT bank_reconciliation, move_line
-        FROM bankpayment_bank_reconciliation_line
-        WHERE move_line IS NOT NULL
-    ) brl ON brl.bank_reconciliation = br.id
-    LEFT JOIN account_move_line ml ON ml.id = brl.move_line
-    WHERE br.bank_details IS NOT NULL
-      AND br.status_select != 2
-      AND EXISTS (
-          SELECT 1 FROM bankpayment_bank_reconciliation br2
-          WHERE br2.bank_details = br.bank_details AND br2.id < br.id AND br2.status_select = 2
-      )
-    GROUP BY br.id, co.currency
-)
-UPDATE bankpayment_bank_reconciliation br
-SET
-    starting_balance = nvd.prev_ending,
-    ending_balance   = nvd.prev_ending + nvd.ml_delta
-FROM non_validated_data nvd
-WHERE br.id = nvd.id;
 
 #### Contract
 
@@ -2796,6 +2725,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.42]: https://github.com/axelor/axelor-open-suite/compare/v8.2.41...v8.2.42
 [8.2.41]: https://github.com/axelor/axelor-open-suite/compare/v8.2.40...v8.2.41
 [8.2.40]: https://github.com/axelor/axelor-open-suite/compare/v8.2.39...v8.2.40
 [8.2.39]: https://github.com/axelor/axelor-open-suite/compare/v8.2.38...v8.2.39
