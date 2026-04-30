@@ -6,9 +6,12 @@
   <grid name="sale-order-line-grid" title="SO lines"
     model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence">
     <hilite strong="true" color="default" if="typeSelect != 0"/>
-    <hilite color="danger" if="deliveryState == 1"/>
-    <hilite color="warning" if="deliveryState == 2"/>
-    <hilite color="success" if="deliveryState == 3"/>
+    <hilite color="danger"
+      if="$get('saleOrder.statusSelect') &gt;= 3 &amp;&amp; deliveryState == 1"/>
+    <hilite color="warning"
+      if="$get('saleOrder.statusSelect') &gt;= 3 &amp;&amp; deliveryState == 2"/>
+    <hilite color="success"
+      if="$get('saleOrder.statusSelect') &gt;= 3 &amp;&amp; deliveryState == 3"/>
     <field name="$hasWarning" hidden="true"/>
     <button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true"
       icon="exclamation-triangle"/>
@@ -288,8 +291,8 @@
               </viewer>
             </field>
             <field name="deliveryState" showTitle="false" colSpan="2"
-              showIf="deliveryState > 0" if-module="axelor-supplychain"
-              if="__config__.app.isApp('supplychain')">
+              showIf="deliveryState > 0 &amp;&amp; saleOrder.statusSelect &gt;= 3"
+              if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
               <viewer><![CDATA[
 	                    <>
 	                        {deliveryState == 1 && <Badge bg="danger">{_t('Not delivered')}</Badge>}
