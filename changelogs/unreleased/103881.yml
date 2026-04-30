@@ -1,0 +1,3 @@
+---
+title: "Partner: fixed partner sequence being auto-generated during import even when generate sequence option is disabled."
+module: axelor-base
