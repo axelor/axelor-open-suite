@@ -19,11 +19,13 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface MoveLineTaxService {
@@ -49,6 +51,10 @@ public interface MoveLineTaxService {
 
   MoveLine generateTaxPaymentMoveLineList(
       MoveLine customerPaymentMoveLine, MoveLine invoiceMoveLine, Reconcile reconcile)
+      throws AxelorException;
+
+  MoveLine generateTaxPaymentMoveLineListForAdvancePayment(
+      MoveLine customerPaymentMoveLine, Invoice invoice, LocalDate paymentDate)
       throws AxelorException;
 
   boolean isGenerateMoveLineForAutoTax(MoveLine moveLine);

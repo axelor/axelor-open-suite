@@ -111,7 +111,7 @@
         onClick="action-accounting-situation-method-open-debt-recovery" colSpan="4"/>
     </panel>
     <panel name="tradingNameDebtRecoveryProcessPanel" title="Debt recovery process"
-      hideIf="tradingNameDebtRecoveryList == null &amp;&amp; tradingNameDebtREcoveryList.length &lt;= 0">
+      hideIf="tradingNameDebtRecoveryList == null &amp;&amp; tradingNameDebtRecoveryList.length &lt;= 0">
       <panel-related name="tradingNameDebtRecoveryPanel"
         field="tradingNameDebtRecoveryList" canNew="false" canRemove="false" canSelect="false"
         grid-view="debt-recovery-grid" form-view="debt-recovery-form" colSpan="12"/>

@@ -682,18 +682,11 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <text-property name="heading">legal_notice</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">supplierVatSystemSelect</property>
-                    <property name="alias">supplierVatSystemSelect</property>
+                    <property name="columnName">vatSystemSelect</property>
+                    <property name="alias">vatSystemSelect</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">supplierVatSystemSelect</text-property>
-                    <text-property name="heading">supplierVatSystemSelect</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">companyVatSystemSelect</property>
-                    <property name="alias">companyVatSystemSelect</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">companyVatSystemSelect</text-property>
-                    <text-property name="heading">companyVatSystemSelect</text-property>
+                    <text-property name="displayName">vatSystemSelect</text-property>
+                    <text-property name="heading">vatSystemSelect</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">display_siren</property>
@@ -757,6 +750,27 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <property name="analysis">measure</property>
                     <text-property name="displayName">displayExpenseOnPrinting</text-property>
                     <text-property name="heading">displayExpenseOnPrinting</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">PenaltyRateNote</property>
+                    <property name="alias">PenaltyRateNote</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">PenaltyRateNote</text-property>
+                    <text-property name="heading">PenaltyRateNote</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">legalFormAndCapital</property>
+                    <property name="alias">legalFormAndCapital</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">legalFormAndCapital</text-property>
+                    <text-property name="heading">legalFormAndCapital</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">legalInformation</property>
+                    <property name="alias">legalInformation</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">legalInformation</text-property>
+                    <text-property name="heading">legalInformation</text-property>
                 </structure>
             </list-property>
             <list-property name="filter"/>
@@ -1106,58 +1120,68 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     </structure>
                     <structure>
                         <property name="position">67</property>
-                        <property name="name">supplierVatSystemSelect</property>
+                        <property name="name">vatSystemSelect</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">68</property>
-                        <property name="name">companyVatSystemSelect</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">69</property>
                         <property name="name">display_siren</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">70</property>
+                        <property name="position">69</property>
                         <property name="name">invoice_product_statement</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">71</property>
+                        <property name="position">70</property>
                         <property name="name">displayItemsCategoriesOnPrinting</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">72</property>
+                        <property name="position">71</property>
                         <property name="name">tableFontSize</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">73</property>
+                        <property name="position">72</property>
                         <property name="name">number_of_decimals</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">74</property>
+                        <property name="position">73</property>
                         <property name="name">invoiceCoefficientEnabled</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">75</property>
+                        <property name="position">74</property>
                         <property name="name">isExpenseLineOnInvoiceGrouped</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">76</property>
+                        <property name="position">75</property>
                         <property name="name">groupingPeriodSelect</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">77</property>
+                        <property name="position">76</property>
                         <property name="name">displayExpenseOnPrinting</property>
                         <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">78</property>
+                        <property name="name">PenaltyRateNote</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">79</property>
+                        <property name="name">legalFormAndCapital</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">80</property>
+                        <property name="name">legalInformation</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1561,69 +1585,81 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </structure>
                 <structure>
                     <property name="position">67</property>
-                    <property name="name">supplierVatSystemSelect</property>
-                    <property name="nativeName">supplierVatSystemSelect</property>
+                    <property name="name">vatSystemSelect</property>
+                    <property name="nativeName">vatSystemSelect</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="position">68</property>
-                    <property name="name">companyVatSystemSelect</property>
-                    <property name="nativeName">companyVatSystemSelect</property>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="position">69</property>
                     <property name="name">display_siren</property>
                     <property name="nativeName">display_siren</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">70</property>
+                    <property name="position">69</property>
                     <property name="name">invoice_product_statement</property>
                     <property name="nativeName">invoice_product_statement</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">71</property>
+                    <property name="position">70</property>
                     <property name="name">displayItemsCategoriesOnPrinting</property>
                     <property name="nativeName">displayItemsCategoriesOnPrinting</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">72</property>
+                    <property name="position">71</property>
                     <property name="name">tableFontSize</property>
                     <property name="nativeName">tableFontSize</property>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="position">73</property>
+                    <property name="position">72</property>
                     <property name="name">number_of_decimals</property>
                     <property name="nativeName">number_of_decimals</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">74</property>
+                    <property name="position">73</property>
                     <property name="name">invoiceCoefficientEnabled</property>
                     <property name="nativeName">invoiceCoefficientEnabled</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">75</property>
+                    <property name="position">74</property>
                     <property name="name">isExpenseLineOnInvoiceGrouped</property>
                     <property name="nativeName">isExpenseLineOnInvoiceGrouped</property>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">76</property>
+                    <property name="position">75</property>
                     <property name="name">groupingPeriodSelect</property>
                     <property name="nativeName">groupingPeriodSelect</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">77</property>
+                    <property name="position">76</property>
                     <property name="name">displayExpenseOnPrinting</property>
                     <property name="nativeName">displayExpenseOnPrinting</property>
                     <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">78</property>
+                    <property name="name">PenaltyRateNote</property>
+                    <property name="nativeName">PenaltyRateNote</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">79</property>
+                    <property name="name">legalFormAndCapital</property>
+                    <property name="nativeName">legalFormAndCapital</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">80</property>
+                    <property name="name">legalInformation</property>
+                    <property name="nativeName">legalInformation</property>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[WITH Invoice AS (
@@ -1706,10 +1742,22 @@ SELECT * FROM Invoice;]]></xml-property>
                     <text-property name="heading">tax_type_count</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">vat_exemption_reason</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">vat_exemption_reason</text-property>
+                    <text-property name="heading">vat_exemption_reason</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">unique_tax_type_names</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">unique_tax_type_names</text-property>
                     <text-property name="heading">unique_tax_type_names</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">exemption_reason_count</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">exemption_reason_count</text-property>
+                    <text-property name="heading">exemption_reason_count</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">seq</property>
@@ -1805,11 +1853,21 @@ SELECT * FROM Invoice;]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">13</property>
+                        <property name="name">vat_exemption_reason</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
                         <property name="name">unique_tax_type_names</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">15</property>
+                        <property name="name">exemption_reason_count</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
                         <property name="name">seq</property>
                         <property name="dataType">integer</property>
                     </structure>
@@ -1906,13 +1964,27 @@ SELECT * FROM Invoice;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
+                    <property name="name">vat_exemption_reason</property>
+                    <property name="nativeName">vat_exemption_reason</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
                     <property name="name">unique_tax_type_names</property>
                     <property name="nativeName">unique_tax_type_names</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">15</property>
+                    <property name="name">exemption_reason_count</property>
+                    <property name="nativeName">exemption_reason_count</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
                     <property name="name">seq</property>
                     <property name="nativeName">seq</property>
                     <property name="dataType">integer</property>
@@ -1921,7 +1993,7 @@ SELECT * FROM Invoice;]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
     main_query.*,
-    unique_tax_type_names,
+    unique_tax_type_names, exemption_reason_count,
     (Case when main_query.tax_type_code IN ('VAT','TVA') THEN 999
     Else 0 END ) as seq
 FROM (
@@ -1941,7 +2013,8 @@ FROM (
     	THEN true
      	ELSE false 
 		END) AS show_percentage,
-        COUNT(TaxType.name) OVER (PARTITION BY TaxType.name) AS tax_type_count
+        COUNT(TaxType.name) OVER (PARTITION BY TaxType.name) AS tax_type_count,
+        VatExemptionReason.code || ' - ' || VatExemptionReason.note AS vat_exemption_reason
     FROM
     	account_invoice_line_tax as InvoiceLineTax
 		inner join account_invoice as Invoice on (InvoiceLineTax.invoice = Invoice.id)
@@ -1953,16 +2026,19 @@ FROM (
 		left outer join meta_select_item MetaSelectItem on (MetaSelectItem.select_id = MetaSelect.id AND MetaSelectItem.value = cast( TaxType.type_select AS text ))
 		left outer join base_company as Company on (Invoice.company = Company.id)
 		left outer join account_account_config as AccountConfig on (AccountConfig.company = Company.id)
+		left outer join account_vat_exemption_reason as VatExemptionReason on (InvoiceLineTax.vat_exemption_reason = VatExemptionReason.id)
     WHERE
         Invoice.id = ?
 ) AS main_query
 CROSS JOIN (
-    SELECT COUNT(DISTINCT TaxType.name) AS unique_tax_type_names
+    SELECT COUNT(DISTINCT TaxType.name) AS unique_tax_type_names,
+    COUNT(VatExemptionReason.id) AS exemption_reason_count
     FROM account_invoice_line_tax as InvoiceLineTax
 		inner join account_invoice as Invoice on (InvoiceLineTax.invoice = Invoice.id)
 		left outer join account_tax_line as TaxLine on (InvoiceLineTax.tax_line = TaxLine.id)
 		left outer join account_tax As Tax on (Tax.id = TaxLine.tax)
 		left outer join account_tax_type as TaxType on (TaxType.id = Tax.tax_type)
+		left outer join account_vat_exemption_reason as VatExemptionReason on (InvoiceLineTax.vat_exemption_reason = VatExemptionReason.id)	
     WHERE Invoice.id = ?
 ) AS subquery;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -2793,7 +2869,7 @@ RETURNS table(inv_id bigint, product_name varchar, description text,
     "productCategory" bigint, "showTotal" boolean, "hideUnitAmounts" boolean,
     "PackHideUnitAmounts" boolean,number_of_decimals int,invoice_line_id bigint, 
     "coefficient" numeric, "ExpenseDate" date,"groupingPeriodSelect" varchar, "previousProgress" numeric, "newProgress" numeric,
-    "display_previous_progress" bigint, "display_new_progress" bigint, "previous_project_invoice_date" date) as
+    "display_previous_progress" bigint, "display_new_progress" bigint, "previous_project_invoice_date" date, "eco_tax_mention" varchar) as
 $func$
 DECLARE
 sql_query text;    
@@ -2860,15 +2936,16 @@ InvoiceLine.is_hide_unit_amounts as hideUnitAmounts,
 (SELECT is_hide_unit_amounts from account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice AND ILine.type_select IN (2,3) AND ILine.sequence > InvoiceLine.sequence order by ILine.sequence limit 1) as "PackHideUnitAmounts",  
 Currency.number_of_decimals,  
 InvoiceLine.id as invoice_line_id,  
-InvoiceLine.coefficient,' ||  
+InvoiceLine.coefficient,' ||
 ExpenseDate ||  
 groupingPeriodSelect ||  
 previousProgress ||  
 newProgress ||  
 display_previous_progress ||  
 display_new_progress ||  
-previous_project_invoice_date ||  
-' from account_invoice_line as InvoiceLine  
+previous_project_invoice_date ||
+',InvoiceLine.eco_tax_mention
+ from account_invoice_line as InvoiceLine  
 inner join account_invoice as Invoice on (InvoiceLine.invoice = Invoice.id)  
 left outer join base_product as Product on (InvoiceLine.product = Product.id)  
 left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)  
@@ -3138,6 +3215,13 @@ else if(row["groupingPeriodSelect"] == "week"){
                     <text-property name="displayName">previous_project_invoice_date</text-property>
                     <text-property name="heading">previous_project_invoice_date</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">eco_tax_mention</property>
+                    <property name="alias">eco_tax_mention</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">eco_tax_mention</text-property>
+                    <text-property name="heading">eco_tax_mention</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -3316,6 +3400,11 @@ else if(row["groupingPeriodSelect"] == "week"){
                     </structure>
                     <structure>
                         <property name="position">33</property>
+                        <property name="name">eco_tax_mention</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">34</property>
                         <property name="name">expense_date</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -3547,6 +3636,13 @@ else if(row["groupingPeriodSelect"] == "week"){
                     <property name="dataType">date</property>
                     <property name="nativeDataType">0</property>
                 </structure>
+                <structure>
+                    <property name="position">33</property>
+                    <property name="name">eco_tax_mention</property>
+                    <property name="nativeName">eco_tax_mention</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[WITH INV AS (
     select * from invoice_line_proc(cast(? as bigint))
@@ -3584,7 +3680,8 @@ select
     INV."newProgress",
     INV."display_previous_progress",
     INV."display_new_progress",
-    INV."previous_project_invoice_date"
+    INV."previous_project_invoice_date",
+    INV."eco_tax_mention"
     from INV
     LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
     LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
@@ -3634,7 +3731,8 @@ select
     SUM(INV."newProgress") as "newProgress",
     SUM(INV."display_previous_progress") as "display_previous_progress",
     SUM(INV."display_new_progress") as "display_new_progress",
-    MAX(INV."previous_project_invoice_date") as "previous_project_invoice_date"
+    MAX(INV."previous_project_invoice_date") as "previous_project_invoice_date",
+    NULL as eco_tax_mention
     from INV
     LEFT JOIN base_product_category as ProductCategory on (INV."productCategory" = ProductCategory.id)
     LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
@@ -3688,7 +3786,8 @@ select
     SUM(INV."newProgress") as "newProgress",
     SUM(INV."display_previous_progress") as "display_previous_progress",
     SUM(INV."display_new_progress") as "display_new_progress",
-    MAX(INV."previous_project_invoice_date") as "previous_project_invoice_date"
+    MAX(INV."previous_project_invoice_date") as "previous_project_invoice_date",
+    NULL as eco_tax_mention
 from INV
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
@@ -4559,8 +4658,7 @@ RETURNS table(
     "isStockMoveEmpty" boolean,
     "displayStockMoveOnInvoicePrinting" boolean,
     "legal_notice" text,
-    "supplierVatSystemSelect" int,
-    "companyVatSystemSelect" int,
+    "vatSystemSelect" int,
     "display_siren" boolean,
     "invoice_product_statement" varchar,
     "displayItemsCategoriesOnPrinting" boolean,
@@ -4569,7 +4667,10 @@ RETURNS table(
     "invoiceCoefficientEnabled" boolean,
     "isExpenseLineOnInvoiceGrouped" boolean,
     "groupingPeriodSelect" varchar,
-    "displayExpenseOnPrinting" boolean
+    "displayExpenseOnPrinting" boolean,
+    "PenaltyRateNote" text,
+    "legalFormAndCapital" varchar,
+    "legalInformation" varchar
 ) AS
 $func$
 BEGIN
@@ -4642,17 +4743,19 @@ select distinct
     InvoiceStockMove is not null as "isStockMoveEmpty",
     Invoice.display_stock_move_on_invoice_printing as "displayStockMoveOnInvoicePrinting",
 	Invoice.legal_notice as "legal_notice",
-	SupplierAccountingSituation.vat_system_select as "supplierVatSystemSelect",
-	CompanyAccountingSituation.vat_system_select as "companyVatSystemSelect",
+	Invoice.vat_liability_select as "vatSystemSelect",
 	(SELECT display_partner_siren_on_invoice_printing FROM account_account_config WHERE company = Company.id) as "display_siren",
-	Invoice.invoice_product_statement,
+	(SELECT ips.statement::varchar FROM account_invoice_product_statement ips WHERE ips.account_config = (SELECT id FROM account_account_config WHERE company = Invoice.company) AND ips.type_list = Invoice.invoice_category_select LIMIT 1) as invoice_product_statement,
 	AccountConfig.display_items_categories_on_printing as "displayItemsCategoriesOnPrinting",
 	PrintingSettings.table_font_size as "tableFontSize",
 	Currency.number_of_decimals,
 	AccountConfig.is_invoice_coefficient_enabled as "invoiceCoefficientEnabled",
 	false::boolean as "isExpenseLineOnInvoiceGrouped",
 	''::varchar as "groupingPeriodSelect",
-	false::boolean as "displayExpenseOnPrinting"
+	false::boolean as "displayExpenseOnPrinting",
+	AccountConfig.penalty_rate_note as "PenaltyRateNote",
+	Company.legal_form_and_capital as "legalFormAndCapital",
+	Company.legal_information as "legalInformation"
 from account_invoice as Invoice
 left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join studio_app_sale as AppSale on true
@@ -4673,8 +4776,6 @@ left outer join base_trading_name as TradingName on (TradingName.id = Invoice.tr
 left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
 left outer join account_invoice as OriginalInvoice on (Invoice.original_invoice = OriginalInvoice.id)
 left outer join account_invoice_stock_move_set as InvoiceStockMove on (InvoiceStockMove.invoice_set = Invoice.id)
-left outer join account_accounting_situation as SupplierAccountingSituation on (Partner.id = SupplierAccountingSituation.partner and Invoice.company = SupplierAccountingSituation.company)
-left outer join account_accounting_situation as CompanyAccountingSituation on (CompanyPartner.id = CompanyAccountingSituation.partner and Invoice.company = CompanyAccountingSituation.company)
 where Invoice.id = InvoiceId;
 ELSE
 return query
@@ -4745,17 +4846,19 @@ select distinct
     InvoiceStockMove is not null as "isStockMoveEmpty",
     Invoice.display_stock_move_on_invoice_printing as "displayStockMoveOnInvoicePrinting",
 	Invoice.legal_notice as "legal_notice",
-	SupplierAccountingSituation.vat_system_select as "supplierVatSystemSelect",
-	CompanyAccountingSituation.vat_system_select as "companyVatSystemSelect",
+	Invoice.vat_liability_select as "vatSystemSelect",
 	(SELECT display_partner_siren_on_invoice_printing FROM account_account_config WHERE company = Company.id) as "display_siren",
-	Invoice.invoice_product_statement,
+	(SELECT ips.statement::varchar FROM account_invoice_product_statement ips WHERE ips.account_config = (SELECT id FROM account_account_config WHERE company = Invoice.company) AND ips.type_list = Invoice.invoice_category_select LIMIT 1) as invoice_product_statement,
 	AccountConfig.display_items_categories_on_printing as "displayItemsCategoriesOnPrinting",
 	PrintingSettings.table_font_size as "tableFontSize",
 	Currency.number_of_decimals,
 	AccountConfig.is_invoice_coefficient_enabled as "invoiceCoefficientEnabled",
 	Invoice.is_expense_line_on_invoice_grouped as "isExpenseLineOnInvoiceGrouped",
 	Invoice.grouping_period_select as "groupingPeriodSelect",
-	Invoice.display_expense_on_printing as "displayExpenseOnPrinting"
+	Invoice.display_expense_on_printing as "displayExpenseOnPrinting",
+	AccountConfig.penalty_rate_note as "PenaltyRateNote",
+	Company.legal_form_and_capital as "legalFormAndCapital",
+	Company.legal_information as "legalInformation"
 from account_invoice as Invoice
 left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join studio_app_sale as AppSale on true
@@ -4776,8 +4879,6 @@ left outer join base_trading_name as TradingName on (TradingName.id = Invoice.tr
 left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
 left outer join account_invoice as OriginalInvoice on (Invoice.original_invoice = OriginalInvoice.id)
 left outer join account_invoice_stock_move_set as InvoiceStockMove on (InvoiceStockMove.invoice_set = Invoice.id)
-left outer join account_accounting_situation as SupplierAccountingSituation on (Partner.id = SupplierAccountingSituation.partner and Invoice.company = SupplierAccountingSituation.company)
-left outer join account_accounting_situation as CompanyAccountingSituation on (CompanyPartner.id = CompanyAccountingSituation.partner and Invoice.company = CompanyAccountingSituation.company)
 where Invoice.id = InvoiceId;
 END IF;
 END;
@@ -4981,6 +5082,18 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                             <expression name="expression" type="javascript">dataSetRow["operation_sub_type_select"]</expression>
                             <property name="dataType">integer</property>
                         </structure>
+                        <structure>
+                            <property name="name">legalFormAndCapital</property>
+                            <text-property name="displayName">legalFormAndCapital</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["legalFormAndCapital"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">legalInformation</property>
+                            <text-property name="displayName">legalInformation</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["legalInformation"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
                     </list-property>
                     <column id="3693"/>
                     <column id="3714">
@@ -5018,7 +5131,7 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                                 <property name="fontSize">xx-small</property>
                                 <property name="textAlign">left</property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["footer"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="HTML">var out = ""; if (row["legalFormAndCapital"]) { out += '<p align="CENTER">' + row["legalFormAndCapital"] + '</p>'; } if (row["legalInformation"]) { out += '<p align="CENTER">' + row["legalInformation"] + '</p>'; } out;</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                         <cell id="3713">
@@ -5080,7 +5193,11 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
                                             <value type="javascript">if (row["status_select"] == "1") {
-                                                    'Invoice.draftInvoiceNo'
+                                                    if (row["operation_type_select"] == "2" || row["operation_type_select"] == "4") {
+                                                        'Invoice.draftRefundNo'
+                                                    } else {
+                                                        'Invoice.draftInvoiceNo'
+                                                    }
                                                 } else if(row["status_select"] == "2") {
                                                     if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                         'Invoice.purchaseInvoiceAdvPaymentNo'
@@ -5089,7 +5206,11 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                                                     }else if ((row["operation_type_select"] == "2" || row["operation_type_select"] == "4") &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                         'Invoice.invoiceCreditAdvPaymentNo'
                                                     } else {
-                                                        'Invoice.draftInvoiceNo'
+                                                        if (row["operation_type_select"] == "2" || row["operation_type_select"] == "4") {
+                                                            'Invoice.draftRefundNo'
+                                                        } else {
+                                                            'Invoice.draftInvoiceNo'
+                                                        }
                                                     }
                                                 } else if(row["status_select"] == "3") {
                                                     if (row["operation_type_select"] == "1") {
@@ -5381,6 +5502,24 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
+                    <property name="name">PenaltyRateNote</property>
+                    <text-property name="displayName">PenaltyRateNote</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["PenaltyRateNote"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">legalFormAndCapital</property>
+                    <text-property name="displayName">legalFormAndCapital</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["legalFormAndCapital"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">legalInformation</property>
+                    <text-property name="displayName">legalInformation</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["legalInformation"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
                     <property name="name">DisplayDelAddr</property>
                     <text-property name="displayName">DisplayDelAddr</text-property>
                     <expression name="expression" type="javascript">dataSetRow["DisplayDelAddr"]</expression>
@@ -5513,15 +5652,9 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">supplierVatSystemSelect</property>
-                    <text-property name="displayName">supplierVatSystemSelect</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["supplierVatSystemSelect"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">companyVatSystemSelect</property>
-                    <text-property name="displayName">companyVatSystemSelect</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["companyVatSystemSelect"]</expression>
+                    <property name="name">vatSystemSelect</property>
+                    <text-property name="displayName">vatSystemSelect</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["vatSystemSelect"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
@@ -5741,7 +5874,11 @@ this.height=row["logo_height"];]]></method>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
                                     <value type="javascript">if (row["status_select"] == "1") {
-                                            'Invoice.draftInvoiceNo'
+                                            if (row["operation_type_select"] == "2" || row["operation_type_select"] == "4") {
+                                                'Invoice.draftRefundNo'
+                                            } else {
+                                                'Invoice.draftInvoiceNo'
+                                            }
                                         } else if(row["status_select"] == "2") {
                                             if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                 'Invoice.purchaseInvoiceAdvPaymentNo'
@@ -5750,7 +5887,11 @@ this.height=row["logo_height"];]]></method>
                                             } else if ((row["operation_type_select"] == "2" || row["operation_type_select"] == "4") &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                 'Invoice.invoiceCreditAdvPaymentNo'
                                             } else {
-                                                'Invoice.draftInvoiceNo'
+                                                if (row["operation_type_select"] == "2" || row["operation_type_select"] == "4") {
+                                                    'Invoice.draftRefundNo'
+                                                } else {
+                                                    'Invoice.draftInvoiceNo'
+                                                }
                                             }
                                         } else if(row["status_select"] == "3") {
                                             if (row["operation_type_select"] == "1") {
@@ -6434,7 +6575,11 @@ row["message_key"]
                                 <simple-property-list name="expression">
                                     <value type="javascript">
                                         if (row["status_select"] == "1") {
-                                            'Invoice.draftInvoiceNo'
+                                            if (row["operation_type_select"] == "2" || row["operation_type_select"] == "4") {
+                                                'Invoice.draftRefundNo'
+                                            } else {
+                                                'Invoice.draftInvoiceNo'
+                                            }
                                         } else if(row["status_select"] == "2") {
                                             if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                 'Invoice.purchaseInvoiceAdvPaymentNo'
@@ -6443,7 +6588,11 @@ row["message_key"]
                                             } else if ((row["operation_type_select"] == "2" || row["operation_type_select"] == "4") &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                 'Invoice.invoiceCreditAdvPaymentNo'
                                             } else {
-                                                'Invoice.draftInvoiceNo'
+                                                if (row["operation_type_select"] == "2" || row["operation_type_select"] == "4") {
+                                                    'Invoice.draftRefundNo'
+                                                } else {
+                                                    'Invoice.draftInvoiceNo'
+                                                }
                                             }
                                         } else if(row["status_select"] == "3") {
                                             if (row["operation_type_select"] == "1") {
@@ -7212,6 +7361,12 @@ row["partnerFirstName"]
                                 <property name="name">description</property>
                                 <text-property name="displayName">description</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["description"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">eco_tax_mention</property>
+                                <text-property name="displayName">eco_tax_mention</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["eco_tax_mention"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
@@ -8567,12 +8722,12 @@ row["partnerFirstName"]
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row["typeselect"] != 0 || row["description"] == null</expression>
+                                                <expression name="valueExpr" type="javascript">row["typeselect"] != 0 || (row["description"] == null &amp;&amp; (row["eco_tax_mention"] == null || row["eco_tax_mention"] == ""))</expression>
                                             </structure>
                                         </list-property>
                                         <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I></SUB></br>]]></text-property>
+                                        <text-property name="content"><![CDATA[<SUB><I><VALUE-OF format="HTML">var out = (row["description"] != null) ? row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"") : ""; if (row["eco_tax_mention"] != null &amp;&amp; row["eco_tax_mention"] != "") { out += "<br/>" + row["eco_tax_mention"]; } out;</VALUE-OF></I></SUB></br>]]></text-property>
                                     </text>
                                     <text id="5730">
                                         <property name="fontSize">8pt</property>
@@ -9796,6 +9951,24 @@ else{ 1.00 }
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
+                    <property name="name">PenaltyRateNote</property>
+                    <text-property name="displayName">PenaltyRateNote</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["PenaltyRateNote"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">legalFormAndCapital</property>
+                    <text-property name="displayName">legalFormAndCapital</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["legalFormAndCapital"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">legalInformation</property>
+                    <text-property name="displayName">legalInformation</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["legalInformation"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
                     <property name="name">DisplayDelAddr</property>
                     <text-property name="displayName">DisplayDelAddr</text-property>
                     <expression name="expression" type="javascript">dataSetRow["DisplayDelAddr"]</expression>
@@ -9928,15 +10101,9 @@ else{ 1.00 }
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">supplierVatSystemSelect</property>
-                    <text-property name="displayName">supplierVatSystemSelect</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["supplierVatSystemSelect"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">companyVatSystemSelect</property>
-                    <text-property name="displayName">companyVatSystemSelect</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["companyVatSystemSelect"]</expression>
+                    <property name="name">vatSystemSelect</property>
+                    <text-property name="displayName">vatSystemSelect</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["vatSystemSelect"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
@@ -10132,6 +10299,18 @@ else{ 1.00 }
                                                 <expression name="expression" type="javascript">dataSetRow["show_percentage"]</expression>
                                                 <property name="dataType">integer</property>
                                             </structure>
+                                            <structure>
+                                                <property name="name">vat_exemption_reason</property>
+                                                <text-property name="displayName">vat_exemption_reason</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["vat_exemption_reason"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">exemption_reason_count</property>
+                                                <text-property name="displayName">exemption_reason_count</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["exemption_reason_count"]</expression>
+                                                <property name="dataType">decimal</property>
+                                            </structure>
                                         </list-property>
                                         <list-property name="filter">
                                             <structure>
@@ -10153,6 +10332,15 @@ else{ 1.00 }
                                             <property name="width">30%</property>
                                         </column>
                                         <column id="4721">
+                                            <property name="width">30%</property>
+                                        </column>
+                                        <column id="6296">
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["exemption_reason_count"] &lt;= 0</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="width">30%</property>
                                         </column>
                                         <header>
@@ -10326,6 +10514,48 @@ else{ 1.00 }
                                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                                     </text>
                                                 </cell>
+                                                <cell id="6292">
+                                                    <property name="borderBottomStyle">solid</property>
+                                                    <property name="borderBottomWidth">thin</property>
+                                                    <property name="borderLeftStyle">solid</property>
+                                                    <property name="borderLeftWidth">thin</property>
+                                                    <property name="borderRightStyle">solid</property>
+                                                    <property name="borderRightWidth">thin</property>
+                                                    <property name="borderTopStyle">solid</property>
+                                                    <property name="borderTopWidth">thin</property>
+                                                    <text id="6297">
+                                                        <property name="fontWeight">bold</property>
+                                                        <property name="borderBottomStyle">none</property>
+                                                        <property name="borderLeftStyle">none</property>
+                                                        <property name="borderRightStyle">none</property>
+                                                        <property name="borderTopStyle">none</property>
+                                                        <property name="dataSet">TranslateDS</property>
+                                                        <list-property name="paramBindings">
+                                                            <structure>
+                                                                <property name="paramName">param_1</property>
+                                                                <simple-property-list name="expression">
+                                                                    <value type="javascript">'Invoice.exemptionReason'</value>
+                                                                </simple-property-list>
+                                                            </structure>
+                                                        </list-property>
+                                                        <list-property name="boundDataColumns">
+                                                            <structure>
+                                                                <property name="name">key</property>
+                                                                <text-property name="displayName">key</text-property>
+                                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                <property name="dataType">string</property>
+                                                            </structure>
+                                                            <structure>
+                                                                <property name="name">translation</property>
+                                                                <text-property name="displayName">translation</text-property>
+                                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                <property name="dataType">string</property>
+                                                            </structure>
+                                                        </list-property>
+                                                        <property name="contentType">html</property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                    </text>
+                                                </cell>
                                             </row>
                                         </header>
                                         <group id="6107">
@@ -10351,7 +10581,7 @@ else{ 1.00 }
                                                         </structure>
                                                     </list-property>
                                                     <cell id="6065">
-                                                        <property name="colSpan">4</property>
+                                                        <property name="colSpan">5</property>
                                                         <property name="rowSpan">1</property>
                                                         <property name="borderLeftStyle">solid</property>
                                                         <property name="borderLeftWidth">thin</property>
@@ -10404,6 +10634,14 @@ else{ 1.00 }
                                                             <property name="textAlign">right</property>
                                                             <property name="resultSetColumn">totalByTaxType</property>
                                                         </data>
+                                                    </cell>
+                                                    <cell id="6295">
+                                                        <property name="borderBottomStyle">solid</property>
+                                                        <property name="borderBottomWidth">thin</property>
+                                                        <property name="borderLeftStyle">solid</property>
+                                                        <property name="borderLeftWidth">thin</property>
+                                                        <property name="borderRightStyle">solid</property>
+                                                        <property name="borderRightWidth">thin</property>
                                                     </cell>
                                                 </row>
                                             </footer>
@@ -10519,6 +10757,25 @@ else{ 1.00 }
                                                         </list-property>
                                                         <property name="contentType">html</property>
                                                         <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["tax_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer._outer["currencyCode"]</VALUE-OF>]]></text-property>
+                                                    </text>
+                                                </cell>
+                                                <cell id="6294">
+                                                    <property name="borderBottomColor">#000000</property>
+                                                    <property name="borderBottomStyle">solid</property>
+                                                    <property name="borderBottomWidth">thin</property>
+                                                    <property name="borderLeftColor">#000000</property>
+                                                    <property name="borderLeftStyle">solid</property>
+                                                    <property name="borderLeftWidth">thin</property>
+                                                    <property name="borderRightColor">#000000</property>
+                                                    <property name="borderRightStyle">solid</property>
+                                                    <property name="borderRightWidth">thin</property>
+                                                    <property name="borderTopColor">#000000</property>
+                                                    <property name="borderTopStyle">solid</property>
+                                                    <property name="borderTopWidth">thin</property>
+                                                    <text id="6298">
+                                                        <property name="textAlign">center</property>
+                                                        <property name="contentType">html</property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF>row["vat_exemption_reason"]</VALUE-OF>]]></text-property>
                                                     </text>
                                                 </cell>
                                             </row>
@@ -10909,8 +11166,7 @@ else{ 1.00 }
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">((row._outer["operation_type_select"] == 1 || row._outer["operation_type_select"] == 2) &amp;&amp; row._outer["supplierVatSystemSelect"] != 2)
-                                                    || ((row._outer["operation_type_select"] == 3 || row._outer["operation_type_select"] ==  4) &amp;&amp; row._outer["companyVatSystemSelect"] != 2)</expression>
+                                                <expression name="valueExpr" type="javascript">row._outer["vatSystemSelect"] != 2</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="paramBindings">
@@ -12165,6 +12421,24 @@ else {'Invoice.totalTaxes'}</value>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
+                                    <property name="name">PenaltyRateNote</property>
+                                    <text-property name="displayName">PenaltyRateNote</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["PenaltyRateNote"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">legalFormAndCapital</property>
+                                    <text-property name="displayName">legalFormAndCapital</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["legalFormAndCapital"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">legalInformation</property>
+                                    <text-property name="displayName">legalInformation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["legalInformation"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
                                     <property name="name">DisplayDelAddr</property>
                                     <text-property name="displayName">DisplayDelAddr</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["DisplayDelAddr"]</expression>
@@ -12309,15 +12583,9 @@ else {'Invoice.totalTaxes'}</value>
                                     <property name="dataType">string</property>
                                 </structure>
                                 <structure>
-                                    <property name="name">supplierVatSystemSelect</property>
-                                    <text-property name="displayName">supplierVatSystemSelect</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["supplierVatSystemSelect"]</expression>
-                                    <property name="dataType">integer</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">companyVatSystemSelect</property>
-                                    <text-property name="displayName">companyVatSystemSelect</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["companyVatSystemSelect"]</expression>
+                                    <property name="name">vatSystemSelect</property>
+                                    <text-property name="displayName">vatSystemSelect</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["vatSystemSelect"]</expression>
                                     <property name="dataType">integer</property>
                                 </structure>
                                 <structure>
@@ -13267,6 +13535,51 @@ else {'Invoice.totalTaxes'}</value>
                                 </cell>
                                 <cell id="5091"/>
                             </row>
+                            <row id="109477">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["operation_type_select"] != 3 || !row["PenaltyRateNote"]</expression>
+                                    </structure>
+                                </list-property>
+                                <cell id="109478">
+                                    <property name="colSpan">8</property>
+                                    <property name="rowSpan">1</property>
+                                    <text id="109479">
+                                        <property name="fontSize">8pt</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'value:'+row["PenaltyRateNote"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["translation"] != null) {
+	row["translation"]
+} else {
+	row._outer["PenaltyRateNote"]
+}</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="109480"/>
+                            </row>
                             <row id="5092">
                                 <property name="height">0.6085416666666666cm</property>
                                 <cell id="5093"/>
@@ -13705,6 +14018,24 @@ else {'Invoice.totalTaxes'}</value>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
+                    <property name="name">PenaltyRateNote</property>
+                    <text-property name="displayName">PenaltyRateNote</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["PenaltyRateNote"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">legalFormAndCapital</property>
+                    <text-property name="displayName">legalFormAndCapital</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["legalFormAndCapital"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">legalInformation</property>
+                    <text-property name="displayName">legalInformation</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["legalInformation"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
                     <property name="name">DisplayDelAddr</property>
                     <text-property name="displayName">DisplayDelAddr</text-property>
                     <expression name="expression" type="javascript">dataSetRow["DisplayDelAddr"]</expression>
@@ -13891,15 +14222,9 @@ else {'Invoice.totalTaxes'}</value>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">supplierVatSystemSelect</property>
-                    <text-property name="displayName">supplierVatSystemSelect</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["supplierVatSystemSelect"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">companyVatSystemSelect</property>
-                    <text-property name="displayName">companyVatSystemSelect</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["companyVatSystemSelect"]</expression>
+                    <property name="name">vatSystemSelect</property>
+                    <text-property name="displayName">vatSystemSelect</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["vatSystemSelect"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>

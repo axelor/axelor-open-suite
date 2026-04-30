@@ -253,6 +253,9 @@
         showIf="typeSelect==1">
         <panel name="moveInfoPanel" title="Account information">
           <field name="moveDate" readonly="true" colSpan="4"/>
+          <button name="showRelatedMovesBtn" title="Show related moves"
+            onClick="action-expense-method-show-related-moves"
+            showIf="statusSelect == 3 || statusSelect == 4" colSpan="4"/>
         </panel>
         <panel name="paymentInfoPanel" showIf=" statusSelect == 4" title="Payment information"
           colSpan="12">
@@ -480,7 +483,7 @@
       expr="eval: statusSelect == 3 || statusSelect == 4 || statusSelect == 6 || ventilated"
       if="!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0"/>
     <attribute name="hidden" for="addPaymentBtn"
-      expr="eval: !(ventilated &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2) &amp;&amp; companyCbSelect != 2) || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0)"/>
+      expr="eval: !(ventilated &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2)) || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0)"/>
     <attribute name="hidden" for="cancelPaymentBtn"
       expr="eval: !(paymentStatusSelect == 1 || paymentStatusSelect == 3) || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0)"/>
   </action-attrs>
@@ -599,6 +602,10 @@
 
   <action-method name="action-expense-method-check-analytic-axis">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="checkAnalyticAxis"/>
+  </action-method>
+
+  <action-method name="action-expense-method-show-related-moves">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="showRelatedMoves"/>
   </action-method>
 
   <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense"

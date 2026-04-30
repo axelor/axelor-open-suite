@@ -16,11 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.invoice.print;
+package com.axelor.apps.purchase.service;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.base.AxelorException;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import java.util.List;
 
-public interface InvoiceProductStatementService {
-  String getInvoiceProductStatement(Invoice invoice) throws AxelorException;
+public interface PurchaseOrderViewService {
+
+  ActionViewBuilder buildQuotationLinesView(List<Long> purchaseOrderIds);
 }

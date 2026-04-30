@@ -18,15 +18,12 @@
  */
 package com.axelor.apps.stock.db.repo;
 
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
-import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.i18n.I18n;
@@ -35,7 +32,6 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppStock;
 import com.google.common.base.Strings;
 import jakarta.persistence.PersistenceException;
-import java.math.BigDecimal;
 import java.util.Map;
 
 public class StockMoveManagementRepository extends StockMoveRepository {
@@ -130,42 +126,9 @@ public class StockMoveManagementRepository extends StockMoveRepository {
         return super.populate(json, context);
       }
 
-      int available = 0, availableForProduct = 0, missing = 0;
-      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-
-        if (stockMoveLine != null
-                && stockMoveLine.getProduct() != null
-                && stockMoveLine.getProduct().getProductTypeSelect() != null
-                && stockMoveLine
-                    .getProduct()
-                    .getProductTypeSelect()
-                    .equals(ProductRepository.PRODUCT_TYPE_SERVICE)
-            || (stockMoveLine.getFromStockLocation() != null
-                && stockMoveLine.getFromStockLocation().getTypeSelect()
-                    == StockLocationRepository.TYPE_VIRTUAL)) {
-          continue;
-        }
-        Beans.get(StockMoveLineService.class)
-            .updateAvailableQty(stockMoveLine, stockMoveLine.getFromStockLocation());
-        Product product = stockMoveLine.getProduct();
-        BigDecimal qty = stockMoveLine.getQty();
-        if (stockMoveLine.getAvailableQty().compareTo(qty) >= 0
-            || product != null && !product.getStockManaged()) {
-          available++;
-        } else if (stockMoveLine.getAvailableQtyForProduct().compareTo(qty) >= 0) {
-          availableForProduct++;
-        } else if (stockMoveLine.getAvailableQty().compareTo(qty) < 0
-            && stockMoveLine.getAvailableQtyForProduct().compareTo(qty) < 0) {
-          missing++;
-        }
-      }
-
-      if ((available > 0 || availableForProduct > 0) && missing == 0) {
-        json.put("availableStatusSelect", StockMoveRepository.STATUS_AVAILABLE);
-      } else if ((available > 0 || availableForProduct > 0) && missing > 0) {
-        json.put("availableStatusSelect", StockMoveRepository.STATUS_PARTIALLY_AVAILABLE);
-      } else if (available == 0 && availableForProduct == 0 && missing > 0) {
-        json.put("availableStatusSelect", StockMoveRepository.STATUS_UNAVAILABLE);
+      Beans.get(StockMoveService.class).setAvailableStatusSelect(stockMove);
+      if (stockMove.getAvailableStatusSelect() != null) {
+        json.put("availableStatusSelect", stockMove.getAvailableStatusSelect());
       }
     } catch (Exception e) {
       TraceBackService.trace(e);

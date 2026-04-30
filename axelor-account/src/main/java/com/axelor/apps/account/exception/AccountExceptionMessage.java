@@ -1344,6 +1344,9 @@ public final class AccountExceptionMessage {
   public static final String IMPORT_FEC_FOREIGN_CURRENCY_AMOUNT_REQUIRED = /*$$(*/
       "The amount in currency in %s is required when importing an entry line in a foreign currency (different from company currency)." /*)*/;
 
+  public static final String IMPORT_FEC_CURRENCY_MISSING_FALLBACK = /*$$(*/
+      "Please fill the column currency with the ISO3 Code of the currency used in the CSV file for each line (while AOS uses one currency by entry) or fill the currency field onto the company settings." /*)*/;
+
   public static final String ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT = /*$$(*/
       "Please select a cash account in config of the payment mode %s" /*)*/;
 
@@ -1738,4 +1741,17 @@ public final class AccountExceptionMessage {
 
   public static final String PERIOD_CLOSE_MOVES_FAILED = /*$$(*/
       "Period closure failed. Some move(s) could not be validated." /*)*/;
+
+  public static final String INVOICE_VAT_SYSTEM_DELIVERY_ON_ADVANCE_PAYMENT_PRODUCT = /*$$(*/
+      "The accounting account for the advance payment product is subject to the VAT on deliveries regime. However, legally, the VAT related to the advance payment becomes due upon receipt of payment. Do you wish to continue or modify the VAT system of the account before validating?" /*)*/;
+
+  public static String MISSING_CASH_DISCOUNT_MENTION =
+      /*$$(*/ "There is no legal notice on financial discount for the invoice %s and the default option to print 'no financial discount applied' is not checked in the config. This legal notice is required, please fix either." /*)*/;
+  public static String MISSING_LEGAL_NOTE =
+      /*$$(*/ "There is no legal note on the invoice %s . This field is required, please fix it." /*)*/;
+  public static String MISSING_PENALTY_RATE_NOTE =
+      /*$$(*/ "There is no penalty rate note on the invoice %s . This field is required, please fix it." /*)*/;
+  public static String UNKNOWN_SCOPE_VALUE = /*$$(*/ "Unknown scope value %s" /*)*/;
+  public static String MISSING_BANK_DETAILS_NOTE_TYPE = /*$$(*/
+      "Bank detail %s doesn't have a note type defined for note %s." /*)*/;
 }

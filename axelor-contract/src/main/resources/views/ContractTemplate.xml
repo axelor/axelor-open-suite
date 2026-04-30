@@ -94,8 +94,7 @@
               <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                 <panel colSpan="6" name="automaticInvoicingPanel">
                   <field name="automaticInvoicing" colSpan="6" widget="boolean-switch"/>
-                  <field name="invoicingMomentSelect" hidden="true"
-                    showIf="automaticInvoicing" colSpan="6" requiredIf="automaticInvoicing"/>
+                  <field name="invoicingMomentSelect" colSpan="6"/>
                 </panel>
               </editor>
             </field>

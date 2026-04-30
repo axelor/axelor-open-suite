@@ -14,7 +14,7 @@
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-sale-order-method-convert-selected-lines-to-merge-lines"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
-          action="action-view-open-quotation-lines"/>
+          action="action-sale-order-method-show-quotation-lines"/>
       </menu>
     </menubar>
     <hilite background="warning"
@@ -1477,7 +1477,7 @@
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-open-sale-quotation-merge-form"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
-          action="action-view-open-quotation-lines"/>
+          action="action-sale-order-method-show-quotation-lines"/>
       </menu>
     </menubar>
     <field name="saleOrderSeq"/>
@@ -1590,7 +1590,6 @@
     <action name="action-sale-order-attrs-hidden-bank-details"/>
     <action name="action-sale-order-attrs-external-reference"/>
     <action name="action-sale-order-attrs-availability"/>
-    <action name="action-sale-order-attrs-set-discounts-need-review"/>
     <action name="action-sale-order-record-get-trading-names-management-config"/>
     <action name="action-sale-order-method-is-incoterm-required"/>
     <action name="action-sale-order-method-get-last-version"/>
@@ -1855,6 +1854,11 @@
       if="__config__.app.getApp('sale')?.getSalespersonSelect() == 1"/>
     <field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"
       if="__config__.app.isApp('supplychain') &amp;&amp; clientPartner?.shipmentMode != null"/>
+    <field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"
+      if="__config__.app.isApp('supplychain')"/>
+    <field name="carrierPartner"
+      expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"
+      if="__config__.app.isApp('supplychain')"/>
   </action-record>
 
   <action-record name="action-sale-order-record-hide-discount"
@@ -2052,13 +2056,9 @@
     <context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
   </action-view>
 
-  <action-view name="action-view-open-quotation-lines" title="Quotation lines"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
-    <view type="grid" name="sale-order-line-menu-grid"/>
-    <view type="form" name="sale-order-line-all-form"/>
-    <view-param name="search-filters" value="sale-order-lines-filter"/>
-    <domain>self.saleOrder.statusSelect in (1,2)</domain>
-  </action-view>
+  <action-method name="action-sale-order-method-show-quotation-lines">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="showQuotationLines"/>
+  </action-method>
 
   <action-view name="action-view-open-sale-order-lines" title="Sale order lines"
     model="com.axelor.apps.sale.db.SaleOrderLine">
@@ -2202,11 +2202,6 @@
       expr="eval: !(__repo__(StockMove).all().filter('? MEMBER OF self.saleOrderSet  AND self.availabilityRequest = ? AND self.statusSelect = ?',id,true,__repo__(StockMove).STATUS_PLANNED).count() > 0)"/>
     <attribute name="hidden" expr="eval: statusSelect != 3"
       for="saleOrderLineList.availableStatus" if="__config__.app.isApp('supplychain')"/>
-  </action-attrs>
-
-  <action-attrs name="action-sale-order-attrs-set-discounts-need-review">
-    <attribute name="value" for="$discountsNeedReview"
-      expr="eval: (statusSelect == __repo__(SaleOrder).STATUS_DRAFT_QUOTATION || (orderBeingEdited &amp;&amp; __repo__(SaleOrder).STATUS_ORDER_CONFIRMED)) &amp;&amp; saleOrderLineList?.any{it.discountsNeedReview}"/>
   </action-attrs>
 
   <action-group name="action-sale-order-group-on-estimated-shipping-date-change">

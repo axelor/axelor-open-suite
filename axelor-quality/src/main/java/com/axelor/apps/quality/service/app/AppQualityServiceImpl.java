@@ -28,8 +28,10 @@ import com.axelor.studio.db.AppQuality;
 import com.axelor.studio.db.repo.AppQualityRepository;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
+@Singleton
 public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQualityService {
 
   private AppQualityRepository appQualityRepo;
