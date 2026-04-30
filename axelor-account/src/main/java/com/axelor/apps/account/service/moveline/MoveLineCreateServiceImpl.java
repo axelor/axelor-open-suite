@@ -755,7 +755,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     int vatSystem = AccountRepository.VAT_SYSTEM_DEFAULT;
     try {
-      vatSystem = moveLineTaxService.getVatSystem(move, moveLine);
+      vatSystem =
+          moveLineTaxService.getVatSystem(move, moveLine.getAccount(), moveLine.getPartner());
     } catch (AxelorException e) {
       if (moveLine.getVatSystemSelect() == null
           || moveLine.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {

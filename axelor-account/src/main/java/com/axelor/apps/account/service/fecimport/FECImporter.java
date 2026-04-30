@@ -204,7 +204,9 @@ public class FECImporter extends Importer {
                   || accountType.equals(AccountTypeRepository.TYPE_INCOME)
                   || accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION);
           if (accountTypeCondition) {
-            moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
+            moveLine.setVatSystemSelect(
+                moveLineTaxService.getVatSystem(
+                    move, moveLine.getAccount(), moveLine.getPartner()));
           }
         }
 

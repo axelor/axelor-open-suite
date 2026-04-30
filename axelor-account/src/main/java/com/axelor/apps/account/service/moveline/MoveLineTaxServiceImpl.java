@@ -484,27 +484,26 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   }
 
   @Override
-  public int getVatSystem(Move move, MoveLine moveline) throws AxelorException {
+  public int getVatSystem(Move move, Account account, Partner partner) throws AxelorException {
     Integer vatLiability = null;
-
+    partner = move.getPartner() != null ? move.getPartner() : partner;
     if (move.getInvoice() != null) {
       vatLiability = move.getInvoice().getVatSystemSelect();
     }
 
     if (vatLiability == null) {
-      Partner partner = move.getPartner() != null ? move.getPartner() : moveline.getPartner();
       vatLiability =
           taxAccountToolService.resolveVatLiabilityFromAccountingSituation(
               partner,
               move.getCompany(),
-              moveline.getAccount(),
+              account,
               (move.getJournal().getJournalType().getTechnicalTypeSelect()
                   == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE),
               (move.getJournal().getJournalType().getTechnicalTypeSelect()
                   == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE));
     }
 
-    return taxAccountToolService.calculateVatSystem(vatLiability, moveline.getAccount());
+    return taxAccountToolService.calculateVatSystem(vatLiability, account);
   }
 
   @Override
