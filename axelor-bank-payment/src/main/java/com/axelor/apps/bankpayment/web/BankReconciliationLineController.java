@@ -89,19 +89,6 @@ public class BankReconciliationLineController {
     }
   }
 
-  public void setSelected(ActionRequest request, ActionResponse response) {
-    try {
-      BankReconciliationLine bankReconciliationLineContext =
-          request.getContext().asType(BankReconciliationLine.class);
-
-      bankReconciliationLineContext =
-          Beans.get(BankReconciliationLineService.class).setSelected(bankReconciliationLineContext);
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void setMoveLineDomain(ActionRequest request, ActionResponse response) {
     try {
       BankReconciliationLine bankReconciliationLineContext =
@@ -112,6 +99,19 @@ public class BankReconciliationLineController {
               .createDomainForMoveLine(bankReconciliationLineContext.getBankReconciliation());
 
       response.setAttr("moveLine", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setSelected(ActionRequest request, ActionResponse response) {
+    try {
+      BankReconciliationLine bankReconciliationLineContext =
+          request.getContext().asType(BankReconciliationLine.class);
+
+      bankReconciliationLineContext =
+          Beans.get(BankReconciliationLineService.class).setSelected(bankReconciliationLineContext);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

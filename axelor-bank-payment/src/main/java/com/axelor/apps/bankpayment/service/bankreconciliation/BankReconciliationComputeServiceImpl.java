@@ -128,8 +128,10 @@ public class BankReconciliationComputeServiceImpl implements BankReconciliationC
                   .getDebit()
                   .subtract(bankReconciliationLine.getMoveLine().getCredit());
         }
+      } else if (bankReconciliationLine.getPostedNbr() != null) {
+        amount = bankReconciliationLine.getCredit().subtract(bankReconciliationLine.getDebit());
+        endingBalance = endingBalance.add(amount);
       }
-      endingBalance = endingBalance.add(amount);
     }
     bankReconciliation.setEndingBalance(
         currencyScaleService.getScaledValue(bankReconciliation, endingBalance));
