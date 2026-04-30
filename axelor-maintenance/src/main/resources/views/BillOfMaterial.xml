@@ -63,18 +63,27 @@
         name="workshopStockLocation" canEdit="false"
         domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
       <field name="machineType" form-view="machine-type-form" grid-view="machine-type-grid"
-        required="true"/>
+        readonlyIf="machine != null" requiredIf="machine == null"/>
+      <field name="machine" colSpan="6" form-view="maintenance-machine-form"
+        grid-view="machine-grid" domain="self.machineType = :machineType OR :machineType IS NULL"
+        onChange="action-maintenance-bom-record-machine-onchange"/>
       <field name="prodProcess" canNew="true"
         onChange="action-bill-of-material-method-validate-prod-process"
         domain="self.machineType = :machineType AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = 3"
         form-view="maintenance-prod-process-form" grid-view="prod-process-grid"/>
-      <field name="qty" colSpan="3"/>
+      <field name="qty" colSpan="3" hidden="true"/>
       <field name="unit" colSpan="3" canEdit="false" required="true" form-view="unit-form"
-        grid-view="unit-grid"/>
+        grid-view="unit-grid" hidden="true"/>
       <field name="product.defaultBillOfMaterial" hidden="true" colSpan="1"/>
       <field name="typeSelect" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
+      <panel name="componentsPanel" title="Components">
+        <panel-related name="billOfMaterialLineListPanel"
+          field="billOfMaterialLineList" colSpan="12"
+          form-view="maintenance-bill-of-material-line-form" grid-view="bill-of-material-line-grid"
+          orderBy="priority"/>
+      </panel>
       <panel name="costPanel" title="Cost">
         <button name="computeCostPriceBtn" title="Compute cost price"
           onClick="save,action-bill-of-material-method-compute-cost-price"/>
@@ -115,12 +124,34 @@
     <action name="action-bill-of-material-default-record"/>
     <action name="action-bill-of-material-group-on-load"/>
     <action name="action-maintenance-bill-of-material-attrs-set-default"/>
+    <action name="action-maintenance-bom-record-set-defaults"/>
   </action-group>
+
+  <!-- Skip prod process validation for maintenance BOMs -->
+  <action-group name="action-bill-of-material-method-validate-prod-process"
+    id="maintenance-action-bill-of-material-method-validate-prod-process">
+    <action name="action-maintenance-bom-method-validate-prod-process" if="typeSelect != 3"/>
+  </action-group>
+
+  <action-method name="action-maintenance-bom-method-validate-prod-process">
+    <call class="com.axelor.apps.production.web.BillOfMaterialController"
+      method="validateProdProcess"/>
+  </action-method>
 
   <action-attrs name="action-maintenance-bill-of-material-attrs-set-default">
     <attribute name="value" for="typeSelect"
       expr="eval: __repo__(ManufOrder).TYPE_MAINTENANCE"/>
   </action-attrs>
+
+  <action-record name="action-maintenance-bom-record-set-defaults"
+    model="com.axelor.apps.production.db.BillOfMaterial">
+    <field name="qty" expr="eval: 1"/>
+  </action-record>
+
+  <action-record name="action-maintenance-bom-record-machine-onchange"
+    model="com.axelor.apps.production.db.BillOfMaterial">
+    <field name="machineType" expr="eval: machine?.machineType" if="machine != null"/>
+  </action-record>
 
   <action-method name="action-bill-of-material-method-print">
     <call class="com.axelor.apps.maintenance.web.BillOfMaterialController" method="print"/>

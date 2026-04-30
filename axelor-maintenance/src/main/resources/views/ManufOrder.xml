@@ -99,13 +99,16 @@
           onSelect="action-maintenance-order-attrs-filter-prodProcess"
           form-view="maintenance-prod-process-form" grid-view="prod-process-grid"/>
         <field name="outsourcing" colSpan="3"
+          hideIf="!prodProcess.outsourcing &amp;&amp; !prodProcess.outsourcable" readonly="true"
           onChange="action-production-attrs-hide-purchaseOrder"/>
-        <spacer colSpan="3"/>
+        <field name="outsourcingPartner" colSpan="3" showIf="outsourcing"
+          domain="self.isSubcontractor = true"/>
         <field name="machineType" colSpan="3" required="true" form-view="machine-type-form"
           grid-view="machine-type-grid"/>
         <field name="machine" colSpan="3" domain="self.machineType = :machineType"
           required="true" form-view="maintenance-machine-form" grid-view="machine-grid"/>
-        <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
+        <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"
+          hidden="true"/>
         <field name="product.economicManufOrderQty" colSpan="3" hidden="true"/>
         <field name="clientPartner" canEdit="false"
           onChange="action-manuf-order-atts-sale-order-onchange-client-partner"
@@ -122,13 +125,16 @@
         <field name="isConsProOnOperation" hidden="true"/>
         <button name="preFillOperationsBtn" title="Pre-fill operations"
           hideIf="statusSelect > 1  || operationOrderList.length > 0" colSpan="4"
-          onClick="save,action-manuf-order-method-pre-fill-operations"/>
+          onClick="save,action-manuf-order-method-pre-fill-operations,action-manuf-order-method-update-lines-outsourced"/>
+        <field name="prodProcess.outsourcing" hidden="true"/>
+        <field name="prodProcess.outsourcable" hidden="true"/>
         <field name="product.isModel" hidden="true"/>
         <field name="typeSelect" hidden="true"/>
       </panel>
       <panel name="actionsPanel" title="Actions" colSpan="4">
         <button name="planBtn" title="Plan" showIf="statusSelect == 1 || statusSelect == 2"
-          colSpan="12" icon="calendar" onClick="save,action-manuf-order-method-plan"/>
+          colSpan="12" icon="calendar"
+          onClick="save,action-manuf-order-method-plan,action-manuf-order-method-update-lines-outsourced"/>
         <button name="startBtn" title="Start" showIf="statusSelect == 3" colSpan="12"
           icon="play-fill" onClick="save,action-manuf-order-method-start"/>
         <button name="pauseBtn" title="Pause" showIf="statusSelect == 4" colSpan="12"
@@ -137,16 +143,24 @@
           icon="forward-fill" onClick="save,action-manuf-order-method-resume"/>
         <button name="finishBtn" title="Finish" showIf="statusSelect == 4" colSpan="12"
           icon="power" onClick="save,action-manuf-order-group-finish"/>
-        <button name="finishPartBtn" title="Partial Finish" showIf="statusSelect == 4"
-          colSpan="12" icon="power" onClick="save, action-manuf-order-method-part-finish"/>
+        <button name="consumeBtn" title="Consume in stock moves" showIf="statusSelect == 4"
+          colSpan="12" icon="check"
+          onClick="save,action-maintenance-manuf-order-method-consume-stock-move"/>
+        <button name="finishPartBtn" title="Partial Finish" showIf="false" colSpan="12"
+          icon="power" onClick="save, action-manuf-order-method-part-finish"/>
         <button name="cancelBtn" title="Cancel" showIf="statusSelect != 2" colSpan="12"
           icon="x-circle-fill" onClick="save,action-manuf-order-view-cancel"/>
+        <button name="declareOutsourcedDelieveryBtn" title="Outsource declaration"
+          hidden="true"
+          showIf="(outsourcing || $areLinesOutsourced) &amp;&amp; statusSelect &gt;= 2" colSpan="12"
+          onClick="action-manuf-order-view-declare-delivery"/>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab" colSpan="4">
       <panel-related name="operationOrderListPanel" readonlyIf="statusSelect == 6"
         colSpan="12" height="15" field="operationOrderList" form-view="operation-order-form"
-        grid-view="operation-order-grid" canNew="false"/>
+        grid-view="operation-order-grid" canNew="false"
+        onChange="action-manuf-order-method-update-lines-outsourced"/>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 6">
         <panel name="plannedDatesPanel" title="Planned dates">
           <field name="plannedStartDateT" title="Start date"
@@ -171,19 +185,30 @@
             type="long" widget="duration" x-big="true" x-seconds="true"/>
         </panel>
       </panel>
+      <panel name="stockMovesPanel" title="Stock moves"
+        showIf="!isConsProOnOperation &amp;&amp; statusSelect &gt;= 3">
+        <panel name="stockMoveListPanel" title="Moves In" readonly="true" colSpan="12">
+          <field name="inStockMoveList" form-view="stock-move-form"
+            grid-view="in-stock-move-manuf-order-grid" hideIf="isConsProOnOperation" colSpan="12"/>
+        </panel>
+      </panel>
       <panel name="consumedProductsPanel" title="Consumed products"
-        showIf="isConsProOnOperation &amp;&amp; statusSelect >= 3">
+        showIf="!isConsProOnOperation &amp;&amp; statusSelect &gt;= 3">
         <button name="updatePlannedQtyBtn"
           title="Update planned quantities (Components and FP)"
-          showIf="statusSelect != 6 &amp;&amp; typeSelect != 2" colSpan="12" css="btn-custom"
+          showIf="isConsProOnOperation &amp;&amp; statusSelect != 6 &amp;&amp; typeSelect != 2"
+          colSpan="12" css="btn-custom"
           onClick="save,action-manuf-order-update-planned-qty-popup-form-view"/>
         <panel-dashlet name="operationOrderToConsumeProductPanel" readonly="true"
-          colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
+          showIf="isConsProOnOperation" colSpan="12"
+          action="action-manuf-order-view-operation-order-to-consume-product"/>
         <button name="updateRealQtyBtn" title="Update real quantities (Components and FP)"
-          showIf="statusSelect != 6 &amp;&amp; typeSelect != 2" colSpan="12" css="btn-custom"
+          showIf="isConsProOnOperation &amp;&amp; statusSelect != 6 &amp;&amp; typeSelect != 2"
+          colSpan="12" css="btn-custom"
           onClick="save,action-manuf-order-update-real-qty-popup-form-view"/>
         <panel-dashlet name="operationOrderConsumedProductPanel" readonly="true"
-          colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
+          showIf="isConsProOnOperation" colSpan="12"
+          action="action-manuf-order-view-operation-order-consumed-product"/>
         <panel if="__config__.app.getApp('supplychain')?.manageStockReservation"
           name="allocationToolsPanel" showIf="$contains([3,4,5], statusSelect)" colSpan="12">
           <button name="allocateAllItem" title="Allocate all" colSpan="3"
@@ -195,22 +220,55 @@
           <button name="cancelReservationItem" title="Cancel reservation" colSpan="3"
             onClick="save,action-manuf-order-method-cancel-reservation"/>
         </panel>
+        <panel-related name="toConsumeProdProductListPanel"
+          field="toConsumeProdProductList" readonly="true" colSpan="12"
+          grid-view="prod-product-consume-manuf-order-grid" form-view="prod-product-form"
+          orderBy="product.code" hideIf="isConsProOnOperation"/>
+        <panel-related name="consumedStockMoveLineListPanel"
+          field="consumedStockMoveLineList"
+          onChange="action-manuf-order-group-on-change-consumed-stock-move-line"
+          readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form"
+          grid-view="stock-move-line-consumed-production-grid" hideIf="isConsProOnOperation"/>
+        <panel-related name="diffStockMoveLineListPanel"
+          field="diffConsumeProdProductList" readonly="true" colSpan="12"
+          grid-view="prod-product-diff-manuf-order-grid" form-view="prod-product-form"
+          hideIf="isConsProOnOperation"/>
         <panel-dashlet name="operationOrderDiffConsumeProductPanel" readonly="true"
-          colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
+          showIf="isConsProOnOperation" colSpan="12"
+          action="action-manuf-order-view-operation-order-diff-consume-product"/>
       </panel>
       <panel-related name="productionOrderSetPanel" readonly="true" colSpan="12"
         height="15" field="productionOrderSet" form-view="production-order-form"
-        grid-view="production-order-grid"/>
+        grid-view="production-order-grid" hidden="true"/>
       <panel-dashlet name="mergedManufOrderDashlet" title="Merged MO" readonly="true"
-        colSpan="12" action="action-manuf-order-view-merged-manuf-orders"/>
+        colSpan="12" action="action-manuf-order-view-merged-manuf-orders" hidden="true"/>
+      <panel name="costPanel" title="Cost" showIf="statusSelect &gt; 3">
+        <button name="computeCostPriceBtn" title="Compute cost price"
+          onClick="save,action-maintenance-manuf-order-method-compute-cost-price"/>
+        <field name="costPrice" readonly="true"/>
+        <field name="costSheetList" colSpan="12" readonly="true"
+          form-view="cost-sheet-bill-of-material-form" grid-view="cost-sheet-bill-of-material-grid"/>
+      </panel>
+      <panel name="outsourcingPanel" title="Outsourcing"
+        showIf="outsourcing || $areLinesOutsourced">
+        <panel-related field="purchaseOrderSet" colSpan="12"/>
+        <panel-related field="outsourcingStockMoveList" colSpan="12"
+          title="Outgoing outsource stock move"/>
+      </panel>
+      <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')">
+        <button name="addControlEntryBtn" title="Add a control entry"
+          onClick="save,action-manuf-order-view-add-control-entry" colOffset="6"/>
+        <panel-dashlet name="controlEntryDashlet"
+          action="action-manuf-order-view-control-entry" colSpan="12"/>
+      </panel>
       <panel name="notePanel" title="Note">
         <field name="note" showTitle="false" colSpan="12"/>
         <panel name="moCommentFromSaleOrderPanel" title="MO's comment from sale order"
-          colSpan="12">
+          colSpan="12" hidden="true">
           <field name="moCommentFromSaleOrder" showTitle="false" colSpan="12" widget="Html"/>
         </panel>
         <panel name="moCommentFromSaleOrderLinePanel"
-          title="MO's comment from sale order line" colSpan="12">
+          title="MO's comment from sale order line" colSpan="12" hidden="true">
           <field name="moCommentFromSaleOrderLine" showTitle="false" colSpan="12"
             widget="Html"/>
         </panel>
@@ -253,6 +311,9 @@
     <action name="action-maintenance-manuf-order-record-on-change-bill-of-material"/>
     <action name="action-manuf-order-attrs-isConsProOnOperation"/>
     <action name="action-manuf-order-record-isConsProOnOperation"/>
+    <action name="action-manuf-order-record-update-qty-from-prod-process"/>
+    <action name="action-production-attrs-set-outsourcing-value"/>
+    <action name="action-production-attrs-hide-purchaseOrder"/>
     <action name="action-manuf-order-reset"/>
     <action name="action-manuf-order-attrs-set-unit" if="billOfMaterial != null"/>
   </action-group>
@@ -310,6 +371,15 @@
 
   <action-method name="action-manuf-order-method-print">
     <call class="com.axelor.apps.maintenance.web.ManufOrderController" method="print"/>
+  </action-method>
+
+  <action-method name="action-maintenance-manuf-order-method-consume-stock-move">
+    <call class="com.axelor.apps.maintenance.web.ManufOrderController"
+      method="consumeInStockMoves"/>
+  </action-method>
+
+  <action-method name="action-maintenance-manuf-order-method-compute-cost-price">
+    <call class="com.axelor.apps.production.web.ManufOrderController" method="computeCostPrice"/>
   </action-method>
 
   <action-attrs name="action-manuf-order-attrs-filter-prodProcess"
