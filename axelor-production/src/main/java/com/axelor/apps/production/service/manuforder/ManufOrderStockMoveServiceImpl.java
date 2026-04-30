@@ -588,8 +588,8 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
       if (product != null
           && product.getRealOrEstimatedPriceSelect() == ProductRepository.PRICE_METHOD_REAL) {
         stockMoveLine.setUnitPriceUntaxed(costPrice);
+        stockMoveLine.setCompanyUnitPriceUntaxed(costPrice);
       }
-      stockMoveLine.setCompanyUnitPriceUntaxed(costPrice);
       // Persist the line explicitly: the caller (updatePrices(ManufOrder, ...)) calls
       // stockMoveToolService.compute(stockMove) right after, which uses BatchProcessorHelper
       // with flushAfterBatch=false and the default clearEveryNBatch=1. Without an explicit save,
