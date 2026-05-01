@@ -13,6 +13,7 @@
     <field name="requestedQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="requestedUnit"/>
     <field name="requestedDate"/>
+    <field name="requestedDeliveryTime"/>
     <field name="proposedQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="proposedUnit"/>
     <field name="proposedPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
@@ -25,6 +26,7 @@
     onNew="action-call-tender-offer-record-init-dummy-fields,action-call-tender-offer-method-init-counter">
     <panel name="sidePanel" showTitle="false" sidebar="true">
       <field name="requestedDate" colSpan="12"/>
+      <field name="requestedDeliveryTime" colSpan="12"/>
       <field name="proposedDate" colSpan="12"/>
       <field name="offerMail" readonly="true" showIf="offerMail != null"/>
     </panel>
@@ -45,7 +47,7 @@
       <field name="proposedPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     </panel>
     <panel name="commentPanel">
-      <field name="offerComment"/>
+      <field name="offerComment" colSpan="12" widget="text"/>
     </panel>
     <panel name="hiddenPanel" hidden="true">
       <field name="$nbDecimalDigitForQty" hidden="true" x-dirty="false"/>
