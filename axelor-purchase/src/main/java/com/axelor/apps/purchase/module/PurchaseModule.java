@@ -51,6 +51,8 @@ import com.axelor.apps.purchase.service.CallTenderOfferService;
 import com.axelor.apps.purchase.service.CallTenderOfferServiceImpl;
 import com.axelor.apps.purchase.service.CallTenderPurchaseOrderService;
 import com.axelor.apps.purchase.service.CallTenderPurchaseOrderServiceImpl;
+import com.axelor.apps.purchase.service.CallTenderReportService;
+import com.axelor.apps.purchase.service.CallTenderReportServiceImpl;
 import com.axelor.apps.purchase.service.ProductServicePurchaseImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateServiceImpl;
@@ -155,6 +157,7 @@ public class PurchaseModule extends AxelorModule {
     bind(CallTenderOfferImportService.class).to(CallTenderOfferImportServiceImpl.class);
     bind(CallTenderAttrConfigRepository.class).to(CallTenderAttrConfigManagementRepository.class);
     bind(CallTenderAttrConfigService.class).to(CallTenderAttrConfigServiceImpl.class);
+    bind(CallTenderReportService.class).to(CallTenderReportServiceImpl.class);
     bind(PurchaseOrderTaxService.class).to(PurchaseOrderTaxServiceImpl.class);
     bind(PurchaseOrderLinePricingService.class).to(PurchaseOrderLinePricingServiceImpl.class);
     bind(PurchasePricingLogsObserver.class);

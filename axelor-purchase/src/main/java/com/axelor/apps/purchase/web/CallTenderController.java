@@ -27,11 +27,14 @@ import com.axelor.apps.purchase.db.CallTenderOffer;
 import com.axelor.apps.purchase.db.CallTenderOfferImportHistory;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.CallTenderRepository;
+import com.axelor.apps.purchase.db.repo.TenderReportConfigRepository;
 import com.axelor.apps.purchase.service.CallTenderExcelService;
 import com.axelor.apps.purchase.service.CallTenderGenerateService;
 import com.axelor.apps.purchase.service.CallTenderMailService;
 import com.axelor.apps.purchase.service.CallTenderOfferImportService;
 import com.axelor.apps.purchase.service.CallTenderPurchaseOrderService;
+import com.axelor.apps.purchase.service.CallTenderReportService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -144,6 +147,38 @@ public class CallTenderController {
           Beans.get(CallTenderExcelService.class).generateTemplate(callTender, supplier);
 
       response.setExportFile(MetaFiles.getPath(templateFile).toString());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void getProductAttributesBySuppliers(ActionRequest request, ActionResponse response) {
+    try {
+      Object callTenderIdObj = request.getData().get("_callTenderId");
+      if (ObjectUtils.isEmpty(callTenderIdObj)) {
+        return;
+      }
+      Long callTenderId = Long.valueOf(callTenderIdObj.toString());
+      CallTender callTender = Beans.get(CallTenderRepository.class).find(callTenderId);
+      response.setData(
+          Beans.get(CallTenderReportService.class)
+              .getReportData(callTender, TenderReportConfigRepository.REPORT_TYPE_PRODUCT_ATTRS));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void getSupplierRespondByProduct(ActionRequest request, ActionResponse response) {
+    try {
+      Object callTenderIdObj = request.getData().get("_callTenderId");
+      if (ObjectUtils.isEmpty(callTenderIdObj)) {
+        return;
+      }
+      Long callTenderId = Long.valueOf(callTenderIdObj.toString());
+      CallTender callTender = Beans.get(CallTenderRepository.class).find(callTenderId);
+      response.setData(
+          Beans.get(CallTenderReportService.class)
+              .getReportData(callTender, TenderReportConfigRepository.REPORT_TYPE_SUPPLIER_REPOND));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

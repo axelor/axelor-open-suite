@@ -14,10 +14,10 @@
     title="Call for tender">
     <toolbar>
       <button name="productAttrPrintBtn"
-        onClick="save,action-call-tender-view-product-attributes-by-suppliers"
+        onClick="save,action-call-tender-validate-product-attr-report-config,action-call-tender-view-product-attributes-by-suppliers"
         title="Show product attributes"/>
       <button name="supplierResponsePrintBtn"
-        onClick="save,action-call-tender-view-supplier-respond-by-product"
+        onClick="save,action-call-tender-validate-supplier-respond-report-config,action-call-tender-view-supplier-respond-by-product"
         title="Suppliers' respond by product"/>
     </toolbar>
     <panel name="headerPanel" showTitle="false">
@@ -48,6 +48,10 @@
         onClick="save,action-call-tender-view-import-offer-wizard" colSpan="12"/>
       <button name="generatePurchaseOrderBtn" title="Generate purchase order"
         onClick="action-call-tender-group-generate-purchase-order" colSpan="12"/>
+    </panel>
+    <panel name="reportConfigPanel" title="Report config" sidebar="true" itemSpan="12">
+      <field name="productAttrReportConfig" domain="self.reportType = 1"/>
+      <field name="supplierRespondReportConfig" domain="self.reportType = 2"/>
     </panel>
     <panel-related field="callTenderNeedList" title="Product needs"
       form-view="call-tender-need-form" grid-view="call-tender-need-grid" colSpan="12"
@@ -132,11 +136,21 @@
     <context name="_callTenderId" expr="eval: id"/>
   </action-view>
 
+  <action-validate name="action-call-tender-validate-product-attr-report-config">
+    <error message="No tender report config found"
+      if="eval: productAttrReportConfig == null &amp;&amp; __repo__(TenderReportConfig).all().filter('self.reportType = 1 AND self.isDefault = true').count() == 0"/>
+  </action-validate>
+
   <action-view name="action-call-tender-view-product-attributes-by-suppliers"
     title="Product attributes by supplier">
     <view type="custom" name="call-tender-product-attributes-by-suppliers"/>
     <context name="_callTenderId" expr="eval: id"/>
   </action-view>
+
+  <action-validate name="action-call-tender-validate-supplier-respond-report-config">
+    <error message="No tender report config found"
+      if="eval: supplierRespondReportConfig == null &amp;&amp; __repo__(TenderReportConfig).all().filter('self.reportType = 2 AND self.isDefault = true').count() == 0"/>
+  </action-validate>
 
   <action-view name="action-call-tender-view-supplier-respond-by-product"
     title="Suppliers' respond by product">
