@@ -12,6 +12,13 @@
           showIf="purchasable"/>
       </insert>
     </extend>
+    <extend target="//panel[@name='attrsPanel']/field[@name='attrs']">
+      <insert position="before">
+        <field name="callTenderAttrConfig" colSpan="6" domain="self.displayInProduct = true"
+          if="__config__.app.getApp('purchase')?.manageCallForTender"
+          onChange="action-call-tender-attr-config-method-fill-defaults"/>
+      </insert>
+    </extend>
   </form>
 
   <action-view name="action-product-view-show-purchase-order-line-history"

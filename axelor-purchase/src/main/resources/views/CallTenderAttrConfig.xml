@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+
+  <grid name="call-tender-attr-config-grid" title="Call tender attribute configuration"
+    model="com.axelor.apps.purchase.db.CallTenderAttrConfig">
+    <field name="name"/>
+    <field name="displayInProduct"/>
+    <field name="displayInSoLine"/>
+    <field name="displayInTenderNeed"/>
+    <field name="displayInTenderOffer"/>
+  </grid>
+
+  <form name="call-tender-attr-config-form" title="Call tender attribute configuration"
+    model="com.axelor.apps.purchase.db.CallTenderAttrConfig">
+    <panel name="mainPanel" showTitle="false">
+      <field name="name" colSpan="12"/>
+    </panel>
+    <panel name="displayInPanel" title="Display in" colSpan="12">
+      <field name="displayInProduct" colSpan="3" widget="boolean-switch"/>
+      <field name="displayInSoLine" colSpan="3" widget="boolean-switch"/>
+      <field name="displayInTenderNeed" colSpan="3" widget="boolean-switch"/>
+      <field name="displayInTenderOffer" colSpan="3" widget="boolean-switch"/>
+    </panel>
+    <panel-related field="customFieldList" title="Custom fields" colSpan="12"
+      form-view="call-tender-attr-config-custom-field-form"
+      grid-view="call-tender-attr-config-custom-field-grid"/>
+  </form>
+
+  <action-method name="action-call-tender-attr-config-method-fill-defaults">
+    <call class="com.axelor.apps.purchase.web.CallTenderAttrConfigController"
+      method="fillDefaults"/>
+  </action-method>
+
+</object-views>

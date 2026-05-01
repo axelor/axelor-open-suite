@@ -87,7 +87,28 @@
         </panel>
       </insert>
     </extend>
+
+    <extend target="//panel[@name='attrsPanel']/field[@name='attrs']">
+      <insert position="before">
+        <field name="callTenderAttrConfig" colSpan="6" domain="self.displayInSoLine = true"
+          if="__config__.app.getApp('purchase')?.manageCallForTender"
+          onChange="action-call-tender-attr-config-method-fill-defaults"/>
+      </insert>
+    </extend>
+
+    <extend target="//field[@name='product'][@grid-view='stock-move-line-product-grid']">
+      <attribute name="onChange"
+        value="action-sale-order-line-method-get-product-information,action-sale-order-line-record-set-call-tender-config"/>
+    </extend>
   </form>
+
+  <action-record name="action-sale-order-line-record-set-call-tender-config"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="callTenderAttrConfig" expr="eval: null"/>
+    <field name="callTenderAttrConfig"
+      expr="eval: __repo__(Product).find(product.id)?.callTenderAttrConfig"
+      if="product?.id &amp;&amp; __repo__(Product).find(product.id)?.callTenderAttrConfig?.displayInSoLine"/>
+  </action-record>
 
   <form name="sale-order-line-template-form" id="supplychain-sale-order-line-template-form"
     title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">

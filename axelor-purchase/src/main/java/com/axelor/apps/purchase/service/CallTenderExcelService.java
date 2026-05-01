@@ -18,24 +18,12 @@
  */
 package com.axelor.apps.purchase.service;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.CallTenderOffer;
-import com.axelor.message.db.Template;
-import jakarta.mail.MessagingException;
+import com.axelor.meta.db.MetaFile;
 import java.io.IOException;
 import java.util.List;
 
-public interface CallTenderMailService {
+public interface CallTenderExcelService {
 
-  void sendMails(CallTender callTender) throws ClassNotFoundException, MessagingException;
-
-  void generateOfferMail(List<CallTenderOffer> offer, Template template)
-      throws AxelorException, IOException;
-
-  void generateCallTenderEmails(CallTender callTender)
-      throws AxelorException, IOException, ClassNotFoundException, MessagingException;
-
-  void sendCallTenderOffers(CallTender callTender)
-      throws ClassNotFoundException, MessagingException;
+  MetaFile generateExcelFile(List<CallTenderOffer> offerList) throws IOException;
 }

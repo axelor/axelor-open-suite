@@ -67,4 +67,13 @@
       data-form="purchase-order-form">Purchase order</option>
   </selection>
 
+  <selection name="purchase.call.tender.attr.field.type.select">
+    <option value="string">String</option>
+    <option value="integer">Integer</option>
+    <option value="decimal">Decimal</option>
+    <option value="boolean">Boolean</option>
+    <option value="date">Date</option>
+    <option value="datetime">DateTime</option>
+  </selection>
+
 </object-views>
