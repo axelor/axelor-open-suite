@@ -18,7 +18,11 @@
       ref="com.axelor.apps.purchase.db.CallTenderOffer" title="Offers" mappedBy="callTender"/>
     <many-to-one name="callForTenderMailTemplate" title="Call for tender mail template"
       ref="com.axelor.message.db.Template"/>
+    <boolean name="attachFileEmail" title="Attach file email" default="false"/>
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
+    <one-to-many name="callTenderOfferImportHistoryList"
+      ref="com.axelor.apps.purchase.db.CallTenderOfferImportHistory" title="Import history"
+      mappedBy="callTender"/>
 
 
     <track on="UPDATE">
