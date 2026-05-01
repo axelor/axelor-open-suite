@@ -272,12 +272,11 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
       return analyticMoveLineSet;
     }
 
-    if (analyticAccount != null && analyticAccount.getId() != null) {
-      analyticAccount = analyticAccountRepository.find(analyticAccount.getId());
-    }
-
     for (AnalyticMoveLine analyticMoveLine : analyticMoveLines) {
       analyticMoveLine = analyticMoveLineRepository.find(analyticMoveLine.getId());
+      if (analyticAccount != null && analyticAccount.getId() != null) {
+        analyticAccount = analyticAccountRepository.find(analyticAccount.getId());
+      }
       AnalyticMoveLine newAnalyticMoveLine =
           analyticMoveLineService.generateAnalyticMoveLine(
               analyticMoveLine, analyticAccount, percentage);
