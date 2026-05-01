@@ -62,9 +62,23 @@
     <option value="5" color="red">Rejected</option>
   </selection>
 
+  <selection name="purchase.tender.report.config.report.type.select">
+    <option value="1">Product attributes by supplier</option>
+    <option value="2">Suppliers' respond by product</option>
+  </selection>
+
   <selection name="message.related.to.select" id="purchase.message.related.to.select">
     <option value="com.axelor.apps.purchase.db.PurchaseOrder" data-grid="purchase-order-grid"
       data-form="purchase-order-form">Purchase order</option>
+  </selection>
+
+  <selection name="purchase.call.tender.attr.field.type.select">
+    <option value="string">String</option>
+    <option value="integer">Integer</option>
+    <option value="decimal">Decimal</option>
+    <option value="boolean">Boolean</option>
+    <option value="date">Date</option>
+    <option value="datetime">DateTime</option>
   </selection>
 
 </object-views>

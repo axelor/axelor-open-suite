@@ -183,6 +183,18 @@
     <view type="form" name="call-tender-form"/>
   </action-view>
 
+  <menuitem name="sc-root-purchase-conf-call-tender-attr-config"
+    parent="sc-root-purchase-conf" title="Call tender attribute configuration"
+    action="sc.root.purchase.conf.call.tender.attr.config" order="1100"
+    if="__config__.app.getApp('purchase')?.manageCallForTender"/>
+
+  <action-view name="sc.root.purchase.conf.call.tender.attr.config"
+    title="Call tender attribute configuration"
+    model="com.axelor.apps.purchase.db.CallTenderAttrConfig">
+    <view type="grid" name="call-tender-attr-config-grid"/>
+    <view type="form" name="call-tender-attr-config-form"/>
+  </action-view>
+
   <menuitem title="Pricing" name="root-purchase-pricing" parent="sc-root-purchase-conf"
     order="1200" action="root.purchase.pricing"
     if="__config__.app.getApp('base')?.enablePricingScale"/>
@@ -205,6 +217,17 @@
     <view type="grid" name="pricing-rule-grid"/>
     <view type="form" name="pricing-rule-form"/>
     <domain>self.concernedModel.name != 'InvoiceLine'</domain>
+  </action-view>
+
+
+  <menuitem name="menu-purchase-conf-tender-report-config" parent="sc-root-purchase-conf"
+    title="Tender report configs" action="action-purchase-view-tender-report-config" order="1400"
+    if="__config__.app.getApp('purchase')?.manageCallForTender"/>
+
+  <action-view name="action-purchase-view-tender-report-config"
+    title="Tender report configs" model="com.axelor.apps.purchase.db.TenderReportConfig">
+    <view type="grid" name="tender-report-config-grid"/>
+    <view type="form" name="tender-report-config-form"/>
   </action-view>
 
 </object-views>

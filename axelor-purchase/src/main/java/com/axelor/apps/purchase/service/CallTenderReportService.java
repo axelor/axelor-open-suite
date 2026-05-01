@@ -18,12 +18,11 @@
  */
 package com.axelor.apps.purchase.service;
 
-import com.axelor.apps.purchase.db.CallTenderOffer;
-import com.axelor.meta.db.MetaFile;
-import java.io.IOException;
+import com.axelor.apps.purchase.db.CallTender;
 import java.util.List;
+import java.util.Map;
 
-public interface CallTenderCsvService {
+public interface CallTenderReportService {
 
-  MetaFile generateCsvFile(List<CallTenderOffer> offerList) throws IOException;
+  List<Map<String, Object>> getReportData(CallTender callTender, int reportType);
 }

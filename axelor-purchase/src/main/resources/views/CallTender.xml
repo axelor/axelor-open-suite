@@ -12,6 +12,14 @@
 
   <form name="call-tender-form" model="com.axelor.apps.purchase.db.CallTender"
     title="Call for tender">
+    <toolbar>
+      <button name="productAttrPrintBtn"
+        onClick="save,action-call-tender-validate-product-attr-report-config,action-call-tender-view-product-attributes-by-suppliers"
+        title="Show product attributes"/>
+      <button name="supplierResponsePrintBtn"
+        onClick="save,action-call-tender-validate-supplier-respond-report-config,action-call-tender-view-supplier-respond-by-product"
+        title="Suppliers' respond by product"/>
+    </toolbar>
     <panel name="headerPanel" showTitle="false">
       <field name="callTenderSeq" showTitle="false" colSpan="12" readonly="true">
         <viewer><![CDATA[
@@ -24,17 +32,26 @@
       </field>
       <field name="name" colSpan="6"/>
       <field name="company" colSpan="6"/>
-      <field name="callForTenderMailTemplate" colSpan="6"
+      <field name="callForTenderMailTemplate" colSpan="4"
         domain="self.metaModel.name='CallTenderOffer'"/>
+      <field name="attachFileEmail" colSpan="2" widget="boolean-switch"/>
       <field name="description" colSpan="12"/>
     </panel>
     <panel name="actionPanel" showTitle="false" sidebar="true">
       <button name="generateCallTenderBtn" title="Generate call for tenders"
         onClick="save,action-call-tender-method-generate-call-tender-offers" colSpan="12"/>
-      <button name="sendCallTendersBtn" title="Send call for tenders"
+      <button name="generateCallTenderEmailsBtn" title="Generate emails"
+        onClick="save,action-call-tender-method-generate-call-tender-emails" colSpan="12"/>
+      <button name="sendCallTendersBtn" title="Send emails"
         onClick="save,action-call-tender-method-send-call-tender-offers" colSpan="12"/>
+      <button name="importOfferBtn" title="Import offer"
+        onClick="save,action-call-tender-view-import-offer-wizard" colSpan="12"/>
       <button name="generatePurchaseOrderBtn" title="Generate purchase order"
         onClick="action-call-tender-group-generate-purchase-order" colSpan="12"/>
+    </panel>
+    <panel name="reportConfigPanel" title="Report config" sidebar="true" itemSpan="12">
+      <field name="productAttrReportConfig" domain="self.reportType = 1"/>
+      <field name="supplierRespondReportConfig" domain="self.reportType = 2"/>
     </panel>
     <panel-related field="callTenderNeedList" title="Product needs"
       form-view="call-tender-need-form" grid-view="call-tender-need-grid" colSpan="12"
@@ -49,6 +66,10 @@
       colSpan="12"/>
 
     <panel-dashlet action="action-call-tender-view-mails" colSpan="12"/>
+
+    <panel-related field="callTenderOfferImportHistoryList" title="Import history"
+      form-view="call-tender-offer-import-history-form"
+      grid-view="call-tender-offer-import-history-grid" colSpan="12" readonly="true"/>
   </form>
 
   <action-method name="action-call-tender-method-generate-call-tender-offers">
@@ -66,10 +87,29 @@
   </action-view>
 
 
+  <action-method name="action-call-tender-method-generate-call-tender-emails">
+    <call class="com.axelor.apps.purchase.web.CallTenderController"
+      method="generateCallTenderEmails"/>
+  </action-method>
+
   <action-method name="action-call-tender-method-send-call-tender-offers">
     <call class="com.axelor.apps.purchase.web.CallTenderController"
       method="sendCallTenderOffers"/>
   </action-method>
+
+  <action-method name="action-call-tender-method-import-offer">
+    <call class="com.axelor.apps.purchase.web.CallTenderController" method="importOffer"/>
+  </action-method>
+
+  <action-view name="action-call-tender-view-import-offer-wizard" title="Import offer"
+    model="com.axelor.apps.purchase.db.CallTenderOfferImportHistory">
+    <view type="form" name="call-tender-import-offer-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_callTenderId" expr="eval: id"/>
+  </action-view>
 
   <action-method name="action-call-tender-method-generate-purchase-order">
     <call class="com.axelor.apps.purchase.web.CallTenderController"
@@ -93,6 +133,28 @@
     <view type="grid" name="purchase-order-grid"/>
     <view type="form" name="purchase-order-form"/>
     <domain>self.callTender.id = :_callTenderId</domain>
+    <context name="_callTenderId" expr="eval: id"/>
+  </action-view>
+
+  <action-validate name="action-call-tender-validate-product-attr-report-config">
+    <error message="No tender report config found"
+      if="eval: productAttrReportConfig == null &amp;&amp; __repo__(TenderReportConfig).all().filter('self.reportType = 1 AND self.isDefault = true').count() == 0"/>
+  </action-validate>
+
+  <action-view name="action-call-tender-view-product-attributes-by-suppliers"
+    title="Product attributes by supplier">
+    <view type="custom" name="call-tender-product-attributes-by-suppliers"/>
+    <context name="_callTenderId" expr="eval: id"/>
+  </action-view>
+
+  <action-validate name="action-call-tender-validate-supplier-respond-report-config">
+    <error message="No tender report config found"
+      if="eval: supplierRespondReportConfig == null &amp;&amp; __repo__(TenderReportConfig).all().filter('self.reportType = 2 AND self.isDefault = true').count() == 0"/>
+  </action-validate>
+
+  <action-view name="action-call-tender-view-supplier-respond-by-product"
+    title="Suppliers' respond by product">
+    <view type="custom" name="call-tender-supplier-respond-by-product"/>
     <context name="_callTenderId" expr="eval: id"/>
   </action-view>
 

@@ -19,23 +19,25 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.purchase.db.CallTender;
-import com.axelor.apps.purchase.db.CallTenderOffer;
-import com.axelor.message.db.Template;
-import jakarta.mail.MessagingException;
-import java.io.IOException;
-import java.util.List;
+import com.axelor.apps.purchase.db.CallTenderAttrConfig;
 
-public interface CallTenderMailService {
+public interface CallTenderAttrConfigService {
 
-  void sendMails(CallTender callTender) throws ClassNotFoundException, MessagingException;
+  String MODEL_SOURCE = "com.axelor.apps.purchase.db.CallTenderAttrConfigSource";
+  String MODEL_PRODUCT = "com.axelor.apps.base.db.Product";
+  String MODEL_SO_LINE = "com.axelor.apps.sale.db.SaleOrderLine";
+  String MODEL_NEED = "com.axelor.apps.purchase.db.CallTenderNeed";
+  String MODEL_OFFER = "com.axelor.apps.purchase.db.CallTenderOffer";
 
-  void generateOfferMail(List<CallTenderOffer> offer, Template template)
-      throws AxelorException, IOException;
+  String MODEL_FIELD = "attrs";
 
-  void generateCallTenderEmails(CallTender callTender)
-      throws AxelorException, IOException, ClassNotFoundException, MessagingException;
+  void syncMirrorFields(CallTenderAttrConfig config);
 
-  void sendCallTenderOffers(CallTender callTender)
-      throws ClassNotFoundException, MessagingException;
+  void deleteFields(CallTenderAttrConfig config);
+
+  String buildDefaultAttrs(CallTenderAttrConfig config, String existingAttrs);
+
+  void regenerateFieldNames(CallTenderAttrConfig config);
+
+  void validateFieldNameUniqueness(CallTenderAttrConfig config) throws AxelorException;
 }
