@@ -10,6 +10,7 @@
     <field name="requestedQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="unit"/>
     <field name="requestedDate"/>
+    <field name="requestedDeliveryTime"/>
     <field name="typeSelect"/>
     <field name="$nbDecimalDigitForQty" hidden="true" x-dirty="false"/>
   </grid>
@@ -18,12 +19,20 @@
     title="Call for tender" width="large" onNew="action-call-tender-need-record-init-dummy-fields">
     <panel name="mainPanel" showTitle="false">
       <field name="product" colSpan="12" domain="self.purchasable is true"
-        onChange="action-call-tender-need-method-set-unit"/>
+        onChange="action-call-tender-need-method-set-unit,action-call-tender-need-record-set-config"/>
       <field name="requestedQty" colSpan="6" x-scale="$nbDecimalDigitForQty"/>
       <field name="unit" colSpan="6"/>
       <field name="requestedDate"/>
       <field name="typeSelect"/>
+      <field name="requestedDeliveryTime"/>
+      <field name="callTenderAttrConfig" colSpan="6" domain="self.displayInTenderNeed = true"
+        onChange="action-call-tender-attr-config-method-fill-defaults"/>
+      <field name="description" colSpan="12" widget="html"/>
       <field name="$nbDecimalDigitForQty" hidden="true" x-dirty="false"/>
+    </panel>
+    <panel name="customAttributesPanel" title="Custom attributes" colSpan="12"
+      showIf="callTenderAttrConfig">
+      <field name="attrs" colSpan="12" showTitle="false"/>
     </panel>
   </form>
 
@@ -44,4 +53,12 @@
   <action-method name="action-call-tender-need-method-set-unit">
     <call class="com.axelor.apps.purchase.web.CallTenderNeedController" method="setUnit"/>
   </action-method>
+
+  <action-record name="action-call-tender-need-record-set-config"
+    model="com.axelor.apps.purchase.db.CallTenderNeed">
+    <field name="callTenderAttrConfig" expr="eval: null"/>
+    <field name="callTenderAttrConfig"
+      expr="eval: __repo__(Product).find(product.id)?.callTenderAttrConfig"
+      if="product?.id &amp;&amp; __repo__(Product).find(product.id)?.callTenderAttrConfig?.displayInTenderNeed"/>
+  </action-record>
 </object-views>

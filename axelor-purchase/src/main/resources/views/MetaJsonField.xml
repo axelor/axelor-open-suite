@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+
+  <grid name="call-tender-attr-config-custom-field-grid" title="Custom fields"
+    model="com.axelor.meta.db.MetaJsonField" orderBy="sequence" canMove="true">
+    <field name="sequence"/>
+    <field name="title"/>
+    <field name="type"/>
+    <field name="defaultValue"/>
+    <field name="required" title="Mandatory"/>
+  </grid>
+
+  <form name="call-tender-attr-config-custom-field-form" title="Custom field"
+    model="com.axelor.meta.db.MetaJsonField"
+    onNew="action-meta-json-field-call-tender-method-on-new"
+    onLoad="action-meta-json-field-call-tender-attrs-set-type-select">
+    <panel name="overViewPanel" title="Overview">
+      <field name="title" title="Name" required="true"
+        onChange="action-meta-json-field-call-tender-method-compute-fields"/>
+      <field name="$typeSelect" selection="purchase.call.tender.attr.field.type.select"
+        title="Type" onChange="action-meta-json-field-call-tender-group-type-select-onchange"/>
+      <field name="defaultValue" title="Default value"/>
+      <field name="required" title="Mandatory"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-meta-json-field-call-tender-attrs-set-type-select">
+    <attribute name="value" for="$typeSelect" expr="eval: type"/>
+  </action-attrs>
+
+  <action-record name="action-meta-json-field-call-tender-record-set-type"
+    model="com.axelor.meta.db.MetaJsonField">
+    <field name="type" expr="eval: typeSelect"/>
+  </action-record>
+
+  <action-group name="action-meta-json-field-call-tender-group-type-select-onchange">
+    <action name="action-meta-json-field-call-tender-record-set-type"/>
+    <action name="action-meta-json-field-call-tender-method-compute-fields"/>
+  </action-group>
+
+  <action-method name="action-meta-json-field-call-tender-method-on-new">
+    <call class="com.axelor.apps.purchase.web.MetaJsonFieldCallTenderController" method="onNew"/>
+  </action-method>
+
+  <action-method name="action-meta-json-field-call-tender-method-compute-fields">
+    <call class="com.axelor.apps.purchase.web.MetaJsonFieldCallTenderController"
+      method="computeFields"/>
+  </action-method>
+
+</object-views>
