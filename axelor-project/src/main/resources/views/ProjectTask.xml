@@ -899,11 +899,6 @@
       expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}.join(',')})&quot;"/>
   </action-attrs>
 
-  <action-validate name="action-project-task-validate-finish-status">
-    <error message="Please fill completed task status in Project configuration."
-      if="!project?.completedTaskStatus"/>
-  </action-validate>
-
   <search-filters name="project-task-filters"
     model="com.axelor.apps.project.db.ProjectTask" title="Project task filters">
     <field name="targetVersion" hidden="true" if="!__config__.app.isApp('business-support')"/>
