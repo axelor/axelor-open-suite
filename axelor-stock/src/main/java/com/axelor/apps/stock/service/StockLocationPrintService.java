@@ -29,6 +29,7 @@ public interface StockLocationPrintService {
       PrintingTemplate stockLocationPrintTemplate,
       String financialDataDateTimeString,
       Boolean withoutDetailsByStockLocation,
+      Boolean allLines,
       Long... stockLocationIds)
       throws AxelorException;
 
@@ -37,6 +38,7 @@ public interface StockLocationPrintService {
       PrintingTemplate stockLocationPrintTemplate,
       LocalDateTime financialDataDateTime,
       Boolean withoutDetailsByStockLocation,
+      Boolean allLines,
       Long... stockLocationIds)
       throws AxelorException;
 

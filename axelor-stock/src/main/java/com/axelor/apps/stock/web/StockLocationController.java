@@ -72,6 +72,7 @@ public class StockLocationController {
       boolean withoutDetailsByStockLocation =
           context.get("withoutDetailsByStockLocation") != null
               && (boolean) context.get("withoutDetailsByStockLocation");
+      boolean allLines = context.get("allLines") != null && (boolean) context.get("allLines");
 
       Long[] idsArray =
           ObjectUtils.notEmpty(selectedStockLocationIds)
@@ -101,6 +102,7 @@ public class StockLocationController {
                   stockLocationPrintTemplate,
                   financialDataDateTimeString,
                   withoutDetailsByStockLocation,
+                  allLines,
                   idsArray);
       String title = Beans.get(StockLocationPrintService.class).getOutputFileName(idsArray);
 
