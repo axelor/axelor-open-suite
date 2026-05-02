@@ -46,6 +46,7 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.i18n.I18n;
 import jakarta.inject.Inject;
+import java.util.ArrayList;
 
 public class OperationOrderStockMoveServiceMaintenanceImpl
     extends OperationOrderStockMoveServiceImpl {
@@ -109,19 +110,19 @@ public class OperationOrderStockMoveServiceMaintenanceImpl
     stockMove.setOperationOrder(operationOrder);
     stockMove.setOrigin(operationOrder.getOperationName());
 
+    stockMove.setStockMoveLineList(new ArrayList<>());
+    stockMove.setInOperationOrder(operationOrder);
+
     for (ProdProduct prodProduct : operationOrder.getToConsumeProdProductList()) {
-      this._createStockMoveLine(prodProduct, stockMove, fromStockLocation, virtualStockLocation);
+      StockMoveLine stockMoveLine =
+          this._createStockMoveLine(
+              prodProduct, stockMove, fromStockLocation, virtualStockLocation);
+      stockMoveLine.setConsumedOperationOrder(operationOrder);
+      stockMove.addStockMoveLineListItem(stockMoveLine);
     }
 
-    if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
+    if (!stockMove.getStockMoveLineList().isEmpty()) {
       stockMoveService.plan(stockMove);
-      operationOrder.addInStockMoveListItem(stockMove);
-    }
-
-    if (stockMove.getStockMoveLineList() != null) {
-      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-        operationOrder.addConsumedStockMoveLineListItem(stockMoveLine);
-      }
     }
   }
 

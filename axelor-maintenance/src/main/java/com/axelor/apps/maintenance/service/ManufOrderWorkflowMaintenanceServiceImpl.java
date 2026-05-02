@@ -133,6 +133,11 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
       }
     }
 
+    // Re-fetch after operationOrderWorkflowService.finish() which may trigger JPA.clear()
+    // through stockMoveProductionService.realize(), to avoid LazyInitializationException
+    // when accessing inStockMoveList in manufOrderStockMoveService.finish()
+    manufOrder = manufOrderRepo.find(manufOrder.getId());
+
     // Realize IN stock moves (maintenance: IN only, no OUT)
     manufOrderStockMoveService.finish(manufOrder);
 
