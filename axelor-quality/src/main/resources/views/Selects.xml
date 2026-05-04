@@ -158,7 +158,6 @@
   </selection>
 
   <selection name="quality.control.entry.related.to.select">
-    <option value="com.axelor.apps.stock.db.StockMove">StockMove</option>
     <option value="com.axelor.apps.stock.db.StockMoveLine">StockMoveLine</option>
     <option value="com.axelor.apps.production.db.ManufOrder">ManufOrder</option>
     <option value="com.axelor.apps.production.db.OperationOrder">OperationOrder</option>
