@@ -144,6 +144,7 @@ public class ContractController {
       service.terminateContract(contract, true, contract.getTerminatedDate());
       response.setReload(true);
     } catch (Exception e) {
+      response.setValue("terminatedDate", null);
       TraceBackService.trace(response, e);
     }
   }
