@@ -58,6 +58,9 @@
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
+    <hilite
+      if="(taskEndDate != null &amp;&amp; $moment().diff(taskEndDate,'days') &gt; 0) &amp;&amp; ($get('status.id') != $get('project.completedTaskStatus.id'))"
+      color="danger"/>
     <field name="project" width="200" onChange="action-project-task-group-project-onchange"
       onSelect="action-project-task-editable-grid-attrs-project-on-select" form-view="project-form"
       grid-view="project-grid" required="true"/>
@@ -67,10 +70,7 @@
       onChange="action-project-task-attrs-hide-time-spent-button" width="150"/>
     <field name="name" width="200"/>
     <field name="taskEndDate" onChange="action-project-task-attrs-set-task-duration"
-      width="150">
-      <hilite color="red"
-        if="(taskEndDate != null &amp;&amp; $moment().diff(taskEndDate,'days') &gt; 0) &amp;&amp; ($get('status.id') != $get('project.completedTaskStatus.id'))"/>
-    </field>
+      width="150"/>
     <field name="projectTaskCategory" width="150"/>
     <field name="priority" onSelect="action-project-task-atts-priority-on-select"
       canView="false" width="150"/>
