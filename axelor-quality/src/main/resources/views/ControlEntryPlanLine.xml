@@ -10,7 +10,7 @@
     <field name="reference"/>
     <field name="typeSelect"/>
     <field name="characteristic"/>
-    <field name="isCustomFrequency"/>
+    <field name="isCustomFrequency" hidden="true"/>
   </grid>
 
   <form name="control-plan-line-form" title="Control plan line"
@@ -21,13 +21,13 @@
       <field name="controlType" colSpan="3" required="true"/>
       <field name="characteristic" colSpan="6"/>
       <field name="name" required="true" colSpan="6"/>
-      <field name="isCustomFrequency" colSpan="3"/>
-      <field name="controlPlanFrequency" colSpan="9" showIf="isCustomFrequency"/>
+      <field name="isCustomFrequency" colSpan="3" hidden="true"/>
+      <field name="controlPlanFrequency" colSpan="9" showIf="isCustomFrequency" hidden="true"/>
       <field name="description" widget="html" colSpan="12"/>
     </panel>
 
     <panel name="attrsPanel" showIf="controlType">
-      <field name="planAttrs"/>
+      <field name="planAttrs" colSpan="12"/>
     </panel>
   </form>
 
@@ -55,7 +55,7 @@
     </panel>
 
     <panel name="planAttrsPanel" showIf="controlPlanLine" readonly="true">
-      <field name="planAttrs"/>
+      <field name="planAttrs" colSpan="12"/>
     </panel>
 
     <panel name="attrsPanel" showIf="controlPlanLine">

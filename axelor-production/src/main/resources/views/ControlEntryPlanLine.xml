@@ -16,7 +16,7 @@
   <form id="production-control-plan-line-form" name="control-plan-line-form"
     title="Control plan line" model="com.axelor.apps.quality.db.ControlEntryPlanLine"
     extension="true">
-    <extend target="//panel[@mainPanel]/field[@name='name']">
+    <extend target="//panel[@name='mainPanel']/field[@name='name']">
       <insert position="after">
         <field name="machineType" colSpan="6" if="__config__.app.isApp('production')"/>
       </insert>
