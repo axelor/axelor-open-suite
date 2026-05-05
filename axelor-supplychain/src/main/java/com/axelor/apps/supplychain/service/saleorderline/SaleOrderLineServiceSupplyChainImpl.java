@@ -48,14 +48,11 @@ import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.persistence.TypedQuery;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineServiceSupplyChain {
@@ -95,24 +92,6 @@ public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineService
       return BigDecimal.ZERO;
     }
     return stockLocationLine.getReservedQty();
-  }
-
-  @Override
-  public BigDecimal computeQtyToDeliver(SaleOrderLine saleOrderLine) {
-    return computeQtyToDeliver(saleOrderLine, new HashSet<>());
-  }
-
-  protected BigDecimal computeQtyToDeliver(SaleOrderLine saleOrderLine, Set<Long> visited) {
-    Long id = saleOrderLine.getId();
-    if (id != null && !visited.add(id)) {
-      return BigDecimal.ONE;
-    }
-    BigDecimal qty = saleOrderLine.getQty();
-    SaleOrderLine parent = saleOrderLine.getParentSaleOrderLine();
-    if (parent == null) {
-      return qty;
-    }
-    return qty.multiply(computeQtyToDeliver(parent, visited)).setScale(10, RoundingMode.HALF_UP);
   }
 
   @Override
@@ -273,23 +252,6 @@ public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineService
       saleOrderLineMap.put("requestedReservedQty", saleOrderLine.getRequestedReservedQty());
     }
     return saleOrderLineMap;
-  }
-
-  @Override
-  public void initQtyToDeliverForAll(List<SaleOrderLine> lines) {
-    initQtyToDeliverForAll(lines, BigDecimal.ONE);
-  }
-
-  protected void initQtyToDeliverForAll(List<SaleOrderLine> lines, BigDecimal parentCumulative) {
-    if (ObjectUtils.isEmpty(lines)) {
-      return;
-    }
-    for (SaleOrderLine line : lines) {
-      BigDecimal lineQty = line.getQty() != null ? line.getQty() : BigDecimal.ZERO;
-      BigDecimal cumulative = lineQty.multiply(parentCumulative).setScale(10, RoundingMode.HALF_UP);
-      line.setQtyToDeliver(cumulative);
-      initQtyToDeliverForAll(line.getSubSaleOrderLineList(), cumulative);
-    }
   }
 
   protected BigDecimal getInvoicedQty(SaleOrderLine saleOrderLine) {

@@ -476,6 +476,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   }
 
   protected void linkParentChildInvoiceLines(List<InvoiceLine> invoiceLineList) {
+    // Identity map is the fallback for unsaved sub-lines (id == null) where the by-id lookup fails.
     Map<Long, InvoiceLine> solIdToInvoiceLine = new HashMap<>();
     Map<SaleOrderLine, InvoiceLine> solInstanceToInvoiceLine = new IdentityHashMap<>();
     for (InvoiceLine invoiceLine : invoiceLineList) {

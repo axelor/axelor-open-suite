@@ -32,12 +32,11 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
-import com.axelor.apps.supplychain.service.config.OutSmGenerationService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
-import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineQtyToDeliverService;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Inject;
 
@@ -61,8 +60,7 @@ public class SaleOrderOnLineChangeProductionServiceImpl
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderShipmentService saleOrderShipmentService,
       SaleOrderLineAnalyticService saleOrderLineAnalyticService,
-      SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
-      OutSmGenerationService outSmGenerationService,
+      SaleOrderLineQtyToDeliverService saleOrderLineQtyToDeliverService,
       AppProductionService appProductionService,
       SaleOrderProductionSyncService saleOrderProductionSyncService) {
     super(
@@ -78,8 +76,7 @@ public class SaleOrderOnLineChangeProductionServiceImpl
         saleOrderSupplychainService,
         saleOrderShipmentService,
         saleOrderLineAnalyticService,
-        saleOrderLineServiceSupplyChain,
-        outSmGenerationService);
+        saleOrderLineQtyToDeliverService);
     this.appProductionService = appProductionService;
     this.saleOrderProductionSyncService = saleOrderProductionSyncService;
   }

@@ -390,6 +390,8 @@ import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineInitValueS
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineOnChangeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineQtyToDeliverService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineQtyToDeliverServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineSublineService;
@@ -458,6 +460,7 @@ public class SupplychainModule extends AxelorModule {
     bind(IntercoService.class).to(IntercoServiceImpl.class);
     bind(StockLocationLineServiceImpl.class).to(StockLocationLineServiceSupplychainImpl.class);
     bind(SaleOrderLineServiceSupplyChain.class).to(SaleOrderLineServiceSupplyChainImpl.class);
+    bind(SaleOrderLineQtyToDeliverService.class).to(SaleOrderLineQtyToDeliverServiceImpl.class);
     bind(SaleOrderLineSublineService.class).to(SaleOrderLineSublineServiceImpl.class);
     bind(SupplyChainConfigService.class).to(SupplyChainConfigServiceImpl.class);
     bind(SupplychainBatchRepository.class).to(SupplychainBatchSupplychainRepository.class);

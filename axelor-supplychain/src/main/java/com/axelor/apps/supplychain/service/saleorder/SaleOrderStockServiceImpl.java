@@ -270,43 +270,70 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     Map<Long, StockMoveLine> saleOrderLineToStockMoveLine = new HashMap<>();
 
     for (SaleOrderLine saleOrderLine : saleOrderLines) {
-      boolean hasChildren = !CollectionUtils.isEmpty(saleOrderLine.getSubSaleOrderLineList());
-      if (hasChildren && saleOrderLineSublineService.hasAnyManagedChild(saleOrderLine)) {
-        StockMoveLine titleLine =
-            stockMoveLineSupplychainService.createStockMoveTitleLine(
-                stockMove, saleOrderLine, null);
-        if (titleLine != null) {
-          stockMove.addStockMoveLineListItem(titleLine);
-          titleLine.setSequence(stockMove.getStockMoveLineList().size());
-          saleOrderLineToStockMoveLine.put(saleOrderLine.getId(), titleLine);
-        }
+      if (shouldCreateTitleLine(saleOrderLine)) {
+        addTitleLine(stockMove, saleOrderLine, saleOrderLineToStockMoveLine);
         continue;
       }
-      if (!saleOrderLine.getManagedInStockMove() || saleOrderLine.getProduct() == null) {
+      if (shouldSkipManagedLine(saleOrderLine, saleOrder)) {
         continue;
       }
-      if (existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
-        continue;
-      }
-      if (saleOrderLineBlockingSupplychainService.isDeliveryBlocked(
-          saleOrderLine, saleOrder.getCompany())) {
-        continue;
-      }
-      BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
-      if (qty.signum() > 0) {
-        StockLocation fromStockLocation =
-            resolveFromStockLocation(saleOrder, saleOrderLine, stockMove);
-        StockMoveLine stockMoveLine =
-            createStockMoveLine(stockMove, saleOrderLine, qty, fromStockLocation, toStockLocation);
-        if (stockMoveLine != null) {
-          stockMove.addStockMoveLineListItem(stockMoveLine);
-          stockMoveLine.setSequence(stockMove.getStockMoveLineList().size());
-          saleOrderLineToStockMoveLine.put(saleOrderLine.getId(), stockMoveLine);
-        }
-      }
+      addManagedStockMoveLine(
+          stockMove, saleOrder, saleOrderLine, toStockLocation, saleOrderLineToStockMoveLine);
     }
 
     saleOrderLineSublineService.linkParentStockMoveLines(stockMove, saleOrderLineToStockMoveLine);
+  }
+
+  protected boolean shouldCreateTitleLine(SaleOrderLine saleOrderLine) {
+    return !CollectionUtils.isEmpty(saleOrderLine.getSubSaleOrderLineList())
+        && saleOrderLineSublineService.hasAnyManagedChild(saleOrderLine);
+  }
+
+  protected boolean shouldSkipManagedLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    if (!saleOrderLine.getManagedInStockMove() || saleOrderLine.getProduct() == null) {
+      return true;
+    }
+    if (existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
+      return true;
+    }
+    return saleOrderLineBlockingSupplychainService.isDeliveryBlocked(
+        saleOrderLine, saleOrder.getCompany());
+  }
+
+  protected void addTitleLine(
+      StockMove stockMove,
+      SaleOrderLine saleOrderLine,
+      Map<Long, StockMoveLine> saleOrderLineToStockMoveLine) {
+    StockMoveLine titleLine =
+        stockMoveLineSupplychainService.createStockMoveTitleLine(stockMove, saleOrderLine, null);
+    if (titleLine == null) {
+      return;
+    }
+    stockMove.addStockMoveLineListItem(titleLine);
+    titleLine.setSequence(stockMove.getStockMoveLineList().size());
+    saleOrderLineToStockMoveLine.put(saleOrderLine.getId(), titleLine);
+  }
+
+  protected void addManagedStockMoveLine(
+      StockMove stockMove,
+      SaleOrder saleOrder,
+      SaleOrderLine saleOrderLine,
+      StockLocation toStockLocation,
+      Map<Long, StockMoveLine> saleOrderLineToStockMoveLine)
+      throws AxelorException {
+    BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
+    if (qty.signum() <= 0) {
+      return;
+    }
+    StockLocation fromStockLocation = resolveFromStockLocation(saleOrder, saleOrderLine, stockMove);
+    StockMoveLine stockMoveLine =
+        createStockMoveLine(stockMove, saleOrderLine, qty, fromStockLocation, toStockLocation);
+    if (stockMoveLine == null) {
+      return;
+    }
+    stockMove.addStockMoveLineListItem(stockMoveLine);
+    stockMoveLine.setSequence(stockMove.getStockMoveLineList().size());
+    saleOrderLineToStockMoveLine.put(saleOrderLine.getId(), stockMoveLine);
   }
 
   protected void populateStandardStockMove(
