@@ -25,6 +25,8 @@
       ref="com.axelor.meta.db.MetaFile"/>
     <one-to-many name="maintenanceRequestList" ref="MaintenanceRequest"
       title="Maintenance Requests" mappedBy="equipementMaintenance"/>
+    <decimal name="lastMtnOperatingHoursRef"
+      title="Operating hours ref. at last maintenance"/>
   </entity>
 
 </domain-models>

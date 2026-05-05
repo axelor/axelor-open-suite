@@ -33,4 +33,7 @@ public final class MaintenanceExceptionMessage {
 
   public static final String MAINTENANCE_REQUEST_CREATION_EXPECTED_DATE_MISSING = /*$$(*/
       "Please indicate an expected date for the maintenance request." /*)*/;
+
+  public static final String BATCH_PREVENTIVE_MAINTENANCE_REPORT = /*$$(*/
+      "Preventive maintenance batch report: %d request(s) created, %d error(s)" /*)*/;
 }
