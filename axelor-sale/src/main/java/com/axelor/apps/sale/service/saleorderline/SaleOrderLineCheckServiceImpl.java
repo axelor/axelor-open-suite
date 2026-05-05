@@ -64,7 +64,7 @@ public class SaleOrderLineCheckServiceImpl implements SaleOrderLineCheckService 
     AppSale appSale = appSaleService.getAppSale();
     boolean isSplitEnabled = appSale.getIsQuotationAndOrderSplitEnabled();
 
-    if (!isSplitEnabled || saleOrderLine.getOriginSaleQuotationLine() != null) {
+    if (!isSplitEnabled) {
       return;
     }
 

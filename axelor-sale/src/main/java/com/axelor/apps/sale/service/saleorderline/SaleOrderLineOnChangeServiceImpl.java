@@ -58,7 +58,6 @@ public class SaleOrderLineOnChangeServiceImpl implements SaleOrderLineOnChangeSe
       SaleOrderLine saleOrderLine, SaleOrder saleOrder, SaleOrderLine parentSol)
       throws AxelorException {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
-    syncOrderedQtyWithQty(saleOrderLine, saleOrder, saleOrderLineMap);
     saleOrderLineMap.putAll(saleOrderLineDiscountService.getDiscount(saleOrderLine, saleOrder));
     saleOrderLineMap.putAll(compute(saleOrderLine, saleOrder));
     saleOrderLineMap.putAll(
@@ -125,15 +124,5 @@ public class SaleOrderLineOnChangeServiceImpl implements SaleOrderLineOnChangeSe
     newSaleOrderLine.put("version", saleOrderLine.getVersion());
     newSaleOrderLine.put("typeSelect", saleOrderLine.getTypeSelect());
     return newSaleOrderLine;
-  }
-
-  protected void syncOrderedQtyWithQty(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder, Map<String, Object> saleOrderLineMap) {
-    if (saleOrder == null || saleOrderLine.getOriginSaleQuotationLine() == null) {
-      return;
-    }
-
-    saleOrderLine.setOrderedQty(saleOrderLine.getQty());
-    saleOrderLineMap.put("orderedQty", saleOrderLine.getOrderedQty());
   }
 }

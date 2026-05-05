@@ -37,7 +37,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
@@ -105,8 +104,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       TrackingNumberSupplychainService trackingNumberSupplychainService,
       PartnerLinkSupplychainService partnerLinkSupplychainService,
       SaleInvoicingStateService saleInvoicingStateService,
-      SaleOrderLineAnalyticService saleOrderLineAnalyticService,
-      SaleOrderOrderingStatusService saleOrderOrderingStatusService) {
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
     super(
         appBaseService,
         saleOrderLineRepo,
@@ -118,8 +116,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         saleOrderLineComplementaryProductService,
         saleOrderLinePackService,
         saleOrderLineDiscountService,
-        saleOrderLineComputeService,
-        saleOrderOrderingStatusService);
+        saleOrderLineComputeService);
     this.appSupplychainService = appSupplychainService;
     this.saleOrderStockService = saleOrderStockService;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
