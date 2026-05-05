@@ -39,8 +39,16 @@ import com.axelor.apps.maintenance.service.ManufOrderPrintServiceImpl;
 import com.axelor.apps.maintenance.service.ManufOrderStockMoveServiceMaintenanceImpl;
 import com.axelor.apps.maintenance.service.ManufOrderWorkflowMaintenanceServiceImpl;
 import com.axelor.apps.maintenance.service.OperationOrderStockMoveServiceMaintenanceImpl;
+import com.axelor.apps.maintenance.service.PreventiveMaintenanceCriterionService;
+import com.axelor.apps.maintenance.service.PreventiveMaintenanceCriterionServiceImpl;
+import com.axelor.apps.maintenance.service.PreventiveMaintenanceEligibilityService;
+import com.axelor.apps.maintenance.service.PreventiveMaintenanceEligibilityServiceImpl;
+import com.axelor.apps.maintenance.service.PreventiveMaintenanceProcessService;
+import com.axelor.apps.maintenance.service.PreventiveMaintenanceProcessServiceImpl;
+import com.axelor.apps.maintenance.service.batch.ProductionBatchMaintenanceService;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
+import com.axelor.apps.production.service.batch.ProductionBatchService;
 import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveServiceImpl;
@@ -64,6 +72,13 @@ public class MaintenanceModule extends AxelorModule {
     bind(ManufOrderPlanServiceImpl.class).to(ManufOrderPlanServiceMaintenanceImpl.class);
     bind(MaintenanceRequestInitValueService.class).to(MaintenanceRequestInitValueServiceImpl.class);
     bind(MaintenanceRequestCreateService.class).to(MaintenanceRequestCreateServiceImpl.class);
+    bind(ProductionBatchService.class).to(ProductionBatchMaintenanceService.class);
+    bind(PreventiveMaintenanceEligibilityService.class)
+        .to(PreventiveMaintenanceEligibilityServiceImpl.class);
+    bind(PreventiveMaintenanceCriterionService.class)
+        .to(PreventiveMaintenanceCriterionServiceImpl.class);
+    bind(PreventiveMaintenanceProcessService.class)
+        .to(PreventiveMaintenanceProcessServiceImpl.class);
 
     // Maintenance stock move and cost sheet overrides
     bind(CostSheetServiceImpl.class).to(CostSheetServiceMaintenanceImpl.class);
