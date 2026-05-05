@@ -1,0 +1,17 @@
+---
+title: "Control entry: unified the java process used by all add control entry buttons."
+module: axelor-quality
+developer: |
+  ControlEntryService: added addControlEntry(Context) and onControlPlanChange(ControlEntry) methods.
+  ControlEntryServiceImpl: constructor now requires ControlPlanRepository and ControlEntryRepository.
+  ControlEntryProductionServiceImpl: new class in axelor-production extending ControlEntryServiceImpl.
+
+  -- Script
+  DELETE FROM meta_action WHERE name IN (
+    'action-product-view-add-control-entry',
+    'action-manuf-order-view-add-control-entry',
+    'action-operation-order-view-add-control-entry',
+    'action-stock-move-line-view-add-control-entry',
+    'action-tracking-number-view-add-control-entry',
+    'action-control-plan-attrs-control-plan-on-change'
+  );
