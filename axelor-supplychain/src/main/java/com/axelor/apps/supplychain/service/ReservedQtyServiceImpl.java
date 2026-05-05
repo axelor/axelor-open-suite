@@ -121,7 +121,12 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
    */
   protected void changeRequestedQtyLowerThanQty(StockMoveLine stockMoveLine)
       throws AxelorException {
-    BigDecimal qty = stockMoveLine.getQty().max(BigDecimal.ZERO);
+    boolean autoFillDeliveryRealQty =
+        Beans.get(AppSupplychainService.class).getAppSupplychain().getAutoFillDeliveryRealQty();
+    BigDecimal qty =
+        autoFillDeliveryRealQty
+            ? stockMoveLine.getRealQty().max(BigDecimal.ZERO)
+            : stockMoveLine.getQty().max(BigDecimal.ZERO);
     BigDecimal requestedReservedQty = stockMoveLine.getRequestedReservedQty();
     if (requestedReservedQty.compareTo(qty) > 0) {
       Product product = stockMoveLine.getProduct();
