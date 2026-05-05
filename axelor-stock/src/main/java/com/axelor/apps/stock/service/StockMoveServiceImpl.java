@@ -522,6 +522,17 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     LOG.debug("Stock realization : {} ", stockMove.getStockMoveSeq());
 
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+        && !stockMove.getIsReversion()
+        && appStockService.getAppStock().getIsRequiredShipmentSupplierDetails()
+        && (stockMove.getSupplierShipmentDate() == null
+            || Strings.isNullOrEmpty(stockMove.getSupplierShipmentRef()))) {
+      throw new AxelorException(
+          stockMove,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(StockExceptionMessage.STOCK_MOVE_MISSING_SUPPLIER_SHIPMENT_DETAILS));
+    }
+
     if (checkOngoingInventoryFlag) {
       checkOngoingInventory(stockMove);
     }

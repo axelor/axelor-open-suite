@@ -349,4 +349,7 @@ public final class StockExceptionMessage {
 
   public static final String STOCK_MOVE_MASS_NO_FROM_STOCK_LOCATION_SELECTED = /*$$(*/
       "No stock location has been selected." /*)*/;
+
+  public static final String STOCK_MOVE_MISSING_SUPPLIER_SHIPMENT_DETAILS = /*$$(*/
+      "Please filled supplier shipment date and supplier shipment reference." /*)*/;
 }
