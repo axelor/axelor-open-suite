@@ -36,4 +36,10 @@ public final class MaintenanceExceptionMessage {
 
   public static final String BATCH_PREVENTIVE_MAINTENANCE_REPORT = /*$$(*/
       "Preventive maintenance batch report: %d request(s) created, %d error(s)" /*)*/;
+
+  public static final String MAINTENANCE_COMPONENTS_STOCK_LOCATION_MISSING = /*$$(*/
+      "Please configure the maintenance components stock location in the stock configuration for company %s." /*)*/;
+
+  public static final String MAINTENANCE_VIRTUAL_STOCK_LOCATION_MISSING = /*$$(*/
+      "Please configure the maintenance virtual stock location in the stock configuration for company %s." /*)*/;
 }

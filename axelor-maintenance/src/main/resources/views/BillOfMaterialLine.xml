@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+  http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+
+  <form name="maintenance-bill-of-material-line-form" title="Components"
+    model="com.axelor.apps.production.db.BillOfMaterialLine" width="large"
+    onNew="action-bill-of-material-line-default-record,action-bill-of-material-line-attrs-price-and-qty-digits"
+    onLoad="action-bill-of-material-attrs-price-and-qty-digits">
+    <panel name="mainPanel">
+      <field name="product" canEdit="false"
+        onChange="action-method-bill-of-material-line-product-on-change"
+        domain="self.productSubTypeSelect = 2 OR self.productSubTypeSelect = 3"
+        form-view="product-form" grid-view="product-grid"/>
+      <field name="billOfMaterial" showIf="product.productSubTypeSelect == 2"
+        form-view="bill-of-material-form" grid-view="bill-of-material-grid" canNew="true"
+        canEdit="true" domain="self.product = :product"/>
+      <field name="hasNoManageStock" colSpan="3" readonlyIf="product.stockManaged == false"/>
+      <field name="qty" colSpan="3"/>
+      <field name="unit" form-view="unit-form" grid-view="unit-grid" colSpan="3"/>
+      <field name="priority" colSpan="3"/>
+      <field name="wasteRate" min="0" hidden="true"/>
+      <field name="product.productSubTypeSelect" hidden="true"/>
+      <field name="product.stockManaged" hidden="true"/>
+    </panel>
+  </form>
+
+</object-views>

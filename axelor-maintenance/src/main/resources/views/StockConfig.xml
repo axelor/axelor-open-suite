@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+
+  <form id="maintenance-stock-config-form" name="stock-config-form" title="Stock configuration"
+    model="com.axelor.apps.stock.db.StockConfig" extension="true">
+    <extend target="//field[@name='virtualOutsourcingStockLocation']">
+      <insert position="after">
+        <field name="maintenanceVirtualStockLocation" colSpan="4"
+          domain="self.usableOnProduction = True AND self.typeSelect = 3 AND self.company = :company"
+          form-view="stock-location-form" grid-view="stock-location-grid"
+          if="__config__.app.isApp('production')"
+          help="This configuration allows you to define the default virtual maintenance location for the company. This location will be used for maintenance of production machines."/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='wasteStockLocation']">
+      <insert position="after">
+        <field name="maintenanceComponentsStockLocation" colSpan="4"
+          domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3"
+          form-view="stock-location-form" grid-view="stock-location-grid"
+          if="__config__.app.isApp('production')"
+          help="This configuration allows you to define the default stock location for the company's components used for maintenance of production machines."/>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>

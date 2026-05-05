@@ -26,6 +26,7 @@ import com.axelor.apps.maintenance.db.repo.MaintenanceRequestRepository;
 import com.axelor.apps.maintenance.service.BillOfMaterialComputeNameServiceMaintenanceImpl;
 import com.axelor.apps.maintenance.service.BillOfMaterialMaintenanceService;
 import com.axelor.apps.maintenance.service.BillOfMaterialServiceMaintenanceImpl;
+import com.axelor.apps.maintenance.service.CostSheetServiceMaintenanceImpl;
 import com.axelor.apps.maintenance.service.MaintenanceRequestCreateService;
 import com.axelor.apps.maintenance.service.MaintenanceRequestCreateServiceImpl;
 import com.axelor.apps.maintenance.service.MaintenanceRequestInitValueService;
@@ -35,7 +36,9 @@ import com.axelor.apps.maintenance.service.MaintenanceRequestServiceImpl;
 import com.axelor.apps.maintenance.service.ManufOrderPlanServiceMaintenanceImpl;
 import com.axelor.apps.maintenance.service.ManufOrderPrintService;
 import com.axelor.apps.maintenance.service.ManufOrderPrintServiceImpl;
+import com.axelor.apps.maintenance.service.ManufOrderStockMoveServiceMaintenanceImpl;
 import com.axelor.apps.maintenance.service.ManufOrderWorkflowMaintenanceServiceImpl;
+import com.axelor.apps.maintenance.service.OperationOrderStockMoveServiceMaintenanceImpl;
 import com.axelor.apps.maintenance.service.PreventiveMaintenanceCriterionService;
 import com.axelor.apps.maintenance.service.PreventiveMaintenanceCriterionServiceImpl;
 import com.axelor.apps.maintenance.service.PreventiveMaintenanceEligibilityService;
@@ -46,8 +49,11 @@ import com.axelor.apps.maintenance.service.batch.ProductionBatchMaintenanceServi
 import com.axelor.apps.production.service.BillOfMaterialComputeNameServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.batch.ProductionBatchService;
+import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
+import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveServiceImpl;
 
 public class MaintenanceModule extends AxelorModule {
 
@@ -73,5 +79,11 @@ public class MaintenanceModule extends AxelorModule {
         .to(PreventiveMaintenanceCriterionServiceImpl.class);
     bind(PreventiveMaintenanceProcessService.class)
         .to(PreventiveMaintenanceProcessServiceImpl.class);
+
+    // Maintenance stock move and cost sheet overrides
+    bind(CostSheetServiceImpl.class).to(CostSheetServiceMaintenanceImpl.class);
+    bind(ManufOrderStockMoveServiceImpl.class).to(ManufOrderStockMoveServiceMaintenanceImpl.class);
+    bind(OperationOrderStockMoveServiceImpl.class)
+        .to(OperationOrderStockMoveServiceMaintenanceImpl.class);
   }
 }

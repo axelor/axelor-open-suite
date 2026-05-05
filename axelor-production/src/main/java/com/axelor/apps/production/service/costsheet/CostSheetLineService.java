@@ -63,6 +63,18 @@ public interface CostSheetLineService {
       UnitCostCalculation unitCostCalculation)
       throws AxelorException;
 
+  public CostSheetLine createConsumedProductCostSheetLine(
+      Company company,
+      Product product,
+      Unit unit,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal consumptionQty,
+      int origin,
+      UnitCostCalculation unitCostCalculation,
+      int valuationMethod)
+      throws AxelorException;
+
   public CostSheetLine createConsumedProductWasteCostSheetLine(
       Company company,
       Product product,
@@ -73,6 +85,19 @@ public interface CostSheetLineService {
       BigDecimal wasteRate,
       int origin,
       UnitCostCalculation unitCostCalculation)
+      throws AxelorException;
+
+  public CostSheetLine createConsumedProductWasteCostSheetLine(
+      Company company,
+      Product product,
+      Unit unit,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal consumptionQty,
+      BigDecimal wasteRate,
+      int origin,
+      UnitCostCalculation unitCostCalculation,
+      int valuationMethod)
       throws AxelorException;
 
   public CostSheetLine createWorkCenterHRCostSheetLine(
