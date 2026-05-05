@@ -173,15 +173,12 @@
           colSpan="3"/>
       </insert>
     </extend>
-    <extend target="//panel[@name='mainPanel']/field[@name='realQty']">
-      <attribute name="onChange"
-        value="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"/>
-    </extend>
     <extend target="//panel[@name='mainPanel']">
       <insert position="after">
         <panel-related name="childStockMoveLinesPanel" field="childStockMoveLineList"
-          title="Child stock move lines" showIf="id" colSpan="12" canNew="false" canEdit="false"
-          canDelete="false" editable="false">
+          title="Child stock move lines"
+          showIf="id &amp;&amp; childStockMoveLineList &amp;&amp; childStockMoveLineList.length > 0"
+          colSpan="12" canNew="false" canEdit="false" canDelete="false" editable="false">
           <field name="product" readonly="true"/>
           <field name="productName" readonly="true"/>
           <field name="qty" readonly="true" x-scale="$nbDecimalDigitForQty"/>
