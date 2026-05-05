@@ -591,7 +591,7 @@
         <panel-dashlet action="action-product-view-control-plan" colSpan="12"/>
 
         <button name="addControlEntryBtn" title="Add a control entry"
-          onClick="save,action-product-view-add-control-entry" colOffset="6"/>
+          onClick="save,action-control-entry-method-add-control-entry" colOffset="6"/>
         <panel-dashlet action="action-product-view-control-entry" colSpan="12"/>
 
       </panel>
@@ -1094,15 +1094,6 @@
     model="com.axelor.apps.quality.db.ControlPlan" title="Control plans">
     <view type="form" name="control-plan-form"/>
     <view type="grid" name="control-plan-grid"/>
-    <view-param name="popup" value="reload"/>
-    <context name="relatedTo" expr="eval: 'com.axelor.apps.base.db.Product'"/>
-    <context name="relatedToId" expr="eval:__self__?.id"/>
-  </action-view>
-
-  <action-view name="action-product-view-add-control-entry"
-    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
-    <view type="form" name="control-entry-form"/>
-    <view type="grid" name="control-entry-grid"/>
     <view-param name="popup" value="reload"/>
     <context name="relatedTo" expr="eval: 'com.axelor.apps.base.db.Product'"/>
     <context name="relatedToId" expr="eval:__self__?.id"/>
