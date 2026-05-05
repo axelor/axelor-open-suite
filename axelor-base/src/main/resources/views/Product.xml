@@ -596,6 +596,12 @@
         <panel-dashlet action="action-product-view-control-entry" colSpan="12"/>
 
       </panel>
+      <panel name="commercialBomPanel" title="Commercial BOM">
+        <panel-related name="commercialBomListPanel" field="commercialBomList"
+          colSpan="12" widget="tree-grid" x-tree-field="commercialBomList"
+          x-tree-field-title="Add a component" form-view="commercial-bom-form"
+          grid-view="commercial-bom-editable-tree-grid"/>
+      </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>

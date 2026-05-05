@@ -36,6 +36,7 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineQtyToDeliverService;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Inject;
 
@@ -55,10 +56,11 @@ public class SaleOrderOnLineChangeProductionServiceImpl
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
       SaleOrderComplementaryProductService saleOrderComplementaryProductService,
+      SaleOrderGlobalDiscountService saleOrderGlobalDiscountService,
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderShipmentService saleOrderShipmentService,
-      SaleOrderGlobalDiscountService saleOrderGlobalDiscountService,
       SaleOrderLineAnalyticService saleOrderLineAnalyticService,
+      SaleOrderLineQtyToDeliverService saleOrderLineQtyToDeliverService,
       AppProductionService appProductionService,
       SaleOrderProductionSyncService saleOrderProductionSyncService) {
     super(
@@ -73,7 +75,8 @@ public class SaleOrderOnLineChangeProductionServiceImpl
         saleOrderGlobalDiscountService,
         saleOrderSupplychainService,
         saleOrderShipmentService,
-        saleOrderLineAnalyticService);
+        saleOrderLineAnalyticService,
+        saleOrderLineQtyToDeliverService);
     this.appProductionService = appProductionService;
     this.saleOrderProductionSyncService = saleOrderProductionSyncService;
   }

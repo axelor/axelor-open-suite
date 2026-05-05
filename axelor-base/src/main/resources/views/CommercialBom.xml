@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+  https://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+
+  <grid name="commercial-bom-editable-tree-grid" title="Commercial BOM"
+    model="com.axelor.apps.base.db.CommercialBom" editable="true">
+    <field name="product" canEdit="false" required="true" form-view="product-form"
+      grid-view="product-grid"/>
+    <field name="product.code" title="Code" width="120" readonly="true"/>
+    <field name="qty" x-scale="2" required="true"/>
+    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+  </grid>
+
+  <form name="commercial-bom-form" title="Commercial BOM"
+    model="com.axelor.apps.base.db.CommercialBom">
+    <panel name="mainPanel" colSpan="12">
+      <field name="product" canEdit="false" required="true" colSpan="6"
+        form-view="product-form" grid-view="product-grid"/>
+      <field name="qty" colSpan="3" required="true" x-scale="2"/>
+      <field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
+      <panel-related name="commercialBomListPanel" field="commercialBomList"
+        colSpan="12" title="Sub-components" widget="tree-grid" x-tree-field="commercialBomList"
+        x-tree-field-title="Add a sub-component" form-view="commercial-bom-form"
+        grid-view="commercial-bom-editable-tree-grid"/>
+    </panel>
+  </form>
+
+</object-views>

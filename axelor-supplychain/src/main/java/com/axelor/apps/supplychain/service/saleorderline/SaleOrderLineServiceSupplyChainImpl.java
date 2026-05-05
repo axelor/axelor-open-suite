@@ -98,7 +98,11 @@ public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineService
   public BigDecimal computeUndeliveredQty(SaleOrderLine saleOrderLine) {
     Preconditions.checkNotNull(saleOrderLine);
 
-    BigDecimal undeliveryQty = saleOrderLine.getQty().subtract(saleOrderLine.getDeliveredQty());
+    BigDecimal refQty =
+        saleOrderLine.getQtyToDeliver() != null && saleOrderLine.getQtyToDeliver().signum() > 0
+            ? saleOrderLine.getQtyToDeliver()
+            : saleOrderLine.getQty();
+    BigDecimal undeliveryQty = refQty.subtract(saleOrderLine.getDeliveredQty());
 
     if (undeliveryQty.signum() > 0) {
       return undeliveryQty;
@@ -134,9 +138,13 @@ public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineService
 
   @Override
   public void updateDeliveryState(SaleOrderLine saleOrderLine) {
+    BigDecimal refQty =
+        saleOrderLine.getQtyToDeliver() != null && saleOrderLine.getQtyToDeliver().signum() > 0
+            ? saleOrderLine.getQtyToDeliver()
+            : saleOrderLine.getQty();
     if (saleOrderLine.getDeliveredQty().signum() == 0) {
       saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
-    } else if (saleOrderLine.getDeliveredQty().compareTo(saleOrderLine.getQty()) < 0) {
+    } else if (saleOrderLine.getDeliveredQty().compareTo(refQty) < 0) {
       saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
     } else {
       saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED);

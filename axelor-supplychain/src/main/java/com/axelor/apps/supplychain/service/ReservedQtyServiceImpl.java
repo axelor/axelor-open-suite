@@ -1042,8 +1042,12 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
                 availableQtyToBeReserved,
                 product)
             .add(saleOrderLine.getReservedQty());
-    BigDecimal qtyThatWillBeAllocated =
-        saleOrderLine.getQty().min(availableQtyToBeReservedSaleOrderLine);
+    BigDecimal qtyToDeliver = saleOrderLine.getQtyToDeliver();
+    BigDecimal effectiveQty =
+        qtyToDeliver != null && qtyToDeliver.compareTo(BigDecimal.ZERO) > 0
+            ? qtyToDeliver
+            : saleOrderLine.getQty();
+    BigDecimal qtyThatWillBeAllocated = effectiveQty.min(availableQtyToBeReservedSaleOrderLine);
 
     // allocate it
     if (qtyThatWillBeAllocated.compareTo(saleOrderLine.getReservedQty()) > 0) {
@@ -1099,7 +1103,12 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     if (stockMoveLine != null) {
       stockMoveLine.setIsQtyRequested(true);
     }
-    this.updateRequestedReservedQty(saleOrderLine, saleOrderLine.getQty());
+    BigDecimal qtyToDeliver = saleOrderLine.getQtyToDeliver();
+    BigDecimal effectiveQty =
+        qtyToDeliver != null && qtyToDeliver.compareTo(BigDecimal.ZERO) > 0
+            ? qtyToDeliver
+            : saleOrderLine.getQty();
+    this.updateRequestedReservedQty(saleOrderLine, effectiveQty);
   }
 
   @Override

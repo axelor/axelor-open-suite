@@ -16,8 +16,7 @@
         grid-view="company-grid"/>
     </panel>
     <panel name="subMainPanel">
-      <field name="hasOutSmForStorableProduct"/>
-      <field name="hasOutSmForNonStorableProduct"/>
+      <field name="outSmGenerationSelect" colSpan="12"/>
       <field name="hasInSmForStorableProduct"/>
       <field name="hasInSmForNonStorableProduct"/>
       <field name="autoAllocateOnReceipt" widget="boolean-switch"

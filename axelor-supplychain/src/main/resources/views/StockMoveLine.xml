@@ -173,6 +173,21 @@
           colSpan="3"/>
       </insert>
     </extend>
+    <extend target="//panel[@name='mainPanel']">
+      <insert position="after">
+        <panel-related name="childStockMoveLinesPanel" field="childStockMoveLineList"
+          title="Child stock move lines"
+          showIf="id &amp;&amp; childStockMoveLineList &amp;&amp; childStockMoveLineList.length > 0"
+          colSpan="12" canNew="false" canEdit="false" canDelete="false" editable="false">
+          <field name="product" readonly="true"/>
+          <field name="productName" readonly="true"/>
+          <field name="qty" readonly="true" x-scale="$nbDecimalDigitForQty"/>
+          <field name="realQty" readonly="true" x-scale="$nbDecimalDigitForQty"/>
+          <field name="unit" readonly="true"/>
+          <field name="stockMove"/>
+        </panel-related>
+      </insert>
+    </extend>
   </form>
 
   <form name="allocated-qty-stock-move-line-form" title="Change allocated qty"

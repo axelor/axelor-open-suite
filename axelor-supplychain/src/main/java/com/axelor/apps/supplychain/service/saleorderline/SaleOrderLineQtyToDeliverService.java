@@ -18,31 +18,25 @@
  */
 package com.axelor.apps.supplychain.service.saleorderline;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import jakarta.inject.Inject;
-import java.util.Objects;
+import java.util.List;
 
-public class SaleOrderLineBlockingSupplychainServiceImpl
-    implements SaleOrderLineBlockingSupplychainService {
+public interface SaleOrderLineQtyToDeliverService {
 
-  protected final AppBaseService appBaseService;
+  /**
+   * Initialize qtyToDeliver recursively for all lines and their sub-lines using a top-down
+   * cumulative product of parent quantities. Called at order confirmation.
+   *
+   * @param lines root-level sale order lines
+   */
+  void initQtyToDeliverForAll(List<SaleOrderLine> lines);
 
-  @Inject
-  public SaleOrderLineBlockingSupplychainServiceImpl(AppBaseService appBaseService) {
-    this.appBaseService = appBaseService;
-  }
-
-  @Override
-  public boolean isDeliveryBlocked(SaleOrderLine saleOrderLine, Company company) {
-    Objects.requireNonNull(saleOrderLine);
-
-    if (saleOrderLine.getDeliveryBlockingToDate() == null) {
-      return saleOrderLine.getIsDeliveryBlocking();
-    }
-
-    return saleOrderLine.getIsDeliveryBlocking()
-        && appBaseService.getTodayDate(company).isBefore(saleOrderLine.getDeliveryBlockingToDate());
-  }
+  /**
+   * Initialize qtyToDeliver recursively for all sale order lines if the company is configured to
+   * generate stock moves only for managed lines. No-op otherwise.
+   *
+   * @param saleOrder the sale order whose lines must be recomputed
+   */
+  void initQtyToDeliverForAllIfManagedLines(SaleOrder saleOrder);
 }

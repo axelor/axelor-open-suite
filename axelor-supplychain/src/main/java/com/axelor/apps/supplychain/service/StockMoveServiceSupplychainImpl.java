@@ -405,9 +405,13 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
           saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().subtract(realQty));
         }
       }
+      BigDecimal refQty =
+          saleOrderLine.getQtyToDeliver() != null && saleOrderLine.getQtyToDeliver().signum() > 0
+              ? saleOrderLine.getQtyToDeliver()
+              : saleOrderLine.getQty();
       if (saleOrderLine.getDeliveredQty().signum() == 0) {
         saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
-      } else if (saleOrderLine.getDeliveredQty().compareTo(saleOrderLine.getQty()) < 0) {
+      } else if (saleOrderLine.getDeliveredQty().compareTo(refQty) < 0) {
         saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
       } else {
         saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED);
@@ -792,5 +796,45 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   @Transactional
   public void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove) {
     stockMove.setFullySpreadOverLogisticalFormsFlag(true);
+  }
+
+  /**
+   * Override to clear parentStockMoveLine on planned copies created by updateStocks. Planned copies
+   * are internal planning artifacts and must not appear in childStockMoveLineList of the original
+   * parent line.
+   */
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateStocks(StockMove stockMove) throws AxelorException {
+    super.updateStocks(stockMove);
+    if (stockMove.getPlannedStockMoveLineList() != null) {
+      for (StockMoveLine copy : stockMove.getPlannedStockMoveLineList()) {
+        copy.setParentStockMoveLine(null);
+      }
+    }
+  }
+
+  /**
+   * Override to clear parentStockMoveLine on planned copies. Planned copies are internal planning
+   * artifacts and must not appear in childStockMoveLineList of the original parent line.
+   */
+  @Override
+  protected void copyPlannedStockMoveLines(StockMove stockMove) {
+    clearPlannedStockMoveLine(stockMove, true);
+
+    final long stockMoveId = stockMove.getId();
+    Query<StockMoveLine> query = getStockMoveLineQuery(stockMoveId);
+    final StockMove[] stockMoveHolder = {stockMoveRepo.find(stockMoveId)};
+    BatchProcessorHelper.of()
+        .<StockMoveLine>forEachByQuery(
+            query,
+            line -> {
+              StockMoveLine copy = stockMoveLineRepo.copy(line, false);
+              copy.setArchived(true);
+              copy.setPlannedStockMove(stockMoveHolder[0]);
+              copy.setParentStockMoveLine(null);
+              stockMoveLineRepo.save(copy);
+            },
+            () -> stockMoveHolder[0] = stockMoveRepo.find(stockMoveId));
   }
 }

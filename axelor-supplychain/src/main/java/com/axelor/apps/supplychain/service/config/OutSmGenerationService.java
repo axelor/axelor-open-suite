@@ -16,12 +16,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service.saleorderline;
+package com.axelor.apps.supplychain.service.config;
 
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.supplychain.db.SupplyChainConfig;
 
-public interface SaleOrderLineBlockingSupplychainService {
+public interface OutSmGenerationService {
 
-  boolean isDeliveryBlocked(SaleOrderLine saleOrderLine, Company company);
+  boolean isGeneratedForStorable(SupplyChainConfig config);
+
+  boolean isGeneratedForServices(SupplyChainConfig config);
+
+  boolean isOnlyForManagedLines(SupplyChainConfig config);
 }

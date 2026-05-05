@@ -84,7 +84,20 @@
           <field name="supplierPartner" showIf="saleSupplySelect == 2"
             onSelect="action-sale-order-line-method-supplier-partner-domain"
             form-view="partner-form" grid-view="partner-grid"/>
+          <field name="managedInStockMove"
+            showIf="typeSelect != 1 &amp;&amp; (saleOrder?.company?.supplyChainConfig?.outSmGenerationSelect || __parent__?.company?.supplyChainConfig?.outSmGenerationSelect) == 4"/>
         </panel>
+      </insert>
+    </extend>
+
+    <extend target="//panel[@name='deliveryPanel']/field[@name='deliveredQty']">
+      <attribute name="hidden" value="false"/>
+    </extend>
+
+    <extend target="//panel[@name='deliveryPanel']/field[@name='deliveredQty']">
+      <insert position="after">
+        <field name="qtyToDeliver" readonly="true" showIf="qtyToDeliver"
+          x-scale="$nbDecimalDigitForQty"/>
       </insert>
     </extend>
   </form>
@@ -138,7 +151,7 @@
         onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty"/>
       <button name="confirmNewReservationBtn" title="OK"
         onClick="action-method-sale-order-line-change-reserved-qty,close"/>
-      <field name="qty" hidden="true"/>
+      <field name="qtyToDeliver" hidden="true"/>
     </panel>
   </form>
 
@@ -159,6 +172,12 @@
     <extend target="//field[@name='taxLineSet']">
       <attribute name="domain"
         value="(self.endDate IS null or self.endDate &gt; :__date__) AND self.tax.isNonDeductibleTax = false"/>
+    </extend>
+    <extend target="//field[@name='qty']">
+      <insert position="after">
+        <field name="qtyToDeliver" readonly="true" x-scale="$nbDecimalDigitForQty"
+          showIf="(saleOrder?.company?.supplyChainConfig?.outSmGenerationSelect || __parent__?.company?.supplyChainConfig?.outSmGenerationSelect) == 4"/>
+      </insert>
     </extend>
   </grid>
 
@@ -297,7 +316,8 @@
   </action-attrs>
 
   <action-attrs name="action-supplychain-attrs-sale-order-line-max-reserved-qty">
-    <attribute for="reservedQty" name="value" expr="eval: qty" if="reservedQty &gt; qty"/>
+    <attribute for="reservedQty" name="value" expr="eval: qtyToDeliver"
+      if="reservedQty &gt; qtyToDeliver"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-set-saleOrderLineListToInvoice">
@@ -402,5 +422,6 @@
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="deliveryBlockingByUser" expr="eval: isDeliveryBlocking ? __user__ : null"/>
   </action-record>
+
 
 </object-views>
