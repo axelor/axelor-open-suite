@@ -229,8 +229,6 @@ import com.axelor.apps.supplychain.service.StockLocationLineServiceSupplychainIm
 import com.axelor.apps.supplychain.service.StockMoveCurrencyServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
-import com.axelor.apps.supplychain.service.StockMoveLineChildrenService;
-import com.axelor.apps.supplychain.service.StockMoveLineChildrenServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineStockLocationServiceSupplychainImpl;
@@ -466,7 +464,6 @@ public class SupplychainModule extends AxelorModule {
     bind(SupplychainBatchRepository.class).to(SupplychainBatchSupplychainRepository.class);
     bind(SubscriptionInvoiceService.class).to(SubscriptionInvoiceServiceImpl.class);
     bind(TimetableService.class).to(TimetableServiceImpl.class);
-    bind(StockMoveLineChildrenService.class).to(StockMoveLineChildrenServiceImpl.class);
     bind(StockMoveLineServiceSupplychain.class).to(StockMoveLineServiceSupplychainImpl.class);
     bind(StockLocationUtilsServiceImpl.class).to(StockLocationUtilsServiceSupplychainImpl.class);
     bind(StockLocationUtilsServiceSupplychain.class)

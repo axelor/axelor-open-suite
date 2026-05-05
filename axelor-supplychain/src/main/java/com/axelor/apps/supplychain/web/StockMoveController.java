@@ -24,11 +24,9 @@ import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.StockMoveLineChildrenService;
 import com.axelor.apps.supplychain.service.StockMoveReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -37,7 +35,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import java.util.List;
 
 public class StockMoveController {
 
@@ -157,21 +154,6 @@ public class StockMoveController {
       stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
       Beans.get(StockMoveServiceSupplychain.class).fillRealQuantities(stockMove);
       response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void propagateRealQtyToChildLines(ActionRequest request, ActionResponse response) {
-    try {
-      StockMove stockMove = request.getContext().asType(StockMove.class);
-      List<StockMoveLine> lines = stockMove.getStockMoveLineList();
-      if (lines == null || lines.isEmpty()) {
-        return;
-      }
-      List<StockMoveLine> updated =
-          Beans.get(StockMoveLineChildrenService.class).propagateRealQtyInList(lines);
-      response.setValue("stockMoveLineList", updated);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

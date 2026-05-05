@@ -28,8 +28,6 @@
     <!-- Is not used in view but needed for java service -->
     <boolean name="isMergedStockMoveLine" transient="true"/>
 
-    <boolean name="realQtyChangedByUser" transient="true"/>
-
     <datetime name="reservationDateTime" readonly="true"/>
 
     <decimal name="qtyRemainingToPackage" title="Qty remaining to package" default="0"

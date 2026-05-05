@@ -31,16 +31,13 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineSublineServiceImpl implements SaleOrderLineSublineService {
 
-  @Inject
-  public SaleOrderLineSublineServiceImpl() {}
-
   @Override
   public List<SaleOrderLine> collectAllLinesRecursively(List<SaleOrderLine> saleOrderLines) {
     List<SaleOrderLine> result = new ArrayList<>();
     List<SaleOrderLine> sorted =
         saleOrderLines.stream()
             .sorted(Comparator.comparing(SaleOrderLine::getSequence))
-            .collect(Collectors.toList());
+            .toList();
     for (SaleOrderLine line : sorted) {
       result.add(line);
       if (!CollectionUtils.isEmpty(line.getSubSaleOrderLineList())) {
