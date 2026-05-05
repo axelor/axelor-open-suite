@@ -20,11 +20,6 @@
       action="action-control-entry-report-view-chart"/>
   </form>
 
-  <action-view name="control.entry.report.view" title="Control entry report"
-    model="com.axelor.utils.db.Wizard">
-    <view type="form" name="control-entry-report-form"/>
-  </action-view>
-
   <action-view name="action-control-entry-report-view-chart"
     title="Compliant vs total controlled samples by month">
     <view type="chart" name="chart.quality.compliant.samples.by.month"/>
@@ -40,8 +35,5 @@
   <action-attrs name="action-control-entry-report-attrs-refresh-dashlet">
     <attribute name="refresh" expr="eval: true" for="control-entry-report-dashlet"/>
   </action-attrs>
-
-  <menuitem name="quality-reportings-control-entry-report" parent="quality-reportings"
-    title="Control entry report" action="control.entry.report.view" order="200"/>
 
 </object-views>

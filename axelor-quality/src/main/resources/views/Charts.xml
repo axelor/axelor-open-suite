@@ -128,6 +128,18 @@
     <series key="_alerts" type="bar"/>
   </chart>
 
+  <!-- Compliant vs non-compliant control entry samples per month. Filters (from parent wizard form context):
+    :fromDate, :toDate date range on ControlEntry.entryDateTime :relatedToSelect optional, ControlPlan.relatedToSelect
+    filter (Product or ProdProcessLine) :relatedToSelectId optional, paired with :relatedToSelect :_language
+    user locale, used to translate series labels Restrictions: - ControlEntry.statusSelect = 3 (FINISHED)
+    - ControlEntry.relatedToSelectId IS NOT NULL Implementation notes: - Series labels are emitted as literals
+    ('Compliant samples', 'Non-compliant samples') and translated via meta_translation. These keys MUST be
+    kept in the i18n CSVs even if no static XML attribute references them, otherwise gradlew i18n will purge
+    them on next run. - CAST(...) wrappers are required so PostgreSQL can infer parameter types when the
+    optional filters arrive as NULL. - The CROSS JOIN ensures every (month, type) pair is rendered, even
+    when one count is zero, so both bars always appear side by side. - The chart uses a single series with
+    no groupBy so the Axelor frontend treats each (month, type) combination as a distinct discrete category
+    (isDiscrete = true), which is the only mode where value labels are rendered on top of bars. -->
   <chart name="chart.quality.compliant.samples.by.month"
     title="Compliant vs total controlled samples by month">
     <dataset type="sql">
