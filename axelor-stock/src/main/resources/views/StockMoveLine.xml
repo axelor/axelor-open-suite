@@ -245,7 +245,7 @@
       <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')"
         colSpan="12">
         <button name="addControlEntryBtn" title="Add a control entry"
-          onClick="save,action-stock-move-line-view-add-control-entry" colOffset="6"/>
+          onClick="save,action-control-entry-method-add-control-entry" colOffset="6"/>
         <panel-dashlet action="action-stock-move-line-view-control-entry" colSpan="12"/>
       </panel>
       <panel name="descriptionPanel" title="Description" colSpan="12">
@@ -527,7 +527,7 @@
       <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')"
         colSpan="12">
         <button name="addControlEntryBtn" title="Add a control entry"
-          onClick="save,action-stock-move-line-view-add-control-entry" colOffset="6"/>
+          onClick="save,action-control-entry-method-add-control-entry" colOffset="6"/>
         <panel-dashlet action="action-stock-move-line-view-control-entry" colSpan="12"/>
       </panel>
       <field name="description" colSpan="12" widget="html"/>
@@ -890,15 +890,6 @@
     <domain>self.relatedToSelectId = :stockMoveLineId AND self.relatedToSelect =
       'com.axelor.apps.stock.db.StockMoveLine'</domain>
     <context name="stockMoveLineId" expr="eval:__self__?.id"/>
-  </action-view>
-
-  <action-view name="action-stock-move-line-view-add-control-entry"
-    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
-    <view type="form" name="control-entry-form"/>
-    <view type="grid" name="control-entry-grid"/>
-    <view-param name="popup" value="reload"/>
-    <context name="relatedTo" expr="eval: 'com.axelor.apps.stock.db.StockMoveLine'"/>
-    <context name="relatedToId" expr="eval:__self__?.id"/>
   </action-view>
 
   <action-validate name="action-stock-move-line-validate-check-split-quantity">

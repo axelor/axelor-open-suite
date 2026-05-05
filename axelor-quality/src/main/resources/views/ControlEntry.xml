@@ -23,7 +23,7 @@
       <field name="inspector" colSpan="6"/>
       <field name="sampleCount" colSpan="6"/>
       <field name="controlPlan" colSpan="6" domain="self.statusSelect = 3"
-        onChange="action-control-plan-attrs-control-plan-on-change"/>
+        onChange="action-control-entry-method-control-plan-change"/>
     </panel>
     <panel-related name="controlEntrySamplesPanel" field="controlEntrySamplesList"
       colSpan="12" grid-view="control-entry-sample-grid" form-view="control-entry-sample-form"
@@ -54,10 +54,14 @@
 
   <action-record name="action-record-control-quality-on-new"
     model="com.axelor.apps.quality.db.ControlEntry">
-    <field name="inspector" expr="eval: __user__"/>
+    <field name="inspector" expr="eval: __user__" if="!_inspector"/>
     <field name="entryDateTime" expr="eval: __time__"/>
-    <field name="relatedToSelect" expr="eval: relatedTo" if="relatedTo"/>
-    <field name="relatedToSelectId" expr="eval: relatedToId" if="relatedToId"/>
+    <field name="relatedToSelect" expr="eval: _relatedTo" if="_relatedTo"/>
+    <field name="relatedToSelectId" expr="eval: _relatedToId" if="_relatedToId"/>
+    <field name="controlPlan" expr="eval: _controlPlan" if="_controlPlan"/>
+    <field name="name" expr="eval: _name" if="_name"/>
+    <field name="sampleCount" expr="eval: _sampleCount" if="_sampleCount"/>
+    <field name="inspector" expr="eval: _inspector" if="_inspector"/>
   </action-record>
 
   <action-record name="action-record-quality-control-finish"
@@ -70,17 +74,17 @@
     <field name="statusSelect" expr="eval: 4"/>
   </action-record>
 
-  <action-attrs name="action-control-plan-attrs-control-plan-on-change">
-    <attribute name="value" for="relatedToSelect"
-      expr="eval: 'com.axelor.apps.production.db.OperationOrder'"
-      if="controlPlan?.relatedToSelect == 'com.axelor.apps.production.db.ProdProcessLine'"/>
-    <attribute name="value" for="relatedToSelectId" expr="eval: null"
-      if="controlPlan?.relatedToSelect == 'com.axelor.apps.production.db.ProdProcessLine'
-      	    &amp;&amp; relatedToSelect != 'com.axelor.apps.production.db.OperationOrder'"/>
-  </action-attrs>
-
   <action-method name="action-method-quality-control-entry-create-samples">
     <call class="com.axelor.apps.quality.web.ControlEntryController" method="createSamples"/>
+  </action-method>
+
+  <action-method name="action-control-entry-method-control-plan-change">
+    <call class="com.axelor.apps.quality.web.ControlEntryController"
+      method="onControlPlanChange"/>
+  </action-method>
+
+  <action-method name="action-control-entry-method-add-control-entry">
+    <call class="com.axelor.apps.quality.web.ControlEntryController" method="addControlEntry"/>
   </action-method>
 
   <action-view name="action-view-quality-control-create-qi" title="Control entry"
