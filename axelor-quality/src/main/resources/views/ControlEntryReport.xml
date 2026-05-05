@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+
+  <form name="control-entry-report-form" title="Control entry report"
+    model="com.axelor.utils.db.Wizard" onNew="action-control-entry-report-record-set-date"
+    canNew="false" canDelete="false" canSave="false" width="large">
+    <panel name="filtersPanel">
+      <field name="$fromDate" title="From Date" type="date" colSpan="3" required="true"
+        onChange="action-control-entry-report-attrs-refresh-dashlet"/>
+      <field name="$toDate" title="To Date" type="date" colSpan="3" required="true"
+        onChange="action-control-entry-report-attrs-refresh-dashlet"/>
+      <field name="$relatedToSelect" title="Related to" type="string" colSpan="3"
+        selection="quality.control.plan.related.to.select" widget="RefSelect"
+        x-related="$relatedToSelectId" onChange="action-control-entry-report-attrs-refresh-dashlet"/>
+      <field name="$relatedToSelectId" type="long" hidden="true"/>
+    </panel>
+    <panel-dashlet name="control-entry-report-dashlet" colSpan="12" height="400"
+      action="action-control-entry-report-view-chart"/>
+  </form>
+
+  <action-view name="control.entry.report.view" title="Control entry report"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="control-entry-report-form"/>
+  </action-view>
+
+  <action-view name="action-control-entry-report-view-chart"
+    title="Compliant vs total controlled samples by month">
+    <view type="chart" name="chart.quality.compliant.samples.by.month"/>
+    <context name="_language" expr="eval: __user__.getLanguage()"/>
+  </action-view>
+
+  <action-record name="action-control-entry-report-record-set-date"
+    model="com.axelor.utils.db.Wizard">
+    <field name="$toDate" expr="eval: __config__.date"/>
+    <field name="$fromDate" expr="eval: __config__.date.withDayOfMonth(1).withMonth(1)"/>
+  </action-record>
+
+  <action-attrs name="action-control-entry-report-attrs-refresh-dashlet">
+    <attribute name="refresh" expr="eval: true" for="control-entry-report-dashlet"/>
+  </action-attrs>
+
+  <menuitem name="quality-reportings-control-entry-report" parent="quality-reportings"
+    title="Control entry report" action="control.entry.report.view" order="200"/>
+
+</object-views>

@@ -1,0 +1,3 @@
+---
+title: "Quality: added a new control entry report under the quality reportings menu, displaying compliant vs total controlled samples by month with date range and Product/ProdProcessLine filters."
+module: axelor-quality
