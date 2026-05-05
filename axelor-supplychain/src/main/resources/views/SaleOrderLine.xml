@@ -172,6 +172,12 @@
       <attribute name="domain"
         value="(self.endDate IS null or self.endDate &gt; :__date__) AND self.tax.isNonDeductibleTax = false"/>
     </extend>
+    <extend target="//field[@name='qty']">
+      <insert position="after">
+        <field name="qtyToDeliver" readonly="true" x-scale="$nbDecimalDigitForQty"
+          showIf="saleOrder?.company?.supplyChainConfig?.outSmGenerationSelect == 4 || __parent__?.company?.supplyChainConfig?.outSmGenerationSelect == 4"/>
+      </insert>
+    </extend>
   </grid>
 
   <grid title="Sale order lines to invoice" name="sale-order-line-to-invoice-grid"

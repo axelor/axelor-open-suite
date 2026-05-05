@@ -277,12 +277,18 @@ public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineService
 
   @Override
   public void initQtyToDeliverForAll(List<SaleOrderLine> lines) {
+    initQtyToDeliverForAll(lines, BigDecimal.ONE);
+  }
+
+  protected void initQtyToDeliverForAll(List<SaleOrderLine> lines, BigDecimal parentCumulative) {
     if (ObjectUtils.isEmpty(lines)) {
       return;
     }
     for (SaleOrderLine line : lines) {
-      line.setQtyToDeliver(computeQtyToDeliver(line));
-      initQtyToDeliverForAll(line.getSubSaleOrderLineList());
+      BigDecimal lineQty = line.getQty() != null ? line.getQty() : BigDecimal.ZERO;
+      BigDecimal cumulative = lineQty.multiply(parentCumulative).setScale(10, RoundingMode.HALF_UP);
+      line.setQtyToDeliver(cumulative);
+      initQtyToDeliverForAll(line.getSubSaleOrderLineList(), cumulative);
     }
   }
 

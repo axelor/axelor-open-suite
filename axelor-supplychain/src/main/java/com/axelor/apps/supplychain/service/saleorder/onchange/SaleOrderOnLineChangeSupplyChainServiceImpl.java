@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.service.saleorder.onchange;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -30,13 +31,17 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnLineChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
+import com.axelor.apps.supplychain.db.SupplyChainConfig;
+import com.axelor.apps.supplychain.service.config.OutSmGenerationService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -45,6 +50,8 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
   protected SaleOrderSupplychainService saleOrderSupplychainService;
   protected SaleOrderShipmentService saleOrderShipmentService;
   protected SaleOrderLineAnalyticService saleOrderLineAnalyticService;
+  protected SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain;
+  protected OutSmGenerationService outSmGenerationService;
 
   @Inject
   public SaleOrderOnLineChangeSupplyChainServiceImpl(
@@ -59,7 +66,9 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
       SaleOrderGlobalDiscountService saleOrderGlobalDiscountService,
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderShipmentService saleOrderShipmentService,
-      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService,
+      SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
+      OutSmGenerationService outSmGenerationService) {
     super(
         appSaleService,
         saleOrderService,
@@ -73,6 +82,8 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
     this.saleOrderSupplychainService = saleOrderSupplychainService;
     this.saleOrderShipmentService = saleOrderShipmentService;
     this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;
+    this.saleOrderLineServiceSupplyChain = saleOrderLineServiceSupplyChain;
+    this.outSmGenerationService = outSmGenerationService;
   }
 
   @Override
@@ -89,9 +100,22 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
     saleOrderSupplychainService.updateAmountToBeSpreadOverTheTimetable(saleOrder);
     messages.add(
         saleOrderShipmentService.createShipmentCostLine(saleOrder, saleOrder.getShipmentMode()));
+    computeQtyToDeliverIfManagedLines(saleOrder);
     return messages.stream()
         .filter(Objects::nonNull)
         .filter(Predicate.not(String::isEmpty))
         .collect(Collectors.joining("<br>"));
+  }
+
+  protected void computeQtyToDeliverIfManagedLines(SaleOrder saleOrder) {
+    SupplyChainConfig config =
+        Optional.ofNullable(saleOrder)
+            .map(SaleOrder::getCompany)
+            .map(Company::getSupplyChainConfig)
+            .orElse(null);
+    if (config == null || !outSmGenerationService.isOnlyForManagedLines(config)) {
+      return;
+    }
+    saleOrderLineServiceSupplyChain.initQtyToDeliverForAll(saleOrder.getSaleOrderLineList());
   }
 }

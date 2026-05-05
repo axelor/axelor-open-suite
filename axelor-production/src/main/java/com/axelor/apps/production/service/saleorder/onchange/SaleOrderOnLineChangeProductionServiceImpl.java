@@ -32,10 +32,12 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
+import com.axelor.apps.supplychain.service.config.OutSmGenerationService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Inject;
 
@@ -55,10 +57,12 @@ public class SaleOrderOnLineChangeProductionServiceImpl
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
       SaleOrderComplementaryProductService saleOrderComplementaryProductService,
+      SaleOrderGlobalDiscountService saleOrderGlobalDiscountService,
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderShipmentService saleOrderShipmentService,
-      SaleOrderGlobalDiscountService saleOrderGlobalDiscountService,
       SaleOrderLineAnalyticService saleOrderLineAnalyticService,
+      SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
+      OutSmGenerationService outSmGenerationService,
       AppProductionService appProductionService,
       SaleOrderProductionSyncService saleOrderProductionSyncService) {
     super(
@@ -73,7 +77,9 @@ public class SaleOrderOnLineChangeProductionServiceImpl
         saleOrderGlobalDiscountService,
         saleOrderSupplychainService,
         saleOrderShipmentService,
-        saleOrderLineAnalyticService);
+        saleOrderLineAnalyticService,
+        saleOrderLineServiceSupplyChain,
+        outSmGenerationService);
     this.appProductionService = appProductionService;
     this.saleOrderProductionSyncService = saleOrderProductionSyncService;
   }
