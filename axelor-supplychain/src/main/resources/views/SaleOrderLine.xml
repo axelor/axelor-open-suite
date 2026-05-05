@@ -84,7 +84,8 @@
           <field name="supplierPartner" showIf="saleSupplySelect == 2"
             onSelect="action-sale-order-line-method-supplier-partner-domain"
             form-view="partner-form" grid-view="partner-grid"/>
-          <field name="managedInStockMove" showIf="typeSelect != 1"/>
+          <field name="managedInStockMove"
+            showIf="typeSelect != 1 &amp;&amp; (saleOrder?.company?.supplyChainConfig?.outSmGenerationSelect || __parent__?.company?.supplyChainConfig?.outSmGenerationSelect) == 4"/>
         </panel>
       </insert>
     </extend>
@@ -175,7 +176,7 @@
     <extend target="//field[@name='qty']">
       <insert position="after">
         <field name="qtyToDeliver" readonly="true" x-scale="$nbDecimalDigitForQty"
-          showIf="(saleOrder?.company?.supplyChainConfig?.outSmGenerationSelect ?: __parent__?.company?.supplyChainConfig?.outSmGenerationSelect) == __repo__(SupplyChainConfig).OUT_SM_GENERATION_MANAGED_LINES"/>
+          showIf="(saleOrder?.company?.supplyChainConfig?.outSmGenerationSelect || __parent__?.company?.supplyChainConfig?.outSmGenerationSelect) == 4"/>
       </insert>
     </extend>
   </grid>

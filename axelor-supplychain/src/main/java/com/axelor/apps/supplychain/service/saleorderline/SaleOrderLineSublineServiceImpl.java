@@ -21,12 +21,10 @@ package com.axelor.apps.supplychain.service.saleorderline;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineSublineServiceImpl implements SaleOrderLineSublineService {
@@ -35,9 +33,7 @@ public class SaleOrderLineSublineServiceImpl implements SaleOrderLineSublineServ
   public List<SaleOrderLine> collectAllLinesRecursively(List<SaleOrderLine> saleOrderLines) {
     List<SaleOrderLine> result = new ArrayList<>();
     List<SaleOrderLine> sorted =
-        saleOrderLines.stream()
-            .sorted(Comparator.comparing(SaleOrderLine::getSequence))
-            .toList();
+        saleOrderLines.stream().sorted(Comparator.comparing(SaleOrderLine::getSequence)).toList();
     for (SaleOrderLine line : sorted) {
       result.add(line);
       if (!CollectionUtils.isEmpty(line.getSubSaleOrderLineList())) {
