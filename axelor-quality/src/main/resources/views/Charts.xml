@@ -128,6 +128,64 @@
     <series key="_alerts" type="bar"/>
   </chart>
 
+  <chart name="chart.quality.compliant.samples.by.month"
+    title="Compliant vs total controlled samples by month">
+    <dataset type="sql">
+      <![CDATA[
+        WITH counts AS (
+          SELECT
+            TO_CHAR(controlEntry.entry_date_time, 'YYYY-MM') AS _month,
+            data._serie AS _serie,
+            COUNT(*) AS _value
+          FROM (
+            SELECT s.id, s.control_entry, 'Compliant samples' AS _serie
+            FROM quality_control_entry_sample AS s
+            WHERE s.result_select = 2
+            UNION ALL
+            SELECT s.id, s.control_entry, 'Non-compliant samples' AS _serie
+            FROM quality_control_entry_sample AS s
+            WHERE s.result_select = 3
+          ) AS data
+          JOIN quality_control_entry AS controlEntry
+            ON data.control_entry = controlEntry.id
+          JOIN quality_control_plan AS controlPlan
+            ON controlEntry.control_plan = controlPlan.id
+          WHERE controlEntry.status_select = 3
+            AND controlEntry.related_to_select_id IS NOT NULL
+            AND DATE(controlEntry.entry_date_time) BETWEEN DATE(:fromDate) AND DATE(:toDate)
+            AND (
+              CAST(:relatedToSelect AS varchar) IS NULL
+              OR (
+                controlPlan.related_to_select = CAST(:relatedToSelect AS varchar)
+                AND (
+                  CAST(:relatedToSelectId AS bigint) IS NULL
+                  OR controlPlan.related_to_select_id = CAST(:relatedToSelectId AS bigint)
+                )
+              )
+            )
+          GROUP BY _month, _serie
+        )
+        SELECT
+          m._month
+            || ' - '
+            || COALESCE(NULLIF(translation.message_value, ''), s._serie) AS _category,
+          COALESCE(c._value, 0) AS _value
+        FROM (SELECT DISTINCT _month FROM counts) AS m
+        CROSS JOIN (
+          VALUES ('Compliant samples'), ('Non-compliant samples')
+        ) AS s(_serie)
+        LEFT JOIN counts AS c
+          ON c._month = m._month AND c._serie = s._serie
+        LEFT JOIN meta_translation AS translation
+          ON translation.message_key = s._serie
+          AND translation.language = substring(CAST(:_language AS varchar) FROM '^[a-zA-Z]+')
+        ORDER BY m._month, s._serie
+      ]]>
+    </dataset>
+    <category key="_category" type="text" title="Month / Type"/>
+    <series key="_value" type="bar" title="Number of samples"/>
+  </chart>
+
   <action-record model="com.axelor.apps.quality.db.ControlPoint"
     name="action.quality.chart.set.date">
     <field name="toDateT" expr="eval: __config__.date"/>
