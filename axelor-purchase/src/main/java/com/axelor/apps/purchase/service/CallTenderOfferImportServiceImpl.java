@@ -26,7 +26,9 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.metajsonattrs.MetaJsonAttrsBuilder;
 import com.axelor.apps.purchase.db.CallTender;
+import com.axelor.apps.purchase.db.CallTenderAttrConfig;
 import com.axelor.apps.purchase.db.CallTenderNeed;
 import com.axelor.apps.purchase.db.CallTenderOffer;
 import com.axelor.apps.purchase.db.CallTenderOfferImportHistory;
@@ -35,9 +37,11 @@ import com.axelor.apps.purchase.db.repo.CallTenderOfferRepository;
 import com.axelor.apps.purchase.db.repo.CallTenderRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.MetaJsonField;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.io.File;
@@ -45,7 +49,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,7 +79,7 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
   protected static final int COL_DATE = 5;
   protected static final int COL_DELIVERY_TIME = 6;
   protected static final int COL_UNIT_PRICE = 7;
-  protected static final int COL_COMMENT = 8;
+  protected static final int COL_CUSTOM_FIELDS_START = 8;
 
   protected final ProductRepository productRepository;
   protected final UnitRepository unitRepository;
@@ -117,17 +124,19 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
 
     try (Workbook workbook = new XSSFWorkbook(new FileInputStream(excelFile))) {
       Sheet sheet = workbook.getSheetAt(0);
-
       validateSheet(sheet);
+
+      Row headerRow = sheet.getRow(0);
+      int commentColIdx = findCommentColumnIndex(headerRow);
 
       for (int i = 1; i <= sheet.getLastRowNum(); i++) {
         Row row = sheet.getRow(i);
         if (row == null) {
           continue;
         }
-        int lineNumber = i + 1;
 
-        String lineError = processRow(row, lineNumber, callTender, supplier, errors);
+        String lineError =
+            processRow(row, i + 1, callTender, supplier, errors, headerRow, commentColIdx);
         if (lineError != null) {
           errorsByRow.put(i, lineError);
         } else {
@@ -156,7 +165,14 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
   }
 
   protected String processRow(
-      Row row, int lineNumber, CallTender callTender, Partner supplier, List<String> errors) {
+      Row row,
+      int lineNumber,
+      CallTender callTender,
+      Partner supplier,
+      List<String> errors,
+      Row headerRow,
+      int commentColIdx) {
+
     try {
       if (row.getLastCellNum() < EXPECTED_MIN_COLUMNS) {
         String error =
@@ -170,13 +186,6 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
       }
 
       String productCode = getCellStringValue(row.getCell(COL_PRODUCT_CODE)).trim();
-      String qtyStr = getCellStringValue(row.getCell(COL_QTY)).trim();
-      String unitName = getCellStringValue(row.getCell(COL_UNIT)).trim();
-      String dateStr = getCellStringValue(row.getCell(COL_DATE)).trim();
-      String deliveryTimeStr = getCellStringValue(row.getCell(COL_DELIVERY_TIME)).trim();
-      String unitPriceStr = getCellStringValue(row.getCell(COL_UNIT_PRICE)).trim();
-      String comment = getCellStringValue(row.getCell(COL_COMMENT)).trim();
-
       Product product = productRepository.findByCode(productCode);
       if (product == null) {
         String error =
@@ -195,13 +204,21 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
         return error;
       }
 
-      CallTenderOffer existingOffer = findExistingOffer(callTender, supplier, product);
-
       List<String> rowErrors = new ArrayList<>();
+      String qtyStr = getCellStringValue(row.getCell(COL_QTY)).trim();
+      String unitName = getCellStringValue(row.getCell(COL_UNIT)).trim();
+      String dateStr = getCellStringValue(row.getCell(COL_DATE)).trim();
+      String deliveryTimeStr = getCellStringValue(row.getCell(COL_DELIVERY_TIME)).trim();
+      String unitPriceStr = getCellStringValue(row.getCell(COL_UNIT_PRICE)).trim();
+      String comment = getCellStringValue(row.getCell(commentColIdx)).trim();
+
+      CallTenderOffer existingOffer = findExistingOffer(callTender, supplier, product);
+      CallTenderOffer offer;
 
       if (existingOffer != null) {
-        updateOffer(
-            existingOffer,
+        offer = existingOffer;
+        setProposedFields(
+            offer,
             qtyStr,
             unitName,
             dateStr,
@@ -210,33 +227,179 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
             comment,
             lineNumber,
             rowErrors);
+        offer.setStatusSelect(CallTenderOfferRepository.STATUS_REPLIED);
       } else {
-        createOffer(
-            callTender,
-            supplier,
-            matchingNeed,
-            qtyStr,
-            unitName,
-            dateStr,
-            deliveryTimeStr,
-            unitPriceStr,
-            comment,
-            lineNumber,
-            rowErrors);
+        offer =
+            createOffer(
+                callTender,
+                supplier,
+                matchingNeed,
+                qtyStr,
+                unitName,
+                dateStr,
+                deliveryTimeStr,
+                unitPriceStr,
+                comment,
+                lineNumber,
+                rowErrors);
       }
+
+      applyCustomFieldValues(offer, product, row, headerRow, commentColIdx, lineNumber, rowErrors);
 
       if (!rowErrors.isEmpty()) {
         String error = String.join("; ", rowErrors);
         errors.addAll(rowErrors);
         return error;
       }
-
       return null;
 
     } catch (Exception e) {
       String error = String.format(I18n.get("Line %d: %s"), lineNumber, e.getMessage());
       errors.add(error);
       return error;
+    }
+  }
+
+  protected int findCommentColumnIndex(Row headerRow) {
+    String expected = I18n.get("Comment");
+    int last = headerRow.getLastCellNum() - 1;
+    for (int i = COL_CUSTOM_FIELDS_START; i <= last; i++) {
+      String value = getCellStringValue(headerRow.getCell(i)).trim();
+      if (expected.equalsIgnoreCase(value) || "Comment".equalsIgnoreCase(value)) {
+        return i;
+      }
+    }
+    return last;
+  }
+
+  protected void applyCustomFieldValues(
+      CallTenderOffer offer,
+      Product product,
+      Row row,
+      Row headerRow,
+      int commentColIdx,
+      int lineNumber,
+      List<String> rowErrors) {
+
+    if (commentColIdx <= COL_CUSTOM_FIELDS_START) {
+      return;
+    }
+
+    Map<String, MetaJsonField> fieldsByTitle = getCustomFieldsByTitle(offer, product);
+
+    try {
+      MetaJsonAttrsBuilder builder = new MetaJsonAttrsBuilder(offer.getAttrs());
+      boolean changed = false;
+
+      for (int colIdx = COL_CUSTOM_FIELDS_START; colIdx < commentColIdx; colIdx++) {
+        String header = getCellStringValue(headerRow.getCell(colIdx)).trim();
+        if (header.isEmpty()) {
+          continue;
+        }
+
+        String rawValue = getCellStringValue(row.getCell(colIdx)).trim();
+        MetaJsonField field = fieldsByTitle.get(header.toLowerCase());
+
+        if (field == null) {
+          if (!rawValue.isEmpty()) {
+            rowErrors.add(
+                String.format(
+                    I18n.get(
+                        "Line %d: Field '%s' is not in the offer's attribute configuration for product '%s'"),
+                    lineNumber,
+                    header,
+                    product.getCode()));
+            appendImportError(
+                offer,
+                "Field '"
+                    + header
+                    + "' is not in the offer's attribute configuration for product '"
+                    + product.getCode()
+                    + "'");
+          }
+          continue;
+        }
+
+        if (rawValue.isEmpty()) {
+          continue;
+        }
+
+        try {
+          Object typedValue = parseCustomFieldValue(field, rawValue);
+          builder.putValue(field, typedValue);
+          changed = true;
+        } catch (Exception e) {
+          rowErrors.add(
+              String.format(
+                  I18n.get("Line %d: Invalid value '%s' for field '%s'"),
+                  lineNumber,
+                  rawValue,
+                  header));
+          appendImportError(offer, "Invalid value '" + rawValue + "' for field '" + header + "'");
+        }
+      }
+
+      if (changed) {
+        offer.setAttrs(builder.build());
+      }
+    } catch (Exception e) {
+      rowErrors.add(
+          String.format(
+              I18n.get("Line %d: Failed to set custom fields: %s"), lineNumber, e.getMessage()));
+    }
+  }
+
+  protected Map<String, MetaJsonField> getCustomFieldsByTitle(
+      CallTenderOffer offer, Product product) {
+    Map<String, MetaJsonField> map = new HashMap<>();
+
+    CallTenderAttrConfig config = null;
+    if (offer != null) {
+      config = offer.getCallTenderAttrConfig();
+    }
+    if (config == null && product != null) {
+      config = product.getCallTenderAttrConfig();
+    }
+    if (config == null || config.getCustomFieldList() == null) {
+      return map;
+    }
+
+    for (MetaJsonField f : config.getCustomFieldList()) {
+      String title = f.getTitle();
+      if (StringUtils.notEmpty(title)) {
+        map.put(title.toLowerCase(), f);
+      }
+    }
+    return map;
+  }
+
+  protected Object parseCustomFieldValue(MetaJsonField field, String rawValue) {
+    String type = field.getType();
+    if (type == null) {
+      return rawValue;
+    }
+    switch (type) {
+      case "integer":
+        return Integer.parseInt(rawValue);
+      case "long":
+        return Long.parseLong(rawValue);
+      case "decimal":
+        return new BigDecimal(rawValue);
+      case "boolean":
+        if (!"true".equalsIgnoreCase(rawValue) && !"false".equalsIgnoreCase(rawValue)) {
+          throw new IllegalArgumentException("Invalid boolean: " + rawValue);
+        }
+        return Boolean.parseBoolean(rawValue);
+      case "date":
+        return LocalDate.parse(rawValue);
+      case "datetime":
+        if (rawValue.endsWith("Z")) {
+          return LocalDateTime.ofInstant(Instant.parse(rawValue), ZoneOffset.UTC);
+        }
+        return LocalDateTime.parse(rawValue);
+      case "string":
+      default:
+        return rawValue;
     }
   }
 
@@ -265,11 +428,8 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
       int lineNumber,
       List<String> rowErrors) {
 
-    if (!comment.isEmpty()) {
-      offer.setOfferComment(comment);
-    }
+    offer.setOfferComment(comment);
 
-    // Proposed Qty
     if (!qtyStr.isEmpty()) {
       try {
         offer.setProposedQty(new BigDecimal(qtyStr));
@@ -281,7 +441,6 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
       }
     }
 
-    // Proposed Unit
     if (!unitName.isEmpty()) {
       Unit unit =
           unitRepository.all().filter("self.name = :name").bind("name", unitName).fetchOne();
@@ -295,7 +454,6 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
       }
     }
 
-    // Proposed Date
     if (!dateStr.isEmpty()) {
       try {
         offer.setProposedDate(LocalDate.parse(dateStr));
@@ -306,7 +464,6 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
       }
     }
 
-    // Delivery time
     if (!deliveryTimeStr.isEmpty()) {
       try {
         offer.setRequestedDeliveryTime(Integer.parseInt(deliveryTimeStr));
@@ -319,7 +476,6 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
       }
     }
 
-    // Proposed Price
     if (!unitPriceStr.isEmpty()) {
       try {
         offer.setProposedPrice(new BigDecimal(unitPriceStr));
@@ -333,11 +489,9 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
   }
 
   protected void appendImportError(CallTenderOffer offer, String errorDetail) {
-    offer.setOfferComment(
-        Optional.ofNullable(offer.getOfferComment()).orElse("")
-            + "\n[Import error: "
-            + errorDetail
-            + "]");
+    String existing = Optional.ofNullable(offer.getOfferComment()).orElse("");
+    String prefix = existing.isEmpty() ? "" : existing + "\n";
+    offer.setOfferComment(prefix + "[Import error: " + errorDetail + "]");
   }
 
   protected CallTenderOfferImportHistory createImportHistory(
@@ -358,17 +512,16 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
   }
 
   protected String buildLog(int importedCount, List<String> errors) {
-    StringBuilder logBuilder = new StringBuilder();
-    logBuilder.append(String.format(I18n.get("Imported %d line(s)."), importedCount));
+    StringBuilder sb = new StringBuilder();
+    sb.append(String.format(I18n.get("Imported %d line(s)."), importedCount));
 
     if (!errors.isEmpty()) {
-      logBuilder.append("\n\n").append(I18n.get("Errors:")).append("\n");
+      sb.append("<br/><br/>").append(I18n.get("Errors:")).append("<br/>");
       for (String error : errors) {
-        logBuilder.append(error).append("\n");
+        sb.append(error).append("<br/>");
       }
     }
-
-    return logBuilder.toString();
+    return sb.toString();
   }
 
   protected MetaFile generateErrorFile(File originalExcelFile, Map<Integer, String> errorsByRow)
@@ -380,14 +533,13 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
 
     try (Workbook workbook = new XSSFWorkbook(new FileInputStream(originalExcelFile))) {
       Sheet sheet = workbook.getSheetAt(0);
-
       CellStyle errorStyle = createErrorStyle(workbook);
 
       Row headerRow = sheet.getRow(0);
       int errorsColIndex = headerRow.getLastCellNum();
+
       Cell errorsHeaderCell = headerRow.createCell(errorsColIndex);
       errorsHeaderCell.setCellValue(I18n.get("Errors"));
-
       CellStyle headerErrorStyle = workbook.createCellStyle();
       Font headerFont = workbook.createFont();
       headerFont.setBold(true);
@@ -395,22 +547,18 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
       errorsHeaderCell.setCellStyle(headerErrorStyle);
 
       for (Map.Entry<Integer, String> entry : errorsByRow.entrySet()) {
-        int rowIndex = entry.getKey();
-        String errorMsg = entry.getValue();
-        Row row = sheet.getRow(rowIndex);
+        Row row = sheet.getRow(entry.getKey());
         if (row == null) {
           continue;
         }
-
         for (int j = 0; j < row.getLastCellNum(); j++) {
           Cell cell = row.getCell(j);
           if (cell != null) {
             cell.setCellStyle(errorStyle);
           }
         }
-
         Cell errorCell = row.createCell(errorsColIndex);
-        errorCell.setCellValue(errorMsg);
+        errorCell.setCellValue(entry.getValue());
         errorCell.setCellStyle(errorStyle);
       }
 
@@ -420,7 +568,6 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
       try (FileOutputStream fos = new FileOutputStream(tempFile)) {
         workbook.write(fos);
       }
-
       try (FileInputStream inStream = new FileInputStream(tempFile)) {
         return metaFiles.upload(inStream, "import-errors.xlsx");
       }
@@ -458,31 +605,7 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
         .orElse(null);
   }
 
-  protected void updateOffer(
-      CallTenderOffer offer,
-      String qtyStr,
-      String unitName,
-      String dateStr,
-      String deliveryTimeStr,
-      String unitPriceStr,
-      String comment,
-      int lineNumber,
-      List<String> rowErrors) {
-
-    setProposedFields(
-        offer,
-        qtyStr,
-        unitName,
-        dateStr,
-        deliveryTimeStr,
-        unitPriceStr,
-        comment,
-        lineNumber,
-        rowErrors);
-    offer.setStatusSelect(CallTenderOfferRepository.STATUS_REPLIED);
-  }
-
-  protected void createOffer(
+  protected CallTenderOffer createOffer(
       CallTender callTender,
       Partner supplier,
       CallTenderNeed need,
@@ -503,6 +626,8 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
     offer.setRequestedDate(need.getRequestedDate());
     offer.setRequestedUnit(need.getUnit());
     offer.setRequestedDeliveryTime(need.getRequestedDeliveryTime());
+    offer.setCallTenderAttrConfig(need.getCallTenderAttrConfig());
+    offer.setAttrs(need.getAttrs());
     offer.setStatusSelect(CallTenderOfferRepository.STATUS_REPLIED);
 
     setProposedFields(
@@ -518,6 +643,6 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
 
     callTenderOfferService.setCounter(offer, callTender);
     callTender.addCallTenderOfferListItem(offer);
-    callTenderOfferRepository.save(offer);
+    return callTenderOfferRepository.save(offer);
   }
 }

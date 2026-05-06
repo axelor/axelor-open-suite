@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.1.xsd">
+
+  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+
+  <entity name="CallTenderAttrConfig">
+
+    <string name="name" title="Name" required="true" unique="true" namecolumn="true"/>
+
+    <boolean name="displayInProduct" title="Product"/>
+    <boolean name="displayInSoLine" title="Sale order line"/>
+    <boolean name="displayInTenderNeed" title="Call tender need"/>
+    <boolean name="displayInTenderOffer" title="Call tender offer"/>
+
+    <one-to-many name="customFieldList" ref="com.axelor.meta.db.MetaJsonField"
+      title="Custom fields" mappedBy="callTenderAttrConfig" orphanRemoval="true"/>
+
+  </entity>
+
+</domain-models>

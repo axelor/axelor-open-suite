@@ -19,6 +19,12 @@
     <string name="description" title="Description" large="true"/>
     <many-to-one name="callTender" ref="com.axelor.apps.purchase.db.CallTender"/>
 
+    <many-to-one name="callTenderAttrConfig"
+      ref="com.axelor.apps.purchase.db.CallTenderAttrConfig"
+      title="Call tender attribute configuration"/>
+
+    <string name="attrs" title="Attributes" json="true"/>
+
 
     <extra-code><![CDATA[
 
