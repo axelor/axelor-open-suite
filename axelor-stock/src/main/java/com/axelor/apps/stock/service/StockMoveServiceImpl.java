@@ -1549,13 +1549,14 @@ public class StockMoveServiceImpl implements StockMoveService {
         continue;
       }
 
-      if (stockMoveLine.getAvailableQty().compareTo(qty) >= 0
+      if (stockMoveLine.getAvailableQty().compareTo(stockMoveLine.getRealQty()) >= 0
           || product != null && !product.getStockManaged()) {
         available++;
-      } else if (stockMoveLine.getAvailableQtyForProduct().compareTo(qty) >= 0) {
+      } else if (stockMoveLine.getAvailableQtyForProduct().compareTo(stockMoveLine.getRealQty())
+          >= 0) {
         availableForProduct++;
-      } else if (stockMoveLine.getAvailableQty().compareTo(qty) < 0
-          && stockMoveLine.getAvailableQtyForProduct().compareTo(qty) < 0) {
+      } else if (stockMoveLine.getAvailableQty().compareTo(stockMoveLine.getRealQty()) < 0
+          && stockMoveLine.getAvailableQtyForProduct().compareTo(stockMoveLine.getRealQty()) < 0) {
         missing++;
       }
     }
