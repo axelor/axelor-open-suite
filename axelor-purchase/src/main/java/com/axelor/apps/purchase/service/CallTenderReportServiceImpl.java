@@ -55,7 +55,7 @@ public class CallTenderReportServiceImpl implements CallTenderReportService {
   private static final Map<Class<?>, Method> GET_ATTRS_CACHE = new ConcurrentHashMap<>();
   private static final Map<Model, Map<String, Object>> ATTRS_CACHE = new ConcurrentHashMap<>();
 
-  protected final TenderReportConfigRepository tenderReportConfigRepository;
+  protected TenderReportConfigRepository tenderReportConfigRepository;
 
   @Inject
   public CallTenderReportServiceImpl(TenderReportConfigRepository tenderReportConfigRepository) {

@@ -89,6 +89,7 @@ public class CallTenderOfferServiceImpl implements CallTenderOfferService {
         ObjectUtils.notEmpty(callTender.getCallTenderOfferList())
             ? callTender.getCallTenderOfferList().stream()
                 .map(CallTenderOffer::getCounter)
+                .filter(Objects::nonNull)
                 .max(Comparator.naturalOrder())
                 .orElse(0)
             : 0;

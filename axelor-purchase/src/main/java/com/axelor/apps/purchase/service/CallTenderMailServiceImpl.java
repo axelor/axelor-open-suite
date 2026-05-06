@@ -45,10 +45,10 @@ import java.util.stream.Collectors;
 
 public class CallTenderMailServiceImpl implements CallTenderMailService {
 
-  protected final MessageService messageService;
-  protected final TemplateMessageService templateMessageService;
-  protected final CallTenderExcelService callTenderExcelService;
-  protected final CallTenderMailRepository callTenderMailRepository;
+  protected MessageService messageService;
+  protected TemplateMessageService templateMessageService;
+  protected CallTenderExcelService callTenderExcelService;
+  protected CallTenderMailRepository callTenderMailRepository;
   protected CallTenderOfferRepository callTenderOfferRepository;
 
   @Inject

@@ -73,6 +73,8 @@ public class CallTenderExcelServiceImpl implements CallTenderExcelService {
   protected static final int COL_UNIT_PRICE = 7;
   protected static final int COL_CUSTOM_FIELDS_START = 8;
 
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
   protected final AppBaseService appBaseService;
   protected final MetaFiles metaFiles;
   protected final SupplierCatalogRepository supplierCatalogRepository;
@@ -127,6 +129,8 @@ public class CallTenderExcelServiceImpl implements CallTenderExcelService {
 
     try (FileInputStream inStream = new FileInputStream(file)) {
       return metaFiles.upload(inStream, fileName);
+    } finally {
+      file.delete();
     }
   }
 
@@ -182,6 +186,8 @@ public class CallTenderExcelServiceImpl implements CallTenderExcelService {
 
     try (FileInputStream inStream = new FileInputStream(file)) {
       return metaFiles.upload(inStream, fileName);
+    } finally {
+      file.delete();
     }
   }
 
@@ -457,7 +463,7 @@ public class CallTenderExcelServiceImpl implements CallTenderExcelService {
       return Collections.emptyMap();
     }
     try {
-      return new ObjectMapper().readValue(attrs, Map.class);
+      return OBJECT_MAPPER.readValue(attrs, Map.class);
     } catch (IOException e) {
       return Collections.emptyMap();
     }

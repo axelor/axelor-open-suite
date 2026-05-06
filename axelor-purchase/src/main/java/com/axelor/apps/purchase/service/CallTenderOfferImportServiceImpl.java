@@ -58,6 +58,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -122,7 +123,8 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
     Map<Integer, String> errorsByRow = new HashMap<>();
     int importedCount = 0;
 
-    try (Workbook workbook = new XSSFWorkbook(new FileInputStream(excelFile))) {
+    try (FileInputStream fis = new FileInputStream(excelFile);
+        Workbook workbook = new XSSFWorkbook(fis)) {
       Sheet sheet = workbook.getSheetAt(0);
       validateSheet(sheet);
 
@@ -143,10 +145,10 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
           importedCount++;
         }
       }
-    }
 
-    MetaFile errorFile = generateErrorFile(excelFile, errorsByRow);
-    return createImportHistory(callTender, file, errorFile, importedCount, errors);
+      MetaFile errorFile = generateErrorFile(workbook, errorsByRow);
+      return createImportHistory(callTender, file, errorFile, importedCount, errors);
+    }
   }
 
   protected void validateSheet(Sheet sheet) throws AxelorException {
@@ -524,53 +526,53 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
     return sb.toString();
   }
 
-  protected MetaFile generateErrorFile(File originalExcelFile, Map<Integer, String> errorsByRow)
+  protected MetaFile generateErrorFile(Workbook workbook, Map<Integer, String> errorsByRow)
       throws IOException {
 
     if (errorsByRow.isEmpty()) {
       return null;
     }
 
-    try (Workbook workbook = new XSSFWorkbook(new FileInputStream(originalExcelFile))) {
-      Sheet sheet = workbook.getSheetAt(0);
-      CellStyle errorStyle = createErrorStyle(workbook);
+    Sheet sheet = workbook.getSheetAt(0);
+    CellStyle errorStyle = createErrorStyle(workbook);
 
-      Row headerRow = sheet.getRow(0);
-      int errorsColIndex = headerRow.getLastCellNum();
+    Row headerRow = sheet.getRow(0);
+    int errorsColIndex = headerRow.getLastCellNum();
 
-      Cell errorsHeaderCell = headerRow.createCell(errorsColIndex);
-      errorsHeaderCell.setCellValue(I18n.get("Errors"));
-      CellStyle headerErrorStyle = workbook.createCellStyle();
-      Font headerFont = workbook.createFont();
-      headerFont.setBold(true);
-      headerErrorStyle.setFont(headerFont);
-      errorsHeaderCell.setCellStyle(headerErrorStyle);
+    Cell errorsHeaderCell = headerRow.createCell(errorsColIndex);
+    errorsHeaderCell.setCellValue(I18n.get("Errors"));
+    CellStyle headerErrorStyle = workbook.createCellStyle();
+    Font headerFont = workbook.createFont();
+    headerFont.setBold(true);
+    headerErrorStyle.setFont(headerFont);
+    errorsHeaderCell.setCellStyle(headerErrorStyle);
 
-      for (Map.Entry<Integer, String> entry : errorsByRow.entrySet()) {
-        Row row = sheet.getRow(entry.getKey());
-        if (row == null) {
-          continue;
+    for (Map.Entry<Integer, String> entry : errorsByRow.entrySet()) {
+      Row row = sheet.getRow(entry.getKey());
+      if (row == null) {
+        continue;
+      }
+      for (int j = 0; j < row.getLastCellNum(); j++) {
+        Cell cell = row.getCell(j);
+        if (cell != null) {
+          cell.setCellStyle(errorStyle);
         }
-        for (int j = 0; j < row.getLastCellNum(); j++) {
-          Cell cell = row.getCell(j);
-          if (cell != null) {
-            cell.setCellStyle(errorStyle);
-          }
-        }
-        Cell errorCell = row.createCell(errorsColIndex);
-        errorCell.setCellValue(entry.getValue());
-        errorCell.setCellStyle(errorStyle);
       }
+      Cell errorCell = row.createCell(errorsColIndex);
+      errorCell.setCellValue(entry.getValue());
+      errorCell.setCellStyle(errorStyle);
+    }
 
-      sheet.autoSizeColumn(errorsColIndex);
+    sheet.autoSizeColumn(errorsColIndex);
 
-      File tempFile = File.createTempFile("import-errors", ".xlsx");
-      try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-        workbook.write(fos);
-      }
-      try (FileInputStream inStream = new FileInputStream(tempFile)) {
-        return metaFiles.upload(inStream, "import-errors.xlsx");
-      }
+    File tempFile = File.createTempFile("import-errors", ".xlsx");
+    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+      workbook.write(fos);
+    }
+    try (FileInputStream inStream = new FileInputStream(tempFile)) {
+      return metaFiles.upload(inStream, "import-errors.xlsx");
+    } finally {
+      tempFile.delete();
     }
   }
 
@@ -587,7 +589,7 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
       return null;
     }
     return callTender.getCallTenderNeedList().stream()
-        .filter(need -> need.getProduct().equals(product))
+        .filter(need -> product.equals(need.getProduct()))
         .findFirst()
         .orElse(null);
   }
@@ -600,7 +602,8 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
     return callTender.getCallTenderOfferList().stream()
         .filter(
             offer ->
-                offer.getSupplierPartner().equals(supplier) && offer.getProduct().equals(product))
+                Objects.equals(supplier, offer.getSupplierPartner())
+                    && product.equals(offer.getProduct()))
         .findFirst()
         .orElse(null);
   }
