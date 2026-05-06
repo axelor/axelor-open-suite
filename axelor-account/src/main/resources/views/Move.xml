@@ -207,7 +207,7 @@
 		          <![CDATA[
 		          		<>
           					<Badge bg="danger">
-          						{_t(['Opening','Closure','Sale','Purchase','Payment','Cut Off','Fixed asset','Doubtful customer','Irrecoverable'][move.functionalOriginSelect-1])}
+          						{_t(['Opening','Closure','Sale','Purchase','Payment','Cut Off','Fixed asset','Doubtful customer','Irrecoverable'][functionalOriginSelect-1])}
           					</Badge>
           				</>
 		          ]]>
