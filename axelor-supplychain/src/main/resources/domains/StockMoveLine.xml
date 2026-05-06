@@ -28,6 +28,8 @@
     <!-- Is not used in view but needed for java service -->
     <boolean name="isMergedStockMoveLine" transient="true"/>
 
+    <string name="levelIndicator" title="Level"/>
+
     <datetime name="reservationDateTime" readonly="true"/>
 
     <decimal name="qtyRemainingToPackage" title="Qty remaining to package" default="0"
