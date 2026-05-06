@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+
+  <grid name="tender-report-config-grid" title="Tender report configs"
+    model="com.axelor.apps.purchase.db.TenderReportConfig">
+    <field name="name"/>
+    <field name="reportType"/>
+    <field name="isDefault"/>
+  </grid>
+
+  <form name="tender-report-config-form" title="Tender report config"
+    model="com.axelor.apps.purchase.db.TenderReportConfig">
+    <panel name="mainPanel">
+      <field name="name" required="true"/>
+      <field name="reportType" colSpan="4"/>
+      <field name="isDefault" colSpan="2" widget="boolean-switch"/>
+    </panel>
+    <panel-related field="tenderReportConfigLineList" colSpan="12"
+      grid-view="tender-report-config-line-grid" form-view="tender-report-config-line-form"/>
+  </form>
+
+</object-views>

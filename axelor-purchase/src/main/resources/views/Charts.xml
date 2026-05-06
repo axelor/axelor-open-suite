@@ -401,57 +401,61 @@
 
   <custom name="call-tender-product-attributes-by-suppliers"
     title="Product attributes by supplier">
-    <dataset type="sql">
-      <![CDATA[
-        SELECT
-          product.name AS product,
-          partner.simple_full_name AS supplier,
-          ROUND(COALESCE(product.sale_price, offer.proposed_price)) AS unit_price,
-          COALESCE(requested_unit.name, proposed_unit.name) AS unit,
-          ROUND(COALESCE(need.requested_qty, offer.proposed_qty)) AS qty,
-          COALESCE(need.requested_date, offer.requested_date) + COALESCE(need.requested_delivery_time, offer.requested_delivery_time) AS delivery_time
-        FROM purchase_call_tender AS tender
-          LEFT JOIN purchase_call_tender_need AS need ON need.call_tender = tender.id
-          LEFT JOIN base_product AS product ON product.id = need.product
-          LEFT JOIN purchase_call_tender_supplier AS tender_supplier ON tender_supplier.call_tender = tender.id
-          LEFT JOIN base_partner AS partner ON partner.id = tender_supplier.supplier_partner
-          LEFT JOIN purchase_call_tender_offer AS offer ON offer.call_tender = tender.id AND offer.supplier_partner = partner.id AND offer.product = product.id
-          LEFT JOIN base_unit AS proposed_unit ON proposed_unit.id = offer.proposed_unit
-          LEFT JOIN base_unit AS requested_unit ON requested_unit.id = need.unit
-        WHERE tender.id = :_callTenderId
-        ORDER BY product.id, partner.id
-      ]]>
-    </dataset>
+    <dataset type="rpc">com.axelor.apps.purchase.web.CallTenderController:getProductAttributesBySuppliers</dataset>
     <template>
       <![CDATA[
         <>
-          <Box p={2} w={100}>
-            {data.filter((row, idx, arr) => row.product && (idx === 0 || arr[idx-1].product !== row.product)).map((productRow, pi) => {
-              const productRows = data.filter(r => r.product === productRow.product && r.supplier);
+          <Box p={2} w={100} style={{ overflowX: "auto" }}>
+            {(() => {
+              const metaRow = data.find(r => r._type === "columns");
+              const dynCols = metaRow ? metaRow.columns : [];
+              const rows = data.filter(r => r._type !== "columns");
+              const thStyle = { backgroundColor: "#8A97A8", color: "white", borderRadius: "20px", padding: "5px 10px", textAlign: "center", fontWeight: "600", fontSize: "12px", whiteSpace: "nowrap" };
+              const borderColor = "#eeeeee";
+              const products = rows.filter((row, idx, arr) => row.product && (idx === 0 || arr[idx - 1].productId !== row.productId));
               return (
-                <Box key={pi} mb={3} style={{ borderRadius: "12px", boxShadow: "0 2px 12px rgba(0,0,0,0.10)", overflow: "hidden", border: "1px solid #e8e8e8" }}>
-                  <Box fontWeight="bold" style={{ backgroundColor: "#1A2980", color: "white", padding: "12px 16px", fontSize: "14px", letterSpacing: "0.3px" }}>
-                    {productRow.product}
-                  </Box>
-                  <Box d="flex" style={{ backgroundColor: "#f5f5f5", padding: "8px 10px", gap: "6px" }}>
-                    <Box flex="1" style={{ backgroundColor: "#8A97A8", color: "white", borderRadius: "20px", padding: "5px 10px", textAlign: "center", fontWeight: "600", fontSize: "12px" }}>{_t('Supplier')}</Box>
-                    <Box flex="1" style={{ backgroundColor: "#8A97A8", color: "white", borderRadius: "20px", padding: "5px 10px", textAlign: "center", fontWeight: "600", fontSize: "12px" }}>{_t('Unit price')}</Box>
-                    <Box flex="1" style={{ backgroundColor: "#8A97A8", color: "white", borderRadius: "20px", padding: "5px 10px", textAlign: "center", fontWeight: "600", fontSize: "12px" }}>{_t('Unit')}</Box>
-                    <Box flex="1" style={{ backgroundColor: "#8A97A8", color: "white", borderRadius: "20px", padding: "5px 10px", textAlign: "center", fontWeight: "600", fontSize: "12px" }}>{_t('Qty')}</Box>
-                    <Box flex="1" style={{ backgroundColor: "#8A97A8", color: "white", borderRadius: "20px", padding: "5px 10px", textAlign: "center", fontWeight: "600", fontSize: "12px" }}>{_t('Delivery time')}</Box>
-                  </Box>
-                  {productRows.map((row, ri) => (
-                    <Box key={ri} d="flex" style={{ backgroundColor: ri % 2 === 0 ? "#F6F2FF" : "#FFFFFF", borderTop: "1px solid #eeeeee" }}>
-                      <Box flex="1" p={2} style={{ borderRight: "1px solid #eeeeee" }}>{row.supplier}</Box>
-                      <Box flex="1" p={2} style={{ borderRight: "1px solid #eeeeee" }}>{row.unit_price}</Box>
-                      <Box flex="1" p={2} style={{ borderRight: "1px solid #eeeeee" }}>{row.unit}</Box>
-                      <Box flex="1" p={2} style={{ borderRight: "1px solid #eeeeee" }}>{row.qty}</Box>
-                      <Box flex="1" p={2}>{row.delivery_time}</Box>
-                    </Box>
-                  ))}
-                </Box>
+                <div style={{ minWidth: "max-content", width: "100%" }}>
+                  {products.map((productRow, pi) => {
+                    const productRows = rows.filter(r => r.productId === productRow.productId && r.supplier);
+                    return (
+                      <Box key={pi} mb={3} style={{ borderRadius: "12px", boxShadow: "0 2px 12px rgba(0,0,0,0.10)", overflow: "hidden", border: "1px solid #e8e8e8" }}>
+                        <Box fontWeight="bold" style={{ backgroundColor: "#1A2980", color: "white", padding: "12px 16px", fontSize: "14px", letterSpacing: "0.3px" }}>
+                          {productRow.product}
+                        </Box>
+                        <table style={{ borderCollapse: "collapse", tableLayout: "auto", whiteSpace: "nowrap", width: "100%" }}>
+                          <thead>
+                            <tr style={{ backgroundColor: "#f5f5f5" }}>
+                              <th style={{ padding: "8px 10px", border: `1px solid ${borderColor}` }}><div style={thStyle}>{_t('Supplier')}</div></th>
+                              <th style={{ padding: "8px 10px", border: `1px solid ${borderColor}` }}><div style={thStyle}>{_t('Unit price')}</div></th>
+                              <th style={{ padding: "8px 10px", border: `1px solid ${borderColor}` }}><div style={thStyle}>{_t('Unit')}</div></th>
+                              <th style={{ padding: "8px 10px", border: `1px solid ${borderColor}` }}><div style={thStyle}>{_t('Qty')}</div></th>
+                              <th style={{ padding: "8px 10px", border: `1px solid ${borderColor}` }}><div style={thStyle}>{_t('Delivery time')}</div></th>
+                              {dynCols.map((col, ci) => (
+                                <th key={ci} style={{ padding: "8px 10px", border: `1px solid ${borderColor}` }}><div style={thStyle}>{col.label}</div></th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {productRows.map((row, ri) => (
+                              <tr key={ri} style={{ backgroundColor: ri % 2 === 0 ? "#F6F2FF" : "#FFFFFF" }}>
+                                <td style={{ padding: "8px", border: `1px solid ${borderColor}` }}>{row.supplier}</td>
+                                <td style={{ padding: "8px", border: `1px solid ${borderColor}` }}>{row.unit_price}</td>
+                                <td style={{ padding: "8px", border: `1px solid ${borderColor}` }}>{row.unit}</td>
+                                <td style={{ padding: "8px", border: `1px solid ${borderColor}` }}>{row.qty}</td>
+                                <td style={{ padding: "8px", border: `1px solid ${borderColor}` }}>{row.delivery_time ? $moment(row.delivery_time).format('DD/MM/YYYY') : ''}</td>
+                                {dynCols.map((col, ci) => (
+                                  <td key={ci} style={{ padding: "8px", border: `1px solid ${borderColor}` }}>{row[col.key]}</td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </Box>
+                    );
+                  })}
+                </div>
               );
-            })}
+            })()}
           </Box>
         </>
       ]]>
@@ -460,49 +464,26 @@
 
   <custom name="call-tender-supplier-respond-by-product"
     title="Suppliers' respond by product">
-    <dataset type="sql">
-      <![CDATA[
-        SELECT
-          product.id AS product_id,
-          product.name AS product_name,
-          ROUND(product.sale_price) AS requested_price,
-          requested_unit.name AS requested_unit,
-          ROUND(need.requested_qty) AS requested_qty,
-          need.requested_date + need.requested_delivery_time AS requested_delivery_date,
-          partner.id AS supplier_id,
-          partner.simple_full_name AS supplier_name,
-          ROUND(offer.proposed_price) AS proposed_price,
-          proposed_unit.name AS proposed_unit,
-          ROUND(offer.proposed_qty) AS proposed_qty,
-          offer.requested_date + offer.requested_delivery_time AS proposed_delivery_date
-        FROM purchase_call_tender AS tender
-          LEFT JOIN purchase_call_tender_need AS need ON need.call_tender = tender.id
-          LEFT JOIN base_product AS product ON product.id = need.product
-          LEFT JOIN purchase_call_tender_supplier AS tender_supplier ON tender_supplier.call_tender = tender.id
-          LEFT JOIN base_partner AS partner ON partner.id = tender_supplier.supplier_partner
-          LEFT JOIN purchase_call_tender_offer AS offer ON offer.call_tender = tender.id AND offer.supplier_partner = partner.id AND offer.product = product.id
-          LEFT JOIN base_unit AS requested_unit ON requested_unit.id = need.unit
-          LEFT JOIN base_unit AS proposed_unit ON proposed_unit.id = offer.proposed_unit
-        WHERE tender.id = :_callTenderId
-        ORDER BY product.id, partner.id
-      ]]>
-    </dataset>
+    <dataset type="rpc">com.axelor.apps.purchase.web.CallTenderController:getSupplierRespondByProduct</dataset>
     <template>
       <![CDATA[
         <>
           <Box p={2} w={100} style={{ overflowX: "auto" }}>
             {data.length > 0 && (() => {
+              const metaRow = data.find(r => r._type === "columns");
+              const dynCols = metaRow ? metaRow.columns : [];
+              const rows = data.filter(r => r._type !== "columns");
               const supplierColors = ["#7B6FE0", "#4A9AE0"];
               const supplierDataColors = ["#F6F2FF", "#F0F7FF"];
               const getSupplierColor = (index) => supplierColors[index % 2];
               const getSupplierDataColor = (index) => supplierDataColors[index % 2];
               const borderColor = "#d0d0d0";
               const pill = (bg) => ({ backgroundColor: bg, color: "white", borderRadius: "20px", padding: "4px 10px", display: "inline-block", fontWeight: "600", fontSize: "12px", whiteSpace: "nowrap" });
-              const suppliers = data.filter(
+              const suppliers = rows.filter(
                 (row, idx, arr) =>
                   row.supplier_id && arr.findIndex(s => s.supplier_id === row.supplier_id) === idx
               );
-              const products = data.filter(
+              const products = rows.filter(
                 (row, idx, arr) =>
                   row.product_id && arr.findIndex(p => p.product_id === row.product_id) === idx
               );
@@ -517,7 +498,7 @@
                           {_t('Requested')}
                         </th>
                         {suppliers.map((supplier, si) => (
-                          <th key={supplier.supplier_id} colSpan={4} style={{ border: `1px solid ${borderColor}`, backgroundColor: getSupplierColor(si), color: "white", padding: "10px 8px", textAlign: "center", fontWeight: "bold", fontSize: "13px" }}>
+                          <th key={supplier.supplier_id} colSpan={4 + dynCols.length} style={{ border: `1px solid ${borderColor}`, backgroundColor: getSupplierColor(si), color: "white", padding: "10px 8px", textAlign: "center", fontWeight: "bold", fontSize: "13px" }}>
                             {supplier.supplier_name}
                           </th>
                         ))}
@@ -534,6 +515,9 @@
                             <th style={{ border: `1px solid ${borderColor}`, backgroundColor: si % 2 === 0 ? "#F0EEFF" : "#EAF4FF", padding: "6px 4px", textAlign: "center" }}><div style={pill(getSupplierColor(si))}>{_t('Unit')}</div></th>
                             <th style={{ border: `1px solid ${borderColor}`, backgroundColor: si % 2 === 0 ? "#F0EEFF" : "#EAF4FF", padding: "6px 4px", textAlign: "center" }}><div style={pill(getSupplierColor(si))}>{_t('Qty')}</div></th>
                             <th style={{ border: `1px solid ${borderColor}`, backgroundColor: si % 2 === 0 ? "#F0EEFF" : "#EAF4FF", padding: "6px 4px", textAlign: "center" }}><div style={pill(getSupplierColor(si))}>{_t('Delivery time')}</div></th>
+                            {dynCols.map((col, ci) => (
+                              <th key={ci} style={{ border: `1px solid ${borderColor}`, backgroundColor: si % 2 === 0 ? "#F0EEFF" : "#EAF4FF", padding: "6px 4px", textAlign: "center" }}><div style={pill(getSupplierColor(si))}>{col.label}</div></th>
+                            ))}
                           </React.Fragment>
                         ))}
                       </tr>
@@ -551,7 +535,7 @@
                             {productRow.requested_delivery_date ? $moment(productRow.requested_delivery_date).format('DD/MM/YYYY') : ''}
                           </td>
                           {suppliers.map((supplier, si) => {
-                            const offer = data.find(
+                            const offer = rows.find(
                               (row) =>
                                 row.product_id === productRow.product_id &&
                                 row.supplier_id === supplier.supplier_id
@@ -564,6 +548,9 @@
                                 <td style={{ border: `1px solid ${borderColor}`, backgroundColor: getSupplierDataColor(si), padding: "8px" }}>
                                   {offer.proposed_delivery_date ? $moment(offer.proposed_delivery_date).format('DD/MM/YYYY') : ''}
                                 </td>
+                                {dynCols.map((col, ci) => (
+                                  <td key={ci} style={{ border: `1px solid ${borderColor}`, backgroundColor: getSupplierDataColor(si), padding: "8px" }}>{offer[col.key]}</td>
+                                ))}
                               </React.Fragment>
                             );
                           })}

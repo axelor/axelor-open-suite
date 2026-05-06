@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+
+  <grid name="tender-report-config-line-grid" title="Tender report config lines"
+    model="com.axelor.apps.purchase.db.TenderReportConfigLine" orderBy="sequence" canMove="true">
+    <field name="sequence" hidden="true"/>
+    <field name="metaField"/>
+    <field name="customField"/>
+  </grid>
+
+  <form name="tender-report-config-line-form" title="Tender report config line"
+    model="com.axelor.apps.purchase.db.TenderReportConfigLine">
+    <panel name="mainPanel">
+      <field name="metaField" readonlyIf="customField != null"
+        domain="self.metaModel.name IN ('CallTenderNeed', 'CallTenderOffer') AND (self.relationship IS NULL OR self.relationship NOT IN ('OneToMany', 'ManyToMany')) AND self.name NOT IN ('attrs', 'archived', 'importId', 'importOrigin', 'processInstanceId')"/>
+      <field name="metaField.metaModel" readonly="true" title="Meta field model"/>
+      <field name="customField" readonlyIf="metaField != null"
+        domain="self.model IN ('com.axelor.apps.purchase.db.CallTenderNeed', 'com.axelor.apps.purchase.db.CallTenderOffer') AND self.type NOT IN ('one-to-many', 'many-to-many', 'json-one-to-many', 'json-many-to-many')"/>
+      <field name="customField.model" readonly="true" title="Custom field model"/>
+      <field name="sequence" hidden="true" colSpan="12"/>
+    </panel>
+  </form>
+
+</object-views>
