@@ -73,7 +73,7 @@ import org.slf4j.LoggerFactory;
 @ThreadSafe
 public class SequenceReservationServiceImpl implements SequenceReservationService {
 
-  protected static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected static final int DEFAULT_TIMEOUT_SECONDS = 5;
 
   private final SequenceIncrementExecutor incrementExecutor;

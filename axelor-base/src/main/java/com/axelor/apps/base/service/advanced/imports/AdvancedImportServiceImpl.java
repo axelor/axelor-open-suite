@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
 
 public class AdvancedImportServiceImpl implements AdvancedImportService {
 
-  protected static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected static final String forSelectUseValues = "values";
   protected static final String forSelectUseTitles = "titles";

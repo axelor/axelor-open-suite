@@ -78,7 +78,7 @@ import org.slf4j.LoggerFactory;
 
 public class DataImportServiceImpl implements DataImportService {
 
-  protected static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected static final char CSV_SEPRATOR = ';';
   protected static final String INPUT_CALLABLE =
       "com.axelor.csv.script.ImportAdvancedImport:importGeneral";

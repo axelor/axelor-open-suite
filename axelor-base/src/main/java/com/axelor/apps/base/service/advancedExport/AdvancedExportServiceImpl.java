@@ -64,7 +64,7 @@ import org.slf4j.LoggerFactory;
 
 public class AdvancedExportServiceImpl implements AdvancedExportService {
 
-  protected static final Logger log = LoggerFactory.getLogger(AdvancedExportServiceImpl.class);
+  private static final Logger log = LoggerFactory.getLogger(AdvancedExportServiceImpl.class);
 
   @Inject protected MetaFieldRepository metaFieldRepo;
 
@@ -492,7 +492,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
     private Map<String, String> joins = Maps.newLinkedHashMap();
 
-    protected static final Pattern pathPattern =
+    private static final Pattern pathPattern =
         Pattern.compile("self\\." + "((?:[a-zA-Z_]\\w+)(?:(?:\\[\\])?\\.\\w+)*)");
 
     public JoinHelper(Class<?> beanClass) {

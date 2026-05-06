@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class IndicatorEvaluationServiceImpl implements IndicatorEvaluationService {
 
-  protected static final Logger LOG = LoggerFactory.getLogger(IndicatorEvaluationServiceImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(IndicatorEvaluationServiceImpl.class);
 
   protected static final String BINDING_INDICATOR = "indicator";
   protected static final String BINDING_TARGET = "target";

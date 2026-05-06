@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 
 public class AddressTemplateServiceImpl implements AddressTemplateService {
 
-  protected static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected final String EMPTY_LINE_REMOVAL_REGEX = "(?m)^\\s*$(\\n|\\r\\n)";
   protected static final char TEMPLATE_DELIMITER = '$';

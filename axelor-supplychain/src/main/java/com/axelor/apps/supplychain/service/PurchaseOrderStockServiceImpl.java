@@ -84,7 +84,7 @@ import org.slf4j.LoggerFactory;
 
 public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService {
 
-  protected static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected static final int MAX_ITERATION = 100;
 
   protected UnitConversionService unitConversionService;
