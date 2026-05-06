@@ -86,6 +86,7 @@
 "Moves In",,,
 "My Maintenance requests",,,
 "Name",,,
+"Need / Maintenance order",,,
 "Next maintenance date",,,
 "Note",,,
 "Number of days before the scheduled maintenance date at which the request is created. Leave at 0 to trigger on the due date (current behavior).",,,

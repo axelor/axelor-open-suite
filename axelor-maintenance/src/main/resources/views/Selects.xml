@@ -29,4 +29,9 @@
     <option value="3">Maintenance</option>
   </selection>
 
+  <selection name="supplychain.mrp.line.element.select"
+    id="maintenance.supplychain.mrp.line.element.select">
+    <option value="13">Need / Maintenance order</option>
+  </selection>
+
 </object-views>

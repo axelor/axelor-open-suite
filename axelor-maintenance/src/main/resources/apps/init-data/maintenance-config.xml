@@ -25,4 +25,18 @@
       eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
 
+  <input file="maintenance_mrpLineType.csv" separator=";"
+    type="com.axelor.apps.supplychain.db.MrpLineType" search="self.importId = :importId">
+    <bind column="elementSelect" to="elementSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.supplychain.db.MrpLineType', 'elementSelect', elementSelect)"
+      check-message="Invalid elementSelect"/>
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.supplychain.db.MrpLineType', 'typeSelect', typeSelect)"
+      check-message="Invalid typeSelect"/>
+    <bind to="applicationFieldSelect" column="applicationFieldSelect"
+      eval="applicationFieldSelect?.empty ? 1 : applicationFieldSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.supplychain.db.MrpLineType', 'applicationFieldSelect', applicationFieldSelect?.empty ? 1 : applicationFieldSelect)"
+      check-message="Invalid applicationFieldSelect"/>
+  </input>
+
 </csv-inputs>
