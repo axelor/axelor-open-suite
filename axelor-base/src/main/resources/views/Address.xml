@@ -72,7 +72,6 @@
         onChange="action-group-base-address-country-change" required="true" form-view="country-form"
         grid-view="country-grid"/>
       <panel name="countryHiddenPanel" hideIf="country == null" colSpan="12">
-        <field name="department" x-bind="{{department|uppercase}}" colSpan="12"/>
         <field name="subDepartment" colSpan="12" x-bind="{{subDepartment|uppercase}}"/>
         <field name="room" x-bind="{{room|uppercase}}" colSpan="12"/>
         <field name="floor" x-bind="{{floor|uppercase}}" colSpan="12"/>
@@ -199,7 +198,6 @@
     <field name="buildingNumber" expr="eval: null"/>
     <field name="room" expr="eval: null"/>
     <field name="floor" expr="eval: null"/>
-    <field name="department" expr="eval: null"/>
     <field name="subDepartment" expr="eval: null"/>
     <field name="buildingName" expr="eval: null"/>
     <field name="townName" expr="eval: null"/>

@@ -8,10 +8,8 @@
   <entity name="Address">
     <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country"
       required="true"/>
-    <string name="department" title="Department"
-      help="Identification of a division of a large organisation or building."/>
     <string name="subDepartment" title="Sub Department"
-      help="Identification of a sub-division of a large organisation or building. Displayed if department field is filled."/>
+      help="Identification of a sub-division of a large organisation or building."/>
 
 
     <string name="addressL2" title="Recipient details"/>

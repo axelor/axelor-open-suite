@@ -206,8 +206,8 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
         address::getPostBox,
         adresseEtablissement.getDistributionSpecialeEtablissement());
     safeSetString(
-        address::setDepartment,
-        address::getDepartment,
+        address::setSubDepartment,
+        address::getSubDepartment,
         adresseEtablissement.getEnseigne1Etablissement());
 
     Country currentCountry = countryRepository.findByName("FRANCE");
