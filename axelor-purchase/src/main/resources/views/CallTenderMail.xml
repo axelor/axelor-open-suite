@@ -7,7 +7,7 @@
     model="com.axelor.apps.purchase.db.CallTenderMail">
     <field name="mailTemplate"/>
     <field name="metaFile"/>
-    <field name="sentMessage"/>
+    <field name="emailMessage"/>
   </grid>
 
   <form name="call-tender-mail-form" model="com.axelor.apps.purchase.db.CallTenderMail"
@@ -15,7 +15,7 @@
     <panel name="mainPanel" showTitle="false">
       <field name="mailTemplate" colSpan="6"/>
       <field name="metaFile" widget="binary-link" colSpan="6"/>
-      <field name="sentMessage"/>
+      <field name="emailMessage"/>
     </panel>
 
   </form>
