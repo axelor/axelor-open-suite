@@ -35,14 +35,14 @@ import java.util.*;
 
 public class IndicatorChartServiceImpl implements IndicatorChartService {
 
-  private static final String CHART_NAME_PATTERN = "indicator-result-chart-%d";
-  private static final String DATASET_TYPE = "rpc";
-  private static final String DATASET_METHOD =
+  protected static final String CHART_NAME_PATTERN = "indicator-result-chart-%d";
+  protected static final String DATASET_TYPE = "rpc";
+  protected static final String DATASET_METHOD =
       "com.axelor.apps.base.web.IndicatorController:fetchResultLinesForChart";
-  private static final String CATEGORY_KEY = "date";
-  private static final String CATEGORY_TYPE = "month";
-  private static final String SERIES_KEY = "indicator";
-  private static final String SERIES_TYPE = "bar";
+  protected static final String CATEGORY_KEY = "date";
+  protected static final String CATEGORY_TYPE = "month";
+  protected static final String SERIES_KEY = "indicator";
+  protected static final String SERIES_TYPE = "bar";
 
   protected final MetaViewRepository metaViewRepository;
 

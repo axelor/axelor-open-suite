@@ -61,7 +61,8 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   protected TaskStatusToolService taskStatusToolService;
   protected TaskStatusProgressByCategoryRepository taskStatusProgressByCategoryRepository;
 
-  private static final String TASK_LINK = "<a href=\"#/ds/all.open.project.tasks/edit/%s\">@%s</a>";
+  protected static final String TASK_LINK =
+      "<a href=\"#/ds/all.open.project.tasks/edit/%s\">@%s</a>";
 
   @Inject
   public ProjectTaskServiceImpl(

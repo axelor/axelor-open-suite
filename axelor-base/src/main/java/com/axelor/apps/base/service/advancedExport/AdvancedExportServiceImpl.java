@@ -64,13 +64,13 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
   private static final Logger log = LoggerFactory.getLogger(AdvancedExportServiceImpl.class);
 
-  @Inject private MetaFieldRepository metaFieldRepo;
+  @Inject protected MetaFieldRepository metaFieldRepo;
 
-  @Inject private MetaModelRepository metaModelRepo;
+  @Inject protected MetaModelRepository metaModelRepo;
 
-  @Inject private MetaSelectRepository metaSelectRepo;
+  @Inject protected MetaSelectRepository metaSelectRepo;
 
-  @Inject private AdvancedExportGeneratorFactory exportGeneratorFactory;
+  @Inject protected AdvancedExportGeneratorFactory exportGeneratorFactory;
 
   private LinkedHashSet<String> joinFieldSet = new LinkedHashSet<>(),
       selectionJoinFieldSet = new LinkedHashSet<>();

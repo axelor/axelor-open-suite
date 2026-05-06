@@ -80,7 +80,7 @@ public class InventoryImportExportServiceImpl implements InventoryImportExportSe
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private static final String X_MARK = "X";
+  protected static final String X_MARK = "X";
 
   protected final AppBaseService appBaseService;
   protected final StockLocationLineFetchService stockLocationLineFetchService;

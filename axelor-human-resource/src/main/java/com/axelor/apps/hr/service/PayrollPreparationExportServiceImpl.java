@@ -57,9 +57,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PayrollPreparationExportServiceImpl implements PayrollPreparationExportService {
-  private static final DateTimeFormatter NIBELIS_EXPORT_DATE_FORMATTER =
+  protected static final DateTimeFormatter NIBELIS_EXPORT_DATE_FORMATTER =
       DateTimeFormatter.ofPattern("dd/MM/yyyy");
-  private static final DateTimeFormatter SILAE_EXPORT_DATE_FORMATTER =
+  protected static final DateTimeFormatter SILAE_EXPORT_DATE_FORMATTER =
       DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
   protected PayrollPreparationRepository payrollPreparationRepository;

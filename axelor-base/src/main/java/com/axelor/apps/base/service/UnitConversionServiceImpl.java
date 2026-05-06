@@ -54,8 +54,8 @@ import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
 public class UnitConversionServiceImpl implements UnitConversionService {
 
-  private static final char TEMPLATE_DELIMITER = '$';
-  private static final int DEFAULT_COEFFICIENT_SCALE = 12;
+  protected static final char TEMPLATE_DELIMITER = '$';
+  protected static final int DEFAULT_COEFFICIENT_SCALE = 12;
 
   private final Cache<String, List<UnitConversion>> unitConversionCache =
       CacheBuilder.newBuilder()
