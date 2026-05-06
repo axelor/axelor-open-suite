@@ -579,8 +579,7 @@ public class PartnerController {
   }
 
   @ErrorException
-  public void filterTagSetOnCompanyChange(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void filterTagSet(ActionRequest request, ActionResponse response) throws AxelorException {
     Partner partner = request.getContext().asType(Partner.class);
     Set<Tag> invalidTags =
         Beans.get(TagService.class)

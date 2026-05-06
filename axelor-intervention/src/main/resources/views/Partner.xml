@@ -5,17 +5,6 @@
 
   <form id="intervention-partner-from" title="Partner" name="partner-form"
     model="com.axelor.apps.base.db.Partner" extension="true">
-    <extend target="//panel[@name='postalAddressesPanel']">
-      <insert position="before">
-        <panel name="LinkPanel" title="Link" showIf="isContact != true &amp;&amp; isCustomer"
-          colSpan="12">
-          <field name="tradingNameSet" requiredIf="isContact != true &amp;&amp; isCustomer"
-            colSpan="6" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
-            widget="Tags" onSelect="action-partner-attrs-set-trading-name-domain"
-            onChange="action-partner-method-filter-tag-set-on-company-change"/>
-        </panel>
-      </insert>
-    </extend>
 
     <extend target="//panel[@name='customerPanel']">
       <insert position="after">
@@ -31,10 +20,6 @@
       </insert>
     </extend>
 
-    <extend target="//field[@name='companySet']">
-      <attribute name="onChange"
-        value="action-partner-record-change-trading-name-set,action-partner-method-filter-tag-set-on-company-change"/>
-    </extend>
   </form>
 
   <action-view name="action-intervention-view-equipments"
@@ -51,16 +36,5 @@
     <domain>self.deliveredPartner.id = :id</domain>
   </action-view>
 
-  <action-record name="action-partner-record-change-trading-name-set"
-    model="com.axelor.apps.base.db.Partner">
-    <field name="tradingNameSet"
-      expr="eval: tradingNameSet?.findAll{ it.company == null || it.company?.id in companySet*.id }"
-      if="tradingNameSet &amp;&amp; tradingNameSet.size() > 0"/>
-  </action-record>
-
-  <action-attrs name="action-partner-attrs-set-trading-name-domain">
-    <attribute name="domain" for="tradingNameSet"
-      expr="eval: &quot; self.company IS NULL OR self.company.id IN (${((companySet ?: [])*.id+[0]).join(',')})&quot;"/>
-  </action-attrs>
 
 </object-views>
