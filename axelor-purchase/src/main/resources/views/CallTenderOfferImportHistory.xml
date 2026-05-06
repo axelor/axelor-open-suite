@@ -24,12 +24,19 @@
     model="com.axelor.apps.purchase.db.CallTenderOfferImportHistory">
     <panel name="mainPanel" showTitle="false">
       <field name="$supplierPartner" title="Supplier" type="many-to-one"
-        target="com.axelor.apps.base.db.Partner" required="true" colSpan="4"
+        target="com.axelor.apps.base.db.Partner" required="true" colSpan="6"
         domain="self.id IN (SELECT cts.supplierPartner.id FROM CallTenderSupplier cts WHERE cts.callTender.id = :_callTenderId)"/>
-      <field name="metaFile" title="File" required="true" colSpan="4" widget="binary-link"/>
+      <field name="metaFile" title="File" required="true" colSpan="6" widget="binary-link"/>
+      <button name="generateTemplateBtn" title="Generate template" colSpan="4"
+        onClick="action-call-tender-method-generate-import-template"/>
       <button name="importBtn" title="Import" colSpan="4"
         onClick="action-call-tender-method-import-offer" css="btn-primary"/>
     </panel>
   </form>
+
+  <action-method name="action-call-tender-method-generate-import-template">
+    <call class="com.axelor.apps.purchase.web.CallTenderController"
+      method="generateImportTemplate"/>
+  </action-method>
 
 </object-views>
