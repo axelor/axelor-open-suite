@@ -19,7 +19,8 @@
       check-message="Invalid leadQueryTypeSelect"/>
   </input>
 
-  <input file="message_template.csv" separator=";" type="com.axelor.message.db.Template">
+  <input file="message_template.csv" separator=";" type="com.axelor.message.db.Template"
+    search="self.name = :name">
     <bind column="name" to="name"
       check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>

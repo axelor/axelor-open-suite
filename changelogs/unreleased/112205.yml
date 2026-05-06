@@ -1,0 +1,3 @@
+---
+title: "Message template: fixed demo data import overriding 'Changed password' message template due to importId conflicts in expense templates."
+module: axelor-human-resource
