@@ -175,8 +175,7 @@
     </extend>
     <extend target="//field[@name='qty']">
       <insert position="after">
-        <field name="qtyToDeliver" readonly="true" x-scale="$nbDecimalDigitForQty"
-          showIf="(saleOrder?.company?.supplyChainConfig?.outSmGenerationSelect || __parent__?.company?.supplyChainConfig?.outSmGenerationSelect) == 4"/>
+        <field name="qtyToDeliver" readonly="true" x-scale="$nbDecimalDigitForQty"/>
       </insert>
     </extend>
   </grid>
