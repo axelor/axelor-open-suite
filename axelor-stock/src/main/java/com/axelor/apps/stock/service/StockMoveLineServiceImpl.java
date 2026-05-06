@@ -1710,7 +1710,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           }
         }
 
-        if (availableQty.compareTo(stockMoveLine.getQty()) < 0) {
+        if (availableQty.compareTo(stockMoveLine.getRealQty()) < 0) {
           StockLocationLine stockLocationLineForProduct =
               stockLocationLineFetchService.getStockLocationLine(
                   stockLocation, stockMoveLine.getProduct());
@@ -1802,18 +1802,19 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             .equals(ProductRepository.PRODUCT_TYPE_SERVICE)) {
       BigDecimal availableQty = stockMoveLine.getAvailableQty();
       BigDecimal availableQtyForProduct = stockMoveLine.getAvailableQtyForProduct();
-      BigDecimal qty = stockMoveLine.getQty();
+      BigDecimal realQty = stockMoveLine.getRealQty();
 
-      if (availableQty.compareTo(qty) >= 0 || !stockMoveLine.getProduct().getStockManaged()) {
+      if (availableQty.compareTo(realQty) >= 0 || !stockMoveLine.getProduct().getStockManaged()) {
         stockMoveLine.setAvailableStatus(I18n.get("Available"));
         stockMoveLine.setAvailableStatusSelect(StockMoveLineRepository.STATUS_AVAILABLE);
         availabilityMap.put("availability", stockMoveLine.getAvailableStatus());
-      } else if (availableQtyForProduct.compareTo(qty) >= 0) {
+      } else if (availableQtyForProduct.compareTo(realQty) >= 0) {
         stockMoveLine.setAvailableStatus(I18n.get("Av. for product"));
         stockMoveLine.setAvailableStatusSelect(
             StockMoveLineRepository.STATUS_AVAILABLE_FOR_PRODUCT);
         availabilityMap.put("availability", stockMoveLine.getAvailableStatus());
-      } else if (availableQty.compareTo(qty) < 0 && availableQtyForProduct.compareTo(qty) < 0) {
+      } else if (availableQty.compareTo(realQty) < 0
+          && availableQtyForProduct.compareTo(realQty) < 0) {
         BigDecimal missingQty = computeMissingQty(stockMoveLine);
         stockMoveLine.setAvailableStatus(
             I18n.get("Missing")
@@ -1839,9 +1840,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                     .orElse(null));
 
     if (trackingNumberConfiguration != null) {
-      return stockMoveLine.getAvailableQtyForProduct().subtract(stockMoveLine.getQty());
+      return stockMoveLine.getAvailableQtyForProduct().subtract(stockMoveLine.getRealQty());
     } else {
-      return stockMoveLine.getAvailableQty().subtract(stockMoveLine.getQty());
+      return stockMoveLine.getAvailableQty().subtract(stockMoveLine.getRealQty());
     }
   }
 
