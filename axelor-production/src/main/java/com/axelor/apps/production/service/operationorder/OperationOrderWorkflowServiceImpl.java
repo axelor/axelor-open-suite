@@ -252,6 +252,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
 
     stopOperationOrderDuration(operationOrder);
     operationOrderPlanningService.computeDuration(operationOrder);
+    computeFinishDuration(operationOrder);
 
     operationOrderStockMoveService.finish(operationOrder);
     operationOrder = JpaModelHelper.ensureManaged(operationOrder);
