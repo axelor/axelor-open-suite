@@ -48,15 +48,12 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class BankOrderValidationServiceImpl implements BankOrderValidationService {
@@ -114,7 +111,7 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validateFromBankOrder(InvoicePayment invoicePayment, boolean force)
-      throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {
+      throws AxelorException {
 
     // Payment date has been initialized at creation. But BankOrder may be validate on a later date
     // So updating paymentDate
@@ -189,8 +186,7 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void realize(BankOrder bankOrder)
-      throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {
+  public void realize(BankOrder bankOrder) throws AxelorException {
 
     LocalDate todayDate = appBaseService.getTodayDate(bankOrder.getSenderCompany());
 
@@ -210,8 +206,7 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
     bankOrderRepository.save(bankOrder);
   }
 
-  protected BankOrder generateMoves(BankOrder bankOrder)
-      throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {
+  protected BankOrder generateMoves(BankOrder bankOrder) throws AxelorException {
 
     if (bankOrder
         .getFunctionalOriginSelect()
@@ -251,8 +246,7 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void confirm(BankOrder bankOrder)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+  public void confirm(BankOrder bankOrder) throws AxelorException {
     bankOrderCheckService.checkBankDetails(bankOrder.getSenderBankDetails(), bankOrder);
     LocalDate todayDate = appBaseService.getTodayDate(bankOrder.getSenderCompany());
 
@@ -282,8 +276,7 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void validatePayment(BankOrder bankOrder)
-      throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {
+  public void validatePayment(BankOrder bankOrder) throws AxelorException {
 
     List<InvoicePayment> invoicePaymentList =
         invoicePaymentRepository.findByBankOrder(bankOrder).fetch();

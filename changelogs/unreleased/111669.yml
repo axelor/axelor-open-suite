@@ -1,0 +1,26 @@
+---
+title: "Bank order: removed DatatypeConfigurationException, JAXBException and IOException from public method signatures."
+module: axelor-bank-payment
+developer: |
+  The following public method signatures were changed to remove checked exceptions JAXBException, IOException, and DatatypeConfigurationException:
+
+  - InvoicePaymentMoveCreateService.createInvoicePaymentMove(InvoicePayment)
+  - InvoicePaymentValidateService.validate(InvoicePayment, boolean)
+  - InvoicePaymentValidateService.validate(InvoicePayment)
+  - BankOrderService.validate(BankOrder)
+  - BankOrderService.generateFile(BankOrder)
+  - BankOrderValidationService.validateFromBankOrder(InvoicePayment, boolean)
+  - BankOrderValidationService.realize(BankOrder)
+  - BankOrderValidationService.validatePayment(BankOrder)
+  - BankOrderValidationService.confirm(BankOrder)
+  - BankOrderFileService.generateFile()
+  - BankOrderFile00800101Service.generateFile()
+  - BankOrderFile00800102Service.generateFile()
+  - BankOrderFile00100102Service.generateFile()
+  - BankOrderFile00100103Service.generateFile()
+  - BankOrderFileAFB160DCOService.generateFile()
+  - BankOrderFileAFB160Service.generateFile()
+  - BankOrderFileAFB320XCTService.generateFile()
+  - BatchBankPaymentService.createBankOrder(Batch)
+  - BatchBankPaymentService.createBankOrderFromPaymentScheduleLines(Batch)
+  - BatchBankPaymentService.createBankOrderFromMonthlyPaymentScheduleLines(Batch)

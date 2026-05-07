@@ -37,14 +37,12 @@ import com.axelor.utils.xml.MarshallingHelper;
 import com.google.common.base.Strings;
 import jakarta.xml.bind.JAXBException;
 import java.io.File;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import javax.xml.datatype.DatatypeConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,17 +123,18 @@ public class BankOrderFileService {
    * Create the order XML file
    *
    * @throws AxelorException
-   * @throws IOException
-   * @throws JAXBException
    */
   @SuppressWarnings("unchecked")
-  public File generateFile()
-      throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
-
+  public File generateFile() throws AxelorException {
     switch (fileExtension) {
       case FILE_EXTENSION_XML:
-        return MarshallingHelper.marshallFile(
-            fileToCreate, context, this.getFolderPath(), this.computeFileName());
+        try {
+          return MarshallingHelper.marshallFile(
+              fileToCreate, context, this.getFolderPath(), this.computeFileName());
+        } catch (JAXBException e) {
+          throw new AxelorException(
+              e, TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
+        }
 
       case FILE_EXTENSION_TXT:
         return FileHelper.writer(
