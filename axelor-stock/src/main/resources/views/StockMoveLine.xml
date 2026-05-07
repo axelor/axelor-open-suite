@@ -240,12 +240,12 @@
       <field name="$trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
       <field name="stockMove.statusSelect" hidden="true"/>
       <field name="stockMove.typeSelect" hidden="true"/>
-      <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
       <field name="$isReadOnly" hidden="true"/>
       <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')"
         colSpan="12">
+        <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
         <button name="addControlEntryBtn" title="Add a control entry"
-          onClick="save,action-control-entry-method-add-control-entry" colOffset="6"/>
+          onClick="save,action-control-entry-method-add-control-entry"/>
         <panel-dashlet action="action-stock-move-line-view-control-entry" colSpan="12"/>
       </panel>
       <panel name="descriptionPanel" title="Description" colSpan="12">

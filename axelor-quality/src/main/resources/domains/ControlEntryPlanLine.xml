@@ -11,7 +11,7 @@
       title="Type"/>
 
     <!-- Type plan line part -->
-    <integer name="priority" title="priority"/>
+    <integer name="priority" title="Priority"/>
     <string name="reference" title="Reference"/>
 
     <string name="name" title="Name"/>

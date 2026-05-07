@@ -18,16 +18,16 @@
     <panel name="mainPanel" colSpan="12" readonlyIf="statusSelect > 2">
       <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"
         readonly="true"/>
+      <field name="controlPlan" colSpan="6" domain="self.statusSelect = 3"
+        onChange="action-control-entry-method-control-plan-change"/>
       <field name="name" colSpan="6"/>
       <field name="entryDateTime" colSpan="6"/>
       <field name="inspector" colSpan="6"/>
-      <field name="sampleCount" colSpan="6"/>
-      <field name="controlPlan" colSpan="6" domain="self.statusSelect = 3"
-        onChange="action-control-entry-method-control-plan-change"/>
+      <field name="sampleCount" colSpan="6" readonlyIf="statusSelect != 1"/>
     </panel>
     <panel-related name="controlEntrySamplesPanel" field="controlEntrySamplesList"
       colSpan="12" grid-view="control-entry-sample-grid" form-view="control-entry-sample-form"
-      showIf="controlEntrySamplesList != null &amp;&amp; controlEntrySamplesList.length > 0"
+      showIf="statusSelect == 2 || statusSelect == 3" canNew="false" canRemove="false"
       readonlyIf="statusSelect > 2" onChange="save"/>
     <panel name="actionPanel" showTitle="false" sidebar="true">
       <button name="createSamplesBtn"

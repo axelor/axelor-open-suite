@@ -8,7 +8,7 @@
     <field name="statusSelect" widget="single-select"/>
     <field name="code"/>
     <field name="name"/>
-    <field name="controlPlanFrequency"/>
+    <field name="controlPlanFrequency" hidden="true"/>
   </grid>
 
   <form name="control-plan-form" title="Control plan"
@@ -17,7 +17,7 @@
       <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"/>
       <field name="code" colSpan="6"/>
       <field name="name" colSpan="6"/>
-      <field name="controlPlanFrequency" colSpan="6"/>
+      <field name="controlPlanFrequency" colSpan="6" hidden="true"/>
       <field name="description" widget="html" colSpan="12"/>
     </panel>
     <panel-related name="controlPlanLinesPanel" field="controlPlanLinesList"
