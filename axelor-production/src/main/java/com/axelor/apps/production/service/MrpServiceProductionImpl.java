@@ -255,12 +255,6 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       return;
     }
 
-    // Strict filter: only products declared directly in the MRP filter criteria
-    // (productSet / productCategorySet / productFamilySet / saleOrderLineSet / mrpForecastSet).
-    // BOM-exploded sub-components are intentionally ignored so that out-of-scope products do not
-    // leak into MRP needs/supplies driven by planned StockMoveLines.
-    Set<Long> filterProductIds = getMrpFilterProductIds();
-
     StockLocation stockLocation = manufOrder.getProdProcess().getStockLocation();
 
     LocalDate maturityDate = null;
@@ -278,8 +272,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       Product product = entry.getKey();
       BigDecimal qty = entry.getValue();
       if ((this.isBeforeEndDate(maturityDate) || manufOrderMrpLineType.getIgnoreEndDate())
-          && this.isMrpProduct(product)
-          && filterProductIds.contains(product.getId())) {
+          && this.isMrpProduct(product)) {
         MrpLine mrpLine =
             this.createMrpLine(
                 mrp,
@@ -317,7 +310,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
             operationMaturityDate,
             stockLocation,
             operationOrder,
-            filterProductIds);
+            null);
       }
     } else {
       createConsumedNeedMrpLines(
@@ -327,7 +320,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           maturityDate,
           stockLocation,
           manufOrder,
-          filterProductIds);
+          manufOrder.getProduct());
     }
   }
 
@@ -338,13 +331,19 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       LocalDate maturityDate,
       StockLocation stockLocation,
       Model originModel,
-      Set<Long> filterProductIds)
+      Product autoInjectLevelReference)
       throws AxelorException {
     for (Map.Entry<Product, BigDecimal> entry :
         computePlannedQtyByProduct(stockMoveLineList).entrySet()) {
       Product product = entry.getKey();
       BigDecimal qty = entry.getValue();
-      if (this.isMrpProduct(product) && filterProductIds.contains(product.getId())) {
+      if (this.isMrpProduct(product)) {
+        // A component not in MRP scope (no default BOM or off-BOM substitution) is added
+        // at the level of the manuf order product + 1 so MRP recursively explodes the BOM.
+        if (autoInjectLevelReference != null && !this.productMap.containsKey(product.getId())) {
+          this.assignProductAndLevel(product, autoInjectLevelReference);
+          this.createAvailableStockMrpLine(product, stockLocation);
+        }
         MrpLine mrpLine =
             this.createMrpLine(
                 mrp,

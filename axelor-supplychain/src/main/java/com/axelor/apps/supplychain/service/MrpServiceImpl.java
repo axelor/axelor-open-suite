@@ -131,7 +131,6 @@ public class MrpServiceImpl implements MrpService {
   protected List<StockLocation> stockLocationList;
   protected Map<Long, Integer> productMap;
   protected Map<Long, Integer> productMapToBeAssigned;
-  protected Set<Long> mrpFilterProductIds;
   protected Integer currentLevel;
   protected Mrp mrp;
   protected LocalDate today;
@@ -1469,14 +1468,6 @@ public class MrpServiceImpl implements MrpService {
     }
 
     return productSet;
-  }
-
-  protected Set<Long> getMrpFilterProductIds() throws AxelorException {
-    if (mrpFilterProductIds == null) {
-      mrpFilterProductIds =
-          getProductList().stream().map(Product::getId).collect(Collectors.toSet());
-    }
-    return mrpFilterProductIds;
   }
 
   public boolean isMrpProduct(Product product) {
