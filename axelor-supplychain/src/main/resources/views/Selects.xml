@@ -251,8 +251,8 @@
 
   <selection name="supplychain.cost.review.status.select">
     <option value="1" color="blue">Draft</option>
-    <option value="2" color="green">Cost review computed</option>
-    <option value="3" color="brown">Cost review updated</option>
+    <option value="2" color="green">Stock revaluation computed</option>
+    <option value="3" color="brown">Stock revaluation updated</option>
   </selection>
 
 </object-views>

@@ -363,7 +363,9 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
 
   @Transactional(rollbackOn = Exception.class)
   protected void updateDepreciationRate(UnitCostCalcLine unitCostCalcLine) throws AxelorException {
-    Product product = unitCostCalcLine.getProduct();
+    // Re-fetch the product within this transaction to avoid LazyInitializationException
+    // on the Hibernate proxy carried by unitCostCalcLine from the outer scope.
+    Product product = productRepository.find(unitCostCalcLine.getProduct().getId());
     BigDecimal rate = unitCostCalcLine.getCostToApply();
     int typeSelect = unitCostCalcLine.getTypeSelect();
 
@@ -390,11 +392,17 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
     }
 
     BigDecimal rateFactor = rate.divide(HUNDRED, WAP_SCALE, RoundingMode.HALF_UP);
+    boolean isValorization = typeSelect == DepreciationRateConfigRepository.TYPE_VALORIZATION;
     BigDecimal factor =
-        typeSelect == DepreciationRateConfigRepository.TYPE_VALORIZATION
-            ? BigDecimal.ONE.add(rateFactor)
-            : BigDecimal.ONE.subtract(rateFactor);
+        isValorization ? BigDecimal.ONE.add(rateFactor) : BigDecimal.ONE.subtract(rateFactor);
     LocalDateTime dateT = getCurrentDateTime();
+
+    String origin =
+        String.format(
+            "%s (%s%s%%)",
+            I18n.get(StockLocationLineHistoryRepository.ORIGIN_INVENTORY_DEPRECIATION),
+            isValorization ? "+" : "-",
+            rate.stripTrailingZeros().toPlainString());
 
     List<StockLocationLine> stockLocationLines =
         stockLocationLineRepository
@@ -417,7 +425,7 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
       stockLocationLineHistoryService.saveHistory(
           stockLocationLine,
           dateT,
-          StockLocationLineHistoryRepository.ORIGIN_INVENTORY_DEPRECIATION,
+          origin,
           StockLocationLineHistoryRepository.TYPE_SELECT_INVENTORY_DEPRECIATION);
     }
 

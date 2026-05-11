@@ -315,13 +315,14 @@
   </action-view>
 
   <!-- Stock cost review menus -->
-  <menuitem name="stock-cost-review" parent="stock-root" title="Cost review" order="1050"/>
+  <menuitem name="stock-cost-review" parent="stock-root" title="Stock revaluation"
+    order="1050"/>
 
   <menuitem name="stock-cost-review-calculation" parent="stock-cost-review"
-    title="Cost review" action="stock.root.depreciation.rate.calculations" order="100"/>
+    title="Stock revaluation" action="stock.root.depreciation.rate.calculations" order="100"/>
 
-  <action-view name="stock.root.depreciation.rate.calculations" title="Cost review"
-    model="com.axelor.apps.supplychain.db.UnitCostCalculation">
+  <action-view name="stock.root.depreciation.rate.calculations"
+    title="Stock revaluation" model="com.axelor.apps.supplychain.db.UnitCostCalculation">
     <view type="grid" name="depreciation-rate-calculations-grid"/>
     <view type="form" name="cost-calculations-form"/>
     <view-param name="forceTitle" value="true"/>
@@ -333,11 +334,11 @@
     title="Configuration" icon="gear" order="200"/>
 
   <menuitem name="stock-cost-review-configuration-rate-config"
-    parent="stock-cost-review-configuration" title="Cost review rate configuration"
+    parent="stock-cost-review-configuration" title="Stock revaluation rate configuration"
     action="action-supplychain-depreciation-rate-config" order="100"/>
 
   <action-view name="action-supplychain-depreciation-rate-config"
-    title="Cost review rate configuration"
+    title="Stock revaluation rate configuration"
     model="com.axelor.apps.supplychain.db.DepreciationRateConfig">
     <view type="grid" name="depreciation-rate-config-grid"/>
     <view type="form" name="depreciation-rate-config-form"/>

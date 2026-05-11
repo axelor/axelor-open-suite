@@ -78,7 +78,7 @@ public class DepRateCalculationCsvServiceImpl implements DepRateCalculationCsvSe
 
     File file = TempFiles.createTempFile(fileName, ".csv").toFile();
 
-    String[] headers = {"Product_code", "Product_code", "Computed_cost", "Cost_to_apply"};
+    String[] headers = {"Product_code", "Product_name", "Computed_cost", "Cost_to_apply"};
 
     CsvHelper.csvWriter(file.getParent(), file.getName(), ';', '"', headers, list);
 

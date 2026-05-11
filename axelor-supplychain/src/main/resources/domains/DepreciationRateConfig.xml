@@ -10,7 +10,7 @@
     <!-- Valuation action type: depreciation (decrease WAP) or valorization (increase WAP) -->
     <integer name="typeSelect" title="Type"
       selection="supplychain.depreciation.rate.config.type.select" default="1" required="true"
-      help="Depreciation reduces the weighted average price. Valorization increases it."/>
+      help="Depreciation reduces the weighted average price. Valorization increases it"/>
 
     <!-- Configuration can be at 4 levels: product, product category, product family, or stock rotation
       category -->

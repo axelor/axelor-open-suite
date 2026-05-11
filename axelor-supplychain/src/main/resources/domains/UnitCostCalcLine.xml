@@ -23,12 +23,12 @@
     <!-- Depreciation totals -->
     <integer name="typeSelect" title="Type"
       selection="supplychain.depreciation.rate.config.type.select" default="1"
-      help="Depreciation reduces the WAP, valorization increases it."/>
+      help="Depreciation reduces the WAP, valorization increases it"/>
     <decimal name="qty" title="Quantity" precision="20" scale="10"
-      help="Current total quantity of the product across non-virtual stock locations."/>
+      help="Current total quantity of the product across non-virtual stock locations"/>
     <decimal name="totalPrice" title="Total price" precision="20" scale="10"
-      help="Current total inventory value (qty x previous cost)."/>
+      help="Current total inventory value (qty x previous cost)"/>
     <decimal name="valuedGap" title="Valued gap" precision="20" scale="10"
-      help="Valuation difference after applying the rate: qty x (new cost - previous cost)."/>
+      help="Valuation difference after applying the rate: qty x (new cost - previous cost)"/>
   </entity>
 </domain-models>
