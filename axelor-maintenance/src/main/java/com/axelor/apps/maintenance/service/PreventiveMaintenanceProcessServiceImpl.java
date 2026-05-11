@@ -53,7 +53,8 @@ public class PreventiveMaintenanceProcessServiceImpl
   @Transactional(rollbackOn = {Exception.class})
   public boolean processEquipment(EquipementMaintenance equipment, ProductionBatch productionBatch)
       throws AxelorException {
-    if (!criterionService.shouldTriggerMaintenance(equipment)) {
+    int anticipationDays = productionBatch != null ? productionBatch.getMtnAnticipationDays() : 0;
+    if (!criterionService.shouldTriggerMaintenance(equipment, anticipationDays)) {
       return false;
     }
 

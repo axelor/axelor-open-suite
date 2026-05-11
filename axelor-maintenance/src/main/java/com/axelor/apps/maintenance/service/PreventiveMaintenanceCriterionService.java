@@ -28,11 +28,19 @@ public interface PreventiveMaintenanceCriterionService {
   /**
    * Evaluate the calendar criterion for the given equipment.
    *
+   * <p>When {@code nextMtnDate} is set, the trigger fires as soon as {@code today >= nextMtnDate -
+   * anticipationDays}. The {@code anticipationDays} value gives planners lead time to prepare the
+   * intervention; a value of 0 reproduces the legacy behavior (trigger on the due date). The value
+   * is not applied to the history-based or no-history paths.
+   *
    * @param equipment the equipment to evaluate
+   * @param anticipationDays number of days before {@code nextMtnDate} to start triggering; values
+   *     less than 0 are treated as 0
    * @return true if the calendar criterion is met, false otherwise; null if the criterion is not
    *     configured (mtnEachDay <= 0)
    */
-  Boolean evaluateCalendarCriterion(EquipementMaintenance equipment) throws AxelorException;
+  Boolean evaluateCalendarCriterion(EquipementMaintenance equipment, int anticipationDays)
+      throws AxelorException;
 
   /**
    * Evaluate the operating hours criterion for the given equipment.
@@ -47,12 +55,15 @@ public interface PreventiveMaintenanceCriterionService {
    * Evaluate combined criteria according to the equipment's trigger mode.
    *
    * <p>Uses createMtnRequestSelect: 0 = "First reached" (OR), 1 = "All reached" (AND). Only
-   * configured criteria participate in the evaluation.
+   * configured criteria participate in the evaluation. The {@code anticipationDays} value applies
+   * to the calendar criterion only.
    *
    * @param equipment the equipment to evaluate
+   * @param anticipationDays anticipation horizon in days for the calendar criterion
    * @return true if maintenance should be triggered
    */
-  boolean shouldTriggerMaintenance(EquipementMaintenance equipment) throws AxelorException;
+  boolean shouldTriggerMaintenance(EquipementMaintenance equipment, int anticipationDays)
+      throws AxelorException;
 
   BigDecimal getMachineOperatingHours(Machine machine);
 }

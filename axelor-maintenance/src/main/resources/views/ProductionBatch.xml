@@ -23,6 +23,15 @@
       </insert>
     </extend>
 
+    <extend target="//panel[@name='informationPanel']">
+      <insert position="before">
+        <panel name="preventiveMaintenanceBatchPanel" title="Preventive maintenance batch"
+          showIf="actionSelect == 4">
+          <field name="mtnAnticipationDays"/>
+        </panel>
+      </insert>
+    </extend>
+
   </form>
 
 </object-views>
