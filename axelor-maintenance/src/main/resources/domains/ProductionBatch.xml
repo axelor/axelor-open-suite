@@ -7,7 +7,8 @@
 
   <entity name="ProductionBatch">
 
-    <integer name="mtnAnticipationDays" title="Anticipation horizon (days)" min="0" default="0"
+    <integer name="mtnAnticipationDays" title="Anticipation horizon (days)" min="0"
+      default="0"
       help="Number of days before the scheduled maintenance date at which the request is created. Leave at 0 to trigger on the due date (current behavior)."/>
 
   </entity>
