@@ -1,0 +1,13 @@
+---
+title: "Expense: fixed an error where ventilating an expense with multiple expense lines on different dates with taxes caused a 'duplicate tax movelines' error."
+module: axelor-human-resource
+developer: |
+  The method `computeExpenseLinesTotalTax` in `ExpenseVentilateServiceImpl` was refactored to group
+  tax amounts by `(TaxLine, vatSystem)` instead of by date. Tax move lines now have `taxLineSet`,
+  `taxRate`, `taxCode`, and `vatSystemSelect` properly set to avoid duplicate detection.
+
+  New class `ExpenseTaxConfiguration` was added to handle tax grouping.
+
+  Modified files:
+  - `ExpenseVentilateServiceImpl.java`
+  - `ExpenseTaxConfiguration.java` (new)
