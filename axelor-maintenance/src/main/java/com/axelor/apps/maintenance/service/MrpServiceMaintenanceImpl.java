@@ -19,11 +19,15 @@
 package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.BillOfMaterialMrpLineService;
@@ -43,9 +47,11 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockHistoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.supplychain.db.Mrp;
+import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
@@ -60,10 +66,14 @@ import com.axelor.message.service.MailMessageService;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MrpServiceMaintenanceImpl extends MrpServiceProductionImpl {
 
@@ -188,6 +198,10 @@ public class MrpServiceMaintenanceImpl extends MrpServiceProductionImpl {
       Mrp mrp, ManufOrder maintenanceOrder, MrpLineType maintenanceOrderNeedMrpLineType)
       throws AxelorException {
 
+    if (processedManufOrderIds != null && !processedManufOrderIds.add(maintenanceOrder.getId())) {
+      return;
+    }
+
     StockLocation stockLocation = maintenanceOrder.getProdProcess().getStockLocation();
 
     LocalDate maturityDate = null;
@@ -204,21 +218,100 @@ public class MrpServiceMaintenanceImpl extends MrpServiceProductionImpl {
       return;
     }
 
-    List<StockMoveLine> stockMoveLineList = new ArrayList<>();
+    // Custom BOM explosion: walk DOWN the BOM tree of each planned SML product and accumulate
+    // cascaded quantities for products that are in the MRP's initial filter (getProductList()).
+    // Only filter products generate MrpLines from the maintenance order, so intermediate cascade
+    // lines (e.g., for filter=C1 with an OM consuming PF, no PF/PSF lines, just C1 qty 4).
+    Set<Long> filterProductIds =
+        getProductList().stream().map(Product::getId).collect(Collectors.toSet());
+    Company company = mrp.getStockLocation() != null ? mrp.getStockLocation().getCompany() : null;
+    int qtyScale = appBaseService.getNbDecimalDigitForQty();
+    Map<Long, BigDecimal> qtyByFilterProduct = new HashMap<>();
+
     for (StockMove stockMove : maintenanceOrder.getInStockMoveList()) {
-      stockMoveLineList.addAll(stockMove.getStockMoveLineList());
+      if (stockMove.getStatusSelect() == null
+          || stockMove.getStatusSelect() != StockMoveRepository.STATUS_PLANNED) {
+        continue;
+      }
+      for (StockMoveLine sml : stockMove.getStockMoveLineList()) {
+        Product smlProduct = sml.getProduct();
+        if (smlProduct == null) {
+          continue;
+        }
+        BigDecimal smlQty = sml.getQty();
+        if (sml.getUnit() != null
+            && smlProduct.getUnit() != null
+            && !sml.getUnit().equals(smlProduct.getUnit())) {
+          smlQty =
+              unitConversionService.convert(
+                  sml.getUnit(), smlProduct.getUnit(), smlQty, qtyScale, smlProduct);
+        }
+        smlQty = smlQty.setScale(qtyScale, RoundingMode.HALF_UP);
+        explodeBomForFilterProducts(
+            smlProduct, smlQty, filterProductIds, company, qtyScale, qtyByFilterProduct, 0);
+      }
     }
 
-    // Pass null for autoInjectLevelReference: maintenance orders have no parent product to anchor
-    // BOM level assignment, and consumed components are tracked directly via planned
-    // StockMoveLines.
-    createConsumedNeedMrpLines(
-        mrp,
-        stockMoveLineList,
-        maintenanceOrderNeedMrpLineType,
-        maturityDate,
-        stockLocation,
-        maintenanceOrder,
-        null);
+    for (Map.Entry<Long, BigDecimal> entry : qtyByFilterProduct.entrySet()) {
+      Product product = productRepository.find(entry.getKey());
+      BigDecimal qty = entry.getValue();
+      MrpLine mrpLine =
+          createMrpLine(
+              mrp,
+              product,
+              maintenanceOrderNeedMrpLineType,
+              qty,
+              maturityDate,
+              BigDecimal.ZERO,
+              stockLocation,
+              maintenanceOrder);
+      if (mrpLine != null) {
+        mrpLineRepository.save(mrpLine);
+      }
+    }
+  }
+
+  /**
+   * Recursively walks DOWN the default BOM of {@code product}, multiplying quantities by each BOM
+   * line's qty, and accumulates the cumulative qty in {@code result} for every product that is in
+   * {@code filterProductIds}. {@code depth} guards against excessively deep or cyclic BOMs (same
+   * 100-level limit as production's standard cascade).
+   */
+  protected void explodeBomForFilterProducts(
+      Product product,
+      BigDecimal qty,
+      Set<Long> filterProductIds,
+      Company company,
+      int qtyScale,
+      Map<Long, BigDecimal> result,
+      int depth)
+      throws AxelorException {
+
+    if (product == null || depth > 100) {
+      return;
+    }
+
+    if (filterProductIds.contains(product.getId())) {
+      result.merge(product.getId(), qty, BigDecimal::add);
+    }
+
+    BillOfMaterial bom = billOfMaterialService.getDefaultBOM(product, company);
+    if (bom == null || bom.getBillOfMaterialLineList() == null) {
+      return;
+    }
+
+    for (BillOfMaterialLine line : bom.getBillOfMaterialLineList()) {
+      Product subProduct = line.getProduct();
+      if (subProduct == null || !isMrpProduct(subProduct) || line.getHasNoManageStock()) {
+        continue;
+      }
+      BigDecimal lineQty = line.getQty() == null ? BigDecimal.ZERO : line.getQty();
+      // BigDecimal.multiply sums the scales of the operands, which can quickly exceed
+      // MrpLine.qty's validation precision (10 fraction digits). Cap the scale at the configured
+      // qty precision so the persisted value stays within bounds.
+      BigDecimal subQty = qty.multiply(lineQty).setScale(qtyScale, RoundingMode.HALF_UP);
+      explodeBomForFilterProducts(
+          subProduct, subQty, filterProductIds, company, qtyScale, result, depth + 1);
+    }
   }
 }
