@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
-  <grid name="maintenance-prod-process-grid" title="Production process"
+  <grid name="maintenance-prod-process-grid" title="Maintenance process"
     model="com.axelor.apps.production.db.ProdProcess">
     <toolbar>
       <button name="printBtn" hideIf="true" onClick=""/>
@@ -16,7 +16,7 @@
     <field name="statusSelect" widget="single-select"/>
   </grid>
 
-  <form name="maintenance-prod-process-form" title="Production process"
+  <form name="maintenance-prod-process-form" title="Maintenance process"
     model="com.axelor.apps.production.db.ProdProcess" width="large"
     onLoad="action-prod-process-record-count-number-of-phases"
     onSave="action-prod-process-method-validate-prod-process"
