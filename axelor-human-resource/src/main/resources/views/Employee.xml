@@ -366,6 +366,7 @@
 
             <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
             <field name="mobilePhone" widget="phone"/>
+            <field name="simpleFullName" hidden="true"/>
           </panel>
         </editor>
       </field>
