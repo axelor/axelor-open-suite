@@ -23,12 +23,13 @@
   </grid>
 
   <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
-    onNew="action-group-base-pricelist-onnew" onLoad="action-price-list-attrs-set-currency-readonly"
+    onNew="action-group-base-pricelist-onnew" onLoad="action-price-list-group-onload"
     onSave="action-price-list-method-check-anomaly,action-price-list-method-check-dates"
     width="large">
     <panel name="mainPanel">
       <field name="title"/>
-      <field name="typeSelect" colSpan="4"/>
+      <field name="typeSelect" colSpan="4"
+        onChange="action-price-list-attrs-set-partner-price-list-panel-title"/>
       <field name="isActive" colSpan="2"/>
       <field name="applicationBeginDate" onChange="action-price-list-method-check-dates"/>
       <field name="applicationEndDate" onChange="action-price-list-method-check-dates"/>
@@ -61,6 +62,7 @@
     <action name="action-price-list-attrs-readonly-type-select-true"
       if="__parent__ || _typeSelect != null"/>
     <action name="action-price-list-attrs-set-currency-readonly"/>
+    <action name="action-price-list-attrs-set-partner-price-list-panel-title"/>
   </action-group>
 
   <action-record name="action-price-list-record-default"
@@ -121,6 +123,16 @@
       if="!__parent__ &amp;&amp; id"/>
     <attribute name="readonly" for="currency" expr="eval: true"
       if="__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.PartnerPriceList'"/>
+  </action-attrs>
+
+  <action-group name="action-price-list-group-onload">
+    <action name="action-price-list-attrs-set-currency-readonly"/>
+    <action name="action-price-list-attrs-set-partner-price-list-panel-title"/>
+  </action-group>
+
+  <action-attrs name="action-price-list-attrs-set-partner-price-list-panel-title">
+    <attribute name="title" for="partnerPriceListPanel"
+      expr="eval: typeSelect == 2 || typeSelect == 4 ? com.axelor.i18n.I18n.get('Supplier partner price lists') : com.axelor.i18n.I18n.get('Customer partner price lists')"/>
   </action-attrs>
 
 </object-views>
