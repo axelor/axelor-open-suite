@@ -63,11 +63,13 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,7 +177,41 @@ public class CostSheetServiceImpl implements CostSheetService {
   public CostSheet computeCostPrice(
       ManufOrder manufOrder, int calculationTypeSelect, LocalDate calculationDate)
       throws AxelorException {
+    return computeCostPrice(manufOrder, calculationTypeSelect, calculationDate, null);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public CostSheet computeCostPrice(
+      ManufOrder manufOrder,
+      int calculationTypeSelect,
+      LocalDate calculationDate,
+      BigDecimal overrideProducedQty)
+      throws AxelorException {
+    return computeCostPrice(
+        manufOrder,
+        calculationTypeSelect,
+        calculationDate,
+        overrideProducedQty,
+        Collections.emptySet(),
+        Collections.emptySet());
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public CostSheet computeCostPrice(
+      ManufOrder manufOrder,
+      int calculationTypeSelect,
+      LocalDate calculationDate,
+      BigDecimal overrideProducedQty,
+      Set<Long> excludedConsumedLineIds,
+      Set<Long> excludedProducedLineIds)
+      throws AxelorException {
     this.init();
+    Set<Long> safeExcludedConsumed =
+        excludedConsumedLineIds != null ? excludedConsumedLineIds : Collections.emptySet();
+    Set<Long> safeExcludedProduced =
+        excludedProducedLineIds != null ? excludedProducedLineIds : Collections.emptySet();
 
     LocalDate previousCostSheetDate = resolvePreviousCostSheetDate(manufOrder);
     manufOrder.addCostSheetListItem(costSheet);
@@ -187,12 +223,15 @@ public class CostSheetServiceImpl implements CostSheetService {
             : appBaseService.getTodayDate(manufOrder.getCompany()));
 
     BigDecimal producedQty =
-        computeTotalProducedQty(
-            manufOrder.getProduct(),
-            manufOrder.getProducedStockMoveLineList(),
-            costSheet.getCalculationDate(),
-            previousCostSheetDate,
-            costSheet.getCalculationTypeSelect());
+        overrideProducedQty != null
+            ? overrideProducedQty
+            : computeTotalProducedQty(
+                manufOrder.getProduct(),
+                manufOrder.getProducedStockMoveLineList(),
+                costSheet.getCalculationDate(),
+                previousCostSheetDate,
+                costSheet.getCalculationTypeSelect(),
+                safeExcludedProduced);
 
     CostSheetLine rootCostSheetLine = createAndAddRootCostSheetLine(manufOrder, producedQty);
 
@@ -203,7 +242,8 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     costSheet.setManufOrderProducedRatio(computeManufOrderProducedRatio(manufOrder, producedQty));
 
-    this.computeRealCostPrice(manufOrder, 0, rootCostSheetLine, previousCostSheetDate);
+    this.computeRealCostPrice(
+        manufOrder, 0, rootCostSheetLine, previousCostSheetDate, safeExcludedConsumed);
 
     this.computeRealResidualProduct(manufOrder);
 
@@ -637,6 +677,17 @@ public class CostSheetServiceImpl implements CostSheetService {
       CostSheetLine parentCostSheetLine,
       LocalDate previousCostSheetDate)
       throws AxelorException {
+    computeRealCostPrice(
+        manufOrder, bomLevel, parentCostSheetLine, previousCostSheetDate, Collections.emptySet());
+  }
+
+  protected void computeRealCostPrice(
+      ManufOrder manufOrder,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      LocalDate previousCostSheetDate,
+      Set<Long> excludedConsumedLineIds)
+      throws AxelorException {
 
     bomLevel++;
 
@@ -644,7 +695,12 @@ public class CostSheetServiceImpl implements CostSheetService {
         resolveComponentValuationMethod(CostSheetService.ORIGIN_MANUF_ORDER, parentCostSheetLine);
 
     this.computeConsumedProduct(
-        manufOrder, bomLevel, parentCostSheetLine, previousCostSheetDate, valuationMethod);
+        manufOrder,
+        bomLevel,
+        parentCostSheetLine,
+        previousCostSheetDate,
+        valuationMethod,
+        excludedConsumedLineIds);
     this.computeOutSourcedProduct(manufOrder, bomLevel, parentCostSheetLine);
 
     BigDecimal producedQty = parentCostSheetLine.getConsumptionQty();
@@ -741,7 +797,8 @@ public class CostSheetServiceImpl implements CostSheetService {
       int bomLevel,
       CostSheetLine parentCostSheetLine,
       LocalDate previousCostSheetDate,
-      int valuationMethod)
+      int valuationMethod,
+      Set<Long> excludedConsumedLineIds)
       throws AxelorException {
 
     BigDecimal ratio = costSheet.getManufOrderProducedRatio();
@@ -756,7 +813,8 @@ public class CostSheetServiceImpl implements CostSheetService {
             operation.getConsumedStockMoveLineList(),
             operation.getToConsumeProdProductList(),
             ratio,
-            valuationMethod);
+            valuationMethod,
+            excludedConsumedLineIds);
       }
     } else {
 
@@ -767,7 +825,8 @@ public class CostSheetServiceImpl implements CostSheetService {
           manufOrder.getConsumedStockMoveLineList(),
           manufOrder.getToConsumeProdProductList(),
           ratio,
-          valuationMethod);
+          valuationMethod,
+          excludedConsumedLineIds);
     }
   }
 
@@ -778,7 +837,8 @@ public class CostSheetServiceImpl implements CostSheetService {
       List<StockMoveLine> consumedStockMoveLineList,
       List<ProdProduct> toConsumeProdProductList,
       BigDecimal ratio,
-      int valuationMethod)
+      int valuationMethod,
+      Set<Long> excludedConsumedLineIds)
       throws AxelorException {
 
     CostSheet parentCostSheet = parentCostSheetLine.getCostSheet();
@@ -790,7 +850,8 @@ public class CostSheetServiceImpl implements CostSheetService {
             consumedStockMoveLineList,
             calculationDate,
             previousCostSheetDate,
-            calculationTypeSelect);
+            calculationTypeSelect,
+            excludedConsumedLineIds);
 
     for (List<Object> keys : consumedStockMoveLinePerProductAndUnit.keySet()) {
 
@@ -823,6 +884,23 @@ public class CostSheetServiceImpl implements CostSheetService {
       LocalDate previousCostSheetDate,
       int calculationTypeSelect)
       throws AxelorException {
+    return computeTotalProducedQty(
+        producedProduct,
+        producedStockMoveLineList,
+        calculationDate,
+        previousCostSheetDate,
+        calculationTypeSelect,
+        Collections.emptySet());
+  }
+
+  protected BigDecimal computeTotalProducedQty(
+      Product producedProduct,
+      List<StockMoveLine> producedStockMoveLineList,
+      LocalDate calculationDate,
+      LocalDate previousCostSheetDate,
+      int calculationTypeSelect,
+      Set<Long> excludedProducedLineIds)
+      throws AxelorException {
 
     BigDecimal totalQty = BigDecimal.ZERO;
 
@@ -831,7 +909,8 @@ public class CostSheetServiceImpl implements CostSheetService {
             producedStockMoveLineList,
             calculationDate,
             previousCostSheetDate,
-            calculationTypeSelect);
+            calculationTypeSelect,
+            excludedProducedLineIds);
 
     for (List<Object> keys : producedStockMoveLinePerProductAndUnit.keySet()) {
 
@@ -872,6 +951,20 @@ public class CostSheetServiceImpl implements CostSheetService {
       LocalDate calculationDate,
       LocalDate previousCostSheetDate,
       int calculationType) {
+    return getTotalQtyPerProductAndUnit(
+        stockMoveLineList,
+        calculationDate,
+        previousCostSheetDate,
+        calculationType,
+        Collections.emptySet());
+  }
+
+  protected Map<List<Object>, BigDecimal> getTotalQtyPerProductAndUnit(
+      List<StockMoveLine> stockMoveLineList,
+      LocalDate calculationDate,
+      LocalDate previousCostSheetDate,
+      int calculationType,
+      Set<Long> excludedLineIds) {
 
     Map<List<Object>, BigDecimal> stockMoveLinePerProductAndUnitMap = new HashMap<>();
 
@@ -880,6 +973,14 @@ public class CostSheetServiceImpl implements CostSheetService {
     }
 
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
+
+      // Lines explicitly excluded (typically already accounted for in a previous cost sheet
+      // batch) are skipped regardless of date filters. This prevents double-counting in
+      // partial + final finishes that happen on the same day, where the date-based filter
+      // alone cannot distinguish events.
+      if (excludedLineIds != null && excludedLineIds.contains(stockMoveLine.getId())) {
+        continue;
+      }
 
       StockMove stockMove = stockMoveLine.getStockMove();
 

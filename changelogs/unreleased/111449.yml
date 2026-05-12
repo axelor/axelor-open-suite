@@ -1,3 +1,0 @@
----
-title: "Sale order: fixed customer credit overrun not being detected at quotation finalization when the current quotation pushes the total above the accepted credit."
-module: axelor-supplychain

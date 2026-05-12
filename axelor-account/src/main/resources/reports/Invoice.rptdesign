@@ -1169,17 +1169,17 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">78</property>
+                        <property name="position">77</property>
                         <property name="name">PenaltyRateNote</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">79</property>
+                        <property name="position">78</property>
                         <property name="name">legalFormAndCapital</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">80</property>
+                        <property name="position">79</property>
                         <property name="name">legalInformation</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -1644,19 +1644,19 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="position">78</property>
+                    <property name="position">77</property>
                     <property name="name">PenaltyRateNote</property>
                     <property name="nativeName">PenaltyRateNote</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">79</property>
+                    <property name="position">78</property>
                     <property name="name">legalFormAndCapital</property>
                     <property name="nativeName">legalFormAndCapital</property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="position">80</property>
+                    <property name="position">79</property>
                     <property name="name">legalInformation</property>
                     <property name="nativeName">legalInformation</property>
                     <property name="dataType">string</property>
@@ -4743,7 +4743,7 @@ select distinct
     InvoiceStockMove is not null as "isStockMoveEmpty",
     Invoice.display_stock_move_on_invoice_printing as "displayStockMoveOnInvoicePrinting",
 	Invoice.legal_notice as "legal_notice",
-	Invoice.vat_liability_select as "vatSystemSelect",
+	Invoice.vat_system_select as "vatSystemSelect",
 	(SELECT display_partner_siren_on_invoice_printing FROM account_account_config WHERE company = Company.id) as "display_siren",
 	(SELECT ips.statement::varchar FROM account_invoice_product_statement ips WHERE ips.account_config = (SELECT id FROM account_account_config WHERE company = Invoice.company) AND ips.type_list = Invoice.invoice_category_select LIMIT 1) as invoice_product_statement,
 	AccountConfig.display_items_categories_on_printing as "displayItemsCategoriesOnPrinting",
@@ -4846,7 +4846,7 @@ select distinct
     InvoiceStockMove is not null as "isStockMoveEmpty",
     Invoice.display_stock_move_on_invoice_printing as "displayStockMoveOnInvoicePrinting",
 	Invoice.legal_notice as "legal_notice",
-	Invoice.vat_liability_select as "vatSystemSelect",
+	Invoice.vat_system_select as "vatSystemSelect",
 	(SELECT display_partner_siren_on_invoice_printing FROM account_account_config WHERE company = Company.id) as "display_siren",
 	(SELECT ips.statement::varchar FROM account_invoice_product_statement ips WHERE ips.account_config = (SELECT id FROM account_account_config WHERE company = Invoice.company) AND ips.type_list = Invoice.invoice_category_select LIMIT 1) as invoice_product_statement,
 	AccountConfig.display_items_categories_on_printing as "displayItemsCategoriesOnPrinting",

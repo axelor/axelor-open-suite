@@ -37,7 +37,7 @@
 
     <extend target="//field[@name='tradingName']">
       <attribute name="readonlyIf"
-        value="callTender == null &amp;&amp; !createdByInterco &amp;&amp; !outsourcingOrder &amp;&amp;((purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3)"/>
+        value="callTender == null &amp;&amp; !createdByInterco &amp;&amp; !outsourcingOrder &amp;&amp; ((purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0 &amp;&amp; statusSelect > 1) || statusSelect >= 3)"/>
     </extend>
 
     <extend target="//field[@name='purchaseOrderSeq']">

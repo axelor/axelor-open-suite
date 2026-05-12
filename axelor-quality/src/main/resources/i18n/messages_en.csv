@@ -382,7 +382,6 @@
 "Statuses",,,
 "Stock move",,,
 "Stock move line",,,
-"StockMove",,,
 "StockMoveLine",,,
 "Sum of accepted quantity and rejected quantity can not be greater than quantity",,,
 "Sum of quantities of the decisions for a default must not be greater than the default's quantity",,,

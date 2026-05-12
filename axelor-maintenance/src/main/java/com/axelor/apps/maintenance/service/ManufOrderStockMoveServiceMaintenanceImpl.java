@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.maintenance.exception.MaintenanceExceptionMessage;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.service.ProductionTrackingPreservationService;
 import com.axelor.apps.production.service.StockMoveProductionService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveLineService;
@@ -63,6 +64,7 @@ public class ManufOrderStockMoveServiceMaintenanceImpl extends ManufOrderStockMo
       ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
       ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService,
+      ProductionTrackingPreservationService productionTrackingPreservationService,
       StockMoveToolService stockMoveToolService,
       StockMoveRepository stockMoveRepository) {
     super(
@@ -78,6 +80,7 @@ public class ManufOrderStockMoveServiceMaintenanceImpl extends ManufOrderStockMo
         manufOrderOutgoingStockMoveService,
         manufOrderGetStockMoveService,
         manufOrderCreateStockMoveLineService,
+        productionTrackingPreservationService,
         stockMoveToolService,
         stockMoveRepository);
   }

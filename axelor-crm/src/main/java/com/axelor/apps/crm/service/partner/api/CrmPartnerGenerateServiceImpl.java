@@ -68,9 +68,10 @@ public class CrmPartnerGenerateServiceImpl extends PartnerGenerateServiceImpl {
   }
 
   @Override
-  protected void setPartnerBasicDetails(Partner partner, PartnerDataResponse partnerData)
+  protected void setPartnerBasicDetails(
+      Partner partner, PartnerDataResponse partnerData, Map<String, Boolean> partnerTypeData)
       throws AxelorException {
-    super.setPartnerBasicDetails(partner, partnerData);
+    super.setPartnerBasicDetails(partner, partnerData, partnerTypeData);
     Integer sizeSelect = null;
 
     String trancheEffectif = partnerData.getTrancheEffectifsEtablissement();

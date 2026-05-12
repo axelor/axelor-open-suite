@@ -1,3 +1,0 @@
----
-title: "Payment Session: fixed pagination skipping invoice terms beyond the first page during session validation."
-module: axelor-account

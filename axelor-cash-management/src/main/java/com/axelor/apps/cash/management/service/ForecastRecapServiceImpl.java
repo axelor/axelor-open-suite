@@ -1311,6 +1311,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         "self.id != :id "
             + "AND self.company = :company "
             + "AND self.isReport = :isReport "
+            + "AND (self.archived IS NULL OR self.archived = false) "
             + "AND self.fromDate <= :toDate "
             + "AND self.toDate >= :fromDate";
 

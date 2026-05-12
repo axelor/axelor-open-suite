@@ -1,3 +1,608 @@
+## [9.0.8] (2026-04-30)
+
+### Fixes
+#### Base
+
+* Company: new legal information fields
+* Update studio dependency to 4.0.6.
+* App Base: fixed today date field appearing twice on the form view.
+* Advanced export: fixed duplicated rows when a selection field is overridden.
+* Partner: fixed wrong field name in setContactPartnerDomain causing contactPartnerSet to allow selecting any partner.
+* File source connector: fixed SFTP private key path not resolved error.
+* Base: fixed batch history panel refresh after first save on a new record.
+* ProjectPlanningTime: fixed projectPlanningTime's endDateTime computation issue
+* Company: replaced the display of workshopList with a panel dashlet.
+* Base: fixed intermittent 'file could not be generated' error during sale order finalization by closing the FileInputStream after attach.
+* Message: fixed temporary email sending not being blocked when email sending is deactivated in the base app.
+* Base: fixed per-company configuration grids rendering empty when multi-company mode is disabled.
+* Partner: fixed missing automatic completion of type, company and currency when creating a third party using Sirene API.
+* PriceList: fix typeSelect field not editable when creating from Referential
+
+#### Account
+
+* Accounting reports: fixed empty custom report generated on a newly created company.
+* Invoice line: new field eco-tax amount and mention, with default defined on product.
+* Invoice: fixed 'Suppl. Invoices to pay' to include validated advance payment invoices too.
+* Invoice: add vatSystemSelect field
+* InvoiceNote: updated modelisation to extract invoice type in a new separate object.
+* Invoice: fixed BIRT report failing with 'column does not exist' and duplicate column metadata after the vatLiabilitySelect/vatSystemSelect rename.
+* Accounting batch: fixed opening-only close/open accounts batch failing when generate result move is enabled.
+* Move: fixed MappingException when changing payment condition on an unsaved duplicated move.
+* BankDetails: add field InvoiceNoteType.
+* Account: add dedicated merge action for customer and supplier credit notes.
+* AccountConfig: New field penaltyRateNote to separate penalty rate note from legal note
+* Vat exemption reason: added VAT exemption reason in VAT summary table in invoice and sale order reports.
+* Accounting report: fixed 'DADS report declaration preparatory process' report to work when company's customer account is not configured.
+* Vat exemption reason: added VAT exemption reason management on invoices, sale orders, and purchase orders.
+* Payment Session: fixed pagination skipping invoice terms beyond the first page during session validation.
+* Account: hide print button in mass entry grid and form views.
+* InvoiceNote: updated management of invoice category.
+
+#### Bank Payment
+
+* Bank reconciliation: fix isPosted flag and ending balance calculation
+* Bank statement: fix column width and font in Birt reports.
+* Move: fixed HibernateException on onLoad after generating counterpart when invoice terms are created.
+
+#### Budget
+
+* Sale order: fixed same name panel in sale order form.
+
+#### Cash Management
+
+* Opportunity : fixed company bank details not auto-filled on opportunity and not carried over to sale order.
+* Forecast: exclude archived reports and summaries from dashboard.
+
+#### Contract
+
+* Contract: fixed an error raised when validating a revaluation formula.
+* Contract: filled ref/refId on traceback so the failing contract is identified when a batch raises an error.
+
+#### Human Resource
+
+* HR: added button to display accounting moves linked to an expense.
+* Timesheet: fixed timesheet line unit display
+* HR batch: fixed french translation for leave reasons field in leave management batch.
+
+#### Production
+
+* Manufacturing order: fixed double WAP computation and duplicate stock location line history entry when finishing a manufacturing order.
+* Production: fixed NPE and incorrect form displayed when clicking a component node in the BOM tree view.
+* Sale order: use AppSaleService to fetch AppSale configuration.
+* MRP: included manufacturing orders consuming a product when MRP is filtered on raw materials, so projected stock reflects expected consumption.
+* Production: fixed tracking number continuity during partial production.
+
+#### Purchase
+
+* Call tender: fixed the currency error when generating a purchase order due to a contact being selected as supplier partner.
+* Purchase: allow editing trading name on draft purchase orders.
+* Call tender: fixed error when generating purchase order without a company.
+
+#### Quality
+
+* Company: fixed french translation of Quality config button.
+
+#### Sale
+
+* Sale order: fixed multiple quantities check skipped on a new sale order line.
+* Sale: fixed performance issue in sale order line loading caused by repeated DI resolution.
+* Sale order line: fixed type selection in sale order line when pack management is disabled.
+* Sale order line: fixed delivery state hilite regardless of sale order status.
+* Sale order : fixed error when adding a pack without any products while editable tree view is activated.
+
+#### Stock
+
+* Inventory: fixed duplicate inventory lines for tracked products when filling lines.
+* Stock location: fixed drag and drop in tree view.
+* Stock location: fixed an error when saving a valued stock location.
+* Stock location: fixed value indicator not displayed in edit mode.
+* StockMove: fixed NPE when we mass invoice and the stock move has an address null.
+* Stock: fixed stock location form marked dirty when opened.
+* Stock: fixed demo data import failure caused by a missing carrier partner reference in stock_logisticalForm.
+
+#### Supply Chain
+
+* Sale order: fixed customer credit overrun not being detected at quotation finalization when the current quotation pushes the total above the accepted credit.
+* Supplychain: fixed performance issue in sale order to stock move generation for orders with many lines.
+* MRP: fixed NullPointerException in MRP processing when a product had a null productTypeSelect or excludeFromMrp.
+* Sale Order: fixed LazyInitializationException when generating stock moves for lines with different estimated shipping dates.
+
+
+### Developer
+
+#### Base
+
+- Company: New fields legalInformation and legalFormAndCapital.
+
+Script to run : 
+ALTER TABLE base_company                                                                                                                                    
+    ADD COLUMN IF NOT EXISTS legal_information VARCHAR(255),                                                                                                
+    ADD COLUMN IF NOT EXISTS legal_form_and_capital VARCHAR(255);
+
+---
+
+- PartnerGenerateService: modified configurePartner method signature to include a new parameter Map<String, Boolean> partnerTypeData.
+
+#### Account
+
+- Product: New fields defaultEcoTaxAmount and defaultEcoTaxMention.
+- InvoiceLine: New fields ecoTaxAmount and ecoTaxMention.
+
+Script to run : 
+ALTER TABLE base_product
+  ADD COLUMN IF NOT EXISTS default_eco_tax_amount DECIMAL(20,10),
+  ADD COLUMN IF NOT EXISTS default_eco_tax_mention VARCHAR(255);
+
+ALTER TABLE account_invoice_line
+  ADD COLUMN IF NOT EXISTS eco_tax_amount DECIMAL(20,10),
+  ADD COLUMN IF NOT EXISTS eco_tax_mention VARCHAR(255);
+
+---
+
+add vatSystemSelect field on invoices and simplified computation process using previous partner.accountingSituation.vatSystemSelect
+
+- Invoice: New field vatSystemSelect.
+
+Script to run: 
+-- 1. Add vat_system_select column on account_invoice
+ALTER TABLE account_invoice
+    ADD COLUMN IF NOT EXISTS vat_system_select INTEGER;
+
+-- 2. Backfill supplier invoices (operation_type_select IN (1, 2))
+-- from AccountingSituation of the invoice's partner
+UPDATE account_invoice inv
+SET vat_system_select = sit.vat_system_select
+FROM account_accounting_situation sit
+WHERE sit.partner = inv.partner
+  AND sit.company = inv.company
+  AND sit.vat_system_select IN (1, 2)
+  AND inv.operation_type_select IN (1, 2)
+  AND inv.status_select IN (1, 2, 3)
+  AND inv.vat_system_select IS NULL;
+
+-- 3. Backfill customer invoices (operation_type_select IN (3, 4))
+-- from AccountingSituation of the company's partner
+UPDATE account_invoice inv
+SET vat_system_select = sit.vat_system_select
+FROM account_accounting_situation sit, base_company c
+WHERE c.id = inv.company
+  AND sit.partner = c.partner
+  AND sit.company = inv.company
+  AND sit.vat_system_select IN (1, 2)
+  AND inv.operation_type_select IN (3, 4)
+  AND inv.status_select IN (1, 2, 3)
+  AND inv.vat_system_select IS NULL;
+
+-- 4. Fallback: default to 1 (Standard regime) for unresolvable invoices
+UPDATE account_invoice
+SET vat_system_select = 1
+WHERE vat_system_select IS NULL OR vat_system_select = 0;
+
+---
+
+Replace free-text name/type fields on InvoiceNote with a M2O reference
+to a new InvoiceNoteType entity (code + name).
+This standardizes note classification using UNTDID 4451 codes
+(AAB, AAI, ABL, ACC, ADN, BAR, BAQ, BLU, PMT, PMD, REG, SUR)
+for electronic invoicing compliance.
+
+Steps:
+1. Create account_invoice_note_type table with standard reference data
+2. Add invoice_note_type FK column on account_invoice_note
+3. Migrate existing records: match type → code, create new types for unmatched
+4. Add invoice_note_type FK column on base_bank_details (#110332)
+5. Drop old columns (name, type) from account_invoice_note
+
+Script to run : 
+-- 1. Create InvoiceNoteType table
+CREATE TABLE IF NOT EXISTS account_invoice_note_type (
+  id BIGINT NOT NULL,
+  version INTEGER DEFAULT 0,
+  archived BOOLEAN,
+  created_on TIMESTAMP,
+  updated_on TIMESTAMP,
+  created_by BIGINT,
+  updated_by BIGINT,
+  import_id VARCHAR(255),
+  import_origin VARCHAR(255),
+  attrs JSONB,
+  code VARCHAR(255) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  CONSTRAINT account_invoice_note_type_pkey PRIMARY KEY (id)
+);
+
+CREATE SEQUENCE IF NOT EXISTS account_invoice_note_type_seq START WITH 1 INCREMENT BY 1;
+
+-- Reset sequence to max existing id if table already has data
+SELECT setval('account_invoice_note_type_seq',
+  GREATEST((SELECT COALESCE(MAX(id), 0) FROM account_invoice_note_type) + 1, 1), false);
+
+-- 2. Insert standard UNTDID 4451 reference data
+INSERT INTO account_invoice_note_type (id, version, code, name, created_on)
+SELECT nextval('account_invoice_note_type_seq'), 0, v.code, v.name, NOW()
+FROM (VALUES
+  ('AAB', 'Payment term'),
+  ('AAI', 'General information'),
+  ('ABL', 'Government information'),
+  ('ACC', 'Factor assignment clause'),
+  ('ADN', 'Type of transaction reason'),
+  ('BAR', 'Processing Instructions'),
+  ('BAQ', 'VAT exemption reason'),
+  ('BLU', 'Waste information'),
+  ('PMT', 'Payment information'),
+  ('PMD', 'Payment detail/remittance information'),
+  ('REG', 'Regulatory information'),
+  ('SUR', 'Supplier remarks')
+) AS v(code, name)
+WHERE NOT EXISTS (
+  SELECT 1 FROM account_invoice_note_type t WHERE t.code = v.code
+);
+
+SELECT setval('account_invoice_note_type_seq',
+  GREATEST((SELECT COALESCE(MAX(id), 0) FROM account_invoice_note_type) + 1, 1), false);
+
+-- 3. Add invoice_note_type FK column on account_invoice_note
+ALTER TABLE account_invoice_note
+  ADD COLUMN IF NOT EXISTS invoice_note_type BIGINT;
+
+-- 4. Migrate existing InvoiceNote records
+
+-- 4a. Create InvoiceNoteType for unmatched non-null types
+INSERT INTO account_invoice_note_type (id, version, code, name, created_on)
+SELECT
+  nextval('account_invoice_note_type_seq'),
+  0,
+  sub.type,
+  COALESCE(sub.first_name, sub.type),
+  NOW()
+FROM (
+  SELECT
+      n.type,
+      (SELECT n2.name
+       FROM account_invoice_note n2
+       WHERE n2.type = n.type
+         AND n2.name IS NOT NULL
+         AND n2.name <> ''
+       LIMIT 1) AS first_name
+  FROM account_invoice_note n
+  WHERE n.type IS NOT NULL
+    AND n.type <> ''
+    AND n.type NOT IN (SELECT code FROM account_invoice_note_type)
+  GROUP BY n.type
+) sub;
+
+-- 4b. Link InvoiceNote records to their InvoiceNoteType
+UPDATE account_invoice_note n
+SET invoice_note_type = t.id
+FROM account_invoice_note_type t
+WHERE n.type IS NOT NULL
+AND n.type != ''
+AND n.type = t.code;
+
+-- 4c. Log count of notes left with NULL invoice_note_type
+-- (notes whose original `type` was NULL or empty).
+DO $$
+DECLARE
+  null_count BIGINT;
+BEGIN
+  SELECT COUNT(*) INTO null_count
+  FROM account_invoice_note
+  WHERE invoice_note_type IS NULL;
+  IF null_count > 0 THEN
+      RAISE NOTICE
+          '[#109676] % InvoiceNote rows left without invoice_note_type (original type was NULL or empty)',
+          null_count;
+  END IF;
+END $$;
+
+-- 5. Add FK constraint
+ALTER TABLE account_invoice_note
+  DROP CONSTRAINT IF EXISTS fk_account_invoice_note_invoice_note_type;
+
+ALTER TABLE account_invoice_note
+  ADD CONSTRAINT fk_account_invoice_note_invoice_note_type
+  FOREIGN KEY (invoice_note_type)
+  REFERENCES account_invoice_note_type(id);
+
+-- 6. Add invoice_note_type FK column on base_bank_details (#110332)
+ALTER TABLE base_bank_details
+  ADD COLUMN IF NOT EXISTS invoice_note_type BIGINT;
+
+ALTER TABLE base_bank_details
+  DROP CONSTRAINT IF EXISTS fk_base_bank_details_invoice_note_type;
+
+ALTER TABLE base_bank_details
+  ADD CONSTRAINT fk_base_bank_details_invoice_note_type
+  FOREIGN KEY (invoice_note_type)
+  REFERENCES account_invoice_note_type(id);
+
+-- 7. Drop old columns
+ALTER TABLE account_invoice_note
+  DROP COLUMN IF EXISTS name,
+  DROP COLUMN IF EXISTS type;
+
+---
+
+- Invoice: removed specificNoteOnInvoiceToDisplayPanel and added bank detail note computation in note lists on ventilation.
+
+Script to run: 
+ALTER TABLE base_bank_details
+  ADD COLUMN IF NOT EXISTS invoice_note_type BIGINT;
+
+ALTER TABLE base_bank_details
+  DROP CONSTRAINT IF EXISTS fk_base_bank_details_invoice_note_type;
+
+ALTER TABLE base_bank_details
+  ADD CONSTRAINT fk_base_bank_details_invoice_note_type
+  FOREIGN KEY (invoice_note_type)
+  REFERENCES account_invoice_note_type(id);
+
+---
+
+- AccountConfig: New field penaltyRateNote.
+
+Script to run : 
+ALTER TABLE account_account_config
+  ADD COLUMN IF NOT EXISTS penalty_rate_note TEXT;
+
+---
+
+A new entity `VatExemptionReason` (table `account_vat_exemption_reason`) has been introduced in
+axelor-base to store standard EU/FR VAT exemption codes (e.g. VATEX-EU-AE, VATEX-EU-IC, VATEX-EU-G).
+
+The `vatExemptionReason` field (many-to-one to `VatExemptionReason`) has been added to the following entities:
+- `TaxEquiv` (axelor-base) — statically assigned per tax equivalence rule
+- `FiscalPosition` (axelor-base) — fallback reason when customerSpecificNote is true
+- `Partner` (axelor-base) — partner-level override when customerSpecificNote is true
+- `InvoiceLine` (axelor-account)
+- `InvoiceLineTax` (axelor-account)
+- `SaleOrderLine` (axelor-sale)
+- `SaleOrderLineTax` (axelor-sale)
+- `PurchaseOrderLine` (axelor-purchase)
+- `PurchaseOrderLineTax` (axelor-purchase)
+
+Resolution logic (implemented in `OrderLineTaxService.resolveVatExemptionReason`):
+- If `fiscalPosition.customerSpecificNote` is true: use `partner.vatExemptionReason`, falling back to `fiscalPosition.vatExemptionReason` if the partner reason is null.
+- Otherwise: use `taxEquiv.vatExemptionReason`.
+
+The specific note displayed on the document is now sourced from `vatExemptionReason.note` when present,
+falling back to `taxEquiv.specificNote`.
+
+--- Constructor changes ---
+
+`InvoiceLineServiceImpl` — new parameter `OrderLineTaxService orderLineTaxService` added at the end.
+
+`InvoiceLineSupplychainService` (axelor-supplychain) — new parameter `OrderLineTaxService orderLineTaxService` added.
+
+`SaleOrderLineTaxServiceImpl` — new parameter `OrderLineTaxService orderLineTaxService` added at the end.
+
+`SaleOrderLineFiscalPositionServiceImpl` — new parameter `OrderLineTaxService orderLineTaxService` added at the end.
+
+`SaleOrderLineProductServiceImpl` — new parameter `OrderLineTaxService orderLineTaxService` added at the end.
+
+`SaleOrderLineProductSupplychainServiceImpl` (axelor-supplychain) — new parameter `OrderLineTaxService orderLineTaxService` added; forwarded to super().
+
+
+--- New API ---
+
+`OrderLineTaxService` (axelor-base):
+  VatExemptionReason resolveVatExemptionReason(FiscalPosition fiscalPosition, TaxEquiv taxEquiv, Partner partner);
+
+--- Demo data ---
+
+New file `account_taxExemptionReason.csv` (EN and FR) providing 11 standard EU/FR exemption reason records.
+Existing file `account_taxEquiv.csv` (EN and FR) updated with a new `vatExemptionReason_code` column
+linking each tax equivalence rule to the appropriate exemption code.
+
+--- Migration script ---
+
+-- Create VatExemptionReason table
+CREATE TABLE account_vat_exemption_reason (
+  id                  BIGINT NOT NULL,
+  archived            BOOLEAN,
+  import_id           CHARACTER VARYING(255),
+  import_origin       CHARACTER VARYING(255),
+  process_instance_id CHARACTER VARYING(255),
+  version             INTEGER,
+  created_on          TIMESTAMP(6) WITHOUT TIME ZONE,
+  updated_on          TIMESTAMP(6) WITHOUT TIME ZONE,
+  attrs               JSONB,
+  code                CHARACTER VARYING(255) NOT NULL,
+  name                CHARACTER VARYING(255) NOT NULL,
+  note                TEXT NOT NULL,
+  created_by          BIGINT,
+  updated_by          BIGINT,
+  CONSTRAINT account_vat_exemption_reason_pkey PRIMARY KEY (id),
+  CONSTRAINT uk_45cls6n7anyc3uvtlrk30qwsg UNIQUE (import_id),
+  CONSTRAINT uk_mmety0ylwddkkoouqdjj2bweg UNIQUE (code),
+  CONSTRAINT fk_rj551obg6gydoq5rqbotlspqj FOREIGN KEY (created_by) REFERENCES auth_user(id),
+  CONSTRAINT fk_hntwiq8h6xox2gwgj1p5hcw8b FOREIGN KEY (updated_by) REFERENCES auth_user(id)
+);
+CREATE INDEX account_vat_exemption_reason_name_idx ON account_vat_exemption_reason (name);
+
+-- Add vatExemptionReason column to TaxEquiv
+ALTER TABLE account_tax_equiv
+  ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+  ADD CONSTRAINT fk_9oarhmr8lmiuk22aaum7mv1cr
+    FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
+
+-- Add vatExemptionReason column to FiscalPosition
+ALTER TABLE account_fiscal_position
+  ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+  ADD CONSTRAINT fk_9gk5x59ubme5j4ah5767nxq04
+    FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
+
+-- Add vatExemptionReason column to Partner
+ALTER TABLE base_partner
+  ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+  ADD CONSTRAINT fk_kdtmpwgucpdl237qmd7qmbsud
+    FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
+
+-- Add vatExemptionReason column to InvoiceLine
+ALTER TABLE account_invoice_line
+  ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+  ADD CONSTRAINT fk_8iumyh08vva5e12ghetgvrbtp
+    FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
+
+-- Add vatExemptionReason column to InvoiceLineTax
+ALTER TABLE account_invoice_line_tax
+  ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+  ADD CONSTRAINT fk_2qn28jl8wurud5ab05b11na99
+    FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
+
+-- Add vatExemptionReason column to SaleOrderLine
+ALTER TABLE sale_sale_order_line
+  ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+  ADD CONSTRAINT fk_pi3ws18w8qw11iuc9worbw7vp
+    FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
+
+-- Add vatExemptionReason column to SaleOrderLineTax
+ALTER TABLE sale_sale_order_line_tax
+  ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+  ADD CONSTRAINT fk_5sa3d2cd74unv4tpu9ga77nei
+    FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
+
+-- Add vatExemptionReason column to PurchaseOrderLine
+ALTER TABLE purchase_purchase_order_line
+  ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+  ADD CONSTRAINT fk_ssmlm5sg6syiqma2q9el7usao
+    FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
+
+-- Add vatExemptionReason column to PurchaseOrderLineTax
+ALTER TABLE purchase_purchase_order_line_tax
+  ADD COLUMN IF NOT EXISTS vat_exemption_reason BIGINT,
+  ADD CONSTRAINT fk_98soi4hx4knmlr57865ea152y
+    FOREIGN KEY (vat_exemption_reason) REFERENCES account_vat_exemption_reason(id);
+
+---
+
+- AccountConfig: New field defaultInvoiceCategory.
+- Invoice: new field invoiceCategory, computed according to invoice lines product type.
+- AccountConfig: modified typeList mechanism (in InvoiceProductStatement) to use new selection.
+- Invoice: deleted invoiceProductStatement and replaced it by a new mention in invoiceNoteList with code 'REG'.
+Script to run : 
+ALTER TABLE account_account_config
+  ADD COLUMN IF NOT EXISTS penalty_rate_note TEXT,
+  ADD COLUMN IF NOT EXISTS default_invoice_category_select VARCHAR(255);
+
+ALTER TABLE account_invoice
+  ADD COLUMN IF NOT EXISTS invoice_category_select VARCHAR(255);
+
+ALTER TABLE base_company
+  ADD COLUMN IF NOT EXISTS legal_information VARCHAR(255),
+  ADD COLUMN IF NOT EXISTS legal_form_and_capital VARCHAR(255);
+
+UPDATE account_invoice_product_statement SET type_list = 'goods' WHERE type_list = 'storable';
+UPDATE account_invoice_product_statement SET type_list = 'services' WHERE type_list = 'service';
+UPDATE account_invoice_product_statement SET type_list = 'mixed' WHERE type_list = 'storable,service';
+UPDATE account_invoice_product_statement SET type_list = 'mixed'
+WHERE type_list LIKE '%storable%' AND type_list LIKE '%service%' AND type_list != 'mixed';
+
+UPDATE account_invoice i
+SET invoice_category_select = 'goods'
+WHERE i.operation_type_select IN (1, 3)
+  AND i.operation_sub_type_select = 1
+  AND i.status_select IN (2, 3)
+  AND i.invoice_category_select IS NULL
+  AND EXISTS (
+    SELECT 1 FROM account_invoice_line il WHERE il.invoice = i.id
+  )
+  AND NOT EXISTS (
+    SELECT 1 FROM account_invoice_line il
+    LEFT JOIN base_product p ON il.product = p.id
+    WHERE il.invoice = i.id
+      AND (p.product_type_select != 'storable' OR il.product IS NULL)
+);
+
+UPDATE account_invoice i
+SET invoice_category_select = 'services'
+WHERE i.operation_type_select IN (1, 3)
+  AND i.operation_sub_type_select = 1
+  AND i.status_select IN (2, 3)
+  AND i.invoice_category_select IS NULL
+  AND EXISTS (
+    SELECT 1 FROM account_invoice_line il WHERE il.invoice = i.id
+  )
+  AND NOT EXISTS (
+    SELECT 1 FROM account_invoice_line il
+    LEFT JOIN base_product p ON il.product = p.id
+    WHERE il.invoice = i.id
+      AND (p.product_type_select != 'service' OR il.product IS NULL)
+  );
+
+UPDATE account_invoice i
+SET invoice_category_select = ac.default_invoice_category_select
+FROM account_account_config ac
+WHERE ac.company = i.company
+  AND i.operation_type_select IN (1, 3)
+  AND i.operation_sub_type_select = 1
+  AND i.status_select IN (2, 3)
+  AND i.invoice_category_select IS NULL
+  AND ac.default_invoice_category_select IS NOT NULL
+  AND EXISTS (
+    SELECT 1 FROM account_invoice_line il WHERE il.invoice = i.id
+);
+
+CREATE SEQUENCE IF NOT EXISTS account_invoice_note_seq START WITH 1 INCREMENT BY 1;
+SELECT setval('account_invoice_note_seq',
+  GREATEST((SELECT COALESCE(MAX(id), 0) FROM account_invoice_note) + 1, 1), false);
+
+INSERT INTO account_invoice_note (id, version, invoice, invoice_note_type, note, created_on)
+SELECT
+  nextval('account_invoice_note_seq'),
+  0,
+  i.id,
+  nt.id,
+  i.invoice_product_statement,
+  NOW()
+FROM account_invoice i
+CROSS JOIN account_invoice_note_type nt
+WHERE nt.code = 'REG'
+  AND i.status_select = 3
+  AND i.invoice_product_statement IS NOT NULL
+  AND i.invoice_product_statement != '';
+
+ALTER TABLE account_invoice
+  DROP COLUMN IF EXISTS invoice_product_statement;
+
+#### Bank Payment
+
+During bank reconciliation validation, lines with a posted number (postedNbr)
+but no associated move line were not marked as posted (isPosted) and were
+incorrectly blocked by the incomplete line check.
+
+The ending balance was also miscalculated for these lines, as their
+credit/debit amounts were ignored when no move line was linked.
+
+Additionally, when a move line is reconciled without a bank statement line,
+the reconciled amount on the move line is now correctly set.
+
+#### Cash Management
+
+- CashManagementModule: Added binding of OpportunitySaleOrderSupplychainServiceImpl to OpportunitySaleOrderCashManagementServiceImpl.
+
+#### Production
+
+ManufOrderStockMoveService: added finishInStockMoves, finishOutStockMoves, partialFinishIn, partialFinishOut methods.
+CostSheetService: added two computeCostPrice overloads accepting an overrideProducedQty (used by ManufOrder finish when OUT moves are still planned) and an additional pair of excludedConsumedLineIds / excludedProducedLineIds sets. The exclusion sets complement the date-based filter on previousCostSheetDate (which has off-by-one semantics) so the cost sheet stays strictly batch-specific even when partial and final finishes happen on the same day.
+ManufOrderWorkflowServiceImpl: constructor now requires UnitConversionService.
+
+---
+
+In `SaleOrderLineBomSyncServiceImpl`, replaced `AppSaleRepository` with `AppSaleService` in the constructor.
+
+#### Stock
+
+Constructor of `InventoryService` now requires a `ProductCompanyService`.
+
+---
+
+- StockLocationUtilsService: removed methods `getStockLocationValue(StockLocation)` and `getStockLocationValue(Long, Long)`.
+
+Script to run:
+DELETE FROM meta_action
+WHERE name = 'action-stock-location-method-set-stock-location-value';
+
 ## [9.0.7] (2026-04-16)
 
 ### Fixes
@@ -1073,6 +1678,7 @@ Replaced the attrs action `action-purchase-order-line-attrs-delivery-panel` with
 
 * Project: improve task tree management.
 
+[9.0.8]: https://github.com/axelor/axelor-open-suite/compare/v9.0.7...v9.0.8
 [9.0.7]: https://github.com/axelor/axelor-open-suite/compare/v9.0.6...v9.0.7
 [9.0.6]: https://github.com/axelor/axelor-open-suite/compare/v9.0.5...v9.0.6
 [9.0.5]: https://github.com/axelor/axelor-open-suite/compare/v9.0.4...v9.0.5

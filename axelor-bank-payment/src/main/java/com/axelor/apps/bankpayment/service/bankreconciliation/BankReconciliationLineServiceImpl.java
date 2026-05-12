@@ -199,7 +199,8 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
   @Override
   public void checkIncompleteLine(BankReconciliationLine bankReconciliationLine)
       throws AxelorException {
-    if (ObjectUtils.isEmpty(bankReconciliationLine.getMoveLine())) {
+    if (ObjectUtils.isEmpty(bankReconciliationLine.getMoveLine())
+        && ObjectUtils.isEmpty(bankReconciliationLine.getPostedNbr())) {
       if (ObjectUtils.notEmpty(bankReconciliationLine.getAccount())) {
         if (bankReconciliationLine.getBankReconciliation().getJournal() == null) {
           throw new AxelorException(

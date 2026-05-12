@@ -77,6 +77,7 @@ import com.axelor.apps.production.service.BomLineCreationService;
 import com.axelor.apps.production.service.BomLineCreationServiceImpl;
 import com.axelor.apps.production.service.BomTreeRemoveService;
 import com.axelor.apps.production.service.BomTreeRemoveServiceImpl;
+import com.axelor.apps.production.service.ControlEntryProductionServiceImpl;
 import com.axelor.apps.production.service.ManufOrderMessageService;
 import com.axelor.apps.production.service.ManufOrderMessageServiceImpl;
 import com.axelor.apps.production.service.MpsChargeService;
@@ -305,6 +306,7 @@ import com.axelor.apps.production.service.saleorder.onchange.SaleOrderOnLineChan
 import com.axelor.apps.purchase.service.PurchaseOrderDomainServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectServiceImpl;
 import com.axelor.apps.quality.rest.service.QualityImprovementParseServiceImpl;
+import com.axelor.apps.quality.service.ControlEntryServiceImpl;
 import com.axelor.apps.quality.service.QIIdentificationServiceImpl;
 import com.axelor.apps.quality.service.QualityImprovementCheckValuesServiceImpl;
 import com.axelor.apps.quality.service.QualityImprovementUpdateServiceImpl;
@@ -546,5 +548,6 @@ public class ProductionModule extends AxelorModule {
     bind(OperationOrderHazardPhraseService.class).to(OperationOrderHazardPhraseServiceImpl.class);
     bind(ManufOrderMessageService.class).to(ManufOrderMessageServiceImpl.class);
     bind(ManufOrderQueryService.class).to(ManufOrderQueryServiceImpl.class);
+    bind(ControlEntryServiceImpl.class).to(ControlEntryProductionServiceImpl.class);
   }
 }
