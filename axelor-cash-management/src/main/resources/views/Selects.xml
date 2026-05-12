@@ -37,8 +37,8 @@
 
   <selection name="sequence.generic.code.select"
     id="cash.management.sequence.generic.code.select">
-    <option value="forecastRecap">Forecast Recap</option>
-    <option value="forecast">Forecast</option>
+    <option order="16" value="forecastRecap">Forecast Recap</option>
+    <option order="15" value="forecast">Forecast</option>
   </selection>
 
   <selection name="forecast.recap.line.type.element.select">

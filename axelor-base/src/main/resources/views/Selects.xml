@@ -115,9 +115,9 @@
   </selection>
 
   <selection name="sequence.generic.code.select">
-    <option value="partner">Partner (Cust/Suppl)</option>
-    <option value="product">Product</option>
-    <option value="abcAnalysis">ABC Analysis</option>
+    <option order="35" value="partner">Partner (Cust/Suppl)</option>
+    <option order="41" value="product">Product</option>
+    <option order="1" value="abcAnalysis">ABC Analysis</option>
   </selection>
 
   <!-- TODO à modifier, produit, taxe, paiement dans le code java ou les vues -->
