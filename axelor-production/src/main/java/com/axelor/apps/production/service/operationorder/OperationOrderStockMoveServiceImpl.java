@@ -25,8 +25,6 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.service.ProductionTrackingPreservationService;
-import com.axelor.apps.production.service.ProductionTrackingPreservationService.PreservedTrackingNumbersByProduct;
 import com.axelor.apps.production.service.StockMoveProductionService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveLineService;
@@ -47,7 +45,6 @@ import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -65,7 +62,6 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
   protected ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService;
   protected StockMoveProductionService stockMoveProductionService;
   protected OperationOrderService operationOrderService;
-  protected final ProductionTrackingPreservationService productionTrackingPreservationService;
 
   @Inject
   public OperationOrderStockMoveServiceImpl(
@@ -78,8 +74,7 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
       ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService,
       StockMoveProductionService stockMoveProductionService,
-      OperationOrderService operationOrderService,
-      ProductionTrackingPreservationService productionTrackingPreservationService) {
+      OperationOrderService operationOrderService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockLocationRepo = stockLocationRepo;
@@ -90,7 +85,6 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
     this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
     this.stockMoveProductionService = stockMoveProductionService;
     this.operationOrderService = operationOrderService;
-    this.productionTrackingPreservationService = productionTrackingPreservationService;
   }
 
   @Override
@@ -268,25 +262,12 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
                     stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
                         && !CollectionUtils.isEmpty(stockMove.getStockMoveLineList()))
             .findFirst();
-
-    // Snapshot tracking numbers before realization changes line state
-    List<StockMoveLine> originalStockMoveLines =
-        stockMoveToRealize.isPresent()
-            ? new ArrayList<>(stockMoveToRealize.get().getStockMoveLineList())
-            : Collections.emptyList();
-    PreservedTrackingNumbersByProduct preservedTrackingNumbersByProduct =
-        new PreservedTrackingNumbersByProduct(null);
-
     if (stockMoveToRealize.isPresent()) {
       manufOrderStockMoveService.finishStockMove(stockMoveToRealize.get());
       operationOrder = JpaModelHelper.ensureManaged(operationOrder);
       company = JpaModelHelper.ensureManaged(company);
       fromStockLocation = JpaModelHelper.ensureManaged(fromStockLocation);
       toStockLocation = JpaModelHelper.ensureManaged(toStockLocation);
-      StockMove realizedStockMove = JpaModelHelper.ensureManaged(stockMoveToRealize.get());
-      preservedTrackingNumbersByProduct =
-          productionTrackingPreservationService.getPreservedTrackingNumbersByProduct(
-              originalStockMoveLines, realizedStockMove.getStockMoveLineList());
     }
 
     // generate new stock move
@@ -306,12 +287,7 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
     newStockMove.setOperationOrder(operationOrder);
 
     newStockMove.setStockMoveLineList(new ArrayList<>());
-    createNewStockMoveLines(
-        operationOrder,
-        newStockMove,
-        fromStockLocation,
-        toStockLocation,
-        preservedTrackingNumbersByProduct);
+    createNewStockMoveLines(operationOrder, newStockMove, fromStockLocation, toStockLocation);
 
     if (!newStockMove.getStockMoveLineList().isEmpty()) {
       // plan the stockmove
@@ -338,17 +314,6 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
       StockLocation fromStockLocation,
       StockLocation toStockLocation)
       throws AxelorException {
-    createNewStockMoveLines(operationOrder, stockMove, fromStockLocation, toStockLocation, null);
-  }
-
-  @Override
-  public void createNewStockMoveLines(
-      OperationOrder operationOrder,
-      StockMove stockMove,
-      StockLocation fromStockLocation,
-      StockLocation toStockLocation,
-      PreservedTrackingNumbersByProduct preservedTrackingNumbersByProduct)
-      throws AxelorException {
     List<ProdProduct> diffProdProductList;
     Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
     diffProdProductList = new ArrayList<>(operationOrder.getDiffConsumeProdProductList());
@@ -357,8 +322,7 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
         stockMove,
         StockMoveLineService.TYPE_IN_PRODUCTIONS,
         fromStockLocation,
-        toStockLocation,
-        preservedTrackingNumbersByProduct);
+        toStockLocation);
   }
 
   @Override
@@ -420,16 +384,7 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
 
     StockMove stockMove = stockMoveOpt.get();
 
-    // Snapshot tracking numbers before cancellation mutates the lines
-    List<StockMoveLine> originalLines =
-        stockMove.getStockMoveLineList() != null
-            ? new ArrayList<>(stockMove.getStockMoveLineList())
-            : Collections.emptyList();
-
     stockMoveProductionService.cancelFromManufOrder(stockMove);
-
-    PreservedTrackingNumbersByProduct preservedTrackingNumbersByProduct =
-        productionTrackingPreservationService.getPreservedTrackingNumbersByProduct(originalLines);
 
     operationOrder = JpaModelHelper.ensureManaged(operationOrder);
     // clear all lists from planned lines
@@ -443,7 +398,7 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
     stockMove = JpaModelHelper.ensureManaged(stockMove);
     stockMove.clearStockMoveLineList();
 
-    // create a new list, reusing preserved tracking numbers
+    // create a new list
     for (ProdProduct prodProduct : operationOrder.getToConsumeProdProductList()) {
       BigDecimal qty =
           manufOrderStockMoveService.getFractionQty(
@@ -461,16 +416,8 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
               .filter(Objects::nonNull)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
       qty = qty.subtract(realizedQty).max(BigDecimal.ZERO);
-
-      productionTrackingPreservationService.createStockMoveLinesWithPreservedTracking(
-          prodProduct,
-          stockMove,
-          StockMoveLineService.TYPE_IN_PRODUCTIONS,
-          qty,
-          stockMove.getFromStockLocation(),
-          stockMove.getToStockLocation(),
-          preservedTrackingNumbersByProduct);
-
+      manufOrderCreateStockMoveLineService._createStockMoveLine(
+          prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty, null, null);
       // Update consumed StockMoveLineList with created stock move lines
       List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
