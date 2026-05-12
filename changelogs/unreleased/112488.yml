@@ -1,0 +1,5 @@
+---
+title: "MRP: improved code by merging redundant app checks and using null type for MRP stock rules lookup."
+module: axelor-supplychain
+developer: |
+  StockRulesService: getStockRules type parameter changed from int to Integer to allow null when use case is 'Used for MRP'.

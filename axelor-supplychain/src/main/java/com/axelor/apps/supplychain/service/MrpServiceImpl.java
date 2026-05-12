@@ -446,10 +446,7 @@ public class MrpServiceImpl implements MrpService {
 
       StockRules stockRules =
           stockRulesService.getStockRules(
-              product,
-              stockLocation,
-              StockRulesRepository.TYPE_FUTURE,
-              StockRulesRepository.USE_CASE_USED_FOR_MRP);
+              product, stockLocation, null, StockRulesRepository.USE_CASE_USED_FOR_MRP);
 
       if (stockRules != null) {
         reorderQty = reorderQty.max(stockRules.getReOrderQty());

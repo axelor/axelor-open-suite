@@ -28,7 +28,7 @@ public interface StockRulesService {
 
   boolean useMinStockRules(StockLocationLine stockLocationLine, StockRules stockRules, int type);
 
-  StockRules getStockRules(Product product, StockLocation stockLocation, int type, int useCase);
+  StockRules getStockRules(Product product, StockLocation stockLocation, Integer type, int useCase);
 
   BigDecimal getQtyToOrder(
       StockLocationLine stockLocationLine, StockRules stockRules, BigDecimal minReorderQty);
