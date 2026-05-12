@@ -27,7 +27,7 @@
   </input>
 
   <input file="base_expenseTemplate.csv" separator=";" type="com.axelor.message.db.Template"
-    search="self.importId = :importId"/>
+    search="self.name = :name"/>
 
   <input file="account_accountConfig.csv" separator=";"
     type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true"/>

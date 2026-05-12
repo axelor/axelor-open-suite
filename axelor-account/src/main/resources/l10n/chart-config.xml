@@ -238,7 +238,8 @@
     <bind to="importOrigin" eval="_dataFileName"/>
   </input>
 
-  <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template">
+  <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
+    search="self.name = :name">
     <bind to="importOrigin" eval="_dataFileName"/>
   </input>
 

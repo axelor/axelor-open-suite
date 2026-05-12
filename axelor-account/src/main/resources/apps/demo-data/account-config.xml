@@ -124,7 +124,8 @@
     </bind>
   </input>
 
-  <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"/>
+  <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
+    search="self.name = :name"/>
 
   <input file="account_debtRecoveryMethod.csv" separator=";"
     type="com.axelor.apps.account.db.DebtRecoveryMethod" search="self.code = :code"/>
