@@ -1,3 +1,14 @@
+## [8.2.43] (2026-05-13)
+
+### Fixes
+#### Account
+
+* Payment session: fixed unbalanced accounting move when re-validating a session containing a refund after cancelling a bank order.
+
+#### Business Project
+
+* Business project: fix 'Done' button on task form not updating the task status.
+
 ## [8.2.42] (2026-04-30)
 
 ### Fixes
@@ -2725,6 +2736,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.43]: https://github.com/axelor/axelor-open-suite/compare/v8.2.42...v8.2.43
 [8.2.42]: https://github.com/axelor/axelor-open-suite/compare/v8.2.41...v8.2.42
 [8.2.41]: https://github.com/axelor/axelor-open-suite/compare/v8.2.40...v8.2.41
 [8.2.40]: https://github.com/axelor/axelor-open-suite/compare/v8.2.39...v8.2.40
