@@ -727,14 +727,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       if (amountRemaining.signum() <= 0 || companyAmountRemaining.signum() <= 0) {
         amountRemaining = BigDecimal.ZERO;
+        companyAmountRemaining = BigDecimal.ZERO;
         invoiceTerm.setIsPaid(true);
         Invoice invoice = invoiceTerm.getInvoice();
         if (invoice != null) {
           invoice.setDueDate(InvoiceToolService.getDueDate(invoice));
-        }
-
-        if (companyAmountRemaining.signum() <= 0) {
-          companyAmountRemaining = BigDecimal.ZERO;
         }
       }
 
@@ -1897,6 +1894,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       companyRemainingAmount =
           reconciledAmount.min(invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining()));
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().add(companyRemainingAmount));
+      invoiceTerm.setCompanyAmountRemaining(
+          invoiceTerm.getCompanyAmountRemaining().add(companyRemainingAmount));
     } else {
       companyRemainingAmount =
           reconciledAmount.min(
