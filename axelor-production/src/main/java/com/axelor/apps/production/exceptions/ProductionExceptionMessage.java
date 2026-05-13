@@ -448,6 +448,9 @@ public final class ProductionExceptionMessage {
   public static final String SALE_ORDER_LINES_CANNOT_PRODUCT = /*$$(*/
       "Warning : One or more lines are blocked for production" /*)*/;
 
-  public static final String OUTSOURCING_SERVICE_PRODUCT_REAL_QTY_CHANGE_NOT_ALLOWED = /*$$(*/
-      "The real quantity cannot be changed for service product '%s' on an outsourcing purchase order. Only full receipt is authorized." /*)*/;
+  public static final String OPERATION_ORDER_CANNOT_ADD_PRODUCT = /*$$(*/
+      "Phase consumption is not enabled for this operation. Please add the consumed products directly to the manufacturing order." /*)*/;
+
+  public static final String API_TYPE_SYSTEM_PRODUCT_MANUF_ORDER_FILLED = /*$$(*/
+      "Product/ManufOrder fields should not be filled if type is 'System'." /*)*/;
 }
