@@ -28,7 +28,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderStockLocationQueryService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -52,7 +52,7 @@ import java.util.Optional;
 public class ProductionProductStockLocationServiceImpl extends ProductStockLocationServiceImpl {
 
   protected AppProductionService appProductionService;
-  protected ManufOrderService manufOrderService;
+  protected ManufOrderStockLocationQueryService manufOrderStockLocationQueryService;
   protected StockMoveLineRepository stockMoveLineRepository;
 
   protected ProductCompanyService productCompanyService;
@@ -70,7 +70,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       StockLocationLineRepository stockLocationLineRepository,
       StockLocationUtilsService stockLocationUtilsService,
       AppProductionService appProductionService,
-      ManufOrderService manufOrderService,
+      ManufOrderStockLocationQueryService manufOrderStockLocationQueryService,
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
       ProductCompanyService productCompanyService) {
@@ -87,7 +87,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
         appBaseService,
         stockLocationUtilsService);
     this.appProductionService = appProductionService;
-    this.manufOrderService = manufOrderService;
+    this.manufOrderStockLocationQueryService = manufOrderStockLocationQueryService;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.productCompanyService = productCompanyService;
   }
@@ -133,7 +133,8 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     }
 
     String query =
-        manufOrderService.getBuildingQtyForAProduct(product.getId(), companyId, stockLocationId);
+        manufOrderStockLocationQueryService.getBuildingQtyForAProduct(
+            product.getId(), companyId, stockLocationId);
     List<StockMoveLine> stockMoveLineList = stockMoveLineRepository.all().filter(query).fetch();
 
     BigDecimal sumBuildingQty = BigDecimal.ZERO;
@@ -168,7 +169,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       }
     }
     String query =
-        manufOrderService.getConsumeAndMissingQtyForAProduct(
+        manufOrderStockLocationQueryService.getConsumeAndMissingQtyForAProduct(
             product.getId(), companyId, stockLocationId);
     List<StockMoveLine> stockMoveLineList = stockMoveLineRepository.all().filter(query).fetch();
 
@@ -204,7 +205,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       }
     }
     String query =
-        manufOrderService.getConsumeAndMissingQtyForAProduct(
+        manufOrderStockLocationQueryService.getConsumeAndMissingQtyForAProduct(
             product.getId(), companyId, stockLocationId);
     List<StockMoveLine> stockMoveLineList = stockMoveLineRepository.all().filter(query).fetch();
 
