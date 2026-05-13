@@ -2898,9 +2898,8 @@ IF (SELECT COUNT(to_regclass('studio_app_business_project')) != 0) THEN
 	display_new_progress := '(SELECT COUNT(new_progress) FROM account_invoice_line as ILine WHERE ILine.invoice = InvoiceLine.invoice) as "display_new_progress",';
 	previous_project_invoice_date := '(SELECT MAX(inv.invoice_date) FROM account_invoice as inv
 										left outer join account_invoice_line as ILine on (inv.id = ILine.invoice)
-										left outer join account_invoice_line_project_task_set as taskSet on (taskSet.invoice_line_set = ILine.id)
-										WHERE taskSet.project_task_set IN (SELECT project_task_set from account_invoice_line_project_task_set as taskSet
-										WHERE (taskSet.invoice_line_set = InvoiceLine.id))
+										WHERE ILine.project_task = InvoiceLine.project_task
+										AND InvoiceLine.project_task IS NOT NULL
 										AND inv.invoice_date IS NOT NULL AND inv.invoice_date < Invoice.invoice_date AND inv.status_select IN (2,3)) as "previous_project_invoice_date"';
 END IF;
 
