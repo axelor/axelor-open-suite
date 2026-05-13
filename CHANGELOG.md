@@ -1,3 +1,81 @@
+## [8.5.18] (2026-05-13)
+
+### Fixes
+#### Base
+
+* Product: fixed code of packaging product demo data.
+* Price list: fixed partner price list panel title not reflecting the price list type.
+
+#### Account
+
+* Move: fixed functional origin badge not displayed in form view.
+* Closure assistant: fixed error on required fields when creating a new annual closure.
+* Payment session: fixed unbalanced accounting move when re-validating a session containing a refund after cancelling a bank order.
+* Analytic review: fix detached entity error when reversing many analytic move lines.
+
+#### Contract
+
+* Contract: prevent enabling grouped invoicing without automatic invoicing.
+
+#### Human Resource
+
+* Message template: fixed demo data import overriding 'Changed password' message template due to importId conflicts in expense templates.
+
+#### Production
+
+* Manuf order: fixed an issue where subcontracting cost was halved on intermediate cost sheets, and removed the restriction blocking partial real quantity changes on outsourcing service stock move lines.
+* Production: machine operating duration is now correctly updated when finishing an operation order.
+
+#### Project
+
+* Project task: changed highlight of column to row in grid view.
+
+#### Quality
+
+* Control entry: unified the java process used by all add control entry buttons.
+* Quality: fixed init data for control type name and translated control entry plan line fields.
+* Quality: fixed view layout for control entry, control plan, and stock move line.
+
+#### Sale
+
+* Sale order: fixed error when adding a title line in sale order line details list.
+
+#### Stock
+
+* Stock move: fixed availability status computed on expected quantity instead of real quantity.
+* Stock move: fixed the display of lines with 0 quantity in Picking order BIRT report.
+* Stock API: fixed required fields check on realization of supplier stock move when 'Require to fill the shipment information' is enabled.
+* Stock move: fixed error on product removal on planned supplier arrival.
+* Stock move: removed the quality control entry panel from the stock move form.
+
+#### Supply Chain
+
+* Stock reservation: fixed an issue where the requested reserved quantity was capped on the planned quantity instead of the real quantity when the auto-fill delivery real quantity configuration was enabled.
+
+
+### Developer
+
+#### Quality
+
+ControlEntryService: added addControlEntry(Context) and onControlPlanChange(ControlEntry) methods.
+ControlEntryServiceImpl: constructor now requires ControlPlanRepository and ControlEntryRepository.
+ControlEntryProductionServiceImpl: new class in axelor-production extending ControlEntryServiceImpl.
+
+-- Script
+DELETE FROM meta_action WHERE name IN (
+  'action-product-view-add-control-entry',
+  'action-manuf-order-view-add-control-entry',
+  'action-operation-order-view-add-control-entry',
+  'action-stock-move-line-view-add-control-entry',
+  'action-tracking-number-view-add-control-entry',
+  'action-control-plan-attrs-control-plan-on-change'
+);
+
+#### Stock
+
+-- Script
+DELETE FROM meta_action WHERE name IN ('action-stock-move-view-control-entry', 'action-stock-move-view-add-control-entry');
+
 ## [8.5.17] (2026-04-30)
 
 ### Fixes
@@ -2689,6 +2767,7 @@ Removed CommonInvoiceService.createInvoiceLinesFromOrder Changed the parameter o
 * Bill of material: added default value for calculation quantity.
 * Manuf order: fixed relation with production order.
 
+[8.5.18]: https://github.com/axelor/axelor-open-suite/compare/v8.5.17...v8.5.18
 [8.5.17]: https://github.com/axelor/axelor-open-suite/compare/v8.5.16...v8.5.17
 [8.5.16]: https://github.com/axelor/axelor-open-suite/compare/v8.5.15...v8.5.16
 [8.5.15]: https://github.com/axelor/axelor-open-suite/compare/v8.5.14...v8.5.15

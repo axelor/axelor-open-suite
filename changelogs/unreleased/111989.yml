@@ -1,3 +1,0 @@
----
-title: "Stock move: fixed availability status computed on expected quantity instead of real quantity."
-module: axelor-stock
