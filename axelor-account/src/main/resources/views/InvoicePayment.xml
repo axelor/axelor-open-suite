@@ -106,7 +106,8 @@
       <panel name="reversePaymentMovePanel"
         showIf="move &amp;&amp; statusSelect != 2 &amp;&amp; (typeSelect &lt; 3 || typeSelect &gt; 9)"
         colSpan="12">
-        <field name="cancelReason" title="Cancel reason (Required to execute the process)"/>
+        <field name="cancelReason" title="Cancel reason (Required to execute the process)"
+          domain="self.applicationType = 'com.axelor.apps.account.db.InvoicePayment'"/>
         <button name="reversePaymentMoveBtn"
           onClick="action-invoice-payment-group-reverse-move" title="Cancel the payment entry"
           readonlyIf="!cancelReason"/>
