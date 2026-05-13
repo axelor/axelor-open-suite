@@ -1,3 +1,0 @@
----
-title: "Manuf order: fixed an issue where subcontracting cost was halved on intermediate cost sheets, and removed the restriction blocking partial real quantity changes on outsourcing service stock move lines."
-module: axelor-production

@@ -1,3 +1,49 @@
+## [8.4.26] (2026-05-13)
+
+### Fixes
+#### Base
+
+* Price list: fixed partner price list panel title not reflecting the price list type.
+
+#### Account
+
+* Move: fixed functional origin badge not displayed in form view.
+* Closure assistant: fixed error on required fields when creating a new annual closure.
+* Payment session: fixed unbalanced accounting move when re-validating a session containing a refund after cancelling a bank order.
+* Analytic review: fix detached entity error when reversing many analytic move lines.
+
+#### Business Project
+
+* Business project: fix 'Done' button on task form not updating the task status.
+
+#### Contract
+
+* Contract: prevent enabling grouped invoicing without automatic invoicing.
+
+#### Human Resource
+
+* Message template: fixed demo data import overriding 'Changed password' message template due to importId conflicts in expense templates.
+
+#### Production
+
+* Manuf order: fixed an issue where subcontracting cost was halved on intermediate cost sheets, and removed the restriction blocking partial real quantity changes on outsourcing service stock move lines.
+* Production: machine operating duration is now correctly updated when finishing an operation order.
+
+#### Sale
+
+* Sale order: fixed error when adding a title line in sale order line details list.
+
+#### Stock
+
+* Stock move: fixed availability status computed on expected quantity instead of real quantity.
+* Stock move: fixed the display of lines with 0 quantity in Picking order BIRT report.
+* Stock API: fixed required fields check on realization of supplier stock move when 'Require to fill the shipment information' is enabled.
+* Stock move: fixed error on product removal on planned supplier arrival.
+
+#### Supply Chain
+
+* Stock reservation: fixed an issue where the requested reserved quantity was capped on the planned quantity instead of the real quantity when the auto-fill delivery real quantity configuration was enabled.
+
 ## [8.4.25] (2026-04-30)
 
 ### Fixes
@@ -2843,6 +2889,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.26]: https://github.com/axelor/axelor-open-suite/compare/v8.4.25...v8.4.26
 [8.4.25]: https://github.com/axelor/axelor-open-suite/compare/v8.4.24...v8.4.25
 [8.4.24]: https://github.com/axelor/axelor-open-suite/compare/v8.4.23...v8.4.24
 [8.4.23]: https://github.com/axelor/axelor-open-suite/compare/v8.4.22...v8.4.23

@@ -1,3 +1,0 @@
----
-title: "Stock API: fixed required fields check on realization of supplier stock move when 'Require to fill the shipment information' is enabled."
-module: axelor-stock
