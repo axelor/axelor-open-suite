@@ -1,0 +1,3 @@
+---
+title: "Base: fixed the simulated date when running in dev mode on a non-UTC server, which was shifted by one day."
+module: axelor-base
