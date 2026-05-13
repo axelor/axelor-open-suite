@@ -47,7 +47,8 @@ public class PreventiveMaintenanceCriterionServiceImpl
   }
 
   @Override
-  public Boolean evaluateCalendarCriterion(EquipementMaintenance equipment) throws AxelorException {
+  public Boolean evaluateCalendarCriterion(EquipementMaintenance equipment, int anticipationDays)
+      throws AxelorException {
     if (equipment.getMtnEachDay() <= 0) {
       return null;
     }
@@ -55,7 +56,8 @@ public class PreventiveMaintenanceCriterionServiceImpl
     LocalDate today = appBaseService.getTodayDate(null);
 
     if (equipment.getNextMtnDate() != null) {
-      return !today.isBefore(equipment.getNextMtnDate());
+      LocalDate triggerDate = equipment.getNextMtnDate().minusDays(Math.max(anticipationDays, 0));
+      return !today.isBefore(triggerDate);
     }
 
     MaintenanceRequest lastCompleted = findLastCompletedPreventiveRequest(equipment);
@@ -92,8 +94,9 @@ public class PreventiveMaintenanceCriterionServiceImpl
   }
 
   @Override
-  public boolean shouldTriggerMaintenance(EquipementMaintenance equipment) throws AxelorException {
-    Boolean calendarResult = evaluateCalendarCriterion(equipment);
+  public boolean shouldTriggerMaintenance(EquipementMaintenance equipment, int anticipationDays)
+      throws AxelorException {
+    Boolean calendarResult = evaluateCalendarCriterion(equipment, anticipationDays);
     Boolean hoursResult = evaluateOperatingHoursCriterion(equipment);
 
     List<Boolean> configuredResults = new ArrayList<>();
