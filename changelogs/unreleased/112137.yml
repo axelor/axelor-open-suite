@@ -1,3 +1,0 @@
----
-title: "Stock reservation: fixed an issue where the requested reserved quantity was capped on the planned quantity instead of the real quantity."
-module: axelor-supplychain

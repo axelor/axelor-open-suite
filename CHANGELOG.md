@@ -1,3 +1,38 @@
+## [7.2.66] (2026-05-13)
+
+### Fixes
+#### Base
+
+* File source connector: fixed SFTP private key path not resolved error.
+* PriceList: fix typeSelect field not editable when creating from Referential
+
+#### Account
+
+* Invoice: fixed 'Suppl. Invoices to pay' to include validated advance payment invoices too.
+* Accounting batch: fixed opening-only close/open accounts batch failing when generate result move is enabled.
+* Move: fixed MappingException when changing payment condition on an unsaved duplicated move.
+* Closure assistant: fixed error on required fields when creating a new annual closure.
+
+#### Production
+
+* Production: machine operating duration is now correctly updated when finishing an operation order.
+
+#### Purchase
+
+* Purchaser order: fixed migration script which is incorrectly setting amount invoiced to 0 on all purchase orders.
+
+#### Stock
+
+* Stock location: fixed drag and drop in tree view.
+* Stock move: fixed error on product removal on planned supplier arrival.
+* StockMove: fixed NPE when we mass invoice and the stock move has an address null.
+
+#### Supply Chain
+
+* Supplychain: fixed performance issue in sale order to stock move generation for orders with many lines.
+* Stock reservation: fixed an issue where the requested reserved quantity was capped on the planned quantity instead of the real quantity.
+* MRP: fixed NullPointerException in MRP processing when a product had a null productTypeSelect or excludeFromMrp.
+
 ## [7.2.65] (2026-04-16)
 
 ### Fixes
@@ -530,7 +565,7 @@ SET amount_invoiced =
                       WHERE ((InvoiceLine.purchase_order_line IN (
                           SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
                       ) OR Invoice.purchase_order = PurchaseOrder.id)
-                      AND Invoice.operation_type_select = 1
+                      AND Invoice.operation_type_select = 3
                       AND Invoice.status_select = 3
                   ), 0)
                   -
@@ -541,7 +576,7 @@ SET amount_invoiced =
                       WHERE ((InvoiceLine.purchase_order_line IN (
                           SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
                       ) OR Invoice.purchase_order = PurchaseOrder.id)
-                      AND Invoice.operation_type_select = 2
+                      AND Invoice.operation_type_select = 4
                       AND Invoice.status_select = 3
                   ), 0)
               ) / PurchaseOrder.company_ex_tax_total
@@ -554,7 +589,7 @@ SET amount_invoiced =
               WHERE ((InvoiceLine.purchase_order_line IN (
                   SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
               ) OR Invoice.purchase_order = PurchaseOrder.id)
-              AND Invoice.operation_type_select = 1
+              AND Invoice.operation_type_select = 3
               AND Invoice.status_select = 3
           ), 0)
           -
@@ -565,7 +600,7 @@ SET amount_invoiced =
               WHERE ((InvoiceLine.purchase_order_line IN (
                   SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
               ) OR Invoice.purchase_order = PurchaseOrder.id)
-              AND Invoice.operation_type_select = 2
+              AND Invoice.operation_type_select = 4
               AND Invoice.status_select = 3
           ), 0)
     END
@@ -3071,6 +3106,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.66]: https://github.com/axelor/axelor-open-suite/compare/v7.2.65...v7.2.66
 [7.2.65]: https://github.com/axelor/axelor-open-suite/compare/v7.2.64...v7.2.65
 [7.2.64]: https://github.com/axelor/axelor-open-suite/compare/v7.2.63...v7.2.64
 [7.2.63]: https://github.com/axelor/axelor-open-suite/compare/v7.2.62...v7.2.63
