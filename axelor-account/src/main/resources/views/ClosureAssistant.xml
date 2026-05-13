@@ -34,7 +34,6 @@
 
   <action-group name="account-closure-assistant-group-on-new">
     <action name="account-closure-assistant-method-set-fields-on-new"/>
-    <action name="save"/>
   </action-group>
 
   <action-group name="account-closure-assistant-group-on-save">
