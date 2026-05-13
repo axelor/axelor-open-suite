@@ -119,7 +119,8 @@ public class SolBomCustomizationServiceImpl implements SolBomCustomizationServic
       List<SaleOrderLineDetails> saleOrderLineDetailsList, BillOfMaterial personalizedBOM) {
     if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
       for (SaleOrderLineDetails saleOrderLineDetails : saleOrderLineDetailsList) {
-        if (saleOrderLineDetails.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT) {
+        if (saleOrderLineDetails.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT
+            && saleOrderLineDetails.getProduct() != null) {
           var bomLine = bomLineCreationService.createBomLineFromSolDetails(saleOrderLineDetails);
           saleOrderLineDetails.setBillOfMaterialLine(bomLine);
           personalizedBOM.addBillOfMaterialLineListItem(bomLine);
