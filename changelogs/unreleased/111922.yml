@@ -1,0 +1,3 @@
+---
+title: "Payment session: fixed unbalanced accounting move when re-validating a session containing a refund after cancelling a bank order."
+module: axelor-account
