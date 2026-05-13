@@ -46,10 +46,13 @@ public class ClosureAssistantLineController {
   public void validateClosureAssistantLine(ActionRequest request, ActionResponse response) {
 
     try {
+      ClosureAssistant closureAssistant =
+          request.getContext().getParent().asType(ClosureAssistant.class);
       ClosureAssistantLine closureAssistantLine =
           request.getContext().asType(ClosureAssistantLine.class);
       closureAssistantLine =
-          Beans.get(ClosureAssistantLineRepository.class).find(closureAssistantLine.getId());
+          Beans.get(ClosureAssistantLineService.class)
+              .getClosureAssistantLine(closureAssistant, closureAssistantLine);
       Beans.get(ClosureAssistantLineService.class)
           .validateClosureAssistantLine(closureAssistantLine);
       response.setReload(true);
@@ -164,9 +167,8 @@ public class ClosureAssistantLineController {
   public void setParentStatus(ActionRequest request, ActionResponse response) {
 
     try {
-      ClosureAssistantLine closureAssistantLine =
-          request.getContext().asType(ClosureAssistantLine.class);
-      ClosureAssistant closureAssistant = closureAssistantLine.getClosureAssistant();
+      ClosureAssistant closureAssistant =
+          request.getContext().getParent().asType(ClosureAssistant.class);
       if (closureAssistant.getId() != null) {
         closureAssistant =
             Beans.get(ClosureAssistantRepository.class).find(closureAssistant.getId());
