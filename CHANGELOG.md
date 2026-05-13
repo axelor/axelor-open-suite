@@ -1,3 +1,22 @@
+## [8.3.35] (2026-05-13)
+
+### Fixes
+#### Account
+
+* Payment session: fixed unbalanced accounting move when re-validating a session containing a refund after cancelling a bank order.
+
+#### Business Project
+
+* Business project: fix 'Done' button on task form not updating the task status.
+
+#### Sale
+
+* Sale order: fixed error when adding a title line in sale order line details list.
+
+#### Supply Chain
+
+* Stock reservation: fixed an issue where the requested reserved quantity was capped on the planned quantity instead of the real quantity when the auto-fill delivery real quantity configuration was enabled.
+
 ## [8.3.34] (2026-04-30)
 
 ### Fixes
@@ -3247,6 +3266,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.35]: https://github.com/axelor/axelor-open-suite/compare/v8.3.34...v8.3.35
 [8.3.34]: https://github.com/axelor/axelor-open-suite/compare/v8.3.33...v8.3.34
 [8.3.33]: https://github.com/axelor/axelor-open-suite/compare/v8.3.32...v8.3.33
 [8.3.32]: https://github.com/axelor/axelor-open-suite/compare/v8.3.31...v8.3.32
