@@ -1,0 +1,3 @@
+---
+title: "Stock: fixed LazyInitializationException when using 'Pick all' on a mass stock move."
+module: axelor-stock
