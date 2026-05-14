@@ -1,0 +1,3 @@
+---
+title: "Production: Populate scrap output stock move with scrapped products and quantities."
+module: axelor-production
