@@ -300,6 +300,8 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     bomLevel++;
 
+    BigDecimal qtyRatio = getQtyRatio(billOfMaterial.getQty(), calculationQty);
+
     // Cout des composants
     this._computeToConsumeProduct(
         company,
@@ -308,7 +310,7 @@ public class CostSheetServiceImpl implements CostSheetService {
         parentCostSheetLine,
         origin,
         unitCostCalculation,
-        getQtyRatio(billOfMaterial.getQty(), calculationQty));
+        qtyRatio);
 
     // Cout des operations
     this._computeProcess(
@@ -316,7 +318,9 @@ public class CostSheetServiceImpl implements CostSheetService {
         calculationQty,
         billOfMaterial.getProduct().getUnit(),
         bomLevel,
-        parentCostSheetLine);
+        parentCostSheetLine,
+        qtyRatio,
+        billOfMaterial.getQty());
   }
 
   protected void _computeToConsumeProduct(
@@ -395,6 +399,25 @@ public class CostSheetServiceImpl implements CostSheetService {
       int bomLevel,
       CostSheetLine parentCostSheetLine)
       throws AxelorException {
+    _computeProcess(
+        prodProcess,
+        producedQty,
+        pieceUnit,
+        bomLevel,
+        parentCostSheetLine,
+        BigDecimal.ONE,
+        producedQty);
+  }
+
+  protected void _computeProcess(
+      ProdProcess prodProcess,
+      BigDecimal producedQty,
+      Unit pieceUnit,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal qtyRatio,
+      BigDecimal bomQty)
+      throws AxelorException {
 
     if (prodProcess != null && prodProcess.getProdProcessLineList() != null) {
 
@@ -416,13 +439,20 @@ public class CostSheetServiceImpl implements CostSheetService {
                 pieceUnit,
                 prodProcessLine.getPriority(),
                 bomLevel,
-                parentCostSheetLine);
+                parentCostSheetLine,
+                qtyRatio);
           }
           if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
               || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
 
             this._computeMachineCost(
-                prodProcessLine, producedQty, pieceUnit, bomLevel, parentCostSheetLine);
+                prodProcessLine,
+                producedQty,
+                pieceUnit,
+                bomLevel,
+                parentCostSheetLine,
+                qtyRatio,
+                bomQty);
           }
         }
       }
@@ -438,6 +468,29 @@ public class CostSheetServiceImpl implements CostSheetService {
       int priority,
       int bomLevel,
       CostSheetLine parentCostSheetLine)
+      throws AxelorException {
+    _computeHumanResourceCost(
+        prodProcessLine,
+        workCenter,
+        producedQty,
+        humanDuration,
+        pieceUnit,
+        priority,
+        bomLevel,
+        parentCostSheetLine,
+        BigDecimal.ONE);
+  }
+
+  protected void _computeHumanResourceCost(
+      ProdProcessLine prodProcessLine,
+      WorkCenter workCenter,
+      BigDecimal producedQty,
+      Long humanDuration,
+      Unit pieceUnit,
+      int priority,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal qtyRatio)
       throws AxelorException {
 
     int hrCostType =
@@ -455,7 +508,8 @@ public class CostSheetServiceImpl implements CostSheetService {
               .divide(
                   BigDecimal.valueOf(3600),
                   appProductionService.getNbDecimalDigitForUnitPrice(),
-                  RoundingMode.HALF_UP);
+                  RoundingMode.HALF_UP)
+              .multiply(qtyRatio);
 
       costSheetLineService.createWorkCenterHRCostSheetLine(
           workCenter,
@@ -478,6 +532,25 @@ public class CostSheetServiceImpl implements CostSheetService {
       Unit pieceUnit,
       int bomLevel,
       CostSheetLine parentCostSheetLine)
+      throws AxelorException {
+    _computeMachineCost(
+        prodProcessLine,
+        producedQty,
+        pieceUnit,
+        bomLevel,
+        parentCostSheetLine,
+        BigDecimal.ONE,
+        producedQty);
+  }
+
+  protected void _computeMachineCost(
+      ProdProcessLine prodProcessLine,
+      BigDecimal producedQty,
+      Unit pieceUnit,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal qtyRatio,
+      BigDecimal bomQty)
       throws AxelorException {
 
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
@@ -517,7 +590,8 @@ public class CostSheetServiceImpl implements CostSheetService {
                   new BigDecimal(3600),
                   appProductionService.getNbDecimalDigitForUnitPrice(),
                   RoundingMode.HALF_UP)
-              .multiply(this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()));
+              .multiply(this.getNbCycle(bomQty, prodProcessLine.getMaxCapacityPerCycle()))
+              .multiply(qtyRatio);
       BigDecimal costPrice = costAmount.multiply(qty);
 
       costSheetLineService.createWorkCenterMachineCostSheetLine(
