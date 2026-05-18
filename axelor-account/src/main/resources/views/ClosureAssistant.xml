@@ -5,8 +5,8 @@
 
   <grid model="com.axelor.apps.account.db.ClosureAssistant" title="Year closure"
     name="closure-assistant-grid" orderBy="progress">
-    <field name="fiscalYear.code" title="Fiscal Year" width="300"/>
-    <field name="fiscalYear.company.code" title="Company" width="300"/>
+    <field name="fiscalYear" title="Fiscal Year" width="300"/>
+    <field name="company" title="Company" width="300"/>
     <field name="progress" title="Progress" widget="Progress" width="600"/>
     <field name="statusSelect"/>
   </grid>
