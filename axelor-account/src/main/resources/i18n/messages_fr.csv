@@ -45,7 +45,7 @@
 "%s : Error : You must configure a year for the batch configurator %s","%s : Erreur : Veuillez configurer une année comptable pour le configurateur de batch %s",,
 "%s : Error : You must configure accounts for the batch configurator %s","%s : Erreur : Veuillez configurer des comptes comptables pour le configurateur de batch %s",,
 "%s : Error : You must configure an account export sequence for the company %s","%s : Erreur : Veuillez configurer une séquence Export comptable pour la société %s",,
-"%s : Error : You must configure an account reporting sequence for the company %s","%s : Erreur : Veuillez configurer une séquence Reporting comptable pour la société %s",,
+"%s : Error : You must configure an account reporting sequence for the company %s","%s : Erreur : Veuillez configurer une séquence de rapport comptable pour la société %s",,
 "%s : Error : You must configure an analytic report sequence for the company %s","%s : Erreur : Veuillez configurer une séquence de rapport analytique pour la société %s",,
 "%s : Error : You must configure an export type for the batch configurator %s","%s : Erreur : Veuillez configurer un type d'export pour le configurateur de batch %s",,
 "%s : Error : You must, at first, create timetable lines for the timetable %s","%s : Erreur : Veuillez d'abord créer les lignes d'échéancier pour l'échéancier %s",,
