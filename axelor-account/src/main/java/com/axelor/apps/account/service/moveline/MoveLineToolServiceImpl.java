@@ -426,10 +426,8 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
   public List<MoveLine> getMoveExcessDueList(
       boolean excessPayment, Company company, Partner partner, Invoice originInvoice) {
     String filter = "";
-    int operationTypeSelect = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
     if (excessPayment) {
       filter = "self.credit > 0";
-      operationTypeSelect = InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
     } else {
       filter = "self.debit > 0";
     }
@@ -440,15 +438,21 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
         .contains(originInvoice.getOperationTypeSelect())) {
       filter =
           filter.concat(
-              " AND (self.partner.isCompensation = true OR (self.move.invoice IS NULL OR self.move.invoice.operationTypeSelect != :operationTypeSelect))");
+              " AND (self.move.invoice IS NULL OR self.move.invoice.operationTypeSelect IN (:refundTypes) OR self.partner.isCompensation = true)");
     }
+
+    // Credit lines have amountRemaining = -(credit - amountPaid), so negative when unreconciled.
+    // Debit lines have amountRemaining = debit - amountPaid, so positive when outstanding.
+    String amountRemainingCondition =
+        excessPayment ? "self.amountRemaining < 0" : "self.amountRemaining > 0";
 
     filter =
         filter.concat(
             " AND self.move.company = :company AND (self.move.statusSelect = :statusAccounted OR self.move.statusSelect = :statusDaybook) "
                 + " AND self.move.ignoreInAccountingOk IN (false,null)"
                 + " AND self.account.accountType.technicalTypeSelect not in (:technicalTypesToExclude)"
-                + " AND self.account.useForPartnerBalance = true AND self.amountRemaining > 0 "
+                + " AND self.account.useForPartnerBalance = true AND "
+                + amountRemainingCondition
                 + " AND self.partner = :partner AND (self.move.invoice IS NULL OR self.move.invoice.id != :invoiceId) ORDER BY self.date ASC ");
 
     Map<String, Object> bindings = new HashMap<>();
@@ -460,7 +464,11 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
         Arrays.asList(AccountTypeRepository.TYPE_VIEW, AccountTypeRepository.TYPE_TAX));
     bindings.put("partner", partner);
     bindings.put("invoiceId", originInvoice.getId());
-    bindings.put("operationTypeSelect", operationTypeSelect);
+    bindings.put(
+        "refundTypes",
+        Arrays.asList(
+            InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND,
+            InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
 
     return moveLineRepository.all().filter(filter).bind(bindings).fetch();
   }
