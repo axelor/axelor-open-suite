@@ -82,9 +82,7 @@ public class PurchaseRequestController {
             Beans.get(PurchaseRequestService.class)
                 .generatePo(purchaseRequests, groupBySupplier, groupByProduct, company);
         ActionViewBuilder actionViewBuilder =
-            ActionView.define(
-                    String.format(
-                        "Purchase Order%s generated", (purchaseOrderList.size() > 1 ? "s" : "")))
+            ActionView.define(I18n.get("Purchase orders"))
                 .model(PurchaseOrder.class.getName())
                 .add("grid", "purchase-order-quotation-grid")
                 .add("form", "purchase-order-form")
