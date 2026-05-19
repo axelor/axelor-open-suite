@@ -227,6 +227,9 @@ public class InvoiceTermController {
   public void validatePfp(ActionRequest request, ActionResponse response) {
     try {
       InvoiceTerm invoiceterm = request.getContext().asType(InvoiceTerm.class);
+      if (isMoveLineContext(request)) {
+        invoiceterm = Beans.get(InvoiceTermRepository.class).find(invoiceterm.getId());
+      }
       Beans.get(InvoiceTermPfpValidateService.class).validatePfp(invoiceterm, AuthUtils.getUser());
       response.setValues(invoiceterm);
     } catch (Exception e) {
@@ -398,6 +401,14 @@ public class InvoiceTermController {
     this.setMoveLine(request, invoiceTerm);
 
     this.setMove(request, invoiceTerm.getMoveLine());
+  }
+
+  protected boolean isMoveLineContext(ActionRequest request) {
+    if (ContextHelper.getContextParent(request.getContext(), Invoice.class, 1) != null) {
+      return false;
+    }
+
+    return ContextHelper.getContextParent(request.getContext(), MoveLine.class, 1) != null;
   }
 
   protected void setInvoice(ActionRequest request, InvoiceTerm invoiceTerm) {
