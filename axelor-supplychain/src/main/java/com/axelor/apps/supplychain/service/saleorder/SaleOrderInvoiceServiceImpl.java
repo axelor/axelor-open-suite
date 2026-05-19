@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
@@ -59,7 +60,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
@@ -100,7 +101,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   protected InvoiceRepository invoiceRepo;
 
-  protected InvoiceServiceSupplychainImpl invoiceService;
+  protected InvoiceService invoiceService;
+
+  protected InvoiceServiceSupplychain invoiceServiceSupplychain;
 
   protected StockMoveRepository stockMoveRepository;
 
@@ -123,7 +126,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       AppSupplychainService appSupplychainService,
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
-      InvoiceServiceSupplychainImpl invoiceService,
+      InvoiceService invoiceService,
+      InvoiceServiceSupplychain invoiceServiceSupplychain,
       StockMoveRepository stockMoveRepository,
       SaleOrderWorkflowService saleOrderWorkflowService,
       InvoiceTermService invoiceTermService,
@@ -141,6 +145,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.saleOrderRepo = saleOrderRepo;
     this.invoiceRepo = invoiceRepo;
     this.invoiceService = invoiceService;
+    this.invoiceServiceSupplychain = invoiceServiceSupplychain;
     this.stockMoveRepository = stockMoveRepository;
     this.saleOrderWorkflowService = saleOrderWorkflowService;
     this.invoiceTermService = invoiceTermService;
@@ -893,7 +898,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       invoiceService.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
       invoiceMerged.setSaleOrder(null);
       invoiceRepo.save(invoiceMerged);
-      invoiceService.swapStockMoveInvoices(invoiceList, invoiceMerged);
+      invoiceServiceSupplychain.swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;
     } else {
@@ -910,7 +915,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
               paymentCondition,
               tradingName,
               fiscalPosition);
-      invoiceService.swapStockMoveInvoices(invoiceList, invoiceMerged);
+      invoiceServiceSupplychain.swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;
     }
