@@ -58,43 +58,52 @@ public class InventoryStockLocationUpdateServiceImpl
             .map(InventoryLine::getProduct)
             .distinct()
             .collect(Collectors.toList());
-    StockLocation stockLocation = inventory.getStockLocation();
+    List<StockLocation> stockLocationList =
+        inventoryLineList.stream()
+            .map(InventoryLine::getStockLocation)
+            .distinct()
+            .collect(Collectors.toList());
 
-    updateStockLocationLines(inventory, stockLocation, productList, inventoryLineList);
-    updateDetailsStockLocationLines(inventory, stockLocation, productList, inventoryLineList);
+    updateStockLocationLines(inventory, stockLocationList, productList, inventoryLineList);
+    updateDetailsStockLocationLines(inventory, stockLocationList, productList, inventoryLineList);
   }
 
   protected void updateStockLocationLines(
       Inventory inventory,
-      StockLocation stockLocation,
+      List<StockLocation> stockLocationList,
       List<Product> productList,
       List<InventoryLine> inventoryLineList) {
     List<StockLocationLine> stockLocationLineList =
         stockLocationLineRepository
             .all()
             .filter(
-                "self.stockLocation = :stockLocation"
+                "self.stockLocation IN :stockLocationList"
                     + " AND self.product IN :productList"
                     + " AND self.trackingNumber IS NULL")
-            .bind("stockLocation", stockLocation)
+            .bind("stockLocationList", stockLocationList)
             .bind("productList", productList)
             .fetch();
 
-    Map<Product, BigDecimal> productToQtyMap = getProductQtyMap(inventoryLineList);
+    Map<Pair<Product, StockLocation>, BigDecimal> productStockLocationToQtyMap =
+        getProductStockLocationQtyMap(inventoryLineList);
 
     for (StockLocationLine stockLocationLine : stockLocationLineList) {
       Product product = stockLocationLine.getProduct();
-      BigDecimal realQty = productToQtyMap.getOrDefault(product, BigDecimal.ZERO);
-      updateLine(inventory, inventoryLineList, stockLocationLine, realQty, product);
+      StockLocation stockLocation = stockLocationLine.getStockLocation();
+      BigDecimal realQty = productStockLocationToQtyMap.get(Pair.of(product, stockLocation));
+      if (realQty == null) {
+        continue;
+      }
+      updateLine(inventory, inventoryLineList, stockLocationLine, realQty, product, stockLocation);
     }
   }
 
-  protected Map<Product, BigDecimal> getProductQtyMap(List<InventoryLine> inventoryLineList) {
+  protected Map<Pair<Product, StockLocation>, BigDecimal> getProductStockLocationQtyMap(
+      List<InventoryLine> inventoryLineList) {
     return inventoryLineList.stream()
-        .filter(line -> line.getTrackingNumber() == null)
         .collect(
             Collectors.groupingBy(
-                InventoryLine::getProduct,
+                line -> Pair.of(line.getProduct(), line.getStockLocation()),
                 Collectors.mapping(
                     InventoryLine::getRealQty,
                     Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
@@ -102,41 +111,56 @@ public class InventoryStockLocationUpdateServiceImpl
 
   protected void updateDetailsStockLocationLines(
       Inventory inventory,
-      StockLocation stockLocation,
+      List<StockLocation> stockLocationList,
       List<Product> productList,
       List<InventoryLine> inventoryLineList) {
     List<StockLocationLine> detailsStockLocationLineList =
         stockLocationLineRepository
             .all()
             .filter(
-                "self.detailsStockLocation = :stockLocation"
+                "self.detailsStockLocation IN :stockLocationList"
                     + " AND self.product IN :productList"
                     + " AND self.trackingNumber IS NOT NULL")
-            .bind("stockLocation", stockLocation)
+            .bind("stockLocationList", stockLocationList)
             .bind("productList", productList)
             .fetch();
 
-    Map<Pair<Product, TrackingNumber>, InventoryLine> inventoryLineMap =
-        getPairInventoryLineMap(inventoryLineList);
+    Map<Pair<Pair<Product, TrackingNumber>, StockLocation>, InventoryLine> inventoryLineMap =
+        getProductTrackingStockLocationInventoryLineMap(inventoryLineList);
 
     if (detailsStockLocationLineList != null) {
       for (StockLocationLine detailsStockLocationLine : detailsStockLocationLineList) {
         Product product = detailsStockLocationLine.getProduct();
         TrackingNumber trackingNumber = detailsStockLocationLine.getTrackingNumber();
-        InventoryLine matchingLine = inventoryLineMap.get(Pair.of(product, trackingNumber));
-        BigDecimal realQty = matchingLine != null ? matchingLine.getRealQty() : BigDecimal.ZERO;
-        updateLine(inventory, inventoryLineList, detailsStockLocationLine, realQty, product);
+        StockLocation detailsStockLocation = detailsStockLocationLine.getDetailsStockLocation();
+        InventoryLine matchingLine =
+            inventoryLineMap.get(Pair.of(Pair.of(product, trackingNumber), detailsStockLocation));
+        if (matchingLine == null) {
+          continue;
+        }
+        BigDecimal realQty = matchingLine.getRealQty();
+        updateLine(
+            inventory,
+            inventoryLineList,
+            detailsStockLocationLine,
+            realQty,
+            product,
+            detailsStockLocation);
       }
     }
   }
 
-  protected Map<Pair<Product, TrackingNumber>, InventoryLine> getPairInventoryLineMap(
-      List<InventoryLine> inventoryLineList) {
+  protected Map<Pair<Pair<Product, TrackingNumber>, StockLocation>, InventoryLine>
+      getProductTrackingStockLocationInventoryLineMap(List<InventoryLine> inventoryLineList) {
     return inventoryLineList.stream()
         .filter(line -> line.getTrackingNumber() != null)
         .collect(
             Collectors.toMap(
-                line -> Pair.of(line.getProduct(), line.getTrackingNumber()), line -> line));
+                line ->
+                    Pair.of(
+                        Pair.of(line.getProduct(), line.getTrackingNumber()),
+                        line.getStockLocation()),
+                line -> line));
   }
 
   protected void updateLine(
@@ -144,13 +168,17 @@ public class InventoryStockLocationUpdateServiceImpl
       List<InventoryLine> inventoryLineList,
       StockLocationLine stockLocationLine,
       BigDecimal realQty,
-      Product product) {
+      Product product,
+      StockLocation stockLocation) {
     stockLocationLine.setLastInventoryRealQty(realQty);
     stockLocationLine.setLastInventoryDateT(
         inventory.getValidatedOn().atZone(ZoneId.systemDefault()));
     stockLocationLine.setRack(
         inventoryLineList.stream()
-            .filter(line -> line.getProduct().equals(product))
+            .filter(
+                line ->
+                    line.getProduct().equals(product)
+                        && Objects.equals(line.getStockLocation(), stockLocation))
             .map(InventoryLine::getRack)
             .filter(Objects::nonNull)
             .findFirst()
