@@ -1,0 +1,8 @@
+---
+title: "Sale order: fixed bad injection of InvoiceServiceSupplychainImpl instead of interface in SaleOrderInvoiceServiceImpl."
+module: axelor-supplychain
+developer: |
+  The constructor of `SaleOrderInvoiceServiceImpl` (and its subclasses `SaleOrderInvoiceContractServiceImpl`, `SaleOrderBudgetServiceImpl`) has changed.
+  `InvoiceServiceSupplychainImpl invoiceService` has been replaced by two interface-typed parameters:
+  - `InvoiceService invoiceService`
+  - `InvoiceServiceSupplychain invoiceServiceSupplychain`
