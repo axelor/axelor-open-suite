@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -27,6 +28,8 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
+import com.axelor.studio.db.AppSale;
+import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -47,6 +50,30 @@ public class SubSaleOrderLineComputeServiceProductionImpl
         currencyScaleService,
         saleOrderLinePriceService,
         saleOrderLineProductService);
+  }
+
+  @Override
+  public void computeSumSubLineList(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    AppSale appSale = appSaleService.getAppSale();
+    if (appSale.getListDisplayTypeSelect() != AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
+      super.computeSumSubLineList(saleOrderLine, saleOrder);
+      return;
+    }
+    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    if (appSale.getIsSOLPriceTotalOfSubLines()
+        && (CollectionUtils.isNotEmpty(subSaleOrderLineList)
+            || CollectionUtils.isNotEmpty(saleOrderLine.getSaleOrderLineDetailsList()))) {
+      if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
+        for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
+          computeSumSubLineList(subSaleOrderLine, saleOrder);
+        }
+      }
+      computePrices(saleOrderLine, saleOrder);
+    } else {
+      saleOrderLineProductService.fillPrice(saleOrderLine, saleOrder);
+    }
+    saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
   }
 
   @Override
