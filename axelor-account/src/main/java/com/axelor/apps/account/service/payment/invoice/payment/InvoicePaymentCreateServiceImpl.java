@@ -569,6 +569,8 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
           invoiceTermList, invoicePayment, amount, reconcile, new HashMap<>());
     } else {
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
+      invoiceTerm.setCompanyAmountRemaining(
+          invoiceTerm.getCompanyAmountRemaining().subtract(amount));
     }
 
     invoiceTerm = invoiceTermService.updateInvoiceTermsAmountsSessionPart(invoiceTerm, isRefund);

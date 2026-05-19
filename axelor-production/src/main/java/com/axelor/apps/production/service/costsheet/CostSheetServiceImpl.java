@@ -727,10 +727,44 @@ public class CostSheetServiceImpl implements CostSheetService {
       ManufOrder manufOrder, int bomLevel, CostSheetLine parentCostSheetLine)
       throws AxelorException {
     List<PurchaseOrderLine> eligiblePoLines = getEligiblePoLines(manufOrder);
-
     if (eligiblePoLines.isEmpty()) {
       return;
     }
+
+    int calculationType = costSheet.getCalculationTypeSelect();
+    BigDecimal ratio = computeSubcontractingRatio(manufOrder, parentCostSheetLine);
+
+    if (calculationType == CostSheetRepository.CALCULATION_WORK_IN_PROGRESS
+        && ratio.signum() == 0) {
+      computeOutSourcedProductFromReceipts(eligiblePoLines, bomLevel, parentCostSheetLine);
+    } else {
+      computeOutSourcedProductFromOrder(eligiblePoLines, bomLevel, parentCostSheetLine, ratio);
+    }
+  }
+
+  /**
+   * Ratio used to prorate the full purchase order total against the fraction of the manuf order
+   * covered by the current cost sheet batch. Computed locally as {@code batchProducedQty /
+   * manufOrder.qty} so that it stays accurate for partial finishes, where {@link
+   * CostSheet#getManufOrderProducedRatio()} reflects the planned OUT moves at the moment of cost
+   * computation (typically equal to the batch qty, yielding a misleading ratio of 1).
+   */
+  protected BigDecimal computeSubcontractingRatio(
+      ManufOrder manufOrder, CostSheetLine parentCostSheetLine) {
+    BigDecimal manufOrderQty = manufOrder.getQty();
+    if (manufOrderQty == null || manufOrderQty.signum() == 0) {
+      return BigDecimal.ZERO;
+    }
+    BigDecimal consumptionQty = parentCostSheetLine.getConsumptionQty();
+    if (consumptionQty == null) {
+      return BigDecimal.ZERO;
+    }
+    return consumptionQty.divide(manufOrderQty, 5, RoundingMode.HALF_UP);
+  }
+
+  protected void computeOutSourcedProductFromReceipts(
+      List<PurchaseOrderLine> eligiblePoLines, int bomLevel, CostSheetLine parentCostSheetLine)
+      throws AxelorException {
 
     List<StockMoveLine> receivedLines =
         stockMoveLineRepository
@@ -744,39 +778,70 @@ public class CostSheetServiceImpl implements CostSheetService {
             .bind("incoming", StockMoveRepository.TYPE_INCOMING)
             .fetch();
 
-    Map<OutsourceKey, BigDecimal[]> receivedByKey = new HashMap<>();
+    Map<OutsourceKey, BigDecimal[]> totals = new HashMap<>();
     for (StockMoveLine sml : receivedLines) {
       OutsourceKey key = new OutsourceKey(sml.getPurchaseOrderLine());
-      BigDecimal[] totals =
-          receivedByKey.computeIfAbsent(
-              key, k -> new BigDecimal[] {BigDecimal.ZERO, BigDecimal.ZERO});
+      BigDecimal[] entry =
+          totals.computeIfAbsent(key, k -> new BigDecimal[] {BigDecimal.ZERO, BigDecimal.ZERO});
       BigDecimal unitPrice =
           sml.getCompanyUnitPriceUntaxed() != null
               ? sml.getCompanyUnitPriceUntaxed()
               : BigDecimal.ZERO;
-      totals[0] = totals[0].add(sml.getRealQty());
-      totals[1] = totals[1].add(sml.getRealQty().multiply(unitPrice));
+      entry[0] = entry[0].add(sml.getRealQty());
+      entry[1] = entry[1].add(sml.getRealQty().multiply(unitPrice));
     }
+    for (Entry<OutsourceKey, BigDecimal[]> e : totals.entrySet()) {
+      createOutsourceCostSheetLine(
+          e.getKey(), e.getValue()[0], e.getValue()[1], bomLevel, parentCostSheetLine);
+    }
+  }
 
-    BigDecimal ratio = costSheet.getManufOrderProducedRatio();
-    for (Entry<OutsourceKey, BigDecimal[]> entry : receivedByKey.entrySet()) {
-      OutsourceKey key = entry.getKey();
-      BigDecimal proratedQty = entry.getValue()[0].multiply(ratio);
-      BigDecimal proratedExTaxTotal = entry.getValue()[1].multiply(ratio);
-      costSheetLineService.createCostSheetLine(
-          key.getProductName(),
-          key.getProductCode(),
-          bomLevel,
-          proratedQty,
-          proratedExTaxTotal,
-          null,
-          null,
-          CostSheetLineRepository.TYPE_CONSUMED_PRODUCT,
-          CostSheetLineRepository.TYPE_CONSUMED_PRODUCT,
-          key.getUnit(),
-          null,
-          parentCostSheetLine);
+  protected void computeOutSourcedProductFromOrder(
+      List<PurchaseOrderLine> eligiblePoLines,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal ratio)
+      throws AxelorException {
+
+    Map<OutsourceKey, BigDecimal[]> totals = new HashMap<>();
+    for (PurchaseOrderLine pol : eligiblePoLines) {
+      OutsourceKey key = new OutsourceKey(pol);
+      BigDecimal[] entry =
+          totals.computeIfAbsent(key, k -> new BigDecimal[] {BigDecimal.ZERO, BigDecimal.ZERO});
+      BigDecimal qty = pol.getQty() != null ? pol.getQty() : BigDecimal.ZERO;
+      BigDecimal exTaxTotal =
+          pol.getCompanyExTaxTotal() != null ? pol.getCompanyExTaxTotal() : BigDecimal.ZERO;
+      entry[0] = entry[0].add(qty);
+      entry[1] = entry[1].add(exTaxTotal);
     }
+    for (Entry<OutsourceKey, BigDecimal[]> e : totals.entrySet()) {
+      BigDecimal proratedQty = e.getValue()[0].multiply(ratio);
+      BigDecimal proratedExTaxTotal = e.getValue()[1].multiply(ratio);
+      createOutsourceCostSheetLine(
+          e.getKey(), proratedQty, proratedExTaxTotal, bomLevel, parentCostSheetLine);
+    }
+  }
+
+  protected void createOutsourceCostSheetLine(
+      OutsourceKey key,
+      BigDecimal qty,
+      BigDecimal exTaxTotal,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine)
+      throws AxelorException {
+    costSheetLineService.createCostSheetLine(
+        key.getProductName(),
+        key.getProductCode(),
+        bomLevel,
+        qty,
+        exTaxTotal,
+        null,
+        null,
+        CostSheetLineRepository.TYPE_CONSUMED_PRODUCT,
+        CostSheetLineRepository.TYPE_CONSUMED_PRODUCT,
+        key.getUnit(),
+        null,
+        parentCostSheetLine);
   }
 
   protected List<PurchaseOrderLine> getEligiblePoLines(ManufOrder manufOrder) {
