@@ -154,7 +154,14 @@ public class MrpServiceMaintenanceImpl extends MrpServiceProductionImpl {
     this.createMaintenanceOrderMrpLines();
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected void createMaintenanceOrderMrpLines() throws AxelorException {
+
+    // Re-attach this.mrp into the current transaction session. super.completeMrp invokes several
+    // @Transactional sub-methods (createAvailableStockMrpLines, createPurchaseMrpLines, etc.) that
+    // commit/clear before returning, leaving this.mrp detached. Without this refresh, the lazy
+    // mrp.getProductSet() access inside getProductList() throws LazyInitializationException.
+    this.mrp = mrpRepository.find(this.mrp.getId());
 
     MrpLineType maintenanceOrderNeedMrpLineType =
         mrpLineTypeService.getMrpLineType(
@@ -184,18 +191,28 @@ public class MrpServiceMaintenanceImpl extends MrpServiceProductionImpl {
             .bind("statusList", statusList)
             .fetch();
 
+    Set<Long> filterProductIds =
+        getProductList().stream().map(Product::getId).collect(Collectors.toSet());
+    int qtyScale = appBaseService.getNbDecimalDigitForQty();
+
     for (ManufOrder maintenanceOrder : maintenanceOrderList) {
       this.createMaintenanceOrderMrpLines(
           mrpRepository.find(mrp.getId()),
           manufOrderRepository.find(maintenanceOrder.getId()),
-          mrpLineTypeRepository.find(maintenanceOrderNeedMrpLineType.getId()));
+          mrpLineTypeRepository.find(maintenanceOrderNeedMrpLineType.getId()),
+          filterProductIds,
+          qtyScale);
       JPA.clear();
     }
   }
 
   @Transactional(rollbackOn = {Exception.class})
   protected void createMaintenanceOrderMrpLines(
-      Mrp mrp, ManufOrder maintenanceOrder, MrpLineType maintenanceOrderNeedMrpLineType)
+      Mrp mrp,
+      ManufOrder maintenanceOrder,
+      MrpLineType maintenanceOrderNeedMrpLineType,
+      Set<Long> filterProductIds,
+      int qtyScale)
       throws AxelorException {
 
     if (processedManufOrderIds != null && !processedManufOrderIds.add(maintenanceOrder.getId())) {
@@ -218,14 +235,7 @@ public class MrpServiceMaintenanceImpl extends MrpServiceProductionImpl {
       return;
     }
 
-    // Custom BOM explosion: walk DOWN the BOM tree of each planned SML product and accumulate
-    // cascaded quantities for products that are in the MRP's initial filter (getProductList()).
-    // Only filter products generate MrpLines from the maintenance order, so intermediate cascade
-    // lines (e.g., for filter=C1 with an OM consuming PF, no PF/PSF lines, just C1 qty 4).
-    Set<Long> filterProductIds =
-        getProductList().stream().map(Product::getId).collect(Collectors.toSet());
     Company company = mrp.getStockLocation() != null ? mrp.getStockLocation().getCompany() : null;
-    int qtyScale = appBaseService.getNbDecimalDigitForQty();
     Map<Long, BigDecimal> qtyByFilterProduct = new HashMap<>();
 
     for (StockMove stockMove : maintenanceOrder.getInStockMoveList()) {
@@ -292,7 +302,13 @@ public class MrpServiceMaintenanceImpl extends MrpServiceProductionImpl {
     }
 
     if (filterProductIds.contains(product.getId())) {
+      // Topmost filter product in this branch: record its cumulative qty and stop descending.
+      // Descendants that are also in the filter will be reached by the standard MRP cascade
+      // (manufacturing proposal triggered by this need will explode the BOM down), so creating
+      // a direct line here would double-count. Example: filter = {PF, C1} with OM consuming PF:
+      // we create only the PF line; the PF proposal cascade will produce the C1 need.
       result.merge(product.getId(), qty, BigDecimal::add);
+      return;
     }
 
     BillOfMaterial bom = billOfMaterialService.getDefaultBOM(product, company);
