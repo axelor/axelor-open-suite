@@ -25,7 +25,7 @@ dependencies {
 	implementation libs.ical4j_extensions
 	implementation libs.ical4j_connector
 
-	implementation libs.iban4j
+	implementation libs.iban_commons
 	implementation libs.jackrabbit_webdav
 	implementation libs.zxing_core
 		// JSch

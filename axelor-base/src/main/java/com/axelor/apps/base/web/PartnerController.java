@@ -68,6 +68,7 @@ import com.axelor.utils.helpers.StringHelper;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import de.speedbanking.iban.InvalidIbanException;
 import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -82,9 +83,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.exception.BirtException;
-import org.iban4j.IbanFormatException;
-import org.iban4j.InvalidCheckDigitException;
-import org.iban4j.UnsupportedCountryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -318,9 +316,7 @@ public class PartnerController {
           LOG.debug("checking iban code : {}", bankDetails.getIban());
           try {
             Beans.get(BankDetailsService.class).validateIban(bankDetails.getIban());
-          } catch (IbanFormatException
-              | InvalidCheckDigitException
-              | UnsupportedCountryException e) {
+          } catch (InvalidIbanException e) {
             ibanInError.add(bankDetails.getIban());
           }
         }

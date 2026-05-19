@@ -23,7 +23,7 @@ libs.groovy = 'org.apache.groovy:groovy:4.0.28'
 libs.pdfbox = 'org.apache.pdfbox:pdfbox:3.0.0'
 libs.openpdf = 'com.github.librepdf:openpdf:1.4.2'
 
-libs.iban4j = 'org.iban4j:iban4j:3.2.3-RELEASE'
+libs.iban_commons = 'de.speedbanking:iban-commons:1.8.7'
 
 libs.ical4j = 'org.mnode.ical4j:ical4j:2.2.0'
 libs.ical4j_connector = dependencies.create("org.mnode.ical4j:ical4j-connector:1.0.1") {

@@ -25,9 +25,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import org.iban4j.IbanFormatException;
-import org.iban4j.InvalidCheckDigitException;
-import org.iban4j.UnsupportedCountryException;
+import de.speedbanking.iban.InvalidIbanException;
 
 public interface BankDetailsService {
 
@@ -109,13 +107,13 @@ public interface BankDetailsService {
   String getActiveCompanyBankDetails(Company company);
 
   /**
-   * Method to validate a iban.
+   * Validates the structural correctness and check digits of a given IBAN string.
+   * <p>
+   * Evaluates the format, country-specific length, and ISO 7064 Mod 97-10 checksum.
    *
-   * @param iban
-   * @throws IbanFormatException
-   * @throws InvalidCheckDigitException
-   * @throws UnsupportedCountryException
+   * @param iban the alphanumeric IBAN string to validate
+   * @throws InvalidIbanException if the string is null, empty, contains invalid characters,
+   * fails length constraints, or has an invalid checksum digit score
    */
-  void validateIban(String iban)
-      throws IbanFormatException, InvalidCheckDigitException, UnsupportedCountryException;
+  void validateIban(String iban) throws InvalidIbanException;
 }
