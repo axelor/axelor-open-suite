@@ -75,46 +75,11 @@ public class ProjectManagementRepository extends ProjectRepository {
 
   @Override
   public Project save(Project project) {
-
-    AppProject appProject = Beans.get(AppProjectService.class).getAppProject();
-
-    try {
-      if (StringUtils.isBlank(project.getCode()) && appProject.getGenerateProjectSequence()) {
-        Company company = project.getCompany();
-        String seq =
-            Beans.get(SequenceService.class)
-                .getSequenceNumber(
-                    SequenceRepository.PROJECT_SEQUENCE, company, Project.class, "code", project);
-
-        if (seq == null) {
-          throw new AxelorException(
-              company,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(ProjectExceptionMessage.PROJECT_SEQUENCE_ERROR),
-              company.getName());
-        }
-        project.setCode(seq);
-      }
-    } catch (AxelorException e) {
-      throw new PersistenceException(e.getMessage(), e);
-    }
-
+    generateProjectCode(project);
     ProjectManagementRepository.setAllProjectMembersUserSet(project);
-
-    if (project.getSynchronize()) {
-      Team team = project.getTeam();
-      if (team != null) {
-        team.clearMembers();
-        project.getMembersUserSet().forEach(team::addMember);
-      }
-    }
-    try {
-      setAllProjectFullName(project);
-    } catch (AxelorException e) {
-      TraceBackService.traceExceptionFromSaveMethod(e.getCause());
-      throw new PersistenceException(e.getMessage(), e);
-    }
-    project.setDescription(projectTaskService.getTaskLink(project.getDescription()));
+    syncProjectMembersToTeam(project);
+    computeProjectFullName(project);
+    setProjectDescription(project);
 
     Project copiedFromProject = project.getCopiedFromProject();
     // the tasks are copied once, on the first save of the copy
@@ -138,6 +103,54 @@ public class ProjectManagementRepository extends ProjectRepository {
     project = super.save(project);
     projectTaskCopyService.saveCopiedProjectTaskList(copiedTaskList);
     return project;
+  }
+
+  protected void generateProjectCode(Project project) {
+    AppProject appProject = Beans.get(AppProjectService.class).getAppProject();
+
+    try {
+      if (StringUtils.isBlank(project.getCode()) && appProject.getGenerateProjectSequence()) {
+        Company company = project.getCompany();
+        String seq =
+            Beans.get(SequenceService.class)
+                .getSequenceNumber(
+                    SequenceRepository.PROJECT_SEQUENCE, company, Project.class, "code", project);
+
+        if (seq == null) {
+          throw new AxelorException(
+              company,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(ProjectExceptionMessage.PROJECT_SEQUENCE_ERROR),
+              company.getName());
+        }
+        project.setCode(seq);
+      }
+    } catch (AxelorException e) {
+      throw new PersistenceException(e.getMessage(), e);
+    }
+  }
+
+  protected void syncProjectMembersToTeam(Project project) {
+    if (project.getSynchronize()) {
+      Team team = project.getTeam();
+      if (team != null) {
+        team.clearMembers();
+        project.getMembersUserSet().forEach(team::addMember);
+      }
+    }
+  }
+
+  protected void computeProjectFullName(Project project) {
+    try {
+      setAllProjectFullName(project);
+    } catch (AxelorException e) {
+      TraceBackService.traceExceptionFromSaveMethod(e.getCause());
+      throw new PersistenceException(e.getMessage(), e);
+    }
+  }
+
+  protected void setProjectDescription(Project project) {
+    project.setDescription(projectTaskService.getTaskLink(project.getDescription()));
   }
 
   @Override
