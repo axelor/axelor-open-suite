@@ -62,9 +62,7 @@
   </grid>
 
   <grid name="manuf-order-time-tracking-grid" title="Manufacturing orders"
-    model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq"
-    groupBy="productionOrder">
-    <field name="productionOrder" width="120"/>
+    model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
     <field name="manufOrderSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
