@@ -18,7 +18,7 @@
 
     <extend target="//panel[@name='customerPanel']">
       <insert position="after">
-        <panel title="Customer.Equipments" showIf="isCustomer"
+        <panel title="Customer.Equipments" showIf="isCustomer" name="equipmentPanel"
           if="__config__.app.isApp('intervention')">
           <panel-dashlet title="Equipments"
             action="action-intervention-view-equipments" colSpan="12"/>
