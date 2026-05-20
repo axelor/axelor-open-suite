@@ -5,6 +5,7 @@
 4;"pain.001.001.02.sct";"1";"EUR";"pain.001.001.02.sct - Virement SEPA";"Remise de virement SEPA - Version 2";"true";"1";;;;
 5;"pain.001.001.02.xct";"3";"EUR";"pain.001.001.02.xct - Virement international";"Remise de virement international";"false";;;;;
 6;"pain.001.001.03.sct";"1";"EUR";"pain.001.001.03.sct - Virement SEPA";"Remise de virement SEPA - Version 3";"true";"1";;;;
+36;"pain.001.001.09.sct";"1";"EUR";"pain.001.001.09.sct - Virement SEPA";"Remise de virement SEPA - Version 9";"true";"1";;;;
 7;"pain.008.001.01.sbb";"2";"EUR";"pain.008.001.01.sbb - SDD BtoB";"Remise de SDD BtoB";"true";;;;;
 8;"pain.008.001.01.sdd";"2";"EUR";"pain.008.001.01.sdd - SDD CORE";"Remise de SDD CORE";"true";;;;;
 9;"pain.008.001.02.sbb";"2";"EUR";"pain.008.001.02.sbb - SDD BtoB";"Remise de SDD BtoB";"true";;;;;
