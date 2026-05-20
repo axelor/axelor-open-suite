@@ -1,0 +1,3 @@
+---
+title: "AppService: add cacheable() on getApp queries to reduce DB load for app configuration lookups."
+module: axelor-base

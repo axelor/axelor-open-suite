@@ -36,7 +36,7 @@ public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
 
   @Override
   public AppMobileSettings getAppMobileSettings() {
-    return Query.of(AppMobileSettings.class).fetchOne();
+    return Query.of(AppMobileSettings.class).cacheable().autoFlush(false).fetchOne();
   }
 
   @Transactional(rollbackOn = {Exception.class})

@@ -33,6 +33,6 @@ public class AppHelpdeskServiceImpl implements AppHelpdeskService {
 
   @Override
   public AppHelpdesk getHelpdeskApp() {
-    return appHelpdeskRepository.all().fetchOne();
+    return appHelpdeskRepository.all().cacheable().autoFlush(false).fetchOne();
   }
 }
