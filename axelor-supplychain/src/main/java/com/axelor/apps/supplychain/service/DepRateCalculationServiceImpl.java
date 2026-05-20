@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -32,6 +33,7 @@ import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
+import com.axelor.apps.stock.translation.ITranslation;
 import com.axelor.apps.supplychain.db.DepreciationRateConfig;
 import com.axelor.apps.supplychain.db.UnitCostCalcLine;
 import com.axelor.apps.supplychain.db.UnitCostCalculation;
@@ -58,6 +60,7 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
   protected final ProductRepository productRepository;
   protected final UnitCostCalculationRepository unitCostCalculationRepository;
   protected final AppBaseService appBaseService;
+  protected final ProductCompanyService productCompanyService;
   protected final DepreciationRateConfigRepository depreciationRateConfigRepository;
   protected final DepRateCalculationProductService depRateCalculationProductService;
   protected final StockLocationLineRepository stockLocationLineRepository;
@@ -69,6 +72,7 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
       ProductRepository productRepository,
       UnitCostCalculationRepository unitCostCalculationRepository,
       AppBaseService appBaseService,
+      ProductCompanyService productCompanyService,
       DepreciationRateConfigRepository depreciationRateConfigRepository,
       DepRateCalculationProductService depRateCalculationProductService,
       StockLocationLineRepository stockLocationLineRepository,
@@ -77,6 +81,7 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
     this.productRepository = productRepository;
     this.unitCostCalculationRepository = unitCostCalculationRepository;
     this.appBaseService = appBaseService;
+    this.productCompanyService = productCompanyService;
     this.depreciationRateConfigRepository = depreciationRateConfigRepository;
     this.depRateCalculationProductService = depRateCalculationProductService;
     this.stockLocationLineRepository = stockLocationLineRepository;
@@ -220,8 +225,8 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
       int typeSelect) {
     UnitCostCalcLine unitCostCalcLine = new UnitCostCalcLine();
     unitCostCalcLine.setProduct(product);
-    BigDecimal previousCost =
-        product.getAvgPrice() != null ? product.getAvgPrice() : BigDecimal.ZERO;
+    unitCostCalcLine.setStockRotationCategory(product.getStockRotationCategory());
+    BigDecimal previousCost = getCurrentProductAvgPrice(product);
     BigDecimal qty = computeProductQuantity(product);
     BigDecimal computedCost = computeNewCost(previousCost, defaultRate, typeSelect);
     unitCostCalcLine.setTypeSelect(typeSelect);
@@ -235,6 +240,29 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
         qty.multiply(previousCost).setScale(WAP_SCALE, RoundingMode.HALF_UP));
     unitCostCalcLine.setValuedGap(computeValuedGap(qty, previousCost, computedCost));
     return unitCostCalcLine;
+  }
+
+  @Override
+  @Transactional
+  public void recomputeLineBalances(UnitCostCalculation unitCostCalculation) {
+    if (unitCostCalculation == null || unitCostCalculation.getId() == null) {
+      return;
+    }
+    unitCostCalculation = unitCostCalculationRepository.find(unitCostCalculation.getId());
+    if (unitCostCalculation.getUnitCostCalcLineList() == null) {
+      return;
+    }
+    for (UnitCostCalcLine line : unitCostCalculation.getUnitCostCalcLineList()) {
+      BigDecimal previousCost =
+          line.getPreviousCost() != null ? line.getPreviousCost() : BigDecimal.ZERO;
+      BigDecimal qty = line.getQty() != null ? line.getQty() : BigDecimal.ZERO;
+      BigDecimal rate = line.getCostToApply();
+      int typeSelect = line.getTypeSelect();
+      BigDecimal computedCost = computeNewCost(previousCost, rate, typeSelect);
+      line.setComputedCost(computedCost);
+      line.setValuedGap(computeValuedGap(qty, previousCost, computedCost));
+    }
+    unitCostCalculationRepository.save(unitCostCalculation);
   }
 
   /**
@@ -251,6 +279,29 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
             ? BigDecimal.ONE.add(rateFactor)
             : BigDecimal.ONE.subtract(rateFactor);
     return previousCost.multiply(factor).setScale(WAP_SCALE, RoundingMode.HALF_UP);
+  }
+
+  /**
+   * Read the current WAP of the product using {@link ProductCompanyService} so the company-specific
+   * value is returned when avgPrice is configured as a company-specific field. Falls back to the
+   * global {@code product.avgPrice} otherwise.
+   */
+  protected BigDecimal getCurrentProductAvgPrice(Product product) {
+    if (product == null) {
+      return BigDecimal.ZERO;
+    }
+    com.axelor.apps.base.db.Company company =
+        Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
+    try {
+      Object value = productCompanyService.get(product, "avgPrice", company);
+      if (value instanceof BigDecimal) {
+        return (BigDecimal) value;
+      }
+    } catch (Exception e) {
+      // Fallback below if the company-specific lookup fails (e.g. company is null
+      // and the field is configured as company-specific).
+    }
+    return product.getAvgPrice() != null ? product.getAvgPrice() : BigDecimal.ZERO;
   }
 
   /** Sum the current quantity across all non-virtual stock location lines for the product. */
@@ -397,10 +448,12 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
         isValorization ? BigDecimal.ONE.add(rateFactor) : BigDecimal.ONE.subtract(rateFactor);
     LocalDateTime dateT = getCurrentDateTime();
 
+    String originLabel =
+        isValorization ? ITranslation.STOCK_VALORIZATION : ITranslation.STOCK_DEPRECIATION;
     String origin =
         String.format(
             "%s (%s%s%%)",
-            I18n.get(StockLocationLineHistoryRepository.ORIGIN_INVENTORY_DEPRECIATION),
+            I18n.get(originLabel),
             isValorization ? "+" : "-",
             rate.stripTrailingZeros().toPlainString());
 
@@ -426,7 +479,7 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
           stockLocationLine,
           dateT,
           origin,
-          StockLocationLineHistoryRepository.TYPE_SELECT_INVENTORY_DEPRECIATION);
+          StockLocationLineHistoryRepository.TYPE_SELECT_STOCK_REVALUATION);
     }
 
     weightedAveragePriceService.computeAvgPriceForProduct(product);

@@ -24,6 +24,8 @@
       ref="com.axelor.apps.base.db.ProductCategory" title="Product categories"/>
     <many-to-many name="productFamilySet" ref="com.axelor.apps.base.db.ProductFamily"
       title="Product families"/>
+    <many-to-many name="stockRotationCategorySet"
+      ref="com.axelor.apps.supplychain.db.StockRotationCategory" title="Stock rotation categories"/>
     <one-to-many name="unitCostCalcLineList"
       ref="com.axelor.apps.supplychain.db.UnitCostCalcLine" title="Results"
       mappedBy="unitCostCalculation"/>

@@ -48,10 +48,13 @@ import org.apache.commons.io.IOUtils;
 public class DepRateCalculationCsvServiceImpl implements DepRateCalculationCsvService {
 
   protected final MetaFiles metaFiles;
+  protected final DepRateCalculationService depRateCalculationService;
 
   @Inject
-  public DepRateCalculationCsvServiceImpl(MetaFiles metaFiles) {
+  public DepRateCalculationCsvServiceImpl(
+      MetaFiles metaFiles, DepRateCalculationService depRateCalculationService) {
     this.metaFiles = metaFiles;
+    this.depRateCalculationService = depRateCalculationService;
   }
 
   @Override
@@ -104,6 +107,10 @@ public class DepRateCalculationCsvServiceImpl implements DepRateCalculationCsvSe
     context.put("_unitCostCalculation", unitCostCalculation.getId());
     csvImporter.setContext(context);
     csvImporter.run();
+
+    // After the CSV import only updates costToApply, recompute the derived balances
+    // (computedCost, valuedGap) on each line so the grid reflects the imported rates.
+    depRateCalculationService.recomputeLineBalances(unitCostCalculation);
   }
 
   protected File getDepRateCalcConfigXmlFile() throws AxelorException {

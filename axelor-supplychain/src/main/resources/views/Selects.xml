@@ -245,8 +245,8 @@
   </selection>
 
   <selection name="supplychain.depreciation.rate.config.type.select">
-    <option value="1">Depreciation</option>
-    <option value="2">Valorization</option>
+    <option value="1" icon="graph-down-arrow">Depreciation</option>
+    <option value="2" icon="graph-up-arrow">Valorization</option>
   </selection>
 
   <selection name="supplychain.cost.review.status.select">

@@ -31,4 +31,10 @@ public interface DepRateCalculationService {
 
   /** Update product depreciation rates based on calculated values. */
   void updateDepRates(UnitCostCalculation unitCostCalculation) throws AxelorException;
+
+  /**
+   * Recompute derived values (computedCost, valuedGap) on every line of the given calculation.
+   * Useful after a CSV import that only updates costToApply.
+   */
+  void recomputeLineBalances(UnitCostCalculation unitCostCalculation);
 }

@@ -23,7 +23,12 @@
       background="red"/>
     <field name="product.code"/>
     <field name="product.name"/>
-    <field name="typeSelect" readonly="true"/>
+    <field name="stockRotationCategory" widget="Tag" x-color-field="color" readonly="true"/>
+    <field name="typeSelect" widget="ImageSelect" title="" x-labels="false" readonly="true"
+      width="60">
+      <hilite if="typeSelect == 1" color="danger"/>
+      <hilite if="typeSelect == 2" color="success"/>
+    </field>
     <field name="qty" readonly="true"/>
     <field name="previousCost" title="Stock unit value" readonly="true"/>
     <field name="totalPrice" title="Total value" readonly="true"/>

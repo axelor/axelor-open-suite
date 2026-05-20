@@ -53,6 +53,8 @@
         colSpan="12"/>
       <field name="productCategorySet" widget="Tags" colSpan="12"/>
       <field name="productFamilySet" widget="Tags" colSpan="12"/>
+      <field name="stockRotationCategorySet" widget="Tags" colSpan="12"
+        showIf="typeSelect == 1"/>
       <field name="customerOk" showIf="typeSelect == 1"/>
     </panel>
     <panel-tabs name="mainPanelTabs" colSpan="12">
@@ -76,6 +78,8 @@
           colSpan="12"/>
         <field name="productCategorySet" widget="Tags" colSpan="12"/>
         <field name="productFamilySet" widget="Tags" colSpan="12"/>
+        <field name="stockRotationCategorySet" widget="Tags" colSpan="12"
+          showIf="typeSelect == 1"/>
         <field name="customerOk" showIf="typeSelect == 1"/>
       </panel>
       <panel-related name="resultPanel" field="unitCostCalcLineList"

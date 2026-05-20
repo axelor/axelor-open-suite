@@ -81,6 +81,21 @@ public class DepRateCalculationProductServiceImpl implements DepRateCalculationP
               .fetch());
     }
 
+    if (unitCostCalculation.getStockRotationCategorySet() != null
+        && !unitCostCalculation.getStockRotationCategorySet().isEmpty()) {
+      productSet.addAll(
+          productRepository
+              .all()
+              .filter(
+                  "self.stockRotationCategory in (:stockRotationCategorySet)"
+                      + " AND self.productTypeSelect = :productTypeSelect"
+                      + " AND self.dtype = 'Product'"
+                      + " AND self.stockManaged IS TRUE")
+              .bind("stockRotationCategorySet", unitCostCalculation.getStockRotationCategorySet())
+              .bind("productTypeSelect", ProductRepository.PRODUCT_TYPE_STORABLE)
+              .fetch());
+    }
+
     if (productSet.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -125,6 +140,14 @@ public class DepRateCalculationProductServiceImpl implements DepRateCalculationP
       domain
           .append(" AND self.productFamily IN (")
           .append(StringHelper.getIdListString(unitCostCalculation.getProductFamilySet()))
+          .append(")");
+    }
+
+    if (unitCostCalculation.getStockRotationCategorySet() != null
+        && !unitCostCalculation.getStockRotationCategorySet().isEmpty()) {
+      domain
+          .append(" AND self.stockRotationCategory IN (")
+          .append(StringHelper.getIdListString(unitCostCalculation.getStockRotationCategorySet()))
           .append(")");
     }
 
