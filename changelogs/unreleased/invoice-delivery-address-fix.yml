@@ -1,0 +1,6 @@
+---
+title: Invoice: fixed delivery address displayed in delivery panel
+module: axelor-account
+developer: |
+  Fixed an issue where the invoice delivery panel displayed
+  the invoicing address instead of the delivery address.
