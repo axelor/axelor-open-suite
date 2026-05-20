@@ -29,6 +29,8 @@ import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.interfaces.massstockmove.MassStockMovableProduct;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
+import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -131,6 +133,10 @@ public class MassStockMovableProductRealizeServiceImpl
 
       stockMoveService.plan(stockMove);
       stockMoveService.realize(stockMove);
+
+      stockMoveLine = JpaModelHelper.ensureManaged(stockMoveLine);
+      movableProduct =
+          (MassStockMovableProduct) JpaModelHelper.ensureManaged((Model) movableProduct);
       movableProduct.setStockMoveLine(stockMoveLine);
 
       processingService.postRealize(movableProduct);
