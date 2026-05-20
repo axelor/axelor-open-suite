@@ -682,7 +682,6 @@
   <action-view name="account.conf.financial.accounting.plan" title="Chart of Accounts"
     model="com.axelor.apps.account.db.Account">
     <view type="tree" name="account-tree"/>
-    <view type="form" name="account-form"/>
     <view-param name="search-filters" value="account-filters"/>
   </action-view>
 
@@ -810,7 +809,6 @@
   <action-view name="account.conf.analytic.accounting.plan"
     title="Chart of Analytic Accounts" model="com.axelor.apps.account.db.AnalyticAccount">
     <view type="tree" name="analytic-account-tree"/>
-    <view type="form" name="analytic-account-form"/>
   </action-view>
 
   <menuitem name="account-conf-analytic-axis" parent="account-conf-analytic"
