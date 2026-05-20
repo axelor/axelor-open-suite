@@ -28,6 +28,7 @@ import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;
+import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800108Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile008Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100103Service;
@@ -185,6 +186,18 @@ public class BankOrderServiceImpl implements BankOrderService {
       case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SBB:
         file =
             new BankOrderFile00800102Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_SBB)
+                .generateFile();
+        break;
+
+      case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_08_SDD:
+        file =
+            new BankOrderFile00800108Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_CORE)
+                .generateFile();
+        break;
+
+      case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_08_SBB:
+        file =
+            new BankOrderFile00800108Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_SBB)
                 .generateFile();
         break;
 
