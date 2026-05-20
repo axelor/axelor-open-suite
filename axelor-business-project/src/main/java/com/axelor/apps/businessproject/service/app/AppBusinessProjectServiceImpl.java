@@ -81,7 +81,7 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
 
   @Override
   public AppBusinessProject getAppBusinessProject() {
-    return appBusinessProjectRepo.all().fetchOne();
+    return appBusinessProjectRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override
