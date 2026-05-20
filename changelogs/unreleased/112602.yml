@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed concurrent BIRT PDF generation causing file error when multiple users ventilate invoices simultaneously."
+module: axelor-base
