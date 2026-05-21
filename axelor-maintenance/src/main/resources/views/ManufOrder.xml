@@ -122,7 +122,7 @@
           grid-view="manuf-order-grid"/>
         <field name="purchaseOrder" showIf="false" canSelect="false" canEdit="false"
           form-view="purchase-order-form" grid-view="purchase-order-grid"/>
-        <field name="isConsProOnOperation" hidden="true"/>
+        <field name="isConsProOnOperation" hidden="true" showIf="false"/>
         <button name="preFillOperationsBtn" title="Pre-fill operations"
           hideIf="statusSelect > 1  || operationOrderList.length > 0" colSpan="4"
           onClick="save,action-manuf-order-method-pre-fill-operations,action-manuf-order-method-update-lines-outsourced"/>
