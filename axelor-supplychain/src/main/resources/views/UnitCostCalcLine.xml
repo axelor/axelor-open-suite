@@ -64,7 +64,7 @@
       <field name="unitCostCalculation" hidden="true"/>
       <field name="product" readonly="true"/>
       <field name="stockRotationCategory" widget="Tag" x-color-field="color" readonly="true"/>
-      <field name="typeSelect" widget="ImageSelect" x-labels="false" readonly="true">
+      <field name="typeSelect" widget="ImageSelect" readonly="true">
         <hilite if="typeSelect == 1" color="danger"/>
         <hilite if="typeSelect == 2" color="success"/>
       </field>

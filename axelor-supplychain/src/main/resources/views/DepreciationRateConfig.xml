@@ -5,14 +5,17 @@
 
   <grid name="depreciation-rate-config-grid" title="Depreciation rate configurations"
     model="com.axelor.apps.supplychain.db.DepreciationRateConfig" editable="true">
-    <field name="typeSelect"/>
+    <field name="typeSelect" widget="ImageSelect">
+      <hilite if="typeSelect == 1" color="danger"/>
+      <hilite if="typeSelect == 2" color="success"/>
+    </field>
     <field name="product"
       readonlyIf="productCategory || productFamily || stockRotationCategory"/>
     <field name="productCategory"
       readonlyIf="productFamily || stockRotationCategory || product"/>
     <field name="productFamily"
       readonlyIf="productCategory || stockRotationCategory || product"/>
-    <field name="stockRotationCategory"
+    <field name="stockRotationCategory" widget="Tag" x-color-field="color"
       readonlyIf="productCategory || productFamily || product"/>
     <field name="minRate" x-scale="2"/>
     <field name="maxRate" x-scale="2"/>
@@ -23,7 +26,10 @@
     model="com.axelor.apps.supplychain.db.DepreciationRateConfig" width="large">
     <panel name="mainPanel" title="Configuration">
       <panel name="typePanel" colSpan="12">
-        <field name="typeSelect" widget="NavSelect" required="true" colSpan="12"/>
+        <field name="typeSelect" widget="ImageSelect" required="true" colSpan="12">
+          <hilite if="typeSelect == 1" color="danger"/>
+          <hilite if="typeSelect == 2" color="success"/>
+        </field>
       </panel>
       <panel name="levelPanel" colSpan="12" title="Configuration Level"
         help="Choose one level: specific product, product category, product family, or stock rotation category">
@@ -34,8 +40,8 @@
           hideIf="productFamily || stockRotationCategory || product" colSpan="12"/>
         <field name="productFamily"
           hideIf="productCategory || stockRotationCategory || product" colSpan="12"/>
-        <field name="stockRotationCategory" grid-view="stock-rotation-category-grid"
-          form-view="stock-rotation-category-form"
+        <field name="stockRotationCategory" widget="Tag" x-color-field="color"
+          grid-view="stock-rotation-category-grid" form-view="stock-rotation-category-form"
           hideIf="productCategory || productFamily || product" colSpan="12"/>
       </panel>
       <panel name="ratesPanel" colSpan="12" title="Rates">
