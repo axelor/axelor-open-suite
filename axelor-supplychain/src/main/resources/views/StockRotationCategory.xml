@@ -5,10 +5,10 @@
 
   <grid name="stock-rotation-category-grid" title="Stock rotation categories"
     model="com.axelor.apps.supplychain.db.StockRotationCategory" orderBy="sequence,id">
-    <field name="sequence"/>
-    <field name="code"/>
-    <field name="name"/>
-    <field name="color" widget="ColorPicker"/>
+    <field name="sequence" width="80"/>
+    <field name="code" width="120"/>
+    <field name="name" width="180"/>
+    <field name="color" widget="ColorPicker" width="100"/>
     <field name="description"/>
   </grid>
 

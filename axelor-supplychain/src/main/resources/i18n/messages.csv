@@ -15,50 +15,41 @@
 "%s sale order",,,
 "%s stock location",,,
 "<>
-          <p>Write a <b>Groovy</b> expression that returns <code>true</code> when a product
-            should be classified in this category. The first category whose formula matches
-            (ordered by id) is assigned to the product by the batch
-            <b>""Update stock history""</b>.</p>
+          <p>{_t('Write a Groovy expression that returns true when a product should be classified in this category. The first category matching (ordered by sequence) is assigned to the product by the batch ""Update stock history"".')}</p>
           <table className=""table table-sm table-striped"">
             <thead>
               <tr>
-                <th>Variable</th>
-                <th>Type</th>
-                <th>Description</th>
+                <th>{_t('Variable')}</th>
+                <th>{_t('Description')}</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td><code>coverageInDays</code></td>
-                <td>BigDecimal</td>
-                <td>Stock coverage in days = currentStock / (salesLast12Months / 360)</td>
+                <td>{_t('Stock coverage in days = currentStock / (salesLast12Months / 360)')}</td>
               </tr>
               <tr>
                 <td><code>salesLast12Months</code></td>
-                <td>BigDecimal</td>
-                <td>Sum of outgoing quantities over the last 12 months</td>
+                <td>{_t('Sum of outgoing quantities over the last 12 months')}</td>
               </tr>
               <tr>
                 <td><code>currentStock</code></td>
-                <td>BigDecimal</td>
-                <td>Current total quantity (non-virtual stock locations)</td>
+                <td>{_t('Current total quantity (non-virtual stock locations)')}</td>
               </tr>
               <tr>
                 <td><code>stock6MonthsAgo</code></td>
-                <td>BigDecimal</td>
-                <td>Approximated stock quantity 6 months ago</td>
+                <td>{_t('Approximated stock quantity 6 months ago')}</td>
               </tr>
             </tbody>
           </table>
-          <p><b>Examples</b></p>
+          <p><b>{_t('Examples')}</b></p>
           <ul>
-            <li><code>coverageInDays &gt; 0 &amp;&amp; coverageInDays &lt; 60</code> - Fast movers</li>
-            <li><code>coverageInDays &gt;= 180 &amp;&amp; coverageInDays &lt; 365</code> - Slow movers</li>
-            <li><code>salesLast12Months == 0 &amp;&amp; currentStock &gt; 0</code> - Dead stock</li>
-            <li><code>stock6MonthsAgo &gt; 0 &amp;&amp; currentStock &gt; stock6MonthsAgo * 1.5</code> - Accumulating stock</li>
+            <li><code>coverageInDays &gt; 0 &amp;&amp; coverageInDays &lt; 60</code> - {_t('Fast movers')}</li>
+            <li><code>coverageInDays &gt;= 180 &amp;&amp; coverageInDays &lt; 365</code> - {_t('Slow movers')}</li>
+            <li><code>salesLast12Months == 0 &amp;&amp; currentStock &gt; 0</code> - {_t('Dead stock')}</li>
+            <li><code>stock6MonthsAgo &gt; 0 &amp;&amp; currentStock &gt; stock6MonthsAgo * 1.5</code> - {_t('Accumulating stock')}</li>
           </ul>
-          <p><Badge bg=""info"">Tip</Badge> Ordering matters: put the most specific rules first.
-            The last one can use <code>true</code> as a catch-all fallback.</p>
+          <p><Badge bg=""info"">{_t('Tip')}</Badge> {_t('Ordering matters: put the most specific rules first. The last one can use true as a catch-all fallback.')}</p>
         </>",,,
 "<>This packaging is different from real packagings defined during shipping process. Design for only shipping cost estimation.</>",,,
 "A list of all product categories for which to run the batch (children categories are automatically included). All products will be processed if this list is left empty (note that the batch may take a long time to run if you have a lot of products).",,,
@@ -70,6 +61,7 @@
 "Accounting Batch",,,
 "Accounting Family Dashboard",,,
 "Accounting Family sale turnover (Excl. Tax) per month",,,
+"Accumulating stock",,,
 "Action",,,
 "Actions",,,
 "Activate partial invoicing for incoming moves",,,
@@ -105,6 +97,7 @@
 "App",,,
 "App Supplychain",,,
 "App supplychain",,,
+"Approximated stock quantity 6 months ago",,,
 "Archived",,,
 "Are you sure you want to change status to ""Collected"" ?",,,
 "Are you sure you want to run the calculation ? Calculation can take a long time.",,,
@@ -118,6 +111,7 @@
 "Auto fill delivery real quantity",,,
 "Auto fill receipt real quantity",,,
 "Auto request reserved qty",,,
+"Auto-assign rotation stock category",,,
 "Availability",,,
 "Availability mean time",,,
 "Availability requests",,,
@@ -182,6 +176,8 @@
 "Choose one level: specific product, product category, product family, or stock rotation category",,,
 "Code",,,
 "Collected",,,
+"Color",,,
+"Color used to highlight this category when displayed on product forms",,,
 "Comment",,,
 "Comments",,,
 "Companies",,,
@@ -205,10 +201,6 @@
 "Contact partner",,,
 "Contract/Subscription",,,
 "Cost price calculation",,,
-"Cost review",,,
-"Cost review computed",,,
-"Cost review rate configuration",,,
-"Cost review updated",,,
 "Cost to apply",,,
 "Costs computed",,,
 "Costs updated",,,
@@ -235,8 +227,9 @@
 "Cumulative qty",,,
 "Current date",,,
 "Current date + days",,,
-"Current total inventory value (qty x previous cost).",,,
-"Current total quantity of the product across non-virtual stock locations.",,,
+"Current total inventory value (qty x previous cost)",,,
+"Current total quantity (non-virtual stock locations)",,,
+"Current total quantity of the product across non-virtual stock locations",,,
 "Cust. Invoices",,,
 "Customer",,,
 "Customer Stock Move to invoice",,,
@@ -254,6 +247,7 @@
 "Date to match delivery delay",,,
 "Date to respect delays",,,
 "Day (end of month)",,,
+"Dead stock",,,
 "Declaration of exchange filters",,,
 "Declaration of exchanges",,,
 "Declaration of exchanges of goods",,,
@@ -286,12 +280,11 @@
 "Delivery partner",,,
 "Delivery state",,,
 "Depreciation",,,
-"Depreciation rate",,,
 "Depreciation rate calculation",,,
 "Depreciation rate configuration",,,
 "Depreciation rate configurations",,,
-"Depreciation reduces the WAP, valorization increases it.",,,
-"Depreciation reduces the weighted average price. Valorization increases it.",,,
+"Depreciation reduces the WAP, valorization increases it",,,
+"Depreciation reduces the weighted average price. Valorization increases it",,,
 "Description",,,
 "Direct order",,,
 "Direct order default stock location",,,
@@ -312,6 +305,8 @@
 "Estimated packagings",,,
 "Estimated shipping date",,,
 "European declaration of services",,,
+"Evaluation order. Categories with a lower sequence are evaluated first; the first formula returning true is assigned",,,
+"Examples",,,
 "Exclude from MRP",,,
 "Exclude late sales",,,
 "Expected realisation date",,,
@@ -320,6 +315,7 @@
 "Export",,,
 "Export directory is not configured.",,,
 "Failed to load depreciation rate import configuration.",,,
+"Fast movers",,,
 "Fetch limit",,,
 "Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.",,,
 "Field fieldSelect is null for %s",,,
@@ -372,7 +368,7 @@
 "Generate supply chain configurations",,,
 "Generate the invoice",,,
 "Generated sale order",,,
-"Groovy formula returning true if the product belongs to this category. Available variables: coverageInDays, salesLast12Months, currentStock, stock6MonthsAgo.",,,
+"Groovy formula returning true if the product belongs to this category. Available variables: coverageInDays, salesLast12Months, currentStock, stock6MonthsAgo",,,
 "Gross mass",,,
 "Growth coefficient",,,
 "Has carriage paid possibility",,,
@@ -582,6 +578,7 @@
 "Order up to date",,,
 "Order(s) processed",,,
 "Ordered by",,,
+"Ordering matters: put the most specific rules first. The last one can use true as a catch-all fallback.",,,
 "Orders",,,
 "Origin",,,
 "Origin purchase order line",,,
@@ -645,6 +642,8 @@
 "Please, select a currency for the order %s",,,
 "Please, select a supplier for the line %s",,,
 "Previous cost",,,
+"Previous rate",,,
+"Previously applied revaluation rate stored on the product",,,
 "Price",,,
 "Pricing",,,
 "Pricing rules",,,
@@ -702,6 +701,7 @@
 "Quantity cannot be lower than already delivered quantity on detail line %s.",,,
 "Quantity requested",,,
 "Quotations",,,
+"Rate to apply",,,
 "Rates",,,
 "Real Qty",,,
 "Real qty changed by user",,,
@@ -722,6 +722,8 @@
 "Result",,,
 "Results",,,
 "Returnable",,,
+"Revaluation",,,
+"Revaluation rate",,,
 "Rotation stock category",,,
 "Run calculation",,,
 "Run stock batch",,,
@@ -763,6 +765,7 @@
 "Select the lines to invoice",,,
 "Select the supplier account for accrued expenses (usually 4081) for end-of-year adjustments.",,,
 "Select timetables to invoice",,,
+"Sequence",,,
 "Sequence to order MRP results",,,
 "Services",,,
 "Settings",,,
@@ -770,6 +773,7 @@
 "Shipment mode",,,
 "Shipping cost",,,
 "Show Total",,,
+"Slow movers",,,
 "Specific package",,,
 "Specific product for this depreciation rate configuration",,,
 "Standard",,,
@@ -781,6 +785,7 @@
 "Statuses to take into account",,,
 "Stock",,,
 "Stock Locations content",,,
+"Stock coverage in days = currentStock / (salesLast12Months / 360)",,,
 "Stock details",,,
 "Stock details by product",,,
 "Stock history",,,
@@ -801,6 +806,10 @@
 "Stock move(s) processed",,,
 "Stock moves",,,
 "Stock reservation feature cannot be active when we are managing stock locations on stock move line.",,,
+"Stock revaluation",,,
+"Stock revaluation computed",,,
+"Stock revaluation rate configuration",,,
+"Stock revaluation updated",,,
 "Stock rotation categories",,,
 "Stock rotation category",,,
 "Stock rotation category (formula-based) for this depreciation rate configuration",,,
@@ -810,6 +819,7 @@
 "Subscription",,,
 "Subscription invoice generation report :",,,
 "Subscription invoices to validate",,,
+"Sum of outgoing quantities over the last 12 months",,,
 "Suppl. Invoices",,,
 "Supplier",,,
 "Supplier Catalog",,,
@@ -921,6 +931,7 @@
 "Timetable templates",,,
 "Timetables",,,
 "Timetables can only be invoiced from a sale order or a purchase order.",,,
+"Tip",,,
 "Title",,,
 "To Date",,,
 "To process",,,
@@ -930,6 +941,7 @@
 "Total net mass",,,
 "Total price",,,
 "Total subscription invoice(s) generated: %s",,,
+"Total value",,,
 "Tracking number",,,
 "Tracking number search",,,
 "Transport rates",,,
@@ -956,8 +968,9 @@
 "Validated for invoicing",,,
 "Validation step for invoicing outgoing stock move",,,
 "Valorization",,,
-"Valuation difference after applying the rate: qty x (new cost - previous cost).",,,
+"Valuation difference after applying the rate: qty x (new cost - previous cost)",,,
 "Valued gap",,,
+"Variable",,,
 "Verify product stock before availabity request",,,
 "Warn delay from supplier",,,
 "Warning : Estimated shipping date isn't updated due to pricing set on sale order.",,,
@@ -986,6 +999,7 @@
 "When this configuration is enabled, you will be able to generate invoices from delivery notes and receipt notes using a Generate invoice button.",,,
 "When this is active, sale order will be automatically set to 'Order completed' status once 'Amount invoiced W.T.' is equal to 'Total W.T.'. This will happen when all invoices linked to the sale order get to status 'Ventilated'",,,
 "Would you like to update all lines with this stock location?",,,
+"Write a Groovy expression that returns true when a product should be classified in this category. The first category matching (ordered by sequence) is assigned to the product by the batch ""Update stock history"".",,,
 "You can define here at which status(es) purchase quotations/orders are taken into account in the stock details of a product, at the Supplier order quantity indicator level.",,,
 "You can define here at which status(es) sale quotations/orders are taken into account in the stock details of a product, at the Customer order quantity indicator level.",,,
 "You can define here which order date to take into account to prioritize reservation requests among confirmation date and estimated shipping date.",,,

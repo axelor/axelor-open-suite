@@ -15,50 +15,41 @@
 "%s sale order","%s en commande client",,
 "%s stock location","%s en emplacement de stock",,
 "<>
-          <p>Write a <b>Groovy</b> expression that returns <code>true</code> when a product
-            should be classified in this category. The first category whose formula matches
-            (ordered by id) is assigned to the product by the batch
-            <b>""Update stock history""</b>.</p>
+          <p>{_t('Write a Groovy expression that returns true when a product should be classified in this category. The first category matching (ordered by sequence) is assigned to the product by the batch ""Update stock history"".')}</p>
           <table className=""table table-sm table-striped"">
             <thead>
               <tr>
-                <th>Variable</th>
-                <th>Type</th>
-                <th>Description</th>
+                <th>{_t('Variable')}</th>
+                <th>{_t('Description')}</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td><code>coverageInDays</code></td>
-                <td>BigDecimal</td>
-                <td>Stock coverage in days = currentStock / (salesLast12Months / 360)</td>
+                <td>{_t('Stock coverage in days = currentStock / (salesLast12Months / 360)')}</td>
               </tr>
               <tr>
                 <td><code>salesLast12Months</code></td>
-                <td>BigDecimal</td>
-                <td>Sum of outgoing quantities over the last 12 months</td>
+                <td>{_t('Sum of outgoing quantities over the last 12 months')}</td>
               </tr>
               <tr>
                 <td><code>currentStock</code></td>
-                <td>BigDecimal</td>
-                <td>Current total quantity (non-virtual stock locations)</td>
+                <td>{_t('Current total quantity (non-virtual stock locations)')}</td>
               </tr>
               <tr>
                 <td><code>stock6MonthsAgo</code></td>
-                <td>BigDecimal</td>
-                <td>Approximated stock quantity 6 months ago</td>
+                <td>{_t('Approximated stock quantity 6 months ago')}</td>
               </tr>
             </tbody>
           </table>
-          <p><b>Examples</b></p>
+          <p><b>{_t('Examples')}</b></p>
           <ul>
-            <li><code>coverageInDays &gt; 0 &amp;&amp; coverageInDays &lt; 60</code> - Fast movers</li>
-            <li><code>coverageInDays &gt;= 180 &amp;&amp; coverageInDays &lt; 365</code> - Slow movers</li>
-            <li><code>salesLast12Months == 0 &amp;&amp; currentStock &gt; 0</code> - Dead stock</li>
-            <li><code>stock6MonthsAgo &gt; 0 &amp;&amp; currentStock &gt; stock6MonthsAgo * 1.5</code> - Accumulating stock</li>
+            <li><code>coverageInDays &gt; 0 &amp;&amp; coverageInDays &lt; 60</code> - {_t('Fast movers')}</li>
+            <li><code>coverageInDays &gt;= 180 &amp;&amp; coverageInDays &lt; 365</code> - {_t('Slow movers')}</li>
+            <li><code>salesLast12Months == 0 &amp;&amp; currentStock &gt; 0</code> - {_t('Dead stock')}</li>
+            <li><code>stock6MonthsAgo &gt; 0 &amp;&amp; currentStock &gt; stock6MonthsAgo * 1.5</code> - {_t('Accumulating stock')}</li>
           </ul>
-          <p><Badge bg=""info"">Tip</Badge> Ordering matters: put the most specific rules first.
-            The last one can use <code>true</code> as a catch-all fallback.</p>
+          <p><Badge bg=""info"">{_t('Tip')}</Badge> {_t('Ordering matters: put the most specific rules first. The last one can use true as a catch-all fallback.')}</p>
         </>",,,
 "<>This packaging is different from real packagings defined during shipping process. Design for only shipping cost estimation.</>",,,
 "A list of all product categories for which to run the batch (children categories are automatically included). All products will be processed if this list is left empty (note that the batch may take a long time to run if you have a lot of products).","Une liste de toutes les catégories de produits pour lesquelles exécuter le batch (les sous-catégories seront automatiquement ajoutées). L'intégralité des produits seront traités si cette liste est laissée vide (veuillez noter que le traitement peut prendre longtemps si vous avez beaucoup de produits).",,
@@ -70,6 +61,7 @@
 "Accounting Batch",,,
 "Accounting Family Dashboard","Tb famille comptable",,
 "Accounting Family sale turnover (Excl. Tax) per month","CA HT par famille comptable par mois",,
+"Accumulating stock","Stock en accumulation",,
 "Action",,,
 "Actions",,,
 "Activate partial invoicing for incoming moves","Activer la facturation partielle pour les réceptions",,
@@ -105,6 +97,7 @@
 "App",,,
 "App Supplychain",,,
 "App supplychain",,,
+"Approximated stock quantity 6 months ago","Quantité de stock approximée il y a 6 mois",,
 "Archived","Archivé",,
 "Are you sure you want to change status to ""Collected"" ?","Confirmez-vous le passage au statut ""Enlevé"" ?",,
 "Are you sure you want to run the calculation ? Calculation can take a long time.","Êtes-vous sûr de vouloir lancer le calcul ? Cela peut prendre un moment.",,
@@ -118,6 +111,7 @@
 "Auto fill delivery real quantity","Remplir automatiquement la quantité réelle des livraisons",,
 "Auto fill receipt real quantity","Remplir automatiquement la quantité réelle des réceptions",,
 "Auto request reserved qty","Demander auto. la quantité pour la réservation",,
+"Auto-assign rotation stock category","Assignation auto du type de rotation",,
 "Availability",,,
 "Availability mean time","Délai moyen de disponibilité",,
 "Availability requests","Demandes de mise à disposition",,
@@ -174,14 +168,16 @@
 "Change requested reserved qty","Changer la quantité demandée",,
 "Change reserved qty","Changer la quantité réservée",,
 "Changing the delivery partner updates the order’s delivery address. Would you like to update all lines with this new address?","Le changement du tiers livré met à jour l’adresse de livraison de la commande. Souhaitez-vous mettre à jour toutes les lignes avec cette nouvelle adresse ?",,
-"Check min or max rate",,,
+"Check min or max rate","Vérifiez le taux minimum ou maximum",,
 "Check stock compliance with stock rules","Vérifier la conformité du stock aux règles de stock",,
 "Check stocks in a sale order","Vérification des stocks lors d'une vente",,
 "Child stock move lines","Lignes de mouvement enfants",,
 "Children packaging","Emballages enfants",,
-"Choose one level: specific product, product category, product family, or stock rotation category",,,
+"Choose one level: specific product, product category, product family, or stock rotation category","Choisissez un seul niveau : produit spécifique, catégorie de produit, famille de produit ou catégorie de rotation de stock",,
 "Code",,,
 "Collected","Enlevé",,
+"Color","Couleur",,
+"Color used to highlight this category when displayed on product forms","Couleur utilisée pour mettre en évidence cette catégorie lorsqu'elle est affichée sur les fiches produit",,
 "Comment","Commentaire",,
 "Comments","Commentaires",,
 "Companies",,,
@@ -204,11 +200,7 @@
 "Contact",,,
 "Contact partner","Contact",,
 "Contract/Subscription","Contrat/abonnement",,
-"Cost price calculation",,,
-"Stock revaluation","Revalorisation des stocks",,
-"Stock revaluation computed","Revalorisation calculée",,
-"Stock revaluation rate configuration","Taux de revalorisation des stocks",,
-"Stock revaluation updated","Revalorisation appliquée",,
+"Cost price calculation","Calcul du coût de revient",,
 "Cost to apply","Coût à appliquer",,
 "Costs computed",,,
 "Costs updated",,,
@@ -236,6 +228,7 @@
 "Current date","Date du jour",,
 "Current date + days","Date du jour + délai en jours",,
 "Current total inventory value (qty x previous cost)","Valeur d'inventaire totale actuelle (qté x coût précédent)",,
+"Current total quantity (non-virtual stock locations)","Quantité totale actuelle (emplacements non virtuels)",,
 "Current total quantity of the product across non-virtual stock locations","Quantité totale actuelle du produit sur les emplacements de stock non virtuels",,
 "Cust. Invoices","Factures client",,
 "Customer",,,
@@ -254,6 +247,7 @@
 "Date to match delivery delay","Date pour respecter les délais de livraison",,
 "Date to respect delays","Date pour respecter les délais",,
 "Day (end of month)","Jour (fin du mois)",,
+"Dead stock","Stock dormant",,
 "Declaration of exchange filters","Filtre Déclaration d’échange",,
 "Declaration of exchanges","Déclaration d'échanges",,
 "Declaration of exchanges of goods","Déclaration d'échanges de biens",,
@@ -286,14 +280,11 @@
 "Delivery partner","Tiers livré",,
 "Delivery state","État de livraison",,
 "Depreciation","Dépréciation",,
-"Depreciation rate",,,
-"Depreciation rate calculation",,,
-"Depreciation rate configuration",,,
-"Revaluation rate","Taux de revalorisation",,
-"Revaluation","Revalorisation",,
-"Depreciation rate configurations",,,
-"Depreciation reduces the WAP, valorization increases it.",,,
-"Depreciation reduces the weighted average price. Valorization increases it.",,,
+"Depreciation rate calculation","Calcul du taux de revalorisation",,
+"Depreciation rate configuration","Configuration du taux de revalorisation",,
+"Depreciation rate configurations","Configurations du taux de revalorisation",,
+"Depreciation reduces the WAP, valorization increases it","La dépréciation réduit le PMP, la valorisation l'augmente",,
+"Depreciation reduces the weighted average price. Valorization increases it","La dépréciation réduit le prix moyen pondéré. La valorisation l'augmente",,
 "Description","Description",,
 "Direct order","Contremarque",,
 "Direct order default stock location","Emplacement contremarque par défaut",,
@@ -314,6 +305,8 @@
 "Estimated packagings",,,
 "Estimated shipping date",,,
 "European declaration of services","Déclaration européenne de services",,
+"Evaluation order. Categories with a lower sequence are evaluated first; the first formula returning true is assigned","Ordre d'évaluation. Les catégories ayant une séquence plus basse sont évaluées en premier ; la première formule renvoyant true est assignée",,
+"Examples","Exemples",,
 "Exclude from MRP","Exclure du CBN",,
 "Exclude late sales","Exclure les commandes en retard",,
 "Expected realisation date","Date de réalisation prévisionnelle",,
@@ -321,7 +314,8 @@
 "Expedition","Expédition",,
 "Export",,,
 "Export directory is not configured.","Le chemin d’export n’est pas configuré.",,
-"Failed to load depreciation rate import configuration.",,,
+"Failed to load depreciation rate import configuration.","Échec du chargement de la configuration d'import des taux de revalorisation.",,
+"Fast movers","Rotation rapide",,
 "Fetch limit",,,
 "Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.","Limite de récupération par lot pour ce traitement de masse. 0 ne sera pas pris en compte. Dans ce cas, la valeur définie dans la configuration de l'application Base sera utilisée.",,
 "Field fieldSelect is null for %s",,,
@@ -374,7 +368,7 @@
 "Generate supply chain configurations","Générer les configurations de la chaîne logistique",,
 "Generate the invoice","Générer la facture",,
 "Generated sale order","Générer Commande de vente",,
-"Groovy formula returning true if the product belongs to this category. Available variables: coverageInDays, salesLast12Months, currentStock, stock6MonthsAgo.",,,
+"Groovy formula returning true if the product belongs to this category. Available variables: coverageInDays, salesLast12Months, currentStock, stock6MonthsAgo","Formule Groovy renvoyant true si le produit appartient à cette catégorie. Variables disponibles : coverageInDays, salesLast12Months, currentStock, stock6MonthsAgo",,
 "Gross mass","Masse brute",,
 "Growth coefficient","Coefficient de croissance",,
 "Has carriage paid possibility","Possibilité d'avoir un franco de port",,
@@ -584,6 +578,7 @@
 "Order up to date","Date antérieure ou égale à",,
 "Order(s) processed","Devis traité(s)",,
 "Ordered by","Commandé par",,
+"Ordering matters: put the most specific rules first. The last one can use true as a catch-all fallback.","L'ordre compte : placez les règles les plus spécifiques en premier. La dernière peut utiliser true comme règle par défaut.",,
 "Orders","Commandes",,
 "Origin","Origine",,
 "Origin purchase order line","Ligne d'achat d'origine",,
@@ -647,6 +642,8 @@
 "Please, select a currency for the order %s","Veuillez sélectionner une devise pour la commande %s",,
 "Please, select a supplier for the line %s","Veuillez choisir un fournisseur pour la ligne %s",,
 "Previous cost","Coût précédent",,
+"Previous rate","Taux précédent",,
+"Previously applied revaluation rate stored on the product","Taux de revalorisation précédemment appliqué stocké sur la fiche produit",,
 "Price",,,
 "Pricing","Barème",,
 "Pricing rules","Règles de barème",,
@@ -660,11 +657,11 @@
 "Product cannot be regenerated because delivered / invoiced sale order lines are using it.","Le produit ne peut pas être régénéré car les lignes de commande livrées/facturées l'utilisent.",,
 "Product categories","Catégorie de produit",,
 "Product category",,,
-"Product category for this depreciation rate configuration",,,
+"Product category for this depreciation rate configuration","Catégorie de produit pour cette configuration de taux de revalorisation",,
 "Product code",,,
 "Product families","Familles de produit",,
 "Product family","Famille de produit",,
-"Product family for this depreciation rate configuration","",,
+"Product family for this depreciation rate configuration","Famille de produit pour cette configuration de taux de revalorisation",,
 "Product is missing.","Il manque le produit.",,
 "Product launches/withdrawal each month","Lancement/Retrait produits par mois",,
 "Product must be a packaging.","Le produit doit être un emballage.",,
@@ -704,6 +701,7 @@
 "Quantity cannot be lower than already delivered quantity on detail line %s.","La quantité ne peut pas être inférieure à la quantité déjà livrée sur la ligne de détail %s.",,
 "Quantity requested","Quantité demandée",,
 "Quotations","Devis",,
+"Rate to apply","Taux à appliquer",,
 "Rates","Taux",,
 "Real Qty","Qté Réelle",,
 "Real qty changed by user",,,
@@ -724,24 +722,9 @@
 "Result","Résultat",,
 "Results","Résultats",,
 "Returnable","Consigne",,
+"Revaluation","Revalorisation",,
+"Revaluation rate","Taux de revalorisation",,
 "Rotation stock category","Catégorie de rotation de stock",,
-"Auto-assign rotation stock category","Assignation auto du type de rotation",,
-"Sequence","Séquence",,
-"Color","Couleur",,
-"Write a Groovy expression that returns true when a product should be classified in this category. The first category matching (ordered by sequence) is assigned to the product by the batch ""Update stock history"".","Saisissez une expression Groovy qui renvoie true lorsqu'un produit doit être classé dans cette catégorie. La première catégorie correspondante (dans l'ordre de la séquence) est assignée au produit par le batch ""Mettre à jour l'historique des stocks"".",,
-"Variable","Variable",,
-"Description","Description",,
-"Stock coverage in days = currentStock / (salesLast12Months / 360)","Couverture de stock en jours = currentStock / (salesLast12Months / 360)",,
-"Sum of outgoing quantities over the last 12 months","Somme des quantités sortantes sur les 12 derniers mois",,
-"Current total quantity (non-virtual stock locations)","Quantité totale actuelle (emplacements non virtuels)",,
-"Approximated stock quantity 6 months ago","Quantité de stock approximée il y a 6 mois",,
-"Examples","Exemples",,
-"Fast movers","Rotation rapide",,
-"Slow movers","Rotation lente",,
-"Dead stock","Stock dormant",,
-"Accumulating stock","Stock en accumulation",,
-"Tip","Astuce",,
-"Ordering matters: put the most specific rules first. The last one can use true as a catch-all fallback.","L'ordre compte : placez les règles les plus spécifiques en premier. La dernière peut utiliser true comme règle par défaut.",,
 "Run calculation","Lancer le calcul",,
 "Run stock batch","Lancer le batch de stock",,
 "SO line","Ligne de Devis/Cmde Client",,
@@ -782,6 +765,7 @@
 "Select the lines to invoice","Sélectionnez les lignes à facturer",,
 "Select the supplier account for accrued expenses (usually 4081) for end-of-year adjustments.","Selectionnez le compte fournisseur pour les factures non parvenues (habituellement le 4081) pour les régularisations de fin d'exercice.",,
 "Select timetables to invoice","Sélectionnez les échéanciers à facturer",,
+"Sequence","Séquence",,
 "Sequence to order MRP results","Séquence pour trier les résultats du CBN",,
 "Services","Prestations",,
 "Settings",,,
@@ -789,8 +773,9 @@
 "Shipment mode","Mode d’expédition",,
 "Shipping cost","Frais de port",,
 "Show Total",,,
+"Slow movers","Rotation lente",,
 "Specific package",,,
-"Specific product for this depreciation rate configuration",,,
+"Specific product for this depreciation rate configuration","Produit spécifique pour cette configuration de taux de revalorisation",,
 "Standard",,,
 "Standard delay (days)","Délai d'appro. (jours)",,
 "Status","Statut",,
@@ -800,6 +785,7 @@
 "Statuses to take into account","Statuts à prendre en compte",,
 "Stock",,,
 "Stock Locations content",,,
+"Stock coverage in days = currentStock / (salesLast12Months / 360)","Couverture de stock en jours = currentStock / (salesLast12Months / 360)",,
 "Stock details","Détails du stock",,
 "Stock details by product","Détails des stocks par article",,
 "Stock history","Historique des stocks",,
@@ -820,17 +806,20 @@
 "Stock move(s) processed","Ligne(s) de mouvement de stock",,
 "Stock moves","Mouvements de stock",,
 "Stock reservation feature cannot be active when we are managing stock locations on stock move line.","La réservation des stocks ne peut pas être activée si la gestion des emplacements de stock sur les lignes de mouvements de stock est activée.",,
+"Stock revaluation","Revalorisation des stocks",,
+"Stock revaluation computed","Revalorisation calculée",,
+"Stock revaluation rate configuration","Taux de revalorisation des stocks",,
+"Stock revaluation updated","Revalorisation appliquée",,
 "Stock rotation categories","Catégories de rotation de stock",,
 "Stock rotation category","Catégorie de rotation de stock",,
-"Stock rotation category (formula-based) for this depreciation rate configuration",,,
+"Stock rotation category (formula-based) for this depreciation rate configuration","Catégorie de rotation de stock (basée sur formule) pour cette configuration de taux de revalorisation",,
 "Stock unit value","Valeur unitaire de stock",,
-"Rate to apply","Taux à appliquer",,
-"Total value","Valeur totale",,
 "StockMove","Mouvement de stock",,
 "Storable products","Articles stockables",,
 "Subscription","Abonnement",,
 "Subscription invoice generation report :","Génération du rapport des factures d’abonnement",,
 "Subscription invoices to validate","Factures d'abonnement à valider",,
+"Sum of outgoing quantities over the last 12 months","Somme des quantités sortantes sur les 12 derniers mois",,
 "Suppl. Invoices","Factures fournisseur",,
 "Supplier",,,
 "Supplier Catalog",,,
@@ -942,6 +931,7 @@
 "Timetable templates","Modèles d'échéancier",,
 "Timetables","Echéanciers",,
 "Timetables can only be invoiced from a sale order or a purchase order.","Les échéanciers ne peuvent être facturés qu'à partir d'une commande client ou d'une commande fournisseur.",,
+"Tip","Astuce",,
 "Title","Libellé",,
 "To Date","Date de fin",,
 "To process","A traiter",,
@@ -951,6 +941,7 @@
 "Total net mass","Poids net total",,
 "Total price","Valorisation totale",,
 "Total subscription invoice(s) generated: %s","Total facture(s) d'abonnement générée(s) : %s",,
+"Total value","Valeur totale",,
 "Tracking number",,,
 "Tracking number search","Recherche des numéros de suivi",,
 "Transport rates","Barème de transport",,
@@ -979,6 +970,7 @@
 "Valorization","Valorisation",,
 "Valuation difference after applying the rate: qty x (new cost - previous cost)","Écart de valorisation après application du taux : qté x (nouveau coût - coût précédent)",,
 "Valued gap","Écart valorisé",,
+"Variable","Variable",,
 "Verify product stock before availabity request","Vérifier le stock du produit avant la demande de mise à disposition",,
 "Warn delay from supplier",,,
 "Warning : Estimated shipping date isn't updated due to pricing set on sale order.","Avertissement: La date d'expédition estimée n'est pas mise à jour en raison de la présence d'un barème.",,
@@ -1007,6 +999,7 @@
 "When this configuration is enabled, you will be able to generate invoices from delivery notes and receipt notes using a Generate invoice button.","En activant cette configuration, vous aurez la possibilité de générer des factures depuis des BL et BR grace à un bouton Générer facture.",,
 "When this is active, sale order will be automatically set to 'Order completed' status once 'Amount invoiced W.T.' is equal to 'Total W.T.'. This will happen when all invoices linked to the sale order get to status 'Ventilated'","Quand cette option est activée, la commande sera automatiquement passée au statut 'Commande terminée' une fois que le 'Montant facturé HT' sera égal au 'Total HT' de la commande. Cela se produira quand toutes les factures liées à la commande passeront au statut 'Ventilée'",,
 "Would you like to update all lines with this stock location?","Souhaitez-vous mettre à jour toutes les lignes avec cet emplacement de stock ?",,
+"Write a Groovy expression that returns true when a product should be classified in this category. The first category matching (ordered by sequence) is assigned to the product by the batch ""Update stock history"".","Saisissez une expression Groovy qui renvoie true lorsqu'un produit doit être classé dans cette catégorie. La première catégorie correspondante (dans l'ordre de la séquence) est assignée au produit par le batch ""Mettre à jour l'historique des stocks"".",,
 "You can define here at which status(es) purchase quotations/orders are taken into account in the stock details of a product, at the Supplier order quantity indicator level.","Vous pouvez définir ici à quel(s) statut(s) les devis/commandes d'achat sont pris en compte dans le détail des stocks d'un produit, au niveau de l'indicateur Quantité en commande fournisseur.",,
 "You can define here at which status(es) sale quotations/orders are taken into account in the stock details of a product, at the Customer order quantity indicator level.","Vous pouvez définir ici à quel(s) statut(s) les devis/commandes clients sont pris en compte dans le détail des stocks d'un produit, au niveau de l'indicateur Quantité en commande client.",,
 "You can define here which order date to take into account to prioritize reservation requests among confirmation date and estimated shipping date.","Vous pouvez définir ici quelle date de la commande prendre en compte pour prioriser les demandes de réservation parmi date de confirmation et date d'expédition estimée.",,

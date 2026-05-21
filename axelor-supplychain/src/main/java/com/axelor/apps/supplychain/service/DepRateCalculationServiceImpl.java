@@ -231,6 +231,8 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
     BigDecimal computedCost = computeNewCost(previousCost, defaultRate, typeSelect);
     unitCostCalcLine.setTypeSelect(typeSelect);
     unitCostCalcLine.setPreviousCost(previousCost);
+    unitCostCalcLine.setPreviousRate(
+        product.getRevaluationRate() != null ? product.getRevaluationRate() : BigDecimal.ZERO);
     unitCostCalcLine.setComputedCost(computedCost);
     unitCostCalcLine.setMinRate(minRate);
     unitCostCalcLine.setMaxRate(maxRate);

@@ -32,11 +32,12 @@
     <field name="qty" readonly="true"/>
     <field name="previousCost" title="Stock unit value" readonly="true"/>
     <field name="totalPrice" title="Total value" readonly="true"/>
-    <field name="computedCost" title="Computed value" readonly="true"/>
+    <field name="previousRate" readonly="true"/>
     <field name="minRate" readonly="true"/>
     <field name="maxRate" readonly="true"/>
     <field name="costToApply" title="Rate to apply"
       onChange="action-unit-cost-calc-line-group-cost-to-apply-onchange"/>
+    <field name="computedCost" title="Computed value" readonly="true"/>
     <field name="valuedGap" readonly="true"/>
   </grid>
 
@@ -62,23 +63,27 @@
     <panel name="mainPanel">
       <field name="unitCostCalculation" hidden="true"/>
       <field name="product" readonly="true"/>
-      <field name="typeSelect" readonly="true"/>
+      <field name="stockRotationCategory" widget="Tag" x-color-field="color" readonly="true"/>
+      <field name="typeSelect" widget="ImageSelect" x-labels="false" readonly="true">
+        <hilite if="typeSelect == 1" color="danger"/>
+        <hilite if="typeSelect == 2" color="success"/>
+      </field>
       <field name="qty" readonly="true"/>
-      <field name="totalPrice" title="Total value" readonly="true"/>
       <field name="previousCost" title="Stock unit value" readonly="true"/>
-      <field name="computedCost" title="Computed value" readonly="true"/>
-      <field name="valuedGap" readonly="true"/>
+      <field name="totalPrice" title="Total value" readonly="true"/>
+      <field name="previousRate" readonly="true"/>
       <field name="minRate" readonly="true" x-scale="2"/>
       <field name="maxRate" readonly="true" x-scale="2"/>
       <field name="costToApply" title="Rate to apply"
         onChange="action-unit-cost-calc-line-group-cost-to-apply-onchange"/>
-
+      <field name="computedCost" title="Computed value" readonly="true"/>
+      <field name="valuedGap" readonly="true"/>
     </panel>
   </form>
 
   <action-attrs name="action-unit-cost-calc-line-attrs-price-digits">
     <attribute name="scale"
-      for="previousCost,computedCost,costToApply,minRate,maxRate,totalPrice,valuedGap"
+      for="previousCost,computedCost,costToApply,minRate,maxRate,totalPrice,valuedGap,previousRate"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     <attribute name="scale" for="qty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>

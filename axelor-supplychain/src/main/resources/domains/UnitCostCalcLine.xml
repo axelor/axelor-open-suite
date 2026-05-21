@@ -32,5 +32,7 @@
       help="Valuation difference after applying the rate: qty x (new cost - previous cost)"/>
     <many-to-one name="stockRotationCategory"
       ref="com.axelor.apps.supplychain.db.StockRotationCategory" title="Stock rotation category"/>
+    <decimal name="previousRate" title="Previous rate" precision="20" scale="10"
+      help="Previously applied revaluation rate stored on the product"/>
   </entity>
 </domain-models>
