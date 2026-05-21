@@ -183,6 +183,14 @@ public class PaymentServiceImpl implements PaymentService {
           try {
             createReconcile(
                 debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
+            debitTotalRemaining =
+                debitMoveLines.stream()
+                    .map(MoveLine::getAmountRemaining)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            creditTotalRemaining =
+                creditMoveLines.stream()
+                    .map(ml -> ml.getAmountRemaining().abs())
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
           } catch (Exception e) {
             if (dontThrow) {
               TraceBackService.trace(e);
@@ -243,10 +251,6 @@ public class PaymentServiceImpl implements PaymentService {
 
     if (reconcile != null) {
       reconcileService.confirmReconcile(reconcile, true, true);
-
-      debitTotalRemaining = debitTotalRemaining.subtract(amount);
-      creditTotalRemaining = creditTotalRemaining.subtract(amount);
-
       log.debug("Reconcile : {}", reconcile);
     }
   }
