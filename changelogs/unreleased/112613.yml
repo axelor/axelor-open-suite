@@ -1,0 +1,3 @@
+---
+title: "Ticket: fixed end date is not being set when resolving the ticket."
+module: axelor-helpdesk
