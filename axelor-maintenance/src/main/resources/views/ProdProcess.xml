@@ -72,7 +72,7 @@
           domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3"
           form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="stockMoveRealizeOrderSelect" colSpan="4"/>
-        <field name="isConsProOnOperation" colSpan="4"/>
+        <field name="isConsProOnOperation" colSpan="4" hidden="true"/>
         <panel name="outsourcePanel" title="Outsourcing" colSpan="12"
           if="__config__.app.getApp('production')?.getManageOutsourcing()">
           <field name="outsourcing" colSpan="4"/>
