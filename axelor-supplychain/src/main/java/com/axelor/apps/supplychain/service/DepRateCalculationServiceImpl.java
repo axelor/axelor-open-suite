@@ -20,8 +20,6 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductCategory;
-import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -34,12 +32,12 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.translation.ITranslation;
-import com.axelor.apps.supplychain.db.DepreciationRateConfig;
 import com.axelor.apps.supplychain.db.UnitCostCalcLine;
 import com.axelor.apps.supplychain.db.UnitCostCalculation;
 import com.axelor.apps.supplychain.db.repo.DepreciationRateConfigRepository;
 import com.axelor.apps.supplychain.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.DepRateAggregationService.AggregatedRates;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -54,14 +52,13 @@ import java.util.Optional;
 
 public class DepRateCalculationServiceImpl implements DepRateCalculationService {
 
-  protected static final int WAP_SCALE = 10;
   protected static final BigDecimal HUNDRED = new BigDecimal("100");
 
   protected final ProductRepository productRepository;
   protected final UnitCostCalculationRepository unitCostCalculationRepository;
   protected final AppBaseService appBaseService;
   protected final ProductCompanyService productCompanyService;
-  protected final DepreciationRateConfigRepository depreciationRateConfigRepository;
+  protected final DepRateAggregationService depRateAggregationService;
   protected final DepRateCalculationProductService depRateCalculationProductService;
   protected final StockLocationLineRepository stockLocationLineRepository;
   protected final StockLocationLineHistoryService stockLocationLineHistoryService;
@@ -73,7 +70,7 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
       UnitCostCalculationRepository unitCostCalculationRepository,
       AppBaseService appBaseService,
       ProductCompanyService productCompanyService,
-      DepreciationRateConfigRepository depreciationRateConfigRepository,
+      DepRateAggregationService depRateAggregationService,
       DepRateCalculationProductService depRateCalculationProductService,
       StockLocationLineRepository stockLocationLineRepository,
       StockLocationLineHistoryService stockLocationLineHistoryService,
@@ -82,7 +79,7 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
     this.unitCostCalculationRepository = unitCostCalculationRepository;
     this.appBaseService = appBaseService;
     this.productCompanyService = productCompanyService;
-    this.depreciationRateConfigRepository = depreciationRateConfigRepository;
+    this.depRateAggregationService = depRateAggregationService;
     this.depRateCalculationProductService = depRateCalculationProductService;
     this.stockLocationLineRepository = stockLocationLineRepository;
     this.stockLocationLineHistoryService = stockLocationLineHistoryService;
@@ -145,101 +142,35 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void rateCalculation(UnitCostCalculation unitCostCalculation, Product product) {
+  protected void rateCalculation(UnitCostCalculation unitCostCalculation, Product product)
+      throws AxelorException {
 
-    DepreciationRateConfig depreciationRateConfig = resolveDepreciationRateConfig(product);
-
-    BigDecimal minRate = BigDecimal.ZERO;
-    BigDecimal maxRate = BigDecimal.ZERO;
-    BigDecimal defaultRate = BigDecimal.ZERO;
-    int typeSelect = DepreciationRateConfigRepository.TYPE_DEPRECIATION;
-    if (depreciationRateConfig != null) {
-      minRate =
-          depreciationRateConfig.getMinRate() != null
-              ? depreciationRateConfig.getMinRate()
-              : BigDecimal.ZERO;
-      maxRate =
-          depreciationRateConfig.getMaxRate() != null
-              ? depreciationRateConfig.getMaxRate()
-              : BigDecimal.ZERO;
-      defaultRate =
-          depreciationRateConfig.getDefaultRate() != null
-              ? depreciationRateConfig.getDefaultRate()
-              : BigDecimal.ZERO;
-      typeSelect = depreciationRateConfig.getTypeSelect();
-    }
-
-    UnitCostCalcLine unitCostCalcLine =
-        createUnitCostCalcLine(product, defaultRate, minRate, maxRate, typeSelect);
+    AggregatedRates aggregated = depRateAggregationService.aggregate(product);
+    UnitCostCalcLine unitCostCalcLine = createUnitCostCalcLine(product, aggregated);
 
     unitCostCalculation.addUnitCostCalcLineListItem(unitCostCalcLine);
     unitCostCalculationRepository.save(unitCostCalculation);
   }
 
-  /**
-   * Resolve the applicable depreciation rate config by priority: product &gt; productCategory (with
-   * parents) &gt; productFamily &gt; stockRotationCategory. Returns the first non-null match.
-   */
-  protected DepreciationRateConfig resolveDepreciationRateConfig(Product product) {
-    DepreciationRateConfig depreciationRateConfig =
-        depreciationRateConfigRepository
-            .all()
-            .filter("self.product = :product")
-            .bind("product", product)
-            .fetchOne();
-    if (depreciationRateConfig != null) {
-      return depreciationRateConfig;
-    }
-
-    if (product.getProductCategory() != null) {
-      depreciationRateConfig = findDepRateConfigFromCategory(product.getProductCategory(), null);
-      if (depreciationRateConfig != null) {
-        return depreciationRateConfig;
-      }
-    }
-
-    if (product.getProductFamily() != null) {
-      depreciationRateConfig = findDepRateConfigFromFamily(product.getProductFamily());
-      if (depreciationRateConfig != null) {
-        return depreciationRateConfig;
-      }
-    }
-
-    if (product.getStockRotationCategory() != null) {
-      depreciationRateConfig =
-          depreciationRateConfigRepository
-              .all()
-              .filter("self.stockRotationCategory = :stockRotationCategory")
-              .bind("stockRotationCategory", product.getStockRotationCategory())
-              .fetchOne();
-    }
-
-    return depreciationRateConfig;
-  }
-
-  protected UnitCostCalcLine createUnitCostCalcLine(
-      Product product,
-      BigDecimal defaultRate,
-      BigDecimal minRate,
-      BigDecimal maxRate,
-      int typeSelect) {
+  protected UnitCostCalcLine createUnitCostCalcLine(Product product, AggregatedRates rates) {
     UnitCostCalcLine unitCostCalcLine = new UnitCostCalcLine();
     unitCostCalcLine.setProduct(product);
     unitCostCalcLine.setStockRotationCategory(product.getStockRotationCategory());
     BigDecimal previousCost = getCurrentProductAvgPrice(product);
     BigDecimal qty = computeProductQuantity(product);
-    BigDecimal computedCost = computeNewCost(previousCost, defaultRate, typeSelect);
-    unitCostCalcLine.setTypeSelect(typeSelect);
+    BigDecimal computedCost = computeNewCost(previousCost, rates.costToApply(), rates.typeSelect());
+    unitCostCalcLine.setTypeSelect(rates.typeSelect());
     unitCostCalcLine.setPreviousCost(previousCost);
     unitCostCalcLine.setPreviousRate(
         product.getRevaluationRate() != null ? product.getRevaluationRate() : BigDecimal.ZERO);
     unitCostCalcLine.setComputedCost(computedCost);
-    unitCostCalcLine.setMinRate(minRate);
-    unitCostCalcLine.setMaxRate(maxRate);
-    unitCostCalcLine.setCostToApply(defaultRate);
+    unitCostCalcLine.setMinRate(rates.minRate());
+    unitCostCalcLine.setMaxRate(rates.maxRate());
+    unitCostCalcLine.setCostToApply(rates.costToApply());
     unitCostCalcLine.setQty(qty);
     unitCostCalcLine.setTotalPrice(
-        qty.multiply(previousCost).setScale(WAP_SCALE, RoundingMode.HALF_UP));
+        qty.multiply(previousCost)
+            .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
     unitCostCalcLine.setValuedGap(computeValuedGap(qty, previousCost, computedCost));
     return unitCostCalcLine;
   }
@@ -275,12 +206,15 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
     if (previousCost == null || rate == null || previousCost.signum() == 0) {
       return previousCost != null ? previousCost : BigDecimal.ZERO;
     }
-    BigDecimal rateFactor = rate.divide(HUNDRED, WAP_SCALE, RoundingMode.HALF_UP);
+    BigDecimal rateFactor =
+        rate.divide(HUNDRED, appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
     BigDecimal factor =
         typeSelect == DepreciationRateConfigRepository.TYPE_VALORIZATION
             ? BigDecimal.ONE.add(rateFactor)
             : BigDecimal.ONE.subtract(rateFactor);
-    return previousCost.multiply(factor).setScale(WAP_SCALE, RoundingMode.HALF_UP);
+    return previousCost
+        .multiply(factor)
+        .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 
   /**
@@ -336,43 +270,9 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
     }
     BigDecimal previousTotal = qty.multiply(previousCost);
     BigDecimal newTotal = qty.multiply(computedCost);
-    return newTotal.subtract(previousTotal).setScale(WAP_SCALE, RoundingMode.HALF_UP);
-  }
-
-  protected DepreciationRateConfig findDepRateConfigFromCategory(
-      ProductCategory productCategory, DepreciationRateConfig depreciationRateConfig) {
-
-    DepreciationRateConfig catDepreciationRateConfig =
-        depreciationRateConfigRepository
-            .all()
-            .filter("self.productCategory = :productCategory")
-            .bind("productCategory", productCategory)
-            .fetchOne();
-
-    if (depreciationRateConfig == null
-        || (catDepreciationRateConfig != null
-            && catDepreciationRateConfig.getMaxRate() != null
-            && depreciationRateConfig.getMaxRate() != null
-            && catDepreciationRateConfig.getMaxRate().compareTo(depreciationRateConfig.getMaxRate())
-                > 0)) {
-      depreciationRateConfig = catDepreciationRateConfig;
-    }
-
-    if (productCategory.getParentProductCategory() != null) {
-      depreciationRateConfig =
-          findDepRateConfigFromCategory(
-              productCategory.getParentProductCategory(), depreciationRateConfig);
-    }
-
-    return depreciationRateConfig;
-  }
-
-  protected DepreciationRateConfig findDepRateConfigFromFamily(ProductFamily productFamily) {
-    return depreciationRateConfigRepository
-        .all()
-        .filter("self.productFamily = :productFamily")
-        .bind("productFamily", productFamily)
-        .fetchOne();
+    return newTotal
+        .subtract(previousTotal)
+        .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 
   @Override
@@ -400,14 +300,16 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
 
   protected boolean ratesOk(UnitCostCalculation unitCostCalculation) {
     for (UnitCostCalcLine unitCostCalcLine : unitCostCalculation.getUnitCostCalcLineList()) {
-      if (unitCostCalcLine.getCostToApply() == null
-          || unitCostCalcLine.getMinRate() == null
-          || unitCostCalcLine.getMaxRate() == null) {
+      BigDecimal costToApply = unitCostCalcLine.getCostToApply();
+      if (costToApply == null) {
         return false;
       }
-
-      if (unitCostCalcLine.getCostToApply().compareTo(unitCostCalcLine.getMinRate()) < 0
-          || unitCostCalcLine.getCostToApply().compareTo(unitCostCalcLine.getMaxRate()) > 0) {
+      BigDecimal minRate = unitCostCalcLine.getMinRate();
+      BigDecimal maxRate = unitCostCalcLine.getMaxRate();
+      if (minRate != null && costToApply.compareTo(minRate) < 0) {
+        return false;
+      }
+      if (maxRate != null && costToApply.compareTo(maxRate) > 0) {
         return false;
       }
     }
@@ -444,7 +346,8 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
       return;
     }
 
-    BigDecimal rateFactor = rate.divide(HUNDRED, WAP_SCALE, RoundingMode.HALF_UP);
+    BigDecimal rateFactor =
+        rate.divide(HUNDRED, appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
     boolean isValorization = typeSelect == DepreciationRateConfigRepository.TYPE_VALORIZATION;
     BigDecimal factor =
         isValorization ? BigDecimal.ONE.add(rateFactor) : BigDecimal.ONE.subtract(rateFactor);
@@ -473,7 +376,9 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
         continue;
       }
       BigDecimal newAvgPrice =
-          currentAvgPrice.multiply(factor).setScale(WAP_SCALE, RoundingMode.HALF_UP);
+          currentAvgPrice
+              .multiply(factor)
+              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
       stockLocationLine.setAvgPrice(newAvgPrice);
       stockLocationLineRepository.save(stockLocationLine);
 

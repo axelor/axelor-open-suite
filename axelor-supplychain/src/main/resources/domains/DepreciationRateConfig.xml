@@ -32,10 +32,10 @@
       help="Minimum acceptable rate"/>
 
     <decimal name="maxRate" title="Max. rate" precision="20" scale="10"
-      help="Maximum acceptable rate"/>
+      help="Maximum acceptable rate" nullable="true"/>
 
     <decimal name="defaultRate" title="Default rate" precision="20" scale="10"
-      help="Default rate to apply"/>
+      help="Default rate to apply" nullable="true"/>
 
     <extra-code><![CDATA[
       // TYPE SELECT

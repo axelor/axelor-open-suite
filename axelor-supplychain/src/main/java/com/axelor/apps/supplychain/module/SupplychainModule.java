@@ -150,6 +150,8 @@ import com.axelor.apps.supplychain.service.CallTenderPurchaseOrderSupplychainSer
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.CommonInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.ConfiguratorCheckServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.DepRateAggregationService;
+import com.axelor.apps.supplychain.service.DepRateAggregationServiceImpl;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.IntercoServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogService;
@@ -677,5 +679,6 @@ public class SupplychainModule extends AxelorModule {
     bind(UnitCostCalculationRepository.class).to(UnitCostCalculationManagementRepository.class);
     bind(StockRotationCategoryService.class).to(StockRotationCategoryServiceImpl.class);
     bind(ProductStockAnalysisService.class).to(ProductStockAnalysisServiceImpl.class);
+    bind(DepRateAggregationService.class).to(DepRateAggregationServiceImpl.class);
   }
 }

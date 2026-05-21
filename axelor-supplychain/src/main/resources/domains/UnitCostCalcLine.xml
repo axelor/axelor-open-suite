@@ -17,9 +17,9 @@
     <integer name="maxLevel" title="Maximum level"/>
     <!-- Min and max rates for depreciation rate validation -->
     <decimal name="minRate" title="Min. rate" precision="20" scale="10"
-      help="Minimum acceptable rate"/>
+      help="Minimum acceptable rate" nullable="true"/>
     <decimal name="maxRate" title="Max. rate" precision="20" scale="10"
-      help="Maximum acceptable rate"/>
+      help="Maximum acceptable rate" nullable="true"/>
     <!-- Depreciation totals -->
     <integer name="typeSelect" title="Type"
       selection="supplychain.depreciation.rate.config.type.select" default="1"

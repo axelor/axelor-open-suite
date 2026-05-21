@@ -27,8 +27,14 @@
     <panel name="mainPanel" title="Configuration">
       <panel name="typePanel" colSpan="12">
         <field name="typeSelect" widget="ImageSelect" required="true" colSpan="12">
-          <hilite if="typeSelect == 1" color="danger"/>
-          <hilite if="typeSelect == 2" color="success"/>
+          <viewer depends="typeSelect"><![CDATA[
+            <>
+              <Box color={typeSelect == 1 ? 'danger' : 'success'} d="flex" alignItems="center">
+                <Icon icon={typeSelect == 1 ? 'graph-down-arrow' : 'graph-up-arrow'}/>
+                <span style={{marginLeft: '6px'}}>{$fmt('typeSelect')}</span>
+              </Box>
+            </>
+          ]]></viewer>
         </field>
       </panel>
       <panel name="levelPanel" colSpan="12" title="Configuration Level"

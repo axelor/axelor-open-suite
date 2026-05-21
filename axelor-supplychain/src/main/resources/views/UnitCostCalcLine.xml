@@ -19,13 +19,13 @@
   <grid name="depreciation-unit-cost-calc-line-grid" title="Results"
     model="com.axelor.apps.supplychain.db.UnitCostCalcLine" editable="true" orderBy="product.code">
     <hilite
-      if="($number(costToApply) &lt; $number(minRate)) || ($number(costToApply) &gt; $number(maxRate))"
+      if="(minRate != null &amp;&amp; $number(costToApply) &lt; $number(minRate)) || (maxRate != null &amp;&amp; $number(costToApply) &gt; $number(maxRate))"
       background="red"/>
     <field name="product.code"/>
     <field name="product.name"/>
     <field name="stockRotationCategory" widget="Tag" x-color-field="color" readonly="true"/>
-    <field name="typeSelect" widget="ImageSelect" title="" x-labels="false" readonly="true"
-      width="60">
+    <field name="typeSelect" widget="ImageSelect" title="" x-labels="false" width="60"
+      onChange="action-unit-cost-calc-line-group-type-select-onchange">
       <hilite if="typeSelect == 1" color="danger"/>
       <hilite if="typeSelect == 2" color="success"/>
     </field>
@@ -64,9 +64,16 @@
       <field name="unitCostCalculation" hidden="true"/>
       <field name="product" readonly="true"/>
       <field name="stockRotationCategory" widget="Tag" x-color-field="color" readonly="true"/>
-      <field name="typeSelect" widget="ImageSelect" readonly="true">
-        <hilite if="typeSelect == 1" color="danger"/>
-        <hilite if="typeSelect == 2" color="success"/>
+      <field name="typeSelect" widget="ImageSelect"
+        onChange="action-unit-cost-calc-line-group-type-select-onchange">
+        <viewer depends="typeSelect"><![CDATA[
+          <>
+            <Box color={typeSelect == 1 ? 'danger' : 'success'} d="flex" alignItems="center">
+              <Icon icon={typeSelect == 1 ? 'graph-down-arrow' : 'graph-up-arrow'}/>
+              <span style={{marginLeft: '6px'}}>{$fmt('typeSelect')}</span>
+            </Box>
+          </>
+        ]]></viewer>
       </field>
       <field name="qty" readonly="true"/>
       <field name="previousCost" title="Stock unit value" readonly="true"/>
@@ -91,8 +98,13 @@
 
   <action-condition name="action-unit-cost-calc-line-condition-check-cost-to-apply">
     <check field="costToApply" error="Check min or max rate"
-      if="eval: (costToApply &lt; minRate) || (costToApply &gt; maxRate)"/>
+      if="eval: costToApply != null &amp;&amp; ((minRate != null &amp;&amp; costToApply &lt; minRate) || (maxRate != null &amp;&amp; costToApply &gt; maxRate))"/>
   </action-condition>
+
+  <action-record name="action-unit-cost-calc-line-record-clear-rates"
+    model="com.axelor.apps.supplychain.db.UnitCostCalcLine">
+    <field name="minRate,maxRate" expr="eval: null"/>
+  </action-record>
 
   <action-record name="action-unit-cost-calc-line-record-compute-valued-gap"
     model="com.axelor.apps.supplychain.db.UnitCostCalcLine">
@@ -112,6 +124,11 @@
 
   <action-group name="action-unit-cost-calc-line-group-cost-to-apply-onchange">
     <action name="action-unit-cost-calc-line-condition-check-cost-to-apply"/>
+    <action name="action-unit-cost-calc-line-record-compute-valued-gap"/>
+  </action-group>
+
+  <action-group name="action-unit-cost-calc-line-group-type-select-onchange">
+    <action name="action-unit-cost-calc-line-record-clear-rates"/>
     <action name="action-unit-cost-calc-line-record-compute-valued-gap"/>
   </action-group>
 
