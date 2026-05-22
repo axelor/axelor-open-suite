@@ -171,6 +171,11 @@ public class OperationOrderStockMoveServiceMaintenanceImpl
     if (prodProcessLine != null && prodProcessLine.getStockLocation() != null) {
       return prodProcessLine.getStockLocation();
     }
+    if (prodProcessLine != null
+        && prodProcessLine.getProdProcess() != null
+        && prodProcessLine.getProdProcess().getStockLocation() != null) {
+      return prodProcessLine.getProdProcess().getStockLocation();
+    }
 
     StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
     StockLocation maintenanceLocation = stockConfig.getMaintenanceComponentsStockLocation();

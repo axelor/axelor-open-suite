@@ -22,7 +22,7 @@
     <field name="machineType"/>
     <field name="billOfMaterial" grid-view="bill-of-material-grid"
       form-view="maintenance-bill-of-material-form"/>
-    <field name="prodProcess" grid-view="prod-process-grid"
+    <field name="prodProcess" title="Maintenance process" grid-view="prod-process-grid"
       form-view="maintenance-prod-process-form"/>
     <field name="plannedStartDateT"/>
     <field name="plannedEndDateT"/>
@@ -94,8 +94,8 @@
           onChange="action-maintenance-maunf-order-group-onchange"
           onSelect="action-maintenance-manuf-order-attrs-filter-bom" required="true"
           form-view="maintenance-bill-of-material-form" grid-view="bill-of-material-grid"/>
-        <field name="prodProcess" readonlyIf="statusSelect > 1" colSpan="3" canEdit="false"
-          onChange="action-manuf-order-group-prod-process-onchange"
+        <field name="prodProcess" title="Maintenance process" readonlyIf="statusSelect > 1"
+          colSpan="3" canEdit="false" onChange="action-manuf-order-group-prod-process-onchange"
           onSelect="action-maintenance-order-attrs-filter-prodProcess"
           form-view="maintenance-prod-process-form" grid-view="prod-process-grid"/>
         <field name="outsourcing" colSpan="3"
@@ -122,7 +122,7 @@
           grid-view="manuf-order-grid"/>
         <field name="purchaseOrder" showIf="false" canSelect="false" canEdit="false"
           form-view="purchase-order-form" grid-view="purchase-order-grid"/>
-        <field name="isConsProOnOperation" hidden="true"/>
+        <field name="isConsProOnOperation" hidden="true" showIf="false"/>
         <button name="preFillOperationsBtn" title="Pre-fill operations"
           hideIf="statusSelect > 1  || operationOrderList.length > 0" colSpan="4"
           onClick="save,action-manuf-order-method-pre-fill-operations,action-manuf-order-method-update-lines-outsourced"/>
@@ -157,9 +157,9 @@
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab" colSpan="4">
-      <panel-related name="operationOrderListPanel" readonlyIf="statusSelect == 6"
-        colSpan="12" height="15" field="operationOrderList" form-view="operation-order-form"
-        grid-view="operation-order-grid" canNew="false"
+      <panel-related name="operationOrderListPanel" title="Maintenance operations"
+        readonlyIf="statusSelect == 6" colSpan="12" height="15" field="operationOrderList"
+        form-view="operation-order-form" grid-view="operation-order-grid" canNew="false"
         onChange="action-manuf-order-method-update-lines-outsourced"/>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 6">
         <panel name="plannedDatesPanel" title="Planned dates">

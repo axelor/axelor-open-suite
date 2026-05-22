@@ -14,7 +14,7 @@
     <field name="machineType"/>
     <field name="qty" aggregate="sum" x-scale="2"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="prodProcess" grid-view="prod-process-grid"
+    <field name="prodProcess" title="Maintenance process" grid-view="prod-process-grid"
       form-view="maintenance-prod-process-form"/>
     <field name="statusSelect" widget="single-select"/>
   </grid>
@@ -67,7 +67,7 @@
       <field name="machine" colSpan="6" form-view="maintenance-machine-form"
         grid-view="machine-grid" domain="self.machineType = :machineType OR :machineType IS NULL"
         onChange="action-maintenance-bom-record-machine-onchange"/>
-      <field name="prodProcess" canNew="true"
+      <field name="prodProcess" title="Maintenance process" canNew="true"
         onChange="action-bill-of-material-method-validate-prod-process"
         domain="self.machineType = :machineType AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = 3"
         form-view="maintenance-prod-process-form" grid-view="prod-process-grid"/>
