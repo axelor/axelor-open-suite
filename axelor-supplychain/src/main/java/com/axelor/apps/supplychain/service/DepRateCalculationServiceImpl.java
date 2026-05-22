@@ -53,6 +53,7 @@ import java.util.Optional;
 public class DepRateCalculationServiceImpl implements DepRateCalculationService {
 
   protected static final BigDecimal HUNDRED = new BigDecimal("100");
+  protected static final int CALCULATION_SCALE = 20;
 
   protected final ProductRepository productRepository;
   protected final UnitCostCalculationRepository unitCostCalculationRepository;
@@ -206,8 +207,7 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
     if (previousCost == null || rate == null || previousCost.signum() == 0) {
       return previousCost != null ? previousCost : BigDecimal.ZERO;
     }
-    BigDecimal rateFactor =
-        rate.divide(HUNDRED, appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    BigDecimal rateFactor = rate.divide(HUNDRED, CALCULATION_SCALE, RoundingMode.HALF_UP);
     BigDecimal factor =
         typeSelect == DepreciationRateConfigRepository.TYPE_VALORIZATION
             ? BigDecimal.ONE.add(rateFactor)
@@ -346,8 +346,7 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
       return;
     }
 
-    BigDecimal rateFactor =
-        rate.divide(HUNDRED, appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    BigDecimal rateFactor = rate.divide(HUNDRED, CALCULATION_SCALE, RoundingMode.HALF_UP);
     boolean isValorization = typeSelect == DepreciationRateConfigRepository.TYPE_VALORIZATION;
     BigDecimal factor =
         isValorization ? BigDecimal.ONE.add(rateFactor) : BigDecimal.ONE.subtract(rateFactor);

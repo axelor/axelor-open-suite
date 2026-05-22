@@ -34,6 +34,7 @@ import java.util.List;
 public class DepRateAggregationServiceImpl implements DepRateAggregationService {
 
   protected static final BigDecimal HUNDRED = new BigDecimal("100");
+  protected static final int CALCULATION_SCALE = 20;
 
   protected final DepreciationRateConfigRepository depreciationRateConfigRepository;
   protected final ProductCategoryService productCategoryService;
@@ -143,8 +144,7 @@ public class DepRateAggregationServiceImpl implements DepRateAggregationService 
 
   protected BigDecimal signedRateFactor(DepreciationRateConfig config) {
     BigDecimal rate = config.getDefaultRate() != null ? config.getDefaultRate() : BigDecimal.ZERO;
-    BigDecimal rateFactor =
-        rate.divide(HUNDRED, appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    BigDecimal rateFactor = rate.divide(HUNDRED, CALCULATION_SCALE, RoundingMode.HALF_UP);
     return config.getTypeSelect() == DepreciationRateConfigRepository.TYPE_VALORIZATION
         ? BigDecimal.ONE.add(rateFactor)
         : BigDecimal.ONE.subtract(rateFactor);
