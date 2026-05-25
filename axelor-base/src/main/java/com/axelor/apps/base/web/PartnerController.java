@@ -537,6 +537,9 @@ public class PartnerController {
     Partner partner;
     if (partnerId != null) {
       partner = JPA.find(Partner.class, Long.parseLong(partnerId.toString()));
+      partnerTypeData.put("isCustomer", partner.getIsCustomer());
+      partnerTypeData.put("isSupplier", partner.getIsSupplier());
+      partnerTypeData.put("isProspect", partner.getIsProspect());
     } else {
       partner = new Partner();
       partnerTypeData.put("isCustomer", getBooleanContextValue(request, "_isCustomer"));
