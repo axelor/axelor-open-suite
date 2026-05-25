@@ -1,0 +1,5 @@
+---
+title: "BOM : Bill of material on SaleOrderLine allow to select regardless the company"
+module: axelor-production
+developer: |
+  Changed SaleOrderLineDomainProductionService.getBomDomain parameters from (saleOrderLine) to (saleOrderLine, saleOrder).
