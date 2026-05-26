@@ -260,22 +260,13 @@
   <action-attrs name="action-inventory-on-select-product">
     <attribute name="domain" for="product"
       expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product' AND self.isModel = false &quot;"
-      if="productCategory != null &amp;&amp; typeSelect == 2"/>
-    <attribute name="domain" for="product"
-      expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND self.dtype = 'Product' AND self.isModel = false &quot;"
-      if="productCategory != null &amp;&amp; typeSelect != 2"/>
+      if="productCategory != null"/>
     <attribute name="domain" for="product"
       expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product' AND self.isModel = false &quot;"
-      if="productCategory == null &amp;&amp; productFamily != null &amp;&amp; typeSelect == 2"/>
-    <attribute name="domain" for="product"
-      expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND self.dtype = 'Product' AND self.isModel = false &quot;"
-      if="productCategory == null &amp;&amp; productFamily != null &amp;&amp; typeSelect != 2"/>
+      if="productCategory == null &amp;&amp; productFamily != null"/>
     <attribute name="domain" for="product"
       expr="eval:&quot;self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product' AND self.isModel = false &quot;"
-      if="productCategory == null &amp;&amp; productFamily == null &amp;&amp; typeSelect == 2"/>
-    <attribute name="domain" for="product"
-      expr="eval:&quot;self.dtype = 'Product' AND self.isModel = false &quot;"
-      if="productCategory == null &amp;&amp; productFamily == null &amp;&amp; typeSelect != 2"/>
+      if="productCategory == null &amp;&amp; productFamily == null"/>
   </action-attrs>
 
   <action-method name="action-inventory-method-show-stockmoves">

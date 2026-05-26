@@ -9,8 +9,8 @@
     <hilite if="!isPresentInStockLocation" color="lightgreen"/>
     <field name="product" canEdit="false"
       onChange="action-inventory-line-group-on-change-product-stock-location"
-      domain="self.stockManaged = true AND self.dtype = 'Product' AND self.isModel = false"
-      grid-view="product-grid" form-view="product-form"/>
+      onSelect="action-inventory-line-attrs-product-domain" grid-view="product-grid"
+      form-view="product-form"/>
     <field name="stockLocation"
       onSelect="action-inventory-line-method-set-stock-location-domain"
       onChange="action-inventory-line-group-on-change-product-stock-location" required="true"/>
@@ -43,8 +43,8 @@
     <panel name="mainPanel">
       <field name="product" canEdit="false"
         onChange="action-inventory-line-group-on-change-product-stock-location"
-        domain="self.expense = false and self.productTypeSelect = 'storable' and self.stockManaged = true and self.dtype = 'Product' AND self.isModel = false"
-        form-view="product-form" grid-view="product-grid"/>
+        onSelect="action-inventory-line-attrs-product-domain" form-view="product-form"
+        grid-view="product-grid"/>
       <field name="stockLocation"
         onSelect="action-inventory-line-method-set-stock-location-domain"
         onChange="action-inventory-line-group-on-change-product-stock-location" required="true"/>
@@ -64,6 +64,15 @@
         if="__config__.app.isApp('supplychain')" widget="info-button" icon="boxes"/>
     </panel>
   </form>
+
+  <action-attrs name="action-inventory-line-attrs-product-domain">
+    <attribute name="domain" for="product"
+      expr="eval: &quot; self.expense = false and self.productTypeSelect = 'storable' and self.stockManaged = true and self.dtype = 'Product' AND self.isModel = false AND self.inventoryTypeSelect = ${__parent__?.typeSelect} &quot;"
+      if="__parent__"/>
+    <attribute name="domain" for="product"
+      expr="eval: &quot; self.expense = false and self.productTypeSelect = 'storable' and self.stockManaged = true and self.dtype = 'Product' AND self.isModel = false &quot;"
+      if="!__parent__"/>
+  </action-attrs>
 
   <action-attrs name="action-inventory-line-attrs-scale-and-precision">
     <attribute name="scale" for="currentQty"
