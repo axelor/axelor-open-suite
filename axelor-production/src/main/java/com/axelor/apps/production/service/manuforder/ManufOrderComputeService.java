@@ -1,0 +1,41 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.axelor.apps.production.service.manuforder;
+
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.production.db.ManufOrder;
+import java.math.BigDecimal;
+import java.util.Map;
+
+public interface ManufOrderComputeService {
+
+  BigDecimal computeProducibleQty(ManufOrder manufOrder) throws AxelorException;
+
+  Map<Product, BigDecimal> getMissingComponents(ManufOrder manufOrder) throws AxelorException;
+
+  /**
+   * This method check if operation orders regardless of manufOrder. If manufOrder is outsourced,
+   * the method will return false as they are outsourced because of manufOrder.
+   *
+   * @param manufOrder
+   * @return true if lines are outsourced regardless of manufOrder, else false.
+   */
+  boolean areLinesOutsourced(ManufOrder manufOrder);
+}

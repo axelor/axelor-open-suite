@@ -1,0 +1,3 @@
+---
+title: "ManufOrder: Improve form loading performance by extracting lightweight on-load services."
+module: axelor-production

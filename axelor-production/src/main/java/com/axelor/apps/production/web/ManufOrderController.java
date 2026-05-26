@@ -47,6 +47,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
+import com.axelor.apps.production.service.manuforder.ManufOrderComputeService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyService;
@@ -772,7 +773,7 @@ public class ManufOrderController {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       BigDecimal producibleQty =
-          Beans.get(ManufOrderService.class).computeProducibleQty(manufOrder);
+          Beans.get(ManufOrderComputeService.class).computeProducibleQty(manufOrder);
       response.setValue("$producibleQty", producibleQty);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -800,7 +801,8 @@ public class ManufOrderController {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       response.setValue(
-          "$areLinesOutsourced", Beans.get(ManufOrderService.class).areLinesOutsourced(manufOrder));
+          "$areLinesOutsourced",
+          Beans.get(ManufOrderComputeService.class).areLinesOutsourced(manufOrder));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -943,7 +945,8 @@ public class ManufOrderController {
 
       Map<Product, BigDecimal> missingComponents = null;
       if (manufOrder.getQty().compareTo(producibleQty) > 0) {
-        missingComponents = Beans.get(ManufOrderService.class).getMissingComponents(manufOrder);
+        missingComponents =
+            Beans.get(ManufOrderComputeService.class).getMissingComponents(manufOrder);
         TranslationService translationService = Beans.get(TranslationService.class);
         UserService userService = Beans.get(UserService.class);
         String missingComponentsStr =
