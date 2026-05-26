@@ -73,6 +73,7 @@ import com.axelor.apps.production.service.BomLineCreationService;
 import com.axelor.apps.production.service.BomLineCreationServiceImpl;
 import com.axelor.apps.production.service.BomTreeRemoveService;
 import com.axelor.apps.production.service.BomTreeRemoveServiceImpl;
+import com.axelor.apps.production.service.ControlEntryProductionServiceImpl;
 import com.axelor.apps.production.service.MpsChargeService;
 import com.axelor.apps.production.service.MpsChargeServiceImpl;
 import com.axelor.apps.production.service.MpsWeeklyScheduleService;
@@ -100,8 +101,6 @@ import com.axelor.apps.production.service.ProdProductAttrsServiceImpl;
 import com.axelor.apps.production.service.ProdProductService;
 import com.axelor.apps.production.service.ProdProductServiceImpl;
 import com.axelor.apps.production.service.ProductionProductStockLocationServiceImpl;
-import com.axelor.apps.production.service.ProductionTrackingPreservationService;
-import com.axelor.apps.production.service.ProductionTrackingPreservationServiceImpl;
 import com.axelor.apps.production.service.PurchaseOrderDomainServiceProductionImpl;
 import com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionImpl;
 import com.axelor.apps.production.service.PurchaseOrderTypeSelectProductionServiceImpl;
@@ -176,8 +175,6 @@ import com.axelor.apps.production.service.SolProdProcessCustomizationService;
 import com.axelor.apps.production.service.SolProdProcessCustomizationServiceImpl;
 import com.axelor.apps.production.service.SopService;
 import com.axelor.apps.production.service.SopServiceImpl;
-import com.axelor.apps.production.service.StockMoveLineOutsourcingService;
-import com.axelor.apps.production.service.StockMoveLineOutsourcingServiceImpl;
 import com.axelor.apps.production.service.StockMoveLineProductionServiceImpl;
 import com.axelor.apps.production.service.StockMoveMergingServiceProductionImpl;
 import com.axelor.apps.production.service.StockMoveProductionService;
@@ -295,6 +292,7 @@ import com.axelor.apps.production.service.saleorder.onchange.SaleOrderOnLineChan
 import com.axelor.apps.purchase.service.PurchaseOrderDomainServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectServiceImpl;
 import com.axelor.apps.quality.rest.service.QualityImprovementParseServiceImpl;
+import com.axelor.apps.quality.service.ControlEntryServiceImpl;
 import com.axelor.apps.quality.service.QIIdentificationServiceImpl;
 import com.axelor.apps.quality.service.QualityImprovementCheckValuesServiceImpl;
 import com.axelor.apps.quality.service.QualityImprovementUpdateServiceImpl;
@@ -416,15 +414,12 @@ public class ProductionModule extends AxelorModule {
     bind(ManufOrderCreateStockMoveService.class).to(ManufOrderCreateStockMoveServiceImpl.class);
     bind(ManufOrderCreateStockMoveLineService.class)
         .to(ManufOrderCreateStockMoveLineServiceImpl.class);
-    bind(ProductionTrackingPreservationService.class)
-        .to(ProductionTrackingPreservationServiceImpl.class);
     bind(ManufOrderUpdateStockMoveService.class).to(ManufOrderUpdateStockMoveServiceImpl.class);
     bind(OperationOrderStockMoveService.class).to(OperationOrderStockMoveServiceImpl.class);
     bind(OperationOrderPlanningInfiniteCapacityService.class)
         .to(OperationOrderPlanningInfiniteCapacityServiceImpl.class);
     bind(BillOfMaterialMrpLineService.class).to(BillOfMaterialMrpLineServiceImpl.class);
     bind(StockMoveLineServiceSupplychainImpl.class).to(StockMoveLineProductionServiceImpl.class);
-    bind(StockMoveLineOutsourcingService.class).to(StockMoveLineOutsourcingServiceImpl.class);
     bind(ManufOrderTrackingNumberService.class).to(ManufOrderTrackingNumberServiceImpl.class);
     bind(PurchaseOrderMergingServiceSupplyChainImpl.class)
         .to(PurchaseOrderMergingServiceProductionImpl.class);
@@ -532,5 +527,6 @@ public class ProductionModule extends AxelorModule {
     bind(QualityImprovementParseServiceImpl.class)
         .to(QualityImprovementParseProductionServiceImpl.class);
     bind(ManufOrderQueryService.class).to(ManufOrderQueryServiceImpl.class);
+    bind(ControlEntryServiceImpl.class).to(ControlEntryProductionServiceImpl.class);
   }
 }

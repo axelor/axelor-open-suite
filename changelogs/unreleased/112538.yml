@@ -1,0 +1,3 @@
+---
+title: "Accounting report: fixed aged balance query to include credit move lines and preserve selected report type when applying model."
+module: axelor-account

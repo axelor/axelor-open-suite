@@ -309,6 +309,7 @@
     <action name="action-ticket-method-compute-real-total-duration"/>
     <action name="action-ticket-record-to-fill-endDate"/>
     <action name="action-ticket-method-compute-from-end-date-time"/>
+    <action name="save"/>
     <action name="action-ticket-method-resolve-ticket"/>
   </action-group>
 

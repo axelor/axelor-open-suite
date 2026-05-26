@@ -36,7 +36,6 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.ScriptAppServiceImpl;
 import com.axelor.studio.db.AppBase;
-import com.axelor.utils.helpers.date.LocalDateTimeHelper;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -48,6 +47,7 @@ import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -74,21 +74,22 @@ public class AppBaseServiceImpl extends ScriptAppServiceImpl implements AppBaseS
 
   public ZonedDateTime getTodayDateTime(Company company) {
 
-    ZonedDateTime todayDateTime = ZonedDateTime.now();
-    if (company != null) {
-      todayDateTime = LocalDateTimeHelper.getTodayDateTime(company.getTimezone());
-    }
+    ZoneId targetZone =
+        (company != null && StringUtils.notBlank(company.getTimezone()))
+            ? ZoneId.of(company.getTimezone())
+            : ZoneId.systemDefault();
+    ZonedDateTime todayDateTime = ZonedDateTime.now(targetZone);
 
     String applicationMode = AppSettings.get().get("application.mode", "prod");
 
     if ("dev".equals(applicationMode)) {
       User user = AuthUtils.getUser();
       if (user != null && user.getTodayDateT() != null) {
-        todayDateTime = user.getTodayDateT();
+        todayDateTime = user.getTodayDateT().withZoneSameInstant(targetZone);
       } else {
         AppBase appBase = getAppBase();
         if (appBase != null && appBase.getTodayDateT() != null) {
-          return appBase.getTodayDateT();
+          return appBase.getTodayDateT().withZoneSameInstant(targetZone);
         }
       }
     }

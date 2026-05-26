@@ -1,6 +1,0 @@
----
-title: "Stock move: removed the quality control entry panel from the stock move form."
-module: axelor-stock
-developer: |
-  -- Script
-  DELETE FROM meta_action WHERE name IN ('action-stock-move-view-control-entry', 'action-stock-move-view-add-control-entry');
