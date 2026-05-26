@@ -24,7 +24,7 @@
 472;65;"Timezone";"${productionBatch.company?.timezone}";"string"
 473;65;"companyId";"${productionBatch.company?.id ?: 0}";"decimal"
 474;65;"locationId";"${productionBatch.workshopStockLocation?.id ?: 0}";"decimal"
-475;65;"editionDate";"${java.time.format.DateTimeFormatter.ofPattern(""MMM d, yyyy, hh:mm a"").format(productionBatch.updatedOn)}";"string"
+475;65;"editionDate";"${java.time.format.DateTimeFormatter.ofPattern(""MMM d, yyyy, hh:mm a"").format(productionBatch.updatedOn?:productionBatch.createdOn)}";"string"
 481;66;"mpsId";"${mpsCharge.id}";"decimal"
 482;66;"logoId";"${__user__?.activeCompany?.logo?.id}";"decimal"
 483;66;"startMonthDate";"${mpsCharge.startMonthDate?.format(java.time.format.DateTimeFormatter.ofPattern(""dd/MM/YYYY""))}";"string"

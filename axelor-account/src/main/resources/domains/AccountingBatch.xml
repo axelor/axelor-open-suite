@@ -50,8 +50,6 @@
     <!-- OTHERS INFORMATION -->
     <integer name="fetchLimit" title="Fetch limit" min="0"/>
     <string name="description" title="Description" large="true"/>
-    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch"
-      mappedBy="accountingBatch" title="Batchs"/>
 
     <!-- CREDIT TRANSFER -->
     <integer name="creditTransferTypeSelect" title="Credit Transfer batch type"
