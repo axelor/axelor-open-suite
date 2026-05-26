@@ -16,14 +16,17 @@
         x-related="$relatedToSelectId" onChange="action-control-entry-report-attrs-refresh-dashlet"/>
       <field name="$relatedToSelectId" type="long" hidden="true"/>
     </panel>
+    <panel name="chartHelpPanel" showFrame="false">
+      <label name="chartHelpLabel" colSpan="12" css="label-italic"
+        title="Displays the non-compliance PPM by month: (non-compliant samples / total controlled samples) × 1,000,000, on finished control entries matching the filters above."/>
+    </panel>
     <panel-dashlet name="control-entry-report-dashlet" colSpan="12" height="400"
       action="action-control-entry-report-view-chart"/>
   </form>
 
   <action-view name="action-control-entry-report-view-chart"
-    title="Compliant vs total controlled samples by month">
-    <view type="chart" name="chart.quality.compliant.samples.by.month"/>
-    <context name="_language" expr="eval: __user__.getLanguage()"/>
+    title="Non-compliance PPM by month">
+    <view type="chart" name="chart.quality.ppm.by.month"/>
   </action-view>
 
   <action-record name="action-control-entry-report-record-set-date"
