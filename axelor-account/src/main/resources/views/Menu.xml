@@ -870,6 +870,18 @@
     <view-param name="search-filters" value="payment-condition-filters"/>
   </action-view>
 
+  <menuitem name="account-conf-payment-cancel-reason" parent="account-conf-payment"
+    title="Cancel reasons" action="account.conf.payment.cancel.reason" order="300"/>
+
+  <action-view name="account.conf.payment.cancel.reason" title="Cancel reasons"
+    model="com.axelor.apps.base.db.CancelReason">
+    <view type="grid" name="cancel-reason-grid"/>
+    <view type="form" name="cancel-reason-form"/>
+    <view-param name="search-filters" value="cancel-reason-filters"/>
+    <domain>self.applicationType = :_xApplicationType</domain>
+    <context name="_xApplicationType" expr="eval: com.axelor.apps.account.db.InvoicePayment"/>
+  </action-view>
+
   <menuitem name="admin-root-batch-accounting" parent="admin-root-batch"
     if="__config__.app.isApp('account')" if-module="axelor-account" title="Accounting batches"
     action="admin.root.batch.accounting" order="500"/>
