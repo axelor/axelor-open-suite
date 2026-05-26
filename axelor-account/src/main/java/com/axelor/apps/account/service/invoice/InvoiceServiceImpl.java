@@ -46,6 +46,7 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.note.InvoiceNoteService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.AxelorMessageException;
@@ -119,6 +120,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected InvoicePrintService invoicePrintService;
   protected InvoiceTermPfpToolService invoiceTermPfpToolService;
   protected InvoiceCategoryService invoiceCategoryService;
+  protected InvoiceNoteService invoiceNoteService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -138,7 +140,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceTermFilterService invoiceTermFilterService,
       InvoicePrintService invoicePrintService,
       InvoiceTermPfpToolService invoiceTermPfpToolService,
-      InvoiceCategoryService invoiceCategoryService) {
+      InvoiceCategoryService invoiceCategoryService,
+      InvoiceNoteService invoiceNoteService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -157,6 +160,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoicePrintService = invoicePrintService;
     this.invoiceTermPfpToolService = invoiceTermPfpToolService;
     this.invoiceCategoryService = invoiceCategoryService;
+    this.invoiceNoteService = invoiceNoteService;
   }
 
   // WKF
@@ -288,6 +292,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         && operationTypeSelect != InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
         && operationTypeSelect != InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
       sendMail(invoice, invoice.getInvoiceMessageTemplate());
+    }
+    if (operationTypeSelect == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || operationTypeSelect == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      invoiceNoteService.generateInvoiceNote(invoice);
     }
   }
 
