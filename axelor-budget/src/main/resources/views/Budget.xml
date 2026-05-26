@@ -24,45 +24,6 @@
     <field name="budgetLevel"/>
   </grid>
 
-  <tree name="budget-tree" title="Budget Levels">
-    <column name="name" type="string"/>
-    <column name="code" type="string"/>
-    <column name="totalAmountExpected" type="decimal" x-scale="$currencyNumberOfDecimals"/>
-    <column name="totalAmountCommitted" type="decimal" x-scale="$currencyNumberOfDecimals"/>
-    <column name="totalFirmGap" type="decimal" x-scale="$currencyNumberOfDecimals"/>
-    <column name="realizedWithNoPo" type="decimal" x-scale="$currencyNumberOfDecimals"/>
-    <column name="realizedWithPo" type="decimal" x-scale="$currencyNumberOfDecimals"/>
-    <column name="simulatedAmount" type="decimal" x-scale="$currencyNumberOfDecimals"/>
-    <column name="availableAmountWithSimulated" type="decimal"
-      x-scale="$currencyNumberOfDecimals"/>
-
-    <node model="com.axelor.apps.budget.db.BudgetLevel"
-      domain="self.parentBudgetLevel is null AND self.globalBudget.id = :_globalId "
-      onClick="action-budget-view-budget-level">
-      <field as="name" name="name"/>
-      <field as="code" name="code"/>
-      <field name="totalAmountExpected"/>
-      <field name="totalAmountCommitted"/>
-      <field name="totalFirmGap"/>
-      <field name="realizedWithNoPo"/>
-      <field name="realizedWithPo"/>
-      <field name="simulatedAmount"/>
-      <field name="availableAmountWithSimulated"/>
-    </node>
-    <node model="com.axelor.apps.budget.db.BudgetLevel" parent="parentBudgetLevel"
-      onClick="action-budget-view-budget-level">
-      <field as="name" name="name"/>
-      <field as="code" name="code"/>
-      <field name="totalAmountExpected"/>
-      <field name="totalAmountCommitted"/>
-      <field name="totalFirmGap"/>
-      <field name="realizedWithNoPo"/>
-      <field name="realizedWithPo"/>
-      <field name="simulatedAmount"/>
-      <field name="availableAmountWithSimulated"/>
-    </node>
-  </tree>
-
   <form name="budget-form" title="Budget" model="com.axelor.apps.budget.db.Budget"
     width="large" onNew="budget-action-budget-group-onnew"
     onLoad="budget-action-budget-group-onload"
