@@ -3102,11 +3102,6 @@
     <action name="action-invoice-method-validate"/>
   </action-group>
 
-  <action-method name="action-invoice-method-generate-category-note">
-    <call class="com.axelor.apps.account.web.InvoiceController"
-      method="generateInvoiceCategoryNote"/>
-  </action-method>
-
   <action-validate name="action-invoice-validate-check-invoice-category">
     <error message="Please select an invoice category before ventilating."
       if="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceCategorySelect == null"/>
