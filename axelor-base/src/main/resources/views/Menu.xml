@@ -20,7 +20,11 @@
     <view type="cards" name="mailing-list-message-cards"/>
     <view type="form" name="mailing-list-message-form"/>
     <view type="grid" name="mailing-list-message-grid"/>
-    <domain>self.id IN (SELECT mf.relatedId FROM MailFollower mf where mf.archived = false)</domain>
+    <domain>self.id IN (SELECT mf.relatedId FROM MailFollower mf WHERE
+      mf.relatedModel =
+      'com.axelor.apps.base.db.MailingListMessage' AND COALESCE(mf.archived,
+      false) = false AND
+      mf.user = :__user__)</domain>
   </action-view>
   <action-view name="menu.mail.all.mailing.list" title="All Mailing lists"
     model="com.axelor.apps.base.db.MailingListMessage">

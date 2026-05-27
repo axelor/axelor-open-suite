@@ -28,8 +28,12 @@ import com.axelor.apps.base.service.address.AddressService;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImportInvoice {
+
+  protected final Logger LOG = LoggerFactory.getLogger(ImportInvoice.class);
 
   @Inject private AddressService addressService;
 
@@ -58,6 +62,18 @@ public class ImportInvoice {
         && invoice.getInTaxTotal() != null
         && !invoiceTermService.checkIfCustomizedInvoiceTerms(invoice.getInvoiceTermList())) {
       invoice = invoiceTermService.computeInvoiceTerms(invoice);
+    }
+
+    if (invoice.getStatusSelect() >= InvoiceRepository.STATUS_VENTILATED
+        && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+            || invoice.getOperationTypeSelect()
+                == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)) {
+      try {
+        invoiceNoteService.generateInvoiceNote(invoice);
+      } catch (Exception e) {
+        LOG.error(
+            "Failed to generate invoice notes for imported invoice {}", invoice.getInvoiceId(), e);
+      }
     }
 
     return invoice;

@@ -64,18 +64,15 @@ public class SubSaleOrderLineComputeServiceImpl implements SubSaleOrderLineCompu
       saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
       return;
     }
-    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
     AppSale appSale = appSaleService.getAppSale();
     if (appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
-      if (appSale.getIsSOLPriceTotalOfSubLines()) {
-        if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
-          for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
-            computeSumSubLineList(subSaleOrderLine, saleOrder);
-          }
-          computePrices(saleOrderLine, saleOrder);
-        } else {
-          saleOrderLineProductService.fillPrice(saleOrderLine, saleOrder);
+      List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+      if (appSale.getIsSOLPriceTotalOfSubLines()
+          && CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
+        for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
+          computeSumSubLineList(subSaleOrderLine, saleOrder);
         }
+        computePrices(saleOrderLine, saleOrder);
       } else {
         saleOrderLineProductService.fillPrice(saleOrderLine, saleOrder);
       }
