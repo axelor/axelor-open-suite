@@ -21,9 +21,12 @@ package com.axelor.apps.account.service.fecimport;
 import com.axelor.apps.account.db.FECImport;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FECImportRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -46,11 +49,16 @@ import com.google.common.collect.Lists;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class FECImporter extends Importer {
 
@@ -60,6 +68,8 @@ public class FECImporter extends Importer {
   protected FECImportRepository fecImportRepository;
   protected CompanyRepository companyRepository;
   protected MoveLineTaxService moveLineTaxService;
+  protected MoveLineRepository moveLineRepository;
+  protected ReconcileGroupRepository reconcileGroupRepository;
   private final List<Move> moveList = new ArrayList<>();
   private FECImport fecImport;
   private Company company;
@@ -74,7 +84,9 @@ public class FECImporter extends Importer {
       MoveRepository moveRepository,
       FECImportRepository fecImportRepository,
       CompanyRepository companyRepository,
-      MoveLineTaxService moveLineTaxService) {
+      MoveLineTaxService moveLineTaxService,
+      MoveLineRepository moveLineRepository,
+      ReconcileGroupRepository reconcileGroupRepository) {
     super(excelToCSV, metaFiles, appBaseService);
     this.moveValidateService = moveValidateService;
     this.appAccountService = appAccountService;
@@ -82,6 +94,8 @@ public class FECImporter extends Importer {
     this.fecImportRepository = fecImportRepository;
     this.companyRepository = companyRepository;
     this.moveLineTaxService = moveLineTaxService;
+    this.moveLineRepository = moveLineRepository;
+    this.reconcileGroupRepository = reconcileGroupRepository;
   }
 
   @Override
@@ -169,10 +183,18 @@ public class FECImporter extends Importer {
     if (fecImport != null) {
       int i = 0;
       Long companyId = null;
+      Set<Long> reconcileGroupIds = new HashSet<>();
       for (Move move : moveList) {
         move = moveRepository.find(move.getId());
         if (companyId == null && move != null) {
           companyId = move.getCompany().getId();
+        }
+        if (move != null && !CollectionUtils.isEmpty(move.getMoveLineList())) {
+          move.getMoveLineList().stream()
+              .map(MoveLine::getReconcileGroup)
+              .filter(Objects::nonNull)
+              .map(ReconcileGroup::getId)
+              .forEach(reconcileGroupIds::add);
         }
         // We modify move in two parts. First part we set description and fecImport on the move
         // Second part we set reference and validate the move if necessary.
@@ -188,6 +210,9 @@ public class FECImporter extends Importer {
       }
       if (companyId != null) {
         this.company = companyRepository.find(companyId);
+      }
+      if (fecImport.getValidGeneratedMove() && !CollectionUtils.isEmpty(reconcileGroupIds)) {
+        removeIncompleteReconcileGroups(reconcileGroupIds);
       }
     }
   }
@@ -257,6 +282,9 @@ public class FECImporter extends Importer {
         if (fecImport.getValidGeneratedMove()) {
           moveValidateService.accounting(move);
         } else {
+          if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
+            move.getMoveLineList().forEach(ml -> ml.setReconcileGroup(null));
+          }
           return moveRepository.save(move);
         }
         return move;
@@ -264,6 +292,9 @@ public class FECImporter extends Importer {
 
     } catch (Exception e) {
       move.setStatusSelect(MoveRepository.STATUS_NEW);
+      if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
+        move.getMoveLineList().forEach(ml -> ml.setReconcileGroup(null));
+      }
       listener.handle(move, e);
     }
     return null;
@@ -301,5 +332,25 @@ public class FECImporter extends Importer {
 
   public Company getCompany() {
     return this.company;
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  protected void removeIncompleteReconcileGroups(Set<Long> reconcileGroupIds) {
+    for (Long id : reconcileGroupIds) {
+      ReconcileGroup reconcileGroup = reconcileGroupRepository.find(id);
+      List<MoveLine> moveLineList = moveLineRepository.findByReconcileGroup(reconcileGroup).fetch();
+      if (CollectionUtils.isEmpty(moveLineList)) {
+        reconcileGroupRepository.remove(reconcileGroup);
+      } else {
+        boolean hasDebit =
+            moveLineList.stream().anyMatch(ml -> ml.getDebit().compareTo(BigDecimal.ZERO) > 0);
+        boolean hasCredit =
+            moveLineList.stream().anyMatch(ml -> ml.getCredit().compareTo(BigDecimal.ZERO) > 0);
+        if (!hasDebit || !hasCredit) {
+          moveLineList.forEach(ml -> ml.setReconcileGroup(null));
+          reconcileGroupRepository.remove(reconcileGroup);
+        }
+      }
+    }
   }
 }
