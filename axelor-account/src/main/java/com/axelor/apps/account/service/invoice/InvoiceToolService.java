@@ -44,6 +44,7 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -368,11 +369,14 @@ public class InvoiceToolService {
   public static Map<String, Object> computeInvoiceAmounts(Invoice copy) throws AxelorException {
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
     // Update invoice lines with new currency rate
-    for (InvoiceLine invoiceLine : copy.getInvoiceLineList()) {
-      invoiceLine.setCompanyExTaxTotal(
-          invoiceLineService.getCompanyExTaxTotal(invoiceLine.getExTaxTotal(), copy));
-      invoiceLine.setCompanyInTaxTotal(
-          invoiceLineService.getCompanyExTaxTotal(invoiceLine.getInTaxTotal(), copy));
+    List<InvoiceLine> invoiceLineList = copy.getInvoiceLineList();
+    if (CollectionUtils.isNotEmpty(invoiceLineList)) {
+      for (InvoiceLine invoiceLine : invoiceLineList) {
+        invoiceLine.setCompanyExTaxTotal(
+            invoiceLineService.getCompanyExTaxTotal(invoiceLine.getExTaxTotal(), copy));
+        invoiceLine.setCompanyInTaxTotal(
+            invoiceLineService.getCompanyExTaxTotal(invoiceLine.getInTaxTotal(), copy));
+      }
     }
 
     // Update invoice
