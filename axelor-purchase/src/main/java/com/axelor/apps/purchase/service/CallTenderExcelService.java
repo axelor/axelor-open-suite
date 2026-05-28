@@ -23,7 +23,7 @@ import com.axelor.meta.db.MetaFile;
 import java.io.IOException;
 import java.util.List;
 
-public interface CallTenderCsvService {
+public interface CallTenderExcelService {
 
-  MetaFile generateCsvFile(List<CallTenderOffer> offerList) throws IOException;
+  MetaFile generateExcelFile(List<CallTenderOffer> offerList) throws IOException;
 }
