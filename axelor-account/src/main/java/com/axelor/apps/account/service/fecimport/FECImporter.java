@@ -338,14 +338,15 @@ public class FECImporter extends Importer {
   protected void removeIncompleteReconcileGroups(Set<Long> reconcileGroupIds) {
     for (Long id : reconcileGroupIds) {
       ReconcileGroup reconcileGroup = reconcileGroupRepository.find(id);
+      if (reconcileGroup == null) continue;
       List<MoveLine> moveLineList = moveLineRepository.findByReconcileGroup(reconcileGroup).fetch();
       if (CollectionUtils.isEmpty(moveLineList)) {
         reconcileGroupRepository.remove(reconcileGroup);
       } else {
         boolean hasDebit =
-            moveLineList.stream().anyMatch(ml -> ml.getDebit().compareTo(BigDecimal.ZERO) > 0);
+            moveLineList.stream().anyMatch(ml -> ml.getDebit().signum() > 0);
         boolean hasCredit =
-            moveLineList.stream().anyMatch(ml -> ml.getCredit().compareTo(BigDecimal.ZERO) > 0);
+            moveLineList.stream().anyMatch(ml -> ml.getCredit().signum() > 0);
         if (!hasDebit || !hasCredit) {
           moveLineList.forEach(ml -> ml.setReconcileGroup(null));
           reconcileGroupRepository.remove(reconcileGroup);
