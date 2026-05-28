@@ -1,6 +1,0 @@
----
-title: "Invoice: restored automatic generation of invoice notes on ventilation."
-module: axelor-account
-developer: |
- Added InvoiceNoteService as parameter in InvoiceServiceImpl constructor
- Added InvoiceNoteService as parameter in InvoiceServiceSupplychainImpl constructor

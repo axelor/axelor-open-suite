@@ -1,3 +1,119 @@
+## [9.0.10] (2026-05-28)
+
+### Fixes
+#### Base
+
+* Upgrade to AOP 8.2.0
+* Unit conversion: fixed an error that could occur during processes involving unit conversions.
+* Partner: fixed missing name of panel-dashlets.
+* fixed invalid null comparison in domain filters broken in Hibernate 6.
+* Mailing list message: fixed 'My Mailing lists' visibility to limit users from viewing non-shared mailing lists.
+
+#### Account
+
+* Invoice: restored automatic generation of invoice notes on ventilation.
+* Accounting report: fixed wrong French translation for DAS2 contact partner phone missing message.
+* Accounting report: fixed French translation for missing account reporting sequence error message.
+* Invoice: fixed cannot cancel an advance invoice which is not paid yet.
+* Move: fixed wrong French translation for move deletion error message.
+* Accounting report: fixed aged balance query to include credit move lines and preserve selected report type when applying model.
+* Invoice: fixed NPE when selecting the origin date before the partner on a supplier invoice.
+* Account: fixed invoice PFP status update after term validation from move line view.
+* Closure assistant: fixed grid view fields to display fiscal year and company correctly.
+* Invoice: fixed 'Authorize auto reconcile on invoice' fails to impute existing credit notes due to unexpected Compensation check.
+* Invoice: fixed ventilation failure when a deductible tax line is shared by invoice lines with and without a co-applied non-deductible tax.
+* ACCOUNTING: added 'Payment' application type to cancel reason and dedicated menu.
+* FEC Import: fixed reconcile group imported when validation is not activated or anomaly encountered, and orphaned reconcile groups are now deleted.
+
+#### Helpdesk
+
+* Client portal / Ticket: fixed resolved tickets filter which uses invalid statusSelect field in client portal dashboard.
+* Ticket: fixed end date is not being set when resolving the ticket.
+
+#### Human Resource
+
+* Expense: fixed an error where ventilating an expense with multiple expense lines on different dates with taxes caused a 'duplicate tax movelines' error.
+
+#### Marketing
+
+* Campaign: fixed emailing report panel always visible regardless of emailing boolean.
+
+#### Production
+
+* Manuf order: fixed an issue where the stock move generated for scrapped products on a manufacturing order was empty.
+* Production: fixed internal server error on manufacturing dashboard.
+* Sale order: fixed the sale order line price when BOM is exploded into details.
+
+#### Purchase
+
+* Purchase order: fixed stock moves fragmented when line stock location is empty.
+* Purchase request: fixed missing translation on generated purchase orders tab title.
+
+#### Sale
+
+* Sale order pricing: pricing scale values are no longer overwritten by the standard line recomputation on change or save.
+* Sale order: fixed end of pack line is not inherited on the sale order when 'Split quotations and orders' is activated.
+
+#### Stock
+
+* Stock move: fixed an error occurring when using 'Pick all' on a mass stock move.
+* Stock: fixed inventory validation not updating the last inventory date and quantity on sub-location stock lines.
+* Stock: fixed Stock financial data report history lookup causing severe slowdown and incorrect zero-quantity valuation snapshots.
+
+#### Supply Chain
+
+* Supplychain: fixed sale order confirm with automatic stock move generation.
+* Sale order: fixed bad injection of InvoiceServiceSupplychainImpl instead of interface in SaleOrderInvoiceServiceImpl.
+
+
+### Developer
+
+#### Base
+
+Check AOP 8.2.0 migration guide at https://docs.axelor.com/adk/8.2/migrations/migration-8.2.html
+Don't forget to check your encryption.algorithm property value before running anything.
+
+---
+
+`UnitConversionServiceImpl.unitConversionCache` is now `static` and shared across all instances instead of being allocated per instance.
+
+#### Account
+
+Added InvoiceNoteService as parameter in InvoiceServiceImpl constructor
+Added InvoiceNoteService as parameter in InvoiceServiceSupplychainImpl constructor
+
+---
+
+Added MoveLineRepository and ReconcileGroupRepository to FECImporter constructor.
+
+#### Helpdesk
+
+Added TicketStatusService as parameter in ClientViewServiceImpl constructor
+
+#### Human Resource
+
+The method `computeExpenseLinesTotalTax` in `ExpenseVentilateServiceImpl` was refactored to group
+tax amounts by `(TaxLine, vatSystem)` instead of by date. Tax move lines now have `taxLineSet`,
+`taxRate`, `taxCode`, and `vatSystemSelect` properly set to avoid duplicate detection.
+
+New class `ExpenseTaxConfiguration` was added to handle tax grouping.
+
+Modified files:
+- `ExpenseVentilateServiceImpl.java`
+- `ExpenseTaxConfiguration.java` (new)
+
+#### Sale
+
+- Changed return type of `SaleOrderLinePricingService.computePricingScale` from `void` to `Map<String, Object>`.
+- Added `AppBaseService appBaseService` and `SaleOrderLinePricingService saleOrderLinePricingService` in `SaleOrderLineComputeServiceImpl` and `SaleOrderLineComputeSupplychainServiceImpl`.
+
+#### Supply Chain
+
+The constructor of `SaleOrderInvoiceServiceImpl` (and its subclasses `SaleOrderInvoiceContractServiceImpl`, `SaleOrderBudgetServiceImpl`) has changed.
+`InvoiceServiceSupplychainImpl invoiceService` has been replaced by two interface-typed parameters:
+- `InvoiceService invoiceService`
+- `InvoiceServiceSupplychain invoiceServiceSupplychain`
+
 ## [9.0.9] (2026-05-13)
 
 ### Fixes
@@ -1758,6 +1874,7 @@ Replaced the attrs action `action-purchase-order-line-attrs-delivery-panel` with
 
 * Project: improve task tree management.
 
+[9.0.10]: https://github.com/axelor/axelor-open-suite/compare/v9.0.9...v9.0.10
 [9.0.9]: https://github.com/axelor/axelor-open-suite/compare/v9.0.8...v9.0.9
 [9.0.8]: https://github.com/axelor/axelor-open-suite/compare/v9.0.7...v9.0.8
 [9.0.7]: https://github.com/axelor/axelor-open-suite/compare/v9.0.6...v9.0.7

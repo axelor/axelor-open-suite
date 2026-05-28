@@ -1,3 +1,0 @@
----
-title: "Purchase order: fixed stock moves fragmented when line stock location is empty."
-module: axelor-purchase

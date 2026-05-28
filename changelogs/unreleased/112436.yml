@@ -1,3 +1,0 @@
----
-title: "Stock: fixed Stock financial data report history lookup causing severe slowdown and incorrect zero-quantity valuation snapshots."
-module: axelor-stock
