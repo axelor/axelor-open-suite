@@ -316,7 +316,8 @@ public class TaxInvoiceLine extends TaxGenerator {
     if (taxLine.getTax().getIsNonDeductibleTax()) {
       taxValue = this.getAdjustedNonDeductibleTaxValue(taxValue, nonDeductibleTaxList);
     } else {
-      taxValue = this.getAdjustedTaxValue(taxValue, nonDeductibleTaxList);
+      taxValue =
+          this.getAdjustedTaxValue(taxValue, nonDeductibleTaxList, invoiceLineTax.getExTaxBase());
     }
 
     // Dans la devise de la facture
@@ -378,20 +379,26 @@ public class TaxInvoiceLine extends TaxGenerator {
   }
 
   protected BigDecimal getAdjustedTaxValue(
-      BigDecimal taxValue, List<InvoiceLineTax> nonDeductibleTaxList) {
-    BigDecimal deductibleTaxValue =
-        nonDeductibleTaxList.stream()
-            .map(InvoiceLineTax::getTaxLine)
-            .map(TaxLine::getValue)
-            .reduce(BigDecimal::multiply)
-            .orElse(BigDecimal.ZERO)
-            .divide(
-                BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
-
-    return BigDecimal.ONE
-        .subtract(deductibleTaxValue)
-        .multiply(taxValue)
-        .setScale(AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+      BigDecimal taxValue, List<InvoiceLineTax> nonDeductibleTaxList, BigDecimal deductibleBase) {
+    if (CollectionUtils.isEmpty(nonDeductibleTaxList) || deductibleBase.signum() == 0) {
+      return taxValue;
+    }
+    BigDecimal nonDeductibleBase = BigDecimal.ZERO;
+    for (InvoiceLineTax invoiceLineTax : nonDeductibleTaxList) {
+      BigDecimal nonDeductibleTaxRate =
+          invoiceLineTax
+              .getTaxLine()
+              .getValue()
+              .divide(
+                  BigDecimal.valueOf(100),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
+      nonDeductibleBase =
+          nonDeductibleBase.add(invoiceLineTax.getExTaxBase().multiply(nonDeductibleTaxRate));
+    }
+    return taxValue
+        .multiply(deductibleBase.subtract(nonDeductibleBase))
+        .divide(deductibleBase, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal getAdjustedNonDeductibleTaxValue(
