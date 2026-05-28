@@ -46,7 +46,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -158,16 +157,20 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
       List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund,
       boolean out)
       throws AxelorException {
-    int offset = 0;
+    long lastSeenId = 0L;
     List<InvoiceTerm> invoiceTermList;
-    Query<InvoiceTerm> invoiceTermQuery =
-        invoiceTermRepo
-            .all()
-            .filter("self.paymentSession = :paymentSession AND self.paymentAmount != 0")
-            .bind("paymentSession", paymentSession)
-            .order("id");
+    String filter =
+        "self.paymentSession = :paymentSession AND self.paymentAmount != 0 AND self.id > :lastSeenId";
 
-    while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
+    while (!(invoiceTermList =
+            invoiceTermRepo
+                .all()
+                .filter(filter)
+                .bind("paymentSession", paymentSession)
+                .bind("lastSeenId", lastSeenId)
+                .autoFlush(false)
+                .order("id")
+                .fetch(AbstractBatch.FETCH_LIMIT))
         .isEmpty()) {
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
@@ -175,7 +178,6 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
 
         if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || paymentSessionValidateService.shouldBeProcessed(invoiceTerm)) {
-          offset++;
           if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) != 0) {
             this.processInvoiceTermBillOfExchange(
                 paymentSession,
@@ -189,6 +191,8 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
         }
       }
 
+      lastSeenId = invoiceTermList.get(invoiceTermList.size() - 1).getId();
+      JPA.flush();
       JPA.clear();
     }
   }
