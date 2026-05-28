@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
+import com.axelor.db.tenants.TenantResolver;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.template.TemplateMaker;
 import com.google.common.cache.Cache;
@@ -57,10 +58,10 @@ public class UnitConversionServiceImpl implements UnitConversionService {
   protected static final char TEMPLATE_DELIMITER = '$';
   protected static final int DEFAULT_COEFFICIENT_SCALE = 12;
 
-  private final Cache<String, List<UnitConversion>> unitConversionCache =
+  private static final Cache<String, List<UnitConversion>> unitConversionCache =
       CacheBuilder.newBuilder()
           .expireAfterWrite(10, TimeUnit.MINUTES)
-          .maximumSize(100)
+          .maximumSize(500)
           .recordStats()
           .build();
 
@@ -267,10 +268,12 @@ public class UnitConversionServiceImpl implements UnitConversionService {
   }
 
   protected String getKey(Unit startUnit, Unit endUnit) {
-    return Stream.of(startUnit.getId(), endUnit.getId())
-        .sorted()
-        .map(String::valueOf)
-        .collect(Collectors.joining("::"));
+    return TenantResolver.currentTenantIdentifier()
+        + "::"
+        + Stream.of(startUnit.getId(), endUnit.getId())
+            .sorted()
+            .map(String::valueOf)
+            .collect(Collectors.joining("::"));
   }
 
   @Override

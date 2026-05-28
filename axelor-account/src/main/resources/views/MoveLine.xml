@@ -1000,7 +1000,7 @@
     </filter>
     <filter name="move-line-filters-entries-to-reconcile" title="Entries to reconcile">
       <domain>self.account.reconcileOk = TRUE AND self.account.statusSelect = 1 AND
-        self.amountRemaining != 0 AND (self.reconcileGroup = null OR
+        self.amountRemaining != 0 AND (self.reconcileGroup IS null OR
         self.reconcileGroup.statusSelect = 3) AND (self.move.statusSelect = 2 OR
         self.move.statusSelect = 3)</domain>
     </filter>

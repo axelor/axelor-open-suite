@@ -3628,6 +3628,7 @@
 "Validated",,,
 "Validated Date",,,
 "Validated Moves",,,
+"Validated advance invoices can not be deleted. %s can not be deleted.","Validated advance invoices can not be deleted. %s can not be deleted.",,
 "Validated by",,,
 "Validated on",,,
 "Validation",,,

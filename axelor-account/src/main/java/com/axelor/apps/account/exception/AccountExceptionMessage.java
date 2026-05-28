@@ -1754,4 +1754,6 @@ public final class AccountExceptionMessage {
   public static String UNKNOWN_SCOPE_VALUE = /*$$(*/ "Unknown scope value %s" /*)*/;
   public static String MISSING_BANK_DETAILS_NOTE_TYPE = /*$$(*/
       "Bank detail %s doesn't have a note type defined for note %s." /*)*/;
+  public static final String ADVANCE_INVOICE_CAN_NOT_DELETE = /*$$(*/
+      "Validated advance invoices can not be deleted. %s can not be deleted." /*)*/;
 }

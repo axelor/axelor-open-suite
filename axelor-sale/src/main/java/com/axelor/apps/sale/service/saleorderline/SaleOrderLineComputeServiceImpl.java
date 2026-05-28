@@ -26,11 +26,13 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.MarginComputeService;
+import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.common.StringUtils;
 import jakarta.inject.Inject;
@@ -56,6 +58,8 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
   protected PriceListService priceListService;
   protected SaleOrderLinePackService saleOrderLinePackService;
   protected SaleOrderLineCostPriceComputeService saleOrderLineCostPriceComputeService;
+  protected AppBaseService appBaseService;
+  protected SaleOrderLinePricingService saleOrderLinePricingService;
 
   @Inject
   public SaleOrderLineComputeServiceImpl(
@@ -66,7 +70,9 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
       CurrencyService currencyService,
       PriceListService priceListService,
       SaleOrderLinePackService saleOrderLinePackService,
-      SaleOrderLineCostPriceComputeService saleOrderLineCostPriceComputeService) {
+      SaleOrderLineCostPriceComputeService saleOrderLineCostPriceComputeService,
+      AppBaseService appBaseService,
+      SaleOrderLinePricingService saleOrderLinePricingService) {
     this.taxService = taxService;
     this.currencyScaleService = currencyScaleService;
     this.productCompanyService = productCompanyService;
@@ -75,6 +81,8 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     this.priceListService = priceListService;
     this.saleOrderLinePackService = saleOrderLinePackService;
     this.saleOrderLineCostPriceComputeService = saleOrderLineCostPriceComputeService;
+    this.appBaseService = appBaseService;
+    this.saleOrderLinePricingService = saleOrderLinePricingService;
   }
 
   @Override
@@ -144,6 +152,11 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     map.put("priceDiscounted", priceDiscounted);
     map.put("companyExTaxTotal", companyExTaxTotal);
     map.put("companyInTaxTotal", companyInTaxTotal);
+
+    if (appBaseService.getAppBase().getEnablePricingScale()) {
+      map.putAll(saleOrderLinePricingService.computePricingScale(saleOrderLine, saleOrder));
+      map.put("pricingScaleLogs", saleOrderLine.getPricingScaleLogs());
+    }
 
     map.putAll(
         marginComputeService.getComputedMarginInfo(
