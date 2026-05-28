@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed ventilation failure when a deductible tax line is shared by invoice lines with and without a co-applied non-deductible tax."
+module: axelor-account
