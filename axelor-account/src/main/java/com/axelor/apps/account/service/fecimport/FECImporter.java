@@ -49,7 +49,6 @@ import com.google.common.collect.Lists;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -343,10 +342,8 @@ public class FECImporter extends Importer {
       if (CollectionUtils.isEmpty(moveLineList)) {
         reconcileGroupRepository.remove(reconcileGroup);
       } else {
-        boolean hasDebit =
-            moveLineList.stream().anyMatch(ml -> ml.getDebit().signum() > 0);
-        boolean hasCredit =
-            moveLineList.stream().anyMatch(ml -> ml.getCredit().signum() > 0);
+        boolean hasDebit = moveLineList.stream().anyMatch(ml -> ml.getDebit().signum() > 0);
+        boolean hasCredit = moveLineList.stream().anyMatch(ml -> ml.getCredit().signum() > 0);
         if (!hasDebit || !hasCredit) {
           moveLineList.forEach(ml -> ml.setReconcileGroup(null));
           reconcileGroupRepository.remove(reconcileGroup);
