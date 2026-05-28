@@ -1,3 +1,40 @@
+## [7.2.67] (2026-05-28)
+
+### Fixes
+#### Base
+
+* Mailing list message: fixed 'My Mailing lists' visibility to limit users from viewing non-shared mailing lists.
+
+#### Account
+
+* Accounting report: fixed wrong French translation for DAS2 contact partner phone missing message.
+* Accounting report: fixed French translation for missing account reporting sequence error message.
+* Invoice: fixed cannot cancel an advance invoice which is not paid yet.
+* Move: fixed wrong French translation for move deletion error message.
+* Accounting report: fixed aged balance query to include credit move lines and preserve selected report type when applying model.
+* Closure assistant: fixed grid view fields to display fiscal year and company correctly.
+* Invoice: fixed 'Authorize auto reconcile on invoice' fails to impute existing credit notes due to unexpected Compensation check.
+* FEC Import: fixed reconcile group imported when validation is not activated or anomaly encountered, and orphaned reconcile groups are now deleted.
+
+#### Marketing
+
+* Campaign: fixed emailing report panel always visible regardless of emailing boolean.
+
+#### Production
+
+* Production: fixed internal server error on manufacturing dashboard.
+
+#### Purchase
+
+* Purchase request: fixed missing translation on generated purchase orders tab title.
+
+
+### Developer
+
+#### Account
+
+Added MoveLineRepository and ReconcileGroupRepository to FECImporter constructor.
+
 ## [7.2.66] (2026-05-13)
 
 ### Fixes
@@ -3106,6 +3143,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.67]: https://github.com/axelor/axelor-open-suite/compare/v7.2.66...v7.2.67
 [7.2.66]: https://github.com/axelor/axelor-open-suite/compare/v7.2.65...v7.2.66
 [7.2.65]: https://github.com/axelor/axelor-open-suite/compare/v7.2.64...v7.2.65
 [7.2.64]: https://github.com/axelor/axelor-open-suite/compare/v7.2.63...v7.2.64
