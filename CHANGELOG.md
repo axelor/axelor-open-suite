@@ -1,3 +1,22 @@
+## [8.3.36] (2026-05-28)
+
+### Fixes
+#### Base
+
+* AppService: add cacheable() on getApp queries to reduce DB load for app configuration lookups.
+
+#### Account
+
+* Invoice: fixed 'Authorize auto reconcile on invoice' fails to impute existing credit notes due to unexpected Compensation check.
+
+#### Production
+
+* Sale order: fixed the sale order line price when BOM is exploded into details.
+
+#### Stock
+
+* Stock: fixed inventory validation not updating the last inventory date and quantity on sub-location stock lines.
+
 ## [8.3.35] (2026-05-13)
 
 ### Fixes
@@ -3266,6 +3285,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.36]: https://github.com/axelor/axelor-open-suite/compare/v8.3.35...v8.3.36
 [8.3.35]: https://github.com/axelor/axelor-open-suite/compare/v8.3.34...v8.3.35
 [8.3.34]: https://github.com/axelor/axelor-open-suite/compare/v8.3.33...v8.3.34
 [8.3.33]: https://github.com/axelor/axelor-open-suite/compare/v8.3.32...v8.3.33

@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed 'Authorize auto reconcile on invoice' fails to impute existing credit notes due to unexpected Compensation check."
-module: axelor-account
