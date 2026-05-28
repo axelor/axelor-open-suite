@@ -1,0 +1,3 @@
+---
+title: "fixed invalid null comparison in domain filters broken in Hibernate 6."
+module: axelor-base
