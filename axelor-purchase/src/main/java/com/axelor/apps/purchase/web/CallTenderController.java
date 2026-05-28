@@ -19,6 +19,7 @@
 package com.axelor.apps.purchase.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.CallTenderOffer;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -29,12 +30,11 @@ import com.axelor.apps.purchase.service.CallTenderPurchaseOrderService;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
-import jakarta.mail.MessagingException;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,17 +50,43 @@ public class CallTenderController {
     }
   }
 
-  public void sendCallTenderOffers(ActionRequest request, ActionResponse response)
-      throws AxelorException, IOException, MessagingException, ClassNotFoundException {
-
-    var callTender = request.getContext().asType(CallTender.class);
-
-    callTender = Beans.get(CallTenderRepository.class).find(callTender.getId());
-    if (callTender != null) {
-      Beans.get(CallTenderMailService.class).sendCallTenderOffers(callTender);
-      response.setInfo(I18n.get("Mails successfully planned for sending."));
+  public void generateCallTenderEmails(ActionRequest request, ActionResponse response) {
+    try {
+      var callTender = request.getContext().asType(CallTender.class);
+      callTender = Beans.get(CallTenderRepository.class).find(callTender.getId());
+      if (callTender != null) {
+        Beans.get(CallTenderMailService.class).generateCallTenderEmails(callTender);
+        response.setReload(true);
+        response.setView(
+            ActionView.define(I18n.get("Generated emails"))
+                .model(Message.class.getName())
+                .add("grid", "message-grid")
+                .add("form", "message-form")
+                .domain(
+                    "self.id IN (SELECT ctm.emailMessage.id FROM CallTenderMail ctm"
+                        + " WHERE ctm.id IN (SELECT cfo.offerMail.id FROM CallTenderOffer cfo"
+                        + " WHERE cfo.callTender.id = :_callTenderId)"
+                        + " AND ctm.emailMessage IS NOT NULL)")
+                .context("_callTenderId", callTender.getId())
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setReload(true);
+  }
+
+  public void sendCallTenderOffers(ActionRequest request, ActionResponse response) {
+    try {
+      var callTender = request.getContext().asType(CallTender.class);
+      callTender = Beans.get(CallTenderRepository.class).find(callTender.getId());
+      if (callTender != null) {
+        Beans.get(CallTenderMailService.class).sendCallTenderOffers(callTender);
+        response.setInfo(I18n.get("Emails sent successfully."));
+      }
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void generatePurchaseOrder(ActionRequest request, ActionResponse response)
