@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed cannot cancel an advance invoice which is not paid yet."
+module: axelor-account
