@@ -151,8 +151,9 @@
             field="notParticipatingPartnerSet" colSpan="12" grid-view="partner-campaign-grid"
             form-view="partner-form" canNew="false" canEdit="false" canSelect="false"/>
         </panel>
-        <panel name="emailingReportPanel" title="Emailing report" colSpan="12">
-          <field name="emailLog" widget="binary-link" showIf="emailing"/>
+        <panel name="emailingReportPanel" title="Emailing report" colSpan="12"
+          showIf="emailing">
+          <field name="emailLog" widget="binary-link"/>
         </panel>
       </panel>
       <panel-related name="campaignReminderListPanel" field="campaignReminderList"
