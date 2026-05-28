@@ -1,5 +1,0 @@
----
-title: "Client portal / Ticket: fixed resolved tickets filter which uses invalid statusSelect field in client portal dashboard."
-module: axelor-helpdesk
-developer: |
- Added TicketStatusService as parameter in ClientViewServiceImpl constructor

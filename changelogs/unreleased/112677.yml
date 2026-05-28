@@ -1,5 +1,0 @@
----
-title: "Unit conversion: fixed an error that could occur during processes involving unit conversions."
-module: axelor-base
-developer: |
-  `UnitConversionServiceImpl.unitConversionCache` is now `static` and shared across all instances instead of being allocated per instance.
