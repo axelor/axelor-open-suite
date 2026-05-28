@@ -581,41 +581,60 @@ public class InventoryService {
   }
 
   protected void storeLastInventoryData(Inventory inventory) {
-    Map<Pair<Product, TrackingNumber>, BigDecimal> realQties = new HashMap<>();
-    Map<Product, BigDecimal> consolidatedRealQties = new HashMap<>();
-    Map<Product, String> realRacks = new HashMap<>();
+    Map<Pair<Pair<Product, TrackingNumber>, StockLocation>, BigDecimal> realQties = new HashMap<>();
+    Map<Pair<Product, StockLocation>, BigDecimal> consolidatedRealQties = new HashMap<>();
+    Map<Pair<Product, StockLocation>, String> realRacks = new HashMap<>();
 
     List<InventoryLine> inventoryLineList = inventory.getInventoryLineList();
+    if (CollectionUtils.isEmpty(inventoryLineList)) {
+      return;
+    }
 
-    if (inventoryLineList != null) {
-      for (InventoryLine inventoryLine : inventoryLineList) {
-        Product product = inventoryLine.getProduct();
-        TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
+    List<Product> productList = new ArrayList<>();
+    List<StockLocation> stockLocationList = new ArrayList<>();
+    for (InventoryLine inventoryLine : inventoryLineList) {
+      Product product = inventoryLine.getProduct();
+      TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
+      StockLocation stockLocation = inventoryLine.getStockLocation();
+      Pair<Product, StockLocation> productStockLocationKey = Pair.of(product, stockLocation);
+      productList.add(product);
+      stockLocationList.add(stockLocation);
 
-        realQties.put(Pair.of(product, trackingNumber), inventoryLine.getRealQty());
+      realQties.put(
+          Pair.of(Pair.of(product, trackingNumber), stockLocation), inventoryLine.getRealQty());
 
-        BigDecimal realQty = consolidatedRealQties.getOrDefault(product, BigDecimal.ZERO);
-        realQty = realQty.add(inventoryLine.getRealQty());
-        consolidatedRealQties.put(product, realQty);
+      BigDecimal realQty =
+          consolidatedRealQties.getOrDefault(productStockLocationKey, BigDecimal.ZERO);
+      realQty = realQty.add(inventoryLine.getRealQty());
+      consolidatedRealQties.put(productStockLocationKey, realQty);
 
-        realRacks.put(product, inventoryLine.getRack());
-      }
+      realRacks.put(productStockLocationKey, inventoryLine.getRack());
     }
 
     List<StockLocationLine> stockLocationLineList =
-        inventory.getStockLocation().getStockLocationLineList();
+        stockLocationLineRepository
+            .all()
+            .filter(
+                "self.stockLocation IN :stockLocationList"
+                    + " AND self.product IN :productList"
+                    + " AND self.trackingNumber IS NULL")
+            .bind("stockLocationList", stockLocationList)
+            .bind("productList", productList)
+            .fetch();
 
     if (stockLocationLineList != null) {
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
         Product product = stockLocationLine.getProduct();
-        BigDecimal realQty = consolidatedRealQties.get(product);
+        Pair<Product, StockLocation> productStockLocationKey =
+            Pair.of(product, stockLocationLine.getStockLocation());
+        BigDecimal realQty = consolidatedRealQties.get(productStockLocationKey);
         if (realQty != null) {
           stockLocationLine.setLastInventoryRealQty(realQty);
           stockLocationLine.setLastInventoryDateT(
               inventory.getValidatedOn().atZone(ZoneId.systemDefault()));
         }
 
-        String rack = realRacks.get(product);
+        String rack = realRacks.get(productStockLocationKey);
         if (rack != null) {
           stockLocationLine.setRack(rack);
         }
@@ -623,20 +642,30 @@ public class InventoryService {
     }
 
     List<StockLocationLine> detailsStockLocationLineList =
-        inventory.getStockLocation().getDetailsStockLocationLineList();
+        stockLocationLineRepository
+            .all()
+            .filter(
+                "self.detailsStockLocation IN :stockLocationList"
+                    + " AND self.product IN :productList"
+                    + " AND self.trackingNumber IS NOT NULL")
+            .bind("stockLocationList", stockLocationList)
+            .bind("productList", productList)
+            .fetch();
 
     if (detailsStockLocationLineList != null) {
       for (StockLocationLine detailsStockLocationLine : detailsStockLocationLineList) {
         Product product = detailsStockLocationLine.getProduct();
         TrackingNumber trackingNumber = detailsStockLocationLine.getTrackingNumber();
-        BigDecimal realQty = realQties.get(Pair.of(product, trackingNumber));
+        StockLocation detailsStockLocation = detailsStockLocationLine.getDetailsStockLocation();
+        BigDecimal realQty =
+            realQties.get(Pair.of(Pair.of(product, trackingNumber), detailsStockLocation));
         if (realQty != null) {
           detailsStockLocationLine.setLastInventoryRealQty(realQty);
           detailsStockLocationLine.setLastInventoryDateT(
               inventory.getValidatedOn().atZone(ZoneId.systemDefault()));
         }
 
-        String rack = realRacks.get(product);
+        String rack = realRacks.get(Pair.of(product, detailsStockLocation));
         if (rack != null) {
           detailsStockLocationLine.setRack(rack);
         }
