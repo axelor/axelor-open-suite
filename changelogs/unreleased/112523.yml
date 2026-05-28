@@ -1,0 +1,3 @@
+---
+title: "Stock: fixed inventory validation not updating the last inventory date and quantity on sub-location stock lines."
+module: axelor-stock
