@@ -1,3 +1,18 @@
+## [8.2.44] (2026-05-28)
+
+### Fixes
+#### Account
+
+* Move line: fixed lettering of 3 or more lines with a gap below the threshold was causing no payment difference move to be generated.
+
+#### Production
+
+* Bill of material: fixed human cost and machine cost not being prorated when a semi-finished product is partially consumed in a parent BOM.
+
+#### Stock
+
+* Stock: fixed inventory validation not updating the last inventory date and quantity on sub-location stock lines.
+
 ## [8.2.43] (2026-05-13)
 
 ### Fixes
@@ -2736,6 +2751,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.44]: https://github.com/axelor/axelor-open-suite/compare/v8.2.43...v8.2.44
 [8.2.43]: https://github.com/axelor/axelor-open-suite/compare/v8.2.42...v8.2.43
 [8.2.42]: https://github.com/axelor/axelor-open-suite/compare/v8.2.41...v8.2.42
 [8.2.41]: https://github.com/axelor/axelor-open-suite/compare/v8.2.40...v8.2.41

@@ -1,3 +1,0 @@
----
-title: "Bill of material: fixed human cost and machine cost not being prorated when a semi-finished product is partially consumed in a parent BOM."
-module: axelor-production
