@@ -1,0 +1,5 @@
+---
+title: "FEC Import: fixed reconcile group imported when validation is not activated or anomaly encountered, and orphaned reconcile groups are now deleted."
+module: axelor-account
+developer: |
+  Added MoveLineRepository and ReconcileGroupRepository to FECImporter constructor.
