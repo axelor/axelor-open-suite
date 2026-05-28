@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -38,6 +39,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountServiceImpl;
+import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeService;
@@ -48,6 +50,7 @@ import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductSe
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
+import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppSale;
 import com.axelor.utils.junit.BaseTest;
 import com.google.inject.Inject;
@@ -105,6 +108,10 @@ class TestSaleOrderDiscountService extends BaseTest {
 
   protected SaleOrderLineComputeService createSaleOrderLineComputeService(
       AppSaleService appSaleService) {
+    AppBaseService appBaseService = mock(AppBaseService.class);
+    AppBase appBase = mock(AppBase.class);
+    when(appBaseService.getAppBase()).thenReturn(appBase);
+    when(appBase.getEnablePricingScale()).thenReturn(false);
     return new SaleOrderLineComputeServiceImpl(
         mock(TaxService.class),
         currencyScaleService,
@@ -113,7 +120,9 @@ class TestSaleOrderDiscountService extends BaseTest {
         currencyService,
         priceListService,
         mock(SaleOrderLinePackService.class),
-        createSaleOrderLineCostPriceComputeService(appSaleService));
+        createSaleOrderLineCostPriceComputeService(appSaleService),
+        appBaseService,
+        mock(SaleOrderLinePricingService.class));
   }
 
   protected MarginComputeService createSaleOrderMarginService(AppSaleService appSaleService) {

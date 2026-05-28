@@ -125,6 +125,12 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
             saleOrderLine));
     saleOrderLineMap.putAll(fillCostPrice(saleOrderLine, saleOrder));
 
+    if (appBaseService.getAppBase().getEnablePricingScale()) {
+      saleOrderLineMap.putAll(
+          saleOrderLinePricingService.computePricingScale(saleOrderLine, saleOrder));
+      saleOrderLineMap.put("pricingScaleLogs", saleOrderLine.getPricingScaleLogs());
+    }
+
     return saleOrderLineMap;
   }
 
@@ -190,7 +196,8 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
 
     // Populate fields from pricing scale before starting process of fillPrice
     if (appBaseService.getAppBase().getEnablePricingScale()) {
-      saleOrderLinePricingService.computePricingScale(saleOrderLine, saleOrder);
+      saleOrderLineMap.putAll(
+          saleOrderLinePricingService.computePricingScale(saleOrderLine, saleOrder));
       saleOrderLineMap.put("pricingScaleLogs", saleOrderLine.getPricingScaleLogs());
     }
 
