@@ -918,16 +918,16 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
         Location.name as location_name,
         Product.name AS product_name,
         Product.code AS product_code,
-        CASE WHEN Location.type_select = 3 THEN StockLocationLine.current_qty ELSE StockLocationLineHistory.qty END AS qty,
+        CASE WHEN Location.type_select = 3 THEN StockLocationLine.current_qty ELSE StockLocationLineHistoryQty.qty END AS qty,
         Unit.label_to_printing as unit_code,
-        StockLocationLineHistory.sale_price,
+        StockLocationLineHistoryPrice.sale_price,
 		(CASE WHEN EXISTS(SELECT 1 FROM studio_app_base_company_specific_product_fields_set ProductCompany LEFT JOIN meta_field field ON field.id = ProductCompany.company_specific_product_fields_set where field.name = 'lastPurchasePrice' LIMIT 1) THEN (ProductCompany.last_purchase_price) ELSE (Product.last_purchase_price) END ) AS purchase_price,        
 		Currency.code AS currency_code,
         ProductFamily.name as product_family,
-        StockLocationLineHistory.cost_price as "cost_price",
+        StockLocationLineHistoryPrice.cost_price as "cost_price",
         (CASE WHEN StockConfig.stock_valuation_type_select = 1 
         THEN (CASE WHEN EXISTS(SELECT 1 FROM studio_app_base_company_specific_product_fields_set ProductCompany LEFT JOIN meta_field field ON field.id = ProductCompany.company_specific_product_fields_set where field.name = 'avgPrice' LIMIT 1) THEN (ProductCompany.avg_price) ELSE (Product.avg_price) END )       
-        ELSE StockLocationLineHistory.wap END ) as "wap",
+        ELSE StockLocationLineHistoryPrice.wap END ) as "wap",
         Product.cost_type_select,
         StockConfig.is_display_sale_value_in_printing,
         StockConfig.is_display_accounting_value_in_printing,
@@ -937,12 +937,16 @@ FROM
     stock_stock_location as Location
         LEFT OUTER JOIN
     stock_stock_location_line as StockLocationLine ON (StockLocationLine.stock_location = Location.id)
-        LEFT JOIN
-    stock_stock_location_line_history StockLocationLineHistory ON StockLocationLineHistory.id = (
-        SELECT ssllh.id FROM stock_stock_location_line_history ssllh
-        WHERE StockLocationLineHistory.qty != 0 AND ssllh.stock_location_line = StockLocationLine.id
+        LEFT JOIN LATERAL (
+        SELECT ssllh.qty FROM stock_stock_location_line_history ssllh
+        WHERE ssllh.stock_location_line = StockLocationLine.id
         AND ssllh.datet <= to_timestamp(@FinancialDataDateTime,'mm/dd/yyyy HH24:MI:SS')
-        order by ssllh.datet desc LIMIT 1)
+        order by ssllh.datet desc LIMIT 1) StockLocationLineHistoryQty ON true
+        LEFT JOIN LATERAL (
+        SELECT ssllh.sale_price, ssllh.cost_price, ssllh.wap FROM stock_stock_location_line_history ssllh
+        WHERE ssllh.qty != 0 AND ssllh.stock_location_line = StockLocationLine.id
+        AND ssllh.datet <= to_timestamp(@FinancialDataDateTime,'mm/dd/yyyy HH24:MI:SS')
+        order by ssllh.datet desc LIMIT 1) StockLocationLineHistoryPrice ON true
         LEFT JOIN
     base_product AS Product ON (Product.id = StockLocationLine.product)
         LEFT JOIN 
@@ -1330,14 +1334,14 @@ order by Product.code;]]></xml-property>
     -- Location.name as location_name,
     Product.name AS product_name,
     Product.code AS product_code,
-    SUM(CASE WHEN Location.type_select = 3 THEN StockLocationLine.current_qty ELSE StockLocationLineHistory.qty END) as current_qty,
+    SUM(CASE WHEN Location.type_select = 3 THEN StockLocationLine.current_qty ELSE StockLocationLineHistoryQty.qty END) as current_qty,
     Unit.label_to_printing as unit_code,
-	AVG(StockLocationLineHistory.sale_price),
-	AVG(StockLocationLineHistory.purchase_price),
+	AVG(StockLocationLineHistoryPrice.sale_price),
+	AVG(StockLocationLineHistoryPrice.purchase_price),
     Currency.code AS currency_code,
     ProductFamily.name as product_family,
-    AVG(StockLocationLineHistory.cost_price) as "cost_price",
-    AVG(CASE WHEN StockConfig.stock_valuation_type_select = 1 THEN Product.avg_price ELSE StockLocationLineHistory.wap END ) as "wap",
+    AVG(StockLocationLineHistoryPrice.cost_price) as "cost_price",
+    AVG(CASE WHEN StockConfig.stock_valuation_type_select = 1 THEN Product.avg_price ELSE StockLocationLineHistoryPrice.wap END ) as "wap",
     Product.cost_type_select,
     StockConfig.is_display_sale_value_in_printing,StockConfig.is_display_accounting_value_in_printing,
     StockConfig.is_display_ag_price_in_printing,StockConfig.is_display_purchase_value_in_printing
@@ -1345,12 +1349,16 @@ order by Product.code;]]></xml-property>
 FROM stock_stock_location_line StockLocationLine
          INNER JOIN
     stock_stock_location as Location ON Location.id = StockLocationLine.stock_location
-         LEFT JOIN
-    stock_stock_location_line_history StockLocationLineHistory ON StockLocationLineHistory.id = (
-        SELECT ssllh.id FROM stock_stock_location_line_history ssllh
-        WHERE StockLocationLineHistory.qty != 0 AND ssllh.stock_location_line = StockLocationLine.id
+         LEFT JOIN LATERAL (
+        SELECT ssllh.qty FROM stock_stock_location_line_history ssllh
+        WHERE ssllh.stock_location_line = StockLocationLine.id
         AND ssllh.datet <= to_timestamp(@FinancialDataDateTime,'mm/dd/yyyy HH24:MI:SS')
-        order by ssllh.datet desc LIMIT 1)
+        order by ssllh.datet desc LIMIT 1) StockLocationLineHistoryQty ON true
+         LEFT JOIN LATERAL (
+        SELECT ssllh.sale_price, ssllh.purchase_price, ssllh.cost_price, ssllh.wap FROM stock_stock_location_line_history ssllh
+        WHERE ssllh.qty != 0 AND ssllh.stock_location_line = StockLocationLine.id
+        AND ssllh.datet <= to_timestamp(@FinancialDataDateTime,'mm/dd/yyyy HH24:MI:SS')
+        order by ssllh.datet desc LIMIT 1) StockLocationLineHistoryPrice ON true
         LEFT JOIN
      base_product Product on Product.id = StockLocationLine.product
          LEFT JOIN
