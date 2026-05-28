@@ -1,3 +1,82 @@
+## [8.4.27] (2026-05-28)
+
+### Fixes
+#### Base
+
+* Update Axelor Open Platform to 7.4.11
+* Partner: fixed missing name of panel-dashlets.
+* Mailing list message: fixed 'My Mailing lists' visibility to limit users from viewing non-shared mailing lists.
+
+#### Account
+
+* Accounting report: fixed wrong French translation for DAS2 contact partner phone missing message.
+* Accounting report: fixed French translation for missing account reporting sequence error message.
+* Invoice: fixed cannot cancel an advance invoice which is not paid yet.
+* Move: fixed wrong French translation for move deletion error message.
+* Accounting report: fixed aged balance query to include credit move lines and preserve selected report type when applying model.
+* Invoice: fixed NPE when selecting the origin date before the partner on a supplier invoice.
+* Account: fixed invoice PFP status update after term validation from move line view.
+* Closure assistant: fixed grid view fields to display fiscal year and company correctly.
+* Invoice: fixed 'Authorize auto reconcile on invoice' fails to impute existing credit notes due to unexpected Compensation check.
+* Invoice: fixed ventilation failure when a deductible tax line is shared by invoice lines with and without a co-applied non-deductible tax.
+* FEC Import: fixed reconcile group imported when validation is not activated or anomaly encountered, and orphaned reconcile groups are now deleted.
+
+#### Helpdesk
+
+* Client portal / Ticket: fixed resolved tickets filter which uses invalid statusSelect field in client portal dashboard.
+* Ticket: fixed end date is not being set when resolving the ticket.
+
+#### Marketing
+
+* Campaign: fixed emailing report panel always visible regardless of emailing boolean.
+
+#### Production
+
+* Production: fixed internal server error on manufacturing dashboard.
+* Sale order: fixed the sale order line price when BOM is exploded into details.
+
+#### Purchase
+
+* Purchase order: fixed stock moves fragmented when line stock location is empty.
+* Purchase request: fixed missing translation on generated purchase orders tab title.
+
+#### Sale
+
+* Sale order pricing: pricing scale values are no longer overwritten by the standard line recomputation on change or save.
+* Sale order: fixed end of pack line is not inherited on the sale order when 'Split quotations and orders' is activated.
+
+#### Stock
+
+* Stock: fixed inventory validation not updating the last inventory date and quantity on sub-location stock lines.
+* Stock: fixed Stock financial data report history lookup causing severe slowdown and incorrect zero-quantity valuation snapshots.
+
+#### Supply Chain
+
+* Sale order: fixed bad injection of InvoiceServiceSupplychainImpl instead of interface in SaleOrderInvoiceServiceImpl.
+
+
+### Developer
+
+#### Account
+
+Added MoveLineRepository and ReconcileGroupRepository to FECImporter constructor.
+
+#### Helpdesk
+
+Added TicketStatusService as parameter in ClientViewServiceImpl constructor
+
+#### Sale
+
+- Changed return type of `SaleOrderLinePricingService.computePricingScale` from `void` to `Map<String, Object>`.
+- Added `AppBaseService appBaseService` and `SaleOrderLinePricingService saleOrderLinePricingService` in `SaleOrderLineComputeServiceImpl` and `SaleOrderLineComputeSupplychainServiceImpl`.
+
+#### Supply Chain
+
+The constructor of `SaleOrderInvoiceServiceImpl` (and its subclasses `SaleOrderInvoiceContractServiceImpl`, `SaleOrderBudgetServiceImpl`) has changed.
+`InvoiceServiceSupplychainImpl invoiceService` has been replaced by two interface-typed parameters:
+- `InvoiceService invoiceService`
+- `InvoiceServiceSupplychain invoiceServiceSupplychain`
+
 ## [8.4.26] (2026-05-13)
 
 ### Fixes
@@ -2889,6 +2968,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.27]: https://github.com/axelor/axelor-open-suite/compare/v8.4.26...v8.4.27
 [8.4.26]: https://github.com/axelor/axelor-open-suite/compare/v8.4.25...v8.4.26
 [8.4.25]: https://github.com/axelor/axelor-open-suite/compare/v8.4.24...v8.4.25
 [8.4.24]: https://github.com/axelor/axelor-open-suite/compare/v8.4.23...v8.4.24

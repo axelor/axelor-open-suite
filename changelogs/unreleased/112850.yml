@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed NPE when selecting the origin date before the partner on a supplier invoice."
-module: axelor-account

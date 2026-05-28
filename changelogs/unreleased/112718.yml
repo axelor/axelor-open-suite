@@ -1,6 +1,0 @@
----
-title: "Sale order pricing: pricing scale values are no longer overwritten by the standard line recomputation on change or save."
-module: axelor-sale
-developer: |
-  - Changed return type of `SaleOrderLinePricingService.computePricingScale` from `void` to `Map<String, Object>`.
-  - Added `AppBaseService appBaseService` and `SaleOrderLinePricingService saleOrderLinePricingService` in `SaleOrderLineComputeServiceImpl` and `SaleOrderLineComputeSupplychainServiceImpl`.
