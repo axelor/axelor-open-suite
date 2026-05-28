@@ -334,12 +334,15 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
           Optional.ofNullable(purchaseOrderLine.getEstimatedReceiptDate())
               .orElse(purchaseOrder.getEstimatedReceiptDate());
 
+      StockLocation effectiveStockLocation =
+          Optional.ofNullable(stockLocation).orElse(purchaseOrderStockLocation);
+
       StockLocation stockLocationKey =
           appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine()
                   && isStockLocationRelatedToPurchaseOrder(
-                      stockLocation, purchaseOrderStockLocation)
+                      effectiveStockLocation, purchaseOrderStockLocation)
               ? purchaseOrderStockLocation
-              : stockLocation;
+              : effectiveStockLocation;
 
       purchaseOrderLineMap
           .computeIfAbsent(Pair.of(stockLocationKey, dateKey), k -> new ArrayList<>())
