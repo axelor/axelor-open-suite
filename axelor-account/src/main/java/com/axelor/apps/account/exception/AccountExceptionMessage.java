@@ -1724,4 +1724,7 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_SPECIAL_ACCOUNTS_NOT_EQUALS = /*$$(*/
       "The input entry %s is not balanced properly. The balance (debit-credit) for entries on account of type special or commitment should return 0 in the same way as other type of accounts (except view accounts which are not selectable for on entries)." /*)*/;
+
+  public static final String ADVANCE_INVOICE_CAN_NOT_DELETE = /*$$(*/
+      "Validated advance invoices can not be deleted. %s can not be deleted." /*)*/;
 }

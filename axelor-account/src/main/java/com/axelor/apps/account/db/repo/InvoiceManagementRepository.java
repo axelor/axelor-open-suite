@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -104,7 +105,18 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 
   @Override
   public void remove(Invoice entity) {
-    if (!entity.getStatusSelect().equals(InvoiceRepository.STATUS_CANCELED)) {
+    if (entity.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      if (!Beans.get(SequenceService.class).isEmptyOrDraftSequenceNumber(entity.getInvoiceId())) {
+        try {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.ADVANCE_INVOICE_CAN_NOT_DELETE),
+              entity.getInvoiceId());
+        } catch (AxelorException e) {
+          throw new PersistenceException(e.getMessage(), e);
+        }
+      }
+    } else if (!entity.getStatusSelect().equals(InvoiceRepository.STATUS_CANCELED)) {
       try {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

@@ -382,7 +382,8 @@
 
   <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
     onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group"
-    onSave="action-invoice-onsave-group" canDelete="statusSelect == 4">
+    onSave="action-invoice-onsave-group"
+    canDelete="statusSelect == 4 || (operationSubTypeSelect == 2 &amp;&amp; statusSelect == 1)">
 
     <toolbar>
       <button name="reportsBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
@@ -1087,7 +1088,8 @@ InvoiceSet.length > 0))"
 
   <form name="invoice-client-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
     onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group"
-    onSave="action-invoice-onsave-group" canDelete="statusSelect == 4">
+    onSave="action-invoice-onsave-group"
+    canDelete="statusSelect == 4 || (operationSubTypeSelect == 2 &amp;&amp; statusSelect == 1)">
 
     <toolbar>
       <button name="showInvoiceBtn" title="Print" icon="fa-print"
@@ -1968,7 +1970,7 @@ InvoiceSet.length > 0))"
 
   <action-attrs name="action-invoice-attrs-hide-cancel-button">
     <attribute name="hidden" for="cancelBtn"
-      expr="(operationSubTypeSelect == 2 &amp;&amp; statusSelect == 2) || statusSelect == 4 || statusSelect == 3"/>
+      expr="((operationSubTypeSelect == 2) &amp;&amp; statusSelect == 2 &amp;&amp; amountRemaining == 0) || statusSelect == 4 || statusSelect == 3"/>
   </action-attrs>
 
   <action-attrs name="action-set-partner-domain">
