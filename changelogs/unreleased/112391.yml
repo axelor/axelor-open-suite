@@ -1,0 +1,3 @@
+---
+title: "Bank statement: fixed printing of bank statement by restoring compatible BIRT report format version."
+module: axelor-bank-payment
