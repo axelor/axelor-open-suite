@@ -331,6 +331,7 @@
     </dataset>
     <category key="estimatedate" type="date" title="Estimated Date"/>
     <series key="qty" groupBy="locat" type="line" aggregate="sum" title="Quantity"/>
+    <config name="onClick" value="action-stock-view-report-for-product-chart"/>
   </chart>
 
   <chart name="chart.stock.history.report.for.product" title="Stock History"
@@ -628,5 +629,32 @@
     <field name="fromDate"
       expr="eval:LocalDate.parse(todayDate).minusMonths(monthSelect ? Integer.parseInt(monthSelect) : 12)"/>
   </action-record>
+
+  <action-view name="action-stock-view-report-for-product-chart" title="Stock movements"
+    model="com.axelor.apps.stock.db.StockMoveLine">
+    <view type="grid" name="stock-move-line-all-grid"/>
+    <view type="form" name="stock-move-line-all-form"/>
+    <domain>self.product.id = :_productId
+      AND self.stockMove.statusSelect IN (2, 3)
+      AND
+      (self.stockMove.fromStockLocation.name = :_locat
+      OR self.stockMove.toStockLocation.name =
+      :_locat)
+      AND (
+      (self.stockMove.realDate IS NOT NULL
+      AND DATE(self.stockMove.realDate) &lt;=
+      DATE(:_todayDate))
+      OR (self.stockMove.realDate IS NULL
+      AND self.stockMove.estimatedDate IS NOT
+      NULL
+      AND DATE(self.stockMove.estimatedDate) &gt; DATE(:_todayDate)
+      AND
+      DATE(self.stockMove.estimatedDate) &lt;= DATE(:_estimatedate))
+      )</domain>
+    <context name="_productId" expr="eval: _id"/>
+    <context name="_locat" expr="eval: locat"/>
+    <context name="_todayDate" expr="eval: todayDate"/>
+    <context name="_estimatedate" expr="eval: estimatedate"/>
+  </action-view>
 
 </object-views>

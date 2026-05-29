@@ -836,6 +836,7 @@
 "Stock move with id %s successfully realized.",,,
 "Stock move(s) must belong to the same client as the logistical form.",,,
 "Stock move(s) status must be planned.",,,
+"Stock movements",,,
 "Stock moves",,,
 "Stock per day",,,
 "Stock reservation feature cannot be active when we are managing stock locations on stock move line.",,,
