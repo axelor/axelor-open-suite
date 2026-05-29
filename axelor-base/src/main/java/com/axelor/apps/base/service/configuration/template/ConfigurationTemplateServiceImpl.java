@@ -22,66 +22,72 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ConfigurationTemplate;
 import com.axelor.apps.base.db.ImportConfiguration;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.MetaFiles;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 import org.apache.commons.collections.CollectionUtils;
-import org.jsoup.internal.StringUtil.StringJoiner;
 
 public class ConfigurationTemplateServiceImpl implements ConfigurationTemplateService {
 
-  protected MetaFiles metaFiles;
   protected FactoryImporter factoryImporter;
 
   @Inject
-  public ConfigurationTemplateServiceImpl(MetaFiles metaFiles, FactoryImporter factoryImporter) {
-    this.metaFiles = metaFiles;
+  public ConfigurationTemplateServiceImpl(FactoryImporter factoryImporter) {
     this.factoryImporter = factoryImporter;
   }
 
   @Override
-  public boolean installConfig(Company company) throws AxelorException {
+  public void installConfig(Company company) throws AxelorException {
     ConfigurationTemplate configurationTemplate = company.getConfigurationTemplate();
 
-    return installProcess(configurationTemplate, company);
+    installProcess(configurationTemplate, company);
   }
 
-  public boolean installProcess(ConfigurationTemplate configurationTemplate, Company company)
+  protected void installProcess(ConfigurationTemplate configurationTemplate, Company company)
       throws AxelorException {
-    try {
-      Map<String, Object> importContext = new HashMap<String, Object>();
-      importContext.put("_companyId", company.getId());
-      importContext.put("_companyName", company.getName());
-      importContext.put("_companyCode", company.getCode());
-      importContext.put("_dataFileName", configurationTemplate.getMetaFile().getFileName());
-
-      importConfigData(configurationTemplate, importContext);
-
-      return true;
-    } catch (IOException e) {
-      TraceBackService.trace(e);
-      return false;
+    if (configurationTemplate == null
+        || configurationTemplate.getBindingFile() == null
+        || configurationTemplate.getMetaFile() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(BaseExceptionMessage.CONFIG_IMPORT_MISSING_METAFILE));
     }
+
+    Map<String, Object> importContext = new HashMap<>();
+    importContext.put("_companyId", company.getId());
+    importContext.put("_companyName", company.getName());
+    importContext.put("_companyCode", company.getCode());
+    importContext.put("_dataFileName", configurationTemplate.getMetaFile().getFileName());
+
+    importConfigData(configurationTemplate, importContext);
   }
 
-  public void importConfigData(
+  protected void importConfigData(
       ConfigurationTemplate configurationTemplate, Map<String, Object> importContext)
-      throws IOException, AxelorException {
+      throws AxelorException {
 
     ImportConfiguration importConfiguration = new ImportConfiguration();
     importConfiguration.setDataMetaFile(configurationTemplate.getMetaFile());
     importConfiguration.setBindMetaFile(configurationTemplate.getBindingFile());
 
-    factoryImporter.createImporter(importConfiguration).run(importContext);
+    try {
+      factoryImporter.createImporter(importConfiguration).run(importContext);
+    } catch (IOException e) {
+      throw new AxelorException(
+          e,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.CONFIG_IMPORT_ERROR));
+    }
   }
 
   @Override
@@ -97,20 +103,20 @@ public class ConfigurationTemplateServiceImpl implements ConfigurationTemplateSe
     }
     int done = 0;
     int error = 0;
-    StringJoiner sj = new StringJoiner("\n");
+    StringJoiner sj = new StringJoiner("<br/>");
     for (Company company : companyList) {
       try {
         installProcess(configurationTemplate, company);
         done++;
       } catch (Exception e) {
+        TraceBackService.trace(e);
         sj.add(
-            I18n.get(
-                String.format(
-                    BaseExceptionMessage.CONFIG_IMPORT_ERROR_FOR_COMPANY, company.getCode())));
+            String.format(
+                I18n.get(BaseExceptionMessage.CONFIG_IMPORT_ERROR_FOR_COMPANY), company.getCode()));
         error++;
       }
     }
-    sj.add(I18n.get(String.format(BaseExceptionMessage.CONFIG_IMPORT_DONE, done, error)));
+    sj.add(String.format(I18n.get(BaseExceptionMessage.CONFIG_IMPORT_DONE), done, error));
     return sj.toString();
   }
 

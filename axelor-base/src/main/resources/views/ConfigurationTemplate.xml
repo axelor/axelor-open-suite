@@ -3,22 +3,23 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
-  <grid name="configuration-template-grid" title="Configurations templates"
+  <grid name="configuration-template-grid" title="Configuration templates"
     model="com.axelor.apps.base.db.ConfigurationTemplate">
     <field name="name"/>
     <field name="code"/>
     <field name="description"/>
   </grid>
 
-  <form name="configuration-template-form" title="Configurations template"
+  <form name="configuration-template-form" title="Configuration template"
     model="com.axelor.apps.base.db.ConfigurationTemplate">
     <panel name="generalPanel" title="General" colSpan="12">
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-      <field name="metaFile" widget="binary-link" form-view="meta-files-form"
-        grid-view="meta-files-grid" required="true"/>
-      <field name="bindingFile" widget="binary-link" form-view="meta-files-form"
-        grid-view="meta-files-grid" required="true"/>
+      <field name="bindingFile" widget="binary-link" x-accept=".xml"
+        domain="self.fileType = 'text/xml'" form-view="meta-files-form" grid-view="meta-files-grid"
+        required="true"/>
+      <field name="metaFile" widget="binary-link" x-accept=".csv,.zip"
+        form-view="meta-files-form" grid-view="meta-files-grid" required="true"/>
       <field name="description" colSpan="12" widget="html"/>
     </panel>
     <panel name="companiesPanel" showIf="id">
@@ -36,7 +37,7 @@
     <panel name="mainPanel">
       <field name="$_companiesToLink" title="Companies to link" type="many-to-many"
         canEdit="false" canNew="false" widget="TagSelect" target="com.axelor.apps.base.db.Company"
-        colSpan="12" domain="self.configurationTemplate = null"/>
+        colSpan="12" domain="self.configurationTemplate IS NULL"/>
       <button onClick="action-configuration-template-method-link-companies"
         name="linkCompaniesBtn" title="Link companies"/>
       <field name="_configurationTemplate" type="many-to-one" hidden="true"
@@ -74,7 +75,7 @@
     <view type="grid" name="company-grid"/>
     <view type="form" name="company-form"/>
     <domain>self.configurationTemplate.id = :id</domain>
-    <context name="accountingConfigTemplate" expr="eval:__self__"/>
+    <context name="configurationTemplate" expr="eval:__self__"/>
   </action-view>
 
 </object-views>

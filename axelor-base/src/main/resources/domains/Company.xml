@@ -68,7 +68,7 @@
     <one-to-many name="emailAccountList" ref="com.axelor.message.db.EmailAccount"
       title="Email accounts" mappedBy="company"/>
     <many-to-one name="configurationTemplate"
-      ref="com.axelor.apps.base.db.ConfigurationTemplate" title="Configurations template"/>
+      ref="com.axelor.apps.base.db.ConfigurationTemplate" title="Configuration template"/>
 
     <extra-code><![CDATA[
 

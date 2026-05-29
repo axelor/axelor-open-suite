@@ -743,20 +743,17 @@ public final class BaseExceptionMessage {
       "Missing data file or binding file in the configuration template." /*)*/;
 
   public static final String CONFIG_IMPORT_SUCCESS = /*$$(*/
-      "The config import has been loaded successfully" /*)*/;
+      "The config import has been completed successfully" /*)*/;
 
   public static final String CONFIG_IMPORT_ERROR = /*$$(*/
       "Error in config import please check the log" /*)*/;
 
   public static final String CONFIGURATION_TEMPLATE_NO_COMPANY_TO_CONFIGURE = /*$$(*/
-      "There is no company to configure."; /*)*/
-  ;
+      "There is no company to configure." /*)*/;
 
   public static final String CONFIG_IMPORT_ERROR_FOR_COMPANY = /*$$(*/
-      "Error in config import please check the log for company %s."; /*)*/
-  ;
+      "Error in config import please check the log for company %s." /*)*/;
 
   public static final String CONFIG_IMPORT_DONE = /*$$(*/
-      "Config import done with %s success and %s error."; /*)*/
-  ;
+      "Config import done with %s success and %s error." /*)*/;
 }

@@ -24,7 +24,7 @@ import com.axelor.apps.base.db.ConfigurationTemplate;
 import java.util.List;
 
 public interface ConfigurationTemplateService {
-  boolean installConfig(Company company) throws AxelorException;
+  void installConfig(Company company) throws AxelorException;
 
   String installConfigForAllCompanies(ConfigurationTemplate configurationTemplate);
 
