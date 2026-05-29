@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.supplychain.db.UnitCostCalcLine;
 import com.axelor.apps.supplychain.db.UnitCostCalculation;
 import com.axelor.apps.supplychain.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -51,6 +52,16 @@ public class DepRateCalculationController {
     Beans.get(DepRateCalculationService.class).runDepRateCalc(unitCostCalculation);
 
     response.setReload(true);
+  }
+
+  public void computeLineBalances(ActionRequest request, ActionResponse response) {
+    UnitCostCalcLine unitCostCalcLine = request.getContext().asType(UnitCostCalcLine.class);
+    unitCostCalcLine =
+        Beans.get(DepRateCalculationService.class).computeLineBalances(unitCostCalcLine);
+    response.setValue("typeSelect", unitCostCalcLine.getTypeSelect());
+    response.setValue("costToApply", unitCostCalcLine.getCostToApply());
+    response.setValue("computedCost", unitCostCalcLine.getComputedCost());
+    response.setValue("valuedGap", unitCostCalcLine.getValuedGap());
   }
 
   public void updateDepRates(ActionRequest request, ActionResponse response)

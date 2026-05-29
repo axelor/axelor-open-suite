@@ -68,10 +68,12 @@
         onChange="action-unit-cost-calc-line-group-type-select-onchange">
         <viewer depends="typeSelect"><![CDATA[
           <>
-            <Box color={typeSelect == 1 ? 'danger' : 'success'} d="flex" alignItems="center">
-              <Icon icon={typeSelect == 1 ? 'graph-down-arrow' : 'graph-up-arrow'}/>
-              <span style={{marginLeft: '6px'}}>{$fmt('typeSelect')}</span>
-            </Box>
+            {(typeSelect == 1 || typeSelect == 2) ? (
+              <Box color={typeSelect == 1 ? 'danger' : 'success'} d="flex" alignItems="center">
+                <Icon icon={typeSelect == 1 ? 'graph-down-arrow' : 'graph-up-arrow'}/>
+                <span style={{marginLeft: '6px'}}>{$fmt('typeSelect')}</span>
+              </Box>
+            ) : null}
           </>
         ]]></viewer>
       </field>
@@ -106,30 +108,19 @@
     <field name="minRate,maxRate" expr="eval: null"/>
   </action-record>
 
-  <action-record name="action-unit-cost-calc-line-record-compute-valued-gap"
-    model="com.axelor.apps.supplychain.db.UnitCostCalcLine">
-    <field name="computedCost"
-      expr="eval: (previousCost != null &amp;&amp; costToApply != null)
-        ? (typeSelect == 2
-            ? previousCost * (1 + costToApply / 100)
-            : previousCost * (1 - costToApply / 100))
-        : previousCost"/>
-    <field name="valuedGap"
-      expr="eval: (qty != null &amp;&amp; previousCost != null &amp;&amp; costToApply != null)
-        ? (typeSelect == 2
-            ? qty * previousCost * (costToApply / 100)
-            : -1 * qty * previousCost * (costToApply / 100))
-        : java.math.BigDecimal.ZERO"/>
-  </action-record>
+  <action-method name="action-unit-cost-calc-line-method-compute-valued-gap">
+    <call class="com.axelor.apps.supplychain.web.DepRateCalculationController"
+      method="computeLineBalances"/>
+  </action-method>
 
   <action-group name="action-unit-cost-calc-line-group-cost-to-apply-onchange">
     <action name="action-unit-cost-calc-line-condition-check-cost-to-apply"/>
-    <action name="action-unit-cost-calc-line-record-compute-valued-gap"/>
+    <action name="action-unit-cost-calc-line-method-compute-valued-gap"/>
   </action-group>
 
   <action-group name="action-unit-cost-calc-line-group-type-select-onchange">
     <action name="action-unit-cost-calc-line-record-clear-rates"/>
-    <action name="action-unit-cost-calc-line-record-compute-valued-gap"/>
+    <action name="action-unit-cost-calc-line-method-compute-valued-gap"/>
   </action-group>
 
 </object-views>

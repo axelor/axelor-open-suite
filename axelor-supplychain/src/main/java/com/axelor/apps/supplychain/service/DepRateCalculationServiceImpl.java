@@ -187,16 +187,43 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
       return;
     }
     for (UnitCostCalcLine line : unitCostCalculation.getUnitCostCalcLineList()) {
-      BigDecimal previousCost =
-          line.getPreviousCost() != null ? line.getPreviousCost() : BigDecimal.ZERO;
-      BigDecimal qty = line.getQty() != null ? line.getQty() : BigDecimal.ZERO;
-      BigDecimal rate = line.getCostToApply();
-      int typeSelect = line.getTypeSelect();
-      BigDecimal computedCost = computeNewCost(previousCost, rate, typeSelect);
-      line.setComputedCost(computedCost);
-      line.setValuedGap(computeValuedGap(qty, previousCost, computedCost));
+      computeLineBalances(line);
     }
     unitCostCalculationRepository.save(unitCostCalculation);
+  }
+
+  @Override
+  public UnitCostCalcLine computeLineBalances(UnitCostCalcLine unitCostCalcLine) {
+    BigDecimal previousCost =
+        unitCostCalcLine.getPreviousCost() != null
+            ? unitCostCalcLine.getPreviousCost()
+            : BigDecimal.ZERO;
+    BigDecimal qty =
+        unitCostCalcLine.getQty() != null ? unitCostCalcLine.getQty() : BigDecimal.ZERO;
+
+    // A line with no type is ignored on update: clear every rate-derived value.
+    if (!hasType(unitCostCalcLine)) {
+      unitCostCalcLine.setTypeSelect(null);
+      unitCostCalcLine.setCostToApply(null);
+      unitCostCalcLine.setComputedCost(null);
+      unitCostCalcLine.setValuedGap(null);
+      return unitCostCalcLine;
+    }
+
+    BigDecimal computedCost =
+        computeNewCost(
+            previousCost, unitCostCalcLine.getCostToApply(), unitCostCalcLine.getTypeSelect());
+    unitCostCalcLine.setComputedCost(computedCost);
+    unitCostCalcLine.setValuedGap(computeValuedGap(qty, previousCost, computedCost));
+    return unitCostCalcLine;
+  }
+
+  /** A line is revalued only if it carries a depreciation or valorization type (not null nor 0). */
+  protected boolean hasType(UnitCostCalcLine unitCostCalcLine) {
+    Integer typeSelect = unitCostCalcLine.getTypeSelect();
+    return typeSelect != null
+        && (typeSelect == DepreciationRateConfigRepository.TYPE_DEPRECIATION
+            || typeSelect == DepreciationRateConfigRepository.TYPE_VALORIZATION);
   }
 
   /**
@@ -287,6 +314,12 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
     int i = 0;
     for (UnitCostCalcLine unitCostCalcLine : unitCostCalculation.getUnitCostCalcLineList()) {
 
+      // Lines whose type was cleared after calculation are skipped: their product is left
+      // untouched.
+      if (!hasType(unitCostCalcLine)) {
+        continue;
+      }
+
       updateDepreciationRate(unitCostCalcLine);
 
       if (++i % AbstractBatch.FETCH_LIMIT == 0) {
@@ -300,6 +333,10 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
 
   protected boolean ratesOk(UnitCostCalculation unitCostCalculation) {
     for (UnitCostCalcLine unitCostCalcLine : unitCostCalculation.getUnitCostCalcLineList()) {
+      // Lines with no type are ignored on update, so they are not validated.
+      if (!hasType(unitCostCalcLine)) {
+        continue;
+      }
       BigDecimal costToApply = unitCostCalcLine.getCostToApply();
       if (costToApply == null) {
         return false;

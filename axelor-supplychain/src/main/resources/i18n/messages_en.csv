@@ -547,6 +547,7 @@
 "No delivery stock move to generate for this purchase order",,,
 "No delivery stock move to generate for this sale order",,,
 "No items have been selected.",,,
+"No product matches the selected filters. Products must have a stock rotation category to be revalued; run the ""Update stock history"" batch to assign them automatically.",,,
 "No proposal can be generated from these lines.",,,
 "No stock location valid. Please uncheck the chosen stock location 'is not in MRP'.",,,
 "Non-deductible tax not authorized for sale orders. Please remove the non-deductible tax on product.",,,

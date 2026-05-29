@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.supplychain.db.UnitCostCalcLine;
 import com.axelor.apps.supplychain.db.UnitCostCalculation;
 
 public interface DepRateCalculationService {
@@ -37,4 +38,11 @@ public interface DepRateCalculationService {
    * Useful after a CSV import that only updates costToApply.
    */
   void recomputeLineBalances(UnitCostCalculation unitCostCalculation);
+
+  /**
+   * Recompute the derived values (computedCost, valuedGap) of a single line from its current rate.
+   * Used by the form onChange so the displayed values match the Java rounding logic exactly. Does
+   * not persist the line.
+   */
+  UnitCostCalcLine computeLineBalances(UnitCostCalcLine unitCostCalcLine);
 }

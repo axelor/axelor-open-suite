@@ -47,6 +47,12 @@ public class DepRateCalculationProductServiceImpl implements DepRateCalculationP
   @Override
   public Set<Product> getProducts(UnitCostCalculation unitCostCalculation) throws AxelorException {
 
+    if (!hasAnyFilter(unitCostCalculation)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(SupplychainExceptionMessage.DEPRECIATION_CHOOSE_FILTERS));
+    }
+
     Set<Product> productSet = Sets.newHashSet();
 
     if (!unitCostCalculation.getProductSet().isEmpty()) {
@@ -99,7 +105,7 @@ public class DepRateCalculationProductServiceImpl implements DepRateCalculationP
     if (productSet.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(SupplychainExceptionMessage.DEPRECIATION_CHOOSE_FILTERS));
+          I18n.get(SupplychainExceptionMessage.DEPRECIATION_NO_ELIGIBLE_PRODUCT));
     }
 
     Set<Product> finalProductSet = Sets.newHashSet();
@@ -119,6 +125,14 @@ public class DepRateCalculationProductServiceImpl implements DepRateCalculationP
     }
 
     return finalProductSet;
+  }
+
+  protected boolean hasAnyFilter(UnitCostCalculation unitCostCalculation) {
+    return !unitCostCalculation.getProductSet().isEmpty()
+        || !unitCostCalculation.getProductCategorySet().isEmpty()
+        || !unitCostCalculation.getProductFamilySet().isEmpty()
+        || (unitCostCalculation.getStockRotationCategorySet() != null
+            && !unitCostCalculation.getStockRotationCategorySet().isEmpty());
   }
 
   @Override

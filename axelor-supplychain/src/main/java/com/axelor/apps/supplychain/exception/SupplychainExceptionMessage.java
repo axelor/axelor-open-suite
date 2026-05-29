@@ -474,6 +474,9 @@ public final class SupplychainExceptionMessage {
   public static final String DEPRECIATION_CHOOSE_FILTERS = /*$$(*/
       "Please select at least one product, product category or product family." /*)*/;
 
+  public static final String DEPRECIATION_NO_ELIGIBLE_PRODUCT = /*$$(*/
+      "No product matches the selected filters. Products must have a stock rotation category to be revalued; run the \"Update stock history\" batch to assign them automatically." /*)*/;
+
   public static final String DEPRECIATION_IMPORT_CSV_ERROR = /*$$(*/
       "Only CSV files are supported for import." /*)*/;
 
