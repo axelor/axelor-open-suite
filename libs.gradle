@@ -55,6 +55,8 @@ libs.xmlsec = 'org.apache.santuario:xmlsec:3.0.2'
 libs.jaxb_xjc = 'com.sun.xml.bind:jaxb-xjc:3.0.1'
 libs.jaxb_bind_api = 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.1'
 
+libs.jsr305 = 'com.google.code.findbugs:jsr305:3.0.2'
+
 libs.mockito = 'org.mockito:mockito-core:4.8.0'
 
 libs.pac4j_core = "org.pac4j:pac4j-core:6.2.0"
