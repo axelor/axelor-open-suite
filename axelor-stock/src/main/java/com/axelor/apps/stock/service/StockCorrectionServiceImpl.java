@@ -156,7 +156,9 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
         getStockLocationLine(stockCorrection, toStockLocation, product);
 
     BigDecimal realQty = stockCorrection.getRealQty();
-    BigDecimal diff = realQty.subtract(stockLocationLine.getCurrentQty());
+    BigDecimal currentQty =
+        stockLocationLine != null ? stockLocationLine.getCurrentQty() : BigDecimal.ZERO;
+    BigDecimal diff = realQty.subtract(currentQty);
 
     BigDecimal productCostPrice =
         (BigDecimal) productCompanyService.get(product, "costPrice", company);
@@ -373,7 +375,8 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       boolean presentInStockLocation,
       StockLocationLine stockLocationLine)
       throws AxelorException {
-    BigDecimal avgPrice = stockLocationLine.getAvgPrice();
+    BigDecimal avgPrice =
+        stockLocationLine != null ? stockLocationLine.getAvgPrice() : BigDecimal.ZERO;
     if (!presentInStockLocation && avgPrice.compareTo(BigDecimal.ZERO) == 0) {
       avgPrice = (BigDecimal) productCompanyService.get(product, "avgPrice", company);
     }
