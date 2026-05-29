@@ -26,6 +26,7 @@ import com.axelor.apps.purchase.db.repo.CallTenderNeedRepository;
 import com.axelor.apps.purchase.db.repo.CallTenderOfferManagementRepository;
 import com.axelor.apps.purchase.db.repo.CallTenderOfferRepository;
 import com.axelor.apps.purchase.db.repo.CallTenderRepository;
+import com.axelor.apps.purchase.db.repo.MessagePurchaseRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -102,6 +103,7 @@ import com.axelor.apps.purchase.service.purchaseorderline.view.PurchaseOrderLine
 import com.axelor.apps.purchase.service.purchaseorderline.view.PurchaseOrderLineViewServiceImpl;
 import com.axelor.apps.purchase.service.split.PurchaseOrderSplitService;
 import com.axelor.apps.purchase.service.split.PurchaseOrderSplitServiceImpl;
+import com.axelor.message.db.repo.MessageManagementRepository;
 
 public class PurchaseModule extends AxelorModule {
 
@@ -149,5 +151,6 @@ public class PurchaseModule extends AxelorModule {
     bind(PurchaseOrderTaxService.class).to(PurchaseOrderTaxServiceImpl.class);
     bind(PurchaseOrderLinePricingService.class).to(PurchaseOrderLinePricingServiceImpl.class);
     bind(PurchasePricingLogsObserver.class);
+    bind(MessageManagementRepository.class).to(MessagePurchaseRepository.class);
   }
 }
