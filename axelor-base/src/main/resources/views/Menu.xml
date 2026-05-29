@@ -700,6 +700,16 @@
     <view type="form" name="trading-name-form"/>
   </action-view>
 
+  <menuitem name="admin-root-user-configuration-configuration-template"
+    title="Configuration templates" action="configuration.template.all"
+    parent="admin-root-user-configuration" order="500"/>
+
+  <action-view name="configuration.template.all" title="Configuration templates"
+    model="com.axelor.apps.base.db.ConfigurationTemplate">
+    <view name="configuration-template-grid" type="grid"/>
+    <view name="configuration-template-form" type="form"/>
+  </action-view>
+
   <menuitem name="admin-root-batch" parent="admin-root" if="__config__.app.isApp('base')"
     title="Batches" order="700"/>
 

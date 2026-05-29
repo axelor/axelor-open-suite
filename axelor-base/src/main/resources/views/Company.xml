@@ -92,6 +92,12 @@
           if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop()"/>
       </panel>
       <panel name="configurationsPanel" title="Configurations">
+        <panel colSpan="12" name="importConfigurationPanel">
+          <field name="configurationTemplate"/>
+          <button name="importConfigBtn" title="Import configs"
+            onClick="action-group-base-company-config-template-install"
+            showIf="configurationTemplate"/>
+        </panel>
         <field name="currency" canEdit="false" form-view="currency-form"
           grid-view="currency-grid"/>
         <field name="printingSettings" canNew="true" required="true"
@@ -200,6 +206,11 @@
     <context name="_id" expr="eval: id"/>
   </action-view>
 
+  <action-method name="action-company-method-config-install-config">
+    <call class="com.axelor.apps.base.web.ConfigurationTemplateController"
+      method="installConfig"/>
+  </action-method>
+
   <search-filters name="company-filters" model="com.axelor.apps.base.db.Company"
     title="Company filters">
     <field name="tradingNameList" hidden="true"
@@ -213,4 +224,8 @@
     <field name="orderBloquedMessage" hidden="true" if="!__config__.app.isApp('sale')"/>
   </search-filters>
 
+  <action-group name="action-group-base-company-config-template-install">
+    <action name="save"/>
+    <action name="action-company-method-config-install-config"/>
+  </action-group>
 </object-views>

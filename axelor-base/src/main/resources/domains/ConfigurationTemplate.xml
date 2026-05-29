@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ConfigurationTemplate">
+
+    <string name="name" namecolumn="true"/>
+    <string name="code"/>
+    <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="File"/>
+    <many-to-one name="bindingFile" ref="com.axelor.meta.db.MetaFile"
+      title="Binding file"/>
+    <string name="description" title="Description" large="true"/>
+
+  </entity>
+
+</domain-models>
