@@ -903,13 +903,7 @@
     <panel name="referencePanel" title="References" hideIf="clientPartner == null"
       itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
       <field name="externalReference" hideIf="company == null"
-        onChange="action-sale-sale-order-attrs-external-reference"/>
-      <field name="$duplicateExternalReference" hidden="true" colSpan="12" showTitle="false"
-        readonly="true">
-        <viewer>
-          <![CDATA[<><Badge bg="warning">{_t('Watch out, a sale order was already created with this external reference.')}</Badge></>]]>
-        </viewer>
-      </field>
+        onChange="action-sale-order-attrs-external-reference"/>
       <field name="opportunity" readonlyIf="statusSelect >= 2" form-view="opportunity-form"
         grid-view="opportunity-grid" canEdit="false"/>
       <field name="duplicateReferenceLabel" showTitle="false" readonly="true" hidden="true">
@@ -2289,12 +2283,6 @@
       for="timetableTemplate"/>
     <attribute name="readonly" expr="eval: timetableList.any { it?.invoiced }"
       for="computationDate"/>
-  </action-attrs>
-
-  <action-attrs name="action-sale-sale-order-attrs-external-reference">
-    <attribute name="hidden" for="$duplicateExternalReference"
-      expr="eval: !((externalReference != null &amp;&amp; id != null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ? AND self.id != ?', externalReference , id).count() > 0)
-                 || (externalReference != null &amp;&amp; id == null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ?', externalReference).count() > 0))"/>
   </action-attrs>
 
   <action-record name="action-sale-order-record-set-stock-location"
