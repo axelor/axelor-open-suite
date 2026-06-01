@@ -25,8 +25,6 @@
     <extra-code><![CDATA[
       //origin
       public static final String ORIGIN_MANUAL_CORRECTION = "Manual correction";
-      public static final String ORIGIN_STOCK_DEPRECIATION = "Stock depreciation";
-      public static final String ORIGIN_STOCK_VALORIZATION = "Stock valorization";
       //Type select
       public static final String TYPE_SELECT_STOCK_MOVE = "stockMove";
       public static final String TYPE_SELECT_WAP_CORRECTION = "wapCorrection";

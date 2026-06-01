@@ -19,10 +19,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.stock.db.repo.StockHistoryLineRepository;
-import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.db.JPA;
 import jakarta.inject.Inject;
@@ -34,20 +31,10 @@ import java.time.LocalDate;
 public class ProductStockAnalysisServiceImpl implements ProductStockAnalysisService {
 
   protected final AppBaseService appBaseService;
-  protected final ProductRepository productRepository;
-  protected final StockHistoryLineRepository stockHistoryLineRepository;
-  protected final StockLocationLineRepository stockLocationLineRepository;
 
   @Inject
-  public ProductStockAnalysisServiceImpl(
-      AppBaseService appBaseService,
-      ProductRepository productRepository,
-      StockHistoryLineRepository stockHistoryLineRepository,
-      StockLocationLineRepository stockLocationLineRepository) {
+  public ProductStockAnalysisServiceImpl(AppBaseService appBaseService) {
     this.appBaseService = appBaseService;
-    this.productRepository = productRepository;
-    this.stockHistoryLineRepository = stockHistoryLineRepository;
-    this.stockLocationLineRepository = stockLocationLineRepository;
   }
 
   @Override
