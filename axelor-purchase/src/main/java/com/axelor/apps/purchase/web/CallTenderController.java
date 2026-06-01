@@ -19,23 +19,32 @@
 package com.axelor.apps.purchase.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.CallTenderOffer;
+import com.axelor.apps.purchase.db.CallTenderOfferImportHistory;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.CallTenderRepository;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.CallTenderGenerateService;
 import com.axelor.apps.purchase.service.CallTenderMailService;
+import com.axelor.apps.purchase.service.CallTenderOfferImportService;
 import com.axelor.apps.purchase.service.CallTenderPurchaseOrderService;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class CallTenderController {
@@ -87,6 +96,41 @@ public class CallTenderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void importOffer(ActionRequest request, ActionResponse response) {
+    try {
+      Long callTenderId = Long.valueOf(request.getContext().get("_callTenderId").toString());
+      CallTender callTender = Beans.get(CallTenderRepository.class).find(callTenderId);
+
+      Partner supplier = getSupplierFromContext(request);
+      CallTenderOfferImportHistory wizard =
+          request.getContext().asType(CallTenderOfferImportHistory.class);
+      MetaFile metaFile = Beans.get(MetaFileRepository.class).find(wizard.getMetaFile().getId());
+
+      CallTenderOfferImportHistory history =
+          Beans.get(CallTenderOfferImportService.class)
+              .importOffers(callTender, supplier, metaFile);
+
+      String log = history.getLog();
+      if (log.contains(I18n.get(PurchaseExceptionMessage.CALL_FOR_TENDER_IMPORT_ERRORS))) {
+        response.setInfo(
+            I18n.get(PurchaseExceptionMessage.CALL_FOR_TENDER_IMPORT_ERROR_CHECK_HISTORY));
+      } else {
+        response.setInfo(log);
+      }
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  protected Partner getSupplierFromContext(ActionRequest request) {
+    return Optional.ofNullable((Map<String, Object>) request.getContext().get("supplierPartner"))
+        .map(m -> m.get("id"))
+        .map(id -> Beans.get(PartnerRepository.class).find(Long.valueOf(id.toString())))
+        .orElse(null);
   }
 
   public void generatePurchaseOrder(ActionRequest request, ActionResponse response)
