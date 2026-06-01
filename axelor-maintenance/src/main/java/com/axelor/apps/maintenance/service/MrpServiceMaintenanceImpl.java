@@ -176,6 +176,7 @@ public class MrpServiceMaintenanceImpl extends MrpServiceProductionImpl {
 
     if (statusList.isEmpty()) {
       statusList.add(ManufOrderRepository.STATUS_PLANNED);
+      statusList.add(ManufOrderRepository.STATUS_IN_PROGRESS);
     }
 
     List<ManufOrder> maintenanceOrderList =
