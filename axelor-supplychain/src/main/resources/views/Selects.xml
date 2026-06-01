@@ -238,4 +238,21 @@
     <option value="2" color="green">Costs computed</option>
     <option value="3" color="brown">Costs updated</option>
   </selection>
+
+  <selection name="supplychain.unit.cost.calculation.type.select">
+    <option value="0">Cost price calculation</option>
+    <option value="1">Depreciation rate calculation</option>
+  </selection>
+
+  <selection name="supplychain.depreciation.rate.config.type.select">
+    <option value="1" icon="graph-down-arrow" color="danger">Depreciation</option>
+    <option value="2" icon="graph-up-arrow" color="success">Valorization</option>
+  </selection>
+
+  <selection name="supplychain.cost.review.status.select">
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Stock revaluation computed</option>
+    <option value="3" color="brown">Stock revaluation updated</option>
+  </selection>
+
 </object-views>

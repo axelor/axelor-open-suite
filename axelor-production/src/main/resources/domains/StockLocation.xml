@@ -11,5 +11,6 @@
     <boolean name="isWorkshop"/>
     <boolean name="isOutsourcingLocation" title="Outsourcing location"/>
     <boolean name="isConsignmentStock" title="Consignment stock"/>
+    <boolean name="customerOk" title="Customer dedicated" default="false" massUpdate="true"/>
   </entity>
 </domain-models>

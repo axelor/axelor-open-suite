@@ -318,6 +318,12 @@ import com.axelor.apps.supplychain.db.repo.MrpLineManagementRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
 import com.axelor.apps.supplychain.service.ConfiguratorCheckServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.DepRateCalculationCsvService;
+import com.axelor.apps.supplychain.service.DepRateCalculationCsvServiceImpl;
+import com.axelor.apps.supplychain.service.DepRateCalculationProductService;
+import com.axelor.apps.supplychain.service.DepRateCalculationProductServiceImpl;
+import com.axelor.apps.supplychain.service.DepRateCalculationService;
+import com.axelor.apps.supplychain.service.DepRateCalculationServiceImpl;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
@@ -543,5 +549,9 @@ public class ProductionModule extends AxelorModule {
     bind(ManufOrderMessageService.class).to(ManufOrderMessageServiceImpl.class);
     bind(ManufOrderQueryService.class).to(ManufOrderQueryServiceImpl.class);
     bind(ControlEntryServiceImpl.class).to(ControlEntryProductionServiceImpl.class);
+
+    bind(DepRateCalculationService.class).to(DepRateCalculationServiceImpl.class);
+    bind(DepRateCalculationProductService.class).to(DepRateCalculationProductServiceImpl.class);
+    bind(DepRateCalculationCsvService.class).to(DepRateCalculationCsvServiceImpl.class);
   }
 }
