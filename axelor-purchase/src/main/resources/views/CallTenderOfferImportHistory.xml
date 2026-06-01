@@ -6,7 +6,6 @@
   <grid name="call-tender-offer-import-history-grid" title="Import history"
     model="com.axelor.apps.purchase.db.CallTenderOfferImportHistory">
     <field name="metaFile"/>
-    <field name="importUser"/>
     <field name="importDateTime"/>
   </grid>
 
@@ -14,7 +13,6 @@
     model="com.axelor.apps.purchase.db.CallTenderOfferImportHistory">
     <panel name="mainPanel" showTitle="false">
       <field name="metaFile" colSpan="4" widget="binary-link"/>
-      <field name="importUser" colSpan="4"/>
       <field name="importDateTime" colSpan="4"/>
       <field name="log" colSpan="12" widget="html" readonly="true"/>
     </panel>

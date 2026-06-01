@@ -13,6 +13,10 @@
       ref="com.axelor.apps.purchase.db.SupplierCatalog" mappedBy="product"
       title="Supplier Catalog Lines"/>
 
+    <many-to-one name="callTenderAttrConfig"
+      ref="com.axelor.apps.purchase.db.CallTenderAttrConfig"
+      title="Call tender attribute configuration"/>
+
     <track on="UPDATE">
       <field name="purchasesUnit"/>
     </track>

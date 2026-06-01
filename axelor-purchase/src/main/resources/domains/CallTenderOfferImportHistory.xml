@@ -8,8 +8,6 @@
   <entity name="CallTenderOfferImportHistory">
 
     <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="File"/>
-    <many-to-one name="importUser" ref="com.axelor.auth.db.User" title="User"
-      column="import_user_id"/>
     <datetime name="importDateTime" title="Date"/>
     <string name="log" title="Log" large="true"/>
     <many-to-one name="callTender" ref="com.axelor.apps.purchase.db.CallTender"/>

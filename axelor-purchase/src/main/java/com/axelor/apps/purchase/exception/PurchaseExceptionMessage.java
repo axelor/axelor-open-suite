@@ -116,7 +116,6 @@ public final class PurchaseExceptionMessage {
       "The import file is empty." /*)*/;
   public static final String CALL_FOR_TENDER_IMPORT_INVALID_FORMAT = /*$$(*/
       "The import file format is invalid. Expected Excel file with columns: Product code, Product name, Description, Qty, Unit, Date, Delivery time, Unit price, Comment." /*)*/;
-
   public static final String CALL_FOR_TENDER_IMPORT_ERRORS = /*$$(*/ "Errors:" /*)*/;
 
   public static final String CALL_FOR_TENDER_IMPORT_ERROR_CHECK_HISTORY = /*$$(*/
@@ -154,4 +153,7 @@ public final class PurchaseExceptionMessage {
   public static final String CALL_FOR_TENDER_IMPORT_IMPORTED_LINES = /*$$(*/
       "Imported %d line(s)." /*)*/;
   public static final String CALL_FOR_TENDER_IMPORT_ERRORS_HEADER = /*$$(*/ "Errors" /*)*/;
+
+  public static final String CALL_TENDER_ATTR_CONFIG_DUPLICATE_FIELD = /*$$(*/
+      "Custom field name '%s' is already used in another call tender attribute configuration '%s'. Please use a unique name." /*)*/;
 }
