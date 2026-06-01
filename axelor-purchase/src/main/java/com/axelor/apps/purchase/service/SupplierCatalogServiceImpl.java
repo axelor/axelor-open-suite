@@ -226,7 +226,8 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
         localDate,
         purchasePrice,
         purchaseCurrency,
-        currency);
+        currency,
+        false);
   }
 
   @Override
