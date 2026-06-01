@@ -90,6 +90,10 @@
         grid-view="depreciation-unit-cost-calc-line-grid"
         form-view="depreciation-unit-cost-calc-line-form" height="20" colSpan="12" canNew="false"
         showIf="statusSelect != 1 &amp;&amp; typeSelect == 1" readonlyIf="statusSelect == 3"/>
+      <panel-dashlet name="familySummaryPanel"
+        action="action-depreciation-rate-calculation-view-family-summary"
+        title="Revaluation by product family" colSpan="12"
+        showIf="statusSelect != 1 &amp;&amp; typeSelect == 1"/>
     </panel-tabs>
     <panel name="actionCostCalculationPanel" sidebar="true" showIf="typeSelect == 0">
       <button name="runCalculationBtn" title="Run calculation"
@@ -229,6 +233,14 @@
     <call class="com.axelor.apps.supplychain.web.DepRateCalculationController"
       method="importDepRateCalc"/>
   </action-method>
+
+  <action-view name="action-depreciation-rate-calculation-view-family-summary"
+    title="Revaluation by product family" model="com.axelor.apps.supplychain.db.UnitCostCalcLine">
+    <view type="grid" name="depreciation-unit-cost-calc-line-family-summary-grid"/>
+    <domain>self.unitCostCalculation.id = :id</domain>
+    <context name="nbDecimalDigitForUnitPrice"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+  </action-view>
 
   <action-attrs name="action-unit-cost-calculation-attrs-set-company-required">
     <attribute name="required" for="companySet" expr="false"

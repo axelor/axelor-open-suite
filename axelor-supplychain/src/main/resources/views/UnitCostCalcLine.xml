@@ -30,6 +30,7 @@
       <hilite if="typeSelect == 2" color="success"/>
     </field>
     <field name="qty" readonly="true"/>
+    <field name="product.unit" title="Unit" readonly="true"/>
     <field name="previousCost" title="Stock unit value" readonly="true"/>
     <field name="totalPrice" title="Total value" readonly="true"/>
     <field name="previousRate" readonly="true"/>
@@ -39,6 +40,20 @@
       onChange="action-unit-cost-calc-line-group-cost-to-apply-onchange"/>
     <field name="computedCost" title="Computed value" readonly="true"/>
     <field name="valuedGap" readonly="true"/>
+  </grid>
+
+  <grid name="depreciation-unit-cost-calc-line-family-summary-grid"
+    title="Revaluation by product family" model="com.axelor.apps.supplychain.db.UnitCostCalcLine"
+    groupBy="product.productFamily" orderBy="product.productFamily.code" canNew="false"
+    canEdit="false" canDelete="false">
+    <field name="product.productFamily" title="Product family"/>
+    <field name="product.code" title="Product code"/>
+    <field name="product.name" title="Product name"/>
+    <field name="totalPrice" title="Total value" aggregate="sum"
+      x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="valuedGap" title="Total value gap" aggregate="sum"
+      x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <form name="unit-cost-calc-line-form" title="Results"
