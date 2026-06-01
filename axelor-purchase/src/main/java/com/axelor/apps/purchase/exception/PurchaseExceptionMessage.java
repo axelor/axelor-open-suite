@@ -112,4 +112,46 @@ public final class PurchaseExceptionMessage {
   public static final String CALL_FOR_TENDER_NO_PO_SELECTED = /*$$(*/ "No selected offer." /*)*/;
   public static final String CALL_FOR_TENDER_MISSING_COMPANY = /*$$(*/
       "Please select a company before generating purchase order." /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_EMPTY_FILE = /*$$(*/
+      "The import file is empty." /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_INVALID_FORMAT = /*$$(*/
+      "The import file format is invalid. Expected Excel file with columns: Product code, Product name, Description, Qty, Unit, Date, Delivery time, Unit price, Comment." /*)*/;
+
+  public static final String CALL_FOR_TENDER_IMPORT_ERRORS = /*$$(*/ "Errors:" /*)*/;
+
+  public static final String CALL_FOR_TENDER_IMPORT_ERROR_CHECK_HISTORY = /*$$(*/
+      "Error importing offers, please check the log in import history." /*)*/;
+
+  public static final String CALL_FOR_TENDER_IMPORT_ERROR = /*$$(*/ "Import error" /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_INVALID_QTY = /*$$(*/
+      "Invalid quantity '%s'" /*)*/;
+
+  public static final String CALL_FOR_TENDER_IMPORT_INVALID_COLUMN_COUNT = /*$$(*/
+      "Line %d: Invalid number of columns (expected %d, got %d)" /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_PRODUCT_NOT_FOUND = /*$$(*/
+      "Line %d: Product with code '%s' not found" /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_NO_NEED_FOR_PRODUCT = /*$$(*/
+      "Line %d: No need found for product '%s'" /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_LINE_ERROR = /*$$(*/ "Line %d: %s" /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_LINE_INVALID_QTY = /*$$(*/
+      "Line %d: Invalid quantity '%s'" /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_UNIT_NOT_FOUND = /*$$(*/
+      "Unit '%s' not found" /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_LINE_UNIT_NOT_FOUND = /*$$(*/
+      "Line %d: Unit '%s' not found" /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_INVALID_DATE = /*$$(*/
+      "Invalid date '%s'" /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_LINE_INVALID_DATE = /*$$(*/
+      "Line %d: Invalid date '%s'" /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_INVALID_DELIVERY_TIME = /*$$(*/
+      "Invalid delivery time '%s'" /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_LINE_INVALID_DELIVERY_TIME = /*$$(*/
+      "Line %d: Invalid delivery time '%s'" /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_INVALID_UNIT_PRICE = /*$$(*/
+      "Invalid unit price '%s'" /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_LINE_INVALID_UNIT_PRICE = /*$$(*/
+      "Line %d: Invalid unit price '%s'" /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_IMPORTED_LINES = /*$$(*/
+      "Imported %d line(s)." /*)*/;
+  public static final String CALL_FOR_TENDER_IMPORT_ERRORS_HEADER = /*$$(*/ "Errors" /*)*/;
 }

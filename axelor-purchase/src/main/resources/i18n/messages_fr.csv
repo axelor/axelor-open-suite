@@ -98,6 +98,8 @@
 "Enable product description copy","Activer la copie de description des produits",,
 "End date","Date de fin",,
 "Estim. receipt date","Date de réception estimée",,
+"Error importing offers, please check the log in import history.","Erreur lors de l'importation des offres, veuillez consulter le journal dans l'historique des importations.",,
+"Errors:","Erreurs :",,
 "Estimated receipt date","Date de réception estimée",,
 "Filter on supplier","Filtrer par le fournisseur",,
 "Filter products by trading name","Filtrer les produits par enseignes",,

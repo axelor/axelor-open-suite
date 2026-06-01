@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+
+  <grid name="call-tender-offer-import-history-grid" title="Import history"
+    model="com.axelor.apps.purchase.db.CallTenderOfferImportHistory">
+    <field name="metaFile"/>
+    <field name="importUser"/>
+    <field name="importDateTime"/>
+  </grid>
+
+  <form name="call-tender-offer-import-history-form" title="Import history"
+    model="com.axelor.apps.purchase.db.CallTenderOfferImportHistory">
+    <panel name="mainPanel" showTitle="false">
+      <field name="metaFile" colSpan="4" widget="binary-link"/>
+      <field name="importUser" colSpan="4"/>
+      <field name="importDateTime" colSpan="4"/>
+      <field name="log" colSpan="12" widget="html" readonly="true"/>
+    </panel>
+  </form>
+
+  <form name="call-tender-import-offer-wizard-form" title="Import offer"
+    model="com.axelor.apps.purchase.db.CallTenderOfferImportHistory">
+    <panel name="mainPanel" showTitle="false">
+      <field name="$supplierPartner" title="Supplier" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner" required="true" colSpan="4"
+        domain="self.id IN (SELECT cts.supplierPartner.id FROM CallTenderSupplier cts WHERE cts.callTender.id = :_callTenderId)"/>
+      <field name="metaFile" title="File" required="true" colSpan="4" widget="binary-link"/>
+      <button name="importBtn" title="Import" colSpan="4"
+        onClick="action-call-tender-method-import-offer" css="btn-primary"/>
+    </panel>
+  </form>
+
+</object-views>
