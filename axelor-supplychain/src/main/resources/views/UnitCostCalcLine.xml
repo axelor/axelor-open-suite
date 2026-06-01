@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
 
   <grid name="unit-cost-calc-line-grid" title="Results"
-    model="com.axelor.apps.production.db.UnitCostCalcLine" editable="true" orderBy="product.code">
+    model="com.axelor.apps.supplychain.db.UnitCostCalcLine" editable="true" orderBy="product.code">
     <field name="product.code"/>
     <field name="product.name"/>
     <field name="company" readonly="true"
@@ -17,7 +17,7 @@
   </grid>
 
   <form name="unit-cost-calc-line-form" title="Results"
-    model="com.axelor.apps.production.db.UnitCostCalcLine" width="large"
+    model="com.axelor.apps.supplychain.db.UnitCostCalcLine" width="large"
     onLoad="action-unit-cost-calc-line-attrs-price-digits">
     <panel name="mainPanel">
       <field name="unitCostCalculation" hidden="true"/>

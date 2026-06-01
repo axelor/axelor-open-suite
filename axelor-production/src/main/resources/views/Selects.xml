@@ -145,12 +145,6 @@
     <option value="2">Machine</option>
   </selection>
 
-  <selection name="production.cost.calculations.status.select">
-    <option value="1" color="blue">Draft</option>
-    <option value="2" color="green">Costs computed</option>
-    <option value="3" color="brown">Costs updated</option>
-  </selection>
-
   <selection name='trace.back.origin.select' id="trace.back.origin.select.production">
     <option value='costSheet'>Cost sheet valuation</option>
   </selection>
