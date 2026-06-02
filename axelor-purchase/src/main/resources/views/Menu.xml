@@ -219,4 +219,15 @@
     <domain>self.concernedModel.name != 'InvoiceLine'</domain>
   </action-view>
 
+
+  <menuitem name="menu-purchase-conf-tender-report-config" parent="sc-root-purchase-conf"
+    title="Tender report configs" action="action-purchase-view-tender-report-config" order="1400"
+    if="__config__.app.getApp('purchase')?.manageCallForTender"/>
+
+  <action-view name="action-purchase-view-tender-report-config"
+    title="Tender report configs" model="com.axelor.apps.purchase.db.TenderReportConfig">
+    <view type="grid" name="tender-report-config-grid"/>
+    <view type="form" name="tender-report-config-form"/>
+  </action-view>
+
 </object-views>

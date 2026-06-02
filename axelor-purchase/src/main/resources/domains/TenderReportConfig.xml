@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.1.xsd">
+
+  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+
+  <entity name="TenderReportConfig">
+
+    <string name="name"/>
+    <integer name="reportType" selection="purchase.tender.report.config.report.type.select"/>
+    <boolean name="isDefault"/>
+    <one-to-many name="tenderReportConfigLineList"
+      ref="com.axelor.apps.purchase.db.TenderReportConfigLine" title="Lines"
+      mappedBy="tenderReportConfig"/>
+
+    <extra-code>
+      <![CDATA[
+      public static final int REPORT_TYPE_PRODUCT_ATTRS = 1;
+      public static final int REPORT_TYPE_SUPPLIER_REPOND = 2;
+      ]]>
+    </extra-code>
+
+
+  </entity>
+
+</domain-models>

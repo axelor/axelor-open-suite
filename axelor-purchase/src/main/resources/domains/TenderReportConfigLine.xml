@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.1.xsd">
+
+  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+
+  <entity name="TenderReportConfigLine">
+
+    <integer name="sequence"/>
+    <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" title="Field"/>
+    <many-to-one name="customField" ref="com.axelor.meta.db.MetaJsonField"
+      title="Custom field"/>
+    <many-to-one name="tenderReportConfig"
+      ref="com.axelor.apps.purchase.db.TenderReportConfig"/>
+
+  </entity>
+
+</domain-models>

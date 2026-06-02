@@ -62,6 +62,11 @@
     <option value="5" color="red">Rejected</option>
   </selection>
 
+  <selection name="purchase.tender.report.config.report.type.select">
+    <option value="1">Product attributes by supplier</option>
+    <option value="2">Suppliers' respond by product</option>
+  </selection>
+
   <selection name="message.related.to.select" id="purchase.message.related.to.select">
     <option value="com.axelor.apps.purchase.db.PurchaseOrder" data-grid="purchase-order-grid"
       data-form="purchase-order-form">Purchase order</option>

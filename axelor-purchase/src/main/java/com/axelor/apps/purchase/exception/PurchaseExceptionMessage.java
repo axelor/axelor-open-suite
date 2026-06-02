@@ -156,4 +156,7 @@ public final class PurchaseExceptionMessage {
 
   public static final String CALL_TENDER_ATTR_CONFIG_DUPLICATE_FIELD = /*$$(*/
       "Custom field name '%s' is already used in another call tender attribute configuration '%s'. Please use a unique name." /*)*/;
+
+  public static final String TENDER_REPORT_CONFIG_NO_FIELD_SELECTED = /*$$(*/
+      "Please select at least one field." /*)*/;
 }

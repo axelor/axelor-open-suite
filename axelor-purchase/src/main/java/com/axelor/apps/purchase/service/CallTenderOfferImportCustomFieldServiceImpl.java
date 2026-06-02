@@ -43,6 +43,8 @@ import org.apache.poi.ss.usermodel.Row;
 public class CallTenderOfferImportCustomFieldServiceImpl
     implements CallTenderOfferImportCustomFieldService {
 
+  protected static final int COL_CUSTOM_FIELDS_START = 8;
+
   @Override
   public void applyCustomFieldValues(
       CallTenderOffer offer,
@@ -53,7 +55,7 @@ public class CallTenderOfferImportCustomFieldServiceImpl
       int lineNumber,
       List<String> rowErrors) {
 
-    if (commentColIdx <= 8) {
+    if (commentColIdx <= COL_CUSTOM_FIELDS_START) {
       return;
     }
 
@@ -63,7 +65,7 @@ public class CallTenderOfferImportCustomFieldServiceImpl
       MetaJsonAttrsBuilder builder = new MetaJsonAttrsBuilder(offer.getAttrs());
       boolean changed = false;
 
-      for (int colIdx = 8; colIdx < commentColIdx; colIdx++) {
+      for (int colIdx = COL_CUSTOM_FIELDS_START; colIdx < commentColIdx; colIdx++) {
         String header = getCellStringValue(headerRow.getCell(colIdx)).trim();
         if (header.isEmpty()) {
           continue;
