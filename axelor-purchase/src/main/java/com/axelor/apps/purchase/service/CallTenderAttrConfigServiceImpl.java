@@ -47,7 +47,7 @@ import java.util.Set;
 
 public class CallTenderAttrConfigServiceImpl implements CallTenderAttrConfigService {
 
-  protected final MetaJsonFieldRepository metaJsonFieldRepository;
+  protected MetaJsonFieldRepository metaJsonFieldRepository;
 
   @Inject
   public CallTenderAttrConfigServiceImpl(MetaJsonFieldRepository metaJsonFieldRepository) {

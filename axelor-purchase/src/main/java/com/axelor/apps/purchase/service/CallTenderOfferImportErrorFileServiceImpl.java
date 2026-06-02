@@ -34,7 +34,6 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class CallTenderOfferImportErrorFileServiceImpl
     implements CallTenderOfferImportErrorFileService {
@@ -47,53 +46,53 @@ public class CallTenderOfferImportErrorFileServiceImpl
   }
 
   @Override
-  public MetaFile generateErrorFile(File originalExcelFile, Map<Integer, String> errorsByRow)
+  public MetaFile generateErrorFile(Workbook workbook, Map<Integer, String> errorsByRow)
       throws IOException {
 
     if (errorsByRow.isEmpty()) {
       return null;
     }
 
-    try (Workbook workbook = new XSSFWorkbook(new FileInputStream(originalExcelFile))) {
-      Sheet sheet = workbook.getSheetAt(0);
-      CellStyle errorStyle = createErrorStyle(workbook);
+    Sheet sheet = workbook.getSheetAt(0);
+    CellStyle errorStyle = createErrorStyle(workbook);
 
-      Row headerRow = sheet.getRow(0);
-      int errorsColIndex = headerRow.getLastCellNum();
+    Row headerRow = sheet.getRow(0);
+    int errorsColIndex = headerRow.getLastCellNum();
 
-      Cell errorsHeaderCell = headerRow.createCell(errorsColIndex);
-      errorsHeaderCell.setCellValue(I18n.get("Errors"));
-      CellStyle headerErrorStyle = workbook.createCellStyle();
-      Font headerFont = workbook.createFont();
-      headerFont.setBold(true);
-      headerErrorStyle.setFont(headerFont);
-      errorsHeaderCell.setCellStyle(headerErrorStyle);
+    Cell errorsHeaderCell = headerRow.createCell(errorsColIndex);
+    errorsHeaderCell.setCellValue(I18n.get("Errors"));
+    CellStyle headerErrorStyle = workbook.createCellStyle();
+    Font headerFont = workbook.createFont();
+    headerFont.setBold(true);
+    headerErrorStyle.setFont(headerFont);
+    errorsHeaderCell.setCellStyle(headerErrorStyle);
 
-      for (Map.Entry<Integer, String> entry : errorsByRow.entrySet()) {
-        Row row = sheet.getRow(entry.getKey());
-        if (row == null) {
-          continue;
+    for (Map.Entry<Integer, String> entry : errorsByRow.entrySet()) {
+      Row row = sheet.getRow(entry.getKey());
+      if (row == null) {
+        continue;
+      }
+      for (int j = 0; j < row.getLastCellNum(); j++) {
+        Cell cell = row.getCell(j);
+        if (cell != null) {
+          cell.setCellStyle(errorStyle);
         }
-        for (int j = 0; j < row.getLastCellNum(); j++) {
-          Cell cell = row.getCell(j);
-          if (cell != null) {
-            cell.setCellStyle(errorStyle);
-          }
-        }
-        Cell errorCell = row.createCell(errorsColIndex);
-        errorCell.setCellValue(entry.getValue());
-        errorCell.setCellStyle(errorStyle);
       }
+      Cell errorCell = row.createCell(errorsColIndex);
+      errorCell.setCellValue(entry.getValue());
+      errorCell.setCellStyle(errorStyle);
+    }
 
-      sheet.autoSizeColumn(errorsColIndex);
+    sheet.autoSizeColumn(errorsColIndex);
 
-      File tempFile = File.createTempFile("import-errors", ".xlsx");
-      try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-        workbook.write(fos);
-      }
-      try (FileInputStream inStream = new FileInputStream(tempFile)) {
-        return metaFiles.upload(inStream, "import-errors.xlsx");
-      }
+    File tempFile = File.createTempFile("import-errors", ".xlsx");
+    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+      workbook.write(fos);
+    }
+    try (FileInputStream inStream = new FileInputStream(tempFile)) {
+      return metaFiles.upload(inStream, "import-errors.xlsx");
+    } finally {
+      tempFile.delete();
     }
   }
 

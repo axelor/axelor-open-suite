@@ -51,6 +51,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -139,10 +140,10 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
           importedCount++;
         }
       }
-    }
 
-    MetaFile errorFile = errorFileService.generateErrorFile(excelFile, errorsByRow);
-    return createImportHistory(callTender, file, errorFile, importedCount, errors);
+      MetaFile errorFile = errorFileService.generateErrorFile(workbook, errorsByRow);
+      return createImportHistory(callTender, file, errorFile, importedCount, errors);
+    }
   }
 
   protected void validateSheet(Sheet sheet) throws AxelorException {
@@ -461,7 +462,8 @@ public class CallTenderOfferImportServiceImpl implements CallTenderOfferImportSe
     return callTender.getCallTenderOfferList().stream()
         .filter(
             offer ->
-                offer.getSupplierPartner().equals(supplier) && offer.getProduct().equals(product))
+                Objects.equals(supplier, offer.getSupplierPartner())
+                    && product.equals(offer.getProduct()))
         .findFirst()
         .orElse(null);
   }

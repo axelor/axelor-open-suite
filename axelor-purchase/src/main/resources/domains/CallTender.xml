@@ -25,6 +25,13 @@
       mappedBy="callTender"/>
 
 
+    <many-to-one name="productAttrReportConfig"
+      ref="com.axelor.apps.purchase.db.TenderReportConfig"
+      title="Product attributes by supplier report config"/>
+    <many-to-one name="supplierRespondReportConfig"
+      ref="com.axelor.apps.purchase.db.TenderReportConfig"
+      title="Suppliers' respond by product report config"/>
+
     <track on="UPDATE">
       <field name="callTenderNeedList"/>
       <field name="callTenderSupplierList"/>

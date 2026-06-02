@@ -18,13 +18,11 @@
  */
 package com.axelor.apps.purchase.service;
 
-import com.axelor.meta.db.MetaFile;
-import java.io.IOException;
-import java.util.Map;
-import org.apache.poi.ss.usermodel.Workbook;
+import java.util.List;
 
-public interface CallTenderOfferImportErrorFileService {
+public interface TenderReportConfigService {
 
-  MetaFile generateErrorFile(Workbook workbook, Map<Integer, String> errorsByRow)
-      throws IOException;
+  void addMetaFieldLines(Long configId, List<Long> fieldIds);
+
+  void addCustomFieldLines(Long configId, List<Long> fieldIds);
 }
