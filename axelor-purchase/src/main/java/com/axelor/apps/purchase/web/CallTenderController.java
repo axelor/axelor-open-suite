@@ -28,6 +28,7 @@ import com.axelor.apps.purchase.db.CallTenderOfferImportHistory;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.CallTenderRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
+import com.axelor.apps.purchase.service.CallTenderExcelService;
 import com.axelor.apps.purchase.service.CallTenderGenerateService;
 import com.axelor.apps.purchase.service.CallTenderMailService;
 import com.axelor.apps.purchase.service.CallTenderOfferImportService;
@@ -36,6 +37,7 @@ import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.schema.actions.ActionView;
@@ -131,6 +133,29 @@ public class CallTenderController {
         .map(m -> m.get("id"))
         .map(id -> Beans.get(PartnerRepository.class).find(Long.valueOf(id.toString())))
         .orElse(null);
+  }
+
+  public void generateImportTemplate(ActionRequest request, ActionResponse response) {
+    try {
+      Long callTenderId = Long.valueOf(request.getContext().get("_callTenderId").toString());
+      CallTender callTender = Beans.get(CallTenderRepository.class).find(callTenderId);
+
+      Partner supplier = null;
+      Object supplierRef = request.getContext().get("supplierPartner");
+      if (supplierRef instanceof Map) {
+        Object id = ((Map<?, ?>) supplierRef).get("id");
+        if (id != null) {
+          supplier = Beans.get(PartnerRepository.class).find(Long.valueOf(id.toString()));
+        }
+      }
+
+      MetaFile templateFile =
+          Beans.get(CallTenderExcelService.class).generateTemplate(callTender, supplier);
+
+      response.setExportFile(MetaFiles.getPath(templateFile).toString());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void generatePurchaseOrder(ActionRequest request, ActionResponse response)

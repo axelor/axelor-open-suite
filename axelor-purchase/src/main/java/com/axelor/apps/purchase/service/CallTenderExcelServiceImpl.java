@@ -24,7 +24,9 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.CallTenderAttrConfig;
+import com.axelor.apps.purchase.db.CallTenderNeed;
 import com.axelor.apps.purchase.db.CallTenderOffer;
+import com.axelor.apps.purchase.db.repo.CallTenderNeedRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -36,7 +38,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -47,6 +55,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormat;
@@ -69,11 +78,16 @@ public class CallTenderExcelServiceImpl implements CallTenderExcelService {
 
   protected final AppBaseService appBaseService;
   protected final MetaFiles metaFiles;
+  protected final CallTenderNeedRepository callTenderNeedRepository;
 
   @Inject
-  public CallTenderExcelServiceImpl(AppBaseService appBaseService, MetaFiles metaFiles) {
+  public CallTenderExcelServiceImpl(
+      AppBaseService appBaseService,
+      MetaFiles metaFiles,
+      CallTenderNeedRepository callTenderNeedRepository) {
     this.appBaseService = appBaseService;
     this.metaFiles = metaFiles;
+    this.callTenderNeedRepository = callTenderNeedRepository;
   }
 
   @Override
@@ -118,6 +132,159 @@ public class CallTenderExcelServiceImpl implements CallTenderExcelService {
     try (FileInputStream inStream = new FileInputStream(file)) {
       return metaFiles.upload(inStream, fileName);
     }
+  }
+
+  @Override
+  public MetaFile generateTemplate(CallTender callTender, Partner supplier) throws IOException {
+
+    String fileName =
+        StringHelper.cutTooLongString(
+            String.format(
+                "CFT%s-template-%s",
+                callTender.getName(),
+                DateTimeFormatter.ofPattern("ddMMyyyyhhmm")
+                    .format(appBaseService.getTodayDateTime())));
+
+    File file = File.createTempFile(fileName, ".xlsx");
+    fileName += ".xlsx";
+
+    List<CallTenderNeed> needList = callTender.getCallTenderNeedList();
+    if (supplier != null) {
+      needList =
+          callTenderNeedRepository
+              .all()
+              .filter(
+                  "self.callTender = :callTender"
+                      + " AND self.product IS NOT NULL"
+                      + " AND EXISTS (SELECT sc FROM SupplierCatalog sc"
+                      + " WHERE sc.supplierPartner = :supplier AND sc.product = self.product)")
+              .bind("callTender", callTender)
+              .bind("supplier", supplier)
+              .fetch();
+    }
+
+    List<MetaJsonField> customFields = collectCustomFieldsFromNeeds(needList);
+
+    try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+      Sheet sheet = workbook.createSheet("Call Tender");
+
+      CellStyle headerStyle = createHeaderStyle(workbook);
+      CellStyle textStyle = createTextStyle(workbook);
+      createHeaderRow(sheet, headerStyle, customFields);
+      createNeedDataRows(sheet, needList, customFields, textStyle);
+      autoSizeColumns(sheet, customFields.size());
+
+      try (FileOutputStream fos = new FileOutputStream(file)) {
+        workbook.write(fos);
+      }
+    }
+
+    try (FileInputStream inStream = new FileInputStream(file)) {
+      return metaFiles.upload(inStream, fileName);
+    }
+  }
+
+  protected void createNeedDataRows(
+      Sheet sheet,
+      List<CallTenderNeed> needList,
+      List<MetaJsonField> customFields,
+      CellStyle textStyle) {
+
+    int rowNum = 1;
+    for (CallTenderNeed need : needList) {
+      Row row = sheet.createRow(rowNum++);
+      row.createCell(COL_PRODUCT_CODE)
+          .setCellValue(Optional.ofNullable(need.getProduct()).map(Product::getCode).orElse(""));
+      row.createCell(COL_PRODUCT_NAME)
+          .setCellValue(Optional.ofNullable(need.getProduct()).map(Product::getName).orElse(""));
+      row.createCell(COL_DESCRIPTION)
+          .setCellValue(Optional.ofNullable(need.getDescription()).orElse(""));
+      row.createCell(COL_QTY).setCellValue(need.getRequestedQty().doubleValue());
+      row.createCell(COL_UNIT)
+          .setCellValue(Optional.ofNullable(need.getUnit()).map(unit -> unit.getName()).orElse(""));
+
+      Cell dateCell = row.createCell(COL_DATE);
+      dateCell.setCellValue(
+          Optional.ofNullable(need.getRequestedDate())
+              .map(date -> date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+              .orElse(""));
+      dateCell.setCellStyle(textStyle);
+
+      Cell deliveryTimeCell = row.createCell(COL_DELIVERY_TIME);
+      deliveryTimeCell.setCellValue(
+          Optional.ofNullable(need.getRequestedDeliveryTime()).map(String::valueOf).orElse(""));
+      deliveryTimeCell.setCellStyle(textStyle);
+
+      row.createCell(COL_UNIT_PRICE).setCellValue("");
+
+      writeNeedCustomFieldCells(row, need, customFields, textStyle);
+
+      row.createCell(COL_CUSTOM_FIELDS_START + customFields.size()).setCellValue("");
+    }
+  }
+
+  protected void writeNeedCustomFieldCells(
+      Row row, CallTenderNeed need, List<MetaJsonField> customFields, CellStyle textStyle) {
+
+    Map<String, Object> attrs = parseAttrs(need.getAttrs());
+    for (int i = 0; i < customFields.size(); i++) {
+      MetaJsonField field = customFields.get(i);
+      Cell cell = row.createCell(COL_CUSTOM_FIELDS_START + i);
+      if (belongsToNeed(field, need)) {
+        cell.setCellValue(getFieldValue(field, attrs));
+      } else {
+        cell.setCellValue("");
+      }
+      cell.setCellStyle(textStyle);
+    }
+  }
+
+  protected String getFieldValue(MetaJsonField field, Map<String, Object> attrs) {
+    Object value = attrs.get(field.getName());
+    String strValue = (value instanceof String) ? (String) value : null;
+    String type = field.getType();
+    if ("date".equals(type)) {
+      DateTimeFormatter dateFormatter =
+          new DateTimeFormatterBuilder()
+              .appendOptional(DateTimeFormatter.ISO_LOCAL_DATE)
+              .appendOptional(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+              .toFormatter();
+      return Optional.ofNullable(strValue)
+          .map(
+              s ->
+                  LocalDate.parse(s, dateFormatter)
+                      .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+          .orElse("");
+    } else if ("datetime".equals(type)) {
+      DateTimeFormatter dateTimeFormatter =
+          new DateTimeFormatterBuilder()
+              .appendOptional(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+              .appendOptional(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+              .appendOptional(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+              .toFormatter();
+      return Optional.ofNullable(strValue)
+          .map(
+              s -> {
+                TemporalAccessor ta =
+                    dateTimeFormatter.parseBest(s, OffsetDateTime::from, LocalDateTime::from);
+                LocalDateTime ldt =
+                    (ta instanceof OffsetDateTime)
+                        ? ((OffsetDateTime) ta).toLocalDateTime()
+                        : (LocalDateTime) ta;
+                return ldt.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+              })
+          .orElse("");
+    } else if ("time".equals(type)) {
+      DateTimeFormatter timeFormatter =
+          new DateTimeFormatterBuilder()
+              .appendOptional(DateTimeFormatter.ISO_LOCAL_TIME)
+              .appendOptional(DateTimeFormatter.ofPattern("HH:mm"))
+              .toFormatter();
+      return Optional.ofNullable(strValue)
+          .map(s -> LocalTime.parse(s, timeFormatter).format(DateTimeFormatter.ofPattern("HH:mm")))
+          .orElse("");
+    }
+    return value == null ? "" : value.toString();
   }
 
   protected CellStyle createHeaderStyle(XSSFWorkbook workbook) {
@@ -197,8 +364,7 @@ public class CallTenderExcelServiceImpl implements CallTenderExcelService {
       MetaJsonField field = customFields.get(i);
       Cell cell = row.createCell(COL_CUSTOM_FIELDS_START + i);
       if (belongsToOffer(field, offer)) {
-        Object value = attrs.get(field.getName());
-        cell.setCellValue(value == null ? "" : value.toString());
+        cell.setCellValue(getFieldValue(field, attrs));
       } else {
         cell.setCellValue("");
       }
@@ -231,11 +397,20 @@ public class CallTenderExcelServiceImpl implements CallTenderExcelService {
   }
 
   protected List<MetaJsonField> collectCustomFields(List<CallTenderOffer> offerList) {
+    return collectCustomFieldsFromConfigs(
+        offerList.stream().map(this::resolveAttrsConfig).collect(Collectors.toList()));
+  }
+
+  protected List<MetaJsonField> collectCustomFieldsFromNeeds(List<CallTenderNeed> needList) {
+    return collectCustomFieldsFromConfigs(
+        needList.stream().map(this::resolveNeedConfig).collect(Collectors.toList()));
+  }
+
+  protected List<MetaJsonField> collectCustomFieldsFromConfigs(List<CallTenderAttrConfig> configs) {
     Set<Long> seenConfigIds = new HashSet<>();
     Map<Long, MetaJsonField> uniqueFields = new LinkedHashMap<>();
 
-    for (CallTenderOffer offer : offerList) {
-      CallTenderAttrConfig config = resolveAttrsConfig(offer);
+    for (CallTenderAttrConfig config : configs) {
       if (config == null
           || !seenConfigIds.add(config.getId())
           || config.getCustomFieldList() == null) {
@@ -270,6 +445,18 @@ public class CallTenderExcelServiceImpl implements CallTenderExcelService {
     return sourceConfig != null && Objects.equals(sourceConfig.getId(), needConfig.getId());
   }
 
+  protected boolean belongsToNeed(MetaJsonField field, CallTenderNeed need) {
+    if (need == null) {
+      return false;
+    }
+    CallTenderAttrConfig needConfig = resolveNeedConfig(need);
+    if (needConfig == null) {
+      return false;
+    }
+    CallTenderAttrConfig sourceConfig = field.getCallTenderAttrConfig();
+    return sourceConfig != null && Objects.equals(sourceConfig.getId(), needConfig.getId());
+  }
+
   protected CallTenderAttrConfig resolveAttrsConfig(CallTenderOffer offer) {
     if (offer == null) {
       return null;
@@ -277,7 +464,22 @@ public class CallTenderExcelServiceImpl implements CallTenderExcelService {
     if (offer.getCallTenderAttrConfig() != null) {
       return offer.getCallTenderAttrConfig();
     }
-    Product product = offer.getProduct();
+
+    if (offer.getCallTenderNeed() != null) {
+      return resolveNeedConfig(offer.getCallTenderNeed());
+    }
+
+    return null;
+  }
+
+  protected CallTenderAttrConfig resolveNeedConfig(CallTenderNeed need) {
+    if (need == null) {
+      return null;
+    }
+    if (need.getCallTenderAttrConfig() != null) {
+      return need.getCallTenderAttrConfig();
+    }
+    Product product = need.getProduct();
     return product == null ? null : product.getCallTenderAttrConfig();
   }
 
