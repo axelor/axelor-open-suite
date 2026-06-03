@@ -56,9 +56,11 @@ public class DepRateAggregationServiceImpl implements DepRateAggregationService 
   }
 
   @Override
-  public AggregatedRates aggregate(Product product, List<DepreciationRateConfig> allConfigs)
+  public AggregatedRates aggregate(
+      Product product, List<DepreciationRateConfig> allConfigs, boolean takeInAccountSubCategories)
       throws AxelorException {
-    List<DepreciationRateConfig> configs = findApplicableConfigs(product, allConfigs);
+    List<DepreciationRateConfig> configs =
+        findApplicableConfigs(product, allConfigs, takeInAccountSubCategories);
     if (configs.isEmpty()) {
       return new AggregatedRates(
           null, null, BigDecimal.ZERO, DepreciationRateConfigRepository.TYPE_DEPRECIATION);
@@ -101,14 +103,15 @@ public class DepRateAggregationServiceImpl implements DepRateAggregationService 
    * (product, product category, product family, stock rotation category) on the same line: it
    * applies only when at least one dimension is set and the product matches <b>all</b> the
    * dimensions set on the line (AND semantics). A line with a dimension the product does not
-   * satisfy is skipped. Category matching honors the parent chain, so a config set on a parent
-   * category still applies to products in its sub-categories.
+   * satisfy is skipped. When {@code takeInAccountSubCategories} is true, a config set on a parent
+   * category also applies to products in its sub-categories.
    */
   protected List<DepreciationRateConfig> findApplicableConfigs(
-      Product product, List<DepreciationRateConfig> allConfigs) throws AxelorException {
+      Product product, List<DepreciationRateConfig> allConfigs, boolean takeInAccountSubCategories)
+      throws AxelorException {
     List<DepreciationRateConfig> applicableConfigs = new ArrayList<>();
     for (DepreciationRateConfig config : allConfigs) {
-      if (isApplicable(config, product)) {
+      if (isApplicable(config, product, takeInAccountSubCategories)) {
         applicableConfigs.add(config);
       }
     }
@@ -118,10 +121,12 @@ public class DepRateAggregationServiceImpl implements DepRateAggregationService 
   /**
    * A config applies to a product when it sets at least one dimension and the product matches every
    * dimension set on the line (AND semantics). A line carrying a dimension the product does not
-   * satisfy is skipped. Category matching honors the parent chain (see {@link
-   * #categoryMatches(ProductCategory, ProductCategory)}).
+   * satisfy is skipped. Category matching is exact, or extended to the parent chain when {@code
+   * takeInAccountSubCategories} is true (see {@link #categoryMatches(ProductCategory,
+   * ProductCategory, boolean)}).
    */
-  protected boolean isApplicable(DepreciationRateConfig config, Product product)
+  protected boolean isApplicable(
+      DepreciationRateConfig config, Product product, boolean takeInAccountSubCategories)
       throws AxelorException {
     boolean hasDimension = false;
 
@@ -133,7 +138,8 @@ public class DepRateAggregationServiceImpl implements DepRateAggregationService 
     }
     if (config.getProductCategory() != null) {
       hasDimension = true;
-      if (!categoryMatches(config.getProductCategory(), product.getProductCategory())) {
+      if (!categoryMatches(
+          config.getProductCategory(), product.getProductCategory(), takeInAccountSubCategories)) {
         return false;
       }
     }
@@ -154,12 +160,16 @@ public class DepRateAggregationServiceImpl implements DepRateAggregationService 
   }
 
   /**
-   * A product matches a config category when its own category is that category or one of its
-   * descendants (i.e. the config category belongs to the product category parent chain), so a
-   * config set on a parent category still applies to products in its sub-categories. Uses {@link
+   * A product matches a config category when its own category is that category. When {@code
+   * takeInAccountSubCategories} is true, the match is extended to descendants: the config category
+   * may also be any ancestor of the product category (i.e. belong to its parent chain), so a config
+   * set on a parent category applies to products in its sub-categories. Uses {@link
    * ProductCategoryService#fetchParentCategoryList} for cycle-safe traversal.
    */
-  protected boolean categoryMatches(ProductCategory configCategory, ProductCategory productCategory)
+  protected boolean categoryMatches(
+      ProductCategory configCategory,
+      ProductCategory productCategory,
+      boolean takeInAccountSubCategories)
       throws AxelorException {
     if (productCategory == null) {
       return false;
@@ -167,7 +177,8 @@ public class DepRateAggregationServiceImpl implements DepRateAggregationService 
     if (configCategory.equals(productCategory)) {
       return true;
     }
-    return productCategoryService.fetchParentCategoryList(productCategory).contains(configCategory);
+    return takeInAccountSubCategories
+        && productCategoryService.fetchParentCategoryList(productCategory).contains(configCategory);
   }
 
   protected BigDecimal signedRateFactor(DepreciationRateConfig config) {

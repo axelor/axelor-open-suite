@@ -44,13 +44,17 @@ public interface DepRateAggregationService {
    * valorization; the net signed result drives {@link AggregatedRates#typeSelect()}, with bounds
    * taken as the intersection {@code max(mins)} / {@code min(maxes)} of configs that define them.
    *
+   * <p>When {@code takeInAccountSubCategories} is true, a config set on a parent category applies
+   * to the products of its sub-categories; otherwise the product category must match exactly.
+   *
    * <p>The configs must be attached to the current persistence context: their dimensions are lazy,
    * so re-fetch them after any {@code JPA.clear()}.
    */
-  AggregatedRates aggregate(Product product, List<DepreciationRateConfig> configs)
+  AggregatedRates aggregate(
+      Product product, List<DepreciationRateConfig> configs, boolean takeInAccountSubCategories)
       throws AxelorException;
 
-  /** Immutable result of {@link #aggregate(Product, List)}. */
+  /** Immutable result of {@link #aggregate(Product, List, boolean)}. */
   record AggregatedRates(
       BigDecimal minRate, BigDecimal maxRate, BigDecimal costToApply, int typeSelect) {}
 }

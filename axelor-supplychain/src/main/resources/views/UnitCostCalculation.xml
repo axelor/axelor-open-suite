@@ -55,7 +55,8 @@
       <field name="productFamilySet" widget="Tags" colSpan="12"/>
       <field name="stockRotationCategorySet" widget="Tags" x-color-field="color" colSpan="12"
         showIf="typeSelect == 1"/>
-      <field name="customerOk" showIf="typeSelect == 1"/>
+      <field name="customerOk" showIf="typeSelect == 1" colSpan="4"/>
+      <field name="takeInAccountSubCategories" showIf="typeSelect == 1" colSpan="4"/>
     </panel>
     <panel-tabs name="mainPanelTabs" colSpan="12">
       <panel name="descriptionPanel" title="Description">
@@ -80,7 +81,8 @@
         <field name="productFamilySet" widget="Tags" colSpan="12"/>
         <field name="stockRotationCategorySet" widget="Tags" x-color-field="color"
           colSpan="12" showIf="typeSelect == 1"/>
-        <field name="customerOk" showIf="typeSelect == 1"/>
+        <field name="customerOk" showIf="typeSelect == 1" colSpan="4"/>
+        <field name="takeInAccountSubCategories" showIf="typeSelect == 1" colSpan="4"/>
       </panel>
       <panel-related name="resultPanel" field="unitCostCalcLineList"
         grid-view="unit-cost-calc-line-grid" form-view="unit-cost-calc-line-form" height="20"

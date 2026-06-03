@@ -20,8 +20,10 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.supplychain.db.UnitCostCalculation;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -29,19 +31,23 @@ import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.collect.Sets;
 import jakarta.inject.Inject;
+import java.util.HashSet;
 import java.util.Set;
 
 public class DepRateCalculationProductServiceImpl implements DepRateCalculationProductService {
 
   protected final ProductRepository productRepository;
   protected final StockLocationLineRepository stockLocationLineRepository;
+  protected final ProductCategoryService productCategoryService;
 
   @Inject
   public DepRateCalculationProductServiceImpl(
       ProductRepository productRepository,
-      StockLocationLineRepository stockLocationLineRepository) {
+      StockLocationLineRepository stockLocationLineRepository,
+      ProductCategoryService productCategoryService) {
     this.productRepository = productRepository;
     this.stockLocationLineRepository = stockLocationLineRepository;
+    this.productCategoryService = productCategoryService;
   }
 
   @Override
@@ -68,7 +74,7 @@ public class DepRateCalculationProductServiceImpl implements DepRateCalculationP
                       + " AND self.dtype = 'Product'"
                       + " AND self.stockManaged IS TRUE"
                       + " AND self.stockRotationCategory IS NOT NULL")
-              .bind("productCategorySet", unitCostCalculation.getProductCategorySet())
+              .bind("productCategorySet", expandProductCategorySet(unitCostCalculation))
               .bind("productTypeSelect", ProductRepository.PRODUCT_TYPE_STORABLE)
               .fetch());
     }
@@ -127,6 +133,19 @@ public class DepRateCalculationProductServiceImpl implements DepRateCalculationP
     return finalProductSet;
   }
 
+  protected Set<ProductCategory> expandProductCategorySet(UnitCostCalculation unitCostCalculation)
+      throws AxelorException {
+    Set<ProductCategory> productCategorySet =
+        new HashSet<>(unitCostCalculation.getProductCategorySet());
+    if (unitCostCalculation.getTakeInAccountSubCategories()) {
+      for (ProductCategory productCategory : unitCostCalculation.getProductCategorySet()) {
+        productCategorySet.addAll(
+            productCategoryService.fetchChildrenCategoryList(productCategory));
+      }
+    }
+    return productCategorySet;
+  }
+
   protected boolean hasAnyFilter(UnitCostCalculation unitCostCalculation) {
     return !unitCostCalculation.getProductSet().isEmpty()
         || !unitCostCalculation.getProductCategorySet().isEmpty()
@@ -136,7 +155,8 @@ public class DepRateCalculationProductServiceImpl implements DepRateCalculationP
   }
 
   @Override
-  public String createDepreciationProductSetDomain(UnitCostCalculation unitCostCalculation) {
+  public String createDepreciationProductSetDomain(UnitCostCalculation unitCostCalculation)
+      throws AxelorException {
     StringBuilder domain =
         new StringBuilder(
             "self.productTypeSelect = 'storable' AND self.dtype = 'Product' AND self.stockManaged IS TRUE AND self.stockRotationCategory IS NOT NULL");
@@ -144,15 +164,15 @@ public class DepRateCalculationProductServiceImpl implements DepRateCalculationP
     if (unitCostCalculation.getProductCategorySet() != null
         && !unitCostCalculation.getProductCategorySet().isEmpty()) {
       domain
-          .append(" AND self.productCategory IN (")
-          .append(StringHelper.getIdListString(unitCostCalculation.getProductCategorySet()))
+          .append(" AND self.productCategory.id IN (")
+          .append(StringHelper.getIdListString(expandProductCategorySet(unitCostCalculation)))
           .append(")");
     }
 
     if (unitCostCalculation.getProductFamilySet() != null
         && !unitCostCalculation.getProductFamilySet().isEmpty()) {
       domain
-          .append(" AND self.productFamily IN (")
+          .append(" AND self.productFamily.id IN (")
           .append(StringHelper.getIdListString(unitCostCalculation.getProductFamilySet()))
           .append(")");
     }
@@ -160,7 +180,7 @@ public class DepRateCalculationProductServiceImpl implements DepRateCalculationP
     if (unitCostCalculation.getStockRotationCategorySet() != null
         && !unitCostCalculation.getStockRotationCategorySet().isEmpty()) {
       domain
-          .append(" AND self.stockRotationCategory IN (")
+          .append(" AND self.stockRotationCategory.id IN (")
           .append(StringHelper.getIdListString(unitCostCalculation.getStockRotationCategorySet()))
           .append(")");
     }

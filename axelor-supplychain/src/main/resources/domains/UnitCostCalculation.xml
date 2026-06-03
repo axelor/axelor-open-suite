@@ -37,6 +37,10 @@
     <boolean name="customerOk" title="Customer dedicated" default="false"
       help="Include only stock locations dedicated to customers"/>
 
+    <boolean name="takeInAccountSubCategories" title="Take in account sub categories"
+      default="false"
+      help="If checked, the selected product categories include the products of all their sub-categories, and a depreciation rate configuration set on a parent category applies to the products of its sub-categories"/>
+
     <extra-code><![CDATA[
 		// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;

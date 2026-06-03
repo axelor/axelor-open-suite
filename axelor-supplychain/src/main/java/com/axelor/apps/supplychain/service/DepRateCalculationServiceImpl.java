@@ -154,7 +154,9 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
       List<DepreciationRateConfig> configs)
       throws AxelorException {
 
-    AggregatedRates aggregated = depRateAggregationService.aggregate(product, configs);
+    AggregatedRates aggregated =
+        depRateAggregationService.aggregate(
+            product, configs, unitCostCalculation.getTakeInAccountSubCategories());
     UnitCostCalcLine unitCostCalcLine = createUnitCostCalcLine(product, aggregated);
 
     unitCostCalculation.addUnitCostCalcLineListItem(unitCostCalcLine);
