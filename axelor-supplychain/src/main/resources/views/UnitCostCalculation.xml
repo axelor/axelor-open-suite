@@ -236,10 +236,8 @@
 
   <action-view name="action-depreciation-rate-calculation-view-family-summary"
     title="Revaluation by product family" model="com.axelor.apps.supplychain.db.UnitCostCalcLine">
-    <view type="grid" name="depreciation-unit-cost-calc-line-family-summary-grid"/>
-    <domain>self.unitCostCalculation.id = :id</domain>
-    <context name="nbDecimalDigitForUnitPrice"
-      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <view type="custom" name="depreciation-unit-cost-calc-line-family-summary-custom"/>
+    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-attrs name="action-unit-cost-calculation-attrs-set-company-required">
