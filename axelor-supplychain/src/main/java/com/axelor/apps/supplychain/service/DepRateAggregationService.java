@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.supplychain.db.DepreciationRateConfig;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Resolves and combines every applicable {@link DepreciationRateConfig} for a product across its
@@ -31,14 +32,25 @@ import java.math.BigDecimal;
 public interface DepRateAggregationService {
 
   /**
-   * Aggregate every applicable config into a single set of rates. Per-config multipliers are
-   * combined as {@code (1 - r/100)} for depreciation and {@code (1 + r/100)} for valorization; the
-   * net signed result drives {@link AggregatedRates#typeSelect()}, with bounds taken as the
-   * intersection {@code max(mins)} / {@code min(maxes)} of configs that define them.
+   * Loads every persisted rate configuration. Callers looping over many products should fetch once
+   * and reuse the list across {@link #aggregate(Product, List)} calls instead of re-querying the
+   * configuration table for each product.
    */
-  AggregatedRates aggregate(Product product) throws AxelorException;
+  List<DepreciationRateConfig> fetchConfigs();
 
-  /** Immutable result of {@link #aggregate(Product)}. */
+  /**
+   * Aggregate every config applicable to the product into a single set of rates. Per-config
+   * multipliers are combined as {@code (1 - r/100)} for depreciation and {@code (1 + r/100)} for
+   * valorization; the net signed result drives {@link AggregatedRates#typeSelect()}, with bounds
+   * taken as the intersection {@code max(mins)} / {@code min(maxes)} of configs that define them.
+   *
+   * <p>The configs must be attached to the current persistence context: their dimensions are lazy,
+   * so re-fetch them after any {@code JPA.clear()}.
+   */
+  AggregatedRates aggregate(Product product, List<DepreciationRateConfig> configs)
+      throws AxelorException;
+
+  /** Immutable result of {@link #aggregate(Product, List)}. */
   record AggregatedRates(
       BigDecimal minRate, BigDecimal maxRate, BigDecimal costToApply, int typeSelect) {}
 }

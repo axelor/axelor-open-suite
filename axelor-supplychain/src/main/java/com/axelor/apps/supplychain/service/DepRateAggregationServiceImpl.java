@@ -51,8 +51,14 @@ public class DepRateAggregationServiceImpl implements DepRateAggregationService 
   }
 
   @Override
-  public AggregatedRates aggregate(Product product) throws AxelorException {
-    List<DepreciationRateConfig> configs = findApplicableConfigs(product);
+  public List<DepreciationRateConfig> fetchConfigs() {
+    return depreciationRateConfigRepository.all().fetch();
+  }
+
+  @Override
+  public AggregatedRates aggregate(Product product, List<DepreciationRateConfig> allConfigs)
+      throws AxelorException {
+    List<DepreciationRateConfig> configs = findApplicableConfigs(product, allConfigs);
     if (configs.isEmpty()) {
       return new AggregatedRates(
           null, null, BigDecimal.ZERO, DepreciationRateConfigRepository.TYPE_DEPRECIATION);
@@ -98,10 +104,10 @@ public class DepRateAggregationServiceImpl implements DepRateAggregationService 
    * satisfy is skipped. Category matching honors the parent chain, so a config set on a parent
    * category still applies to products in its sub-categories.
    */
-  protected List<DepreciationRateConfig> findApplicableConfigs(Product product)
-      throws AxelorException {
+  protected List<DepreciationRateConfig> findApplicableConfigs(
+      Product product, List<DepreciationRateConfig> allConfigs) throws AxelorException {
     List<DepreciationRateConfig> applicableConfigs = new ArrayList<>();
-    for (DepreciationRateConfig config : depreciationRateConfigRepository.all().fetch()) {
+    for (DepreciationRateConfig config : allConfigs) {
       if (isApplicable(config, product)) {
         applicableConfigs.add(config);
       }

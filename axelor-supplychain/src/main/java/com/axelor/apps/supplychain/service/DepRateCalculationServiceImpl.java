@@ -32,6 +32,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.translation.ITranslation;
+import com.axelor.apps.supplychain.db.DepreciationRateConfig;
 import com.axelor.apps.supplychain.db.UnitCostCalcLine;
 import com.axelor.apps.supplychain.db.UnitCostCalculation;
 import com.axelor.apps.supplychain.db.repo.DepreciationRateConfigRepository;
@@ -130,23 +131,30 @@ public class DepRateCalculationServiceImpl implements DepRateCalculationService 
 
   protected void rateCalculation(UnitCostCalculation unitCostCalculation) throws AxelorException {
     int i = 0;
+    List<DepreciationRateConfig> configs = depRateAggregationService.fetchConfigs();
     for (Product product : depRateCalculationProductService.getProducts(unitCostCalculation)) {
 
       rateCalculation(
           unitCostCalculationRepository.find(unitCostCalculation.getId()),
-          productRepository.find(product.getId()));
+          productRepository.find(product.getId()),
+          configs);
 
       if (++i % AbstractBatch.FETCH_LIMIT == 0) {
         JPA.clear();
+        // The clear detached the configs and their dimensions are lazy: fetch a fresh list.
+        configs = depRateAggregationService.fetchConfigs();
       }
     }
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void rateCalculation(UnitCostCalculation unitCostCalculation, Product product)
+  protected void rateCalculation(
+      UnitCostCalculation unitCostCalculation,
+      Product product,
+      List<DepreciationRateConfig> configs)
       throws AxelorException {
 
-    AggregatedRates aggregated = depRateAggregationService.aggregate(product);
+    AggregatedRates aggregated = depRateAggregationService.aggregate(product, configs);
     UnitCostCalcLine unitCostCalcLine = createUnitCostCalcLine(product, aggregated);
 
     unitCostCalculation.addUnitCostCalcLineListItem(unitCostCalcLine);
