@@ -90,56 +90,78 @@ public class DepRateAggregationServiceImpl implements DepRateAggregationService 
     return new AggregatedRates(minRate, maxRate, costToApply, typeSelect);
   }
 
+  /**
+   * Returns every config that applies to the product. A config can now carry several dimensions
+   * (product, product category, product family, stock rotation category) on the same line: it
+   * applies only when at least one dimension is set and the product matches <b>all</b> the
+   * dimensions set on the line (AND semantics). A line with a dimension the product does not
+   * satisfy is skipped. Category matching honors the parent chain, so a config set on a parent
+   * category still applies to products in its sub-categories.
+   */
   protected List<DepreciationRateConfig> findApplicableConfigs(Product product)
       throws AxelorException {
-    List<DepreciationRateConfig> configs = new ArrayList<>();
-    addIfPresent(configs, findConfigBy("product", product));
-    addIfPresent(configs, findMostSpecificCategoryConfig(product.getProductCategory()));
-    addIfPresent(configs, findConfigBy("productFamily", product.getProductFamily()));
-    addIfPresent(
-        configs, findConfigBy("stockRotationCategory", product.getStockRotationCategory()));
-    return configs;
+    List<DepreciationRateConfig> applicableConfigs = new ArrayList<>();
+    for (DepreciationRateConfig config : depreciationRateConfigRepository.all().fetch()) {
+      if (isApplicable(config, product)) {
+        applicableConfigs.add(config);
+      }
+    }
+    return applicableConfigs;
   }
 
   /**
-   * Picks the most specific config in the category chain. With the new multi-dimensional
-   * aggregation model only one category contributes per product; resolving leaf-most preserves
-   * intent (a config on a sub-category overrides one on its parent). Uses {@link
-   * ProductCategoryService#fetchParentCategoryList} for cycle-safe traversal.
+   * A config applies to a product when it sets at least one dimension and the product matches every
+   * dimension set on the line (AND semantics). A line carrying a dimension the product does not
+   * satisfy is skipped. Category matching honors the parent chain (see {@link
+   * #categoryMatches(ProductCategory, ProductCategory)}).
    */
-  protected DepreciationRateConfig findMostSpecificCategoryConfig(ProductCategory category)
+  protected boolean isApplicable(DepreciationRateConfig config, Product product)
       throws AxelorException {
-    if (category == null) {
-      return null;
-    }
-    DepreciationRateConfig config = findConfigBy("productCategory", category);
-    if (config != null) {
-      return config;
-    }
-    for (ProductCategory parent : productCategoryService.fetchParentCategoryList(category)) {
-      config = findConfigBy("productCategory", parent);
-      if (config != null) {
-        return config;
+    boolean hasDimension = false;
+
+    if (config.getProduct() != null) {
+      hasDimension = true;
+      if (!config.getProduct().equals(product)) {
+        return false;
       }
     }
-    return null;
+    if (config.getProductCategory() != null) {
+      hasDimension = true;
+      if (!categoryMatches(config.getProductCategory(), product.getProductCategory())) {
+        return false;
+      }
+    }
+    if (config.getProductFamily() != null) {
+      hasDimension = true;
+      if (!config.getProductFamily().equals(product.getProductFamily())) {
+        return false;
+      }
+    }
+    if (config.getStockRotationCategory() != null) {
+      hasDimension = true;
+      if (!config.getStockRotationCategory().equals(product.getStockRotationCategory())) {
+        return false;
+      }
+    }
+
+    return hasDimension;
   }
 
-  protected DepreciationRateConfig findConfigBy(String field, Object value) {
-    if (value == null) {
-      return null;
+  /**
+   * A product matches a config category when its own category is that category or one of its
+   * descendants (i.e. the config category belongs to the product category parent chain), so a
+   * config set on a parent category still applies to products in its sub-categories. Uses {@link
+   * ProductCategoryService#fetchParentCategoryList} for cycle-safe traversal.
+   */
+  protected boolean categoryMatches(ProductCategory configCategory, ProductCategory productCategory)
+      throws AxelorException {
+    if (productCategory == null) {
+      return false;
     }
-    return depreciationRateConfigRepository
-        .all()
-        .filter("self." + field + " = :value")
-        .bind("value", value)
-        .fetchOne();
-  }
-
-  protected void addIfPresent(List<DepreciationRateConfig> configs, DepreciationRateConfig config) {
-    if (config != null) {
-      configs.add(config);
+    if (configCategory.equals(productCategory)) {
+      return true;
     }
+    return productCategoryService.fetchParentCategoryList(productCategory).contains(configCategory);
   }
 
   protected BigDecimal signedRateFactor(DepreciationRateConfig config) {
