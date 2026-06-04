@@ -44,6 +44,8 @@
       title="Tax Equiv"/>
     <many-to-one name="vatExemptionReason"
       ref="com.axelor.apps.account.db.VatExemptionReason" title="VAT exemption reason"/>
+    <decimal name="ecoTaxAmount" title="Eco-tax amount" min="0"/>
+    <string name="ecoTaxMention" title="Eco-tax mention"/>
     <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="3" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." precision="20" scale="3" readonly="true"/>
 

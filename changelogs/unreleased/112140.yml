@@ -1,0 +1,21 @@
+---
+title: "Sale order line: new eco-tax amount and mention fields, with default defined on product."
+module: axelor-sale
+developer: |
+  - Product: fields defaultEcoTaxAmount and defaultEcoTaxMention are now defined in Base.
+  - AppBase: new field enableEcoTax.
+  - SaleOrderLine: new fields ecoTaxAmount and ecoTaxMention.
+  - SaleOrder report: eco-tax mention is printed below the line description.
+  - Supplychain invoice generation: eco-tax amount and mention are copied from SaleOrderLine to InvoiceLine.
+
+  Script to run :
+  ALTER TABLE studio_app_base
+    ADD COLUMN IF NOT EXISTS enable_eco_tax BOOLEAN DEFAULT FALSE;
+
+  ALTER TABLE sale_sale_order_line
+    ADD COLUMN IF NOT EXISTS eco_tax_amount DECIMAL(20,10),
+    ADD COLUMN IF NOT EXISTS eco_tax_mention VARCHAR(255);
+
+  DELETE FROM meta_view
+  WHERE name = 'product-form'
+    AND xml_id = 'account-product-form';

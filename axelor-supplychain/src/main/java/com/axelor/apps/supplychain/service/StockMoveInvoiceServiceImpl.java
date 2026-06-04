@@ -528,6 +528,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     InvoiceLine invoiceLine = null;
     if (invoiceLines != null && !invoiceLines.isEmpty()) {
       invoiceLine = invoiceLines.get(0);
+      copyEcoTaxInformation(invoiceLine, saleOrderLine);
       if (!stockMoveLine.getIsMergedStockMoveLine()) {
         // not a consolidated line so we can set the reference.
         invoiceLine.setStockMoveLine(stockMoveLine);
@@ -569,6 +570,17 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       }
     }
     return invoiceLine;
+  }
+
+  protected void copyEcoTaxInformation(InvoiceLine invoiceLine, SaleOrderLine saleOrderLine) {
+    if (invoiceLine == null
+        || saleOrderLine == null
+        || !Boolean.TRUE.equals(appBaseService.getAppBase().getEnableEcoTax())) {
+      return;
+    }
+
+    invoiceLine.setEcoTaxAmount(saleOrderLine.getEcoTaxAmount());
+    invoiceLine.setEcoTaxMention(saleOrderLine.getEcoTaxMention());
   }
 
   protected void deleteConsolidatedStockMoveLine(StockMoveLine stockMoveLine) {

@@ -81,6 +81,7 @@
         <field name="storeStreets" widget="boolean-switch"/>
         <field name="isSharedAddress" widget="boolean-switch"/>
         <field name="enableTaxNumbers" widget="boolean-switch"/>
+        <field name="enableEcoTax" widget="boolean-switch"/>
         <field name="defaultAddressTemplate"/>
         <panel-related field="companySpecificProductFieldsSet"
           domain="self.metaModel.fullName = 'com.axelor.apps.base.db.Product'
