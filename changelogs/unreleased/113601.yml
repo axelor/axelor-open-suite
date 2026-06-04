@@ -1,0 +1,3 @@
+---
+title: "Analytic move line query: fixed analytic account value not displayed in reverse query parameter list in readonly mode."
+module: axelor-account
