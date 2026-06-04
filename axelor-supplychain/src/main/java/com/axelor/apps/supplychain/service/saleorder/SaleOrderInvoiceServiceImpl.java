@@ -682,6 +682,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           public List<InvoiceLine> creates() throws AxelorException {
 
             InvoiceLine invoiceLine = this.createInvoiceLine();
+            copyEcoTaxInformation(invoiceLine, saleOrderLine);
 
             List<InvoiceLine> invoiceLines = new ArrayList<>();
             invoiceLines.add(invoiceLine);
@@ -691,6 +692,17 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         };
 
     return invoiceLineGenerator.creates();
+  }
+
+  protected void copyEcoTaxInformation(InvoiceLine invoiceLine, SaleOrderLine saleOrderLine) {
+    if (invoiceLine == null
+        || saleOrderLine == null
+        || !Boolean.TRUE.equals(appBaseService.getAppBase().getEnableEcoTax())) {
+      return;
+    }
+
+    invoiceLine.setEcoTaxAmount(saleOrderLine.getEcoTaxAmount());
+    invoiceLine.setEcoTaxMention(saleOrderLine.getEcoTaxMention());
   }
 
   @Override

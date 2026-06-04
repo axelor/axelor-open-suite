@@ -121,6 +121,7 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     saleOrderLineMap.put("typeSelect", SaleOrderLineRepository.TYPE_NORMAL);
 
     saleOrderLineMap.putAll(fillPrice(saleOrderLine, saleOrder));
+    saleOrderLineMap.putAll(fillEcoTaxInformation(saleOrderLine));
     saleOrderLineMap.putAll(
         saleOrderLineComplementaryProductService.fillComplementaryProductList(saleOrderLine));
     saleOrderLineMap.putAll(translateProductNameAndDescription(saleOrderLine, saleOrder));
@@ -292,6 +293,22 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
   }
 
   @Override
+  public Map<String, Object> fillEcoTaxInformation(SaleOrderLine saleOrderLine) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+
+    Product product = saleOrderLine.getProduct();
+    if (product == null || !Boolean.TRUE.equals(appBaseService.getAppBase().getEnableEcoTax())) {
+      return saleOrderLineMap;
+    }
+
+    saleOrderLine.setEcoTaxAmount(product.getDefaultEcoTaxAmount());
+    saleOrderLine.setEcoTaxMention(product.getDefaultEcoTaxMention());
+    saleOrderLineMap.put("ecoTaxAmount", saleOrderLine.getEcoTaxAmount());
+    saleOrderLineMap.put("ecoTaxMention", saleOrderLine.getEcoTaxMention());
+    return saleOrderLineMap;
+  }
+
+  @Override
   public Map<String, Object> resetProductInformation(SaleOrderLine line) {
     Map<String, Object> saleOrderLineMap = resetProductInformationMap(line);
 
@@ -317,6 +334,8 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     saleOrderLineMap.put("companyInTaxTotal", null);
     saleOrderLineMap.put("companyExTaxTotal", null);
     saleOrderLineMap.put("description", null);
+    saleOrderLineMap.put("ecoTaxAmount", null);
+    saleOrderLineMap.put("ecoTaxMention", null);
     saleOrderLineMap.put("typeSelect", SaleOrderLineRepository.TYPE_NORMAL);
     if (CollectionUtils.isNotEmpty(line.getSelectedComplementaryProductList())) {
       line.clearSelectedComplementaryProductList();
