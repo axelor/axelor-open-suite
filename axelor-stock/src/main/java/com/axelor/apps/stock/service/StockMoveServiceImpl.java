@@ -60,6 +60,7 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.stock.utils.BatchProcessorHelper;
 import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -663,7 +664,8 @@ public class StockMoveServiceImpl implements StockMoveService {
           stockMove);
     }
     try {
-      Beans.get(TemplateMessageService.class).generateAndSendMessage(stockMove, template);
+      Beans.get(TemplateMessageService.class)
+          .generateAndSendMessage(stockMove, JPA.find(Template.class, template.getId()));
     } catch (Exception e) {
       TraceBackService.trace(
           new AxelorMessageException(
