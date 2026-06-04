@@ -296,7 +296,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                     .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
           }
           amountToInvoice =
-              amountToInvoice.add(qtyToInvoice.multiply(priceMap.get(saleOrderLineId)));
+              amountToInvoice.add(
+                  currencyScaleService.getScaledValue(
+                      saleOrder, qtyToInvoice.multiply(priceMap.get(saleOrderLineId))));
         }
       }
     } else if (operationSelect == SaleOrderRepository.INVOICE_ADVANCE_PAYMENT && isPercent) {
