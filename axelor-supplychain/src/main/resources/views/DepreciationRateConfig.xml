@@ -9,14 +9,10 @@
       <hilite if="typeSelect == 1" color="danger"/>
       <hilite if="typeSelect == 2" color="success"/>
     </field>
-    <field name="product"
-      readonlyIf="productCategory || productFamily || stockRotationCategory"/>
-    <field name="productCategory"
-      readonlyIf="productFamily || stockRotationCategory || product"/>
-    <field name="productFamily"
-      readonlyIf="productCategory || stockRotationCategory || product"/>
-    <field name="stockRotationCategory" widget="Tag" x-color-field="color"
-      readonlyIf="productCategory || productFamily || product"/>
+    <field name="product"/>
+    <field name="productCategory"/>
+    <field name="productFamily"/>
+    <field name="stockRotationCategory" widget="Tag" x-color-field="color"/>
     <field name="minRate" x-scale="2"/>
     <field name="maxRate" x-scale="2"/>
     <field name="defaultRate" x-scale="2"/>
@@ -38,17 +34,14 @@
         </field>
       </panel>
       <panel name="levelPanel" colSpan="12" title="Configuration Level"
-        help="Choose one level: specific product, product category, product family, or stock rotation category">
-        <field name="product" grid-view="product-grid" form-view="product-form"
-          hideIf="productCategory || productFamily || stockRotationCategory" colSpan="12"/>
+        help="Set one or more dimensions (product, product category, product family, stock rotation category). The configuration applies to a product only if it matches all the dimensions set on the line.">
+        <field name="product" grid-view="product-grid" form-view="product-form" colSpan="12"/>
         <field name="productCategory" grid-view="product-category-grid"
-          form-view="product-category-form"
-          hideIf="productFamily || stockRotationCategory || product" colSpan="12"/>
-        <field name="productFamily"
-          hideIf="productCategory || stockRotationCategory || product" colSpan="12"/>
+          form-view="product-category-form" colSpan="12"/>
+        <field name="productFamily" colSpan="12"/>
         <field name="stockRotationCategory" widget="Tag" x-color-field="color"
           grid-view="stock-rotation-category-grid" form-view="stock-rotation-category-form"
-          hideIf="productCategory || productFamily || product" colSpan="12"/>
+          colSpan="12"/>
       </panel>
       <panel name="ratesPanel" colSpan="12" title="Rates">
         <field name="minRate" colSpan="4"

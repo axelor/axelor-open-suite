@@ -638,7 +638,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     if (unitCostCalculation.getProductCategorySet() != null
         && !unitCostCalculation.getProductCategorySet().isEmpty()) {
       domain +=
-          " AND self.productCategory IN ("
+          " AND self.productCategory.id IN ("
               + StringHelper.getIdListString(unitCostCalculation.getProductCategorySet())
               + ")";
     }
@@ -646,7 +646,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     if (unitCostCalculation.getProductFamilySet() != null
         && !unitCostCalculation.getProductFamilySet().isEmpty()) {
       domain +=
-          " AND self.productFamily IN ("
+          " AND self.productFamily.id IN ("
               + StringHelper.getIdListString(unitCostCalculation.getProductFamilySet())
               + ")";
     }

@@ -42,19 +42,32 @@
     <field name="valuedGap" readonly="true"/>
   </grid>
 
-  <grid name="depreciation-unit-cost-calc-line-family-summary-grid"
-    title="Revaluation by product family" model="com.axelor.apps.supplychain.db.UnitCostCalcLine"
-    groupBy="product.productFamily" orderBy="product.productFamily.code" canNew="false"
-    canEdit="false" canDelete="false">
-    <field name="product.productFamily" title="Product family"/>
-    <field name="product.code" title="Product code"/>
-    <field name="product.name" title="Product name"/>
-    <field name="totalPrice" title="Total value" aggregate="sum"
-      x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="valuedGap" title="Total value gap" aggregate="sum"
-      x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
-  </grid>
+  <custom name="depreciation-unit-cost-calc-line-family-summary-custom"
+    title="Revaluation by product family">
+
+    <field name="productFamily" title="Product family" type="string"/>
+    <field name="totalPrice" title="Total value" type="decimal" x-scale="numberOfDecimals"/>
+    <field name="valuedGap" title="Total value gap" type="decimal" x-scale="numberOfDecimals"/>
+
+    <dataset type="jpql"><![CDATA[
+      SELECT
+        _family.name AS productFamily,
+        SUM(self.totalPrice) AS totalPrice,
+        SUM(self.valuedGap) AS valuedGap,
+        (SELECT _appBase.nbDecimalDigitForUnitPrice FROM AppBase _appBase) AS numberOfDecimals
+      FROM UnitCostCalcLine self
+      LEFT JOIN self.product.productFamily AS _family
+      WHERE self.unitCostCalculation.id = :id
+      GROUP BY _family.id, _family.code, _family.name
+      ORDER BY _family.code
+    ]]></dataset>
+
+    <template><![CDATA[
+      <report-table data='data' columns='productFamily,totalPrice,valuedGap'
+        sums='totalPrice,valuedGap'/>
+    ]]></template>
+
+  </custom>
 
   <form name="unit-cost-calc-line-form" title="Results"
     model="com.axelor.apps.supplychain.db.UnitCostCalcLine" width="large"

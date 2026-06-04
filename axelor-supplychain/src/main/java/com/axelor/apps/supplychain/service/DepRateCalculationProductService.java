@@ -31,7 +31,9 @@ public interface DepRateCalculationProductService {
    * Build the product set domain used on {@link UnitCostCalculation#getProductSet()} selection in
    * the UI for a depreciation (or cost review) calculation. Filters storable managed products that
    * have a stock rotation category assigned and that match the calculation's category/family
-   * filters.
+   * filters. When {@link UnitCostCalculation#getTakeInAccountSubCategories()} is checked, the
+   * selected categories are expanded to their whole sub-category tree.
    */
-  String createDepreciationProductSetDomain(UnitCostCalculation unitCostCalculation);
+  String createDepreciationProductSetDomain(UnitCostCalculation unitCostCalculation)
+      throws AxelorException;
 }
