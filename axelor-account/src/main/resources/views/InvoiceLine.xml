@@ -326,6 +326,7 @@
     <action name="action-invoice-line-method-set-scale"/>
     <action name="action-invoice-line-attrs-display-coefficient"/>
     <action name="action-invoice-line-attrs-compute-is-global-discount"/>
+    <action name="action-invoice-line-method-get-product-information"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-onload">
