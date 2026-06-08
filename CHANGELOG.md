@@ -694,11 +694,13 @@ UPDATE account_invoice_product_statement SET type_list = 'mixed' WHERE type_list
 UPDATE account_invoice_product_statement SET type_list = 'mixed'
 WHERE type_list LIKE '%storable%' AND type_list LIKE '%service%' AND type_list != 'mixed';
 
+UPDATE account_account_config
+SET default_invoice_category_select = 'mixed'
+WHERE default_invoice_category_select IS NULL;
+
 UPDATE account_invoice i
 SET invoice_category_select = 'goods'
-WHERE i.operation_type_select IN (1, 3)
-  AND i.operation_sub_type_select = 1
-  AND i.status_select IN (2, 3)
+WHERE i.status_select IN (2, 3)
   AND i.invoice_category_select IS NULL
   AND EXISTS (
     SELECT 1 FROM account_invoice_line il WHERE il.invoice = i.id
@@ -712,9 +714,7 @@ WHERE i.operation_type_select IN (1, 3)
 
 UPDATE account_invoice i
 SET invoice_category_select = 'services'
-WHERE i.operation_type_select IN (1, 3)
-  AND i.operation_sub_type_select = 1
-  AND i.status_select IN (2, 3)
+WHERE i.status_select IN (2, 3)
   AND i.invoice_category_select IS NULL
   AND EXISTS (
     SELECT 1 FROM account_invoice_line il WHERE il.invoice = i.id
@@ -730,8 +730,6 @@ UPDATE account_invoice i
 SET invoice_category_select = ac.default_invoice_category_select
 FROM account_account_config ac
 WHERE ac.company = i.company
-  AND i.operation_type_select IN (1, 3)
-  AND i.operation_sub_type_select = 1
   AND i.status_select IN (2, 3)
   AND i.invoice_category_select IS NULL
   AND ac.default_invoice_category_select IS NOT NULL
