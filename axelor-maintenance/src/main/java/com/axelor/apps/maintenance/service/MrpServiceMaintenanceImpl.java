@@ -154,12 +154,11 @@ public class MrpServiceMaintenanceImpl extends MrpServiceProductionImpl {
     this.createMaintenanceOrderMrpLines();
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   protected void createMaintenanceOrderMrpLines() throws AxelorException {
 
-    // Re-attach this.mrp into the current transaction session. super.completeMrp invokes several
-    // @Transactional sub-methods (createAvailableStockMrpLines, createPurchaseMrpLines, etc.) that
-    // commit/clear before returning, leaving this.mrp detached. Without this refresh, the lazy
+    // Re-attach this.mrp into the current session. super.completeMrp invokes several @Transactional
+    // sub-methods (createAvailableStockMrpLines, createPurchaseMrpLines, etc.) that commit/clear
+    // before returning, leaving this.mrp detached. Without this refresh, the lazy
     // mrp.getProductSet() access inside getProductList() throws LazyInitializationException.
     this.mrp = mrpRepository.find(this.mrp.getId());
 
