@@ -519,6 +519,9 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     BigDecimal taxTotal = invoice.getTaxTotal();
 
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
+      if (invoiceLineTax.getReverseCharged()) {
+        continue;
+      }
       TaxLine taxLine = invoiceLineTax.getTaxLine();
       List<InvoiceLine> invoiceLineList = invoiceLineTax.getInvoice().getInvoiceLineList();
       long noOfLines =
