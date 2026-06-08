@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed total cost price is not updated when modifying sale order line list qty."
+module: axelor-sale
