@@ -5,7 +5,7 @@
 
   <grid name="ordered-range-grid" title="Ordered range" editable="true"
     model="com.axelor.apps.intervention.db.OrderedRange" orderBy="sequence" canMove="true">
-    <field name="rangeVal" grid-view="range-form" form-view="range-form"/>
+    <field name="rangeVal" grid-view="range-grid" form-view="range-form"/>
     <field name="sequence"/>
   </grid>
 
