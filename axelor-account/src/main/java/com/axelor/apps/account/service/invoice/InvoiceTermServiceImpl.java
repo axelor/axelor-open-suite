@@ -1367,16 +1367,21 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       boolean isRefund)
       throws AxelorException {
 
+    BigDecimal companyAmount = reconcile != null ? reconcile.getAmount() : amount;
     if (invoiceTerm.getInvoice() != null) {
       InvoicePayment invoicePayment =
           invoicePaymentCreateService.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
+      if (paymentSession != null && paymentSession.getPaymentDate() != null) {
+        invoicePayment.setPaymentDate(paymentSession.getPaymentDate());
+      }
       invoicePayment.setReconcile(reconcile);
 
       List<InvoiceTerm> invoiceTermList = new ArrayList<InvoiceTerm>();
 
       invoiceTermList.add(invoiceTerm);
 
-      reconcileService.updateInvoiceTerms(invoiceTermList, invoicePayment, amount, reconcile);
+      reconcileService.updateInvoiceTerms(
+          invoiceTermList, invoicePayment, companyAmount, reconcile);
     } else {
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
     }
