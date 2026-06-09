@@ -1,0 +1,3 @@
+---
+title: "Sale order: removed duplicated AppBaseService parameter in SaleOrderOnChangeSupplychainServiceImpl constructor."
+module: axelor-supplychain
