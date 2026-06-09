@@ -23,6 +23,8 @@ import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
@@ -708,7 +710,12 @@ public class BudgetServiceImpl implements BudgetService {
         if ((move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
                 || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
             && !moveLine.getIsBudgetImputed()) {
-          updateBudgetLineAmounts(budgetLine, budget, budgetDistribution.getAmount());
+          Invoice invoice = move.getInvoice();
+          if (invoice != null && isLinkedToOrder(invoice)) {
+            updateBudgetLineAmountWithPo(budgetLine, budget, budgetDistribution.getAmount());
+          } else {
+            updateBudgetLineAmounts(budgetLine, budget, budgetDistribution.getAmount());
+          }
           return true;
         } else if (move.getStatusSelect() == MoveRepository.STATUS_CANCELED) {
           updateBudgetLineAmounts(budgetLine, budget, budgetDistribution.getAmount().negate());
@@ -716,6 +723,17 @@ public class BudgetServiceImpl implements BudgetService {
       }
     }
     return false;
+  }
+
+  protected boolean isLinkedToOrder(Invoice invoice) {
+    if (invoice.getPurchaseOrder() != null || invoice.getSaleOrder() != null) {
+      return true;
+    }
+    return !CollectionUtils.isEmpty(invoice.getInvoiceLineList())
+        && invoice.getInvoiceLineList().stream()
+            .anyMatch(
+                (InvoiceLine line) ->
+                    line.getPurchaseOrderLine() != null || line.getSaleOrderLine() != null);
   }
 
   @Override
