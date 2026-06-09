@@ -174,8 +174,7 @@ public class MrpServiceMaintenanceImpl extends MrpServiceProductionImpl {
     List<Integer> statusList = StringHelper.getIntegerList(statusSelect);
 
     if (statusList.isEmpty()) {
-      statusList.add(ManufOrderRepository.STATUS_PLANNED);
-      statusList.add(ManufOrderRepository.STATUS_IN_PROGRESS);
+      statusList.add(ManufOrderRepository.STATUS_FINISHED);
     }
 
     List<ManufOrder> maintenanceOrderList =
