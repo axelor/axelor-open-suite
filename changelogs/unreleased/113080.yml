@@ -1,0 +1,3 @@
+---
+title: "Stock correction: fixed error when validating a stock correction for non stock managed product."
+module: axelor-stock
