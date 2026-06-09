@@ -47,7 +47,11 @@ import com.axelor.apps.budget.db.repo.BudgetLineRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.date.LocalDateHelper;
@@ -152,26 +156,33 @@ public class BudgetServiceImpl implements BudgetService {
         LocalDate orderDate = null;
         Integer statusSelect = 0;
         BigDecimal amountInvoiced = BigDecimal.ZERO;
-        if (budgetDistribution.getPurchaseOrderLine() != null
-            && budgetDistribution.getPurchaseOrderLine().getPurchaseOrder() != null) {
+        PurchaseOrderLine purchaseOrderLine = budgetDistribution.getPurchaseOrderLine();
+        SaleOrderLine saleOrderLine = budgetDistribution.getSaleOrderLine();
+
+        if (purchaseOrderLine != null && purchaseOrderLine.getPurchaseOrder() != null) {
           isPurchase = true;
-          orderDate = budgetDistribution.getPurchaseOrderLine().getPurchaseOrder().getOrderDate();
-          statusSelect =
-              budgetDistribution.getPurchaseOrderLine().getPurchaseOrder().getStatusSelect();
+          PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+          statusSelect = purchaseOrder.getStatusSelect();
+          if (statusSelect == PurchaseOrderRepository.STATUS_DRAFT) {
+            continue;
+          }
+          orderDate = purchaseOrder.getOrderDate();
           amountInvoiced =
-              currencyScaleService.getCompanyScaledValue(
-                  budget,
-                  budgetDistribution.getPurchaseOrderLine().getPurchaseOrder().getAmountInvoiced());
-        } else if (budgetDistribution.getSaleOrderLine() != null
-            && budgetDistribution.getSaleOrderLine().getSaleOrder() != null) {
-          orderDate =
-              budgetDistribution.getSaleOrderLine().getSaleOrder().getOrderDate() != null
-                  ? budgetDistribution.getSaleOrderLine().getSaleOrder().getOrderDate()
-                  : budgetDistribution.getSaleOrderLine().getSaleOrder().getCreationDate();
-          statusSelect = budgetDistribution.getSaleOrderLine().getSaleOrder().getStatusSelect();
-          amountInvoiced =
-              currencyScaleService.getCompanyScaledValue(
-                  budget, budgetDistribution.getSaleOrderLine().getSaleOrder().getAmountInvoiced());
+              currencyScaleService.getCompanyScaledValue(budget, purchaseOrder.getAmountInvoiced());
+        } else {
+          if (saleOrderLine != null && saleOrderLine.getSaleOrder() != null) {
+            SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+            statusSelect = saleOrder.getStatusSelect();
+            if (statusSelect == SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
+              continue;
+            }
+            orderDate =
+                saleOrder.getOrderDate() != null
+                    ? saleOrder.getOrderDate()
+                    : saleOrder.getCreationDate();
+            amountInvoiced =
+                currencyScaleService.getCompanyScaledValue(budget, saleOrder.getAmountInvoiced());
+          }
         }
         if (orderDate != null) {
           for (BudgetLine budgetLine : budgetLineList) {
