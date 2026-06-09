@@ -1212,9 +1212,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
 
     Reconcile invoiceTermsReconcile =
-        reconcileService.createReconcile(debitMoveLine, creditMoveLine, pair.getRight(), true);
-
-    reconcileService.confirmReconcile(invoiceTermsReconcile, false, false);
+        reconcileService.reconcile(debitMoveLine, creditMoveLine, null, true, false);
 
     invoicePaymentCreateService.updateInvoiceTermsAmounts(
         invoiceTerm, pair.getRight(), invoiceTermsReconcile, pairMove, paymentSession, false);
