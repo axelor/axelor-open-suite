@@ -74,7 +74,6 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
     MapTools.addMap(attrs, collapseSpecificSettings());
     MapTools.addMap(attrs, inAti(saleOrder));
     MapTools.addMap(attrs, hideBankDetails(saleOrder));
-    MapTools.addMap(attrs, hideDuplicateReferenceLabel(saleOrder));
     MapTools.addMap(attrs, getTypeSelectSelection());
     MapTools.addMap(attrs, hideDiscount());
     MapTools.addMap(attrs, refreshVersionPanel());
@@ -88,6 +87,7 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     MapTools.addMap(attrs, hideContactPartner(saleOrder));
     MapTools.addMap(attrs, hideDiscount());
+    MapTools.addMap(attrs, hideDuplicateReferenceLabel(saleOrder));
     saleOrderAttrsService.setSaleOrderGlobalDiscountDummies(saleOrder, attrs);
     return attrs;
   }
@@ -159,32 +159,28 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     Long saleOrderId = saleOrder.getId();
     String externalReference = saleOrder.getExternalReference();
+    boolean duplicateExists;
     if (saleOrderId != null) {
-      boolean saleOrderExists =
+      duplicateExists =
           saleOrderRepository
                   .all()
-                  .filter("self.externalReference = :externalReference AND self.id = :saleOrderId")
+                  .filter("self.externalReference = :externalReference AND self.id != :saleOrderId")
                   .bind("externalReference", externalReference)
                   .bind("saleOrderId", saleOrderId)
                   .count()
               > 0;
-      attrs.put(
-          "duplicateReferenceLabel",
-          Map.of(HIDDEN_ATTRS, StringUtils.notEmpty(externalReference) && saleOrderExists));
-      return attrs;
     } else {
-      boolean saleOrderExists =
+      duplicateExists =
           saleOrderRepository
                   .all()
                   .filter("self.externalReference = :externalReference")
                   .bind("externalReference", externalReference)
                   .count()
               > 0;
-      attrs.put(
-          "duplicateReferenceLabel",
-          Map.of(HIDDEN_ATTRS, StringUtils.notEmpty(externalReference) && saleOrderExists));
-      return attrs;
     }
+    boolean shouldShowWarning = StringUtils.notEmpty(externalReference) && duplicateExists;
+    attrs.put("duplicateReferenceLabel", Map.of(HIDDEN_ATTRS, !shouldShowWarning));
+    return attrs;
   }
 
   protected Map<String, Map<String, Object>> getTypeSelectSelection() {
