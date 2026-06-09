@@ -65,7 +65,6 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
   protected SaleOrderSupplychainService saleOrderSupplychainService;
   protected SaleOrderIntercoService saleOrderIntercoService;
   protected SaleOrderStockLocationService saleOrderStockLocationService;
-  protected AppBaseService appBaseService;
   protected SaleOrderTaxNumberService saleOrderTaxNumberService;
 
   @Inject
@@ -89,7 +88,6 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderIntercoService saleOrderIntercoService,
       SaleOrderStockLocationService saleOrderStockLocationService,
-      AppBaseService appBaseService1,
       SaleOrderTaxNumberService saleOrderTaxNumberService) {
     super(
         partnerService,
@@ -111,7 +109,6 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
     this.saleOrderSupplychainService = saleOrderSupplychainService;
     this.saleOrderIntercoService = saleOrderIntercoService;
     this.saleOrderStockLocationService = saleOrderStockLocationService;
-    this.appBaseService = appBaseService1;
     this.saleOrderTaxNumberService = saleOrderTaxNumberService;
   }
 
