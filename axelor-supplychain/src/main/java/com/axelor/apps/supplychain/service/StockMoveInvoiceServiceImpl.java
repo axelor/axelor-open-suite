@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
@@ -85,6 +86,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   protected PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService;
   protected UnitConversionService unitConversionService;
   protected InvoiceService invoiceService;
+  protected InvoiceGlobalDiscountService invoiceGlobalDiscountService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -102,7 +104,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
       PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
       UnitConversionService unitConversionService,
-      InvoiceService invoiceService) {
+      InvoiceService invoiceService,
+      InvoiceGlobalDiscountService invoiceGlobalDiscountService) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
@@ -118,6 +121,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     this.purchaseOrderMergingSupplychainService = purchaseOrderMergingSupplychainService;
     this.unitConversionService = unitConversionService;
     this.invoiceService = invoiceService;
+    this.invoiceGlobalDiscountService = invoiceGlobalDiscountService;
   }
 
   @Override
@@ -232,6 +236,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
       invoice.setNote(fillInvoiceNoteFromOutStockMove(saleOrderSet));
       invoice.setProformaComments(fillInvoiceProformaCommentsFromOutStockMove(saleOrderSet));
+
+      invoice.setDiscountTypeSelect(saleOrder.getDiscountTypeSelect());
+      invoice.setDiscountAmount(saleOrder.getDiscountAmount());
+      invoiceGlobalDiscountService.computePriceBeforeGlobalDiscount(invoice);
 
       Set<StockMove> stockMoveSet = invoice.getStockMoveSet();
       if (stockMoveSet == null) {
