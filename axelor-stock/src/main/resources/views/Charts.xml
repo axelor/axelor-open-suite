@@ -225,7 +225,7 @@
   <chart name="chart.stock.report.for.product" title="Stock"
     onInit="action-product-set-today-date">
     <search-fields>
-      <field name="todayDate" type="date" title="Today" x-required="true"/>
+      <field name="todayDate" type="date" title="Today" x-required="true" readonly="true"/>
     </search-fields>
     <dataset type="sql">
 	    <![CDATA[
@@ -281,7 +281,8 @@
 				  )
 				  UNION ALL
 				  (
-				    SELECT estimated_date AS dt,
+				    SELECT dt, locat, SUM(qty) AS qty FROM (
+				    SELECT GREATEST(move.estimated_date, DATE(:todayDate) + 1) AS dt,
 				           location.name AS locat,
 				           SUM(
 				             CASE
@@ -314,11 +315,12 @@
 				      LIMIT 1
 				    ) uc ON true
 				    WHERE line.product = :id
-				      AND move.estimated_date > DATE(:todayDate)
+				      AND move.estimated_date IS NOT NULL
 				      AND move.real_date IS NULL
 				      AND location.type_select = 1
 				      AND move.status_select IN (2, 3)
 				    GROUP BY move.estimated_date, location.name
+				    ) planned_moves GROUP BY dt, locat
 				  )
 				) location_stock
 				ORDER BY locat, estimatedate;
