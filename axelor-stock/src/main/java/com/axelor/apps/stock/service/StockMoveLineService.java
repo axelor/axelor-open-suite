@@ -180,10 +180,10 @@ public interface StockMoveLineService {
    *
    * @param stockMoveLine
    * @param stockMove
-   * @throws AxelorException if the stock move line needs to have a conformity selected and it is
-   *     not selected.
+   * @return true if the stock move line needs to have a conformity selected and it is not selected
+   * @throws AxelorException if a technical error occurs during product company field resolution
    */
-  public void checkConformitySelection(StockMoveLine stockMoveLine, StockMove stockMove)
+  public boolean checkConformitySelection(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException;
 
   /**

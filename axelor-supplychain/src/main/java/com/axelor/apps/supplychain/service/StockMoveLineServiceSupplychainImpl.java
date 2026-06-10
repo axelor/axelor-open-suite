@@ -110,7 +110,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       InvoiceLineRepository invoiceLineRepository,
       AppSupplychainService appSupplychainService,
       StockLocationLineFetchService stockLocationLineFetchService,
-      TrackingNumberCreateService trackingNumberCreateService) {
+      TrackingNumberCreateService trackingNumberCreateService,
+      StockMoveRepository stockMoveRepository) {
     super(
         trackingNumberService,
         appBaseService,
@@ -126,7 +127,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         stockLocationLineHistoryService,
         stockLocationLineFetchService,
         trackingNumberCreateService,
-        stockMoveService);
+        stockMoveService,
+        stockMoveRepository);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
     this.supplychainBatchRepo = supplychainBatchRepo;
