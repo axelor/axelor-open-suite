@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -118,6 +119,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected InvoiceTaxService invoiceTaxService;
   protected SaleOrderDeliveryAddressService saleOrderDeliveryAddressService;
   protected PartnerAccountService partnerAccountService;
+  protected InvoiceGlobalDiscountService invoiceGlobalDiscountService;
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
@@ -138,7 +140,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       OrderInvoiceService orderInvoiceService,
       InvoiceTaxService invoiceTaxService,
       SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
-      PartnerAccountService partnerAccountService) {
+      PartnerAccountService partnerAccountService,
+      InvoiceGlobalDiscountService invoiceGlobalDiscountService) {
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
     this.appSupplychainService = appSupplychainService;
@@ -157,6 +160,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.invoiceTaxService = invoiceTaxService;
     this.saleOrderDeliveryAddressService = saleOrderDeliveryAddressService;
     this.partnerAccountService = partnerAccountService;
+    this.invoiceGlobalDiscountService = invoiceGlobalDiscountService;
   }
 
   @Override
@@ -243,6 +247,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     }
 
     invoice.setHideDiscount(saleOrder.getHideDiscount());
+
+    invoice.setDiscountTypeSelect(saleOrder.getDiscountTypeSelect());
+    invoice.setDiscountAmount(saleOrder.getDiscountAmount());
+    invoiceGlobalDiscountService.computePriceBeforeGlobalDiscount(invoice);
 
     invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
     invoice.setCompanyTaxNumber(saleOrder.getTaxNumber());

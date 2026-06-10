@@ -68,4 +68,9 @@ public class InvoiceGlobalDiscountServiceImpl extends GlobalDiscountAbstractServ
     }
     return invoice;
   }
+
+  @Override
+  public void computePriceBeforeGlobalDiscount(GlobalDiscounter globalDiscounter) {
+    super.computePriceBeforeGlobalDiscount(globalDiscounter);
+  }
 }

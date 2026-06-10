@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.PartnerAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
@@ -91,6 +92,7 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceContract
       InvoiceTaxService invoiceTaxService,
       SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
       PartnerAccountService partnerAccountService,
+      InvoiceGlobalDiscountService invoiceGlobalDiscountService,
       AppBusinessProjectService appBusinessProjectService) {
     super(
         appBaseService,
@@ -110,7 +112,8 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceContract
         orderInvoiceService,
         invoiceTaxService,
         saleOrderDeliveryAddressService,
-        partnerAccountService);
+        partnerAccountService,
+        invoiceGlobalDiscountService);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 
