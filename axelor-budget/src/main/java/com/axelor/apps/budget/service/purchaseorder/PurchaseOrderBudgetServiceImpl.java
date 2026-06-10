@@ -52,6 +52,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -274,12 +275,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
       }
     }
 
-    for (Budget budget : budgetSet) {
-      budgetService.updateLines(budget);
-      budgetService.computeTotalAmountCommitted(budget);
-      budgetService.computeTotalAmountPaid(budget);
-      budgetService.computeToBeCommittedAmount(budget);
-    }
+    recomputeBudgets(budgetSet);
   }
 
   @Override
@@ -397,5 +393,33 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
       purchaseOrderLineBudgetService.fillBudgetStrOnLine(purchaseOrderLine, multiBudget);
     }
     purchaseOrderRepo.save(purchaseOrder);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void createNewVersion(PurchaseOrder purchaseOrder) {
+    recomputeBudgets(collectAffectedBudgets(purchaseOrder));
+  }
+
+  protected Set<Budget> collectAffectedBudgets(PurchaseOrder purchaseOrder) {
+    Set<Budget> budgets = new LinkedHashSet<>();
+    if (CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+      return budgets;
+    }
+    for (PurchaseOrderLine poLine : purchaseOrder.getPurchaseOrderLineList()) {
+      if (CollectionUtils.isNotEmpty(poLine.getBudgetDistributionList())) {
+        poLine.getBudgetDistributionList().forEach(bd -> budgets.add(bd.getBudget()));
+      }
+    }
+    return budgets;
+  }
+
+  protected void recomputeBudgets(Set<Budget> budgets) {
+    for (Budget budget : budgets) {
+      budgetService.updateLines(budget);
+      budgetService.computeTotalAmountCommitted(budget);
+      budgetService.computeTotalAmountPaid(budget);
+      budgetService.computeToBeCommittedAmount(budget);
+    }
   }
 }

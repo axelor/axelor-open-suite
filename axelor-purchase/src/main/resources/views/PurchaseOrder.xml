@@ -352,7 +352,7 @@
         onClick="save,action-purchase-order-method-draft,save" icon="reply-all-fill"
         readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
       <button name="newVersionBtn" title="New version" showIf="statusSelect == 2"
-        onClick="save,action-purchase-record-newVersion,save"
+        onClick="action-purchase-order-group-new-version"
         if="__config__.app.getApp('purchase')?.getManagePurchaseOrderVersion()" icon="tag-fill"
         readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
       <button name="separateInNewQuotationBtn" title="Separate in a new quotation"
@@ -885,6 +885,12 @@
     <error message="Please enter at least one detail line."
       if="purchaseOrderLineList?.isEmpty()"/>
   </action-validate>
+
+  <action-group name="action-purchase-order-group-new-version">
+    <action name="save"/>
+    <action name="action-purchase-record-newVersion"/>
+    <action name="save"/>
+  </action-group>
 
   <action-record name="action-purchase-record-newVersion"
     model="com.axelor.apps.purchase.db.PurchaseOrder">

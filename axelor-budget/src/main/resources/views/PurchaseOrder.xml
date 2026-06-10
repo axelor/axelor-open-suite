@@ -60,6 +60,10 @@
         value="action-budget-group-purchase-order-on-validate-actions"/>
     </extend>
 
+    <extend target="//button[@name='newVersionBtn']">
+      <attribute name="onClick" value="action-budget-purchase-order-group-new-version-btn"/>
+    </extend>
+
     <extend target="//button[@name='requestedBtn']">
       <insert position="before">
         <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
@@ -126,6 +130,16 @@
     <action name="action-purchase-order-method-requested"/>
     <action name="save"/>
   </action-group>
+
+  <action-group name="action-budget-purchase-order-group-new-version-btn">
+    <action name="action-purchase-order-group-new-version"/>
+    <action name="action-budget-purchase-order-method-new-version"
+      if="__config__.app.isApp('budget')"/>
+  </action-group>
+
+  <action-method name="action-budget-purchase-order-method-new-version">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderController" method="createNewVersion"/>
+  </action-method>
 
   <action-method
     name="action-purchase-order-method-budget-auto-compute-budget-distribution">
