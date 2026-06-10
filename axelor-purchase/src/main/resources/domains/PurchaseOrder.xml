@@ -37,7 +37,7 @@
     <date name="estimatedReceiptDate" title="Estimated receipt date"/>
     <date name="orderDate" title="Order Date"/>
     <one-to-many name="purchaseOrderLineList" mappedBy="purchaseOrder"
-      ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Products list"/>
+      ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Products list" orderBy="sequence"/>
     <integer name="statusSelect" title="Status"
       selection="purchase.purchase.order.status.select" readonly="true"/>
     <string name="externalReference" title="Supplier ref."/>

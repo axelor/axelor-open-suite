@@ -18,10 +18,11 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 
 public interface SaleOrderLineDomainProductionService {
-  String getBomDomain(SaleOrderLine saleOrderLine);
+  String getBomDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
 
   String getProdProcessDomain(SaleOrderLine saleOrderLine);
 }

@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -76,6 +77,7 @@ public class StockMoveInvoiceBudgetServiceImpl extends StockMoveInvoiceServiceIm
       UnitConversionService unitConversionService,
       InvoiceService invoiceService,
       AppSupplychainService appSupplychainService,
+      InvoiceGlobalDiscountService invoiceGlobalDiscountService,
       BudgetInvoiceService budgetInvoiceService,
       AppBudgetService appBudgetService,
       InvoiceToolBudgetService invoiceToolBudgetService,
@@ -97,7 +99,8 @@ public class StockMoveInvoiceBudgetServiceImpl extends StockMoveInvoiceServiceIm
         purchaseOrderMergingSupplychainService,
         unitConversionService,
         invoiceService,
-        appSupplychainService);
+        appSupplychainService,
+        invoiceGlobalDiscountService);
     this.budgetInvoiceService = budgetInvoiceService;
     this.appBudgetService = appBudgetService;
     this.invoiceToolBudgetService = invoiceToolBudgetService;

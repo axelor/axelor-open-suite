@@ -1,0 +1,6 @@
+---
+title: "Invoice: fixed the global discount on invoices generated from the stock move."
+module: axelor-supplychain
+developer: |
+  Added `InvoiceGlobalDiscountService` as parameter in `StockMoveInvoiceServiceImpl` constructor.
+  Added `computePriceBeforeGlobalDiscount(GlobalDiscounter)` method to `InvoiceGlobalDiscountService` interface.
