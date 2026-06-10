@@ -542,7 +542,7 @@ public class ClientViewServiceImpl implements ClientViewService {
         new JPQLFilter(
             "self.customerPartner.id = "
                 + user.getPartner().getId()
-                + " AND self.assignedToUser.id = "
+                + " AND self.assignedToUser.activeCompany.id = "
                 + user.getActiveCompany().getId());
     filters.add(filter);
     addPermissionFilter(filters, filterFromPermission);
