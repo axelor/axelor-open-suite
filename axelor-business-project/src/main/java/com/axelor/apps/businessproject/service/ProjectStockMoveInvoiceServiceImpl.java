@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -69,7 +70,8 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
       PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
       UnitConversionService unitConversionService,
-      InvoiceService invoiceService) {
+      InvoiceService invoiceService,
+      InvoiceGlobalDiscountService invoiceGlobalDiscountService) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
@@ -85,7 +87,8 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
         saleOrderMergingServiceSupplyChain,
         purchaseOrderMergingSupplychainService,
         unitConversionService,
-        invoiceService);
+        invoiceService,
+        invoiceGlobalDiscountService);
   }
 
   @Override
