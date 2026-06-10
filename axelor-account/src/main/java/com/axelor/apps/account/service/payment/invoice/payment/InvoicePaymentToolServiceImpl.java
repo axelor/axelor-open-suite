@@ -176,27 +176,17 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   }
 
   /**
-   * Check whether the sum of pending payments equals or exceeds the remaining amount of the
-   * invoice.
+   * Check whether the invoice has at least one payment that is still pending.
    *
    * @param invoice
    * @return
    */
   protected boolean checkPendingPayments(Invoice invoice) {
-    BigDecimal pendingAmount = BigDecimal.ZERO;
-
-    if (invoice.getInvoicePaymentList() != null) {
-      for (InvoicePayment invoicePayment : invoice.getInvoicePaymentList()) {
-        if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING) {
-          pendingAmount = pendingAmount.add(invoicePayment.getAmount());
-        }
-      }
-    }
-    BigDecimal remainingAmount =
-        invoice.getFinancialDiscount() != null
-            ? invoice.getRemainingAmountAfterFinDiscount()
-            : invoice.getAmountRemaining();
-    return remainingAmount.compareTo(pendingAmount) <= 0;
+    return invoice.getInvoicePaymentList() != null
+        && invoice.getInvoicePaymentList().stream()
+            .anyMatch(
+                invoicePayment ->
+                    invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING);
   }
 
   /** @inheritDoc */
