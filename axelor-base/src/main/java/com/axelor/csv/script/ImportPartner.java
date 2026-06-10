@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberValidator;
 import com.axelor.apps.base.service.partner.registrationnumber.factory.PartnerRegistrationValidatorFactoryService;
 import com.axelor.meta.MetaFiles;
@@ -47,6 +48,8 @@ public class ImportPartner {
 
   @Inject protected SequenceService sequenceService;
 
+  @Inject protected AppBaseService appBaseService;
+
   @Inject protected PartnerRegistrationValidatorFactoryService registrationValidatorFactoryService;
 
   public Object importPartner(Object bean, Map<String, Object> values)
@@ -55,9 +58,12 @@ public class ImportPartner {
     assert bean instanceof Partner;
 
     Partner partner = (Partner) bean;
-    partner.setPartnerSeq(
-        sequenceService.getSequenceNumber(
-            SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner));
+    if (partner.getPartnerSeq() == null
+        && appBaseService.getAppBase().getGeneratePartnerSequence()) {
+      partner.setPartnerSeq(
+          sequenceService.getSequenceNumber(
+              SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner));
+    }
 
     partnerService.setPartnerFullName(partner);
 
