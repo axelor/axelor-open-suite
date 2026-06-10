@@ -992,6 +992,10 @@
       message="The first period end date cannot be earlier than the supposed activation date."
       if="firstPeriodEndDate != null &amp;&amp; currentContractVersion != null &amp;&amp; currentContractVersion.supposedActivationDate != null &amp;&amp; firstPeriodEndDate &lt; currentContractVersion.supposedActivationDate"
       action="action-contract-record-reset-first-period-end-date"/>
+    <error
+      message="The first period end date cannot be earlier than today if there is no supposed activation date."
+      if="firstPeriodEndDate != null &amp;&amp; currentContractVersion != null &amp;&amp; currentContractVersion.supposedActivationDate == null &amp;&amp; firstPeriodEndDate &lt; __config__.date"
+      action="action-contract-record-reset-first-period-end-date"/>
   </action-validate>
 
   <action-record name="action-contract-record-reset-first-period-end-date"
