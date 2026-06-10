@@ -19,18 +19,24 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.common.StringUtils;
 
 public class SaleOrderLineDomainProductionServiceImpl
     implements SaleOrderLineDomainProductionService {
   @Override
-  public String getBomDomain(SaleOrderLine saleOrderLine) {
+  public String getBomDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     String domain = getProdProcessDomain(saleOrderLine);
     if (StringUtils.isEmpty(domain)) {
       return domain;
     }
-    return domain + " AND self.defineSubBillOfMaterial = true";
+    domain = "(" + domain + ") AND self.defineSubBillOfMaterial = true";
+    if (saleOrder != null && saleOrder.getCompany() != null) {
+      domain +=
+          " AND (self.company IS NULL OR self.company.id = " + saleOrder.getCompany().getId() + ")";
+    }
+    return domain;
   }
 
   @Override
