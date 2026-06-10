@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="supplychain-batch-grid" title="Supplychain batches"
     model="com.axelor.apps.supplychain.db.SupplychainBatch">
@@ -65,7 +65,7 @@
       <panel name="updateStockHistoryConfigPanel" title="Update stock history configuration"
         showIf="actionSelect == 4" colSpan="12">
         <field name="period"
-          domain="self.year.typeSelect = 0 AND self.year.company = :company"/>
+          domain="self.year.typeSelect = 0 AND self.year.company = :company" required="true"/>
         <field name="productCategorySet" colSpan="12" canNew="false" canEdit="false"
           canSelect="true"/>
       </panel>
