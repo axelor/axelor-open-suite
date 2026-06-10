@@ -65,7 +65,8 @@ public abstract class GlobalDiscountAbstractService {
                 globalDiscounterLine ->
                     globalDiscounterLine.getPrice().multiply(globalDiscounterLine.getQty()))
             .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO));
+            .orElse(BigDecimal.ZERO)
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
   }
 
   protected void applyPercentageGlobalDiscountOnLines(GlobalDiscounter globalDiscounter) {

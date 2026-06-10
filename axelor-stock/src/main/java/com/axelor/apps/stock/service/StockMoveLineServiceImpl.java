@@ -100,6 +100,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected StockLocationLineFetchService stockLocationLineFetchService;
   protected TrackingNumberCreateService trackingNumberCreateService;
   protected StockMoveService stockMoveService;
+  protected StockMoveRepository stockMoveRepository;
 
   @Inject
   public StockMoveLineServiceImpl(
@@ -117,7 +118,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       StockLocationLineHistoryService stockLocationLineHistoryService,
       StockLocationLineFetchService stockLocationLineFetchService,
       TrackingNumberCreateService trackingNumberCreateService,
-      StockMoveService stockMoveService) {
+      StockMoveService stockMoveService,
+      StockMoveRepository stockMoveRepository) {
     this.trackingNumberService = trackingNumberService;
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
@@ -133,6 +135,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     this.stockLocationLineFetchService = stockLocationLineFetchService;
     this.trackingNumberCreateService = trackingNumberCreateService;
     this.stockMoveService = stockMoveService;
+    this.stockMoveRepository = stockMoveRepository;
   }
 
   @Override
@@ -1078,12 +1081,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
-  public void checkConformitySelection(StockMoveLine stockMoveLine, StockMove stockMove)
+  public boolean checkConformitySelection(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException {
     Product product = stockMoveLine.getProduct();
     // check if the product configuration forces to select a conformity
     if (product == null) {
-      return;
+      return false;
     }
     Boolean controlOnReceipt =
         (Boolean) productCompanyService.get(product, "controlOnReceipt", stockMove.getCompany());
@@ -1091,16 +1094,25 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (!controlOnReceipt
         || stockMove.getTypeSelect() != StockMoveRepository.TYPE_INCOMING
         || stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0) {
-      return;
+      return false;
     }
 
     // check the conformity
-    if (stockMoveLine.getConformitySelect() <= StockMoveLineRepository.CONFORMITY_NONE) {
-      throw new AxelorException(
-          stockMoveLine,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(StockExceptionMessage.STOCK_MOVE_LINE_MUST_FILL_CONFORMITY),
-          product.getName());
+    return stockMoveLine.getConformitySelect() <= StockMoveLineRepository.CONFORMITY_NONE;
+  }
+
+  protected void checkLineConformity(
+      StockMoveLine stockMoveLine, StockMove stockMove, Map<Long, String> productsWithErrors)
+      throws AxelorException {
+    final Product product = stockMoveLine.getProduct();
+    Object type = productCompanyService.get(product, "productTypeSelect", stockMove.getCompany());
+    if (!ProductRepository.PRODUCT_TYPE_STORABLE.equals(type)) {
+      return;
+    }
+    if (checkConformitySelection(stockMoveLine, stockMove)) {
+      productsWithErrors.putIfAbsent(
+          product.getId(),
+          (String) productCompanyService.get(product, "name", stockMove.getCompany()));
     }
   }
 
@@ -1111,7 +1123,10 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       return;
     }
 
-    final Set<String> productsWithErrors = new HashSet<>();
+    final Map<Long, String> productsWithErrors = new LinkedHashMap<>();
+
+    final long smId = stockMove.getId();
+    final StockMove[] smHolder = {stockMoveRepository.find(smId)};
 
     BatchProcessorHelper batch = BatchProcessorHelper.builder().flushAfterBatch(false).build();
 
@@ -1125,23 +1140,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     batch.<StockMoveLine, AxelorException>forEachByQuery(
         query,
-        sml -> {
-          final Product product = sml.getProduct();
-          Object type =
-              productCompanyService.get(product, "productTypeSelect", stockMove.getCompany());
-          if (!ProductRepository.PRODUCT_TYPE_STORABLE.equals(type)) {
-            return;
-          }
-          try {
-            checkConformitySelection(sml, stockMove);
-          } catch (Exception e) {
-            productsWithErrors.add(
-                (String) productCompanyService.get(product, "name", stockMove.getCompany()));
-          }
-        });
+        sml -> checkLineConformity(sml, smHolder[0], productsWithErrors),
+        () -> smHolder[0] = stockMoveRepository.find(smId));
 
     if (!productsWithErrors.isEmpty()) {
-      String productsWithErrorStr = productsWithErrors.stream().collect(Collectors.joining(", "));
+      String productsWithErrorStr =
+          productsWithErrors.values().stream().collect(Collectors.joining(", "));
       throw new AxelorException(
           stockMove,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
