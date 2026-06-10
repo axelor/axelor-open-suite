@@ -620,11 +620,16 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             this.getMoveLineDescription(paymentSession),
             out);
 
-    moveLine.setAmountPaid(reconciliedAmount);
+    BigDecimal moveLineCurrencyRate =
+        moveLine.getCurrencyRate().compareTo(BigDecimal.ZERO) != 0
+            ? moveLine.getCurrencyRate()
+            : BigDecimal.ONE;
+    moveLine.setAmountPaid(
+        reconciliedAmount
+            .multiply(moveLineCurrencyRate)
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 
     this.reconcile(paymentSession, invoiceTerm, moveLine);
-
-    recomputeAmountPaid(invoiceTerm.getMoveLine());
 
     return move;
   }
@@ -846,8 +851,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       partner = partnerRepo.find(partner.getId());
     }
 
-    this.generateMoveLine(
-        move, partner, cashAccount, paymentAmount, move.getOrigin(), description, !out);
+    MoveLine cashMoveLine =
+        this.generateMoveLine(
+            move, partner, cashAccount, paymentAmount, move.getOrigin(), description, !out);
+    cashMoveLine.setAmountPaid(out ? cashMoveLine.getCredit() : cashMoveLine.getDebit());
 
     return moveRepo.save(move);
   }

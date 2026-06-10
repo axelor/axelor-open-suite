@@ -384,7 +384,8 @@ public class ReconcileInvoiceTermComputationServiceImpl
       }
       if (CollectionUtils.isNotEmpty(invoiceTermsToPay)
           && move != null
-          && move.getPaymentSession() != null) {
+          && move.getPaymentSession() != null
+          && invoiceTermsToPay.stream().anyMatch(it -> it.getPaymentSession() != null)) {
         return invoiceTermsToPay.stream()
             .filter(
                 it ->
