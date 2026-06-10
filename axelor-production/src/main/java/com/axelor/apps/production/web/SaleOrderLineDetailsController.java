@@ -95,6 +95,7 @@ public class SaleOrderLineDetailsController {
         Beans.get(SaleOrderLineDetailsPriceService.class);
     SaleOrder saleOrder = getSaleOrder(context);
     Map<String, Object> values = new HashMap<>();
+    values.putAll(saleOrderLineDetailsPriceService.computeSubTotalCostPrice(saleOrderLineDetails));
     values.putAll(
         saleOrderLineDetailsPriceService.computeTotalPrice(saleOrderLineDetails, saleOrder));
     response.setValues(values);

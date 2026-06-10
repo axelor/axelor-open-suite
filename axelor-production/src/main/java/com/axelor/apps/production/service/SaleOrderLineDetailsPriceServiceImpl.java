@@ -138,8 +138,8 @@ public class SaleOrderLineDetailsPriceServiceImpl implements SaleOrderLineDetail
     return lineMap;
   }
 
-  protected Map<String, Object> computeSubTotalCostPrice(
-      SaleOrderLineDetails saleOrderLineDetails) {
+  @Override
+  public Map<String, Object> computeSubTotalCostPrice(SaleOrderLineDetails saleOrderLineDetails) {
 
     Map<String, Object> lineMap = new HashMap<>();
     BigDecimal qty = saleOrderLineDetails.getQty();
