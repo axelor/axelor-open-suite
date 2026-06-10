@@ -1,0 +1,3 @@
+---
+title: "Unit cost calculation: fixed calculation process that ignored products with default BOM set at ProductCompany level."
+module: axelor-production
