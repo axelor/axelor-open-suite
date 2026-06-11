@@ -19,7 +19,7 @@
     <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"/>
     <boolean name="includeOutOfStock" title="Include out of stocks products" default="false"/>
     <decimal name="stockLocationValue" title="Stock location value" formula="true"
-      precision="20" scale="2">
+      precision="27" scale="2">
       <![CDATA[
         SELECT ROUND(COALESCE(SUM(history.qty *
             CASE
@@ -48,17 +48,17 @@
             END
         ), 0), 2)
         FROM stock_stock_location_line sll
-        LEFT JOIN stock_stock_location_line_history history
+        INNER JOIN stock_stock_location_line_history history
             ON history.stock_location_line = sll.id
             AND history.datet = (
                 SELECT MAX(h2.datet) FROM stock_stock_location_line_history h2
                 WHERE h2.stock_location_line = sll.id
             )
+            AND history.qty != 0
         LEFT JOIN stock_stock_location loc ON loc.id = sll.stock_location
         LEFT JOIN base_product p ON p.id = sll.product
         LEFT JOIN stock_stock_config cfg ON cfg.company = loc.company
         WHERE sll.stock_location = id
-        AND history.qty != 0
       ]]>
     </decimal>
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
