@@ -322,6 +322,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       }
 
       offset += invoiceTermList.size();
+      JPA.flush();
       JPA.clear();
     }
 
