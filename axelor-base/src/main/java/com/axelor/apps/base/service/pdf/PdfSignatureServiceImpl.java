@@ -46,10 +46,20 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.time.ZoneId;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.ExternalSigningSupport;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
+import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.apache.pdfbox.pdmodel.interactive.form.PDField;
+import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
 
 public class PdfSignatureServiceImpl implements PdfSignatureService {
 
@@ -71,23 +81,82 @@ public class PdfSignatureServiceImpl implements PdfSignatureService {
   public MetaFile digitallySignPdf(MetaFile metaFile, PfxCertificate pfxCertificate, String reason)
       throws AxelorException {
 
+    File signedPdfFile =
+        digitallySignPdf(new File(MetaFiles.getPath(metaFile).toString()), pfxCertificate, reason);
+    try {
+      String baseName = FileUtils.stripExtension(FileUtils.safeFileName(metaFile.getFileName()));
+      MetaFile resultFile = metaFiles.upload(signedPdfFile);
+      resultFile.setFileName(baseName + ".pdf");
+      return resultFile;
+    } catch (IOException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BaseExceptionMessage.SIGNING_PDF_ERROR),
+          e.getMessage());
+    }
+  }
+
+  @Override
+  public File digitallySignPdf(File pdfFile, PfxCertificate pfxCertificate, String reason)
+      throws AxelorException {
+
     pfxCertificateCheckService.checkValidity(pfxCertificate);
     MetaFile certificate = pfxCertificate.getCertificate();
     String certificatePassword = pfxCertificate.getPassword();
     try {
-      String baseName = FileUtils.stripExtension(FileUtils.safeFileName(metaFile.getFileName()));
-      File tempPdfFile = TempFiles.createTempFile(baseName, ".pdf").toFile();
-      try (FileOutputStream outStream = new FileOutputStream(tempPdfFile);
+      File signedPdfFile = TempFiles.createTempFile(null, ".pdf").toFile();
+      try (FileOutputStream outStream = new FileOutputStream(signedPdfFile);
           FileInputStream inputStream =
               new FileInputStream(String.valueOf(MetaFiles.getPath(certificate)))) {
-        try (PDDocument doc = Loader.loadPDF(new File(MetaFiles.getPath(metaFile).toString()))) {
+        try (PDDocument doc = Loader.loadPDF(pdfFile)) {
           getCertificateAndSign(certificatePassword, reason, inputStream, doc, outStream);
         }
       }
-      MetaFile resultFile = metaFiles.upload(tempPdfFile);
-      resultFile.setFileName(baseName + ".pdf");
-      return resultFile;
+      return signedPdfFile;
     } catch (AxelorException | IOException | GeneralSecurityException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BaseExceptionMessage.SIGNING_PDF_ERROR),
+          e.getMessage());
+    }
+  }
+
+  @Override
+  public void removeSignatureFields(File pdfFile) throws AxelorException {
+    try {
+      byte[] pdfBytes = java.nio.file.Files.readAllBytes(pdfFile.toPath());
+      try (PDDocument doc = Loader.loadPDF(pdfBytes)) {
+        PDAcroForm acroForm = doc.getDocumentCatalog().getAcroForm();
+        if (acroForm == null) {
+          return;
+        }
+        List<PDField> fields = acroForm.getFields();
+        Set<COSDictionary> signatureWidgets =
+            fields.stream()
+                .filter(PDSignatureField.class::isInstance)
+                .flatMap(field -> field.getWidgets().stream())
+                .map(PDAnnotationWidget::getCOSObject)
+                .collect(Collectors.toSet());
+        if (signatureWidgets.isEmpty()) {
+          return;
+        }
+        for (PDPage page : doc.getPages()) {
+          List<PDAnnotation> annotations = page.getAnnotations();
+          if (annotations.stream()
+              .anyMatch(annotation -> signatureWidgets.contains(annotation.getCOSObject()))) {
+            page.setAnnotations(
+                annotations.stream()
+                    .filter(annotation -> !signatureWidgets.contains(annotation.getCOSObject()))
+                    .collect(Collectors.toList()));
+          }
+        }
+        acroForm.setFields(
+            fields.stream()
+                .filter(field -> !(field instanceof PDSignatureField))
+                .collect(Collectors.toList()));
+        doc.save(pdfFile);
+      }
+    } catch (IOException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BaseExceptionMessage.SIGNING_PDF_ERROR),
