@@ -1,3 +1,22 @@
+## [8.3.37] (2026-06-11)
+
+### Fixes
+#### Base
+
+* Sequence: fixed sequence number generation failing in multi-tenant environments.
+
+#### Account
+
+* Payment session: fixed bank order generation losing invoice terms when the session exceeds one batch of 10 terms.
+* Invoice: invoice email template now renders the invoice number correctly.
+* Analytic move line query: fixed analytic account value not displayed in reverse query parameter list in readonly mode.
+* Payment session: fixed unselected invoice terms not fully released.
+
+#### Budget
+
+* Budget: fixed realized with PO listing on global budget showing no lines.
+* Budget: fixed draft orders being included in the committed amount.
+
 ## [8.3.36] (2026-05-28)
 
 ### Fixes
@@ -3285,6 +3304,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.37]: https://github.com/axelor/axelor-open-suite/compare/v8.3.36...v8.3.37
 [8.3.36]: https://github.com/axelor/axelor-open-suite/compare/v8.3.35...v8.3.36
 [8.3.35]: https://github.com/axelor/axelor-open-suite/compare/v8.3.34...v8.3.35
 [8.3.34]: https://github.com/axelor/axelor-open-suite/compare/v8.3.33...v8.3.34

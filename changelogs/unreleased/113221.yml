@@ -1,3 +1,0 @@
----
-title: "Payment session: fixed bank order generation losing invoice terms when the session exceeds one batch of 10 terms."
-module: axelor-account
