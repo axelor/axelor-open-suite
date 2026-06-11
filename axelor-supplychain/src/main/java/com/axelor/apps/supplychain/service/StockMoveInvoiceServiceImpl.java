@@ -628,6 +628,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   @Override
   public BigDecimal computeNonCanceledInvoiceQty(StockMoveLine stockMoveLine)
       throws AxelorException {
+    if (stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_NORMAL) {
+      return BigDecimal.ZERO;
+    }
     List<InvoiceLine> nonCanceledInvoiceLineList =
         invoiceLineRepository
             .all()
