@@ -23,5 +23,5 @@ import com.axelor.meta.CallMethod;
 
 public interface TaxEquivService {
   @CallMethod
-  String getTaxDomain(TaxEquiv taxEquiv, boolean isFromTax, boolean isToTax);
+  String getTaxDomain(TaxEquiv taxEquiv);
 }
