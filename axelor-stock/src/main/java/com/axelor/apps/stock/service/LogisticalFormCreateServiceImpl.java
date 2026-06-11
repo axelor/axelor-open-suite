@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
@@ -125,5 +126,23 @@ public class LogisticalFormCreateServiceImpl implements LogisticalFormCreateServ
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(StockExceptionMessage.LOGISTICAL_FORM_STOCK_LOCATION_MUST_BE_VIRTUAL));
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public LogisticalForm createLogisticalFormFromStockMove(StockMove stockMove)
+      throws AxelorException {
+    LogisticalForm logisticalForm = new LogisticalForm();
+    Company company = stockMove.getCompany();
+    logisticalForm.setCompany(company);
+    logisticalForm.setStockLocation(stockMove.getFromStockLocation());
+    logisticalForm.setDeliverToCustomerPartner(stockMove.getPartner());
+    logisticalForm.setCarrierPartner(stockMove.getCarrierPartner());
+    logisticalForm.setForwarderPartner(stockMove.getForwarderPartner());
+    logisticalForm.setIncoterm(stockMove.getIncoterm());
+    logisticalForm.setCollectionDate(appBaseService.getTodayDate(company));
+    logisticalForm.setAccountSelectionToCarrierSelect(LogisticalFormRepository.ACCOUNT_COMPANY);
+    logisticalForm.addStockMoveListItem(stockMove);
+    return logisticalFormRepository.save(logisticalForm);
   }
 }

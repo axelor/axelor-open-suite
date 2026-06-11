@@ -69,6 +69,8 @@
         value="action-group-stock-stockmove-onnew, action-stock-move-attrs-fill-ctx"/>
       <attribute name="onLoad"
         value="action-group-stock-stockmove-onload, action-stock-move-attrs-fill-ctx"/>
+      <attribute name="onSave"
+        value="action-stock-move-group-save-and-update-stocks, action-supplychain-stock-move-method-create-logistical-form"/>
     </extend>
     <extend target="//panel[@name='configPanel']">
       <insert position="after">
@@ -392,6 +394,11 @@
     name="action-mass-stock-move-invoicing-method-filter-supplier-stock-move">
     <call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController"
       method="filterSupplierStockMoveForMassInvoicing"/>
+  </action-method>
+
+  <action-method name="action-supplychain-stock-move-method-create-logistical-form">
+    <call class="com.axelor.apps.supplychain.web.StockMoveController"
+      method="createLogisticalForm"/>
   </action-method>
 
   <search-filters id="supplychain-customer-deliveries-filter"
