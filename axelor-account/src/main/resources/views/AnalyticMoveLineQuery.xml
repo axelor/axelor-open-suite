@@ -32,7 +32,9 @@
 
       <panel title="Move line search criterias" colSpan="12">
         <field name="searchAnalyticMoveLineQueryParameterList"
-          readonlyIf="!company || !fromDate || !toDate" colSpan="12">
+          readonlyIf="!company || !fromDate || !toDate" colSpan="12"
+          grid-view="analytic-move-line-query-parameter-search-grid"
+          form-view="analytic-move-line-query-parameter-form">
           <editor x-show-on-new="false"
             onNew="action-analytic-move-line-query-parameter-record-search-on-new">
             <field name="analyticAxis" grid-view="analytic-axis-grid"
@@ -49,7 +51,8 @@
       <panel title="Move line reverse values" colSpan="12">
         <field name="reverseAnalyticMoveLineQueryParameterList"
           readonlyIf="!searchAnalyticMoveLineQueryParameterList.length" colSpan="12"
-          showTitle="false">
+          showTitle="false" grid-view="analytic-move-line-query-parameter-reverse-grid"
+          form-view="analytic-move-line-query-parameter-form">
           <editor x-show-on-new="false" itemSpan="4"
             onNew="action-analytic-move-line-query-parameter-record-reverse-on-new">
             <field name="analyticAxis" grid-view="analytic-axis-grid"
