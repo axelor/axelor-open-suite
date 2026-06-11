@@ -1,0 +1,3 @@
+---
+title: "Payment session: fixed unselected invoice terms not fully released."
+module: axelor-account
