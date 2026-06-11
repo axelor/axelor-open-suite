@@ -363,6 +363,8 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.OrderLineTaxServiceImpl;
+import com.axelor.apps.base.service.tax.TaxArchiveService;
+import com.axelor.apps.base.service.tax.TaxArchiveServiceImpl;
 import com.axelor.apps.base.service.tax.TaxEquivService;
 import com.axelor.apps.base.service.tax.TaxEquivServiceImpl;
 import com.axelor.apps.base.service.theme.MetaThemeFetchService;
@@ -639,5 +641,6 @@ public class BaseModule extends AxelorModule {
     bind(IndicatorMetaService.class).to(IndicatorMetaServiceImpl.class);
     bind(SequenceDateCheckService.class).to(SequenceDateCheckServiceImpl.class);
     bind(PriceListLineRepository.class).to(PriceListLineManagementRepository.class);
+    bind(TaxArchiveService.class).to(TaxArchiveServiceImpl.class);
   }
 }
