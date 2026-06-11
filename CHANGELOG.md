@@ -1,3 +1,26 @@
+## [8.2.45] (2026-06-11)
+
+### Fixes
+#### Base
+
+* Sequence: fixed sequence number generation failing in multi-tenant environments.
+
+#### Account
+
+* Payment session: fixed bank order generation losing invoice terms when the session exceeds one batch of 10 terms.
+* Invoice: invoice email template now renders the invoice number correctly.
+* Analytic move line query: fixed analytic account value not displayed in reverse query parameter list in readonly mode.
+* Payment session: fixed unselected invoice terms not fully released.
+
+#### Bank Payment
+
+* Bank statement: fixed printing of bank statement by restoring compatible BIRT report format version.
+
+#### Budget
+
+* Budget: fixed realized with PO listing on global budget showing no lines.
+* Budget: fixed draft orders being included in the committed amount.
+
 ## [8.2.44] (2026-05-28)
 
 ### Fixes
@@ -2751,6 +2774,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.45]: https://github.com/axelor/axelor-open-suite/compare/v8.2.44...v8.2.45
 [8.2.44]: https://github.com/axelor/axelor-open-suite/compare/v8.2.43...v8.2.44
 [8.2.43]: https://github.com/axelor/axelor-open-suite/compare/v8.2.42...v8.2.43
 [8.2.42]: https://github.com/axelor/axelor-open-suite/compare/v8.2.41...v8.2.42
