@@ -721,6 +721,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   @Override
   public BigDecimal computeNonCanceledInvoiceQty(StockMoveLine stockMoveLine)
       throws AxelorException {
+    if (stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_NORMAL) {
+      return BigDecimal.ZERO;
+    }
     List<InvoiceLine> nonCanceledInvoiceLineList =
         invoiceLineRepository
             .all()
@@ -748,7 +751,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     BigDecimal qty = invoiceLine.getQty();
     Unit invoiceLineUnit = invoiceLine.getUnit();
     Unit stockMoveLineUnit = stockMoveLine.getUnit();
-    if (!invoiceLineUnit.equals(stockMoveLineUnit)) {
+    if (!Objects.equals(invoiceLineUnit, stockMoveLineUnit)) {
       qty =
           unitConversionService.convert(
               invoiceLineUnit,
