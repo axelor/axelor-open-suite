@@ -1,0 +1,3 @@
+---
+title: "AccountChart: fixed l10n FRA/GBR account management CSV to use saleTaxSet and purchaseTaxSet instead of removed saleTax/purchaseTax fields."
+module: axelor-account
