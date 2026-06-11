@@ -1407,10 +1407,11 @@ public class MrpServiceImpl implements MrpService {
       Set<ProductCategory> productCategorySet = new HashSet<>(mrp.getProductCategorySet());
 
       if (mrp.getTakeInAccountSubCategories()) {
+        Set<ProductCategory> subCategorySet = new HashSet<>();
         for (ProductCategory productCategory : productCategorySet) {
-          productCategorySet.addAll(
-              productCategoryService.fetchChildrenCategoryList(productCategory));
+          subCategorySet.addAll(productCategoryService.fetchChildrenCategoryList(productCategory));
         }
+        productCategorySet.addAll(subCategorySet);
       }
 
       productSet.addAll(

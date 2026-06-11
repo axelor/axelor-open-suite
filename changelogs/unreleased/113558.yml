@@ -1,0 +1,3 @@
+---
+title: "MRP: fixed error when running calculation with sub-categories taken into account."
+module: axelor-supplychain
