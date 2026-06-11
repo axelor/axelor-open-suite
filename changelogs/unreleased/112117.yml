@@ -1,6 +1,0 @@
----
-title: "Stock: fixed false conformity errors during stock move realization caused by lazy or detached stock move data."
-module: axelor-stock
-developer: |
-  `StockMoveRepository` has been added as a constructor-injected variable in `StockMoveLineServiceImpl`.
-  `StockMoveLineService#checkConformitySelection(StockMoveLine, StockMove)` now returns whether conformity is missing instead of throwing the conformity functional error directly.

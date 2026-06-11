@@ -1,3 +1,0 @@
----
-title: "Invoice payment: fixed financial discount duplicated on invoice with fiscal position with reverse charge tax resulting in unbalanced payment move."
-module: axelor-account
