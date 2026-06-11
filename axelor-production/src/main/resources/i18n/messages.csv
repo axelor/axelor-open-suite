@@ -55,6 +55,7 @@
 "Bill of material line",,,
 "Bill of material line list",,,
 "Bill of materials",,,
+"Bill of materials name is too long (maximum 255 characters).",,,
 "BillOfMaterial",,,
 "Bills of material",,,
 "Bills of material filters",,,

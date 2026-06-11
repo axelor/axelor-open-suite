@@ -346,4 +346,7 @@ public final class ProductionExceptionMessage {
 
   public static final String LOOP_IN_BILL_OF_MATERIALS = /*$$(*/
       "The system found a loop in your bill of materials, please correct concerned data" /*)*/;
+
+  public static final String BILL_OF_MATERIAL_NAME_TOO_LONG = /*$$(*/
+      "Bill of materials name is too long (maximum 255 characters)." /*)*/;
 }

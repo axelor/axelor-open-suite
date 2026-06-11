@@ -55,6 +55,7 @@
 "Bill of material line",,,
 "Bill of material line list",,,
 "Bill of materials","Nomenclatures",,
+"Bill of materials name is too long (maximum 255 characters).","Le nom de la nomenclature est trop long (maximum 255 caractères).",,
 "BillOfMaterial","Nomenclature",,
 "Bills of material","Nomenclatures",,
 "Bills of material filters","Filtres Nomenclatures",,

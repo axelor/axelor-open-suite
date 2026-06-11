@@ -18,11 +18,17 @@
  */
 package com.axelor.apps.production.db.repo;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.persistence.PersistenceException;
 
 public class BillOfMaterialManagementRepository extends BillOfMaterialRepository {
 
@@ -37,15 +43,32 @@ public class BillOfMaterialManagementRepository extends BillOfMaterialRepository
 
   @Override
   public BillOfMaterial save(BillOfMaterial billOfMaterial) {
+    try {
+      if (billOfMaterial.getName() != null && billOfMaterial.getName().length() > 255) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_NAME_TOO_LONG));
+      }
 
-    if (billOfMaterial.getVersionNumber() != null && billOfMaterial.getVersionNumber() > 1) {
-      billOfMaterial.setFullName(
-          billOfMaterial.getName() + " - v" + billOfMaterial.getVersionNumber());
-    } else {
-      billOfMaterial.setFullName(billOfMaterial.getName());
+      String fullName;
+      if (billOfMaterial.getVersionNumber() != null && billOfMaterial.getVersionNumber() > 1) {
+        fullName = billOfMaterial.getName() + " - v" + billOfMaterial.getVersionNumber();
+      } else {
+        fullName = billOfMaterial.getName();
+      }
+
+      if (fullName != null && fullName.length() > 255) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_NAME_TOO_LONG));
+      }
+
+      billOfMaterial.setFullName(fullName);
+      return super.save(billOfMaterial);
+    } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
-
-    return super.save(billOfMaterial);
   }
 
   @Override
