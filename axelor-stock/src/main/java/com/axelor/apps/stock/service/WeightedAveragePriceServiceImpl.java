@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.stock.utils.BatchProcessorHelper;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -75,6 +76,9 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
       for (ProductCompany productCompany : product.getProductCompanyList()) {
         Company company = productCompany.getCompany();
         BigDecimal productAvgPrice = this.computeAvgPriceForCompany(product, company);
+        if (productAvgPrice.compareTo(BigDecimal.ZERO) == 0) {
+          continue;
+        }
         productCompanyService.set(product, "avgPrice", productAvgPrice, company);
         if ((Integer) productCompanyService.get(product, "costTypeSelect", company)
             == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
@@ -86,6 +90,9 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
       }
     } else {
       BigDecimal productAvgPrice = this.computeAvgPriceForCompany(product, null);
+      if (productAvgPrice.compareTo(BigDecimal.ZERO) == 0) {
+        return;
+      }
       product.setAvgPrice(productAvgPrice);
       if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
         product.setCostPrice(productAvgPrice);
@@ -134,5 +141,51 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
 
     int scale = appBaseService.getNbDecimalDigitForUnitPrice();
     return totalWeightedValue.divide(totalQty, scale, RoundingMode.HALF_UP);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void resetAvgPriceForProducts(Set<Long> productIds) throws AxelorException {
+    BatchProcessorHelper.builder()
+        .clearEveryNBatch(0)
+        .build()
+        .<Product, AxelorException>forEachByIds(
+            Product.class, productIds, this::doResetAvgPriceForProduct);
+  }
+
+  protected void doResetAvgPriceForProduct(Product product) throws AxelorException {
+    Boolean avgPriceHandledByCompany = false;
+    Set<MetaField> companySpecificFields =
+        appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
+    for (MetaField field : companySpecificFields) {
+      if (field.getName().equals("avgPrice")) {
+        avgPriceHandledByCompany = true;
+        break;
+      }
+    }
+    if (avgPriceHandledByCompany
+        && product.getProductCompanyList() != null
+        && !product.getProductCompanyList().isEmpty()) {
+      for (ProductCompany productCompany : product.getProductCompanyList()) {
+        Company company = productCompany.getCompany();
+        if (computeAvgPriceForCompany(product, company).compareTo(BigDecimal.ZERO) != 0) {
+          continue;
+        }
+        productCompanyService.set(product, "avgPrice", BigDecimal.ZERO, company);
+        if ((Integer) productCompanyService.get(product, "costTypeSelect", company)
+            == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
+          productCompanyService.set(product, "costPrice", BigDecimal.ZERO, company);
+        }
+      }
+    } else {
+      if (computeAvgPriceForCompany(product, null).compareTo(BigDecimal.ZERO) != 0) {
+        return;
+      }
+      product.setAvgPrice(BigDecimal.ZERO);
+      if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
+        product.setCostPrice(BigDecimal.ZERO);
+      }
+    }
+    JPA.save(product);
   }
 }
