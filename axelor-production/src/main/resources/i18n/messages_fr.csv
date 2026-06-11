@@ -69,6 +69,7 @@
 "Bill of materials import source","Source d'import de nomenclature",,
 "Bill of materials import sources","Sources d'import de nomenclature",,
 "Bill of materials imports","Imports de nomenclature",,
+"Bill of materials name is too long (maximum 255 characters).","Le nom de la nomenclature est trop long (maximum 255 caractères).",,
 "BillOfMaterial","Nomenclature",,
 "Bills of material","Nomenclatures",,
 "Bills of material filters","Filtres Nomenclatures",,
