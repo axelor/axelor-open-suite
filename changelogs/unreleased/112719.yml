@@ -1,0 +1,6 @@
+---
+title: "Stock location: fixed stock location value always displaying 0 in form view."
+module: axelor-stock
+developer: |
+  -- Script
+  DELETE FROM meta_action WHERE name = 'action-stock-location-record-set-stock-location-value-btn';
