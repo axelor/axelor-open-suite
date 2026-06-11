@@ -1,0 +1,3 @@
+---
+title: "Sequence: fixed sequence number generation failing in multi-tenant environments."
+module: axelor-base

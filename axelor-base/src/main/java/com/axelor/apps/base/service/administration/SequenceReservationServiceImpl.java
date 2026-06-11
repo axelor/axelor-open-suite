@@ -276,29 +276,30 @@ public class SequenceReservationServiceImpl implements SequenceReservationServic
     AtomicReference<Long> resultRef = new AtomicReference<>();
     AtomicReference<Exception> exceptionRef = new AtomicReference<>();
 
+    TenantAware tenantAware =
+        new TenantAware(
+            () -> {
+              try {
+                ReservedSequence reservation = new ReservedSequence();
+                reservation.setSequence(JPA.find(Sequence.class, sequenceId));
+                reservation.setSequenceVersion(JPA.find(SequenceVersion.class, versionId));
+                reservation.setReservedNum(reservedNum);
+                reservation.setGeneratedSequence(sequenceNumber);
+                reservation.setReservedAt(LocalDateTime.now());
+                reservation.setStatus(ReservedSequenceRepository.STATUS_PENDING);
+                reservation.setCallerClass(callerClass);
+                reservation.setCallerField(fieldName);
+
+                JPA.save(reservation);
+
+                resultRef.set(reservation.getId());
+              } catch (Exception e) {
+                exceptionRef.set(e);
+              }
+            });
+
     Callable<Void> callable =
         () -> {
-          TenantAware tenantAware =
-              new TenantAware(
-                  () -> {
-                    try {
-                      ReservedSequence reservation = new ReservedSequence();
-                      reservation.setSequence(JPA.find(Sequence.class, sequenceId));
-                      reservation.setSequenceVersion(JPA.find(SequenceVersion.class, versionId));
-                      reservation.setReservedNum(reservedNum);
-                      reservation.setGeneratedSequence(sequenceNumber);
-                      reservation.setReservedAt(LocalDateTime.now());
-                      reservation.setStatus(ReservedSequenceRepository.STATUS_PENDING);
-                      reservation.setCallerClass(callerClass);
-                      reservation.setCallerField(fieldName);
-
-                      JPA.save(reservation);
-
-                      resultRef.set(reservation.getId());
-                    } catch (Exception e) {
-                      exceptionRef.set(e);
-                    }
-                  });
           tenantAware.start();
           tenantAware.join();
           return null;
