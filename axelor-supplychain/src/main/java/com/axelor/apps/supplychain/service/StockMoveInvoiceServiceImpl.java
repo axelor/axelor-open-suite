@@ -654,7 +654,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     BigDecimal qty = invoiceLine.getQty();
     Unit invoiceLineUnit = invoiceLine.getUnit();
     Unit stockMoveLineUnit = stockMoveLine.getUnit();
-    if (!invoiceLineUnit.equals(stockMoveLineUnit)) {
+    if (!Objects.equals(invoiceLineUnit, stockMoveLineUnit)) {
       qty =
           unitConversionService.convert(
               invoiceLineUnit,
