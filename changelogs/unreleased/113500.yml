@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed NPE in getQtyToInvoice when invoice line has no unit."
+module: axelor-supplychain
