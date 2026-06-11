@@ -1,3 +1,144 @@
+## [8.5.20] (2026-06-11)
+
+### Fixes
+#### Base
+
+* Partner: preserve isProspect, isCustomer and isSupplier flags when filling from Sirene API.
+* Invoice: fixed concurrent BIRT PDF generation causing file error when multiple users ventilate invoices simultaneously.
+* Product: fixed packaging products not appearing in purchase order line product selection due to missing expense value.
+* Sequence: fixed sequence number generation failing in multi-tenant environments.
+* Tax: fixed archived taxes still appearing in the tax selection on invoice lines and move lines.
+* Partner: fixed partner sequence being auto-generated during import even when generate sequence option is disabled.
+
+#### Account
+
+* Payment session: fixed bank order generation losing invoice terms when the session exceeds one batch of 10 terms.
+* Invoice: fixed has pending payments boolean stays true on fully paid invoices.
+* Invoice: invoice email template now renders the invoice number correctly.
+* AccountChart: removed stale finDiscount account columns from l10n FRA/GBR account management CSV that reference fields no longer on AccountManagement entity.
+* Analytic move line query: fixed analytic account value not displayed in reverse query parameter list in readonly mode.
+* Payment session: fixed unselected invoice terms not fully released.
+* AccountChart: fixed l10n FRA/GBR account management CSV to use saleTaxSet and purchaseTaxSet instead of removed saleTax/purchaseTax fields.
+* Invoice payment: fixed financial discount duplicated on invoice with fiscal position with reverse charge tax resulting in unbalanced payment move.
+* Payment Session: fixed validation failing with RECONCILE_4 error when session contains an invoice and a refund on the same partner in a foreign currency.
+* Account management: removed obsolete financialDiscountAccount column from CSV import files.
+
+#### Bank Payment
+
+* Bank statement: fixed printing of bank statement by restoring compatible BIRT report format version.
+
+#### Budget
+
+* Budget: fixed committed amount not updated if a budget distribution line is deleted.
+* Budget: fixed draft orders being included in the committed amount.
+
+#### Contract
+
+* Contract: fixed validation to prevent setting a first period end date earlier than today when no supposed activation date is defined.
+
+#### Helpdesk
+
+* Client portal / Ticket: fixed company tickets ('Assign to supplier') filter.
+
+#### Human Resource
+
+* HR config: fixed wrong expense notification templates and removed duplicated entries in HR configuration demo data.
+
+#### Production
+
+* Sale order line: fixed the domain on bill of material field.
+* Unit cost calculation: fixed calculation process that ignored products with default BOM set at ProductCompany level.
+* Bill of material: fixed error while customizing bills of material directly from sales order lines.
+
+#### Purchase
+
+* Purchase order: fixed the order of purchase order lines during duplication.
+
+#### Sale
+
+* Sale order: fixed duplicate reference label warning badge shown by default on new sale order form (inverted condition).
+* Sale order: fixed total cost price is not updated when modifying sale order line list qty.
+
+#### Stock
+
+* Stock move: fixed the missing form view and grid view for all fields in the links panel.
+* Stock report: fix future quantity chart to include overdue movements at D+1.
+* Stock location: fixed stock location value always displaying 0 in form view.
+* Stock move: fix lazy initialization exception when sending automatic email on realization.
+* Stock: preserved ProductCompany avg/cost price on zero-stock normal depletion.
+* Stock correction: fixed error when validating a stock correction for non stock managed product.
+* Stock: fixed false conformity errors during stock move realization caused by lazy or detached stock move data.
+
+#### Supply Chain
+
+* Sale order: removed duplicated AppBaseService parameter in SaleOrderOnChangeSupplychainServiceImpl constructor.
+* Supplychain batch: fixed NPE when no period is set in 'Update stock history' batch.
+* Invoice: fixed the global discount on invoices generated from the stock move.
+* Stock move invoicing: fixed NPE and unit conversion error on title lines when computing non-canceled invoice quantity.
+* MRP: fixed error when running calculation with sub-categories taken into account.
+* Invoice: fixed NPE in getQtyToInvoice when invoice line has no unit.
+* Invoice: fixed the global discount on invoices generated from the sale order.
+* Sale order: fixed the error when invoicing a sale order line with a discount and unit prices set to more than 2 decimal places.
+
+#### Intervention
+
+* Intervention type: fixed error when selecting a range in the range lists.
+
+
+### Developer
+
+#### Production
+
+Changed SaleOrderLineDomainProductionService.getBomDomain parameters from (saleOrderLine) to (saleOrderLine, saleOrder).
+
+#### Sale
+
+The action-attrs `action-sale-sale-order-attrs-external-reference` and the dummy
+field `$duplicateExternalReference` (along with its viewer badge) have been removed
+from the SaleOrder form view. The duplicate external reference warning is now handled
+through the `duplicateReferenceLabel` field, set by
+`SaleOrderViewServiceImpl.hideDuplicateReferenceLabel`.
+
+The `externalReference` field `onChange` now points to the existing
+`action-sale-order-attrs-external-reference` action.
+
+```sql
+DELETE FROM meta_action WHERE name = 'action-sale-sale-order-attrs-external-reference';
+```
+
+---
+
+`SaleOrderLineDetailsPriceService.computeSubTotalCostPrice` is now public instead of protected.
+
+#### Stock
+
+-- Script
+DELETE FROM meta_action WHERE name = 'action-stock-location-record-set-stock-location-value-btn';
+
+---
+
+WeightedAveragePriceService: added resetAvgPriceForProducts(Set<Long> productIds).
+Constructors of StockMoveServiceImpl, StockMoveServiceSupplychainImpl, and StockMoveServiceProductionImpl now require WeightedAveragePriceService.
+
+---
+
+`StockMoveRepository` has been added as a constructor-injected variable in `StockMoveLineServiceImpl`.
+`StockMoveLineService#checkConformitySelection(StockMoveLine, StockMove)` now returns whether conformity is missing instead of throwing the conformity functional error directly.
+
+#### Supply Chain
+
+Added `InvoiceGlobalDiscountService` as parameter in `StockMoveInvoiceServiceImpl` constructor.
+Added `computePriceBeforeGlobalDiscount(GlobalDiscounter)` method to `InvoiceGlobalDiscountService` interface.
+
+---
+
+Added `InvoiceGlobalDiscountService` as parameter in `SaleOrderInvoiceServiceImpl` constructor.
+Added `computePriceBeforeGlobalDiscount(GlobalDiscounter)` method to `InvoiceGlobalDiscountService` interface.
+
+---
+
+Removed duplicated AppBaseService parameter in `SaleOrderOnChangeSupplychainServiceImpl̀` constructor.
+
 ## [8.5.19] (2026-05-28)
 
 ### Fixes
@@ -683,13 +824,11 @@ UPDATE account_invoice_product_statement SET type_list = 'mixed' WHERE type_list
 UPDATE account_invoice_product_statement SET type_list = 'mixed'
 WHERE type_list LIKE '%storable%' AND type_list LIKE '%service%' AND type_list != 'mixed';
 
-UPDATE account_account_config
-SET default_invoice_category_select = 'mixed'
-WHERE default_invoice_category_select IS NULL;
-
 UPDATE account_invoice i
 SET invoice_category_select = 'goods'
-WHERE i.status_select IN (2, 3)
+WHERE i.operation_type_select IN (1, 3)
+  AND i.operation_sub_type_select = 1
+  AND i.status_select IN (2, 3)
   AND i.invoice_category_select IS NULL
   AND EXISTS (
     SELECT 1 FROM account_invoice_line il WHERE il.invoice = i.id
@@ -703,7 +842,9 @@ WHERE i.status_select IN (2, 3)
 
 UPDATE account_invoice i
 SET invoice_category_select = 'services'
-WHERE i.status_select IN (2, 3)
+WHERE i.operation_type_select IN (1, 3)
+  AND i.operation_sub_type_select = 1
+  AND i.status_select IN (2, 3)
   AND i.invoice_category_select IS NULL
   AND EXISTS (
     SELECT 1 FROM account_invoice_line il WHERE il.invoice = i.id
@@ -719,6 +860,8 @@ UPDATE account_invoice i
 SET invoice_category_select = ac.default_invoice_category_select
 FROM account_account_config ac
 WHERE ac.company = i.company
+  AND i.operation_type_select IN (1, 3)
+  AND i.operation_sub_type_select = 1
   AND i.status_select IN (2, 3)
   AND i.invoice_category_select IS NULL
   AND ac.default_invoice_category_select IS NOT NULL
@@ -2875,6 +3018,7 @@ Removed CommonInvoiceService.createInvoiceLinesFromOrder Changed the parameter o
 * Bill of material: added default value for calculation quantity.
 * Manuf order: fixed relation with production order.
 
+[8.5.20]: https://github.com/axelor/axelor-open-suite/compare/v8.5.19...v8.5.20
 [8.5.19]: https://github.com/axelor/axelor-open-suite/compare/v8.5.18...v8.5.19
 [8.5.18]: https://github.com/axelor/axelor-open-suite/compare/v8.5.17...v8.5.18
 [8.5.17]: https://github.com/axelor/axelor-open-suite/compare/v8.5.16...v8.5.17

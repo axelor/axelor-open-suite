@@ -1,3 +1,0 @@
----
-title: "Stock move invoicing: fixed NPE and unit conversion error on title lines when computing non-canceled invoice quantity."
-module: axelor-supplychain

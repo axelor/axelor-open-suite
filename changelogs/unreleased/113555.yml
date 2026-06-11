@@ -1,3 +1,0 @@
----
-title: "Sale order: fixed the error when invoicing a sale order line with a discount and unit prices set to more than 2 decimal places."
-module: axelor-supplychain
