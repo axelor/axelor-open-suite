@@ -1,6 +1,0 @@
----
-title: "Invoice: fixed the global discount on invoices generated from the sale order."
-module: axelor-supplychain
-developer: |
-  Added `InvoiceGlobalDiscountService` as parameter in `SaleOrderInvoiceServiceImpl` constructor.
-  Added `computePriceBeforeGlobalDiscount(GlobalDiscounter)` method to `InvoiceGlobalDiscountService` interface.

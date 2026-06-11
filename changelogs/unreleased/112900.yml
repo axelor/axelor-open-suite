@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed has pending payments boolean stays true on fully paid invoices."
-module: axelor-account

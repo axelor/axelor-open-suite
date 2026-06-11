@@ -1,3 +1,126 @@
+## [8.4.28] (2026-06-11)
+
+### Fixes
+#### Base
+
+* Partner: preserve isProspect, isCustomer and isSupplier flags when filling from Sirene API.
+* Invoice: fixed concurrent BIRT PDF generation causing file error when multiple users ventilate invoices simultaneously.
+* Sequence: fixed sequence number generation failing in multi-tenant environments.
+* Tax: fixed archived taxes still appearing in the tax selection on invoice lines and move lines.
+* Partner: fixed partner sequence being auto-generated during import even when generate sequence option is disabled.
+
+#### Account
+
+* Payment session: fixed bank order generation losing invoice terms when the session exceeds one batch of 10 terms.
+* Invoice: fixed has pending payments boolean stays true on fully paid invoices.
+* Invoice: invoice email template now renders the invoice number correctly.
+* AccountChart: removed stale finDiscount account columns from l10n FRA/GBR account management CSV that reference fields no longer on AccountManagement entity.
+* Analytic move line query: fixed analytic account value not displayed in reverse query parameter list in readonly mode.
+* Payment session: fixed unselected invoice terms not fully released.
+* AccountChart: fixed l10n FRA/GBR account management CSV to use saleTaxSet and purchaseTaxSet instead of removed saleTax/purchaseTax fields.
+* Invoice payment: fixed financial discount duplicated on invoice with fiscal position with reverse charge tax resulting in unbalanced payment move.
+* Payment Session: fixed validation failing with RECONCILE_4 error when session contains an invoice and a refund on the same partner in a foreign currency.
+* Account management: removed obsolete financialDiscountAccount column from CSV import files.
+
+#### Bank Payment
+
+* Bank statement: fixed printing of bank statement by restoring compatible BIRT report format version.
+
+#### Budget
+
+* Budget: fixed committed amount not updated if a budget distribution line is deleted.
+* Budget: fixed draft orders being included in the committed amount.
+
+#### Contract
+
+* Contract: fixed validation to prevent setting a first period end date earlier than today when no supposed activation date is defined.
+
+#### Helpdesk
+
+* Client portal / Ticket: fixed company tickets ('Assign to supplier') filter.
+
+#### Production
+
+* Sale order line: fixed the domain on bill of material field.
+* Unit cost calculation: fixed calculation process that ignored products with default BOM set at ProductCompany level.
+* Bill of material: fixed error while customizing bills of material directly from sales order lines.
+
+#### Purchase
+
+* Purchase order: fixed the order of purchase order lines during duplication.
+
+#### Sale
+
+* Sale order: fixed duplicate reference label warning badge shown by default on new sale order form (inverted condition).
+* Sale order: fixed total cost price is not updated when modifying sale order line list qty.
+
+#### Stock
+
+* Stock move: fixed the missing form view and grid view for all fields in the links panel.
+* Stock report: fix future quantity chart to include overdue movements at D+1.
+* Stock location: fixed stock location value always displaying 0 in form view.
+* Stock correction: fixed error when validating a stock correction for non stock managed product.
+
+#### Supply Chain
+
+* Sale order: removed duplicated AppBaseService parameter in SaleOrderOnChangeSupplychainServiceImpl̀ constructor.
+* Supplychain batch: fixed NPE when no period is set in 'Update stock history' batch.
+* Invoice: fixed the global discount on invoices generated from the stock move.
+* Stock move invoicing: fixed NPE and unit conversion error on title lines when computing non-canceled invoice quantity.
+* MRP: fixed error when running calculation with sub-categories taken into account.
+* Invoice: fixed NPE in getQtyToInvoice when invoice line has no unit.
+* Invoice: fixed the global discount on invoices generated from the sale order.
+* Sale order: fixed the error when invoicing a sale order line with a discount and unit prices set to more than 2 decimal places.
+
+#### Intervention
+
+* Intervention type: fixed error when selecting a range in the range lists.
+
+
+### Developer
+
+#### Production
+
+Changed SaleOrderLineDomainProductionService.getBomDomain parameters from (saleOrderLine) to (saleOrderLine, saleOrder).
+
+#### Sale
+
+The action-attrs `action-sale-sale-order-attrs-external-reference` and the dummy
+field `$duplicateExternalReference` (along with its viewer badge) have been removed
+from the SaleOrder form view. The duplicate external reference warning is now handled
+through the `duplicateReferenceLabel` field, set by
+`SaleOrderViewServiceImpl.hideDuplicateReferenceLabel`.
+
+The `externalReference` field `onChange` now points to the existing
+`action-sale-order-attrs-external-reference` action.
+
+```sql
+DELETE FROM meta_action WHERE name = 'action-sale-sale-order-attrs-external-reference';
+```
+
+---
+
+`SaleOrderLineDetailsPriceService.computeSubTotalCostPrice` is now public instead of protected.
+
+#### Stock
+
+-- Script
+DELETE FROM meta_action WHERE name = 'action-stock-location-record-set-stock-location-value-btn';
+
+#### Supply Chain
+
+Added `InvoiceGlobalDiscountService` as parameter in `StockMoveInvoiceServiceImpl` constructor.
+Added `computePriceBeforeGlobalDiscount(GlobalDiscounter)` method to `InvoiceGlobalDiscountService` interface.
+
+---
+
+Added `InvoiceGlobalDiscountService` as parameter in `SaleOrderInvoiceServiceImpl` constructor.
+Added `computePriceBeforeGlobalDiscount(GlobalDiscounter)` method to `InvoiceGlobalDiscountService` interface.
+
+---
+
+Removed duplicated AppBaseService parameter in `SaleOrderOnChangeSupplychainServiceImpl̀` constructor.
+
 ## [8.4.27] (2026-05-28)
 
 ### Fixes
@@ -2968,6 +3091,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.28]: https://github.com/axelor/axelor-open-suite/compare/v8.4.27...v8.4.28
 [8.4.27]: https://github.com/axelor/axelor-open-suite/compare/v8.4.26...v8.4.27
 [8.4.26]: https://github.com/axelor/axelor-open-suite/compare/v8.4.25...v8.4.26
 [8.4.25]: https://github.com/axelor/axelor-open-suite/compare/v8.4.24...v8.4.25
