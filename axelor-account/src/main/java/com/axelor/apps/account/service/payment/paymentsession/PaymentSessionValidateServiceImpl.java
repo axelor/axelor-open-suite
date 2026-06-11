@@ -277,21 +277,24 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean isGlobal)
       throws AxelorException {
     counter = 0;
-    int offset = 0;
     List<InvoiceTerm> invoiceTermList;
-    Query<InvoiceTerm> invoiceTermQuery =
-        invoiceTermRepo
-            .all()
-            .filter("self.paymentSession = :paymentSession AND self.paymentAmount != 0")
-            .bind("paymentSession", paymentSession)
-            .order("id");
-
+    long lastSeenId = 0L;
     Set<Long> compensatedRefundIds =
         invoiceTermLinkWithRefund.stream()
             .map(p -> p.getRight().getLeft().getId())
             .collect(Collectors.toSet());
 
-    while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
+    String filter =
+        "self.paymentSession = :paymentSession AND self.paymentAmount != 0 AND self.id > :lastSeenId";
+    while (!(invoiceTermList =
+            invoiceTermRepo
+                .all()
+                .filter(filter)
+                .bind("paymentSession", paymentSession)
+                .bind("lastSeenId", lastSeenId)
+                .order("id")
+                .autoFlush(false)
+                .fetch(AbstractBatch.FETCH_LIMIT))
         .isEmpty()) {
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
@@ -321,7 +324,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         }
       }
 
-      offset += invoiceTermList.size();
+      lastSeenId = invoiceTermList.get(invoiceTermList.size() - 1).getId();
       JPA.flush();
       JPA.clear();
     }

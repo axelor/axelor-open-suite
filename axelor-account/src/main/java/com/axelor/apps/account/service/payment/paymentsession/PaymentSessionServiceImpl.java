@@ -486,13 +486,15 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   public void removeNegativeLines(PaymentSession paymentSession) throws AxelorException {
     Query<InvoiceTerm> invoiceTermQuery = this.getNegativeBalanceInvoiceTermQuery(paymentSession);
     List<InvoiceTerm> invoiceTermList;
-    int offset = 0;
+    long lastSeenId = 0L;
 
-    while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
+    while (!(invoiceTermList =
+            invoiceTermQuery.bind("lastSeenId", lastSeenId).fetch(AbstractBatch.FETCH_LIMIT))
         .isEmpty()) {
       invoiceTermService.toggle(invoiceTermList, false);
 
-      offset += invoiceTermList.size();
+      lastSeenId = invoiceTermList.get(invoiceTermList.size() - 1).getId();
+      JPA.flush();
       JPA.clear();
     }
   }
@@ -503,11 +505,13 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
         .filter(
             "self.paymentSession = :paymentSession "
                 + "AND self.isSelectedOnPaymentSession IS TRUE "
+                + "AND self.id > :lastSeenId "
                 + "AND self.partner IN ("
                 + "SELECT it.partner FROM InvoiceTerm it "
                 + "WHERE it.paymentSession = :paymentSession AND it.isSelectedOnPaymentSession IS TRUE "
                 + "GROUP BY it.partner HAVING SUM(it.paymentAmount) < 0)")
         .bind("paymentSession", paymentSession)
+        .autoFlush(false)
         .order("id");
   }
 
