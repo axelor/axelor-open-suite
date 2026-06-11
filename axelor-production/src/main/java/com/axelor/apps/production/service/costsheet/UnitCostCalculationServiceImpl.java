@@ -324,6 +324,11 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     List<Integer> productSubTypeSelects =
         StringHelper.getIntegerList(unitCostCalculation.getProductSubTypeSelect());
 
+    String companyFilter =
+        hasDefaultBOMSelected()
+            ? " AND EXISTS (SELECT pc FROM ProductCompany pc WHERE pc.product = self AND pc.defaultBillOfMaterial.company IN (?4))"
+            : " AND self.defaultBillOfMaterial.company in (?4)";
+
     if (!productCategorySet.isEmpty()) {
 
       productSet.addAll(
@@ -331,7 +336,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               .all()
               .filter(
                   "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
-                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
+                      + companyFilter
+                      + " AND self.procurementMethodSelect in (?5, ?6)"
                       + " AND self.dtype = 'Product'",
                   productCategorySet,
                   ProductRepository.PRODUCT_TYPE_STORABLE,
@@ -349,7 +355,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               .all()
               .filter(
                   "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
-                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
+                      + companyFilter
+                      + " AND self.procurementMethodSelect in (?5, ?6)"
                       + " AND self.dtype = 'Product'",
                   productFamilySet,
                   ProductRepository.PRODUCT_TYPE_STORABLE,

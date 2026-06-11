@@ -22,8 +22,8 @@
 
   <form name="product-company-form" title="Product per company"
     model="com.axelor.apps.base.db.ProductCompany"
-    onNew="action-product-company-record-init-product,action-product-company-attrs-scale-and-precision,action-product-company-attrs-change-title-based-on-inAti,action-product-company-attrs-company-domain"
-    onLoad="action-product-company-attrs-scale-and-precision,action-product-company-attrs-change-title-based-on-inAti,action-product-company-attrs-company-domain">
+    onNew="action-product-company-record-init-product,action-product-company-attrs-procurement-method,action-product-company-attrs-scale-and-precision,action-product-company-attrs-change-title-based-on-inAti,action-product-company-attrs-company-domain"
+    onLoad="action-product-company-attrs-scale-and-precision,action-product-company-attrs-change-title-based-on-inAti,action-product-company-attrs-company-domain,action-product-company-attrs-procurement-method">
     <panel name="mainPanel" colSpan="12">
       <field name="product" readonly="true" form-view="product-form"/>
       <field name="company" required="true"
@@ -132,5 +132,12 @@
     <field name="saleCurrency,purchaseCurrency" expr="eval: company?.currency"
       if="company?.currency"/>
   </action-record>
+
+  <action-attrs name="action-product-company-attrs-procurement-method">
+    <attribute for="procurementMethodSelect" if="__parent__?.productSubTypeSelect == 3"
+      name="value" expr="buy"/>
+    <attribute for="procurementMethodSelect" if="__parent__?.productSubTypeSelect == 3"
+      name="readonly" expr="eval: true"/>
+  </action-attrs>
 
 </object-views>
