@@ -1,0 +1,3 @@
+---
+title: "Account management: removed obsolete financialDiscountAccount column from CSV import files."
+module: axelor-account
