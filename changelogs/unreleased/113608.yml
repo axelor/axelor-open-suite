@@ -1,3 +1,0 @@
----
-title: "Supplychain batch: fixed NPE when no period is set in 'Update stock history' batch."
-module: axelor-supplychain

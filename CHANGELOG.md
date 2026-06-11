@@ -1,3 +1,37 @@
+## [7.2.68] (2026-06-11)
+
+### Fixes
+#### Account
+
+* Payment Session: fixed validation failing with RECONCILE_4 error when session contains an invoice and a refund on the same partner in a foreign currency.
+* Invoice: fixed has pending payments boolean stays true on fully paid invoices.
+* Invoice: invoice email template now renders the invoice number correctly.
+
+#### Helpdesk
+
+* Client portal / Ticket: fixed company tickets ('Assign to supplier') filter.
+
+#### Production
+
+* Unit cost calculation: fixed calculation process that ignored products with default BOM set at ProductCompany level.
+* Bill of material: fixed error while customizing bills of material directly from sales order lines.
+
+#### Purchase
+
+* Purchase order: fixed the order of purchase order lines during duplication.
+
+#### Stock
+
+* Stock move: fixed the missing form view and grid view for all fields in the links panel.
+* Stock report: fix future quantity chart to include overdue movements at D+1.
+
+#### Supply Chain
+
+* Supplychain batch: fixed NPE when no period is set in 'Update stock history' batch.
+* Stock move invoicing: fixed NPE and unit conversion error on title lines when computing non-canceled invoice quantity.
+* MRP: fixed error when running calculation with sub-categories taken into account.
+* Invoice: fixed NPE in getQtyToInvoice when invoice line has no unit.
+
 ## [7.2.67] (2026-05-28)
 
 ### Fixes
@@ -3143,6 +3177,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.68]: https://github.com/axelor/axelor-open-suite/compare/v7.2.67...v7.2.68
 [7.2.67]: https://github.com/axelor/axelor-open-suite/compare/v7.2.66...v7.2.67
 [7.2.66]: https://github.com/axelor/axelor-open-suite/compare/v7.2.65...v7.2.66
 [7.2.65]: https://github.com/axelor/axelor-open-suite/compare/v7.2.64...v7.2.65

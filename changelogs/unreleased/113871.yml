@@ -1,3 +1,0 @@
----
-title: "Payment Session: fixed validation failing with RECONCILE_4 error when session contains an invoice and a refund on the same partner in a foreign currency."
-module: axelor-account
