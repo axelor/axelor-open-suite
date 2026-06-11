@@ -1,3 +1,14 @@
+## [8.1.45] (2026-06-11)
+
+### Fixes
+#### Base
+
+* Sequence: fixed sequence number generation failing in multi-tenant environments.
+
+#### Account
+
+* Invoice: invoice email template now renders the invoice number correctly.
+
 ## [8.1.44] (2026-04-02)
 
 ### Fixes
@@ -2050,6 +2061,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.45]: https://github.com/axelor/axelor-open-suite/compare/v8.1.44...v8.1.45
 [8.1.44]: https://github.com/axelor/axelor-open-suite/compare/v8.1.43...v8.1.44
 [8.1.43]: https://github.com/axelor/axelor-open-suite/compare/v8.1.42...v8.1.43
 [8.1.42]: https://github.com/axelor/axelor-open-suite/compare/v8.1.41...v8.1.42
