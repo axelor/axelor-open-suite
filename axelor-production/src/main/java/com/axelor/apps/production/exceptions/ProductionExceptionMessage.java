@@ -433,4 +433,7 @@ public final class ProductionExceptionMessage {
 
   public static final String API_TYPE_SYSTEM_PRODUCT_MANUF_ORDER_FILLED = /*$$(*/
       "Product/ManufOrder fields should not be filled if type is 'System'." /*)*/;
+
+  public static final String BILL_OF_MATERIAL_NAME_TOO_LONG = /*$$(*/
+      "Bill of materials name is too long (maximum 255 characters)." /*)*/;
 }

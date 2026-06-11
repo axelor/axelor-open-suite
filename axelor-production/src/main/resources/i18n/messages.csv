@@ -71,6 +71,7 @@
 "Bill of materials import source",,,
 "Bill of materials import sources",,,
 "Bill of materials imports",,,
+"Bill of materials name is too long (maximum 255 characters).",,,
 "BillOfMaterial",,,
 "Bills of material",,,
 "Bills of material filters",,,

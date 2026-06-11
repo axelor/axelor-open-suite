@@ -57,6 +57,7 @@ import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.stock.utils.BatchProcessorHelper;
@@ -133,7 +134,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       PfpService pfpService,
       SaleOrderConfirmService saleOrderConfirmService,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
-      PurchaseOrderReceiptStateService purchaseOrderReceiptStateService) {
+      PurchaseOrderReceiptStateService purchaseOrderReceiptStateService,
+      WeightedAveragePriceService weightedAveragePriceService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -146,7 +148,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         stockConfigService,
         appStockService,
         productCompanyService,
-        stockLocationService);
+        stockLocationService,
+        weightedAveragePriceService);
     this.appSupplyChainService = appSupplyChainService;
     this.appAccountService = appAccountService;
     this.purchaseOrderRepo = purchaseOrderRepo;

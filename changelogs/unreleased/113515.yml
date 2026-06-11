@@ -1,3 +1,0 @@
----
-title: "Stock move: fix lazy initialization exception when sending automatic email on realization."
-module: axelor-stock

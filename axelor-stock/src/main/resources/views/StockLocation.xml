@@ -63,8 +63,7 @@
 
   <form name="stock-location-form" title="Stock location"
     model="com.axelor.apps.stock.db.StockLocation"
-    onNew="action-stock-location-record-new,action-stock-location-attrs-set-is-valued" width="large"
-    onLoad="action-stock-location-record-set-stock-location-value-btn">
+    onNew="action-stock-location-record-new,action-stock-location-attrs-set-is-valued" width="large">
     <toolbar>
       <button name="createInventoryBtn" title="Create inventory"
         onClick="action-location-view-create-inventory"/>
@@ -101,7 +100,8 @@
           <field name="typeSelect"
             onChange="action-stock-location-group-type-select-on-change" colSpan="12"/>
           <button name="$stockLocationValueBtn" title="Stock location value" colSpan="12"
-            hidden="true" showIf="isValued &amp;&amp; id" onClick="" widget="info-button"/>
+            hidden="true" showIf="isValued &amp;&amp; id" onClick="" widget="info-button"
+            x-field="stockLocationValue"/>
           <field name="stockLocationValue" hidden="true"/>
         </panel>
         <panel name="barcodePanel" colSpan="12"
@@ -253,12 +253,6 @@
     <context name="contentLocationIds"
       expr="call:com.axelor.apps.stock.service.StockLocationService:getContentStockLocationIds(__self__)"/>
   </action-view>
-
-  <action-record name="action-stock-location-record-set-stock-location-value-btn"
-    model="com.axelor.apps.stock.db.StockLocation">
-    <field name="$stockLocationValueBtn"
-      expr="call:com.axelor.apps.base.service.user.UserLocaleHelper:formatNumberWithLocale(stockLocationValue)"/>
-  </action-record>
 
   <action-view name="action-stock-location-view-show-form-view" title="Stock location"
     model="com.axelor.apps.stock.db.StockLocation">

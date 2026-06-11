@@ -1,3 +1,0 @@
----
-title: "AccountChart: removed stale finDiscount account columns from l10n FRA/GBR account management CSV that reference fields no longer on AccountManagement entity."
-module: axelor-account
