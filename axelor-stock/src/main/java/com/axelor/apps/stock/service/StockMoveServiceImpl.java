@@ -105,6 +105,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected AppStockService appStockService;
   protected ProductCompanyService productCompanyService;
   protected StockLocationService stockLocationService;
+  protected WeightedAveragePriceService weightedAveragePriceService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -119,7 +120,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockConfigService stockConfigService,
       AppStockService appStockService,
       ProductCompanyService productCompanyService,
-      StockLocationService stockLocationService) {
+      StockLocationService stockLocationService,
+      WeightedAveragePriceService weightedAveragePriceService) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
@@ -132,6 +134,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.appStockService = appStockService;
     this.productCompanyService = productCompanyService;
     this.stockLocationService = stockLocationService;
+    this.weightedAveragePriceService = weightedAveragePriceService;
   }
 
   /**
@@ -1124,6 +1127,13 @@ public class StockMoveServiceImpl implements StockMoveService {
           true,
           true);
       stockMove.setRealDate(appBaseService.getTodayDate(stockMove.getCompany()));
+      Set<Long> productIds =
+          stockMove.getStockMoveLineList().stream()
+              .map(StockMoveLine::getProduct)
+              .filter(p -> p != null)
+              .map(Product::getId)
+              .collect(Collectors.toSet());
+      weightedAveragePriceService.resetAvgPriceForProducts(productIds);
     }
 
     clearPlannedStockMoveLine(stockMove, false);
