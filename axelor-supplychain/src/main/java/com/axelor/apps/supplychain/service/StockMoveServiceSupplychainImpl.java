@@ -57,6 +57,7 @@ import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -128,7 +129,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       FixedAssetRepository fixedAssetRepository,
       PfpService pfpService,
       SaleOrderConfirmService saleOrderConfirmService,
-      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain) {
+      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
+      WeightedAveragePriceService weightedAveragePriceService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -141,7 +143,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         stockConfigService,
         appStockService,
         productCompanyService,
-        stockLocationService);
+        stockLocationService,
+        weightedAveragePriceService);
     this.appSupplyChainService = appSupplyChainService;
     this.appAccountService = appAccountService;
     this.purchaseOrderRepo = purchaseOrderRepo;
