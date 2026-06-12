@@ -224,12 +224,17 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         manufOrderRepository
             .all()
             .filter(
-                "self.product.id in (?1) AND (self.prodProcess.stockLocation in (?2) OR "
-                    + "self.prodProcess.producedProductStockLocation in (?2)) "
-                    + "AND self.statusSelect IN (?3)",
-                productMap.keySet(),
-                this.stockLocationList,
-                statusList)
+                "self.product.id IN (:productIds) "
+                    + "AND (self.prodProcess.stockLocation IN (:stockLocations) "
+                    + "OR self.prodProcess.producedProductStockLocation IN (:stockLocations)) "
+                    + "AND self.statusSelect IN (:statusList) "
+                    + "AND self.typeSelect IN (:manufOrderTypeList)")
+            .bind("productIds", productMap.keySet())
+            .bind("stockLocations", this.stockLocationList)
+            .bind("statusList", statusList)
+            .bind(
+                "manufOrderTypeList",
+                List.of(ManufOrderRepository.TYPE_PRODUCTION, ManufOrderRepository.TYPE_PERMANENT))
             .fetch();
 
     for (ManufOrder manufOrder : manufOrderList) {
