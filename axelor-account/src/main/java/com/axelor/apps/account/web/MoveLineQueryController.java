@@ -109,6 +109,15 @@ public class MoveLineQueryController {
                 .filter(l -> l.getIsSelected())
                 .map(l -> l.getMoveLine())
                 .collect(Collectors.toList());
+
+        List<String> pendingPaymentMessages =
+            Beans.get(MoveLineControlService.class).getPendingPaymentMessages(moveLineSelectedList);
+        if (!pendingPaymentMessages.isEmpty()) {
+          response.setReload(true);
+          response.setError(String.join("<br/>", pendingPaymentMessages));
+          return;
+        }
+
         for (MoveLine moveLine : moveLineSelectedList) {
           if (Beans.get(MoveLineControlService.class).canReconcile(moveLine)) {
             moveLineList.add(moveLine);
