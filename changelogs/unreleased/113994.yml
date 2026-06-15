@@ -1,0 +1,3 @@
+---
+title: "Partner: fixed the display of supplier/customer contract panels when partner is not a supplier/customer."
+module: axelor-contract
