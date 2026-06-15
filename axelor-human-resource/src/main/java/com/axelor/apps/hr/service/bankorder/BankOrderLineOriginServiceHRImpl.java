@@ -25,6 +25,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceI
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.db.Model;
 import com.axelor.dms.db.repo.DMSFileRepository;
+import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 
@@ -35,9 +36,14 @@ public class BankOrderLineOriginServiceHRImpl extends BankOrderLineOriginService
       BankOrderLineOriginRepository bankOrderLineOriginRepository,
       InvoiceTermRepository invoiceTermRepository,
       InvoiceRepository invoiceRepository,
-      DMSFileRepository dmsFileRepository) {
+      DMSFileRepository dmsFileRepository,
+      MetaFiles metaFiles) {
     super(
-        bankOrderLineOriginRepository, invoiceTermRepository, invoiceRepository, dmsFileRepository);
+        bankOrderLineOriginRepository,
+        invoiceTermRepository,
+        invoiceRepository,
+        dmsFileRepository,
+        metaFiles);
   }
 
   @Override
