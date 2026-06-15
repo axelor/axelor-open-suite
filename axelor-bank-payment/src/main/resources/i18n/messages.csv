@@ -631,7 +631,7 @@
 "Please select at least two bank orders",,,
 "Please select draft bank orders only",,,
 "Please select one bank reconciliation line",,,
-"Please select one bank reconciliation line and one move line",,,
+"Please select one bank statement line and one accounting move line",,,
 "Please select one move line",,,
 "Please select some bank orders that have the same currency",,,
 "Please select some bank orders that have the same partner type",,,

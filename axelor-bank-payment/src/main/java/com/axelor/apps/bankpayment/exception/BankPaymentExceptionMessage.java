@@ -240,7 +240,7 @@ public final class BankPaymentExceptionMessage {
 
   public static final String
       BANK_RECONCILIATION_SELECT_MOVE_LINE_AND_BANK_RECONCILIATION_LINE = /*$$(*/
-          "Please select one bank reconciliation line and one move line" /*)*/;
+          "Please select one bank statement line and one accounting move line" /*)*/;
   public static final String BANK_RECONCILIATION_SELECT_BANK_RECONCILIATION_LINE = /*$$(*/
       "Please select one bank reconciliation line" /*)*/;
   public static final String BANK_RECONCILIATION_SELECT_MOVE_LINE = /*$$(*/

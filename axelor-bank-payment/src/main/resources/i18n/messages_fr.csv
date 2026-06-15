@@ -631,7 +631,7 @@
 "Please select at least two bank orders","Veuillez sélectionner au moins deux ordres bancaires",,
 "Please select draft bank orders only","Veuillez sélectionner uniquement des ordres bancaires  au statut brouillon",,
 "Please select one bank reconciliation line","Veuillez sélectionner une ligne de reconciliation",,
-"Please select one bank reconciliation line and one move line","Veuillez sélectionner une ligne de reconciliation et une ligne d’écriture",,
+"Please select one bank statement line and one accounting move line","Veuillez sélectionner une ligne de relevé bancaire et une ligne d’écriture comptable",,
 "Please select one move line","Veuillez sélectionner une ligne d’écriture",,
 "Please select some bank orders that have the same currency","Veuillez sélectionner des ordres bancaires qui partagent la même devise",,
 "Please select some bank orders that have the same partner type","Veuillez sélectionner des ordres bancaires du même type",,
