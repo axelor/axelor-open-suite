@@ -31,7 +31,10 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.dms.db.repo.DMSFileRepository;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +52,8 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
 
   protected DMSFileRepository dmsFileRepository;
 
+  protected MetaFiles metaFiles;
+
   protected final String RELATED_MODEL_KEY = "relatedModel";
 
   protected final String RELATED_ID_KEY = "relatedId";
@@ -58,11 +63,13 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
       BankOrderLineOriginRepository bankOrderLineOriginRepository,
       InvoiceTermRepository invoiceTermRepo,
       InvoiceRepository invoiceRepository,
-      DMSFileRepository dmsFileRepository) {
+      DMSFileRepository dmsFileRepository,
+      MetaFiles metaFiles) {
     this.bankOrderLineOriginRepository = bankOrderLineOriginRepository;
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepository = invoiceRepository;
     this.dmsFileRepository = dmsFileRepository;
+    this.metaFiles = metaFiles;
   }
 
   public BankOrderLineOrigin createBankOrderLineOrigin(Model model) {
@@ -269,13 +276,55 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
 
   public boolean dmsFilePresent(BankOrderLineOrigin bankOrderLineOrigin) {
     Map<String, Object> relatedDataMap = getRelatedDataMap(bankOrderLineOrigin);
-    return dmsFileRepository
-            .all()
-            .filter(
-                "self.relatedModel = :relatedModel AND self.relatedId = :relatedId AND self.isDirectory = false")
-            .bind("relatedModel", relatedDataMap.get(RELATED_MODEL_KEY))
-            .bind("relatedId", relatedDataMap.get(RELATED_ID_KEY))
-            .fetchOne()
-        != null;
+    boolean dmsFileExists =
+        dmsFileRepository
+                .all()
+                .filter(
+                    "self.relatedModel = :relatedModel AND self.relatedId = :relatedId AND self.isDirectory = false")
+                .bind("relatedModel", relatedDataMap.get(RELATED_MODEL_KEY))
+                .bind("relatedId", relatedDataMap.get(RELATED_ID_KEY))
+                .fetchOne()
+            != null;
+    if (dmsFileExists) {
+      return true;
+    }
+    Invoice invoice = getRelatedInvoice(relatedDataMap);
+    return invoice != null && invoice.getPrintedPDF() != null;
+  }
+
+  @Override
+  @Transactional
+  public void ensurePrintedPdfAttached(BankOrderLineOrigin bankOrderLineOrigin) {
+    Map<String, Object> relatedDataMap = getRelatedDataMap(bankOrderLineOrigin);
+    Invoice invoice = getRelatedInvoice(relatedDataMap);
+    if (invoice == null) {
+      return;
+    }
+    MetaFile printedPdf = invoice.getPrintedPDF();
+    if (printedPdf == null) {
+      return;
+    }
+    boolean alreadyAttached =
+        dmsFileRepository
+                .all()
+                .filter(
+                    "self.relatedModel = :relatedModel AND self.relatedId = :relatedId AND self.metaFile = :metaFile AND self.isDirectory = false")
+                .bind("relatedModel", relatedDataMap.get(RELATED_MODEL_KEY))
+                .bind("relatedId", relatedDataMap.get(RELATED_ID_KEY))
+                .bind("metaFile", printedPdf)
+                .fetchOne()
+            != null;
+    if (alreadyAttached) {
+      return;
+    }
+    metaFiles.attach(printedPdf, printedPdf.getFileName(), invoice);
+  }
+
+  protected Invoice getRelatedInvoice(Map<String, Object> relatedDataMap) {
+    if (!BankOrderLineOriginRepository.RELATED_TO_INVOICE.equals(
+        relatedDataMap.get(RELATED_MODEL_KEY))) {
+      return null;
+    }
+    return invoiceRepository.find((Long) relatedDataMap.get(RELATED_ID_KEY));
   }
 }
