@@ -21,14 +21,17 @@ package com.axelor.apps.account.service.analytic;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountType;
+import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticDistributionTemplateRepository;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
@@ -42,6 +45,7 @@ import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -57,6 +61,7 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
   protected AnalyticAccountService analyticAccountService;
   protected AnalyticDistributionTemplateRepository analyticDistributionTemplateRepository;
   protected AnalyticMoveLineService analyticMoveLineService;
+  protected AccountService accountService;
 
   @Inject
   public AnalyticAttrsServiceImpl(
@@ -66,7 +71,8 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
       AnalyticToolService analyticToolService,
       AnalyticAccountService analyticAccountService,
       AnalyticDistributionTemplateRepository analyticDistributionTemplateRepository,
-      AnalyticMoveLineService analyticMoveLineService) {
+      AnalyticMoveLineService analyticMoveLineService,
+      AccountService accountService) {
     this.accountConfigService = accountConfigService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.analyticLineService = analyticLineService;
@@ -74,6 +80,7 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
     this.analyticAccountService = analyticAccountService;
     this.analyticDistributionTemplateRepository = analyticDistributionTemplateRepository;
     this.analyticMoveLineService = analyticMoveLineService;
+    this.accountService = accountService;
   }
 
   protected void addAttr(
@@ -194,7 +201,46 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
         analyticMoveLineService.getAnalyticDistributionTemplate(
             partner, product, company, tradingName, account, isPurchase));
 
+    analyticDistributionTemplateList =
+        this.filterTemplatesByAnalyticRules(analyticDistributionTemplateList, account);
+
     return "self.id IN (" + StringHelper.getIdListString(analyticDistributionTemplateList) + ")";
+  }
+
+  /**
+   * Excludes the analytic distribution templates that use at least one analytic account not
+   * authorized by the analytic rules configured for the given accounting account. A template is
+   * kept only if every analytic account used by its distribution lines is authorized. When the
+   * account is null or has no matching analytic rule, no restriction is applied.
+   */
+  protected List<AnalyticDistributionTemplate> filterTemplatesByAnalyticRules(
+      List<AnalyticDistributionTemplate> templateList, Account account) {
+    if (account == null) {
+      return templateList.stream().filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    List<Long> authorizedAnalyticAccountIdList = accountService.getAnalyticAccountsIds(account);
+    if (ObjectUtils.isEmpty(authorizedAnalyticAccountIdList)) {
+      return templateList.stream().filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    return templateList.stream()
+        .filter(Objects::nonNull)
+        .filter(template -> this.isTemplateAuthorized(template, authorizedAnalyticAccountIdList))
+        .collect(Collectors.toList());
+  }
+
+  protected boolean isTemplateAuthorized(
+      AnalyticDistributionTemplate template, List<Long> authorizedAnalyticAccountIdList) {
+    if (ObjectUtils.isEmpty(template.getAnalyticDistributionLineList())) {
+      return true;
+    }
+
+    return template.getAnalyticDistributionLineList().stream()
+        .map(AnalyticDistributionLine::getAnalyticAccount)
+        .filter(Objects::nonNull)
+        .map(AnalyticAccount::getId)
+        .allMatch(authorizedAnalyticAccountIdList::contains);
   }
 
   @Override

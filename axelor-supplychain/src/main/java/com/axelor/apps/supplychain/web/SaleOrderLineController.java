@@ -18,11 +18,15 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Blocking;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.BlockingRepository;
@@ -430,6 +434,13 @@ public class SaleOrderLineController {
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
 
+    Account account =
+        this.getProductAccount(
+            saleOrderLine.getProduct(),
+            saleOrder.getCompany(),
+            saleOrder.getFiscalPosition(),
+            false);
+
     response.setAttr(
         "analyticDistributionTemplate",
         "domain",
@@ -439,8 +450,26 @@ public class SaleOrderLineController {
                 saleOrderLine.getProduct(),
                 saleOrder.getCompany(),
                 saleOrder.getTradingName(),
-                null,
+                account,
                 false));
+  }
+
+  /**
+   * Derives the accounting account from the product to filter the analytic distribution templates
+   * by analytic rules. Returns null when the account cannot be determined so that no rule-based
+   * restriction is applied.
+   */
+  protected Account getProductAccount(
+      Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase) {
+    if (product == null || company == null) {
+      return null;
+    }
+    try {
+      return Beans.get(AccountManagementAccountService.class)
+          .getProductAccount(product, company, fiscalPosition, isPurchase, false);
+    } catch (AxelorException e) {
+      return null;
+    }
   }
 
   public void setDistributionLineReadonly(ActionRequest request, ActionResponse response) {
