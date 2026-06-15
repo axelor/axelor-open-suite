@@ -22,17 +22,18 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.signature.SignatureService;
+import com.axelor.common.FileUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.google.common.io.Files;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -81,8 +82,9 @@ public class PdfSignatureServiceImpl implements PdfSignatureService {
             certificatePassword,
             reason);
     try {
+      String baseName = FileUtils.stripExtension(FileUtils.safeFileName(metaFile.getFileName()));
       MetaFile resultFile = metaFiles.upload(signedPdfFile);
-      resultFile.setFileName(Files.getNameWithoutExtension(metaFile.getFileName()) + ".pdf");
+      resultFile.setFileName(baseName + ".pdf");
       return resultFile;
     } catch (IOException e) {
       throw new AxelorException(
@@ -98,7 +100,7 @@ public class PdfSignatureServiceImpl implements PdfSignatureService {
       throws AxelorException {
 
     try {
-      File signedPdfFile = java.nio.file.Files.createTempFile(null, ".pdf").toFile();
+      File signedPdfFile = Files.createTempFile(null, ".pdf").toFile();
       try (FileOutputStream outStream = new FileOutputStream(signedPdfFile);
           FileInputStream inputStream =
               new FileInputStream(String.valueOf(MetaFiles.getPath(certificate)))) {
