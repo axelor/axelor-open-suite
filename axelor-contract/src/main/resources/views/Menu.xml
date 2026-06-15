@@ -68,6 +68,16 @@
     <context name="_isFrameworkContract" expr="eval: true"/>
   </action-view>
 
+  <menuitem name="contracts-root-customer-amendments" title="Customer amendments"
+    action="contracts.root.customer.amendments" parent="contracts-root" order="150"/>
+
+  <action-view name="contracts.root.customer.amendments" title="Customer amendments"
+    model="com.axelor.apps.contract.db.ContractVersion">
+    <view type="grid" name="contract-version-customer-amendment-grid"/>
+    <view type="form" name="contract-version-next-form"/>
+    <domain>self.nextContract IS NOT NULL AND self.nextContract.targetTypeSelect = 1</domain>
+  </action-view>
+
   <menuitem title="Configuration" name="contracts-root-conf-all" parent="contracts-root"
     icon="gear" order="500"/>
 
