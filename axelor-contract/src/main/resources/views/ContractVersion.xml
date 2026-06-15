@@ -12,6 +12,22 @@
     <field name="statusSelect" widget="single-select"/>
   </grid>
 
+  <grid name="contract-version-customer-amendment-grid" title="Customer amendments"
+    model="com.axelor.apps.contract.db.ContractVersion"
+    orderBy="-statusSelect,nextContract.contractId" canNew="false">
+    <toolbar>
+      <button name="massWaitingBtn" title="Set to waiting" icon="clock"
+        onClick="action-contract-version-method-mass-waiting"/>
+    </toolbar>
+    <hilite if="statusSelect == 1" color="info"/>
+    <hilite if="statusSelect == 2" color="warning"/>
+    <hilite if="statusSelect == 3" color="success"/>
+    <field name="nextContract.contractId" title="Contract ID"/>
+    <field name="nextContract.name" title="Contract name"/>
+    <field name="nextContract.partner" title="Customer"/>
+    <field name="statusSelect" title="Status" widget="single-select"/>
+  </grid>
+
   <form name="contract-version-next-form" title="Amendment"
     model="com.axelor.apps.contract.db.ContractVersion" width="large"
     onLoad="action-contract-version-group-form-onload"
@@ -274,5 +290,9 @@
     <action name="save"/>
     <action name="action-method-contract-version-update-contract-lines"/>
   </action-group>
+
+  <action-method name="action-contract-version-method-mass-waiting">
+    <call class="com.axelor.apps.contract.web.ContractVersionController" method="massWaiting"/>
+  </action-method>
 
 </object-views>
