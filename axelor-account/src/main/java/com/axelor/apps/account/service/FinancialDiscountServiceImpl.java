@@ -54,14 +54,7 @@ public class FinancialDiscountServiceImpl implements FinancialDiscountService {
         == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
       return this.getFinancialDiscountAmount(financialDiscount, inTaxTotal, currency);
     } else {
-      BigDecimal financialDiscountAmountWithoutTax =
-          this.getFinancialDiscountAmount(financialDiscount, exTaxTotal, currency);
-
-      BigDecimal financialDiscountTaxAmount =
-          this.getFinancialDiscountTaxAmount(
-              financialDiscount, inTaxTotal, exTaxTotal, taxTotal, currency);
-
-      return financialDiscountAmountWithoutTax.add(financialDiscountTaxAmount);
+      return this.getFinancialDiscountAmount(financialDiscount, exTaxTotal, currency);
     }
   }
 
@@ -74,23 +67,6 @@ public class FinancialDiscountServiceImpl implements FinancialDiscountService {
             new BigDecimal(100),
             currencyScaleService.getCurrencyScale(currency),
             RoundingMode.HALF_UP);
-  }
-
-  protected BigDecimal getFinancialDiscountTaxAmount(
-      FinancialDiscount financialDiscount,
-      BigDecimal inTaxTotal,
-      BigDecimal exTaxTotal,
-      BigDecimal taxTotal,
-      Currency currency) {
-    return inTaxTotal.signum() == 0
-        ? BigDecimal.ZERO
-        : taxTotal
-            .multiply(exTaxTotal)
-            .multiply(financialDiscount.getDiscountRate())
-            .divide(
-                inTaxTotal.multiply(BigDecimal.valueOf(100)),
-                currencyScaleService.getCurrencyScale(currency),
-                RoundingMode.HALF_UP);
   }
 
   @Override

@@ -1,0 +1,3 @@
+---
+title: "Move: fixed financial discount miscalculated on manual journal entries with reverse-charge (intra-EU / import) VAT."
+module: axelor-account
