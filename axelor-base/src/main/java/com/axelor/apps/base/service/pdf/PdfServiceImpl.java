@@ -21,14 +21,15 @@ package com.axelor.apps.base.service.pdf;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.common.FileUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
-import com.google.common.io.Files;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -76,12 +77,12 @@ public class PdfServiceImpl implements PdfService {
       if (metaFile == null) {
         return null;
       }
-      File tempPdfFile =
-          File.createTempFile(Files.getNameWithoutExtension(metaFile.getFileName()), ".pdf");
+      String baseName = FileUtils.stripExtension(FileUtils.safeFileName(metaFile.getFileName()));
+      File tempPdfFile = Files.createTempFile(baseName, ".pdf").toFile();
 
       convertImageToPdf(metaFile, tempPdfFile);
       MetaFile resultFile = metaFiles.upload(tempPdfFile);
-      resultFile.setFileName(Files.getNameWithoutExtension(metaFile.getFileName()) + ".pdf");
+      resultFile.setFileName(baseName + ".pdf");
       return resultFile;
     } catch (IOException e) {
       throw new AxelorException(
