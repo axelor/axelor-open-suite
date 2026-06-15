@@ -18,14 +18,9 @@
  */
 package com.axelor.apps.contract.web;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
@@ -121,41 +116,20 @@ public class ContractLineController {
 
       AnalyticLineContractModel analyticLineContractModel =
           new AnalyticLineContractModel(contractLine, contractVersion, contract);
-      Company company = analyticLineContractModel.getCompany();
-      boolean isPurchase = analyticLineContractModel.getIsPurchase();
-
-      Account account = this.getProductAccount(contractLine.getProduct(), company, isPurchase);
 
       response.setAttr(
           "analyticDistributionTemplate",
           "domain",
           Beans.get(AnalyticAttrsService.class)
-              .getAnalyticDistributionTemplateDomain(
+              .getAnalyticDistributionTemplateDomainFromProduct(
                   analyticLineContractModel.getPartner(),
                   contractLine.getProduct(),
-                  company,
+                  analyticLineContractModel.getCompany(),
                   null,
-                  account,
-                  isPurchase));
+                  analyticLineContractModel.getFiscalPosition(),
+                  analyticLineContractModel.getIsPurchase()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
-   * Derives the accounting account from the product to filter the analytic distribution templates
-   * by analytic rules. Returns null when the account cannot be determined so that no rule-based
-   * restriction is applied.
-   */
-  protected Account getProductAccount(Product product, Company company, boolean isPurchase) {
-    if (product == null || company == null) {
-      return null;
-    }
-    try {
-      return Beans.get(AccountManagementAccountService.class)
-          .getProductAccount(product, company, null, isPurchase, false);
-    } catch (AxelorException e) {
-      return null;
     }
   }
 

@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -47,6 +48,20 @@ public interface AnalyticAttrsService {
       Company company,
       TradingName tradingName,
       Account account,
+      boolean isPurchase)
+      throws AxelorException;
+
+  /**
+   * Same as {@link #getAnalyticDistributionTemplateDomain(Partner, Product, Company, TradingName,
+   * Account, boolean)} but derives the accounting account from the product. Used for documents
+   * whose lines have no accounting account (sale/purchase orders, contracts).
+   */
+  String getAnalyticDistributionTemplateDomainFromProduct(
+      Partner partner,
+      Product product,
+      Company company,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition,
       boolean isPurchase)
       throws AxelorException;
 

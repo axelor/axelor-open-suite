@@ -26,11 +26,13 @@ import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticDistributionTemplateRepository;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
@@ -62,6 +64,7 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
   protected AnalyticDistributionTemplateRepository analyticDistributionTemplateRepository;
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AccountService accountService;
+  protected AccountManagementAccountService accountManagementAccountService;
 
   @Inject
   public AnalyticAttrsServiceImpl(
@@ -72,7 +75,8 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
       AnalyticAccountService analyticAccountService,
       AnalyticDistributionTemplateRepository analyticDistributionTemplateRepository,
       AnalyticMoveLineService analyticMoveLineService,
-      AccountService accountService) {
+      AccountService accountService,
+      AccountManagementAccountService accountManagementAccountService) {
     this.accountConfigService = accountConfigService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.analyticLineService = analyticLineService;
@@ -81,6 +85,7 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
     this.analyticDistributionTemplateRepository = analyticDistributionTemplateRepository;
     this.analyticMoveLineService = analyticMoveLineService;
     this.accountService = accountService;
+    this.accountManagementAccountService = accountManagementAccountService;
   }
 
   protected void addAttr(
@@ -205,6 +210,40 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
         this.filterTemplatesByAnalyticRules(analyticDistributionTemplateList, account);
 
     return "self.id IN (" + StringHelper.getIdListString(analyticDistributionTemplateList) + ")";
+  }
+
+  @Override
+  public String getAnalyticDistributionTemplateDomainFromProduct(
+      Partner partner,
+      Product product,
+      Company company,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition,
+      boolean isPurchase)
+      throws AxelorException {
+    Account account = this.getProductAccount(product, company, fiscalPosition, isPurchase);
+
+    return this.getAnalyticDistributionTemplateDomain(
+        partner, product, company, tradingName, account, isPurchase);
+  }
+
+  /**
+   * Derives the accounting account from the product so the analytic distribution templates can be
+   * filtered by analytic rules. Returns null when the account cannot be determined so that no
+   * rule-based restriction is applied.
+   */
+  protected Account getProductAccount(
+      Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase) {
+    if (product == null || company == null) {
+      return null;
+    }
+
+    try {
+      return accountManagementAccountService.getProductAccount(
+          product, company, fiscalPosition, isPurchase, false);
+    } catch (AxelorException e) {
+      return null;
+    }
   }
 
   /**

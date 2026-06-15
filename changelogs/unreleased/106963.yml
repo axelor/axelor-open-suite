@@ -8,10 +8,15 @@ developer: |
   of the given accounting account (a template is kept only when all of its analytic accounts
   are authorized). No restriction is applied when the account is null or has no matching rule.
 
+  Added `AnalyticAttrsService#getAnalyticDistributionTemplateDomainFromProduct(Partner, Product,
+  Company, TradingName, FiscalPosition, boolean)` which derives the accounting account from the
+  product (via `AccountManagementAccountService#getProductAccount`) and delegates to the
+  account-based method. Used for documents whose lines have no accounting account.
+
   Callers now pass the context accounting account:
   - `InvoiceLineController#setDomainAnalyticDistributionTemplate` passes the invoice line account.
-  - `SaleOrderLineController` and `PurchaseOrderLineController` derive the account from the product
-    via `AccountManagementAccountService#getProductAccount`.
-  - `ContractLineController#setDomainAnalyticDistributionTemplate` (new method) derives the account
-    from the product and is wired through the new
+  - `SaleOrderLineController` and `PurchaseOrderLineController` call
+    `getAnalyticDistributionTemplateDomainFromProduct`.
+  - `ContractLineController#setDomainAnalyticDistributionTemplate` (new method) calls
+    `getAnalyticDistributionTemplateDomainFromProduct` and is wired through the new
     `action-contract-line-method-set-domain-analytic-distribution-template` action.
