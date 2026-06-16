@@ -647,9 +647,9 @@
         <field name="expectedRealisationDate" colSpan="12" width="50%"/>
         <label name="orLabel" title="OR" colSpan="12"/>
         <field name="timetableTemplate"
-          onChange="action-sale-order-method-apply-timetable-template,action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
+          onChange="action-group-sale-order-timetable-template-change"/>
         <field name="computationDate"
-          onChange="action-sale-order-method-apply-timetable-template,action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
+          onChange="action-group-sale-order-timetable-template-change"/>
         <field name="amountToBeSpreadOverTheTimetable" colSpan="12"
           x-scale="currency.numberOfDecimals"/>
         <panel-related name="timetableListPanel" if-module="axelor-supplychain"

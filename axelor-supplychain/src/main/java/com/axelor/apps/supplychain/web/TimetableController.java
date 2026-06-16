@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -78,7 +79,9 @@ public class TimetableController {
       }
     }
 
-    if (timetable.getInvoice() != null) {
+    if (timetable.getInvoiced()
+        || (timetable.getInvoice() != null
+            && timetable.getInvoice().getStatusSelect() < InvoiceRepository.STATUS_VENTILATED)) {
       response.setAlert(I18n.get(SupplychainExceptionMessage.TIMETABLE_INVOICE_ALREADY_GENERATED));
       return;
     }
