@@ -62,7 +62,7 @@ public class AnalyticLineComputeServiceImpl implements AnalyticLineComputeServic
         analyticMoveLineService.updateAnalyticMoveLine(analyticMoveLine, amount, date);
       }
     }
-    updateAccountTypeOnAnalytic(analyticLine, analyticMoveLineList);
+    updateAccountTypeOnAnalytic(analyticLine, analyticLine.getAnalyticMoveLineList());
 
     return analyticLine;
   }
@@ -86,6 +86,7 @@ public class AnalyticLineComputeServiceImpl implements AnalyticLineComputeServic
     for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
       analyticLine.addAnalyticMoveLineListItem(analyticMoveLine);
     }
+    updateAccountTypeOnAnalytic(analyticLine, analyticLine.getAnalyticMoveLineList());
     return analyticLine;
   }
 

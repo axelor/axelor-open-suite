@@ -1,0 +1,5 @@
+---
+title: "Invoice: fixed ventilation failing with tax amounts not equal when several invoice lines share the same product account with analytic distribution template."
+module: axelor-account
+developer: |
+  - MoveLineConsolidateService: modified findConsolidateMoveLine method signature, changed first parameter from Map<List<Object>, MoveLine> map to Map<List<Object>, List<MoveLine>> map.
