@@ -45,6 +45,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -99,6 +100,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceContractServiceI
       SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
       PartnerAccountService partnerAccountService,
       InvoiceGlobalDiscountService invoiceGlobalDiscountService,
+      TimetableRepository timetableRepo,
       AppBudgetService appBudgetService,
       BudgetDistributionService budgetDistributionService,
       SaleOrderLineBudgetService saleOrderLineBudgetService,
@@ -124,7 +126,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceContractServiceI
         invoiceTaxService,
         saleOrderDeliveryAddressService,
         partnerAccountService,
-        invoiceGlobalDiscountService);
+        invoiceGlobalDiscountService,
+        timetableRepo);
     this.appBudgetService = appBudgetService;
     this.budgetDistributionService = budgetDistributionService;
     this.saleOrderLineBudgetService = saleOrderLineBudgetService;
