@@ -210,7 +210,15 @@ public class UnitConversionServiceImpl implements UnitConversionService {
           conf.addCompilationCustomizers(customizer);
           Binding binding = new Binding();
           GroovyShell shell = new GroovyShell(binding, conf);
-          return new BigDecimal(shell.evaluate(eval).toString());
+          try {
+            return new BigDecimal(shell.evaluate(eval).toString());
+          } catch (Exception e) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(BaseExceptionMessage.UNIT_CONVERSION_FORMULA_ERROR),
+                startUnit.getName(),
+                endUnit.getName());
+          }
         }
       }
 
@@ -231,7 +239,16 @@ public class UnitConversionServiceImpl implements UnitConversionService {
           conf.addCompilationCustomizers(customizer);
           Binding binding = new Binding();
           GroovyShell shell = new GroovyShell(binding, conf);
-          BigDecimal result = new BigDecimal(shell.evaluate(eval).toString());
+          BigDecimal result;
+          try {
+            result = new BigDecimal(shell.evaluate(eval).toString());
+          } catch (Exception e) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(BaseExceptionMessage.UNIT_CONVERSION_FORMULA_ERROR),
+                startUnit.getName(),
+                endUnit.getName());
+          }
           if (result.compareTo(BigDecimal.ZERO) != 0) {
             return BigDecimal.ONE.divide(result, DEFAULT_COEFFICIENT_SCALE, RoundingMode.HALF_UP);
           }
