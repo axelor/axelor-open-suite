@@ -52,6 +52,8 @@ public final class SupplychainExceptionMessage {
       "The quantity to invoice is greater than the quantity in the sale order" /*)*/;
   public static final String SO_INVOICE_AMOUNT_MAX = /*$$(*/
       "The amount to invoice is superior than the amount in the sale order" /*)*/;
+  public static final String PO_INVOICE_AMOUNT_MAX = /*$$(*/
+      "The amount to invoice is superior than the amount in the purchase order" /*)*/;
   public static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_PRODUCT = /*$$(*/
       "Please configure the advance payment product" /*)*/;
   public static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_ACCOUNT = /*$$(*/

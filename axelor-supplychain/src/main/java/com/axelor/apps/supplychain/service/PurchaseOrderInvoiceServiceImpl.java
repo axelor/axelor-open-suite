@@ -44,6 +44,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.address.AddressService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -368,21 +369,40 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SupplychainExceptionMessage.SO_INVOICE_NO_TIMETABLES_SELECTED));
     }
-    BigDecimal percentSum = BigDecimal.ZERO;
-    List<Timetable> timetableList = new ArrayList<>();
-    for (Long timetableId : timetableIdList) {
-      Timetable timetable = timetableRepo.find(timetableId);
-      timetableList.add(timetable);
-      percentSum = percentSum.add(timetable.getPercentage());
-    }
+    List<Timetable> timetableList = timetableRepo.findByIds(timetableIdList);
+    checkTimetableInvoiceAmount(purchaseOrder, timetableList);
+    BigDecimal percentSum =
+        timetableList.stream()
+            .map(t -> t.getAmount().subtract(t.getInvoicedAmount()))
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .divide(
+                purchaseOrder.getExTaxTotal(),
+                AppBaseService.COMPUTATION_SCALING,
+                RoundingMode.HALF_UP)
+            .multiply(BigDecimal.valueOf(100));
     Invoice invoice = generateInvoiceFromLines(purchaseOrder, percentSum);
 
     for (Timetable timetable : timetableList) {
       timetable.setInvoice(invoice);
-      timetable.setInvoiced(true);
       timetableRepo.save(timetable);
     }
     return invoice;
+  }
+
+  protected void checkTimetableInvoiceAmount(
+      PurchaseOrder purchaseOrder, List<Timetable> timetableList) throws AxelorException {
+
+    BigDecimal alreadyInvoiced = orderInvoiceService.amountToBeInvoiced(purchaseOrder);
+    BigDecimal selectedAmount =
+        timetableList.stream()
+            .map(t -> t.getAmount().subtract(t.getInvoicedAmount()))
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    if (alreadyInvoiced.add(selectedAmount).compareTo(purchaseOrder.getExTaxTotal()) > 0) {
+      throw new AxelorException(
+          purchaseOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.PO_INVOICE_AMOUNT_MAX));
+    }
   }
 
   public Invoice generateInvoiceFromLines(PurchaseOrder purchaseOrder, BigDecimal percentSum)
@@ -442,6 +462,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     InvoiceGenerator invoiceGenerator = this.createInvoiceGenerator(purchaseOrder);
 
     Invoice invoice = invoiceGenerator.generate();
+    invoice.setPurchaseOrder(purchaseOrder);
 
     invoiceGenerator.populate(
         invoice, this.createInvoiceLines(invoice, purchaseOrderLineList, qtyToInvoiceMap));

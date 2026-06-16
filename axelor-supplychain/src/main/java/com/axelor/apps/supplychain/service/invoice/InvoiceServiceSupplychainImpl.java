@@ -49,9 +49,8 @@ import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.supplychain.db.Timetable;
-import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
+import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
@@ -77,6 +76,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
   protected InvoiceLineRepository invoiceLineRepo;
   protected IntercoService intercoService;
   protected StockMoveRepository stockMoveRepository;
+  protected TimetableService timetableService;
 
   @Inject
   public InvoiceServiceSupplychainImpl(
@@ -100,7 +100,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       InvoiceNoteService invoiceNoteService,
       InvoiceLineRepository invoiceLineRepo,
       IntercoService intercoService,
-      StockMoveRepository stockMoveRepository) {
+      StockMoveRepository stockMoveRepository,
+      TimetableService timetableService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -123,6 +124,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     this.invoiceLineRepo = invoiceLineRepo;
     this.intercoService = intercoService;
     this.stockMoveRepository = stockMoveRepository;
+    this.timetableService = timetableService;
   }
 
   @Override
@@ -139,31 +141,14 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
   }
 
   protected void updateTimetable(Invoice invoice) {
-    TimetableRepository timeTableRepo = Beans.get(TimetableRepository.class);
-
-    List<Timetable> timetableList =
-        timeTableRepo.all().filter("self.invoice.id = ?1", invoice.getId()).fetch();
-
-    for (Timetable timetable : timetableList) {
-      timetable.setInvoiced(true);
-      timeTableRepo.save(timetable);
-    }
+    timetableService.updateTimetables(invoice);
 
     int operationTypeSelect = invoice.getOperationTypeSelect();
     if (operationTypeSelect == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
         || operationTypeSelect == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
       Invoice originalInvoice = invoice.getOriginalInvoice();
       if (originalInvoice != null) {
-        Timetable timetable =
-            timeTableRepo
-                .all()
-                .filter("self.invoice = :invoice")
-                .bind("invoice", originalInvoice)
-                .fetchOne();
-        if (timetable != null) {
-          timetable.setInvoiced(false);
-          timetable.setInvoice(null);
-        }
+        timetableService.cancelTimetable(originalInvoice);
       }
     }
   }

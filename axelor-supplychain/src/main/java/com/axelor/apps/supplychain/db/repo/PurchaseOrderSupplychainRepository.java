@@ -50,6 +50,7 @@ public class PurchaseOrderSupplychainRepository extends PurchaseOrderManagementR
 
     copy.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);
     copy.setAmountInvoiced(null);
+    copy.setTimetableList(null);
 
     if (copy.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : copy.getPurchaseOrderLineList()) {
