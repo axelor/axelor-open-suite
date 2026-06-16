@@ -20,6 +20,7 @@ package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
@@ -32,11 +33,30 @@ import jakarta.inject.Inject;
 public class PurchaseRequestWorkflowServiceImpl implements PurchaseRequestWorkflowService {
 
   protected final PurchaseRequestToPoCreateService purchaseRequestToPoCreateService;
+  protected final PurchaseRequestRepository purchaseRequestRepository;
 
   @Inject
   public PurchaseRequestWorkflowServiceImpl(
-      PurchaseRequestToPoCreateService purchaseRequestToPoCreateService) {
+      PurchaseRequestToPoCreateService purchaseRequestToPoCreateService,
+      PurchaseRequestRepository purchaseRequestRepository) {
     this.purchaseRequestToPoCreateService = purchaseRequestToPoCreateService;
+    this.purchaseRequestRepository = purchaseRequestRepository;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void purchasePurchaseRequestsByPo(PurchaseOrder purchaseOrder) throws AxelorException {
+    for (PurchaseRequest pr :
+        purchaseRequestRepository
+            .all()
+            .filter("self.purchaseOrder.id = :poId")
+            .bind("poId", purchaseOrder.getId())
+            .fetch()) {
+      if (pr.getStatusSelect() != null
+          && pr.getStatusSelect() == PurchaseRequestRepository.STATUS_ACCEPTED) {
+        purchasePurchaseRequest(pr);
+      }
+    }
   }
 
   @Transactional(rollbackOn = {Exception.class})

@@ -79,7 +79,8 @@ public class PurchaseRequestToPoCreateServiceImpl implements PurchaseRequestToPo
       List<PurchaseRequest> purchaseRequests,
       Boolean groupBySupplier,
       Boolean groupByProduct,
-      Company company)
+      Company company,
+      Partner defaultSupplier)
       throws AxelorException {
 
     final Map<String, PurchaseOrder> poMap = new HashMap<>();
@@ -97,13 +98,20 @@ public class PurchaseRequestToPoCreateServiceImpl implements PurchaseRequestToPo
         continue;
       }
 
-      String key =
-          groupBySupplier
-              ? getGroupBySupplierKey(purchaseRequest)
-              : purchaseRequest.getId().toString();
+      String key;
+      if (groupBySupplier) {
+        key =
+            purchaseRequest.getSupplierPartner() != null
+                ? getGroupBySupplierKey(purchaseRequest)
+                : (defaultSupplier != null
+                    ? defaultSupplier.getId().toString()
+                    : purchaseRequest.getId().toString());
+      } else {
+        key = purchaseRequest.getId().toString();
+      }
       PurchaseOrder po = poMap.get(key);
       if (po == null) {
-        po = createPurchaseOrder(purchaseRequest, company);
+        po = createPurchaseOrder(purchaseRequest, company, defaultSupplier);
         poMap.put(key, po);
       }
 
@@ -127,7 +135,7 @@ public class PurchaseRequestToPoCreateServiceImpl implements PurchaseRequestToPo
   @Transactional(rollbackOn = {Exception.class})
   public PurchaseOrder createFromRequest(PurchaseRequest pr) throws AxelorException {
     PurchaseRequestToPoGenerationResult result =
-        createFromRequests(List.of(pr), false, false, null);
+        createFromRequests(List.of(pr), false, false, null, null);
 
     if (result.hasWarnings()) {
       throw new AxelorException(TraceBackRepository.CATEGORY_NO_VALUE, result.getWarningMessage());
@@ -166,20 +174,23 @@ public class PurchaseRequestToPoCreateServiceImpl implements PurchaseRequestToPo
   }
 
   protected PurchaseOrder createPurchaseOrder(
-      PurchaseRequest purchaseRequest, Company defaultCompany) throws AxelorException {
+      PurchaseRequest purchaseRequest, Company defaultCompany, Partner defaultSupplier)
+      throws AxelorException {
     Company company = Optional.ofNullable(purchaseRequest.getCompany()).orElse(defaultCompany);
+    Partner supplier =
+        Optional.ofNullable(purchaseRequest.getSupplierPartner()).orElse(defaultSupplier);
     PurchaseOrder purchaseOrder =
         purchaseOrderCreateService.createPurchaseOrder(
             AuthUtils.getUser(),
             company,
             null,
-            purchaseRequest.getSupplierPartner().getCurrency(),
+            supplier.getCurrency(),
             null,
             null,
             null,
             appBaseService.getTodayDate(company),
             null,
-            purchaseRequest.getSupplierPartner(),
+            supplier,
             purchaseRequest.getTradingName());
     setPurchaseOrderSupplierDetails(purchaseOrder);
     return purchaseOrderRepo.save(purchaseOrder);

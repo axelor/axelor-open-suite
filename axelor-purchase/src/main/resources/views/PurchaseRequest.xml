@@ -98,7 +98,7 @@
   </form>
 
   <form name="purchase-request-wizard-generate-po-form" title="Generate PO"
-    model="com.axelor.utils.db.Wizard" onNew="action-purchase-request-attrs-company">
+    model="com.axelor.utils.db.Wizard" onNew="action-purchase-request-group-wizard-init">
     <panel name="mainPanel">
       <field name="$company" title="Company" type="many-to-one"
         target="com.axelor.apps.base.db.Company" hidden="true"
@@ -106,9 +106,12 @@
       <spacer name="companySpacer"/>
       <field name="$groupBySupplier" title="Group by supplier" type="boolean"/>
       <spacer name="supplierSpacer"/>
-      <field name="$groupByProduct" title="Group by product" type="boolean"
-        onChange="action-purchase-request-set-group-by-supplier"/>
+      <field name="$groupByProduct" title="Group by product" type="boolean"/>
       <spacer name="productSpacer"/>
+      <field name="$supplierPartner" title="Supplier" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner" domain="self.isSupplier = true" hidden="true"
+        form-view="partner-form" grid-view="partner-grid"/>
+      <spacer name="supplierPartnerSpacer"/>
       <button name="generatePOBtn" title="Generate PO"
         onClick="save,action-purchase-request-method-generate-po"/>
     </panel>
@@ -123,9 +126,13 @@
       if="_ids"/>
   </action-attrs>
 
-  <action-attrs name="action-purchase-request-set-group-by-supplier">
-    <attribute name="value" for="$groupBySupplier" expr="eval: groupByProduct"/>
-    <attribute name="readonly" for="$groupBySupplier" expr="eval: groupByProduct"/>
+  <action-attrs name="action-purchase-request-attrs-supplier">
+    <attribute name="hidden" for="$supplierPartner"
+      expr="eval: !(__repo__(PurchaseRequest).all().filter('self.id in (?1) and self.supplierPartner is null', _ids).count() > 0)"
+      if="_ids"/>
+    <attribute name="required" for="$supplierPartner"
+      expr="eval: __repo__(PurchaseRequest).all().filter('self.id in (?1) and self.supplierPartner is null', _ids).count() > 0"
+      if="_ids"/>
   </action-attrs>
 
   <action-method name="action-purchase-request-method-set-default-values">
@@ -216,6 +223,11 @@
     <action name="save"/>
     <action name="action-purchase-request-method-set-status-drafted"/>
     <action name="save"/>
+  </action-group>
+
+  <action-group name="action-purchase-request-group-wizard-init">
+    <action name="action-purchase-request-attrs-company"/>
+    <action name="action-purchase-request-attrs-supplier"/>
   </action-group>
 
   <action-group name="action-purchase-request-group-company-onchange">

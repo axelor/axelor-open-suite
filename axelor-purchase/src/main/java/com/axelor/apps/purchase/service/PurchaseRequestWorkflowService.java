@@ -19,9 +19,19 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 
 public interface PurchaseRequestWorkflowService {
+
+  /**
+   * Set the status of all purchase requests linked to the given purchase order to purchased.
+   *
+   * @param purchaseOrder
+   * @throws AxelorException
+   */
+  void purchasePurchaseRequestsByPo(PurchaseOrder purchaseOrder) throws AxelorException;
+
   /**
    * Set the purchase request status to requested.
    *

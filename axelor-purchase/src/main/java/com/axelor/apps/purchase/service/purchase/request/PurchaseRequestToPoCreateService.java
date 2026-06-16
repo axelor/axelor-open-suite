@@ -20,6 +20,7 @@ package com.axelor.apps.purchase.service.purchase.request;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import java.util.List;
@@ -30,7 +31,8 @@ public interface PurchaseRequestToPoCreateService {
       List<PurchaseRequest> purchaseRequests,
       Boolean groupBySupplier,
       Boolean groupByProduct,
-      Company company)
+      Company company,
+      Partner defaultSupplier)
       throws AxelorException;
 
   PurchaseOrder createFromRequest(PurchaseRequest purchaseRequest) throws AxelorException;

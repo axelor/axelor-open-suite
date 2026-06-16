@@ -62,9 +62,11 @@ public class PurchaseRequestToPoCreateServiceSupplychainImpl
   }
 
   @Override
-  protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest, Company company)
+  protected PurchaseOrder createPurchaseOrder(
+      PurchaseRequest purchaseRequest, Company company, Partner defaultSupplier)
       throws AxelorException {
-    PurchaseOrder purchaseOrder = super.createPurchaseOrder(purchaseRequest, company);
+    PurchaseOrder purchaseOrder =
+        super.createPurchaseOrder(purchaseRequest, company, defaultSupplier);
     if (appBaseService.isApp("supplychain")) {
       purchaseOrder.setStockLocation(purchaseRequest.getStockLocation());
     }
