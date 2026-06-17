@@ -3788,3 +3788,6 @@
 "value:Invoicing",,,
 "vat.Delivery",,,
 "vat.Payment",,,
+"Value for collection move grouping",,,
+"By payment voucher",,,
+"Defines how the bank deposit moves generated from value for collection payments are grouped to ease bank reconciliation.",,,
