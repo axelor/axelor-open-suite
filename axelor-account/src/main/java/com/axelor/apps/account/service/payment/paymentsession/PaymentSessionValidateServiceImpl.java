@@ -69,8 +69,6 @@ import com.google.common.collect.Sets;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.persistence.TypedQuery;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -82,7 +80,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -277,33 +274,37 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean isGlobal)
       throws AxelorException {
     counter = 0;
-    int offset = 0;
     List<InvoiceTerm> invoiceTermList;
-    Query<InvoiceTerm> invoiceTermQuery =
-        invoiceTermRepo
-            .all()
-            .filter("self.paymentSession = :paymentSession AND self.paymentAmount != 0")
-            .bind("paymentSession", paymentSession)
-            .order("id");
-
+    long lastSeenId = 0L;
     Set<Long> compensatedRefundIds =
         invoiceTermLinkWithRefund.stream()
             .map(p -> p.getRight().getLeft().getId())
             .collect(Collectors.toSet());
 
-    while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
+    String filter =
+        "self.paymentSession = :paymentSession AND self.paymentAmount != 0 AND self.id > :lastSeenId";
+    while (!(invoiceTermList =
+            invoiceTermRepo
+                .all()
+                .filter(filter)
+                .bind("paymentSession", paymentSession)
+                .bind("lastSeenId", lastSeenId)
+                .order("id")
+                .autoFlush(false)
+                .fetch(AbstractBatch.FETCH_LIMIT))
         .isEmpty()) {
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
         if (compensatedRefundIds.contains(invoiceTerm.getId())) {
-          invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
-          invoiceTerm.setAmountPaid(BigDecimal.ZERO);
-          invoiceTermRepo.save(invoiceTerm);
+          if (!this.generatePaymentsFirst(paymentSession)) {
+            invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
+            invoiceTerm.setAmountPaid(BigDecimal.ZERO);
+            invoiceTermRepo.save(invoiceTerm);
+          }
         } else if (paymentSession.getStatusSelect()
                 == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || this.shouldBeProcessed(invoiceTerm)) {
-          offset++;
 
           if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) != 0) {
             this.processInvoiceTerm(
@@ -320,10 +321,15 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         }
       }
 
+      lastSeenId = invoiceTermList.get(invoiceTermList.size() - 1).getId();
+      JPA.flush();
       JPA.clear();
     }
 
-    this.updatePaymentAmountsAfterCompensation(invoiceTermLinkWithRefund);
+    this.updatePaymentAmountsAfterCompensation(
+        invoiceTermLinkWithRefund,
+        paymentSession.getAccountingTriggerSelect()
+            == PaymentSessionRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
   }
 
   @Override
@@ -674,12 +680,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       invoicePayment.setMove(moveLine.getMove());
 
       if (invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_PENDING) {
-        try {
-          invoicePaymentValidateService.validate(invoicePayment, true);
-        } catch (JAXBException | IOException | DatatypeConfigurationException e) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
-        }
+        invoicePaymentValidateService.validate(invoicePayment, true);
       }
     }
 
@@ -874,6 +875,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   public void updateStatus(PaymentSession paymentSession) {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
+    if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_CLOSED) {
+      return;
+    }
     if (paymentSession.getAccountingTriggerSelect()
             == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE
         || paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
@@ -1204,9 +1208,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     }
 
     Reconcile invoiceTermsReconcile =
-        reconcileService.createReconcile(debitMoveLine, creditMoveLine, pair.getRight(), true);
-
-    reconcileService.confirmReconcile(invoiceTermsReconcile, false, false);
+        reconcileService.reconcile(debitMoveLine, creditMoveLine, null, true, false);
 
     invoicePaymentCreateService.updateInvoiceTermsAmounts(
         invoiceTerm, pair.getRight(), invoiceTermsReconcile, pairMove, paymentSession, false);
@@ -1275,7 +1277,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   @Transactional(rollbackOn = {Exception.class})
   protected void updatePaymentAmountsAfterCompensation(
-      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund) {
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund,
+      boolean updateAmountPaid) {
     if (CollectionUtils.isEmpty(invoiceTermLinkWithRefund)) {
       return;
     }
@@ -1290,6 +1293,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       InvoiceTerm invoiceTerm = invoiceTermRepo.find(entry.getKey());
       if (invoiceTerm != null) {
         invoiceTerm.setPaymentAmount(invoiceTerm.getPaymentAmount().subtract(entry.getValue()));
+        if (updateAmountPaid) {
+          invoiceTerm.setAmountPaid(invoiceTerm.getPaymentAmount());
+        }
         invoiceTermRepo.save(invoiceTerm);
       }
     }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="equipement-maintenance-grid" title="Equipement maintenance"
     model="com.axelor.apps.maintenance.db.EquipementMaintenance">
@@ -27,7 +27,8 @@
       <panel title="Maintenance periods" colSpan="12">
         <field name="mtnEachDay" colSpan="3"/>
         <label name="mtnDays" title="Days" colSpan="1"/>
-        <field name="mtnEachCycle" showIf="machine != null" colSpan="3"/>
+        <field name="mtnEachCycle" showIf="machine != null" colSpan="3"
+          help="This field is not yet taken into account by the preventive maintenance batch. Cycle-based triggering is planned for a future version."/>
         <label name="mtnCycles" title="Cycles" colSpan="1" showIf="machine != null"/>
         <field name="mtnEachDuration" showIf="machine != null" colSpan="3"/>
         <label name="mtnHoursOfProduction" title="Hours of production" colSpan="1"
@@ -35,6 +36,7 @@
       </panel>
       <field name="nextMtnDate"/>
       <field name="createMtnRequestSelect" showIf="machine != null"/>
+      <field name="lastMtnOperatingHoursRef" readonly="true" showIf="machine != null"/>
       <field name="mtnProcedure" colSpan="12" widget="html"/>
       <field name="mtnFile" widget="binary-link"/>
     </panel>

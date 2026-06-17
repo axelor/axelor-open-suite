@@ -93,6 +93,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -102,6 +103,10 @@ import org.slf4j.LoggerFactory;
 public class ManufOrderServiceImpl implements ManufOrderService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  // Perf: Thread-safe cache for getDefaultBOM lookups during recursive BOM traversal
+  // Key: Product ID, Value: BillOfMaterial (null if no default BOM found)
+  private final Map<Long, BillOfMaterial> defaultBomCache = new ConcurrentHashMap<>();
 
   protected SequenceService sequenceService;
   protected OperationOrderService operationOrderService;
@@ -549,26 +554,30 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             StockMoveRepository.TYPE_INTERNAL);
 
     for (ProdProduct prodProduct : manufOrder.getWasteProdProductList()) {
-      stockMoveLineService.createStockMoveLine(
-          prodProduct.getProduct(),
-          (String) productCompanyService.get(prodProduct.getProduct(), "name", company),
-          (String) productCompanyService.get(prodProduct.getProduct(), "description", company),
-          prodProduct.getQty(),
-          (BigDecimal) productCompanyService.get(prodProduct.getProduct(), "costPrice", company),
-          (BigDecimal) productCompanyService.get(prodProduct.getProduct(), "costPrice", company),
-          prodProduct.getUnit(),
-          wasteStockMove,
-          StockMoveLineService.TYPE_WASTE_PRODUCTIONS,
-          false,
-          BigDecimal.ZERO,
-          virtualStockLocation,
-          wasteStockLocation,
-          prodProduct.getWasteProductTrackingNumber());
+      StockMoveLine stockMoveLine =
+          stockMoveLineService.createStockMoveLine(
+              prodProduct.getProduct(),
+              (String) productCompanyService.get(prodProduct.getProduct(), "name", company),
+              (String) productCompanyService.get(prodProduct.getProduct(), "description", company),
+              prodProduct.getQty(),
+              (BigDecimal)
+                  productCompanyService.get(prodProduct.getProduct(), "costPrice", company),
+              (BigDecimal)
+                  productCompanyService.get(prodProduct.getProduct(), "costPrice", company),
+              prodProduct.getUnit(),
+              wasteStockMove,
+              StockMoveLineService.TYPE_WASTE_PRODUCTIONS,
+              false,
+              BigDecimal.ZERO,
+              virtualStockLocation,
+              wasteStockLocation,
+              prodProduct.getWasteProductTrackingNumber());
+      wasteStockMove.addStockMoveLineListItem(stockMoveLine);
     }
+    manufOrder.setWasteStockMove(wasteStockMove);
+    manufOrderRepo.save(manufOrder);
 
     stockMoveService.validate(wasteStockMove);
-
-    manufOrder.setWasteStockMove(wasteStockMove);
     return wasteStockMove;
   }
 
@@ -579,6 +588,13 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     manufOrder.clearToProduceProdProductList();
     this.createToConsumeProdProductList(manufOrder);
     this.createToProduceProdProductList(manufOrder);
+    if (manufOrder.getIsConsProOnOperation()) {
+      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+        operationOrder = JpaModelHelper.ensureManaged(operationOrder);
+        operationOrder.clearToConsumeProdProductList();
+        operationOrderService.createToConsumeProdProductList(operationOrder);
+      }
+    }
     updateRealQty(manufOrder, manufOrder.getQty());
     manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     LocalDateTime plannedStartDateT = manufOrder.getPlannedStartDateT();
@@ -826,12 +842,19 @@ public class ManufOrderServiceImpl implements ManufOrderService {
    */
   public List<ManufOrder> generateAllSubManufOrder(List<Product> productList, ManufOrder manufOrder)
       throws AxelorException {
-    Integer depth = 0;
-    List<ManufOrder> moList = new ArrayList<>();
-    List<Pair<BillOfMaterial, BigDecimal>> childBomList =
-        getToConsumeSubBomList(manufOrder.getBillOfMaterial(), manufOrder, productList);
-    moList.addAll(this.generateChildMOs(manufOrder, childBomList, depth));
-    return moList;
+    // Perf: Clear BOM cache before starting recursive BOM traversal
+    defaultBomCache.clear();
+    try {
+      Integer depth = 0;
+      List<ManufOrder> moList = new ArrayList<>();
+      List<Pair<BillOfMaterial, BigDecimal>> childBomList =
+          getToConsumeSubBomList(manufOrder.getBillOfMaterial(), manufOrder, productList);
+      moList.addAll(this.generateChildMOs(manufOrder, childBomList, depth));
+      return moList;
+    } finally {
+      // Clear cache after completion to free memory
+      defaultBomCache.clear();
+    }
   }
 
   public List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
@@ -855,7 +878,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           bomList.add(Pair.of(bom, qtyReq));
         }
       } else {
-        BillOfMaterial defaultBOM = billOfMaterialService.getDefaultBOM(product, null);
+        // Perf: Use cache for getDefaultBOM to avoid repeated DB lookups for same product
+        BillOfMaterial defaultBOM = getDefaultBOMCached(product);
 
         if ((product.getProductSubTypeSelect()
                     == ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT
@@ -868,6 +892,25 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       }
     }
     return bomList;
+  }
+
+  /**
+   * Get default BOM for a product with caching to avoid repeated DB lookups.
+   *
+   * @param product The product to get the default BOM for
+   * @return The default BillOfMaterial or null if not found
+   * @throws AxelorException if an error occurs during BOM lookup
+   */
+  protected BillOfMaterial getDefaultBOMCached(Product product) throws AxelorException {
+    Long productId = product.getId();
+    if (defaultBomCache.containsKey(productId)) {
+      return defaultBomCache.get(productId);
+    }
+    BillOfMaterial defaultBOM = billOfMaterialService.getDefaultBOM(product, null);
+    if (defaultBOM != null) {
+      defaultBomCache.put(productId, defaultBOM);
+    }
+    return defaultBOM;
   }
 
   protected ManufOrder createDraftManufOrder(
@@ -1031,8 +1074,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     } else {
       preFillOperations(mergedManufOrder);
     }
-
-    manufOrderRepo.save(mergedManufOrder);
   }
 
   public boolean canMerge(List<Long> ids) {

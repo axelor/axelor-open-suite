@@ -21,11 +21,12 @@ package com.axelor.apps.base.service.partner.api;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.City;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.MainActivity;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PartnerCategory;
+import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.MainActivityRepository;
@@ -37,12 +38,14 @@ import com.axelor.apps.base.rest.dto.sirene.PartnerDataResponse;
 import com.axelor.apps.base.rest.dto.sirene.UniteLegaleResponse;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -61,6 +64,7 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
   protected final MainActivityRepository mainActivityRepository;
   protected final PartnerService partnerService;
   protected final AppBaseService appBaseService;
+  protected final AddressRepository addressRepository;
 
   @Inject
   public PartnerGenerateServiceImpl(
@@ -71,7 +75,8 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
       PartnerApiFetchService partnerApiFetchService,
       MainActivityRepository mainActivityRepository,
       PartnerService partnerService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      AddressRepository addressRepository) {
     this.partnerRepository = partnerRepository;
     this.partnerCategoryRepository = partnerCategoryRepository;
     this.countryRepository = countryRepository;
@@ -80,17 +85,19 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
     this.mainActivityRepository = mainActivityRepository;
     this.partnerService = partnerService;
     this.appBaseService = appBaseService;
+    this.addressRepository = addressRepository;
   }
 
   @Transactional(rollbackOn = Exception.class)
   @Override
-  public void configurePartner(Partner partner, String siret) throws AxelorException {
+  public void configurePartner(Partner partner, String siret, Map<String, Boolean> partnerTypeData)
+      throws AxelorException {
     String result = partnerApiFetchService.fetch(siret);
     try {
       ObjectMapper objectMapper = new ObjectMapper();
       PartnerDataResponse partnerData = objectMapper.readValue(result, PartnerDataResponse.class);
 
-      setPartnerBasicDetails(partner, partnerData);
+      setPartnerBasicDetails(partner, partnerData, partnerTypeData);
       setPartnerCategoryAndType(partner, partnerData.getUniteLegale());
       setPartnerAddress(partner, partnerData.getAdresseEtablissement());
 
@@ -100,7 +107,8 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
     }
   }
 
-  protected void setPartnerBasicDetails(Partner partner, PartnerDataResponse partnerData)
+  protected void setPartnerBasicDetails(
+      Partner partner, PartnerDataResponse partnerData, Map<String, Boolean> partnerTypeData)
       throws AxelorException {
     safeSetString(
         partner::setRegistrationCode, partner::getRegistrationCode, partnerData.getSiret());
@@ -118,6 +126,14 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
       partner.setSiren(sirenNb);
       setPartnerTaxNumber(sirenNb, partner);
     }
+    Company activeCompany = AuthUtils.getUser().getActiveCompany();
+    if (activeCompany != null) {
+      partner.addCompanySetItem(activeCompany);
+      partner.setCurrency(activeCompany.getCurrency());
+    }
+    partner.setIsCustomer(partnerTypeData.get("isCustomer"));
+    partner.setIsSupplier(partnerTypeData.get("isSupplier"));
+    partner.setIsProspect(partnerTypeData.get("isProspect"));
   }
 
   protected void setPartnerTaxNumber(String sirenNb, Partner partner) {
@@ -185,10 +201,8 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
     setAddressDetails(address, adresseEtablissement);
 
     if (isValidAddress(address)) {
-      PartnerAddress partnerAddress = new PartnerAddress();
-      partnerAddress.setPartner(partner);
-      partnerAddress.setAddress(address);
-      partner.addPartnerAddressListItem(partnerAddress);
+      addressRepository.save(address);
+      partnerService.addPartnerAddress(partner, address, true, true, true);
     }
   }
 
@@ -205,8 +219,8 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
         address::getPostBox,
         adresseEtablissement.getDistributionSpecialeEtablissement());
     safeSetString(
-        address::setDepartment,
-        address::getDepartment,
+        address::setSubDepartment,
+        address::getSubDepartment,
         adresseEtablissement.getEnseigne1Etablissement());
 
     Country currentCountry = countryRepository.findByName("FRANCE");

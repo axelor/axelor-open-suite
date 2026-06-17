@@ -35,7 +35,7 @@ import java.util.Optional;
 
 public class IndicatorFormServiceImpl implements IndicatorFormService {
 
-  private static final String FORM_NAME_PATTERN = "indicator-result-viewer-%s-form";
+  protected static final String FORM_NAME_PATTERN = "indicator-result-viewer-%s-form";
 
   protected final MetaViewRepository metaViewRepository;
 

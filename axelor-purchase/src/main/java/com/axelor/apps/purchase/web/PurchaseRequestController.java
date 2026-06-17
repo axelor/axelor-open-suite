@@ -29,6 +29,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseRequestService;
 import com.axelor.apps.purchase.service.PurchaseRequestWorkflowService;
+import com.axelor.apps.purchase.service.purchase.request.PurchaseRequestToPoGenerationResult;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -78,13 +79,22 @@ public class PurchaseRequestController {
               purchaseRequestSeqs.toString());
         }
         response.setCanClose(true);
-        List<PurchaseOrder> purchaseOrderList =
-            Beans.get(PurchaseRequestService.class)
-                .generatePo(purchaseRequests, groupBySupplier, groupByProduct, company);
+
+        PurchaseRequestService purchaseRequestService = Beans.get(PurchaseRequestService.class);
+
+        PurchaseRequestToPoGenerationResult generationResult =
+            purchaseRequestService.generatePo(
+                purchaseRequests, groupBySupplier, groupByProduct, company);
+        if (!generationResult.hasPurchaseOrders()) {
+          if (generationResult.hasWarnings()) {
+            response.setInfo(generationResult.getWarningMessage());
+          }
+          return;
+        }
+
+        List<PurchaseOrder> purchaseOrderList = generationResult.getPurchaseOrders();
         ActionViewBuilder actionViewBuilder =
-            ActionView.define(
-                    String.format(
-                        "Purchase Order%s generated", (purchaseOrderList.size() > 1 ? "s" : "")))
+            ActionView.define(I18n.get("Purchase orders"))
                 .model(PurchaseOrder.class.getName())
                 .add("grid", "purchase-order-quotation-grid")
                 .add("form", "purchase-order-form")
@@ -94,6 +104,9 @@ public class PurchaseRequestController {
                     String.format(
                         "self.id in (%s)", StringHelper.getIdListString(purchaseOrderList)));
         response.setView(actionViewBuilder.map());
+        if (generationResult.hasWarnings()) {
+          response.setInfo(generationResult.getWarningMessage());
+        }
       } catch (AxelorException e) {
         response.setInfo(e.getMessage());
       }

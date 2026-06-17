@@ -32,9 +32,9 @@ public class LanguageServiceImpl implements LanguageService {
   protected MetaSelectRepository metaSelectRepository;
   protected MetaSelectItemRepository metaSelectItemRepository;
 
-  private static final String SELECT_NAME = "select.language";
-  private static final String NATIVE_SELECT_LANGUAGE_MODULE = "axelor-core";
-  private static final String NEW_SELECT_LANGUAGE_MODULE = "axelor-base";
+  protected static final String SELECT_NAME = "select.language";
+  protected static final String NATIVE_SELECT_LANGUAGE_MODULE = "axelor-core";
+  protected static final String NEW_SELECT_LANGUAGE_MODULE = "axelor-base";
 
   @Inject
   public LanguageServiceImpl(

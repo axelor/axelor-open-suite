@@ -24,13 +24,7 @@ import {
   convertNumberToTime,
   convertTimeToNumber,
 } from "./container";
-
-export function translate(str) {
-  if (window.top && window.top._t && typeof str === "string") {
-    return window.top._t(str);
-  }
-  return str;
-}
+import { translate } from "../utils/translate";
 
 export function dynamicSort(property) {
   var sortOrder = 1;

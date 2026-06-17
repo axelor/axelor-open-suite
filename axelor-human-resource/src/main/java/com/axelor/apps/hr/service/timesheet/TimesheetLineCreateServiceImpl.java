@@ -29,6 +29,7 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
@@ -52,6 +53,7 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
   protected TimesheetLineCheckService timesheetLineCheckService;
   protected AppBaseService appBaseService;
   protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
+  protected AppHumanResourceService appHumanResourceService;
 
   @Inject
   public TimesheetLineCreateServiceImpl(
@@ -60,13 +62,15 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
       UserHrService userHrService,
       TimesheetLineCheckService timesheetLineCheckService,
       AppBaseService appBaseService,
-      ProjectPlanningTimeRepository projectPlanningTimeRepository) {
+      ProjectPlanningTimeRepository projectPlanningTimeRepository,
+      AppHumanResourceService appHumanResourceService) {
     this.timesheetLineService = timesheetLineService;
     this.timesheetLineRepository = timesheetLineRepository;
     this.userHrService = userHrService;
     this.timesheetLineCheckService = timesheetLineCheckService;
     this.appBaseService = appBaseService;
     this.projectPlanningTimeRepository = projectPlanningTimeRepository;
+    this.appHumanResourceService = appHumanResourceService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -89,7 +93,7 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE);
     }
-    if (product == null) {
+    if (product == null && appHumanResourceService.getAppTimesheet().getEnableActivity()) {
       product = userHrService.getTimesheetProduct(employee, projectTask);
     }
     if (hoursDuration == null && duration == null) {

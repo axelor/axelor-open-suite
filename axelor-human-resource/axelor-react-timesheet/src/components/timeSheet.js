@@ -23,7 +23,7 @@ import { convertNumberToTime } from "./container";
 import "./main.css";
 import CellComponent from "./cellComponent";
 import Cell from "./cell";
-import { translate } from "./cellComponent";
+import { translate } from "../utils/translate";
 
 class TimeSheet extends Component {
   isToday(date) {

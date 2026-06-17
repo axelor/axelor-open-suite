@@ -19,7 +19,10 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 
 public interface PurchaseOrderDomainService {
   String getPartnerBaseDomain(Company company);
+
+  String getPartnerBaseDomain(Company company, PurchaseOrder purchaseOrder);
 }

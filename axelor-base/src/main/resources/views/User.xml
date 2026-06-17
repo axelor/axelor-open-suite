@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="user-grid" title="Users list" model="com.axelor.auth.db.User" id="user-grid-base">
     <field name="name"/>
@@ -123,7 +123,7 @@
             <field name="employee" if-module="axelor-human-resource" form-view="employee-form"
               grid-view="employee-grid" canNew="false" canEdit="false" canView="false"
               if="__config__.app.isApp('employee')"
-              onSelect="action-user-attrs-change-employee-domain" domain="self.user == null"
+              onSelect="action-user-attrs-change-employee-domain" domain="self.user IS NULL"
               onChange="action-user-attrs-fill-contact"
               showIf="partner == null || partner.employee != null" hidden="true"/>
             <button name="createEmployeeBtn" onClick="save,action-user-group-employee"
@@ -251,7 +251,7 @@
               showIf="partner == null &amp;&amp; id != null &amp;&amp; id>0"
               onClick="action-user-view-user-partner-type-wizard,action-user-attrs"/>
             <field name="partner" showTitle="false" colSpan="12" canNew="true"
-              domain="self.linkedUser=null AND (self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true)"
+              domain="self.linkedUser IS null AND (self.partnerTypeSelect = 2 OR self.isContact = true OR self.isEmployee = true)"
               form-view="partner-employee-form" grid-view="partner-employee-grid"
               onChange="action-user-attrs-remove-linked-employee">
               <editor x-viewer="true">

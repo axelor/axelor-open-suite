@@ -183,6 +183,40 @@ public class InvoiceMergingController {
     }
   }
 
+  @SuppressWarnings("unchecked")
+  public void openCustCreditNoteMergeWizard(ActionRequest request, ActionResponse response) {
+    try {
+      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+      List<Invoice> invoicesToMerge =
+          Beans.get(InvoiceMergingService.class).convertSelectedLinesToMergeLines(idList);
+      response.setView(
+          ActionView.define(I18n.get("Merge Cust. Credit notes"))
+              .model("com.axelor.utils.db.Wizard")
+              .add("form", "customer-credit-notes-merge-form")
+              .context("_invoiceToMerge", invoicesToMerge)
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void openSupplCreditNoteMergeWizard(ActionRequest request, ActionResponse response) {
+    try {
+      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+      List<Invoice> invoicesToMerge =
+          Beans.get(InvoiceMergingService.class).convertSelectedLinesToMergeLines(idList);
+      response.setView(
+          ActionView.define(I18n.get("Merge Suppl. Credit notes"))
+              .model("com.axelor.utils.db.Wizard")
+              .add("form", "supplier-credit-notes-merge-form")
+              .context("_invoiceToMerge", invoicesToMerge)
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   protected void setResponseView(ActionResponse response, InvoiceMergingResult result) {
     if (result.getInvoice() != null) {
       // Open the generated invoice in a new tab

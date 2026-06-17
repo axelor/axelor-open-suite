@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="product-category-grid" title="Product categories"
     model="com.axelor.apps.base.db.ProductCategory" orderBy="name">
@@ -28,6 +28,8 @@
       <field name="sequence" onSelect="action-attrs-product-category-form-set-sequence-domain"/>
       <field name="maxDiscount" onChange="action-group-product-category-max-discount-onchange"/>
       <field name="growthCoef"/>
+      <field name="excludeFromMrp" if-module="axelor-supplychain"
+        if="__config__.app.isApp('supplychain')"/>
     </panel>
     <panel-dashlet name="salesTurnoverPanel" title="Sales Turnover"
       action="dashlet.category.sales.turnover.per.month" colSpan="12" height="350"

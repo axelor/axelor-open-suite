@@ -93,5 +93,7 @@ public interface ITranslation {
   public static final String SALES_ORDER_TAX_CODE = /*$$(*/ "SaleOrder.taxCode"; /*)*/
   ;
   public static final String SALES_ORDER_TOTAL_TAXES = /*$$(*/ "SaleOrder.totalTaxes"; /*)*/
+  public static final String SALES_ORDER_EXEMPTION_REASON = /*$$(*/
+      "SaleOrder.exemptionReason"; /*)*/
   ;
 }

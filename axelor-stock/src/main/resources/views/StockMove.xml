@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove"
     orderBy="statusSelect,-estimatedDate">
@@ -600,6 +600,9 @@
           onClick="action-group-stock-stockmove-cancel-click"/>
         <button name="draftBtn" title="Draft" showIf="statusSelect == 4"
           onClick="action-stock-move-method-draft"/>
+        <field if="__config__.app.getApp('stock')?.getActivateStockMoveBarcodeGeneration()"
+          name="stockMoveBarcode" showTitle="false" colOffset="9" colSpan="3" widget="Image"
+          showIf="stockMoveBarcode"/>
       </panel>
     </panel>
 
@@ -607,8 +610,7 @@
       <panel-related name="stockMoveLineListPanel" field="stockMoveLineList"
         title="Stock move lines" height="12"
         readonlyIf="company == null || fromStockLocation == null || toStockLocation == null || statusSelect == 3"
-        onChange="action-stock-move-line-change-group"
-        onNew="action-stock-move-line-record-filter-on-available-products, action-stock-move-line-record-fill-stock-location"
+        onChange="action-stock-move-line-change-group" onNew="action-stock-move-line-onnew-group"
         grid-view="stock-move-line-grid" form-view="stock-move-line-form" canMove="true"
         orderBy="sequence" canRemove="!(statusSelect == 2 &amp;&amp; pickingIsEdited)" canNew="true"/>
       <panel name="freightCarrierPanel" title="Freight Carrier" itemSpan="12">
@@ -673,13 +675,18 @@
         if="__config__.app.isApp('supplychain')" showIf="id">
         <panel name="OriginPanel" colSpan="12">
           <panel colSpan="3" itemSpan="3" stacked="true" readonly="true">
-            <field name="inventory" hidden="true" showIf="inventory != null"/>
+            <field name="inventory" hidden="true" showIf="inventory != null"
+              grid-view="inventory-grid" form-view="inventory-form"/>
             <field name="manufOrder" hidden="true" showIf="manufOrder != null"
-              if-module="axelor-production"/>
+              if-module="axelor-production" grid-view="manuf-order-grid"
+              form-view="manuf-order-form"/>
             <field name="operationOrder" hidden="true" showIf="operationOrder != null"
-              if-module="axelor-production"/>
-            <field name="stockCorrection" hidden="true" showIf="stockCorrection != null"/>
-            <field name="massStockMove" hidden="true" showIf="massStockMove != null"/>
+              if-module="axelor-production" grid-view="operation-order-grid"
+              form-view="operation-order-form"/>
+            <field name="stockCorrection" hidden="true" showIf="stockCorrection != null"
+              grid-view="stock-correction-grid" form-view="stock-correction-form"/>
+            <field name="massStockMove" hidden="true" showIf="massStockMove != null"
+              grid-view="mass-stock-move-grid" form-view="mass-stock-move-form"/>
           </panel>
           <field name="saleOrderSet" hidden="true"
             showIf="saleOrderSet &amp;&amp; saleOrderSet.length > 0" colSpan="12" readonly="true"
@@ -710,12 +717,6 @@
       <panel name="datesPanel" title="Dates">
         <field name="realDate" colSpan="4"/>
         <field name="pickingEditDate" hidden="true" showIf="pickingEditDate" readonly="true"/>
-      </panel>
-
-      <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')">
-        <button name="addControlEntryBtn" title="Add a control entry"
-          onClick="save,action-stock-move-view-add-control-entry" colOffset="6"/>
-        <panel-dashlet action="action-stock-move-view-control-entry" colSpan="12"/>
       </panel>
 
       <panel name="configPanel" title="Configuration" itemSpan="6">
@@ -1334,6 +1335,7 @@
     model="com.axelor.apps.stock.db.LogisticalForm">
     <view type="grid" name="logistical-form-stock-move-grid"/>
     <view type="form" name="logistical-form-form"/>
+    <domain>:id MEMBER OF self.stockMoveList</domain>
   </action-view>
 
   <action-view name="action-stock-move-view-reversion" title="Reversions"
@@ -1657,24 +1659,6 @@
     <view type="form" name="stock-move-send-notification-wizard-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="popup-save" value="false"/>
-  </action-view>
-
-  <action-view name="action-stock-move-view-control-entry"
-    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
-    <view type="grid" name="control-entry-grid"/>
-    <view type="form" name="control-entry-form"/>
-    <domain>self.relatedToSelectId = :stockMoveId AND self.relatedToSelect =
-      'com.axelor.apps.stock.db.StockMove'</domain>
-    <context name="stockMoveId" expr="eval:__self__?.id"/>
-  </action-view>
-
-  <action-view name="action-stock-move-view-add-control-entry"
-    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
-    <view type="form" name="control-entry-form"/>
-    <view type="grid" name="control-entry-grid"/>
-    <view-param name="popup" value="reload"/>
-    <context name="relatedTo" expr="eval: 'com.axelor.apps.stock.db.StockMove'"/>
-    <context name="relatedToId" expr="eval:__self__?.id"/>
   </action-view>
 
   <action-method name="action-stock-move-method-send-notification">

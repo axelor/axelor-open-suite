@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
 
   <menuitem name="menu-products-dashboard-1" parent="referential-report"
@@ -182,16 +182,6 @@
     <view-param name="show-toolbar" value="false"/>
   </action-view>
 
-  <menuitem name="stock-multi-sale-invoicing" parent="sc-root-sale" order="800"
-    if="__config__.app.isApp('supplychain')" title="Mass Cust. Stock Move Invoicing"
-    action="stock.root.multi.sale.invoicing"/>
-
-  <action-view name="stock.root.multi.sale.invoicing"
-    title="Mass Cust. Stock Move Invoicing" model="com.axelor.apps.stock.db.StockMove">
-    <view type="form" name="stock-move-multi-sale-invoicing-form"/>
-    <view-param name="show-toolbar" value="false"/>
-  </action-view>
-
   <menuitem name="stock-root-availabilityreq" parent="sc-root-sale" order="900"
     title="Availability requests" action="stock.root.availabilityreq"
     if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock')?.isSeparateShipmentOperations"/>
@@ -246,18 +236,31 @@
     <view type="form" name="stock-move-invoice-blocking-reason-form"/>
   </action-view>
 
+  <menuitem title="Mass invoicing" name="sc-root-sale-mass-invoicing" parent="sc-root-sale"
+    order="605"/>
+
   <menuitem name="sc-root-sale-order-lines-to-invoice"
-    title="Mass sale order line invoicing" parent="sc-root-sale" order="601"
+    title="Mass Sale Order Line Invoicing" parent="sc-root-sale-mass-invoicing" order="100"
     action="sc.root.sale.order.lines.to.invoice"/>
 
   <action-view name="sc.root.sale.order.lines.to.invoice"
-    title="Mass sale order line invoicing" model="com.axelor.apps.sale.db.SaleOrderLine">
+    title="Mass Sale Order Line Invoicing" model="com.axelor.apps.sale.db.SaleOrderLine">
     <view type="grid" name="sale-order-line-to-invoice-grid"/>
     <view type="form" name="sale-order-line-to-invoice-form"/>
     <domain>
       (self.invoicingState = 1 OR self.invoicingState = 2) AND
       self.saleOrder.statusSelect = 3
     </domain>
+  </action-view>
+
+  <menuitem name="stock-multi-sale-invoicing" parent="sc-root-sale-mass-invoicing"
+    order="200" if="__config__.app.isApp('supplychain')" title="Mass Cust. Stock Move Invoicing"
+    action="stock.root.multi.sale.invoicing"/>
+
+  <action-view name="stock.root.multi.sale.invoicing"
+    title="Mass Cust. Stock Move Invoicing" model="com.axelor.apps.stock.db.StockMove">
+    <view type="form" name="stock-move-multi-sale-invoicing-form"/>
+    <view-param name="show-toolbar" value="false"/>
   </action-view>
 
   <!-- Pricing menus -->
@@ -302,13 +305,53 @@
     <view type="form" name="pricing-rule-form"/>
   </action-view>
 
-  <menuitem name="supplychain-un-code-all" parent="base-referential-root-product-settings"
-    title="UN codes" action="supplychain.un.code.all" order="1000"/>
+  <menuitem name="supplychain-un-code-all" parent="referential-conf" title="UN codes"
+    action="supplychain.un.code.all" order="1700"/>
 
   <action-view name="supplychain.un.code.all" title="UN codes"
     model="com.axelor.apps.supplychain.db.UNCode">
     <view type="grid" name="un-code-grid"/>
     <view type="form" name="un-code-form"/>
+  </action-view>
+
+  <!-- Stock cost review menus -->
+  <menuitem name="stock-cost-review" parent="stock-root" title="Stock revaluation"
+    order="1050"/>
+
+  <menuitem name="stock-cost-review-calculation" parent="stock-cost-review"
+    title="Stock revaluation" action="stock.root.depreciation.rate.calculations" order="100"/>
+
+  <action-view name="stock.root.depreciation.rate.calculations"
+    title="Stock revaluation" model="com.axelor.apps.supplychain.db.UnitCostCalculation">
+    <view type="grid" name="depreciation-rate-calculations-grid"/>
+    <view type="form" name="cost-calculations-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.typeSelect = 1</domain>
+    <context name="_typeSelect" expr="eval: 1"/>
+  </action-view>
+
+  <menuitem name="stock-cost-review-configuration" parent="stock-cost-review"
+    title="Configuration" icon="gear" order="200"/>
+
+  <menuitem name="stock-cost-review-configuration-rate-config"
+    parent="stock-cost-review-configuration" title="Stock revaluation rate configuration"
+    action="action-supplychain-depreciation-rate-config" order="100"/>
+
+  <action-view name="action-supplychain-depreciation-rate-config"
+    title="Stock revaluation rate configuration"
+    model="com.axelor.apps.supplychain.db.DepreciationRateConfig">
+    <view type="grid" name="depreciation-rate-config-grid"/>
+    <view type="form" name="depreciation-rate-config-form"/>
+  </action-view>
+
+  <menuitem name="stock-cost-review-configuration-stock-rotation-category"
+    parent="stock-cost-review-configuration" title="Stock rotation categories"
+    action="action-supplychain-stock-rotation-category" order="200"/>
+
+  <action-view name="action-supplychain-stock-rotation-category"
+    title="Stock rotation categories" model="com.axelor.apps.supplychain.db.StockRotationCategory">
+    <view type="grid" name="stock-rotation-category-grid"/>
+    <view type="form" name="stock-rotation-category-form"/>
   </action-view>
 
 </object-views>

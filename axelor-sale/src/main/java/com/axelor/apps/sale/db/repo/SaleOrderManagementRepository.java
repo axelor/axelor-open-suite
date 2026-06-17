@@ -29,6 +29,7 @@ import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCopyService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
@@ -75,6 +76,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       }
       computeSeq(saleOrder);
       computeFullName(saleOrder);
+      syncAddressStr(saleOrder);
 
       if (appSale.getManagePartnerComplementaryProduct()) {
         Beans.get(SaleOrderService.class).manageComplementaryProductSOLines(saleOrder);
@@ -85,8 +87,9 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       if (appSale.getIsQuotationAndOrderSplitEnabled()) {
         saleOrderOrderingStatusService.updateOrderingStatus(saleOrder);
       }
-      Beans.get(SaleOrderLineComputeService.class)
-          .computeLevels(saleOrder.getSaleOrderLineList(), null);
+      SaleOrderLineComputeService saleOrderLineComputeService =
+          Beans.get(SaleOrderLineComputeService.class);
+      saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null, saleOrder);
       return super.save(saleOrder);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
@@ -125,13 +128,20 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     }
   }
 
+  protected void syncAddressStr(SaleOrder saleOrder) {
+    Beans.get(SaleOrderService.class).computeAddressStr(saleOrder);
+    Beans.get(SaleOrderDeliveryAddressService.class)
+        .updateSaleOrderLinesDeliveryAddressStr(saleOrder);
+  }
+
   protected void computeSubMargin(SaleOrder saleOrder) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     MarginComputeService marginComputeService = Beans.get(MarginComputeService.class);
     if (saleOrderLineList != null) {
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      boolean considerZeroCost = Beans.get(AppSaleService.class).getAppSale().getConsiderZeroCost();
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         marginComputeService.computeSubMargin(
-            saleOrder, saleOrderLine, saleOrderLine.getExTaxTotal());
+            saleOrder, saleOrderLine, saleOrderLine.getExTaxTotal(), considerZeroCost);
       }
     }
   }

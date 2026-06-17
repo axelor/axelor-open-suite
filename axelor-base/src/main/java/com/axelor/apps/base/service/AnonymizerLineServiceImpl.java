@@ -28,7 +28,7 @@ import java.util.Objects;
 
 public class AnonymizerLineServiceImpl implements AnonymizerLineService {
 
-  private FakerApiFieldRepository fakerApiFieldRepository;
+  protected FakerApiFieldRepository fakerApiFieldRepository;
 
   @Inject
   public AnonymizerLineServiceImpl(FakerApiFieldRepository fakerApiFieldRepository) {

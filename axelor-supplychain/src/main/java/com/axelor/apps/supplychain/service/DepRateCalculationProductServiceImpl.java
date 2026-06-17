@@ -1,0 +1,190 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.axelor.apps.supplychain.service;
+
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.ProductCategoryService;
+import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
+import com.axelor.apps.supplychain.db.UnitCostCalculation;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.i18n.I18n;
+import com.axelor.utils.helpers.StringHelper;
+import com.google.common.collect.Sets;
+import jakarta.inject.Inject;
+import java.util.HashSet;
+import java.util.Set;
+
+public class DepRateCalculationProductServiceImpl implements DepRateCalculationProductService {
+
+  protected final ProductRepository productRepository;
+  protected final StockLocationLineRepository stockLocationLineRepository;
+  protected final ProductCategoryService productCategoryService;
+
+  @Inject
+  public DepRateCalculationProductServiceImpl(
+      ProductRepository productRepository,
+      StockLocationLineRepository stockLocationLineRepository,
+      ProductCategoryService productCategoryService) {
+    this.productRepository = productRepository;
+    this.stockLocationLineRepository = stockLocationLineRepository;
+    this.productCategoryService = productCategoryService;
+  }
+
+  @Override
+  public Set<Product> getProducts(UnitCostCalculation unitCostCalculation) throws AxelorException {
+
+    if (!hasAnyFilter(unitCostCalculation)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(SupplychainExceptionMessage.DEPRECIATION_CHOOSE_FILTERS));
+    }
+
+    Set<Product> productSet = Sets.newHashSet();
+
+    if (!unitCostCalculation.getProductSet().isEmpty()) {
+      productSet.addAll(unitCostCalculation.getProductSet());
+    }
+
+    if (!unitCostCalculation.getProductCategorySet().isEmpty()) {
+      productSet.addAll(
+          productRepository
+              .all()
+              .filter(
+                  "self.productCategory in (:productCategorySet) AND self.productTypeSelect = :productTypeSelect"
+                      + " AND self.dtype = 'Product'"
+                      + " AND self.stockManaged IS TRUE"
+                      + " AND self.stockRotationCategory IS NOT NULL")
+              .bind("productCategorySet", expandProductCategorySet(unitCostCalculation))
+              .bind("productTypeSelect", ProductRepository.PRODUCT_TYPE_STORABLE)
+              .fetch());
+    }
+
+    if (!unitCostCalculation.getProductFamilySet().isEmpty()) {
+      productSet.addAll(
+          productRepository
+              .all()
+              .filter(
+                  "self.productFamily in (:productFamily) AND self.productTypeSelect = :productTypeSelect"
+                      + " AND self.dtype = 'Product'"
+                      + " AND self.stockManaged = true"
+                      + " AND self.stockRotationCategory IS NOT NULL")
+              .bind("productFamily", unitCostCalculation.getProductFamilySet())
+              .bind("productTypeSelect", ProductRepository.PRODUCT_TYPE_STORABLE)
+              .fetch());
+    }
+
+    if (unitCostCalculation.getStockRotationCategorySet() != null
+        && !unitCostCalculation.getStockRotationCategorySet().isEmpty()) {
+      productSet.addAll(
+          productRepository
+              .all()
+              .filter(
+                  "self.stockRotationCategory in (:stockRotationCategorySet)"
+                      + " AND self.productTypeSelect = :productTypeSelect"
+                      + " AND self.dtype = 'Product'"
+                      + " AND self.stockManaged IS TRUE")
+              .bind("stockRotationCategorySet", unitCostCalculation.getStockRotationCategorySet())
+              .bind("productTypeSelect", ProductRepository.PRODUCT_TYPE_STORABLE)
+              .fetch());
+    }
+
+    if (productSet.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(SupplychainExceptionMessage.DEPRECIATION_NO_ELIGIBLE_PRODUCT));
+    }
+
+    Set<Product> finalProductSet = Sets.newHashSet();
+    for (Product product : productSet) {
+      long count =
+          stockLocationLineRepository
+              .all()
+              .filter(
+                  "self.product = :product AND coalesce(self.stockLocation.customerOk,false) = :customerOk")
+              .bind("product", product)
+              .bind("customerOk", unitCostCalculation.getCustomerOk())
+              .count();
+
+      if (count > 0) {
+        finalProductSet.add(product);
+      }
+    }
+
+    return finalProductSet;
+  }
+
+  protected Set<ProductCategory> expandProductCategorySet(UnitCostCalculation unitCostCalculation)
+      throws AxelorException {
+    Set<ProductCategory> productCategorySet =
+        new HashSet<>(unitCostCalculation.getProductCategorySet());
+    if (unitCostCalculation.getTakeInAccountSubCategories()) {
+      for (ProductCategory productCategory : unitCostCalculation.getProductCategorySet()) {
+        productCategorySet.addAll(
+            productCategoryService.fetchChildrenCategoryList(productCategory));
+      }
+    }
+    return productCategorySet;
+  }
+
+  protected boolean hasAnyFilter(UnitCostCalculation unitCostCalculation) {
+    return !unitCostCalculation.getProductSet().isEmpty()
+        || !unitCostCalculation.getProductCategorySet().isEmpty()
+        || !unitCostCalculation.getProductFamilySet().isEmpty()
+        || (unitCostCalculation.getStockRotationCategorySet() != null
+            && !unitCostCalculation.getStockRotationCategorySet().isEmpty());
+  }
+
+  @Override
+  public String createDepreciationProductSetDomain(UnitCostCalculation unitCostCalculation)
+      throws AxelorException {
+    StringBuilder domain =
+        new StringBuilder(
+            "self.productTypeSelect = 'storable' AND self.dtype = 'Product' AND self.stockManaged IS TRUE AND self.stockRotationCategory IS NOT NULL");
+
+    if (unitCostCalculation.getProductCategorySet() != null
+        && !unitCostCalculation.getProductCategorySet().isEmpty()) {
+      domain
+          .append(" AND self.productCategory.id IN (")
+          .append(StringHelper.getIdListString(expandProductCategorySet(unitCostCalculation)))
+          .append(")");
+    }
+
+    if (unitCostCalculation.getProductFamilySet() != null
+        && !unitCostCalculation.getProductFamilySet().isEmpty()) {
+      domain
+          .append(" AND self.productFamily.id IN (")
+          .append(StringHelper.getIdListString(unitCostCalculation.getProductFamilySet()))
+          .append(")");
+    }
+
+    if (unitCostCalculation.getStockRotationCategorySet() != null
+        && !unitCostCalculation.getStockRotationCategorySet().isEmpty()) {
+      domain
+          .append(" AND self.stockRotationCategory.id IN (")
+          .append(StringHelper.getIdListString(unitCostCalculation.getStockRotationCategorySet()))
+          .append(")");
+    }
+
+    return domain.toString();
+  }
+}

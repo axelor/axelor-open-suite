@@ -41,6 +41,7 @@ public class ImportSaleOrderLine {
     if (saleOrder == null) {
       saleOrder = getSaleOrder(saleOrderLine);
     }
+    saleOrderLine.setMainSaleOrder(saleOrder);
     Set<TaxLine> taxLineSet = saleOrderLineTaxService.getTaxLineSet(saleOrder, saleOrderLine);
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
       saleOrderLine.setTaxLineSet(taxLineSet);

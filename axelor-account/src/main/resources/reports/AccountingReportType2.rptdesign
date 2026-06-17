@@ -380,7 +380,7 @@ account_set_count AS (
     FROM account_accounting_report_account_set
     WHERE account_accounting_report = ?
 )
-select Account.id as account_id, MoveLine.account_code as account_code, MoveLine.account_name as account_name, Account.parent_account as parent_account_id,
+select Account.id as account_id, COALESCE(MoveLine.account_code, Account.code) as account_code, COALESCE(MoveLine.account_name, Account.name) as account_name, Account.parent_account as parent_account_id,
 CASE WHEN (COUNT(CASE WHEN Move.status_select = 2 OR Move.status_select = 5 THEN 1 ELSE NULL END)) > 0 THEN TRUE ELSE FALSE END as "showProvisionTitle",
 SUM(MoveLine.debit) as debit, SUM(MoveLine.credit) as credit, SUM(MoveLine.debit - MoveLine.credit) as balance, Currency.number_of_decimals
 
@@ -441,9 +441,9 @@ AND (AccountingReport.display_closing_accounting_moves is true
 AND (AccountingReport.display_opening_accounting_moves is true 
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
-group by Account.id, MoveLine.account_code, MoveLine.account_name, Currency.number_of_decimals
+group by Account.id, COALESCE(MoveLine.account_code, Account.code), COALESCE(MoveLine.account_name, Account.name), Currency.number_of_decimals
 
-order by MoveLine.account_code]]></xml-property>
+order by COALESCE(MoveLine.account_code, Account.code)]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>

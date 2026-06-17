@@ -41,12 +41,15 @@ import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.purchase.service.pricing.PurchaseOrderLinePricingService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.AppPurchase;
@@ -89,6 +92,9 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   @Inject protected CurrencyScaleService currencyScaleService;
 
   @Inject protected FiscalPositionService fiscalPositionService;
+  @Inject protected OrderLineTaxService orderLineTaxService;
+
+  @Inject protected PurchaseOrderLinePricingService purchaseOrderLinePricingService;
 
   @Deprecated private int sequence = 0;
 
@@ -226,6 +232,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     Product product = line.getProduct();
     Partner supplierPartner = purchaseOrder.getSupplierPartner();
     Company company = purchaseOrder.getCompany();
+    BigDecimal oldPrice = line.getPrice();
 
     Map<String, String> productSupplierInfos =
         supplierCatalogService.getProductSupplierInfos(supplierPartner, company, product);
@@ -252,19 +259,29 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     Set<TaxLine> taxLineSet = getTaxLineSet(purchaseOrder, line);
     line.setTaxLineSet(taxLineSet);
 
-    BigDecimal price = getExTaxUnitPrice(purchaseOrder, line, taxLineSet);
-    BigDecimal inTaxPrice = getInTaxUnitPrice(purchaseOrder, line, taxLineSet);
+    line.setPrice(getExTaxUnitPrice(purchaseOrder, line, taxLineSet));
+    line.setInTaxPrice(getInTaxUnitPrice(purchaseOrder, line, taxLineSet));
 
+    if (appBaseService.getAppBase().getEnablePricingScale()) {
+      purchaseOrderLinePricingService.computePricingScale(line, purchaseOrder);
+    }
+
+    BigDecimal price = line.getPrice();
+    BigDecimal inTaxPrice = line.getInTaxPrice();
     if (price == null || inTaxPrice == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
     }
 
+    FiscalPosition fiscalPosition = purchaseOrder.getFiscalPosition();
     TaxEquiv taxEquiv =
         accountManagementService.getProductTaxEquiv(
-            product, purchaseOrder.getCompany(), purchaseOrder.getFiscalPosition(), true);
+            product, purchaseOrder.getCompany(), fiscalPosition, true);
     line.setTaxEquiv(taxEquiv);
+    line.setVatExemptionReason(
+        orderLineTaxService.resolveVatExemptionReason(
+            fiscalPosition, taxEquiv, purchaseOrder.getSupplierPartner()));
 
     Map<String, Object> discounts =
         getDiscountsFromPriceLists(
@@ -305,8 +322,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       }
       line.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
     }
-    if (!line.getEnableFreezeFields()) {
-      line.setPrice(price);
+    if (line.getEnableFreezeFields()) {
+      line.setPrice(oldPrice);
     }
     line.setInTaxPrice(inTaxPrice);
 
@@ -642,6 +659,9 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
               purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), fiscalPosition, true);
 
       purchaseOrderLine.setTaxEquiv(taxEquiv);
+      purchaseOrderLine.setVatExemptionReason(
+          orderLineTaxService.resolveVatExemptionReason(
+              fiscalPosition, taxEquiv, purchaseOrder.getSupplierPartner()));
 
       BigDecimal exTaxTotal = purchaseOrderLine.getExTaxTotal();
 
@@ -682,6 +702,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     Map<String, Object> valuesMap = new HashMap<>();
     if (fiscalPosition == null || CollectionUtils.isEmpty(taxLineSet)) {
       valuesMap.put("taxEquiv", taxEquiv);
+      valuesMap.put("vatExemptionReason", null);
       return valuesMap;
     }
     taxEquiv = fiscalPositionService.getTaxEquivFromOrToTaxSet(fiscalPosition, taxLineSet);
@@ -691,9 +712,29 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
     valuesMap.put("taxLineSet", taxLineSet);
     valuesMap.put("taxEquiv", taxEquiv);
+    valuesMap.put(
+        "vatExemptionReason",
+        orderLineTaxService.resolveVatExemptionReason(
+            fiscalPosition, taxEquiv, purchaseOrder.getSupplierPartner()));
     return valuesMap;
   }
 
   @Override
   public void validateDeletion(PurchaseOrderLine purchaseOrderLine) throws AxelorException {}
+
+  @Override
+  public void updatePurchaseOrderLineList(PurchaseOrder purchaseOrder) throws AxelorException {
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    if (ObjectUtils.isEmpty(purchaseOrderLineList)) {
+      return;
+    }
+
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+      if (purchaseOrderLine.getProduct() != null) {
+        reset(purchaseOrderLine);
+        fill(purchaseOrderLine, purchaseOrder);
+        compute(purchaseOrderLine, purchaseOrder);
+      }
+    }
+  }
 }

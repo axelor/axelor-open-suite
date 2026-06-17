@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
-  <grid name="tax-grid" title="Tax" model="com.axelor.apps.account.db.Tax" orderBy="code">
+  <grid name="tax-grid" title="Tax" model="com.axelor.apps.account.db.Tax" orderBy="code"
+    canArchive="false">
+    <toolbar>
+      <button name="archiveBtn" title="Archive" onClick="action-tax-method-archive"/>
+      <button name="unarchiveBtn" title="Unarchive" onClick="action-tax-method-unarchive"/>
+    </toolbar>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="taxType"/>
     <field name="name"/>
   </grid>
 
   <form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax" width="large"
-    onLoad="action-base-attrs-set-tax-line-list-scale">
+    onLoad="action-base-attrs-set-tax-line-list-scale" canArchive="false">
+    <toolbar>
+      <button name="archiveBtn" title="Archive" showIf="id &amp;&amp; !archived"
+        onClick="action-tax-method-archive"/>
+      <button name="unarchiveBtn" title="Unarchive" showIf="id &amp;&amp; archived"
+        onClick="action-tax-method-unarchive"/>
+    </toolbar>
     <panel name="mainPanel">
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="name"/>
@@ -43,6 +54,14 @@
     <attribute name="scale" for="taxLineList.value"
       expr="eval: __config__.app.getApp('base').getNbDecimalDigitForTaxRate()"/>
   </action-attrs>
+
+  <action-method name="action-tax-method-archive">
+    <call class="com.axelor.apps.base.web.TaxController" method="archive"/>
+  </action-method>
+
+  <action-method name="action-tax-method-unarchive">
+    <call class="com.axelor.apps.base.web.TaxController" method="unarchive"/>
+  </action-method>
 
   <search-filters name="tax-filters" model="com.axelor.apps.account.db.Tax"
     title="Tax filters">

@@ -38,7 +38,5 @@ public interface MoveTemplateService {
       List<HashMap<String, Object>> moveTemplateList)
       throws AxelorException;
 
-  boolean checkValidity(MoveTemplate moveTemplate);
-
   Map<String, Object> computeTotals(MoveTemplate moveTemplate);
 }

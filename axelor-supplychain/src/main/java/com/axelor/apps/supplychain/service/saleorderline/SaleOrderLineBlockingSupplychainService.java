@@ -18,9 +18,10 @@
  */
 package com.axelor.apps.supplychain.service.saleorderline;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.sale.db.SaleOrderLine;
 
 public interface SaleOrderLineBlockingSupplychainService {
 
-  boolean isDeliveryBlocked(SaleOrderLine saleOrderLine);
+  boolean isDeliveryBlocked(SaleOrderLine saleOrderLine, Company company);
 }

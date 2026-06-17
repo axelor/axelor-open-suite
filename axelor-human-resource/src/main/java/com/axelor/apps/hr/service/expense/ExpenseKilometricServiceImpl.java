@@ -36,6 +36,7 @@ import jakarta.inject.Singleton;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class ExpenseKilometricServiceImpl implements ExpenseKilometricService {
@@ -146,5 +147,27 @@ public class ExpenseKilometricServiceImpl implements ExpenseKilometricService {
       }
     }
     return kilometricAllowParamList;
+  }
+
+  @Override
+  public KilometricAllowParam updateKAPOfKilometricAllowance(
+      ExpenseLine expenseLine, List<KilometricAllowParam> kilometricAllowParamList) {
+
+    KilometricAllowParam currentKap = expenseLine.getKilometricAllowParam();
+    if (CollectionUtils.isEmpty(kilometricAllowParamList) || currentKap == null) {
+      return null;
+    }
+
+    if (kilometricAllowParamList.size() == 1) {
+      return kilometricAllowParamList.get(0);
+    }
+
+    for (KilometricAllowParam kap : kilometricAllowParamList) {
+      if (currentKap.equals(kap)) {
+        expenseLine.setKilometricAllowParam(kap);
+        return kap;
+      }
+    }
+    return null;
   }
 }

@@ -21,13 +21,29 @@ package com.axelor.apps.sale.web;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
+import com.axelor.apps.sale.service.ProductSaleDomainService;
 import com.axelor.apps.sale.service.cartline.CartLineProductService;
+import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.util.Map;
+import java.util.Optional;
 
 public class CartLineController {
+
+  public void computeProductDomain(ActionRequest request, ActionResponse response) {
+    Cart cart = request.getContext().getParent().asType(Cart.class);
+    String domain =
+        Beans.get(ProductSaleDomainService.class)
+            .computeProductDomain(
+                Optional.ofNullable(cart).map(Cart::getCompany).orElse(null),
+                Optional.ofNullable(cart)
+                    .map(Cart::getUser)
+                    .map(User::getTradingName)
+                    .orElse(null));
+    response.setAttr("product", "domain", domain);
+  }
 
   public void setProductInformation(ActionRequest request, ActionResponse response) {
     try {

@@ -298,8 +298,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       if (journalType != null) {
         this.addParams("self.move.journal.journalType.id = ?%d", journalType.getId());
       }
-      String dateFromStr = "'" + accountingReport.getDateFrom().toString() + "'";
-      String dateToStr = "'" + accountingReport.getDateTo().toString() + "'";
+      String dateFromStr = "CAST('" + accountingReport.getDateFrom().toString() + "' AS date)";
+      String dateToStr = "CAST('" + accountingReport.getDateTo().toString() + "' AS date)";
       String reconcileDateConditionQuery =
           String.format(
               "reconcile.statusSelect = %s AND reconcile.effectiveDate >= %s AND reconcile.effectiveDate <= %s",
@@ -330,7 +330,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
       if (typeSelect == AccountingReportRepository.REPORT_AGED_BALANCE) {
         this.addParams("(self.account is null OR self.account.reconcileOk = true)");
-        this.addParams("self.amountRemaining != 0 AND self.debit > 0");
+        this.addParams("self.amountRemaining != 0");
       }
 
       if (typeSelect == AccountingReportRepository.REPORT_PARNER_GENERAL_LEDGER) {
@@ -951,6 +951,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         modelAccountingReportCopy.setBalance(null);
         modelAccountingReportCopy.setDate(accountingReport.getDate());
         modelAccountingReportCopy.setStatusSelect(accountingReport.getStatusSelect());
+        modelAccountingReportCopy.setReportType(accountingReport.getReportType());
         Map<String, Object> modelAccountingReportCopyMap = Mapper.toMap(modelAccountingReportCopy);
         return modelAccountingReportCopyMap;
       }

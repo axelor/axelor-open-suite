@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="stock-move-line-grid" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
     <hilite strong="true" color="default" if="lineTypeSelect != 0"/>
-    <field name="lineTypeSelect" hidden="true"/>
+    <field name="lineTypeSelect" onChange="action-stock-move-line-method-empty-line"/>
     <field name="fromStockLocation"
       onSelect="action-stock-move-line-method-compute-from-stock-location-domain"
       onChange="action-stock-move-line-group-stock-location-onchange"/>
@@ -40,12 +40,12 @@
     <button name="allocateAll"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true"
       title="Allocate" icon="plus-square-fill"
-      readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == $number(qty) || $get('product.productTypeSelect') == 'service'"
+      readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') != 2 || $number(reservedQty) == $number(qty) || $get('product.productTypeSelect') == 'service'"
       onClick="save,action-supplychain-stock-move-line-allocate-all"/>
     <button name="deallocate"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true"
       title="Deallocate" icon="dash-square-fill"
-      readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == 0"
+      readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') != 2 || $number(reservedQty) == 0"
       onClick="save,action-supplychain-stock-move-line-deallocate-all"/>
     <field name="qtyInvoiced" readonly="true" x-scale="$nbDecimalDigitForQty"/>
     <field name="unitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice" width="120px"
@@ -61,6 +61,7 @@
     <field name="trackingNumber"
       canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('$trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isSaleTrackingManaged'))"
       onSelect="action-stock-move-line-attrs-tracking-number-domain"
+      onChange="action-stock-move-line-method-fill-stock-location-from-tracking-number"
       form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"
       readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') > 2"/>
     <field name="$trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
@@ -89,7 +90,7 @@
       title="Split into fulfilled line and unfulfilled one"
       help="Split into fulfilled line and unfulfilled one" icon="copy"
       onClick="save,action-stock-move-line-method-split-into-fulfilled-line-and-unfulfilled-one"
-      hideIf=" $get('stockMove.typeSelect') == 1 || $get('stockMove.statusSelect') &gt; 2 "/>
+      hideIf="lineTypeSelect == 1 || $get('stockMove.typeSelect') == 1 || $get('stockMove.statusSelect') &gt; 2 "/>
     <field name="availableQty" x-scale="$nbDecimalDigitForQty" readonly="true"/>
     <field name="availableQtyForProduct" x-scale="$nbDecimalDigitForQty" readonly="true"/>
     <field name="isRealQtyModifiedByUser" hidden="true"/>
@@ -230,7 +231,7 @@
       <field name="stockMove.company.stockConfig.customsMassUnit" colSpan="3"/>
       <field name="trackingNumber"
         canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('$trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isSaleTrackingManaged'))"
-        onChange="action-stock-move-line-record-product"
+        onChange="action-stock-move-line-record-product,action-stock-move-line-method-fill-stock-location-from-tracking-number"
         form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"
         onSelect="action-stock-move-line-attrs-tracking-number-domain"
         readonlyIf="$get('stockMove.statusSelect') > 2"/>
@@ -239,12 +240,12 @@
       <field name="$trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
       <field name="stockMove.statusSelect" hidden="true"/>
       <field name="stockMove.typeSelect" hidden="true"/>
-      <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
       <field name="$isReadOnly" hidden="true"/>
       <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')"
         colSpan="12">
+        <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
         <button name="addControlEntryBtn" title="Add a control entry"
-          onClick="save,action-stock-move-line-view-add-control-entry" colOffset="6"/>
+          onClick="save,action-control-entry-method-add-control-entry"/>
         <panel-dashlet action="action-stock-move-line-view-control-entry" colSpan="12"/>
       </panel>
       <panel name="descriptionPanel" title="Description" colSpan="12">
@@ -265,15 +266,16 @@
   <grid name="stock-move-line-split-grid" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine" editable="true" canNew="false" canDelete="false">
     <field name="product" x-image-field="picture" readonly="true" form-view="product-form"
-      grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"
+      grid-view="product-grid"
+      readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') > 1"
       domain="self.dtype = 'Product'"/>
     <field name="productModel" readonly="true" form-view="product-form"
       grid-view="product-grid" if="__config__.app.getApp('base')?.getManageProductVariants()"
-      readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
+      readonlyIf="lineTypeSelect == 1 || product || $get('stockMove.statusSelect') > 1"/>
     <field name="productName" readonly="true"/>
     <field name="qty" aggregate="sum"
       onChange="action-stock-move-line-validate-check-split-quantity"
-      x-scale="$nbDecimalDigitForQty"/>
+      x-scale="$nbDecimalDigitForQty" readonlyIf="lineTypeSelect == 1"/>
     <field name="unitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice"
       readonlyIf="lineTypeSelect == 1"/>
     <field name="unitPriceTaxed" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
@@ -290,6 +292,7 @@
     </field>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="lineTypeSelect" hidden="true"/>
   </grid>
 
   <grid name="stock-move-line-sale-order-grid" model="com.axelor.apps.stock.db.StockMoveLine"
@@ -526,7 +529,7 @@
       <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')"
         colSpan="12">
         <button name="addControlEntryBtn" title="Add a control entry"
-          onClick="save,action-stock-move-line-view-add-control-entry" colOffset="6"/>
+          onClick="save,action-control-entry-method-add-control-entry" colOffset="6"/>
         <panel-dashlet action="action-stock-move-line-view-control-entry" colSpan="12"/>
       </panel>
       <field name="description" colSpan="12" widget="html"/>
@@ -792,6 +795,12 @@
     <call class="com.axelor.apps.stock.web.StockMoveLineController" method="fillStockLocation"/>
   </action-method>
 
+  <action-method
+    name="action-stock-move-line-method-fill-stock-location-from-tracking-number">
+    <call class="com.axelor.apps.stock.web.StockMoveLineController"
+      method="fillStockLocationFromTrackingNumber"/>
+  </action-method>
+
   <action-record name="action-stock-move-line-record-product"
     model="com.axelor.apps.stock.db.StockMoveLine">
     <field name="product" expr="eval: trackingNumber.product"
@@ -819,7 +828,10 @@
                EXISTS (
                   SELECT sll.id FROM StockLocationLine sll
                     WHERE sll.trackingNumber.id = self.id
-                    AND sll.detailsStockLocation.id = ${fromStockLocation?.id}
+                    AND (sll.futureQty != 0 OR sll.currentQty != 0)
+                    AND (sll.detailsStockLocation.id = ${fromStockLocation?.id}
+                         OR (sll.detailsStockLocation.parentStockLocation.id = ${fromStockLocation?.id}
+                             AND sll.detailsStockLocation.usableOnSaleOrder = true))
                )
                OR NOT EXISTS (
                  SELECT stockLocationLine.id FROM StockLocationLine stockLocationLine
@@ -880,15 +892,6 @@
     <domain>self.relatedToSelectId = :stockMoveLineId AND self.relatedToSelect =
       'com.axelor.apps.stock.db.StockMoveLine'</domain>
     <context name="stockMoveLineId" expr="eval:__self__?.id"/>
-  </action-view>
-
-  <action-view name="action-stock-move-line-view-add-control-entry"
-    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
-    <view type="form" name="control-entry-form"/>
-    <view type="grid" name="control-entry-grid"/>
-    <view-param name="popup" value="reload"/>
-    <context name="relatedTo" expr="eval: 'com.axelor.apps.stock.db.StockMoveLine'"/>
-    <context name="relatedToId" expr="eval:__self__?.id"/>
   </action-view>
 
   <action-validate name="action-stock-move-line-validate-check-split-quantity">
@@ -1021,6 +1024,17 @@
     <call class="com.axelor.apps.stock.web.StockMoveLineController"
       method="splitIntoFulfilledMoveLineAndUnfulfilledOne"/>
   </action-method>
+
+  <action-group name="action-stock-move-line-onnew-group">
+    <action name="action-stock-move-line-record-filter-on-available-products"/>
+    <action name="action-stock-move-line-record-fill-stock-location"/>
+    <action name="action-stock-move-line-attrs-filter-line-type-select"/>
+  </action-group>
+
+  <action-attrs name="action-stock-move-line-attrs-filter-line-type-select">
+    <attribute name="selection-in" for="lineTypeSelect"
+      expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
+  </action-attrs>
 
   <search-filters name="stock-move-line-filters"
     model="com.axelor.apps.stock.db.StockMoveLine" title="Stock move line filters">

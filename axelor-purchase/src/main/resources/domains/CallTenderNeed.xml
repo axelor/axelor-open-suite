@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
@@ -13,9 +13,17 @@
       scale="10"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <date name="requestedDate" title="Date"/>
+    <integer name="requestedDeliveryTime" title="Delivery time(days)"/>
     <integer name="typeSelect" selection="purchase.call.tender.need.type.select"
       title="Type"/>
+    <string name="description" title="Description" large="true"/>
     <many-to-one name="callTender" ref="com.axelor.apps.purchase.db.CallTender"/>
+
+    <many-to-one name="callTenderAttrConfig"
+      ref="com.axelor.apps.purchase.db.CallTenderAttrConfig"
+      title="Call tender attribute configuration"/>
+
+    <string name="attrs" title="Attributes" json="true"/>
 
 
     <extra-code><![CDATA[

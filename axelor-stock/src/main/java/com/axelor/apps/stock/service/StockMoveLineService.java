@@ -139,8 +139,16 @@ public interface StockMoveLineService {
   public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product)
       throws AxelorException;
 
+  public void assignTrackingNumber(
+      StockMoveLine stockMoveLine, Product product, Set<Long> excludedTrackingNumberIds)
+      throws AxelorException;
+
   public List<? extends StockLocationLine> getStockLocationLines(
       Product product, StockLocation stockLocation) throws AxelorException;
+
+  public List<? extends StockLocationLine> getStockLocationLines(
+      Product product, StockLocation stockLocation, Set<Long> excludedTrackingNumberIds)
+      throws AxelorException;
 
   public StockMoveLine splitStockMoveLine(
       StockMoveLine stockMoveLine, BigDecimal qty, TrackingNumber trackingNumber)
@@ -180,10 +188,10 @@ public interface StockMoveLineService {
    *
    * @param stockMoveLine
    * @param stockMove
-   * @throws AxelorException if the stock move line needs to have a conformity selected and it is
-   *     not selected.
+   * @return true if the stock move line needs to have a conformity selected and it is not selected
+   * @throws AxelorException if a technical error occurs during product company field resolution
    */
-  public void checkConformitySelection(StockMoveLine stockMoveLine, StockMove stockMove)
+  public boolean checkConformitySelection(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException;
 
   /**
@@ -400,4 +408,6 @@ public interface StockMoveLineService {
 
   StockMoveLine qtyOnChange(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException;
+
+  StockMoveLine createStockMoveLine(String productName, int lineTypeSelect, StockMove stockMove);
 }

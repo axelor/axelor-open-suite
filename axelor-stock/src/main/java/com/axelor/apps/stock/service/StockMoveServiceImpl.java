@@ -50,7 +50,6 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
-import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -60,6 +59,7 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.stock.utils.BatchProcessorHelper;
 import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -104,6 +104,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected AppStockService appStockService;
   protected ProductCompanyService productCompanyService;
   protected StockLocationService stockLocationService;
+  protected WeightedAveragePriceService weightedAveragePriceService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -118,7 +119,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockConfigService stockConfigService,
       AppStockService appStockService,
       ProductCompanyService productCompanyService,
-      StockLocationService stockLocationService) {
+      StockLocationService stockLocationService,
+      WeightedAveragePriceService weightedAveragePriceService) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
@@ -131,6 +133,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.appStockService = appStockService;
     this.productCompanyService = productCompanyService;
     this.stockLocationService = stockLocationService;
+    this.weightedAveragePriceService = weightedAveragePriceService;
   }
 
   /**
@@ -550,6 +553,17 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     LOG.debug("Stock realization : {} ", stockMove.getStockMoveSeq());
 
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+        && !stockMove.getIsReversion()
+        && appStockService.getAppStock().getIsRequiredShipmentSupplierDetails()
+        && (stockMove.getSupplierShipmentDate() == null
+            || Strings.isNullOrEmpty(stockMove.getSupplierShipmentRef()))) {
+      throw new AxelorException(
+          stockMove,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(StockExceptionMessage.STOCK_MOVE_MISSING_SUPPLIER_SHIPMENT_DETAILS));
+    }
+
     if (checkOngoingInventoryFlag) {
       checkOngoingInventory(stockMove);
     }
@@ -652,7 +666,8 @@ public class StockMoveServiceImpl implements StockMoveService {
           stockMove);
     }
     try {
-      Beans.get(TemplateMessageService.class).generateAndSendMessage(stockMove, template);
+      Beans.get(TemplateMessageService.class)
+          .generateAndSendMessage(stockMove, JPA.find(Template.class, template.getId()));
     } catch (Exception e) {
       TraceBackService.trace(
           new AxelorMessageException(
@@ -715,11 +730,9 @@ public class StockMoveServiceImpl implements StockMoveService {
         inventoryLineRepo
             .all()
             .filter(
-                "self.inventory.statusSelect BETWEEN :startStatus AND :endStatus\n"
+                "self.inventory.isStockMoveBlocked = true\n"
                     + "AND self.inventory.stockLocation.id IN (:stockLocationIds)\n"
                     + "AND self.product.id IN (:productList)")
-            .bind("startStatus", InventoryRepository.STATUS_IN_PROGRESS)
-            .bind("endStatus", InventoryRepository.STATUS_COMPLETED)
             .bind("stockLocationIds", stockLocationIds)
             .bind("productList", productIds)
             .fetchOne();
@@ -1111,6 +1124,13 @@ public class StockMoveServiceImpl implements StockMoveService {
           true,
           true);
       stockMove.setRealDate(appBaseService.getTodayDate(stockMove.getCompany()));
+      Set<Long> productIds =
+          stockMove.getStockMoveLineList().stream()
+              .map(StockMoveLine::getProduct)
+              .filter(p -> p != null)
+              .map(Product::getId)
+              .collect(Collectors.toSet());
+      weightedAveragePriceService.resetAvgPriceForProducts(productIds);
     }
 
     clearPlannedStockMoveLine(stockMove, false);
@@ -1195,7 +1215,10 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     modifiedStockMoveLines =
         modifiedStockMoveLines.stream()
-            .filter(stockMoveLine -> stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0)
+            .filter(
+                stockMoveLine ->
+                    stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0
+                        && stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_NORMAL)
             .collect(Collectors.toList());
     for (StockMoveLine moveLine : modifiedStockMoveLines) {
 
@@ -1493,9 +1516,84 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   public void setAvailableStatus(StockMove stockMove) throws AxelorException {
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (stockMoveLineList == null) {
+      stockMove.setAvailableStatusSelect(null);
+      return;
+    }
+
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       stockMoveLineService.setAvailableStatus(stockMoveLine, stockMove);
     }
+
+    setAvailableStatusSelectFromStockMoveLines(stockMove);
+  }
+
+  @Override
+  public void setAvailableStatusSelect(StockMove stockMove) throws AxelorException {
+    if (stockMove == null || stockMove.getStockMoveLineList() == null) {
+      return;
+    }
+
+    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+      if (stockMoveLine == null || mustIgnoreForAvailableStatusSelect(stockMoveLine)) {
+        continue;
+      }
+
+      stockMoveLineService.updateAvailableQty(stockMoveLine, stockMoveLine.getFromStockLocation());
+    }
+    setAvailableStatusSelectFromStockMoveLines(stockMove);
+  }
+
+  protected void setAvailableStatusSelectFromStockMoveLines(StockMove stockMove) {
+    int available = 0;
+    int availableForProduct = 0;
+    int missing = 0;
+
+    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+      if (stockMoveLine == null || mustIgnoreForAvailableStatusSelect(stockMoveLine)) {
+        continue;
+      }
+
+      Product product = stockMoveLine.getProduct();
+      BigDecimal qty = stockMoveLine.getQty();
+
+      if (qty == null) {
+        continue;
+      }
+
+      if (stockMoveLine.getAvailableQty().compareTo(stockMoveLine.getRealQty()) >= 0
+          || product != null && !product.getStockManaged()) {
+        available++;
+      } else if (stockMoveLine.getAvailableQtyForProduct().compareTo(stockMoveLine.getRealQty())
+          >= 0) {
+        availableForProduct++;
+      } else if (stockMoveLine.getAvailableQty().compareTo(stockMoveLine.getRealQty()) < 0
+          && stockMoveLine.getAvailableQtyForProduct().compareTo(stockMoveLine.getRealQty()) < 0) {
+        missing++;
+      }
+    }
+
+    if ((available > 0 || availableForProduct > 0) && missing == 0) {
+      stockMove.setAvailableStatusSelect(StockMoveRepository.STATUS_AVAILABLE);
+    } else if ((available > 0 || availableForProduct > 0) && missing > 0) {
+      stockMove.setAvailableStatusSelect(StockMoveRepository.STATUS_PARTIALLY_AVAILABLE);
+    } else if (available == 0 && availableForProduct == 0 && missing > 0) {
+      stockMove.setAvailableStatusSelect(StockMoveRepository.STATUS_UNAVAILABLE);
+    } else {
+      stockMove.setAvailableStatusSelect(null);
+    }
+  }
+
+  protected boolean mustIgnoreForAvailableStatusSelect(StockMoveLine stockMoveLine) {
+    return stockMoveLine.getProduct() != null
+            && stockMoveLine.getProduct().getProductTypeSelect() != null
+            && stockMoveLine
+                .getProduct()
+                .getProductTypeSelect()
+                .equals(ProductRepository.PRODUCT_TYPE_SERVICE)
+        || stockMoveLine.getFromStockLocation() != null
+            && stockMoveLine.getFromStockLocation().getTypeSelect()
+                == StockLocationRepository.TYPE_VIRTUAL;
   }
 
   @Override

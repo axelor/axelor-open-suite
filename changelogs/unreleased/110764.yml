@@ -1,0 +1,4 @@
+---
+title: "Call tender: Add checkbox 'Attach file in email'"
+module: axelor-purchase
+description: "It will be useful to send the email with detail file."

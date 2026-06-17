@@ -509,7 +509,8 @@ public class InvoiceMergingServiceImpl implements InvoiceMergingService {
         .filter(Objects::nonNull)
         .findFirst()
         .ifPresent(it -> getCommonFields(result).setCommonFiscalPosition(it));
-    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
+    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
+        || result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)) {
       invoicesToMerge.stream()
           .map(Invoice::getSupplierInvoiceNb)
           .filter(Objects::nonNull)
@@ -568,7 +569,8 @@ public class InvoiceMergingServiceImpl implements InvoiceMergingService {
       getCommonFields(result).setCommonFiscalPosition(null);
       getChecks(result).setExistFiscalPositionDiff(true);
     }
-    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
+    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
+        || result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)) {
       if (getCommonFields(result).getCommonSupplierInvoiceNb() != null
           && !getCommonFields(result)
               .getCommonSupplierInvoiceNb()
@@ -624,7 +626,8 @@ public class InvoiceMergingServiceImpl implements InvoiceMergingService {
 
   protected Invoice generateMergedInvoice(
       List<Invoice> invoicesToMerge, InvoiceMergingResult result) throws AxelorException {
-    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
+    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
+        || result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)) {
       return invoiceService.mergeInvoiceProcess(
           invoicesToMerge,
           getCommonFields(result).getCommonCompany(),

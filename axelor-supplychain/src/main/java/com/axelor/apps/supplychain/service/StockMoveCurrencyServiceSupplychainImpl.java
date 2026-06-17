@@ -23,7 +23,9 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveCurrencyServiceImpl;
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -65,8 +67,14 @@ public class StockMoveCurrencyServiceSupplychainImpl extends StockMoveCurrencySe
   public boolean isMultiCurrency(StockMove stockMove) {
     Set<Currency> currencySet =
         Stream.concat(
-                stockMove.getSaleOrderSet().stream().map(SaleOrder::getCurrency),
-                stockMove.getPurchaseOrderSet().stream().map(PurchaseOrder::getCurrency))
+                Optional.ofNullable(stockMove.getSaleOrderSet())
+                    .orElse(Collections.emptySet())
+                    .stream()
+                    .map(SaleOrder::getCurrency),
+                Optional.ofNullable(stockMove.getPurchaseOrderSet())
+                    .orElse(Collections.emptySet())
+                    .stream()
+                    .map(PurchaseOrder::getCurrency))
             .filter(Objects::nonNull)
             .collect(Collectors.toSet());
     if (CollectionUtils.isEmpty(currencySet)) {

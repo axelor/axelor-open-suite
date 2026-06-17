@@ -41,6 +41,7 @@ import com.axelor.apps.production.service.operationorder.planning.OperationOrder
 import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningAtTheLatestInfiniteCapacityService;
 import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningCommonService;
 import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningInfiniteCapacityService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.date.DurationHelper;
@@ -151,8 +152,12 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
             : operationOrderService.getReversedSortedOperationOrderList(operationOrders);
 
     for (OperationOrder operationOrder : sortedOperationOrders) {
+      // Re-attach before each plan: a previous iteration's createToConsumeStockMove call
+      // triggers JPA.clear() via BatchProcessorHelper, which detaches all entities.
+      operationOrder = JpaModelHelper.ensureManaged(operationOrder);
       operationOrderPlanningCommonService.plan(operationOrder);
     }
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     manufOrderWorkflowService.setOperationOrderMaxPriority(manufOrder);
   }
 
@@ -203,7 +208,12 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
           I18n.get(ProductionExceptionMessage.UNRECOGNIZED_CAPACITY_FOR_COMPANY_PRODUCTION_CONFIG),
           company.getName());
     }
-    operationOrders.forEach(operationOrderRepository::save);
+    // Only save for INFINITE capacity case. For FINITE capacity, plan() already saves each
+    // operationOrder internally. Saving here would call em.merge() on detached entities
+    // (detached by JPA.clear() during stock move planning), risking cascade explosion.
+    if (capacity == ProductionConfigRepository.INFINITE_CAPACITY_SCHEDULING) {
+      operationOrders.forEach(operationOrderRepository::save);
+    }
   }
 
   protected OperationOrderPlanningStrategy getOperationOrderPlanningStrategy(
@@ -280,10 +290,12 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
             Beans.get(OperationOrderPlanningAsapInfiniteCapacityService.class);
       }
       for (OperationOrder oo : getNextOrderedOperationOrders(operationOrder)) {
+        oo = JpaModelHelper.ensureManaged(oo);
         operationOrderPlanningCommonService.plan(oo);
       }
     }
 
+    operationOrder = JpaModelHelper.ensureManaged(operationOrder);
     return computeDuration(operationOrder);
   }
 

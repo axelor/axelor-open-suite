@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticAxisService;
+import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
@@ -79,6 +80,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
       FiscalPositionService fiscalPositionService,
       TaxService taxService,
       AnalyticAxisService analyticAxisService,
+      AnalyticGroupService analyticGroupService,
       BudgetDistributionComputeService budgetDistributionComputeService) {
     super(
         moveLineService,
@@ -99,7 +101,8 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
         moveLineRecordBankPaymentService,
         fiscalPositionService,
         taxService,
-        analyticAxisService);
+        analyticAxisService,
+        analyticGroupService);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
     this.budgetDistributionComputeService = budgetDistributionComputeService;

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="ProductionBatch">
+
+    <integer name="mtnAnticipationDays" title="Anticipation horizon (days)" min="0"
+      default="0"
+      help="Number of days before the scheduled maintenance date at which the request is created. Leave at 0 to trigger on the due date (current behavior)."/>
+
+  </entity>
+
+</domain-models>

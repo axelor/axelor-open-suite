@@ -103,9 +103,10 @@ public class PurchaseOrderReceiptStateServiceImpl implements PurchaseOrderReceip
           stockMoveLineRepository
               .all()
               .filter(
-                  "self.stockMove.statusSelect = :realizedStatus AND self.purchaseOrderLine = :purchaseOrderLine")
+                  "self.stockMove.statusSelect = :realizedStatus AND self.purchaseOrderLine = :purchaseOrderLine AND self.lineTypeSelect = :lineTypeSelect")
               .bind("realizedStatus", StockMoveRepository.STATUS_REALIZED)
               .bind("purchaseOrderLine", purchaseOrderLine)
+              .bind("lineTypeSelect", StockMoveLineRepository.TYPE_NORMAL)
               .fetch();
       BigDecimal receivedQty = BigDecimal.ZERO;
       for (StockMoveLine stockMoveLine : stockMoveLineList) {

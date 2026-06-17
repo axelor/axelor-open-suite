@@ -133,8 +133,6 @@ import com.axelor.apps.base.service.MapGoogleService;
 import com.axelor.apps.base.service.MapGoogleServiceImpl;
 import com.axelor.apps.base.service.MapOsmService;
 import com.axelor.apps.base.service.MapOsmServiceImpl;
-import com.axelor.apps.base.service.MapRestService;
-import com.axelor.apps.base.service.MapRestServiceImpl;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.MapServiceImpl;
 import com.axelor.apps.base.service.MapToolService;
@@ -155,8 +153,6 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.PartnerServiceImpl;
-import com.axelor.apps.base.service.PaymentModeService;
-import com.axelor.apps.base.service.PaymentModeServiceImpl;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.PfxCertificateCheckService;
@@ -309,6 +305,7 @@ import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.base.service.meta.MetaViewService;
 import com.axelor.apps.base.service.meta.MetaViewServiceImpl;
+import com.axelor.apps.base.service.observer.PricingLogsObserver;
 import com.axelor.apps.base.service.observer.ProductFireService;
 import com.axelor.apps.base.service.observer.ProductFireServiceImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
@@ -370,6 +367,8 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.OrderLineTaxServiceImpl;
+import com.axelor.apps.base.service.tax.TaxArchiveService;
+import com.axelor.apps.base.service.tax.TaxArchiveServiceImpl;
 import com.axelor.apps.base.service.tax.TaxEquivService;
 import com.axelor.apps.base.service.tax.TaxEquivServiceImpl;
 import com.axelor.apps.base.service.theme.MetaThemeFetchService;
@@ -485,7 +484,6 @@ public class BaseModule extends AxelorModule {
     bind(PeriodService.class).to(PeriodServiceImpl.class);
     bind(ConvertDemoDataFileService.class).to(ConvertDemoDataFileServiceImpl.class);
     bind(ImportDemoDataService.class).to(ImportDemoDataServiceImpl.class);
-    bind(MapRestService.class).to(MapRestServiceImpl.class);
     bind(TaxRepository.class).to(TaxBaseRepository.class);
     bind(TeamTaskRepository.class).to(TeamTaskBaseRepository.class);
     bind(TeamTaskService.class).to(TeamTaskServiceImpl.class);
@@ -512,7 +510,6 @@ public class BaseModule extends AxelorModule {
     bind(AdvancedImportRepository.class).to(AdvancedImportBaseRepository.class);
     bind(AuthPac4jUserService.class).to(BaseAuthPac4jUserService.class);
     bind(ImportConfigurationRepository.class).to(ImportConfigurationBaseRepository.class);
-    bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
     bind(ModelEmailLinkService.class).to(ModelEmailLinkServiceImpl.class);
     bind(ProductVariantService.class).to(ProductVariantServiceImpl.class);
     bind(ProductCategoryDomainCreatorService.class)
@@ -644,6 +641,8 @@ public class BaseModule extends AxelorModule {
     bind(MapOsmService.class).to(MapOsmServiceImpl.class);
     bind(MapGoogleService.class).to(MapGoogleServiceImpl.class);
     bind(MapToolService.class).to(MapToolServiceImpl.class);
+    bind(PricingLogsObserver.class);
     bind(PriceListLineRepository.class).to(PriceListLineManagementRepository.class);
+    bind(TaxArchiveService.class).to(TaxArchiveServiceImpl.class);
   }
 }

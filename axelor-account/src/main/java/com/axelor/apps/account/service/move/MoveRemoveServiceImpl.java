@@ -131,7 +131,7 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
     String moveModelError = null;
     for (Map.Entry<String, String> entry : objectsLinkToMoveMap.entrySet()) {
       String modelName = I18n.get(archivingService.getModelTitle(entry.getKey()));
-      if (!entry.getKey().equals("MoveLine")) {
+      if (!entry.getKey().equals("MoveLine") && !entry.getKey().equals("MoveLineMassEntry")) {
         if (moveModelError == null) {
           moveModelError = modelName;
         } else {
@@ -194,7 +194,12 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   @Override
   public List<String> getModelsToIgnoreList() {
     return Lists.newArrayList(
-        "Move", "Reconcile", "InvoiceTerm", "AnalyticMoveLine", "TaxPaymentMoveLine");
+        "Move",
+        "Reconcile",
+        "InvoiceTerm",
+        "AnalyticMoveLine",
+        "TaxPaymentMoveLine",
+        "MoveLineMassEntry");
   }
 
   @Override

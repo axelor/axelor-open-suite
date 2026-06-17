@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <grid name="tender-report-config-grid" title="Tender report configs"
+    model="com.axelor.apps.purchase.db.TenderReportConfig">
+    <field name="name"/>
+    <field name="reportType"/>
+    <field name="isDefault"/>
+  </grid>
+
+  <form name="tender-report-config-form" title="Tender report config"
+    model="com.axelor.apps.purchase.db.TenderReportConfig">
+    <panel name="mainPanel">
+      <field name="name" required="true"/>
+      <field name="reportType" colSpan="4"
+        readonlyIf="tenderReportConfigLineList &amp;&amp; tenderReportConfigLineList.length > 0"/>
+      <field name="isDefault" colSpan="2" widget="boolean-switch"/>
+      <panel-related field="tenderReportConfigLineList" colSpan="12"
+        grid-view="tender-report-config-line-grid" form-view="tender-report-config-line-form"/>
+    </panel>
+    <panel name="actionPanel" sidebar="true">
+      <button name="btnAddFields" title="Add Fields"
+        onClick="save,action-purchase-tender-config-open-meta-field-selector"/>
+      <button name="btnAddCustomFields" title="Add Custom Fields"
+        onClick="save,action-purchase-tender-config-open-custom-field-selector"/>
+    </panel>
+  </form>
+
+  <form name="tender-meta-field-selector-form" title="Select Fields"
+    model="com.axelor.utils.db.Wizard" onNew="action-purchase-tender-config-prefill-meta-fields">
+    <panel name="mainPanel">
+      <field name="$metaFieldList" title="Fields" colSpan="12" type="one-to-many"
+        target="com.axelor.meta.db.MetaField" canNew="false" canEdit="false" canSelect="true"/>
+      <button name="btnAddSelected" title="Add Selected Fields"
+        onClick="action-purchase-tender-config-add-meta-fields"/>
+    </panel>
+  </form>
+
+  <form name="tender-custom-field-selector-form" title="Select Custom Fields"
+    model="com.axelor.utils.db.Wizard" onNew="action-purchase-tender-config-prefill-custom-fields">
+    <panel name="mainPanel">
+      <field name="$customFieldList" title="Custom Fields" colSpan="12" type="one-to-many"
+        target="com.axelor.meta.db.MetaJsonField" canNew="false" canEdit="false" canSelect="true"/>
+      <button name="btnAddSelected" title="Add Selected Custom Fields"
+        onClick="action-purchase-tender-config-add-custom-fields"/>
+    </panel>
+  </form>
+
+  <action-view name="action-purchase-tender-config-open-meta-field-selector"
+    title="Select Fields" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="tender-meta-field-selector-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_configId" expr="eval: id"/>
+    <context name="_metaModelName"
+      expr="eval: reportType == 1 ? 'CallTenderNeed' : 'CallTenderOffer'"/>
+  </action-view>
+
+  <action-view name="action-purchase-tender-config-open-custom-field-selector"
+    title="Select Custom Fields" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="tender-custom-field-selector-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_configId" expr="eval: id"/>
+    <context name="_metaModelName"
+      expr="eval: reportType == 1 ? 'com.axelor.apps.purchase.db.CallTenderNeed' : 'com.axelor.apps.purchase.db.CallTenderOffer'"/>
+  </action-view>
+
+  <action-attrs name="action-purchase-tender-config-prefill-meta-fields">
+    <attribute name="value" for="$metaFieldList"
+      expr="eval: __repo__(com.axelor.meta.db.MetaField).all().filter(&quot;self.metaModel.name = :metaModelName AND (self.relationship IS NULL OR self.relationship NOT IN ('OneToMany', 'ManyToMany')) AND self.name NOT IN ('attrs', 'archived', 'importId', 'importOrigin', 'processInstanceId')&quot;).bind(&quot;metaModelName&quot;, _metaModelName).fetch()"/>
+  </action-attrs>
+
+  <action-method name="action-purchase-tender-config-add-meta-fields">
+    <call class="com.axelor.apps.purchase.web.TenderReportConfigController"
+      method="addMetaFieldLines"/>
+  </action-method>
+
+  <action-attrs name="action-purchase-tender-config-prefill-custom-fields">
+    <attribute name="value" for="$customFieldList"
+      expr="eval: __repo__(com.axelor.meta.db.MetaJsonField).all().filter(&quot;self.model = :metaModelName AND self.type NOT IN ('one-to-many', 'many-to-many', 'json-one-to-many', 'json-many-to-many')&quot;).bind(&quot;metaModelName&quot;, _metaModelName).fetch()"/>
+  </action-attrs>
+
+  <action-method name="action-purchase-tender-config-add-custom-fields">
+    <call class="com.axelor.apps.purchase.web.TenderReportConfigController"
+      method="addCustomFieldLines"/>
+  </action-method>
+
+</object-views>

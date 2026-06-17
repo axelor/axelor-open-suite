@@ -42,7 +42,6 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.rpc.filter.Filter;
 import com.axelor.utils.helpers.NamingHelper;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -58,7 +57,6 @@ import java.util.Optional;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,13 +64,13 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
   private static final Logger log = LoggerFactory.getLogger(AdvancedExportServiceImpl.class);
 
-  @Inject private MetaFieldRepository metaFieldRepo;
+  @Inject protected MetaFieldRepository metaFieldRepo;
 
-  @Inject private MetaModelRepository metaModelRepo;
+  @Inject protected MetaModelRepository metaModelRepo;
 
-  @Inject private MetaSelectRepository metaSelectRepo;
+  @Inject protected MetaSelectRepository metaSelectRepo;
 
-  @Inject private AdvancedExportGeneratorFactory exportGeneratorFactory;
+  @Inject protected AdvancedExportGeneratorFactory exportGeneratorFactory;
 
   private LinkedHashSet<String> joinFieldSet = new LinkedHashSet<>(),
       selectionJoinFieldSet = new LinkedHashSet<>();
@@ -107,15 +105,9 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     msi = 0;
     mt = 0;
     int col = 0;
-    language = Optional.ofNullable(AuthUtils.getUser()).map(User::getLanguage).orElse(null);
+    language = getAdvancedExportLanguage(advancedExport);
 
     try {
-      if (language == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get("Please select a language on user form."));
-      }
-
       for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
         String[] splitField = advancedExportLine.getTargetField().split("\\.");
         String alias = "Col_" + col;
@@ -139,6 +131,23 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     }
     return createQuery(
         createQueryBuilder(advancedExport, selectFieldBuilder, recordIds, orderByFieldBuilder));
+  }
+
+  protected String getAdvancedExportLanguage(AdvancedExport advancedExport) throws AxelorException {
+    String language = getExportLanguage(advancedExport);
+    if (Strings.isNullOrEmpty(language)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get("Please select a language on advanced export or user form."));
+    }
+    return language;
+  }
+
+  protected String getExportLanguage(AdvancedExport advancedExport) {
+    if (!Strings.isNullOrEmpty(advancedExport.getLanguage())) {
+      return advancedExport.getLanguage();
+    }
+    return Optional.ofNullable(AuthUtils.getUser()).map(User::getLanguage).orElse(null);
   }
 
   /**
@@ -207,13 +216,10 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
     Class<?> klass = Class.forName(metaModel.getFullName());
     Mapper mapper = Mapper.of(klass);
-    List<MetaSelect> metaSelectList =
-        metaSelectRepo
-            .all()
-            .filter("self.name = ?", mapper.getProperty(fieldName[index]).getSelection())
-            .fetch();
+    MetaSelect metaSelect =
+        metaSelectRepo.findByName(mapper.getProperty(fieldName[index]).getSelection());
 
-    if (CollectionUtils.isNotEmpty(metaSelectList)) {
+    if (metaSelect != null) {
       isSelectionField = true;
       String alias = "self";
       msi++;
@@ -221,7 +227,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       if (!isNormalField && index != 0) {
         alias = aliasName;
       }
-      addSelectionField(fieldName[index], alias, StringHelper.getIdListString(metaSelectList));
+      addSelectionField(fieldName[index], alias, String.valueOf(metaSelect.getId()));
     }
   }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -10,6 +10,8 @@
 
     <many-to-one name="machineType" ref="com.axelor.apps.production.db.MachineType"
       title="Machine type"/>
+    <many-to-one name="machine" ref="com.axelor.apps.production.db.Machine"
+      title="Machine"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
       required="false"/>
 

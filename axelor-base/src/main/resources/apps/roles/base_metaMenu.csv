@@ -118,7 +118,6 @@
 "admin-root-general-import-export-interface";"Base Read|Base User|Base Manager"
 "referential-conf-contact-function";"Base Read|Base User|Base Manager"
 "referential-conf-product-category-tree";"Base Read|Base User|Base Manager"
-"referential-conf-sync-contact";"Base Read|Base User|Base Manager"
 "admin-root-organisation-territory-street";"Base Read|Base User|Base Manager"
 "admin-root-organisation-economic-area";"Base Read|Base User|Base Manager"
 "admin-root-organisation-territory-citizenship";"Base Read|Base User|Base Manager"

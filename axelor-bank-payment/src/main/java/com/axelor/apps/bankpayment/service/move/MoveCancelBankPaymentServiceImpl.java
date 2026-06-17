@@ -21,6 +21,7 @@ package com.axelor.apps.bankpayment.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
@@ -29,6 +30,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MoveCancelBankPaymentServiceImpl implements MoveCancelBankPaymentService {
   protected AppBaseService appBaseService;
@@ -62,27 +66,36 @@ public class MoveCancelBankPaymentServiceImpl implements MoveCancelBankPaymentSe
         moveReverseService.generateReverse(
             move, false, false, false, appBaseService.getTodayDate(move.getCompany()));
 
+    List<MoveLine> reverseMoveLineList = new ArrayList<>(reverseMove.getMoveLineList());
+
     moveValidateService.accounting(reverseMove);
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      this.cancelMoveLine(moveLine, reverseMove);
+    List<MoveLine> moveLineList = new ArrayList<>(move.getMoveLineList());
+    for (int i = 0; i < moveLineList.size(); i++) {
+      MoveLine reverseMoveLine = i < reverseMoveLineList.size() ? reverseMoveLineList.get(i) : null;
+      this.cancelMoveLine(moveLineList.get(i), reverseMoveLine);
     }
   }
 
-  protected void cancelMoveLine(MoveLine moveLine, Move reverseMove) throws AxelorException {
+  protected void cancelMoveLine(MoveLine moveLine, MoveLine reverseMoveLine)
+      throws AxelorException {
     for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
       unReconcileService.unreconcile(reconcile);
+      MoveLine creditLine = reconcile.getCreditMoveLine();
+      if (creditLine != null) {
+        creditLine.setAmountPaid(computeAmountPaidFromConfirmedReconciles(creditLine));
+      }
     }
 
     for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
       unReconcileService.unreconcile(reconcile);
+      MoveLine debitLine = reconcile.getDebitMoveLine();
+      if (debitLine != null) {
+        debitLine.setAmountPaid(computeAmountPaidFromConfirmedReconciles(debitLine));
+      }
     }
 
-    MoveLine reverseMoveLine =
-        reverseMove.getMoveLineList().stream()
-            .filter(it -> it.getAccount().equals(moveLine.getAccount()))
-            .findFirst()
-            .orElse(null);
+    moveLine.setAmountPaid(BigDecimal.ZERO);
 
     if (reverseMoveLine != null) {
       if (moveLine.getDebit().signum() > 0) {
@@ -93,5 +106,24 @@ public class MoveCancelBankPaymentServiceImpl implements MoveCancelBankPaymentSe
         reconcileService.reconcile(reverseMoveLine, moveLine, false, false);
       }
     }
+  }
+
+  protected BigDecimal computeAmountPaidFromConfirmedReconciles(MoveLine moveLine) {
+    BigDecimal amountPaid = BigDecimal.ZERO;
+    if (moveLine.getDebitReconcileList() != null) {
+      for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
+        if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
+          amountPaid = amountPaid.add(reconcile.getAmount());
+        }
+      }
+    }
+    if (moveLine.getCreditReconcileList() != null) {
+      for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
+        if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
+          amountPaid = amountPaid.add(reconcile.getAmount());
+        }
+      }
+    }
+    return amountPaid;
   }
 }

@@ -27,6 +27,7 @@ import com.axelor.inject.Beans;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
+import java.util.Objects;
 import java.util.Optional;
 
 public class AddressBaseRepository extends AddressRepository {
@@ -41,7 +42,7 @@ public class AddressBaseRepository extends AddressRepository {
       Address oldAddressObject =
           Optional.ofNullable(entity.getId()).map(id -> em.find(Address.class, id)).orElse(null);
       if (oldAddressObject == null
-          || !oldAddressObject.getFullName().equals(entity.getFullName())) {
+          || !Objects.equals(oldAddressObject.getFullName(), entity.getFullName())) {
         addressService.updateLatLong(entity);
       }
       AddressTemplateService addressTemplateService = Beans.get(AddressTemplateService.class);

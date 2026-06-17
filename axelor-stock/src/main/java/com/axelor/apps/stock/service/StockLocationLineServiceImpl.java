@@ -620,8 +620,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     jpql.append(
         "SELECT new com.axelor.apps.stock.utils.StockLocationLineQtyView("
             + " self.unit, "
-            + " SUM(CASE WHEN self.toStockLocation.id = :stockLocationId THEN COALESCE(self.realQty, 0) ELSE 0 END), "
-            + " SUM(CASE WHEN self.fromStockLocation.id = :stockLocationId THEN COALESCE(self.realQty, 0) ELSE 0 END) "
+            + " SUM(CASE WHEN self.toStockLocation.id = :stockLocationId THEN COALESCE(self.qty, 0) ELSE 0 END), "
+            + " SUM(CASE WHEN self.fromStockLocation.id = :stockLocationId THEN COALESCE(self.qty, 0) ELSE 0 END) "
             + ") "
             + " FROM StockMoveLine self "
             + " WHERE (self.stockMove.archived IS NULL OR self.archived IS FALSE) "
@@ -667,71 +667,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
 
     return futureQty;
-  }
-
-  @Override
-  public void updateWap(StockLocationLine stockLocationLine, BigDecimal wap)
-      throws AxelorException {
-    updateWap(stockLocationLine, wap, null);
-  }
-
-  @Override
-  public void updateWap(
-      StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine)
-      throws AxelorException {
-
-    LocalDateTime dateT =
-        appBaseService
-            .getTodayDateTime(
-                stockLocationLine.getStockLocation() != null
-                    ? stockLocationLine.getStockLocation().getCompany()
-                    : Optional.ofNullable(AuthUtils.getUser())
-                        .map(User::getActiveCompany)
-                        .orElse(null))
-            .toLocalDateTime();
-
-    String origin =
-        Optional.ofNullable(stockMoveLine)
-            .map(StockMoveLine::getStockMove)
-            .map(StockMove::getStockMoveSeq)
-            .orElse("");
-    stockLocationLine.setAvgPrice(wap);
-    stockLocationLineHistoryService.saveHistory(stockLocationLine, dateT, origin, "");
-  }
-
-  @Override
-  public void updateWap(
-      StockLocationLine stockLocationLine,
-      BigDecimal wap,
-      StockMoveLine stockMoveLine,
-      LocalDate date,
-      String origin)
-      throws AxelorException {
-    if (origin == null) {
-      origin =
-          Optional.ofNullable(stockMoveLine)
-              .map(StockMoveLine::getStockMove)
-              .map(StockMove::getStockMoveSeq)
-              .orElse("");
-    }
-
-    LocalDateTime dateT = null;
-    if (date != null) {
-      dateT = date.atStartOfDay();
-    } else {
-      dateT =
-          appBaseService
-              .getTodayDateTime(
-                  stockLocationLine.getStockLocation() != null
-                      ? stockLocationLine.getStockLocation().getCompany()
-                      : Optional.ofNullable(AuthUtils.getUser())
-                          .map(User::getActiveCompany)
-                          .orElse(null))
-              .toLocalDateTime();
-    }
-
-    stockLocationLine.setAvgPrice(wap);
-    stockLocationLineHistoryService.saveHistory(stockLocationLine, dateT, origin, "");
   }
 
   @Override

@@ -33,4 +33,6 @@ public interface StockMoveLineStockLocationService {
 
   String getStockLocationDomainWithDefaultLocation(
       StockMoveLine stockMoveLine, StockMove stockMove, StockLocation stockLocation);
+
+  void fillStockLocationFromTrackingNumber(StockMoveLine stockMoveLine, StockMove stockMove);
 }

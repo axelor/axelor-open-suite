@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -51,7 +51,7 @@
       title="Update sale price from cost price"/>
 
     <one-to-many name="priceListLineList" ref="com.axelor.apps.base.db.PriceListLine"
-      mappedBy="product"/>
+      mappedBy="product" copy="false"/>
 
     <decimal name="costPrice" title="Cost price" precision="20" scale="10" massUpdate="true"
       min="0"/>
@@ -133,6 +133,9 @@
 
     <one-to-many name="productCompanyList" ref="com.axelor.apps.base.db.ProductCompany"
       title="Products per companies" mappedBy="product"/>
+
+    <one-to-many name="commercialBomList" ref="com.axelor.apps.base.db.CommercialBom"
+      title="Commercial BOM" mappedBy="parentProduct"/>
 
     <string name="dtype" insertable="false" updatable="false"/>
 

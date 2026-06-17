@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="AdvancedExport">
     <string name="name"/>
+    <string name="language" title="Language" selection="select.language" default="en"/>
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel"
       title="Target model" required="true"/>
     <one-to-many name="advancedExportLineList"

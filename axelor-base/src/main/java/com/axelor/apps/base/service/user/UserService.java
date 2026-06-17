@@ -35,43 +35,43 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-/** UserService is a class that implement all methods for user information */
+/** Service for managing user-related operations. */
 @ScriptAllowed
 public interface UserService {
 
   /**
-   * Return the current connected user.
+   * Returns the current connected user.
    *
-   * @return user the current connected user
+   * @return the current connected user
    */
   User getUser();
 
   /**
-   * Return the id of the current connected user.
+   * Returns the id of the current connected user.
    *
-   * @return user the id of current connected user
+   * @return the id of the current connected user
    */
   Long getUserId();
 
   /**
-   * Return the active company of the current connected user.
+   * Returns the active company of the current connected user.
    *
-   * @return Company the active company
+   * @return the active company
    */
   @CallMethod
   Company getUserActiveCompany();
 
   /**
-   * Return the trading name of the current connected user.
+   * Returns the trading name of the current connected user.
    *
-   * @return Company the active company
+   * @return the trading name
    */
   TradingName getTradingName();
 
   /**
-   * Return the active company id of the current connected user.
+   * Returns the active company id of the current connected user.
    *
-   * @return Company the active company id
+   * @return the active company id
    */
   Long getUserActiveCompanyId();
 
@@ -99,100 +99,138 @@ public interface UserService {
   String getUserActiveCompanyLogoLink(String mode);
 
   /**
-   * Return the active team of the current connected user.
+   * Returns the active team of the current connected user.
    *
-   * @return Team the active team
+   * @return the active team
    */
   @CallMethod
   Team getUserActiveTeam();
 
   /**
-   * Return the active team ID of the current connected user.
+   * Returns the active team id of the current connected user.
    *
-   * @return Team the active team id
+   * @return the active team id
    */
   @CallMethod
   Long getUserActiveTeamId();
 
   /**
-   * Return the partner of the current connected user.
+   * Returns the partner of the current connected user.
    *
-   * @return Partner the user partner
+   * @return the user partner
    */
   @CallMethod
   Partner getUserPartner();
 
+  /**
+   * Creates a partner for the given user.
+   *
+   * @param user the user for which to create a partner
+   */
   void createPartner(User user);
 
+  /**
+   * Returns the localization code of the current connected user.
+   *
+   * @return the localization code, or default code if not set
+   */
   String getLocalizationCode();
 
   /**
-   * Get the active company address of the user.
+   * Returns the active company address of the current connected user.
    *
-   * @return
+   * @return the active company address, or empty if not available
    */
   Optional<Address> getUserActiveCompanyAddress();
 
   /**
-   * Change user password.
+   * Changes the user password.
    *
-   * @param user
-   * @param values
-   * @return
+   * @param user the user whose password will be changed
+   * @param values map containing oldPassword, newPassword, and chkPassword
+   * @return the updated user
    */
   User changeUserPassword(User user, Map<String, Object> values);
 
   /**
-   * Trigger post processes after a change of the user password.
+   * Triggers post-processes after a change of the user password.
    *
-   * @param user
-   * @throws AxelorException
-   * @throws ClassNotFoundException
-   * @throws IOException
+   * @param user the user whose password was changed
+   * @throws AxelorException if template is missing
+   * @throws ClassNotFoundException if class not found during template processing
+   * @throws IOException if I/O error occurs during template processing
    */
   void processChangedPassword(User user)
       throws AxelorException, ClassNotFoundException, IOException;
 
   /**
-   * Return whether the password matches the pattern in {@code user.password.pattern} property, with
-   * a fallback to the default password pattern if property is not set.
+   * Returns whether the password matches the pattern in {@code user.password.pattern} property,
+   * with a fallback to the default password pattern if property is not set.
    *
-   * @param password
-   * @return
+   * @param password the password to validate
+   * @return true if the password matches the pattern, false otherwise
    */
   boolean matchPasswordPattern(CharSequence password);
 
   /**
-   * Generate a random password.
+   * Generates a random password that matches the password pattern.
    *
-   * @return
+   * @return the generated password
    */
   CharSequence generateRandomPassword();
 
   /**
-   * Get password pattern description.
+   * Returns the password pattern description.
    *
-   * @return
+   * @return the password pattern description
    */
   @CallMethod
   String getPasswordPatternDescription();
 
   /**
-   * Set the partner of the user.
+   * Sets the partner of the user.
    *
-   * @param partner
-   * @param user
-   * @return
+   * @param partner the partner to set
+   * @param user the user
    */
   void setUserPartner(Partner partner, User user);
 
+  /**
+   * Generates a random password for the given user and updates their password.
+   *
+   * @param user the user for which to generate a password
+   */
   void generateRandomPasswordForUser(User user);
 
+  /**
+   * Returns all permissions for the given user, including those from groups and roles.
+   *
+   * @param user the user
+   * @return the list of permissions
+   */
   List<Permission> getPermissions(User user);
 
+  /**
+   * Returns all meta permission rules for the given user, including those from groups and roles.
+   *
+   * @param user the user
+   * @return the list of meta permission rules
+   */
   List<MetaPermissionRule> getMetaPermissionRules(User user);
 
+  /**
+   * Sets the active company for the given user.
+   *
+   * @param user the user
+   * @param company the company to set as active
+   */
   void setActiveCompany(User user, Company company);
 
+  /**
+   * Sets the trading name for the given user.
+   *
+   * @param user the user
+   * @param tradingName the trading name to set
+   */
   void setTradingName(User user, TradingName tradingName);
 }

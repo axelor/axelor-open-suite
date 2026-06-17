@@ -20,6 +20,8 @@ package com.axelor.apps.sale.service.saleorder.views;
 
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import jakarta.inject.Inject;
@@ -31,15 +33,18 @@ public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
   protected CurrencyScaleService currencyScaleService;
   protected SaleOrderService saleOrderService;
   protected SaleOrderGlobalDiscountService saleOrderGlobalDiscountService;
+  protected SaleOrderLineRepository saleOrderLineRepository;
 
   @Inject
   public SaleOrderAttrsServiceImpl(
       CurrencyScaleService currencyScaleService,
       SaleOrderService saleOrderService,
-      SaleOrderGlobalDiscountService saleOrderGlobalDiscountService) {
+      SaleOrderGlobalDiscountService saleOrderGlobalDiscountService,
+      SaleOrderLineRepository saleOrderLineRepository) {
     this.currencyScaleService = currencyScaleService;
     this.saleOrderService = saleOrderService;
     this.saleOrderGlobalDiscountService = saleOrderGlobalDiscountService;
+    this.saleOrderLineRepository = saleOrderLineRepository;
   }
 
   protected void addAttr(
@@ -82,5 +87,27 @@ public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
       return;
     }
     attrsMap.putAll(saleOrderGlobalDiscountService.setDiscountDummies(saleOrder));
+  }
+
+  @Override
+  public void setDiscountsNeedReview(
+      SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap) {
+    if (saleOrder == null) {
+      return;
+    }
+    boolean isEditableStatus =
+        saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION
+            || (Boolean.TRUE.equals(saleOrder.getOrderBeingEdited())
+                && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED);
+    boolean discountsNeedReview =
+        isEditableStatus
+            && saleOrder.getId() != null
+            && saleOrderLineRepository
+                    .all()
+                    .filter("self.saleOrder.id = :id AND self.discountsNeedReview = true")
+                    .bind("id", saleOrder.getId())
+                    .fetchOne()
+                != null;
+    addAttr("$discountsNeedReview", "value", discountsNeedReview, attrsMap);
   }
 }

@@ -42,6 +42,7 @@ import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProdProductProductionRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.ManufOrderMessageService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
@@ -94,24 +95,10 @@ public class ManufOrderController {
       ManufOrder manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrderId);
       Beans.get(ManufOrderWorkflowService.class).start(manufOrder);
       response.setReload(true);
-      String message = "";
-      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
-        message = manufOrder.getMoCommentFromSaleOrder();
-      }
-
-      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
-        message =
-            message
-                .concat(System.lineSeparator())
-                .concat(manufOrder.getMoCommentFromSaleOrderLine());
-      }
-
-      if (!message.isEmpty()) {
-        message =
-            I18n.get(ITranslation.PRODUCTION_COMMENT)
-                .concat(System.lineSeparator())
-                .concat(message);
-        response.setInfo(message);
+      String startMessage =
+          Beans.get(ManufOrderMessageService.class).getManufOrderStartMessage(manufOrder);
+      if (!Strings.isNullOrEmpty(startMessage)) {
+        response.setInfo(startMessage);
         response.setCanClose(true);
       }
     } catch (Exception e) {
@@ -515,11 +502,15 @@ public class ManufOrderController {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
 
+      int calculationType =
+          manufOrder.getStatusSelect() == ManufOrderRepository.STATUS_FINISHED
+              ? CostSheetRepository.CALCULATION_END_OF_PRODUCTION
+              : CostSheetRepository.CALCULATION_WORK_IN_PROGRESS;
       CostSheet costSheet =
           Beans.get(CostSheetService.class)
               .computeCostPrice(
                   manufOrder,
-                  CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
+                  calculationType,
                   Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
 
       response.setView(

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+  http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <form name="mrp-line-type-form" id="maintenance-mrp-line-type-form-ext" title="MRP Type"
+    model="com.axelor.apps.supplychain.db.MrpLineType" extension="true">
+
+    <extend
+      target="//field[@name='statusSelect'][@selection='production.manuf.order.status.select']">
+      <insert position="after">
+        <field name="statusSelect" widget="MultiSelect"
+          selection="production.manuf.order.status.select" showIf="elementSelect == 13"
+          if="__config__.app.isApp('maintenance')"/>
+      </insert>
+    </extend>
+
+  </form>
+
+</object-views>

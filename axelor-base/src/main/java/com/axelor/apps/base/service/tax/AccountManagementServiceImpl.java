@@ -46,9 +46,9 @@ public class AccountManagementServiceImpl implements AccountManagementService {
   protected static final int CONFIG_OBJECT_PRODUCT = 1;
   protected static final int CONFIG_OBJECT_PRODUCT_FAMILY = 2;
 
-  private FiscalPositionService fiscalPositionService;
+  protected FiscalPositionService fiscalPositionService;
 
-  private TaxService taxService;
+  protected TaxService taxService;
 
   @Inject
   public AccountManagementServiceImpl(

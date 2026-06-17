@@ -41,7 +41,8 @@ public class InvoiceMergingViewServiceImpl implements InvoiceMergingViewService 
   }
 
   protected String getMergeConfirmFormViewName(InvoiceMergingResult result) {
-    if (result.getInvoiceType() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+    if (result.getInvoiceType() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || result.getInvoiceType() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
       return "supplier-invoices-merge-confirm-form";
     }
     return "customer-invoices-merge-confirm-form";
@@ -85,7 +86,8 @@ public class InvoiceMergingViewServiceImpl implements InvoiceMergingViewService 
     if (invoiceMergingService.getChecks(result).isExistFiscalPositionDiff()) {
       confirmView.context("contextFiscalPositionToCheck", Boolean.TRUE.toString());
     }
-    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
+    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
+        || result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)) {
       if (invoiceMergingService.getChecks(result).isExistSupplierInvoiceNbDiff()) {
         confirmView.context("contextSupplierInvoiceNbToCheck", Boolean.TRUE.toString());
       }

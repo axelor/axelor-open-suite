@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingTemplate;
+import com.axelor.apps.base.db.Tag;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -38,6 +39,7 @@ import com.axelor.apps.base.service.MapOsmService;
 import com.axelor.apps.base.service.PartnerConvertService;
 import com.axelor.apps.base.service.PartnerPriceListDomainService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.TagService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
@@ -74,11 +76,13 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.exception.BirtException;
@@ -495,7 +499,7 @@ public class PartnerController {
   public void setContactPartnerDomain(ActionRequest request, ActionResponse response) {
     Partner partner = request.getContext().asType(Partner.class);
     response.setAttr(
-        "contactPartner",
+        "contactPartnerSet",
         "domain",
         String.format(
             "self.id IN (%s)",
@@ -532,15 +536,22 @@ public class PartnerController {
       throws AxelorException {
     String siret = request.getContext().get("siretNumber").toString();
 
+    Map<String, Boolean> partnerTypeData = new HashMap<>();
     Object partnerId = request.getContext().get("_id");
     Partner partner;
     if (partnerId != null) {
       partner = JPA.find(Partner.class, Long.parseLong(partnerId.toString()));
+      partnerTypeData.put("isCustomer", partner.getIsCustomer());
+      partnerTypeData.put("isSupplier", partner.getIsSupplier());
+      partnerTypeData.put("isProspect", partner.getIsProspect());
     } else {
       partner = new Partner();
+      partnerTypeData.put("isCustomer", getBooleanContextValue(request, "_isCustomer"));
+      partnerTypeData.put("isSupplier", getBooleanContextValue(request, "_isSupplier"));
+      partnerTypeData.put("isProspect", getBooleanContextValue(request, "_isProspect"));
     }
 
-    Beans.get(PartnerGenerateService.class).configurePartner(partner, siret);
+    Beans.get(PartnerGenerateService.class).configurePartner(partner, siret, partnerTypeData);
 
     if (partnerId != null) {
       response.setValues(partner);
@@ -572,5 +583,56 @@ public class PartnerController {
         "purchasePartnerPriceList",
         "domain",
         Beans.get(PartnerPriceListDomainService.class).getPurchasePartnerPriceListDomain(partner));
+  }
+
+  @ErrorException
+  public void filterTagSet(ActionRequest request, ActionResponse response) throws AxelorException {
+    Partner partner = request.getContext().asType(Partner.class);
+    Set<Tag> invalidTags =
+        Beans.get(TagService.class)
+            .getInvalidTagsFromTagSet(
+                partner.getTagSet(), partner.getCompanySet(), partner.getTradingNameSet());
+    if (!ObjectUtils.isEmpty(invalidTags)) {
+      Set<Tag> newTagSet = new HashSet<>(partner.getTagSet());
+      newTagSet.removeAll(invalidTags);
+      response.setValue("tagSet", newTagSet);
+    }
+  }
+
+  public void updatePartnerAddress(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      PartnerService partnerService = Beans.get(PartnerService.class);
+      partnerService.setDefaultPartnerAddress(partner);
+      partnerService.updatePartnerAddress(partner);
+      response.setValue("mainAddress", partner.getMainAddress());
+      response.setValue("partnerAddressList", partner.getPartnerAddressList());
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void checkRegistrationCodeIfRequired(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      if (!Strings.isNullOrEmpty(partner.getRegistrationCode())) {
+        return;
+      }
+      RegistrationNumberValidator validator =
+          Beans.get(PartnerRegistrationValidatorFactoryService.class)
+              .getRegistrationNumberValidator(partner);
+      if (validator != null && !validator.isRegistrationCodeValid(partner)) {
+        response.setError(I18n.get(BaseExceptionMessage.REGISTRATION_CODE_EMPTY_FOR_COMPANIES));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  protected boolean getBooleanContextValue(ActionRequest request, String key) {
+    return Optional.ofNullable(request.getContext().get(key))
+        .map(Object::toString)
+        .map(Boolean::parseBoolean)
+        .orElse(false);
   }
 }

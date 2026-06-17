@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="invoice-payment-grid" title="Payments"
     model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
@@ -106,7 +106,8 @@
       <panel name="reversePaymentMovePanel"
         showIf="move &amp;&amp; statusSelect != 2 &amp;&amp; (typeSelect &lt; 3 || typeSelect &gt; 9)"
         colSpan="12">
-        <field name="cancelReason" title="Cancel reason (Required to execute the process)"/>
+        <field name="cancelReason" title="Cancel reason (Required to execute the process)"
+          domain="self.applicationType = 'com.axelor.apps.account.db.InvoicePayment'"/>
         <button name="reversePaymentMoveBtn"
           onClick="action-invoice-payment-group-reverse-move" title="Cancel the payment entry"
           readonlyIf="!cancelReason"/>

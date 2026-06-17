@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -103,6 +103,8 @@
 
     <boolean name="activateSendingEmail" title="Activate sending email" default="true"
       help="Allows activating the ability to send emails from Axelor."/>
+    <boolean name="activateStreamEmailSending" title="Activate stream email sending"
+      default="false"/>
 
     <boolean name="activateBarCodeGeneration"
       title="Activate bar code generation for products" default="false"
@@ -177,6 +179,9 @@
 
     <many-to-one name="productSequence" ref="com.axelor.apps.base.db.Sequence"
       title="Product sequence" help="Allows defining the default product sequence."/>
+
+    <boolean name="showProductCompanies" title="Show product companies" default="false"
+      help="This option allows products to be displayed by company in the product form, provided that one or more fields are selected in “Company-specific product fields.”"/>
 
     <many-to-many name="companySpecificProductFieldsSet"
       ref="com.axelor.meta.db.MetaField" title="Company-specific product fields"
@@ -253,6 +258,9 @@
 
     <string name="importErrorPath" title="Import error directory path"/>
 
+    <boolean name="enableProductsSafety" title="Enable products safety" default="false"
+      help="By enabling this option, a safety panel becomes accessible from the product form view, allowing you to configure the product's safety information."/>
+
     <extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
@@ -296,6 +304,7 @@
 
       <field name="teamManagement" on="UPDATE"/>
       <field name="activateSendingEmail" on="UPDATE"/>
+      <field name="activateStreamEmailSending" on="UPDATE"/>
 
       <field name="activateBarCodeGeneration" on="UPDATE"/>
       <field name="enableMultiBarcodeOnProducts" on="UPDATE"/>
@@ -354,6 +363,7 @@
       <field name="contactPhoneBookPrintTemplate" on="UPDATE"/>
       <field name="productCatalogPGQLPrintTemplate" on="UPDATE"/>
       <field name="importErrorPath" on="UPDATE"/>
+      <field name="enableProductsSafety" on="UPDATE"/>
       <!-- 32 fields -->
     </track>
 

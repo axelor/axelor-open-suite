@@ -2243,11 +2243,23 @@ group by AppBase.regroup_products_label_products, AppBase.regroup_products_label
                     <text-property name="heading">tax_type_count</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">vat_exemption_reason</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">vat_exemption_reason</text-property>
+                    <text-property name="heading">vat_exemption_reason</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">unique_tax_type_names</property>
                     <property name="alias">unique_tax_type_names</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">unique_tax_type_names</text-property>
                     <text-property name="heading">unique_tax_type_names</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">exemption_reason_count</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">exemption_reason_count</text-property>
+                    <text-property name="heading">exemption_reason_count</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">seq</property>
@@ -2327,11 +2339,21 @@ group by AppBase.regroup_products_label_products, AppBase.regroup_products_label
                     </structure>
                     <structure>
                         <property name="position">10</property>
+                        <property name="name">vat_exemption_reason</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
                         <property name="name">unique_tax_type_names</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">12</property>
+                        <property name="name">exemption_reason_count</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
                         <property name="name">seq</property>
                         <property name="dataType">integer</property>
                     </structure>
@@ -2407,13 +2429,27 @@ group by AppBase.regroup_products_label_products, AppBase.regroup_products_label
                 </structure>
                 <structure>
                     <property name="position">10</property>
+                    <property name="name">vat_exemption_reason</property>
+                    <property name="nativeName">vat_exemption_reason</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
                     <property name="name">unique_tax_type_names</property>
                     <property name="nativeName">unique_tax_type_names</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">12</property>
+                    <property name="name">exemption_reason_count</property>
+                    <property name="nativeName">exemption_reason_count</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
                     <property name="name">seq</property>
                     <property name="nativeName">seq</property>
                     <property name="dataType">integer</property>
@@ -2421,20 +2457,32 @@ group by AppBase.regroup_products_label_products, AppBase.regroup_products_label
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
-    main_query.*,
+    main_query.value,
+    main_query.ex_tax_base,
+    main_query.tax_total,
+    main_query.sale_order_type_select,
+    main_query.tax_type,
+    main_query.tax_type_name,
+    main_query.tax_type_code,
+    main_query.tax_code,
+    main_query.tax_type_count,
+    main_query.vat_exemption_reason,
     unique_tax_type_names,
+    exemption_reason_count,
     (Case when main_query.tax_type_code IN ('VAT','TVA') THEN 999
     Else 0 END ) as seq
 FROM (
   SELECT * FROM sale_order_line_tax_proc(cast(? as bigint))
 ) AS main_query
 CROSS JOIN (
-    SELECT COUNT(DISTINCT TaxType.name) AS unique_tax_type_names
+    SELECT COUNT(DISTINCT TaxType.name) AS unique_tax_type_names,
+    COUNT(VatExemptionReason.id) AS exemption_reason_count
     FROM sale_sale_order_line_tax AS SOLineTax
         INNER JOIN sale_sale_order AS SOrder ON (SOLineTax.sale_order = SOrder.id)
         LEFT OUTER JOIN account_tax_line AS TaxLine ON (SOLineTax.tax_line = TaxLine.id)
         LEFT OUTER JOIN account_tax AS Tax ON (Tax.id = TaxLine.tax)
         LEFT OUTER JOIN account_tax_type AS TaxType ON (TaxType.id = Tax.tax_type)
+   		LEFT OUTER JOIN account_vat_exemption_reason as VatExemptionReason on (SOLineTax.vat_exemption_reason = VatExemptionReason.id)	
     WHERE SOrder.id = ?
 ) AS subquery;]]></xml-property>
         </oda-data-set>
@@ -2848,7 +2896,8 @@ RETURNS table(value numeric,
   tax_type_name varchar,
   tax_type_code varchar,
   tax_code varchar,
-  tax_type_count bigint) as
+  tax_type_count bigint,
+  vat_exemption_reason varchar) as
 $func$
 BEGIN
 IF (SELECT true FROM pg_attribute WHERE attrelid = 'sale_sale_order'::regclass AND attname = 'sale_order_type_select') THEN
@@ -2862,7 +2911,8 @@ return query
         TaxType.name AS tax_type_name,
         TaxType.code as tax_type_code,
         Tax.code AS tax_code,
-        COUNT(TaxType.name) OVER (PARTITION BY TaxType.name) AS tax_type_count
+        COUNT(TaxType.name) OVER (PARTITION BY TaxType.name) AS tax_type_count,
+        (VatExemptionReason.code || ' - ' || VatExemptionReason.note)::varchar AS vat_exemption_reason
     FROM
         sale_sale_order_line_tax AS SOLineTax
         INNER JOIN sale_sale_order AS SOrder ON (SOLineTax.sale_order = SOrder.id)
@@ -2871,20 +2921,22 @@ return query
         LEFT OUTER JOIN account_tax_type AS TaxType ON (TaxType.id = Tax.tax_type)
         LEFT OUTER JOIN meta_select AS MetaSelect ON (MetaSelect.name = 'tax.type.type.select')
         LEFT OUTER JOIN meta_select_item MetaSelectItem ON (MetaSelectItem.select_id = MetaSelect.id AND MetaSelectItem.value = CAST(TaxType.type_select AS TEXT))
+        LEFT OUTER JOIN account_vat_exemption_reason as VatExemptionReason on (SOLineTax.vat_exemption_reason = VatExemptionReason.id)
     WHERE
         SOrder.id = saleOrderId;
   ELSE
 return query
     SELECT
-        TaxLine.value, 
-        SOLineTax.ex_tax_base, 
-        SOLineTax.tax_total, 
-        1 as sale_order_type_select, 
-        MetaSelectItem.title AS tax_type, 
+        TaxLine.value,
+        SOLineTax.ex_tax_base,
+        SOLineTax.tax_total,
+        1 as sale_order_type_select,
+        MetaSelectItem.title AS tax_type,
         TaxType.name AS tax_type_name,
         TaxType.code as tax_type_code,
         Tax.code AS tax_code,
-        COUNT(TaxType.name) OVER (PARTITION BY TaxType.name) AS tax_type_count
+        COUNT(TaxType.name) OVER (PARTITION BY TaxType.name) AS tax_type_count,
+        (VatExemptionReason.code || ' - ' || VatExemptionReason.note)::varchar AS vat_exemption_reason
     FROM
         sale_sale_order_line_tax AS SOLineTax
         INNER JOIN sale_sale_order AS SOrder ON (SOLineTax.sale_order = SOrder.id)
@@ -2893,6 +2945,7 @@ return query
         LEFT OUTER JOIN account_tax_type AS TaxType ON (TaxType.id = Tax.tax_type)
         LEFT OUTER JOIN meta_select AS MetaSelect ON (MetaSelect.name = 'tax.type.type.select')
         LEFT OUTER JOIN meta_select_item MetaSelectItem ON (MetaSelectItem.select_id = MetaSelect.id AND MetaSelectItem.value = CAST(TaxType.type_select AS TEXT))
+        LEFT OUTER JOIN account_vat_exemption_reason as VatExemptionReason on (SOLineTax.vat_exemption_reason = VatExemptionReason.id)
     WHERE
         SOrder.id = saleOrderId;
 END IF;
@@ -2973,15 +3026,8 @@ SELECT
 	MetaFile.id::decimal as "product_pic_id"
 
 from sale_sale_order as SaleOrder
-left outer join studio_app_sale as AppSale on true
-left outer join sale_sale_order_line AS SOLine on
-(
-    CASE
-        WHEN SaleOrder.is_display_sub_lines_on_report = FALSE OR AppSale.list_display_type_select != 2
-        THEN SOLine.sale_order = SaleOrder.id
-        ELSE SOLine.id IN (SELECT SOL.id FROM SaleOrderLines as SOL)
-    END
-)
+cross join studio_app_sale as AppSale
+join sale_sale_order_line AS SOLine on SOLine.sale_order = SaleOrder.id
 left outer join SaleOrderLines as SOLines on (SOLines.id = SOLine.id)
 left outer join base_product as Product on (SOLine.product = Product.id)
 left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
@@ -2989,7 +3035,64 @@ left outer join base_unit as Unit on (SOLine.unit = Unit.id)
 left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
 left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = SaleOrder.client_partner)
 left outer join meta_file as MetaFile on (MetaFile.id = Product.picture)
-where SaleOrder.id = orderId;
+where SaleOrder.id = orderId
+and (SaleOrder.is_display_sub_lines_on_report = FALSE OR AppSale.list_display_type_select != 2)
+
+UNION ALL
+
+SELECT
+    SaleOrder.id as "SaleOrderId",
+    SOLine.id,
+    SOLines.levelNo,
+    SOLine.level_indicator as "levelIndicator",
+    SOLine.product_name as "ProductName",
+    ProductCategory.name as product_category_name,
+    SOLine.description,
+    Product.product_type_select,
+    SOLine.qty as "quantity",
+    (CASE WHEN SaleOrder.in_ati
+        THEN SOLine.in_tax_price
+        ELSE SOLine.price END)
+        as "unit_price",
+    (SOLine.price_discounted
+        - (CASE WHEN SaleOrder.in_ati
+        THEN SOLine.in_tax_price
+        ELSE SOLine.price END))
+        * SOLine.qty
+        as "totalDiscountAmount",
+    SOLine.ex_tax_total,
+    SOLine.in_tax_total,
+    Currency.code as "CurrencyCode",
+    MetaFile.file_path as "productPicture",
+    SOLine.sequence,
+    SOLine.type_select as "typeSelect",
+    SaleOrder.in_ati,
+    Product.code as "productCode",
+    ProductCategory.code as product_category_code,
+    SaleOrder.sale_order_type_select,
+    CustomerCatalog.product_customer_code as "CustomerProductCode",
+    CustomerCatalog.product_customer_name as "CustomerProductName",
+    SOLine.estimated_shipping_date as "EstimatedShippingDate",
+    SOLine.price_discounted as "price_discounted",
+    SOLine.is_show_total as "showTotal",
+    SOLine.is_hide_unit_amounts as "hideUnitAmounts",
+    Unit.label_to_printing as "UnitCode",
+	(SELECT is_hide_unit_amounts from sale_sale_order_line as SOL
+	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts",
+	MetaFile.id::decimal as "product_pic_id"
+
+from sale_sale_order as SaleOrder
+cross join studio_app_sale as AppSale
+join SaleOrderLines as SOLines on true
+join sale_sale_order_line AS SOLine on SOLine.id = SOLines.id
+left outer join base_product as Product on (SOLine.product = Product.id)
+left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
+left outer join base_unit as Unit on (SOLine.unit = Unit.id)
+left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
+left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = SaleOrder.client_partner)
+left outer join meta_file as MetaFile on (MetaFile.id = Product.picture)
+where SaleOrder.id = orderId
+and SaleOrder.is_display_sub_lines_on_report = TRUE AND AppSale.list_display_type_select = 2;
 ELSE
 return query
 
@@ -3042,15 +3145,8 @@ SELECT
 	MetaFile.id::decimal as "product_pic_id"
 
 from sale_sale_order as SaleOrder
-left outer join studio_app_sale as AppSale on true
-left outer join sale_sale_order_line AS SOLine on
-(
-    CASE
-        WHEN SaleOrder.is_display_sub_lines_on_report = FALSE OR AppSale.list_display_type_select != 2
-        THEN SOLine.sale_order = SaleOrder.id
-        ELSE SOLine.id IN (SELECT SOL.id FROM SaleOrderLines as SOL)
-    END
-)
+cross join studio_app_sale as AppSale
+join sale_sale_order_line AS SOLine on SOLine.sale_order = SaleOrder.id
 left outer join SaleOrderLines as SOLines on (SOLines.id = SOLine.id)
 left outer join base_product as Product on (SOLine.product = Product.id)
 left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
@@ -3058,7 +3154,64 @@ left outer join base_unit as Unit on (SOLine.unit = Unit.id)
 left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
 left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = SaleOrder.client_partner)
 left outer join meta_file as MetaFile on (MetaFile.id = Product.picture)
-where SaleOrder.id = orderId;
+where SaleOrder.id = orderId
+and (SaleOrder.is_display_sub_lines_on_report = FALSE OR AppSale.list_display_type_select != 2)
+
+UNION ALL
+
+SELECT
+    SaleOrder.id as "SaleOrderId",
+    SOLine.id,
+    SOLines.levelNo,
+    SOLine.level_indicator as "levelIndicator",
+    SOLine.product_name as "ProductName",
+    ProductCategory.name as product_category_name,
+    SOLine.description,
+    Product.product_type_select,
+    SOLine.qty as "quantity",
+    (CASE WHEN SaleOrder.in_ati
+        THEN SOLine.in_tax_price
+        ELSE SOLine.price END)
+        as "unit_price",
+    (SOLine.price_discounted
+        - (CASE WHEN SaleOrder.in_ati
+        THEN SOLine.in_tax_price
+        ELSE SOLine.price END))
+        * SOLine.qty
+        as "totalDiscountAmount",
+    SOLine.ex_tax_total,
+    SOLine.in_tax_total,
+    Currency.code as "CurrencyCode",
+    MetaFile.file_path as "productPicture",
+    SOLine.sequence,
+    SOLine.type_select as "typeSelect",
+    SaleOrder.in_ati,
+    Product.code as "productCode",
+    ProductCategory.code as product_category_code,
+    1 as sale_order_type_select,
+    CustomerCatalog.product_customer_code as "CustomerProductCode",
+    CustomerCatalog.product_customer_name as "CustomerProductName",
+    SOLine.estimated_shipping_date as "EstimatedShippingDate",
+    SOLine.price_discounted as "price_discounted",
+    SOLine.is_show_total as "showTotal",
+    SOLine.is_hide_unit_amounts as "hideUnitAmounts",
+    Unit.label_to_printing as "UnitCode",
+	(SELECT is_hide_unit_amounts from sale_sale_order_line as SOL
+	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts",
+	MetaFile.id::decimal as "product_pic_id"
+
+from sale_sale_order as SaleOrder
+cross join studio_app_sale as AppSale
+join SaleOrderLines as SOLines on true
+join sale_sale_order_line AS SOLine on SOLine.id = SOLines.id
+left outer join base_product as Product on (SOLine.product = Product.id)
+left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
+left outer join base_unit as Unit on (SOLine.unit = Unit.id)
+left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
+left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = SaleOrder.client_partner)
+left outer join meta_file as MetaFile on (MetaFile.id = Product.picture)
+where SaleOrder.id = orderId
+and SaleOrder.is_display_sub_lines_on_report = TRUE AND AppSale.list_display_type_select = 2;
 END IF;
 END;
 $func$ LANGUAGE plpgsql;
@@ -7679,7 +7832,7 @@ if(row._outer._outer["hideDiscount"] == 0){
 if(row._outer._outer["hideDiscount"] == 1){
 	Formatter.format(row._outer["price_discounted"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"] || 2))
 }
-</VALUE-OF>]]></text-property>
+</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["CurrencyCode"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4569">
@@ -8194,6 +8347,18 @@ if (isDisplaySubLinesOnReport &amp;&amp; listDisplayTypeSelect == 2) {
                                 <expression name="expression" type="javascript">dataSetRow["seq"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
+                            <structure>
+                                <property name="name">exemption_reason_count</property>
+                                <text-property name="displayName">exemption_reason_count</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["exemption_reason_count"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">vat_exemption_reason</property>
+                                <text-property name="displayName">vat_exemption_reason</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["vat_exemption_reason"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
                         </list-property>
                         <column id="5709">
                             <property name="width">25%</property>
@@ -8205,6 +8370,15 @@ if (isDisplaySubLinesOnReport &amp;&amp; listDisplayTypeSelect == 2) {
                             <property name="width">30%</property>
                         </column>
                         <column id="3508">
+                            <property name="width">30%</property>
+                        </column>
+                        <column id="5839">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["exemption_reason_count"] &lt;= 0</expression>
+                                </structure>
+                            </list-property>
                             <property name="width">30%</property>
                         </column>
                         <header>
@@ -8375,6 +8549,45 @@ if (isDisplaySubLinesOnReport &amp;&amp; listDisplayTypeSelect == 2) {
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
+                                <cell id="5835">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <text id="5840">
+                                        <property name="fontSize">8pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'SaleOrder.exemptionReason'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
                             </row>
                         </header>
                         <group id="5772">
@@ -8401,7 +8614,7 @@ if (isDisplaySubLinesOnReport &amp;&amp; listDisplayTypeSelect == 2) {
                                         </structure>
                                     </list-property>
                                     <cell id="5774">
-                                        <property name="colSpan">4</property>
+                                        <property name="colSpan">5</property>
                                         <property name="rowSpan">1</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
@@ -8488,6 +8701,14 @@ if (isDisplaySubLinesOnReport &amp;&amp; listDisplayTypeSelect == 2) {
                                             <property name="resultSetColumn">totalByTaxType</property>
                                         </data>
                                     </cell>
+                                    <cell id="5838">
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                    </cell>
                                 </row>
                             </footer>
                         </group>
@@ -8546,7 +8767,7 @@ if (isDisplaySubLinesOnReport &amp;&amp; listDisplayTypeSelect == 2) {
                                         <property name="fontSize">8pt</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["ex_tax_base"], row._outer["number_of_decimals"] == 0? "#,##0" : "#,##0."+"0".repeat(row._outer["number_of_decimals"] || 2))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["ex_tax_base"], row._outer["number_of_decimals"] == 0? "#,##0" : "#,##0."+"0".repeat(row._outer["number_of_decimals"] || 2))</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["CurrencyCode"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="3501">
@@ -8562,7 +8783,23 @@ if (isDisplaySubLinesOnReport &amp;&amp; listDisplayTypeSelect == 2) {
                                         <property name="fontSize">8pt</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["tax_total"], row._outer["number_of_decimals"] == 0? "#,##0" : "#,##0."+"0".repeat(row._outer["number_of_decimals"] || 2))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["tax_total"], row._outer["number_of_decimals"] == 0? "#,##0" : "#,##0."+"0".repeat(row._outer["number_of_decimals"] || 2))</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["CurrencyCode"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="5837">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <text id="5841">
+                                        <property name="fontSize">8pt</property>
+                                        <property name="textAlign">center</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["vat_exemption_reason"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>

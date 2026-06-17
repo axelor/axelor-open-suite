@@ -75,23 +75,23 @@ public class UserServiceImpl implements UserService {
 
   public static final String DEFAULT_LOCALIZATION_CODE = "en_GB";
 
-  private static final String PATTERN_ACCESS_RESTRICTION =
+  protected static final String PATTERN_ACCESS_RESTRICTION =
       "(((?=.*[a-z])(?=.*[A-Z])(?=.*\\d))|((?=.*[a-z])(?=.*[A-Z])(?=.*\\W))|((?=.*[a-z])(?=.*\\d)(?=.*\\W))|((?=.*[A-Z])(?=.*\\d)(?=.*\\W))).{8,}";
-  private static final Pattern PATTERN =
+  protected static final Pattern PATTERN =
       Pattern.compile(
           MoreObjects.firstNonNull(
               AppSettings.get().get("user.password.pattern"), PATTERN_ACCESS_RESTRICTION));
 
-  private static final String PATTERN_DESCRIPTION =
+  protected static final String PATTERN_DESCRIPTION =
       PATTERN.pattern().equals(PATTERN_ACCESS_RESTRICTION)
           ? BaseExceptionMessage.USER_PATTERN_MISMATCH_ACCES_RESTRICTION
           : BaseExceptionMessage.USER_PATTERN_MISMATCH_CUSTOM;
 
-  private static final String GEN_CHARS =
+  protected static final String GEN_CHARS =
       "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
-  private static final Pair<Integer, Integer> GEN_BOUNDS = Pair.of(12, 22);
-  private static final int GEN_LOOP_LIMIT = 1000;
-  private static final SecureRandom random = new SecureRandom();
+  protected static final Pair<Integer, Integer> GEN_BOUNDS = Pair.of(12, 22);
+  protected static final int GEN_LOOP_LIMIT = 1000;
+  protected static final SecureRandom random = new SecureRandom();
 
   @Inject
   public UserServiceImpl(
@@ -101,11 +101,6 @@ public class UserServiceImpl implements UserService {
     this.metaThemeFetchService = metaThemeFetchService;
   }
 
-  /**
-   * Method that return the current connected user
-   *
-   * @return user the current connected user
-   */
   @Override
   public User getUser() {
     User user = null;
@@ -119,11 +114,6 @@ public class UserServiceImpl implements UserService {
     return user;
   }
 
-  /**
-   * Method that return the id of the current connected user
-   *
-   * @return user the id of current connected user
-   */
   @Override
   public Long getUserId() {
 
@@ -136,11 +126,6 @@ public class UserServiceImpl implements UserService {
     return user.getId();
   }
 
-  /**
-   * Method that return the active company of the current connected user
-   *
-   * @return Company the active company
-   */
   @Override
   public Company getUserActiveCompany() {
 
@@ -153,11 +138,6 @@ public class UserServiceImpl implements UserService {
     return user.getActiveCompany();
   }
 
-  /**
-   * Method that return the active company id of the current connected user
-   *
-   * @return Company the active company id
-   */
   @Override
   public Long getUserActiveCompanyId() {
 
@@ -209,11 +189,6 @@ public class UserServiceImpl implements UserService {
     return Optional.empty();
   }
 
-  /**
-   * Method that return the active team of the current connected user
-   *
-   * @return Team the active team
-   */
   @Override
   public Team getUserActiveTeam() {
 
@@ -226,11 +201,6 @@ public class UserServiceImpl implements UserService {
     return user.getActiveTeam();
   }
 
-  /**
-   * Method that return the active team of the current connected user
-   *
-   * @return Team the active team id
-   */
   @Override
   public Long getUserActiveTeamId() {
 
@@ -243,11 +213,6 @@ public class UserServiceImpl implements UserService {
     return team.getId();
   }
 
-  /**
-   * Method that return the partner of the current connected user
-   *
-   * @return Partner the user partner
-   */
   @Override
   public Partner getUserPartner() {
 

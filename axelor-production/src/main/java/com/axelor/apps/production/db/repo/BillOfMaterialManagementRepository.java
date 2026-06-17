@@ -18,10 +18,17 @@
  */
 package com.axelor.apps.production.db.repo;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameService;
+import com.axelor.apps.production.service.BillOfMaterialHazardPhraseRefreshService;
+import com.axelor.i18n.I18n;
 import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -29,21 +36,46 @@ public class BillOfMaterialManagementRepository extends BillOfMaterialRepository
 
   protected BillOfMaterialLineRepository billOfMaterialLineRepository;
   protected BillOfMaterialComputeNameService billOfMaterialComputeNameService;
+  protected BillOfMaterialHazardPhraseRefreshService billOfMaterialHazardPhraseRefreshService;
 
   @Inject
   public BillOfMaterialManagementRepository(
       BillOfMaterialLineRepository billOfMaterialLineRepository,
-      BillOfMaterialComputeNameService billOfMaterialComputeNameService) {
-
+      BillOfMaterialComputeNameService billOfMaterialComputeNameService,
+      BillOfMaterialHazardPhraseRefreshService billOfMaterialHazardPhraseRefreshService) {
     this.billOfMaterialLineRepository = billOfMaterialLineRepository;
     this.billOfMaterialComputeNameService = billOfMaterialComputeNameService;
+    this.billOfMaterialHazardPhraseRefreshService = billOfMaterialHazardPhraseRefreshService;
   }
 
   @Override
   public BillOfMaterial save(BillOfMaterial billOfMaterial) {
-    billOfMaterial = super.save(billOfMaterial);
-    billOfMaterial.setFullName(billOfMaterialComputeNameService.computeFullName(billOfMaterial));
-    return billOfMaterial;
+    try {
+      if (billOfMaterial.getName() != null && billOfMaterial.getName().length() > 255) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_NAME_TOO_LONG));
+      }
+      // Capture the id before save: null for new BOMs, used by the service to read the old state.
+      Long oldBomId = billOfMaterial.getId();
+
+      billOfMaterial = super.save(billOfMaterial);
+      String fullName = billOfMaterialComputeNameService.computeFullName(billOfMaterial);
+      if (fullName.length() > 255) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(ProductionExceptionMessage.BILL_OF_MATERIAL_NAME_TOO_LONG));
+      }
+      billOfMaterial.setFullName(fullName);
+
+      billOfMaterialHazardPhraseRefreshService.refreshProdProcessHazardPhrases(
+          oldBomId, billOfMaterial);
+
+      return billOfMaterial;
+    } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
   }
 
   @Override

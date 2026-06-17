@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="inventory-grid" title="Inventory" model="com.axelor.apps.stock.db.Inventory">
     <field name="inventorySeq" width="120"/>
@@ -59,7 +59,9 @@
           <field name="stockLocation" canEdit="false"
             onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2"
             grid-view="stock-location-grid" form-view="stock-location-form"/>
-          <field name="typeSelect" validIf="typeSelect > 0"/>
+          <field name="typeSelect" validIf="typeSelect > 0" colSpan="3"/>
+          <field name="isStockMoveBlocked" showIf="statusSelect == 3 || statusSelect == 4"
+            colSpan="3"/>
           <field name="completedBy" readonly="true" showIf="completedBy"/>
           <field name="validatedBy" readonly="true" showIf="validatedBy"/>
           <field name="validatedOn" readonly="true" showIf="validatedOn"/>
@@ -88,9 +90,9 @@
         </panel>
       </panel>
 
-      <panel-related name="inventoryLineListPanel" field="inventoryLineList"
-        readonlyIf="statusSelect >= 5 || stockLocation == null" colSpan="12" height="20"
-        grid-view="inventory-line-grid" form-view="inventory-line-form"/>
+      <panel-dashlet name="inventoryLineListPanelDashlet" title="Inventory lines"
+        height="800" readonlyIf="statusSelect >= 5 || stockLocation == null"
+        action="action-inventory-line-view-dashlet" canNew="id" canDelete="true" showIf="id"/>
 
       <panel name="filterPanel" title="Filters" hideIf="statusSelect &lt; 2" readonly="true">
         <field name="productFamily" grid-view="product-family-grid"

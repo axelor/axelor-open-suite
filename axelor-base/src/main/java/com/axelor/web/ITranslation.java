@@ -20,13 +20,7 @@ package com.axelor.web;
 
 public interface ITranslation {
 
-  public static final String PREFIX = "MapRest.";
-
-  public static final String DEFAULT = /*$$(*/ "MapRest.Default" /*)*/;
   public static final String INVOICING = /*$$(*/ "MapRest.Invoicing" /*)*/;
-  public static final String DELIVERY = /*$$(*/ "MapRest.Delivery" /*)*/;
-
-  public static final String MAP_ZERO_RESULTS = /*$$(*/ "MapRest.ZERO_RESULTS" /*)*/;
 
   public static final String PRICING_OBSERVER_IDENTIFIED_PRICING = /*$$(*/
       "Identified pricing scale: %s"; /*)*/
