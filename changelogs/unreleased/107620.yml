@@ -1,7 +1,0 @@
----
-title: "Deposit slip: group the generated bank deposit moves to ease bank reconciliation."
-module: axelor-account
-description: |
-  Added a 'Value for collection move grouping' setting on payment modes using the
-  'Value for collection' accounting trigger, allowing the bank deposit moves to be
-  grouped by payment voucher (legacy behavior), by partner or globally.
