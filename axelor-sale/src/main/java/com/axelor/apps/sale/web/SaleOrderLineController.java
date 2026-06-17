@@ -453,4 +453,10 @@ public class SaleOrderLineController {
       response.setError(I18n.get(SaleExceptionMessage.CONFIGURATOR_VERSION_IS_DIFFERENT));
     }
   }
+
+  public void setSubTotalCostPriceManually(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    response.setValues(
+        Beans.get(SaleOrderLineProductService.class).setSubTotalCostPriceManually(saleOrderLine));
+  }
 }

@@ -483,7 +483,7 @@
       </panel>
       <panel name="marginPanel" title="Margin" readonlyIf="$isReadOnly !== false">
         <field name="subTotalCostPrice"
-          onChange="action-sale-order-line-method-compute-subMargin"
+          onChange="action-sale-order-line-sub-total-cost-price-onchange"
           x-scale="$companyCurrency.numberOfDecimals"
           readonlyIf="subSaleOrderLineList.length &gt; 0 &amp;&amp; $computeWithSOL"/>
         <field name="subTotalGrossMargin" readonly="true"
@@ -611,7 +611,7 @@
     <panel-tabs hideIf="typeSelect == 1" name="allPanelTab">
       <panel name="marginPanel" title="Margin">
         <field name="subTotalCostPrice"
-          onChange="action-sale-order-line-method-compute-subMargin"
+          onChange="action-sale-order-line-sub-total-cost-price-onchange"
           x-scale="$companyCurrency.numberOfDecimals"/>
         <field name="subTotalGrossMargin" readonly="true"
           x-scale="$companyCurrency.numberOfDecimals"/>
@@ -873,5 +873,16 @@
     <attribute name="readonly" for="discountAmount"
       expr="eval: __parent__?.discountTypeSelect > 0 || discountTypeSelect == 0"/>
   </action-attrs>
+
+  <action-group name="action-sale-order-line-sub-total-cost-price-onchange">
+    <action name="action-sale-order-line-method-set-sub-total-cost-price-manually"/>
+    <action name="action-sale-order-line-method-compute-subMargin"/>
+  </action-group>
+
+  <action-method
+    name="action-sale-order-line-method-set-sub-total-cost-price-manually">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="setSubTotalCostPriceManually"/>
+  </action-method>
 
 </object-views>
