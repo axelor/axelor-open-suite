@@ -126,7 +126,7 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
         birtTemplateService
             .generateBirtTemplateFile(birtTemplate, model, context, name, false, format)
             .toPath();
-    Path tempDir = TempFiles.createTempDir();
+    Path tempDir = TempFiles.getTempPath();
     Path dest = Files.move(src, tempDir.resolve(name + "." + format));
     return dest.toFile();
   }
