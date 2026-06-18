@@ -41,7 +41,8 @@
     <column name="code" type="string"/>
 
     <node model="com.axelor.apps.base.db.ProductCategory"
-      domain="self.parentProductCategory is null" onClick="action-view-product-category-from-tree">
+      domain="self.parentProductCategory is null" draggable="true"
+      onClick="action-view-product-category-from-tree">
       <field as="name" name="name"/>
       <field as="code" name="code"/>
     </node>
