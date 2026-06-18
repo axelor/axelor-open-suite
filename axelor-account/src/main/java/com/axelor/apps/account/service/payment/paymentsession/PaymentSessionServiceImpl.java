@@ -232,7 +232,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   protected Query<InvoiceTerm> getTermsBySession(PaymentSession paymentSession) {
     return invoiceTermRepository
         .all()
-        .filter("self.paymentSession = :paymentSession ")
+        .filter("self.paymentSession.id = :paymentSession ")
         .bind("paymentSession", paymentSession.getId());
   }
 
@@ -249,6 +249,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .bind("company", paymentSession.getCompany())
             .bind("paymentMode", paymentSession.getPaymentMode())
             .bind("paymentModeInOutSelect", paymentSession.getPaymentMode().getInOutSelect())
+            .bind("paymentModeTypeSelect", paymentSession.getPaymentMode().getTypeSelect())
             .bind(
                 "paymentDatePlusMargin",
                 paymentSession
@@ -291,11 +292,11 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     String termsMoveLineCondition =
         ") AND (0 in (:partnerIds) OR self.moveLine.move.partner.id in (:partnerIds))"
             + " AND ((self.moveLine.partner.isCustomer = TRUE "
-            + " AND (self.paymentMode = :paymentMode OR self.paymentMode.inOutSelect != :paymentModeInOutSelect)"
+            + " AND (self.paymentMode = :paymentMode OR (self.paymentMode.inOutSelect != :paymentModeInOutSelect AND self.paymentMode.typeSelect = :paymentModeTypeSelect))"
             + " AND :partnerTypeSelect = :partnerTypeClient"
             + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginClient)"
             + " OR ( self.moveLine.partner.isSupplier = TRUE "
-            + " AND (self.paymentMode = :paymentMode OR self.paymentMode.inOutSelect != :paymentModeInOutSelect)"
+            + " AND (self.paymentMode = :paymentMode OR (self.paymentMode.inOutSelect != :paymentModeInOutSelect AND self.paymentMode.typeSelect = :paymentModeTypeSelect))"
             + " AND :partnerTypeSelect = :partnerTypeSupplier "
             + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier ) "
             + " OR ( :accountingMethodSelect in (2,3) AND self.moveLine.partner.isCustomer = TRUE AND self.moveLine.partner.isSupplier = TRUE AND self.moveLine.partner.isCompensation = TRUE "
@@ -486,13 +487,15 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   public void removeNegativeLines(PaymentSession paymentSession) throws AxelorException {
     Query<InvoiceTerm> invoiceTermQuery = this.getNegativeBalanceInvoiceTermQuery(paymentSession);
     List<InvoiceTerm> invoiceTermList;
-    int offset = 0;
+    long lastSeenId = 0L;
 
-    while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
+    while (!(invoiceTermList =
+            invoiceTermQuery.bind("lastSeenId", lastSeenId).fetch(AbstractBatch.FETCH_LIMIT))
         .isEmpty()) {
       invoiceTermService.toggle(invoiceTermList, false);
 
-      offset += invoiceTermList.size();
+      lastSeenId = invoiceTermList.get(invoiceTermList.size() - 1).getId();
+      JPA.flush();
       JPA.clear();
     }
   }
@@ -503,11 +506,13 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
         .filter(
             "self.paymentSession = :paymentSession "
                 + "AND self.isSelectedOnPaymentSession IS TRUE "
+                + "AND self.id > :lastSeenId "
                 + "AND self.partner IN ("
                 + "SELECT it.partner FROM InvoiceTerm it "
                 + "WHERE it.paymentSession = :paymentSession AND it.isSelectedOnPaymentSession IS TRUE "
                 + "GROUP BY it.partner HAVING SUM(it.paymentAmount) < 0)")
         .bind("paymentSession", paymentSession)
+        .autoFlush(false)
         .order("id");
   }
 

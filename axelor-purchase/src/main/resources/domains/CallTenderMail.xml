@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
@@ -9,14 +9,17 @@
 
     <many-to-one name="mailTemplate" title="Mail template"
       ref="com.axelor.message.db.Template"/>
-    <many-to-one name="sentMessage" title="Sent message"
+    <many-to-one name="emailMessage" title="Email message"
       ref="com.axelor.message.db.Message"/>
     <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="Attachment"
       copy="false"/>
+    <one-to-many ref="com.axelor.apps.purchase.db.CallTenderOffer"
+      name="callTenderOfferList" mappedBy="offerMail" title="Call tender offers"
+      orphanRemoval="false"/>
 
     <track on="UPDATE">
       <field name="mailTemplate"/>
-      <field name="sentMessage"/>
+      <field name="emailMessage"/>
       <field name="metaFile"/>
     </track>
   </entity>

@@ -33,6 +33,7 @@ import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineQtyToDeliverService;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,7 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
   protected SaleOrderSupplychainService saleOrderSupplychainService;
   protected SaleOrderShipmentService saleOrderShipmentService;
   protected SaleOrderLineAnalyticService saleOrderLineAnalyticService;
+  protected SaleOrderLineQtyToDeliverService saleOrderLineQtyToDeliverService;
 
   @Inject
   public SaleOrderOnLineChangeSupplyChainServiceImpl(
@@ -59,7 +61,8 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
       SaleOrderGlobalDiscountService saleOrderGlobalDiscountService,
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderShipmentService saleOrderShipmentService,
-      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService,
+      SaleOrderLineQtyToDeliverService saleOrderLineQtyToDeliverService) {
     super(
         appSaleService,
         saleOrderService,
@@ -73,6 +76,7 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
     this.saleOrderSupplychainService = saleOrderSupplychainService;
     this.saleOrderShipmentService = saleOrderShipmentService;
     this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;
+    this.saleOrderLineQtyToDeliverService = saleOrderLineQtyToDeliverService;
   }
 
   @Override
@@ -89,6 +93,7 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
     saleOrderSupplychainService.updateAmountToBeSpreadOverTheTimetable(saleOrder);
     messages.add(
         saleOrderShipmentService.createShipmentCostLine(saleOrder, saleOrder.getShipmentMode()));
+    saleOrderLineQtyToDeliverService.initQtyToDeliverForAllIfManagedLines(saleOrder);
     return messages.stream()
         .filter(Objects::nonNull)
         .filter(Predicate.not(String::isEmpty))

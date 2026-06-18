@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
     <field name="name"/>
@@ -79,15 +79,17 @@
 
     <panel-tabs name="mainPanelTab" hideIf="$popup()">
       <panel name="informationsPanel" title="Information">
+        <field name="legalInformation" widget="html" x-lite="true" colSpan="12"/>
+        <field name="legalFormAndCapital" widget="html" x-lite="true" colSpan="12"/>
         <field name="notes" colSpan="12"/>
         <field name="companyDepartmentList" grid-view="company-department-company-grid"
           form-view="company-department-company-form" canSelect="true" domain="self.company IS NULL"
           colSpan="12"/>
         <field name="partnerList" form-view="partner-form" grid-view="partner-grid"
           colSpan="12" canNew="false" canSelect="true" domain="self.isInternal is true"/>
-        <field name="workshopList" colSpan="12" if-module="axelor-production"
-          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop()"
-          canNew="false" canSelect="true" domain="self.isWorkshop is true"/>
+        <panel-dashlet name="workshopsPanel" title="Workshops"
+          action="action-company-view-show-workshops" colSpan="12" if-module="axelor-production"
+          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop()"/>
       </panel>
       <panel name="configurationsPanel" title="Configurations">
         <field name="currency" canEdit="false" form-view="currency-form"
@@ -189,6 +191,14 @@
   <action-method name="action-company-check-multi-banks">
     <call class="com.axelor.apps.base.web.CompanyController" method="checkMultiBanks"/>
   </action-method>
+
+  <action-view name="action-company-view-show-workshops" title="Workshops"
+    model="com.axelor.apps.stock.db.StockLocation">
+    <view type="grid" name="stock-location-grid"/>
+    <view type="form" name="stock-location-form"/>
+    <domain>self.company.id = :_id AND self.isWorkshop = true</domain>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
 
   <search-filters name="company-filters" model="com.axelor.apps.base.db.Company"
     title="Company filters">

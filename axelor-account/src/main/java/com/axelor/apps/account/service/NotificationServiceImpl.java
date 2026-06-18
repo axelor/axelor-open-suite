@@ -83,9 +83,13 @@ public class NotificationServiceImpl implements NotificationService {
     notification.clearNotificationItemList();
 
     Comparator<Invoice> byInvoiceDate =
-        (i1, i2) -> i1.getInvoiceDate().compareTo(i2.getInvoiceDate());
-    Comparator<Invoice> byDueDate = (i1, i2) -> i1.getDueDate().compareTo(i2.getDueDate());
-    Comparator<Invoice> byInvoiceId = (i1, i2) -> i1.getInvoiceId().compareTo(i2.getInvoiceId());
+        Comparator.comparing(
+            Invoice::getInvoiceDate, Comparator.nullsLast(Comparator.naturalOrder()));
+    Comparator<Invoice> byDueDate =
+        Comparator.comparing(Invoice::getDueDate, Comparator.nullsLast(Comparator.naturalOrder()));
+    Comparator<Invoice> byInvoiceId =
+        Comparator.comparing(
+            Invoice::getInvoiceId, Comparator.nullsLast(Comparator.naturalOrder()));
 
     List<Invoice> invoiceList = new ArrayList<Invoice>();
     if (notification.getSubrogationRelease() != null) {

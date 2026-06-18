@@ -85,7 +85,7 @@ import org.slf4j.LoggerFactory;
 public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private static final int MAX_ITERATION = 100;
+  protected static final int MAX_ITERATION = 100;
 
   protected UnitConversionService unitConversionService;
   protected StockMoveLineRepository stockMoveLineRepository;
@@ -390,12 +390,15 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
           Optional.ofNullable(purchaseOrderLine.getEstimatedReceiptDate())
               .orElse(purchaseOrder.getEstimatedReceiptDate());
 
+      StockLocation effectiveStockLocation =
+          Optional.ofNullable(stockLocation).orElse(purchaseOrderStockLocation);
+
       StockLocation stockLocationKey =
           appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine()
                   && isStockLocationRelatedToPurchaseOrder(
-                      stockLocation, purchaseOrderStockLocation)
+                      effectiveStockLocation, purchaseOrderStockLocation)
               ? purchaseOrderStockLocation
-              : stockLocation;
+              : effectiveStockLocation;
 
       purchaseOrderLineMap
           .computeIfAbsent(Pair.of(stockLocationKey, dateKey), k -> new ArrayList<>())

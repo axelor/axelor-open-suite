@@ -21,7 +21,9 @@ package com.axelor.apps.helpdesk.service.app;
 import com.axelor.studio.db.AppHelpdesk;
 import com.axelor.studio.db.repo.AppHelpdeskRepository;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
+@Singleton
 public class AppHelpdeskServiceImpl implements AppHelpdeskService {
 
   protected AppHelpdeskRepository appHelpdeskRepository;

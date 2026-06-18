@@ -133,8 +133,6 @@ import com.axelor.apps.base.service.MapGoogleService;
 import com.axelor.apps.base.service.MapGoogleServiceImpl;
 import com.axelor.apps.base.service.MapOsmService;
 import com.axelor.apps.base.service.MapOsmServiceImpl;
-import com.axelor.apps.base.service.MapRestService;
-import com.axelor.apps.base.service.MapRestServiceImpl;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.MapServiceImpl;
 import com.axelor.apps.base.service.MapToolService;
@@ -369,6 +367,8 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.OrderLineTaxServiceImpl;
+import com.axelor.apps.base.service.tax.TaxArchiveService;
+import com.axelor.apps.base.service.tax.TaxArchiveServiceImpl;
 import com.axelor.apps.base.service.tax.TaxEquivService;
 import com.axelor.apps.base.service.tax.TaxEquivServiceImpl;
 import com.axelor.apps.base.service.theme.MetaThemeFetchService;
@@ -484,7 +484,6 @@ public class BaseModule extends AxelorModule {
     bind(PeriodService.class).to(PeriodServiceImpl.class);
     bind(ConvertDemoDataFileService.class).to(ConvertDemoDataFileServiceImpl.class);
     bind(ImportDemoDataService.class).to(ImportDemoDataServiceImpl.class);
-    bind(MapRestService.class).to(MapRestServiceImpl.class);
     bind(TaxRepository.class).to(TaxBaseRepository.class);
     bind(TeamTaskRepository.class).to(TeamTaskBaseRepository.class);
     bind(TeamTaskService.class).to(TeamTaskServiceImpl.class);
@@ -644,5 +643,6 @@ public class BaseModule extends AxelorModule {
     bind(MapToolService.class).to(MapToolServiceImpl.class);
     bind(PricingLogsObserver.class);
     bind(PriceListLineRepository.class).to(PriceListLineManagementRepository.class);
+    bind(TaxArchiveService.class).to(TaxArchiveServiceImpl.class);
   }
 }

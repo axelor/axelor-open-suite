@@ -133,6 +133,15 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
 
     initFieldsNeededForPlan(manufOrder);
     planSchedulingDates(manufOrder);
+    // Re-attach after potential JPA.clear() from isConsProOnOperation stock move creation.
+    // Use find() instead of save()/merge() to avoid cascade explosion (32767 columns error):
+    // em.merge() on detached ManufOrder cascades through all collections (StockMoveLine
+    // extended in enterprise), generating a SQL query exceeding PostgreSQL column limits.
+    LocalDateTime plannedStartDateT = manufOrder.getPlannedStartDateT();
+    LocalDateTime plannedEndDateT = manufOrder.getPlannedEndDateT();
+    manufOrder = manufOrderRepo.find(manufOrder.getId());
+    manufOrder.setPlannedStartDateT(plannedStartDateT);
+    manufOrder.setPlannedEndDateT(plannedEndDateT);
     manufOrder = updateStatusToPlan(manufOrder);
     return manufOrderRepo.save(manufOrder);
   }
@@ -277,10 +286,13 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     } else if (manufOrder.getPlannedStartDateT() == null
         && manufOrder.getPlannedEndDateT() != null) {
       long duration = 0;
-      for (OperationOrder order : manufOrder.getOperationOrderList()) {
-        duration +=
-            operationOrderService.computeEntireCycleDuration(
-                order, order.getManufOrder().getQty()); // in seconds
+      List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
+      if (CollectionUtils.isNotEmpty(operationOrderList)) {
+        for (OperationOrder order : operationOrderList) {
+          duration +=
+              operationOrderService.computeEntireCycleDuration(
+                  order, order.getManufOrder().getQty()); // in seconds
+        }
       }
       // This is a estimation only, it will be updated later
       // It does not take into configuration such as machine planning etc...

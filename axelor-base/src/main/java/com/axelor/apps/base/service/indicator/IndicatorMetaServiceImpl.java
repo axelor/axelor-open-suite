@@ -33,10 +33,10 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class IndicatorMetaServiceImpl implements IndicatorMetaService {
 
-  private static final String INDICATOR_TITLE = "Indicators";
-  private static final String BASE_ACTION =
+  protected static final String INDICATOR_TITLE = "Indicators";
+  protected static final String BASE_ACTION =
       "action-indicator-result-line-view-indicator-result-line";
-  private static final String CHART_ACTION_PREFIX = "chart:indicator-result-chart-";
+  protected static final String CHART_ACTION_PREFIX = "chart:indicator-result-chart-";
 
   private final IndicatorConfigRepository configRepo;
 

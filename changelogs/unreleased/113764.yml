@@ -1,0 +1,3 @@
+---
+title: "Expense: fixed electronic signature failure when the uploaded file has a short filename."
+module: axelor-base

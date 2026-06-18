@@ -33,7 +33,14 @@ public interface AnalyticLine {
 
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate();
 
+  public void setAnalyticDistributionTemplate(
+      AnalyticDistributionTemplate analyticDistributionTemplate);
+
   public List<AnalyticMoveLine> getAnalyticMoveLineList();
+
+  public void setAnalyticMoveLineList(List<AnalyticMoveLine> analyticMoveLineList);
+
+  public void addAnalyticMoveLineListItem(AnalyticMoveLine analyticMoveLine);
 
   public AnalyticAccount getAxis1AnalyticAccount();
 

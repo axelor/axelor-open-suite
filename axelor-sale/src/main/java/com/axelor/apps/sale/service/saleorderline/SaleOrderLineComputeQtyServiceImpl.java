@@ -32,7 +32,9 @@ public class SaleOrderLineComputeQtyServiceImpl implements SaleOrderLineComputeQ
   @Override
   public Map<String, Object> initQty(SaleOrderLine saleOrderLine) {
     Map<String, Object> values = new HashMap<>();
-    saleOrderLine.setQty(BigDecimal.ONE);
+    if (saleOrderLine.getQty() == null || saleOrderLine.getQty().compareTo(BigDecimal.ZERO) == 0) {
+      saleOrderLine.setQty(BigDecimal.ONE);
+    }
     values.put("qty", saleOrderLine.getQty());
     return values;
   }

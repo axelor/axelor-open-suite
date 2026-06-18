@@ -35,7 +35,7 @@
 135;"move";"Clearance Move Live";"NUMBERS";"UPPERCASE";1;4;"MVCLR_%YY_";;1;1
 136;"move";"Irrecovrable Move Line";"NUMBERS";"UPPERCASE";1;4;"MVIRREC%YY_";;1;1
 137;"moveLineExport";"Accounting Export";"NUMBERS";"UPPERCASE";1;4;"ACCEXP_%YY_";;1;1
-138;"moveLineReport";"Accounting Report";"NUMBERS";"UPPERCASE";1;4;"ACCREP_%YY_";;1;1
+138;"accountingReport";"Accounting Report";"NUMBERS";"UPPERCASE";1;4;"ACCREP_%YY_";;1;1
 139;"paymentSchedule";"Installment N°";"NUMBERS";"UPPERCASE";1;4;"INSTAL_%YY_";;1;1
 140;"paymentVoucher";"N° for payments received in Cash";"NUMBERS";"UPPERCASE";1;4;"PI_ESP_%YY_";;1;1
 141;"paymentVoucher";"N° for payments received in Cheque";"NUMBERS";"UPPERCASE";1;4;"PI_CHQ_%YY_";;1;1

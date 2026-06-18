@@ -110,6 +110,7 @@ public class ContractSaleOrderGenerationImpl implements ContractSaleOrderGenerat
     saleOrderLine.setTaxLineSet(Sets.newHashSet(contractLine.getTaxLineSet()));
     saleOrderLine.setTypeSelect(contractLine.getTypeSelect());
 
+    saleOrderLine.setMainSaleOrder(saleOrder);
     saleOrder.addSaleOrderLineListItem(saleOrderLine);
 
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);

@@ -226,7 +226,7 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
       toRemoveLines.remove(saleOrderLine);
     }
     manageLines(saleOrder, toRemoveLines);
-    saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null);
+    saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null, saleOrder);
   }
 
   @Transactional(rollbackOn = Exception.class)

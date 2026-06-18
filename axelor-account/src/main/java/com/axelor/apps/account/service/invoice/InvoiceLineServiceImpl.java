@@ -49,6 +49,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.studio.db.AppInvoice;
 import com.google.common.collect.Sets;
@@ -83,6 +84,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected ProductPriceService productPriceService;
   protected FiscalPositionService fiscalPositionService;
   protected InvoiceLineCheckService invoiceLineCheckService;
+  protected OrderLineTaxService orderLineTaxService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -101,7 +103,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       CurrencyScaleService currencyScaleService,
       ProductPriceService productPriceService,
       FiscalPositionService fiscalPositionService,
-      InvoiceLineCheckService invoiceLineCheckService) {
+      InvoiceLineCheckService invoiceLineCheckService,
+      OrderLineTaxService orderLineTaxService) {
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
@@ -118,6 +121,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.productPriceService = productPriceService;
     this.fiscalPositionService = fiscalPositionService;
     this.invoiceLineCheckService = invoiceLineCheckService;
+    this.orderLineTaxService = orderLineTaxService;
   }
 
   @Override
@@ -337,6 +341,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     Map<String, Object> productInformation = new HashMap<>();
     productInformation.put("taxLineSet", Sets.newHashSet());
     productInformation.put("taxEquiv", null);
+    productInformation.put("vatExemptionReason", null);
     productInformation.put("taxCode", null);
     productInformation.put("taxRate", null);
     productInformation.put("productName", null);
@@ -482,6 +487,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
           accountManagementAccountService.getProductTaxEquiv(
               product, company, fiscalPosition, isPurchase);
       productInformation.put("taxEquiv", taxEquiv);
+      productInformation.put(
+          "vatExemptionReason",
+          orderLineTaxService.resolveVatExemptionReason(
+              fiscalPosition, taxEquiv, invoice.getPartner()));
 
       Account account =
           accountManagementAccountService.getProductAccount(
@@ -657,6 +666,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
           accountManagementAccountService.getProductTaxEquiv(
               invoiceLine.getProduct(), invoice.getCompany(), fiscalPosition, isPurchase);
       invoiceLine.setTaxEquiv(taxEquiv);
+      invoiceLine.setVatExemptionReason(
+          orderLineTaxService.resolveVatExemptionReason(
+              fiscalPosition, taxEquiv, invoice.getPartner()));
 
       Account account =
           accountManagementAccountService.getProductAccount(
@@ -775,6 +787,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     Map<String, Object> valuesMap = new HashMap<>();
     if (fiscalPosition == null || CollectionUtils.isEmpty(taxLineSet)) {
       valuesMap.put("taxEquiv", taxEquiv);
+      valuesMap.put("vatExemptionReason", null);
       return valuesMap;
     }
     taxEquiv = fiscalPositionService.getTaxEquivFromOrToTaxSet(fiscalPosition, taxLineSet);
@@ -786,6 +799,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     valuesMap.put("taxLineSet", taxLineSet);
     valuesMap.put("taxEquiv", taxEquiv);
+    valuesMap.put(
+        "vatExemptionReason",
+        orderLineTaxService.resolveVatExemptionReason(
+            fiscalPosition, taxEquiv, invoice.getPartner()));
     return valuesMap;
   }
 }

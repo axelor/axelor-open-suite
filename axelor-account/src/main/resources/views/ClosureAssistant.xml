@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid model="com.axelor.apps.account.db.ClosureAssistant" title="Year closure"
     name="closure-assistant-grid" orderBy="progress">
-    <field name="fiscalYear.code" title="Fiscal Year" width="300"/>
-    <field name="fiscalYear.company.code" title="Company" width="300"/>
+    <field name="fiscalYear" title="Fiscal Year" width="300"/>
+    <field name="company" title="Company" width="300"/>
     <field name="progress" title="Progress" widget="Progress" width="600"/>
     <field name="statusSelect" widget="single-select"/>
   </grid>
@@ -34,7 +34,6 @@
 
   <action-group name="account-closure-assistant-group-on-new">
     <action name="account-closure-assistant-method-set-fields-on-new"/>
-    <action name="save"/>
   </action-group>
 
   <action-group name="account-closure-assistant-group-on-save">

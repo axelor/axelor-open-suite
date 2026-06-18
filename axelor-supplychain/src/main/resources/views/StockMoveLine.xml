@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid id="stock-move-line-supplychain-grid" name="stock-move-line-grid"
     title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" extension="true">
@@ -171,6 +171,21 @@
       <insert position="after">
         <field name="qtyRemainingToPackage" readonly="true" x-scale="$nbDecimalDigitForQty"
           colSpan="3"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='mainPanel']">
+      <insert position="after">
+        <panel-related name="childStockMoveLinesPanel" field="childStockMoveLineList"
+          title="Child stock move lines"
+          showIf="id &amp;&amp; childStockMoveLineList &amp;&amp; childStockMoveLineList.length > 0"
+          colSpan="12" canNew="false" canEdit="false" canDelete="false" editable="false">
+          <field name="product" readonly="true"/>
+          <field name="productName" readonly="true"/>
+          <field name="qty" readonly="true" x-scale="$nbDecimalDigitForQty"/>
+          <field name="realQty" readonly="true" x-scale="$nbDecimalDigitForQty"/>
+          <field name="unit" readonly="true"/>
+          <field name="stockMove"/>
+        </panel-related>
       </insert>
     </extend>
   </form>

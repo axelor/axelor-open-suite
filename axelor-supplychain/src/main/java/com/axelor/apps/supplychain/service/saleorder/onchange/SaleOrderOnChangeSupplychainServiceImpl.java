@@ -66,7 +66,6 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
   protected SaleOrderSupplychainService saleOrderSupplychainService;
   protected SaleOrderIntercoService saleOrderIntercoService;
   protected SaleOrderStockLocationService saleOrderStockLocationService;
-  protected AppBaseService appBaseService;
   protected SaleOrderTaxNumberService saleOrderTaxNumberService;
   protected PricingSupplychainService pricingSupplychainService;
 
@@ -91,7 +90,6 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderIntercoService saleOrderIntercoService,
       SaleOrderStockLocationService saleOrderStockLocationService,
-      AppBaseService appBaseService1,
       SaleOrderTaxNumberService saleOrderTaxNumberService,
       PricingSupplychainService pricingSupplychainService) {
     super(
@@ -114,7 +112,6 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
     this.saleOrderSupplychainService = saleOrderSupplychainService;
     this.saleOrderIntercoService = saleOrderIntercoService;
     this.saleOrderStockLocationService = saleOrderStockLocationService;
-    this.appBaseService = appBaseService1;
     this.saleOrderTaxNumberService = saleOrderTaxNumberService;
     this.pricingSupplychainService = pricingSupplychainService;
   }
@@ -184,7 +181,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
       FreightCarrierMode freightCarrierMode = clientPartner.getFreightCarrierMode();
       if (freightCarrierMode != null) {
         saleOrder.setFreightCarrierMode(freightCarrierMode);
-        values.put("freightCarriedMode", saleOrder.getFreightCarrierMode());
+        values.put("freightCarrierMode", saleOrder.getFreightCarrierMode());
         saleOrder.setCarrierPartner(freightCarrierMode.getCarrierPartner());
         values.put("carrierPartner", saleOrder.getCarrierPartner());
       }

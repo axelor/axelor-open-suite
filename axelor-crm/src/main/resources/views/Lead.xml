@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <kanban columnBy="leadStatus" model="com.axelor.apps.crm.db.Lead" sequenceBy="sequence"
     title="Leads" name="lead-kanban" draggable="true" limit="10"
@@ -210,7 +210,6 @@
                   onChange="action-group-base-address-country-change" required="true"
                   form-view="country-form" grid-view="country-grid"/>
                 <panel name="countryHiddenPanel" hideIf="country == null" colSpan="12">
-                  <field name="department" x-bind="{{department|uppercase}}" colSpan="12"/>
                   <field name="subDepartment" colSpan="12"
                     x-bind="{{subDepartment|uppercase}}"/>
                   <field name="room" x-bind="{{room|uppercase}}" colSpan="12"/>
@@ -300,7 +299,8 @@
       <field name="team" canEdit="false" colSpan="6" form-view="team-form"
         grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
       <field name="company" colSpan="6" form-view="company-form" grid-view="company-grid"
-        if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+        if="__config__.app.getApp('base')?.getEnableMultiCompany()"
+        onChange="action-lead-method-filter-tag-set-on-company-change"/>
       <field name="agency" colSpan="6" form-view="agency-form" grid-view="agency-grid"
         if="__config__.app.getApp('crm')?.getAgenciesManagement()"/>
       <field name="contactDate" colSpan="6"/>
@@ -665,6 +665,11 @@
 
   <action-attrs name="action-lead-attrs-set-lead-tag-domain">
     <attribute name="domain" for="tagSet"
-      expr="eval: &quot; (${__repo__(MetaModel).findByName('Lead')?.id} IN (self.concernedModelSet.id) OR self.concernedModelSet IS EMPTY) AND (:company IS NULL OR :company MEMBER OF self.companySet OR self.companySet IS EMPTY) &quot;"/>
+      expr="eval: &quot; (${__repo__(MetaModel).findByName('Lead')?.id} IN (self.concernedModelSet.id) OR self.concernedModelSet IS EMPTY) AND (:company IS NULL OR :company MEMBER OF self.companySet OR self.companySet IS EMPTY) AND (self.tradingNameSet IS EMPTY OR EXISTS(SELECT 1 FROM TradingName tn WHERE tn MEMBER OF self.tradingNameSet AND tn.id = ${__user__?.tradingName?.id ?: 0})) &quot;"/>
   </action-attrs>
+
+  <action-method name="action-lead-method-filter-tag-set-on-company-change">
+    <call class="com.axelor.apps.crm.web.LeadController" method="filterTagSetOnCompanyChange"/>
+  </action-method>
+
 </object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="account-management-payment-mode-grid" title="Account Managements"
     model="com.axelor.apps.account.db.AccountManagement" editable="true"
@@ -29,6 +29,7 @@
     <field name="typeSelect" hidden="true"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       onChange="action-group-account-account-management-onchange-common" canEdit="false"
+      onSelect="action-account-management-method-set-company-domain"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="purchaseTaxVatSystem1Account"
       domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
@@ -50,7 +51,8 @@
 
   <grid name="account-management-editable-grid" title="Account management list"
     model="com.axelor.apps.account.db.AccountManagement" editable="true"
-    groupBy="company,bankDetails" onNew="action-record-account-management-new-account-management">
+    groupBy="company,bankDetails" onNew="action-record-account-management-new-account-management"
+    onSave="action-account-management-method-check-payment-mode-uniqueness">
     <field name="company"/>
     <field name="bankDetails"/>
     <field name="journal"
@@ -67,6 +69,8 @@
       <attribute name="onNew"
         value="action-account-management-group-onNew,action-account-management-attrs-global-accounting-cash-account-title"/>
       <attribute name="onLoad" value="account-action-account-management-group-onload"/>
+      <attribute name="onSave"
+        value="action-account-management-method-check-payment-mode-uniqueness"/>
     </extend>
     <extend
       target="//panel[@name='paymentConfigPanel']/field[@name='globalAccountingCashAccount']">
@@ -219,6 +223,11 @@
     name="action-account-management-method-set-domain-analytic-distribution-template">
     <call class="com.axelor.apps.account.web.AccountManagementController"
       method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
+
+  <action-method name="action-account-management-method-check-payment-mode-uniqueness">
+    <call class="com.axelor.apps.account.web.AccountManagementController"
+      method="checkPaymentModeUniqueness"/>
   </action-method>
 
 </object-views>

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <grid name="cost-calculations-grid" title="Cost price calculation"
+    model="com.axelor.apps.supplychain.db.UnitCostCalculation" orderBy="-statusSelect,-createdOn">
+    <field name="unitCostCalcSeq"/>
+    <field name="name"/>
+    <field name="calculationDateTime"/>
+    <field name="updateCostDateTime"/>
+    <field name="allBomLevels"/>
+    <field name="statusSelect" widget="single-select"/>
+  </grid>
+
+  <grid name="depreciation-rate-calculations-grid" title="Depreciation rate calculation"
+    model="com.axelor.apps.supplychain.db.UnitCostCalculation" orderBy="-statusSelect,-createdOn">
+    <field name="unitCostCalcSeq"/>
+    <field name="name"/>
+    <field name="calculationDateTime"/>
+    <field name="updateCostDateTime"/>
+    <field name="statusSelect" widget="single-select"
+      selection="supplychain.cost.review.status.select"/>
+  </grid>
+
+  <form name="cost-calculations-form" title="Cost price calculation"
+    model="com.axelor.apps.supplychain.db.UnitCostCalculation" width="*"
+    onNew="action-unit-cost-calculation-record-default,action-unit-cost-calculation-attrs-set-company-required,action-unit-cost-calculation-attrs-scale"
+    onLoad="action-unit-cost-calculation-method-fill-company,action-unit-cost-calculation-attrs-scale"
+    onSave="save,action-unit-cost-calculation-method-fill-company-set">
+    <panel name="mainPanel">
+      <field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false"
+        colSpan="12" hideIf="typeSelect == 1"/>
+      <field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false"
+        colSpan="12" showIf="typeSelect == 1" selection="supplychain.cost.review.status.select"/>
+      <field name="unitCostCalcSeq" readonly="true" colSpan="4"/>
+      <field name="name" colSpan="8" required="true"/>
+      <field name="typeSelect" hidden="true"/>
+    </panel>
+    <panel name="startFilterPanel" colSpan="12" showIf="statusSelect == 1">
+      <field name="companySet" widget="Tags" required="true"
+        if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"
+        showIf="typeSelect != 1"/>
+      <field name="$company" title="Company" required="true" type="many-to-one"
+        target="com.axelor.apps.base.db.Company"
+        if="__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"
+        showIf="typeSelect != 1"/>
+      <field name="productSubTypeSelect" widget="MultiSelect" selection-in="1,2"
+        requiredIf="typeSelect == 0" showIf="typeSelect == 0"/>
+      <field name="allBomLevels" showIf="typeSelect != 1"/>
+      <field name="productSet" widget="Tags"
+        onSelect="action-unit-cost-calculation-method-create-product-domain" canNew="false"
+        colSpan="12"/>
+      <field name="productCategorySet" widget="Tags" colSpan="12"/>
+      <field name="productFamilySet" widget="Tags" colSpan="12"/>
+      <field name="stockRotationCategorySet" widget="Tags" x-color-field="color" colSpan="12"
+        showIf="typeSelect == 1"/>
+      <field name="customerOk" showIf="typeSelect == 1" colSpan="4"/>
+      <field name="takeInAccountSubCategories" showIf="typeSelect == 1" colSpan="4"/>
+    </panel>
+    <panel-tabs name="mainPanelTabs" colSpan="12">
+      <panel name="descriptionPanel" title="Description">
+        <field name="description" widget="html" colSpan="12" showTitle="false"/>
+      </panel>
+      <panel name="filtersPanel" title="Filters" showIf="statusSelect != 1"
+        readonlyIf="statusSelect == 3">
+        <field name="companySet" widget="Tags" required="true"
+          if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"
+          showIf="typeSelect != 1"/>
+        <field name="$company" title="Company" required="true" type="many-to-one"
+          target="com.axelor.apps.base.db.Company"
+          if="__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"
+          showIf="typeSelect != 1"/>
+        <field name="productSubTypeSelect" widget="MultiSelect" selection-in="1,2"
+          requiredIf="typeSelect != 1" showIf="typeSelect != 1"/>
+        <field name="allBomLevels" showIf="typeSelect != 1"/>
+        <field name="productSet" widget="Tags"
+          onSelect="action-unit-cost-calculation-method-create-product-domain" canNew="false"
+          colSpan="12"/>
+        <field name="productCategorySet" widget="Tags" colSpan="12"/>
+        <field name="productFamilySet" widget="Tags" colSpan="12"/>
+        <field name="stockRotationCategorySet" widget="Tags" x-color-field="color"
+          colSpan="12" showIf="typeSelect == 1"/>
+        <field name="customerOk" showIf="typeSelect == 1" colSpan="4"/>
+        <field name="takeInAccountSubCategories" showIf="typeSelect == 1" colSpan="4"/>
+      </panel>
+      <panel-related name="resultPanel" field="unitCostCalcLineList"
+        grid-view="unit-cost-calc-line-grid" form-view="unit-cost-calc-line-form" height="20"
+        colSpan="12" canNew="false" showIf="statusSelect != 1 &amp;&amp; typeSelect == 0"
+        readonlyIf="statusSelect == 3"/>
+      <panel-related name="resultDepreciationPanel" field="unitCostCalcLineList"
+        grid-view="depreciation-unit-cost-calc-line-grid"
+        form-view="depreciation-unit-cost-calc-line-form" height="20" colSpan="12" canNew="false"
+        showIf="statusSelect != 1 &amp;&amp; typeSelect == 1" readonlyIf="statusSelect == 3"/>
+      <panel-dashlet name="familySummaryPanel"
+        action="action-depreciation-rate-calculation-view-family-summary"
+        title="Revaluation by product family" colSpan="12"
+        showIf="statusSelect != 1 &amp;&amp; typeSelect == 1"/>
+    </panel-tabs>
+    <panel name="actionCostCalculationPanel" sidebar="true" showIf="typeSelect == 0">
+      <button name="runCalculationBtn" title="Run calculation"
+        onClick="save,action-unit-cost-calculation-method-fill-company-set,action-unit-cost-calculation-method-run-calculation"
+        hideIf="statusSelect == 3"/>
+      <button name="updateUnitCostBtn" title="Update costs"
+        onClick="save,action-unit-cost-calculation-method-update-unit-costs"
+        showIf="statusSelect == 2"/>
+      <button name="exportBtn" title="Export"
+        onClick="save,action-unit-cost-calculation-method-export-csv" hideIf="statusSelect == 1"/>
+      <button name="importBtn" title="import.verb"
+        onClick="save,action-unit-cost-calculation-view-import-csv" showIf="statusSelect == 2"/>
+    </panel>
+    <panel name="actionDepreciationRatePanel" sidebar="true" showIf="typeSelect == 1">
+      <button name="runCalculationBtn" title="Run calculation"
+        onClick="save,action-depreciation-rate-calculation-method-run-calculation"
+        hideIf="statusSelect == 3"/>
+      <button name="updateDepRatesBtn" title="Update rates"
+        onClick="save,action-depreciation-rate-calculation-method-update-dep-rates"
+        showIf="statusSelect == 2"/>
+      <button name="exportBtn" title="Export"
+        onClick="save,action-depreciation-rate-calculation-method-export-csv"
+        hideIf="statusSelect == 1"/>
+      <button name="importBtn" title="Import"
+        onClick="save,action-depreciation-rate-calculation-view-import-csv"
+        showIf="statusSelect == 2"/>
+    </panel>
+    <panel name="datePanel" sidebar="true" showIf="statusSelect != 1">
+      <field name="calculationDateTime" readonly="true"/>
+      <field name="updateCostDateTime" readonly="true"/>
+    </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <form name="wizard-unit-cost-calc-import-form" title="Import CSV"
+    model="com.axelor.utils.db.Wizard">
+    <panel name="wizardPanel">
+      <field name="metaFile" title="Input file" type="many-to-one"
+        target="com.axelor.meta.db.MetaFile" widget="binary-link"/>
+      <button name="importBtn" colSpan="4" title="import.verb" readonlyIf="metaFile == null"
+        onClick="action-unit-cost-calculation-method-import-csv"/>
+    </panel>
+  </form>
+
+  <form name="wizard-depreciation-rate-calc-import-form" title="Import CSV"
+    model="com.axelor.utils.db.Wizard">
+    <panel name="wizardPanel">
+      <field name="metaFile" title="Input file" type="many-to-one"
+        target="com.axelor.meta.db.MetaFile" widget="binary-link"/>
+      <button name="importBtn" colSpan="4" title="Import" readonlyIf="metaFile == null"
+        onClick="action-depreciation-rate-calculation-method-import-csv"/>
+    </panel>
+  </form>
+
+  <action-record name="action-unit-cost-calculation-record-default"
+    model="com.axelor.apps.supplychain.db.UnitCostCalculation">
+    <field name="statusSelect" expr="eval:1"/>
+    <field name="typeSelect" expr="eval: 0" if="_typeSelect == 0"/>
+    <field name="typeSelect" expr="eval: 1" if="_typeSelect == 1"/>
+  </action-record>
+
+  <action-method name="action-unit-cost-calculation-method-run-calculation">
+    <call class="com.axelor.apps.production.web.UnitCostCalculationController"
+      method="runUnitCostCalc"/>
+  </action-method>
+
+  <action-method name="action-unit-cost-calculation-method-update-unit-costs">
+    <call class="com.axelor.apps.production.web.UnitCostCalculationController"
+      method="updateUnitCosts"/>
+  </action-method>
+
+  <action-method name="action-unit-cost-calculation-method-export-csv">
+    <call class="com.axelor.apps.production.web.UnitCostCalculationController"
+      method="exportUnitCostCalc"/>
+  </action-method>
+
+  <action-method name="action-unit-cost-calculation-method-import-csv">
+    <call class="com.axelor.apps.production.web.UnitCostCalculationController"
+      method="importUnitCostCalc"/>
+  </action-method>
+
+  <action-view name="action-unit-cost-calculation-view-import-csv" title="import.name"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="wizard-unit-cost-calc-import-form"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="width" value="800"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup" value="reload"/>
+  </action-view>
+
+  <action-view name="action-depreciation-rate-calculation-view-import-csv"
+    title="Import CSV" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="wizard-depreciation-rate-calc-import-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-unit-cost-calculation-method-create-product-domain">
+    <call class="com.axelor.apps.production.web.UnitCostCalculationController"
+      method="fillProductSetDomain"/>
+  </action-method>
+
+  <action-method name="action-unit-cost-calculation-method-fill-company-set">
+    <call class="com.axelor.apps.production.web.UnitCostCalculationController"
+      method="fillCompanySet"/>
+  </action-method>
+
+  <action-method name="action-unit-cost-calculation-method-fill-company">
+    <call class="com.axelor.apps.production.web.UnitCostCalculationController"
+      method="fillCompany"/>
+  </action-method>
+
+  <action-method name="action-depreciation-rate-calculation-method-run-calculation">
+    <call class="com.axelor.apps.supplychain.web.DepRateCalculationController"
+      method="runDepRateCalc"/>
+  </action-method>
+
+  <action-method name="action-depreciation-rate-calculation-method-update-dep-rates">
+    <call class="com.axelor.apps.supplychain.web.DepRateCalculationController"
+      method="updateDepRates"/>
+  </action-method>
+
+  <action-method name="action-depreciation-rate-calculation-method-export-csv">
+    <call class="com.axelor.apps.supplychain.web.DepRateCalculationController"
+      method="exportDepRateCalc"/>
+  </action-method>
+
+  <action-method name="action-depreciation-rate-calculation-method-import-csv">
+    <call class="com.axelor.apps.supplychain.web.DepRateCalculationController"
+      method="importDepRateCalc"/>
+  </action-method>
+
+  <action-view name="action-depreciation-rate-calculation-view-family-summary"
+    title="Revaluation by product family" model="com.axelor.apps.supplychain.db.UnitCostCalcLine">
+    <view type="custom" name="depreciation-unit-cost-calc-line-family-summary-custom"/>
+    <context name="id" expr="eval: id"/>
+  </action-view>
+
+  <action-attrs name="action-unit-cost-calculation-attrs-set-company-required">
+    <attribute name="required" for="companySet" expr="false"
+      if="__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
+  </action-attrs>
+
+  <action-attrs name="action-unit-cost-calculation-attrs-scale">
+    <attribute name="scale"
+      for="unitCostCalcLineList.previousCost,unitCostCalcLineList.computedCost,unitCostCalcLineList.costToApply,unitCostCalcLineList.minRate,unitCostCalcLineList.maxRate,unitCostCalcLineList.totalPrice,unitCostCalcLineList.valuedGap,unitCostCalcLineList.previousRate"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="unitCostCalcLineList.qty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-attrs>
+</object-views>

@@ -42,7 +42,7 @@ import org.apache.commons.collections.CollectionUtils;
 public class InventoryStockLocationUpdateServiceImpl
     implements InventoryStockLocationUpdateService {
 
-  private static final int DEFAULT_PRODUCT_PAGE_SIZE = 10;
+  protected static final int DEFAULT_PRODUCT_PAGE_SIZE = 10;
 
   protected final StockLocationLineRepository stockLocationLineRepository;
   protected final InventoryLineRepository inventoryLineRepository;
@@ -63,7 +63,6 @@ public class InventoryStockLocationUpdateServiceImpl
     }
 
     final Long inventoryId = inventory.getId();
-    StockLocation stockLocation = inventory.getStockLocation();
 
     int offset = 0;
     final int productPageSize = DEFAULT_PRODUCT_PAGE_SIZE;
@@ -76,10 +75,17 @@ public class InventoryStockLocationUpdateServiceImpl
 
       List<InventoryLine> linesForPage = fetchInventoryLinesForProducts(inventoryId, productIdPage);
 
+      List<StockLocation> locationsForPage =
+          linesForPage.stream()
+              .map(InventoryLine::getStockLocation)
+              .filter(Objects::nonNull)
+              .distinct()
+              .collect(Collectors.toList());
+
       List<StockLocationLine> stockLocationLines =
-          fetchStockLocationLinesForProducts(stockLocation, productIdPage, /* details= */ false);
+          fetchStockLocationLinesForProducts(locationsForPage, productIdPage, /* details= */ false);
       List<StockLocationLine> detailsStockLocationLines =
-          fetchStockLocationLinesForProducts(stockLocation, productIdPage, /* details= */ true);
+          fetchStockLocationLinesForProducts(locationsForPage, productIdPage, /* details= */ true);
 
       processPage(inventory, linesForPage, stockLocationLines, detailsStockLocationLines);
 
@@ -87,7 +93,6 @@ public class InventoryStockLocationUpdateServiceImpl
       JPA.clear();
 
       inventory = JPA.find(Inventory.class, inventoryId);
-      stockLocation = inventory.getStockLocation();
 
       offset += productPageSize;
     } while (productIdPage.size() == productPageSize);
@@ -137,24 +142,24 @@ public class InventoryStockLocationUpdateServiceImpl
   }
 
   /**
-   * @param stockLocation stock location
+   * @param stockLocations stock locations
    * @param productIds product ids
    * @param details
    * @return list of StockLocationLine
    */
   protected List<StockLocationLine> fetchStockLocationLinesForProducts(
-      StockLocation stockLocation, List<Long> productIds, boolean details) {
+      List<StockLocation> stockLocations, List<Long> productIds, boolean details) {
 
-    if (CollectionUtils.isEmpty(productIds)) {
+    if (CollectionUtils.isEmpty(productIds) || CollectionUtils.isEmpty(stockLocations)) {
       return Collections.emptyList();
     }
 
     StringBuilder filter = new StringBuilder();
 
     if (details) {
-      filter.append("self.detailsStockLocation = :stockLocation ");
+      filter.append("self.detailsStockLocation IN :stockLocations ");
     } else {
-      filter.append("self.stockLocation = :stockLocation ");
+      filter.append("self.stockLocation IN :stockLocations ");
     }
 
     filter.append("AND self.product.id IN :pids ");
@@ -168,13 +173,14 @@ public class InventoryStockLocationUpdateServiceImpl
     return stockLocationLineRepository
         .all()
         .filter(filter.toString())
-        .bind("stockLocation", stockLocation)
+        .bind("stockLocations", stockLocations)
         .bind("pids", productIds)
         .fetch();
   }
 
   /**
-   * Process one page: group inventory lines by product and update corresponding stockLocationLines
+   * Process one page: group inventory lines by (product, location) and update corresponding
+   * stockLocationLines
    *
    * @param inventory
    * @param linesForPage inventory lines that belong to products
@@ -191,29 +197,38 @@ public class InventoryStockLocationUpdateServiceImpl
       return;
     }
 
-    Map<Long, List<InventoryLine>> invLinesByProduct =
+    Map<ProductLocationKey, List<InventoryLine>> invLinesByProductAndLocation =
         linesForPage.stream()
             .filter(Objects::nonNull)
-            .filter(il -> il.getProduct() != null)
-            .collect(Collectors.groupingBy(il -> il.getProduct().getId()));
+            .filter(il -> il.getProduct() != null && il.getStockLocation() != null)
+            .collect(
+                Collectors.groupingBy(
+                    il ->
+                        ProductLocationKey.of(
+                            il.getProduct().getId(), il.getStockLocation().getId())));
 
-    Map<Long, List<StockLocationLine>> nonTrackedByProduct =
+    Map<ProductLocationKey, List<StockLocationLine>> nonTrackedMap =
         stockLocationLines.stream()
             .filter(Objects::nonNull)
-            .filter(s -> s.getProduct() != null)
-            .collect(Collectors.groupingBy(s -> s.getProduct().getId()));
-    Map<ProductTrackingKey, StockLocationLine> trackedMap =
+            .filter(s -> s.getProduct() != null && s.getStockLocation() != null)
+            .collect(
+                Collectors.groupingBy(
+                    s ->
+                        ProductLocationKey.of(
+                            s.getProduct().getId(), s.getStockLocation().getId())));
+    Map<ProductLocationTrackingKey, StockLocationLine> trackedMap =
         buildTrackedMap(detailsStockLocationLines);
 
-    for (Map.Entry<Long, List<InventoryLine>> entry : invLinesByProduct.entrySet()) {
-      Long productId = entry.getKey();
+    for (Map.Entry<ProductLocationKey, List<InventoryLine>> entry :
+        invLinesByProductAndLocation.entrySet()) {
+      ProductLocationKey key = entry.getKey();
       List<InventoryLine> inventoryLines = entry.getValue();
       if (CollectionUtils.isEmpty(inventoryLines)) {
         continue;
       }
 
       List<StockLocationLine> stockLocationLineList =
-          nonTrackedByProduct.getOrDefault(productId, Collections.emptyList());
+          nonTrackedMap.getOrDefault(key, Collections.emptyList());
       if (CollectionUtils.isNotEmpty(stockLocationLineList)) {
         BigDecimal realQty = sumRealQty(inventoryLines);
         for (StockLocationLine sll : stockLocationLineList) {
@@ -221,49 +236,54 @@ public class InventoryStockLocationUpdateServiceImpl
         }
       }
 
-      updateTrackedLines(inventory, inventoryLines, trackedMap, productId);
+      updateTrackedLines(inventory, inventoryLines, trackedMap, key.productId);
     }
   }
 
   /**
-   * Build a lookup map for tracked stockLocationLines keyed by (productId, trackingId).
+   * Build a lookup map for tracked stockLocationLines keyed by (productId, trackingId, locationId).
    *
    * @param trackedSll tracked stock location lines
-   * @return map keyed by ProductTrackingKey
+   * @return map keyed by ProductLocationTrackingKey
    */
-  protected Map<ProductTrackingKey, StockLocationLine> buildTrackedMap(
+  protected Map<ProductLocationTrackingKey, StockLocationLine> buildTrackedMap(
       List<StockLocationLine> trackedSll) {
-    Map<ProductTrackingKey, StockLocationLine> map = new HashMap<>();
+    Map<ProductLocationTrackingKey, StockLocationLine> map = new HashMap<>();
     if (CollectionUtils.isEmpty(trackedSll)) {
       return map;
     }
     for (StockLocationLine stockLocationLine : trackedSll) {
       Product product = stockLocationLine.getProduct();
       TrackingNumber trackingNumber = stockLocationLine.getTrackingNumber();
-      if (product == null || trackingNumber == null) {
+      StockLocation location = stockLocationLine.getDetailsStockLocation();
+      if (product == null || trackingNumber == null || location == null) {
         continue;
       }
-      map.put(ProductTrackingKey.of(product.getId(), trackingNumber.getId()), stockLocationLine);
+      map.put(
+          ProductLocationTrackingKey.of(product.getId(), trackingNumber.getId(), location.getId()),
+          stockLocationLine);
     }
     return map;
   }
 
   /**
-   * Update tracked stockLocationLines by matching each inventory line's tracking number and writing
-   * its realQty to the matched SLL.
+   * Update tracked stockLocationLines by matching each inventory line's tracking number and
+   * location, writing its realQty to the matched SLL.
    */
   protected void updateTrackedLines(
       Inventory inventory,
       List<InventoryLine> inventoryLines,
-      Map<ProductTrackingKey, StockLocationLine> trackedMap,
+      Map<ProductLocationTrackingKey, StockLocationLine> trackedMap,
       Long productId) {
 
     for (InventoryLine il : inventoryLines) {
-      if (il.getTrackingNumber() == null) {
+      if (il.getTrackingNumber() == null || il.getStockLocation() == null) {
         continue;
       }
       Long trackingId = il.getTrackingNumber().getId();
-      ProductTrackingKey key = ProductTrackingKey.of(productId, trackingId);
+      Long locationId = il.getStockLocation().getId();
+      ProductLocationTrackingKey key =
+          ProductLocationTrackingKey.of(productId, trackingId, locationId);
       StockLocationLine stockLocationLine = trackedMap.get(key);
       if (stockLocationLine != null) {
         BigDecimal realQty = il.getRealQty() == null ? BigDecimal.ZERO : il.getRealQty();
@@ -310,17 +330,17 @@ public class InventoryStockLocationUpdateServiceImpl
     stockLocationLineRepository.save(stockLocationLine);
   }
 
-  protected static final class ProductTrackingKey {
-    private final Long productId;
-    private final Long trackingId;
+  protected static final class ProductLocationKey {
+    final Long productId;
+    final Long locationId;
 
-    private ProductTrackingKey(Long productId, Long trackingId) {
+    private ProductLocationKey(Long productId, Long locationId) {
       this.productId = productId;
-      this.trackingId = trackingId;
+      this.locationId = locationId;
     }
 
-    static ProductTrackingKey of(Long productId, Long trackingId) {
-      return new ProductTrackingKey(productId, trackingId);
+    static ProductLocationKey of(Long productId, Long locationId) {
+      return new ProductLocationKey(productId, locationId);
     }
 
     @Override
@@ -328,17 +348,52 @@ public class InventoryStockLocationUpdateServiceImpl
       if (this == o) {
         return true;
       }
-      if (!(o instanceof ProductTrackingKey)) {
+      if (!(o instanceof ProductLocationKey)) {
         return false;
       }
-      ProductTrackingKey that = (ProductTrackingKey) o;
+      ProductLocationKey that = (ProductLocationKey) o;
       return Objects.equals(productId, that.productId)
-          && Objects.equals(trackingId, that.trackingId);
+          && Objects.equals(locationId, that.locationId);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(productId, trackingId);
+      return Objects.hash(productId, locationId);
+    }
+  }
+
+  protected static final class ProductLocationTrackingKey {
+    private final Long productId;
+    private final Long trackingId;
+    private final Long locationId;
+
+    private ProductLocationTrackingKey(Long productId, Long trackingId, Long locationId) {
+      this.productId = productId;
+      this.trackingId = trackingId;
+      this.locationId = locationId;
+    }
+
+    static ProductLocationTrackingKey of(Long productId, Long trackingId, Long locationId) {
+      return new ProductLocationTrackingKey(productId, trackingId, locationId);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+      if (!(o instanceof ProductLocationTrackingKey)) {
+        return false;
+      }
+      ProductLocationTrackingKey that = (ProductLocationTrackingKey) o;
+      return Objects.equals(productId, that.productId)
+          && Objects.equals(trackingId, that.trackingId)
+          && Objects.equals(locationId, that.locationId);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(productId, trackingId, locationId);
     }
   }
 }

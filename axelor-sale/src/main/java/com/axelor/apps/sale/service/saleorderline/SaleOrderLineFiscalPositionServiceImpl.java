@@ -25,6 +25,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -42,6 +43,7 @@ public class SaleOrderLineFiscalPositionServiceImpl implements SaleOrderLineFisc
   protected ProductCompanyService productCompanyService;
   protected TaxService taxService;
   protected AppBaseService appBaseService;
+  protected OrderLineTaxService orderLineTaxService;
 
   @Inject
   public SaleOrderLineFiscalPositionServiceImpl(
@@ -49,12 +51,14 @@ public class SaleOrderLineFiscalPositionServiceImpl implements SaleOrderLineFisc
       SaleOrderLineTaxService saleOrderLineTaxService,
       ProductCompanyService productCompanyService,
       TaxService taxService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      OrderLineTaxService orderLineTaxService) {
     this.accountManagementService = accountManagementService;
     this.saleOrderLineTaxService = saleOrderLineTaxService;
     this.productCompanyService = productCompanyService;
     this.taxService = taxService;
     this.appBaseService = appBaseService;
+    this.orderLineTaxService = orderLineTaxService;
   }
 
   public List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)
@@ -88,6 +92,9 @@ public class SaleOrderLineFiscalPositionServiceImpl implements SaleOrderLineFisc
             saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
 
     saleOrderLine.setTaxEquiv(taxEquiv);
+    saleOrderLine.setVatExemptionReason(
+        orderLineTaxService.resolveVatExemptionReason(
+            fiscalPosition, taxEquiv, saleOrder.getClientPartner()));
 
     BigDecimal exTaxTotal = saleOrderLine.getExTaxTotal();
 

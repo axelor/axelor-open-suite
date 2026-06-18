@@ -20,6 +20,7 @@ package com.axelor.apps.cash.management.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.cash.management.db.ForecastRecap;
+import java.util.List;
 
 public interface ForecastRecapService {
 
@@ -33,4 +34,6 @@ public interface ForecastRecapService {
 
   ForecastRecap computeStartingBalanceForReporting(ForecastRecap forecastRecap)
       throws AxelorException;
+
+  List<ForecastRecap> getOverlappingForecastRecaps(ForecastRecap forecastRecap);
 }

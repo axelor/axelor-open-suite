@@ -404,18 +404,28 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   @Override
   public boolean isIncotermRequired(SaleOrder saleOrder) {
     Partner clientPartner = saleOrder.getClientPartner();
-    return saleOrder.getSaleOrderLineList() != null
-        && saleOrder.getSaleOrderLineList().stream()
-            .anyMatch(
-                saleOrderLine ->
-                    saleOrderLine.getProduct() != null
-                        && saleOrderLine
-                            .getProduct()
-                            .getProductTypeSelect()
-                            .equals(ProductRepository.PRODUCT_TYPE_STORABLE))
-        && isSameAlpha2Code(saleOrder)
-        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION
-            & clientPartner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_COMPANY;
+    if (saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_FINALIZED_QUOTATION
+        || clientPartner == null
+        || clientPartner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_COMPANY
+        || !isSameAlpha2Code(saleOrder)) {
+      return false;
+    }
+    if (saleOrder.getId() == null) {
+      return saleOrder.getSaleOrderLineList() != null
+          && saleOrder.getSaleOrderLineList().stream()
+              .anyMatch(
+                  sol ->
+                      sol.getProduct() != null
+                          && ProductRepository.PRODUCT_TYPE_STORABLE.equals(
+                              sol.getProduct().getProductTypeSelect()));
+    }
+    return saleOrderLineRepo
+            .all()
+            .filter("self.saleOrder.id = :id AND self.product.productTypeSelect = :type")
+            .bind("id", saleOrder.getId())
+            .bind("type", ProductRepository.PRODUCT_TYPE_STORABLE)
+            .fetchOne()
+        != null;
   }
 
   protected boolean isSameAlpha2Code(SaleOrder saleOrder) {

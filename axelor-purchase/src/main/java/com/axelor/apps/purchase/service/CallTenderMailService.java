@@ -21,6 +21,7 @@ package com.axelor.apps.purchase.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.CallTenderOffer;
+import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
 import jakarta.mail.MessagingException;
 import java.io.IOException;
@@ -33,6 +34,11 @@ public interface CallTenderMailService {
   void generateOfferMail(List<CallTenderOffer> offer, Template template)
       throws AxelorException, IOException;
 
+  void generateCallTenderEmails(CallTender callTender)
+      throws AxelorException, IOException, ClassNotFoundException, MessagingException;
+
   void sendCallTenderOffers(CallTender callTender)
-      throws AxelorException, IOException, MessagingException, ClassNotFoundException;
+      throws ClassNotFoundException, MessagingException;
+
+  void removeCallTenderMailByMessage(Message message);
 }

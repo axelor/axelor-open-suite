@@ -56,10 +56,14 @@ public class TimesheetLineRestController {
   @POST
   @HttpExceptionHandler
   public Response createTimesheetLine(TimesheetLinePostRequest requestBody) throws AxelorException {
-    new SecurityCheck()
-        .createAccess(TimesheetLine.class)
-        .writeAccess(Timesheet.class, requestBody.getTimesheetId());
     RequestValidator.validateBody(requestBody);
+    SecurityCheck securityCheck = new SecurityCheck().createAccess(TimesheetLine.class);
+    if (requestBody.getTimesheetId() != null) {
+      securityCheck = securityCheck.writeAccess(Timesheet.class, requestBody.getTimesheetId());
+    } else {
+      securityCheck = securityCheck.writeAccess(Timesheet.class).createAccess(Timesheet.class);
+    }
+    securityCheck.check();
 
     Timesheet timesheet = TimesheetLinePostRequestHelper.fetchOrCreateTimesheet(requestBody);
     TimesheetLine timesheetLine =

@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -29,10 +31,20 @@ import java.util.Optional;
 public class BomLineCreationServiceImpl implements BomLineCreationService {
 
   protected final BillOfMaterialLineService billOfMaterialLineService;
+  protected final UnitRepository unitRepository;
 
   @Inject
-  public BomLineCreationServiceImpl(BillOfMaterialLineService billOfMaterialLineService) {
+  public BomLineCreationServiceImpl(
+      BillOfMaterialLineService billOfMaterialLineService, UnitRepository unitRepository) {
     this.billOfMaterialLineService = billOfMaterialLineService;
+    this.unitRepository = unitRepository;
+  }
+
+  protected Unit findUnit(Unit unit) {
+    if (unit == null || unit.getId() == null) {
+      return unit;
+    }
+    return unitRepository.find(unit.getId());
   }
 
   @Override
@@ -42,7 +54,7 @@ public class BomLineCreationServiceImpl implements BomLineCreationService {
             subSaleOrderLine.getProduct(),
             subSaleOrderLine.getBillOfMaterial(),
             subSaleOrderLine.getQty(),
-            subSaleOrderLine.getUnit(),
+            findUnit(subSaleOrderLine.getUnit()),
             Optional.ofNullable(subSaleOrderLine.getSequence())
                 .map(seq -> seq * 10)
                 .or(
@@ -68,7 +80,7 @@ public class BomLineCreationServiceImpl implements BomLineCreationService {
         saleOrderLineDetails.getProduct(),
         null,
         saleOrderLineDetails.getQty(),
-        saleOrderLineDetails.getUnit(),
+        findUnit(saleOrderLineDetails.getUnit()),
         Optional.ofNullable(saleOrderLineDetails.getBillOfMaterialLine())
             .map(BillOfMaterialLine::getPriority)
             .orElse(0),

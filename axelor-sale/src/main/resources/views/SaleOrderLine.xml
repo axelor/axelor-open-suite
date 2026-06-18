@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="sale-order-line-grid" title="SO lines"
     model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence">
     <hilite strong="true" color="default" if="typeSelect != 0"/>
-    <hilite color="danger" if="deliveryState == 1"/>
-    <hilite color="warning" if="deliveryState == 2"/>
-    <hilite color="success" if="deliveryState == 3"/>
+    <hilite color="danger"
+      if="$get('saleOrder.statusSelect') &gt;= 3 &amp;&amp; deliveryState == 1"/>
+    <hilite color="warning"
+      if="$get('saleOrder.statusSelect') &gt;= 3 &amp;&amp; deliveryState == 2"/>
+    <hilite color="success"
+      if="$get('saleOrder.statusSelect') &gt;= 3 &amp;&amp; deliveryState == 3"/>
     <field name="$hasWarning" hidden="true"/>
     <button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true"
       icon="exclamation-triangle"/>
@@ -288,8 +291,8 @@
               </viewer>
             </field>
             <field name="deliveryState" showTitle="false" colSpan="2"
-              showIf="deliveryState > 0" if-module="axelor-supplychain"
-              if="__config__.app.isApp('supplychain')">
+              showIf="deliveryState > 0 &amp;&amp; saleOrder.statusSelect &gt;= 3"
+              if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
               <viewer><![CDATA[
 	                    <>
 	                        {deliveryState == 1 && <Badge bg="danger">{_t('Not delivered')}</Badge>}
@@ -349,7 +352,7 @@
           <field name="qty" colSpan="3"
             onChange="action-group-sale-saleorderline-qty-onchange"
             readonlyIf="$availabiltyRequest || ($isReadOnly !== false &amp;&amp; !$get('saleOrder.orderBeingEdited'))"
-            validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"/>
+            validIf="$qtyValid !== false" x-scale="$nbDecimalDigitForQty"/>
           <field name="orderedQty" colSpan="3" x-scale="$nbDecimalDigitForQty"
             if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled" readonly="true"/>
           <field name="unit" colSpan="3"
@@ -435,7 +438,7 @@
             if-module="axelor-supplychain"
             if="__config__.app.getApp('supplychain')?.getManageStockReservation()">
             <button name="requestQty" title="Request reservation"
-              showIf="product &amp;&amp; product.productTypeSelect != 'service' &amp;&amp; !isQtyRequested"
+              showIf="id &amp;&amp; product &amp;&amp; product.productTypeSelect != 'service' &amp;&amp; !isQtyRequested"
               onClick="save,action-method-sale-order-line-request-qty"/>
           </panel>
           <panel name="cancelReservedQtyBtnqPanel" colSpan="12" if-module="axelor-supplychain"
@@ -457,6 +460,8 @@
           showIf="product &amp;&amp; product.productTypeSelect != 'service'" type="decimal"
           title="Total stock" if-module="axelor-supplychain"
           if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
+        <field name="vatExemptionReason" readonly="true" hideIf="!vatExemptionReason"
+          form-view="vat-exemption-reason-form" grid-view="vat-exemption-reason-grid"/>
         <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
           form-view="tax-equiv-form"/>
         <field name="selectedComplementaryProductList"
@@ -590,6 +595,8 @@
       <field name="inTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"/>
       <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
         form-view="tax-equiv-form"/>
+      <field name="vatExemptionReason" readonly="true" hideIf="!vatExemptionReason"
+        form-view="vat-exemption-reason-form" grid-view="vat-exemption-reason-grid"/>
       <field name="$currency" hidden="true" type="many-to-one"
         target="com.axelor.apps.base.db.Currency"/>
       <field name="$currency.numberOfDecimals" hidden="true"/>

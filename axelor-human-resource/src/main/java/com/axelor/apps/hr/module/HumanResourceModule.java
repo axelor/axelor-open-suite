@@ -236,6 +236,8 @@ import com.axelor.apps.hr.service.leave.LeaveValueProrataService;
 import com.axelor.apps.hr.service.leave.LeaveValueProrataServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveViewService;
 import com.axelor.apps.hr.service.leave.LeaveViewServiceImpl;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeCalendarDayService;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeCalendarDayServiceImpl;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDayDurationService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDayDurationServiceImpl;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDurationService;
@@ -423,6 +425,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseVentilateService.class).to(ExpenseVentilateServiceImpl.class);
     bind(ExpenseToolService.class).to(ExpenseToolServiceImpl.class);
     bind(ExpenseComputationService.class).to(ExpenseComputationServiceImpl.class);
+    bind(ExpenseViewService.class).to(ExpenseViewServiceImpl.class);
     bind(EmployeeFileDMSService.class).to(EmployeeFileDMSServiceImpl.class);
     bind(ExpenseProofFileService.class).to(ExpenseProofFileServiceImpl.class);
     bind(LeaveLineService.class).to(LeaveLineServiceImpl.class);
@@ -544,6 +547,8 @@ public class HumanResourceModule extends AxelorModule {
     bind(KilometricGoogleService.class).to(KilometricGoogleServiceImpl.class);
     bind(KilometricOsmService.class).to(KilometricOsmServiceImpl.class);
     bind(KilometricResponseToolService.class).to(KilometricResponseToolServiceImpl.class);
+    bind(LeaveRequestComputeCalendarDayService.class)
+        .to(LeaveRequestComputeCalendarDayServiceImpl.class);
     bind(ExpenseViewService.class).to(ExpenseViewServiceImpl.class);
     bind(TimesheetViewService.class).to(TimesheetViewServiceImpl.class);
     bind(TimesheetBusinessService.class).to(TimesheetBusinessServiceImpl.class);

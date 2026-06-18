@@ -57,6 +57,8 @@ import com.axelor.apps.sale.service.ProductCategorySaleService;
 import com.axelor.apps.sale.service.ProductCategoryServiceSaleImpl;
 import com.axelor.apps.sale.service.ProductRestService;
 import com.axelor.apps.sale.service.ProductRestServiceImpl;
+import com.axelor.apps.sale.service.ProductSaleDomainService;
+import com.axelor.apps.sale.service.ProductSaleDomainServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.app.AppSaleServiceImpl;
 import com.axelor.apps.sale.service.cart.CartCreateService;
@@ -214,6 +216,8 @@ import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProduct
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.subline.SaleOrderLineCommercialBomService;
+import com.axelor.apps.sale.service.saleorderline.subline.SaleOrderLineCommercialBomServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
@@ -319,11 +323,13 @@ public class SaleModule extends AxelorModule {
     bind(CartLineUpdateService.class).to(CartLineUpdateServiceImpl.class);
     bind(CartLineProductService.class).to(CartLineProductServiceImpl.class);
     bind(CartLinePriceService.class).to(CartLinePriceServiceImpl.class);
+    bind(ProductSaleDomainService.class).to(ProductSaleDomainServiceImpl.class);
     bind(ProductPopulateSaleObserver.class);
     bind(ProductRestService.class).to(ProductRestServiceImpl.class);
     bind(CartSaleOrderGeneratorService.class).to(CartSaleOrderGeneratorServiceImpl.class);
     bind(SaleOrderRestService.class).to(SaleOrderRestServiceImpl.class);
     bind(SubSaleOrderLineComputeService.class).to(SubSaleOrderLineComputeServiceImpl.class);
+    bind(SaleOrderLineCommercialBomService.class).to(SaleOrderLineCommercialBomServiceImpl.class);
     bind(SaleOrderComplementaryProductService.class)
         .to(SaleOrderComplementaryProductServiceImpl.class);
     bind(ConfiguratorCheckService.class).to(ConfiguratorCheckServiceImpl.class);

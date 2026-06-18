@@ -219,9 +219,8 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
     if (appSale.getEnablePackManagement()) {
       selection.add(SaleOrderLineRepository.TYPE_START_OF_PACK);
       selection.add(SaleOrderLineRepository.TYPE_END_OF_PACK);
-      attrs.put("typeSelect", Map.of(SELECTION_IN_ATTR, selection));
     }
-
+    attrs.put("typeSelect", Map.of(SELECTION_IN_ATTR, selection));
     return attrs;
   }
 

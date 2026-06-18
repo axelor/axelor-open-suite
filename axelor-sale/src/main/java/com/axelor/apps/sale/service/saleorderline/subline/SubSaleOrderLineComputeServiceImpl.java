@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
@@ -58,16 +59,20 @@ public class SubSaleOrderLineComputeServiceImpl implements SubSaleOrderLineCompu
   @Override
   public void computeSumSubLineList(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL
+        || saleOrderLine.getProduct() == null) {
+      saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+      return;
+    }
     AppSale appSale = appSaleService.getAppSale();
     if (appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
-      if (appSale.getIsSOLPriceTotalOfSubLines()) {
-        if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
-          for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
-            computeSumSubLineList(subSaleOrderLine, saleOrder);
-          }
-          computePrices(saleOrderLine, saleOrder);
+      List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+      if (appSale.getIsSOLPriceTotalOfSubLines()
+          && CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
+        for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
+          computeSumSubLineList(subSaleOrderLine, saleOrder);
         }
+        computePrices(saleOrderLine, saleOrder);
       } else {
         saleOrderLineProductService.fillPrice(saleOrderLine, saleOrder);
       }

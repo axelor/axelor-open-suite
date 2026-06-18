@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <action-record model="com.axelor.apps.purchase.db.PurchaseOrder"
     name="action.purchase.chart.set.date.6m">
@@ -398,5 +398,138 @@
     <category key="_family_product" type="text" title="Product Accounting Family"/>
     <series key="amount" type="bar" title="Amount"/>
   </chart>
+
+  <custom name="call-tender-product-attributes-by-suppliers"
+    title="Product attributes by supplier">
+    <dataset type="rpc">com.axelor.apps.purchase.web.CallTenderController:getProductAttributesBySuppliers</dataset>
+    <template>
+      <![CDATA[
+        <>
+          <Box p={2} w={100} style={{ overflowX: "auto" }}>
+            {(() => {
+              const metaRow = data.find(r => r._type === "columns");
+              const dynCols = metaRow ? metaRow.columns : [];
+              const rows = data.filter(r => r._type !== "columns");
+              const products = rows.filter((row, idx, arr) =>
+                row.product && (idx === 0 || arr[idx - 1].productId !== row.productId)
+              );
+              const hStyle = { backgroundColor: "#f5f7fa", fontWeight: "600", fontSize: "12px", color: "#555", padding: "10px 12px", border: "1px solid #e0e0e0", textAlign: "left", whiteSpace: "nowrap" };
+              const cStyle = { padding: "8px 12px", border: "1px solid #e0e0e0", fontSize: "13px", verticalAlign: "middle" };
+              const gStyle = { ...cStyle, fontWeight: "bold", color: "#1a73e8", backgroundColor: "#f0f4ff" };
+              return (
+                <table style={{ borderCollapse: "collapse", width: "100%" }}>
+                  <thead>
+                    <tr>
+                      <th style={hStyle}>{_t('Product')}</th>
+                      <th style={hStyle}>{_t('Supplier')}</th>
+                      <th style={hStyle}>{_t('Unit Price')}</th>
+                      <th style={hStyle}>{_t('Unit')}</th>
+                      <th style={hStyle}>{_t('Qty')}</th>
+                      <th style={hStyle}>{_t('Delivery Time')}</th>
+                      {dynCols.map((col, ci) => <th key={ci} style={hStyle}>{col.label}</th>)}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.map((productRow, pi) => {
+                      const productRows = rows.filter(r => r.productId === productRow.productId && r.supplier);
+                      return productRows.map((row, ri) => (
+                        <tr key={`${pi}-${ri}`} style={{ backgroundColor: pi % 2 === 0 ? "#fff" : "#fafafa" }}>
+                          {ri === 0 && (
+                            <td rowSpan={productRows.length} style={gStyle}>{productRow.product}</td>
+                          )}
+                          <td style={cStyle}>{row.supplier}</td>
+                          <td style={{ ...cStyle, textAlign: "right" }}>{row.unit_price}</td>
+                          <td style={cStyle}>{row.unit}</td>
+                          <td style={{ ...cStyle, textAlign: "right" }}>{row.qty}</td>
+                          <td style={cStyle}>{row.delivery_time ? $moment(row.delivery_time).format('DD/MM/YYYY') : ''}</td>
+                          {dynCols.map((col, ci) => <td key={ci} style={cStyle}>{row[col.key]}</td>)}
+                        </tr>
+                      ));
+                    })}
+                  </tbody>
+                </table>
+              );
+            })()}
+          </Box>
+        </>
+      ]]>
+    </template>
+  </custom>
+
+  <custom name="call-tender-supplier-respond-by-product"
+    title="Suppliers' respond by product">
+    <dataset type="rpc">com.axelor.apps.purchase.web.CallTenderController:getSupplierRespondByProduct</dataset>
+    <template>
+      <![CDATA[
+        <>
+          <Box p={2} w={100} style={{ overflowX: "auto" }}>
+            {data.length > 0 && (() => {
+              const metaRow = data.find(r => r._type === "columns");
+              const dynCols = metaRow ? metaRow.columns : [];
+              const rows = data.filter(r => r._type !== "columns");
+              const products = rows.filter((row, idx, arr) =>
+                row.product_id && (idx === 0 || arr[idx - 1].product_id !== row.product_id)
+              );
+              const hStyle = { backgroundColor: "#f5f7fa", fontWeight: "600", fontSize: "12px", color: "#555", padding: "10px 12px", border: "1px solid #e0e0e0", textAlign: "left", whiteSpace: "nowrap" };
+              const hReqStyle = { ...hStyle, backgroundColor: "#edf7ee" };
+              const hPropStyle = { ...hStyle, backgroundColor: "#e8f2fd" };
+              const cStyle = { padding: "8px 12px", border: "1px solid #e0e0e0", fontSize: "13px", verticalAlign: "middle" };
+              const gStyle = { ...cStyle, fontWeight: "bold", color: "#1a73e8", backgroundColor: "#f0f4ff" };
+              const rStyle = { ...cStyle, backgroundColor: "#f5fbf5" };
+              return (
+                <table style={{ borderCollapse: "collapse", width: "100%" }}>
+                  <thead>
+                    <tr>
+                      <th rowSpan={2} style={hStyle}>{_t('Product')}</th>
+                      <th colSpan={4} style={{ ...hStyle, backgroundColor: "#d6efda", textAlign: "center" }}>{_t('Requested')}</th>
+                      <th rowSpan={2} style={hStyle}>{_t('Supplier')}</th>
+                      <th colSpan={4 + dynCols.length} style={{ ...hStyle, backgroundColor: "#cce3f8", textAlign: "center" }}>{_t('Proposed')}</th>
+                    </tr>
+                    <tr>
+                      <th style={hReqStyle}>{_t('Price')}</th>
+                      <th style={hReqStyle}>{_t('Unit')}</th>
+                      <th style={hReqStyle}>{_t('Qty')}</th>
+                      <th style={hReqStyle}>{_t('Delivery')}</th>
+                      <th style={hPropStyle}>{_t('Price')}</th>
+                      <th style={hPropStyle}>{_t('Unit')}</th>
+                      <th style={hPropStyle}>{_t('Qty')}</th>
+                      <th style={hPropStyle}>{_t('Delivery')}</th>
+                      {dynCols.map((col, ci) => <th key={ci} style={hPropStyle}>{col.label}</th>)}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.map((productRow, pi) => {
+                      const productRows = rows.filter(r => r.product_id === productRow.product_id);
+                      const spanCount = productRows.length || 1;
+                      const req = productRows[0] || {};
+                      return productRows.map((row, ri) => (
+                        <tr key={`${pi}-${ri}`} style={{ backgroundColor: pi % 2 === 0 ? "#fff" : "#fafafa" }}>
+                          {ri === 0 && (
+                            <>
+                              <td rowSpan={spanCount} style={gStyle}>{productRow.product_name}</td>
+                              <td rowSpan={spanCount} style={{ ...rStyle, textAlign: "right" }}>{req.requested_price}</td>
+                              <td rowSpan={spanCount} style={rStyle}>{req.requested_unit}</td>
+                              <td rowSpan={spanCount} style={{ ...rStyle, textAlign: "right" }}>{req.requested_qty}</td>
+                              <td rowSpan={spanCount} style={rStyle}>{req.requested_delivery_date ? $moment(req.requested_delivery_date).format('DD/MM/YYYY') : ''}</td>
+                            </>
+                          )}
+                          <td style={cStyle}>{row.supplier_name}</td>
+                          <td style={{ ...cStyle, textAlign: "right" }}>{row.proposed_price}</td>
+                          <td style={cStyle}>{row.proposed_unit}</td>
+                          <td style={{ ...cStyle, textAlign: "right" }}>{row.proposed_qty}</td>
+                          <td style={cStyle}>{row.proposed_delivery_date ? $moment(row.proposed_delivery_date).format('DD/MM/YYYY') : ''}</td>
+                          {dynCols.map((col, ci) => <td key={ci} style={cStyle}>{row[col.key]}</td>)}
+                        </tr>
+                      ));
+                    })}
+                  </tbody>
+                </table>
+              );
+            })()}
+          </Box>
+        </>
+      ]]>
+    </template>
+  </custom>
 
 </object-views>

@@ -19,7 +19,9 @@
 package com.axelor.apps.project.service;
 
 import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaSelect;
 import com.axelor.rpc.Context;
+import java.util.List;
 import java.util.Map;
 
 public interface MetaJsonFieldProjectService {
@@ -28,4 +30,10 @@ public interface MetaJsonFieldProjectService {
 
   Map<String, Object> computeContextValues(
       Map<String, Object> contextValues, Context parentContext);
+
+  boolean isMetaJsonFieldUsedOnTasks(MetaJsonField jsonField);
+
+  void saveSelection(MetaSelect metaSelect);
+
+  void saveSelectionItems(Long metaSelectId, List<Map<String, Object>> items);
 }

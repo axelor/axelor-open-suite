@@ -127,15 +127,16 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
     moveLineRecordService.refreshAccountInformation(moveLine, move);
 
     if (ObjectUtils.isEmpty(moveLine.getAccount())) {
-      moveLine.setVatSystemSelect(
-          taxAccountToolService.calculateVatSystem(
+      Integer vatLiability =
+          taxAccountToolService.resolveVatLiabilityFromAccountingSituation(
               moveLine.getPartner(),
               move.getCompany(),
               null,
               (move.getJournal().getJournalType().getTechnicalTypeSelect()
                   == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE),
               (move.getJournal().getJournalType().getTechnicalTypeSelect()
-                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE)));
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE));
+      moveLine.setVatSystemSelect(taxAccountToolService.calculateVatSystem(vatLiability, null));
     }
   }
 
@@ -209,7 +210,8 @@ public class MoveLineMassEntryRecordServiceImpl implements MoveLineMassEntryReco
 
   @Override
   public void setVatSystemSelect(MoveLineMassEntry moveLine, Move move) throws AxelorException {
-    moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
+    moveLine.setVatSystemSelect(
+        moveLineTaxService.getVatSystem(move, moveLine.getAccount(), moveLine.getPartner()));
   }
 
   @Override

@@ -92,6 +92,7 @@ import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -99,6 +100,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -773,7 +775,7 @@ public class SaleOrderController {
         response.setInfo(alert);
       }
 
-      response.setValues(Mapper.toMap(saleOrder));
+      response.setValues(saleOrder);
       response.setAttrs(Beans.get(SaleOrderGroupService.class).onChangeSaleOrderLine(saleOrder));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -905,5 +907,27 @@ public class SaleOrderController {
             .param("forceTitle", "true")
             .context("_showRecord", String.valueOf(copySaleOrder.getId()))
             .map());
+  }
+
+  public void showQuotationLines(ActionRequest request, ActionResponse response) {
+    try {
+      List<Long> ids = getSelectedIds(request);
+      response.setView(Beans.get(SaleOrderViewService.class).buildQuotationLinesView(ids).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<Long> getSelectedIds(ActionRequest request) {
+    List<Integer> ids = (List<Integer>) request.getContext().get("_ids");
+    if (!ObjectUtils.isEmpty(ids)) {
+      return ids.stream().map(Integer::longValue).collect(Collectors.toList());
+    }
+    List<Long> allIds =
+        request.getCriteria().createQuery(SaleOrder.class).select("id").fetch(0, 0).stream()
+            .map(m -> (Long) m.get("id"))
+            .collect(Collectors.toList());
+    return allIds.isEmpty() ? Collections.singletonList(0L) : allIds;
   }
 }

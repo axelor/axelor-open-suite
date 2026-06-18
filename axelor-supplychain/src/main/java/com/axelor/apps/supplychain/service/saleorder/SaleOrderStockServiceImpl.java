@@ -48,14 +48,17 @@ import com.axelor.apps.stock.service.StockMoveLineStockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.config.OutSmGenerationService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineBlockingSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineSublineService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Sets;
@@ -89,6 +92,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected SaleOrderRepository saleOrderRepository;
   protected AppSupplychainService appSupplychainService;
   protected SupplyChainConfigService supplyChainConfigService;
+  protected OutSmGenerationService outSmGenerationService;
   protected ProductCompanyService productCompanyService;
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected TaxService taxService;
@@ -96,6 +100,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected final SaleOrderLineBlockingSupplychainService saleOrderLineBlockingSupplychainService;
   protected AppStockService appStockService;
   protected StockMoveLineStockLocationService stockMoveLineStockLocationService;
+  protected SaleOrderLineSublineService saleOrderLineSublineService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -110,13 +115,15 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       SaleOrderRepository saleOrderRepository,
       AppSupplychainService appSupplychainService,
       SupplyChainConfigService supplyChainConfigService,
+      OutSmGenerationService outSmGenerationService,
       ProductCompanyService productCompanyService,
       PartnerStockSettingsService partnerStockSettingsService,
       TaxService taxService,
       SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
       SaleOrderLineBlockingSupplychainService saleOrderLineBlockingSupplychainService,
       AppStockService appStockService,
-      StockMoveLineStockLocationService stockMoveLineStockLocationService) {
+      StockMoveLineStockLocationService stockMoveLineStockLocationService,
+      SaleOrderLineSublineService saleOrderLineSublineService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockConfigService = stockConfigService;
@@ -128,6 +135,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.saleOrderRepository = saleOrderRepository;
     this.appSupplychainService = appSupplychainService;
     this.supplyChainConfigService = supplyChainConfigService;
+    this.outSmGenerationService = outSmGenerationService;
     this.productCompanyService = productCompanyService;
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.taxService = taxService;
@@ -135,6 +143,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.saleOrderLineBlockingSupplychainService = saleOrderLineBlockingSupplychainService;
     this.appStockService = appStockService;
     this.stockMoveLineStockLocationService = stockMoveLineStockLocationService;
+    this.saleOrderLineSublineService = saleOrderLineSublineService;
   }
 
   @Override
@@ -167,7 +176,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       String deliveryAddressStr = key.getLeft();
       LocalDate estimatedDeliveryDate = key.getRight();
 
-      List<SaleOrderLine> saleOrderLineList = entry.getValue();
+      List<SaleOrderLine> saleOrderLineList =
+          entry.getValue().stream().map(JpaModelHelper::ensureManaged).toList();
 
       Optional<StockMove> stockMoveOpt =
           createStockMove(
@@ -196,6 +206,29 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
             saleOrder, company, saleOrderLineList, deliveryAddressStr, estimatedDeliveryDate);
     stockMove.setDeliveryCondition(saleOrder.getDeliveryCondition());
 
+    StockLocation toStockLocation = resolveToStockLocation(saleOrder, company);
+    SupplyChainConfig supplychainConfig = supplyChainConfigService.getSupplyChainConfig(company);
+
+    if (outSmGenerationService.isOnlyForManagedLines(supplychainConfig)) {
+      populateManagedLinesStockMove(stockMove, saleOrder, saleOrderLineList, toStockLocation);
+    } else {
+      populateStandardStockMove(
+          stockMove, saleOrder, saleOrderLineList, isTitleLine, toStockLocation);
+    }
+
+    if (stockMove.getStockMoveLineList() == null || stockMove.getStockMoveLineList().isEmpty()) {
+      return Optional.empty();
+    }
+
+    applyStockMoveSettings(stockMove, saleOrder, supplychainConfig);
+    setReservationDateTime(stockMove, saleOrder);
+    stockMoveService.planWithNoSplit(stockMove);
+
+    return Optional.of(stockMove);
+  }
+
+  protected StockLocation resolveToStockLocation(SaleOrder saleOrder, Company company)
+      throws AxelorException {
     StockLocation toStockLocation = saleOrder.getToStockLocation();
     if (toStockLocation == null) {
       toStockLocation =
@@ -207,9 +240,110 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
           stockConfigService.getCustomerVirtualStockLocation(
               stockConfigService.getStockConfig(company));
     }
+    return toStockLocation;
+  }
 
+  protected StockLocation resolveFromStockLocation(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, StockMove stockMove)
+      throws AxelorException {
+    StockLocation fromStockLocation = saleOrder.getStockLocation();
+    if (appBaseService.getAppBase().getEnableSiteManagementForStock()
+        && appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine()) {
+      fromStockLocation =
+          Optional.ofNullable(
+                  stockMoveLineStockLocationService.getDefaultFromStockLocation(
+                      saleOrderLine.getProduct(), stockMove))
+              .orElse(fromStockLocation);
+    }
+    return fromStockLocation;
+  }
+
+  protected void populateManagedLinesStockMove(
+      StockMove stockMove,
+      SaleOrder saleOrder,
+      List<SaleOrderLine> saleOrderLineList,
+      StockLocation toStockLocation)
+      throws AxelorException {
+    List<SaleOrderLine> saleOrderLines =
+        saleOrderLineSublineService.collectAllLinesRecursively(saleOrderLineList);
+
+    Map<Long, StockMoveLine> saleOrderLineToStockMoveLine = new HashMap<>();
+
+    for (SaleOrderLine saleOrderLine : saleOrderLines) {
+      if (shouldCreateTitleLine(saleOrderLine)) {
+        addTitleLine(stockMove, saleOrderLine, saleOrderLineToStockMoveLine);
+        continue;
+      }
+      if (shouldSkipManagedLine(saleOrderLine, saleOrder)) {
+        continue;
+      }
+      addManagedStockMoveLine(
+          stockMove, saleOrder, saleOrderLine, toStockLocation, saleOrderLineToStockMoveLine);
+    }
+
+    saleOrderLineSublineService.linkParentStockMoveLines(stockMove, saleOrderLineToStockMoveLine);
+  }
+
+  protected boolean shouldCreateTitleLine(SaleOrderLine saleOrderLine) {
+    return !CollectionUtils.isEmpty(saleOrderLine.getSubSaleOrderLineList())
+        && saleOrderLineSublineService.hasAnyManagedChild(saleOrderLine);
+  }
+
+  protected boolean shouldSkipManagedLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    if (!saleOrderLine.getManagedInStockMove() || saleOrderLine.getProduct() == null) {
+      return true;
+    }
+    if (existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
+      return true;
+    }
+    return saleOrderLineBlockingSupplychainService.isDeliveryBlocked(
+        saleOrderLine, saleOrder.getCompany());
+  }
+
+  protected void addTitleLine(
+      StockMove stockMove,
+      SaleOrderLine saleOrderLine,
+      Map<Long, StockMoveLine> saleOrderLineToStockMoveLine) {
+    StockMoveLine titleLine =
+        stockMoveLineSupplychainService.createStockMoveTitleLine(stockMove, saleOrderLine, null);
+    if (titleLine == null) {
+      return;
+    }
+    stockMove.addStockMoveLineListItem(titleLine);
+    titleLine.setSequence(stockMove.getStockMoveLineList().size());
+    saleOrderLineToStockMoveLine.put(saleOrderLine.getId(), titleLine);
+  }
+
+  protected void addManagedStockMoveLine(
+      StockMove stockMove,
+      SaleOrder saleOrder,
+      SaleOrderLine saleOrderLine,
+      StockLocation toStockLocation,
+      Map<Long, StockMoveLine> saleOrderLineToStockMoveLine)
+      throws AxelorException {
+    BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
+    if (qty.signum() <= 0) {
+      return;
+    }
+    StockLocation fromStockLocation = resolveFromStockLocation(saleOrder, saleOrderLine, stockMove);
+    StockMoveLine stockMoveLine =
+        createStockMoveLine(stockMove, saleOrderLine, qty, fromStockLocation, toStockLocation);
+    if (stockMoveLine == null) {
+      return;
+    }
+    stockMove.addStockMoveLineListItem(stockMoveLine);
+    stockMoveLine.setSequence(stockMove.getStockMoveLineList().size());
+    saleOrderLineToStockMoveLine.put(saleOrderLine.getId(), stockMoveLine);
+  }
+
+  protected void populateStandardStockMove(
+      StockMove stockMove,
+      SaleOrder saleOrder,
+      List<SaleOrderLine> saleOrderLineList,
+      boolean isTitleLine,
+      StockLocation toStockLocation)
+      throws AxelorException {
     List<SaleOrderLine> saleOrderLines = new ArrayList<>(saleOrderLineList);
-
     if (isTitleLine && appSupplychainService.getAppSupplychain().getIsTitleLineManaged()) {
       saleOrderLines.addAll(
           saleOrder.getSaleOrderLineList().stream()
@@ -223,21 +357,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         continue;
       }
       if (saleOrderLine.getProduct() != null) {
-        if (saleOrderLineBlockingSupplychainService.isDeliveryBlocked(saleOrderLine)) {
+        if (saleOrderLineBlockingSupplychainService.isDeliveryBlocked(
+            saleOrderLine, saleOrderLine.getSaleOrder().getCompany())) {
           continue;
         }
         BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
         if (qty.signum() > 0) {
-          StockLocation fromStockLocation = saleOrder.getStockLocation();
-          if (appBaseService.getAppBase().getEnableSiteManagementForStock()
-              && appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine()) {
-            fromStockLocation =
-                Optional.ofNullable(
-                        stockMoveLineStockLocationService.getDefaultFromStockLocation(
-                            saleOrderLine.getProduct(), stockMove))
-                    .orElse(fromStockLocation);
-          }
-
+          StockLocation fromStockLocation =
+              resolveFromStockLocation(saleOrder, saleOrderLine, stockMove);
           StockMoveLine stockMoveLine =
               createStockMoveLine(
                   stockMove, saleOrderLine, qty, fromStockLocation, toStockLocation);
@@ -256,30 +383,26 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         }
       }
     }
+  }
 
-    if (stockMove.getStockMoveLineList() == null || stockMove.getStockMoveLineList().isEmpty()) {
-      return Optional.empty();
-    }
-
+  protected void applyStockMoveSettings(
+      StockMove stockMove, SaleOrder saleOrder, SupplyChainConfig supplychainConfig)
+      throws AxelorException {
     if (stockMove.getStockMoveLineList().stream()
         .noneMatch(
-            stockMoveLine ->
-                stockMoveLine.getSaleOrderLine() != null
-                    && stockMoveLine.getSaleOrderLine().getTypeSelect()
+            sml ->
+                sml.getSaleOrderLine() != null
+                    && sml.getSaleOrderLine().getTypeSelect()
                         == SaleOrderLineRepository.TYPE_NORMAL)) {
       stockMove.setFullySpreadOverLogisticalFormsFlag(true);
     }
 
     boolean isNeedingConformityCertificate = saleOrder.getIsNeedingConformityCertificate();
     stockMove.setIsNeedingConformityCertificate(isNeedingConformityCertificate);
-
     if (isNeedingConformityCertificate) {
       stockMove.setSignatoryUser(
           stockConfigService.getStockConfig(stockMove.getCompany()).getSignatoryUser());
     }
-
-    SupplyChainConfig supplychainConfig =
-        supplyChainConfigService.getSupplyChainConfig(saleOrder.getCompany());
 
     if (supplychainConfig.getDefaultEstimatedDate() != null
         && supplychainConfig.getDefaultEstimatedDate() == SupplyChainConfigRepository.CURRENT_DATE
@@ -293,21 +416,22 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               .getTodayDate(saleOrder.getCompany())
               .plusDays(supplychainConfig.getNumberOfDays().longValue()));
     }
-
-    setReservationDateTime(stockMove, saleOrder);
-    stockMoveService.planWithNoSplit(stockMove);
-
-    return Optional.of(stockMove);
   }
 
   protected Map<Pair<String, LocalDate>, List<SaleOrderLine>> getSaleOrderLineMap(
-      SaleOrder saleOrder) {
+      SaleOrder saleOrder) throws AxelorException {
 
     Map<Pair<String, LocalDate>, List<SaleOrderLine>> saleOrderLineMap = new HashMap<>();
 
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+    SupplyChainConfig supplychainConfig =
+        supplyChainConfigService.getSupplyChainConfig(saleOrder.getCompany());
 
-      if (saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine).signum() <= 0) {
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      // In managed mode, include all top-level lines regardless of their own undelivered qty,
+      // because their managed children may still have qty to deliver.
+      // populateManagedLinesStockMove handles the actual qty filtering per line.
+      if (!outSmGenerationService.isOnlyForManagedLines(supplychainConfig)
+          && saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine).signum() <= 0) {
         continue;
       }
 
@@ -320,14 +444,16 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   }
 
   protected Pair<String, LocalDate> getDeliveryInformation(SaleOrderLine saleOrderLine) {
+    SaleOrder effectiveSaleOrder = saleOrderLine.getMainSaleOrder();
+
     String addressKey = saleOrderLine.getDeliveryAddressStr();
-    if (addressKey == null) {
-      addressKey = saleOrderLine.getSaleOrder().getDeliveryAddressStr();
+    if (addressKey == null && effectiveSaleOrder != null) {
+      addressKey = effectiveSaleOrder.getDeliveryAddressStr();
     }
 
     LocalDate dateKey = saleOrderLine.getEstimatedShippingDate();
-    if (dateKey == null) {
-      dateKey = saleOrderLine.getSaleOrder().getEstimatedShippingDate();
+    if (dateKey == null && effectiveSaleOrder != null) {
+      dateKey = effectiveSaleOrder.getEstimatedShippingDate();
     }
     if (dateKey == null) {
       dateKey = saleOrderLine.getDesiredDeliveryDate();
@@ -342,10 +468,10 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       return false;
     }
 
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+    for (SaleOrderLine saleOrderLine :
+        saleOrderLineSublineService.collectAllLinesRecursively(saleOrder.getSaleOrderLineList())) {
 
       if (this.isStockMoveProduct(saleOrderLine)) {
-
         return true;
       }
     }
@@ -504,17 +630,21 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       Unit unit = saleOrderLine.getProduct().getUnit();
       BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
+      BigDecimal qtyToDeliver = saleOrderLine.getQtyToDeliver();
+      if (Boolean.TRUE.equals(saleOrderLine.getIsQtyRequested())
+          && qtyToDeliver.compareTo(BigDecimal.ZERO) > 0) {
+        saleOrderLine.setRequestedReservedQty(qtyToDeliver);
+      }
       BigDecimal requestedReservedQty =
           saleOrderLine.getRequestedReservedQty().subtract(saleOrderLine.getDeliveredQty());
 
+      SaleOrder effectiveSaleOrder = saleOrderLine.getMainSaleOrder();
       BigDecimal companyUnitPriceUntaxed =
           (BigDecimal)
               productCompanyService.get(
                   saleOrderLine.getProduct(),
                   "costPrice",
-                  saleOrderLine.getSaleOrder() != null
-                      ? saleOrderLine.getSaleOrder().getCompany()
-                      : null);
+                  effectiveSaleOrder != null ? effectiveSaleOrder.getCompany() : null);
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
             unitConversionService.convert(
@@ -563,7 +693,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               unit,
               stockMove,
               StockMoveLineService.TYPE_SALES,
-              saleOrderLine.getSaleOrder().getInAti(),
+              effectiveSaleOrder != null && effectiveSaleOrder.getInAti(),
               taxRate,
               saleOrderLine,
               null,
@@ -584,7 +714,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
   @Override
   public boolean isStockMoveProduct(SaleOrderLine saleOrderLine) throws AxelorException {
-    return isStockMoveProduct(saleOrderLine, saleOrderLine.getSaleOrder());
+    return isStockMoveProduct(saleOrderLine, saleOrderLine.getMainSaleOrder());
   }
 
   @Override
@@ -595,14 +725,18 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     SupplyChainConfig supplyChainConfig = supplyChainConfigService.getSupplyChainConfig(company);
 
+    if (outSmGenerationService.isOnlyForManagedLines(supplyChainConfig)) {
+      return saleOrderLine.getManagedInStockMove() && saleOrderLine.getProduct() != null;
+    }
+
     Product product = saleOrderLine.getProduct();
 
     return (product != null
         && ((ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())
-                && supplyChainConfig.getHasOutSmForNonStorableProduct()
+                && outSmGenerationService.isGeneratedForServices(supplyChainConfig)
                 && !product.getIsShippingCostsProduct())
             || (ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())
-                && supplyChainConfig.getHasOutSmForStorableProduct())));
+                && outSmGenerationService.isGeneratedForStorable(supplyChainConfig))));
   }
 
   protected boolean existActiveStockMoveForSaleOrderLine(SaleOrderLine saleOrderLine) {
@@ -615,6 +749,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
                 saleOrderLine.getId(),
                 StockMoveRepository.STATUS_DRAFT,
                 StockMoveRepository.STATUS_PLANNED)
+            .autoFlush(false)
             .count();
 
     return stockMoveLineCount > 0;

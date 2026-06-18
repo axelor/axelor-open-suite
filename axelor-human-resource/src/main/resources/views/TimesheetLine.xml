@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="timesheet-line-project-grid" title="Log Times"
     model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
@@ -358,9 +358,11 @@
   </action-attrs>
 
   <action-attrs name="action-timesheet-line-attrs-set-duration-label">
-    <attribute name="title" for="durationLabel" if="__parent__"
+    <attribute name="title" for="durationLabel"
+      if="__parent__ != null &amp;&amp; __parent__?._model == 'com.axelor.apps.hr.db.Timesheet'"
       expr="eval: __parent__?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __parent__?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
-    <attribute name="title" for="durationLabel" if="!__parent__"
+    <attribute name="title" for="durationLabel"
+      if="__parent__ == null || __parent__?._model != 'com.axelor.apps.hr.db.Timesheet'"
       expr="eval: timesheet?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : timesheet?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
   </action-attrs>
 
@@ -521,7 +523,7 @@
     <view type="grid" name="timesheet-line-project-task-grid"/>
     <view type="form" name="timesheet-line-timesheet-project-task-form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.timesheet.statusSelect = 3 and self.projectTask = :id</domain>
+    <domain>self.timesheet.statusSelect = 3 and self.projectTask.id = :id</domain>
     <context name="_projectTaskId" expr="eval: id"/>
   </action-view>
 
@@ -530,7 +532,7 @@
     <view type="grid" name="timesheet-line-project-task-grid"/>
     <view type="form" name="timesheet-line-timesheet-project-task-form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.timesheet.statusSelect &lt; 3 and self.projectTask = :id</domain>
+    <domain>self.timesheet.statusSelect &lt; 3 and self.projectTask.id = :id</domain>
     <context name="_projectTaskId" expr="eval: id"/>
   </action-view>
 
@@ -539,7 +541,7 @@
     <view type="grid" name="timesheet-line-project-task-grid"/>
     <view type="form" name="timesheet-line-timesheet-project-task-form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.projectTask = :id</domain>
+    <domain>self.projectTask.id = :id</domain>
     <context name="_projectTaskId" expr="eval: id"/>
   </action-view>
 

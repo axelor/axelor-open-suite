@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="stock-location-grid" title="Stock Locations"
     model="com.axelor.apps.stock.db.StockLocation">
@@ -46,7 +46,8 @@
     <column name="company" type="reference"/>
 
     <node model="com.axelor.apps.stock.db.StockLocation"
-      domain="self.parentStockLocation is null" onClick="action-stock-location-view-show-form-view">
+      domain="self.parentStockLocation is null" draggable="true"
+      onClick="action-stock-location-view-show-form-view">
       <field as="name" name="name"/>
       <field name="typeSelect" as="typeSelect"/>
       <field name="company" as="company"/>
@@ -62,8 +63,7 @@
 
   <form name="stock-location-form" title="Stock location"
     model="com.axelor.apps.stock.db.StockLocation"
-    onNew="action-stock-location-record-new,action-stock-location-attrs-set-is-valued" width="large"
-    onLoad="action-stock-location-method-set-stock-location-value,action-stock-location-record-set-stock-location-value-btn">
+    onNew="action-stock-location-record-new,action-stock-location-attrs-set-is-valued" width="large">
     <toolbar>
       <button name="createInventoryBtn" title="Create inventory"
         onClick="action-location-view-create-inventory"/>
@@ -100,8 +100,8 @@
           <field name="typeSelect"
             onChange="action-stock-location-group-type-select-on-change" colSpan="12"/>
           <button name="$stockLocationValueBtn" title="Stock location value" colSpan="12"
-            hidden="true" showIf="isValued &amp;&amp; id &amp;&amp; $readonly()" onClick=""
-            widget="info-button"/>
+            hidden="true" showIf="isValued &amp;&amp; id" onClick="" widget="info-button"
+            x-field="stockLocationValue"/>
           <field name="stockLocationValue" hidden="true"/>
         </panel>
         <panel name="barcodePanel" colSpan="12"
@@ -253,17 +253,6 @@
     <context name="contentLocationIds"
       expr="call:com.axelor.apps.stock.service.StockLocationService:getContentStockLocationIds(__self__)"/>
   </action-view>
-
-  <action-method name="action-stock-location-method-set-stock-location-value">
-    <call class="com.axelor.apps.stock.web.StockLocationController"
-      method="setStocklocationValue"/>
-  </action-method>
-
-  <action-record name="action-stock-location-record-set-stock-location-value-btn"
-    model="com.axelor.apps.stock.db.StockLocation">
-    <field name="$stockLocationValueBtn"
-      expr="call:com.axelor.apps.base.service.user.UserLocaleHelper:formatNumberWithLocale(stockLocationValue)"/>
-  </action-record>
 
   <action-view name="action-stock-location-view-show-form-view" title="Stock location"
     model="com.axelor.apps.stock.db.StockLocation">

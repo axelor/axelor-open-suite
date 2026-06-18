@@ -502,11 +502,15 @@ public class ManufOrderController {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
 
+      int calculationType =
+          manufOrder.getStatusSelect() == ManufOrderRepository.STATUS_FINISHED
+              ? CostSheetRepository.CALCULATION_END_OF_PRODUCTION
+              : CostSheetRepository.CALCULATION_WORK_IN_PROGRESS;
       CostSheet costSheet =
           Beans.get(CostSheetService.class)
               .computeCostPrice(
                   manufOrder,
-                  CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
+                  calculationType,
                   Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
 
       response.setView(

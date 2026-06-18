@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -153,6 +153,14 @@
     <option value="1">Estimated shipping date</option>
   </selection>
 
+  <selection name="supplychain.out.sm.generation.select">
+    <option value="0">None</option>
+    <option value="1">Storable products</option>
+    <option value="2">Services</option>
+    <option value="3">All products</option>
+    <option value="4">Managed lines only</option>
+  </selection>
+
   <selection name="supplychain.mrp.line.off.of.sales.select">
     <option value="0">One-off sales included</option>
     <option value="1">One-off sales excluded</option>
@@ -224,6 +232,28 @@
   <selection id="supplychain.call.tender.need.type.select"
     name="purchase.call.tender.need.type.select">
     <option value="2">MRP</option>
+  </selection>
+
+  <selection name="supplychain.cost.calculations.status.select">
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Costs computed</option>
+    <option value="3" color="brown">Costs updated</option>
+  </selection>
+
+  <selection name="supplychain.unit.cost.calculation.type.select">
+    <option value="0">Cost price calculation</option>
+    <option value="1">Depreciation rate calculation</option>
+  </selection>
+
+  <selection name="supplychain.depreciation.rate.config.type.select">
+    <option value="1" icon="graph-down-arrow" color="danger">Depreciation</option>
+    <option value="2" icon="graph-up-arrow" color="success">Valorization</option>
+  </selection>
+
+  <selection name="supplychain.cost.review.status.select">
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Stock revaluation computed</option>
+    <option value="3" color="brown">Stock revaluation updated</option>
   </selection>
 
 </object-views>

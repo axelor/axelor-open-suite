@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentMoveCreateServiceImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
@@ -47,10 +48,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
 import java.util.Optional;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 public class InvoicePaymentMoveCreateServiceBankPayImpl
     extends InvoicePaymentMoveCreateServiceImpl {
@@ -77,7 +75,8 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
       InvoiceLineTaxToolService invoiceLineTaxToolService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderValidationService bankOrderValidationService,
-      InvoicePaymentRepository invoicePaymentRepository) {
+      InvoicePaymentRepository invoicePaymentRepository,
+      MoveLineTaxService moveLineTaxService) {
     super(
         dateService,
         paymentModeService,
@@ -94,14 +93,14 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
         accountingSituationService,
         currencyService,
         invoicePaymentRepository,
-        invoiceLineTaxToolService);
+        invoiceLineTaxToolService,
+        moveLineTaxService);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderValidationService = bankOrderValidationService;
   }
 
   @Override
-  public void createInvoicePaymentMove(InvoicePayment invoicePayment)
-      throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {
+  public void createInvoicePaymentMove(InvoicePayment invoicePayment) throws AxelorException {
     Invoice invoice = invoicePayment.getInvoice();
     Company company = invoice.getCompany();
     PaymentSession paymentSession = invoicePayment.getPaymentSession();
@@ -132,13 +131,9 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
    *
    * @param invoicePayment An invoice payment
    * @throws AxelorException
-   * @throws DatatypeConfigurationException
-   * @throws IOException
-   * @throws JAXBException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public void createBankOrder(InvoicePayment invoicePayment)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+  public void createBankOrder(InvoicePayment invoicePayment) throws AxelorException {
 
     BankOrder bankOrder = bankOrderCreateService.createBankOrder(invoicePayment);
 

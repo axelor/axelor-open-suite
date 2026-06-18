@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove"
     orderBy="statusSelect,-estimatedDate">
@@ -416,14 +416,14 @@
 	        <![CDATA[<><Badge bg="warning">Warning : Delivery address is missing.</Badge></>]]>
           </static>
           <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
-            showTitle="false" x-currency="company.currency.symbol"
-            x-scale="company.currency.numberOfDecimals">
+            showTitle="false" x-currency="$currencySymbol" x-scale="$currencyNumberOfDecimals">
             <viewer><![CDATA[
 						<>
 							<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
 								<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
 								<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
 							</Box>
+							{$isMultiCurrency && <Badge bg="warning">{_t('This stock move is linked to orders with different currencies.')}</Badge>}
 						</>
 	                    ]]>
             </viewer>
@@ -493,8 +493,7 @@
             </field>
 
             <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
-              showTitle="false" x-currency="company.currency.symbol"
-              x-scale="company.currency.numberOfDecimals">
+              showTitle="false" x-currency="$currencySymbol" x-scale="$currencyNumberOfDecimals">
               <viewer>
                           <![CDATA[
 							<>
@@ -502,6 +501,7 @@
 									<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
 									<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
 								</Box>
+								{$isMultiCurrency && <Badge bg="warning">{_t('This stock move is linked to orders with different currencies.')}</Badge>}
 							</>
                           ]]>
               </viewer>
@@ -537,22 +537,23 @@
               <viewer><![CDATA[<>{fromAddressStr}</>]]></viewer>
             </field>
             <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
-              showTitle="false" x-currency="company.currency.symbol"
-              x-scale="company.currency.numberOfDecimals">
+              showTitle="false" x-currency="$currencySymbol" x-scale="$currencyNumberOfDecimals">
               <viewer><![CDATA[
 							<>
 								<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
 									<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
 									<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
 								</Box>
+								{$isMultiCurrency && <Badge bg="warning">{_t('This stock move is linked to orders with different currencies.')}</Badge>}
 							</>
                           ]]>
               </viewer>
             </field>
           </panel>
         </panel>
-        <field name="company.currency.symbol" hidden="true"/>
-        <field name="company.currency.numberOfDecimals" hidden="true"/>
+        <field name="$currencySymbol" type="string" hidden="true"/>
+        <field name="$currencyNumberOfDecimals" type="integer" hidden="true"/>
+        <field name="$isMultiCurrency" type="boolean" hidden="true"/>
       </panel>
       <panel name="actionPanel" colSpan="3" itemSpan="12">
         <button name="planBtn" title="Plan" icon="calendar" showIf="statusSelect == 1"
@@ -599,6 +600,9 @@
           onClick="action-group-stock-stockmove-cancel-click"/>
         <button name="draftBtn" title="Draft" showIf="statusSelect == 4"
           onClick="action-stock-move-method-draft"/>
+        <field if="__config__.app.getApp('stock')?.getActivateStockMoveBarcodeGeneration()"
+          name="stockMoveBarcode" showTitle="false" colOffset="9" colSpan="3" widget="Image"
+          showIf="stockMoveBarcode"/>
       </panel>
     </panel>
 
@@ -671,13 +675,18 @@
         if="__config__.app.isApp('supplychain')" showIf="id">
         <panel name="OriginPanel" colSpan="12">
           <panel colSpan="3" itemSpan="3" stacked="true" readonly="true">
-            <field name="inventory" hidden="true" showIf="inventory != null"/>
+            <field name="inventory" hidden="true" showIf="inventory != null"
+              grid-view="inventory-grid" form-view="inventory-form"/>
             <field name="manufOrder" hidden="true" showIf="manufOrder != null"
-              if-module="axelor-production"/>
+              if-module="axelor-production" grid-view="manuf-order-grid"
+              form-view="manuf-order-form"/>
             <field name="operationOrder" hidden="true" showIf="operationOrder != null"
-              if-module="axelor-production"/>
-            <field name="stockCorrection" hidden="true" showIf="stockCorrection != null"/>
-            <field name="massStockMove" hidden="true" showIf="massStockMove != null"/>
+              if-module="axelor-production" grid-view="operation-order-grid"
+              form-view="operation-order-form"/>
+            <field name="stockCorrection" hidden="true" showIf="stockCorrection != null"
+              grid-view="stock-correction-grid" form-view="stock-correction-form"/>
+            <field name="massStockMove" hidden="true" showIf="massStockMove != null"
+              grid-view="mass-stock-move-grid" form-view="mass-stock-move-form"/>
           </panel>
           <field name="saleOrderSet" hidden="true"
             showIf="saleOrderSet &amp;&amp; saleOrderSet.length > 0" colSpan="12" readonly="true"
@@ -708,12 +717,6 @@
       <panel name="datesPanel" title="Dates">
         <field name="realDate" colSpan="4"/>
         <field name="pickingEditDate" hidden="true" showIf="pickingEditDate" readonly="true"/>
-      </panel>
-
-      <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')">
-        <button name="addControlEntryBtn" title="Add a control entry"
-          onClick="save,action-stock-move-view-add-control-entry" colOffset="6"/>
-        <panel-dashlet action="action-stock-move-view-control-entry" colSpan="12"/>
       </panel>
 
       <panel name="configPanel" title="Configuration" itemSpan="6">
@@ -920,6 +923,7 @@
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <action name="action-stock-move-attrs-show-stock-location"/>
     <action name="action-stock-move-attrs-stock-location-readonly"/>
+    <action name="action-stock-move-method-set-currency-info"/>
   </action-group>
 
   <action-group name="action-group-stock-stockmove-onload">
@@ -935,6 +939,7 @@
     <action name="action-stock-move-attrs-show-stock-location"/>
     <action name="action-stock-move-attrs-stock-location-readonly"/>
     <action name="action-stock-move-attrs-show-send-notif-button"/>
+    <action name="action-stock-move-method-set-currency-info"/>
   </action-group>
 
   <action-group name="action-stock-move-line-change-group">
@@ -1330,6 +1335,7 @@
     model="com.axelor.apps.stock.db.LogisticalForm">
     <view type="grid" name="logistical-form-stock-move-grid"/>
     <view type="form" name="logistical-form-form"/>
+    <domain>:id MEMBER OF self.stockMoveList</domain>
   </action-view>
 
   <action-view name="action-stock-move-view-reversion" title="Reversions"
@@ -1655,24 +1661,6 @@
     <view-param name="popup-save" value="false"/>
   </action-view>
 
-  <action-view name="action-stock-move-view-control-entry"
-    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
-    <view type="grid" name="control-entry-grid"/>
-    <view type="form" name="control-entry-form"/>
-    <domain>self.relatedToSelectId = :stockMoveId AND self.relatedToSelect =
-      'com.axelor.apps.stock.db.StockMove'</domain>
-    <context name="stockMoveId" expr="eval:__self__?.id"/>
-  </action-view>
-
-  <action-view name="action-stock-move-view-add-control-entry"
-    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
-    <view type="form" name="control-entry-form"/>
-    <view type="grid" name="control-entry-grid"/>
-    <view-param name="popup" value="reload"/>
-    <context name="relatedTo" expr="eval: 'com.axelor.apps.stock.db.StockMove'"/>
-    <context name="relatedToId" expr="eval:__self__?.id"/>
-  </action-view>
-
   <action-method name="action-stock-move-method-send-notification">
     <call class="com.axelor.apps.stock.web.StockMoveController"
       method="sendSupplierArrivalCancellationMessage"/>
@@ -1713,6 +1701,10 @@
   <action-method name="action-stock-move-method-add-stock-moves-to-logistical-form">
     <call class="com.axelor.apps.stock.web.StockMoveController"
       method="addStockMovesToLogisticalForm"/>
+  </action-method>
+
+  <action-method name="action-stock-move-method-set-currency-info">
+    <call class="com.axelor.apps.stock.web.StockMoveController" method="setCurrencyInfo"/>
   </action-method>
 
 </object-views>

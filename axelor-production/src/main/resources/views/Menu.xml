@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
 
   <menuitem name="manufacturing-root" title="Manufacturing" order="-600"
@@ -247,9 +247,11 @@
     title="Cost calculations" action="manufacturing.root.cost.calculations" order="1400"/>
 
   <action-view name="manufacturing.root.cost.calculations" title="Cost calculations"
-    model="com.axelor.apps.production.db.UnitCostCalculation">
+    model="com.axelor.apps.supplychain.db.UnitCostCalculation">
     <view type="grid" name="cost-calculations-grid"/>
     <view type="form" name="cost-calculations-form"/>
+    <domain>self.typeSelect = 0</domain>
+    <context name="_typeSelect" expr="eval: 0"/>
   </action-view>
 
   <menuitem name="manufacturing-mps" parent="manufacturing-root" title="S&amp;OP/MPS"

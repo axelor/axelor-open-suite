@@ -23,8 +23,6 @@ public final class SaleExceptionMessage {
   private SaleExceptionMessage() {}
 
   /** Sales Order Stock Move Service */
-  public static final String SALES_ORDER_STOCK_MOVE_1 = /*$$(*/
-      "Invoice by delivery impose that all sale order lines must have service or stockable product with provision from stock" /*)*/;
 
   /** Sales Order Service Impl */
   public static final String SALES_ORDER_1 = /*$$(*/
@@ -146,10 +144,6 @@ public final class SaleExceptionMessage {
 
   public static final String PRODUCT_CURRENCY_IS_NULL = /*$$(*/
       "This product currency is empty: %s" /*)*/;
-
-  public static final String NO_PRODUCT_FAMILY =
-      /*$$(*/ "No product family is set for this product: %s" /*)*/;
-  public static final String PRODUCT_IS_NULL = /*$$(*/ "Product should not be null" /*)*/;
 
   public static final String PRODUCT_ADDED_TO_CART = /*$$(*/
       "%s has been added to your cart." /*)*/;

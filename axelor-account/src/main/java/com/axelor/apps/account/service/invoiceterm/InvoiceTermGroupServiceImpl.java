@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.EntityHelper;
 import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -87,6 +88,12 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
     valuesMap.put("$isMultiCurrency", invoiceTermService.isMultiCurrency(invoiceTerm));
     valuesMap.put("$companyCurrencyScale", currencyScaleService.getCompanyScale(invoiceTerm));
 
+    if (invoiceTerm.getMoveLine() != null) {
+      valuesMap.put("moveLine", EntityHelper.getEntity(invoiceTerm.getMoveLine()));
+    }
+    if (invoiceTerm.getInvoice() != null) {
+      valuesMap.put("invoice", EntityHelper.getEntity(invoiceTerm.getInvoice()));
+    }
     return valuesMap;
   }
 

@@ -74,7 +74,7 @@ import org.slf4j.LoggerFactory;
 public class SequenceReservationServiceImpl implements SequenceReservationService {
 
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private static final int DEFAULT_TIMEOUT_SECONDS = 5;
+  protected static final int DEFAULT_TIMEOUT_SECONDS = 5;
 
   private final SequenceIncrementExecutor incrementExecutor;
   private final SequenceComputationService computationService;
@@ -276,29 +276,30 @@ public class SequenceReservationServiceImpl implements SequenceReservationServic
     AtomicReference<Long> resultRef = new AtomicReference<>();
     AtomicReference<Exception> exceptionRef = new AtomicReference<>();
 
+    TenantAware tenantAware =
+        new TenantAware(
+            () -> {
+              try {
+                ReservedSequence reservation = new ReservedSequence();
+                reservation.setSequence(JPA.find(Sequence.class, sequenceId));
+                reservation.setSequenceVersion(JPA.find(SequenceVersion.class, versionId));
+                reservation.setReservedNum(reservedNum);
+                reservation.setGeneratedSequence(sequenceNumber);
+                reservation.setReservedAt(LocalDateTime.now());
+                reservation.setStatus(ReservedSequenceRepository.STATUS_PENDING);
+                reservation.setCallerClass(callerClass);
+                reservation.setCallerField(fieldName);
+
+                JPA.save(reservation);
+
+                resultRef.set(reservation.getId());
+              } catch (Exception e) {
+                exceptionRef.set(e);
+              }
+            });
+
     Callable<Void> callable =
         () -> {
-          TenantAware tenantAware =
-              new TenantAware(
-                  () -> {
-                    try {
-                      ReservedSequence reservation = new ReservedSequence();
-                      reservation.setSequence(JPA.find(Sequence.class, sequenceId));
-                      reservation.setSequenceVersion(JPA.find(SequenceVersion.class, versionId));
-                      reservation.setReservedNum(reservedNum);
-                      reservation.setGeneratedSequence(sequenceNumber);
-                      reservation.setReservedAt(LocalDateTime.now());
-                      reservation.setStatus(ReservedSequenceRepository.STATUS_PENDING);
-                      reservation.setCallerClass(callerClass);
-                      reservation.setCallerField(fieldName);
-
-                      JPA.save(reservation);
-
-                      resultRef.set(reservation.getId());
-                    } catch (Exception e) {
-                      exceptionRef.set(e);
-                    }
-                  });
           tenantAware.start();
           tenantAware.join();
           return null;

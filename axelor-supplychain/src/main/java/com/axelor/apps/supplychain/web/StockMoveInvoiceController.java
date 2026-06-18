@@ -784,4 +784,32 @@ public class StockMoveInvoiceController {
             Beans.get(AppSupplychainService.class).getTodayDate(stockMove.getCompany()))
         .map();
   }
+
+  public void filterCustomerStockMoveForMassInvoicing(
+      ActionRequest request, ActionResponse response) {
+    try {
+      response.setAttr(
+          "$customerStockMoveToInvoice",
+          "domain",
+          Beans.get(StockMoveMultiInvoiceService.class)
+              .getStockMoveDomain(
+                  StockMoveRepository.TYPE_OUTGOING, StockMoveRepository.TYPE_INCOMING, true));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void filterSupplierStockMoveForMassInvoicing(
+      ActionRequest request, ActionResponse response) {
+    try {
+      response.setAttr(
+          "$supplierStockMoveToInvoice",
+          "domain",
+          Beans.get(StockMoveMultiInvoiceService.class)
+              .getStockMoveDomain(
+                  StockMoveRepository.TYPE_INCOMING, StockMoveRepository.TYPE_OUTGOING, true));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

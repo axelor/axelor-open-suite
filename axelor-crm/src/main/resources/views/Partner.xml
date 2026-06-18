@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="partner-related-contact-grid" model="com.axelor.apps.base.db.Partner"
     title="Contacts">
@@ -149,7 +149,8 @@
               hideIf="isEmployee" colSpan="6" canEdit="false" form-view="team-form"
               grid-view="team-grid"/>
             <field name="companySet" colSpan="12" widget="Tags" canNew="false"
-              form-view="company-form" grid-view="company-grid"/>
+              form-view="company-form" grid-view="company-grid"
+              onChange="action-partner-group-company-change"/>
             <field if="__config__.app.getApp('crm')?.getAgenciesManagement()" name="agency"/>
           </panel>
         </panel>
@@ -769,7 +770,8 @@
       == __config__.app.getApp('crm')?.closedLostPartnerStatus?.id"/>
     <action name="action-partner-record-win"
       if="eval: __this__?.partnerStatus?.id == __config__.app.getApp('crm')?.closedWinPartnerStatus?.id"/>
-    <action name="save"/>
+    <action name="save"
+      if="eval: __this__?.partnerStatus?.id != __config__.app.getApp('crm')?.closedLostPartnerStatus?.id"/>
   </action-group>
 
   <action-view name="action-partner-view-partner-popup-view"

@@ -33,4 +33,6 @@ public interface FinancialDiscountService {
       Currency currency);
 
   Account getFinancialDiscountAccount(Company company, boolean isPurchase) throws AxelorException;
+
+  Account getFinancialDiscountAccountOrNull(Company company, boolean isPurchase);
 }

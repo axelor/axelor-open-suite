@@ -68,13 +68,21 @@ public abstract class OperationOrderPlanningCommonService {
 
     planWithStrategy(operationOrder);
 
+    operationOrder.setStatusSelect(OperationOrderRepository.STATUS_PLANNED);
+    operationOrder = operationOrderRepository.save(operationOrder);
+
     ManufOrder manufOrder = operationOrder.getManufOrder();
-    if (manufOrder != null && Boolean.TRUE.equals(manufOrder.getIsConsProOnOperation())) {
+    if (manufOrder != null
+        && Boolean.TRUE.equals(manufOrder.getIsConsProOnOperation())
+        && !operationOrderStockMoveService.hasPlannedConsumeStockMove(operationOrder)) {
+      Long operationOrderId = operationOrder.getId();
       operationOrderStockMoveService.createToConsumeStockMove(operationOrder);
+      // Reload after JPA.clear() triggered by stockMoveService.plan() inside
+      // createToConsumeStockMove
+      operationOrder = operationOrderRepository.find(operationOrderId);
     }
 
-    operationOrder.setStatusSelect(OperationOrderRepository.STATUS_PLANNED);
-    return operationOrderRepository.save(operationOrder);
+    return operationOrder;
   }
 
   /**

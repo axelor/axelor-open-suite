@@ -199,6 +199,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
 
     if (singleInvoiceTerm != null
         && invoiceTermToolService.isNotReadonly(singleInvoiceTerm)
+        && !singleInvoiceTerm.getIsCustomized()
         && !Objects.equals(dueDate, singleInvoiceTerm.getDueDate())) {
       singleInvoiceTerm.setDueDate(dueDate);
       singleInvoiceTerm.getMoveLine().setDueDate(dueDate);

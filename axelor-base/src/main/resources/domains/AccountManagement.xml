@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -20,6 +20,8 @@
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily"
       title="Accounting family"/>
+
+    <unique-constraint columns="tax,company"/>
 
     <extra-code><![CDATA[
 

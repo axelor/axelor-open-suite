@@ -90,6 +90,8 @@ import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockLocationServiceImpl;
 import com.axelor.apps.stock.service.StockMoveCheckWapService;
 import com.axelor.apps.stock.service.StockMoveCheckWapServiceImpl;
+import com.axelor.apps.stock.service.StockMoveCurrencyService;
+import com.axelor.apps.stock.service.StockMoveCurrencyServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineStockLocationService;
@@ -100,8 +102,6 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.StockMoveToolServiceImpl;
-import com.axelor.apps.stock.service.StockMoveUpdateService;
-import com.axelor.apps.stock.service.StockMoveUpdateServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.stock.service.TrackingNumberCompanyService;
@@ -173,7 +173,6 @@ public class StockModule extends AxelorModule {
     bind(StockLocationLineService.class).to(StockLocationLineServiceImpl.class);
     bind(StockMoveLineService.class).to(StockMoveLineServiceImpl.class);
     bind(StockMoveService.class).to(StockMoveServiceImpl.class);
-    bind(StockMoveUpdateService.class).to(StockMoveUpdateServiceImpl.class);
     bind(StockLocationService.class).to(StockLocationServiceImpl.class);
     bind(ProductBaseRepository.class).to(ProductStockRepository.class);
     bind(PartnerProductQualityRatingService.class).to(PartnerProductQualityRatingServiceImpl.class);
@@ -247,5 +246,6 @@ public class StockModule extends AxelorModule {
     bind(LogisticalFormCreateService.class).to(LogisticalFormCreateServiceImpl.class);
     bind(InventoryImportExportService.class).to(InventoryImportExportServiceImpl.class);
     bind(InventoryValidateService.class).to(InventoryValidateServiceImpl.class);
+    bind(StockMoveCurrencyService.class).to(StockMoveCurrencyServiceImpl.class);
   }
 }

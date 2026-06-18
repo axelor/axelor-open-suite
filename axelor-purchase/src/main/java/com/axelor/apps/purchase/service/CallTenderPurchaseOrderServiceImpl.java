@@ -86,6 +86,11 @@ public class CallTenderPurchaseOrderServiceImpl implements CallTenderPurchaseOrd
     List<PurchaseOrder> purchaseOrderList = new ArrayList<>();
 
     Company company = callTender.getCompany();
+    if (company == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(PurchaseExceptionMessage.CALL_FOR_TENDER_MISSING_COMPANY));
+    }
 
     List<Partner> partnerList =
         selectedCallTenderOfferList.stream()

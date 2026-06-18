@@ -62,4 +62,18 @@ public class AnalyticGroupServiceImpl implements AnalyticGroupService {
 
     return valuesMap;
   }
+
+  @Override
+  public Map<String, Object> createAnalyticValuesMap(AnalyticLine analyticLine) {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    valuesMap.put("axis1AnalyticAccount", analyticLine.getAxis1AnalyticAccount());
+    valuesMap.put("axis2AnalyticAccount", analyticLine.getAxis2AnalyticAccount());
+    valuesMap.put("axis3AnalyticAccount", analyticLine.getAxis3AnalyticAccount());
+    valuesMap.put("axis4AnalyticAccount", analyticLine.getAxis4AnalyticAccount());
+    valuesMap.put("axis5AnalyticAccount", analyticLine.getAxis5AnalyticAccount());
+    valuesMap.put("analyticMoveLineList", analyticLine.getAnalyticMoveLineList());
+
+    return valuesMap;
+  }
 }

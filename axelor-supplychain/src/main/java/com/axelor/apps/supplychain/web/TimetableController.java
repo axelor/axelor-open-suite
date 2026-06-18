@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -53,6 +54,13 @@ public class TimetableController {
     timetable = Beans.get(TimetableRepository.class).find(timetable.getId());
 
     Context parentContext = request.getContext().getParent();
+    if (timetable.getSaleOrder() == null && timetable.getPurchaseOrder() == null) {
+      throw new AxelorException(
+          timetable,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(SupplychainExceptionMessage.TIMETABLE_NOT_LINKED_TO_ORDER));
+    }
+
     if (parentContext != null && parentContext.getContextClass().equals(SaleOrder.class)) {
       SaleOrder saleOrder = parentContext.asType(SaleOrder.class);
       if (saleOrder.getStatusSelect() < SaleOrderRepository.STATUS_ORDER_CONFIRMED) {

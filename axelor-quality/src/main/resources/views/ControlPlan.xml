@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="control-plan-grid" title="Control plans"
     model="com.axelor.apps.quality.db.ControlPlan">
     <field name="statusSelect" widget="single-select"/>
     <field name="code"/>
     <field name="name"/>
-    <field name="controlPlanFrequency"/>
+    <field name="controlPlanFrequency" hidden="true"/>
   </grid>
 
   <form name="control-plan-form" title="Control plan"
@@ -17,7 +17,7 @@
       <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"/>
       <field name="code" colSpan="6"/>
       <field name="name" colSpan="6"/>
-      <field name="controlPlanFrequency" colSpan="6"/>
+      <field name="controlPlanFrequency" colSpan="6" hidden="true"/>
       <field name="description" widget="html" colSpan="12"/>
     </panel>
     <panel-related name="controlPlanLinesPanel" field="controlPlanLinesList"

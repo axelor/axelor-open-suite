@@ -21,6 +21,7 @@ package com.axelor.apps.crm.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Catalog;
+import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
 import jakarta.mail.MessagingException;
 import java.io.IOException;
@@ -28,7 +29,7 @@ import java.util.List;
 
 public interface CatalogService {
 
-  void sendEmail(Catalog catalog, Template template, List<Partner> contactList)
+  Message sendEmail(Catalog catalog, Template template, List<Partner> contactList)
       throws ClassNotFoundException,
           InstantiationException,
           IllegalAccessException,

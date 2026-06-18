@@ -179,7 +179,9 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
   }
 
   protected void taxLinePrecondition(Move move) throws AxelorException {
-    if (!Arrays.asList(
+    if (move.getFunctionalOriginSelect() != null
+        && move.getFunctionalOriginSelect() != 0
+        && !Arrays.asList(
                 MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE, MoveRepository.FUNCTIONAL_ORIGIN_OPENING)
             .contains(move.getFunctionalOriginSelect())
         && !move.getMoveLineList().stream().allMatch(this::hasPayableReceivableAccount)

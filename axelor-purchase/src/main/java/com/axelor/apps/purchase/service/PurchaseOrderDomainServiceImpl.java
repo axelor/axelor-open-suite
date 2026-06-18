@@ -19,6 +19,7 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 
 public class PurchaseOrderDomainServiceImpl implements PurchaseOrderDomainService {
   @Override
@@ -27,5 +28,10 @@ public class PurchaseOrderDomainServiceImpl implements PurchaseOrderDomainServic
     return String.format(
         "self.id != %d AND self.isContact = false AND self.isSupplier = true AND :company member of self.companySet",
         companyId);
+  }
+
+  @Override
+  public String getPartnerBaseDomain(Company company, PurchaseOrder purchaseOrder) {
+    return getPartnerBaseDomain(company);
   }
 }

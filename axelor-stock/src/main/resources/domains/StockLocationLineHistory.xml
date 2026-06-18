@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -22,6 +22,8 @@
     <decimal name="salePrice" title="Sale price" initParam="true"/>
     <decimal name="purchasePrice" title="Purchase price" initParam="true"/>
     <decimal name="costPrice" title="Cost price" initParam="true"/>
+    <index columns="stockLocationLine,dateT" name="idx_sslh_stock_location_line_datet"/>
+
     <extra-code><![CDATA[
       //origin
       public static final String ORIGIN_MANUAL_CORRECTION = "Manual correction";
@@ -30,6 +32,7 @@
       public static final String TYPE_SELECT_WAP_CORRECTION = "wapCorrection";
       public static final String TYPE_SELECT_CANCELATION = "cancelation";
       public static final String TYPE_SELECT_UPDATE_STOCK_LOCATION_FROM_PRODUCT = "updateStockLocationFromProduct";
+      public static final String TYPE_SELECT_STOCK_REVALUATION = "stockRevaluation";
     ]]></extra-code>
   </entity>
 

@@ -171,8 +171,10 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
   public boolean isFinancialDiscountLine(MoveLine moveLine, Company company, boolean isPurchase)
       throws AxelorException {
     Account financialDiscountAccount =
-        financialDiscountService.getFinancialDiscountAccount(company, isPurchase);
-
+        financialDiscountService.getFinancialDiscountAccountOrNull(company, isPurchase);
+    if (financialDiscountAccount == null) {
+      return false;
+    }
     return moveLine.getAccount().equals(financialDiscountAccount);
   }
 
@@ -517,6 +519,9 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     BigDecimal taxTotal = invoice.getTaxTotal();
 
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
+      if (invoiceLineTax.getReverseCharged()) {
+        continue;
+      }
       TaxLine taxLine = invoiceLineTax.getTaxLine();
       List<InvoiceLine> invoiceLineList = invoiceLineTax.getInvoice().getInvoiceLineList();
       long noOfLines =

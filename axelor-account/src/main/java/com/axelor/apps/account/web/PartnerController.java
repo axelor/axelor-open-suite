@@ -56,7 +56,7 @@ public class PartnerController {
         long accountConfigCount =
             Beans.get(AccountConfigRepository.class)
                 .all()
-                .filter("self.factorPartner = :factorPartner")
+                .filter("self.factorPartner.id = :factorPartner")
                 .bind("factorPartner", partner.getId())
                 .count();
         if (accountConfigCount > 0) {
@@ -75,7 +75,7 @@ public class PartnerController {
         long notificationCount =
             Beans.get(NotificationRepository.class)
                 .all()
-                .filter("self.factorPartner = :factorPartner")
+                .filter("self.factorPartner.id = :factorPartner")
                 .bind("factorPartner", partner.getId())
                 .count();
         if (notificationCount > 0) {

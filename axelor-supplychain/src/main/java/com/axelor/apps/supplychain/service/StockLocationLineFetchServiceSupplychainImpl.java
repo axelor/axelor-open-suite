@@ -24,8 +24,11 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.service.StockLocationLineFetchServiceImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.db.JPA;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class StockLocationLineFetchServiceSupplychainImpl
     extends StockLocationLineFetchServiceImpl {
@@ -71,6 +74,24 @@ public class StockLocationLineFetchServiceSupplychainImpl
     BigDecimal availableQty = BigDecimal.ZERO;
     if (stockLocationLine != null) {
       availableQty = stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
+    }
+    return availableQty;
+  }
+
+  @Override
+  public BigDecimal getTrackingNumberAvailableQtyIncludingSubLocations(
+      StockLocation stockLocation, TrackingNumber trackingNumber) {
+    BigDecimal availableQty = getTrackingNumberAvailableQty(stockLocation, trackingNumber);
+    List<StockLocation> subStockLocations =
+        JPA.all(StockLocation.class)
+            .filter("self.parentStockLocation = :stockLocation AND self.usableOnSaleOrder = true")
+            .bind("stockLocation", stockLocation)
+            .fetch();
+    if (CollectionUtils.isEmpty(subStockLocations)) {
+      return availableQty;
+    }
+    for (StockLocation location : subStockLocations) {
+      availableQty = availableQty.add(getTrackingNumberAvailableQty(location, trackingNumber));
     }
     return availableQty;
   }

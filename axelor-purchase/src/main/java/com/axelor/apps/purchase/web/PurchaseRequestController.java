@@ -94,9 +94,7 @@ public class PurchaseRequestController {
 
         List<PurchaseOrder> purchaseOrderList = generationResult.getPurchaseOrders();
         ActionViewBuilder actionViewBuilder =
-            ActionView.define(
-                    String.format(
-                        "Purchase Order%s generated", (purchaseOrderList.size() > 1 ? "s" : "")))
+            ActionView.define(I18n.get("Purchase orders"))
                 .model(PurchaseOrder.class.getName())
                 .add("grid", "purchase-order-quotation-grid")
                 .add("form", "purchase-order-form")
