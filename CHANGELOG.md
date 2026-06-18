@@ -1,3 +1,34 @@
+## [8.5.21] (2026-06-18)
+
+### Fixes
+#### Base
+
+* Upgrade AOP version to 7.4.12
+* Birt report: fixed file not found error and concurrent generation conflicts when printing birt reports.
+* Expense: fixed electronic signature failure when the uploaded file has a short filename.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed wrong translation of warning message when selecting lines.
+* Bank order: included the invoice's printedPDF file in the 'Display invoice' document list.
+
+#### Quality
+
+* Quality: moved the control plan line 'Type of control device' field from a production view extension into the quality views, conditioned on the production app.
+
+#### Stock
+
+* Stock location: fixed poor performance of stock location value's formula.
+* Stock move: fixed logistical forms dashlet showing all logistical forms instead of only those linked to the current stock move.
+
+
+### Developer
+
+#### Bank Payment
+
+Added MetaFiles as parameter in BankOrderLineOriginServiceImpl constructor
+Added MetaFiles as parameter in BankOrderLineOriginServiceHRImpl constructor
+
 ## [8.5.20] (2026-06-11)
 
 ### Fixes
@@ -3144,6 +3175,7 @@ Removed CommonInvoiceService.createInvoiceLinesFromOrder Changed the parameter o
 * Bill of material: added default value for calculation quantity.
 * Manuf order: fixed relation with production order.
 
+[8.5.21]: https://github.com/axelor/axelor-open-suite/compare/v8.5.20...v8.5.21
 [8.5.20]: https://github.com/axelor/axelor-open-suite/compare/v8.5.19...v8.5.20
 [8.5.19]: https://github.com/axelor/axelor-open-suite/compare/v8.5.18...v8.5.19
 [8.5.18]: https://github.com/axelor/axelor-open-suite/compare/v8.5.17...v8.5.18
