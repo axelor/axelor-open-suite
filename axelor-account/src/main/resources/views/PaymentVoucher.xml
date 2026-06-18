@@ -52,6 +52,8 @@
         showIf="statusSelect == 1 || !id" readonlyIf="paidAmount == 0"/>
       <button name="printPaymentVoucherBtn" title="Print receipt" hidden="true"
         icon="printer" onClick="action-payment-voucher-group-print-template"/>
+      <button name="cancelPaymentVoucherBtn" title="Cancel" icon="fa-ban" css="btn-danger"
+        onClick="action-payment-voucher-open-cancel-wizard" hideIf="statusSelect != 2"/>
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info" readonly="true">
@@ -156,6 +158,13 @@
         field="payVoucherElementToPayList" form-view="pay-voucher-element-to-pay-form"
         grid-view="pay-voucher-element-to-pay-grid" orderBy="sequence" canNew="false"/>
     </panel-stack>
+
+    <panel name="cancellationInfoPanel" title="Cancellation" hideIf="statusSelect != 3"
+      colSpan="12">
+      <field name="cancellationReason" readonly="true"/>
+      <field name="cancellationDate" readonly="true"/>
+      <field name="cancelledByUser" readonly="true"/>
+    </panel>
 
   </form>
 
@@ -465,6 +474,20 @@
   <action-method name="action-payment-voucher-method-reset-and-reload-element-to-pay">
     <call class="com.axelor.apps.account.web.PaymentVoucherController"
       method="resetAndReloadElementToPay"/>
+  </action-method>
+
+  <action-view name="action-payment-voucher-open-cancel-wizard"
+    model="com.axelor.utils.db.Wizard" title="Cancel payment voucher">
+    <view type="form" name="payment-voucher-cancel-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <context name="_paymentVoucherId" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-payment-voucher-method-confirm-cancel">
+    <call class="com.axelor.apps.account.web.PaymentVoucherController" method="confirmCancel"/>
   </action-method>
 
 </object-views>

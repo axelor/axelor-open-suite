@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <form name="payment-voucher-cancel-wizard-form" title="Cancel payment voucher"
+    model="com.axelor.utils.db.Wizard">
+    <panel name="warningPanel" colSpan="12">
+      <label
+        title="You are about to cancel this payment voucher. This action is irreversible. The accounting move must already be reversed before proceeding. Please select a cancellation reason."
+        css="label-warning" colSpan="12"/>
+    </panel>
+    <panel name="reasonPanel" colSpan="12">
+      <field name="$cancellationReason" type="many-to-one"
+        target="com.axelor.apps.base.db.CancelReason" title="Cancellation reason" required="true"
+        colSpan="12" form-view="cancel-reason-form" grid-view="cancel-reason-grid"
+        domain="self.applicationType = 'com.axelor.apps.account.db.PaymentVoucher' OR self.applicationType IS NULL"/>
+    </panel>
+    <panel name="buttonsPanel" colSpan="12">
+      <button name="confirmBtn" title="Confirm" css="btn-danger"
+        onClick="action-payment-voucher-method-confirm-cancel,close"
+        readonlyIf="!$cancellationReason"/>
+    </panel>
+  </form>
+
+</object-views>

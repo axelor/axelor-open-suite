@@ -27,14 +27,18 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherControlService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.CancelReasonRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -43,8 +47,11 @@ import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
+import com.axelor.utils.db.Wizard;
 import com.google.common.base.Strings;
 import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -159,6 +166,45 @@ public class PaymentVoucherController {
     try {
       Beans.get(PaymentVoucherConfirmService.class).confirmPaymentVoucher(paymentVoucher);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void openCancelWizard(ActionRequest request, ActionResponse response) {
+    try {
+      PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
+      response.setView(
+          ActionView.define(I18n.get("Cancel payment voucher"))
+              .model(Wizard.class.getName())
+              .add("form", "payment-voucher-cancel-wizard-form")
+              .param("popup", "reload")
+              .param("popup-save", "false")
+              .param("show-toolbar", "false")
+              .param("show-confirm", "false")
+              .context("_paymentVoucherId", paymentVoucher.getId())
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void confirmCancel(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      Long pvId = Long.valueOf(context.get("_paymentVoucherId").toString());
+      Map<String, Object> reasonMap = (Map<String, Object>) context.get("$cancellationReason");
+      if (reasonMap == null) {
+        response.setError(I18n.get("Please select a cancellation reason."));
+        return;
+      }
+      Long reasonId = Long.valueOf(reasonMap.get("id").toString());
+      PaymentVoucher pv = Beans.get(PaymentVoucherRepository.class).find(pvId);
+      CancelReason reason = Beans.get(CancelReasonRepository.class).find(reasonId);
+      Beans.get(PaymentVoucherCancelService.class).cancelPaymentVoucherManually(pv, reason);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
