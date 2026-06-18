@@ -1,0 +1,3 @@
+---
+title: "Birt report: fixed file not found error and concurrent generation conflicts when printing birt reports."
+module: axelor-base
