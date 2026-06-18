@@ -52,9 +52,13 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Criteria;
 import com.axelor.utils.helpers.ModelHelper;
 import jakarta.inject.Singleton;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 
 @Singleton
 public class ContractController {
@@ -399,5 +403,31 @@ public class ContractController {
         Beans.get(PartnerPriceListService.class)
             .getPriceListDomain(contract.getPartner(), targetType);
     response.setAttr("priceList", "domain", domain);
+  }
+
+  public void fetchSummary(ActionRequest request, ActionResponse response) {
+    try {
+      Criteria criteria = Criteria.parse(request);
+      List<Contract> contracts =
+          criteria != null ? criteria.createQuery(Contract.class).fetch() : Collections.emptyList();
+
+      BigDecimal totalInitialExTaxTotalPerYear = BigDecimal.ZERO;
+      BigDecimal totalYearlyExTaxTotalRevalued = BigDecimal.ZERO;
+
+      for (Contract contract : contracts) {
+        ContractVersion version = contract.getCurrentContractVersion();
+        if (version != null) {
+          totalInitialExTaxTotalPerYear =
+              totalInitialExTaxTotalPerYear.add(version.getInitialExTaxTotalPerYear());
+          totalYearlyExTaxTotalRevalued =
+              totalYearlyExTaxTotalRevalued.add(version.getYearlyExTaxTotalRevalued());
+        }
+      }
+
+      response.setValue("$totalInitialExTaxTotalPerYear", totalInitialExTaxTotalPerYear);
+      response.setValue("$totalYearlyExTaxTotalRevalued", totalYearlyExTaxTotalRevalued);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

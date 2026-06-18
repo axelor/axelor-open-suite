@@ -83,6 +83,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.rpc.Criteria;
 import com.axelor.utils.db.Wizard;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.base.Function;
@@ -929,5 +930,28 @@ public class SaleOrderController {
             .map(m -> (Long) m.get("id"))
             .collect(Collectors.toList());
     return allIds.isEmpty() ? Collections.singletonList(0L) : allIds;
+  }
+
+  public void fetchSummary(ActionRequest request, ActionResponse response) {
+    try {
+      Criteria criteria = Criteria.parse(request);
+      List<SaleOrder> saleOrders =
+          criteria != null
+              ? criteria.createQuery(SaleOrder.class).fetch()
+              : Collections.emptyList();
+
+      BigDecimal totalExTaxTotal = BigDecimal.ZERO;
+      BigDecimal totalInTaxTotal = BigDecimal.ZERO;
+
+      for (SaleOrder saleOrder : saleOrders) {
+        totalExTaxTotal = totalExTaxTotal.add(saleOrder.getExTaxTotal());
+        totalInTaxTotal = totalInTaxTotal.add(saleOrder.getInTaxTotal());
+      }
+
+      response.setValue("$totalExTaxTotal", totalExTaxTotal);
+      response.setValue("$totalInTaxTotal", totalInTaxTotal);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

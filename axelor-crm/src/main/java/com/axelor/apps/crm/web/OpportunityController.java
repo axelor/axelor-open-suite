@@ -34,9 +34,12 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.rpc.Criteria;
 import jakarta.inject.Singleton;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -201,6 +204,26 @@ public class OpportunityController {
       Beans.get(OpportunityService.class).kanbanOpportunityOnMove(opportunity);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void fetchSummary(ActionRequest request, ActionResponse response) {
+    try {
+      Criteria criteria = Criteria.parse(request);
+      List<Opportunity> opportunities =
+          criteria != null
+              ? criteria.createQuery(Opportunity.class).fetch()
+              : Collections.emptyList();
+
+      BigDecimal totalAmount = BigDecimal.ZERO;
+
+      for (Opportunity opportunity : opportunities) {
+        totalAmount = totalAmount.add(opportunity.getAmount());
+      }
+
+      response.setValue("$totalAmount", totalAmount);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
