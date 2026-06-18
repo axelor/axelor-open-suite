@@ -636,7 +636,7 @@ SET amount_invoiced =
                       WHERE ((InvoiceLine.purchase_order_line IN (
                           SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
                       ) OR Invoice.purchase_order = PurchaseOrder.id)
-                      AND Invoice.operation_type_select = 3
+                      AND Invoice.operation_type_select = 1
                       AND Invoice.status_select = 3
                   ), 0)
                   -
@@ -647,7 +647,7 @@ SET amount_invoiced =
                       WHERE ((InvoiceLine.purchase_order_line IN (
                           SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
                       ) OR Invoice.purchase_order = PurchaseOrder.id)
-                      AND Invoice.operation_type_select = 4
+                      AND Invoice.operation_type_select = 2
                       AND Invoice.status_select = 3
                   ), 0)
               ) / PurchaseOrder.company_ex_tax_total
@@ -660,7 +660,7 @@ SET amount_invoiced =
               WHERE ((InvoiceLine.purchase_order_line IN (
                   SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
               ) OR Invoice.purchase_order = PurchaseOrder.id)
-              AND Invoice.operation_type_select = 3
+              AND Invoice.operation_type_select = 1
               AND Invoice.status_select = 3
           ), 0)
           -
@@ -671,7 +671,7 @@ SET amount_invoiced =
               WHERE ((InvoiceLine.purchase_order_line IN (
                   SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
               ) OR Invoice.purchase_order = PurchaseOrder.id)
-              AND Invoice.operation_type_select = 4
+              AND Invoice.operation_type_select = 2
               AND Invoice.status_select = 3
           ), 0)
     END
