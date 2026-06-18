@@ -10,6 +10,7 @@
     <field name="reference"/>
     <field name="typeSelect"/>
     <field name="characteristic"/>
+    <field name="machineType" if="__config__.app.isApp('production')"/>
     <field name="isCustomFrequency" hidden="true"/>
   </grid>
 
@@ -21,6 +22,7 @@
       <field name="controlType" colSpan="3" required="true"/>
       <field name="characteristic" colSpan="6"/>
       <field name="name" required="true" colSpan="6"/>
+      <field name="machineType" colSpan="6" if="__config__.app.isApp('production')"/>
       <field name="isCustomFrequency" colSpan="3" hidden="true"/>
       <field name="controlPlanFrequency" colSpan="9" showIf="isCustomFrequency" hidden="true"/>
       <field name="description" widget="html" colSpan="12"/>

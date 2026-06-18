@@ -1,0 +1,3 @@
+---
+title: "Quality: moved the control plan line 'Type of control device' field from a production view extension into the quality views, conditioned on the production app."
+module: axelor-quality
