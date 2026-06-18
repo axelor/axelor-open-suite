@@ -1,3 +1,28 @@
+## [9.0.12] (2026-06-18)
+
+### Fixes
+#### Base
+
+* Birt report: fixed file not found error and concurrent generation conflicts when printing birt reports.
+* Expense: fixed electronic signature failure when the uploaded file has a short filename.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed wrong translation of warning message when selecting lines.
+* Bank order: included the invoice's printedPDF file in the 'Display invoice' document list.
+
+#### Stock
+
+* Stock move: fixed logistical forms dashlet showing all logistical forms instead of only those linked to the current stock move.
+
+
+### Developer
+
+#### Bank Payment
+
+Added MetaFiles as parameter in BankOrderLineOriginServiceImpl constructor
+Added MetaFiles as parameter in BankOrderLineOriginServiceHRImpl constructor
+
 ## [9.0.11] (2026-06-11)
 
 ### Fixes
@@ -2140,6 +2165,7 @@ Replaced the attrs action `action-purchase-order-line-attrs-delivery-panel` with
 
 * Project: improve task tree management.
 
+[9.0.12]: https://github.com/axelor/axelor-open-suite/compare/v9.0.11...v9.0.12
 [9.0.11]: https://github.com/axelor/axelor-open-suite/compare/v9.0.10...v9.0.11
 [9.0.10]: https://github.com/axelor/axelor-open-suite/compare/v9.0.9...v9.0.10
 [9.0.9]: https://github.com/axelor/axelor-open-suite/compare/v9.0.8...v9.0.9
