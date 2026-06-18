@@ -1,3 +1,29 @@
+## [8.4.29] (2026-06-18)
+
+### Fixes
+#### Base
+
+* Upgrade AOP version to 7.4.12
+* Birt report: fixed file not found error and concurrent generation conflicts when printing birt reports.
+* Expense: fixed electronic signature failure when the uploaded file has a short filename.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed wrong translation of warning message when selecting lines.
+* Bank order: included the invoice's printedPDF file in the 'Display invoice' document list.
+
+#### Stock
+
+* Stock location: fixed poor performance of stock location value's formula.
+
+
+### Developer
+
+#### Bank Payment
+
+Added MetaFiles as parameter in BankOrderLineOriginServiceImpl constructor
+Added MetaFiles as parameter in BankOrderLineOriginServiceHRImpl constructor
+
 ## [8.4.28] (2026-06-11)
 
 ### Fixes
@@ -3219,6 +3245,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.29]: https://github.com/axelor/axelor-open-suite/compare/v8.4.28...v8.4.29
 [8.4.28]: https://github.com/axelor/axelor-open-suite/compare/v8.4.27...v8.4.28
 [8.4.27]: https://github.com/axelor/axelor-open-suite/compare/v8.4.26...v8.4.27
 [8.4.26]: https://github.com/axelor/axelor-open-suite/compare/v8.4.25...v8.4.26
