@@ -1,0 +1,3 @@
+---
+title: "Barcode: fixed EAN_13 barcode type to accept 13-digit serial numbers."
+module: axelor-base
