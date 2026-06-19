@@ -129,6 +129,14 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
   @Transactional(rollbackOn = {Exception.class})
   public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
 
+    if (manufOrder.getStatusSelect() == ManufOrderRepository.STATUS_PLANNED) {
+      throw new AxelorException(
+          manufOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.MANUF_ORDER_ALREADY_PLANNED),
+          manufOrder.getManufOrderSeq());
+    }
+
     initFieldsNeededForPlan(manufOrder);
     planSchedulingDates(manufOrder);
     updateStatusToPlan(manufOrder);
