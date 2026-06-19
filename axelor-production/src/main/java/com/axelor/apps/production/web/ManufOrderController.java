@@ -69,6 +69,7 @@ import com.axelor.utils.db.Wizard;
 import com.axelor.utils.service.TranslationService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -80,6 +81,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.persistence.OptimisticLockException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -256,7 +258,12 @@ public class ManufOrderController {
         response.setCanClose(true);
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      if (Throwables.getCausalChain(e).stream()
+          .anyMatch(cause -> cause instanceof OptimisticLockException)) {
+        response.setError(I18n.get(ProductionExceptionMessage.MANUF_ORDER_CONCURRENT_MODIFICATION));
+      } else {
+        TraceBackService.trace(response, e);
+      }
     }
   }
 
