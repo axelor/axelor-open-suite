@@ -456,4 +456,10 @@ public final class ProductionExceptionMessage {
 
   public static final String BILL_OF_MATERIAL_NAME_TOO_LONG = /*$$(*/
       "Bill of materials name is too long (maximum 255 characters)." /*)*/;
+
+  public static final String MANUF_ORDER_ALREADY_PLANNED = /*$$(*/
+      "Manufacturing order %s is already planned." /*)*/;
+
+  public static final String MANUF_ORDER_CONCURRENT_MODIFICATION = /*$$(*/
+      "The manufacturing order is being modified by another session. Please refresh the page and try again." /*)*/;
 }
