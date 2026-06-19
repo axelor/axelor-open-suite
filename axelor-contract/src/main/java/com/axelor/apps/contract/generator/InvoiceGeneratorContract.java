@@ -59,6 +59,8 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
   protected Invoice createInvoiceHeader() throws AxelorException {
     Invoice invoice = super.createInvoiceHeader();
 
+    invoice.setFiscalPosition(partner.getFiscalPosition());
+
     ContractVersion version = contract.getCurrentContractVersion();
     if (contract.getIsInvoicingManagement() && version.getIsPeriodicInvoicing()) {
       invoice.setOperationSubTypeSelect(
