@@ -1029,6 +1029,31 @@
     <view type="form" name="fec-import-form"/>
   </action-view>
 
+  <menuitem title="Loans" name="account-root-loan-management" parent="account-root"
+    order="1150"/>
+
+  <menuitem title="Loans" name="account-root-loan-management-loans"
+    parent="account-root-loan-management" action="account.root.loan.management.loans" order="100"/>
+
+  <action-view name="account.root.loan.management.loans" title="Loans"
+    model="com.axelor.apps.account.db.Loan">
+    <view type="grid" name="loan-grid"/>
+    <view type="form" name="loan-form"/>
+  </action-view>
+
+  <menuitem title="Configurations" name="account-root-loan-management-conf"
+    parent="account-root-loan-management" icon="gear" order="200"/>
+
+  <menuitem title="Loan configurations" name="account-root-loan-management-conf-config"
+    parent="account-root-loan-management-conf" action="account.root.loan.management.conf.config"
+    order="100"/>
+
+  <action-view name="account.root.loan.management.conf.config"
+    title="Loan configurations" model="com.axelor.apps.account.db.LoanManagementConfig">
+    <view type="grid" name="loan-management-config-grid"/>
+    <view type="form" name="loan-management-config-form"/>
+  </action-view>
+
   <!-- Delay Reason -->
 
   <menuitem name="debt-recovery-root-conf-payment-delay-reason"

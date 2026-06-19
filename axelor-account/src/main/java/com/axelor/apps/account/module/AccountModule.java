@@ -288,6 +288,12 @@ import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeServiceImpl;
 import com.axelor.apps.account.service.journal.JournalControlService;
 import com.axelor.apps.account.service.journal.JournalControlServiceImpl;
+import com.axelor.apps.account.service.loan.LoanManagementConfigService;
+import com.axelor.apps.account.service.loan.LoanManagementConfigServiceImpl;
+import com.axelor.apps.account.service.loan.LoanService;
+import com.axelor.apps.account.service.loan.LoanServiceImpl;
+import com.axelor.apps.account.service.loan.LoanValidateService;
+import com.axelor.apps.account.service.loan.LoanValidateServiceImpl;
 import com.axelor.apps.account.service.move.MoveControlService;
 import com.axelor.apps.account.service.move.MoveControlServiceImpl;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
@@ -813,6 +819,10 @@ public class AccountModule extends AxelorModule {
     bind(SimulatedMoveService.class).to(SimulatedMoveServiceImpl.class);
 
     bind(FixedAssetValidateService.class).to(FixedAssetValidateServiceImpl.class);
+
+    bind(LoanManagementConfigService.class).to(LoanManagementConfigServiceImpl.class);
+    bind(LoanService.class).to(LoanServiceImpl.class);
+    bind(LoanValidateService.class).to(LoanValidateServiceImpl.class);
 
     bind(AnalyticMoveLineQueryService.class).to(AnalyticMoveLineQueryServiceImpl.class);
 

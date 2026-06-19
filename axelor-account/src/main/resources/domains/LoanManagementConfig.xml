@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="LoanManagementConfig" cacheable="true">
+
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true"
+      help="Company this loan configuration applies to."/>
+    <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"
+      required="true" help="Journal used to book loan accounting entries."/>
+    <many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence"
+      title="Loan sequence" help="Sequence used to number loans on validation."/>
+
+    <many-to-one name="borrowingDebtAccount" ref="com.axelor.apps.account.db.Account"
+      title="Borrowing debt account" help="Account 164 - loan principal debt owed to the lender."/>
+    <many-to-one name="interestExpenseAccount" ref="com.axelor.apps.account.db.Account"
+      title="Interest expense account" help="Account 661 - interest charges on the loan."/>
+    <many-to-one name="insuranceExpenseAccount" ref="com.axelor.apps.account.db.Account"
+      title="Insurance expense account"
+      help="Account 616 - insurance premiums attached to the loan."/>
+    <many-to-one name="bankAccount" ref="com.axelor.apps.account.db.Account"
+      title="Bank account" help="Account 512 - bank account used for loan cash movements."/>
+    <many-to-one name="accruedInterestAccount" ref="com.axelor.apps.account.db.Account"
+      title="Accrued interest account" help="Account 16884 - accrued interest not yet due (ICNE)."/>
+    <many-to-one name="prepaidExpenseAccount" ref="com.axelor.apps.account.db.Account"
+      title="Prepaid expense account" help="Account 486 - prepaid expenses (CCA)."/>
+
+  </entity>
+
+</domain-models>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <grid name="loan-management-config-grid" title="Loan configurations"
+    model="com.axelor.apps.account.db.LoanManagementConfig">
+    <field name="company"/>
+    <field name="journal"/>
+    <field name="sequence"/>
+  </grid>
+
+  <form name="loan-management-config-form" title="Loan configuration"
+    model="com.axelor.apps.account.db.LoanManagementConfig">
+    <panel name="mainPanel" title="Configuration">
+      <field name="company"/>
+      <field name="journal"/>
+      <field name="sequence"/>
+    </panel>
+    <panel name="accountsPanel" title="Accounts">
+      <field name="borrowingDebtAccount"/>
+      <field name="interestExpenseAccount"/>
+      <field name="insuranceExpenseAccount"/>
+      <field name="bankAccount"/>
+      <field name="accruedInterestAccount"/>
+      <field name="prepaidExpenseAccount"/>
+    </panel>
+  </form>
+
+</object-views>

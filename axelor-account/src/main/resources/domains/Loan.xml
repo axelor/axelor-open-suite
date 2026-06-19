@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="Loan">
+
+    <string name="reference" title="Reference" readonly="true"/>
+    <integer name="statusSelect" title="Status" default="1"
+      selection="account.loan.status.select"/>
+
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true"/>
+    <many-to-one name="loanManagementConfig"
+      ref="com.axelor.apps.account.db.LoanManagementConfig" title="Loan configuration"
+      help="Loan configuration providing the journal and accounts copied on validation."/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Lender"/>
+
+    <decimal name="amount" title="Borrowed amount" precision="20" scale="3"/>
+    <decimal name="annualInterestRate" title="Annual interest rate" precision="20" scale="3"/>
+    <integer name="computationModeSelect" title="Computation mode"
+      selection="account.loan.computation.mode.select"
+      help="Constant payment: fixed installment, capital share grows over time.&lt;br/&gt;Constant capital: fixed capital repayment, decreasing installment.&lt;br/&gt;In fine: interest only until the last installment which repays the whole capital.&lt;br/&gt;"/>
+    <integer name="durationInMonth" title="Duration in month"/>
+    <date name="firstInstallmentDate" title="First installment date"/>
+    <decimal name="monthlyInsuranceAmount" title="Monthly insurance amount" precision="20"
+      scale="3"/>
+
+    <decimal name="monthlyPayment" title="Monthly payment" precision="20" scale="3"
+      readonly="true"/>
+    <decimal name="remainingDebt" title="Remaining debt" precision="20" scale="3"
+      readonly="true"/>
+
+    <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"/>
+    <many-to-one name="borrowingDebtAccount" ref="com.axelor.apps.account.db.Account"
+      title="Borrowing debt account"/>
+    <many-to-one name="interestExpenseAccount" ref="com.axelor.apps.account.db.Account"
+      title="Interest expense account"/>
+    <many-to-one name="insuranceExpenseAccount" ref="com.axelor.apps.account.db.Account"
+      title="Insurance expense account"/>
+    <many-to-one name="bankAccount" ref="com.axelor.apps.account.db.Account"
+      title="Bank account"/>
+    <many-to-one name="accruedInterestAccount" ref="com.axelor.apps.account.db.Account"
+      title="Accrued interest account"/>
+    <many-to-one name="prepaidExpenseAccount" ref="com.axelor.apps.account.db.Account"
+      title="Prepaid expense account"/>
+
+    <one-to-many name="lineList" ref="com.axelor.apps.account.db.LoanLine"
+      title="Schedule" mappedBy="loan"/>
+
+    <extra-code><![CDATA[
+		// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_VALIDATED = 2;
+		public static final int STATUS_ONGOING = 3;
+		public static final int STATUS_CLOSED = 4;
+
+		// COMPUTATION MODE SELECT
+		public static final int COMPUTATION_MODE_CONSTANT_PAYMENT = 1;
+		public static final int COMPUTATION_MODE_CONSTANT_CAPITAL = 2;
+		public static final int COMPUTATION_MODE_IN_FINE = 3;
+	]]></extra-code>
+
+  </entity>
+
+</domain-models>

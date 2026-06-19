@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <grid name="loan-grid" title="Loans" model="com.axelor.apps.account.db.Loan">
+    <field name="reference"/>
+    <field name="company"/>
+    <field name="partner"/>
+    <field name="amount"/>
+    <field name="statusSelect"/>
+  </grid>
+
+  <form name="loan-form" title="Loan" model="com.axelor.apps.account.db.Loan"
+    onNew="action-loan-record-default,action-loan-method-set-default-config">
+    <panel name="mainPanel">
+      <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"
+        readonly="true"/>
+      <field name="reference"/>
+      <field name="company" readonlyIf="statusSelect &gt; 1"
+        onChange="action-loan-method-set-default-config"/>
+      <field name="loanManagementConfig" readonlyIf="statusSelect &gt; 1"
+        domain="self.company = :company"/>
+      <field name="partner" readonlyIf="statusSelect &gt; 1"/>
+    </panel>
+    <panel name="conditionsPanel" title="Financial conditions">
+      <field name="amount" readonlyIf="statusSelect &gt; 1"/>
+      <field name="annualInterestRate" readonlyIf="statusSelect &gt; 1"/>
+      <field name="computationModeSelect" readonlyIf="statusSelect &gt; 1"/>
+      <field name="durationInMonth" readonlyIf="statusSelect &gt; 1"/>
+      <field name="firstInstallmentDate" readonlyIf="statusSelect &gt; 1"/>
+      <field name="monthlyInsuranceAmount" readonlyIf="statusSelect &gt; 1"/>
+      <field name="monthlyPayment"/>
+      <field name="remainingDebt"/>
+    </panel>
+    <panel name="accountsPanel" title="Accounts" canCollapse="true" collapseIf="true">
+      <field name="journal" readonly="true"/>
+      <field name="borrowingDebtAccount" readonly="true"/>
+      <field name="interestExpenseAccount" readonly="true"/>
+      <field name="insuranceExpenseAccount" readonly="true"/>
+      <field name="bankAccount" readonly="true"/>
+      <field name="accruedInterestAccount" readonly="true"/>
+      <field name="prepaidExpenseAccount" readonly="true"/>
+    </panel>
+    <panel-related name="lineListPanel" field="lineList" title="Schedule"
+      grid-view="loan-line-grid" readonly="true"/>
+    <panel name="actionsPanel" sidebar="true">
+      <button name="validateBtn" title="Validate" onClick="action-loan-method-validate"
+        showIf="statusSelect == 1"/>
+    </panel>
+  </form>
+
+  <action-record name="action-loan-record-default"
+    model="com.axelor.apps.account.db.Loan">
+    <field name="statusSelect" expr="eval: 1"/>
+    <field name="company" expr="eval: __user__.activeCompany"/>
+  </action-record>
+
+  <action-method name="action-loan-method-validate">
+    <call class="com.axelor.apps.account.web.LoanController" method="validate"/>
+  </action-method>
+
+  <action-method name="action-loan-method-set-default-config">
+    <call class="com.axelor.apps.account.web.LoanController"
+      method="setDefaultLoanManagementConfig"/>
+  </action-method>
+
+</object-views>

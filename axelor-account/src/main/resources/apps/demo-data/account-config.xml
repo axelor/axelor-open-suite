@@ -1073,4 +1073,37 @@
 
   <input file="account_taxNumber.csv" separator=";"
     type="com.axelor.apps.account.db.TaxNumber" search="self.importId = :importId"/>
+
+  <input file="account_loanManagementConfig.csv" separator=";"
+    type="com.axelor.apps.account.db.LoanManagementConfig"
+    search="self.company.importId = :company_importId">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+    <bind column="sequence_code" to="sequence"
+      search="self.codeSelect = :sequence_code and self.company.importId = :company_importId"
+      if="sequence_code"/>
+    <bind column="journal_code" to="journal"
+      search="self.code = :journal_code and self.company.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(journal_code)"
+      check-message="Journal must not be null"/>
+    <bind column="borrowingDebtAccount_code" to="borrowingDebtAccount"
+      search="self.code = :borrowingDebtAccount_code and self.company.importId = :company_importId"
+      if="borrowingDebtAccount_code"/>
+    <bind column="interestExpenseAccount_code" to="interestExpenseAccount"
+      search="self.code = :interestExpenseAccount_code and self.company.importId = :company_importId"
+      if="interestExpenseAccount_code"/>
+    <bind column="insuranceExpenseAccount_code" to="insuranceExpenseAccount"
+      search="self.code = :insuranceExpenseAccount_code and self.company.importId = :company_importId"
+      if="insuranceExpenseAccount_code"/>
+    <bind column="bankAccount_code" to="bankAccount"
+      search="self.code = :bankAccount_code and self.company.importId = :company_importId"
+      if="bankAccount_code"/>
+    <bind column="accruedInterestAccount_code" to="accruedInterestAccount"
+      search="self.code = :accruedInterestAccount_code and self.company.importId = :company_importId"
+      if="accruedInterestAccount_code"/>
+    <bind column="prepaidExpenseAccount_code" to="prepaidExpenseAccount"
+      search="self.code = :prepaidExpenseAccount_code and self.company.importId = :company_importId"
+      if="prepaidExpenseAccount_code"/>
+  </input>
 </csv-inputs>
