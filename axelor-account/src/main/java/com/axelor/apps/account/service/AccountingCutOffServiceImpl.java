@@ -474,6 +474,9 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         moveLineComputeAnalyticService.clearAnalyticAccounting(cutOffMoveLine);
         analyticLineComputeService.copyAnalyticMoveLines(
             moveLine, cutOffMoveLine, amountInCurrency.abs());
+        if (CollectionUtils.isNotEmpty(cutOffMoveLine.getAnalyticMoveLineList())) {
+          cutOffMoveLine.getAnalyticMoveLineList().forEach(line -> line.setDate(moveDate));
+        }
       }
     }
 
