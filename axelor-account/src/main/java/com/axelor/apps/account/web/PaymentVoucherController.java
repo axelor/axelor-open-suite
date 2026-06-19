@@ -183,8 +183,6 @@ public class PaymentVoucherController {
       PaymentVoucher pv = Beans.get(PaymentVoucherRepository.class).find(pvId);
       CancelReason reason = Beans.get(CancelReasonRepository.class).find(reasonId);
       Beans.get(PaymentVoucherCancelService.class).cancelPaymentVoucherManually(pv, reason);
-      response.setInfo(I18n.get("Payment voucher successfully cancelled."));
-      response.setReload(true);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     } catch (Exception e) {
