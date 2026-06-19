@@ -26,6 +26,6 @@ public interface PaymentVoucherCancelService {
 
   public PaymentVoucher cancelPaymentVoucher(PaymentVoucher paymentVoucher);
 
-  void cancelPaymentVoucherManually(PaymentVoucher paymentVoucher, CancelReason cancelReason)
+  public void cancelPaymentVoucherManually(PaymentVoucher paymentVoucher, CancelReason cancelReason)
       throws AxelorException;
 }

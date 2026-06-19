@@ -91,10 +91,10 @@
       copy="false"/>
 
     <many-to-one name="cancellationReason" ref="com.axelor.apps.base.db.CancelReason"
-      title="Cancellation reason"/>
-    <datetime name="cancellationDate" title="Cancellation date"/>
+      title="Cancellation reason" copy="false"/>
+    <datetime name="cancellationDate" title="Cancellation date" copy="false"/>
     <many-to-one name="cancelledByUser" ref="com.axelor.auth.db.User"
-      title="Cancelled by"/>
+      title="Cancelled by" copy="false"/>
 
     <many-to-one name="depositBankDetails" ref="com.axelor.apps.base.db.BankDetails"
       title="Deposit bank details"/>

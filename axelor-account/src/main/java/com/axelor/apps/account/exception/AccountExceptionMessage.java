@@ -938,16 +938,16 @@ public final class AccountExceptionMessage {
       "Some imported invoice terms are not PFP validated." /*)*/;
 
   public static final String PAYMENT_VOUCHER_CANCEL_NO_MOVE = /*$$(*/
-      "The accounting move linked to this payment voucher has not been reversed. "
-          + "Please reverse the move entry first before cancelling." /*)*/;
+      "No accounting move is linked to this payment voucher. Manual cancellation is not possible." /*)*/;
 
   public static final String PAYMENT_VOUCHER_CANCEL_MOVE_NOT_REVERSED = /*$$(*/
       "The accounting move linked to this payment voucher has not been reversed. "
           + "Please reverse the move entry first before cancelling." /*)*/;
 
   public static final String PAYMENT_VOUCHER_CANCEL_DEPOSIT_SLIP_PUBLISHED = /*$$(*/
-      "This payment voucher is included in a deposit slip that has already been "
-          + "published (ref: %s). Cancellation is not possible." /*)*/;
+      "This payment voucher is included in a deposit slip that has already been sent "
+          + "to the bank (ref: %s). Cancellation is not possible. "
+          + "Please contact your accountant." /*)*/;
 
   /** Payment schedule line service */
 

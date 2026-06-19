@@ -81,7 +81,7 @@ public class PaymentVoucherCancelServiceImpl implements PaymentVoucherCancelServ
   protected void checkGeneratedMoveIsReversed(PaymentVoucher paymentVoucher)
       throws AxelorException {
     Move generatedMove = paymentVoucher.getGeneratedMove();
-    if (generatedMove == null) {
+    if (generatedMove == null || generatedMove.getOrigin() == null) {
       throw new AxelorException(
           paymentVoucher,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -125,9 +125,6 @@ public class PaymentVoucherCancelServiceImpl implements PaymentVoucherCancelServ
 
   protected void handleInvoicePayments(PaymentVoucher paymentVoucher) throws AxelorException {
     Move generatedMove = paymentVoucher.getGeneratedMove();
-    if (generatedMove == null) {
-      return;
-    }
     List<InvoicePayment> invoicePayments =
         invoicePaymentRepository.findByMove(generatedMove).fetch();
     for (InvoicePayment ip : invoicePayments) {
