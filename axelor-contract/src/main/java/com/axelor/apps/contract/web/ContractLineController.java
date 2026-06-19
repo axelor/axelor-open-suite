@@ -107,6 +107,32 @@ public class ContractLineController {
     }
   }
 
+  public void setDomainAnalyticDistributionTemplate(
+      ActionRequest request, ActionResponse response) {
+    try {
+      ContractLine contractLine = request.getContext().asType(ContractLine.class);
+      ContractVersion contractVersion = this.getContractVersionFromContext(request);
+      Contract contract = this.getContractFromContext(request);
+
+      AnalyticLineContractModel analyticLineContractModel =
+          new AnalyticLineContractModel(contractLine, contractVersion, contract);
+
+      response.setAttr(
+          "analyticDistributionTemplate",
+          "domain",
+          Beans.get(AnalyticAttrsService.class)
+              .getAnalyticDistributionTemplateDomainFromProduct(
+                  analyticLineContractModel.getPartner(),
+                  contractLine.getProduct(),
+                  analyticLineContractModel.getCompany(),
+                  null,
+                  analyticLineContractModel.getFiscalPosition(),
+                  analyticLineContractModel.getIsPurchase()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
       ContractLine contractLine = request.getContext().asType(ContractLine.class);
