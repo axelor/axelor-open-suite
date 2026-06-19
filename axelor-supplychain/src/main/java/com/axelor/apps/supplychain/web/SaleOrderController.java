@@ -32,6 +32,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PartnerLinkService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -46,6 +47,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingService;
+import com.axelor.apps.supplychain.service.pricing.PricingSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderBlockingSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderReservedQtyService;
@@ -882,6 +884,16 @@ public class SaleOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @ErrorException
+  public void updateFiscalPositionUsingPricing(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    Beans.get(PricingSupplychainService.class)
+        .computeFiscalPositionPricing(saleOrder, saleOrder.getCompany());
+    response.setValue("fiscalPosition", saleOrder.getFiscalPosition());
   }
 
   public void updateEstimatedDeliveryDateWithPricingDelay(

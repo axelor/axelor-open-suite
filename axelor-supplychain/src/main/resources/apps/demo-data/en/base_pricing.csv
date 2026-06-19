@@ -1,3 +1,4 @@
 "importId";"name";"startDate";"company.importId";"concernedModel.name";"class1PricingRule.importId";"result1PricingRule.importId";"productCategory.code";"formula";"typeSelect"
+10;"Fiscal position selection";"TODAY[-1M]";1;"SaleOrder";11;12;;"clientPartner != null";"FiscalPosition"
 2;"Colissimo prices";"TODAY[-1M]";1;"FreightCarrierPricing";3;4;;"true";"FreightCarrierPricing"
 3;"Colissimo delay";"TODAY[-1M]";1;"FreightCarrierPricing";3;5;;"true";"FreightCarrierPricing"
