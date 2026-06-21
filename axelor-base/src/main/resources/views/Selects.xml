@@ -478,6 +478,7 @@
     <option value="com.axelor.apps.stock.db.StockMove">Stock move</option>
     <option value="com.axelor.apps.account.db.Invoice">Invoice</option>
     <option value="com.axelor.apps.account.db.InvoicePayment">Payment</option>
+    <option value="com.axelor.apps.account.db.PaymentVoucher">Payment voucher</option>
   </selection>
 
   <selection name="base.barcode.select">

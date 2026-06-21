@@ -90,6 +90,12 @@
     <many-to-one name="depositSlip" ref="com.axelor.apps.account.db.DepositSlip"
       copy="false"/>
 
+    <many-to-one name="cancellationReason" ref="com.axelor.apps.base.db.CancelReason"
+      title="Cancellation reason" copy="false"/>
+    <datetime name="cancellationDate" title="Cancellation date" copy="false"/>
+    <many-to-one name="cancelledByUser" ref="com.axelor.auth.db.User"
+      title="Cancelled by" copy="false"/>
+
     <many-to-one name="depositBankDetails" ref="com.axelor.apps.base.db.BankDetails"
       title="Deposit bank details"/>
 
