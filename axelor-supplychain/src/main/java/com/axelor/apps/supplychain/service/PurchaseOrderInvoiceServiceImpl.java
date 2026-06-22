@@ -211,8 +211,11 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     BigDecimal qtyAlreadyInvoiced =
         invoiceLineRepository
             .all()
-            .filter("self.purchaseOrderLine = :purchaseOrderLine")
+            .filter(
+                "self.purchaseOrderLine = :purchaseOrderLine"
+                    + " AND self.invoice.statusSelect != :statusCanceled")
             .bind("purchaseOrderLine", purchaseOrderLine)
+            .bind("statusCanceled", InvoiceRepository.STATUS_CANCELED)
             .fetch()
             .stream()
             .map(InvoiceLine::getQty)
