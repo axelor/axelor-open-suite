@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed anomaly traceback not saved when mass ventilation fails."
+module: axelor-account
