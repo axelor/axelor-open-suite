@@ -1,0 +1,3 @@
+---
+title: "Purchase: fixed invoice qty set to 0 when regenerating after cancellation."
+module: axelor-supplychain
