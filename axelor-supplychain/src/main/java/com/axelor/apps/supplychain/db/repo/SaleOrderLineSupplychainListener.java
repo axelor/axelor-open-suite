@@ -16,16 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service.saleorderline;
+package com.axelor.apps.supplychain.db.repo;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCheckSupplychainService;
+import com.axelor.inject.Beans;
+import javax.persistence.PreRemove;
 
-public interface SaleOrderLineCheckSupplychainService {
+public class SaleOrderLineSupplychainListener {
 
-  void saleSupplySelectOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException;
-
-  void detachCanceledStockMoveLines(SaleOrderLine saleOrderLine);
+  @PreRemove
+  public void preRemove(SaleOrderLine saleOrderLine) {
+    Beans.get(SaleOrderLineCheckSupplychainService.class)
+        .detachCanceledStockMoveLines(saleOrderLine);
+  }
 }
