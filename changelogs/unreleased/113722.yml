@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed deletion of a sale order line failing when a canceled stock move line still referenced it."
+module: axelor-supplychain

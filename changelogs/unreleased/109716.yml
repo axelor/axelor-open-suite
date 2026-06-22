@@ -1,0 +1,3 @@
+---
+title: "HR: fixed Employee grid not refreshing the contact partner full name inline after editing the form."
+module: axelor-human-resource

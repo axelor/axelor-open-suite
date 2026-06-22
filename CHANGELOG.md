@@ -1,3 +1,94 @@
+## [9.1.1] (2026-06-18)
+
+### Fixes
+#### Base
+
+* Birt report: fixed file not found error and concurrent generation conflicts when printing birt reports.
+* Expense: fixed electronic signature failure when the uploaded file has a short filename.
+* Product: fixed missing fields when company-specific product configuration is disabled.
+* Advance export: fixed language in batch when user is null.
+* Account management: prevent duplicate company entries per tax.
+* App base: added a separate configuration to activate email sending on stream messages.
+* Address: removed the department field.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed wrong translation of warning message when selecting lines.
+* Bank order: included the invoice's printedPDF file in the 'Display invoice' document list.
+* BANKORDER : allowed multidate for pain.xxx.cfonb160.dco type of BankOrderFileFormat
+* Bank order: removed DatatypeConfigurationException, JAXBException and IOException from public method signatures.
+
+#### Production
+
+* Production: fixed configurator-generated ProdProcessLine not inheriting startingDuration, endingDuration, and setupDuration from the WorkCenter, leading to underestimated BOM cost prices.
+* Production: fixed tracking number continuity during partial production.
+
+#### Project
+
+* Project: moved 'Dashboard' and 'Activities' into a new panel tab.
+
+#### Purchase
+
+* Call tender: Add checkbox 'Attach file in email'
+* Provide feature for Product attribute configuration for call tender
+* Call tender: Add a new integer field Delivery time (days)
+* Blocking: improved code organization for purchase blocking
+* Purchase Requests: fixed an issue where purchase order was not linked with PurchaseRequest
+* Call tender : Provided the way to compare the offers (Product attributes by supplier & Suppliers' response by product)
+* Call tender need: Added a new html text field description
+* Call tender: Added report configuration
+* Call tender: Added Button 'Import offer' to import the excel file per supplier.
+* Call tender: Split button 'Send call for tenders' into 'Generate emails' & 'Send emails'
+
+#### Stock
+
+* Stock move: fixed logistical forms dashlet showing all logistical forms instead of only those linked to the current stock move.
+
+
+### Developer
+
+#### Bank Payment
+
+Added MetaFiles as parameter in BankOrderLineOriginServiceImpl constructor
+Added MetaFiles as parameter in BankOrderLineOriginServiceHRImpl constructor
+
+---
+
+The following public method signatures were changed to remove checked exceptions JAXBException, IOException, and DatatypeConfigurationException:
+
+- InvoicePaymentMoveCreateService.createInvoicePaymentMove(InvoicePayment)
+- InvoicePaymentValidateService.validate(InvoicePayment, boolean)
+- InvoicePaymentValidateService.validate(InvoicePayment)
+- BankOrderService.validate(BankOrder)
+- BankOrderService.generateFile(BankOrder)
+- BankOrderValidationService.validateFromBankOrder(InvoicePayment, boolean)
+- BankOrderValidationService.realize(BankOrder)
+- BankOrderValidationService.validatePayment(BankOrder)
+- BankOrderValidationService.confirm(BankOrder)
+- BankOrderFileService.generateFile()
+- BankOrderFile00800101Service.generateFile()
+- BankOrderFile00800102Service.generateFile()
+- BankOrderFile00100102Service.generateFile()
+- BankOrderFile00100103Service.generateFile()
+- BankOrderFileAFB160DCOService.generateFile()
+- BankOrderFileAFB160Service.generateFile()
+- BankOrderFileAFB320XCTService.generateFile()
+- BatchBankPaymentService.createBankOrder(Batch)
+- BatchBankPaymentService.createBankOrderFromPaymentScheduleLines(Batch)
+- BatchBankPaymentService.createBankOrderFromMonthlyPaymentScheduleLines(Batch)
+
+#### Purchase
+
+The `PURCHASE_BLOCKING` constant has been moved from `axelor-base` to `axelor-purchase` module
+for better modularity.
+
+**Migration:** No action required. The entity package remains `com.axelor.apps.base.db.Blocking`,
+so existing imports continue to work.
+
+---
+
+- PurchaseRequestServiceImpl consturctor is updated to introduce PurchaseRequestToPoCreateService
+
 ## [9.1.0] (2026-06-15)
 
 ### Features
@@ -127,4 +218,5 @@
 #### Intervention
 * Fixed intervention generation from a contract.
 
+[9.1.1]: https://github.com/axelor/axelor-open-suite/compare/v9.1.0...v9.1.1
 [9.1.0]: https://github.com/axelor/axelor-open-suite/compare/v9.0.11...v9.1.0
