@@ -1001,8 +1001,13 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
               @Override
               public void accept(Invoice invoice) throws Exception {
                 if (invoice.getStatusSelect() == statusSelect) {
-                  consumer.accept(invoice);
-                  doneCounter.increment();
+                  try {
+                    consumer.accept(invoice);
+                    doneCounter.increment();
+                  } catch (Exception e) {
+                    TraceBackService.trace(e);
+                    throw e;
+                  }
                 }
               }
             });
