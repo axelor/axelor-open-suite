@@ -151,9 +151,9 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
       queryString
           .append(
               " AND EXISTS (SELECT 1 FROM AnalyticMoveLine aml_sub WHERE aml_sub.moveLine = aml.moveLine")
-          .append(" AND aml_sub.analyticAxis = ")
+          .append(" AND aml_sub.analyticAxis.id = ")
           .append(entry.getKey().getId())
-          .append(" AND aml_sub.analyticAccount IN ")
+          .append(" AND aml_sub.analyticAccount.id IN ")
           .append("(" + StringHelper.getIdListString(entry.getValue()) + "))");
     }
     TypedQuery<Long> amlQuery = JPA.em().createQuery(queryString.toString(), Long.class);
