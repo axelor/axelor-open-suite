@@ -5,6 +5,7 @@
 
   <grid name="loan-management-config-grid" title="Loan configurations"
     model="com.axelor.apps.account.db.LoanManagementConfig">
+    <field name="name"/>
     <field name="company"/>
     <field name="journal"/>
     <field name="sequence"/>
@@ -13,17 +14,30 @@
   <form name="loan-management-config-form" title="Loan configuration"
     model="com.axelor.apps.account.db.LoanManagementConfig">
     <panel name="mainPanel" title="Configuration">
+      <field name="name"/>
       <field name="company"/>
       <field name="journal"/>
       <field name="sequence"/>
     </panel>
+    <panel name="conditionsPanel" title="Default conditions">
+      <field name="annualInterestRate"/>
+      <field name="computationModeSelect"/>
+      <field name="durationInMonth"/>
+      <field name="monthlyInsuranceAmount"/>
+    </panel>
     <panel name="accountsPanel" title="Accounts">
-      <field name="borrowingDebtAccount"/>
-      <field name="interestExpenseAccount"/>
-      <field name="insuranceExpenseAccount"/>
-      <field name="bankAccount"/>
-      <field name="accruedInterestAccount"/>
-      <field name="prepaidExpenseAccount"/>
+      <field name="borrowingDebtAccount"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'debt'"/>
+      <field name="interestExpenseAccount"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"/>
+      <field name="insuranceExpenseAccount"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"/>
+      <field name="bankAccount"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"/>
+      <field name="accruedInterestAccount"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'debt'"/>
+      <field name="prepaidExpenseAccount"
+        domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect != 'view'"/>
     </panel>
   </form>
 

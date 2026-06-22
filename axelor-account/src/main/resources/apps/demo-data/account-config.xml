@@ -1077,6 +1077,7 @@
   <input file="account_loanManagementConfig.csv" separator=";"
     type="com.axelor.apps.account.db.LoanManagementConfig"
     search="self.company.importId = :company_importId">
+    <bind column="name" to="name"/>
     <bind column="company_importId" to="company" search="self.importId = :company_importId"
       check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
       check-message="Company doesn't exist"/>

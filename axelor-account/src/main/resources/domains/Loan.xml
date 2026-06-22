@@ -13,6 +13,8 @@
 
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true"/>
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
+      required="true" help="Currency of the loan; its number of decimals drives the amounts scale."/>
     <many-to-one name="loanManagementConfig"
       ref="com.axelor.apps.account.db.LoanManagementConfig" title="Loan configuration"
       help="Loan configuration providing the journal and accounts copied on validation."/>
@@ -33,6 +35,11 @@
     <decimal name="remainingDebt" title="Remaining debt" precision="20" scale="3"
       readonly="true"/>
 
+    <decimal name="simulatedAmount" title="Simulated borrowable capital" precision="20"
+      scale="3" transient="true"/>
+    <decimal name="simulatedMonthlyPayment" title="Simulated monthly payment" precision="20"
+      scale="3" transient="true"/>
+
     <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"/>
     <many-to-one name="borrowingDebtAccount" ref="com.axelor.apps.account.db.Account"
       title="Borrowing debt account"/>
@@ -48,7 +55,7 @@
       title="Prepaid expense account"/>
 
     <one-to-many name="lineList" ref="com.axelor.apps.account.db.LoanLine"
-      title="Schedule" mappedBy="loan"/>
+      title="Schedule" mappedBy="loan" orderBy="installmentDate"/>
 
     <extra-code><![CDATA[
 		// STATUS SELECT

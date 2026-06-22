@@ -7,13 +7,26 @@
 
   <entity name="LoanManagementConfig" cacheable="true">
 
+    <string name="name" title="Name" required="true"
+      help="Label identifying this loan configuration."/>
+
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
-      required="true"
-      help="Company this loan configuration applies to."/>
+      required="true" help="Company this loan configuration applies to."/>
     <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"
       required="true" help="Journal used to book loan accounting entries."/>
     <many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence"
       title="Loan sequence" help="Sequence used to number loans on validation."/>
+
+    <decimal name="annualInterestRate" title="Annual interest rate" precision="20" scale="3"
+      help="Default annual interest rate prefilled on a new loan using this configuration."/>
+    <integer name="computationModeSelect" title="Computation mode"
+      selection="account.loan.computation.mode.select"
+      help="Default computation mode prefilled on a new loan using this configuration."/>
+    <integer name="durationInMonth" title="Duration in month"
+      help="Default duration prefilled on a new loan using this configuration."/>
+    <decimal name="monthlyInsuranceAmount" title="Monthly insurance amount" precision="20"
+      scale="3"
+      help="Default monthly insurance amount prefilled on a new loan using this configuration."/>
 
     <many-to-one name="borrowingDebtAccount" ref="com.axelor.apps.account.db.Account"
       title="Borrowing debt account" help="Account 164 - loan principal debt owed to the lender."/>

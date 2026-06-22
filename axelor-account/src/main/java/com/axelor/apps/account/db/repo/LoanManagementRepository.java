@@ -16,25 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.loan;
+package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.Loan;
-import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.account.service.loan.LoanService;
+import com.axelor.inject.Beans;
 
-public interface LoanService {
+public class LoanManagementRepository extends LoanRepository {
 
-  /** Generates the loan reference from the company loan sequence. */
-  String generateReference(Loan loan) throws AxelorException;
-
-  /**
-   * Copies the journal and the accounts from the loan's selected configuration onto the loan. If no
-   * configuration is selected, those fields are cleared.
-   */
-  void copyManagementConfigToLoan(Loan loan);
-
-  /**
-   * Resets the duplicate-specific fields when a loan is copied: status back to draft, reference and
-   * computed schedule cleared.
-   */
-  void resetForCopy(Loan loan);
+  @Override
+  public Loan copy(Loan entity, boolean deep) {
+    Loan copy = super.copy(entity, deep);
+    Beans.get(LoanService.class).resetForCopy(copy);
+    return copy;
+  }
 }

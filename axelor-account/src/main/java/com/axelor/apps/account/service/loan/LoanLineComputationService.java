@@ -19,22 +19,12 @@
 package com.axelor.apps.account.service.loan;
 
 import com.axelor.apps.account.db.Loan;
+import com.axelor.apps.account.db.LoanLine;
 import com.axelor.apps.base.AxelorException;
+import java.util.List;
 
-public interface LoanService {
+public interface LoanLineComputationService {
 
-  /** Generates the loan reference from the company loan sequence. */
-  String generateReference(Loan loan) throws AxelorException;
-
-  /**
-   * Copies the journal and the accounts from the loan's selected configuration onto the loan. If no
-   * configuration is selected, those fields are cleared.
-   */
-  void copyManagementConfigToLoan(Loan loan);
-
-  /**
-   * Resets the duplicate-specific fields when a loan is copied: status back to draft, reference and
-   * computed schedule cleared.
-   */
-  void resetForCopy(Loan loan);
+  /** Computes the amortization schedule lines for the loan (not attached/persisted). */
+  List<LoanLine> computeLines(Loan loan) throws AxelorException;
 }

@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.loan;
 
 import com.axelor.apps.account.db.Loan;
 import com.axelor.apps.account.db.LoanManagementConfig;
+import com.axelor.apps.account.db.repo.LoanRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Sequence;
@@ -27,6 +28,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.i18n.I18n;
 import jakarta.inject.Inject;
+import java.util.ArrayList;
 
 public class LoanServiceImpl implements LoanService {
 
@@ -56,5 +58,30 @@ public class LoanServiceImpl implements LoanService {
           companyName);
     }
     return reference;
+  }
+
+  @Override
+  public void copyManagementConfigToLoan(Loan loan) {
+    LoanManagementConfig config = loan.getLoanManagementConfig();
+    loan.setJournal(config == null ? null : config.getJournal());
+    loan.setBorrowingDebtAccount(config == null ? null : config.getBorrowingDebtAccount());
+    loan.setInterestExpenseAccount(config == null ? null : config.getInterestExpenseAccount());
+    loan.setInsuranceExpenseAccount(config == null ? null : config.getInsuranceExpenseAccount());
+    loan.setBankAccount(config == null ? null : config.getBankAccount());
+    loan.setAccruedInterestAccount(config == null ? null : config.getAccruedInterestAccount());
+    loan.setPrepaidExpenseAccount(config == null ? null : config.getPrepaidExpenseAccount());
+    loan.setAnnualInterestRate(config == null ? null : config.getAnnualInterestRate());
+    loan.setComputationModeSelect(config == null ? null : config.getComputationModeSelect());
+    loan.setDurationInMonth(config == null ? null : config.getDurationInMonth());
+    loan.setMonthlyInsuranceAmount(config == null ? null : config.getMonthlyInsuranceAmount());
+  }
+
+  @Override
+  public void resetForCopy(Loan loan) {
+    loan.setStatusSelect(LoanRepository.STATUS_DRAFT);
+    loan.setReference(null);
+    loan.setLineList(new ArrayList<>());
+    loan.setMonthlyPayment(null);
+    loan.setRemainingDebt(null);
   }
 }

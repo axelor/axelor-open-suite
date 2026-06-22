@@ -19,22 +19,19 @@
 package com.axelor.apps.account.service.loan;
 
 import com.axelor.apps.account.db.Loan;
-import com.axelor.apps.base.AxelorException;
+import java.math.BigDecimal;
 
-public interface LoanService {
-
-  /** Generates the loan reference from the company loan sequence. */
-  String generateReference(Loan loan) throws AxelorException;
+public interface LoanSimulationService {
 
   /**
-   * Copies the journal and the accounts from the loan's selected configuration onto the loan. If no
-   * configuration is selected, those fields are cleared.
+   * Monthly payment (insurance included) for the loan's simulated capital, according to its
+   * computation mode. For constant capital (decreasing payments) the first installment is returned.
    */
-  void copyManagementConfigToLoan(Loan loan);
+  BigDecimal computeMonthlyPayment(Loan loan);
 
   /**
-   * Resets the duplicate-specific fields when a loan is copied: status back to draft, reference and
-   * computed schedule cleared.
+   * Borrowable capital for the loan's simulated monthly payment (insurance included), inverting the
+   * computation mode formula.
    */
-  void resetForCopy(Loan loan);
+  BigDecimal computeBorrowableCapital(Loan loan);
 }

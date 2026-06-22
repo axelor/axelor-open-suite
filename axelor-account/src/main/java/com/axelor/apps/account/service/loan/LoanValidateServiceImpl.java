@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service.loan;
 
 import com.axelor.apps.account.db.Loan;
-import com.axelor.apps.account.db.LoanManagementConfig;
 import com.axelor.apps.account.db.repo.LoanRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
@@ -34,11 +33,16 @@ public class LoanValidateServiceImpl implements LoanValidateService {
 
   protected LoanRepository loanRepository;
   protected LoanService loanService;
+  protected LoanLineGenerationService loanLineGenerationService;
 
   @Inject
-  public LoanValidateServiceImpl(LoanRepository loanRepository, LoanService loanService) {
+  public LoanValidateServiceImpl(
+      LoanRepository loanRepository,
+      LoanService loanService,
+      LoanLineGenerationService loanLineGenerationService) {
     this.loanRepository = loanRepository;
     this.loanService = loanService;
+    this.loanLineGenerationService = loanLineGenerationService;
   }
 
   @Override
@@ -53,8 +57,7 @@ public class LoanValidateServiceImpl implements LoanValidateService {
           I18n.get(AccountExceptionMessage.LOAN_NOT_DRAFT));
     }
 
-    LoanManagementConfig config = loan.getLoanManagementConfig();
-    if (config == null) {
+    if (loan.getLoanManagementConfig() == null) {
       throw new AxelorException(
           loan,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -62,7 +65,7 @@ public class LoanValidateServiceImpl implements LoanValidateService {
           loan.getCompany() != null ? loan.getCompany().getName() : "");
     }
 
-    copyConfigToLoan(loan, config);
+    loanLineGenerationService.generateSchedule(loan);
 
     if (StringUtils.isEmpty(loan.getReference())) {
       loan.setReference(loanService.generateReference(loan));
@@ -70,15 +73,5 @@ public class LoanValidateServiceImpl implements LoanValidateService {
 
     loan.setStatusSelect(LoanRepository.STATUS_VALIDATED);
     loanRepository.save(loan);
-  }
-
-  protected void copyConfigToLoan(Loan loan, LoanManagementConfig config) {
-    loan.setJournal(config.getJournal());
-    loan.setBorrowingDebtAccount(config.getBorrowingDebtAccount());
-    loan.setInterestExpenseAccount(config.getInterestExpenseAccount());
-    loan.setInsuranceExpenseAccount(config.getInsuranceExpenseAccount());
-    loan.setBankAccount(config.getBankAccount());
-    loan.setAccruedInterestAccount(config.getAccruedInterestAccount());
-    loan.setPrepaidExpenseAccount(config.getPrepaidExpenseAccount());
   }
 }

@@ -38,6 +38,7 @@ class LoanValidateServiceImplTest {
 
   private LoanRepository loanRepository;
   private LoanService loanService;
+  private LoanLineGenerationService loanLineGenerationService;
 
   private LoanValidateServiceImpl service;
   private Company company;
@@ -47,7 +48,8 @@ class LoanValidateServiceImplTest {
   void setUp() throws AxelorException {
     loanRepository = mock(LoanRepository.class);
     loanService = mock(LoanService.class);
-    service = new LoanValidateServiceImpl(loanRepository, loanService);
+    loanLineGenerationService = mock(LoanLineGenerationService.class);
+    service = new LoanValidateServiceImpl(loanRepository, loanService, loanLineGenerationService);
     company = new Company();
     config = new LoanManagementConfig();
     config.setJournal(new Journal());
@@ -69,20 +71,13 @@ class LoanValidateServiceImplTest {
   }
 
   @Test
-  void validate_draftLoan_setsValidatedCopiesAccountsAndReference() throws AxelorException {
+  void validate_draftLoan_setsValidatedAndReference() throws AxelorException {
     Loan loan = draftLoan();
 
     service.validate(loan);
 
     assertEquals(LoanRepository.STATUS_VALIDATED, loan.getStatusSelect().intValue());
     assertEquals("EMP0001", loan.getReference());
-    assertEquals(config.getJournal(), loan.getJournal());
-    assertEquals(config.getBorrowingDebtAccount(), loan.getBorrowingDebtAccount());
-    assertEquals(config.getInterestExpenseAccount(), loan.getInterestExpenseAccount());
-    assertEquals(config.getInsuranceExpenseAccount(), loan.getInsuranceExpenseAccount());
-    assertEquals(config.getBankAccount(), loan.getBankAccount());
-    assertEquals(config.getAccruedInterestAccount(), loan.getAccruedInterestAccount());
-    assertEquals(config.getPrepaidExpenseAccount(), loan.getPrepaidExpenseAccount());
   }
 
   @Test
