@@ -30,6 +30,7 @@ public interface SaleOrderLineMOGenerationService {
       SaleOrderLine saleOrderLine,
       SaleOrder saleOrder,
       ProductionOrder productionOrder,
-      BigDecimal qtyRequested)
+      BigDecimal qtyRequested,
+      BigDecimal grossQtyRequested)
       throws AxelorException;
 }

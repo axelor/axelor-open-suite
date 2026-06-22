@@ -1,0 +1,7 @@
+---
+title: "Production: fixed sub manufacturing orders being created with zero or negative quantity when sub-component stock covers the requirement."
+module: axelor-production
+developer: |
+  - SaleOrderLineMOGenerationSingleLineService: `generateManufOrders()` signature updated — added `BigDecimal grossQtyRequested` parameter.
+  - SaleOrderLineMOGenerationService: `generateManufOrders()` signature updated — added `BigDecimal grossQtyRequested` parameter.
+  - ProductionOrderSaleOrderMOGenerationService: `generateManufOrders()` signature updated — added `BigDecimal grossQtyRequested` parameter.
