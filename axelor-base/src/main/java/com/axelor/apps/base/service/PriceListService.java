@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.inject.persist.Transactional;
@@ -117,11 +118,54 @@ public class PriceListService {
 
   @Transactional
   public void setPriceListLineAnomaly(Product product) {
-    for (PriceListLine priceListLine : product.getPriceListLineList()) {
-      Integer typeSelect = getPriceListTypeSelect(priceListLine);
-      priceListLine.setAnomalySelect(getAnomalySelect(product, typeSelect));
-      priceListLineRepo.save(priceListLine);
+    int saleAnomaly;
+    if (!product.getSellable()) {
+      saleAnomaly = PriceListLineRepository.ANOMALY_UNAVAILABLE_FOR_SALE;
+    } else if (product.getIsUnrenewed()) {
+      saleAnomaly = PriceListLineRepository.ANOMALY_NOT_RENEWED;
+    } else {
+      saleAnomaly = 0;
     }
+
+    int purchaseAnomaly =
+        !product.getPurchasable() ? PriceListLineRepository.ANOMALY_UNAVAILABLE_FOR_PURCHASE : 0;
+
+    JPA.em()
+        .createQuery(
+            "UPDATE PriceListLine self SET self.anomalySelect = :anomaly "
+                + "WHERE self.product.id = :productId "
+                + "AND self.priceList.id IN ("
+                + "  SELECT pl.id FROM PriceList pl "
+                + "  WHERE pl.isActive = true AND pl.typeSelect = :typeSelect)")
+        .setParameter("productId", product.getId())
+        .setParameter("typeSelect", PriceListRepository.TYPE_SALE)
+        .setParameter("anomaly", saleAnomaly)
+        .executeUpdate();
+
+    JPA.em()
+        .createQuery(
+            "UPDATE PriceListLine self SET self.anomalySelect = :anomaly "
+                + "WHERE self.product.id = :productId "
+                + "AND self.priceList.id IN ("
+                + "  SELECT pl.id FROM PriceList pl "
+                + "  WHERE pl.isActive = true AND pl.typeSelect = :typeSelect)")
+        .setParameter("productId", product.getId())
+        .setParameter("typeSelect", PriceListRepository.TYPE_PURCHASE)
+        .setParameter("anomaly", purchaseAnomaly)
+        .executeUpdate();
+
+    JPA.em()
+        .createQuery(
+            "UPDATE PriceListLine self SET self.anomalySelect = 0 "
+                + "WHERE self.product.id = :productId "
+                + "AND self.priceList.id IN ("
+                + "  SELECT pl.id FROM PriceList pl "
+                + "  WHERE pl.isActive = true "
+                + "  AND pl.typeSelect <> :typeSale AND pl.typeSelect <> :typePurchase)")
+        .setParameter("productId", product.getId())
+        .setParameter("typeSale", PriceListRepository.TYPE_SALE)
+        .setParameter("typePurchase", PriceListRepository.TYPE_PURCHASE)
+        .executeUpdate();
   }
 
   protected int getPriceListTypeSelect(PriceListLine priceListLine) {
