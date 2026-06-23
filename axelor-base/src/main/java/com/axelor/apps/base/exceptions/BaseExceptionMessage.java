@@ -83,6 +83,9 @@ public final class BaseExceptionMessage {
   public static final String CURRENCY_CONVERSION_2 = /*$$(*/
       "WARNING : To Date must be after or equals to From Date" /*)*/;
 
+  public static final String UNIT_CONVERSION_FORMULA_ERROR = /*$$(*/
+      "Error during unit conversion from %s to %s" /*)*/;
+
   /** Account management service */
   public static final String ACCOUNT_MANAGEMENT_2 = /*$$(*/ "No tax found for product %s" /*)*/;
 
