@@ -19,6 +19,7 @@
 "%s : Bank statement line %s amount can't be null","%s : La montant de la ligne de rapprochement %s ne peut-être égal à 0.",,
 "%s : Caution, payment entry nb %s, total line's amount imputed is higher than customer's amount paid.","%s : Attention, saisie paiement n° %s, le total des montants imputés par ligne est supérieur au montant payé par le client",,
 "%s : Currency missing","%s : Devise absente",,
+"%s : Error : You must configure a check deposit journal for the company %s and a payment mode %s","%s : Erreur : Veuillez configurer un journal de remise de chèques pour la société %s et le mode de paiement %s",,
 "%s : Error : You must configure a company for the batch configurator %s","%s : Erreur : Veuillez configurer une société pour le configurateur de batch %s",,
 "%s : Error : You must configure a credit note interface sequence for the company %s","%s : Erreur : Veuillez configurer une séquence Interface Avoir pour la société %s",,
 "%s : Error : You must configure a due date for the batch configurator %s","%s : Erreur : Veuillez configurer une date de fin pour le configurateur de batch %s",,

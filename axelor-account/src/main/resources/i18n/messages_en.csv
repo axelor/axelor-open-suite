@@ -19,6 +19,7 @@
 "%s : Bank statement line %s amount can't be null",,,
 "%s : Caution, payment entry nb %s, total line's amount imputed is higher than customer's amount paid.",,,
 "%s : Currency missing",,,
+"%s : Error : You must configure a check deposit journal for the company %s and a payment mode %s",,,
 "%s : Error : You must configure a company for the batch configurator %s",,,
 "%s : Error : You must configure a credit note interface sequence for the company %s",,,
 "%s : Error : You must configure a due date for the batch configurator %s",,,
