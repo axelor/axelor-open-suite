@@ -70,7 +70,7 @@ public class LoanLineGenerationServiceImpl implements LoanLineGenerationService 
         || loan.getComputationModeSelect() == 0
         || loan.getFirstInstallmentDate() == null) {
       throw new AxelorException(
-          loan,
+          Loan.class,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(AccountExceptionMessage.LOAN_GENERATION_MISSING_DATA));
     }

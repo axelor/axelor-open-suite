@@ -52,14 +52,14 @@ public class LoanValidateServiceImpl implements LoanValidateService {
 
     if (loan.getStatusSelect() == null || loan.getStatusSelect() != LoanRepository.STATUS_DRAFT) {
       throw new AxelorException(
-          loan,
+          Loan.class,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.LOAN_NOT_DRAFT));
     }
 
     if (loan.getLoanManagementConfig() == null) {
       throw new AxelorException(
-          loan,
+          Loan.class,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(AccountExceptionMessage.LOAN_MANAGEMENT_CONFIG_MISSING),
           loan.getCompany() != null ? loan.getCompany().getName() : "");
