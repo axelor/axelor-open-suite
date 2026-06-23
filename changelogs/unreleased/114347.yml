@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed the error on confirmation when both customerStockMoveGenerationAuto and autoPlanManufOrderFromSO are activated."
+module: axelor-production
