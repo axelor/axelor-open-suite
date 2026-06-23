@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed add line from configurator button not available on confirmed sale order being edited."
+module: axelor-sale
