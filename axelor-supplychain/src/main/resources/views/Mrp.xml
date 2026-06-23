@@ -3,8 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
-  <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="MRP"
-    onDelete="action-mrp-validate-delete-multi-mrp-reset">
+  <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="MRP">
     <toolbar>
       <button name="printBtn" hideIf="true" onClick=""/>
     </toolbar>
@@ -22,8 +21,7 @@
   </grid>
 
   <form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="MRP" width="large"
-    onLoad="action-attrs-mrp-generate-all-proposals" onNew="action-mrp-record-onnew"
-    onDelete="action-mrp-validate-delete-mrp-reset">
+    onLoad="action-attrs-mrp-generate-all-proposals" onNew="action-mrp-record-onnew">
     <toolbar>
       <button name="printBtn" title="Print" onClick="save,action-method-print-template"
         showIf="statusSelect == 2"/>
@@ -222,13 +220,6 @@
     <call class="com.axelor.apps.supplychain.web.MrpController" method="undoManualChanges"/>
   </action-method>
 
-  <action-validate name="action-mrp-validate-delete-mrp-reset">
-    <info message="The MRP has been reset and results deleted."/>
-  </action-validate>
-
-  <action-validate name="action-mrp-validate-delete-multi-mrp-reset">
-    <info message="The MRP have been reset and their results deleted."/>
-  </action-validate>
 </object-views>
 
 
