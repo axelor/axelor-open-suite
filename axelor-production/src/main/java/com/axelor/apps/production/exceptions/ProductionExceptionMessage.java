@@ -105,7 +105,34 @@ public final class ProductionExceptionMessage {
 
   /** Production Order Controller */
   public static final String PRODUCTION_ORDER_NO_GENERATION = /*$$(*/
-      "No production order could be generated. Make sure that everything has been configured correctly. Reminder: check that the order lines that should be produced have their supply method set to 'produce' and that the chosen BoM has a production process associated to it." /*)*/;
+      "No production order could be generated. Make sure that everything has been configured correctly." /*)*/;
+
+  public static final String PRODUCTION_ORDER_PARTIAL_GENERATION = /*$$(*/
+      "No manufacturing order could be generated for the following lines:" /*)*/;
+
+  public static final String PRODUCTION_ORDER_LINE_WRONG_SUPPLY_TYPE = /*$$(*/
+      "The supply method for product %s must be set to 'Produce' or 'Stock and produce'." /*)*/;
+
+  public static final String PRODUCTION_ORDER_LINE_BLOCKED = /*$$(*/
+      "Production is blocked for product %s." /*)*/;
+
+  public static final String PRODUCTION_ORDER_LINE_NO_PRODUCT = /*$$(*/
+      "Sale order line %s has no product." /*)*/;
+
+  public static final String PRODUCTION_ORDER_LINE_QTY_ALREADY_COVERED = /*$$(*/
+      "A manufacturing order already covers the quantity to produce for product %s." /*)*/;
+
+  public static final String PRODUCTION_ORDER_LINE_NOT_STORABLE = /*$$(*/
+      "Product %s is not a storable product, only storable products can be produced." /*)*/;
+
+  public static final String PRODUCTION_ORDER_LINE_NO_BOM = /*$$(*/
+      "There is no bill of materials for product %s." /*)*/;
+
+  public static final String PRODUCTION_ORDER_LINE_BOM_NO_PROD_PROCESS = /*$$(*/
+      "The bill of materials %s of product %s has no production process." /*)*/;
+
+  public static final String PRODUCTION_ORDER_LINE_STOCK_COVERS_QTY = /*$$(*/
+      "The available stock already covers the quantity to produce for product %s." /*)*/;
 
   /** ProdProcess service */
   public static final String PROD_PROCESS_USELESS_PRODUCT = /*$$(*/
