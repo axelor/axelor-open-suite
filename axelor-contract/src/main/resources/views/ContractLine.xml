@@ -15,8 +15,10 @@
     <field name="exTaxTotal" x-scale="$currencyNumberOfDecimals"/>
     <field name="inTaxTotal" x-scale="$currencyNumberOfDecimals"/>
     <field name="isToRevaluate"/>
-    <field name="initialPricePerYear" readonly="true" x-scale="$currencyNumberOfDecimals"/>
-    <field name="yearlyPriceRevalued" readonly="true" x-scale="$currencyNumberOfDecimals"/>
+    <field name="initialPricePerYear" readonly="true" hidden="true"
+      x-scale="$currencyNumberOfDecimals"/>
+    <field name="yearlyPriceRevalued" readonly="true" hidden="true"
+      x-scale="$currencyNumberOfDecimals"/>
     <field name="typeSelect" hidden="true"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
