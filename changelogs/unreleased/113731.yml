@@ -1,0 +1,3 @@
+---
+title: "Unit conversion: display a clear error message when the formula evaluation fails."
+module: axelor-base

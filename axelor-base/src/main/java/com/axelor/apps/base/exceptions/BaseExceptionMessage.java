@@ -73,6 +73,9 @@ public final class BaseExceptionMessage {
   public static final String COEFFICIENT_SHOULD_NOT_BE_ZERO = /*$$(*/
       "The coefficient for unit conversion from %s to %s should not be 0." /*)*/;
 
+  public static final String UNIT_CONVERSION_FORMULA_ERROR = /*$$(*/
+      "Error during unit conversion from %s to %s" /*)*/;
+
   /** Account management service */
   public static final String ACCOUNT_MANAGEMENT_2 = /*$$(*/ "No tax found for product %s" /*)*/;
 
