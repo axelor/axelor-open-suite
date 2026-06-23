@@ -29,12 +29,17 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckServiceImpl;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineCheckSupplychainServiceImpl extends SaleOrderLineCheckServiceImpl
     implements SaleOrderLineCheckSupplychainService {
@@ -42,17 +47,20 @@ public class SaleOrderLineCheckSupplychainServiceImpl extends SaleOrderLineCheck
   protected StockLocationLineService stockLocationLineService;
   protected AppSupplychainService appSupplychainService;
   protected TaxAccountService taxAccountService;
+  protected StockMoveLineRepository stockMoveLineRepository;
 
   @Inject
   public SaleOrderLineCheckSupplychainServiceImpl(
       AppSaleService appSaleService,
       StockLocationLineService stockLocationLineService,
       AppSupplychainService appSupplychainService,
-      TaxAccountService taxAccountService) {
+      TaxAccountService taxAccountService,
+      StockMoveLineRepository stockMoveLineRepository) {
     super(appSaleService);
     this.stockLocationLineService = stockLocationLineService;
     this.appSupplychainService = appSupplychainService;
     this.taxAccountService = taxAccountService;
+    this.stockMoveLineRepository = stockMoveLineRepository;
   }
 
   @Override
@@ -112,6 +120,24 @@ public class SaleOrderLineCheckSupplychainServiceImpl extends SaleOrderLineCheck
           I18n.get(
               SupplychainExceptionMessage
                   .SALE_ORDER_LINE_PRODUCT_WITH_NON_DEDUCTIBLE_TAX_NOT_AUTHORIZED));
+    }
+  }
+
+  @Override
+  public void detachCanceledStockMoveLines(SaleOrderLine saleOrderLine) {
+    List<StockMoveLine> stockMoveLineList =
+        stockMoveLineRepository
+            .all()
+            .autoFlush(false)
+            .filter(
+                "self.saleOrderLine.id = :id AND (self.stockMove.statusSelect = :statusSelect OR self.plannedStockMove.statusSelect = :statusSelect)")
+            .bind("id", saleOrderLine.getId())
+            .bind("statusSelect", StockMoveRepository.STATUS_CANCELED)
+            .fetch();
+    if (!CollectionUtils.isEmpty(stockMoveLineList)) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        stockMoveLine.setSaleOrderLine(null);
+      }
     }
   }
 }

@@ -96,6 +96,9 @@
       <field name="reservedQty"/>
     </track>
 
+    <entity-listener
+      class="com.axelor.apps.supplychain.db.repo.SaleOrderLineSupplychainListener"/>
+
   </entity>
 
 </domain-models>
