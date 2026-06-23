@@ -443,6 +443,7 @@
     <option value="subrogationRelease">Subrogation release</option>
     <option value="partnerAccount">Partner account</option>
     <option value="fixedAsset">Fixed asset</option>
+    <option value="loan">Loan</option>
     <option value="noteBills">Note bills</option>
     <option value="paymentSession">Payment session</option>
   </selection>
@@ -474,6 +475,19 @@
   <selection name="account.fixed.asset.line.status.select">
     <option value="1" color="blue">Planned</option>
     <option value="2" color="green">Realized</option>
+  </selection>
+
+  <selection name="account.loan.status.select">
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Validated</option>
+    <option value="3" color="deeporange">Ongoing</option>
+    <option value="4" color="purple">Closed</option>
+  </selection>
+
+  <selection name="account.loan.computation.mode.select">
+    <option value="1">Constant payment</option>
+    <option value="2">Constant capital</option>
+    <option value="3">In fine</option>
   </selection>
 
   <selection name="account.move.template.type.type.select">

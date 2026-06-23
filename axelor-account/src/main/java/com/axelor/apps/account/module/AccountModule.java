@@ -56,6 +56,8 @@ import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalManagementRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.LoanManagementRepository;
+import com.axelor.apps.account.db.repo.LoanRepository;
 import com.axelor.apps.account.db.repo.MoveLineManagementRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
@@ -288,6 +290,18 @@ import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeServiceImpl;
 import com.axelor.apps.account.service.journal.JournalControlService;
 import com.axelor.apps.account.service.journal.JournalControlServiceImpl;
+import com.axelor.apps.account.service.loan.LoanLineComputationService;
+import com.axelor.apps.account.service.loan.LoanLineComputationServiceImpl;
+import com.axelor.apps.account.service.loan.LoanLineGenerationService;
+import com.axelor.apps.account.service.loan.LoanLineGenerationServiceImpl;
+import com.axelor.apps.account.service.loan.LoanManagementConfigService;
+import com.axelor.apps.account.service.loan.LoanManagementConfigServiceImpl;
+import com.axelor.apps.account.service.loan.LoanService;
+import com.axelor.apps.account.service.loan.LoanServiceImpl;
+import com.axelor.apps.account.service.loan.LoanSimulationService;
+import com.axelor.apps.account.service.loan.LoanSimulationServiceImpl;
+import com.axelor.apps.account.service.loan.LoanValidateService;
+import com.axelor.apps.account.service.loan.LoanValidateServiceImpl;
 import com.axelor.apps.account.service.move.MoveControlService;
 import com.axelor.apps.account.service.move.MoveControlServiceImpl;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
@@ -813,6 +827,14 @@ public class AccountModule extends AxelorModule {
     bind(SimulatedMoveService.class).to(SimulatedMoveServiceImpl.class);
 
     bind(FixedAssetValidateService.class).to(FixedAssetValidateServiceImpl.class);
+
+    bind(LoanRepository.class).to(LoanManagementRepository.class);
+    bind(LoanManagementConfigService.class).to(LoanManagementConfigServiceImpl.class);
+    bind(LoanService.class).to(LoanServiceImpl.class);
+    bind(LoanValidateService.class).to(LoanValidateServiceImpl.class);
+    bind(LoanLineComputationService.class).to(LoanLineComputationServiceImpl.class);
+    bind(LoanLineGenerationService.class).to(LoanLineGenerationServiceImpl.class);
+    bind(LoanSimulationService.class).to(LoanSimulationServiceImpl.class);
 
     bind(AnalyticMoveLineQueryService.class).to(AnalyticMoveLineQueryServiceImpl.class);
 

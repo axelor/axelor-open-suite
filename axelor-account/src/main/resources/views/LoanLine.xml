@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <grid name="loan-line-grid" title="Schedule" model="com.axelor.apps.account.db.LoanLine"
+    editable="false" orderBy="installmentDate">
+    <field name="installmentDate"/>
+    <field name="remainingDebtBefore" x-scale="loan.currency.numberOfDecimals"/>
+    <field name="interestAmount" x-scale="loan.currency.numberOfDecimals"/>
+    <field name="capitalAmount" x-scale="loan.currency.numberOfDecimals"/>
+    <field name="insuranceAmount" x-scale="loan.currency.numberOfDecimals"/>
+    <field name="totalAmount" x-scale="loan.currency.numberOfDecimals"/>
+    <field name="remainingDebtAfter" x-scale="loan.currency.numberOfDecimals"/>
+    <field name="accountMove"/>
+  </grid>
+
+</object-views>

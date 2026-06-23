@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <grid name="loan-grid" title="Loans" model="com.axelor.apps.account.db.Loan">
+    <field name="reference"/>
+    <field name="company"/>
+    <field name="partner"/>
+    <field name="amount"/>
+    <field name="statusSelect"/>
+  </grid>
+
+  <form name="loan-form" title="Loan" model="com.axelor.apps.account.db.Loan"
+    onNew="action-loan-record-default,action-loan-method-set-default-config">
+    <panel name="mainPanel">
+      <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"
+        readonly="true"/>
+      <field name="reference"/>
+      <field name="company" readonlyIf="statusSelect &gt; 1"
+        onChange="action-loan-method-set-default-config"/>
+      <field name="currency" readonlyIf="statusSelect &gt; 1"/>
+      <field name="partner" readonlyIf="statusSelect &gt; 1"/>
+      <field name="loanManagementConfig" readonlyIf="statusSelect &gt; 1"
+        domain="self.company = :company" onChange="action-loan-method-copy-config"/>
+      <field name="currency.numberOfDecimals" hidden="true"/>
+    </panel>
+    <panel name="conditionsPanel" title="Financial conditions">
+      <field name="amount" readonlyIf="statusSelect &gt; 1"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="annualInterestRate" readonlyIf="statusSelect &gt; 1"/>
+      <field name="computationModeSelect" readonlyIf="statusSelect &gt; 1"/>
+      <field name="durationInMonth" readonlyIf="statusSelect &gt; 1"/>
+      <field name="firstInstallmentDate" readonlyIf="statusSelect &gt; 1"/>
+      <field name="monthlyInsuranceAmount" readonlyIf="statusSelect &gt; 1"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="monthlyPayment" x-scale="currency.numberOfDecimals"/>
+      <field name="remainingDebt" x-scale="currency.numberOfDecimals"/>
+    </panel>
+    <panel-tabs name="detailsPanelTabs">
+      <panel-related name="lineListPanel" field="lineList" title="Schedule"
+        grid-view="loan-line-grid" readonly="true"/>
+      <panel name="accountsPanel" title="Accounts">
+        <field name="journal" readonly="true"/>
+        <field name="borrowingDebtAccount" readonly="true"/>
+        <field name="interestExpenseAccount" readonly="true"/>
+        <field name="insuranceExpenseAccount" readonly="true"/>
+        <field name="bankAccount" readonly="true"/>
+        <field name="accruedInterestAccount" readonly="true"/>
+        <field name="prepaidExpenseAccount" readonly="true"/>
+      </panel>
+    </panel-tabs>
+    <panel name="actionsPanel" sidebar="true">
+      <button name="validateBtn" title="Validate" onClick="save,action-loan-method-validate"
+        showIf="statusSelect == 1"/>
+      <button name="generateScheduleBtn" title="Generate schedule"
+        onClick="save,action-loan-method-generate-schedule" showIf="statusSelect == 1"/>
+    </panel>
+    <panel name="simulationPanel" title="Simulation" sidebar="true"
+      hideIf="statusSelect &gt; 1" canCollapse="true" collapseIf="true">
+      <field name="simulatedAmount" x-scale="currency.numberOfDecimals"/>
+      <button name="simulateMonthlyPaymentBtn" title="Compute monthly payment"
+        onClick="action-loan-method-simulate-monthly-payment" colSpan="12"/>
+      <field name="simulatedMonthlyPayment" x-scale="currency.numberOfDecimals"/>
+      <button name="simulateCapitalBtn" title="Compute borrowable capital"
+        onClick="action-loan-method-simulate-capital" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-record name="action-loan-record-default"
+    model="com.axelor.apps.account.db.Loan">
+    <field name="statusSelect" expr="eval: 1"/>
+    <field name="company" expr="eval: __user__.activeCompany"/>
+    <field name="currency" expr="eval: __user__.activeCompany?.currency"/>
+  </action-record>
+
+  <action-method name="action-loan-method-validate">
+    <call class="com.axelor.apps.account.web.LoanController" method="validate"/>
+  </action-method>
+
+  <action-method name="action-loan-method-copy-config">
+    <call class="com.axelor.apps.account.web.LoanController" method="copyLoanManagementConfig"/>
+  </action-method>
+
+  <action-method name="action-loan-method-set-default-config">
+    <call class="com.axelor.apps.account.web.LoanController"
+      method="setDefaultLoanManagementConfig"/>
+  </action-method>
+
+  <action-method name="action-loan-method-generate-schedule">
+    <call class="com.axelor.apps.account.web.LoanController" method="generateSchedule"/>
+  </action-method>
+
+  <action-method name="action-loan-method-simulate-monthly-payment">
+    <call class="com.axelor.apps.account.web.LoanController" method="simulateMonthlyPayment"/>
+  </action-method>
+
+  <action-method name="action-loan-method-simulate-capital">
+    <call class="com.axelor.apps.account.web.LoanController" method="simulateBorrowableCapital"/>
+  </action-method>
+
+</object-views>

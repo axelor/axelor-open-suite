@@ -1756,4 +1756,14 @@ public final class AccountExceptionMessage {
       "Bank detail %s doesn't have a note type defined for note %s." /*)*/;
   public static final String ADVANCE_INVOICE_CAN_NOT_DELETE = /*$$(*/
       "Validated advance invoices can not be deleted. %s can not be deleted." /*)*/;
+
+  public static final String LOAN_MANAGEMENT_CONFIG_MISSING =
+      /*$$(*/ "No loan configuration found for company %s." /*)*/;
+  public static final String LOAN_NOT_DRAFT = /*$$(*/ "Only a draft loan can be validated." /*)*/;
+  public static final String LOAN_SEQUENCE_MISSING =
+      /*$$(*/ "No active loan sequence configured for company %s." /*)*/;
+  public static final String LOAN_GENERATION_MISSING_DATA =
+      /*$$(*/ "Please fill the amount, the annual interest rate, the duration, the computation mode and the first installment date before generating the schedule." /*)*/;
+  public static final String LOAN_SIMULATION_MISSING_DATA =
+      /*$$(*/ "Please fill the annual interest rate, the duration and the amount or monthly payment to simulate." /*)*/;
 }

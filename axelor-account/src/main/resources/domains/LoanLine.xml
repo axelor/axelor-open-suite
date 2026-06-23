@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="LoanLine">
+
+    <many-to-one name="loan" ref="com.axelor.apps.account.db.Loan" title="Loan"/>
+
+    <date name="installmentDate" title="Installment date"/>
+    <decimal name="remainingDebtBefore" title="Remaining debt before" precision="20"
+      scale="3"/>
+    <decimal name="interestAmount" title="Interest" precision="20" scale="3"/>
+    <decimal name="capitalAmount" title="Capital" precision="20" scale="3"/>
+    <decimal name="insuranceAmount" title="Insurance" precision="20" scale="3"/>
+    <decimal name="totalAmount" title="Total" precision="20" scale="3"/>
+    <decimal name="remainingDebtAfter" title="Remaining debt after" precision="20" scale="3"/>
+
+    <many-to-one name="accountMove" ref="com.axelor.apps.account.db.Move"
+      title="Accounting entry"
+      help="Accounting entry of this installment. A line with a move is considered booked."/>
+    <boolean name="isManuallyModified" title="Manually modified"/>
+
+  </entity>
+
+</domain-models>
