@@ -1,0 +1,3 @@
+---
+title: "Data Backup: fixed backup creation failing when 'Update Import Id' option is enabled for entities using joined inheritance."
+module: axelor-base
