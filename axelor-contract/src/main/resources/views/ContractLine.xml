@@ -14,8 +14,8 @@
     <field name="exTaxTotal"/>
     <field name="inTaxTotal"/>
     <field name="isToRevaluate"/>
-    <field name="initialPricePerYear" readonly="true"/>
-    <field name="yearlyPriceRevalued" readonly="true"/>
+    <field name="initialPricePerYear" readonly="true" hidden="true"/>
+    <field name="yearlyPriceRevalued" readonly="true" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
