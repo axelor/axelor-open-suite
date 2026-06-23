@@ -739,6 +739,11 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
       LocalDate todayDate = appBaseService.getTodayDate(move.getCompany());
       TaxEquiv taxEquiv = moveLine.getTaxEquiv();
+      if (taxEquiv == null) {
+        taxEquiv =
+            fiscalPositionAccountService.getTaxEquivFromOrToTaxSet(
+                fiscalPosition, moveLine.getTaxLineSet());
+      }
       if (taxEquiv != null && taxEquiv.getReverseCharge()) {
         if (ObjectUtils.isEmpty(taxEquiv.getReverseChargeTaxSet())) {
           throw new AxelorException(

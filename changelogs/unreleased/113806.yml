@@ -1,0 +1,3 @@
+---
+title: "Account: fixed SemanticException when using AND operator in Analytic Move Line Query filter."
+module: axelor-account
