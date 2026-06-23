@@ -138,10 +138,12 @@ public class BudgetServiceImpl implements BudgetService {
           budgetDistributionRepo
               .all()
               .filter(
-                  "self.budget.id = ?1 AND ((self.purchaseOrderLine IS NOT NULL AND self.purchaseOrderLine.purchaseOrder.statusSelect NOT IN (?2)) OR (self.saleOrderLine IS NOT NULL AND self.saleOrderLine.saleOrder.statusSelect NOT IN (?3)))",
+                  "self.budget.id = ?1 AND ((self.purchaseOrderLine IS NOT NULL AND self.purchaseOrderLine.purchaseOrder.statusSelect NOT IN (?2,?3)) OR (self.saleOrderLine IS NOT NULL AND self.saleOrderLine.saleOrder.statusSelect NOT IN (?4,?5)))",
                   budget.getId(),
                   PurchaseOrderRepository.STATUS_CANCELED,
-                  SaleOrderRepository.STATUS_CANCELED)
+                  PurchaseOrderRepository.STATUS_DRAFT,
+                  SaleOrderRepository.STATUS_CANCELED,
+                  SaleOrderRepository.STATUS_DRAFT_QUOTATION)
               .fetch();
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
         boolean isPurchase = false;

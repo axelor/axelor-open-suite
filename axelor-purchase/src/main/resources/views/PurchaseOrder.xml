@@ -289,7 +289,7 @@
       <button name="requestedBtn" title="Requested" showIf="statusSelect == 1"
         onClick="save,action-purchase-order-method-requested"/>
       <button name="newVersionBtn" title="New version" showIf="statusSelect == 2"
-        onClick="save,action-purchase-record-newVersion,save"
+        onClick="action-purchase-order-group-new-version"
         if="__config__.app.getApp('purchase')?.getManagePurchaseOrderVersion()"/>
       <button name="validateBtn" title="Validate" showIf="statusSelect == 2"
         onClick="action-group-purchase-order-on-validate-actions"/>
@@ -1022,5 +1022,11 @@
       expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
       if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
   </action-attrs>
+
+  <action-group name="action-purchase-order-group-new-version">
+    <action name="save"/>
+    <action name="action-purchase-record-newVersion"/>
+    <action name="save"/>
+  </action-group>
 
 </object-views>

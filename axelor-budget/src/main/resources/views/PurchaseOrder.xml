@@ -52,6 +52,10 @@
       </insert>
     </extend>
 
+    <extend target="//button[@name='newVersionBtn']">
+      <attribute name="onClick" value="action-budget-purchase-order-group-new-version-btn"/>
+    </extend>
+
     <extend target="//button[@name='requestedBtn']">
       <attribute name="onClick" value="action-group-budget-purchase-order-request-onclick"/>
     </extend>
@@ -238,5 +242,15 @@
     <view type="form" name="purchase-order-budget-distribution-complete-form"/>
     <domain><![CDATA[self.purchaseOrderLine.purchaseOrder.statusSelect != 5]]></domain>
   </action-view>
+
+  <action-group name="action-budget-purchase-order-group-new-version-btn">
+    <action name="action-purchase-order-group-new-version"/>
+    <action name="action-budget-purchase-order-method-new-version"
+      if="__config__.app.isApp('budget')"/>
+  </action-group>
+
+  <action-method name="action-budget-purchase-order-method-new-version">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderController" method="createNewVersion"/>
+  </action-method>
 
 </object-views>
