@@ -39,7 +39,7 @@ public class MrpManagementRepository extends MrpRepository {
 
     Beans.get(MrpService.class).reset(entity);
 
-    super.save(entity);
+    super.remove(entity);
   }
 
   @Override
