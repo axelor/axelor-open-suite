@@ -96,8 +96,6 @@ public class ProductionOrderSaleOrderController {
                 .param("search-filters", "production-order-filters")
                 .domain("self.id in (" + Joiner.on(",").join(productionOrderIds) + ")")
                 .map());
-      } else if (!productionOrderSaleOrderService.areAllBlocked(selectedSaleOrderLines)) {
-        response.setInfo(I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_NO_GENERATION));
       }
 
       if (StringUtils.notEmpty(infoMessage)) {
