@@ -32,6 +32,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
+import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.google.common.collect.Lists;
 import jakarta.inject.Inject;
@@ -56,19 +57,23 @@ public class WorkflowCancelServiceSupplychainImpl extends WorkflowCancelServiceI
 
   protected SaleInvoicingStateService saleInvoicingStateService;
 
+  protected TimetableService timetableService;
+
   @Inject
   public WorkflowCancelServiceSupplychainImpl(
       SaleOrderInvoiceService saleOrderInvoiceService,
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SaleOrderRepository saleOrderRepository,
       PurchaseOrderRepository purchaseOrderRepository,
-      SaleInvoicingStateService saleInvoicingStateService) {
+      SaleInvoicingStateService saleInvoicingStateService,
+      TimetableService timetableService) {
 
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.saleInvoicingStateService = saleInvoicingStateService;
+    this.timetableService = timetableService;
   }
 
   private PurchaseOrderRepository purchaseOrderRepository;
@@ -80,6 +85,8 @@ public class WorkflowCancelServiceSupplychainImpl extends WorkflowCancelServiceI
 
   @Override
   public void afterCancel(Invoice invoice) throws AxelorException {
+    timetableService.cancelTimetable(invoice);
+
     if (oldInvoiceStatusSelect == InvoiceRepository.STATUS_VENTILATED) {
 
       if (InvoiceToolService.isPurchase(invoice)) {
