@@ -129,10 +129,10 @@
       onChange="action-sale-order-line-method-onchange-intaxprice"
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="discountTypeSelect" colSpan="3"
-      readonlyIf="$nonNegotiable || $isParentTitleLine"
+      readonlyIf="$nonNegotiable || $isParentTitleLine || saleOrder.discountTypeSelect &gt; 0"
       onChange="action-sale-order-line-method-discount-type-onchange"/>
     <field name="discountAmount" colSpan="3"
-      readonlyIf="$nonNegotiable || discountTypeSelect == 0 || $isParentTitleLine"
+      readonlyIf="$nonNegotiable || discountTypeSelect == 0 || $isParentTitleLine || saleOrder.discountTypeSelect &gt; 0"
       validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
       onChange="action-sale-order-line-method-discount-amount-onchange"
       x-scale="$nbDecimalDigitForUnitPrice"/>
@@ -169,6 +169,7 @@
     <field name="configurator" hidden="true"/>
     <field name="saleOrder" hidden="true"/>
     <field name="saleOrder.id" hidden="true"/>
+    <field name="saleOrder.discountTypeSelect" hidden="true"/>
     <field name="subSaleOrderLineList" hidden="true"/>
     <field name="saleOrderLineDetailsList" hidden="true"/>
   </grid>

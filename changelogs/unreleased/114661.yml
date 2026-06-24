@@ -1,0 +1,3 @@
+---
+title: "Sale order: made the per-line discount fields read-only in the editable grid when a global discount is set on the order, consistently with the form view."
+module: axelor-sale
