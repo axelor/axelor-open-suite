@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
@@ -55,9 +56,11 @@ public class PurchaseRequestToPoCreateServiceSupplychainImpl
   }
 
   @Override
-  protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest, Company company)
+  protected PurchaseOrder createPurchaseOrder(
+      PurchaseRequest purchaseRequest, Company company, Partner defaultSupplier)
       throws AxelorException {
-    PurchaseOrder purchaseOrder = super.createPurchaseOrder(purchaseRequest, company);
+    PurchaseOrder purchaseOrder =
+        super.createPurchaseOrder(purchaseRequest, company, defaultSupplier);
     if (appBaseService.isApp("supplychain")) {
       purchaseOrder.setStockLocation(purchaseRequest.getStockLocation());
     }
