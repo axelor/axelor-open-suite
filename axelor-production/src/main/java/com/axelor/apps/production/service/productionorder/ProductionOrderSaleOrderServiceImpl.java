@@ -19,6 +19,7 @@
 package com.axelor.apps.production.service.productionorder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
@@ -29,7 +30,9 @@ import com.axelor.apps.production.service.manuforder.ManufOrderSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
@@ -93,10 +96,17 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
   }
 
   @Override
-  public boolean areAllBlocked(List<SaleOrderLine> saleOrderLineList) {
-    return saleOrderLineList.stream()
-        .filter(this::isGenerationNeeded)
-        .allMatch(saleOrderLineBlockingProductionService::isProductionBlocked);
+  public String areAllBlocked(List<SaleOrderLine> saleOrderLineList) {
+    List<String> messageList =
+        saleOrderLineList.stream()
+            .map(this::getNoGenerationReason)
+            .filter(StringUtils::notEmpty)
+            .collect(Collectors.toList());
+    if (CollectionUtils.isEmpty(messageList)) {
+      return null;
+    }
+    return StringHtmlListBuilder.formatMessage(
+        I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_NO_GENERATION), messageList);
   }
 
   protected String getMessageForOneProdPerSo(
@@ -237,5 +247,32 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
     LocalDate productionBlockingToDate = saleOrderLine.getProductionBlockingToDate();
     return isProductionBlocked
         && (productionBlockingToDate == null || todayDate.isBefore(productionBlockingToDate));
+  }
+
+  protected String getNoGenerationReason(SaleOrderLine saleOrderLine) {
+    Product product = saleOrderLine.getProduct();
+    if (product == null) {
+      return String.format(
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_LINE_NO_PRODUCT),
+          saleOrderLine.getFullName());
+    }
+    String fullName = product.getFullName();
+    if (!isLineHasCorrectSaleSupply(saleOrderLine)) {
+      return String.format(
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_LINE_WRONG_SUPPLY_TYPE), fullName);
+    }
+    if (manufOrderSaleOrderService
+            .computeQuantityToProduceLeft(saleOrderLine)
+            .compareTo(BigDecimal.ZERO)
+        <= 0) {
+      return String.format(
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_LINE_QTY_ALREADY_PRODUCED),
+          fullName);
+    }
+    if (saleOrderLineBlockingProductionService.isProductionBlocked(saleOrderLine)) {
+      return String.format(
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_LINE_BLOCKED), fullName);
+    }
+    return null;
   }
 }
