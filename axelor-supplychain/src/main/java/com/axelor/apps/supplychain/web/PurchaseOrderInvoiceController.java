@@ -49,6 +49,9 @@ public class PurchaseOrderInvoiceController {
 
     try {
       Beans.get(PurchaseOrderInvoiceService.class)
+          .displayErrorMessageBtnGenerateInvoice(purchaseOrder);
+
+      Beans.get(PurchaseOrderInvoiceService.class)
           .displayErrorMessageIfPurchaseOrderIsInvoiceable(
               purchaseOrder, purchaseOrder.getExTaxTotal(), false);
       Invoice invoice = Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
@@ -75,6 +78,8 @@ public class PurchaseOrderInvoiceController {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+      Beans.get(PurchaseOrderInvoiceService.class)
+          .displayErrorMessageBtnGenerateInvoice(purchaseOrder);
       response.setView(
           ActionView.define(I18n.get("Invoicing"))
               .model(PurchaseOrder.class.getName())
