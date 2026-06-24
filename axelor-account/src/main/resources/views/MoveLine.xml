@@ -27,6 +27,7 @@
     <field name="debit" aggregate="sum" width="100"/>
     <field name="credit" aggregate="sum" width="100"/>
     <field name="amountRemaining" aggregate="sum" width="100"/>
+    <field name="move.companyCurrency"/>
     <field name="taxLine" domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv"/>
     <field name="analyticDistributionTemplate"
@@ -55,6 +56,7 @@
     <field name="debit"/>
     <field name="credit"/>
     <field name="amountRemaining"/>
+    <field name="move.companyCurrency"/>
     <field name="taxLine" onChange="account-move-line-update-tax-equiv"/>
     <field name="move.statusSelect"/>
     <field name="description"/>
@@ -81,6 +83,7 @@
     <field name="debit"/>
     <field name="credit"/>
     <field name="amountRemaining"/>
+    <field name="move.companyCurrency"/>
     <field name="taxLine" onChange="account-move-line-update-tax-equiv"/>
     <field name="move.statusSelect"/>
     <field name="reconcileGroup"/>
@@ -235,6 +238,7 @@
     <field name="debit" aggregate="sum"/>
     <field name="credit" aggregate="sum"/>
     <field name="amountRemaining" aggregate="sum"/>
+    <field name="move.companyCurrency"/>
     <field name="taxLine"
       requiredIf="!account.isTaxAuthorizedOnMoveLine || ['charge', 'income', 'immobilisation', 'tax'].includes(account.accountType.technicalTypeSelect)"
       domain="self.endDate > :date OR self.endDate IS NULL"
@@ -270,6 +274,7 @@
     <field name="debit" aggregate="sum"/>
     <field name="credit" aggregate="sum"/>
     <field name="amountRemaining" aggregate="sum"/>
+    <field name="move.companyCurrency"/>
     <field name="taxLine"
       requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'"
       domain="self.endDate > :date OR self.endDate IS NULL"
