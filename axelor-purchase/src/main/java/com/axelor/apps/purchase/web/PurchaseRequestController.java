@@ -135,7 +135,8 @@ public class PurchaseRequestController {
     try {
       PurchaseRequest purchaseRequest = request.getContext().asType(PurchaseRequest.class);
       purchaseRequest = Beans.get(PurchaseRequestRepository.class).find(purchaseRequest.getId());
-      Beans.get(PurchaseRequestWorkflowService.class).purchasePurchaseRequest(purchaseRequest);
+      Beans.get(PurchaseRequestWorkflowService.class)
+          .generatePurchaseOrderFromRequest(purchaseRequest);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
