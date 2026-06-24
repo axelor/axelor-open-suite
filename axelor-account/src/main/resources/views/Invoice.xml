@@ -1164,6 +1164,33 @@
     </panel-mail>
   </form>
 
+  <form name="invoice-customer-form" title="Cust. invoice"
+    model="com.axelor.apps.account.db.Invoice" onNew="action-account-invoice-onnew-group"
+    onLoad="action-account-invoice-onload-group" onSave="action-invoice-onsave-group"
+    canDelete="statusSelect == 4 || (operationSubTypeSelect == 2 &amp;&amp; statusSelect == 1)">
+    <panel-include view="invoice-form"/>
+  </form>
+
+  <form name="invoice-supplier-form" title="Suppl. invoice"
+    model="com.axelor.apps.account.db.Invoice" onNew="action-account-invoice-onnew-group"
+    onLoad="action-account-invoice-onload-group" onSave="action-invoice-onsave-group"
+    canDelete="statusSelect == 4 || (operationSubTypeSelect == 2 &amp;&amp; statusSelect == 1)">
+    <panel-include view="invoice-form"/>
+  </form>
+
+  <form name="invoice-customer-refund-form" title="Cust. credit note"
+    model="com.axelor.apps.account.db.Invoice" onNew="action-account-invoice-onnew-group"
+    onLoad="action-account-invoice-onload-group" onSave="action-invoice-onsave-group"
+    canDelete="statusSelect == 4 || (operationSubTypeSelect == 2 &amp;&amp; statusSelect == 1)">
+    <panel-include view="invoice-form"/>
+  </form>
+
+  <form name="invoice-supplier-refund-form" title="Suppl. credit note"
+    model="com.axelor.apps.account.db.Invoice" onNew="action-account-invoice-onnew-group"
+    onLoad="action-account-invoice-onload-group" onSave="action-invoice-onsave-group"
+    canDelete="statusSelect == 4 || (operationSubTypeSelect == 2 &amp;&amp; statusSelect == 1)">
+    <panel-include view="invoice-form"/>
+  </form>
 
   <form name="invoice-reports-wizard-form" title="Reports" model="com.axelor.utils.db.Wizard"
     onNew="action-invoice-reports-wizard-attrs-set-report-type-select,action-invoice-reports-wizard-method-set-invoice-print-template">
