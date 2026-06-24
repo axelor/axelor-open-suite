@@ -79,4 +79,13 @@ public interface PurchaseRequestWorkflowService {
    * @throws AxelorException
    */
   void draftPurchaseRequest(PurchaseRequest purchaseRequest) throws AxelorException;
+
+  /**
+   * Create a Draft purchase order for an accepted request without changing its status. The request
+   * transitions to STATUS_PURCHASED only when the generated purchase order is validated.
+   *
+   * @param purchaseRequest
+   * @throws AxelorException
+   */
+  void generatePurchaseOrderFromRequest(PurchaseRequest purchaseRequest) throws AxelorException;
 }

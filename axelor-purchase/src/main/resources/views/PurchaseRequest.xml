@@ -62,7 +62,8 @@
         onClick="action-purchase-request-group-request-button"/>
       <button name="acceptBtn" title="Accept" icon="check" showIf="statusSelect == 2"
         onClick="action-purchase-request-group-accept-button"/>
-      <button name="purchaseBtn" title="Purchase" icon="cart-fill" showIf="statusSelect == 3"
+      <button name="purchaseBtn" title="Generate purchase order" icon="cart-fill"
+        showIf="statusSelect == 3 &amp;&amp; !purchaseOrder"
         onClick="action-purchase-request-group-purchase-button"/>
       <button name="refuseBtn" title="Refuse" icon="x" css="btn-danger"
         showIf="statusSelect == 2" onClick="action-purchase-request-group-refuse-button"/>
@@ -106,7 +107,8 @@
       <spacer name="companySpacer"/>
       <field name="$groupBySupplier" title="Group by supplier" type="boolean"/>
       <spacer name="supplierSpacer"/>
-      <field name="$groupByProduct" title="Group by product" type="boolean"/>
+      <field name="$groupByProduct" title="Group by product" type="boolean"
+        onChange="action-purchase-request-attrs-supplier"/>
       <spacer name="productSpacer"/>
       <field name="$supplierPartner" title="Supplier" type="many-to-one"
         target="com.axelor.apps.base.db.Partner" domain="self.isSupplier = true" hidden="true"
@@ -128,10 +130,10 @@
 
   <action-attrs name="action-purchase-request-attrs-supplier">
     <attribute name="hidden" for="$supplierPartner"
-      expr="eval: !(__repo__(PurchaseRequest).all().filter('self.id in (?1) and self.supplierPartner is null', _ids).count() > 0)"
+      expr="eval: !(__repo__(PurchaseRequest).all().filter('self.id in (?1) and self.supplierPartner is null', _ids).count() > 0) &amp;&amp; !groupByProduct"
       if="_ids"/>
     <attribute name="required" for="$supplierPartner"
-      expr="eval: __repo__(PurchaseRequest).all().filter('self.id in (?1) and self.supplierPartner is null', _ids).count() > 0"
+      expr="eval: __repo__(PurchaseRequest).all().filter('self.id in (?1) and self.supplierPartner is null', _ids).count() > 0 || groupByProduct"
       if="_ids"/>
   </action-attrs>
 

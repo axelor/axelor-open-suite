@@ -137,4 +137,24 @@ public class PurchaseRequestWorkflowServiceImpl implements PurchaseRequestWorkfl
     }
     purchaseRequest.setStatusSelect(PurchaseRequestRepository.STATUS_DRAFT);
   }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void generatePurchaseOrderFromRequest(PurchaseRequest purchaseRequest)
+      throws AxelorException {
+    if (purchaseRequest.getStatusSelect() == null
+        || purchaseRequest.getStatusSelect() != PurchaseRequestRepository.STATUS_ACCEPTED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_PURCHASE_WRONG_STATUS));
+    }
+    if (purchaseRequest.getPurchaseOrder() != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_PO_ALREADY_EXISTS));
+    }
+    purchaseRequestToPoCreateService.createFromRequest(purchaseRequest);
+    // Status stays at STATUS_ACCEPTED — only PO validation triggers the switch
+    // via purchasePurchaseRequestsByPo()
+  }
 }
