@@ -131,6 +131,7 @@ public class MrpServiceImpl implements MrpService {
   protected List<StockLocation> stockLocationList;
   protected Map<Long, Integer> productMap;
   protected Map<Long, Integer> productMapToBeAssigned;
+  protected Set<Long> processedMrpForecastIdSet;
   protected Integer currentLevel;
   protected Mrp mrp;
   protected LocalDate today;
@@ -1017,6 +1018,7 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected void createSaleForecastMrpLines() throws AxelorException {
+    this.processedMrpForecastIdSet = new HashSet<>();
     this.createSaleForecastMrpLines(this.productMap);
   }
 
@@ -1053,6 +1055,9 @@ public class MrpServiceImpl implements MrpService {
 
     for (MrpForecast mrpForecast : mrpForecastList) {
 
+      if (!processedMrpForecastIdSet.add(mrpForecast.getId())) {
+        continue;
+      }
       this.createSaleForecastMrpLines(
           mrpRepository.find(mrp.getId()),
           mrpForecastRepository.find(mrpForecast.getId()),
