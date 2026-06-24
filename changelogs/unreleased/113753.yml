@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed regenerated invoice PDF copies being returned without the certificate signature."
+module: axelor-account

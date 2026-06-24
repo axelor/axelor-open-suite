@@ -214,7 +214,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         metaFiles.attach(signedMetaFile, signedMetaFile.getFileName(), invoice);
       }
       invoice.setPrintedPDF(signedMetaFile);
-      return MetaFiles.getPath(metaFile).toFile();
+      return MetaFiles.getPath(signedMetaFile).toFile();
     } catch (IOException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
