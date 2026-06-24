@@ -186,4 +186,59 @@ class TestSaleOrderDiscountService extends BaseTest {
         BigDecimal.valueOf(92).setScale(SCALE_VALUE, RoundingMode.HALF_UP),
         saleOrder.getExTaxTotal());
   }
+
+  @Test
+  void testApplyFixedGlobalDiscountOverPreexistingPercentLineDiscount() throws AxelorException {
+    // reporter scenario: line 200 with a manual 10% discount, line 300, then global fixed 50
+    saleOrder.setSaleOrderLineList(new ArrayList<>());
+    SaleOrderLine line200 =
+        createSaleOrderLine(
+            BigDecimal.valueOf(200).setScale(SCALE_VALUE, RoundingMode.HALF_UP), BigDecimal.ONE);
+    line200.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_PERCENT);
+    line200.setDiscountAmount(BigDecimal.TEN);
+    SaleOrderLine line300 =
+        createSaleOrderLine(
+            BigDecimal.valueOf(300).setScale(SCALE_VALUE, RoundingMode.HALF_UP), BigDecimal.ONE);
+    saleOrder.addSaleOrderLineListItem(line200);
+    saleOrder.addSaleOrderLineListItem(line300);
+
+    saleOrder.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_FIXED);
+    saleOrder.setDiscountAmount(BigDecimal.valueOf(50));
+    saleOrderGlobalDiscountService.applyGlobalDiscountOnLines(saleOrder);
+
+    Assertions.assertEquals(
+        PriceListLineRepository.AMOUNT_TYPE_FIXED, line200.getDiscountTypeSelect());
+    Assertions.assertEquals(
+        0, BigDecimal.valueOf(20).compareTo(line200.getDiscountAmount()), "line 200 -> fixed 20");
+    Assertions.assertEquals(
+        PriceListLineRepository.AMOUNT_TYPE_FIXED, line300.getDiscountTypeSelect());
+    Assertions.assertEquals(
+        0, BigDecimal.valueOf(30).compareTo(line300.getDiscountAmount()), "line 300 -> fixed 30");
+  }
+
+  @Test
+  void testResetGlobalDiscountOnLinesClearsLineDiscounts() throws AxelorException {
+    // a global discount is applied: lines carry a derived discount
+    saleOrder.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_PERCENT);
+    saleOrder.setDiscountAmount(BigDecimal.TEN);
+    saleOrderGlobalDiscountService.applyGlobalDiscountOnLines(saleOrder);
+
+    // the global discount is removed: lines must be reset and totals recomputed at full price
+    saleOrder.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
+    saleOrder.setDiscountAmount(BigDecimal.ZERO);
+    saleOrderGlobalDiscountService.resetGlobalDiscountOnLines(saleOrder);
+    saleOrderComputeService.computeSaleOrder(saleOrder);
+
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      Assertions.assertEquals(
+          PriceListLineRepository.AMOUNT_TYPE_NONE, saleOrderLine.getDiscountTypeSelect());
+      Assertions.assertEquals(
+          0,
+          BigDecimal.ZERO.compareTo(saleOrderLine.getDiscountAmount()),
+          "line discount amount should be reset to zero");
+    }
+    Assertions.assertEquals(
+        BigDecimal.valueOf(102).setScale(SCALE_VALUE, RoundingMode.HALF_UP),
+        saleOrder.getExTaxTotal());
+  }
 }

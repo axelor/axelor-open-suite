@@ -58,6 +58,24 @@ public abstract class GlobalDiscountAbstractService {
     }
   }
 
+  public void resetGlobalDiscountOnLines(GlobalDiscounter globalDiscounter) {
+    if (globalDiscounter == null
+        || CollectionUtils.isEmpty(getGlobalDiscounterLines(globalDiscounter))) {
+      return;
+    }
+    getGlobalDiscounterLines(globalDiscounter).stream()
+        .filter(
+            globalDiscounterLine ->
+                globalDiscounterLine
+                    .getTypeSelect()
+                    .equals(globalDiscounterLine.getTypeSelectNormal()))
+        .forEach(
+            globalDiscounterLine -> {
+              globalDiscounterLine.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
+              globalDiscounterLine.setDiscountAmount(BigDecimal.ZERO);
+            });
+  }
+
   protected void computePriceBeforeGlobalDiscount(GlobalDiscounter globalDiscounter) {
     globalDiscounter.setPriceBeforeGlobalDiscount(
         getGlobalDiscounterLines(globalDiscounter).stream()
