@@ -443,6 +443,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
     Invoice invoice = invoiceGenerator.generate();
 
+    invoice.setPurchaseOrder(purchaseOrder);
+
     invoiceGenerator.populate(
         invoice, this.createInvoiceLines(invoice, purchaseOrderLineList, qtyToInvoiceMap));
 
@@ -750,6 +752,33 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SupplychainExceptionMessage.PO_INVOICE_TOO_MUCH_INVOICED),
           purchaseOrder.getPurchaseOrderSeq());
+    }
+  }
+
+  @Override
+  public void displayErrorMessageBtnGenerateInvoice(PurchaseOrder purchaseOrder)
+      throws AxelorException {
+    if (orderInvoiceService
+            .amountToBeInvoiced(purchaseOrder)
+            .compareTo(purchaseOrder.getExTaxTotal())
+        >= 0) {
+      throw new AxelorException(
+          purchaseOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.PO_INVOICE_GENERATE_ALL_INVOICES));
+    }
+  }
+
+  @Override
+  public void displayErrorMessageIfExceedsInvoiceableAmount(
+      PurchaseOrder purchaseOrder, BigDecimal amountToInvoice) throws AxelorException {
+    BigDecimal sumInvoices = orderInvoiceService.amountToBeInvoiced(purchaseOrder);
+    sumInvoices = sumInvoices.add(amountToInvoice);
+    if (sumInvoices.compareTo(purchaseOrder.getExTaxTotal()) > 0) {
+      throw new AxelorException(
+          purchaseOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.PO_INVOICE_GENERATE_ALL_INVOICES));
     }
   }
 }
