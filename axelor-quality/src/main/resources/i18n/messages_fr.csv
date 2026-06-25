@@ -1,5 +1,6 @@
 "key","message","comment","context"
 "% VOC","% COV",,
+"A control plan frequency with the same name %s already exists.",,,
 "Acceptance","Acceptation",,
 "Acceptance required","Acceptation requise",,
 "Accepted","Accepté",,
@@ -440,6 +441,5 @@
 "counter","Compteur",,
 "each","chaque",,
 "name",,,
-"priority","priorité",,
 "quality.responsible","Responsable",,
 "value:Quality","Qualité",,
