@@ -26,16 +26,13 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.utils.helpers.StringHelper;
+import de.speedbanking.iban.Iban;
+import de.speedbanking.iban.InvalidIbanException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import org.iban4j.CountryCode;
-import org.iban4j.IbanFormatException;
-import org.iban4j.IbanUtil;
-import org.iban4j.InvalidCheckDigitException;
-import org.iban4j.UnsupportedCountryException;
 
 public class BankDetailsServiceImpl implements BankDetailsService {
 
@@ -176,14 +173,8 @@ public class BankDetailsServiceImpl implements BankDetailsService {
     return domain;
   }
 
-  public void validateIban(String iban)
-      throws IbanFormatException, InvalidCheckDigitException, UnsupportedCountryException {
-    CountryCode countryCode = CountryCode.getByCode(IbanUtil.getCountryCode(iban));
-    if (countryCode == null) {
-      throw new UnsupportedCountryException("Country code is not supported.");
-    }
-    if (IbanUtil.isSupportedCountry(countryCode)) {
-      IbanUtil.validate(iban);
-    }
+  @Override
+  public void validateIban(String iban) throws InvalidIbanException {
+    Iban.validate(iban);
   }
 }
