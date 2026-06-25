@@ -1,0 +1,3 @@
+---
+title: "Data backup: fixed 'Update Import Id' failing for entities with joined table inheritance, and fixed long type fields incorrectly taking the import id value."
+module: axelor-base
