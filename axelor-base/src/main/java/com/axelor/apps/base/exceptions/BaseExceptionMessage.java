@@ -333,6 +333,8 @@ public final class BaseExceptionMessage {
   public static final String BARCODE_GENERATOR_8 = /*$$(*/
       "Invalid Serial Number '%s' for '%s' barcode type.It must be only number or only alphabets" /*)*/;
   public static final String BARCODE_GENERATOR_9 = /*$$(*/ "Barcode format not supported" /*)*/;
+  public static final String BARCODE_GENERATOR_10 = /*$$(*/
+      "Invalid serial number '%s' for '%s' barcode type. The check digit is invalid." /*)*/;
 
   public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;
   ;
