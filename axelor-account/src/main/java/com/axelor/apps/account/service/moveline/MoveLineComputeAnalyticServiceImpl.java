@@ -84,7 +84,7 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
         analyticMoveLineService.updateAnalyticMoveLine(analyticMoveLine, amount, date);
       }
     }
-    updateAccountTypeOnAnalytic(moveLine, analyticMoveLineList);
+    updateAccountTypeOnAnalytic(moveLine, moveLine.getAnalyticMoveLineList());
 
     return moveLine;
   }
@@ -145,6 +145,7 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
       moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
     }
+    updateAccountTypeOnAnalytic(moveLine, moveLine.getAnalyticMoveLineList());
     return moveLine;
   }
 
