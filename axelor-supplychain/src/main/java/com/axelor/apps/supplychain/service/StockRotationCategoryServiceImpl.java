@@ -116,18 +116,27 @@ public class StockRotationCategoryServiceImpl implements StockRotationCategorySe
   @Override
   @Transactional
   public void assignStockRotationCategory(Product product) {
-    if (product == null || !Boolean.TRUE.equals(product.getAutoAssignStockRotationCategory())) {
+    if (product == null
+        || product.getId() == null
+        || !Boolean.TRUE.equals(product.getAutoAssignStockRotationCategory())) {
       return;
     }
-    StockRotationCategory match = findMatchingCategory(product);
+    // Reload a managed instance: the product passed by the batch loop may be detached (JPA.clear()
+    // at page boundary), and save() cascading over the lazy productCompanyList would otherwise
+    // raise a LazyInitializationException.
+    Product managedProduct = productRepository.find(product.getId());
+    if (managedProduct == null) {
+      return;
+    }
+    StockRotationCategory match = findMatchingCategory(managedProduct);
     if (match == null) {
       return;
     }
-    if (match.equals(product.getStockRotationCategory())) {
+    if (match.equals(managedProduct.getStockRotationCategory())) {
       return;
     }
-    product.setStockRotationCategory(match);
-    productRepository.save(product);
+    managedProduct.setStockRotationCategory(match);
+    productRepository.save(managedProduct);
   }
 
   protected Map<String, Object> buildContext(Product product) {
