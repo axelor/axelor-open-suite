@@ -66,4 +66,16 @@ public interface ProductPriceService {
       Currency fromCurrency,
       Currency toCurrency)
       throws AxelorException;
+
+  BigDecimal getConvertedPrice(
+      Company company,
+      Product product,
+      Set<TaxLine> taxLineSet,
+      boolean resultInAti,
+      LocalDate localDate,
+      BigDecimal price,
+      Currency fromCurrency,
+      Currency toCurrency,
+      boolean priceIsAti)
+      throws AxelorException;
 }

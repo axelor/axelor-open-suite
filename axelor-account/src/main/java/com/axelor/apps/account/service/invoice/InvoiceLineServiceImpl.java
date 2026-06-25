@@ -251,17 +251,20 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     Map<String, Object> processedDiscounts = new HashMap<>();
 
+    boolean priceIsAti =
+        !InvoiceToolService.isPurchase(invoice) && invoiceLine.getProduct().getInAti();
+
     if (rawDiscounts != null) {
       if (rawDiscounts.get("price") != null) {
         price = (BigDecimal) rawDiscounts.get("price");
       }
-      if (invoiceLine.getProduct().getInAti() != invoice.getInAti()
+      if (priceIsAti != invoice.getInAti()
           && (Integer) rawDiscounts.get("discountTypeSelect")
               != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
         processedDiscounts.put(
             "discountAmount",
             taxAccountService.convertUnitPrice(
-                invoiceLine.getProduct().getInAti(),
+                priceIsAti,
                 invoiceLine.getTaxLineSet(),
                 (BigDecimal) rawDiscounts.get("discountAmount"),
                 appBaseService.getNbDecimalDigitForUnitPrice()));
@@ -271,12 +274,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       processedDiscounts.put("discountTypeSelect", rawDiscounts.get("discountTypeSelect"));
     }
 
-    if (price.compareTo(
-            invoiceLine.getProduct().getInAti()
-                ? invoiceLine.getInTaxPrice()
-                : invoiceLine.getPrice())
-        != 0) {
-      if (invoiceLine.getProduct().getInAti()) {
+    if (price.compareTo(priceIsAti ? invoiceLine.getInTaxPrice() : invoiceLine.getPrice()) != 0) {
+      if (priceIsAti) {
         processedDiscounts.put(
             "inTaxPrice", currencyScaleService.getScaledValue(invoiceLine, price));
         processedDiscounts.put(
@@ -507,8 +506,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     productInformation.put("price", price);
     productInformation.put("inTaxPrice", inTaxPrice);
 
+    boolean priceIsAti = !isPurchase && product.getInAti();
     productInformation.putAll(
-        this.getDiscount(invoice, invoiceLine, product.getInAti() ? inTaxPrice : price));
+        this.getDiscount(invoice, invoiceLine, priceIsAti ? inTaxPrice : price));
     return productInformation;
   }
 
