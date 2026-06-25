@@ -169,15 +169,15 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       return;
     }
 
-    if (accountingAccount.getVatSystemSelect() != null
+    AccountingSituation accountingSituation =
+        accountingSituationRepository.findByCompanyAndPartner(company, moveLine.getPartner());
+
+    if (accountingSituation != null
+        && accountingSituation.getVatSystemSelect() == AccountingSituationRepository.VAT_DELIVERY) {
+      moveLine.setVatSystemSelect(AccountRepository.VAT_SYSTEM_GOODS);
+    } else if (accountingAccount.getVatSystemSelect() != null
         && accountingAccount.getVatSystemSelect() != AccountRepository.VAT_SYSTEM_DEFAULT) {
       moveLine.setVatSystemSelect(accountingAccount.getVatSystemSelect());
-    } else {
-      AccountingSituation accountingSituation =
-          accountingSituationRepository.findByCompanyAndPartner(company, moveLine.getPartner());
-      if (accountingSituation != null
-          && accountingSituation.getVatSystemSelect() == AccountingSituationRepository.VAT_DELIVERY)
-        moveLine.setVatSystemSelect(AccountRepository.VAT_SYSTEM_GOODS);
     }
   }
 
