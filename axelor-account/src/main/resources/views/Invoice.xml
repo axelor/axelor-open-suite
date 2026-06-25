@@ -639,7 +639,7 @@
       <panel name="invoiceContentPanel" title="Content" showTitle="false" itemSpan="12">
         <field name="invoiceCategorySelect"
           showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting &amp;&amp; statusSelect >= 2"
-          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; statusSelect >= 2 &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
+          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
           readonlyIf="statusSelect &gt;= 3" colSpan="2"/>
         <field name="company.accountConfig.displayItemsCategoriesOnPrinting" hidden="true"/>
         <panel name="cutOffPanel" title="Cut off period" itemSpan="4"
@@ -1291,7 +1291,7 @@
       <panel name="invoiceContentPanel" title="Invoice content" showTitle="false">
         <field name="invoiceCategorySelect"
           showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting &amp;&amp; statusSelect >= 2"
-          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; statusSelect >= 2 &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
+          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
           readonlyIf="statusSelect &gt;= 3" colSpan="2"/>
         <field name="company.accountConfig.displayItemsCategoriesOnPrinting" hidden="true"/>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
