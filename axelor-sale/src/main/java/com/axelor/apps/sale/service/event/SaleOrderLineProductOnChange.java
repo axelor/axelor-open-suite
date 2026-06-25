@@ -25,17 +25,24 @@ import java.util.Map;
 
 public class SaleOrderLineProductOnChange {
   private final SaleOrderLine saleOrderLine;
+  private final SaleOrderLine parentSaleOrderLine;
   private final SaleOrder saleOrder;
   private final Map<String, Object> saleOrderLineMap;
 
-  public SaleOrderLineProductOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+  public SaleOrderLineProductOnChange(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, SaleOrderLine parentSaleOrderLine) {
     this.saleOrderLine = saleOrderLine;
     this.saleOrder = saleOrder;
     this.saleOrderLineMap = new HashMap<>();
+    this.parentSaleOrderLine = parentSaleOrderLine;
   }
 
   public SaleOrderLine getSaleOrderLine() {
     return saleOrderLine;
+  }
+
+  public SaleOrderLine getParentSaleOrderLine() {
+    return parentSaleOrderLine;
   }
 
   public SaleOrder getSaleOrder() {

@@ -1,0 +1,5 @@
+---
+title: "Sale order line: add support for parent sale order line on product onchange event."
+module: axelor-sale
+developer: |
+ Added parent sale order line on product onchange method on sale order line and on SaleOrderLineProductOnChange constructor.
