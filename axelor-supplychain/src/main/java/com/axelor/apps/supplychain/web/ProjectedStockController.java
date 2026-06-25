@@ -249,7 +249,9 @@ public class ProjectedStockController {
                 Comparator.nullsLast(Comparator.naturalOrder()))
             .thenComparing(
                 line -> line.getMrpLineType() != null ? loadMrpLineType(line).getSequence() : null,
-                Comparator.nullsLast(Comparator.naturalOrder()));
+                Comparator.nullsLast(Comparator.naturalOrder()))
+            .thenComparing(
+                MrpLine::getCumulativeQty, Comparator.nullsLast(Comparator.naturalOrder()));
     Map<LocalDate, MrpLine> bestLinePerDate =
         mrpLines.stream()
             .collect(
