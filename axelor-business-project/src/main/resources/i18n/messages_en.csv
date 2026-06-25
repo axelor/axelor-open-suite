@@ -608,6 +608,8 @@
 "You haven't select any element to invoice",,,
 "You must add a sale order template",,,
 "You must select a project/task",,,
+"_project",,,
+"_task",,,
 "com.axelor.apps.businessproject.service.batch.BusinessProjectBatchService",,,
 "value:Canceled",,,
 "value:Done paid",,,

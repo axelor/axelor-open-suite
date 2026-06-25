@@ -7,7 +7,7 @@
 
   <entity name="Project">
 
-    <string name="name"/>
+    <string name="name" translatable="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <string name="description" multiline="true" large="true"/>
     <many-to-one name="team" ref="com.axelor.team.db.Team"/>
@@ -57,7 +57,7 @@
     <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product"
       title="Type of authorized activities"/>
 
-    <string name="fullName" namecolumn="true" title="Name"/>
+    <string name="fullName" namecolumn="true" title="Name" translatable="true"/>
 
     <boolean name="isShowPhasesElements" title="Show sub-projects"/>
     <enum name="genProjTypePerOrderLine" ref="GenProjTypePerOrderLine"
