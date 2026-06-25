@@ -1245,7 +1245,7 @@ where AccountingReport.id = ?
 	AnalyticDistributionTemplate.name AS analytic_distribution_template_name,
 	Currency.number_of_decimals,
 	CASE
-		WHEN acquisition_date <= date_from 
+		WHEN acquisition_date < date_from
 		THEN Asset.gross_value 
 		ELSE 0
 	END AS original_value,
