@@ -837,6 +837,12 @@
     <option value="5" order="5">Value for collection</option>
   </selection>
 
+  <selection name="payment.mode.value.for.collection.grouping.select">
+    <option value="1">By payment voucher</option>
+    <option value="2">By partner</option>
+    <option value="3">Global</option>
+  </selection>
+
   <selection name="batch.batch.type.select" id="account.batch.batch.type.select">
     <option value="200">Accounting batch</option>
     <option value="201">Invoice batch</option>
