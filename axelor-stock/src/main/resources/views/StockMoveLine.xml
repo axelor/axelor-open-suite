@@ -834,7 +834,9 @@
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.stockMove.statusSelect = 2 and
       (self.fromStockLocation.typeSelect = 1 or
-      self.toStockLocation.typeSelect = 1) and self.product.id = :_id</domain>
+      self.toStockLocation.typeSelect = 1) and
+      (self.product.id = :_id OR
+      self.product.parentProduct.id = :_id)</domain>
   </action-view>
 
   <action-view name="action-stock-move-line-product-default-realized"
@@ -843,7 +845,9 @@
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.stockMove.statusSelect = 3 and
       (self.fromStockLocation.typeSelect = 1 or
-      self.toStockLocation.typeSelect = 1) and self.product.id = :_id</domain>
+      self.toStockLocation.typeSelect = 1) and
+      (self.product.id = :_id OR
+      self.product.parentProduct.id = :_id)</domain>
   </action-view>
 
   <action-validate name="action-stock-move-line-validate-check-split-quantity">

@@ -131,9 +131,11 @@ public class StockLocationLineFetchServiceImpl implements StockLocationLineFetch
       Long productId, Long companyId, Long stockLocationId) {
 
     String query =
-        "self.product.id = "
+        "(self.product.id = "
             + productId
-            + " AND self.stockLocation.typeSelect != "
+            + " OR self.product.parentProduct.id = "
+            + productId
+            + ") AND self.stockLocation.typeSelect != "
             + StockLocationRepository.TYPE_VIRTUAL;
 
     if (companyId != 0L) {

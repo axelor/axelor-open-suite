@@ -28,11 +28,14 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
+import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -42,12 +45,14 @@ import java.util.Map;
 public class ProjectedStockServiceImpl implements ProjectedStockService {
 
   @Inject StockLocationRepository stockLocationRepository;
+  @Inject ProductRepository productRepository;
+  @Inject MrpLineRepository mrpLineRepository;
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public List<MrpLine> createProjectedStock(Long productId, Long companyId, Long stockLocationId)
       throws AxelorException {
-    Product product = Beans.get(ProductRepository.class).find(productId);
+    Product product = productRepository.find(productId);
     Company company = Beans.get(CompanyRepository.class).find(companyId);
     StockLocation stockLocation = stockLocationRepository.find(stockLocationId);
     Mrp mrp = new Mrp();
@@ -57,12 +62,29 @@ public class ProjectedStockServiceImpl implements ProjectedStockService {
       return Collections.emptyList();
     }
     mrp.addProductSetItem(product);
+
+    List<Product> variantList = new ArrayList<>();
+    if (Boolean.TRUE.equals(product.getIsModel())) {
+      variantList =
+          productRepository
+              .all()
+              .filter("self.parentProduct.id = ?1 AND self.stockManaged = true", productId)
+              .fetch();
+      for (Product variant : variantList) {
+        mrp.addProductSetItem(variant);
+      }
+    }
+
     mrp.setMrpTypeSelect(MrpRepository.MRP_TYPE_MRP);
     mrp = Beans.get(MrpRepository.class).save(mrp);
     mrp = Beans.get(MrpService.class).createProjectedStock(mrp, product, company, stockLocation);
 
+    if (Boolean.TRUE.equals(product.getIsModel()) && !variantList.isEmpty()) {
+      return createModelProjectedStockLines(mrp, variantList);
+    }
+
     List<MrpLine> mrpLineList =
-        Beans.get(MrpLineRepository.class)
+        mrpLineRepository
             .all()
             .filter("self.mrp = ?1 AND self.product = ?2 AND self.qty != 0", mrp, product)
             .order("maturityDate")
@@ -73,12 +95,47 @@ public class ProjectedStockServiceImpl implements ProjectedStockService {
 
     if (mrpLineList.isEmpty()) {
       List<MrpLine> mrpLineListToDelete =
-          Beans.get(MrpLineRepository.class).all().filter("self.mrp = ?1", mrp).fetch();
+          mrpLineRepository.all().filter("self.mrp = ?1", mrp).fetch();
       removeMrpAndMrpLine(mrpLineListToDelete);
       return Collections.emptyList();
     }
 
     for (MrpLine mrpLine : mrpLineList) {
+      mrpLine.setCompany(mrpLine.getStockLocation().getCompany());
+      mrpLine.setUnit(mrpLine.getProduct().getUnit());
+    }
+    return mrpLineList;
+  }
+
+  protected List<MrpLine> createModelProjectedStockLines(Mrp mrp, List<Product> variantList) {
+    List<MrpLine> mrpLineList =
+        mrpLineRepository
+            .all()
+            .filter("self.mrp = ?1 AND self.product IN ?2 AND self.qty != 0", mrp, variantList)
+            .order("maturityDate")
+            .order("mrpLineType.typeSelect")
+            .order("mrpLineType.sequence")
+            .order("id")
+            .fetch();
+
+    if (mrpLineList.isEmpty()) {
+      List<MrpLine> mrpLineListToDelete =
+          mrpLineRepository.all().filter("self.mrp = ?1", mrp).fetch();
+      removeMrpAndMrpLine(mrpLineListToDelete);
+      return Collections.emptyList();
+    }
+
+    BigDecimal previousCumulativeQty = BigDecimal.ZERO;
+    for (MrpLine mrpLine : mrpLineList) {
+      if (mrpLine.getMrpLineType() != null
+          && mrpLine.getMrpLineType().getElementSelect()
+              == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+          && mrpLine.getEstimatedDeliveryMrpLine() != null) {
+        mrpLine.setCumulativeQty(previousCumulativeQty);
+      } else {
+        mrpLine.setCumulativeQty(previousCumulativeQty.add(mrpLine.getQty()));
+      }
+      previousCumulativeQty = mrpLine.getCumulativeQty();
       mrpLine.setCompany(mrpLine.getStockLocation().getCompany());
       mrpLine.setUnit(mrpLine.getProduct().getUnit());
     }
@@ -149,7 +206,7 @@ public class ProjectedStockServiceImpl implements ProjectedStockService {
   public void removeMrpAndMrpLine(List<MrpLine> mrpLineList) {
     if (mrpLineList != null && !mrpLineList.isEmpty()) {
       Long mrpId = mrpLineList.get(0).getMrp().getId();
-      Beans.get(MrpLineRepository.class).all().filter("self.mrp.id = ?1", mrpId).remove();
+      mrpLineRepository.all().filter("self.mrp.id = ?1", mrpId).remove();
       Beans.get(MrpRepository.class).all().filter("self.id = ?1", mrpId).remove();
     }
   }
