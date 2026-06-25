@@ -40,6 +40,12 @@
     <button name="closed-lostBtn" icon="dash-circle-fill" help="Closed lost"
       onClick="action-method-opportunity-set-stage-closed-lost"
       hideIf="$get('opportunityStatus.id') == $closedLostId"/>
+    <summary-bar>
+      <field name="amount" title="Selected amount" aggregate="sum" on="selection"/>
+      <call action="com.axelor.apps.crm.web.OpportunityController:fetchSummary">
+        <field name="$totalAmount" title="Total amount" type="decimal" align="end"/>
+      </call>
+    </summary-bar>
   </grid>
 
   <grid name="my-opportunity-grid" title="My Opportunities"

@@ -90,12 +90,15 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.rpc.Criteria;
 import com.axelor.utils.db.Wizard;
 import com.google.common.base.Function;
 import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1618,6 +1621,30 @@ public class InvoiceController {
       Integer vatLiability =
           Beans.get(InvoiceVatLiabilityService.class).computeVatLiability(invoice);
       response.setValue("vatSystemSelect", vatLiability);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void fetchSummary(ActionRequest request, ActionResponse response) {
+    try {
+      Criteria criteria = Criteria.parse(request);
+      List<Invoice> invoices =
+          criteria != null ? criteria.createQuery(Invoice.class).fetch() : Collections.emptyList();
+
+      BigDecimal totalExTaxTotal = BigDecimal.ZERO;
+      BigDecimal totalInTaxTotal = BigDecimal.ZERO;
+      BigDecimal totalAmountRemaining = BigDecimal.ZERO;
+
+      for (Invoice invoice : invoices) {
+        totalExTaxTotal = totalExTaxTotal.add(invoice.getExTaxTotal());
+        totalInTaxTotal = totalInTaxTotal.add(invoice.getInTaxTotal());
+        totalAmountRemaining = totalAmountRemaining.add(invoice.getAmountRemaining());
+      }
+
+      response.setValue("$totalExTaxTotal", totalExTaxTotal);
+      response.setValue("$totalInTaxTotal", totalInTaxTotal);
+      response.setValue("$totalAmountRemaining", totalAmountRemaining);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
