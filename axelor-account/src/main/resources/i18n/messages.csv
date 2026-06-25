@@ -1224,7 +1224,6 @@
 "Cust. Invoices to merge",,,
 "Cust. credit notes to merge",,,
 "Custom",,,
-"Custom accounting reports",,,
 "Custom report %s couldn't be computed (timeout). Related anomalies can be viewed in the dedicated tab",,,
 "Custom rule",,,
 "Custom state",,,

@@ -36,6 +36,8 @@ import com.google.common.collect.Lists;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.HashSet;
 
 public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccountingReportService {
 
@@ -72,6 +74,8 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
     AccountingReport accountingReport = new AccountingReport();
     accountingReport.setCompany(accountingBatch.getCompany());
     if (accountingReport.getCompany() != null) {
+      accountingReport.setCompanySet(
+          new HashSet<>(Collections.singleton(accountingReport.getCompany())));
       accountingReport.setCurrency(accountingReport.getCompany().getCurrency());
       AccountConfig accountConfig =
           accountConfigService.getAccountConfig(accountingReport.getCompany());
