@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.CallTenderOffer;
 import com.axelor.meta.db.MetaFile;
 import java.io.IOException;
@@ -26,4 +28,6 @@ import java.util.List;
 public interface CallTenderExcelService {
 
   MetaFile generateExcelFile(List<CallTenderOffer> offerList) throws IOException;
+
+  MetaFile generateTemplate(CallTender callTender, Partner supplier) throws IOException;
 }
