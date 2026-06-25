@@ -1,0 +1,3 @@
+---
+title: "InvoicingPaymentSituation: allowed selecting the same company on several lines as long as one bank details remains available, enforcing uniqueness on the company/bank details couple."
+module: axelor-account
