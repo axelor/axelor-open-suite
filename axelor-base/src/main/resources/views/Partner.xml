@@ -161,7 +161,7 @@
           action="save,action-send-by-email-with-template" readonlyIf="id == null"
           if-module="axelor-message"/>
         <item name="sirenApiBtn" title="Fill from Sirene API"
-          action="save,action-partner-view-wizard-api-sirene-configuration"/>
+          action="action-partner-view-wizard-api-sirene-configuration"/>
       </menu>
     </menubar>
   </form>

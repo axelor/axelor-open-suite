@@ -40,7 +40,7 @@
     <menubar>
       <menu name="partnerToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="sirenApiBtn" title="Fill from Sirene API"
-          action="save,action-partner-view-wizard-api-sirene-configuration"/>
+          action="action-partner-view-wizard-api-sirene-configuration"/>
         <item title="Customer recovery" name="customerRecoveryItem"
           action="action-partner-view-show-customer-debt-recovery"
           if="__config__.app.isApp('account')" showIf="isCustomer"/>
