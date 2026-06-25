@@ -1029,6 +1029,9 @@ public final class AccountExceptionMessage {
   public static final String MOVE_TEMPLATE_MIXED_COMPUTE_TAX_AT_CREATION = /*$$(*/
       "Lines with account %s and tax %s have inconsistent 'Compute tax at creation' values. All lines with the same account and tax must have the same setting." /*)*/;
 
+  public static final String MOVE_TEMPLATE_COMPUTE_TAX_AT_CREATION_WITH_TAX_LINES = /*$$(*/
+      "'Compute tax at creation' is enabled on at least one line, but the template also contains tax lines. In this case the tax is not computed automatically and the option is ignored: either remove the tax lines or uncheck 'Compute tax at creation'." /*)*/;
+
   /** Mass entry move controller */
   public static final String MASS_ENTRY_MOVE_CONTROL_ERROR = /*$$(*/
       "Error(s) during moves control" /*)*/;
