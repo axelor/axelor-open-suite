@@ -156,9 +156,11 @@ public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineService
     String statusListQuery =
         statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
     String query =
-        "self.product.id = "
+        "(self.product.id = "
             + productId
-            + " AND self.deliveryState != "
+            + " OR self.product.parentProduct.id = "
+            + productId
+            + ") AND self.deliveryState != "
             + SaleOrderLineRepository.DELIVERY_STATE_DELIVERED
             + " AND self.saleOrder.statusSelect IN ("
             + statusListQuery

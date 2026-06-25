@@ -639,9 +639,11 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     String statusListQuery =
         statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
     String query =
-        "self.product.id = "
+        "(self.product.id = "
             + productId
-            + " AND self.receiptState != "
+            + " OR self.product.parentProduct.id = "
+            + productId
+            + ") AND self.receiptState != "
             + PurchaseOrderLineRepository.RECEIPT_STATE_RECEIVED
             + " AND self.purchaseOrder.statusSelect IN ("
             + statusListQuery

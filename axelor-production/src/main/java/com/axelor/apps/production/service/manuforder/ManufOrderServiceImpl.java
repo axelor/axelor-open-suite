@@ -745,9 +745,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     String statusListQuery =
         statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
     String query =
-        "self.product.id = "
+        "(self.product.id = "
             + productId
-            + " AND self.stockMove.statusSelect = "
+            + " OR self.product.parentProduct.id = "
+            + productId
+            + ") AND self.stockMove.statusSelect = "
             + StockMoveRepository.STATUS_PLANNED
             + " AND self.fromStockLocation.typeSelect != "
             + StockLocationRepository.TYPE_VIRTUAL
@@ -786,9 +788,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     String statusListQuery =
         statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
     String query =
-        "self.product.id = "
+        "(self.product.id = "
             + productId
-            + " AND self.stockMove.statusSelect = "
+            + " OR self.product.parentProduct.id = "
+            + productId
+            + ") AND self.stockMove.statusSelect = "
             + StockMoveRepository.STATUS_PLANNED
             + " AND self.stockMove.toStockLocation.typeSelect != "
             + StockLocationRepository.TYPE_VIRTUAL
