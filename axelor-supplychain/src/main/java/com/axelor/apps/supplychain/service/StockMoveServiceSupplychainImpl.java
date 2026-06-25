@@ -798,7 +798,13 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   @Override
   @Transactional
   public void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove) {
-    stockMove.setFullySpreadOverLogisticalFormsFlag(true);
+    if (CollectionUtils.isEmpty(stockMove.getStockMoveLineList())) {
+      return;
+    }
+    boolean fullySpread =
+        stockMove.getStockMoveLineList().stream()
+            .allMatch(sml -> sml.getQtyRemainingToPackage().compareTo(BigDecimal.ZERO) <= 0);
+    stockMove.setFullySpreadOverLogisticalFormsFlag(fullySpread);
   }
 
   /**
