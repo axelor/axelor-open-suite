@@ -308,10 +308,17 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       if (lastInvoiceTermCompanyAmount != null) {
         companyAmount = lastInvoiceTermCompanyAmount;
       } else {
-        BigDecimal companyTotal =
-            invoice != null
-                ? invoice.getCompanyInTaxTotal()
-                : moveLine.getDebit().max(moveLine.getCredit());
+        BigDecimal companyTotal;
+        if (moveLine != null
+            && (invoice == null
+                || moveLine.getMove() == null
+                || !moveLine.getMove().equals(invoice.getMove()))) {
+          companyTotal = moveLine.getDebit().max(moveLine.getCredit());
+        } else if (invoice != null) {
+          companyTotal = invoice.getCompanyInTaxTotal();
+        } else {
+          companyTotal = invoiceTermAmount;
+        }
 
         BigDecimal percentage = isHoldback ? BigDecimal.valueOf(100) : invoiceTerm.getPercentage();
 
@@ -1341,17 +1348,23 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoiceTermList != null) {
       invoiceTermToolService.checkHoldbackBeforeReconcile(invoiceTermList);
 
+      BigDecimal invoicePaymentAmount =
+          invoicePayment != null ? invoicePayment.getAmount() : amount;
       BigDecimal currencyAmount =
           invoicePayment != null
               ? currencyService.getAmountCurrencyConvertedAtDate(
-                  invoicePayment.getCompanyCurrency(),
                   invoicePayment.getCurrency(),
-                  amount,
+                  invoicePayment.getCompanyCurrency(),
+                  invoicePayment.getAmount(),
                   invoicePayment.getPaymentDate())
               : amount;
       invoiceTermPaymentList =
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-              invoicePayment, invoiceTermList, amount, currencyAmount, reconcile.getAmount());
+              invoicePayment,
+              invoiceTermList,
+              currencyAmount,
+              invoicePaymentAmount,
+              reconcile.getAmount());
 
       for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
         this.updateInvoiceTermsPaidAmount(
