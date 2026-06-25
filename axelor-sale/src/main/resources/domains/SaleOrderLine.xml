@@ -85,6 +85,8 @@
 
     <!-- Margins -->
     <decimal name="subTotalCostPrice" title="SubTotal cost price" precision="20" scale="3"/>
+    <decimal name="manualSubTotalCostPrice" hidden="true" precision="20" scale="3"/>
+    <boolean name="isSubTotalCostPriceManuallyEdited" hidden="true"/>
     <decimal name="subTotalGrossMargin" title="Sub Total gross profit" precision="20"
       scale="3"/>
     <decimal name="subMarginRate" title="Sub margin rate"/>
