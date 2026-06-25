@@ -5130,7 +5130,7 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                                 <property name="fontSize">xx-small</property>
                                 <property name="textAlign">left</property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF format="HTML">var out = ""; if (row["legalFormAndCapital"]) { out += '<p align="CENTER">' + row["legalFormAndCapital"] + '</p>'; } if (row["legalInformation"]) { out += '<p align="CENTER">' + row["legalInformation"] + '</p>'; } out;</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="HTML">var out = ""; if (row["footer"]) { out += '<p  align="CENTER">' + row["footer"] + '</p>'; } if (row["legalFormAndCapital"]) { out += '<p align="CENTER">' + row["legalFormAndCapital"] + '</p>'; } if (row["legalInformation"]) { out += '<p align="CENTER">' + row["legalInformation"] + '</p>'; } out;</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                         <cell id="3713">
