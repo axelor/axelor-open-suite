@@ -1,0 +1,8 @@
+---
+title: "Bank reconciliation: fixed computed balances for unreconciled and ongoing amounts with multi-currency accounts."
+module: axelor-bank-payment
+developer: |
+  BankReconciliationBalanceComputationServiceImpl: constructor no longer requires BankReconciliationLineRepository, CurrencyService and DateService.
+  BankReconciliationBalanceComputationServiceImpl.computeBalances: signature changed from (Account) to (BankReconciliation, boolean).
+  BankReconciliationBalanceComputationServiceImpl.computeMovesOngoingReconciledLineBalance: added boolean and Currency parameters.
+  BankReconciliationBalanceComputationServiceImpl.getConvertedAmount: removed.

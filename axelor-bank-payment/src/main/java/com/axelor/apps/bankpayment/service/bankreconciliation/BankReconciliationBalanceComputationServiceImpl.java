@@ -25,20 +25,20 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
-import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.service.BankReconciliationToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.DateService;
 import com.axelor.db.JPA;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -47,10 +47,7 @@ public class BankReconciliationBalanceComputationServiceImpl
 
   protected BankReconciliationRepository bankReconciliationRepository;
   protected AccountService accountService;
-  protected BankReconciliationLineRepository bankReconciliationLineRepository;
   protected MoveLineRepository moveLineRepository;
-  protected CurrencyService currencyService;
-  protected DateService dateService;
   protected BankReconciliationComputeService bankReconciliationComputeService;
   protected CurrencyScaleService currencyScaleService;
 
@@ -58,18 +55,12 @@ public class BankReconciliationBalanceComputationServiceImpl
   public BankReconciliationBalanceComputationServiceImpl(
       BankReconciliationRepository bankReconciliationRepository,
       AccountService accountService,
-      BankReconciliationLineRepository bankReconciliationLineRepository,
       MoveLineRepository moveLineRepository,
-      CurrencyService currencyService,
-      DateService dateService,
       BankReconciliationComputeService bankReconciliationComputeService,
       CurrencyScaleService currencyScaleService) {
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.accountService = accountService;
-    this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.moveLineRepository = moveLineRepository;
-    this.currencyService = currencyService;
-    this.dateService = dateService;
     this.bankReconciliationComputeService = bankReconciliationComputeService;
     this.currencyScaleService = currencyScaleService;
   }
@@ -89,48 +80,84 @@ public class BankReconciliationBalanceComputationServiceImpl
     BigDecimal statementOngoingReconciledBalance = BigDecimal.ZERO;
     BigDecimal movesOngoingReconciledBalance = BigDecimal.ZERO;
 
-    bankReconciliations =
-        bankReconciliationRepository
-            .findByBankDetails(bankReconciliation.getBankDetails())
-            .order("id")
-            .fetch(limit, offset);
-    if (bankReconciliations.size() != 0) {
-      statementReconciledLineBalance =
-          currencyScaleService.getScaledValue(
-              bankReconciliation,
-              statementReconciledLineBalance.add(bankReconciliations.get(0).getStartingBalance()));
-      movesReconciledLineBalance =
-          currencyScaleService.getScaledValue(
-              bankReconciliation,
-              movesReconciledLineBalance.add(bankReconciliations.get(0).getStartingBalance()));
-    }
-    do {
-      for (BankReconciliation br : bankReconciliations) {
-        Set<MoveLine> moveLineSet = new HashSet<>();
-        for (BankReconciliationLine brl : br.getBankReconciliationLineList()) {
-          statementReconciledLineBalance =
-              computeStatementReconciledLineBalance(statementReconciledLineBalance, brl);
-          statementUnreconciledLineBalance =
-              computeStatementUnreconciledLineBalance(statementUnreconciledLineBalance, brl);
-          statementOngoingReconciledBalance =
-              computeStatementOngoingReconciledLineBalance(statementOngoingReconciledBalance, brl);
-          movesOngoingReconciledBalance =
-              computeMovesOngoingReconciledLineBalance(
-                  movesOngoingReconciledBalance, brl, moveLineSet);
-        }
-      }
-      offset += limit;
-      JPA.clear();
+    boolean isMultiCurrency = BankReconciliationToolService.isForeignCurrency(bankReconciliation);
+    Currency bankReconciliationCurrency = bankReconciliation.getCurrency();
+
+    if (bankReconciliation.getIncludeOtherBankStatements()) {
       bankReconciliations =
           bankReconciliationRepository
               .findByBankDetails(bankReconciliation.getBankDetails())
               .order("id")
               .fetch(limit, offset);
-    } while (bankReconciliations.size() != 0);
+      if (bankReconciliations.size() != 0) {
+        statementReconciledLineBalance =
+            currencyScaleService.getScaledValue(
+                bankReconciliation,
+                statementReconciledLineBalance.add(
+                    bankReconciliations.get(0).getStartingBalance()));
+        movesReconciledLineBalance =
+            currencyScaleService.getScaledValue(
+                bankReconciliation,
+                movesReconciledLineBalance.add(bankReconciliations.get(0).getStartingBalance()));
+      }
+      do {
+        for (BankReconciliation br : bankReconciliations) {
+          Set<MoveLine> moveLineSet = new HashSet<>();
+          for (BankReconciliationLine brl : br.getBankReconciliationLineList()) {
+            statementReconciledLineBalance =
+                computeStatementReconciledLineBalance(statementReconciledLineBalance, brl);
+            statementUnreconciledLineBalance =
+                computeStatementUnreconciledLineBalance(statementUnreconciledLineBalance, brl);
+            statementOngoingReconciledBalance =
+                computeStatementOngoingReconciledLineBalance(
+                    statementOngoingReconciledBalance, brl);
+            movesOngoingReconciledBalance =
+                computeMovesOngoingReconciledLineBalance(
+                    movesOngoingReconciledBalance,
+                    brl,
+                    moveLineSet,
+                    isMultiCurrency,
+                    bankReconciliationCurrency);
+          }
+        }
+        offset += limit;
+        JPA.clear();
+        bankReconciliations =
+            bankReconciliationRepository
+                .findByBankDetails(bankReconciliation.getBankDetails())
+                .order("id")
+                .fetch(limit, offset);
+      } while (bankReconciliations.size() != 0);
+    } else {
+      statementReconciledLineBalance =
+          currencyScaleService.getScaledValue(
+              bankReconciliation,
+              statementReconciledLineBalance.add(bankReconciliation.getStartingBalance()));
+      movesReconciledLineBalance =
+          currencyScaleService.getScaledValue(
+              bankReconciliation,
+              movesReconciledLineBalance.add(bankReconciliation.getStartingBalance()));
+      Set<MoveLine> moveLineSet = new HashSet<>();
+      for (BankReconciliationLine brl : bankReconciliation.getBankReconciliationLineList()) {
+        statementReconciledLineBalance =
+            computeStatementReconciledLineBalance(statementReconciledLineBalance, brl);
+        statementUnreconciledLineBalance =
+            computeStatementUnreconciledLineBalance(statementUnreconciledLineBalance, brl);
+        statementOngoingReconciledBalance =
+            computeStatementOngoingReconciledLineBalance(statementOngoingReconciledBalance, brl);
+        movesOngoingReconciledBalance =
+            computeMovesOngoingReconciledLineBalance(
+                movesOngoingReconciledBalance,
+                brl,
+                moveLineSet,
+                isMultiCurrency,
+                bankReconciliationCurrency);
+      }
+    }
     JPA.clear();
 
     bankReconciliation = bankReconciliationRepository.find(bankReconciliation.getId());
-    Pair<BigDecimal, BigDecimal> balances = computeBalances(bankReconciliation.getCashAccount());
+    Pair<BigDecimal, BigDecimal> balances = computeBalances(bankReconciliation, isMultiCurrency);
     movesReconciledLineBalance = movesReconciledLineBalance.add(balances.getLeft());
     movesUnreconciledLineBalance = movesUnreconciledLineBalance.add(balances.getRight());
 
@@ -141,37 +168,50 @@ public class BankReconciliationBalanceComputationServiceImpl
     }
 
     bankReconciliation.setStatementReconciledLineBalance(
-        getConvertedAmount(statementReconciledLineBalance, bankReconciliation));
+        currencyScaleService.getScaledValue(bankReconciliation, statementReconciledLineBalance));
     bankReconciliation.setMovesReconciledLineBalance(
-        getConvertedAmount(movesReconciledLineBalance, bankReconciliation));
+        currencyScaleService.getScaledValue(bankReconciliation, movesReconciledLineBalance));
     bankReconciliation.setStatementUnreconciledLineBalance(
-        getConvertedAmount(statementUnreconciledLineBalance, bankReconciliation));
+        currencyScaleService.getScaledValue(bankReconciliation, statementUnreconciledLineBalance));
     bankReconciliation.setMovesUnreconciledLineBalance(
-        getConvertedAmount(movesUnreconciledLineBalance, bankReconciliation));
+        currencyScaleService.getScaledValue(bankReconciliation, movesUnreconciledLineBalance));
     bankReconciliation.setStatementOngoingReconciledBalance(
-        getConvertedAmount(statementOngoingReconciledBalance, bankReconciliation));
+        currencyScaleService.getScaledValue(bankReconciliation, statementOngoingReconciledBalance));
     bankReconciliation.setMovesOngoingReconciledBalance(
-        getConvertedAmount(movesOngoingReconciledBalance, bankReconciliation));
+        currencyScaleService.getScaledValue(bankReconciliation, movesOngoingReconciledBalance));
     bankReconciliation.setStatementAmountRemainingToReconcile(
-        getConvertedAmount(
-            statementUnreconciledLineBalance.subtract(statementOngoingReconciledBalance),
-            bankReconciliation));
+        currencyScaleService.getScaledValue(
+            bankReconciliation,
+            statementUnreconciledLineBalance.subtract(statementOngoingReconciledBalance)));
     bankReconciliation.setMovesAmountRemainingToReconcile(
-        getConvertedAmount(
-            movesUnreconciledLineBalance.subtract(movesOngoingReconciledBalance),
-            bankReconciliation));
+        currencyScaleService.getScaledValue(
+            bankReconciliation,
+            movesUnreconciledLineBalance.subtract(movesOngoingReconciledBalance)));
     bankReconciliation.setStatementTheoreticalBalance(
-        getConvertedAmount(
-            statementReconciledLineBalance.add(statementOngoingReconciledBalance),
-            bankReconciliation));
+        currencyScaleService.getScaledValue(
+            bankReconciliation,
+            statementReconciledLineBalance.add(statementOngoingReconciledBalance)));
     bankReconciliation.setMovesTheoreticalBalance(
-        getConvertedAmount(
-            movesReconciledLineBalance.add(movesOngoingReconciledBalance), bankReconciliation));
+        currencyScaleService.getScaledValue(
+            bankReconciliation, movesReconciledLineBalance.add(movesOngoingReconciledBalance)));
     bankReconciliation = bankReconciliationComputeService.computeEndingBalance(bankReconciliation);
     return bankReconciliationRepository.save(bankReconciliation);
   }
 
-  public Pair<BigDecimal, BigDecimal> computeBalances(Account cashAccount) {
+  public Pair<BigDecimal, BigDecimal> computeBalances(
+      BankReconciliation bankReconciliation, boolean isMultiCurrency) {
+
+    Account cashAccount = bankReconciliation.getCashAccount();
+
+    String amountQuery;
+    if (isMultiCurrency) {
+      amountQuery =
+          "CASE WHEN ml.move.currency = :bankReconciliationCurrency"
+              + " THEN abs(ml.currencyAmount)"
+              + " ELSE (ml.debit + ml.credit) END";
+    } else {
+      amountQuery = "(ml.debit + ml.credit)";
+    }
 
     String balanceQuery =
         "SELECT "
@@ -180,22 +220,48 @@ public class BankReconciliationBalanceComputationServiceImpl
             + "         ELSE -ml.bankReconciledAmount END, c.numberOfDecimals"
             + ")), "
             + "SUM(FUNCTION('ROUND', "
-            + "    CASE WHEN ml.debit <> 0 THEN (ml.debit - ml.bankReconciledAmount) "
-            + "         ELSE -(ml.credit - ml.bankReconciledAmount) END, c.numberOfDecimals"
+            + "    CASE WHEN ml.debit <> 0 THEN ("
+            + amountQuery
+            + " - ml.bankReconciledAmount) "
+            + "         ELSE -("
+            + amountQuery
+            + " - ml.bankReconciledAmount) END, c.numberOfDecimals"
             + ")) "
             + "FROM MoveLine ml "
             + "JOIN ml.move.companyCurrency c "
             + "WHERE ml.account = :cashAccount "
             + "AND ml.move.statusSelect IN (:daybook, :accounted)";
 
-    Object[] results =
-        (Object[])
-            JPA.em()
-                .createQuery(balanceQuery)
-                .setParameter("cashAccount", cashAccount)
-                .setParameter("daybook", MoveRepository.STATUS_DAYBOOK)
-                .setParameter("accounted", MoveRepository.STATUS_ACCOUNTED)
-                .getSingleResult();
+    if (!bankReconciliation.getIncludeOtherBankStatements()) {
+      if (bankReconciliation.getFromDate() != null) {
+        balanceQuery += " AND ml.date >= :fromDate";
+      }
+      if (bankReconciliation.getToDate() != null) {
+        balanceQuery += " AND ml.date <= :toDate";
+      }
+    }
+
+    Query query =
+        JPA.em()
+            .createQuery(balanceQuery)
+            .setParameter("cashAccount", cashAccount)
+            .setParameter("daybook", MoveRepository.STATUS_DAYBOOK)
+            .setParameter("accounted", MoveRepository.STATUS_ACCOUNTED);
+
+    if (isMultiCurrency) {
+      query.setParameter("bankReconciliationCurrency", bankReconciliation.getCurrency());
+    }
+
+    if (!bankReconciliation.getIncludeOtherBankStatements()) {
+      if (bankReconciliation.getFromDate() != null) {
+        query.setParameter("fromDate", bankReconciliation.getFromDate());
+      }
+      if (bankReconciliation.getToDate() != null) {
+        query.setParameter("toDate", bankReconciliation.getToDate());
+      }
+    }
+
+    Object[] results = (Object[]) query.getSingleResult();
 
     BigDecimal reconciled = results[0] == null ? BigDecimal.ZERO : (BigDecimal) results[0];
     BigDecimal unreconciled = results[1] == null ? BigDecimal.ZERO : (BigDecimal) results[1];
@@ -235,7 +301,9 @@ public class BankReconciliationBalanceComputationServiceImpl
   protected BigDecimal computeMovesOngoingReconciledLineBalance(
       BigDecimal movesOngoingReconciledBalance,
       BankReconciliationLine brl,
-      Set<MoveLine> moveLineSet) {
+      Set<MoveLine> moveLineSet,
+      boolean isMultiCurrency,
+      Currency bankReconciliationCurrency) {
     if (!brl.getIsPosted() && !Strings.isNullOrEmpty(brl.getPostedNbr())) {
       String query = "self.postedNbr LIKE '%%s%'";
       query = query.replace("%s", brl.getPostedNbr());
@@ -256,30 +324,24 @@ public class BankReconciliationBalanceComputationServiceImpl
           moveLineSet.add(moveLine);
         }
 
-        if (BankReconciliationToolService.isForeignCurrency(brl.getBankReconciliation())) {
-          movesOngoingReconciledBalance =
-              movesOngoingReconciledBalance.add(moveLine.getCurrencyAmount());
+        boolean isCurrencyAmount =
+            isMultiCurrency
+                && Optional.ofNullable(moveLine.getMove())
+                    .map(move -> move.getCurrency())
+                    .map(currency -> currency.equals(bankReconciliationCurrency))
+                    .orElse(false);
+        BigDecimal amount =
+            isCurrencyAmount
+                ? moveLine.getCurrencyAmount().abs()
+                : moveLine.getCredit().add(moveLine.getDebit());
+
+        if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
+          movesOngoingReconciledBalance = movesOngoingReconciledBalance.add(amount);
         } else {
-          if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
-            movesOngoingReconciledBalance =
-                movesOngoingReconciledBalance.add(moveLine.getCredit().add(moveLine.getDebit()));
-          } else {
-            movesOngoingReconciledBalance =
-                movesOngoingReconciledBalance.subtract(
-                    moveLine.getCredit().add(moveLine.getDebit()));
-          }
+          movesOngoingReconciledBalance = movesOngoingReconciledBalance.subtract(amount);
         }
       }
     }
     return currencyScaleService.getScaledValue(brl, movesOngoingReconciledBalance);
-  }
-
-  protected BigDecimal getConvertedAmount(BigDecimal value, BankReconciliation bankReconciliation)
-      throws AxelorException {
-    return currencyService.getAmountCurrencyConvertedAtDate(
-        bankReconciliation.getCurrency(),
-        bankReconciliation.getCompany().getCurrency(),
-        value,
-        dateService.date());
   }
 }
