@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.PrintingTemplateRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -57,6 +58,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
@@ -775,6 +777,33 @@ public class SaleOrderController {
 
       response.setValues(saleOrder);
       response.setAttrs(Beans.get(SaleOrderGroupService.class).onChangeSaleOrderLine(saleOrder));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onGlobalDiscountChange(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+      if (saleOrder == null) {
+        return;
+      }
+
+      SaleOrderGlobalDiscountService globalDiscountService =
+          Beans.get(SaleOrderGlobalDiscountService.class);
+      if (saleOrder.getDiscountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_NONE) {
+        // Removing the global discount must clear the line discounts derived from it, otherwise the
+        // stale discounts are kept and carried to the invoice.
+        globalDiscountService.resetGlobalDiscountOnLines(saleOrder);
+      } else {
+        globalDiscountService.applyGlobalDiscountOnLines(saleOrder);
+      }
+
+      // setValues on the parent context proxy does not push modified o2m line fields back to the
+      // client, so the recomputed per-line discounts are set explicitly (same pattern as
+      // updateLinesAfterFiscalPositionChange). Order totals are refreshed by the chained
+      // action-sale-order-method-on-line-change.
+      response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed global discount changes not being applied to the order lines, so the per-line discounts (and the discounts carried to the invoice) are now recomputed when the global discount type or amount changes."
+module: axelor-sale
