@@ -71,6 +71,7 @@ public class ProductionTrackingPreservationServiceImpl
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public PreservedTrackingNumbersByProduct getPreservedTrackingNumbersByProduct(
       List<StockMoveLine> stockMoveLines) {
     Map<Long, Deque<PreservedTrackingNumber>> result = new HashMap<>();
@@ -79,21 +80,30 @@ public class ProductionTrackingPreservationServiceImpl
     }
 
     for (StockMoveLine line : stockMoveLines) {
-      TrackingNumber trackingNumber = line.getTrackingNumber();
-      Product product = line.getProduct();
-      BigDecimal qty = line.getQty();
+      StockMoveLine managedLine = JpaModelHelper.ensureManaged(line);
+      if (managedLine == null) {
+        continue;
+      }
+      TrackingNumber trackingNumber = managedLine.getTrackingNumber();
+      Product product = managedLine.getProduct();
+      BigDecimal qty = managedLine.getQty();
       if (trackingNumber == null || product == null || qty == null) {
         continue;
       }
       boolean restoreOrigin =
           Optional.ofNullable(trackingNumber.getOriginStockMoveLine())
               .map(StockMoveLine::getId)
-              .filter(originLineId -> Objects.equals(originLineId, line.getId()))
+              .filter(originLineId -> Objects.equals(originLineId, managedLine.getId()))
               .isPresent();
 
       result
           .computeIfAbsent(product.getId(), k -> new ArrayDeque<>())
-          .add(new PreservedTrackingNumber(trackingNumber, qty, line.getUnit(), restoreOrigin));
+          .add(
+              new PreservedTrackingNumber(
+                  trackingNumber,
+                  qty,
+                  JpaModelHelper.ensureManaged(managedLine.getUnit()),
+                  restoreOrigin));
     }
 
     return new PreservedTrackingNumbersByProduct(result);
