@@ -1,0 +1,3 @@
+---
+title: "Mass stock move: fixed an error occurring when using 'Pick all' or 'The rest'."
+module: axelor-stock
