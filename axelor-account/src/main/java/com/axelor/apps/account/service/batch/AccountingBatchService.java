@@ -96,6 +96,9 @@ public class AccountingBatchService extends AbstractBatchService {
       case AccountingBatchRepository.ACTION_POST_LOAN_INSTALLMENT:
         batch = postLoanInstallment(accountingBatch);
         break;
+      case AccountingBatchRepository.ACTION_POST_LOAN_CLOSING:
+        batch = postLoanClosing(accountingBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -207,6 +210,10 @@ public class AccountingBatchService extends AbstractBatchService {
 
   public Batch postLoanInstallment(AccountingBatch accountingBatch) {
     return Beans.get(BatchPostLoanInstallment.class).run(accountingBatch);
+  }
+
+  public Batch postLoanClosing(AccountingBatch accountingBatch) {
+    return Beans.get(BatchLoanClosure.class).run(accountingBatch);
   }
 
   @Transactional

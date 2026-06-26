@@ -1778,4 +1778,8 @@ public final class AccountExceptionMessage {
       /*$$(*/ "There is no planned installment to book on this loan." /*)*/;
   public static final String BATCH_POSTED_LOAN_INSTALLMENT =
       /*$$(*/ "Booked loan installment(s) :" /*)*/;
+  public static final String LOAN_CLOSURE_ACCOUNT_MISSING =
+      /*$$(*/ "The loan %s is missing the journal or one of the accounts required for the closing adjustments." /*)*/;
+  public static final String BATCH_LOAN_CLOSURE =
+      /*$$(*/ "Loan(s) with closing adjustments generated :" /*)*/;
 }
