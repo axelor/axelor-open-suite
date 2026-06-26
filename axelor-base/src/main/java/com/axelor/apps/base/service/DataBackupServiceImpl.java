@@ -36,6 +36,7 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;
 import jakarta.inject.Inject;
+import jakarta.persistence.Entity;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -203,7 +204,11 @@ public class DataBackupServiceImpl implements DataBackupService {
 
     for (MetaModel metaModel : metaModelList) {
       try {
-        Class.forName(metaModel.getFullName());
+        Class<?> entityClass = Class.forName(metaModel.getFullName());
+        Class<?> superClass = entityClass.getSuperclass();
+        if (superClass != null && superClass.isAnnotationPresent(Entity.class)) {
+          continue;
+        }
         String currentDateTimeStr = "'" + LocalDateTime.now().format(formatter) + "'";
         String query =
             "Update "

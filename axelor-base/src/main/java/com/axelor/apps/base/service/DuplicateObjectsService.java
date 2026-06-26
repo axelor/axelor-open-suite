@@ -58,6 +58,7 @@ public class DuplicateObjectsService {
     Object originalObjct = getOriginalObject(selectedIds, modelName);
 
     managePartnerAccountingSituations(duplicateObjects, originalObjct);
+    managePartnerAddresses(duplicateObjects, originalObjct);
 
     List<MetaField> allField =
         metaFieldRepo
@@ -335,5 +336,19 @@ public class DuplicateObjectsService {
       deleteQuery.setParameter("companyIds", companyIds);
       deleteQuery.executeUpdate();
     }
+  }
+
+  protected void managePartnerAddresses(List<Object> duplicateObjects, Object originalObject) {
+    if (!(originalObject instanceof Partner) || CollectionUtils.isEmpty(duplicateObjects)) {
+      return;
+    }
+    JPA.em()
+        .createQuery(
+            "UPDATE com.axelor.apps.base.db.PartnerAddress self"
+                + " SET self.isDefaultAddr = false"
+                + " WHERE self.partner IN (:duplicates)"
+                + " AND self.isDefaultAddr = true")
+        .setParameter("duplicates", duplicateObjects)
+        .executeUpdate();
   }
 }

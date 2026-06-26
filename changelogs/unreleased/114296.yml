@@ -1,0 +1,3 @@
+---
+title: "Purchase order: fixed invoice generation allowed on a totally invoiced purchase order."
+module: axelor-supplychain

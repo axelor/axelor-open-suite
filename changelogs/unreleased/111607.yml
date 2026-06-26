@@ -1,0 +1,3 @@
+---
+title: "Payment Voucher: display proper error message when cheque deposit journal is not configured."
+module: axelor-account

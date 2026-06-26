@@ -1,0 +1,5 @@
+---
+title: "Product: reset revaluation section fields on product copy."
+module: axelor-base
+developer: |
+ Add a new ProductSupplychainServiceImpl that extends ProductServicePurchaseImpl

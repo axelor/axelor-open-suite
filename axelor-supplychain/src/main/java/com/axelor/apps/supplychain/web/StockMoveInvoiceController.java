@@ -396,16 +396,11 @@ public class StockMoveInvoiceController {
   public void generateInvoiceConcatInStockMoveCheckMissingFields(
       ActionRequest request, ActionResponse response) {
     try {
-      List<StockMove> stockMoveList = new ArrayList<>();
-      List<Long> stockMoveIdList = new ArrayList<>();
-
       List<Map> stockMoveMap = (List<Map>) request.getContext().get("supplierStockMoveToInvoice");
-      for (Map map : stockMoveMap) {
-        stockMoveIdList.add(Long.valueOf((Integer) map.get("id")));
-      }
-      for (Long stockMoveId : stockMoveIdList) {
-        stockMoveList.add(JPA.em().find(StockMove.class, stockMoveId));
-      }
+      List<StockMove> stockMoveList = getSelectedOrAllStockMoves(stockMoveMap);
+      List<Long> stockMoveIdList =
+          stockMoveList.stream().map(StockMove::getId).collect(Collectors.toList());
+
       Map<String, Object> mapResult =
           Beans.get(StockMoveMultiInvoiceService.class)
               .areFieldsConflictedToGenerateSupplierInvoice(stockMoveList);
@@ -477,6 +472,19 @@ public class StockMoveInvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @SuppressWarnings("rawtypes")
+  protected List<StockMove> getSelectedOrAllStockMoves(List<Map> stockMoveMap) {
+    List<Map> selectedStockMoveMap =
+        stockMoveMap.stream()
+            .filter(map -> Boolean.TRUE.equals(map.get("selected")))
+            .collect(Collectors.toList());
+
+    return (selectedStockMoveMap.isEmpty() ? stockMoveMap : selectedStockMoveMap)
+        .stream()
+            .map(map -> JPA.em().find(StockMove.class, ((Number) map.get("id")).longValue()))
+            .collect(Collectors.toList());
   }
 
   /**

@@ -639,7 +639,7 @@
       <panel name="invoiceContentPanel" title="Content" showTitle="false" itemSpan="12">
         <field name="invoiceCategorySelect"
           showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting &amp;&amp; statusSelect >= 2"
-          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; statusSelect >= 2 &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
+          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
           readonlyIf="statusSelect &gt;= 3" colSpan="2"/>
         <field name="company.accountConfig.displayItemsCategoriesOnPrinting" hidden="true"/>
         <panel name="cutOffPanel" title="Cut off period" itemSpan="4"
@@ -1175,11 +1175,11 @@
           readonly="true" colSpan="12"/>
         <field name="$reportType" title="Invoice type" type="integer" selection-in="[2,3]"
           selection="invoice.report.type" required="true"
-          showIf="(_statusSelect == 3  || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF == null"
+          showIf="(_statusSelect == 3  || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; (_printedPDF == null || _operationTypeSelect == 1 || _operationTypeSelect == 2)"
           colSpan="12"/>
         <field name="$reportType" title="Invoice type" type="integer" selection-in="[2,3,4]"
           selection="invoice.report.type" colSpan="12" required="true"
-          showIf="(_statusSelect == 3 || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF != null"/>
+          showIf="(_statusSelect == 3 || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF != null &amp;&amp; (_operationTypeSelect == 3 || _operationTypeSelect == 4)"/>
       </panel>
       <field name="$invoicePrintTemplate" title="Invoice template" type="many-to-one"
         target="com.axelor.apps.base.db.PrintingTemplate" required="true"
@@ -1291,7 +1291,7 @@
       <panel name="invoiceContentPanel" title="Invoice content" showTitle="false">
         <field name="invoiceCategorySelect"
           showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting &amp;&amp; statusSelect >= 2"
-          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; statusSelect >= 2 &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
+          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
           readonlyIf="statusSelect &gt;= 3" colSpan="2"/>
         <field name="company.accountConfig.displayItemsCategoriesOnPrinting" hidden="true"/>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
@@ -2737,6 +2737,7 @@
     <view-param name="show-confirm" value="false"/>
     <context name="_statusSelect" expr="eval: statusSelect"/>
     <context name="_operationSubTypeSelect" expr="eval: operationSubTypeSelect"/>
+    <context name="_operationTypeSelect" expr="eval: operationTypeSelect"/>
     <context name="_printedPDF" expr="eval: printedPDF"/>
     <context name="_invoiceId" expr="eval: id"/>
     <context name="_localization" expr="eval: localization"/>

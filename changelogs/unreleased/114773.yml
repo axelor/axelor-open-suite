@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed cannot set back to draft a canceled invoice due to required condition."
+module: axelor-account

@@ -26,6 +26,7 @@
     <field name="credit" aggregate="sum" width="100" x-scale="companyCurrencyDecimals"/>
     <field name="amountRemaining" aggregate="sum" width="100"
       x-scale="companyCurrencyDecimals"/>
+    <field name="move.companyCurrency"/>
     <field name="taxLineSet" domain="self.endDate > :date OR self.endDate IS NULL"
       readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
       requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
@@ -69,6 +70,7 @@
     <field name="debit" x-scale="companyCurrencyDecimals"/>
     <field name="credit" x-scale="companyCurrencyDecimals"/>
     <field name="amountRemaining" x-scale="companyCurrencyDecimals"/>
+    <field name="move.companyCurrency"/>
     <field name="taxLineSet" onChange="account-move-line-update-tax-equiv" widget="Tags"/>
     <field name="move.statusSelect"/>
     <field name="description"/>
@@ -94,6 +96,7 @@
     <field name="debit" x-scale="companyCurrencyDecimals"/>
     <field name="credit" x-scale="companyCurrencyDecimals"/>
     <field name="amountRemaining" x-scale="companyCurrencyDecimals"/>
+    <field name="move.companyCurrency"/>
     <field name="taxLineSet" onChange="account-move-line-update-tax-equiv" widget="Tags"/>
     <field name="move.statusSelect"/>
     <field name="reconcileGroup"/>
@@ -265,6 +268,7 @@
     <field name="debit" aggregate="sum" x-scale="companyCurrencyDecimals"/>
     <field name="credit" aggregate="sum" x-scale="companyCurrencyDecimals"/>
     <field name="amountRemaining" aggregate="sum" x-scale="companyCurrencyDecimals"/>
+    <field name="move.companyCurrency"/>
     <field name="taxLineSet"
       requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
       readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
@@ -302,6 +306,7 @@
     <field name="debit" aggregate="sum"/>
     <field name="credit" aggregate="sum"/>
     <field name="amountRemaining" aggregate="sum"/>
+    <field name="move.companyCurrency"/>
     <field name="taxLineSet"
       requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
       readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
@@ -363,6 +368,7 @@
     <field name="debit"/>
     <field name="credit"/>
     <field name="amountRemaining"/>
+    <field name="move.companyCurrency"/>
     <field name="move.statusSelect"/>
     <field name="description"/>
     <field name="dueDate"/>
@@ -702,6 +708,7 @@
       <field name="move.company" colSpan="6"/>
       <field name="move.journal" colSpan="6"/>
       <field name="move.period" canView="false" colSpan="6"/>
+      <field name="move.companyCurrency" colSpan="6"/>
     </panel>
   </form>
   <form name="move-line-move-form" title="Move line"

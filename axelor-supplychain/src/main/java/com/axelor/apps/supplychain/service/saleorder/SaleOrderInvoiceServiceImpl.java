@@ -997,6 +997,19 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     }
   }
 
+  @Override
+  public void displayErrorMessageIfExceedsInvoiceableAmount(
+      SaleOrder saleOrder, BigDecimal amountToInvoice) throws AxelorException {
+    BigDecimal sumInvoices = orderInvoiceService.amountToBeInvoiced(saleOrder);
+    sumInvoices = sumInvoices.add(amountToInvoice);
+    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
+      throw new AxelorException(
+          saleOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.SO_INVOICE_GENERATE_ALL_INVOICES));
+    }
+  }
+
   @Transactional(rollbackOn = {Exception.class})
   public List<Invoice> generateInvoicesFromSaleOrderLines(
       Map<SaleOrder, Map<Long, BigDecimal>> priceMaps,

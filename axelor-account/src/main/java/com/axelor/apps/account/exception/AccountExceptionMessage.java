@@ -899,6 +899,8 @@ public final class AccountExceptionMessage {
       "%s : Error : You must configure a sequence for the company %s and a payment mode %s" /*)*/;
   public static final String PAYMENT_MODE_3 = /*$$(*/
       "%s : Error : You must configure a journal for the company %s and a payment mode %s" /*)*/;
+  public static final String PAYMENT_MODE_4 = /*$$(*/
+      "%s : Error : You must configure a check deposit journal for the company %s and a payment mode %s" /*)*/;
 
   public static final String PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE = /*$$(*/
       "The configuration to retrieve the account on the payment mode is missing:" /*)*/;

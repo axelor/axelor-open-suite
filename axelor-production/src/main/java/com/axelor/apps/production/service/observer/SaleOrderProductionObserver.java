@@ -24,6 +24,7 @@ import com.axelor.apps.production.service.SaleOrderCopyProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.event.SaleOrderConfirm;
 import com.axelor.apps.sale.service.event.SaleOrderCopy;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
 import jakarta.annotation.Priority;
@@ -34,6 +35,8 @@ public class SaleOrderProductionObserver {
       throws AxelorException {
     SaleOrder saleOrder = event.getSaleOrder();
     Beans.get(SaleOrderConfirmProductionService.class).confirmProcess(saleOrder);
+    saleOrder = JpaModelHelper.ensureManaged(saleOrder);
+    event.setSaleOrder(saleOrder);
   }
 
   public void copySaleOrder(@Observes @Priority(value = 30) SaleOrderCopy event) {

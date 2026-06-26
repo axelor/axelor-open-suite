@@ -1,0 +1,3 @@
+---
+title: "Accounting batch: fixed the date of analytic distribution lines on generated moves to use the move accounting date instead of the origin date for the 'Accounting cut-off' batch."
+module: axelor-account

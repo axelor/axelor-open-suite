@@ -105,4 +105,9 @@ public interface PurchaseOrderInvoiceService {
   void displayErrorMessageIfPurchaseOrderIsInvoiceable(
       PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
       throws AxelorException;
+
+  void displayErrorMessageBtnGenerateInvoice(PurchaseOrder purchaseOrder) throws AxelorException;
+
+  void displayErrorMessageIfExceedsInvoiceableAmount(
+      PurchaseOrder purchaseOrder, BigDecimal amountToInvoice) throws AxelorException;
 }

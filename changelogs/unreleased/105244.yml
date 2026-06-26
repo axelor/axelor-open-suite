@@ -1,0 +1,14 @@
+---
+title: "MRP: fixed issue with deleted record reappearing in draft status after refresh."
+module: axelor-supplychain
+developer: |
+  The `onDelete` actions `action-mrp-validate-delete-mrp-reset` and
+  `action-mrp-validate-delete-multi-mrp-reset` have been removed from the MRP form and
+  grid views. The `MrpManagementRepository.remove()` override that was incorrectly
+  resetting and saving the record instead of deleting it has been replaced with a correct
+  implementation that deletes associated `MrpLine` records before removing the MRP itself.
+
+  ```sql
+  DELETE FROM meta_action WHERE name = 'action-mrp-validate-delete-mrp-reset';
+  DELETE FROM meta_action WHERE name = 'action-mrp-validate-delete-multi-mrp-reset';
+  ```
