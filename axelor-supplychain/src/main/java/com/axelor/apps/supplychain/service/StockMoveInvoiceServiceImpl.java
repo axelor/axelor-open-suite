@@ -630,7 +630,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         && stockMoveLine.getStockMove().getStockMoveLineList() != null) {
       stockMoveLine.getStockMove().getStockMoveLineList().remove(stockMoveLine);
     }
-    stockMoveLineRepository.remove(stockMoveLine);
+    if (stockMoveLine.getId() != null) {
+      stockMoveLineRepository.remove(stockMoveLine);
+    }
   }
 
   /**
