@@ -121,12 +121,34 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     File fileCopies = file;
     String fileName = file.getName();
     if (ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(fileName))) {
-      Path path = PdfHelper.printCopiesToFile(file, copyNumber).toPath();
+      Path path =
+          copyNumber > 1
+              ? printSignedCopies(file, copyNumber).toPath()
+              : Files.copy(
+                  file.toPath(),
+                  Files.createTempFile(null, ".pdf"),
+                  StandardCopyOption.REPLACE_EXISTING);
       fileCopies =
           Files.move(path, path.resolveSibling(fileName), StandardCopyOption.REPLACE_EXISTING)
               .toFile();
     }
     return fileCopies;
+  }
+
+  protected File printSignedCopies(File file, int copyNumber) throws AxelorException, IOException {
+    File sourceCopy =
+        Files.copy(
+                file.toPath(),
+                Files.createTempFile(null, ".pdf"),
+                StandardCopyOption.REPLACE_EXISTING)
+            .toFile();
+    pdfSignatureService.removeSignatureFields(sourceCopy);
+    File copies = PdfHelper.printCopiesToFile(sourceCopy, copyNumber);
+    PfxCertificate pfxCertificate = appBaseService.getAppBase().getPfxCertificate();
+    if (pfxCertificate == null) {
+      return copies;
+    }
+    return pdfSignatureService.digitallySignPdf(copies, pfxCertificate, "Invoice");
   }
 
   @Override
