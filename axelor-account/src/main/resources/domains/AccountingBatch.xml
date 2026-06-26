@@ -149,6 +149,7 @@
 		public static final int ACTION_MOVES_CONSISTENCY_CONTROL = 25;
 		public static final int ACTION_ACCOUNTING_CUT_OFF = 26;
 		public static final int ACTION_AUTO_MOVE_LETTERING = 27;
+		public static final int ACTION_POST_LOAN_INSTALLMENT = 28;
 
 		// REIMBURSEMENT TYPE
 		public static final int REIMBURSEMENT_TYPE_EXPORT = 1;

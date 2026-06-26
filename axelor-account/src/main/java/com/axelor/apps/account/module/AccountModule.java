@@ -294,6 +294,8 @@ import com.axelor.apps.account.service.loan.LoanLineComputationService;
 import com.axelor.apps.account.service.loan.LoanLineComputationServiceImpl;
 import com.axelor.apps.account.service.loan.LoanLineGenerationService;
 import com.axelor.apps.account.service.loan.LoanLineGenerationServiceImpl;
+import com.axelor.apps.account.service.loan.LoanLineMoveService;
+import com.axelor.apps.account.service.loan.LoanLineMoveServiceImpl;
 import com.axelor.apps.account.service.loan.LoanManagementConfigService;
 import com.axelor.apps.account.service.loan.LoanManagementConfigServiceImpl;
 import com.axelor.apps.account.service.loan.LoanService;
@@ -834,6 +836,7 @@ public class AccountModule extends AxelorModule {
     bind(LoanValidateService.class).to(LoanValidateServiceImpl.class);
     bind(LoanLineComputationService.class).to(LoanLineComputationServiceImpl.class);
     bind(LoanLineGenerationService.class).to(LoanLineGenerationServiceImpl.class);
+    bind(LoanLineMoveService.class).to(LoanLineMoveServiceImpl.class);
     bind(LoanSimulationService.class).to(LoanSimulationServiceImpl.class);
 
     bind(AnalyticMoveLineQueryService.class).to(AnalyticMoveLineQueryServiceImpl.class);

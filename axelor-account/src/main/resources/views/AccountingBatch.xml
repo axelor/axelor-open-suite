@@ -127,6 +127,11 @@
           requiredIf="!updateAllRealizedFixedAssetLines &amp;&amp; actionSelect == 20"
           showIf="!updateAllRealizedFixedAssetLines"/>
       </panel>
+      <panel name="postLoanInstallmentPanel" title="Post loan installments up to a date"
+        itemSpan="4" hideIf="actionSelect != 28">
+        <field name="endDate" title="Up to date"
+          help="Installments planned up to this date are booked. If left empty, today's date is used."/>
+      </panel>
       <panel name="yearOpeningOrClosureAccountsPagePanel" title="Close/open the accounts"
         hideIf="actionSelect != 21">
         <!-- TODO FILTER ON STATUS -->
@@ -276,6 +281,9 @@
       <button name="realizeFixedAssetLinesBatchBtn" title="Realize Fixed asset lines Batch"
         showIf="actionSelect == 20"
         onClick="save,action-accounting-batch-group-realize-fixed-asset-lines" colSpan="12"/>
+      <button name="postLoanInstallmentBatchBtn" title="Post loan installments"
+        showIf="actionSelect == 28"
+        onClick="save,action-accounting-batch-method-action-post-loan-installment" colSpan="12"/>
       <button name="closeAnnualAccountsBatchBtn" title="Start" showIf="actionSelect == 21"
         onClick="save,action-accounting-batch-group-close-annual-accounts" colSpan="12"/>
       <button name="blockCustomerWithLatePayments" title="Block customers with late payments"
@@ -330,6 +338,11 @@
     <action name="action-accounting-batch-validate-realized-fixed-date"/>
     <action name="action-accounting-batch-method-action-fixed-asset-lines-realize"/>
   </action-group>
+
+  <action-method name="action-accounting-batch-method-action-post-loan-installment">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="actionPostLoanInstallment"/>
+  </action-method>
 
   <action-group name="action-accounting-batch-group-on-new">
     <action name="action-accounting-batch-record-on-new"/>

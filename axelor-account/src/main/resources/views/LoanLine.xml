@@ -13,6 +13,32 @@
     <field name="totalAmount" x-scale="loan.currency.numberOfDecimals"/>
     <field name="remainingDebtAfter" x-scale="loan.currency.numberOfDecimals"/>
     <field name="accountMove"/>
+    <button name="postInstallmentBtn" title="Post" icon="check-circle-fill"
+      readonlyIf="accountMove != null" onClick="save,action-loan-line-method-post-installment"/>
   </grid>
+
+  <action-method name="action-loan-line-method-post-installment">
+    <call class="com.axelor.apps.account.web.LoanLineController" method="postInstallment"/>
+  </action-method>
+
+  <form name="loan-line-form" title="Installment" model="com.axelor.apps.account.db.LoanLine"
+    width="large">
+    <panel name="mainPanel">
+      <field name="loan.currency.numberOfDecimals" hidden="true"/>
+      <field name="installmentDate" readonly="true"/>
+      <field name="accountMove" readonly="true" colSpan="6"/>
+      <field name="isManuallyModified" readonly="true"/>
+    </panel>
+    <panel name="amountsPanel" title="Amounts">
+      <field name="remainingDebtBefore" readonly="true"
+        x-scale="loan.currency.numberOfDecimals"/>
+      <field name="capitalAmount" readonly="true" x-scale="loan.currency.numberOfDecimals"/>
+      <field name="interestAmount" readonly="true" x-scale="loan.currency.numberOfDecimals"/>
+      <field name="insuranceAmount" readonly="true" x-scale="loan.currency.numberOfDecimals"/>
+      <field name="totalAmount" readonly="true" x-scale="loan.currency.numberOfDecimals"/>
+      <field name="remainingDebtAfter" readonly="true"
+        x-scale="loan.currency.numberOfDecimals"/>
+    </panel>
+  </form>
 
 </object-views>

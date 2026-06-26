@@ -137,6 +137,10 @@ public class AccountingBatchController {
     runBatch(AccountingBatchRepository.ACTION_REALIZE_FIXED_ASSET_LINES, request, response);
   }
 
+  public void actionPostLoanInstallment(ActionRequest request, ActionResponse response) {
+    runBatch(AccountingBatchRepository.ACTION_POST_LOAN_INSTALLMENT, request, response);
+  }
+
   public void actionBillOfExchange(ActionRequest request, ActionResponse response) {
 
     AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
