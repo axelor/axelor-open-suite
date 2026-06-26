@@ -1,0 +1,3 @@
+---
+title: "Accounting batch: fixed wrong Groovy expression error in DebtRecovery printing template file name."
+module: axelor-account
