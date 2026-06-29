@@ -57,7 +57,7 @@ jobs:
       # with the latest binary, but `claude install <version>` (it forwards this
       # argument) pins the launcher we actually invoke in `claude -p`.
       # Bump deliberately; valid values: an exact X.Y.Z, `stable`, `latest`.
-      CLAUDE_CODE_VERSION: 2.1.159
+      CLAUDE_CODE_VERSION: 2.1.195
       # Fixed output directory: the Claude Write scope, the collector and (in the
       # other job) the commit guard all key off this one value.
       DOC_DIR: docs/generated
