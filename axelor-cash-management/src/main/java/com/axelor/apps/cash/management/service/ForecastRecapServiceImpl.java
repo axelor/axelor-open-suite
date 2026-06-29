@@ -127,6 +127,18 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     forecastRecapRepo.save(forecastRecap);
   }
 
+  protected List<Integer> getDeductionStatusList(int operationTypeSelect) {
+    List<Integer> statusList =
+        new ArrayList<>(
+            Optional.ofNullable(invoiceStatusMap)
+                .map(m -> m.get(operationTypeSelect))
+                .orElse(Collections.emptyList()));
+    if (!statusList.contains(InvoiceRepository.STATUS_VENTILATED)) {
+      statusList.add(InvoiceRepository.STATUS_VENTILATED);
+    }
+    return statusList;
+  }
+
   protected Map<Integer, List<Integer>> fetchAvailableStatusMap() {
     List<Integer> supportedOperationTypeSelect =
         Arrays.asList(
@@ -578,11 +590,11 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             .setParameter("operationTypeInvoice", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
             .setParameter(
                 "invoiceStatusSelect",
-                invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE))
+                getDeductionStatusList(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE))
             .setParameter("operationTypeRefund", InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
             .setParameter(
                 "refundStatusSelect",
-                invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
+                getDeductionStatusList(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
 
     return Optional.ofNullable(sumAmountInvoiceQuery.getSingleResult()).orElse(BigDecimal.ZERO);
   }
@@ -814,7 +826,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
               .bind("bankDetailsSet", bankDetailsIdList)
               .bind(
                   "invoiceStatusSelectList",
-                  invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE))
+                  getDeductionStatusList(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE))
               .fetch();
 
       for (Timetable timetable : timetableList) {
@@ -858,7 +870,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
               .bind("bankDetailsSet", bankDetailsIdList)
               .bind(
                   "invoiceStatusSelectList",
-                  invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE))
+                  getDeductionStatusList(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE))
               .fetch();
 
       for (Timetable timetable : timetableList) {
@@ -904,7 +916,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
               .bind("bankDetailsSet", bankDetailsIdList)
               .bind(
                   "invoiceStatusSelectList",
-                  invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE))
+                  getDeductionStatusList(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE))
               .bind(
                   "journalType",
                   forecastRecapLineType.getTypeSelect() == 1
@@ -1291,11 +1303,11 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     query.setParameter("operationTypeInvoice", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
     query.setParameter(
         "invoiceStatusSelect",
-        invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE));
+        getDeductionStatusList(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE));
     query.setParameter("operationTypeRefund", InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
     query.setParameter(
         "refundStatusSelect",
-        invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
+        getDeductionStatusList(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
 
     return Optional.ofNullable(query.getSingleResult()).orElse(BigDecimal.ZERO);
   }
