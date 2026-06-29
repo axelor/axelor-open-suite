@@ -290,4 +290,6 @@ public interface InvoiceTermService {
 
   void updateInvoiceTermsAmountRemainingWithoutPayment(Reconcile reconcile, MoveLine moveLine)
       throws AxelorException;
+
+  boolean checkIfAmountCustomizedInvoiceTerms(List<InvoiceTerm> invoiceTermList);
 }
