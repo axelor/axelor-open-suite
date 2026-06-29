@@ -124,6 +124,5 @@ public class InvoiceTermDateComputeServiceImpl implements InvoiceTermDateCompute
     }
 
     invoiceTerm.setDueDate(dueDate);
-    invoiceTerm.setIsCustomized(true);
   }
 }
