@@ -127,7 +127,7 @@ public class ProdProcessLineHourlyCostComputeServiceImpl
   }
 
   protected BigDecimal computeMachineCostAmount(
-      ProdProcessLine prodProcessLine, BigDecimal qtyToProduce) {
+      ProdProcessLine prodProcessLine, BigDecimal qtyToProduce) throws AxelorException {
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
     BigDecimal costAmount =
         appProductionService.getIsCostPerProcessLine()
