@@ -51,6 +51,7 @@ task xjc () {
 		['package': 'com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03', 'destdir': "$target", 'schema': "$source/pain.001.001.03.xsd"],
 		['package': 'com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01', 'destdir': "$target", 'schema': "$source/pain.008.001.01.xsd"], // SEPA Direct Debit v01
 		['package': 'com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02', 'destdir': "$target", 'schema': "$source/pain.008.001.02.xsd"],  // SEPA Direct Debit v02
+		['package': 'com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08', 'destdir': "$target", 'schema': "$source/pain.008.001.08.xsd"],  // SEPA Direct Debit v08
 		['package': 'com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02', 'destdir': "$target", 'schema': "$source/camt.053.001.02.xsd"]
 
 	]
