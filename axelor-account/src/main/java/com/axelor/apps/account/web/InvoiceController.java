@@ -1475,11 +1475,17 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       String supplierInvoiceNb = invoice.getSupplierInvoiceNb();
       LocalDate originDate = invoice.getOriginDate();
+      boolean originalInvoiceRequired =
+          Beans.get(AccountConfigService.class)
+              .getAccountConfig(invoice.getCompany())
+              .getOriginalInvoiceRequiredOnSupplierInvoice();
 
       if ((invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
               || invoice.getOperationTypeSelect()
                   == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)
-          && (supplierInvoiceNb == null || originDate == null)) {
+          && (supplierInvoiceNb == null
+              || originDate == null
+              || (invoice.getPrintedPDF() == null && originalInvoiceRequired))) {
         response.setView(
             ActionView.define(I18n.get("Supplier invoice"))
                 .model(Invoice.class.getName())
