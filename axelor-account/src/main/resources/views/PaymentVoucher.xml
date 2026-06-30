@@ -56,7 +56,8 @@
 
     <panel sidebar="true" name="infoPanel" title="Info" readonly="true">
       <field name="statusSelect" widget="single-select"/>
-      <panel hidden="true" showIf="statusSelect == 2 || statusSelect == 3" itemSpan="12">
+      <panel name="movePanel" hidden="true" showIf="statusSelect == 2 || statusSelect == 3"
+        itemSpan="12">
         <field name="valueForCollectionMove" form-view="move-form" grid-view="move-grid"
           hidden="true"
           showIf="!bankEntryGenWithoutValEntryCollectionOk &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>

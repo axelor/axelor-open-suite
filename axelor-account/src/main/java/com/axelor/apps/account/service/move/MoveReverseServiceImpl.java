@@ -224,7 +224,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     return moveRepository.save(newMove);
   }
 
-  protected void cancelPaymentVoucher(Move move) {
+  protected void cancelPaymentVoucher(Move move) throws AxelorException {
     PaymentVoucher paymentVoucher = move.getPaymentVoucher();
     if (paymentVoucher != null) {
       paymentVoucherCancelService.cancelPaymentVoucher(paymentVoucher);
