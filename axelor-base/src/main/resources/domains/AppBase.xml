@@ -170,7 +170,7 @@
     <integer name="limitNumberTasksGenerated"
       title="Number of tasks generated at most at once" min="1" default="100"/>
 
-    <boolean name="isSharedAddress" title="Shared address" default="false"
+    <boolean name="isSharedAddress" title="Shared address" default="true"
       help="If this option is enabled, in the address field of a partner, you can view all existing addresses in the software and select an existing one. If this option is disabled, you must create a new address each time you want to add one to a partner."/>
 
     <string name="productSequenceTypeSelect" selection="product.sequence.type.select"
@@ -207,7 +207,7 @@
     <string name="geoNamesZipUrl" title="GeoNames Zip URL"/>
 
     <boolean name="manageSubsidiaryPartner" title="Manage subsidiaries on partners"
-      default="false"
+      default="true"
       help="Allows activating subsidiary management on partners, and thus defining a parent company / subsidiary relationship. On a parent company partner, the list of its subsidiaries appears."/>
     <boolean name="manageCcBccRelatedTo" title="Manage related CC &amp; BCC emails"/>
 
