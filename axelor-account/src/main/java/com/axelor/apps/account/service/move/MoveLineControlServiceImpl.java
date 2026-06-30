@@ -36,12 +36,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -286,17 +286,31 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
       if (!isNotWaitingPayment) {
         LOG.debug(
             "MoveLine {} can not be reconciled because of pending payment", moveLine.getName());
-        TraceBackService.trace(
-            new AxelorException(
-                TraceBackRepository.CATEGORY_INCONSISTENCY,
-                I18n.get(AccountExceptionMessage.CANNOT_BE_RECONCILED_WAITING_PAYMENT),
-                moveLine.getName()));
       }
 
       return isNotWaitingPayment;
     }
-    LOG.debug("MoveLine {} can be reconciled", moveLine.getName());
+    LOG.debug("MoveLine {} can not be reconciled", moveLine.getName());
     return false;
+  }
+
+  @Override
+  public List<String> getPendingPaymentMessages(List<MoveLine> moveLines) {
+    List<String> messages = new ArrayList<>();
+    for (MoveLine moveLine : moveLines) {
+      if ((moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
+              || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
+          && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) != 0
+          && !CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
+          && moveLine.getInvoiceTermList().stream()
+              .anyMatch(it -> !invoiceTermFilterService.isNotAwaitingPayment(it))) {
+        messages.add(
+            String.format(
+                I18n.get(AccountExceptionMessage.CANNOT_BE_RECONCILED_WAITING_PAYMENT),
+                moveLine.getName()));
+      }
+    }
+    return messages;
   }
 
   @Override
