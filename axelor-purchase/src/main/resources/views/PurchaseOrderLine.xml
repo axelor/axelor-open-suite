@@ -190,7 +190,7 @@
           </panel>
           <panel name="discountPanel" colSpan="12">
             <field name="discountTypeSelect" colSpan="3"
-              onChange="action-purchase-order-line-method-compute,action-purchase-order-line-attrs-discountamount-title,action-purchase-order-line-method-compute-analytic-distribution"/>
+              onChange="action-purchase-order-line-group-discount-type-onchange"/>
             <field name="discountAmount" colSpan="3"
               onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution"
               hideIf="discountTypeSelect == 3" x-scale="$nbDecimalDigitForUnitPrice"/>
@@ -653,5 +653,17 @@
     <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController"
       method="differentUnitMessage"/>
   </action-method>
+
+  <action-record name="action-purchase-order-line-record-clear-discount-amount"
+    model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    <field name="discountAmount" expr="eval: 0"/>
+  </action-record>
+
+  <action-group name="action-purchase-order-line-group-discount-type-onchange">
+    <action name="action-purchase-order-line-record-clear-discount-amount"/>
+    <action name="action-purchase-order-line-method-compute"/>
+    <action name="action-purchase-order-line-attrs-discountamount-title"/>
+    <action name="action-purchase-order-line-method-compute-analytic-distribution"/>
+  </action-group>
 
 </object-views>
