@@ -861,7 +861,7 @@
       showIf="clientPartner &amp;&amp; saleOrderLineList &amp;&amp; saleOrderLineList.length != 0"
       sidebar="true" readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited">
       <field name="discountTypeSelect"
-        onChange="action-sale-order-method-on-global-discount-change, action-sale-order-method-on-line-change"/>
+        onChange="action-sale-order-group-discount-type-onchange"/>
       <field name="discountAmount" showIf="discountTypeSelect != 0"
         x-currency="discountCurrency" x-scale="discountScale" colSpan="6"
         onChange="action-sale-order-method-on-global-discount-change, action-sale-order-method-on-line-change"/>
@@ -2391,5 +2391,15 @@
     <view type="form" name="sale-order-form"/>
     <domain>self.originSaleQuotation.id = :id</domain>
   </action-view>
+
+  <action-record name="action-sale-order-record-clear-discount-amount"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="discountAmount" expr="eval: 0"/>
+  </action-record>
+
+  <action-group name="action-sale-order-group-discount-type-onchange">
+    <action name="action-sale-order-record-clear-discount-amount"/>
+    <action name="action-sale-order-method-on-line-change"/>
+  </action-group>
 
 </object-views>

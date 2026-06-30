@@ -1,0 +1,3 @@
+---
+title: "Discount: fixed discount amount not being emptied after changing discount type select"
+module: axelor-base
