@@ -258,9 +258,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       FiscalPosition fiscalPosition = null;
       if (move.getInvoice() != null) {
         fiscalPosition = move.getInvoice().getFiscalPosition();
-        if (fiscalPosition == null) {
-          fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
-        }
       } else {
         fiscalPosition = partner.getFiscalPosition();
       }
