@@ -1125,7 +1125,7 @@
         showIf="partner &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0"
         canCollapse="true" collapseIf="true">
         <field name="discountTypeSelect" colSpan="12"
-          onChange="action-invoice-group-invoice-line-list-on-change"/>
+          onChange="action-invoice-group-discount-type-onchange"/>
         <field name="discountAmount" showIf="discountTypeSelect != 0"
           x-currency="discountCurrency" x-scale="discountScale"
           onChange="action-invoice-group-invoice-line-list-on-change"/>
@@ -3109,5 +3109,15 @@
     <error message="Please select an invoice category before ventilating."
       if="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceCategorySelect == null"/>
   </action-validate>
+
+  <action-record name="action-invoice-record-clear-discount-amount"
+    model="com.axelor.apps.account.db.Invoice">
+    <field name="discountAmount" expr="eval: 0"/>
+  </action-record>
+
+  <action-group name="action-invoice-group-discount-type-onchange">
+    <action name="action-invoice-record-clear-discount-amount"/>
+    <action name="action-invoice-group-invoice-line-list-on-change"/>
+  </action-group>
 
 </object-views>
