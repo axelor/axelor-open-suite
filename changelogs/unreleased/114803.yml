@@ -1,0 +1,3 @@
+---
+title: "Supplychain: fixed MRP Family not grouping purchase proposals when demands fall exactly on the day window limit."
+module: axelor-supplychain
