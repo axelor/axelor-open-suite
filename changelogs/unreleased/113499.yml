@@ -1,0 +1,3 @@
+---
+title: "Bank payment: fixed CFONB120 multi-period import rejected on non-chronological period order."
+module: axelor-bank-payment
