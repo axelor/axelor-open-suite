@@ -25,15 +25,18 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentMoveCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateService;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -235,6 +238,10 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
         .getFunctionalOriginSelect()
         .equals(BankOrderRepository.FUNCTIONAL_ORIGIN_INVOICE_PAYMENT)) {
       this.validatePayment(bankOrder);
+    } else if (bankOrder
+        .getFunctionalOriginSelect()
+        .equals(BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_VOUCHER)) {
+      this.validatePaymentVoucher(bankOrder);
     } else {
       bankOrderMoveService.generateMoves(bankOrder);
     }
@@ -294,5 +301,15 @@ public class BankOrderValidationServiceImpl implements BankOrderValidationServic
         }
       }
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void validatePaymentVoucher(BankOrder bankOrder) throws AxelorException {
+    PaymentVoucher paymentVoucher =
+        Beans.get(PaymentVoucherRepository.class).findByBankOrder(bankOrder);
+    if (paymentVoucher == null || paymentVoucher.getGeneratedMove() != null) {
+      return;
+    }
+    Beans.get(PaymentVoucherConfirmService.class).finalizePaymentVoucher(paymentVoucher);
   }
 }

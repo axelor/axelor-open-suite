@@ -419,6 +419,15 @@ public class PaymentVoucherConfirmService {
     return move.getMoveLineList().stream().filter(filter).findFirst();
   }
 
+  protected boolean shouldGenerateMoveImmediately(PaymentVoucher paymentVoucher) {
+    return true;
+  }
+
+  protected void beforeConfirmReconcile(
+      Move move, Reconcile reconcile, PaymentVoucher paymentVoucher, Invoice invoice) {}
+
+  public void finalizePaymentVoucher(PaymentVoucher paymentVoucher) throws AxelorException {}
+
   /**
    * Confirm payment voucher and create move.
    *
@@ -427,6 +436,21 @@ public class PaymentVoucherConfirmService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public void createMoveAndConfirm(
+      PaymentVoucher paymentVoucher,
+      Journal journal,
+      Account paymentModeAccount,
+      boolean valueForCollection)
+      throws AxelorException {
+
+    if (shouldGenerateMoveImmediately(paymentVoucher)) {
+      generatePaymentMove(paymentVoucher, journal, paymentModeAccount, valueForCollection);
+    }
+    paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CONFIRMED);
+
+    deleteUnPaidLines(paymentVoucher);
+  }
+
+  protected void generatePaymentMove(
       PaymentVoucher paymentVoucher,
       Journal journal,
       Account paymentModeAccount,
@@ -604,6 +628,12 @@ public class PaymentVoucherConfirmService {
             reconcileService.createReconcile(
                 moveLine, paymentVoucher.getMoveLine(), moveLine.getDebit(), !isDebitToPay);
         if (reconcile != null) {
+          Invoice excessPaymentInvoice =
+              Optional.ofNullable(paymentVoucher.getMoveLine())
+                  .map(MoveLine::getMove)
+                  .map(Move::getInvoice)
+                  .orElse(null);
+          beforeConfirmReconcile(move, reconcile, paymentVoucher, excessPaymentInvoice);
           reconcileService.confirmReconcile(reconcile, true, true);
         }
       } else {
@@ -670,9 +700,6 @@ public class PaymentVoucherConfirmService {
       moveValidateService.accounting(move);
       setMove(paymentVoucher, move, valueForCollection);
     }
-    paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CONFIRMED);
-
-    deleteUnPaidLines(paymentVoucher);
   }
 
   protected void setMove(PaymentVoucher paymentVoucher, Move move, boolean valueForCollection) {
@@ -899,16 +926,17 @@ public class PaymentVoucherConfirmService {
             invoiceTerm,
             moveLineToPay.getMove().getCompany());
 
+    Invoice invoiceToPay =
+        Optional.of(moveLineToPay).map(MoveLine::getMove).map(Move::getInvoice).orElse(null);
     Reconcile reconcile =
         reconcileService.createReconcile(moveLineToPay, moveLine, companyAmountToPay, true);
     if (reconcile != null) {
       log.debug("Reconcile : : : {}", reconcile);
+      beforeConfirmReconcile(
+          paymentMove, reconcile, payVoucherElementToPay.getPaymentVoucher(), invoiceToPay);
       reconcileService.confirmReconcile(reconcile, true, true);
 
-      manageFinancialDiscountOnInvoicePayment(
-          reconcile,
-          Optional.of(moveLineToPay).map(MoveLine::getMove).map(Move::getInvoice).orElse(null),
-          payVoucherElementToPay);
+      manageFinancialDiscountOnInvoicePayment(reconcile, invoiceToPay, payVoucherElementToPay);
     }
 
     return moveLine;
