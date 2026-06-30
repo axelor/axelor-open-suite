@@ -1,0 +1,6 @@
+---
+title: "Invoice: pre-fill the default account and taxes on invoice lines without a product using the partner's accounting situation."
+module: axelor-account
+developer: |
+  Added `AccountingSituationService` and `FiscalPositionAccountService` as constructor parameters to `InvoiceLineGenerator`.
+  Added `AccountingSituationService` and `FiscalPositionAccountService` as constructor parameters to `InvoiceLineServiceImpl` and its subclasses.
