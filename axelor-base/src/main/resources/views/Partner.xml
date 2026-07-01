@@ -52,6 +52,8 @@
           action="action-general-check-duplicate-records"/>
         <item name="mergeDuplicatedItem" title="Merge duplicated"
           action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+        <item name="sirenApiItem" action="action-partner-view-wizard-api-sirene-configuration"
+          title="Create from Sirene API"/>
       </menu>
     </menubar>
     <field name="partnerSeq" width="120"/>
@@ -85,6 +87,8 @@
           action="action-general-check-duplicate-records"/>
         <item name="mergeDuplicatedItem" title="Merge duplicated"
           action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+        <item name="sirenApiItem" action="action-partner-view-wizard-api-sirene-configuration"
+          title="Create from Sirene API"/>
       </menu>
     </menubar>
     <field name="partnerSeq" width="120"/>
