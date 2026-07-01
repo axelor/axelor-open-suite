@@ -47,6 +47,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentMov
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionBillOfExchangeValidateServiceImpl;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionValidateServiceImpl;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.account.web.InvoicePaymentController;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineRepository;
@@ -194,6 +195,7 @@ import com.axelor.apps.bankpayment.service.moveline.MoveLineRecordBankPaymentSer
 import com.axelor.apps.bankpayment.service.moveline.MoveLineRecordBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineToolBankPaymentService;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineToolBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.payment.paymentvoucher.PaymentVoucherConfirmServiceBankPayImpl;
 import com.axelor.apps.bankpayment.web.InvoicePaymentBankPayController;
 
 public class BankPaymentModule extends AxelorModule {
@@ -349,5 +351,6 @@ public class BankPaymentModule extends AxelorModule {
     bind(PaymentScheduleServiceImpl.class).to(PaymentScheduleServiceBankPaymentImpl.class);
 
     bind(InvoicePaymentAlertServiceImpl.class).to(InvoicePaymentAlertServiceBankPayImpl.class);
+    bind(PaymentVoucherConfirmService.class).to(PaymentVoucherConfirmServiceBankPayImpl.class);
   }
 }
