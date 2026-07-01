@@ -23,6 +23,17 @@
       help="Accounting entry of this installment. A line with a move is considered booked."/>
     <boolean name="isManuallyModified" title="Manually modified"/>
 
+    <integer name="editedFieldSelect" transient="true"
+      help="Marks which amount was manually edited, to drive the recomputation of the following installments."/>
+
+    <extra-code><![CDATA[
+		// EDITED FIELD SELECT
+		public static final int EDITED_FIELD_NONE = 0;
+		public static final int EDITED_FIELD_INTEREST = 1;
+		public static final int EDITED_FIELD_CAPITAL = 2;
+		public static final int EDITED_FIELD_INSURANCE = 3;
+	]]></extra-code>
+
   </entity>
 
 </domain-models>

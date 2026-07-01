@@ -57,6 +57,19 @@
     <one-to-many name="lineList" ref="com.axelor.apps.account.db.LoanLine"
       title="Schedule" mappedBy="loan" orderBy="installmentDate"/>
 
+    <string name="scheduleSnapshot" title="Schedule snapshot" large="true" hidden="true"
+      help="Copy of the planned installments taken before a deferral, used to cancel it."/>
+
+    <integer name="deferralInstallmentCount" title="Defer (installments)" transient="true"
+      help="Number of upcoming installments to defer."/>
+    <boolean name="deferralCapitalizeInterest" title="Interest added to remaining debt"
+      transient="true"
+      help="If yes, the interest of the deferred installments is added to the remaining debt."/>
+    <boolean name="deferralRecomputePayment" title="Recompute installments" transient="true"
+      help="If yes, the installments are recomputed to include the deferred interest; otherwise the original installments are kept."/>
+    <boolean name="deferralKeepInsurance" title="Keep insurance" transient="true"
+      help="If yes, the insurance stays due during the deferred installments."/>
+
     <extra-code><![CDATA[
 		// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
