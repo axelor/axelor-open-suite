@@ -50,11 +50,10 @@
         <field name="prepaidExpenseAccount" readonly="true"/>
       </panel>
     </panel-tabs>
-    <panel name="actionsPanel" sidebar="true">
-      <button name="validateBtn" title="Validate" onClick="save,action-loan-method-validate"
-        showIf="statusSelect == 1"/>
+    <panel name="actionsPanel" sidebar="true" showIf="statusSelect == 1">
+      <button name="validateBtn" title="Validate" onClick="save,action-loan-method-validate"/>
       <button name="generateScheduleBtn" title="Generate schedule"
-        onClick="save,action-loan-method-generate-schedule" showIf="statusSelect == 1"/>
+        onClick="save,action-loan-method-generate-schedule"/>
     </panel>
     <panel name="simulationPanel" title="Simulation" sidebar="true"
       hideIf="statusSelect &gt; 1" canCollapse="true" collapseIf="true">
