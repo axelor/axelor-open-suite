@@ -4,31 +4,35 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="loan-line-grid" title="Schedule" model="com.axelor.apps.account.db.LoanLine"
-    editable="false" orderBy="installmentDate">
-    <field name="installmentDate"/>
-    <field name="remainingDebtBefore" x-scale="loan.currency.numberOfDecimals"/>
-    <field name="interestAmount" x-scale="loan.currency.numberOfDecimals"/>
-    <field name="capitalAmount" x-scale="loan.currency.numberOfDecimals"/>
-    <field name="insuranceAmount" x-scale="loan.currency.numberOfDecimals"/>
-    <field name="totalAmount" x-scale="loan.currency.numberOfDecimals"/>
-    <field name="remainingDebtAfter" x-scale="loan.currency.numberOfDecimals"/>
-    <field name="accountMove"/>
+    editable="true" orderBy="installmentDate" canNew="false" canDelete="false">
+    <field name="installmentDate" readonly="true"/>
+    <field name="remainingDebtBefore" x-scale="loan.currency.numberOfDecimals" readonly="true"/>
+    <field name="interestAmount" x-scale="loan.currency.numberOfDecimals"
+      readonlyIf="accountMove != null" onChange="action-loan-line-method-edit-interest"/>
+    <field name="capitalAmount" x-scale="loan.currency.numberOfDecimals"
+      readonlyIf="accountMove != null" onChange="action-loan-line-method-edit-capital"/>
+    <field name="insuranceAmount" x-scale="loan.currency.numberOfDecimals"
+      readonlyIf="accountMove != null" onChange="action-loan-line-method-edit-insurance"/>
+    <field name="totalAmount" x-scale="loan.currency.numberOfDecimals" readonly="true"/>
+    <field name="remainingDebtAfter" x-scale="loan.currency.numberOfDecimals" readonly="true"/>
+    <field name="accountMove" readonly="true"/>
+    <field name="isManuallyModified" readonly="true"/>
+    <field name="editedFieldSelect" hidden="true"/>
     <button name="postInstallmentBtn" title="Post" icon="check-circle-fill"
       readonlyIf="accountMove != null" onClick="save,action-loan-line-method-post-installment"/>
   </grid>
-
-  <action-method name="action-loan-line-method-post-installment">
-    <call class="com.axelor.apps.account.web.LoanLineController" method="postInstallment"/>
-  </action-method>
 
   <form name="loan-line-form" title="Installment" model="com.axelor.apps.account.db.LoanLine"
     width="large">
     <panel name="amountsPanel" title="Amounts">
       <field name="remainingDebtBefore" readonly="true"
         x-scale="loan.currency.numberOfDecimals"/>
-      <field name="capitalAmount" readonly="true" x-scale="loan.currency.numberOfDecimals"/>
-      <field name="interestAmount" readonly="true" x-scale="loan.currency.numberOfDecimals"/>
-      <field name="insuranceAmount" readonly="true" x-scale="loan.currency.numberOfDecimals"/>
+      <field name="interestAmount" x-scale="loan.currency.numberOfDecimals"
+        readonlyIf="accountMove != null" onChange="action-loan-line-method-edit-interest"/>
+      <field name="capitalAmount" x-scale="loan.currency.numberOfDecimals"
+        readonlyIf="accountMove != null" onChange="action-loan-line-method-edit-capital"/>
+      <field name="insuranceAmount" x-scale="loan.currency.numberOfDecimals"
+        readonlyIf="accountMove != null" onChange="action-loan-line-method-edit-insurance"/>
       <field name="totalAmount" readonly="true" x-scale="loan.currency.numberOfDecimals"/>
       <field name="remainingDebtAfter" readonly="true"
         x-scale="loan.currency.numberOfDecimals"/>
@@ -37,8 +41,25 @@
       <field name="installmentDate" readonly="true"/>
       <field name="accountMove" readonly="true" colSpan="6"/>
       <field name="isManuallyModified" readonly="true"/>
+      <field name="editedFieldSelect" hidden="true"/>
       <field name="loan.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
+
+  <action-method name="action-loan-line-method-post-installment">
+    <call class="com.axelor.apps.account.web.LoanLineController" method="postInstallment"/>
+  </action-method>
+
+  <action-method name="action-loan-line-method-edit-interest">
+    <call class="com.axelor.apps.account.web.LoanLineController" method="editInterest"/>
+  </action-method>
+
+  <action-method name="action-loan-line-method-edit-capital">
+    <call class="com.axelor.apps.account.web.LoanLineController" method="editCapital"/>
+  </action-method>
+
+  <action-method name="action-loan-line-method-edit-insurance">
+    <call class="com.axelor.apps.account.web.LoanLineController" method="editInsurance"/>
+  </action-method>
 
 </object-views>

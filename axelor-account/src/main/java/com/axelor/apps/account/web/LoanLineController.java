@@ -18,8 +18,10 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.db.Loan;
 import com.axelor.apps.account.db.LoanLine;
 import com.axelor.apps.account.db.repo.LoanLineRepository;
+import com.axelor.apps.account.service.loan.LoanAdjustmentService;
 import com.axelor.apps.account.service.loan.LoanLineMoveService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
@@ -37,6 +39,36 @@ public class LoanLineController {
               .find(request.getContext().asType(LoanLine.class).getId());
       Beans.get(LoanLineMoveService.class).postInstallment(loanLine, false);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void editInterest(ActionRequest request, ActionResponse response) {
+    editLine(request, response, LoanLineRepository.EDITED_FIELD_INTEREST);
+  }
+
+  public void editCapital(ActionRequest request, ActionResponse response) {
+    editLine(request, response, LoanLineRepository.EDITED_FIELD_CAPITAL);
+  }
+
+  public void editInsurance(ActionRequest request, ActionResponse response) {
+    editLine(request, response, LoanLineRepository.EDITED_FIELD_INSURANCE);
+  }
+
+  protected void editLine(ActionRequest request, ActionResponse response, int editedField) {
+    try {
+      LoanLine line = request.getContext().asType(LoanLine.class);
+      if (request.getContext().getParent() != null) {
+        line.setLoan(request.getContext().getParent().asType(Loan.class));
+      }
+      line.setEditedFieldSelect(editedField);
+      Beans.get(LoanAdjustmentService.class).computeEditedLine(line);
+      response.setValue("editedFieldSelect", editedField);
+      response.setValue("capitalAmount", line.getCapitalAmount());
+      response.setValue("totalAmount", line.getTotalAmount());
+      response.setValue("remainingDebtAfter", line.getRemainingDebtAfter());
+      response.setValue("isManuallyModified", true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
