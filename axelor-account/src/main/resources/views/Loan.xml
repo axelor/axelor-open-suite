@@ -40,19 +40,7 @@
     <panel-tabs name="detailsPanelTabs">
       <panel-related name="lineListPanel" field="lineList" title="Schedule"
         grid-view="loan-line-grid" form-view="loan-line-form" editable="true" canNew="false"
-        canDelete="false" onChange="action-loan-method-recompute-schedule"/>
-      <panel name="reportPanel" title="Deferral"
-        showIf="statusSelect == 2 || statusSelect == 3">
-        <field name="scheduleSnapshot" hidden="true"/>
-        <field name="deferralInstallmentCount"/>
-        <field name="deferralCapitalizeInterest"/>
-        <field name="deferralRecomputePayment" showIf="deferralCapitalizeInterest"/>
-        <field name="deferralKeepInsurance"/>
-        <button name="deferBtn" title="Defer" colSpan="6"
-          onClick="save,action-loan-method-defer"/>
-        <button name="cancelDeferralBtn" title="Cancel deferral" colSpan="6"
-          showIf="scheduleSnapshot != null" onClick="save,action-loan-method-cancel-deferral"/>
-      </panel>
+        canRemove="false" onChange="action-loan-method-recompute-schedule"/>
       <panel name="accountsPanel" title="Accounts">
         <field name="journal" readonly="true"/>
         <field name="borrowingDebtAccount" readonly="true"/>
@@ -76,6 +64,17 @@
       <field name="simulatedMonthlyPayment" x-scale="currency.numberOfDecimals"/>
       <button name="simulateCapitalBtn" title="Compute borrowable capital"
         onClick="action-loan-method-simulate-capital" colSpan="12"/>
+    </panel>
+    <panel name="reportPanel" title="Deferral" sidebar="true"
+      showIf="statusSelect == 2 || statusSelect == 3">
+      <field name="scheduleSnapshot" hidden="true"/>
+      <field name="deferralInstallmentCount" colSpan="12"/>
+      <field name="deferralCapitalizeInterest" colSpan="12"/>
+      <field name="deferralRecomputePayment" showIf="deferralCapitalizeInterest" colSpan="12"/>
+      <field name="deferralKeepInsurance" colSpan="12"/>
+      <button name="deferBtn" title="Defer" colSpan="12" onClick="action-loan-method-defer"/>
+      <button name="cancelDeferralBtn" title="Cancel deferral" colSpan="12"
+        showIf="scheduleSnapshot != null" onClick="save,action-loan-method-cancel-deferral"/>
     </panel>
   </form>
 

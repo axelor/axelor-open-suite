@@ -74,10 +74,9 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
     BigDecimal capital = nz(loanLine.getCapitalAmount());
     BigDecimal insurance = nz(loanLine.getInsuranceAmount());
     BigDecimal total = nz(loanLine.getTotalAmount());
-    int field = nz(loanLine.getEditedFieldSelect());
 
-    if (field == LoanLineRepository.EDITED_FIELD_INTEREST) {
-      // Keep the installment total, adjust the capital repayment.
+    if (nz(loanLine.getEditedFieldSelect()) == LoanLineRepository.EDITED_FIELD_INTEREST) {
+      // Keep the installment total and adjust the capital repayment.
       capital = scale(loan, total.subtract(interest).subtract(insurance));
       if (capital.signum() < 0) {
         capital = BigDecimal.ZERO;

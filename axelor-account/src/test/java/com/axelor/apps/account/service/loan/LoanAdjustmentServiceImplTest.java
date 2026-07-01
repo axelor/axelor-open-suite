@@ -90,7 +90,8 @@ class LoanAdjustmentServiceImplTest {
   }
 
   @Test
-  void computeEditedLine_interest_keepsTotalAndAdjustsCapital() throws AxelorException {
+  void computeEditedLine_interest_keepsTotalAdjustsCapitalAndRemainingDebt()
+      throws AxelorException {
     Loan loan = scheduledLoan();
     LoanLine first = line(loan, 0); // interest 300, capital 8196.73, insurance 50, total 8546.73
     first.setInterestAmount(new BigDecimal("400.00"));
@@ -98,8 +99,10 @@ class LoanAdjustmentServiceImplTest {
 
     service.computeEditedLine(first);
 
+    // total kept ; capital = 8546.73 - 400 - 50 ; remainingDebtAfter = 100000 - 8096.73
     assertEquals(0, new BigDecimal("8546.73").compareTo(first.getTotalAmount()));
     assertEquals(0, new BigDecimal("8096.73").compareTo(first.getCapitalAmount()));
+    assertEquals(0, new BigDecimal("91903.27").compareTo(first.getRemainingDebtAfter()));
     assertTrue(Boolean.TRUE.equals(first.getIsManuallyModified()));
   }
 
