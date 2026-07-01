@@ -504,23 +504,22 @@ public class MrpServiceImpl implements MrpService {
       StockLocation stockLocation,
       LocalDate maturityDate) {
 
-    LocalDate startPeriodDate = maturityDate;
-
     MrpFamily mrpFamily = product.getMrpFamily();
 
-    if (mrpFamily != null) {
-
-      if (mrpFamily.getDayNb() == 0) {
-        return null;
-      }
-
-      startPeriodDate = maturityDate.minusDays(mrpFamily.getDayNb());
+    if (mrpFamily == null) {
+      return null;
     }
+
+    if (mrpFamily.getDayNb() == 0) {
+      return null;
+    }
+
+    LocalDate startPeriodDate = maturityDate.minusDays(mrpFamily.getDayNb());
 
     return mrpLineRepository
         .all()
         .filter(
-            "self.mrp.id = ?1 AND self.product = ?2 AND self.mrpLineType = ?3 AND self.stockLocation = ?4 AND self.maturityDate > ?5 AND self.maturityDate <= ?6",
+            "self.mrp.id = ?1 AND self.product = ?2 AND self.mrpLineType = ?3 AND self.stockLocation = ?4 AND self.maturityDate >= ?5 AND self.maturityDate <= ?6",
             mrp.getId(),
             product,
             mrpLineType,
