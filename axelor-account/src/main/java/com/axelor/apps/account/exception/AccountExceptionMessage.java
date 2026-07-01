@@ -1768,4 +1768,20 @@ public final class AccountExceptionMessage {
       /*$$(*/ "Please fill the amount, the annual interest rate, the duration, the computation mode and the first installment date before generating the schedule." /*)*/;
   public static final String LOAN_SIMULATION_MISSING_DATA =
       /*$$(*/ "Please fill the annual interest rate, the duration and the amount or monthly payment to simulate." /*)*/;
+  public static final String LOAN_NOT_VALIDATED =
+      /*$$(*/ "The loan must be validated before booking installments." /*)*/;
+  public static final String LOAN_LINE_ALREADY_POSTED =
+      /*$$(*/ "This installment has already been booked." /*)*/;
+  public static final String LOAN_LINE_NOT_SEQUENTIAL =
+      /*$$(*/ "Installments must be booked in chronological order; book the previous installment first." /*)*/;
+  public static final String LOAN_ACCOUNT_MISSING =
+      /*$$(*/ "The loan %s is missing the journal or one of the accounts required to book the installment." /*)*/;
+  public static final String LOAN_NO_INSTALLMENT_TO_POST =
+      /*$$(*/ "There is no planned installment to book on this loan." /*)*/;
+  public static final String BATCH_POSTED_LOAN_INSTALLMENT =
+      /*$$(*/ "Booked loan installment(s) :" /*)*/;
+  public static final String LOAN_CLOSURE_ACCOUNT_MISSING =
+      /*$$(*/ "The loan %s is missing the journal or one of the accounts required for the closing adjustments." /*)*/;
+  public static final String BATCH_LOAN_CLOSURE =
+      /*$$(*/ "Loan(s) with closing adjustments generated :" /*)*/;
 }

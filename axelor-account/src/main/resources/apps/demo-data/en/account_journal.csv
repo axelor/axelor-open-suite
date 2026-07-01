@@ -22,7 +22,7 @@
 21;"OUT_OTH";"Other Payments";3;"true";"false";"true";"false";"Payment Emit.";"true";"false";;1;1;132;"10|12|14|2";"665000|765000";5;"false";"false"
 22;"ACC_CLR";"Account clearance";3;"true";"false";"false";"false";;"false";"false";;1;1;135;"12|14|2";;;"false";"false"
 23;"MISC_AUTO";"Auto Misc. Operation on invoices or cashing";3;"false";"false";"true";"false";;"false";"false";;1;1;133;"1|2|3|4|6|8|10|12|14|7|9|5|11|13";;"6,7,5";"false";"false"
-24;"MISC_MAN";"Manual Misc. Operation";3;"false";"false";"true";"false";;"false";"false";;1;1;134;"1|2|3|4|6|8|10|12|14|7|9|5|11|13";;"6,7";"false";"false"
+24;"MISC_MAN";"Manual Misc. Operation";3;"false";"false";"true";"false";;"false";"false";;1;1;134;"1|2|3|4|6|8|10|12|14|7|9|5|11|13";;"6,7,11,12";"false";"false"
 25;"REJ_BK";"Bank Operations Rejects";3;"false";"false";"false";"false";"Reject ";"true";"false";;1;1;;"10|12|14|2";;5;"false";"false"
 26;"INSTALL";"Monthly Installments";3;"false";"false";"false";"false";"Installment";"true";"false";;1;1;;"12|14|7";;5;"false";"false"
 27;"TECH";"Technical";5;"false";"false";"false";"false";;"false";"true";;1;1;;;;;"false";"false"

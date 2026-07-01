@@ -229,6 +229,8 @@
     <option value="25">Moves consistency control</option>
     <option value="26">Accounting cut-off</option>
     <option value="27">Auto move lettering</option>
+    <option value="28">Post loan installments</option>
+    <option value="29">Post loan closing adjustments</option>
   </selection>
 
   <selection name="iaccount.account.batch.transfer.type.select">
@@ -564,6 +566,8 @@
     <option value='8'>Doubtful customer</option>
     <option value='9'>Irrecoverable</option>
     <option value='10'>Late payment interest</option>
+    <option value='11'>Loan</option>
+    <option value='12'>Loan closure</option>
   </selection>
 
   <selection name='iaccount.move.line.mass.entry.input.action.select'>

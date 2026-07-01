@@ -1,0 +1,3 @@
+---
+title: "Loans: book installments generating the accounting entry, with automatic loan lifecycle transitions and a batch to book installments up to a date."
+module: axelor-account
