@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
@@ -398,9 +399,15 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
 
   protected int computeVatSystem(Expense expense, Account taxAccount) throws AxelorException {
     Partner partner = expense.getEmployee().getContactPartner();
-    Integer vatSystemSelect =
-        taxAccountToolService.resolveVatLiabilityFromAccountingSituation(
-            partner, expense.getCompany(), taxAccount, true, false);
+    Integer vatSystemSelect = MoveLineRepository.VAT_SYSTEM_DEFAULT;
+    try {
+      vatSystemSelect =
+          taxAccountToolService.resolveVatLiabilityFromAccountingSituation(
+              partner, expense.getCompany(), taxAccount, true, false);
+    } catch (AxelorException e) {
+      taxAccountToolService.checkAccountVatSystem(taxAccount);
+    }
+
     return taxAccountToolService.calculateVatSystem(vatSystemSelect, taxAccount);
   }
 
