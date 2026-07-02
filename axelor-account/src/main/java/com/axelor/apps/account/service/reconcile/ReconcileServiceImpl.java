@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -74,6 +75,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -553,6 +555,11 @@ public class ReconcileServiceImpl implements ReconcileService {
           MoveLine debitAdjustmentMoveLine =
               moveAdjustementService.createAdjustmentMove(creditMoveLine, creditAccount);
 
+          if (debitAdjustmentMoveLine == null) {
+            handleNullAdjustmentMoveLine(creditMoveLine, creditAmountRemaining);
+            return;
+          }
+
           // Création de la réconciliation
           Reconcile newReconcile =
               this.createReconcile(
@@ -602,6 +609,11 @@ public class ReconcileServiceImpl implements ReconcileService {
 
           MoveLine creditAdjustMoveLine =
               moveAdjustementService.createAdjustmentMove(debitMoveLine, debitAccount);
+
+          if (creditAdjustMoveLine == null) {
+            handleNullAdjustmentMoveLine(debitMoveLine, debitAmountRemaining);
+            return;
+          }
 
           // Création de la réconciliation
           Reconcile newReconcile =
@@ -865,6 +877,19 @@ public class ReconcileServiceImpl implements ReconcileService {
                   .min(reconcile.getDebitMoveLine().getAmountRemaining().abs()));
         }
       }
+    }
+  }
+
+  protected void handleNullAdjustmentMoveLine(MoveLine moveLine, BigDecimal amountRemaining) {
+    moveLine.setAmountPaid(moveLine.getAmountPaid().add(amountRemaining));
+    List<InvoiceTerm> invoiceTermList = moveLine.getInvoiceTermList();
+    if (CollectionUtils.isEmpty(invoiceTermList)) {
+      return;
+    }
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
+      invoiceTerm.setCompanyAmountRemaining(BigDecimal.ZERO);
+      invoiceTerm.setIsPaid(true);
     }
   }
 }
