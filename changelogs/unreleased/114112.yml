@@ -1,8 +1,0 @@
----
-title: "Sale order: fixed subtotal cost price that could not be modified."
-module: axelor-sale
-developer: |
-  -- Script
-  ALTER TABLE sale_sale_order_line
-    ADD COLUMN IF NOT EXISTS manual_sub_total_cost_price numeric(20, 3),
-    ADD COLUMN IF NOT EXISTS is_sub_total_cost_price_manually_edited boolean;

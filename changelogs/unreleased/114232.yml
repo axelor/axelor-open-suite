@@ -1,3 +1,0 @@
----
-title: "Account: fixed ArithmeticException when saving a tax line with rate exceeding 2 decimal digits."
-module: axelor-account
