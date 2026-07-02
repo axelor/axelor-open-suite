@@ -1,3 +1,0 @@
----
-title: "Account: fixed reverse-charge VAT lines missing on auto counterpart when supplier has a default expense account."
-module: axelor-account
