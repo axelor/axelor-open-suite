@@ -39,6 +39,7 @@ import com.axelor.apps.base.rest.dto.sirene.UniteLegaleResponse;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,6 +50,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -242,7 +245,9 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
     String typeVoieEtablissement = adresseEtablissement.getTypeVoieEtablissement();
     String libelleVoieEtablissement = adresseEtablissement.getLibelleVoieEtablissement();
     String streetName =
-        numeroVoieEtablissement + " " + typeVoieEtablissement + " " + libelleVoieEtablissement;
+        Stream.of(numeroVoieEtablissement, typeVoieEtablissement, libelleVoieEtablissement)
+            .filter(ObjectUtils::notEmpty)
+            .collect(Collectors.joining(" "));
     safeSetString(address::setStreetName, address::getStreetName, streetName);
     safeSetString(
         address::setFullName,
