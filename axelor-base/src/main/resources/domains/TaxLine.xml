@@ -16,7 +16,7 @@
 	    <![CDATA[
 	    	String name = "";
 	    	if(tax != null)  { name += tax.getCode();  }
-	    	name += " : " + value.setScale(2);
+	    	name += " : " + value.setScale(Beans.get(AppBaseService.class).getNbDecimalDigitForTaxRate(), RoundingMode.HALF_UP);
 	    	return name;
 	   	]]>
     </string>
@@ -24,12 +24,20 @@
       <![CDATA[
 	    	String name = "";
 	    	if(tax != null)  { name += tax.getCode();  }
-	    	name += " : " + value.setScale(2);
+	    	name += " : " + value.setScale(Beans.get(AppBaseService.class).getNbDecimalDigitForTaxRate(), RoundingMode.HALF_UP);
 	    	name += " : " + startDate;
 			if (endDate != null) { name += " - " + endDate; }
 	    	return name;
 	   	]]>
     </string>
+
+    <extra-imports>
+      <![CDATA[
+      import com.axelor.inject.Beans;
+      import com.axelor.apps.base.service.app.AppBaseService;
+      import java.math.RoundingMode;
+      ]]>
+    </extra-imports>
 
   </entity>
 

@@ -80,6 +80,8 @@ public interface AppBaseService extends AppService {
 
   public int getNbDecimalDigitForQty();
 
+  public int getNbDecimalDigitForTaxRate();
+
   public int getGlobalTrackingLogPersistence();
 
   public String getDefaultPartnerLocale();
