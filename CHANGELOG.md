@@ -1,3 +1,50 @@
+## [8.3.38] (2026-07-02)
+
+### Fixes
+#### Base
+
+* Updated xsd schema URL to fix a build issue.
+
+#### Account
+
+* Reconciliation: fixed NPE when unlettering an advance payment move with tax payment move lines having no reconcile.
+* Move line: fixed lettering without partner ignoring payment difference threshold, causing always-partial reconciliation.
+* Invoice term : fixed readonly condition of due date in form view opening from menu.
+* Accounting batch: fixed the date of analytic distribution lines on generated moves to use the move accounting date instead of the origin date for the 'Accounting cut-off' batch.
+* Invoice: fixed internal server error when recording a payment on a foreign currency invoice where the company-currency micro-residual converts to zero in the invoice currency.
+
+#### Bank Payment
+
+* Bank payment: fixed CFONB120 multi-period import rejected on non-chronological period order.
+
+#### Contract
+
+* Contract: fixed fiscal position not being set on generated invoice.
+
+#### CRM
+
+* Event: fixed opportunity, event lead and partner linked via relatedToSelect not displayed on event-grid.
+
+#### Supply Chain
+
+* MRP: fixed issue with deleted record reappearing in draft status after refresh.
+
+
+### Developer
+
+#### Supply Chain
+
+The `onDelete` actions `action-mrp-validate-delete-mrp-reset` and
+`action-mrp-validate-delete-multi-mrp-reset` have been removed from the MRP form and
+grid views. The `MrpManagementRepository.remove()` override that was incorrectly
+resetting and saving the record instead of deleting it has been replaced with a correct
+implementation that deletes associated `MrpLine` records before removing the MRP itself.
+
+```sql
+DELETE FROM meta_action WHERE name = 'action-mrp-validate-delete-mrp-reset';
+DELETE FROM meta_action WHERE name = 'action-mrp-validate-delete-multi-mrp-reset';
+```
+
 ## [8.3.37] (2026-06-11)
 
 ### Fixes
@@ -3432,6 +3479,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.38]: https://github.com/axelor/axelor-open-suite/compare/v8.3.37...v8.3.38
 [8.3.37]: https://github.com/axelor/axelor-open-suite/compare/v8.3.36...v8.3.37
 [8.3.36]: https://github.com/axelor/axelor-open-suite/compare/v8.3.35...v8.3.36
 [8.3.35]: https://github.com/axelor/axelor-open-suite/compare/v8.3.34...v8.3.35
