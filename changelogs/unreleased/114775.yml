@@ -1,0 +1,3 @@
+---
+title: "Sale order: on the editable sale order line grid, the discount type and discount amount fields are now correctly set as read-only according to the global discount management."
+module: axelor-sale
