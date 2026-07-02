@@ -1,3 +1,31 @@
+## [8.2.46] (2026-07-02)
+
+### Fixes
+#### Base
+
+* Updated xsd schema URL to fix a build issue.
+
+#### Account
+
+* Reconciliation: fixed NPE when unlettering an advance payment move with tax payment move lines having no reconcile.
+* Move line: fixed lettering without partner ignoring payment difference threshold, causing always-partial reconciliation.
+* Invoice term : fixed readonly condition of due date in form view opening from menu.
+* Account: fixed Mass Entry validation failing when move lines have different partners.
+* Accounting batch: fixed the date of analytic distribution lines on generated moves to use the move accounting date instead of the origin date for the 'Accounting cut-off' batch.
+* Invoice: fixed internal server error when recording a payment on a foreign currency invoice where the company-currency micro-residual converts to zero in the invoice currency.
+
+#### Bank Payment
+
+* Bank payment: fixed CFONB120 multi-period import rejected on non-chronological period order.
+
+#### Budget
+
+* Budget: fixed committed amount not updated if a budget distribution line is deleted.
+
+#### Contract
+
+* Contract: fixed validation to prevent setting a first period end date earlier than today when no supposed activation date is defined.
+
 ## [8.2.45] (2026-06-11)
 
 ### Fixes
@@ -2902,6 +2930,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.46]: https://github.com/axelor/axelor-open-suite/compare/v8.2.45...v8.2.46
 [8.2.45]: https://github.com/axelor/axelor-open-suite/compare/v8.2.44...v8.2.45
 [8.2.44]: https://github.com/axelor/axelor-open-suite/compare/v8.2.43...v8.2.44
 [8.2.43]: https://github.com/axelor/axelor-open-suite/compare/v8.2.42...v8.2.43

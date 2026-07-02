@@ -1,3 +1,0 @@
----
-title: "Contract: fixed validation to prevent setting a first period end date earlier than today when no supposed activation date is defined."
-module: axelor-contract
