@@ -1,0 +1,3 @@
+---
+title: "Production: fixed stock reservation not requested when planning a Manufacturing Order with 'Auto request qty for manuf orders' enabled."
+module: axelor-production
