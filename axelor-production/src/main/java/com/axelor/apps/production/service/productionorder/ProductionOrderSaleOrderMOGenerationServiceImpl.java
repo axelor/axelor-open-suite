@@ -74,7 +74,8 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
       ProductionOrder productionOrder,
       SaleOrderLine saleOrderLine,
       Product product,
-      BigDecimal qtyToProduce)
+      BigDecimal qtyToProduce,
+      BigDecimal grossQtyRequested)
       throws AxelorException {
     BillOfMaterial billOfMaterial = getBillOfMaterial(saleOrderLine, product);
     if (billOfMaterial.getProdProcess() == null) {
@@ -82,9 +83,10 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
     }
 
     BigDecimal qty = convertToProductUnit(product, saleOrderLine.getUnit(), qtyToProduce);
+    BigDecimal grossQty = convertToProductUnit(product, saleOrderLine.getUnit(), grossQtyRequested);
 
     return saleOrderLineMOGenerationService.generateManufOrders(
-        saleOrderLine, saleOrderLine.getSaleOrder(), productionOrder, qty);
+        saleOrderLine, saleOrderLine.getSaleOrder(), productionOrder, qty, grossQty);
   }
 
   protected BigDecimal convertToProductUnit(Product product, Unit saleOrderLineUnit, BigDecimal qty)
