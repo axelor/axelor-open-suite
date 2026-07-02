@@ -218,17 +218,10 @@ public class StockMoveInvoiceController {
   public void generateInvoiceConcatOutStockMoveCheckMissingFields(
       ActionRequest request, ActionResponse response) {
     try {
-      List<StockMove> stockMoveList = new ArrayList<>();
-      List<Long> stockMoveIdList = new ArrayList<>();
-
-      // No confirmation popup, stock Moves are content in a parameter list
       List<Map> stockMoveMap = (List<Map>) request.getContext().get("customerStockMoveToInvoice");
-      for (Map map : stockMoveMap) {
-        stockMoveIdList.add(Long.valueOf((Integer) map.get("id")));
-      }
-      for (Long stockMoveId : stockMoveIdList) {
-        stockMoveList.add(JPA.em().find(StockMove.class, stockMoveId));
-      }
+      List<StockMove> stockMoveList = getSelectedOrAllStockMoves(stockMoveMap);
+      List<Long> stockMoveIdList =
+          stockMoveList.stream().map(StockMove::getId).collect(Collectors.toList());
 
       Map<String, Object> mapResult =
           Beans.get(StockMoveMultiInvoiceService.class)
