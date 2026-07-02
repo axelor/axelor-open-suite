@@ -559,7 +559,7 @@
 
   <action-attrs name="action-contract-attrs-show-close-btn">
     <attribute for="closeContractBtn" name="hidden"
-      expr="terminatedDate == null || statusSelect != 2 || __config__.date &lt; terminatedDate"/>
+      expr="terminatedDate == null || statusSelect != 2 || __config__.date &lt; terminatedDate || !terminatedManually"/>
   </action-attrs>
 
   <action-method name="action-contract-method-close">
