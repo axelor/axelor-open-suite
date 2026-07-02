@@ -80,6 +80,8 @@ public interface AppBaseService extends ScriptAppService {
 
   public int getNbDecimalDigitForQty();
 
+  public int getNbDecimalDigitForTaxRate();
+
   public int getGlobalTrackingLogPersistence();
 
   public String getDefaultPartnerLocale();
