@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.LogisticalFormCreateService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveReservedQtyService;
@@ -153,6 +154,23 @@ public class StockMoveController {
       StockMove stockMove = request.getContext().asType(StockMove.class);
       stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
       Beans.get(StockMoveServiceSupplychain.class).fillRealQuantities(stockMove);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createLogisticalForm(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      if (stockMove.getId() == null
+          || stockMove.getTypeSelect() != StockMoveRepository.TYPE_OUTGOING
+          || stockMove.getPartner() == null
+          || stockMove.getLogisticalForm() != null) {
+        return;
+      }
+      stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+      Beans.get(LogisticalFormCreateService.class).createLogisticalFormFromStockMove(stockMove);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
