@@ -1,3 +1,58 @@
+## [7.2.69] (2026-07-02)
+
+### Fixes
+#### Base
+
+* Updated xsd schema URL to fix a build issue.
+* Product category: fixed drag and drop in tree view.
+
+#### Account
+
+* Invoice line: fixed duplicate product, filter on supplier and type fields briefly shown on new line popup.
+* Move line: fixed the display of the company currency in grid views and form.
+* Invoice: fixed anomaly traceback not saved when mass ventilation fails.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed wrong translation of warning message when selecting lines.
+* Bank order: included the invoice's printedPDF file in the 'Display invoice' document list.
+
+#### Budget
+
+* Budget: fixed committed amount not updated if a budget distribution line is deleted.
+
+#### Contract
+
+* Contract: fixed 'Initial price per year' and 'Yearly price revalued' showing 0.00 in contract line grid on draft amendments.
+* Contract: fixed fiscal position not being set on generated invoice.
+* Contract: fixed close button appears after a termination that failed due to the notice period.
+
+#### CRM
+
+* Event: fixed opportunity, event lead and partner linked via relatedToSelect not displayed on event-grid.
+
+#### Sale
+
+* Sale dashboard: fixed inconsistencies between charts due to incorrect date bounds, missing company filter, and non-YTD comparison in turnover charts.
+
+#### Stock
+
+* Stock rules: fixed wrong refill type filter when product by companies feature is enabled.
+
+#### Supply Chain
+
+* Sale: fixed mass invoicing to process only selected customer deliveries.
+* Sale order: fixed deletion of a sale order line failing when a canceled stock move line still referenced it.
+* Purchase: fixed mass invoicing to process only selected delivery receipts.
+
+
+### Developer
+
+#### Bank Payment
+
+Added MetaFiles as parameter in BankOrderLineOriginServiceImpl constructor
+Added MetaFiles as parameter in BankOrderLineOriginServiceHRImpl constructor
+
 ## [7.2.68] (2026-06-11)
 
 ### Fixes
@@ -3177,6 +3232,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.69]: https://github.com/axelor/axelor-open-suite/compare/v7.2.68...v7.2.69
 [7.2.68]: https://github.com/axelor/axelor-open-suite/compare/v7.2.67...v7.2.68
 [7.2.67]: https://github.com/axelor/axelor-open-suite/compare/v7.2.66...v7.2.67
 [7.2.66]: https://github.com/axelor/axelor-open-suite/compare/v7.2.65...v7.2.66
