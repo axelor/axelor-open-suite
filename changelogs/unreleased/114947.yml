@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed internal server error when recording a payment on a foreign currency invoice where the company-currency micro-residual converts to zero in the invoice currency."
-module: axelor-account

@@ -1,3 +1,0 @@
----
-title: "Sale dashboard: fixed inconsistencies between charts due to incorrect date bounds, missing company filter, and non-YTD comparison in turnover charts."
-module: axelor-sale
