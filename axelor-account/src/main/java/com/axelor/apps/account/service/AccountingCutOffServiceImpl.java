@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Journal;
@@ -61,6 +62,7 @@ import com.google.common.collect.Sets;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +71,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
@@ -398,7 +401,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     Account moveLineAccount;
     BigDecimal amountInCurrency;
     MoveLine cutOffMoveLine;
-    Map<Account, MoveLine> cutOffMoveLineMap = new HashMap<>();
+    Map<Pair<Account, Boolean>, MoveLine> cutOffMoveLineMap = new HashMap<>();
     Currency companyCurrency = move.getCompanyCurrency();
 
     BigDecimal currencyRate =
@@ -430,9 +433,14 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             currencyService.getAmountCurrencyConvertedUsingExchangeRate(
                 amountInCurrency, currencyRate, companyCurrency);
 
+        Pair<Account, Boolean> cutOffMoveLineKey =
+            Pair.of(
+                moveLineAccount, CollectionUtils.isNotEmpty(moveLine.getAnalyticMoveLineList()));
+
         // Check if move line already exists with that account
-        if (cutOffMoveLineMap.containsKey(moveLineAccount)) {
-          cutOffMoveLine = cutOffMoveLineMap.get(moveLineAccount);
+        boolean isExistingCutOffMoveLine = cutOffMoveLineMap.containsKey(cutOffMoveLineKey);
+        if (isExistingCutOffMoveLine) {
+          cutOffMoveLine = cutOffMoveLineMap.get(cutOffMoveLineKey);
           boolean isCutOffDebit =
               isReverse
                   != (accountingCutOffTypeSelect
@@ -472,11 +480,13 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
           }
           cutOffMoveLine.setOriginDate(originDate);
 
-          cutOffMoveLineMap.put(moveLineAccount, cutOffMoveLine);
+          cutOffMoveLineMap.put(cutOffMoveLineKey, cutOffMoveLine);
         }
 
         // Copy analytic move lines
-        moveLineComputeAnalyticService.clearAnalyticAccounting(cutOffMoveLine);
+        if (!isExistingCutOffMoveLine) {
+          moveLineComputeAnalyticService.clearAnalyticAccounting(cutOffMoveLine);
+        }
         analyticLineComputeService.copyAnalyticMoveLines(
             moveLine, cutOffMoveLine, amountInCurrency.abs());
         if (CollectionUtils.isNotEmpty(cutOffMoveLine.getAnalyticMoveLineList())) {
@@ -485,7 +495,13 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       }
     }
 
-    cutOffMoveLineMap.values().forEach(cutOffMove::addMoveLineListItem);
+    cutOffMoveLineMap
+        .values()
+        .forEach(
+            line -> {
+              recomputeAnalyticPercentage(line);
+              cutOffMove.addMoveLineListItem(line);
+            });
 
     // Partner move line
     Account account =
@@ -650,5 +666,45 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       }
     }
     return null;
+  }
+
+  protected void recomputeAnalyticPercentage(MoveLine cutOffMoveLine) {
+    List<AnalyticMoveLine> analyticMoveLineList = cutOffMoveLine.getAnalyticMoveLineList();
+    if (CollectionUtils.isEmpty(analyticMoveLineList)) {
+      return;
+    }
+
+    Map<AnalyticAxis, List<AnalyticMoveLine>> analyticMoveLinesByAxis =
+        analyticMoveLineList.stream()
+            .collect(Collectors.groupingBy(AnalyticMoveLine::getAnalyticAxis));
+
+    for (List<AnalyticMoveLine> axisAnalyticMoveLineList : analyticMoveLinesByAxis.values()) {
+      BigDecimal axisAmount =
+          axisAnalyticMoveLineList.stream()
+              .map(AnalyticMoveLine::getAmount)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+      if (axisAmount.signum() == 0) {
+        continue;
+      }
+
+      BigDecimal percentageSum = BigDecimal.ZERO;
+      for (int i = 0; i < axisAnalyticMoveLineList.size(); i++) {
+        AnalyticMoveLine analyticMoveLine = axisAnalyticMoveLineList.get(i);
+        BigDecimal percentage;
+        if (i == axisAnalyticMoveLineList.size() - 1) {
+          percentage =
+              BigDecimal.valueOf(100).setScale(2, RoundingMode.HALF_UP).subtract(percentageSum);
+        } else {
+          percentage =
+              analyticMoveLine
+                  .getAmount()
+                  .multiply(BigDecimal.valueOf(100))
+                  .divide(axisAmount, 2, RoundingMode.HALF_UP);
+          percentageSum = percentageSum.add(percentage);
+        }
+        analyticMoveLine.setPercentage(percentage);
+      }
+    }
   }
 }
