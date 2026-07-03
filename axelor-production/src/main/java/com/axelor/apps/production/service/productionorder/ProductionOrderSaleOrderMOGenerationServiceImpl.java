@@ -23,6 +23,7 @@ import static com.axelor.apps.production.exceptions.ProductionExceptionMessage.Y
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -81,7 +82,8 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
       ProductionOrder productionOrder,
       SaleOrderLine saleOrderLine,
       Product product,
-      BigDecimal qtyToProduce)
+      BigDecimal qtyToProduce,
+      BigDecimal grossQtyRequested)
       throws AxelorException {
     BillOfMaterial billOfMaterial = getBillOfMaterial(saleOrderLine, product);
     if (billOfMaterial.getProdProcess() == null) {
@@ -89,11 +91,13 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
     }
 
     BigDecimal qty = convertToProductUnit(product, saleOrderLine.getUnit(), qtyToProduce);
+    BigDecimal grossQty = convertToProductUnit(product, saleOrderLine.getUnit(), grossQtyRequested);
 
     return generateManufOrders(
         productionOrder,
         billOfMaterial,
         qty,
+        grossQty,
         appBaseService.getTodayDateTime().toLocalDateTime(),
         saleOrderLine.getSaleOrder(),
         saleOrderLine);
@@ -139,7 +143,9 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
    *
    * @param productionOrder Initialized production order with no manufacturing order.
    * @param billOfMaterial the bill of material of the parent manufacturing order
-   * @param qtyRequested the quantity requested of the parent manufacturing order.
+   * @param qtyRequested the net quantity to produce of the parent manufacturing order.
+   * @param grossQtyRequested the gross quantity requested, propagated through the BOM tree to
+   *     compute the gross demand of each sub-component.
    * @param startDate startDate of creation
    * @param saleOrder a sale order
    * @return the updated production order with all generated manufacturing orders.
@@ -149,19 +155,20 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
       ProductionOrder productionOrder,
       BillOfMaterial billOfMaterial,
       BigDecimal qtyRequested,
+      BigDecimal grossQtyRequested,
       LocalDateTime startDate,
       SaleOrder saleOrder,
       SaleOrderLine saleOrderLine)
       throws AxelorException {
 
-    Map<BillOfMaterial, BigDecimal> subBomMapWithLineQty = new HashMap<>();
-    // One for the parent BOM (It will be multiplied by qtyRequested anyway)
-    subBomMapWithLineQty.put(billOfMaterial, billOfMaterial.getQty());
+    Map<BillOfMaterial, BigDecimal> subBomGrossDemandMap = new HashMap<>();
+    // Gross demand of the parent BOM (line qty multiplied by the gross requested qty)
+    subBomGrossDemandMap.put(billOfMaterial, grossQtyRequested.multiply(billOfMaterial.getQty()));
 
     Map<BillOfMaterial, ManufOrder> subBomManufOrderParentMap = new HashMap<>();
     // prevent infinite loop
     int depth = 0;
-    while (!subBomMapWithLineQty.isEmpty()) {
+    while (!subBomGrossDemandMap.isEmpty()) {
       if (depth >= 100) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -185,24 +192,36 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
         startDate = null;
       }
 
-      Map<BillOfMaterial, BigDecimal> tempBomMapWithLineQty = new HashMap<>();
+      Map<BillOfMaterial, BigDecimal> tempBomGrossDemandMap = new HashMap<>();
 
       // Map for future manufOrder and its manufOrder Parent
 
-      for (BillOfMaterial childBom : subBomMapWithLineQty.keySet()) {
+      for (BillOfMaterial childBom : subBomGrossDemandMap.keySet()) {
 
         if (childBom.getProdProcess() == null) {
           continue;
         }
 
-        BigDecimal qtyToProduce = qtyRequested.multiply(subBomMapWithLineQty.get(childBom));
+        BigDecimal grossDemand = subBomGrossDemandMap.get(childBom);
+        BigDecimal qtyToProduce;
 
-        if (!childBom.equals(billOfMaterial)) {
+        if (childBom.equals(billOfMaterial)) {
+          qtyToProduce = qtyRequested.multiply(billOfMaterial.getQty());
+        } else {
+          boolean shouldDeductStock =
+              childBom.getProduct().getSaleSupplySelect()
+                  == ProductRepository.SALE_SUPPLY_FROM_STOCK_AND_PRODUCE;
           BigDecimal availableQty =
-              stockLocationLineFetchService.getAvailableQty(
-                  saleOrderLine.getSaleOrder().getStockLocation(), childBom.getProduct());
+              shouldDeductStock
+                  ? stockLocationLineFetchService.getAvailableQty(
+                      saleOrderLine.getSaleOrder().getStockLocation(), childBom.getProduct())
+                  : BigDecimal.ZERO;
+          qtyToProduce = grossDemand.subtract(availableQty);
+        }
 
-          qtyToProduce = qtyToProduce.subtract(availableQty);
+        // Skip sub-MO creation when the stock already covers the requirement
+        if (qtyToProduce.signum() <= 0) {
+          continue;
         }
 
         ManufOrder manufOrder =
@@ -222,19 +241,16 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
         Map<BillOfMaterial, BigDecimal> mapBomWithQty =
             billOfMaterialService.getSubBillOfMaterialMapWithLineQty(childBom);
 
-        mapBomWithQty
-            .keySet()
-            .forEach(
-                bom -> {
-                  subBomManufOrderParentMap.putIfAbsent(bom, manufOrder);
-                });
-
-        tempBomMapWithLineQty.putAll(mapBomWithQty);
+        mapBomWithQty.forEach(
+            (bom, lineQty) -> {
+              subBomManufOrderParentMap.putIfAbsent(bom, manufOrder);
+              tempBomGrossDemandMap.put(bom, grossDemand.multiply(lineQty));
+            });
       }
 
-      subBomMapWithLineQty.clear();
-      subBomMapWithLineQty.putAll(tempBomMapWithLineQty);
-      tempBomMapWithLineQty.clear();
+      subBomGrossDemandMap.clear();
+      subBomGrossDemandMap.putAll(tempBomGrossDemandMap);
+      tempBomGrossDemandMap.clear();
       depth++;
     }
     return productionOrder;
