@@ -75,6 +75,25 @@ public class ControlEntryServiceImpl implements ControlEntryService {
     values.put("relatedTo", relatedToSelect);
     values.put("relatedToId", relatedToSelectId);
 
+    if (relatedToSelect != null
+        && relatedToSelectId != null
+        && hasActiveControlEntry(relatedToSelect, relatedToSelectId)) {
+      return ActionView.define(I18n.get("Control entries"))
+          .model(ControlEntry.class.getName())
+          .add("grid", "control-entry-grid")
+          .add("form", "control-entry-form")
+          .domain(
+              "self.relatedToSelect = :relatedToSelect AND self.relatedToSelectId = :relatedToSelectId"
+                  + " AND self.statusSelect IN ("
+                  + ControlEntryRepository.DRAFT_STATUS
+                  + ", "
+                  + ControlEntryRepository.IN_PROGRESS_STATUS
+                  + ")")
+          .context("relatedToSelect", relatedToSelect)
+          .context("relatedToSelectId", relatedToSelectId)
+          .map();
+    }
+
     ControlPlan controlPlan =
         getControlPlan(
             getControlPlanRelatedToSelect(contextClass),
@@ -96,6 +115,20 @@ public class ControlEntryServiceImpl implements ControlEntryService {
         .context("_sampleCount", values.get("sampleCount"))
         .context("_inspector", values.get("inspector"))
         .map();
+  }
+
+  protected boolean hasActiveControlEntry(String relatedToSelect, Long relatedToSelectId) {
+    return controlEntryRepository
+            .all()
+            .filter(
+                "self.relatedToSelect = ?1 AND self.relatedToSelectId = ?2"
+                    + " AND self.statusSelect IN (?3, ?4)",
+                relatedToSelect,
+                relatedToSelectId,
+                ControlEntryRepository.DRAFT_STATUS,
+                ControlEntryRepository.IN_PROGRESS_STATUS)
+            .count()
+        > 0;
   }
 
   @Override
