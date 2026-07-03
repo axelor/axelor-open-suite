@@ -7,8 +7,8 @@
     model="com.axelor.apps.base.db.Partner" extension="true">
     <extend target="//panel[@name='opportunitiesPanel']">
       <insert position="after">
-        <panel name="contractsPanel" title="Contracts" showIf="id"
-          if="__config__.app.isApp('contract')">
+        <panel name="contractsPanel" title="Contracts"
+          showIf="id &amp;&amp; (isCustomer || isSupplier)" if="__config__.app.isApp('contract')">
           <panel-include view="incl-contracts-partner-form"/>
         </panel>
       </insert>
@@ -17,9 +17,9 @@
 
   <form title="Partner" name="incl-contracts-partner-form"
     model="com.axelor.apps.base.db.Partner">
-    <panel-dashlet name="partnerCustomerContractsPanel"
+    <panel-dashlet name="partnerCustomerContractsPanel" showIf="isCustomer"
       action="action-partner-view-customer-contracts" colSpan="12" height="550"/>
-    <panel-dashlet name="partnerSupplierContractsPanel"
+    <panel-dashlet name="partnerSupplierContractsPanel" showIf="isSupplier"
       action="action-partner-view-supplier-contracts" colSpan="12" height="550"/>
   </form>
 
