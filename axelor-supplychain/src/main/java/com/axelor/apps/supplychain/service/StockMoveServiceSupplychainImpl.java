@@ -753,7 +753,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     Set<SaleOrder> saleOrderSet = oldStockMove.getSaleOrderSet();
     if (ObjectUtils.notEmpty(saleOrderSet)) {
       newStockMove.setSaleOrderSet(Sets.newHashSet(saleOrderSet));
-      saleOrderSet.forEach(saleOrder -> saleOrder.addStockMoveListItem(newStockMove));
     } else if (oldStockMove.getPurchaseOrderSet() != null) {
       newStockMove.setPurchaseOrderSet(Sets.newHashSet(oldStockMove.getPurchaseOrderSet()));
     } else {
