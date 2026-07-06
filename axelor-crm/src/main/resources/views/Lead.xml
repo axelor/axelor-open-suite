@@ -231,7 +231,7 @@
                   <field name="countrySubDivision" colSpan="12"
                     x-bind="{{countrySubDivision|uppercase}}"/>
                   <field name="city" colSpan="12" canNew="true" canEdit="false"
-                    onChange="action-address-change-city, action-address-validate-change-city"
+                    onChange="action-address-change-city"
                     onSelect="action-address-attrs-update-domain-city" form-view="city-form"
                     grid-view="city-grid"/>
                   <field name="zip" colSpan="12"

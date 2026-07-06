@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
@@ -122,12 +123,18 @@ public class MoveLineController {
 
       MoveLineService moveLineService = Beans.get(MoveLineService.class);
 
+      List<String> pendingPaymentMessages =
+          Beans.get(MoveLineControlService.class)
+              .getPendingPaymentMessages(moveLineService.getMoveLines(idList));
+
       int errorNumber =
           moveLineService.reconcileMoveLinesWithCacheManagement(
               moveLineService.getReconcilableMoveLines(idList));
 
       response.setReload(true);
-      if (errorNumber > 0) {
+      if (!pendingPaymentMessages.isEmpty()) {
+        response.setError(String.join("<br/>", pendingPaymentMessages));
+      } else if (errorNumber > 0) {
         response.setInfo(I18n.get(AccountExceptionMessage.RECONCILE_MASS_ERRORS));
       }
 

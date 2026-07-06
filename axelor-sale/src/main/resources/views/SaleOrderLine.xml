@@ -129,10 +129,8 @@
       onChange="action-sale-order-line-method-onchange-intaxprice"
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="discountTypeSelect" colSpan="3"
-      readonlyIf="$nonNegotiable || $isParentTitleLine"
-      onChange="action-sale-order-line-method-discount-type-onchange"/>
+      onChange="action-sale-order-line-group-discount-type-onchange"/>
     <field name="discountAmount" colSpan="3"
-      readonlyIf="$nonNegotiable || discountTypeSelect == 0 || $isParentTitleLine"
       validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
       onChange="action-sale-order-line-method-discount-amount-onchange"
       x-scale="$nbDecimalDigitForUnitPrice"/>
@@ -169,6 +167,7 @@
     <field name="configurator" hidden="true"/>
     <field name="saleOrder" hidden="true"/>
     <field name="saleOrder.id" hidden="true"/>
+    <field name="saleOrder.discountTypeSelect" hidden="true"/>
     <field name="subSaleOrderLineList" hidden="true"/>
     <field name="saleOrderLineDetailsList" hidden="true"/>
   </grid>
@@ -370,7 +369,7 @@
           <panel name="discountPanel" colSpan="12"
             readonlyIf="$isGlobalDiscount || $isReadOnly !== false || deliveryState == 3">
             <field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable"
-              onChange="action-sale-order-line-method-discount-type-onchange"/>
+              onChange="action-sale-order-line-group-discount-type-onchange"/>
             <!--This panel purpose is to avoid issues with permission by field -->
             <panel name="discountAmountPanel" colSpan="9" hideIf="discountTypeSelect == 0">
               <field name="discountAmount" colSpan="3" readonlyIf="$nonNegotiable"
@@ -484,7 +483,7 @@
       </panel>
       <panel name="marginPanel" title="Margin" readonlyIf="$isReadOnly !== false">
         <field name="subTotalCostPrice"
-          onChange="action-sale-order-line-method-compute-subMargin"
+          onChange="action-sale-order-line-sub-total-cost-price-onchange"
           x-scale="$companyCurrency.numberOfDecimals"
           readonlyIf="subSaleOrderLineList.length &gt; 0 &amp;&amp; $computeWithSOL"/>
         <field name="subTotalGrossMargin" readonly="true"
@@ -580,7 +579,7 @@
           colSpan="4" hidden="true"/>
         <panel name="discountPanel" title="Discount">
           <field name="discountTypeSelect"
-            onChange="action-sale-order-line-method-discount-type-onchange"/>
+            onChange="action-sale-order-line-group-discount-type-onchange"/>
           <field name="discountAmount"
             onChange="action-sale-order-line-method-discount-amount-onchange"
             hideIf="discountTypeSelect == 0"/>
@@ -612,7 +611,7 @@
     <panel-tabs hideIf="typeSelect == 1" name="allPanelTab">
       <panel name="marginPanel" title="Margin">
         <field name="subTotalCostPrice"
-          onChange="action-sale-order-line-method-compute-subMargin"
+          onChange="action-sale-order-line-sub-total-cost-price-onchange"
           x-scale="$companyCurrency.numberOfDecimals"/>
         <field name="subTotalGrossMargin" readonly="true"
           x-scale="$companyCurrency.numberOfDecimals"/>
@@ -858,4 +857,32 @@
     <call class="com.axelor.apps.sale.web.SaleOrderLineController"
       method="checkEditConfiguratorSaleOrderLine"/>
   </action-method>
+
+  <action-record name="action-sale-order-line-record-clear-discount-amount"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="discountAmount" expr="eval: 0"/>
+  </action-record>
+
+  <action-group name="action-sale-order-line-group-discount-type-onchange">
+    <action name="action-sale-order-line-record-clear-discount-amount"/>
+    <action name="action-sale-order-line-attrs-readonly-discount-amount"/>
+    <action name="action-sale-order-line-method-discount-type-onchange"/>
+  </action-group>
+
+  <action-attrs name="action-sale-order-line-attrs-readonly-discount-amount">
+    <attribute name="readonly" for="discountAmount"
+      expr="eval: __parent__?.discountTypeSelect > 0 || discountTypeSelect == 0"/>
+  </action-attrs>
+
+  <action-group name="action-sale-order-line-sub-total-cost-price-onchange">
+    <action name="action-sale-order-line-method-set-sub-total-cost-price-manually"/>
+    <action name="action-sale-order-line-method-compute-subMargin"/>
+  </action-group>
+
+  <action-method
+    name="action-sale-order-line-method-set-sub-total-cost-price-manually">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="setSubTotalCostPriceManually"/>
+  </action-method>
+
 </object-views>

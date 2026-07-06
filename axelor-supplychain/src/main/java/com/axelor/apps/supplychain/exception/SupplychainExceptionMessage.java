@@ -34,6 +34,8 @@ public final class SupplychainExceptionMessage {
 
   public static final String PO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/
       "The purchase order %s invoiced amount cannot be greater than its total amount." /*)*/;
+  public static final String PO_INVOICE_GENERATE_ALL_INVOICES = /*$$(*/
+      "All invoices have been generated for this purchase order." /*)*/;
   public static final String PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS = /*$$(*/
       "Can only return to validated from finished purchase order." /*)*/;
 

@@ -20,15 +20,19 @@ package com.axelor.apps.crm.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ICalendarUser;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Event;
+import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.CalendarService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -43,6 +47,9 @@ public class EventManagementRepository extends EventRepository {
   public Event copy(Event entity, boolean deep) {
     Event event = super.copy(entity, deep);
     event.setStatusSelect(EventRepository.STATUS_PLANNED);
+    event.setOpportunity(null);
+    event.setEventLead(null);
+    event.setPartner(null);
     return event;
   }
 
@@ -80,6 +87,7 @@ public class EventManagementRepository extends EventRepository {
         entity.setSubjectTeam(I18n.get("Busy"));
       }
     }
+    setRelatedFields(entity);
 
     return super.save(entity);
   }
@@ -114,5 +122,27 @@ public class EventManagementRepository extends EventRepository {
     }
 
     entity.setArchived(true);
+  }
+
+  protected void setRelatedFields(Event event) {
+    String relatedTo = event.getRelatedToSelect();
+    Long relatedId = event.getRelatedToSelectId();
+
+    if (Opportunity.class.getName().equals(relatedTo)) {
+      Opportunity opportunity = JPA.find(Opportunity.class, relatedId);
+      if (opportunity != null) {
+        event.setOpportunity(opportunity);
+      }
+    } else if (Lead.class.getName().equals(relatedTo)) {
+      Lead lead = JPA.find(Lead.class, relatedId);
+      if (lead != null) {
+        event.setEventLead(lead);
+      }
+    } else if (Partner.class.getName().equals(relatedTo)) {
+      Partner partner = JPA.find(Partner.class, relatedId);
+      if (partner != null) {
+        event.setPartner(partner);
+      }
+    }
   }
 }

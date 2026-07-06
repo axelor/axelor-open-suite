@@ -448,6 +448,11 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
+  public List<MoveLine> getMoveLines(List<Integer> moveLineIds) {
+    return getMoveLinesFromIds(moveLineIds);
+  }
+
+  @Override
   public List<MoveLine> getReconcilableMoveLines(List<Integer> moveLineIds) {
     if (moveLineIds == null) {
       return Collections.emptyList();

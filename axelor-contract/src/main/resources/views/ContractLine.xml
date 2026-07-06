@@ -98,7 +98,7 @@
           onChange="action-method-contract-line-compute-total"/>
         <panel name="discountPanel" colSpan="12">
           <field name="discountTypeSelect" colSpan="3"
-            onChange="action-method-contract-line-compute-total"/>
+            onChange="action-contract-line-group-discount-type-onchange"/>
           <field name="discountAmount" hideIf="discountTypeSelect == 0" colSpan="3"
             onChange="action-method-contract-line-compute-total"
             x-scale="$nbDecimalDigitForUnitPrice"/>
@@ -536,4 +536,15 @@ In case you have contract lines with different invoicing duration, you can activ
     <call class="com.axelor.apps.contract.web.ContractLineController"
       method="computeProductDomain"/>
   </action-method>
+
+  <action-record name="action-contract-line-record-clear-discount-amount"
+    model="com.axelor.apps.contract.db.ContractLine">
+    <field name="discountAmount" expr="eval: 0"/>
+  </action-record>
+
+  <action-group name="action-contract-line-group-discount-type-onchange">
+    <action name="action-contract-line-record-clear-discount-amount"/>
+    <action name="action-method-contract-line-compute-total"/>
+  </action-group>
+
 </object-views>

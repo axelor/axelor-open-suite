@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
+import java.util.List;
 
 public interface MoveLineControlService {
 
@@ -54,6 +55,8 @@ public interface MoveLineControlService {
   void checkJournalCompany(MoveLine moveLine) throws AxelorException;
 
   boolean canReconcile(MoveLine moveLine);
+
+  List<String> getPendingPaymentMessages(List<MoveLine> moveLines);
 
   void checkPartner(MoveLine moveLine) throws AxelorException;
 

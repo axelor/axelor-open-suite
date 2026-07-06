@@ -49,6 +49,8 @@ public class PurchaseOrderInvoiceController {
     purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 
     try {
+      Beans.get(PurchaseOrderInvoiceService.class)
+          .displayErrorMessageBtnGenerateInvoice(purchaseOrder);
 
       BigDecimal amountToInvoice =
           purchaseOrder
@@ -81,6 +83,8 @@ public class PurchaseOrderInvoiceController {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+      Beans.get(PurchaseOrderInvoiceService.class)
+          .displayErrorMessageBtnGenerateInvoice(purchaseOrder);
       response.setView(
           ActionView.define(I18n.get("Invoicing"))
               .model(PurchaseOrder.class.getName())

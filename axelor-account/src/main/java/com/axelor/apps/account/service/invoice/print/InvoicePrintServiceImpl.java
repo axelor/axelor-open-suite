@@ -41,6 +41,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.EntityHelper;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -121,12 +122,34 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     File fileCopies = file;
     String fileName = file.getName();
     if (ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(fileName))) {
-      Path path = PdfHelper.printCopiesToFile(file, copyNumber).toPath();
+      Path path =
+          copyNumber > 1
+              ? printSignedCopies(file, copyNumber).toPath()
+              : Files.copy(
+                  file.toPath(),
+                  TempFiles.createTempFile(null, ".pdf"),
+                  StandardCopyOption.REPLACE_EXISTING);
       fileCopies =
           Files.move(path, path.resolveSibling(fileName), StandardCopyOption.REPLACE_EXISTING)
               .toFile();
     }
     return fileCopies;
+  }
+
+  protected File printSignedCopies(File file, int copyNumber) throws AxelorException, IOException {
+    File sourceCopy =
+        Files.copy(
+                file.toPath(),
+                TempFiles.createTempFile(null, ".pdf"),
+                StandardCopyOption.REPLACE_EXISTING)
+            .toFile();
+    pdfSignatureService.removeSignatureFields(sourceCopy);
+    File copies = PdfHelper.printCopiesToFile(sourceCopy, copyNumber);
+    PfxCertificate pfxCertificate = appBaseService.getAppBase().getPfxCertificate();
+    if (pfxCertificate == null) {
+      return copies;
+    }
+    return pdfSignatureService.digitallySignPdf(copies, pfxCertificate, "Invoice");
   }
 
   @Override
@@ -214,7 +237,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         metaFiles.attach(signedMetaFile, signedMetaFile.getFileName(), invoice);
       }
       invoice.setPrintedPDF(signedMetaFile);
-      return MetaFiles.getPath(metaFile).toFile();
+      return MetaFiles.getPath(signedMetaFile).toFile();
     } catch (IOException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

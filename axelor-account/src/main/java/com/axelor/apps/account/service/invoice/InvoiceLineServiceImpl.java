@@ -19,17 +19,21 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.VatExemptionReason;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
@@ -85,6 +89,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected FiscalPositionService fiscalPositionService;
   protected InvoiceLineCheckService invoiceLineCheckService;
   protected OrderLineTaxService orderLineTaxService;
+  protected AccountingSituationService accountingSituationService;
+  protected FiscalPositionAccountService fiscalPositionAccountService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -104,7 +110,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       ProductPriceService productPriceService,
       FiscalPositionService fiscalPositionService,
       InvoiceLineCheckService invoiceLineCheckService,
-      OrderLineTaxService orderLineTaxService) {
+      OrderLineTaxService orderLineTaxService,
+      AccountingSituationService accountingSituationService,
+      FiscalPositionAccountService fiscalPositionAccountService) {
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
@@ -122,6 +130,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     this.fiscalPositionService = fiscalPositionService;
     this.invoiceLineCheckService = invoiceLineCheckService;
     this.orderLineTaxService = orderLineTaxService;
+    this.accountingSituationService = accountingSituationService;
+    this.fiscalPositionAccountService = fiscalPositionAccountService;
   }
 
   @Override
@@ -355,6 +365,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     productInformation.put("companyInTaxTotal", null);
     productInformation.put("companyExTaxTotal", null);
     productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
+    productInformation.put("account", null);
 
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
     AppInvoice appInvoice = appAccountService.getAppInvoice();
@@ -374,6 +385,8 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
         == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
       productInformation.put("analyticMoveLineList", new ArrayList<AnalyticMoveLine>());
     }
+    productInformation.putAll(getDefaultAccountAndTaxesFromPartner(invoice));
+
     return productInformation;
   }
 
@@ -639,6 +652,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public List<InvoiceLine> updateLinesAfterFiscalPositionChange(Invoice invoice)
       throws AxelorException {
     List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
@@ -649,8 +663,24 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     for (InvoiceLine invoiceLine : invoiceLineList) {
 
-      // Skip line update if product is not filled
       if (invoiceLine.getProduct() == null) {
+        Map<String, Object> valuesMap = getDefaultAccountAndTaxesFromPartner(invoice);
+        if (valuesMap.containsKey("account")) {
+          invoiceLine.setAccount((Account) valuesMap.get("account"));
+        }
+        if (valuesMap.containsKey("taxLineSet")) {
+          Set<TaxLine> taxLineSet = (Set<TaxLine>) valuesMap.get("taxLineSet");
+          invoiceLine.setTaxLineSet(taxLineSet);
+          invoiceLine.setTaxRate(taxAccountService.getTotalTaxRateInPercentage(taxLineSet));
+          invoiceLine.setTaxCode(taxAccountService.computeTaxCode(taxLineSet));
+        }
+        if (valuesMap.containsKey("taxEquiv")) {
+          invoiceLine.setTaxEquiv((TaxEquiv) valuesMap.get("taxEquiv"));
+        }
+        if (valuesMap.containsKey("vatExemptionReason")) {
+          invoiceLine.setVatExemptionReason(
+              (VatExemptionReason) valuesMap.get("vatExemptionReason"));
+        }
         continue;
       }
 
@@ -803,6 +833,54 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
         "vatExemptionReason",
         orderLineTaxService.resolveVatExemptionReason(
             fiscalPosition, taxEquiv, invoice.getPartner()));
+    return valuesMap;
+  }
+
+  protected Map<String, Object> getDefaultAccountAndTaxesFromPartner(Invoice invoice)
+      throws AxelorException {
+    Map<String, Object> valuesMap = new HashMap<>();
+    if (invoice == null || invoice.getPartner() == null || invoice.getCompany() == null) {
+      return valuesMap;
+    }
+    AccountingSituation accountingSituation =
+        accountingSituationService.getAccountingSituation(
+            invoice.getPartner(), invoice.getCompany());
+    if (accountingSituation == null) {
+      return valuesMap;
+    }
+    boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+    Account account =
+        isPurchase
+            ? accountingSituation.getDefaultExpenseAccount()
+            : accountingSituation.getDefaultIncomeAccount();
+    if (account == null) {
+      return valuesMap;
+    }
+    FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+    if (fiscalPosition != null) {
+      account = fiscalPositionAccountService.getAccount(fiscalPosition, account);
+    }
+    valuesMap.put("account", account);
+
+    if (account != null && CollectionUtils.isNotEmpty(account.getDefaultTaxSet())) {
+      LocalDate todayDate = appAccountService.getTodayDate(invoice.getCompany());
+      Set<TaxLine> taxLineSet =
+          taxAccountService.getTaxLineSet(account.getDefaultTaxSet(), todayDate);
+
+      TaxEquiv taxEquiv = null;
+      if (fiscalPosition != null && CollectionUtils.isNotEmpty(taxLineSet)) {
+        taxEquiv = fiscalPositionService.getTaxEquivFromOrToTaxSet(fiscalPosition, taxLineSet);
+        if (taxEquiv != null) {
+          taxLineSet = taxAccountService.getTaxLineSet(taxEquiv.getToTaxSet(), todayDate);
+        }
+      }
+      valuesMap.put("taxLineSet", taxLineSet);
+      valuesMap.put("taxEquiv", taxEquiv);
+      valuesMap.put(
+          "vatExemptionReason",
+          orderLineTaxService.resolveVatExemptionReason(
+              fiscalPosition, taxEquiv, invoice.getPartner()));
+    }
     return valuesMap;
   }
 }

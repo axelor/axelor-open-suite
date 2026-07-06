@@ -79,7 +79,12 @@ public class StockLocationUtilsServiceImpl implements StockLocationUtilsService 
     query.append("SELECT self.unit.id, sum(self.%s)");
     query.append(" FROM StockLocationLine self");
     query.append(" WHERE self.stockLocation.typeSelect != :stockLocationTypeSelectVirtual");
-    query.append(" AND self.product.id = :productId AND self.product.stockManaged is TRUE");
+    if (Boolean.TRUE.equals(product.getIsModel())) {
+      query.append(" AND self.product.parentProduct.id = :productId");
+    } else {
+      query.append(" AND self.product.id = :productId");
+    }
+    query.append(" AND self.product.stockManaged is TRUE");
 
     parameterMap.put("stockLocationTypeSelectVirtual", StockLocationRepository.TYPE_VIRTUAL);
     parameterMap.put("productId", product.getId());

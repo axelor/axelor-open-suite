@@ -789,8 +789,8 @@
         icon="box-seam-fill"/>
       <button if="__config__.app.getApp('sale')?.getEnableConfigurator()"
         name="addLineFromConfiguratorBtn" title="Add Line from Configurator"
-        showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"
-        icon="ui-checks"/>
+        showIf="statusSelect == 1 || (statusSelect == 3 &amp;&amp; orderBeingEdited)"
+        onClick="save,action-sale-order-view-generate-line" icon="ui-checks"/>
       <button
         if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto"
         name="generateCustomerStockMoveBtn" title="Generate customer deliveries"
@@ -864,13 +864,14 @@
       if="__config__.app.getApp('base')?.getIsGlobalDiscountEnabled()"
       showIf="clientPartner &amp;&amp; saleOrderLineList &amp;&amp; saleOrderLineList.length != 0"
       sidebar="true" readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited">
-      <field name="discountTypeSelect" onChange="action-sale-order-method-on-line-change"/>
+      <field name="discountTypeSelect"
+        onChange="action-sale-order-group-discount-type-onchange"/>
       <field name="discountAmount" showIf="discountTypeSelect != 0"
         x-currency="discountCurrency" x-scale="discountScale" colSpan="6"
-        onChange="action-sale-order-method-on-line-change"/>
+        onChange="action-sale-order-method-on-global-discount-change, action-sale-order-method-on-line-change"/>
       <button name="$swapDiscountTypeBtn" title="Swap discount type" widget="info-button"
         showIf="discountTypeSelect != 0" icon="arrow-left-right" colSpan="6"
-        onClick="action-sale-order-attrs-swap-discount-type, action-sale-order-method-on-line-change"/>
+        onClick="action-sale-order-attrs-swap-discount-type, action-sale-order-method-on-global-discount-change, action-sale-order-method-on-line-change"/>
       <field name="priceBeforeGlobalDiscount" type="decimal" x-currency="currency.symbol"
         x-scale="currency.numberOfDecimals" hidden="true"/>
       <field name="discountCurrency" hidden="true" x-dirty="false"/>
@@ -1589,6 +1590,7 @@
     <action name="action-sale-order-method-get-last-version"/>
     <action name="action-sale-order-attrs-set-save-actual-version"/>
     <action name="action-sale-order-attrs-list-selection-in-type-select"/>
+    <action name="action-sale-order-attrs-line-discount-readonly"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
@@ -1747,6 +1749,10 @@
 
   <action-method name="action-sale-order-method-on-line-change">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="onLineChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-on-global-discount-change">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="onGlobalDiscountChange"/>
   </action-method>
 
   <action-method name="action-sale-order-method-new-version">
@@ -2350,5 +2356,23 @@
   <action-method name="action-sale-order-method-compute-margin">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="computeMargin"/>
   </action-method>
+
+  <action-record name="action-sale-order-record-clear-discount-amount"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="discountAmount" expr="eval: 0"/>
+  </action-record>
+
+  <action-group name="action-sale-order-group-discount-type-onchange">
+    <action name="action-sale-order-record-clear-discount-amount"/>
+    <action name="action-sale-order-attrs-line-discount-readonly"/>
+    <action name="action-sale-order-method-on-line-change"/>
+  </action-group>
+
+  <action-attrs name="action-sale-order-attrs-line-discount-readonly">
+    <attribute name="readonly" for="saleOrderLineList.discountTypeSelect"
+      expr="eval: discountTypeSelect > 0"/>
+    <attribute name="readonly" for="saleOrderLineList.discountAmount"
+      expr="eval: discountTypeSelect > 0"/>
+  </action-attrs>
 
 </object-views>

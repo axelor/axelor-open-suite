@@ -300,6 +300,9 @@ public interface SaleOrderInvoiceService {
    */
   void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException;
 
+  void displayErrorMessageIfExceedsInvoiceableAmount(
+      SaleOrder saleOrder, BigDecimal amountToInvoice) throws AxelorException;
+
   List<Invoice> generateInvoicesFromSaleOrderLines(
       Map<SaleOrder, Map<Long, BigDecimal>> priceMaps,
       Map<SaleOrder, Map<Long, BigDecimal>> qtyToInvoiceMaps,

@@ -9,7 +9,7 @@
       <hilite if="typeSelect == 1" color="danger"/>
       <hilite if="typeSelect == 2" color="success"/>
     </field>
-    <field name="product"/>
+    <field name="product" domain="self.stockManaged IS TRUE"/>
     <field name="productCategory"/>
     <field name="productFamily"/>
     <field name="stockRotationCategory" widget="Tag" x-color-field="color"/>
@@ -35,7 +35,8 @@
       </panel>
       <panel name="levelPanel" colSpan="12" title="Configuration Level"
         help="Set one or more dimensions (product, product category, product family, stock rotation category). The configuration applies to a product only if it matches all the dimensions set on the line.">
-        <field name="product" grid-view="product-grid" form-view="product-form" colSpan="12"/>
+        <field name="product" grid-view="product-grid" form-view="product-form" colSpan="12"
+          domain="self.stockManaged IS TRUE"/>
         <field name="productCategory" grid-view="product-category-grid"
           form-view="product-category-form" colSpan="12"/>
         <field name="productFamily" colSpan="12"/>

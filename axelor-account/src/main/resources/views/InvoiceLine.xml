@@ -126,7 +126,7 @@
           hidden="true" x-scale="$nbDecimalDigitForUnitPrice"/>
         <panel name="discountPanel" colSpan="12" readonlyIf="$isGlobalDiscount">
           <field name="discountTypeSelect" colSpan="3"
-            onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
+            onChange="action-invoice-line-group-discount-type-onchange"/>
           <field name="discountAmount" colSpan="3"
             onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
             hideIf="discountTypeSelect == 0" x-scale="$nbDecimalDigitForUnitPrice"/>
@@ -290,7 +290,7 @@
         <field name="invoice" hidden="true"/>
         <panel name="discountPanel" title="Financial Discount" colSpan="12">
           <field name="discountTypeSelect"
-            onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
+            onChange="action-invoice-line-group-discount-type-onchange"/>
           <field name="discountAmount"
             onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
             hideIf="discountTypeSelect == 0"/>
@@ -326,6 +326,7 @@
     <action name="action-invoice-line-method-set-scale"/>
     <action name="action-invoice-line-attrs-display-coefficient"/>
     <action name="action-invoice-line-attrs-compute-is-global-discount"/>
+    <action name="action-invoice-line-method-get-product-information"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-onload">
@@ -738,6 +739,18 @@
       expr="eval: __parent__?.discountTypeSelect != 0"/>
   </action-attrs>
 
+
+  <action-record name="action-invoice-line-record-clear-discount-amount"
+    model="com.axelor.apps.account.db.InvoiceLine">
+    <field name="discountAmount" expr="eval: 0"/>
+  </action-record>
+
+  <action-group name="action-invoice-line-group-discount-type-onchange">
+    <action name="action-invoice-line-record-clear-discount-amount"/>
+    <action name="action-invoice-line-method-compute"/>
+    <action name="action-invoice-line-attrs-discountamount-title"/>
+    <action name="action-invoice-line-method-compute-analytic-distribution"/>
+  </action-group>
 
   <search-filters name="invoice-line-filters"
     model="com.axelor.apps.account.db.InvoiceLine" title="Invoice line filters">
