@@ -45,7 +45,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -307,12 +306,11 @@ public abstract class Importer {
 
   protected MetaFile getDataMetaFile() throws IOException {
     MetaFile dataMetaFile = configuration.getDataMetaFile();
-    Path path = MetaFiles.getPath(dataMetaFile);
     Store store = FileStoreFactory.getStore();
-    if (!store.hasFile(path.toString())) {
+    if (dataMetaFile == null || !store.hasFile(dataMetaFile.getFilePath())) {
       return null;
     }
-    try (FileInputStream in = new FileInputStream(path.toFile())) {
+    try (InputStream in = store.getStream(dataMetaFile.getFilePath())) {
       return metaFiles.upload(in, dataMetaFile.getFileName());
     }
   }
