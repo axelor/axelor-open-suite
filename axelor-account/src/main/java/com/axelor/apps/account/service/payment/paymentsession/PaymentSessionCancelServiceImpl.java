@@ -81,5 +81,6 @@ public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelServ
     invoiceTerm.setApplyFinancialDiscountOnPaymentSession(false);
     invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
     invoiceTerm.setAmountPaid(BigDecimal.ZERO);
+    invoiceTerm.setIsPaid(false);
   }
 }
