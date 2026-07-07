@@ -836,6 +836,7 @@
 "Stock move with id %s successfully realized.","Le mouvement de stock d'id %s a été réalisé avec succès.",,
 "Stock move(s) must belong to the same client as the logistical form.","Les mouvements de stock doivent appartenir au même client que la fiche logistique.",,
 "Stock move(s) status must be planned.","Les mouvements de stocks doivent être planifiés.",,
+"Stock movements",,,
 "Stock moves","Mouvements de stock",,
 "Stock per day","Stock par jour",,
 "Stock reservation feature cannot be active when we are managing stock locations on stock move line.","La réservation des stocks ne peut pas être activée si la gestion des emplacements de stock sur les lignes de mouvements de stock est activée.",,
