@@ -116,12 +116,17 @@ public class BudgetController {
         budgetType = globalBudget.getBudgetTypeSelect();
       }
 
-      response.setAttr(
-          "accountSet",
-          "domain",
-          "self.id IN ("
-              + Beans.get(BudgetService.class).getAccountIdList(companyId, budgetType)
-              + ")");
+      String domain;
+      if (Boolean.TRUE.equals(budget.getAllowBudgetImputationOnChildAccounts())) {
+        domain = Beans.get(BudgetService.class).getAccountDomainWithParents(companyId, budgetType);
+      } else {
+        domain =
+            "self.id IN ("
+                + Beans.get(BudgetService.class).getAccountIdList(companyId, budgetType)
+                + ")";
+      }
+
+      response.setAttr("accountSet", "domain", domain);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

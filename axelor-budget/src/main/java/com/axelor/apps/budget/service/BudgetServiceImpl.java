@@ -50,6 +50,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
@@ -60,8 +61,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -569,6 +572,29 @@ public class BudgetServiceImpl implements BudgetService {
   }
 
   @Override
+  public Budget findBudgetByAccountWithKey(
+      Account account, Company company, AnalyticMoveLine analyticMoveLine, LocalDate date) {
+    Account currentAccount = account;
+    int safety = 0;
+    while (currentAccount != null && safety++ < 50) {
+      String key = computeKey(currentAccount, company, analyticMoveLine);
+      if (!Strings.isNullOrEmpty(key)) {
+        Budget budget = findBudgetWithKey(key, date);
+        if (budget != null) {
+          if (!Boolean.TRUE.equals(budget.getAllowBudgetImputationOnChildAccounts())
+              && !budget.getAccountSet().contains(account)) {
+            currentAccount = currentAccount.getParentAccount();
+            continue;
+          }
+          return budget;
+        }
+      }
+      currentAccount = currentAccount.getParentAccount();
+    }
+    return null;
+  }
+
+  @Override
   @Transactional
   public void updateLinesFromMove(
       List<BudgetDistribution> budgetDistributionList,
@@ -709,6 +735,40 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     return "(0)";
+  }
+
+  @Override
+  public String getAccountDomainWithParents(Long companyId, int budgetType) throws AxelorException {
+    String originalIds = getAccountIdList(companyId, budgetType);
+
+    if ("(0)".equals(originalIds)) {
+      return "self.id IN (0)";
+    }
+
+    Set<Long> closure =
+        Arrays.stream(originalIds.split(","))
+            .map(String::trim)
+            .filter(s -> !s.isEmpty())
+            .map(Long::valueOf)
+            .collect(Collectors.toCollection(HashSet::new));
+
+    Set<Long> frontier = new HashSet<>(closure);
+    int safety = 0;
+    while (!frontier.isEmpty() && safety++ < 50) {
+      List<Long> parents =
+          JPA.em()
+              .createQuery(
+                  "SELECT a.parentAccount.id FROM Account a "
+                      + "WHERE a.id IN :ids AND a.parentAccount IS NOT NULL",
+                  Long.class)
+              .setParameter("ids", frontier)
+              .getResultList();
+      frontier = parents.stream().filter(closure::add).collect(Collectors.toSet());
+    }
+
+    return "self.id IN ("
+        + closure.stream().map(String::valueOf).collect(Collectors.joining(","))
+        + ")";
   }
 
   @Override
