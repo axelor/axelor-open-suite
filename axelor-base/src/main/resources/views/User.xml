@@ -18,8 +18,14 @@
 
 
   <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User"
-    onNew="action-user-group-on-new" onSave="com.axelor.apps.base.web.UserController:validate"
-    onLoad="action-user-group-on-load" extension="true">
+    extension="true">
+    <extend target="/">
+      <attribute name="onNew" value="action-user-group-on-new"/>
+      <attribute name="onLoad" value="action-user-group-on-load"/>
+      <attribute name="onSave"
+        value="com.axelor.apps.base.web.UserController:validate,action-user-validate-password"/>
+    </extend>
+
     <extend target="panel[@title='Overview']">
       <insert position="before">
         <panel name="stepUserPanel" showIf="[0,1,2,3,4].indexOf(stepStatusSelect) > -1">

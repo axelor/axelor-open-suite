@@ -1,0 +1,3 @@
+---
+title: "User: fixed password pattern error message still displayed after a successful random password change."
+module: axelor-base
