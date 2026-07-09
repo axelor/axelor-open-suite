@@ -18,7 +18,8 @@
 
 
   <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User"
-    onNew="action-user-group-on-new" onSave="com.axelor.apps.base.web.UserController:validate"
+    onNew="action-user-group-on-new"
+    onSave="com.axelor.apps.base.web.UserController:validate,action-user-validate-password"
     onLoad="action-user-group-on-load">
     <panel name="stepUserPanel" showIf="[0,1,2,3,4].indexOf(stepStatusSelect) > -1">
       <panel name="stepStatusPanel" colSpan="12">
