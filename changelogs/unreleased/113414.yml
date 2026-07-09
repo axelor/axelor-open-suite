@@ -1,0 +1,35 @@
+---
+title: "User: fixed the password change that no longer worked after the upgrade to AOP 8.2."
+module: axelor-base
+developer: |
+  Password management has been realigned with the flow reworked in AOP 8.2
+  (com.axelor.auth.AuthService.changePassword). The old inline password fields on the user form
+  no longer worked (the platform stopped encrypting/persisting transientPassword on save) and
+  have been removed.
+
+  Public API removed (adapt custom modules that depended on it):
+  - UserService.changeUserPassword(User, Map) and UserService.getPasswordPatternDescription()
+  - UserController.validate, UserController.validatePassword, UserController.generateRandomPassword
+
+  Behavior changes:
+  - AuthService is now overridden by AuthServiceBaseImpl (bound in BaseModule) to send the
+    "password changed" email (template AppBase.passwordChangedTemplate) on any password change
+    when User.sendEmailUponPasswordChange is true. This covers administrator changes and the
+    password-change batch; it is never triggered by a self-service change (the flag is not
+    exposed to users editing their own account). The flag is one-shot: it is reset after the
+    email is sent, so the forced change at next login (after a batch reset) does not re-send the
+    user's freshly chosen password.
+  - user-form and user-preferences-form no longer declare the inline password fields
+    (change, oldPassword, newPassword, chkPassword) nor their actions; the platform
+    "Change password" button is used instead.
+  - Password validation now relies on the AOP password policies. The complexity requirement
+    previously validated in Java is now enforced by the pattern policy.
+
+  Configuration migration required in axelor-config.properties (rename + enable):
+  ```
+  # before
+  user.password.pattern = <regex>
+  # after
+  user.password.pattern.enabled = true
+  user.password.pattern.value = <regex>
+  ```

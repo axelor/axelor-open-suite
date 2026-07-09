@@ -145,7 +145,7 @@ public class BatchPasswordChange extends BatchStrategy {
             == BaseBatchRepository.PASSWORD_CHANGE_ACTION_GENERATE_AND_FORCE_UPDATE) {
       user.setForcePasswordChange(true);
     }
-    userRepo.save(user); // processChangedPassword method call in save method for email send
+    userRepo.save(user); // processChangedPassword called in the save hook to send the email
     updateUser(user);
   }
 
