@@ -20,6 +20,7 @@ package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.service.purchase.request.PurchaseRequestToPoGenerationResult;
 import java.util.List;
@@ -30,7 +31,8 @@ public interface PurchaseRequestService {
       List<PurchaseRequest> purchaseRequests,
       Boolean groupBySupplier,
       Boolean groupByProduct,
-      Company company)
+      Company company,
+      Partner defaultSupplier)
       throws AxelorException;
 
   public Map<String, Object> getDefaultValues(PurchaseRequest purchaseRequest, Company company)

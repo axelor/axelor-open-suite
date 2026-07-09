@@ -20,6 +20,7 @@ package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
@@ -56,18 +57,11 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
       List<PurchaseRequest> purchaseRequests,
       Boolean groupBySupplier,
       Boolean groupByProduct,
-      Company company)
+      Company company,
+      Partner defaultSupplier)
       throws AxelorException {
-    PurchaseRequestToPoGenerationResult result =
-        purchaseRequestToPoCreateService.createFromRequests(
-            purchaseRequests, groupBySupplier, groupByProduct, company);
-
-    for (PurchaseRequest pr : purchaseRequests) {
-      if (pr.getPurchaseOrder() != null) {
-        pr.setStatusSelect(PurchaseRequestRepository.STATUS_PURCHASED);
-      }
-    }
-    return result;
+    return purchaseRequestToPoCreateService.createFromRequests(
+        purchaseRequests, groupBySupplier, groupByProduct, company, defaultSupplier);
   }
 
   @Override
