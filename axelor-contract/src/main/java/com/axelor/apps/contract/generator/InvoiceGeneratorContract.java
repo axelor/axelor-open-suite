@@ -44,7 +44,7 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
             : contract.getPartner(),
         null,
         null,
-        contract.getContractId(),
+        computeInternalReference(contract),
         null,
         null,
         null);
@@ -53,6 +53,15 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
     this.paymentCondition = contract.getCurrentContractVersion().getPaymentCondition();
     this.paymentMode = contract.getCurrentContractVersion().getPaymentMode();
     this.appBaseService = Beans.get(AppBaseService.class);
+  }
+
+  public static String computeInternalReference(Contract contract) {
+    String contractId = contract.getContractId();
+    Integer versionNumber = contract.getVersionNumber();
+    if (versionNumber != null && versionNumber > 0) {
+      return contractId + " - " + versionNumber;
+    }
+    return contractId;
   }
 
   @Override
