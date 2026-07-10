@@ -1,0 +1,3 @@
+---
+title: "Stock rules: fixed alert email not sent when recipients are resolved from the user/team templating formula."
+module: axelor-stock
