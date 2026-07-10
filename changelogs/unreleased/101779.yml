@@ -1,0 +1,5 @@
+---
+title: "Fiscal position: fixed wrong tax domain on tax equivalence preventing proper reverse charge setup when replacement tax has a different rate than the original tax."
+module: axelor-base
+developer: |
+  `TaxEquivService#getTaxDomain(TaxEquiv, boolean, boolean)` signature changed to `getTaxDomain(TaxEquiv)`.
