@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.loan;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,6 +40,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -81,8 +83,15 @@ class LoanAdjustmentServiceImplTest {
     return loan.getLineList().get(index);
   }
 
+  private List<LoanLine> sorted(Loan loan) {
+    List<LoanLine> lines = new ArrayList<>(loan.getLineList());
+    lines.sort(Comparator.comparing(LoanLine::getInstallmentDate));
+    return lines;
+  }
+
   private LoanLine lastLine(Loan loan) {
-    return loan.getLineList().get(loan.getLineList().size() - 1);
+    List<LoanLine> lines = sorted(loan);
+    return lines.get(lines.size() - 1);
   }
 
   private boolean isZero(BigDecimal value) {
@@ -150,42 +159,64 @@ class LoanAdjustmentServiceImplTest {
   }
 
   @Test
-  void defer_capitalize_extendsScheduleAndReachesZero() throws AxelorException {
+  void defer_capitalizeAndRecompute_extendsScheduleAndReachesZero() throws AxelorException {
     Loan loan = scheduledLoan();
 
     service.defer(loan, 2, true, true, true);
 
-    assertEquals(14, loan.getLineList().size());
-    assertTrue(isZero(line(loan, 0).getCapitalAmount()));
-    assertTrue(isZero(line(loan, 1).getCapitalAmount()));
+    List<LoanLine> lines = sorted(loan);
+    assertEquals(14, lines.size());
+    assertTrue(isZero(lines.get(0).getCapitalAmount()));
+    assertTrue(isZero(lines.get(1).getCapitalAmount()));
     // remaining debt grows over the two deferred months (interest capitalized)
-    assertTrue(line(loan, 1).getRemainingDebtAfter().compareTo(new BigDecimal("100000")) > 0);
+    assertTrue(lines.get(1).getRemainingDebtAfter().compareTo(new BigDecimal("100000")) > 0);
     assertTrue(isZero(lastLine(loan).getRemainingDebtAfter()));
     assertTrue(loan.getScheduleSnapshot() != null);
   }
 
   @Test
-  void defer_withoutCapitalize_generatesInterestOnlyMonths() throws AxelorException {
+  void defer_withoutCapitalize_keepsExistingLinesShiftsDatesAndAddsDeferredMonths()
+      throws AxelorException {
     Loan loan = scheduledLoan();
+    // Manually edit an installment; it must survive the deferral untouched.
+    LoanLine edited = line(loan, 5);
+    edited.setCapitalAmount(new BigDecimal("1234.56"));
+    BigDecimal editedCapital = edited.getCapitalAmount();
 
     service.defer(loan, 2, false, false, true);
 
-    assertEquals(14, loan.getLineList().size());
-    assertTrue(isZero(line(loan, 0).getCapitalAmount()));
-    assertEquals(0, new BigDecimal("300.00").compareTo(line(loan, 0).getInterestAmount()));
-    assertEquals(0, new BigDecimal("100000").compareTo(line(loan, 0).getRemainingDebtAfter()));
-    assertTrue(isZero(lastLine(loan).getRemainingDebtAfter()));
+    List<LoanLine> lines = sorted(loan);
+    // 12 original installments kept + 2 deferred = 14
+    assertEquals(14, lines.size());
+    // The two earliest are the interest-only deferred months.
+    assertTrue(isZero(lines.get(0).getCapitalAmount()));
+    assertEquals(0, new BigDecimal("300.00").compareTo(lines.get(0).getInterestAmount()));
+    assertEquals(0, new BigDecimal("100000").compareTo(lines.get(0).getRemainingDebtAfter()));
+    // The manually edited line is preserved.
+    assertEquals(0, editedCapital.compareTo(edited.getCapitalAmount()));
+    assertTrue(loan.getLineList().contains(edited));
   }
 
   @Test
-  void cancelDeferral_restoresSnapshot() throws AxelorException {
+  void cancelDeferral_removesDeferralInstallmentsRestoresDatesAndKeepsAmounts()
+      throws AxelorException {
     Loan loan = scheduledLoan();
-    service.defer(loan, 2, true, true, true);
+    // The first installment is already booked and must be preserved.
+    line(loan, 0).setAccountMove(new com.axelor.apps.account.db.Move());
+    LoanLine tracked = line(loan, 3); // a planned installment
+    LocalDate originalDate = tracked.getInstallmentDate();
+    BigDecimal originalCapital = tracked.getCapitalAmount();
+    service.defer(loan, 2, false, false, true);
+    assertEquals(14, loan.getLineList().size());
 
     service.cancelDeferral(loan);
 
+    // deferral installments removed -> back to 12
     assertEquals(12, loan.getLineList().size());
-    assertEquals(0, new BigDecimal("8546.73").compareTo(line(loan, 0).getTotalAmount()));
+    assertNotNull(line(loan, 0).getAccountMove()); // booked line kept
+    // the other installments keep their amount and get their original date back
+    assertEquals(originalDate, tracked.getInstallmentDate());
+    assertEquals(0, originalCapital.compareTo(tracked.getCapitalAmount()));
     assertNull(loan.getScheduleSnapshot());
   }
 }

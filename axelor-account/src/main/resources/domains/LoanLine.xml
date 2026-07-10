@@ -22,6 +22,8 @@
       title="Accounting entry"
       help="Accounting entry of this installment. A line with a move is considered booked."/>
     <boolean name="isManuallyModified" title="Manually modified"/>
+    <boolean name="isDeferral" title="Deferral installment"
+      help="Installment created by a deferral; removed when the deferral is cancelled."/>
 
     <integer name="editedFieldSelect" transient="true"
       help="Marks which amount was manually edited, to drive the recomputation of the following installments."/>

@@ -1788,4 +1788,8 @@ public final class AccountExceptionMessage {
       /*$$(*/ "There is no planned installment to adjust on this loan." /*)*/;
   public static final String LOAN_NO_ADJUSTMENT_TO_CANCEL =
       /*$$(*/ "There is no adjustment to cancel on this loan." /*)*/;
+  public static final String LOAN_LINE_CAPITAL_EXCEEDS_REMAINING_DEBT =
+      /*$$(*/ "The capital repayment cannot exceed the remaining debt of the installment." /*)*/;
+  public static final String LOAN_LINE_NEGATIVE_AMOUNT =
+      /*$$(*/ "The installment amounts cannot be negative." /*)*/;
 }

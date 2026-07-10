@@ -33,7 +33,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,7 +42,6 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
   protected static final MathContext MC = MathContext.DECIMAL64;
   protected static final BigDecimal HUNDRED = BigDecimal.valueOf(100);
   protected static final BigDecimal TWELVE = BigDecimal.valueOf(12);
-  protected static final int MAX_INSTALLMENTS = 1200;
   protected static final String SNAPSHOT_LINE_SEPARATOR = "\n";
   protected static final String SNAPSHOT_FIELD_SEPARATOR = ";";
 
@@ -67,7 +65,7 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
   }
 
   @Override
-  public void computeEditedLine(LoanLine loanLine) {
+  public void computeEditedLine(LoanLine loanLine) throws AxelorException {
     Loan loan = loanLine.getLoan();
     BigDecimal rdBefore = nz(loanLine.getRemainingDebtBefore());
     BigDecimal interest = nz(loanLine.getInterestAmount());
@@ -75,16 +73,30 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
     BigDecimal insurance = nz(loanLine.getInsuranceAmount());
     BigDecimal total = nz(loanLine.getTotalAmount());
 
+    if (interest.signum() < 0 || capital.signum() < 0 || insurance.signum() < 0) {
+      throw new AxelorException(
+          LoanLine.class,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.LOAN_LINE_NEGATIVE_AMOUNT));
+    }
+
     if (nz(loanLine.getEditedFieldSelect()) == LoanLineRepository.EDITED_FIELD_INTEREST) {
       // Keep the installment total and adjust the capital repayment.
       capital = scale(loan, total.subtract(interest).subtract(insurance));
       if (capital.signum() < 0) {
         capital = BigDecimal.ZERO;
       }
-      loanLine.setCapitalAmount(capital);
-    } else {
-      loanLine.setTotalAmount(scale(loan, interest.add(capital).add(insurance)));
     }
+
+    if (capital.compareTo(rdBefore) > 0) {
+      throw new AxelorException(
+          LoanLine.class,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.LOAN_LINE_CAPITAL_EXCEEDS_REMAINING_DEBT));
+    }
+
+    loanLine.setCapitalAmount(capital);
+    loanLine.setTotalAmount(scale(loan, interest.add(capital).add(insurance)));
     loanLine.setRemainingDebtAfter(scale(loan, rdBefore.subtract(capital)));
     loanLine.setIsManuallyModified(true);
   }
@@ -151,8 +163,6 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
     BigDecimal t = monthlyRate(loan);
     BigDecimal insurance = keepInsurance ? insuranceOf(loan) : BigDecimal.ZERO;
     int resumeCount = planned.size();
-    BigDecimal originalPayment =
-        scale(loan, nz(first.getInterestAmount()).add(nz(first.getCapitalAmount())));
 
     List<LoanLine> deferralLines = new ArrayList<>();
     for (int j = 0; j < installmentCount; j++) {
@@ -163,6 +173,7 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
       line.setInsuranceAmount(insurance);
       line.setCapitalAmount(BigDecimal.ZERO);
       line.setIsManuallyModified(true);
+      line.setIsDeferral(true);
       if (capitalizeInterest) {
         line.setInterestAmount(BigDecimal.ZERO);
         rd = scale(loan, rd.add(interest));
@@ -175,17 +186,21 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
       deferralLines.add(line);
     }
 
-    LocalDate resumeDate = startDate.plusMonths(installmentCount);
-    List<LoanLine> resumed;
-    if (capitalizeInterest && !recomputePayment) {
-      resumed = amortizeWithFixedPayment(loan, rd, resumeDate, originalPayment);
+    if (capitalizeInterest && recomputePayment) {
+      // Recompute the following installments on the new (higher) remaining debt.
+      LocalDate resumeDate = startDate.plusMonths(installmentCount);
+      List<LoanLine> resumed =
+          loanLineComputationService.computeLinesFrom(loan, rd, resumeDate, resumeCount);
+      removePlannedLines(loan);
+      resumed.forEach(loan::addLineListItem);
     } else {
-      resumed = loanLineComputationService.computeLinesFrom(loan, rd, resumeDate, resumeCount);
+      // Keep the existing installments (including manual edits): only shift their dates.
+      for (LoanLine plannedLine : planned) {
+        plannedLine.setInstallmentDate(
+            plannedLine.getInstallmentDate().plusMonths(installmentCount));
+      }
     }
-
-    removePlannedLines(loan);
     deferralLines.forEach(loan::addLineListItem);
-    resumed.forEach(loan::addLineListItem);
     loanRepository.save(loan);
   }
 
@@ -198,9 +213,19 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.LOAN_NO_ADJUSTMENT_TO_CANCEL));
     }
-    List<LoanLine> restored = deserializeSnapshot(loan);
-    removePlannedLines(loan);
-    restored.forEach(loan::addLineListItem);
+    // Remove the deferral installments and shift the other installments back, without resetting
+    // their amounts (manual edits are preserved).
+    long deferralCount =
+        loan.getLineList().stream()
+            .filter(line -> Boolean.TRUE.equals(line.getIsDeferral()))
+            .count();
+    loan.getLineList().removeIf(line -> Boolean.TRUE.equals(line.getIsDeferral()));
+
+    if (deferralCount > 0) {
+      for (LoanLine line : orderedPlannedLines(loan)) {
+        line.setInstallmentDate(line.getInstallmentDate().minusMonths(deferralCount));
+      }
+    }
     loan.setScheduleSnapshot(null);
     loanRepository.save(loan);
   }
@@ -228,38 +253,6 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
               loan,
               nz(line.getInterestAmount()).add(nz(line.getCapitalAmount())).add(nz(insurance))));
     }
-  }
-
-  protected List<LoanLine> amortizeWithFixedPayment(
-      Loan loan, BigDecimal startRd, LocalDate startDate, BigDecimal payment) {
-    List<LoanLine> lines = new ArrayList<>();
-    BigDecimal t = monthlyRate(loan);
-    BigDecimal insurance = insuranceOf(loan);
-    BigDecimal rd = startRd;
-    int i = 0;
-    while (rd.signum() > 0 && i < MAX_INSTALLMENTS) {
-      BigDecimal interest = scale(loan, rd.multiply(t));
-      BigDecimal capital = scale(loan, payment.subtract(interest));
-      if (capital.signum() <= 0) {
-        capital = rd; // payment cannot cover interest: close the schedule
-      }
-      if (capital.compareTo(rd) >= 0) {
-        capital = rd;
-      }
-      BigDecimal rdAfter = scale(loan, rd.subtract(capital));
-      LoanLine line = new LoanLine();
-      line.setInstallmentDate(startDate.plusMonths(i));
-      line.setRemainingDebtBefore(rd);
-      line.setInterestAmount(interest);
-      line.setCapitalAmount(capital);
-      line.setInsuranceAmount(insurance);
-      line.setTotalAmount(scale(loan, interest.add(capital).add(insurance)));
-      line.setRemainingDebtAfter(rdAfter);
-      lines.add(line);
-      rd = rdAfter;
-      i++;
-    }
-    return lines;
   }
 
   protected void replaceLines(Loan loan, List<LoanLine> toRemove, List<LoanLine> toAdd) {
@@ -330,27 +323,6 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
         plain(line.getTotalAmount()),
         plain(line.getRemainingDebtAfter()),
         Boolean.toString(Boolean.TRUE.equals(line.getIsManuallyModified())));
-  }
-
-  protected List<LoanLine> deserializeSnapshot(Loan loan) {
-    return Arrays.stream(loan.getScheduleSnapshot().split(SNAPSHOT_LINE_SEPARATOR))
-        .filter(row -> !row.isBlank())
-        .map(this::deserializeLine)
-        .collect(Collectors.toList());
-  }
-
-  protected LoanLine deserializeLine(String row) {
-    String[] parts = row.split(SNAPSHOT_FIELD_SEPARATOR, -1);
-    LoanLine line = new LoanLine();
-    line.setInstallmentDate(LocalDate.parse(parts[0]));
-    line.setRemainingDebtBefore(new BigDecimal(parts[1]));
-    line.setInterestAmount(new BigDecimal(parts[2]));
-    line.setCapitalAmount(new BigDecimal(parts[3]));
-    line.setInsuranceAmount(new BigDecimal(parts[4]));
-    line.setTotalAmount(new BigDecimal(parts[5]));
-    line.setRemainingDebtAfter(new BigDecimal(parts[6]));
-    line.setIsManuallyModified(Boolean.parseBoolean(parts[7]));
-    return line;
   }
 
   protected String plain(BigDecimal value) {

@@ -34,7 +34,7 @@ public interface LoanAdjustmentService {
    * total and adjusts the capital; editing the capital or the insurance recomputes the total. The
    * remaining debt after is updated and the line is flagged manually modified.
    */
-  void computeEditedLine(LoanLine loanLine);
+  void computeEditedLine(LoanLine loanLine) throws AxelorException;
 
   /**
    * Recomputes the following installments after a manual edit, applying the Quadra rules: editing

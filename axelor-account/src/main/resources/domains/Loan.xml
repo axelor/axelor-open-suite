@@ -60,14 +60,13 @@
     <string name="scheduleSnapshot" title="Schedule snapshot" large="true" hidden="true"
       help="Copy of the planned installments taken before a deferral, used to cancel it."/>
 
-    <integer name="deferralInstallmentCount" title="Defer (installments)" transient="true"
+    <integer name="deferralInstallmentCount" title="Defer (installments)"
       help="Number of upcoming installments to defer."/>
     <boolean name="deferralCapitalizeInterest" title="Interest added to remaining debt"
-      transient="true"
       help="If yes, the interest of the deferred installments is added to the remaining debt."/>
-    <boolean name="deferralRecomputePayment" title="Recompute installments" transient="true"
+    <boolean name="deferralRecomputePayment" title="Recompute installments"
       help="If yes, the installments are recomputed to include the deferred interest; otherwise the original installments are kept."/>
-    <boolean name="deferralKeepInsurance" title="Keep insurance" transient="true"
+    <boolean name="deferralKeepInsurance" title="Keep insurance"
       help="If yes, the insurance stays due during the deferred installments."/>
 
     <extra-code><![CDATA[
