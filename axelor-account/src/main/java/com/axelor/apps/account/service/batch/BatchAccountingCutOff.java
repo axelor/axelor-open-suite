@@ -121,6 +121,7 @@ public class BatchAccountingCutOff extends PreviewBatch {
     }
   }
 
+  @Transactional
   protected boolean _processMove(Move move, AccountingBatch accountingBatch) {
     try {
       Journal miscOpeJournal = accountingBatch.getMiscOpeJournal();
