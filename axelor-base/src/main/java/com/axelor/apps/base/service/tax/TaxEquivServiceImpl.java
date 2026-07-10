@@ -32,26 +32,11 @@ import java.util.stream.Collectors;
 
 public class TaxEquivServiceImpl implements TaxEquivService {
   @Override
-  public String getTaxDomain(TaxEquiv taxEquiv, boolean isFromTax, boolean isToTax) {
+  public String getTaxDomain(TaxEquiv taxEquiv) {
     if (!taxEquiv.getReverseCharge()) {
       return null;
     }
-
-    Set<BigDecimal> taxRateSet;
-
-    if (isFromTax) {
-      taxRateSet =
-          this.getTaxValues(taxEquiv.getToTaxSet())
-              .orElse(this.getTaxValues(taxEquiv.getReverseChargeTaxSet()).orElse(null));
-    } else if (isToTax) {
-      taxRateSet =
-          this.getTaxValues(taxEquiv.getFromTaxSet())
-              .orElse(this.getTaxValues(taxEquiv.getReverseChargeTaxSet()).orElse(null));
-    } else {
-      taxRateSet =
-          this.getTaxValues(taxEquiv.getFromTaxSet())
-              .orElse(this.getTaxValues(taxEquiv.getToTaxSet()).orElse(null));
-    }
+    Set<BigDecimal> taxRateSet = this.getTaxValues(taxEquiv.getToTaxSet()).orElse(null);
 
     if (ObjectUtils.isEmpty(taxRateSet)) {
       return null;
