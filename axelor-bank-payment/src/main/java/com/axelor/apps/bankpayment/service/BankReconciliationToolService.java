@@ -23,8 +23,11 @@ import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.common.ObjectUtils;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class BankReconciliationToolService {
@@ -48,7 +51,7 @@ public class BankReconciliationToolService {
       return errorMoveLineList;
     }
 
-    List<MoveLine> moveLineList = new ArrayList<>();
+    Map<MoveLine, BigDecimal> amountPerMoveLineMap = new LinkedHashMap<>();
 
     for (BankReconciliationLine bankReconciliationLine :
         bankReconciliation.getBankReconciliationLineList()) {
@@ -57,10 +60,15 @@ public class BankReconciliationToolService {
         continue;
       }
 
-      if (moveLineList.contains(moveLine)) {
+      BigDecimal amount = bankReconciliationLine.getDebit().add(bankReconciliationLine.getCredit());
+      amountPerMoveLineMap.merge(moveLine, amount, BigDecimal::add);
+    }
+
+    for (Map.Entry<MoveLine, BigDecimal> entry : amountPerMoveLineMap.entrySet()) {
+      MoveLine moveLine = entry.getKey();
+      BigDecimal moveLineAmount = moveLine.getDebit().add(moveLine.getCredit());
+      if (entry.getValue().compareTo(moveLineAmount) > 0) {
         errorMoveLineList.add(moveLine);
-      } else {
-        moveLineList.add(moveLine);
       }
     }
 

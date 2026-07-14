@@ -103,6 +103,8 @@
           onClick="action-bank-reconciliation-method-automatic-reconciliation,action-bank-reconciliation-method-check-multiple-move-line"/>
         <button name="multipleReconcileBtn" title="Multiple reconciles" colSpan="3"
           onClick="save,action-bank-reconciliation-validate-lines-selected,action-bank-reconciliation-view-multiple-reconcile-wizard"/>
+        <button name="reconcileToMoveLineBtn" title="Reconcile to move line" colSpan="3"
+          onClick="save,action-bank-reconciliation-validate-reconcile-to-move-line-lines-selected,action-bank-reconciliation-view-reconcile-to-move-line-wizard"/>
         <button name="unreconcileBtn" title="Unreconcile selected" colSpan="3"
           onClick="save,action-bank-reconciliation-method-unreconcile"/>
         <button name="reconcileBtn" title="Reconcile selected" colSpan="3"
@@ -203,6 +205,59 @@
       <button name="validateBtn" title="Validate" hideIf="statusSelect == 2"
         onClick="action-bank-reconciliation-method-validate-multiple-reconciles"
         showIf="$selectedMoveLineTotal &gt; 0"/>
+    </panel>
+  </form>
+
+  <form name="bank-reconciliation-reconcile-to-move-line-wizard-form"
+    title="Reconcile to move line" model="com.axelor.apps.bankpayment.db.BankReconciliation"
+    onNew="action-bank-reconciliation-group-reconcile-to-move-line-wizard-new">
+    <panel name="mainPanel" colSpan="12">
+      <panel-related name="$selectedBankReconciliationLinesPanel"
+        field="$selectedBankReconciliationLines" title="Selected bank movements" colSpan="12"
+        type="one-to-many" target="com.axelor.apps.bankpayment.db.BankReconciliationLine"
+        readonly="true" grid-view="bank-reconciliation-line-reconcile-to-move-line-grid"
+        form-view="bank-reconciliation-line-form"/>
+
+      <panel name="moveLinePanel" title="Move line details" colSpan="12">
+        <field name="$moveLineToReconcile" title="Move line" type="many-to-one"
+          target="com.axelor.apps.account.db.MoveLine" canNew="false" canEdit="false"
+          form-view="move-line-form" grid-view="move-line-grid"
+          onSelect="action-bank-reconciliation-method-reconcile-to-move-line-domain"
+          onChange="action-bank-reconciliation-group-reconcile-to-move-line-on-change-move-line"/>
+        <field name="$moveLineAccount" title="Account" type="many-to-one"
+          target="com.axelor.apps.account.db.Account" readonly="true"/>
+        <field name="$moveLinePartner" title="Partner" type="many-to-one"
+          target="com.axelor.apps.base.db.Partner" readonly="true"/>
+        <field name="$moveLineDate" title="Accounting date" type="date" readonly="true"/>
+        <field name="$moveLineTotalAmount" title="Total amount" type="decimal" readonly="true"
+          x-scale="$currencyNumberOfDecimals"/>
+        <field name="$moveLineAlreadyReconciledAmount" title="Already reconciled amount"
+          type="decimal" readonly="true" x-scale="$currencyNumberOfDecimals"/>
+      </panel>
+
+      <panel name="overviewPanel" title="Overview" colSpan="12">
+        <field name="$bankMovementsTotal" title="Bank movements total" type="decimal"
+          readonly="true" x-scale="$currencyNumberOfDecimals"/>
+        <field name="$moveLineRemainingAmount" title="Move line remaining" type="decimal"
+          readonly="true" x-scale="$currencyNumberOfDecimals"/>
+        <field name="$reconcileDifference" title="Difference" type="decimal" readonly="true"
+          x-scale="$currencyNumberOfDecimals"/>
+        <label name="reconcileBalancedLabel" title="Amounts are balanced"
+          showIf="$moveLineToReconcile &amp;&amp; $reconcileDifference == 0" colSpan="12"
+          css="label-success label-bold"/>
+        <label name="reconcilePartialLabel"
+          title="Partial reconciliation: an amount will remain to reconcile on the move line"
+          showIf="$moveLineToReconcile &amp;&amp; $reconcileDifference &lt; 0" colSpan="12"
+          css="label-info label-bold"/>
+        <label name="reconcileOverrunLabel"
+          title="Warning: the sum of bank movements exceeds the remaining amount on the move line"
+          showIf="$moveLineToReconcile &amp;&amp; $reconcileDifference &gt; 0" colSpan="12"
+          css="label-warning label-bold"/>
+      </panel>
+
+      <field name="$currencyNumberOfDecimals" hidden="true"/>
+      <button name="validateBtn" title="Validate" readonlyIf="!$moveLineToReconcile"
+        onClick="action-bank-reconciliation-validate-reconcile-to-move-line-confirm-overrun,action-bank-reconciliation-method-reconcile-to-move-line"/>
     </panel>
   </form>
 
@@ -468,6 +523,77 @@
   <action-method name="action-bank-reconciliation-method-check-multiple-move-line">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController"
       method="checkMultipleMoveLine"/>
+  </action-method>
+
+  <action-view name="action-bank-reconciliation-view-reconcile-to-move-line-wizard"
+    title="Reconcile to move line" model="com.axelor.apps.bankpayment.db.BankReconciliation">
+    <view type="form" name="bank-reconciliation-reconcile-to-move-line-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_bankReconciliation" expr="eval: __this__"/>
+    <context name="_selectedBankReconciliationLineList"
+      expr="eval: __this__.bankReconciliationLineList.findAll{it.isSelected() &amp;&amp; it.moveLine == null}"/>
+  </action-view>
+
+  <action-group
+    name="action-bank-reconciliation-group-reconcile-to-move-line-wizard-new">
+    <action name="action-bank-reconciliation-attrs-reconcile-to-move-line-wizard-new"/>
+    <action name="action-bank-reconciliation-method-compute-reconcile-to-move-line-balances"/>
+  </action-group>
+
+  <action-attrs
+    name="action-bank-reconciliation-attrs-reconcile-to-move-line-wizard-new">
+    <attribute name="value" for="$selectedBankReconciliationLines"
+      expr="eval: _selectedBankReconciliationLineList"/>
+    <attribute name="value" for="$currencyNumberOfDecimals"
+      expr="eval: __repo__(BankReconciliation).find(_bankReconciliation?.id).currency?.numberOfDecimals"/>
+  </action-attrs>
+
+  <action-validate
+    name="action-bank-reconciliation-validate-reconcile-to-move-line-lines-selected">
+    <error message="Please select at least one unreconciled bank reconciliation line"
+      if="bankReconciliationLineList.find{it.isSelected()} == null"/>
+    <error message="All selected bank reconciliation lines must be unreconciled"
+      if="bankReconciliationLineList.find{it.isSelected() &amp;&amp; it.moveLine != null} != null"/>
+  </action-validate>
+
+  <action-group
+    name="action-bank-reconciliation-group-reconcile-to-move-line-on-change-move-line">
+    <action name="action-bank-reconciliation-method-reconcile-to-move-line-details"/>
+    <action name="action-bank-reconciliation-method-compute-reconcile-to-move-line-balances"/>
+  </action-group>
+
+  <action-method
+    name="action-bank-reconciliation-method-reconcile-to-move-line-details">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController"
+      method="setReconcileToMoveLineDetails"/>
+  </action-method>
+
+  <action-validate
+    name="action-bank-reconciliation-validate-reconcile-to-move-line-confirm-overrun">
+    <alert
+      message="The sum of bank movements exceeds the remaining amount on the move line. Do you want to continue?"
+      if="reconcileDifference != null &amp;&amp; new BigDecimal(reconcileDifference).compareTo(BigDecimal.ZERO) &gt; 0"/>
+  </action-validate>
+
+  <action-method name="action-bank-reconciliation-method-reconcile-to-move-line">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController"
+      method="reconcileToMoveLine"/>
+  </action-method>
+
+  <action-method
+    name="action-bank-reconciliation-method-reconcile-to-move-line-domain">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController"
+      method="getReconcileToMoveLineDomain"/>
+  </action-method>
+
+  <action-method
+    name="action-bank-reconciliation-method-compute-reconcile-to-move-line-balances">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController"
+      method="computeReconcileToMoveLineBalances"/>
   </action-method>
 
   <search-filters name="bank-reconciliation-filters"

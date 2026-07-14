@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
@@ -575,5 +576,136 @@ public class BankReconciliationController {
                 .map(MoveLine::getName)
                 .distinct()
                 .collect(Collectors.joining(","))));
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  public void reconcileToMoveLine(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+
+      Map<String, Object> bankReconciliationContext =
+          (Map<String, Object>) context.get("_bankReconciliation");
+      BankReconciliation bankReconciliation =
+          Beans.get(BankReconciliationRepository.class)
+              .find(((Integer) bankReconciliationContext.get("id")).longValue());
+
+      BankReconciliationLineRepository bankReconciliationLineRepository =
+          Beans.get(BankReconciliationLineRepository.class);
+      List<LinkedHashMap> selectedBankReconciliationLineListContext =
+          (List<LinkedHashMap>) context.get("selectedBankReconciliationLines");
+      List<BankReconciliationLine> selectedBankReconciliationLineList =
+          selectedBankReconciliationLineListContext.stream()
+              .map(map -> map.get("id"))
+              .map(Object::toString)
+              .map(Long::valueOf)
+              .map(bankReconciliationLineRepository::find)
+              .collect(Collectors.toList());
+
+      Map<String, Object> moveLineToReconcileContext =
+          (Map<String, Object>) context.get("moveLineToReconcile");
+      MoveLine moveLine =
+          Beans.get(MoveLineRepository.class)
+              .find(((Integer) moveLineToReconcileContext.get("id")).longValue());
+
+      Beans.get(BankReconciliationValidateService.class)
+          .validateReconcileToMoveLine(
+              bankReconciliation, moveLine, selectedBankReconciliationLineList, true);
+
+      Beans.get(BankReconciliationBalanceComputationService.class)
+          .computeBalances(bankReconciliation);
+
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void getReconcileToMoveLineDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Map<String, Object> bankReconciliationContext =
+          (Map<String, Object>) request.getContext().get("_bankReconciliation");
+      BankReconciliation bankReconciliation =
+          Beans.get(BankReconciliationRepository.class)
+              .find(((Integer) bankReconciliationContext.get("id")).longValue());
+      response.setAttr(
+          "$moveLineToReconcile",
+          "domain",
+          Beans.get(BankReconciliationDomainService.class)
+              .createDomainForMoveLine(bankReconciliation));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void setReconcileToMoveLineDetails(ActionRequest request, ActionResponse response) {
+    try {
+      Map<String, Object> moveLineToReconcile =
+          (Map<String, Object>) request.getContext().get("moveLineToReconcile");
+      if (moveLineToReconcile == null || moveLineToReconcile.get("id") == null) {
+        response.setValue("$moveLineAccount", null);
+        response.setValue("$moveLinePartner", null);
+        response.setValue("$moveLineDate", null);
+        response.setValue("$moveLineTotalAmount", BigDecimal.ZERO);
+        response.setValue("$moveLineAlreadyReconciledAmount", BigDecimal.ZERO);
+        return;
+      }
+      MoveLine moveLine =
+          Beans.get(MoveLineRepository.class)
+              .find(((Integer) moveLineToReconcile.get("id")).longValue());
+
+      response.setValue("$moveLineAccount", moveLine.getAccount());
+      response.setValue("$moveLinePartner", moveLine.getPartner());
+      response.setValue("$moveLineDate", moveLine.getDate());
+      response.setValue("$moveLineTotalAmount", moveLine.getDebit().add(moveLine.getCredit()));
+      response.setValue("$moveLineAlreadyReconciledAmount", moveLine.getBankReconciledAmount());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  public void computeReconcileToMoveLineBalances(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      Map<String, Object> bankReconciliationContext =
+          (Map<String, Object>) context.get("_bankReconciliation");
+      BankReconciliation bankReconciliation =
+          Beans.get(BankReconciliationRepository.class)
+              .find(((Integer) bankReconciliationContext.get("id")).longValue());
+
+      BankReconciliationSelectedLineComputationService
+          bankReconciliationSelectedLineComputationService =
+              Beans.get(BankReconciliationSelectedLineComputationService.class);
+
+      List<LinkedHashMap> selectedBankReconciliationLineList =
+          (List<LinkedHashMap>) context.get("selectedBankReconciliationLines");
+      BigDecimal bankMovementsTotal =
+          bankReconciliationSelectedLineComputationService
+              .computeSelectedBankReconciliationLinesTotal(
+                  bankReconciliation, selectedBankReconciliationLineList);
+      response.setValue("$bankMovementsTotal", bankMovementsTotal);
+
+      Map<String, Object> moveLineToReconcile =
+          (Map<String, Object>) context.get("moveLineToReconcile");
+      if (moveLineToReconcile == null || moveLineToReconcile.get("id") == null) {
+        response.setValue("$moveLineRemainingAmount", BigDecimal.ZERO);
+        response.setValue("$reconcileDifference", bankMovementsTotal);
+        return;
+      }
+
+      MoveLine moveLine =
+          Beans.get(MoveLineRepository.class)
+              .find(((Integer) moveLineToReconcile.get("id")).longValue());
+      BigDecimal moveLineRemainingAmount =
+          bankReconciliationSelectedLineComputationService.getMoveLineRemainingAmount(
+              moveLine, bankReconciliation);
+      response.setValue("$moveLineRemainingAmount", moveLineRemainingAmount);
+      response.setValue(
+          "$reconcileDifference", bankMovementsTotal.subtract(moveLineRemainingAmount));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

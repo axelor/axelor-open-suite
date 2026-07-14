@@ -35,7 +35,9 @@ import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BankReconciliationLineServiceImpl implements BankReconciliationLineService {
 
@@ -157,14 +159,14 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
                     currencyScaleService.getScaledValue(
                         bankReconciliationLine,
                         moveLineCredit.subtract(moveLine.getBankReconciledAmount())))
-                == 0)
+                <= 0)
         && !(bankCredit.compareTo(BigDecimal.ZERO) > 0
             && moveLineDebit.compareTo(BigDecimal.ZERO) > 0
             && bankCredit.compareTo(
                     currencyScaleService.getScaledValue(
                         bankReconciliationLine,
                         moveLineDebit.subtract(moveLine.getBankReconciledAmount())))
-                == 0)) {
+                <= 0)) {
       throw new AxelorException(
           bankReconciliationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -235,6 +237,69 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
 
     MoveLine moveLine = bankReconciliationLine.getMoveLine();
 
-    moveLine.setBankReconciledAmount(bankReconciledAmount);
+    moveLine.setBankReconciledAmount(
+        currencyScaleService.getScaledValue(
+            bankReconciliationLine, moveLine.getBankReconciledAmount().add(bankReconciledAmount)));
+  }
+
+  @Override
+  public void checkReconcileToMoveLine(
+      List<BankReconciliationLine> bankReconciliationLineList, MoveLine moveLine)
+      throws AxelorException {
+    if (CollectionUtils.isEmpty(bankReconciliationLineList)) {
+      return;
+    }
+    boolean isDebit = bankReconciliationLineList.get(0).getDebit().compareTo(BigDecimal.ZERO) > 0;
+
+    for (BankReconciliationLine bankReconciliationLine : bankReconciliationLineList) {
+      boolean lineIsDebit = bankReconciliationLine.getDebit().compareTo(BigDecimal.ZERO) > 0;
+      if (lineIsDebit != isDebit) {
+        throw new AxelorException(
+            bankReconciliationLine,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                BankPaymentExceptionMessage
+                    .BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_INCONSISTENT_SIDE),
+            bankReconciliationLine.getReference() != null
+                ? bankReconciliationLine.getReference()
+                : "",
+            isDebit ? I18n.get("debit") : I18n.get("credit"));
+      }
+    }
+
+    boolean isMoveLineConsistent =
+        isDebit
+            ? moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0
+            : moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0;
+    if (!isMoveLineConsistent) {
+      throw new AxelorException(
+          moveLine,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              BankPaymentExceptionMessage
+                  .BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_MOVE_LINE_SIDE_MISMATCH),
+          isDebit ? I18n.get("credit") : I18n.get("debit"));
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public BankReconciliationLine reconcileBRLToMoveLine(
+      BankReconciliationLine bankReconciliationLine, MoveLine moveLine, String reconcileNumber) {
+    bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());
+    bankReconciliationLine.setReconcileNumber(reconcileNumber);
+    bankReconciliationLine.setConfidenceIndex(
+        BankReconciliationLineRepository.CONFIDENCE_INDEX_GREEN);
+    moveLine =
+        moveLinePostedNbrService.setMoveLinePostedNbr(
+            moveLine, bankReconciliationLine.getPostedNbr());
+    moveLine.setIsSelectedBankReconciliation(false);
+    bankReconciliationLine.setIsSelectedBankReconciliation(false);
+    bankReconciliationLine.setMoveLine(moveLine);
+    BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
+    if (bankStatementLine != null) {
+      bankStatementLine.setMoveLine(bankReconciliationLine.getMoveLine());
+    }
+    return bankReconciliationLine;
   }
 }

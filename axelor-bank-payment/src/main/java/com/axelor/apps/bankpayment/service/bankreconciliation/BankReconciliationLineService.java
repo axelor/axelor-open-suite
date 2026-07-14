@@ -24,6 +24,7 @@ import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface BankReconciliationLineService {
 
@@ -46,4 +47,11 @@ public interface BankReconciliationLineService {
   void updateBankReconciledAmounts(BankReconciliationLine bankReconciliationLine);
 
   void checkIncompleteLine(BankReconciliationLine bankReconciliationLine) throws AxelorException;
+
+  void checkReconcileToMoveLine(
+      List<BankReconciliationLine> bankReconciliationLineList, MoveLine moveLine)
+      throws AxelorException;
+
+  BankReconciliationLine reconcileBRLToMoveLine(
+      BankReconciliationLine bankReconciliationLine, MoveLine moveLine, String reconcileNumber);
 }
