@@ -160,6 +160,7 @@
     <field name="paymentMode"/>
     <field name="amountRemaining" x-scale="currency.numberOfDecimals"/>
     <field name="isPaid"/>
+    <field name="lcrAccounted" title="LCR"/>
     <field name="isHoldBack"/>
     <field name="percentage"/>
     <field name="financialDiscount" hidden="true"
@@ -239,6 +240,7 @@
         <field name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
         <field name="isCustomized"/>
         <field name="isPaid"/>
+        <field name="lcrAccounted"/>
         <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="thirdPartyPayerPartner" domain="self.isThirdPartyPayer IS TRUE"
@@ -405,6 +407,7 @@
           grid-view="invoice-grid"/>
         <field name="isCustomized" readonly="true"/>
         <field name="isPaid" readonly="true"/>
+        <field name="lcrAccounted" readonly="true"/>
         <field name="moveLine" readonly="true" form-view="move-line-form"
           grid-view="move-line-grid"/>
         <field name="partner" readonly="true" form-view="partner-form"
@@ -576,6 +579,7 @@
           grid-view="invoice-grid"/>
         <field name="isCustomized" readonly="true"/>
         <field name="isPaid" title="Paid / Used" readonly="true"/>
+        <field name="lcrAccounted" readonly="true"/>
         <field name="moveLine" readonly="true" form-view="move-line-form"
           grid-view="move-line-grid"/>
         <field name="partner" readonly="true" form-view="partner-form"
