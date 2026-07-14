@@ -168,6 +168,8 @@ import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentService;
 import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.batch.BatchCreditTransferPartnerReimbursementBankPayment;
 import com.axelor.apps.bankpayment.service.batch.BatchCreditTransferSupplierPaymentBankPayment;
+import com.axelor.apps.bankpayment.service.batch.BillOfExchangeInvoiceTermQueryService;
+import com.axelor.apps.bankpayment.service.batch.BillOfExchangeInvoiceTermQueryServiceImpl;
 import com.axelor.apps.bankpayment.service.extract.ExtractContextMoveServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentAlertServiceBankPayImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentBankPaymentCancelService;
@@ -269,6 +271,9 @@ public class BankPaymentModule extends AxelorModule {
         .to(InvoiceTermFilterBankPaymentServiceImpl.class);
 
     bind(InvoiceTermFilterServiceImpl.class).to(InvoiceTermFilterBankPaymentServiceImpl.class);
+
+    bind(BillOfExchangeInvoiceTermQueryService.class)
+        .to(BillOfExchangeInvoiceTermQueryServiceImpl.class);
 
     bind(MoveLineGroupServiceImpl.class).to(MoveLineGroupBankPaymentServiceImpl.class);
     bind(MoveLineGroupBankPaymentService.class).to(MoveLineGroupBankPaymentServiceImpl.class);
