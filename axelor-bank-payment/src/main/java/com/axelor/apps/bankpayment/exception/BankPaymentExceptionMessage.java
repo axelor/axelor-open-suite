@@ -74,6 +74,8 @@ public final class BankPaymentExceptionMessage {
       "Please fill the bank details" /*)*/;
   public static final String BANK_ORDER_PAYMENT_MODE_MISSING = /*$$(*/
       "Please select a payment mode" /*)*/;
+  public static final String BATCH_BILL_OF_EXCHANGE_BANK_ORDER_PAYMENT_MODE_INVALID = /*$$(*/
+      "Please select a payment mode configured to generate bank orders." /*)*/;
   public static final String BANK_ORDER_WRONG_SENDER_RECORD = /*$$(*/
       "Anomaly has been detected during file generation for the sender record of the bank order %s" /*)*/;
   public static final String BANK_ORDER_WRONG_MAIN_DETAIL_RECORD = /*$$(*/

@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.service.invoice.payment;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -33,6 +34,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
+import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -44,6 +46,7 @@ import com.google.inject.servlet.RequestScoped;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -108,6 +111,38 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
       Beans.get(BankOrderMergeService.class).mergeFromInvoicePayments(invoicePaymentList);
     }
     return invoicePaymentList;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public InvoicePayment createInvoicePaymentForBankOrder(
+      Invoice invoice,
+      InvoiceTerm invoiceTerm,
+      PaymentMode paymentMode,
+      BankDetails companyBankDetails,
+      LocalDate paymentDate,
+      BankOrder bankOrder)
+      throws AxelorException {
+    InvoicePayment invoicePayment =
+        this.createInvoicePayment(
+            invoice,
+            invoiceTerm.getAmountRemaining(),
+            paymentDate,
+            invoice.getCurrency(),
+            paymentMode,
+            InvoicePaymentRepository.TYPE_PAYMENT);
+
+    invoicePayment.setCompanyBankDetails(companyBankDetails);
+    invoicePayment.setManualChange(true);
+    invoicePayment.setBankOrder(bankOrder);
+    invoice.addInvoicePaymentListItem(invoicePayment);
+
+    invoiceTermPaymentService.initInvoiceTermPayments(
+        invoicePayment, Collections.singletonList(invoiceTerm), paymentDate);
+    invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
+    invoicePayment.setAmount(
+        invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));
+
+    return invoicePaymentRepository.save(invoicePayment);
   }
 
   @Override
