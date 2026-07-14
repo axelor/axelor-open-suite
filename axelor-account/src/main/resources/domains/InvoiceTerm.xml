@@ -52,6 +52,8 @@
       title="Move line" readonly="true"/>
     <many-to-one name="placementMoveLine" ref="com.axelor.apps.account.db.MoveLine"
       title="Placement move line" readonly="true"/>
+    <boolean name="lcrAccounted" title="LCR accounted" default="false" readonly="true"/>
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     <many-to-one name="paymentConditionLine"
       ref="com.axelor.apps.account.db.PaymentConditionLine" title="Payment condition line"/>
     <boolean name="isCustomized" title="Is customized" default="false"/>
@@ -137,6 +139,7 @@
       <field name="amount"/>
       <field name="amountRemaining"/>
       <field name="isPaid"/>
+      <field name="lcrAccounted"/>
       <field name="isHoldBack"/>
       <field name="isCustomized"/>
       <field name="bankDetails"/>
