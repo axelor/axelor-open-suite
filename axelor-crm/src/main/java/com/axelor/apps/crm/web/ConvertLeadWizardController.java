@@ -257,6 +257,8 @@ public class ConvertLeadWizardController {
 
     contactMap.put("jobTitleFunction", lead.getJobTitleFunction());
 
+    contactMap.put("companyDepartment", lead.getCompanyDepartment());
+
     return contactMap;
   }
 
