@@ -311,8 +311,7 @@ public class UserServiceImpl implements UserService {
     // (sent from the repository save hook) can include it, then store it encrypted.
     user.setTransientPassword(password);
     user.setPassword(authService.encrypt(password));
-    user.setPasswordUpdatedOn(
-        Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
+    user.setPasswordUpdatedOn(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
   }
 
   @Override
