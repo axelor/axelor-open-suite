@@ -899,8 +899,8 @@
   </action-record>
 
   <action-validate name="action-validate-purchase-order-check-selection">
-    <error message="You have to choose at least one purchase order"
-      if="purchaseOrderToMerge == null || purchaseOrderToMerge.size() == 0"/>
+    <error message="You have to choose at least two purchase quotations"
+      if="purchaseOrderToMerge == null || purchaseOrderToMerge.size() &lt; 2"/>
   </action-validate>
 
   <action-method name="action-purchase-order-method-merge-purchase">
