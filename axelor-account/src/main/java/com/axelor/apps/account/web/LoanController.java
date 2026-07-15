@@ -19,6 +19,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Loan;
+import com.axelor.apps.account.db.LoanLine;
 import com.axelor.apps.account.db.repo.LoanRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.loan.LoanAdjustmentService;
@@ -43,6 +44,17 @@ public class LoanController {
           Beans.get(LoanRepository.class).find(request.getContext().asType(Loan.class).getId());
       Beans.get(LoanValidateService.class).validate(loan);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeDeferralFlag(ActionRequest request, ActionResponse response) {
+    try {
+      Loan loan = request.getContext().asType(Loan.class);
+      LoanLine next = Beans.get(LoanAdjustmentService.class).getNextUnpaidLine(loan);
+      response.setValue(
+          "nextInstallmentIsDeferral", next != null && Boolean.TRUE.equals(next.getIsDeferral()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

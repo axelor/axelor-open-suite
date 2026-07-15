@@ -12,7 +12,8 @@
   </grid>
 
   <form name="loan-form" title="Loan" model="com.axelor.apps.account.db.Loan"
-    onNew="action-loan-record-default,action-loan-method-set-default-config">
+    onNew="action-loan-record-default,action-loan-method-set-default-config"
+    onLoad="action-loan-method-compute-deferral-flag">
     <panel name="mainPanel">
       <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"
         readonly="true"/>
@@ -69,6 +70,7 @@
     <panel name="reportPanel" title="Deferral" sidebar="true"
       showIf="statusSelect == 2 || statusSelect == 3">
       <field name="scheduleSnapshot" hidden="true"/>
+      <field name="nextInstallmentIsDeferral" hidden="true"/>
       <field name="deferralInstallmentCount" colSpan="12"/>
       <field name="deferralCapitalizeInterest" colSpan="12"/>
       <field name="deferralRecomputePayment" showIf="deferralCapitalizeInterest" colSpan="12"/>
@@ -76,7 +78,7 @@
       <button name="deferBtn" title="Defer" colSpan="12"
         onClick="save,action-loan-method-defer"/>
       <button name="cancelDeferralBtn" title="Cancel deferral" colSpan="12"
-        showIf="scheduleSnapshot != null" onClick="save,action-loan-method-cancel-deferral"/>
+        showIf="nextInstallmentIsDeferral" onClick="save,action-loan-method-cancel-deferral"/>
     </panel>
   </form>
 
@@ -110,6 +112,10 @@
 
   <action-method name="action-loan-method-simulate-capital">
     <call class="com.axelor.apps.account.web.LoanController" method="simulateBorrowableCapital"/>
+  </action-method>
+
+  <action-method name="action-loan-method-compute-deferral-flag">
+    <call class="com.axelor.apps.account.web.LoanController" method="computeDeferralFlag"/>
   </action-method>
 
   <action-method name="action-loan-method-recompute-schedule">

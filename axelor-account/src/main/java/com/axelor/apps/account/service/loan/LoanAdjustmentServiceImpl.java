@@ -213,13 +213,16 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.LOAN_NO_ADJUSTMENT_TO_CANCEL));
     }
-    // Remove the deferral installments and shift the other installments back, without resetting
-    // their amounts (manual edits are preserved).
+    // Remove the (planned) deferral installments and shift the other installments back, without
+    // resetting their amounts (manual edits are preserved). Booked installments are out of scope.
     long deferralCount =
         loan.getLineList().stream()
-            .filter(line -> Boolean.TRUE.equals(line.getIsDeferral()))
+            .filter(
+                line -> Boolean.TRUE.equals(line.getIsDeferral()) && line.getAccountMove() == null)
             .count();
-    loan.getLineList().removeIf(line -> Boolean.TRUE.equals(line.getIsDeferral()));
+    loan.getLineList()
+        .removeIf(
+            line -> Boolean.TRUE.equals(line.getIsDeferral()) && line.getAccountMove() == null);
 
     if (deferralCount > 0) {
       for (LoanLine line : orderedPlannedLines(loan)) {

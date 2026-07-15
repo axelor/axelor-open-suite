@@ -36,6 +36,16 @@
 		public static final int EDITED_FIELD_INSURANCE = 3;
 	]]></extra-code>
 
+    <track>
+      <field name="installmentDate"/>
+      <field name="remainingDebtBefore"/>
+      <field name="interestAmount"/>
+      <field name="capitalAmount"/>
+      <field name="insuranceAmount"/>
+      <field name="totalAmount"/>
+      <field name="remainingDebtAfter"/>
+    </track>
+
   </entity>
 
 </domain-models>

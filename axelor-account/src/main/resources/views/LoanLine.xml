@@ -41,9 +41,13 @@
       <field name="installmentDate" readonly="true"/>
       <field name="accountMove" readonly="true" colSpan="6"/>
       <field name="isManuallyModified" readonly="true"/>
+      <field name="isDeferral" readonly="true"/>
       <field name="editedFieldSelect" hidden="true"/>
       <field name="loan.currency.numberOfDecimals" hidden="true"/>
     </panel>
+    <panel-mail>
+      <mail-messages limit="4"/>
+    </panel-mail>
   </form>
 
   <action-method name="action-loan-line-method-post-installment">
