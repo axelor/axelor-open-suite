@@ -1,0 +1,3 @@
+---
+title: "EXPENSE: fixed NPE when refreshing an expense after adding an kilometric expense line."
+module: axelor-human-resource
