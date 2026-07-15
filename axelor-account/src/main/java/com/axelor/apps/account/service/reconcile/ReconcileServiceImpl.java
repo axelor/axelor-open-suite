@@ -867,7 +867,7 @@ public class ReconcileServiceImpl implements ReconcileService {
               foreignExchangeGapMove.getMove(),
               false,
               true,
-              foreignExchangeGapMove.getUpdateInvoiceTerms());
+              true);
       if (foreignExchangeReconcile != null) {
         InvoicePayment invoicePayment =
             invoicePaymentRepository.findByReconcile(foreignExchangeReconcile).fetchOne();
