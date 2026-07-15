@@ -1,0 +1,3 @@
+---
+title: "Contract: fixed invoice origin field always shows version 0 contract ID for versioned contracts."
+module: axelor-contract
