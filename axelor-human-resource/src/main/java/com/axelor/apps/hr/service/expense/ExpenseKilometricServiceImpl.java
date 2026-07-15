@@ -51,6 +51,9 @@ public class ExpenseKilometricServiceImpl implements ExpenseKilometricService {
 
   @Override
   public Product getKilometricExpenseProduct(Expense expense) throws AxelorException {
+    if (expense.getCompany() == null) {
+      return null;
+    }
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
     return hrConfigService.getKilometricExpenseProduct(hrConfig);
   }
