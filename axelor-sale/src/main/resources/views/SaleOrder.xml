@@ -2121,13 +2121,13 @@
   </action-view>
 
   <action-validate name="action-validate-sale-order-check-selection">
-    <error message="You have to choose at least one sale order"
-      if="saleOrderToMerge == null || (saleOrderToMerge != null &amp;&amp; saleOrderToMerge.size() == 0)"/>
+    <error message="You have to choose at least two sale orders"
+      if="saleOrderToMerge == null || (saleOrderToMerge != null &amp;&amp; saleOrderToMerge.size() &lt; 2)"/>
   </action-validate>
 
   <action-validate name="action-validate-sale-quotation-check-selection">
-    <error message="You have to choose at least one sale quotation"
-      if="saleQuotationToMerge == null || (saleQuotationToMerge != null &amp;&amp; saleQuotationToMerge.size() == 0)"/>
+    <error message="You have to choose at least two sale quotations"
+      if="saleQuotationToMerge == null || (saleQuotationToMerge != null &amp;&amp; saleQuotationToMerge.size() &lt; 2)"/>
   </action-validate>
 
   <action-record name="action-saleorder-record-template"
