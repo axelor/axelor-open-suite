@@ -1,0 +1,3 @@
+---
+title: "Move template: added a warning at validity check when 'Compute tax at creation' is enabled while the template also contains tax lines."
+module: axelor-account

@@ -148,6 +148,7 @@
 "%s has not exaclty the same internal companies as %s.",,,
 "%s records(s) refused on %s record(s) selected(s).",,,
 "%s records(s) updated on %s record(s) selected(s).",,,
+"'Compute tax at creation' is enabled on at least one line, but the template also contains tax lines. In this case the tax is not computed automatically and the option is ignored: either remove the tax lines or uncheck 'Compute tax at creation'.",,,
 "(Debit %s account %s amount %s - Credit %s account %s amount %s)",,,
 "* %s Account(s) situation(s) treated",,,
 "* %s Invoice(s)/Move(s) treated",,,

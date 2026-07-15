@@ -148,6 +148,7 @@
 "%s has not exaclty the same internal companies as %s.","%s n'a pas exactement les mêmes sociétés internes que %s",,
 "%s records(s) refused on %s record(s) selected(s).","%s enregistrement(s) refusé(s) sur %s enregistrement(s) sélectionné(s).",,
 "%s records(s) updated on %s record(s) selected(s).","%s enregistrement(s) validé(s) sur %s enregistrement(s) sélectionné(s).",,
+"'Compute tax at creation' is enabled on at least one line, but the template also contains tax lines. In this case the tax is not computed automatically and the option is ignored: either remove the tax lines or uncheck 'Compute tax at creation'.","'Calculer la taxe à la création' est activé sur au moins une ligne, mais le modèle contient aussi des lignes de taxe. Dans ce cas, la taxe n'est pas calculée automatiquement et l'option est ignorée : supprimez les lignes de taxe ou décochez 'Calculer la taxe à la création'.",,
 "(Debit %s account %s amount %s - Credit %s account %s amount %s)","(Débit %s compte %s montant %s - Crédit %s compte %s montant %s)",,
 "* %s Account(s) situation(s) treated","* %s Compte(s) de situation(s) traité(s)",,
 "* %s Invoice(s)/Move(s) treated","* %s Facture(s)/Écriture(s) traitée(s)",,
