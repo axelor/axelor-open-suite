@@ -111,13 +111,6 @@ public class DataBackupCreateService {
           .put("com.axelor.auth.db.User", "self.code = :code")
           .put("com.axelor.auth.db.Permission", "self.name = :name")
           .put("com.axelor.auth.db.Group", "self.code = :code")
-          .put("com.axelor.apps.base.db.Language", "self.code = :code")
-          .put("com.axelor.apps.base.db.BirtTemplate", "self.name = :name")
-          .put("com.axelor.apps.base.db.BirtTemplateParameter", "self.name = :name")
-          .put("com.axelor.apps.crm.db.EventCategory", "self.code = :code")
-          .put("com.axelor.apps.account.db.AccountChart", "self.code = :code")
-          .put("com.axelor.apps.bankpayment.db.BankOrderFileFormat", "self.name = :name")
-          .put("com.axelor.apps.bankpayment.db.BankStatementFileFormat", "self.name = :name")
           .build();
 
   protected DataBackupRepository dataBackupRepository;
