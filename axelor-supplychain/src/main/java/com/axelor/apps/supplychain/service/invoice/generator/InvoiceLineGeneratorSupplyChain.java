@@ -49,6 +49,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 /** Classe de création de ligne de facture abstraite. */
 public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerator {
@@ -175,6 +176,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
                 appBaseService.getNbDecimalDigitForUnitPrice(),
                 product);
         this.unit = saleOrPurchaseUnit;
+      } else if (saleOrPurchaseUnit != null && this.unit == null) {
+        this.unit = saleOrPurchaseUnit;
       }
     }
   }
@@ -237,20 +240,25 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       this.price = stockMoveLine.getUnitPriceUntaxed();
       this.inTaxPrice = stockMoveLine.getUnitPriceTaxed();
 
-      this.price =
-          unitConversionService.convert(
-              stockMoveLine.getUnit(),
-              this.unit,
-              this.price,
-              appBaseService.getNbDecimalDigitForUnitPrice(),
-              product);
-      this.inTaxPrice =
-          unitConversionService.convert(
-              stockMoveLine.getUnit(),
-              this.unit,
-              this.inTaxPrice,
-              appBaseService.getNbDecimalDigitForUnitPrice(),
-              product);
+      Unit stockMoveLineUnit = stockMoveLine.getUnit();
+      if (stockMoveLineUnit != null
+          && this.unit != null
+          && !Objects.equals(stockMoveLineUnit, this.unit)) {
+        this.price =
+            unitConversionService.convert(
+                stockMoveLineUnit,
+                this.unit,
+                this.price,
+                appBaseService.getNbDecimalDigitForUnitPrice(),
+                product);
+        this.inTaxPrice =
+            unitConversionService.convert(
+                stockMoveLineUnit,
+                this.unit,
+                this.inTaxPrice,
+                appBaseService.getNbDecimalDigitForUnitPrice(),
+                product);
+      }
 
       invoiceLine.setPrice(price);
       invoiceLine.setInTaxPrice(inTaxPrice);
