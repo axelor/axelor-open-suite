@@ -1,0 +1,3 @@
+---
+title: "Loans: the schedule installments can now be edited directly (interest, capital, insurance) with automatic recomputation of the following installments, and a deferral feature defers a number of installments (interest capitalization and insurance options, cancellable)."
+module: axelor-account

@@ -1784,4 +1784,12 @@ public final class AccountExceptionMessage {
       /*$$(*/ "The loan %s is missing the journal or one of the accounts required for the closing adjustments." /*)*/;
   public static final String BATCH_LOAN_CLOSURE =
       /*$$(*/ "Loan(s) with closing adjustments generated :" /*)*/;
+  public static final String LOAN_NO_INSTALLMENT_TO_ADJUST =
+      /*$$(*/ "There is no planned installment to adjust on this loan." /*)*/;
+  public static final String LOAN_NO_ADJUSTMENT_TO_CANCEL =
+      /*$$(*/ "There is no adjustment to cancel on this loan." /*)*/;
+  public static final String LOAN_LINE_CAPITAL_EXCEEDS_REMAINING_DEBT =
+      /*$$(*/ "The capital repayment cannot exceed the remaining debt of the installment." /*)*/;
+  public static final String LOAN_LINE_NEGATIVE_AMOUNT =
+      /*$$(*/ "The installment amounts cannot be negative." /*)*/;
 }

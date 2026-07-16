@@ -19,8 +19,10 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Loan;
+import com.axelor.apps.account.db.LoanLine;
 import com.axelor.apps.account.db.repo.LoanRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.loan.LoanAdjustmentService;
 import com.axelor.apps.account.service.loan.LoanLineGenerationService;
 import com.axelor.apps.account.service.loan.LoanManagementConfigService;
 import com.axelor.apps.account.service.loan.LoanService;
@@ -41,6 +43,56 @@ public class LoanController {
       Loan loan =
           Beans.get(LoanRepository.class).find(request.getContext().asType(Loan.class).getId());
       Beans.get(LoanValidateService.class).validate(loan);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeDeferralFlag(ActionRequest request, ActionResponse response) {
+    try {
+      Loan loan = request.getContext().asType(Loan.class);
+      LoanLine next = Beans.get(LoanAdjustmentService.class).getNextUnpaidLine(loan);
+      response.setValue(
+          "nextInstallmentIsDeferral", next != null && Boolean.TRUE.equals(next.getIsDeferral()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void recomputeSchedule(ActionRequest request, ActionResponse response) {
+    try {
+      Loan loan = request.getContext().asType(Loan.class);
+      response.setValue("lineList", Beans.get(LoanAdjustmentService.class).recomputeSchedule(loan));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void defer(ActionRequest request, ActionResponse response) {
+    try {
+      Loan context = request.getContext().asType(Loan.class);
+      Loan loan = Beans.get(LoanRepository.class).find(context.getId());
+      int count =
+          context.getDeferralInstallmentCount() == null ? 0 : context.getDeferralInstallmentCount();
+      Beans.get(LoanAdjustmentService.class)
+          .defer(
+              loan,
+              count,
+              Boolean.TRUE.equals(context.getDeferralCapitalizeInterest()),
+              Boolean.TRUE.equals(context.getDeferralRecomputePayment()),
+              Boolean.TRUE.equals(context.getDeferralKeepInsurance()));
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void cancelDeferral(ActionRequest request, ActionResponse response) {
+    try {
+      Loan loan =
+          Beans.get(LoanRepository.class).find(request.getContext().asType(Loan.class).getId());
+      Beans.get(LoanAdjustmentService.class).cancelDeferral(loan);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
