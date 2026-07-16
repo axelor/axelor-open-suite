@@ -164,8 +164,10 @@
         <item name="sendEmailItem" title="Send email"
           action="save,action-send-by-email-with-template" readonlyIf="id == null"
           if-module="axelor-message"/>
-        <item name="sirenApiBtn" title="Fill from Sirene API"
-          action="save,action-partner-view-wizard-api-sirene-configuration"/>
+        <item name="sirenApiCreateBtn" title="Create from Sirene API"
+          action="action-partner-group-sirene-api-configuration" showIf="id == null"/>
+        <item name="sirenApiFillBtn" title="Fill from Sirene API"
+          action="action-partner-group-sirene-api-configuration" showIf="id != null"/>
       </menu>
     </menubar>
   </form>
@@ -1876,4 +1878,16 @@
       'com.axelor.apps.base.db.Partner'</domain>
     <context name="partnerId" expr="eval:__self__?.id"/>
   </action-view>
+
+  <action-validate name="action-partner-validate-sirene-api-configuration">
+    <alert
+      message="You're about to create a partner using the Sirene API. Current changes will be lost. Do you really want to proceed?"/>
+  </action-validate>
+
+  <action-group name="action-partner-group-sirene-api-configuration">
+    <action name="action-partner-validate-sirene-api-configuration" if="id == null"/>
+    <action name="save" if="id != null"/>
+    <action name="action-partner-view-wizard-api-sirene-configuration"/>
+  </action-group>
+
 </object-views>
