@@ -905,8 +905,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         continue;
       }
       for (MoveLine moveLine : moveLineList) {
-        BigDecimal amountRemaining = moveLine.getAmountRemaining().abs();
-        if (amountRemaining != null && amountRemaining.compareTo(BigDecimal.ZERO) > 0) {
+        Account account = moveLine.getAccount();
+        if (account == null || !account.getUseForPartnerBalance()) {
+          continue;
+        }
+        BigDecimal amountRemaining = moveLine.getAmountRemaining();
+        if (amountRemaining != null && amountRemaining.abs().compareTo(BigDecimal.ZERO) > 0) {
           return false;
         }
       }
