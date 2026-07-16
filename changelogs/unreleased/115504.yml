@@ -1,0 +1,5 @@
+---
+title: "Invoice: fixed a blocking invoice category error when validating with the 'Skip ventilation step' option enabled; the category is now computed automatically before validation."
+module: axelor-account
+developer: |
+  Invoice form view: added the action-method 'action-invoice-method-compute-invoice-category' into the 'action-invoice-group-before-validate' action-group
