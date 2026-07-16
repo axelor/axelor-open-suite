@@ -1,0 +1,3 @@
+---
+title: "Account: fixed fully allocated advance payment with VAT on payment still being proposed on subsequent customer invoices."
+module: axelor-account
