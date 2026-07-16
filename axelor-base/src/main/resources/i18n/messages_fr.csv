@@ -2558,6 +2558,7 @@
 "You can't stop a timer that hasn't been started","Vous ne pouvez pas arrêter un chronomètre qui n’a pas été démarré.",,
 "You must select a connection type in order to create a session","Vous devez selectionner un type de connexion afin de créer une session",,
 "You will lost all configuration. Are you sure ?","Vous allez perdre toutes les configurations. Êtes-vous sûr ?",,
+"You're about to create a partner using the Sirene API. Current changes will be lost. Do you really want to proceed?","Vous êtes sur le point de créer un tiers via l'API Sirene. Les modifications en cours seront perdues. Voulez-vous vraiment continuer ?",,
 "Your password","Votre mot de passe actuel",,
 "Your selection is valid","Votre sélection est valide",,
 "ZIMBRA",,,

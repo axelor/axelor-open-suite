@@ -2558,6 +2558,7 @@
 "You can't stop a timer that hasn't been started",,,
 "You must select a connection type in order to create a session",,,
 "You will lost all configuration. Are you sure ?",,,
+"You're about to create a partner using the Sirene API. Current changes will be lost. Do you really want to proceed?",,,
 "Your password",,,
 "Your selection is valid",,,
 "ZIMBRA",,,
