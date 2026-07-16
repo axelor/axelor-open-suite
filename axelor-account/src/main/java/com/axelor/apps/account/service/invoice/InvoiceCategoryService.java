@@ -24,4 +24,6 @@ import com.axelor.apps.base.AxelorException;
 public interface InvoiceCategoryService {
 
   void setInvoiceCategory(Invoice invoice) throws AxelorException;
+
+  String computeInvoiceCategorySelect(Invoice invoice) throws AxelorException;
 }
