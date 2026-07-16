@@ -54,7 +54,8 @@ public class InvoiceCategoryServiceImpl implements InvoiceCategoryService {
     invoiceRepository.save(invoice);
   }
 
-  protected String computeInvoiceCategorySelect(Invoice invoice) throws AxelorException {
+  @Override
+  public String computeInvoiceCategorySelect(Invoice invoice) throws AxelorException {
     int operationType = invoice.getOperationTypeSelect();
     int operationSubType = invoice.getOperationSubTypeSelect();
 

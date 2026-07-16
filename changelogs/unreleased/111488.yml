@@ -1,0 +1,3 @@
+---
+title: "Product model: fixed wrong tab title 'Product' to display 'Product models' when opening a product model form."
+module: axelor-base

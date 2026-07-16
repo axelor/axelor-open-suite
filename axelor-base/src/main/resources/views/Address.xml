@@ -90,9 +90,8 @@
         <field name="countrySubDivision" colSpan="12"
           x-bind="{{countrySubDivision|uppercase}}"/>
         <field name="city" colSpan="12" canNew="true" canEdit="false"
-          onChange="action-address-change-city, action-address-validate-change-city"
-          onSelect="action-address-attrs-update-domain-city" form-view="city-form"
-          grid-view="city-grid"/>
+          onChange="action-address-change-city" onSelect="action-address-attrs-update-domain-city"
+          form-view="city-form" grid-view="city-grid"/>
         <field name="zip" colSpan="12" onChange="action-address-method-autocomplete-address"/>
       </panel>
     </panel>
@@ -134,15 +133,10 @@
   <action-record name="action-address-change-city"
     model="com.axelor.apps.base.db.Address">
     <field name="country" expr="eval: city?.country" if="city"/>
-    <field name="zip" expr="eval: city?.zip" if="!zip"/>
+    <field name="zip" expr="eval: city?.zip" if="city?.zip"/>
     <field name="street" expr="eval: null"/>
     <field name="townName" expr="eval: city?.name"/>
   </action-record>
-
-  <action-validate name="action-address-validate-change-city">
-    <alert message="City zip is different from address zip"
-      if="city &amp;&amp; zip &amp;&amp; city.zip != zip"/>
-  </action-validate>
 
   <action-record name="action-base-address-set-address-used"
     model="com.axelor.apps.base.db.Address">
@@ -173,9 +167,13 @@
   </action-method>
 
   <action-attrs name="action-address-attrs-update-domain-city">
-    <attribute name="domain" if="country"
-      expr="eval: (country ? &quot;self.country = :country&quot; : &quot;&quot;)" for="city"/>
-    <attribute name="domain" if="!country &amp;&amp; !zip" expr="eval: null" for="city"/>
+    <attribute name="domain" if="country &amp;&amp; zip" for="city"
+      expr="eval: &quot;self.country = :country AND self.zip LIKE '${zip + '%'}'&quot;"/>
+    <attribute name="domain" if="country &amp;&amp; !zip" for="city"
+      expr="eval: &quot;self.country = :country&quot;"/>
+    <attribute name="domain" if="!country &amp;&amp; zip" for="city"
+      expr="eval: &quot;self.zip LIKE '${zip + '%'}'&quot;"/>
+    <attribute name="domain" if="!country &amp;&amp; !zip" for="city" expr="eval: null"/>
   </action-attrs>
 
   <action-attrs name="action-address-attrs-update-domain-street">

@@ -45,6 +45,7 @@ public class StockMoveSupplychainRepository extends StockMoveManagementRepositor
       }
     }
     copy.setInvoicingStatusSelect(StockMoveRepository.STATUS_NOT_INVOICED);
+    copy.setLogisticalForm(null);
 
     return copy;
   }

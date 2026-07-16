@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed invalid PDF signature on printed invoice; single copy is served unchanged and multiple copies are re-signed after merging."
-module: axelor-account

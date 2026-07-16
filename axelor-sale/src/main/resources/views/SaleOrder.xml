@@ -1590,6 +1590,7 @@
     <action name="action-sale-order-method-get-last-version"/>
     <action name="action-sale-order-attrs-set-save-actual-version"/>
     <action name="action-sale-order-attrs-list-selection-in-type-select"/>
+    <action name="action-sale-order-attrs-line-discount-readonly"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
@@ -2116,13 +2117,13 @@
   </action-view>
 
   <action-validate name="action-validate-sale-order-check-selection">
-    <error message="You have to choose at least one sale order"
-      if="saleOrderToMerge == null || (saleOrderToMerge != null &amp;&amp; saleOrderToMerge.size() == 0)"/>
+    <error message="You have to choose at least two sale orders"
+      if="saleOrderToMerge == null || (saleOrderToMerge != null &amp;&amp; saleOrderToMerge.size() &lt; 2)"/>
   </action-validate>
 
   <action-validate name="action-validate-sale-quotation-check-selection">
-    <error message="You have to choose at least one sale quotation"
-      if="saleQuotationToMerge == null || (saleQuotationToMerge != null &amp;&amp; saleQuotationToMerge.size() == 0)"/>
+    <error message="You have to choose at least two sale quotations"
+      if="saleQuotationToMerge == null || (saleQuotationToMerge != null &amp;&amp; saleQuotationToMerge.size() &lt; 2)"/>
   </action-validate>
 
   <action-record name="action-saleorder-record-template"
@@ -2363,7 +2364,15 @@
 
   <action-group name="action-sale-order-group-discount-type-onchange">
     <action name="action-sale-order-record-clear-discount-amount"/>
+    <action name="action-sale-order-attrs-line-discount-readonly"/>
     <action name="action-sale-order-method-on-line-change"/>
   </action-group>
+
+  <action-attrs name="action-sale-order-attrs-line-discount-readonly">
+    <attribute name="readonly" for="saleOrderLineList.discountTypeSelect"
+      expr="eval: discountTypeSelect > 0"/>
+    <attribute name="readonly" for="saleOrderLineList.discountAmount"
+      expr="eval: discountTypeSelect > 0"/>
+  </action-attrs>
 
 </object-views>

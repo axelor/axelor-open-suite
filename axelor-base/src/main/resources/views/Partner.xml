@@ -52,6 +52,8 @@
           action="action-general-check-duplicate-records"/>
         <item name="mergeDuplicatedItem" title="Merge duplicated"
           action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+        <item name="sirenApiItem" action="action-partner-view-wizard-api-sirene-configuration"
+          title="Create from Sirene API"/>
       </menu>
     </menubar>
     <field name="partnerSeq" width="120"/>
@@ -85,6 +87,8 @@
           action="action-general-check-duplicate-records"/>
         <item name="mergeDuplicatedItem" title="Merge duplicated"
           action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+        <item name="sirenApiItem" action="action-partner-view-wizard-api-sirene-configuration"
+          title="Create from Sirene API"/>
       </menu>
     </menubar>
     <field name="partnerSeq" width="120"/>
@@ -160,8 +164,10 @@
         <item name="sendEmailItem" title="Send email"
           action="save,action-send-by-email-with-template" readonlyIf="id == null"
           if-module="axelor-message"/>
-        <item name="sirenApiBtn" title="Fill from Sirene API"
-          action="save,action-partner-view-wizard-api-sirene-configuration"/>
+        <item name="sirenApiCreateBtn" title="Create from Sirene API"
+          action="action-partner-group-sirene-api-configuration" showIf="id == null"/>
+        <item name="sirenApiFillBtn" title="Fill from Sirene API"
+          action="action-partner-group-sirene-api-configuration" showIf="id != null"/>
       </menu>
     </menubar>
   </form>
@@ -1906,5 +1912,16 @@
     <attribute name="domain" for="tradingNameSet"
       expr="eval: &quot; self.company IS NULL OR self.company.id IN (${((companySet ?: [])*.id+[0]).join(',')})&quot;"/>
   </action-attrs>
+
+  <action-validate name="action-partner-validate-sirene-api-configuration">
+    <alert
+      message="You're about to create a partner using the Sirene API. Current changes will be lost. Do you really want to proceed?"/>
+  </action-validate>
+
+  <action-group name="action-partner-group-sirene-api-configuration">
+    <action name="action-partner-validate-sirene-api-configuration" if="id == null"/>
+    <action name="save" if="id != null"/>
+    <action name="action-partner-view-wizard-api-sirene-configuration"/>
+  </action-group>
 
 </object-views>

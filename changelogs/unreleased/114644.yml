@@ -1,0 +1,7 @@
+---
+title: "Invoice: fixed an issue where changing the due date on a draft invoice prevented further editing and left invoice term amounts out of sync with the invoice lines."
+module: axelor-account
+developer: |
+  - Added InvoiceTermRecordService as a constructor parameter to InvoiceTermServiceImpl.
+  - Removed the unused InvoiceTermService constructor parameter from InvoiceTermRecordServiceImpl.
+  - Added new method boolean checkIfAmountCustomizedInvoiceTerms(List<InvoiceTerm>) to the InvoiceTermService.

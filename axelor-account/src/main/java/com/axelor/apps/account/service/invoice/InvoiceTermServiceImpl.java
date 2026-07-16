@@ -39,6 +39,7 @@ import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PaymentConditionToolService;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermRecordService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -97,6 +98,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected InvoiceTermToolService invoiceTermToolService;
   protected InvoiceTermPfpToolService invoiceTermPfpToolService;
   protected InvoiceTermDateComputeService invoiceTermDateComputeService;
+  protected InvoiceTermRecordService invoiceTermRecordService;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -115,7 +117,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       InvoiceTermPfpUpdateService invoiceTermPfpUpdateService,
       InvoiceTermToolService invoiceTermToolService,
       InvoiceTermPfpToolService invoiceTermPfpToolService,
-      InvoiceTermDateComputeService invoiceTermDateComputeService) {
+      InvoiceTermDateComputeService invoiceTermDateComputeService,
+      InvoiceTermRecordService invoiceTermRecordService) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -132,6 +135,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.invoiceTermToolService = invoiceTermToolService;
     this.invoiceTermPfpToolService = invoiceTermPfpToolService;
     this.invoiceTermDateComputeService = invoiceTermDateComputeService;
+    this.invoiceTermRecordService = invoiceTermRecordService;
   }
 
   @Override
@@ -230,6 +234,15 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return invoice;
     }
 
+    Map<Long, InvoiceTerm> customizedTermsByConditionLine =
+        Optional.ofNullable(invoice.getInvoiceTermList()).orElse(new ArrayList<>()).stream()
+            .filter(it -> it.getIsCustomized() && it.getPaymentConditionLine() != null)
+            .collect(
+                Collectors.toMap(
+                    it -> it.getPaymentConditionLine().getId(),
+                    it -> it,
+                    (originalTerm, newTerm) -> originalTerm));
+
     invoice.clearInvoiceTermList();
 
     Set<PaymentConditionLine> paymentConditionLines =
@@ -239,6 +252,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     while (iterator.hasNext()) {
       PaymentConditionLine paymentConditionLine = iterator.next();
       InvoiceTerm invoiceTerm = computeInvoiceTerm(invoice, paymentConditionLine);
+      InvoiceTerm customizedTerm = customizedTermsByConditionLine.get(paymentConditionLine.getId());
+      if (customizedTerm != null) {
+        invoiceTerm.setDueDate(customizedTerm.getDueDate());
+        invoiceTerm.setIsCustomized(true);
+      }
       if (!iterator.hasNext()) {
         invoiceTerm.setAmount(invoice.getInTaxTotal().subtract(total));
         invoiceTerm.setAmountRemaining(invoice.getInTaxTotal().subtract(total));
@@ -308,10 +326,17 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       if (lastInvoiceTermCompanyAmount != null) {
         companyAmount = lastInvoiceTermCompanyAmount;
       } else {
-        BigDecimal companyTotal =
-            invoice != null
-                ? invoice.getCompanyInTaxTotal()
-                : moveLine.getDebit().max(moveLine.getCredit());
+        BigDecimal companyTotal;
+        if (moveLine != null
+            && (invoice == null
+                || moveLine.getMove() == null
+                || !moveLine.getMove().equals(invoice.getMove()))) {
+          companyTotal = moveLine.getDebit().max(moveLine.getCredit());
+        } else if (invoice != null) {
+          companyTotal = invoice.getCompanyInTaxTotal();
+        } else {
+          companyTotal = invoiceTermAmount;
+        }
 
         BigDecimal percentage = isHoldback ? BigDecimal.valueOf(100) : invoiceTerm.getPercentage();
 
@@ -1341,17 +1366,23 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoiceTermList != null) {
       invoiceTermToolService.checkHoldbackBeforeReconcile(invoiceTermList);
 
+      BigDecimal invoicePaymentAmount =
+          invoicePayment != null ? invoicePayment.getAmount() : amount;
       BigDecimal currencyAmount =
           invoicePayment != null
               ? currencyService.getAmountCurrencyConvertedAtDate(
-                  invoicePayment.getCompanyCurrency(),
                   invoicePayment.getCurrency(),
-                  amount,
+                  invoicePayment.getCompanyCurrency(),
+                  invoicePayment.getAmount(),
                   invoicePayment.getPaymentDate())
               : amount;
       invoiceTermPaymentList =
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
-              invoicePayment, invoiceTermList, amount, currencyAmount, reconcile.getAmount());
+              invoicePayment,
+              invoiceTermList,
+              currencyAmount,
+              invoicePaymentAmount,
+              reconcile.getAmount());
 
       for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
         this.updateInvoiceTermsPaidAmount(
@@ -1776,8 +1807,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
   @Override
   public void computeInvoiceTermsDueDates(Invoice invoice) throws AxelorException {
-    if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
-        || checkIfCustomizedInvoiceTerms(invoice.getInvoiceTermList())) {
+    if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
       return;
     }
     LocalDate invoiceDate = invoiceTermDateComputeService.getInvoiceDateForTermGeneration(invoice);
@@ -1819,7 +1849,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
-        || checkIfCustomizedInvoiceTerms(invoice.getInvoiceTermList())) {
+        || checkIfAmountCustomizedInvoiceTerms(invoice.getInvoiceTermList())) {
       return;
     }
 
@@ -1942,5 +1972,13 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             paymentConditionLineList.size() > invoiceTermCount
                 ? paymentConditionLineList.get(invoiceTermCount)
                 : null);
+  }
+
+  @Override
+  public boolean checkIfAmountCustomizedInvoiceTerms(List<InvoiceTerm> invoiceTermList) {
+    if (CollectionUtils.isEmpty(invoiceTermList)) {
+      return false;
+    }
+    return invoiceTermList.stream().anyMatch(invoiceTermRecordService::computeIsCustomized);
   }
 }

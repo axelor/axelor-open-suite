@@ -397,6 +397,10 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
   protected boolean isStockMoveInvoicingPartiallyActivated(Invoice invoice) throws AxelorException {
     SupplyChainConfig supplyChainConfig =
         supplyChainConfigService.getSupplyChainConfig(invoice.getCompany());
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+      return supplyChainConfig.getActivateIncStockMovePartialInvoicing();
+    }
     return supplyChainConfig.getActivateOutStockMovePartialInvoicing();
   }
 }
