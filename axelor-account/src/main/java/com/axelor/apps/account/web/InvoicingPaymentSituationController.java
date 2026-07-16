@@ -22,23 +22,16 @@ import com.axelor.apps.account.db.InvoicingPaymentSituation;
 import com.axelor.apps.account.db.Umr;
 import com.axelor.apps.account.service.InvoicingPaymentSituationService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.exception.ErrorException;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.helpers.StringHelper;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 public class InvoicingPaymentSituationController {
 
@@ -64,12 +57,18 @@ public class InvoicingPaymentSituationController {
 
     String domain = "self.id = 0";
 
+    // A UMR is identified by the (partner, company, bankDetails) triple. Restricting on the bank
+    // details prevents selecting a UMR from another situation sharing the same company, while UMRs
+    // of a situation with no bank details yet stay selectable.
     if (invoicingPaymentSituation != null
         && !ObjectUtils.isEmpty(invoicingPaymentSituation.getUmrList())
         && invoicingPaymentSituation.getCompany() != null
         && invoicingPaymentSituation.getPartner() != null) {
       domain =
-          "self.invoicingPaymentSituation.partner = :partner AND self.invoicingPaymentSituation.company = :company";
+          "self.invoicingPaymentSituation.partner = :partner"
+              + " AND self.invoicingPaymentSituation.company = :company"
+              + " AND (self.invoicingPaymentSituation.bankDetails = :bankDetails"
+              + " OR self.invoicingPaymentSituation.bankDetails is null)";
     }
 
     response.setAttr("activeUmr", "domain", domain);
@@ -81,21 +80,9 @@ public class InvoicingPaymentSituationController {
         request.getContext().asType(InvoicingPaymentSituation.class);
     Partner partner = getPartner(request, invoicingPaymentSituation);
 
-    response.setValue("partner", partner);
-    response.setValue("umrList", new ArrayList<>());
-
-    Company defaultCompany =
-        Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
-    if (defaultCompany == null) {
-      return;
-    }
-
-    if (partner != null
-        && (ObjectUtils.isEmpty(partner.getInvoicingPaymentSituationList())
-            || partner.getInvoicingPaymentSituationList().stream()
-                .noneMatch(situation -> defaultCompany.equals(situation.getCompany())))) {
-      response.setValue("company", defaultCompany);
-    }
+    response.setValues(
+        Beans.get(InvoicingPaymentSituationService.class)
+            .initInvoicingPaymentSituation(invoicingPaymentSituation, partner));
   }
 
   @ErrorException
@@ -124,11 +111,14 @@ public class InvoicingPaymentSituationController {
 
   @ErrorException
   public void selectBankDetails(ActionRequest request, ActionResponse response) {
+    InvoicingPaymentSituation invoicingPaymentSituation =
+        request.getContext().asType(InvoicingPaymentSituation.class);
     Context parentContext = request.getContext().getParent();
     if (parentContext != null && Objects.equals(parentContext.getContextClass(), Partner.class)) {
-      Partner partner = parentContext.asType(Partner.class);
-      List<BankDetails> bankDetailsList = partner.getBankDetailsList();
-      String domain = "self.id IN (" + StringHelper.getIdListString(bankDetailsList) + ")";
+      Partner partner = EntityHelper.getEntity(parentContext.asType(Partner.class));
+      String domain =
+          Beans.get(InvoicingPaymentSituationService.class)
+              .getBankDetailsDomain(invoicingPaymentSituation, partner);
       response.setAttr("bankDetails", "domain", domain);
     }
   }
