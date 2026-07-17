@@ -1,3 +1,0 @@
----
-title: "Payment session: fixed credit note invoiceTerm staying marked as paid after cancellation."
-module: axelor-account
