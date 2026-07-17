@@ -285,16 +285,10 @@
     </extend>
     <!-- /from axelor-core -->
 
-    <!-- Hide the sidebar panel (Change password / 2FA / API keys) until the user is created: those actions
-      need a persisted user and do nothing on a new record. This is the only sidebar panel that is a direct
-      child of the form (AOS sidebars are nested). -->
     <extend target="panel[@sidebar='true']">
       <attribute name="showIf" value="id"/>
     </extend>
 
-    <!-- Put the "notify by email" option right next to the Change password button. The button saves
-      first so the persisted flag is up to date when the platform reloads the user in the change-password flow
-      (AuthServiceBaseImpl reads User.sendEmailUponPasswordChange). -->
     <extend target="//button[@name='changePasswordBtn']">
       <attribute name="onClick" value="save,action-method-show-user-change-password"/>
       <insert position="after">
