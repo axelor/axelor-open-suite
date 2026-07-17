@@ -1,3 +1,32 @@
+## [7.2.70] (2026-07-17)
+
+### Fixes
+#### Base
+
+* Product model: fixed wrong tab title 'Product' to display 'Product models' when opening a product model form.
+* Data backup: fixed AutoImportModelMap using natural keys that are not guaranteed unique and required causing silent data loss on restore.
+
+#### Account
+
+* Payment session: fixed credit note invoiceTerm staying marked as paid after cancellation.
+* Account: fixed fully allocated advance payment with VAT on payment still being proposed on subsequent customer invoices.
+
+#### Bank Payment
+
+* Bank payment: fixed CFONB120 multi-period import rejected on non-chronological period order.
+
+#### CRM
+
+* Lead: fixed company department in generated contact from lead.
+
+#### Human Resource
+
+* EXPENSE: fixed NPE when refreshing an expense after adding an kilometric expense line.
+
+#### Supply Chain
+
+* Stock move: fixed error when invoicing stock moves for service products without a stock unit.
+
 ## [7.2.69] (2026-07-02)
 
 ### Fixes
@@ -3232,6 +3261,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.70]: https://github.com/axelor/axelor-open-suite/compare/v7.2.69...v7.2.70
 [7.2.69]: https://github.com/axelor/axelor-open-suite/compare/v7.2.68...v7.2.69
 [7.2.68]: https://github.com/axelor/axelor-open-suite/compare/v7.2.67...v7.2.68
 [7.2.67]: https://github.com/axelor/axelor-open-suite/compare/v7.2.66...v7.2.67
