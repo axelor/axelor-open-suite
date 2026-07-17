@@ -1,3 +1,25 @@
+## [8.3.39] (2026-07-17)
+
+### Fixes
+#### CRM
+
+* Lead: fixed company department in generated contact from lead.
+
+#### Production
+
+* Production: fixed sub manufacturing orders being created with zero or negative quantity when sub-component stock covers the requirement.
+
+#### Supply Chain
+
+* Sale/Purchase order: fixed merge quotations action allowing to merge a single quotation.
+
+
+### Developer
+
+#### Production
+
+- ProductionOrderSaleOrderMOGenerationService: `generateManufOrders()` signature updated — added `BigDecimal grossQtyRequested` parameter.
+
 ## [8.3.38] (2026-07-02)
 
 ### Fixes
@@ -3479,6 +3501,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.39]: https://github.com/axelor/axelor-open-suite/compare/v8.3.38...v8.3.39
 [8.3.38]: https://github.com/axelor/axelor-open-suite/compare/v8.3.37...v8.3.38
 [8.3.37]: https://github.com/axelor/axelor-open-suite/compare/v8.3.36...v8.3.37
 [8.3.36]: https://github.com/axelor/axelor-open-suite/compare/v8.3.35...v8.3.36
