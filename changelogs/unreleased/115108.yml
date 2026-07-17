@@ -1,3 +1,0 @@
----
-title: "Data backup: fixed AutoImportModelMap using natural keys that are not guaranteed unique and required causing silent data loss on restore."
-module: axelor-base
