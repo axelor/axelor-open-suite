@@ -356,10 +356,6 @@ public final class BaseExceptionMessage {
    */
   public static final String USER_CODE_ALREADY_EXISTS = /*$$(*/
       "A user with this login already exists." /*)*/;
-  public static final String USER_PATTERN_MISMATCH_ACCES_RESTRICTION = /*$$(*/
-      "Password must have at least 8 characters with at least three of these four types: lowercase, uppercase, digit, special." /*)*/;
-  public static final String USER_PATTERN_MISMATCH_CUSTOM = /*$$(*/
-      "Password doesn't match with configured pattern." /*)*/;
   public static final String USER_CODE_LENGTH_SHOULD_BE_GREATER_THAN_2 = /*$$(*/
       "Code length should be greater than 2." /*)*/;
 

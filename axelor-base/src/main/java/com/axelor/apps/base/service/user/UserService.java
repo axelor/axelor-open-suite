@@ -32,7 +32,6 @@ import com.axelor.script.ScriptAllowed;
 import com.axelor.team.db.Team;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /** UserService is a class that implement all methods for user information */
@@ -134,15 +133,6 @@ public interface UserService {
   Optional<Address> getUserActiveCompanyAddress();
 
   /**
-   * Change user password.
-   *
-   * @param user
-   * @param values
-   * @return
-   */
-  User changeUserPassword(User user, Map<String, Object> values);
-
-  /**
    * Trigger post processes after a change of the user password.
    *
    * @param user
@@ -154,8 +144,10 @@ public interface UserService {
       throws AxelorException, ClassNotFoundException, IOException;
 
   /**
-   * Return whether the password matches the pattern in {@code user.password.pattern} property, with
-   * a fallback to the default password pattern if property is not set.
+   * Returns whether the password matches the pattern in {@code user.password.pattern.value}
+   * property, with a fallback to the default password pattern if property is not set. Used to
+   * produce policy-compliant random passwords; password validation at change-time is handled by the
+   * platform password policies (AOP 8.2+).
    *
    * @param password
    * @return
@@ -168,14 +160,6 @@ public interface UserService {
    * @return
    */
   CharSequence generateRandomPassword();
-
-  /**
-   * Get password pattern description.
-   *
-   * @return
-   */
-  @CallMethod
-  String getPasswordPatternDescription();
 
   /**
    * Set the partner of the user.
