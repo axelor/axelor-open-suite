@@ -1,3 +1,0 @@
----
-title: "Stock move: fixed an error when reverting a merged stock move linked to multiple sale orders."
-module: axelor-supplychain
