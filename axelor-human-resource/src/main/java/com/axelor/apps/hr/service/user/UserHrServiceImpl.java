@@ -28,6 +28,7 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.auth.AuthService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.inject.Beans;
@@ -136,7 +137,7 @@ public class UserHrServiceImpl implements UserHrService {
     employeeUser.setGroup(user.getGroup());
 
     CharSequence password = userService.generateRandomPassword();
-    employeeUser.setPassword(password.toString());
+    employeeUser.setPassword(Beans.get(AuthService.class).encrypt(password.toString()));
   }
 
   protected void setUserInfoFromEmployee(User employeeUser, Employee employee) {
