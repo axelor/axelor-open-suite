@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed manually edited delivery/invoicing address text being overwritten on every save."
+module: axelor-sale
