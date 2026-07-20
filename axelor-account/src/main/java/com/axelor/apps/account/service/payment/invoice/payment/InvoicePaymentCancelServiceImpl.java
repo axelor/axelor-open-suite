@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -30,6 +31,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,6 +85,10 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
 
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
+    invoicePayment.getInvoiceTermPaymentList().stream()
+        .map(InvoiceTermPayment::getInvoiceTerm)
+        .filter(Objects::nonNull)
+        .forEach(it -> it.setPaymentSession(null));
     invoicePayment.getInvoiceTermPaymentList().forEach(it -> it.setInvoiceTerm(null));
 
     invoicePaymentRepository.save(invoicePayment);
