@@ -1,0 +1,3 @@
+---
+title: "Intervention: fixed the trading name being required on Partner even when the Intervention module is not installed."
+module: axelor-intervention
