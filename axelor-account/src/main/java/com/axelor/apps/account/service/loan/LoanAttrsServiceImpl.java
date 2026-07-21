@@ -44,16 +44,12 @@ public class LoanAttrsServiceImpl implements LoanAttrsService {
     BigDecimal capital = BigDecimal.ZERO;
     BigDecimal insurance = BigDecimal.ZERO;
     BigDecimal total = BigDecimal.ZERO;
-    BigDecimal remainingDebt = BigDecimal.ZERO;
     if (loan.getLineList() != null) {
       for (LoanLine line : loan.getLineList()) {
         interest = interest.add(nz(line.getInterestAmount()));
         capital = capital.add(nz(line.getCapitalAmount()));
         insurance = insurance.add(nz(line.getInsuranceAmount()));
         total = total.add(nz(line.getTotalAmount()));
-        if (line.getAccountMove() == null) {
-          remainingDebt = remainingDebt.add(nz(line.getCapitalAmount()));
-        }
       }
     }
 
@@ -61,7 +57,6 @@ public class LoanAttrsServiceImpl implements LoanAttrsService {
     addAttr("$totalInterest", "value", interest, attrsMap);
     addAttr("$totalInsurance", "value", insurance, attrsMap);
     addAttr("$totalPaid", "value", total, attrsMap);
-    addAttr("remainingDebt", "value", remainingDebt, attrsMap);
     return attrsMap;
   }
 
