@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.LoanLine;
 import com.axelor.apps.account.db.repo.LoanRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.loan.LoanAdjustmentService;
-import com.axelor.apps.account.service.loan.LoanConsistencyService;
+import com.axelor.apps.account.service.loan.LoanAttrsService;
 import com.axelor.apps.account.service.loan.LoanLineGenerationService;
 import com.axelor.apps.account.service.loan.LoanManagementConfigService;
 import com.axelor.apps.account.service.loan.LoanService;
@@ -64,21 +64,7 @@ public class LoanController {
   public void computeConsistency(ActionRequest request, ActionResponse response) {
     try {
       Loan loan = request.getContext().asType(Loan.class);
-      LoanConsistencyService service = Beans.get(LoanConsistencyService.class);
-      java.math.BigDecimal accountBalance = service.computeAccountBalance(loan);
-      java.math.BigDecimal gap = service.computeGap(loan);
-      response.setValue("$theoreticalOutstanding", service.computeTheoreticalOutstanding(loan));
-      response.setValue("$accountBalance", accountBalance);
-      response.setValue("$outstandingGap", gap);
-
-      String message = null;
-      if (gap.signum() != 0 && loan.getBorrowingDebtAccount() != null) {
-        message =
-            String.format(
-                I18n.get(AccountExceptionMessage.LOAN_CONSISTENCY_GAP),
-                loan.getBorrowingDebtAccount().getCode());
-      }
-      response.setValue("$consistencyAlertMessage", message);
+      response.setAttrs(Beans.get(LoanAttrsService.class).getConsistencyAttrsMap(loan));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -88,7 +74,7 @@ public class LoanController {
     try {
       Loan loan = request.getContext().asType(Loan.class);
       response.setValue("lineList", Beans.get(LoanAdjustmentService.class).recomputeSchedule(loan));
-      setTotals(response, loan);
+      response.setAttrs(Beans.get(LoanAttrsService.class).getTotalsAttrsMap(loan));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -96,38 +82,11 @@ public class LoanController {
 
   public void computeTotals(ActionRequest request, ActionResponse response) {
     try {
-      setTotals(response, request.getContext().asType(Loan.class));
+      Loan loan = request.getContext().asType(Loan.class);
+      response.setAttrs(Beans.get(LoanAttrsService.class).getTotalsAttrsMap(loan));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  protected void setTotals(ActionResponse response, Loan loan) {
-    java.math.BigDecimal interest = java.math.BigDecimal.ZERO;
-    java.math.BigDecimal capital = java.math.BigDecimal.ZERO;
-    java.math.BigDecimal insurance = java.math.BigDecimal.ZERO;
-    java.math.BigDecimal total = java.math.BigDecimal.ZERO;
-    java.math.BigDecimal remainingDebt = java.math.BigDecimal.ZERO;
-    if (loan.getLineList() != null) {
-      for (LoanLine line : loan.getLineList()) {
-        interest = interest.add(nz(line.getInterestAmount()));
-        capital = capital.add(nz(line.getCapitalAmount()));
-        insurance = insurance.add(nz(line.getInsuranceAmount()));
-        total = total.add(nz(line.getTotalAmount()));
-        if (line.getAccountMove() == null) {
-          remainingDebt = remainingDebt.add(nz(line.getCapitalAmount()));
-        }
-      }
-    }
-    response.setValue("$totalInterest", interest);
-    response.setValue("$totalCapital", capital);
-    response.setValue("$totalInsurance", insurance);
-    response.setValue("$totalPaid", total);
-    response.setValue("$totalRemainingDebt", remainingDebt);
-  }
-
-  protected java.math.BigDecimal nz(java.math.BigDecimal value) {
-    return value == null ? java.math.BigDecimal.ZERO : value;
   }
 
   public void defer(ActionRequest request, ActionResponse response) {
