@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.LoanLine;
 import com.axelor.apps.account.db.repo.LoanRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.loan.LoanAdjustmentService;
-import com.axelor.apps.account.service.loan.LoanConsistencyService;
+import com.axelor.apps.account.service.loan.LoanAttrsService;
 import com.axelor.apps.account.service.loan.LoanLineGenerationService;
 import com.axelor.apps.account.service.loan.LoanManagementConfigService;
 import com.axelor.apps.account.service.loan.LoanService;
@@ -64,21 +64,7 @@ public class LoanController {
   public void computeConsistency(ActionRequest request, ActionResponse response) {
     try {
       Loan loan = request.getContext().asType(Loan.class);
-      LoanConsistencyService service = Beans.get(LoanConsistencyService.class);
-      java.math.BigDecimal accountBalance = service.computeAccountBalance(loan);
-      java.math.BigDecimal gap = service.computeGap(loan);
-      response.setValue("$theoreticalOutstanding", service.computeTheoreticalOutstanding(loan));
-      response.setValue("$accountBalance", accountBalance);
-      response.setValue("$outstandingGap", gap);
-
-      String message = null;
-      if (gap.signum() != 0 && loan.getBorrowingDebtAccount() != null) {
-        message =
-            String.format(
-                I18n.get(AccountExceptionMessage.LOAN_CONSISTENCY_GAP),
-                loan.getBorrowingDebtAccount().getCode());
-      }
-      response.setValue("$consistencyAlertMessage", message);
+      response.setAttrs(Beans.get(LoanAttrsService.class).getConsistencyAttrsMap(loan));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -88,6 +74,16 @@ public class LoanController {
     try {
       Loan loan = request.getContext().asType(Loan.class);
       response.setValue("lineList", Beans.get(LoanAdjustmentService.class).recomputeSchedule(loan));
+      response.setAttrs(Beans.get(LoanAttrsService.class).getTotalsAttrsMap(loan));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeTotals(ActionRequest request, ActionResponse response) {
+    try {
+      Loan loan = request.getContext().asType(Loan.class);
+      response.setAttrs(Beans.get(LoanAttrsService.class).getTotalsAttrsMap(loan));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -1,0 +1,3 @@
+---
+title: "Loans: added a totals panel on the loan form summing the capital, interest, insurance and total amounts of the installments."
+module: axelor-account

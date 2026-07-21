@@ -292,6 +292,8 @@ import com.axelor.apps.account.service.journal.JournalControlService;
 import com.axelor.apps.account.service.journal.JournalControlServiceImpl;
 import com.axelor.apps.account.service.loan.LoanAdjustmentService;
 import com.axelor.apps.account.service.loan.LoanAdjustmentServiceImpl;
+import com.axelor.apps.account.service.loan.LoanAttrsService;
+import com.axelor.apps.account.service.loan.LoanAttrsServiceImpl;
 import com.axelor.apps.account.service.loan.LoanClosureService;
 import com.axelor.apps.account.service.loan.LoanClosureServiceImpl;
 import com.axelor.apps.account.service.loan.LoanConsistencyService;
@@ -846,6 +848,7 @@ public class AccountModule extends AxelorModule {
     bind(LoanClosureService.class).to(LoanClosureServiceImpl.class);
     bind(LoanAdjustmentService.class).to(LoanAdjustmentServiceImpl.class);
     bind(LoanConsistencyService.class).to(LoanConsistencyServiceImpl.class);
+    bind(LoanAttrsService.class).to(LoanAttrsServiceImpl.class);
     bind(LoanSimulationService.class).to(LoanSimulationServiceImpl.class);
 
     bind(AnalyticMoveLineQueryService.class).to(AnalyticMoveLineQueryServiceImpl.class);
