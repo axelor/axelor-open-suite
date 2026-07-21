@@ -61,7 +61,7 @@ public class LoanAttrsServiceImpl implements LoanAttrsService {
     addAttr("$totalInterest", "value", interest, attrsMap);
     addAttr("$totalInsurance", "value", insurance, attrsMap);
     addAttr("$totalPaid", "value", total, attrsMap);
-    addAttr("$totalRemainingDebt", "value", remainingDebt, attrsMap);
+    addAttr("remainingDebt", "value", remainingDebt, attrsMap);
     return attrsMap;
   }
 

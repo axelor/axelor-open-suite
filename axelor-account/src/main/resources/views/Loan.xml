@@ -101,8 +101,8 @@
         readonly="true" x-scale="currency.numberOfDecimals"/>
       <field name="$totalPaid" type="decimal" title="Total paid" colSpan="12" readonly="true"
         x-scale="currency.numberOfDecimals"/>
-      <field name="$totalRemainingDebt" type="decimal" title="Remaining debt" colSpan="12"
-        readonly="true" x-scale="currency.numberOfDecimals" showIf="statusSelect &gt; 1"/>
+      <field name="remainingDebt" colSpan="12" x-scale="currency.numberOfDecimals"
+        showIf="statusSelect &gt; 1"/>
     </panel>
   </form>
 
