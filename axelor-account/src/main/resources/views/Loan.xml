@@ -13,7 +13,7 @@
 
   <form name="loan-form" title="Loan" model="com.axelor.apps.account.db.Loan"
     onNew="action-loan-record-default,action-loan-method-set-default-config"
-    onLoad="action-loan-method-compute-deferral-flag,action-loan-method-compute-consistency">
+    onLoad="action-loan-method-compute-deferral-flag,action-loan-method-compute-consistency,action-loan-method-compute-totals">
     <panel name="mainPanel">
       <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"
         readonly="true"/>
@@ -26,7 +26,8 @@
         domain="self.company = :company" onChange="action-loan-method-copy-config"/>
       <field name="currency.numberOfDecimals" hidden="true"/>
     </panel>
-    <panel name="conditionsPanel" title="Financial conditions">
+    <panel name="conditionsPanel" title="Financial conditions" canCollapse="true"
+      collapseIf="statusSelect &gt; 1">
       <field name="amount" readonlyIf="statusSelect &gt; 1"
         x-scale="currency.numberOfDecimals"/>
       <field name="annualInterestRate" readonlyIf="statusSelect &gt; 1"/>
@@ -36,7 +37,6 @@
       <field name="monthlyInsuranceAmount" readonlyIf="statusSelect &gt; 1"
         x-scale="currency.numberOfDecimals"/>
       <field name="monthlyPayment" x-scale="currency.numberOfDecimals"/>
-      <field name="remainingDebt" x-scale="currency.numberOfDecimals"/>
     </panel>
     <panel name="consistencyPanel" title="Consistency check" itemSpan="4"
       showIf="statusSelect == 2 || statusSelect == 3">
@@ -91,6 +91,19 @@
       <button name="cancelDeferralBtn" title="Cancel deferral" colSpan="12"
         showIf="nextInstallmentIsDeferral" onClick="save,action-loan-method-cancel-deferral"/>
     </panel>
+    <panel name="totalsPanel" title="Totals" sidebar="true"
+      hideIf="!lineList || lineList.length == 0">
+      <field name="$totalCapital" type="decimal" title="Total capital" colSpan="12"
+        readonly="true" x-scale="currency.numberOfDecimals"/>
+      <field name="$totalInterest" type="decimal" title="Total interest" colSpan="12"
+        readonly="true" x-scale="currency.numberOfDecimals"/>
+      <field name="$totalInsurance" type="decimal" title="Total insurance" colSpan="12"
+        readonly="true" x-scale="currency.numberOfDecimals"/>
+      <field name="$totalPaid" type="decimal" title="Total paid" colSpan="12" readonly="true"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="$totalRemainingDebt" type="decimal" title="Remaining debt" colSpan="12"
+        readonly="true" x-scale="currency.numberOfDecimals" showIf="statusSelect &gt; 1"/>
+    </panel>
   </form>
 
   <action-record name="action-loan-record-default"
@@ -131,6 +144,10 @@
 
   <action-method name="action-loan-method-compute-consistency">
     <call class="com.axelor.apps.account.web.LoanController" method="computeConsistency"/>
+  </action-method>
+
+  <action-method name="action-loan-method-compute-totals">
+    <call class="com.axelor.apps.account.web.LoanController" method="computeTotals"/>
   </action-method>
 
   <action-method name="action-loan-method-recompute-schedule">

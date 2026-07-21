@@ -88,9 +88,46 @@ public class LoanController {
     try {
       Loan loan = request.getContext().asType(Loan.class);
       response.setValue("lineList", Beans.get(LoanAdjustmentService.class).recomputeSchedule(loan));
+      setTotals(response, loan);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void computeTotals(ActionRequest request, ActionResponse response) {
+    try {
+      setTotals(response, request.getContext().asType(Loan.class));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  protected void setTotals(ActionResponse response, Loan loan) {
+    java.math.BigDecimal interest = java.math.BigDecimal.ZERO;
+    java.math.BigDecimal capital = java.math.BigDecimal.ZERO;
+    java.math.BigDecimal insurance = java.math.BigDecimal.ZERO;
+    java.math.BigDecimal total = java.math.BigDecimal.ZERO;
+    java.math.BigDecimal remainingDebt = java.math.BigDecimal.ZERO;
+    if (loan.getLineList() != null) {
+      for (LoanLine line : loan.getLineList()) {
+        interest = interest.add(nz(line.getInterestAmount()));
+        capital = capital.add(nz(line.getCapitalAmount()));
+        insurance = insurance.add(nz(line.getInsuranceAmount()));
+        total = total.add(nz(line.getTotalAmount()));
+        if (line.getAccountMove() == null) {
+          remainingDebt = remainingDebt.add(nz(line.getCapitalAmount()));
+        }
+      }
+    }
+    response.setValue("$totalInterest", interest);
+    response.setValue("$totalCapital", capital);
+    response.setValue("$totalInsurance", insurance);
+    response.setValue("$totalPaid", total);
+    response.setValue("$totalRemainingDebt", remainingDebt);
+  }
+
+  protected java.math.BigDecimal nz(java.math.BigDecimal value) {
+    return value == null ? java.math.BigDecimal.ZERO : value;
   }
 
   public void defer(ActionRequest request, ActionResponse response) {
