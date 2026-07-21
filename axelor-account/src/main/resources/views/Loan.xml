@@ -13,7 +13,7 @@
 
   <form name="loan-form" title="Loan" model="com.axelor.apps.account.db.Loan"
     onNew="action-loan-record-default,action-loan-method-set-default-config"
-    onLoad="action-loan-method-compute-deferral-flag">
+    onLoad="action-loan-method-compute-deferral-flag,action-loan-method-compute-consistency">
     <panel name="mainPanel">
       <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"
         readonly="true"/>
@@ -37,6 +37,17 @@
         x-scale="currency.numberOfDecimals"/>
       <field name="monthlyPayment" x-scale="currency.numberOfDecimals"/>
       <field name="remainingDebt" x-scale="currency.numberOfDecimals"/>
+    </panel>
+    <panel name="consistencyPanel" title="Consistency check" itemSpan="4"
+      showIf="statusSelect == 2 || statusSelect == 3">
+      <field name="$theoreticalOutstanding" type="decimal"
+        title="Theoretical outstanding capital" readonly="true" x-scale="currency.numberOfDecimals"/>
+      <field name="$accountBalance" type="decimal" title="Debt account balance"
+        readonly="true" x-scale="currency.numberOfDecimals"/>
+      <field name="$outstandingGap" type="decimal" title="Gap" readonly="true"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="$consistencyAlertMessage" type="string" colSpan="12" showTitle="false"
+        readonly="true" css="label-danger" showIf="$consistencyAlertMessage"/>
     </panel>
     <panel-tabs name="detailsPanelTabs">
       <panel-related name="lineListPanel" field="lineList" title="Schedule"
@@ -116,6 +127,10 @@
 
   <action-method name="action-loan-method-compute-deferral-flag">
     <call class="com.axelor.apps.account.web.LoanController" method="computeDeferralFlag"/>
+  </action-method>
+
+  <action-method name="action-loan-method-compute-consistency">
+    <call class="com.axelor.apps.account.web.LoanController" method="computeConsistency"/>
   </action-method>
 
   <action-method name="action-loan-method-recompute-schedule">

@@ -1792,4 +1792,7 @@ public final class AccountExceptionMessage {
       /*$$(*/ "The capital repayment cannot exceed the remaining debt of the installment." /*)*/;
   public static final String LOAN_LINE_NEGATIVE_AMOUNT =
       /*$$(*/ "The installment amounts cannot be negative." /*)*/;
+  public static final String LOAN_CONSISTENCY_GAP =
+      /*$$(*/
+      "Inconsistency detected: the theoretical outstanding capital does not match the balance of account %s." /*)*/;
 }
