@@ -1,0 +1,3 @@
+---
+title: "Loans: added a consistency check panel on the loan comparing the theoretical outstanding capital with the accounting balance of the borrowing debt account (164), highlighting any gap."
+module: axelor-account

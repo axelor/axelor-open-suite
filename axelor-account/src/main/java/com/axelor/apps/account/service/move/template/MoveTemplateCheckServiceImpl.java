@@ -254,6 +254,30 @@ public class MoveTemplateCheckServiceImpl implements MoveTemplateCheckService {
     return true;
   }
 
+  @Override
+  public String getComputeTaxAtCreationWarning(MoveTemplate moveTemplate) {
+    List<MoveTemplateLine> lines = moveTemplate.getMoveTemplateLineList();
+    if (CollectionUtils.isEmpty(lines)) {
+      return null;
+    }
+
+    boolean hasExplicitTaxLines = lines.stream().anyMatch(moveTemplateTaxService::isTaxAccountLine);
+    if (!hasExplicitTaxLines) {
+      return null;
+    }
+
+    boolean hasComputeTaxAtCreation =
+        lines.stream()
+            .anyMatch(
+                line ->
+                    !moveTemplateTaxService.isTaxAccountLine(line)
+                        && Boolean.TRUE.equals(line.getComputeTaxAtCreation()));
+    if (hasComputeTaxAtCreation) {
+      return I18n.get(AccountExceptionMessage.MOVE_TEMPLATE_COMPUTE_TAX_AT_CREATION_WITH_TAX_LINES);
+    }
+    return null;
+  }
+
   @Transactional
   protected void validateMoveTemplateLine(MoveTemplate moveTemplate) {
     moveTemplate.setIsValid(true);

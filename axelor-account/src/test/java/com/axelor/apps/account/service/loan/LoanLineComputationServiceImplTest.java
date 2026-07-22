@@ -139,4 +139,18 @@ class LoanLineComputationServiceImplTest {
     assertAmount("0.00", lines.get(0).getInterestAmount());
     assertAmount("0.00", lines.get(11).getRemainingDebtAfter());
   }
+
+  @Test
+  void computeLinesFrom_reamortizesRemainingBalanceToZero() throws AxelorException {
+    Loan loan = loan(LoanRepository.COMPUTATION_MODE_CONSTANT_PAYMENT);
+
+    List<LoanLine> lines =
+        service.computeLinesFrom(loan, new BigDecimal("50000"), LocalDate.of(2026, 7, 1), 6);
+
+    assertEquals(6, lines.size());
+    assertEquals(LocalDate.of(2026, 7, 1), lines.get(0).getInstallmentDate());
+    assertAmount("50000", lines.get(0).getRemainingDebtBefore());
+    assertAmount("150.00", lines.get(0).getInterestAmount());
+    assertAmount("0.00", lines.get(5).getRemainingDebtAfter());
+  }
 }

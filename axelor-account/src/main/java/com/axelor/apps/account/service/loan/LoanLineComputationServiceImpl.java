@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,14 +45,46 @@ public class LoanLineComputationServiceImpl implements LoanLineComputationServic
 
   @Override
   public List<LoanLine> computeLines(Loan loan) throws AxelorException {
+    return computeLinesFrom(
+        loan, loan.getAmount(), loan.getFirstInstallmentDate(), loan.getDurationInMonth());
+  }
+
+  @Override
+  public List<LoanLine> computeLinesFrom(
+      Loan loan, BigDecimal startRemainingDebt, LocalDate firstDate, int count) {
+    if (startRemainingDebt == null || firstDate == null || count <= 0) {
+      return new ArrayList<>();
+    }
     int mode = loan.getComputationModeSelect() == null ? 0 : loan.getComputationModeSelect();
+    BigDecimal t = monthlyRate(loan);
     switch (mode) {
       case LoanRepository.COMPUTATION_MODE_CONSTANT_PAYMENT:
-        return computeConstantPayment(loan);
+        BigDecimal payment = computeConstantPaymentAmount(loan, startRemainingDebt, count, t);
+        return buildLines(
+            loan,
+            startRemainingDebt,
+            firstDate,
+            count,
+            (i, rdBefore) -> scale(loan, rdBefore.multiply(t)),
+            (i, rdBefore, interest) -> scale(loan, payment.subtract(interest)));
       case LoanRepository.COMPUTATION_MODE_CONSTANT_CAPITAL:
-        return computeConstantCapital(loan);
+        BigDecimal capitalShare =
+            scale(loan, startRemainingDebt.divide(BigDecimal.valueOf(count), MC));
+        return buildLines(
+            loan,
+            startRemainingDebt,
+            firstDate,
+            count,
+            (i, rdBefore) -> scale(loan, rdBefore.multiply(t)),
+            (i, rdBefore, interest) -> capitalShare);
       case LoanRepository.COMPUTATION_MODE_IN_FINE:
-        return computeInFine(loan);
+        return buildLines(
+            loan,
+            startRemainingDebt,
+            firstDate,
+            count,
+            (i, rdBefore) -> scale(loan, rdBefore.multiply(t)),
+            (i, rdBefore, interest) -> BigDecimal.ZERO);
       default:
         return new ArrayList<>();
     }
@@ -72,10 +105,8 @@ public class LoanLineComputationServiceImpl implements LoanLineComputationServic
         : loan.getMonthlyInsuranceAmount();
   }
 
-  protected BigDecimal computeConstantMonthlyPayment(Loan loan) {
-    BigDecimal t = monthlyRate(loan);
-    BigDecimal capital = loan.getAmount();
-    int n = loan.getDurationInMonth();
+  protected BigDecimal computeConstantPaymentAmount(
+      Loan loan, BigDecimal capital, int n, BigDecimal t) {
     if (t.signum() == 0) {
       return scale(loan, capital.divide(BigDecimal.valueOf(n), MC));
     }
@@ -84,46 +115,27 @@ public class LoanLineComputationServiceImpl implements LoanLineComputationServic
     return scale(loan, capital.multiply(t).divide(denominator, MC));
   }
 
-  protected List<LoanLine> computeConstantPayment(Loan loan) {
-    BigDecimal t = monthlyRate(loan);
-    BigDecimal payment = computeConstantMonthlyPayment(loan);
-    return buildLines(
-        loan,
-        (i, rdBefore) -> scale(loan, rdBefore.multiply(t)),
-        (i, rdBefore, interest) -> scale(loan, payment.subtract(interest)));
-  }
-
-  protected List<LoanLine> computeConstantCapital(Loan loan) {
-    BigDecimal t = monthlyRate(loan);
-    BigDecimal capitalShare =
-        scale(loan, loan.getAmount().divide(BigDecimal.valueOf(loan.getDurationInMonth()), MC));
-    return buildLines(
-        loan,
-        (i, rdBefore) -> scale(loan, rdBefore.multiply(t)),
-        (i, rdBefore, interest) -> capitalShare);
-  }
-
-  protected List<LoanLine> computeInFine(Loan loan) {
-    BigDecimal t = monthlyRate(loan);
-    return buildLines(
-        loan,
-        (i, rdBefore) -> scale(loan, rdBefore.multiply(t)),
-        (i, rdBefore, interest) -> BigDecimal.ZERO);
-  }
-
-  /** Builds n lines applying interest/capital functions; the last line absorbs the residual. */
-  protected List<LoanLine> buildLines(Loan loan, InterestFn interestFn, CapitalFn capitalFn) {
+  /**
+   * Builds {@code count} lines from a starting remaining debt and date, applying the interest and
+   * capital functions; the last line absorbs the residual to reach a zero remaining debt.
+   */
+  protected List<LoanLine> buildLines(
+      Loan loan,
+      BigDecimal startRemainingDebt,
+      LocalDate firstDate,
+      int count,
+      InterestFn interestFn,
+      CapitalFn capitalFn) {
     List<LoanLine> lines = new ArrayList<>();
-    int n = loan.getDurationInMonth();
-    BigDecimal rdBefore = loan.getAmount();
+    BigDecimal rdBefore = startRemainingDebt;
     BigDecimal ins = insurance(loan);
-    for (int i = 1; i <= n; i++) {
+    for (int i = 1; i <= count; i++) {
       BigDecimal interest = interestFn.apply(i, rdBefore);
-      BigDecimal capital = (i == n) ? rdBefore : capitalFn.apply(i, rdBefore, interest);
+      BigDecimal capital = (i == count) ? rdBefore : capitalFn.apply(i, rdBefore, interest);
       BigDecimal total = scale(loan, interest.add(capital).add(ins));
       BigDecimal rdAfter = scale(loan, rdBefore.subtract(capital));
       LoanLine line = new LoanLine();
-      line.setInstallmentDate(loan.getFirstInstallmentDate().plusMonths(i - 1L));
+      line.setInstallmentDate(firstDate.plusMonths(i - 1L));
       line.setRemainingDebtBefore(rdBefore);
       line.setInterestAmount(interest);
       line.setCapitalAmount(capital);

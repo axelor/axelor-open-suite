@@ -1,3 +1,0 @@
----
-title: "Accounting dashboard: fixed error when opening the dashboard caused by invalid date arithmetic in chart queries."
-module: axelor-account

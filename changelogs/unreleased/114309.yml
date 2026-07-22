@@ -1,3 +1,0 @@
----
-title: "Stock history update batch: fix the blocking errors raised on a second run over the same period and ensure the stock rotation category is correctly assigned"
-module: axelor-supplychain

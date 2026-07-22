@@ -1,3 +1,0 @@
----
-title: "Move line/Move line query/Reconciliation: display an error message when a selected moveLine belongs to an invoice with a pending payment."
-module: axelor-account

@@ -1,0 +1,6 @@
+---
+title: "Purchase request: fixed supplier details not populated on generated purchase order."
+module: axelor-supplychain
+developer: |
+  - PurchaseRequestToPoCreateServiceImpl: added protected `setPurchaseOrderSupplierDetails(PurchaseOrder)` — override and call `super` to populate additional supplier fields on the generated PO.
+  - PurchaseRequestToPoCreateServiceSupplychainImpl: constructor updated with a new `AccountConfigService` parameter.

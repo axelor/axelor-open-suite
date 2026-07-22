@@ -114,7 +114,11 @@ public class SaleOrderLineController {
     }
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
-    response.setAttrs(Beans.get(SaleOrderLineViewService.class).focusProduct());
+    SaleOrderLineViewService saleOrderLineViewService = Beans.get(SaleOrderLineViewService.class);
+    Map<String, Map<String, Object>> attrs = saleOrderLineViewService.focusProduct();
+    attrs.putAll(
+        saleOrderLineViewService.getDiscountReadonlyAttrs(saleOrderLine, saleOrder, parentSol));
+    response.setAttrs(attrs);
 
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(
@@ -448,5 +452,11 @@ public class SaleOrderLineController {
         .isConfiguratorVersionDifferent(saleOrderLine.getConfigurator())) {
       response.setError(I18n.get(SaleExceptionMessage.CONFIGURATOR_VERSION_IS_DIFFERENT));
     }
+  }
+
+  public void setSubTotalCostPriceManually(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    response.setValues(
+        Beans.get(SaleOrderLineProductService.class).setSubTotalCostPriceManually(saleOrderLine));
   }
 }

@@ -306,6 +306,7 @@
     <view type="cards" name="product-cards"/>
     <view type="grid" name="product-grid"/>
     <view type="form" name="product-form"/>
+    <view-param name="forceTitle" value="true"/>
     <view-param name="limit" value="39"/>
     <view-param name="search-filters" value="products-filters"/>
     <domain>self.isModel = :_isModel AND self.dtype = 'Product'</domain>

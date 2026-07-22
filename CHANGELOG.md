@@ -1,3 +1,150 @@
+## [9.1.2] (2026-07-02)
+
+### Fixes
+#### Base
+
+* Upgrade to AOP 8.2.2
+* Partner Sirene API: fixed null value in street name computation.
+* Data backup: fixed 'Update Import Id' failing for entities with joined table inheritance, and fixed long type fields incorrectly taking the import id value.
+* Product: reset revaluation section fields on product copy.
+* Partner Sirene API: added missing siren api buttons on grid view of customer and supplier.
+* Base: fixed address city selection to show only cities matching the entered zip code.
+* Data Backup: fixed backup creation failing when 'Update Import Id' option is enabled for entities using joined inheritance.
+* Barcode: fixed EAN_13 barcode type to accept 13-digit serial numbers.
+* Updated xsd schema URL to fix a build issue.
+* Product: improved performance when editing a product referenced in a large number of price lists.
+* Product category: fixed drag and drop in tree view.
+* Discount: fixed discount amount not being emptied after changing discount type select
+* added missing french translation for 'Template Rules' and 'Routings'.
+* Update studio dependency to 4.0.7
+* Unit conversion: display a clear error message when the formula evaluation fails.
+* Base: fixed duplicate default address on partner after merge.
+
+#### Account
+
+* Reconciliation: fixed NPE when unlettering an advance payment move with tax payment move lines having no reconcile.
+* Invoice line: fixed duplicate product, filter on supplier and type fields briefly shown on new line popup.
+* Account: fixed ArithmeticException when saving a tax line with rate exceeding 2 decimal digits.
+* Invoice: fixed invalid PDF signature on printed invoice; single copy is served unchanged and multiple copies are re-signed after merging.
+* Move line/Move line query/Reconciliation: display an error message when a selected moveLine belongs to an invoice with a pending payment.
+* Invoice: fixed ventilation failing with tax amounts not equal when several invoice lines share the same product account with analytic distribution template.
+* Invoice: fixed regenerated invoice PDF copies being returned without the certificate signature.
+* Invoice: removed 'Updated copy' option from the Reports print wizard for supplier invoices and supplier credit notes.
+* Move line: fixed lettering without partner ignoring payment difference threshold, causing always-partial reconciliation.
+* Account: fixed SemanticException when using AND operator in Analytic Move Line Query filter.
+* Invoice: pre-fill the default account and taxes on invoice lines without a product using the partner's accounting situation.
+* Account: fixed reverse-charge VAT lines missing on auto counterpart when supplier has a default expense account.
+* Invoice term : fixed readonly condition of due date in form view opening from menu.
+* Payment Voucher: display proper error message when cheque deposit journal is not configured.
+* Accounting dashboard: fixed error when opening the dashboard caused by invalid date arithmetic in chart queries.
+* Move line: fixed the display of the company currency in grid views and form.
+* Move: fixed financial discount miscalculated on manual journal entries with reverse-charge (intra-EU / import) VAT.
+* Invoice: fixed cannot set back to draft a canceled invoice due to required condition.
+* Account: fixed Mass Entry validation failing when move lines have different partners.
+* Accounting batch: fixed the date of analytic distribution lines on generated moves to use the move accounting date instead of the origin date for the 'Accounting cut-off' batch.
+* Invoice: fixed anomaly traceback not saved when mass ventilation fails.
+* Invoice: fixed internal server error when recording a payment on a foreign currency invoice where the company-currency micro-residual converts to zero in the invoice currency.
+
+#### Bank Payment
+
+* Bank payment: fixed CFONB120 multi-period import rejected on non-chronological period order.
+
+#### Contract
+
+* Contract: fixed 'Initial price per year' and 'Yearly price revalued' showing 0.00 in contract line grid on draft amendments.
+* Contract: fixed fiscal position not being set on generated invoice.
+* Contract: fixed close button appears after a termination that failed due to the notice period.
+
+#### CRM
+
+* Event: fixed opportunity, event lead and partner linked via relatedToSelect not displayed on event-grid.
+
+#### Human Resource
+
+* Expense: fixed ventilation failing when the VAT system could not be resolved from the partner accounting situation.
+* HR: fixed Employee grid not refreshing the contact partner full name inline after editing the form.
+
+#### Production
+
+* Production: fixed stock reservation not requested when planning a Manufacturing Order with 'Auto request qty for manuf orders' enabled.
+* Production: fixed sub manufacturing orders being created with zero or negative quantity when sub-component stock covers the requirement.
+* Sale order: fixed the error on confirmation when both customerStockMoveGenerationAuto and autoPlanManufOrderFromSO are activated.
+* Manuf order: fixed duplicate in and out stock moves while planning manuf orders from diff tabs.
+* Manuf order : fixed no session error when partially completing a manufacturing order with tracking number
+
+#### Sale
+
+* Sale order: fixed global discount changes not being applied to the order lines, so the per-line discounts (and the discounts carried to the invoice) are now recomputed when the global discount type or amount changes.
+* Sale order: on the editable sale order line grid, the discount type and discount amount fields are now correctly set as read-only according to the global discount management.
+* Sale order: fixed subtotal cost price that could not be modified.
+* Sale order: fixed add line from configurator button not available on confirmed sale order being edited.
+* Sale order: made the per-line discount fields read-only in the editable grid when a global discount is set on the order, consistently with the form view.
+* Sale dashboard: fixed inconsistencies between charts due to incorrect date bounds, missing company filter, and non-YTD comparison in turnover charts.
+
+#### Stock
+
+* Product: fixed stock indicators to show variants stocks for product model.
+* Mass stock move: fixed an error occurring when using 'Pick all' or 'The rest'.
+* Tracking number: fixed error when creating new tracking number from menu.
+* Stock rules: fixed wrong refill type filter when product by companies feature is enabled.
+
+#### Supply Chain
+
+* Sale order: fixed deletion of a sale order line failing when a canceled stock move line still referenced it.
+* Stock history update batch: fix the blocking errors raised on a second run over the same period and ensure the stock rotation category is correctly assigned
+* Stock depreciation: restrict product selection to stock-managed products.
+* Sale: fixed mass invoicing to process only selected customer deliveries.
+* Stock: fixed logistical form dashlet on customer deliveries incorrectly showing all existing logistical forms instead of only those linked to the stock move, and added automatic logistical form creation on outgoing stock move save.
+* Stock move: fixed logistical form not cleared when duplicating a stock move.
+* Purchase: fixed mass invoicing to process only selected delivery receipts.
+* MRP: fixed issue with deleted record reappearing in draft status after refresh.
+* Purchase order: fixed invoice generation allowed on a totally invoiced purchase order.
+* Supplychain: fixed MRP Family not grouping purchase proposals when demands fall exactly on the day window limit.
+* Purchase: fixed invoice qty set to 0 when regenerating after cancellation.
+* MRP: fixed duplicate sales forecast lines in MRP result.
+
+
+### Developer
+
+#### Base
+
+Add a new ProductSupplychainServiceImpl that extends ProductServicePurchaseImpl
+
+#### Account
+
+- MoveLineConsolidateService: modified findConsolidateMoveLine method signature, changed first parameter from Map<List<Object>, MoveLine> map to Map<List<Object>, List<MoveLine>> map.
+
+---
+
+Added `AccountingSituationService` and `FiscalPositionAccountService` as constructor parameters to `InvoiceLineGenerator`.
+Added `AccountingSituationService` and `FiscalPositionAccountService` as constructor parameters to `InvoiceLineServiceImpl` and its subclasses.
+
+#### Production
+
+- SaleOrderLineMOGenerationSingleLineService: `generateManufOrders()` signature updated — added `BigDecimal grossQtyRequested` parameter.
+- SaleOrderLineMOGenerationService: `generateManufOrders()` signature updated — added `BigDecimal grossQtyRequested` parameter.
+- ProductionOrderSaleOrderMOGenerationService: `generateManufOrders()` signature updated — added `BigDecimal grossQtyRequested` parameter.
+
+#### Sale
+
+-- Script
+ALTER TABLE sale_sale_order_line
+  ADD COLUMN IF NOT EXISTS manual_sub_total_cost_price numeric(20, 3),
+  ADD COLUMN IF NOT EXISTS is_sub_total_cost_price_manually_edited boolean;
+
+#### Supply Chain
+
+The `onDelete` actions `action-mrp-validate-delete-mrp-reset` and
+`action-mrp-validate-delete-multi-mrp-reset` have been removed from the MRP form and
+grid views. The `MrpManagementRepository.remove()` override that was incorrectly
+resetting and saving the record instead of deleting it has been replaced with a correct
+implementation that deletes associated `MrpLine` records before removing the MRP itself.
+
+```sql
+DELETE FROM meta_action WHERE name = 'action-mrp-validate-delete-mrp-reset';
+DELETE FROM meta_action WHERE name = 'action-mrp-validate-delete-multi-mrp-reset';
+```
+
 ## [9.1.1] (2026-06-18)
 
 ### Fixes
@@ -218,5 +365,6 @@ so existing imports continue to work.
 #### Intervention
 * Fixed intervention generation from a contract.
 
+[9.1.2]: https://github.com/axelor/axelor-open-suite/compare/v9.1.1...v9.1.2
 [9.1.1]: https://github.com/axelor/axelor-open-suite/compare/v9.1.0...v9.1.1
 [9.1.0]: https://github.com/axelor/axelor-open-suite/compare/v9.0.11...v9.1.0

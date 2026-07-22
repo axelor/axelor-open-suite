@@ -1029,6 +1029,9 @@ public final class AccountExceptionMessage {
   public static final String MOVE_TEMPLATE_MIXED_COMPUTE_TAX_AT_CREATION = /*$$(*/
       "Lines with account %s and tax %s have inconsistent 'Compute tax at creation' values. All lines with the same account and tax must have the same setting." /*)*/;
 
+  public static final String MOVE_TEMPLATE_COMPUTE_TAX_AT_CREATION_WITH_TAX_LINES = /*$$(*/
+      "'Compute tax at creation' is enabled on at least one line, but the template also contains tax lines. In this case the tax is not computed automatically and the option is ignored: either remove the tax lines or uncheck 'Compute tax at creation'." /*)*/;
+
   /** Mass entry move controller */
   public static final String MASS_ENTRY_MOVE_CONTROL_ERROR = /*$$(*/
       "Error(s) during moves control" /*)*/;
@@ -1784,4 +1787,15 @@ public final class AccountExceptionMessage {
       /*$$(*/ "The loan %s is missing the journal or one of the accounts required for the closing adjustments." /*)*/;
   public static final String BATCH_LOAN_CLOSURE =
       /*$$(*/ "Loan(s) with closing adjustments generated :" /*)*/;
+  public static final String LOAN_NO_INSTALLMENT_TO_ADJUST =
+      /*$$(*/ "There is no planned installment to adjust on this loan." /*)*/;
+  public static final String LOAN_NO_ADJUSTMENT_TO_CANCEL =
+      /*$$(*/ "There is no adjustment to cancel on this loan." /*)*/;
+  public static final String LOAN_LINE_CAPITAL_EXCEEDS_REMAINING_DEBT =
+      /*$$(*/ "The capital repayment cannot exceed the remaining debt of the installment." /*)*/;
+  public static final String LOAN_LINE_NEGATIVE_AMOUNT =
+      /*$$(*/ "The installment amounts cannot be negative." /*)*/;
+  public static final String LOAN_CONSISTENCY_GAP =
+      /*$$(*/
+      "Inconsistency detected: the theoretical outstanding capital does not match the balance of account %s." /*)*/;
 }
