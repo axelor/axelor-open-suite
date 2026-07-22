@@ -1,0 +1,5 @@
+---
+title: "Supplychain: fixed new delivery note generated after editing a confirmed sale order using the original quantity instead of the newly edited one."
+module: axelor-supplychain
+developer: |
+  The SaleOrderServiceSupplychainImpl constructor now requires a SaleOrderLineQtyToDeliverService parameter.
