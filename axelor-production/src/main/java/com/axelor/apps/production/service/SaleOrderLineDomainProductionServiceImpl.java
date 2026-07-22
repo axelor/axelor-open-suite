@@ -27,20 +27,15 @@ public class SaleOrderLineDomainProductionServiceImpl
     implements SaleOrderLineDomainProductionService {
   @Override
   public String getBomDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
-    String domain = getProdProcessDomain(saleOrderLine);
+    String domain = getProdProcessDomain(saleOrderLine, saleOrder);
     if (StringUtils.isEmpty(domain)) {
       return domain;
     }
-    domain = "(" + domain + ") AND self.defineSubBillOfMaterial = true";
-    if (saleOrder != null && saleOrder.getCompany() != null) {
-      domain +=
-          " AND (self.company IS NULL OR self.company.id = " + saleOrder.getCompany().getId() + ")";
-    }
-    return domain;
+    return "(" + domain + ") AND self.defineSubBillOfMaterial = true";
   }
 
   @Override
-  public String getProdProcessDomain(SaleOrderLine saleOrderLine) {
+  public String getProdProcessDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     StringBuilder domain = new StringBuilder();
     Product product = saleOrderLine.getProduct();
     if (product == null) {
@@ -53,6 +48,12 @@ public class SaleOrderLineDomainProductionServiceImpl
     if (parentProduct != null) {
       domain.append(" OR self.product.id = ");
       domain.append(parentProduct.getId());
+    }
+
+    if (saleOrder != null && saleOrder.getCompany() != null) {
+      domain.append(" AND (self.company IS NULL OR self.company.id = ");
+      domain.append(saleOrder.getCompany().getId());
+      domain.append(")");
     }
 
     return domain.toString();
