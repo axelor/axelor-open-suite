@@ -126,7 +126,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               ? printSignedCopies(file, copyNumber).toPath()
               : Files.copy(
                   file.toPath(),
-                  Files.createTempFile(null, ".pdf"),
+                  MetaFiles.createTempFile(null, ".pdf"),
                   StandardCopyOption.REPLACE_EXISTING);
       fileCopies =
           Files.move(path, path.resolveSibling(fileName), StandardCopyOption.REPLACE_EXISTING)
@@ -139,7 +139,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     File sourceCopy =
         Files.copy(
                 file.toPath(),
-                Files.createTempFile(null, ".pdf"),
+                MetaFiles.createTempFile(null, ".pdf"),
                 StandardCopyOption.REPLACE_EXISTING)
             .toFile();
     pdfSignatureService.removeSignatureFields(sourceCopy);
