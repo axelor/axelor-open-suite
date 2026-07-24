@@ -60,6 +60,7 @@ import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
+import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
@@ -906,8 +907,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       List<InvoiceLine> invoiceLines = invoiceService.getInvoiceLinesFromInvoiceList(invoiceList);
       invoiceGenerator.populate(invoiceMerged, invoiceLines);
       invoiceService.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
-      invoiceMerged.setSaleOrder(null);
+      invoiceMerged.setSaleOrder(saleOrder);
       invoiceRepo.save(invoiceMerged);
+      Beans.get(TimetableService.class).reassignInvoice(invoiceList, invoiceMerged);
       invoiceServiceSupplychain.swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;
@@ -925,6 +927,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
               paymentCondition,
               tradingName,
               fiscalPosition);
+      Beans.get(TimetableService.class).reassignInvoice(invoiceList, invoiceMerged);
       invoiceServiceSupplychain.swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;
