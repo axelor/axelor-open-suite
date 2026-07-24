@@ -1478,7 +1478,8 @@
     <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
       form-view="invoice-form" grid-view="invoice-grid" title="Cust. Invoices to merge" colSpan="12"
       type="many-to-many" target="com.axelor.apps.account.db.Invoice"
-      domain="self.statusSelect = 1 AND self.operationTypeSelect = 3" canNew="false" canEdit="false"/>
+      domain="self.statusSelect IN (1, 2) AND self.operationTypeSelect = 3" canNew="false"
+      canEdit="false"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="generateMergedCustInvoicesBtn" title="Merge into single cust. invoice"
         onClick="action-validate-invoice-check-selection,action-invoice-method-merge"/>
@@ -1530,7 +1531,8 @@
     <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
       form-view="invoice-form" grid-view="invoice-grid" title="Suppl. Invoices to merge"
       colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice"
-      domain="self.statusSelect = 1 AND self.operationTypeSelect = 1" canNew="false" canEdit="false"/>
+      domain="self.statusSelect IN (1, 2) AND self.operationTypeSelect = 1" canNew="false"
+      canEdit="false"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="generateMergedSupplInvoicesBtn" title="Merge into single suppl. invoice"
         onClick="action-validate-invoice-check-selection,action-invoice-method-merge"/>

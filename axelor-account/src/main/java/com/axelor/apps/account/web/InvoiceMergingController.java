@@ -22,9 +22,11 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceMergingService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingService.InvoiceMergingResult;
 import com.axelor.apps.account.service.invoice.InvoiceMergingViewService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
@@ -39,6 +41,7 @@ import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.MapHelper;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceMergingController {
@@ -165,6 +168,9 @@ public class InvoiceMergingController {
         response.setError(I18n.get("You have to choose at least one invoice"));
         return;
       }
+      if (rejectInvalidStatusInvoices(response, invoicesToMerge)) {
+        return;
+      }
       InvoiceMergingService invoiceMergingService = Beans.get(InvoiceMergingService.class);
       if (CollectionUtils.isNotEmpty(invoicesToMerge)) {
         InvoiceMergingResult result = invoiceMergingService.mergeInvoices(invoicesToMerge);
@@ -189,6 +195,9 @@ public class InvoiceMergingController {
       List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
       List<Invoice> invoicesToMerge =
           Beans.get(InvoiceMergingService.class).convertSelectedLinesToMergeLines(idList);
+      if (rejectInvalidStatusInvoices(response, invoicesToMerge)) {
+        return;
+      }
       response.setView(
           ActionView.define(I18n.get("Merge Cust. Credit notes"))
               .model("com.axelor.utils.db.Wizard")
@@ -206,6 +215,9 @@ public class InvoiceMergingController {
       List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
       List<Invoice> invoicesToMerge =
           Beans.get(InvoiceMergingService.class).convertSelectedLinesToMergeLines(idList);
+      if (rejectInvalidStatusInvoices(response, invoicesToMerge)) {
+        return;
+      }
       response.setView(
           ActionView.define(I18n.get("Merge Suppl. Credit notes"))
               .model("com.axelor.utils.db.Wizard")
@@ -215,6 +227,30 @@ public class InvoiceMergingController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  protected boolean rejectInvalidStatusInvoices(
+      ActionResponse response, List<Invoice> invoicesToMerge) {
+    if (CollectionUtils.isEmpty(invoicesToMerge)) {
+      return false;
+    }
+    String invalidInvoiceIds =
+        invoicesToMerge.stream()
+            .filter(invoice -> !InvoiceToolService.isInvoiceStatusMergeable(invoice))
+            .map(
+                invoice ->
+                    invoice.getInvoiceId() != null
+                        ? invoice.getInvoiceId()
+                        : String.valueOf(invoice.getId()))
+            .collect(Collectors.joining("<br/>"));
+    if (invalidInvoiceIds.isEmpty()) {
+      return false;
+    }
+    response.setError(
+        String.format(
+            I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_STATUS_INVOICE),
+            invalidInvoiceIds));
+    return true;
   }
 
   protected void setResponseView(ActionResponse response, InvoiceMergingResult result) {
