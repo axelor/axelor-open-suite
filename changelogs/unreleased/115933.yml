@@ -1,0 +1,3 @@
+---
+title: "Tax line: fixed error when computing full name."
+module: axelor-base
