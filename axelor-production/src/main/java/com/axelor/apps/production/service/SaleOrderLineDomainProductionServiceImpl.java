@@ -41,7 +41,7 @@ public class SaleOrderLineDomainProductionServiceImpl
     if (product == null) {
       return "";
     }
-    domain.append("self.product.id = ");
+    domain.append("(self.product.id = ");
     domain.append(product.getId());
 
     Product parentProduct = product.getParentProduct();
@@ -49,6 +49,7 @@ public class SaleOrderLineDomainProductionServiceImpl
       domain.append(" OR self.product.id = ");
       domain.append(parentProduct.getId());
     }
+    domain.append(")");
 
     if (saleOrder != null && saleOrder.getCompany() != null) {
       domain.append(" AND (self.company IS NULL OR self.company.id = ");
