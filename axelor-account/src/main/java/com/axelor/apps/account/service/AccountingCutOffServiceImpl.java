@@ -554,7 +554,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
                 move,
                 move.getPartner(),
                 taxAccount,
-                currencyTaxAmount,
+                currencyTaxAmount.abs(),
                 isDebit,
                 move.getDate(),
                 ++counter,
