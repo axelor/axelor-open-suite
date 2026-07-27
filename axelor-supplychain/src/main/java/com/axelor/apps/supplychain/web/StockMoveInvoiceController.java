@@ -740,22 +740,28 @@ public class StockMoveInvoiceController {
           }
           invoice = stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, saleOrder, null);
         } else if (ObjectUtils.notEmpty(purchaseOrderSet)) {
-          PurchaseOrderMergingResult result =
-              Beans.get(PurchaseOrderMergingService.class)
-                  .simulateMergePurchaseOrders(new ArrayList<>(purchaseOrderSet));
-          if (result.isConfirmationNeeded()) {
-            ActionViewBuilder confirmView =
-                Beans.get(PurchaseOrderMergingViewService.class)
-                    .buildConfirmView(result, new ArrayList<>(purchaseOrderSet));
-            confirmView.context("stockMoveId", stockMove.getId());
-            confirmView.context("toStockMove", true);
+          PurchaseOrder purchaseOrder;
+          if (purchaseOrderSet.size() == 1) {
+            purchaseOrder = purchaseOrderSet.iterator().next();
+          } else {
+            PurchaseOrderMergingResult result =
+                Beans.get(PurchaseOrderMergingService.class)
+                    .simulateMergePurchaseOrders(new ArrayList<>(purchaseOrderSet));
+            if (result.isConfirmationNeeded()) {
+              ActionViewBuilder confirmView =
+                  Beans.get(PurchaseOrderMergingViewService.class)
+                      .buildConfirmView(result, new ArrayList<>(purchaseOrderSet));
+              confirmView.context("stockMoveId", stockMove.getId());
+              confirmView.context("toStockMove", true);
 
-            response.setView(confirmView.map());
-            return;
+              response.setView(confirmView.map());
+              return;
+            }
+            purchaseOrder = result.getPurchaseOrder();
           }
           invoice =
               stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
-                  stockMove, result.getPurchaseOrder(), null);
+                  stockMove, purchaseOrder, null);
         } else {
           invoice = stockMoveInvoiceService.createInvoiceFromOrderlessStockMove(stockMove, null);
         }
