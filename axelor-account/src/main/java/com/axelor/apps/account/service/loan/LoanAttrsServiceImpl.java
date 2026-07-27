@@ -31,10 +31,13 @@ import java.util.Map;
 public class LoanAttrsServiceImpl implements LoanAttrsService {
 
   protected LoanConsistencyService loanConsistencyService;
+  protected LoanAdjustmentService loanAdjustmentService;
 
   @Inject
-  public LoanAttrsServiceImpl(LoanConsistencyService loanConsistencyService) {
+  public LoanAttrsServiceImpl(
+      LoanConsistencyService loanConsistencyService, LoanAdjustmentService loanAdjustmentService) {
     this.loanConsistencyService = loanConsistencyService;
+    this.loanAdjustmentService = loanAdjustmentService;
   }
 
   @Override
@@ -87,8 +90,14 @@ public class LoanAttrsServiceImpl implements LoanAttrsService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getDeferralTitlesAttrsMap(Loan loan) {
+  public Map<String, Map<String, Object>> getDeferralAttrsMap(Loan loan) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+    LoanLine next = loanAdjustmentService.getNextUnpaidLine(loan);
+    addAttr(
+        "nextInstallmentIsDeferral",
+        "value",
+        next != null && Boolean.TRUE.equals(next.getIsDeferral()),
+        attrsMap);
     boolean draft =
         loan.getStatusSelect() != null && loan.getStatusSelect() == LoanRepository.STATUS_DRAFT;
     addAttr("deferralPanel", "title", I18n.get(draft ? "Deferred" : "Deferral"), attrsMap);

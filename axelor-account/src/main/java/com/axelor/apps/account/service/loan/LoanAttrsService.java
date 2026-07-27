@@ -28,9 +28,10 @@ public interface LoanAttrsService {
   Map<String, Map<String, Object>> getConsistencyAttrsMap(Loan loan);
 
   /**
-   * Titles of the shared deferral panel and its buttons, adapted to the loan status: a deferral
-   * negociated during the setting phase (Draft) is worded as a "différé", a repayment-phase one as
-   * a "report".
+   * Attributes of the shared deferral panel: the nextInstallmentIsDeferral flag and the panel and
+   * button titles, adapted to the loan status (a deferral negociated during the setting phase
+   * (Draft) is worded as a "différé", a repayment-phase one as a "report"). Everything is set as
+   * field attributes so the record is not flagged as modified on load.
    */
-  Map<String, Map<String, Object>> getDeferralTitlesAttrsMap(Loan loan);
+  Map<String, Map<String, Object>> getDeferralAttrsMap(Loan loan);
 }

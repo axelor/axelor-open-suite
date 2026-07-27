@@ -19,7 +19,6 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Loan;
-import com.axelor.apps.account.db.LoanLine;
 import com.axelor.apps.account.db.repo.LoanRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.loan.LoanAdjustmentService;
@@ -53,10 +52,7 @@ public class LoanController {
   public void computeDeferralFlag(ActionRequest request, ActionResponse response) {
     try {
       Loan loan = request.getContext().asType(Loan.class);
-      LoanLine next = Beans.get(LoanAdjustmentService.class).getNextUnpaidLine(loan);
-      response.setValue(
-          "nextInstallmentIsDeferral", next != null && Boolean.TRUE.equals(next.getIsDeferral()));
-      response.setAttrs(Beans.get(LoanAttrsService.class).getDeferralTitlesAttrsMap(loan));
+      response.setAttrs(Beans.get(LoanAttrsService.class).getDeferralAttrsMap(loan));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

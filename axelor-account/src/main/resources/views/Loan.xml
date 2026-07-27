@@ -13,7 +13,7 @@
 
   <form name="loan-form" title="Loan" model="com.axelor.apps.account.db.Loan"
     onNew="action-loan-record-default,action-loan-method-set-default-config"
-    onLoad="action-loan-method-compute-deferral-flag,action-loan-method-compute-consistency,action-loan-method-compute-totals">
+    onLoad="action-loan-group-on-load">
     <panel name="mainPanel">
       <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"
         readonly="true"/>
@@ -116,6 +116,12 @@
     <field name="company" expr="eval: __user__.activeCompany"/>
     <field name="currency" expr="eval: __user__.activeCompany?.currency"/>
   </action-record>
+
+  <action-group name="action-loan-group-on-load">
+    <action name="action-loan-method-compute-deferral-flag"/>
+    <action name="action-loan-method-compute-consistency"/>
+    <action name="action-loan-method-compute-totals"/>
+  </action-group>
 
   <action-method name="action-loan-method-validate">
     <call class="com.axelor.apps.account.web.LoanController" method="validate"/>
