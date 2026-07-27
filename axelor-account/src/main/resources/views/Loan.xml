@@ -22,7 +22,7 @@
         onChange="action-loan-method-set-default-config"/>
       <field name="currency" readonlyIf="statusSelect &gt; 1"/>
       <field name="partner" readonlyIf="statusSelect &gt; 1"/>
-      <field name="loanManagementConfig" readonlyIf="statusSelect &gt; 1"
+      <field name="loanManagementConfig" required="true" readonlyIf="statusSelect &gt; 1"
         domain="self.company = :company" onChange="action-loan-method-copy-config"/>
       <field name="currency.numberOfDecimals" hidden="true"/>
     </panel>
