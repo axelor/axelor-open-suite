@@ -20,6 +20,7 @@ package com.axelor.apps.sale.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -128,7 +129,15 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
   }
 
   protected void syncAddressStr(SaleOrder saleOrder) {
-    Beans.get(SaleOrderService.class).computeAddressStr(saleOrder);
+    AddressService addressService = Beans.get(AddressService.class);
+    if (Strings.isNullOrEmpty(saleOrder.getMainInvoicingAddressStr())) {
+      saleOrder.setMainInvoicingAddressStr(
+          addressService.computeAddressStr(saleOrder.getMainInvoicingAddress()));
+    }
+    if (Strings.isNullOrEmpty(saleOrder.getDeliveryAddressStr())) {
+      saleOrder.setDeliveryAddressStr(
+          addressService.computeAddressStr(saleOrder.getDeliveryAddress()));
+    }
     Beans.get(SaleOrderDeliveryAddressService.class)
         .updateSaleOrderLinesDeliveryAddressStr(saleOrder);
   }
