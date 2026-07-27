@@ -61,4 +61,13 @@ public interface LoanAdjustmentService {
 
   /** Restores the planned installments to the state captured before the last deferral. */
   void cancelDeferral(Loan loan) throws AxelorException;
+
+  /**
+   * Applies the deferral described by the loan's own deferral parameters (deferralInstallmentCount
+   * and the related options) to its freshly generated schedule. Used for a deferral negociated
+   * during the setting phase (Draft status): unlike {@link #defer}, it takes no snapshot, so the
+   * deferral is baked into the schedule and cannot be cancelled once the loan is validated. Does
+   * nothing when no deferral is parameterised or the schedule has no planned installment.
+   */
+  void applyParameterizedDeferral(Loan loan) throws AxelorException;
 }

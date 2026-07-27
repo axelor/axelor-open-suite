@@ -119,6 +119,30 @@ public class LoanController {
     }
   }
 
+  public void applyDraftDeferral(ActionRequest request, ActionResponse response) {
+    try {
+      Loan loan =
+          Beans.get(LoanRepository.class).find(request.getContext().asType(Loan.class).getId());
+      // Regenerates the base schedule and re-applies the parameterised deferral.
+      Beans.get(LoanLineGenerationService.class).generateSchedule(loan);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void cancelDraftDeferral(ActionRequest request, ActionResponse response) {
+    try {
+      Loan loan =
+          Beans.get(LoanRepository.class).find(request.getContext().asType(Loan.class).getId());
+      loan.setDeferralInstallmentCount(0);
+      Beans.get(LoanLineGenerationService.class).generateSchedule(loan);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void setDefaultLoanManagementConfig(ActionRequest request, ActionResponse response) {
     Loan loan = request.getContext().asType(Loan.class);
     if (loan.getCurrency() == null && loan.getCompany() != null) {

@@ -33,12 +33,16 @@ public class LoanLineGenerationServiceImpl implements LoanLineGenerationService 
 
   protected LoanLineComputationService loanLineComputationService;
   protected LoanRepository loanRepository;
+  protected LoanAdjustmentService loanAdjustmentService;
 
   @Inject
   public LoanLineGenerationServiceImpl(
-      LoanLineComputationService loanLineComputationService, LoanRepository loanRepository) {
+      LoanLineComputationService loanLineComputationService,
+      LoanRepository loanRepository,
+      LoanAdjustmentService loanAdjustmentService) {
     this.loanLineComputationService = loanLineComputationService;
     this.loanRepository = loanRepository;
+    this.loanAdjustmentService = loanAdjustmentService;
   }
 
   @Override
@@ -57,6 +61,9 @@ public class LoanLineGenerationServiceImpl implements LoanLineGenerationService 
       LoanLine first = lines.get(0);
       loan.setMonthlyPayment(first.getInterestAmount().add(first.getCapitalAmount()));
     }
+    // Re-apply a deferral negociated during the setting phase (Draft "différé"), so it is preserved
+    // across any schedule regeneration, including validation.
+    loanAdjustmentService.applyParameterizedDeferral(loan);
     loanRepository.save(loan);
   }
 
