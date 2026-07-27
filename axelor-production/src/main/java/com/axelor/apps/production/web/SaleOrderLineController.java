@@ -116,10 +116,15 @@ public class SaleOrderLineController {
 
   public void setProdProcessDomain(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    if (saleOrder == null) {
+      saleOrder = SaleOrderLineContextHelper.getSaleOrder(request.getContext(), saleOrderLine);
+    }
     response.setAttr(
         "prodProcess",
         "domain",
-        Beans.get(SaleOrderLineDomainProductionService.class).getProdProcessDomain(saleOrderLine));
+        Beans.get(SaleOrderLineDomainProductionService.class)
+            .getProdProcessDomain(saleOrderLine, saleOrder));
   }
 
   public void bomOnChange(ActionRequest request, ActionResponse response) throws Exception {
