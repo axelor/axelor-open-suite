@@ -65,7 +65,8 @@
       </panel>
     </panel-tabs>
     <panel name="actionsPanel" sidebar="true" showIf="statusSelect == 1">
-      <button name="validateBtn" title="Validate" onClick="save,action-loan-method-validate"/>
+      <button name="validateBtn" title="Validate" onClick="save,action-loan-method-validate"
+        showIf="lineList &amp;&amp; lineList.length &gt; 0"/>
       <button name="generateScheduleBtn" title="Generate schedule"
         onClick="save,action-loan-method-generate-schedule"/>
     </panel>
@@ -82,7 +83,7 @@
       panel and button titles are set on load by LoanAttrsService; the buttons dispatch on the loan status
       in LoanController. -->
     <panel name="deferralPanel" title="Deferral" sidebar="true"
-      showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3">
+      showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 3) &amp;&amp; lineList &amp;&amp; lineList.length &gt; 0">
       <field name="scheduleSnapshot" hidden="true"/>
       <field name="$nextInstallmentIsDeferral" type="boolean" hidden="true"/>
       <field name="deferralInstallmentCount" colSpan="12"/>
