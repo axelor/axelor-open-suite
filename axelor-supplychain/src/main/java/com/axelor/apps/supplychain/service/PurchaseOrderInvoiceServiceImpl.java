@@ -201,6 +201,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       Invoice invoice, List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine)
       throws AxelorException {
     invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
+    purchaseOrderLine.setInvoiced(true);
   }
 
   @Override
@@ -465,6 +466,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             this.createInvoiceLine(
                 invoice, purchaseOrderLine, qtyToInvoiceMap.get(purchaseOrderLine.getId()));
         invoiceLineList.addAll(invoiceLines);
+        purchaseOrderLine.setInvoiced(true);
       }
     }
 
@@ -564,8 +566,9 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       List<InvoiceLine> invoiceLines = invoiceService.getInvoiceLinesFromInvoiceList(invoiceList);
       invoiceGenerator.populate(invoiceMerged, invoiceLines);
       invoiceService.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
-      invoiceMerged.setPurchaseOrder(null);
+      invoiceMerged.setPurchaseOrder(purchaseOrder);
       invoiceRepo.save(invoiceMerged);
+      Beans.get(TimetableService.class).reassignInvoice(invoiceList, invoiceMerged);
       invoiceServiceSupplychain.swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;
@@ -585,6 +588,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
               fiscalPosition,
               supplierInvoiceNb,
               originDate);
+      Beans.get(TimetableService.class).reassignInvoice(invoiceList, invoiceMerged);
       invoiceServiceSupplychain.swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;

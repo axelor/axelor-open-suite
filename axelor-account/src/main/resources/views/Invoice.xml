@@ -158,8 +158,8 @@
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
   </grid>
 
-  <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice"
-    orderBy="-invoiceDate">
+  <grid name="invoice-refund-grid" title="Cust. Credit notes"
+    model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
         onClick="action-invoice-method-show-invoice" icon="printer"/>
@@ -275,7 +275,7 @@
       onClick="action-send-by-email-with-template"/>
   </grid>
 
-  <grid name="invoice-supplier-refund-grid" title="Invoices"
+  <grid name="invoice-supplier-refund-grid" title="Suppl. Credit notes"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
@@ -1588,7 +1588,7 @@
     title="Merge Cust. Credit notes" width="large"
     onNew="action-invoice-record-set-credit-notes-to-merge">
     <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
-      form-view="invoice-form" grid-view="invoice-grid" title="Cust. credit notes to merge"
+      form-view="invoice-form" grid-view="invoice-refund-grid" title="Cust. credit notes to merge"
       colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice"
       domain="self.statusSelect IN (1, 2) AND self.operationTypeSelect = 4" canNew="false"
       canEdit="false"/>
@@ -1604,8 +1604,9 @@
     title="Merge Suppl. Credit notes" width="large"
     onNew="action-invoice-record-set-credit-notes-to-merge">
     <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
-      form-view="invoice-form" grid-view="invoice-grid" title="Suppl. credit notes to merge"
-      colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice"
+      form-view="invoice-form" grid-view="invoice-supplier-refund-grid"
+      title="Suppl. credit notes to merge" colSpan="12" type="many-to-many"
+      target="com.axelor.apps.account.db.Invoice"
       domain="self.statusSelect IN (1, 2) AND self.operationTypeSelect = 2" canNew="false"
       canEdit="false"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">

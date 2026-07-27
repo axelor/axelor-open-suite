@@ -39,10 +39,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.ModelHelper;
-import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import jakarta.inject.Singleton;
-import jakarta.validation.ValidationException;
 import java.util.Map;
 
 @Singleton
@@ -71,53 +69,6 @@ public class UserController {
     String applicationMode = AppSettings.get().get("application.mode", "prod");
     if ("dev".equals(applicationMode)) {
       response.setAttr("testingPanel", "hidden", false);
-    }
-  }
-
-  public void validate(ActionRequest request, ActionResponse response) {
-    try {
-      Context context = request.getContext();
-      User user = request.getContext().asType(User.class);
-      Map<String, String> errors = ModelHelper.getUniqueErrors(user, UNIQUE_MESSAGES);
-
-      if (!errors.isEmpty()) {
-        response.setErrors(errors);
-        return;
-      }
-
-      UserService userService = Beans.get(UserService.class);
-      user = userService.changeUserPassword(user, context);
-
-      response.setValue("transientPassword", user.getTransientPassword());
-    } catch (ValidationException e) {
-      response.setError(e.getMessage());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void generateRandomPassword(ActionRequest request, ActionResponse response) {
-    try {
-      UserService userService = Beans.get(UserService.class);
-      CharSequence password = userService.generateRandomPassword();
-
-      response.setValue("newPassword", password);
-      response.setValue("chkPassword", password);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void validatePassword(ActionRequest request, ActionResponse response) {
-    try {
-      UserService userService = Beans.get(UserService.class);
-      String newPassword =
-          MoreObjects.firstNonNull((String) request.getContext().get("newPassword"), "");
-      boolean valid = userService.matchPasswordPattern(newPassword);
-
-      response.setAttr("passwordPatternDescriptionLabel", "hidden", valid);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 
