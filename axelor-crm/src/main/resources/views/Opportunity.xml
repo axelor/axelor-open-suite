@@ -533,7 +533,7 @@
     <field name="team" expr="eval: _partner.team"
       if="_partner.user != null || _partner.team != null"/>
     <field name="currency" expr="eval: _partner.currency"/>
-    <field name="customerDescription" expr="eval: _partner.description"/>
+    <field name="customerDescription" expr="eval: _lead?.description ?: _partner.description"/>
   </action-record>
 
   <search-filters name="opportunity-filters"
