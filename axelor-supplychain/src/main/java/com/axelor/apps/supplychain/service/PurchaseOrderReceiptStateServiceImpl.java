@@ -130,12 +130,13 @@ public class PurchaseOrderReceiptStateServiceImpl implements PurchaseOrderReceip
   }
 
   protected void computePurchaseOrderLineReceiptState(PurchaseOrderLine purchaseOrderLine) {
-    if (purchaseOrderLine.getReceivedQty().signum() == 0) {
-      purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);
-    } else if (purchaseOrderLine.getReceivedQty().compareTo(purchaseOrderLine.getQty()) < 0) {
-      purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED);
-    } else {
+    if (purchaseOrderLine.getQty().signum() == 0
+        || purchaseOrderLine.getReceivedQty().compareTo(purchaseOrderLine.getQty()) >= 0) {
       purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_RECEIVED);
+    } else if (purchaseOrderLine.getReceivedQty().signum() == 0) {
+      purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);
+    } else {
+      purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED);
     }
   }
 }
