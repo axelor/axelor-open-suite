@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed the title displayed on the credit notes search popup when merging credit notes."
+module: axelor-account
