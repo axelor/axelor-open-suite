@@ -94,7 +94,7 @@ public class LoanAttrsServiceImpl implements LoanAttrsService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
     LoanLine next = loanAdjustmentService.getNextUnpaidLine(loan);
     addAttr(
-        "nextInstallmentIsDeferral",
+        "$nextInstallmentIsDeferral",
         "value",
         next != null && Boolean.TRUE.equals(next.getIsDeferral()),
         attrsMap);
