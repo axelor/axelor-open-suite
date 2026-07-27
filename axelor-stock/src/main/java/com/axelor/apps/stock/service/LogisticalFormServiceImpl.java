@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class LogisticalFormServiceImpl implements LogisticalFormService {
 
@@ -198,5 +199,10 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
           I18n.get(StockExceptionMessage.LOGISTICAL_FORM_PROVISION_WRONG_STATUS));
     }
     logisticalForm.setStatusSelect(LogisticalFormRepository.STATUS_PROVISION);
+    if (CollectionUtils.isNotEmpty(logisticalForm.getStockMoveList())) {
+      logisticalForm
+          .getStockMoveList()
+          .forEach(stockMove -> stockMove.setFullySpreadOverLogisticalFormsFlag(false));
+    }
   }
 }
