@@ -1491,6 +1491,7 @@
 "Display delivery address on printing",,,
 "Display detailed lines",,,
 "Display head office address on invoice printing",,,
+"Display invoice terms to be processed",,,
 "Display invoices to be processed",,,
 "Display mention 'no financial discount applied' on printing",,,
 "Display moveline sequence",,,

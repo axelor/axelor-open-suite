@@ -22,11 +22,15 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.db.Query;
+import java.util.List;
 
 public interface BillOfExchangeInvoiceTermQueryService {
 
   Query<InvoiceTerm> buildOrderedQueryFetchLcrAccountedInvoiceTerms(
       AccountingBatch accountingBatch);
+
+  Query<InvoiceTerm> buildOrderedQueryFetchEligibleInvoiceTerms(
+      AccountingBatch accountingBatch, List<Long> anomalyList);
 
   BankDetails getReceiverBankDetails(InvoiceTerm invoiceTerm);
 }

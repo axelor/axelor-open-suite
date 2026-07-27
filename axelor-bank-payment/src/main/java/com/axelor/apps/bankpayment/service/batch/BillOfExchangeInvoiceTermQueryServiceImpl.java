@@ -20,7 +20,9 @@ package com.axelor.apps.bankpayment.service.batch;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.PartnerService;
@@ -28,6 +30,7 @@ import com.axelor.db.Query;
 import com.google.common.collect.Sets;
 import jakarta.inject.Inject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -75,6 +78,67 @@ public class BillOfExchangeInvoiceTermQueryServiceImpl
       filter.append("AND self.company = :company ");
       bindings.put("company", accountingBatch.getCompany());
     }
+    if (accountingBatch.getBankDetails() != null) {
+      filter.append(
+          "AND ((self.invoice IS NOT NULL AND self.invoice.companyBankDetails IN (:bankDetailsSet)) "
+              + "OR (self.invoice IS NULL AND self.moveLine.move.companyBankDetails IN (:bankDetailsSet))) ");
+      Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
+      if (manageMultiBanks && accountingBatch.getIncludeOtherBankAccounts()) {
+        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsList());
+      }
+      bindings.put("bankDetailsSet", bankDetailsSet);
+    }
+
+    return invoiceTermRepository.all().filter(filter.toString()).bind(bindings).order("id");
+  }
+
+  @Override
+  public Query<InvoiceTerm> buildOrderedQueryFetchEligibleInvoiceTerms(
+      AccountingBatch accountingBatch, List<Long> anomalyList) {
+    StringBuilder filter = new StringBuilder();
+    boolean manageMultiBanks = appAccountService.getAppBase().getManageMultiBanks();
+    filter.append(
+        "self.isPaid = FALSE "
+            + "AND self.amountRemaining > 0 "
+            + "AND self.lcrAccounted = FALSE "
+            + "AND self.id NOT IN (:anomalyList) "
+            + "AND self.paymentMode = :paymentMode "
+            + "AND ("
+            + "  (self.invoice IS NOT NULL "
+            + "    AND self.invoice.operationTypeSelect = :operationTypeSelect "
+            + "    AND self.invoice.statusSelect = :statusSelect "
+            + "    AND self.invoice.hasPendingPayments = FALSE "
+            + "    AND self.invoice.lcrAccounted = FALSE "
+            + "    AND (self.invoice.billOfExchangeBlockingOk = FALSE OR (self.invoice.billOfExchangeBlockingOk = TRUE AND self.invoice.billOfExchangeBlockingToDate < :dueDate)) "
+            + "  ) OR ("
+            + "    self.invoice IS NULL "
+            + "    AND self.moveLine.move.functionalOriginSelect = :functionalOriginSale "
+            + "    AND self.moveLine.move.statusSelect IN (:daybookStatus, :accountedStatus)"
+            + "  )"
+            + ") ");
+
+    Map<String, Object> bindings = new HashMap<>();
+    bindings.put("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
+    bindings.put("statusSelect", InvoiceRepository.STATUS_VENTILATED);
+    bindings.put("paymentMode", accountingBatch.getPaymentMode());
+    bindings.put("anomalyList", anomalyList);
+    bindings.put("dueDate", accountingBatch.getDueDate());
+    bindings.put("functionalOriginSale", MoveRepository.FUNCTIONAL_ORIGIN_SALE);
+    bindings.put("daybookStatus", MoveRepository.STATUS_DAYBOOK);
+    bindings.put("accountedStatus", MoveRepository.STATUS_ACCOUNTED);
+
+    if (accountingBatch.getDueDate() != null) {
+      filter.append("AND self.dueDate <= :dueDate ");
+    }
+    if (accountingBatch.getCurrency() != null) {
+      filter.append("AND self.currency = :currency ");
+      bindings.put("currency", accountingBatch.getCurrency());
+    }
+    if (accountingBatch.getCompany() != null) {
+      filter.append("AND self.company = :company ");
+      bindings.put("company", accountingBatch.getCompany());
+    }
+
     if (accountingBatch.getBankDetails() != null) {
       filter.append(
           "AND ((self.invoice IS NOT NULL AND self.invoice.companyBankDetails IN (:bankDetailsSet)) "
