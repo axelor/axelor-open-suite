@@ -471,6 +471,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void removeNegativeLines(PaymentSession paymentSession) throws AxelorException {
     Query<InvoiceTerm> invoiceTermQuery = this.getNegativeBalanceInvoiceTermQuery(paymentSession);
     List<InvoiceTerm> invoiceTermList;
