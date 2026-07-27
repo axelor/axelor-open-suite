@@ -19,4 +19,4 @@ developer: |
       JOIN stock_logistical_form lf ON lf.id = pkg.logistical_form
       WHERE sml.stock_move = sm.id AND lf.status_select = 3
     );
-  ``
+  ```
