@@ -26,4 +26,11 @@ public interface LoanAttrsService {
   Map<String, Map<String, Object>> getTotalsAttrsMap(Loan loan);
 
   Map<String, Map<String, Object>> getConsistencyAttrsMap(Loan loan);
+
+  /**
+   * Titles of the shared deferral panel and its buttons, adapted to the loan status: a deferral
+   * negociated during the setting phase (Draft) is worded as a "différé", a repayment-phase one as
+   * a "report".
+   */
+  Map<String, Map<String, Object>> getDeferralTitlesAttrsMap(Loan loan);
 }

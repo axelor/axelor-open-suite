@@ -69,17 +69,6 @@
       <button name="generateScheduleBtn" title="Generate schedule"
         onClick="save,action-loan-method-generate-schedule"/>
     </panel>
-    <panel name="draftDeferralPanel" title="Deferred" sidebar="true"
-      showIf="statusSelect == 1">
-      <field name="deferralInstallmentCount" colSpan="12"/>
-      <field name="deferralCapitalizeInterest" colSpan="12"/>
-      <field name="deferralRecomputePayment" showIf="deferralCapitalizeInterest" colSpan="12"/>
-      <field name="deferralKeepInsurance" colSpan="12"/>
-      <button name="applyDraftDeferralBtn" title="Apply deferral" colSpan="12"
-        onClick="save,action-loan-method-apply-draft-deferral"/>
-      <button name="cancelDraftDeferralBtn" title="Remove deferral" colSpan="12"
-        showIf="deferralInstallmentCount &gt; 0" onClick="action-loan-method-cancel-draft-deferral"/>
-    </panel>
     <panel name="simulationPanel" title="Simulation" sidebar="true"
       hideIf="statusSelect &gt; 1" canCollapse="true" collapseIf="true">
       <field name="simulatedAmount" x-scale="currency.numberOfDecimals"/>
@@ -89,8 +78,11 @@
       <button name="simulateCapitalBtn" title="Compute borrowable capital"
         onClick="action-loan-method-simulate-capital" colSpan="12"/>
     </panel>
-    <panel name="reportPanel" title="Deferral" sidebar="true"
-      showIf="statusSelect == 2 || statusSelect == 3">
+    <!-- Deferral for both the setting phase (Draft "différé") and the repayment phase ("report"). The
+      panel and button titles are set on load by LoanAttrsService; the buttons dispatch on the loan status
+      in LoanController. -->
+    <panel name="deferralPanel" title="Deferral" sidebar="true"
+      showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3">
       <field name="scheduleSnapshot" hidden="true"/>
       <field name="nextInstallmentIsDeferral" hidden="true"/>
       <field name="deferralInstallmentCount" colSpan="12"/>
@@ -100,7 +92,7 @@
       <button name="deferBtn" title="Defer" colSpan="12"
         onClick="save,action-loan-method-defer"/>
       <button name="cancelDeferralBtn" title="Cancel deferral" colSpan="12"
-        showIf="nextInstallmentIsDeferral &amp;&amp; scheduleSnapshot"
+        showIf="(statusSelect == 1 &amp;&amp; deferralInstallmentCount &gt; 0) || (statusSelect &gt; 1 &amp;&amp; nextInstallmentIsDeferral &amp;&amp; scheduleSnapshot)"
         onClick="save,action-loan-method-cancel-deferral"/>
     </panel>
     <panel name="totalsPanel" title="Totals" sidebar="true"
@@ -168,14 +160,6 @@
 
   <action-method name="action-loan-method-defer">
     <call class="com.axelor.apps.account.web.LoanController" method="defer"/>
-  </action-method>
-
-  <action-method name="action-loan-method-apply-draft-deferral">
-    <call class="com.axelor.apps.account.web.LoanController" method="applyDraftDeferral"/>
-  </action-method>
-
-  <action-method name="action-loan-method-cancel-draft-deferral">
-    <call class="com.axelor.apps.account.web.LoanController" method="cancelDraftDeferral"/>
   </action-method>
 
   <action-method name="action-loan-method-cancel-deferral">
