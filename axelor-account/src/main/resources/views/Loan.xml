@@ -29,7 +29,7 @@
     <panel name="conditionsPanel" title="Financial conditions" canCollapse="true"
       collapseIf="statusSelect &gt; 1">
       <field name="amount" readonlyIf="statusSelect &gt; 1"
-        x-scale="currency.numberOfDecimals"/>
+        x-scale="currency.numberOfDecimals" onChange="action-loan-record-default-simulated-amount"/>
       <field name="annualInterestRate" readonlyIf="statusSelect &gt; 1"/>
       <field name="computationModeSelect" readonlyIf="statusSelect &gt; 1"/>
       <field name="durationInMonth" readonlyIf="statusSelect &gt; 1"/>
@@ -116,6 +116,11 @@
     <field name="statusSelect" expr="eval: 1"/>
     <field name="company" expr="eval: __user__.activeCompany"/>
     <field name="currency" expr="eval: __user__.activeCompany?.currency"/>
+  </action-record>
+
+  <action-record name="action-loan-record-default-simulated-amount"
+    model="com.axelor.apps.account.db.Loan">
+    <field name="simulatedAmount" expr="eval: amount" if="!simulatedAmount"/>
   </action-record>
 
   <action-group name="action-loan-group-on-load">
