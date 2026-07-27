@@ -2092,7 +2092,6 @@ SaleOrder.in_tax_total - (SELECT COALESCE(SUM(SubSaleOrder.in_tax_total), 0) FRO
 FROM base_partner AS Partner
 INNER JOIN sale_sale_order AS SaleOrder ON (SaleOrder.client_partner = Partner.id)
 LEFT JOIN base_partner AS ContactPartner ON (ContactPartner.id = SaleOrder.contact_partner)
-INNER JOIN auth_user AS AuthUser ON (AuthUser.id = Partner.user_id)
 LEFT JOIN base_company as Company on (SaleOrder.company = Company.id)
 LEFT JOIN base_currency as Currency on (Company.currency = Currency.id)
 LEFT JOIN base_trading_name as TradingName on (SaleOrder.trading_name = TradingName.id)
