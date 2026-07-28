@@ -174,6 +174,7 @@ import com.axelor.apps.bankpayment.service.extract.ExtractContextMoveServiceBank
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentAlertServiceBankPayImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentBankPaymentCancelService;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCancelServiceBankPayImpl;
+import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCreateServiceBankPay;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCreateServiceBankPayImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentMoveCreateServiceBankPayImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
@@ -235,6 +236,7 @@ public class BankPaymentModule extends AxelorModule {
         .to(PaymentScheduleLineBankPaymentServiceImpl.class);
 
     bind(InvoicePaymentCreateServiceImpl.class).to(InvoicePaymentCreateServiceBankPayImpl.class);
+    bind(InvoicePaymentCreateServiceBankPay.class).to(InvoicePaymentCreateServiceBankPayImpl.class);
 
     bind(InvoicePaymentController.class).to(InvoicePaymentBankPayController.class);
 

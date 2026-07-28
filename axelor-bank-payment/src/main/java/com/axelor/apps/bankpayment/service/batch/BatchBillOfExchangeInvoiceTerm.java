@@ -144,7 +144,6 @@ public class BatchBillOfExchangeInvoiceTerm extends BatchStrategy {
     }
   }
 
-  @Transactional(rollbackOn = Exception.class)
   protected void createMoveAndUpdateInvoiceTerm(
       AccountingBatch accountingBatch, InvoiceTerm invoiceTerm) throws AxelorException {
     invoiceTerm = invoiceTermRepository.find(invoiceTerm.getId());

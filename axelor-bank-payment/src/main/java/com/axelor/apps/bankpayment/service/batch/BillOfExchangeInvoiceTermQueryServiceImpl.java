@@ -109,7 +109,7 @@ public class BillOfExchangeInvoiceTermQueryServiceImpl
             + "    AND self.invoice.statusSelect = :statusSelect "
             + "    AND self.invoice.hasPendingPayments = FALSE "
             + "    AND self.invoice.lcrAccounted = FALSE "
-            + "    AND (self.invoice.billOfExchangeBlockingOk = FALSE OR (self.invoice.billOfExchangeBlockingOk = TRUE AND self.invoice.billOfExchangeBlockingToDate < :dueDate)) "
+            + "    AND (self.invoice.billOfExchangeBlockingOk = FALSE OR (self.invoice.billOfExchangeBlockingOk = TRUE AND (:dueDate IS NULL OR self.invoice.billOfExchangeBlockingToDate < :dueDate))) "
             + "  ) OR ("
             + "    self.invoice IS NULL "
             + "    AND self.moveLine.move.functionalOriginSelect = :functionalOriginSale "

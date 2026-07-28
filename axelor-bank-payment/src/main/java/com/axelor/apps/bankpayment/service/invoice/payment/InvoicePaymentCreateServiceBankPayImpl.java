@@ -51,7 +51,8 @@ import java.util.List;
 import java.util.Objects;
 
 @RequestScoped
-public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreateServiceImpl {
+public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreateServiceImpl
+    implements InvoicePaymentCreateServiceBankPay {
 
   @Inject
   public InvoicePaymentCreateServiceBankPayImpl(
@@ -113,6 +114,7 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
     return invoicePaymentList;
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public InvoicePayment createInvoicePaymentForBankOrder(
       Invoice invoice,

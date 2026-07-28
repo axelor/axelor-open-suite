@@ -21,8 +21,6 @@ package com.axelor.apps.bankpayment.service.batch;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.repo.AccountingBatchRepository;
-import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -34,7 +32,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
-import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCreateServiceBankPayImpl;
+import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCreateServiceBankPay;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
@@ -47,40 +45,36 @@ import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class BatchBankOrderGenerationBillOfExchangeInvoiceTerm extends AbstractBatch {
 
-  protected InvoiceTermRepository invoiceTermRepository;
   protected AppAccountService appAccountService;
   protected BankPaymentConfigService bankPaymentConfigService;
-  protected InvoicePaymentCreateServiceBankPayImpl invoicePaymentCreateService;
+  protected InvoicePaymentCreateServiceBankPay invoicePaymentCreateService;
   protected BankOrderCreateService bankOrderCreateService;
   protected BankOrderLineService bankOrderLineService;
   protected BankOrderRepository bankOrderRepository;
   protected BankOrderValidationService bankOrderValidationService;
-  protected AccountingBatchRepository accountingBatchRepository;
   protected InvoiceTermFilterBankPaymentService invoiceTermFilterBankPaymentService;
   protected BillOfExchangeInvoiceTermQueryService billOfExchangeInvoiceTermQueryService;
   private boolean end = false;
 
   @Inject
   public BatchBankOrderGenerationBillOfExchangeInvoiceTerm(
-      InvoiceTermRepository invoiceTermRepository,
       AppAccountService appAccountService,
       BankPaymentConfigService bankPaymentConfigService,
-      InvoicePaymentCreateServiceBankPayImpl invoicePaymentCreateService,
+      InvoicePaymentCreateServiceBankPay invoicePaymentCreateService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderLineService bankOrderLineService,
       BankOrderRepository bankOrderRepository,
       BankOrderValidationService bankOrderValidationService,
-      AccountingBatchRepository accountingBatchRepository,
       InvoiceTermFilterBankPaymentService invoiceTermFilterBankPaymentService,
       BillOfExchangeInvoiceTermQueryService billOfExchangeInvoiceTermQueryService) {
     super();
-    this.invoiceTermRepository = invoiceTermRepository;
     this.appAccountService = appAccountService;
     this.bankPaymentConfigService = bankPaymentConfigService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
@@ -88,7 +82,6 @@ public class BatchBankOrderGenerationBillOfExchangeInvoiceTerm extends AbstractB
     this.bankOrderLineService = bankOrderLineService;
     this.bankOrderRepository = bankOrderRepository;
     this.bankOrderValidationService = bankOrderValidationService;
-    this.accountingBatchRepository = accountingBatchRepository;
     this.invoiceTermFilterBankPaymentService = invoiceTermFilterBankPaymentService;
     this.billOfExchangeInvoiceTermQueryService = billOfExchangeInvoiceTermQueryService;
   }
@@ -139,21 +132,11 @@ public class BatchBankOrderGenerationBillOfExchangeInvoiceTerm extends AbstractB
         return;
       }
       Currency bankOrderCurrency = getBankOrderCurrency(accountingBatch, invoiceTermList);
-      BankOrder bankOrder = createAndSaveBankOrder(accountingBatch, bankOrderCurrency);
-      boolean hasBankOrderLine = false;
-      for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        try {
-          if (addBankOrderLine(bankOrder.getId(), invoiceTerm.getId(), accountingBatch)) {
-            hasBankOrderLine = true;
-            incrementDone();
-          }
-        } catch (Exception e) {
-          incrementAnomaly();
-          TraceBackService.trace(
-              e, "billOfExchangeInvoiceTermBatch: create bank order line", batch.getId());
-        }
+      BankOrder bankOrder =
+          buildAndSaveBankOrderIfNeeded(accountingBatch, bankOrderCurrency, invoiceTermList);
+      if (bankOrder != null) {
+        confirmBankOrderIfNeeded(bankOrder.getId(), true);
       }
-      confirmBankOrderIfNeeded(bankOrder.getId(), hasBankOrderLine);
     } catch (Exception e) {
       incrementAnomaly();
       TraceBackService.trace(
@@ -205,9 +188,8 @@ public class BatchBankOrderGenerationBillOfExchangeInvoiceTerm extends AbstractB
     return bankOrderCurrency;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  protected BankOrder createAndSaveBankOrder(
-      AccountingBatch accountingBatch, Currency bankOrderCurrency) throws AxelorException {
+  protected BankOrder buildBankOrder(AccountingBatch accountingBatch, Currency bankOrderCurrency)
+      throws AxelorException {
     PaymentMode paymentMode = accountingBatch.getPaymentMode();
     BankDetails senderBankDetails = getAccountingBankDetails(accountingBatch);
     LocalDate bankOrderDate =
@@ -215,58 +197,80 @@ public class BatchBankOrderGenerationBillOfExchangeInvoiceTerm extends AbstractB
             ? accountingBatch.getDueDate()
             : appAccountService.getTodayDate(accountingBatch.getCompany());
 
-    BankOrder bankOrder =
-        bankOrderCreateService.createBankOrder(
-            paymentMode,
-            BankOrderRepository.PARTNER_TYPE_CUSTOMER,
-            bankOrderDate,
-            accountingBatch.getCompany(),
-            senderBankDetails,
-            bankOrderCurrency,
-            null,
-            I18n.get("Bill of exchange"),
-            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            BankOrderRepository.FUNCTIONAL_ORIGIN_LCR,
-            paymentMode.getAccountingTriggerSelect());
-
-    return bankOrderRepository.save(bankOrder);
+    return bankOrderCreateService.createBankOrder(
+        paymentMode,
+        BankOrderRepository.PARTNER_TYPE_CUSTOMER,
+        bankOrderDate,
+        accountingBatch.getCompany(),
+        senderBankDetails,
+        bankOrderCurrency,
+        null,
+        I18n.get("Bill of exchange"),
+        BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+        BankOrderRepository.FUNCTIONAL_ORIGIN_LCR,
+        paymentMode.getAccountingTriggerSelect());
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected boolean addBankOrderLine(
-      Long bankOrderId, Long invoiceTermId, AccountingBatch accountingBatch)
+  protected BankOrder buildAndSaveBankOrderIfNeeded(
+      AccountingBatch accountingBatch,
+      Currency bankOrderCurrency,
+      List<InvoiceTerm> invoiceTermList)
       throws AxelorException {
-    accountingBatch = accountingBatchRepository.find(accountingBatch.getId());
-    BankOrder bankOrder = bankOrderRepository.find(bankOrderId);
-    InvoiceTerm invoiceTerm = invoiceTermRepository.find(invoiceTermId);
-    if (invoiceTermFilterBankPaymentService.getAwaitingBankOrderLineOrigin(invoiceTerm) != null) {
-      return false;
+    BankOrder bankOrder = null;
+    List<InvoiceTerm> linkedTerms = new ArrayList<>();
+
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      try {
+        if (invoiceTermFilterBankPaymentService.getAwaitingBankOrderLineOrigin(invoiceTerm)
+            != null) {
+          continue;
+        }
+
+        if (bankOrder == null) {
+          bankOrder = buildBankOrder(accountingBatch, bankOrderCurrency);
+        }
+
+        LocalDate lineDate =
+            bankOrder.getBankOrderFileFormat().getIsMultiDate() ? invoiceTerm.getDueDate() : null;
+
+        BankOrderLine bankOrderLine =
+            bankOrderLineService.createBankOrderLine(
+                bankOrder.getBankOrderFileFormat(),
+                null,
+                invoiceTerm.getPartner(),
+                billOfExchangeInvoiceTermQueryService.getReceiverBankDetails(invoiceTerm),
+                invoiceTerm.getAmountRemaining(),
+                invoiceTerm.getCurrency(),
+                lineDate,
+                invoiceTerm.getName(),
+                invoiceTerm.getName(),
+                invoiceTerm);
+
+        bankOrder.addBankOrderLineListItem(bankOrderLine);
+        linkedTerms.add(invoiceTerm);
+        incrementDone();
+      } catch (Exception e) {
+        incrementAnomaly();
+        TraceBackService.trace(
+            e, "billOfExchangeInvoiceTermBatch: create bank order line", batch.getId());
+      }
     }
 
-    LocalDate lineDate =
-        bankOrder.getBankOrderFileFormat().getIsMultiDate() ? invoiceTerm.getDueDate() : null;
-
-    BankOrderLine bankOrderLine =
-        bankOrderLineService.createBankOrderLine(
-            bankOrder.getBankOrderFileFormat(),
-            null,
-            invoiceTerm.getPartner(),
-            billOfExchangeInvoiceTermQueryService.getReceiverBankDetails(invoiceTerm),
-            invoiceTerm.getAmountRemaining(),
-            invoiceTerm.getCurrency(),
-            lineDate,
-            invoiceTerm.getName(),
-            invoiceTerm.getName(),
-            invoiceTerm);
-
-    bankOrder.addBankOrderLineListItem(bankOrderLine);
-    bankOrderRepository.save(bankOrder);
-
-    if (invoiceTerm.getInvoice() != null) {
-      // InvoicePayment requires an Invoice; standalone terms get only the BankOrderLine above.
-      createInvoicePaymentForTraceability(invoiceTerm, accountingBatch, bankOrder);
+    if (bankOrder == null) {
+      return null;
     }
-    return true;
+
+    bankOrder = bankOrderRepository.save(bankOrder);
+
+    for (InvoiceTerm invoiceTerm : linkedTerms) {
+      if (invoiceTerm.getInvoice() != null) {
+        // InvoicePayment requires an Invoice; standalone terms get only the BankOrderLine above.
+        createInvoicePaymentForTraceability(invoiceTerm, accountingBatch, bankOrder);
+      }
+    }
+
+    return bankOrder;
   }
 
   protected void createInvoicePaymentForTraceability(
