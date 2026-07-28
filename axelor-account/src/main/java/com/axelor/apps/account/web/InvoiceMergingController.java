@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceMergingService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingService.InvoiceMergingResult;
@@ -160,27 +161,47 @@ public class InvoiceMergingController {
 
   public void openCustCreditNoteMergeWizard(ActionRequest request, ActionResponse response) {
     openInvoiceMergeWizard(
-        request, response, "Merge Cust. Credit notes", "customer-credit-notes-merge-form");
+        request,
+        response,
+        "Merge Cust. Credit notes",
+        "customer-credit-notes-merge-form",
+        InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
   }
 
   public void openSupplCreditNoteMergeWizard(ActionRequest request, ActionResponse response) {
     openInvoiceMergeWizard(
-        request, response, "Merge Suppl. Credit notes", "supplier-credit-notes-merge-form");
+        request,
+        response,
+        "Merge Suppl. Credit notes",
+        "supplier-credit-notes-merge-form",
+        InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
   }
 
   public void openCustInvoiceMergeWizard(ActionRequest request, ActionResponse response) {
     openInvoiceMergeWizard(
-        request, response, "Merge Cust. Invoices", "customer-invoices-merge-form");
+        request,
+        response,
+        "Merge Cust. Invoices",
+        "customer-invoices-merge-form",
+        InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
   }
 
   public void openSupplInvoiceMergeWizard(ActionRequest request, ActionResponse response) {
     openInvoiceMergeWizard(
-        request, response, "Merge Suppl. Invoices", "supplier-invoices-merge-form");
+        request,
+        response,
+        "Merge Suppl. Invoices",
+        "supplier-invoices-merge-form",
+        InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
   }
 
   @SuppressWarnings("unchecked")
   protected void openInvoiceMergeWizard(
-      ActionRequest request, ActionResponse response, String title, String formViewName) {
+      ActionRequest request,
+      ActionResponse response,
+      String title,
+      String formViewName,
+      int operationTypeSelect) {
     try {
       List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
       List<Invoice> invoicesToMerge =
@@ -190,7 +211,7 @@ public class InvoiceMergingController {
       }
       response.setView(
           Beans.get(InvoiceMergingViewService.class)
-              .buildMergeWizardView(title, formViewName, invoicesToMerge)
+              .buildMergeWizardView(title, formViewName, invoicesToMerge, operationTypeSelect)
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

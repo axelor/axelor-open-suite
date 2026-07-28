@@ -42,11 +42,12 @@ public class InvoiceMergingViewServiceImpl implements InvoiceMergingViewService 
 
   @Override
   public ActionViewBuilder buildMergeWizardView(
-      String title, String formViewName, List<Invoice> invoicesToMerge) {
+      String title, String formViewName, List<Invoice> invoicesToMerge, int operationTypeSelect) {
     return ActionView.define(I18n.get(title))
         .model(Wizard.class.getName())
         .add("form", formViewName)
         .param("show-toolbar", Boolean.FALSE.toString())
+        .context("_operationTypeSelect", operationTypeSelect)
         .context("_invoiceToMerge", invoicesToMerge);
   }
 

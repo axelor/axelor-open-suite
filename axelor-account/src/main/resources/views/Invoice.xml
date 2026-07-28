@@ -1483,7 +1483,7 @@
       canEdit="false"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="generateMergedCustInvoicesBtn" title="Merge into single cust. invoice"
-        onClick="action-validate-invoice-check-customer-invoice-selection,action-invoice-method-merge"/>
+        onClick="action-invoice-group-merge"/>
     </panel>
   </form>
 
@@ -1537,7 +1537,7 @@
       canEdit="false"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="generateMergedSupplInvoicesBtn" title="Merge into single suppl. invoice"
-        onClick="action-validate-invoice-check-supplier-invoice-selection,action-invoice-method-merge"/>
+        onClick="action-invoice-group-merge"/>
     </panel>
   </form>
 
@@ -1598,8 +1598,7 @@
       canEdit="false"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="generateMergedCustCreditNotesBtn"
-        title="Merge into single cust. credit note"
-        onClick="action-validate-invoice-check-customer-credit-note-selection,action-invoice-method-merge"/>
+        title="Merge into single cust. credit note" onClick="action-invoice-group-merge"/>
     </panel>
   </form>
 
@@ -1614,8 +1613,7 @@
       canEdit="false"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="generateMergedSupplCreditNotesBtn"
-        title="Merge into single suppl. credit note"
-        onClick="action-validate-invoice-check-supplier-credit-note-selection,action-invoice-method-merge"/>
+        title="Merge into single suppl. credit note" onClick="action-invoice-group-merge"/>
     </panel>
   </form>
 
@@ -1776,6 +1774,11 @@
     <action name="action-invoice-method-fill-advance-payment-set"/>
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-method-check-multi-currency"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-merge">
+    <action name="action-validate-invoice-check-selection"/>
+    <action name="action-invoice-method-merge"/>
   </action-group>
 
   <action-group name="action-invoice-group-saleorder-onchange">
@@ -2296,26 +2299,15 @@
 
   <!-- ACTION VALIDATE -->
 
-  <action-validate name="action-validate-invoice-check-customer-invoice-selection">
+  <action-validate name="action-validate-invoice-check-selection">
     <error message="You must select at least two customer invoices to merge."
-      if="invoiceToMerge == null || invoiceToMerge.size() &lt; 2"/>
-  </action-validate>
-
-  <action-validate name="action-validate-invoice-check-supplier-invoice-selection">
+      if="_operationTypeSelect == 3 &amp;&amp; (invoiceToMerge == null || invoiceToMerge.size() &lt; 2)"/>
     <error message="You must select at least two supplier invoices to merge."
-      if="invoiceToMerge == null || invoiceToMerge.size() &lt; 2"/>
-  </action-validate>
-
-  <action-validate
-    name="action-validate-invoice-check-customer-credit-note-selection">
+      if="_operationTypeSelect == 1 &amp;&amp; (invoiceToMerge == null || invoiceToMerge.size() &lt; 2)"/>
     <error message="You must select at least two customer credit notes to merge."
-      if="invoiceToMerge == null || invoiceToMerge.size() &lt; 2"/>
-  </action-validate>
-
-  <action-validate
-    name="action-validate-invoice-check-supplier-credit-note-selection">
+      if="_operationTypeSelect == 4 &amp;&amp; (invoiceToMerge == null || invoiceToMerge.size() &lt; 2)"/>
     <error message="You must select at least two supplier credit notes to merge."
-      if="invoiceToMerge == null || invoiceToMerge.size() &lt; 2"/>
+      if="_operationTypeSelect == 2 &amp;&amp; (invoiceToMerge == null || invoiceToMerge.size() &lt; 2)"/>
   </action-validate>
 
   <action-validate name="action-validate-send-email-remove-access-for-client">

@@ -26,7 +26,7 @@ import java.util.List;
 public interface InvoiceMergingViewService {
 
   ActionViewBuilder buildMergeWizardView(
-      String title, String formViewName, List<Invoice> invoicesToMerge);
+      String title, String formViewName, List<Invoice> invoicesToMerge, int operationTypeSelect);
 
   /**
    * Method that build a ActionViewBuilder for confirm view in the sale order merge process.
