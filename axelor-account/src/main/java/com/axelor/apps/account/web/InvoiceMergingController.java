@@ -164,8 +164,8 @@ public class InvoiceMergingController {
       List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
       List<Invoice> invoicesToMerge =
           Beans.get(InvoiceMergingService.class).convertSelectedLinesToMergeLines(idList);
-      if (invoicesToMerge == null || invoicesToMerge.isEmpty()) {
-        response.setError(I18n.get("You have to choose at least one invoice"));
+      if (invoicesToMerge == null || invoicesToMerge.size() < 2) {
+        response.setError(I18n.get("You must select at least two customer invoices to merge."));
         return;
       }
       if (rejectInvalidStatusInvoices(response, invoicesToMerge)) {
