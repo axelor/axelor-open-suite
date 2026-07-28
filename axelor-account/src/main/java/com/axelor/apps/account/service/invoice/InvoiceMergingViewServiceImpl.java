@@ -46,6 +46,7 @@ public class InvoiceMergingViewServiceImpl implements InvoiceMergingViewService 
     return ActionView.define(I18n.get(title))
         .model(Wizard.class.getName())
         .add("form", formViewName)
+        .param("show-toolbar", Boolean.FALSE.toString())
         .context("_invoiceToMerge", invoicesToMerge);
   }
 

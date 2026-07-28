@@ -158,37 +158,6 @@ public class InvoiceMergingController {
     }
   }
 
-  public void convertSelectedLinesToMergeLines(ActionRequest request, ActionResponse response) {
-    try {
-      @SuppressWarnings("unchecked")
-      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
-      List<Invoice> invoicesToMerge =
-          Beans.get(InvoiceMergingService.class).convertSelectedLinesToMergeLines(idList);
-      if (invoicesToMerge == null || invoicesToMerge.size() < 2) {
-        response.setError(I18n.get("You must select at least two customer invoices to merge."));
-        return;
-      }
-      if (rejectInvalidStatusInvoices(response, invoicesToMerge)) {
-        return;
-      }
-      InvoiceMergingService invoiceMergingService = Beans.get(InvoiceMergingService.class);
-      if (CollectionUtils.isNotEmpty(invoicesToMerge)) {
-        InvoiceMergingResult result = invoiceMergingService.mergeInvoices(invoicesToMerge);
-        if (result.isConfirmationNeeded()) {
-          // Need to display intermediate screen to select some values
-          ActionViewBuilder confirmView =
-              Beans.get(InvoiceMergingViewService.class).buildConfirmView(result, invoicesToMerge);
-
-          response.setView(confirmView.map());
-          return;
-        }
-        setResponseView(response, result);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void openCustCreditNoteMergeWizard(ActionRequest request, ActionResponse response) {
     openInvoiceMergeWizard(
         request, response, "Merge Cust. Credit notes", "customer-credit-notes-merge-form");
@@ -197,6 +166,11 @@ public class InvoiceMergingController {
   public void openSupplCreditNoteMergeWizard(ActionRequest request, ActionResponse response) {
     openInvoiceMergeWizard(
         request, response, "Merge Suppl. Credit notes", "supplier-credit-notes-merge-form");
+  }
+
+  public void openCustInvoiceMergeWizard(ActionRequest request, ActionResponse response) {
+    openInvoiceMergeWizard(
+        request, response, "Merge Cust. Invoices", "customer-invoices-merge-form");
   }
 
   public void openSupplInvoiceMergeWizard(ActionRequest request, ActionResponse response) {

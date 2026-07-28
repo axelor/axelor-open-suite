@@ -21,7 +21,7 @@
           prompt="Are you sure you want to ventilate all selected invoices ?"
           if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
-          action="action-invoice-method-convert-selected-lines-to-merge-lines"/>
+          action="action-invoice-method-open-cust-invoice-merge-wizard"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
           action="action-customer-invoice-line-menu"/>
       </menu>
@@ -1474,7 +1474,8 @@
 
   <!-- CUSTOMER INVOICES MERGE -->
   <form name="customer-invoices-merge-form" model="com.axelor.utils.db.Wizard"
-    title="Merge Cust. Invoices" width="large">
+    title="Merge Cust. Invoices" width="large"
+    onNew="action-invoice-record-set-credit-notes-to-merge">
     <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
       form-view="invoice-form" grid-view="invoice-grid" title="Cust. Invoices to merge" colSpan="12"
       type="many-to-many" target="com.axelor.apps.account.db.Invoice"
@@ -2457,11 +2458,6 @@
       method="mergeSupplInvoiceFromPopup"/>
   </action-method>
 
-  <action-method name="action-invoice-method-convert-selected-lines-to-merge-lines">
-    <call class="com.axelor.apps.account.web.InvoiceMergingController"
-      method="convertSelectedLinesToMergeLines"/>
-  </action-method>
-
   <action-record name="action-invoice-record-set-credit-notes-to-merge"
     model="com.axelor.utils.db.Wizard">
     <field name="$invoiceToMerge" expr="eval: _invoiceToMerge"/>
@@ -2475,6 +2471,11 @@
   <action-method name="action-invoice-method-open-suppl-credit-note-merge-wizard">
     <call class="com.axelor.apps.account.web.InvoiceMergingController"
       method="openSupplCreditNoteMergeWizard"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-open-cust-invoice-merge-wizard">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController"
+      method="openCustInvoiceMergeWizard"/>
   </action-method>
 
   <action-method name="action-invoice-method-open-suppl-invoice-merge-wizard">
