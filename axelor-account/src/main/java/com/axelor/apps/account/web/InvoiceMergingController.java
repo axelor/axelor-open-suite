@@ -189,28 +189,24 @@ public class InvoiceMergingController {
     }
   }
 
-  @SuppressWarnings("unchecked")
   public void openCustCreditNoteMergeWizard(ActionRequest request, ActionResponse response) {
-    try {
-      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
-      List<Invoice> invoicesToMerge =
-          Beans.get(InvoiceMergingService.class).convertSelectedLinesToMergeLines(idList);
-      if (rejectInvalidStatusInvoices(response, invoicesToMerge)) {
-        return;
-      }
-      response.setView(
-          ActionView.define(I18n.get("Merge Cust. Credit notes"))
-              .model("com.axelor.utils.db.Wizard")
-              .add("form", "customer-credit-notes-merge-form")
-              .context("_invoiceToMerge", invoicesToMerge)
-              .map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    openInvoiceMergeWizard(
+        request, response, "Merge Cust. Credit notes", "customer-credit-notes-merge-form");
+  }
+
+  public void openSupplCreditNoteMergeWizard(ActionRequest request, ActionResponse response) {
+    openInvoiceMergeWizard(
+        request, response, "Merge Suppl. Credit notes", "supplier-credit-notes-merge-form");
+  }
+
+  public void openSupplInvoiceMergeWizard(ActionRequest request, ActionResponse response) {
+    openInvoiceMergeWizard(
+        request, response, "Merge Suppl. Invoices", "supplier-invoices-merge-form");
   }
 
   @SuppressWarnings("unchecked")
-  public void openSupplCreditNoteMergeWizard(ActionRequest request, ActionResponse response) {
+  protected void openInvoiceMergeWizard(
+      ActionRequest request, ActionResponse response, String title, String formViewName) {
     try {
       List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
       List<Invoice> invoicesToMerge =
@@ -219,10 +215,8 @@ public class InvoiceMergingController {
         return;
       }
       response.setView(
-          ActionView.define(I18n.get("Merge Suppl. Credit notes"))
-              .model("com.axelor.utils.db.Wizard")
-              .add("form", "supplier-credit-notes-merge-form")
-              .context("_invoiceToMerge", invoicesToMerge)
+          Beans.get(InvoiceMergingViewService.class)
+              .buildMergeWizardView(title, formViewName, invoicesToMerge)
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

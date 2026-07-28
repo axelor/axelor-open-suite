@@ -233,7 +233,7 @@
         <item name="seeSupplInvoicesLinesItem" title="See suppl. invoices lines"
           action="action-supplier-invoice-line-menu"/>
         <item name="mergeSupplInvoicesItem" title="Merge Suppl. Invoices"
-          action="action-invoice-mergesupplinvoices"/>
+          action="action-invoice-method-open-suppl-invoice-merge-wizard"/>
       </menu>
     </menubar>
     <hilite color="primary" if="statusSelect == 1"/>
@@ -1527,7 +1527,8 @@
 
   <!-- SUPPLIER INVOICES MERGE -->
   <form name="supplier-invoices-merge-form" model="com.axelor.utils.db.Wizard"
-    title="Merge Suppl. Invoices" width="large">
+    title="Merge Suppl. Invoices" width="large"
+    onNew="action-invoice-record-set-credit-notes-to-merge">
     <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
       form-view="invoice-form" grid-view="invoice-grid" title="Suppl. Invoices to merge"
       colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice"
@@ -2459,6 +2460,11 @@
       method="openSupplCreditNoteMergeWizard"/>
   </action-method>
 
+  <action-method name="action-invoice-method-open-suppl-invoice-merge-wizard">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController"
+      method="openSupplInvoiceMergeWizard"/>
+  </action-method>
+
   <action-method name="action-invoice-method-create-advance-payment-domain">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="fillAdvancePaymentInvoiceSetDomain"/>
@@ -2715,11 +2721,6 @@
   <action-view name="action-invoice-mergecustinvoices" title="Merge Cust. Invoices"
     model="com.axelor.utils.db.Wizard">
     <view type="form" name="customer-invoices-merge-form"/>
-  </action-view>
-
-  <action-view name="action-invoice-mergesupplinvoices" title="Merge Suppl. Invoices"
-    model="com.axelor.utils.db.Wizard">
-    <view type="form" name="supplier-invoices-merge-form"/>
   </action-view>
 
   <action-view name="action-invoice-view-show-subrogation-release"

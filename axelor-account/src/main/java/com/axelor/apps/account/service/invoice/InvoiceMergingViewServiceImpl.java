@@ -40,6 +40,15 @@ public class InvoiceMergingViewServiceImpl implements InvoiceMergingViewService 
     this.invoiceMergingService = invoiceMergingService;
   }
 
+  @Override
+  public ActionViewBuilder buildMergeWizardView(
+      String title, String formViewName, List<Invoice> invoicesToMerge) {
+    return ActionView.define(I18n.get(title))
+        .model(Wizard.class.getName())
+        .add("form", formViewName)
+        .context("_invoiceToMerge", invoicesToMerge);
+  }
+
   protected String getMergeConfirmFormViewName(InvoiceMergingResult result) {
     if (result.getInvoiceType() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
         || result.getInvoiceType() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
