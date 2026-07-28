@@ -2460,7 +2460,7 @@
 
   <action-record name="action-invoice-record-set-credit-notes-to-merge"
     model="com.axelor.utils.db.Wizard">
-    <field name="$invoiceToMerge" expr="eval: _invoiceToMerge"/>
+    <field name="$invoiceToMerge" expr="eval: _invoiceToMerge" if="_invoiceToMerge != null"/>
   </action-record>
 
   <action-method name="action-invoice-method-open-cust-credit-note-merge-wizard">
