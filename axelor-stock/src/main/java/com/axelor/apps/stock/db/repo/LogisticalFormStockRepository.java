@@ -26,6 +26,7 @@ import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.LogisticalFormSequenceService;
+import com.axelor.apps.stock.service.LogisticalFormService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -80,5 +81,11 @@ public class LogisticalFormStockRepository extends LogisticalFormRepository {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  @Override
+  public void remove(LogisticalForm logisticalForm) {
+    Beans.get(LogisticalFormService.class).resetFullySpreadOverLogisticalFormsFlag(logisticalForm);
+    super.remove(logisticalForm);
   }
 }
