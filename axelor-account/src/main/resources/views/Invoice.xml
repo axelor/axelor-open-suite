@@ -74,7 +74,7 @@
           prompt="Are you sure you want to ventilate all selected invoices ?"
           if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
-          action="action-invoice-mergecustinvoices"/>
+          action="action-invoice-method-open-cust-invoice-merge-wizard"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
           action="action-customer-invoice-line-menu"/>
       </menu>
@@ -121,7 +121,7 @@
           prompt="Are you sure you want to ventilate all selected invoices ?"
           if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
-          action="action-invoice-mergecustinvoices"/>
+          action="action-invoice-method-open-cust-invoice-merge-wizard"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
           action="action-customer-invoice-line-menu"/>
       </menu>
@@ -2734,11 +2734,6 @@
     <view-param name="show-confirm" value="true"/>
     <context name="_invoice" expr="eval: __this__"/>
     <context name="_operationTypeSelect" expr="eval: operationTypeSelect"/>
-  </action-view>
-
-  <action-view name="action-invoice-mergecustinvoices" title="Merge Cust. Invoices"
-    model="com.axelor.utils.db.Wizard">
-    <view type="form" name="customer-invoices-merge-form"/>
   </action-view>
 
   <action-view name="action-invoice-view-show-subrogation-release"
