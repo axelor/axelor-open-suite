@@ -14,6 +14,10 @@
 
   <form id="supplychain-cart-form" name="cart-form" title="Cart"
     model="com.axelor.apps.sale.db.Cart" extension="true">
+    <extend target="//field[@name='partner']">
+      <attribute name="onChange"
+        value="action-cart-method-update-price,action-cart-method-set-stock-location,action-cart-method-set-available-status"/>
+    </extend>
     <extend target="//field[@name='partner.currency']">
       <insert position="after">
         <field name="stockLocation" form-view="stock-location-form"
@@ -28,6 +32,10 @@
 
   <action-method name="action-cart-method-set-available-status">
     <call class="com.axelor.apps.supplychain.web.CartController" method="setAvailableStatus"/>
+  </action-method>
+
+  <action-method name="action-cart-method-set-stock-location">
+    <call class="com.axelor.apps.supplychain.web.CartController" method="setStockLocation"/>
   </action-method>
 
 </object-views>
