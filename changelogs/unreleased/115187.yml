@@ -1,0 +1,3 @@
+---
+title: "Accounting batch: fixed the analytic distribution being lost when several move lines are merged into one for the 'Accounting cut-off' batch."
+module: axelor-account
