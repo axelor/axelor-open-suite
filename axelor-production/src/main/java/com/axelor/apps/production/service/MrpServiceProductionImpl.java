@@ -93,6 +93,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   protected Set<Long> processedManufOrderIds;
 
+  protected Set<Long> processedConsumingManufOrderIds;
+
   protected ManufOrderRepository manufOrderRepository;
 
   protected ProductCompanyService productCompanyService;
@@ -178,6 +180,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     if (appProductionService.isApp("production")) {
       this.processedManufOrderIds = new HashSet<>();
+      this.processedConsumingManufOrderIds = new HashSet<>();
       this.createManufOrderMrpLines();
       this.createConsumingManufOrderMrpLines();
       this.createMPSLines();
@@ -238,7 +241,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           mrpRepository.find(mrp.getId()),
           manufOrderRepository.find(manufOrder.getId()),
           mrpLineTypeRepository.find(manufOrderMrpLineType.getId()),
-          mrpLineTypeRepository.find(manufOrderNeedMrpLineType.getId()));
+          manufOrderNeedMrpLineType != null
+              ? mrpLineTypeRepository.find(manufOrderNeedMrpLineType.getId())
+              : null,
+          true);
       JPA.clear();
     }
   }
@@ -248,10 +254,13 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       Mrp mrp,
       ManufOrder manufOrder,
       MrpLineType manufOrderMrpLineType,
-      MrpLineType manufOrderNeedMrpLineType)
+      MrpLineType manufOrderNeedMrpLineType,
+      boolean producedProductInScope)
       throws AxelorException {
 
-    if (processedManufOrderIds != null && !processedManufOrderIds.add(manufOrder.getId())) {
+    Set<Long> processedIds =
+        producedProductInScope ? processedManufOrderIds : processedConsumingManufOrderIds;
+    if (processedIds != null && !processedIds.add(manufOrder.getId())) {
       return;
     }
 
@@ -271,7 +280,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
       Product product = prodProduct.getProduct();
 
-      if ((this.isBeforeEndDate(maturityDate) || manufOrderMrpLineType.getIgnoreEndDate())
+      if (producedProductInScope
+          && (this.isBeforeEndDate(maturityDate) || manufOrderMrpLineType.getIgnoreEndDate())
           && this.isMrpProduct(product)) {
         Unit unit = prodProduct.getUnit();
         BigDecimal qty = computeQtyLeftToProduce(manufOrder, prodProduct);
@@ -305,7 +315,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
           Product product = prodProduct.getProduct();
 
-          if (this.isMrpProduct(product)) {
+          if (this.isMrpProduct(product)
+              && (producedProductInScope || this.productMap.containsKey(product.getId()))) {
 
             if (operationOrder.getPlannedStartDateT() != null) {
               maturityDate = operationOrder.getPlannedStartDateT().toLocalDate();
@@ -344,7 +355,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
         Product product = prodProduct.getProduct();
 
-        if (this.isMrpProduct(product)) {
+        if (this.isMrpProduct(product)
+            && (producedProductInScope || this.productMap.containsKey(product.getId()))) {
 
           // A component of a manuf order that is not loaded on MRP because there is no default
           // BOM or
@@ -946,7 +958,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           mrpRepository.find(mrp.getId()),
           manufOrderRepository.find(manufOrder.getId()),
           mrpLineTypeRepository.find(manufOrderMrpLineType.getId()),
-          mrpLineTypeRepository.find(manufOrderNeedMrpLineType.getId()));
+          manufOrderNeedMrpLineType != null
+              ? mrpLineTypeRepository.find(manufOrderNeedMrpLineType.getId())
+              : null,
+          false);
       JPA.clear();
     }
   }
