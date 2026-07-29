@@ -1,0 +1,3 @@
+---
+title: "Account: fixed negative lines not being removed from payment sessions on the first attempt."
+module: axelor-account

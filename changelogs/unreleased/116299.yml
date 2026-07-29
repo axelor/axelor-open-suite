@@ -1,0 +1,3 @@
+---
+title: "Global budget: fixed a LazyInitializationException when creating the default budget version."
+module: axelor-budget
