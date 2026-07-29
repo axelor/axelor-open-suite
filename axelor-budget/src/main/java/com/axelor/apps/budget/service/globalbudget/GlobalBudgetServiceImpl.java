@@ -153,6 +153,9 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       return globalBudget;
     }
 
+    globalBudget = globalBudgetRepository.find(globalBudget.getId());
+    budgetVersion = budgetVersionRepo.find(budgetVersion.getId());
+
     List<Budget> budgetList = globalBudgetToolsService.getAllBudgets(globalBudget);
     List<VersionExpectedAmountsLine> versionExpectedAmountsLineList =
         budgetVersion.getVersionExpectedAmountsLineList();
