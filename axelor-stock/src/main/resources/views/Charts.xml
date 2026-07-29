@@ -132,20 +132,19 @@
         selection="base.month.select" x-required="true"/>
     </search-fields>
     <dataset type="sql">
+      <![CDATA[
       SELECT moves,
       (CASE
       WHEN (translation.message_value IS NULL OR
       translation.message_value = '') THEN label
       ELSE translation.message_value
       END) AS status
-
       FROM (
       SELECT
       COUNT(self.id) AS moves,
       (CASE
-      when self.estimated_date >= self.real_date then 'OnTime
-      Deliveries'
-      when self.estimated_date &lt; self.real_date then 'Late Deliveries'
+      when self.estimated_date >= self.real_date then 'OnTime Deliveries'
+      when self.estimated_date < self.real_date then 'Late Deliveries'
       END) AS label
       FROM
       stock_stock_move AS self
@@ -174,6 +173,7 @@
       ON
       translation.message_key = label AND
       translation.language = :_language
+      ]]>
     </dataset>
     <category key="status" type="text" title="Status"/>
     <series key="moves" type="donut" title="Stock Moves"/>
@@ -186,6 +186,7 @@
       <field type="date" name="toDate" title="To Date" x-required="true"/>
     </search-fields>
     <dataset type="sql">
+      <![CDATA[
       SELECT
       ROUND(AVG((self.estimated_date - self.real_date)*-1)) AS days,
       (CASE
@@ -217,6 +218,7 @@
       DATE(:fromDate) AND DATE(:toDate)
       GROUP BY
       label
+      ]]>
     </dataset>
     <category key="label" type="text" title="Delay"/>
     <series key="days" type="bar" title="Days"/>

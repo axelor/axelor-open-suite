@@ -32,14 +32,16 @@
     name="dashlet.stockMove.deliveries.time.delay.in.nbr">
     <view type="chart" name="chart.stockMove.deliveries.time.delay.in.nbr"/>
     <context name="todayDate" expr="eval:__config__.date"/>
-    <context name="_language" expr="eval:__user__.getLanguage()"/>
+    <context name="_language"
+      expr="eval:__user__.getLanguage()?.tokenize('-')?.first()?.toLowerCase()"/>
   </action-view>
 
   <action-view title="Customer average delivery delay"
     name="dashlet.stockMove.average.delivery.time.delay">
     <view type="chart" name="chart.stockMove.average.delivery.time.delay"/>
     <context name="todayDate" expr="eval:__config__.date"/>
-    <context name="_language" expr="eval:__user__.getLanguage()"/>
+    <context name="_language"
+      expr="eval:__user__.getLanguage()?.tokenize('-')?.first()?.toLowerCase()"/>
   </action-view>
 
   <!-- Stock Dashboard -->

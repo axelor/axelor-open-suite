@@ -16,7 +16,8 @@
   <action-view name="action-dashboard-view-quality-control-points"
     title="Control Points">
     <view type="chart" name="chart.quality.control.points"/>
-    <context name="_language" expr="eval: __user__.getLanguage()"/>
+    <context name="_language"
+      expr="eval: __user__.getLanguage()?.tokenize('-')?.first()?.toLowerCase()"/>
   </action-view>
 
 </object-views>
