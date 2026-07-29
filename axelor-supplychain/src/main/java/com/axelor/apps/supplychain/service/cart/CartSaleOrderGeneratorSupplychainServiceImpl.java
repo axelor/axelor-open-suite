@@ -92,7 +92,9 @@ public class CartSaleOrderGeneratorSupplychainServiceImpl
             cartOrderCreationModeSelect == SaleConfigRepository.CREATE_ORDER_WITH_MISSING_PRODUCTS
                 ? cartLineList
                 : availableCartLineList);
-    saleOrder.setStockLocation(cart.getStockLocation());
+    if (cart.getStockLocation() != null) {
+      saleOrder.setStockLocation(cart.getStockLocation());
+    }
     return saleOrder;
   }
 }
