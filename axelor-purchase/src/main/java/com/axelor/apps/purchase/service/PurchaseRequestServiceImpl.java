@@ -20,7 +20,10 @@ package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -30,6 +33,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashMap;
@@ -102,7 +106,7 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
 
   protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest, Company company)
       throws AxelorException {
-    return purchaseOrderRepo.save(
+    PurchaseOrder purchaseOrder =
         purchaseOrderCreateService.createPurchaseOrder(
             AuthUtils.getUser(),
             Optional.ofNullable(purchaseRequest.getCompany()).orElse(company),
@@ -114,7 +118,26 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
             appBaseService.getTodayDate(purchaseRequest.getCompany()),
             null,
             purchaseRequest.getSupplierPartner(),
-            purchaseRequest.getTradingName()));
+            purchaseRequest.getTradingName());
+    setPurchaseOrderSupplierDetails(purchaseOrder);
+    return purchaseOrderRepo.save(purchaseOrder);
+  }
+
+  protected void setPurchaseOrderSupplierDetails(PurchaseOrder purchaseOrder)
+      throws AxelorException {
+    Partner supplierPartner = purchaseOrder.getSupplierPartner();
+    if (supplierPartner == null) {
+      return;
+    }
+    purchaseOrder.setNotes(supplierPartner.getPurchaseOrderComments());
+
+    if (supplierPartner.getContactPartnerSet().size() == 1) {
+      purchaseOrder.setContactPartner(supplierPartner.getContactPartnerSet().iterator().next());
+    }
+
+    purchaseOrder.setPriceList(
+        Beans.get(PartnerPriceListService.class)
+            .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE));
   }
 
   protected String getPurchaseOrderGroupBySupplierKey(PurchaseRequest purchaseRequest) {
