@@ -37,6 +37,17 @@
     </panel>
   </form>
 
+  <form name="product-bill-of-material-line-form" title="Components"
+    model="com.axelor.apps.production.db.BillOfMaterialLine"
+    onNew="action-bill-of-material-line-default-record,action-bill-of-material-line-attrs-price-and-qty-digits"
+    onLoad="action-bill-of-material-attrs-price-and-qty-digits">
+    <panel-include view="bill-of-material-line-form"/>
+    <panel name="bomPanel">
+      <field name="billOfMaterialParent" form-view="bill-of-material-form"
+        grid-view="bill-of-material-grid"/>
+    </panel>
+  </form>
+
   <action-record name="action-bill-of-material-line-default-record"
     model="com.axelor.apps.production.db.BillOfMaterialLine">
     <field name="qty" expr="1"/>
