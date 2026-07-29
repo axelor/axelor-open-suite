@@ -45,6 +45,7 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineUtils;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
@@ -298,9 +299,9 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       if (stockMoveLine == null) {
         continue;
       }
-      if (isStockMoveInvoicingPartiallyActivated(invoice)) {
+      StockMove stockMove = stockMoveLine.getStockMove();
+      if (isStockMoveInvoicingPartiallyActivated(stockMove)) {
         BigDecimal qty = stockMoveLine.getQtyInvoiced();
-        StockMove stockMove = stockMoveLine.getStockMove();
         Unit movUnit = stockMoveLine.getUnit();
         Unit invUnit = invoiceLine.getUnit();
 
@@ -392,13 +393,13 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
   }
 
-  protected boolean isStockMoveInvoicingPartiallyActivated(Invoice invoice) throws AxelorException {
+  protected boolean isStockMoveInvoicingPartiallyActivated(StockMove stockMove)
+      throws AxelorException {
     SupplyChainConfig supplyChainConfig =
-        supplyChainConfigService.getSupplyChainConfig(invoice.getCompany());
-    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-        || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
-      return supplyChainConfig.getActivateIncStockMovePartialInvoicing();
-    }
-    return supplyChainConfig.getActivateOutStockMovePartialInvoicing();
+        supplyChainConfigService.getSupplyChainConfig(stockMove.getCompany());
+    return (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+            && supplyChainConfig.getActivateIncStockMovePartialInvoicing())
+        || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+            && supplyChainConfig.getActivateOutStockMovePartialInvoicing());
   }
 }
