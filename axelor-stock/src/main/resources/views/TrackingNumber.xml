@@ -134,7 +134,7 @@
 
   <form name="tracking-number-stock-move-line-form" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber"
-    onLoad="action-tracking-number-attrs-set-scale,action-tracking-number-method-fill-origin-parents"
+    onLoad="action-tracking-number-method-fill-origin-parents"
     onNew="action-tracking-number-stock-move-line-group-on-new">
     <panel name="mainPanel">
       <field name="trackingNumberSeq"/>
@@ -271,7 +271,6 @@
 
   <action-group name="action-tracking-number-stock-move-line-group-on-new">
     <action name="action-tracking-number-attrs-product-stock-move-line"/>
-    <action name="action-tracking-number-attrs-set-scale"/>
     <action name="action-tracking-number-record-set-supplier"/>
     <action name="action-tracking-number-record-set-origin"/>
     <action name="action-tracking-number-method-set-product-tracking-number-configuration"/>
@@ -298,7 +297,6 @@
   </action-record>
 
   <action-group name="action-tracking-number-group-on-load">
-    <action name="action-tracking-number-attrs-set-scale"/>
     <action name="action-tracking-number-attrs-set-product-readonly"/>
     <action name="action-tracking-number-attrs-set-dimensions-title"/>
     <action name="action-tracking-number-record-set-original-volume-value"/>
@@ -341,7 +339,6 @@
 
 
   <action-group name="action-tracking-number-group-on-new">
-    <action name="action-tracking-number-attrs-set-scale"/>
     <action name="action-tracking-number-record-product"/>
     <action name="action-tracking-number-method-set-product-tracking-number-configuration"/>
     <action name="action-tracking-number-record-set-fields-from-tn-config"/>
