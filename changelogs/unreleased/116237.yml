@@ -1,0 +1,3 @@
+---
+title: "Supplychain: fixed Cart stock location not defaulted from Partner and cleared when generating the Sale Order."
+module: axelor-supplychain
