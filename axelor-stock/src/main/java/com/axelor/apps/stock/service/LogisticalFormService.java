@@ -175,4 +175,12 @@ public interface LogisticalFormService {
    * @throws AxelorException
    */
   void backToProvision(LogisticalForm logisticalForm) throws AxelorException;
+
+  /**
+   * Reset the fullySpreadOverLogisticalFormsFlag on the stock moves linked to this logistical
+   * form's detail lines.
+   *
+   * @param logisticalForm
+   */
+  void resetFullySpreadOverLogisticalFormsFlag(LogisticalForm logisticalForm);
 }

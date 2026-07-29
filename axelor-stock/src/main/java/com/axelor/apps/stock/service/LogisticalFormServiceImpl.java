@@ -759,5 +759,22 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
           I18n.get(StockExceptionMessage.LOGISTICAL_FORM_PROVISION_WRONG_STATUS));
     }
     logisticalForm.setStatusSelect(LogisticalFormRepository.STATUS_PROVISION);
+    resetFullySpreadOverLogisticalFormsFlag(logisticalForm);
+  }
+
+  @Override
+  public void resetFullySpreadOverLogisticalFormsFlag(LogisticalForm logisticalForm) {
+    if (CollectionUtils.isEmpty(logisticalForm.getLogisticalFormLineList())) {
+      return;
+    }
+    logisticalForm.getLogisticalFormLineList().stream()
+        .filter(
+            logisticalFormLine ->
+                logisticalFormLine.getTypeSelect() == LogisticalFormLineRepository.TYPE_DETAIL
+                    && logisticalFormLine.getStockMoveLine() != null
+                    && logisticalFormLine.getStockMoveLine().getStockMove() != null)
+        .map(logisticalFormLine -> logisticalFormLine.getStockMoveLine().getStockMove())
+        .distinct()
+        .forEach(stockMove -> stockMove.setFullySpreadOverLogisticalFormsFlag(false));
   }
 }
