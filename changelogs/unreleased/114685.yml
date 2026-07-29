@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed HTML tags in notes causing XML rejection by converting HTML fields to plain text before note creation."
+module: axelor-account
