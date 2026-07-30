@@ -261,9 +261,9 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       boolean close,
       boolean open,
       LinkedHashMap<AccountByPartner, Map<Boolean, Boolean>> map) {
-    List<Long> idsDone = new ArrayList<>();
+    List<Pair<Long, Long>> consumedPairs = new ArrayList<>();
     for (Account account : getSortedAccountList(accountAndPartnerPairList)) {
-      Partner partner = getPartner(accountAndPartnerPairList, account, idsDone);
+      Partner partner = getPartner(accountAndPartnerPairList, account, consumedPairs);
 
       Map<Boolean, Boolean> value = new HashMap<>();
       if (close) {
@@ -294,22 +294,22 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   }
 
   protected Partner getPartner(
-      List<Pair<Long, Long>> accountAndPartnerPairList, Account account, List<Long> idsDone) {
-    Partner partner =
+      List<Pair<Long, Long>> accountAndPartnerPairList,
+      Account account,
+      List<Pair<Long, Long>> consumedPairs) {
+    Pair<Long, Long> matchedPair =
         accountAndPartnerPairList.stream()
-            .filter(
-                pair ->
-                    pair.getLeft().equals(account.getId()) && !idsDone.contains(pair.getRight()))
+            .filter(pair -> pair.getLeft().equals(account.getId()) && !consumedPairs.contains(pair))
             .findFirst()
-            .map(Pair::getRight)
-            .map(id -> partnerRepository.find(id))
             .orElse(null);
 
-    if (partner != null) {
-      idsDone.add(partner.getId());
+    if (matchedPair == null) {
+      return null;
     }
 
-    return partner;
+    consumedPairs.add(matchedPair);
+
+    return matchedPair.getRight() != null ? partnerRepository.find(matchedPair.getRight()) : null;
   }
 
   protected void generateMoves(Map<AccountByPartner, Map<Boolean, Boolean>> map) {
