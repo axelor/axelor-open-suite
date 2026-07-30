@@ -19,10 +19,13 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
@@ -51,6 +54,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   protected TaxService taxService;
   protected MoveLineToolService moveLineToolService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
+  protected AccountingSituationRepository accountingSituationRepository;
 
   @Inject
   public MoveLineRecordServiceImpl(
@@ -61,7 +65,8 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       CurrencyScaleService currencyScaleService,
       TaxService taxService,
       MoveLineToolService moveLineToolService,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      AccountingSituationRepository accountingSituationRepository) {
     this.appAccountService = appAccountService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.fiscalPositionService = fiscalPositionService;
@@ -70,6 +75,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     this.taxService = taxService;
     this.moveLineToolService = moveLineToolService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.accountingSituationRepository = accountingSituationRepository;
   }
 
   @Override
@@ -150,7 +156,14 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     moveLine.setTaxLineSet(taxLineSet);
     moveLine.setTaxEquiv(taxEquiv);
 
-    if (ObjectUtils.notEmpty(accountingAccount.getVatSystemSelect())) {
+    AccountingSituation accountingSituation =
+        accountingSituationRepository.findByCompanyAndPartner(
+            move.getCompany(), moveLine.getPartner());
+
+    if (accountingSituation != null
+        && accountingSituation.getVatSystemSelect() == AccountingSituationRepository.VAT_DELIVERY) {
+      moveLine.setVatSystemSelect(AccountRepository.VAT_SYSTEM_GOODS);
+    } else if (ObjectUtils.notEmpty(accountingAccount.getVatSystemSelect())) {
       moveLine.setVatSystemSelect(accountingAccount.getVatSystemSelect());
     }
   }
