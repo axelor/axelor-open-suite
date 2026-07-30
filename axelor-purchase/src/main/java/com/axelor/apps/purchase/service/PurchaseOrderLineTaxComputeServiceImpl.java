@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
@@ -31,6 +32,7 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +49,7 @@ public class PurchaseOrderLineTaxComputeServiceImpl implements PurchaseOrderLine
 
   public void computeAndAddTaxToList(
       Map<?, PurchaseOrderLineTax> map,
+      Map<PurchaseOrderLineTax, Set<PurchaseOrderLine>> purchaseOrderLineSetByTax,
       List<PurchaseOrderLineTax> purchaseOrderLineTaxList,
       Currency currency,
       List<PurchaseOrderLineTax> currentPurchaseOrderLineTaxList) {

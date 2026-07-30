@@ -85,6 +85,7 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
     purchaseOrder.clearPurchaseOrderLineTaxList();
 
     Map<TaxLineTaxExemptionKey, PurchaseOrderLineTax> map = new HashMap<>();
+    Map<PurchaseOrderLineTax, Set<PurchaseOrderLine>> purchaseOrderLineSetByTax = new HashMap<>();
     Set<String> specificNotes = new HashSet<>();
     boolean customerSpecificNote = orderLineTaxService.isCustomerSpecificNote(purchaseOrder);
 
@@ -92,12 +93,18 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
       LOG.debug("Creation of tax lines for purchase order lines.");
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
         getOrCreateLines(
-            purchaseOrder, purchaseOrderLine, map, customerSpecificNote, specificNotes);
+            purchaseOrder,
+            purchaseOrderLine,
+            map,
+            purchaseOrderLineSetByTax,
+            customerSpecificNote,
+            specificNotes);
       }
     }
 
     purchaseOrderLineTaxComputeService.computeAndAddTaxToList(
         map,
+        purchaseOrderLineSetByTax,
         purchaseOrderLineTaxList,
         purchaseOrder.getCurrency(),
         currentPurchaseOrderLineTaxList);
@@ -111,13 +118,15 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
       PurchaseOrder purchaseOrder,
       PurchaseOrderLine purchaseOrderLine,
       Map<TaxLineTaxExemptionKey, PurchaseOrderLineTax> map,
+      Map<PurchaseOrderLineTax, Set<PurchaseOrderLine>> purchaseOrderLineSetByTax,
       boolean customerSpecificNote,
       Set<String> specificNotes)
       throws AxelorException {
     Set<TaxLine> taxLineSet = purchaseOrderLine.getTaxLineSet();
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
       for (TaxLine taxLine : taxLineSet) {
-        getOrCreateLine(purchaseOrder, purchaseOrderLine, taxLine, map, false);
+        getOrCreateLine(
+            purchaseOrder, purchaseOrderLine, taxLine, map, purchaseOrderLineSetByTax, false);
       }
     }
     TaxEquiv taxEquiv = purchaseOrderLine.getTaxEquiv();
@@ -135,7 +144,8 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
             : null;
     if (CollectionUtils.isNotEmpty(taxLineRCSet)) {
       for (TaxLine taxLineRC : taxLineRCSet) {
-        getOrCreateLine(purchaseOrder, purchaseOrderLine, taxLineRC, map, true);
+        getOrCreateLine(
+            purchaseOrder, purchaseOrderLine, taxLineRC, map, purchaseOrderLineSetByTax, true);
       }
     }
 
@@ -148,24 +158,29 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
       PurchaseOrderLine purchaseOrderLine,
       TaxLine taxLine,
       Map<TaxLineTaxExemptionKey, PurchaseOrderLineTax> map,
+      Map<PurchaseOrderLineTax, Set<PurchaseOrderLine>> purchaseOrderLineSetByTax,
       boolean reverseCharged) {
     if (taxLine != null) {
       LOG.debug("VAT {}", taxLine);
       TaxLineTaxExemptionKey key =
           new TaxLineTaxExemptionKey(taxLine, purchaseOrderLine.getVatExemptionReason());
+      PurchaseOrderLineTax purchaseOrderLineTax;
       if (map.containsKey(key)) {
-        PurchaseOrderLineTax purchaseOrderLineVat = map.get(key);
-        purchaseOrderLineVat.setReverseCharged(reverseCharged);
-        purchaseOrderLineVat.setExTaxBase(
-            purchaseOrderLineVat.getExTaxBase().add(purchaseOrderLine.getExTaxTotal()));
-        purchaseOrderLineVat.setInTaxTotal(
-            purchaseOrderLineVat.getInTaxTotal().add(purchaseOrderLine.getInTaxTotal()));
+        purchaseOrderLineTax = map.get(key);
+        purchaseOrderLineTax.setReverseCharged(reverseCharged);
+        purchaseOrderLineTax.setExTaxBase(
+            purchaseOrderLineTax.getExTaxBase().add(purchaseOrderLine.getExTaxTotal()));
+        purchaseOrderLineTax.setInTaxTotal(
+            purchaseOrderLineTax.getInTaxTotal().add(purchaseOrderLine.getInTaxTotal()));
 
       } else {
-        PurchaseOrderLineTax purchaseOrderLineTax =
+        purchaseOrderLineTax =
             createPurchaseOrderLineTax(purchaseOrder, purchaseOrderLine, taxLine, reverseCharged);
         map.put(key, purchaseOrderLineTax);
       }
+      purchaseOrderLineSetByTax
+          .computeIfAbsent(purchaseOrderLineTax, keyValue -> new HashSet<>())
+          .add(purchaseOrderLine);
     }
   }
 
