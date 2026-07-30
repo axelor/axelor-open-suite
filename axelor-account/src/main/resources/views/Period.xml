@@ -25,7 +25,7 @@
         value="save,action-method-period-status-open,action-method-period-show-buttons,action-method-account-set-readonly"/>
       <insert position="after">
         <field name="closeJournalsOnPeriod" showIf="statusSelect == 1" colSpan="12"
-          onChange="action-account-period-attrs-show-journal-btn"/>
+          onChange="action-account-period-record-clear-closed-journal-set,action-account-period-attrs-show-journal-btn"/>
         <field name="closedJournalSet" onChange="action-account-period-attrs-show-journal-btn"
           showIf="closeJournalsOnPeriod &amp;&amp; statusSelect == 1" colSpan="12" canEdit="false"
           canNew="false" onSelect="action-account-period-attrs-set-journal-set-domain"/>
@@ -35,7 +35,7 @@
           css="btn-success"
           showIf="statusSelect == 1 &amp;&amp; closeJournalsOnPeriod &amp;&amp; closedJournalSet != null &amp;&amp; !closedJournalSet.isEmpty()"/>
         <field name="keepJournalsOpenOnPeriod" showIf="statusSelect == 4" colSpan="12"
-          onChange="action-account-period-attrs-show-journal-btn"/>
+          onChange="action-account-period-record-clear-opened-journal-set,action-account-period-attrs-show-journal-btn"/>
         <field name="openedJournalSet" onChange="action-account-period-attrs-show-journal-btn"
           showIf="keepJournalsOpenOnPeriod &amp;&amp; statusSelect == 4" colSpan="12"
           canEdit="false" canNew="false"
@@ -179,4 +179,17 @@
     <alert
       message="The closure of a period will block the operations that can be carried out on the accounting journals for this period. The 'New' moves will be deleted, the 'Daybook' moves will be validated and the 'Simulated' moves will no longer be editable."/>
   </action-validate>
+
+  <action-record name="action-account-period-record-clear-closed-journal-set"
+    model="com.axelor.apps.base.db.Period">
+    <field name="closedJournalSet" expr="eval: new java.util.HashSet()"
+      if="!closeJournalsOnPeriod"/>
+  </action-record>
+
+  <action-record name="action-account-period-record-clear-opened-journal-set"
+    model="com.axelor.apps.base.db.Period">
+    <field name="openedJournalSet" expr="eval: new java.util.HashSet()"
+      if="!keepJournalsOpenOnPeriod"/>
+  </action-record>
+
 </object-views>
