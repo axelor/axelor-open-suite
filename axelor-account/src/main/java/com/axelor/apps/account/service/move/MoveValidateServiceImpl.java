@@ -944,7 +944,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     Map<Object, BigDecimal> amountByTaxLineMap = new HashMap<>();
     for (MoveLine moveLine : moveLineWithTaxList) {
-      getTaxAmount(moveLine, amountByTaxLineMap);
+      getTaxAmount(moveLine, amountByTaxLineMap, move);
     }
 
     if (!ObjectUtils.isEmpty(amountByTaxLineMap)) {
@@ -977,7 +977,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
   }
 
-  protected void getTaxAmount(MoveLine moveLine, Map<Object, BigDecimal> amountByTaxLineMap) {
+  protected void getTaxAmount(
+      MoveLine moveLine, Map<Object, BigDecimal> amountByTaxLineMap, Move move) {
     BigDecimal lineTotal = this.getMoveLineSignedValue(moveLine);
 
     if (CollectionUtils.isEmpty(moveLine.getTaxLineSet()) || lineTotal.signum() == 0) {
@@ -985,12 +986,14 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     Set<TaxLine> taxLineSet =
-        taxAccountService.getNotNonDeductibleTaxesSet(moveLine.getTaxLineSet());
+        move.getInvoice() != null
+            ? moveLine.getTaxLineSet()
+            : taxAccountService.getNotNonDeductibleTaxesSet(moveLine.getTaxLineSet());
 
     for (TaxLine taxLine : taxLineSet) {
       BigDecimal taxAmount =
           lineTotal
-              .multiply(taxAccountService.getTotalTaxRateInPercentage(Set.of(taxLine)))
+              .multiply(taxLine.getValue())
               .divide(
                   BigDecimal.valueOf(100),
                   currencyScaleService.getCompanyScale(moveLine),
