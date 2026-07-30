@@ -10,7 +10,7 @@
 
   <form name="control-plan-frequency-form" title="Control plan frequency"
     model="com.axelor.apps.quality.db.ControlPlanFrequency"
-    onSave="action-control-plan-frequency-method-create-or-update-value-translations">
+    onSave="action-control-plan-frequency-method-check-unique-name,action-control-plan-frequency-method-create-or-update-value-translations">
     <panel name="mainPanel" colSpan="12">
       <field name="name" colSpan="12"/>
       <field name="sampleTypeSelect" colSpan="2"/>
@@ -26,6 +26,11 @@
     name="action-control-plan-frequency-method-create-or-update-value-translations">
     <call class="com.axelor.apps.quality.web.ControlPlanFrequencyController"
       method="createOrUpdateValueTranslations"/>
+  </action-method>
+
+  <action-method name="action-control-plan-frequency-method-check-unique-name">
+    <call class="com.axelor.apps.quality.web.ControlPlanFrequencyController"
+      method="checkUniqueName"/>
   </action-method>
 
 </object-views>
