@@ -56,6 +56,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -137,9 +138,53 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
         analyticMoveLineList.add(
             this.createAnalyticMoveLine(analyticDistributionLine, total, typeSelect, date));
       }
+      reconcileRoundingRemainder(analyticMoveLineList, total);
     }
 
     return analyticMoveLineList;
+  }
+
+  /**
+   * Adjusts the generated analytic move lines so that, for each analytic axis distributing 100% of
+   * the amount, the sum of the line amounts equals the source amount. Each line is rounded HALF_UP
+   * independently in {@link #computeAmount}, so the per-line residuals can otherwise accumulate
+   * into a drift (e.g. 4 lines of 25% on 91.51 round to 22.88 each, summing to 91.52). The last
+   * line of each axis absorbs the residual. Axes that do not sum to 100% (partial distributions)
+   * are left untouched.
+   */
+  protected void reconcileRoundingRemainder(
+      List<AnalyticMoveLine> analyticMoveLineList, BigDecimal total) {
+    if (total == null || total.signum() <= 0 || CollectionUtils.isEmpty(analyticMoveLineList)) {
+      return;
+    }
+
+    Map<AnalyticAxis, List<AnalyticMoveLine>> analyticMoveLineListByAxis =
+        analyticMoveLineList.stream()
+            .collect(
+                Collectors.groupingBy(
+                    AnalyticMoveLine::getAnalyticAxis, LinkedHashMap::new, Collectors.toList()));
+
+    for (List<AnalyticMoveLine> axisAnalyticMoveLineList : analyticMoveLineListByAxis.values()) {
+      BigDecimal percentageSum =
+          axisAnalyticMoveLineList.stream()
+              .map(AnalyticMoveLine::getPercentage)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+      if (percentageSum.compareTo(new BigDecimal(100)) != 0) {
+        continue;
+      }
+
+      AnalyticMoveLine lastAnalyticMoveLine =
+          axisAnalyticMoveLineList.get(axisAnalyticMoveLineList.size() - 1);
+      BigDecimal generatedSum =
+          axisAnalyticMoveLineList.stream()
+              .map(AnalyticMoveLine::getAmount)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+      BigDecimal residual =
+          currencyScaleService.getScaledValue(lastAnalyticMoveLine, total).subtract(generatedSum);
+      lastAnalyticMoveLine.setAmount(
+          currencyScaleService.getScaledValue(
+              lastAnalyticMoveLine, lastAnalyticMoveLine.getAmount().add(residual)));
+    }
   }
 
   @Override
