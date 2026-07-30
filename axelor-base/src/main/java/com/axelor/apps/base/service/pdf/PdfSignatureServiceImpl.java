@@ -33,7 +33,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -100,7 +99,7 @@ public class PdfSignatureServiceImpl implements PdfSignatureService {
       throws AxelorException {
 
     try {
-      File signedPdfFile = Files.createTempFile(null, ".pdf").toFile();
+      File signedPdfFile = MetaFiles.createTempFile(null, ".pdf").toFile();
       try (FileOutputStream outStream = new FileOutputStream(signedPdfFile);
           FileInputStream inputStream =
               new FileInputStream(String.valueOf(MetaFiles.getPath(certificate)))) {
