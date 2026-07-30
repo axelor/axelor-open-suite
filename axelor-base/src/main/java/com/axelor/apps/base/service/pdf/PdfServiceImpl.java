@@ -29,7 +29,6 @@ import com.axelor.meta.db.repo.MetaFileRepository;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -78,7 +77,7 @@ public class PdfServiceImpl implements PdfService {
         return null;
       }
       String baseName = FileUtils.stripExtension(FileUtils.safeFileName(metaFile.getFileName()));
-      File tempPdfFile = Files.createTempFile(baseName, ".pdf").toFile();
+      File tempPdfFile = MetaFiles.createTempFile(baseName, ".pdf").toFile();
 
       convertImageToPdf(metaFile, tempPdfFile);
       MetaFile resultFile = metaFiles.upload(tempPdfFile);
