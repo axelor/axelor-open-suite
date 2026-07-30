@@ -1,3 +1,8 @@
 ---
-title: "Invoicing: fixed non-deductible tax being applied to deductible tax lines that never share an invoice line with it."
-module: axelor-account
+title: "Invoicing and purchase orders: fixed non-deductible taxes being applied to unrelated deductible tax lines."
+module: axelor-supplychain
+developer: |
+  `PurchaseOrderLineTaxComputeService#computeAndAddTaxToList` now requires a
+  `Map<PurchaseOrderLineTax, Set<PurchaseOrderLine>>` argument containing the purchase order lines
+  that contributed to each aggregated tax line. Custom callers and implementations must collect
+  and pass this contribution map.
