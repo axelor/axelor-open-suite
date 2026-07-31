@@ -58,9 +58,14 @@ public class EmployeeHRRepository extends EmployeeRepository {
       Beans.get(PartnerService.class).setPartnerFullName(partner);
     }
     EmploymentContract employmentContract = entity.getMainEmploymentContract();
-    if ((partner.getCompanySet() == null || partner.getCompanySet().isEmpty())
-        && employmentContract != null) {
-      partner.addCompanySetItem(employmentContract.getPayCompany());
+    if (partner.getCompanySet() == null || partner.getCompanySet().isEmpty()) {
+      if (employmentContract != null) {
+        partner.addCompanySetItem(employmentContract.getPayCompany());
+      } else {
+        Optional.ofNullable(AuthUtils.getUser())
+            .map(User::getActiveCompany)
+            .ifPresent(partner::addCompanySetItem);
+      }
     }
     if (!partner.getIsEmployee()) {
       partner.setIsContact(true);
