@@ -1,3 +1,19 @@
+## [8.3.40] (2026-07-31)
+
+### Fixes
+#### Base
+
+* Expense: fixed electronic signature failure when the uploaded file has a short filename.
+
+#### Account
+
+* Invoice: fixed invalid PDF signature on printed invoice; single copy is served unchanged and multiple copies are re-signed after merging.
+* Invoice: fixed regenerated invoice PDF copies being returned without the certificate signature.
+* Accounting report: fixed wrong values when the acquisition date of fixed asset is equal to the report start date for report type 'Summary of gross values and depreciation'.
+* Account: fixed missing reported-balance lines for some partners when closing annual accounts with partner allocation enabled.
+* MoveLine: fixed VAT system priority to check supplier's VAT on delivery before account's VAT system.
+* Invoice: fixed temporary files created outside the upload directory when reprinting invoice copies.
+
 ## [8.3.39] (2026-07-17)
 
 ### Fixes
@@ -3501,6 +3517,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.40]: https://github.com/axelor/axelor-open-suite/compare/v8.3.39...v8.3.40
 [8.3.39]: https://github.com/axelor/axelor-open-suite/compare/v8.3.38...v8.3.39
 [8.3.38]: https://github.com/axelor/axelor-open-suite/compare/v8.3.37...v8.3.38
 [8.3.37]: https://github.com/axelor/axelor-open-suite/compare/v8.3.36...v8.3.37
