@@ -1,3 +1,0 @@
----
-title: "MoveLine: fixed VAT system priority to check supplier's VAT on delivery before account's VAT system."
-module: axelor-account

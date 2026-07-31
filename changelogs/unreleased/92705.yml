@@ -1,3 +1,0 @@
----
-title: "Accounting report: fixed wrong values when the acquisition date of fixed asset is equal to the report start date for report type 'Summary of gross values and depreciation'."
-module: axelor-account

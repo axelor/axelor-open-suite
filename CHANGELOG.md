@@ -1,3 +1,16 @@
+## [8.1.46] (2026-07-31)
+
+### Fixes
+#### Base
+
+* Updated xsd schema URL to fix a build issue.
+
+#### Account
+
+* Accounting report: fixed wrong values when the acquisition date of fixed asset is equal to the report start date for report type 'Summary of gross values and depreciation'.
+* Account: fixed missing reported-balance lines for some partners when closing annual accounts with partner allocation enabled.
+* MoveLine: fixed VAT system priority to check supplier's VAT on delivery before account's VAT system.
+
 ## [8.1.45] (2026-06-11)
 
 ### Fixes
@@ -2061,6 +2074,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.46]: https://github.com/axelor/axelor-open-suite/compare/v8.1.45...v8.1.46
 [8.1.45]: https://github.com/axelor/axelor-open-suite/compare/v8.1.44...v8.1.45
 [8.1.44]: https://github.com/axelor/axelor-open-suite/compare/v8.1.43...v8.1.44
 [8.1.43]: https://github.com/axelor/axelor-open-suite/compare/v8.1.42...v8.1.43
