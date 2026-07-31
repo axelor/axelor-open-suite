@@ -56,6 +56,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Query;
+import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.inject.Beans;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.utils.helpers.WrappingHelper;
@@ -84,6 +85,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       VentilateFactory ventilateFactory,
       CancelFactory cancelFactory,
       InvoiceRepository invoiceRepo,
+      DMSFileRepository dmsFileRepository,
       AppAccountService appAccountService,
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
@@ -106,6 +108,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         ventilateFactory,
         cancelFactory,
         invoiceRepo,
+        dmsFileRepository,
         appAccountService,
         partnerService,
         invoiceLineService,

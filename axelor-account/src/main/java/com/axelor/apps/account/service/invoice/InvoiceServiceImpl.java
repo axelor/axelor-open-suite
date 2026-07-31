@@ -69,6 +69,8 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
+import com.axelor.dms.db.DMSFile;
+import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
@@ -107,6 +109,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected VentilateFactory ventilateFactory;
   protected CancelFactory cancelFactory;
   protected InvoiceRepository invoiceRepo;
+  protected DMSFileRepository dmsFileRepository;
   protected AppAccountService appAccountService;
   protected PartnerService partnerService;
   protected InvoiceLineService invoiceLineService;
@@ -128,6 +131,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       VentilateFactory ventilateFactory,
       CancelFactory cancelFactory,
       InvoiceRepository invoiceRepo,
+      DMSFileRepository dmsFileRepository,
       AppAccountService appAccountService,
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
@@ -147,6 +151,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.ventilateFactory = ventilateFactory;
     this.cancelFactory = cancelFactory;
     this.invoiceRepo = invoiceRepo;
+    this.dmsFileRepository = dmsFileRepository;
     this.appAccountService = appAccountService;
     this.partnerService = partnerService;
     this.invoiceLineService = invoiceLineService;
@@ -310,6 +315,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     ventilateFactory.getVentilator(invoice).process();
 
     invoiceRepo.save(invoice);
+    resyncDmsHomeFolderName(invoice);
     if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
       invoicePrintService.printAndSave(
           invoice,
@@ -318,6 +324,20 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           null,
           true);
     }
+  }
+
+  protected void resyncDmsHomeFolderName(Invoice invoice) {
+    DMSFile dmsHome = dmsFileRepository.findHomeByRelated(invoice);
+    String invoiceId = invoice.getInvoiceId();
+
+    if (dmsHome == null
+        || StringUtils.isBlank(invoiceId)
+        || Objects.equals(dmsHome.getFileName(), invoiceId)) {
+      return;
+    }
+
+    dmsHome.setFileName(invoiceId);
+    dmsFileRepository.save(dmsHome);
   }
 
   @Override
