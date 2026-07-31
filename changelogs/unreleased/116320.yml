@@ -1,0 +1,6 @@
+---
+title: "Invoice: fixed the GED folder keeping the pre-ventilation invoice number after ventilation."
+module: axelor-account
+developer: |
+  The `InvoiceServiceImpl` constructor now requires a `DMSFileRepository` parameter. Custom
+  subclasses must inject and forward this dependency.
