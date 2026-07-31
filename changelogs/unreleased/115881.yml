@@ -1,3 +1,0 @@
----
-title: "Sale order: fixed the invoicing state wrongly showing 'Partially invoiced' on a sale order fully reimbursed by a refund invoice generated from a stock move reversion, with no prior sale invoice."
-module: axelor-supplychain

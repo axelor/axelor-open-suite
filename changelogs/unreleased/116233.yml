@@ -1,3 +1,0 @@
----
-title: "Stock: fixed inventory validation failing when tracked and untracked quantities are mixed."
-module: axelor-stock

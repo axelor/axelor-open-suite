@@ -1,3 +1,31 @@
+## [7.2.71] (2026-07-31)
+
+### Fixes
+#### Base
+
+* Base: fixed Client Situation report showing no sale orders when the partner has no assigned user.
+
+#### Account
+
+* Account: fixed the direction of VAT lines on accounting cutoff moves.
+* Account: fixed negative lines not being removed from payment sessions on the first attempt.
+
+#### CRM
+
+* CRM: fixed the lead's description not being copied onto the generated opportunity's Customer description field.
+
+#### Human Resource
+
+* Partner: fixed default company not being set on the partner created from the employee form.
+
+#### Stock
+
+* Stock: fixed inventory validation failing when tracked and untracked quantities are mixed.
+
+#### Supply Chain
+
+* Sale order: fixed the invoicing state wrongly showing 'Partially invoiced' on a sale order fully reimbursed by a refund invoice generated from a stock move reversion, with no prior sale invoice.
+
 ## [7.2.70] (2026-07-17)
 
 ### Fixes
@@ -3261,6 +3289,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.71]: https://github.com/axelor/axelor-open-suite/compare/v7.2.70...v7.2.71
 [7.2.70]: https://github.com/axelor/axelor-open-suite/compare/v7.2.69...v7.2.70
 [7.2.69]: https://github.com/axelor/axelor-open-suite/compare/v7.2.68...v7.2.69
 [7.2.68]: https://github.com/axelor/axelor-open-suite/compare/v7.2.67...v7.2.68
