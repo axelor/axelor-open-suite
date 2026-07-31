@@ -1,3 +1,0 @@
----
-title: "Purchase order line: fixed the 'Invoiced' flag no longer being set when ventilating a direct invoice, since business-project was removed."
-module: axelor-supplychain

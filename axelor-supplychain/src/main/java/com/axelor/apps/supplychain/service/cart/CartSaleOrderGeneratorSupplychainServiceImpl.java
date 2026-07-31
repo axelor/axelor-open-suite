@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service.cart;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.db.SaleConfig;
@@ -54,13 +55,15 @@ public class CartSaleOrderGeneratorSupplychainServiceImpl
       SaleOrderLineGeneratorService saleOrderLineGeneratorService,
       SaleOrderLineRepository saleOrderLineRepository,
       CartResetService cartResetService,
+      AppBaseService appBaseService,
       SaleConfigService saleConfigService,
       CartLineAvailabilityService cartLineAvailabilityService) {
     super(
         saleOrderGeneratorService,
         saleOrderLineGeneratorService,
         saleOrderLineRepository,
-        cartResetService);
+        cartResetService,
+        appBaseService);
     this.saleConfigService = saleConfigService;
     this.cartLineAvailabilityService = cartLineAvailabilityService;
   }
@@ -92,7 +95,9 @@ public class CartSaleOrderGeneratorSupplychainServiceImpl
             cartOrderCreationModeSelect == SaleConfigRepository.CREATE_ORDER_WITH_MISSING_PRODUCTS
                 ? cartLineList
                 : availableCartLineList);
-    saleOrder.setStockLocation(cart.getStockLocation());
+    if (cart.getStockLocation() != null) {
+      saleOrder.setStockLocation(cart.getStockLocation());
+    }
     return saleOrder;
   }
 }

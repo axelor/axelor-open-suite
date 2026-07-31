@@ -1,3 +1,0 @@
----
-title: "Stock: fixed untranslated chart status labels caused by corrupted or unnormalized locale values."
-module: axelor-stock

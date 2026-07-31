@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.apps.purchase.service.PurchaseOrderLineTaxComputeServiceImpl;
 import jakarta.inject.Inject;
@@ -30,6 +31,7 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PurchaseOrderLineTaxComputeSupplychainServiceImp
@@ -44,6 +46,7 @@ public class PurchaseOrderLineTaxComputeSupplychainServiceImp
   @Override
   public void computeAndAddTaxToList(
       Map<?, PurchaseOrderLineTax> map,
+      Map<PurchaseOrderLineTax, Set<PurchaseOrderLine>> purchaseOrderLineSetByTax,
       List<PurchaseOrderLineTax> purchaseOrderLineTaxList,
       Currency currency,
       List<PurchaseOrderLineTax> currentPurchaseOrderLineTaxList) {
@@ -61,7 +64,8 @@ public class PurchaseOrderLineTaxComputeSupplychainServiceImp
                 purchaseOrderLineTaxList,
                 currency,
                 currentPurchaseOrderLineTaxList,
-                deductibleTaxList));
+                deductibleTaxList,
+                purchaseOrderLineSetByTax));
     deductibleTaxList.forEach(
         it ->
             computeAndAddPurchaseOrderLineTax(
@@ -69,7 +73,8 @@ public class PurchaseOrderLineTaxComputeSupplychainServiceImp
                 purchaseOrderLineTaxList,
                 currency,
                 currentPurchaseOrderLineTaxList,
-                nonDeductibleTaxList));
+                nonDeductibleTaxList,
+                purchaseOrderLineSetByTax));
   }
 
   protected void computeAndAddPurchaseOrderLineTax(
@@ -77,14 +82,19 @@ public class PurchaseOrderLineTaxComputeSupplychainServiceImp
       List<PurchaseOrderLineTax> purchaseOrderLineTaxList,
       Currency currency,
       List<PurchaseOrderLineTax> currentPurchaseOrderLineTaxList,
-      List<PurchaseOrderLineTax> nonDeductibleTaxList) {
+      List<PurchaseOrderLineTax> oppositeTaxList,
+      Map<PurchaseOrderLineTax, Set<PurchaseOrderLine>> purchaseOrderLineSetByTax) {
     TaxLine taxLine = purchaseOrderLineTax.getTaxLine();
     BigDecimal taxTotal = this.computeTaxLineTaxTotal(taxLine, purchaseOrderLineTax);
 
     if (taxLine.getTax().getIsNonDeductibleTax()) {
-      taxTotal = this.getAdjustedNonDeductibleTaxValue(taxTotal, nonDeductibleTaxList);
+      taxTotal =
+          this.getAdjustedNonDeductibleTaxValue(
+              purchaseOrderLineTax, taxTotal, oppositeTaxList, purchaseOrderLineSetByTax);
     } else {
-      taxTotal = this.getAdjustedTaxValue(taxTotal, nonDeductibleTaxList);
+      taxTotal =
+          this.getAdjustedTaxValue(
+              purchaseOrderLineTax, taxTotal, oppositeTaxList, purchaseOrderLineSetByTax);
     }
 
     this.computePurchaseOrderLineTax(
@@ -101,38 +111,68 @@ public class PurchaseOrderLineTaxComputeSupplychainServiceImp
   }
 
   protected BigDecimal getAdjustedTaxValue(
-      BigDecimal taxValue, List<PurchaseOrderLineTax> nonDeductibleTaxList) {
-    BigDecimal deductibleTaxValue =
-        nonDeductibleTaxList.stream()
-            .map(PurchaseOrderLineTax::getTaxLine)
-            .map(TaxLine::getValue)
-            .reduce(BigDecimal::multiply)
-            .orElse(BigDecimal.ZERO)
-            .divide(
-                BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+      PurchaseOrderLineTax deductibleTax,
+      BigDecimal taxValue,
+      List<PurchaseOrderLineTax> nonDeductibleTaxList,
+      Map<PurchaseOrderLineTax, Set<PurchaseOrderLine>> purchaseOrderLineSetByTax) {
+    BigDecimal deductibleBase = deductibleTax.getExTaxBase();
+    if (nonDeductibleTaxList.isEmpty() || deductibleBase.signum() == 0) {
+      return taxValue;
+    }
 
-    return BigDecimal.ONE
-        .subtract(deductibleTaxValue)
-        .multiply(taxValue)
-        .setScale(AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+    BigDecimal nonDeductibleBase = BigDecimal.ZERO;
+    for (PurchaseOrderLineTax nonDeductibleTax : nonDeductibleTaxList) {
+      BigDecimal overlapBase =
+          getOverlapBase(deductibleTax, nonDeductibleTax, purchaseOrderLineSetByTax);
+      nonDeductibleBase = nonDeductibleBase.add(overlapBase.multiply(getTaxRate(nonDeductibleTax)));
+    }
+
+    return taxValue
+        .multiply(deductibleBase.subtract(nonDeductibleBase))
+        .divide(deductibleBase, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal getAdjustedNonDeductibleTaxValue(
-      BigDecimal taxValue, List<PurchaseOrderLineTax> deductibleTaxList) {
-    BigDecimal nonDeductibleTaxValue = BigDecimal.ZERO;
-
-    for (PurchaseOrderLineTax purchaseOrderLineTax : deductibleTaxList) {
-      nonDeductibleTaxValue =
-          nonDeductibleTaxValue.add(
-              taxValue.multiply(
-                  purchaseOrderLineTax
-                      .getTaxLine()
-                      .getValue()
-                      .divide(
-                          BigDecimal.valueOf(100),
-                          AppBaseService.COMPUTATION_SCALING,
-                          RoundingMode.HALF_UP)));
+      PurchaseOrderLineTax nonDeductibleTax,
+      BigDecimal taxValue,
+      List<PurchaseOrderLineTax> deductibleTaxList,
+      Map<PurchaseOrderLineTax, Set<PurchaseOrderLine>> purchaseOrderLineSetByTax) {
+    BigDecimal nonDeductibleBase = nonDeductibleTax.getExTaxBase();
+    if (deductibleTaxList.isEmpty() || nonDeductibleBase.signum() == 0) {
+      return BigDecimal.ZERO;
     }
-    return nonDeductibleTaxValue.setScale(AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+
+    BigDecimal deductibleTaxBase = BigDecimal.ZERO;
+    for (PurchaseOrderLineTax deductibleTax : deductibleTaxList) {
+      BigDecimal overlapBase =
+          getOverlapBase(nonDeductibleTax, deductibleTax, purchaseOrderLineSetByTax);
+      deductibleTaxBase = deductibleTaxBase.add(overlapBase.multiply(getTaxRate(deductibleTax)));
+    }
+
+    return taxValue
+        .multiply(deductibleTaxBase)
+        .divide(nonDeductibleBase, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal getOverlapBase(
+      PurchaseOrderLineTax firstTax,
+      PurchaseOrderLineTax secondTax,
+      Map<PurchaseOrderLineTax, Set<PurchaseOrderLine>> purchaseOrderLineSetByTax) {
+    Set<PurchaseOrderLine> firstPurchaseOrderLineSet =
+        purchaseOrderLineSetByTax.getOrDefault(firstTax, Set.of());
+    Set<PurchaseOrderLine> secondPurchaseOrderLineSet =
+        purchaseOrderLineSetByTax.getOrDefault(secondTax, Set.of());
+
+    return firstPurchaseOrderLineSet.stream()
+        .filter(secondPurchaseOrderLineSet::contains)
+        .map(PurchaseOrderLine::getExTaxTotal)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  protected BigDecimal getTaxRate(PurchaseOrderLineTax purchaseOrderLineTax) {
+    return purchaseOrderLineTax
+        .getTaxLine()
+        .getValue()
+        .divide(BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
   }
 }
