@@ -1,3 +1,20 @@
+## [8.2.48] (2026-07-31)
+
+### Fixes
+#### Base
+
+* Expense: fixed electronic signature failure when the uploaded file has a short filename.
+
+#### Account
+
+* Invoice: fixed invalid PDF signature on printed invoice; single copy is served unchanged and multiple copies are re-signed after merging.
+* Invoice: fixed regenerated invoice PDF copies being returned without the certificate signature.
+* Accounting batch: fixed the analytic distribution being lost when several move lines are merged into one for the 'Accounting cut-off' batch.
+* Accounting report: fixed wrong values when the acquisition date of fixed asset is equal to the report start date for report type 'Summary of gross values and depreciation'.
+* Account: fixed missing reported-balance lines for some partners when closing annual accounts with partner allocation enabled.
+* MoveLine: fixed VAT system priority to check supplier's VAT on delivery before account's VAT system.
+* Invoice: fixed temporary files created outside the upload directory when reprinting invoice copies.
+
 ## [8.2.47] (2026-07-17)
 
 ### Fixes
@@ -2937,6 +2954,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.48]: https://github.com/axelor/axelor-open-suite/compare/v8.2.47...v8.2.48
 [8.2.47]: https://github.com/axelor/axelor-open-suite/compare/v8.2.46...v8.2.47
 [8.2.46]: https://github.com/axelor/axelor-open-suite/compare/v8.2.45...v8.2.46
 [8.2.45]: https://github.com/axelor/axelor-open-suite/compare/v8.2.44...v8.2.45
