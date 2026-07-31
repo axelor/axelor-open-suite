@@ -751,6 +751,7 @@
 "Turnover per month per salesman","CA HT par mois par commercial",,
 "Type",,,
 "Type select normal","Type normal",,
+"Unable to generate the sale order: company %s has several trading names. Please create the sale order manually to select a trading name.","Impossible de générer la commande client : la société %s possède plusieurs noms commerciaux. Veuillez créer la commande client manuellement afin de sélectionner un nom commercial.",,
 "Unable to start the simulation because one or more products in the order have a sold quantity that is not a multiple of the default packaging defined in their product form.","Impossible de lancer la simulation car il existe un où plusieurs produit(s) de la commande dont la quantité vendue n'est pas un multiple de l'emballage par défaut défini dans sa fiche produit.",,
 "Unable to start the simulation. One or more items are too heavy to be carried by the existing packagings.","Impossible de lancer la simulation. Un ou plusieurs articles sont trop lourds pour être transportés dans les emballages existants.",,
 "Unable to start the simulation. One or more items are too large to fit into the existing packagings.","Impossible de lancer la simulation. Un ou plusieurs articles sont trop grands pour rentrer dans les emballages existants.",,

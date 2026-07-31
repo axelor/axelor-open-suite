@@ -169,6 +169,9 @@ public final class SaleExceptionMessage {
   public static final String NO_ORDER_LINE_NEEDS_TO_BE_GENERATED = /*$$(*/
       "No order line needs to be generated for this cart." /*)*/;
 
+  public static final String CART_SALE_ORDER_TRADING_NAME_NOT_RESOLVED = /*$$(*/
+      "Unable to generate the sale order: company %s has several trading names. Please create the sale order manually to select a trading name." /*)*/;
+
   public static final String SALE_ORDER_LINE_PARENT_WRONG_TYPE = /*$$(*/
       "Title type line can not have sublines." /*)*/;
 
