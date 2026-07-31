@@ -1,3 +1,142 @@
+## [8.5.24] (2026-07-31)
+
+### Fixes
+#### Base
+
+* Partner: fixed registration number cleaning to also strip dots, slashes and hyphens (not just spaces) before validation and SIREN/NIC extraction.
+* User: fixed password pattern error message still displayed after a successful random password change.
+* Base: fixed Client Situation report showing no sale orders when the partner has no assigned user.
+
+#### Account
+
+* Account: fixed the direction of VAT lines on accounting cutoff moves.
+* Invoice: fixed ventilation check on invoice category ignoring displayItemsCategoriesOnPrinting config.
+* Accounting batch: fixed the analytic distribution being lost when several move lines are merged into one for the 'Accounting cut-off' batch.
+* Invoice: fixed HTML tags in notes causing XML rejection by converting HTML fields to plain text before note creation.
+* PaymentReminder: settled invoice terms still printed on the PDF (missing amount_remaining filter)
+* Accounting report: fixed wrong values when the acquisition date of fixed asset is equal to the report start date for report type 'Summary of gross values and depreciation'.
+* Invoice: fixed the title displayed on the credit notes search popup when merging credit notes.
+* Account: fixed missing reported-balance lines for some partners when closing annual accounts with partner allocation enabled.
+* MoveLine: fixed VAT system priority to check supplier's VAT on delivery before account's VAT system.
+* Account: fixed negative lines not being removed from payment sessions on the first attempt.
+* Invoice: fixed temporary files created outside the upload directory when reprinting invoice copies.
+* Period: fixed period closure to only process moves from selected journals when closing per journal.
+* Invoice: fixed the GED folder keeping the pre-ventilation invoice number after ventilation.
+
+#### Bank Payment
+
+* Bank statement line: fixed BIRT report being empty when bank statement line tables have different physical column orders.
+
+#### Budget
+
+* Global budget: fixed a LazyInitializationException when creating the default budget version.
+
+#### CRM
+
+* CRM: fixed the lead's description not being copied onto the generated opportunity's Customer description field.
+
+#### Human Resource
+
+* Project planning time: fixed unique constraint error when saving multiple planning lines with the same display planned time.
+* Partner: fixed default company not being set on the partner created from the employee form.
+
+#### Production
+
+* Product: fixed the access to the parent bill of material from the 'Where-used list' dashlet.
+* Production: fixed MRP calculation creating irrelevant manufacturing proposals for unrelated products.
+* Sale order line: fixed the domain on production process field to filter by company.
+* Production: fixed tracking number continuity during partial production.
+
+#### Sale
+
+* Sale order: fixed manually edited delivery/invoicing address text being overwritten on every save.
+* Sale: fixed Cart sale order generation when a trading name is required.
+
+#### Stock
+
+* Stock rules: fixed alert email not sent when recipients are resolved from the user/team templating formula.
+* Stock: fixed an issue in tracking number forms.
+* Stock: fixed inventory validation failing when tracked and untracked quantities are mixed.
+* Stock: fixed untranslated chart status labels caused by corrupted or unnormalized locale values.
+* StockMove: reset fullySpreadOverLogisticalFormsFlag when a LogisticalForm is deleted or set back to draft.
+
+#### Supply Chain
+
+* Purchase Order: fixed purchase order amountInvoiced not updated for a credit note generated from a reversion stockMove.
+* Supplychain: fixed Cart stock location not defaulted from Partner and cleared when generating the Sale Order.
+* Mass stock invoicing: Set fiscal position from partner when invoicing a standalone stock move.
+* Purchase order line: fixed line editor being wrongly marked as modified on open when analytic accounts were already set.
+* Purchase order: fixed receipt state staying on 'Partially received' when a line's quantity is corrected to 0.
+* Sale order: fixed the invoicing state wrongly showing 'Partially invoiced' on a sale order fully reimbursed by a refund invoice generated from a stock move reversion, with no prior sale invoice.
+* Purchase order line: fixed the 'Invoiced' flag no longer being set when ventilating a direct invoice, since business-project was removed.
+* Sale/Purchase: fixed timetable invoicing status and re-invoicing checks breaking after invoice merging.
+* Stock move: fixed incoming partial invoices being marked as fully invoiced after ventilation.
+* Invoicing and purchase orders: fixed non-deductible taxes being applied to unrelated deductible tax lines.
+* Purchase request: fixed supplier details not populated on generated purchase order.
+
+#### Intervention
+
+* Intervention: fixed tradingNameSet being required on Partner even when the Intervention module is not installed.
+
+
+### Developer
+
+#### Account
+
+The `InvoiceServiceImpl` constructor now requires a `DMSFileRepository` parameter. Custom
+subclasses must inject and forward this dependency.
+
+#### Production
+
+`MrpServiceProductionImpl#createManufOrderMrpLines` gained a new `boolean producedProductInScope`
+parameter.
+
+---
+
+Changed SaleOrderLineDomainProductionService.getProdProcessDomain parameters from (saleOrderLine) to (saleOrderLine, saleOrder).
+
+#### Sale
+
+The CartSaleOrderGeneratorServiceImpl and CartSaleOrderGeneratorSupplychainServiceImpl constructors now require an AppBaseService parameter.
+
+#### Stock
+
+```sql
+-- Script to update fully_spread_over_logistical_forms_flag field to keep consistent data. Please check data before applying.
+UPDATE stock_stock_move sm
+SET fully_spread_over_logistical_forms_flag = FALSE
+WHERE sm.fully_spread_over_logistical_forms_flag = TRUE
+  AND EXISTS (
+    SELECT 1 FROM stock_stock_move_line sml
+    JOIN sale_sale_order_line sol ON sol.id = sml.sale_order_line
+    WHERE sml.stock_move = sm.id AND sol.type_select = 0   -- TYPE_NORMAL
+  )
+  AND NOT EXISTS (
+    SELECT 1 FROM supplychain_packaging_line pl
+    JOIN supplychain_packaging pkg ON pkg.id = pl.packaging
+    JOIN stock_stock_move_line sml ON sml.id = pl.stock_move_line
+    JOIN stock_logistical_form lf ON lf.id = pkg.logistical_form
+    WHERE sml.stock_move = sm.id AND lf.status_select = 3
+  );
+```
+
+#### Supply Chain
+
+Changed the protected method signature
+`isStockMoveInvoicingPartiallyActivated(Invoice)` to
+`isStockMoveInvoicingPartiallyActivated(StockMove)`.
+
+---
+
+`PurchaseOrderLineTaxComputeService#computeAndAddTaxToList` now requires a
+`Map<PurchaseOrderLineTax, Set<PurchaseOrderLine>>` argument containing the purchase order lines
+that contributed to each aggregated tax line. Custom callers and implementations must collect
+and pass this contribution map.
+
+---
+
+- PurchaseRequestServiceSupplychainImpl: constructor updated with a new `AccountConfigService` parameter.
+
 ## [8.5.23] (2026-07-17)
 
 ### Fixes
@@ -3387,6 +3526,7 @@ Removed CommonInvoiceService.createInvoiceLinesFromOrder Changed the parameter o
 * Bill of material: added default value for calculation quantity.
 * Manuf order: fixed relation with production order.
 
+[8.5.24]: https://github.com/axelor/axelor-open-suite/compare/v8.5.23...v8.5.24
 [8.5.23]: https://github.com/axelor/axelor-open-suite/compare/v8.5.22...v8.5.23
 [8.5.22]: https://github.com/axelor/axelor-open-suite/compare/v8.5.21...v8.5.22
 [8.5.21]: https://github.com/axelor/axelor-open-suite/compare/v8.5.20...v8.5.21

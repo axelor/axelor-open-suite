@@ -1,3 +1,0 @@
----
-title: "Purchase Order: fixed purchase order amountInvoiced not updated for a credit note generated from a reversion stockMove."
-module: axelor-supplychain

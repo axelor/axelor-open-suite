@@ -1,4 +1,0 @@
----
-title: "PaymentReminder: settled invoice terms still printed on the PDF (missing amount_remaining filter)"
-module: axelor-account
-
