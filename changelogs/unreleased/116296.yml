@@ -1,5 +1,0 @@
----
-title: "Sale: fixed Cart sale order generation when a trading name is required."
-module: axelor-sale
-developer: |
-  The CartSaleOrderGeneratorServiceImpl and CartSaleOrderGeneratorSupplychainServiceImpl constructors now require an AppBaseService parameter.

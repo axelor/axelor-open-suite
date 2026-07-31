@@ -1,3 +1,0 @@
----
-title: "CRM: fixed the lead's description not being copied onto the generated opportunity's Customer description field."
-module: axelor-crm

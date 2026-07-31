@@ -1,6 +1,0 @@
----
-title: "Production: fixed MRP calculation creating irrelevant manufacturing proposals for unrelated products."
-module: axelor-production
-developer: |
-  `MrpServiceProductionImpl#createManufOrderMrpLines` gained a new `boolean producedProductInScope`
-  parameter.

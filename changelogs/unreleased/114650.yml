@@ -1,7 +1,0 @@
----
-title: "Stock move: fixed incoming partial invoices being marked as fully invoiced after ventilation."
-module: axelor-supplychain
-developer: |
-  Changed the protected method signature
-  `isStockMoveInvoicingPartiallyActivated(Invoice)` to
-  `isStockMoveInvoicingPartiallyActivated(StockMove)`.

@@ -1,3 +1,0 @@
----
-title: "Account: fixed missing reported-balance lines for some partners when closing annual accounts with partner allocation enabled."
-module: axelor-account

@@ -1,3 +1,0 @@
----
-title: "Project planning time: fixed unique constraint error when saving multiple planning lines with the same display planned time."
-module: axelor-human-resource
