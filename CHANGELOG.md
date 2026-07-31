@@ -1,3 +1,73 @@
+## [8.4.32] (2026-07-31)
+
+### Fixes
+#### Base
+
+* Tax line: fixed error when computing full name.
+
+#### Account
+
+* PaymentReminder: settled invoice terms still printed on the PDF (missing amount_remaining filter)
+* Accounting report: fixed wrong values when the acquisition date of fixed asset is equal to the report start date for report type 'Summary of gross values and depreciation'.
+* Account: fixed missing reported-balance lines for some partners when closing annual accounts with partner allocation enabled.
+* MoveLine: fixed VAT system priority to check supplier's VAT on delivery before account's VAT system.
+* Invoice: fixed temporary files created outside the upload directory when reprinting invoice copies.
+* Account: fixed invoice terms remaining unavailable in a new payment session after payment reversal, unreconciliation, or unlettering.
+
+#### Bank Payment
+
+* Bank statement line: fixed BIRT report being empty when bank statement line tables have different physical column orders.
+
+#### Production
+
+* Product: fixed the access to the parent bill of material from the 'Where-used list' dashlet.
+* Sale order line: fixed the domain on production process field to filter by company.
+
+#### Sale
+
+* Sale order: fixed manually edited delivery/invoicing address text being overwritten on every save.
+
+#### Stock
+
+* Stock: preserved the last average price when normally depleting stock.
+* StockMove: reset fullySpreadOverLogisticalFormsFlag when a LogisticalForm is deleted or set back to draft.
+
+#### Supply Chain
+
+* Mass stock invoicing: Set fiscal position from partner when invoicing a standalone stock move.
+* Purchase request: fixed supplier details not populated on generated purchase order.
+
+
+### Developer
+
+#### Production
+
+Changed SaleOrderLineDomainProductionService.getProdProcessDomain parameters from (saleOrderLine) to (saleOrderLine, saleOrder).
+
+#### Stock
+
+WeightedAveragePriceService: added resetAvgPriceForProducts(Set<Long> productIds).
+Constructors of StockMoveServiceImpl, StockMoveServiceSupplychainImpl, and StockMoveServiceProductionImpl now require WeightedAveragePriceService.
+
+---
+
+-- Script to update fully_spread_over_logistical_forms_flag field to keep consistent data. Please check data before applying.
+UPDATE stock_stock_move sm
+SET fully_spread_over_logistical_forms_flag = FALSE
+WHERE sm.fully_spread_over_logistical_forms_flag = TRUE
+  AND NOT EXISTS (
+    SELECT 1
+    FROM stock_stock_move_line sml
+    JOIN stock_logistical_form_line lfl ON lfl.stock_move_line = sml.id
+    JOIN stock_logistical_form lf ON lf.id = lfl.logistical_form
+    WHERE sml.stock_move = sm.id
+      AND lf.status_select = 3
+  );
+
+#### Supply Chain
+
+- PurchaseRequestServiceSupplychainImpl: constructor updated with a new `AccountConfigService` parameter.
+
 ## [8.4.31] (2026-07-17)
 
 ### Fixes
@@ -3412,6 +3482,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.32]: https://github.com/axelor/axelor-open-suite/compare/v8.4.31...v8.4.32
 [8.4.31]: https://github.com/axelor/axelor-open-suite/compare/v8.4.30...v8.4.31
 [8.4.30]: https://github.com/axelor/axelor-open-suite/compare/v8.4.29...v8.4.30
 [8.4.29]: https://github.com/axelor/axelor-open-suite/compare/v8.4.28...v8.4.29

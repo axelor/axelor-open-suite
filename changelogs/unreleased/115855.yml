@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed temporary files created outside the upload directory when reprinting invoice copies."
-module: axelor-account
