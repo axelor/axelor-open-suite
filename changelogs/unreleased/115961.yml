@@ -1,3 +1,0 @@
----
-title: "Purchase order line: fixed line editor being wrongly marked as modified on open when analytic accounts were already set."
-module: axelor-supplychain

@@ -1,3 +1,0 @@
----
-title: "Intervention: fixed tradingNameSet being required on Partner even when the Intervention module is not installed."
-module: axelor-intervention

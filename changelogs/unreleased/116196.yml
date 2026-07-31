@@ -1,3 +1,0 @@
----
-title: "Purchase order: fixed receipt state staying on 'Partially received' when a line's quantity is corrected to 0."
-module: axelor-supplychain

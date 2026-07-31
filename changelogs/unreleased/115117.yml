@@ -1,3 +1,0 @@
----
-title: "Partner: fixed registration number cleaning to also strip dots, slashes and hyphens (not just spaces) before validation and SIREN/NIC extraction."
-module: axelor-base

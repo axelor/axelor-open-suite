@@ -1,3 +1,0 @@
----
-title: "Bank statement line: fixed BIRT report being empty when bank statement line tables have different physical column orders."
-module: axelor-bank-payment
