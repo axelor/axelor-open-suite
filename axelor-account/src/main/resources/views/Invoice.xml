@@ -56,6 +56,16 @@
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
+    <summary-bar>
+      <field name="exTaxTotal" title="Selected W.T." aggregate="sum" on="selection"/>
+      <field name="inTaxTotal" title="Selected A.T.I." aggregate="sum" on="selection"/>
+      <field name="amountRemaining" title="Selected remaining" aggregate="sum" on="selection"/>
+      <call action="com.axelor.apps.account.web.InvoiceController:fetchSummary">
+        <field name="$totalExTaxTotal" title="Total W.T." type="decimal" align="end"/>
+        <field name="$totalInTaxTotal" title="Total A.T.I." type="decimal" align="end"/>
+        <field name="$totalAmountRemaining" title="Total remaining" type="decimal" align="end"/>
+      </call>
+    </summary-bar>
   </grid>
 
   <grid name="invoice-bill-of-exchange-batch-grid" title="Invoices"

@@ -33,6 +33,12 @@
       onClick="action-purchase-order-method-show-purchase-order"/>
     <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
+    <summary-bar>
+      <field name="inTaxTotal" title="Selected A.T.I." aggregate="sum" on="selection"/>
+      <call action="com.axelor.apps.purchase.web.PurchaseOrderController:fetchSummary">
+        <field name="$totalInTaxTotal" title="Total A.T.I." type="decimal" align="end"/>
+      </call>
+    </summary-bar>
   </grid>
 
   <grid name="purchase-order-grid" title="Purchase orders"
@@ -63,6 +69,12 @@
       onClick="action-purchase-order-method-show-purchase-order"/>
     <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
+    <summary-bar>
+      <field name="inTaxTotal" title="Selected A.T.I." aggregate="sum" on="selection"/>
+      <call action="com.axelor.apps.purchase.web.PurchaseOrderController:fetchSummary">
+        <field name="$totalInTaxTotal" title="Total A.T.I." type="decimal" align="end"/>
+      </call>
+    </summary-bar>
   </grid>
 
   <grid orderBy="-orderDate,-purchaseOrderSeq" edit-icon="true" name="my-purchase-order-grid"

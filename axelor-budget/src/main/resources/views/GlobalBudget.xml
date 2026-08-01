@@ -17,6 +17,19 @@
     <field name="totalFirmGap" x-scale="company.currency.numberOfDecimals"/>
     <field name="statusSelect" widget="single-select"/>
     <field name="company.currency.numberOfDecimals" hidden="true"/>
+    <summary-bar>
+      <field name="totalAmountExpected" title="Selected expected" aggregate="sum"
+        on="selection"/>
+      <field name="totalAmountAvailable" title="Selected available" aggregate="sum"
+        on="selection"/>
+      <field name="totalAmountCommitted" title="Selected committed" aggregate="sum"
+        on="selection"/>
+      <call action="com.axelor.apps.budget.web.GlobalBudgetController:fetchSummary">
+        <field name="$totalAmountExpected" title="Total expected" type="decimal" align="end"/>
+        <field name="$totalAmountAvailable" title="Total available" type="decimal" align="end"/>
+        <field name="$totalAmountCommitted" title="Total committed" type="decimal" align="end"/>
+      </call>
+    </summary-bar>
   </grid>
 
   <form model="com.axelor.apps.budget.db.GlobalBudget" title="Global budget"
