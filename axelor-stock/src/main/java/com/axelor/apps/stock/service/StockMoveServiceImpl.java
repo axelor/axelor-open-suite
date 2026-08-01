@@ -73,6 +73,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -93,6 +94,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected StockConfigService stockConfigService;
   protected AppStockService appStockService;
   protected ProductCompanyService productCompanyService;
+  protected WeightedAveragePriceService weightedAveragePriceService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -106,7 +108,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       AppStockService appStockService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      WeightedAveragePriceService weightedAveragePriceService) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
@@ -118,6 +121,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.stockConfigService = stockConfigService;
     this.appStockService = appStockService;
     this.productCompanyService = productCompanyService;
+    this.weightedAveragePriceService = weightedAveragePriceService;
   }
 
   /**
@@ -978,6 +982,13 @@ public class StockMoveServiceImpl implements StockMoveService {
           true);
 
       stockMove.setRealDate(appBaseService.getTodayDate(stockMove.getCompany()));
+      Set<Long> productIds =
+          stockMove.getStockMoveLineList().stream()
+              .map(StockMoveLine::getProduct)
+              .filter(p -> p != null)
+              .map(Product::getId)
+              .collect(Collectors.toSet());
+      weightedAveragePriceService.resetAvgPriceForProducts(productIds);
     }
 
     stockMove.clearPlannedStockMoveLineList();

@@ -1,0 +1,6 @@
+---
+title: "Stock: preserved the last average price when normally depleting stock."
+module: axelor-stock
+developer: |
+  WeightedAveragePriceService: added resetAvgPriceForProducts(Set<Long> productIds).
+  Constructors of StockMoveServiceImpl, StockMoveServiceSupplychainImpl, and StockMoveServiceProductionImpl now require WeightedAveragePriceService.

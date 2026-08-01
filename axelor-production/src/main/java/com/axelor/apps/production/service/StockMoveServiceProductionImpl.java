@@ -34,6 +34,7 @@ import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
@@ -67,7 +68,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       FixedAssetRepository fixedAssetRepository,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       PfpService pfpService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      WeightedAveragePriceService weightedAveragePriceService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -89,7 +91,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         fixedAssetRepository,
         stockMoveLineServiceSupplychain,
         pfpService,
-        productCompanyService);
+        productCompanyService,
+        weightedAveragePriceService);
   }
 
   @Override
