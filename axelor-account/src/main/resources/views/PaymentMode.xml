@@ -34,6 +34,8 @@
               <field name="accountingTriggerSelect" hidden="true"
                 showIf="typeSelect == 7 &amp;&amp; inOutSelect == 1" selection-in="[1,5]"/>
             </panel>
+            <field name="valueForCollectionGroupingSelect"
+              showIf="accountingTriggerSelect == 5" requiredIf="accountingTriggerSelect == 5"/>
             <panel-related name="accountManagementListPanel"
               field="accountManagementList" grid-view="account-management-payment-mode-grid"
               form-view="account-management-form" domain="self.typeSelect = 3" colSpan="12"/>
