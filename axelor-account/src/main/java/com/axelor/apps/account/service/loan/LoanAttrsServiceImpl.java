@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.loan;
 
 import com.axelor.apps.account.db.Loan;
 import com.axelor.apps.account.db.LoanLine;
+import com.axelor.apps.account.db.repo.LoanRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.i18n.I18n;
 import jakarta.inject.Inject;
@@ -30,10 +31,13 @@ import java.util.Map;
 public class LoanAttrsServiceImpl implements LoanAttrsService {
 
   protected LoanConsistencyService loanConsistencyService;
+  protected LoanAdjustmentService loanAdjustmentService;
 
   @Inject
-  public LoanAttrsServiceImpl(LoanConsistencyService loanConsistencyService) {
+  public LoanAttrsServiceImpl(
+      LoanConsistencyService loanConsistencyService, LoanAdjustmentService loanAdjustmentService) {
     this.loanConsistencyService = loanConsistencyService;
+    this.loanAdjustmentService = loanAdjustmentService;
   }
 
   @Override
@@ -82,6 +86,27 @@ public class LoanAttrsServiceImpl implements LoanAttrsService {
               loan.getBorrowingDebtAccount().getCode());
     }
     addAttr("$consistencyAlertMessage", "value", message, attrsMap);
+    return attrsMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getDeferralAttrsMap(Loan loan) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+    LoanLine next = loanAdjustmentService.getNextUnpaidLine(loan);
+    addAttr(
+        "$nextInstallmentIsDeferral",
+        "value",
+        next != null && Boolean.TRUE.equals(next.getIsDeferral()),
+        attrsMap);
+    boolean draft =
+        loan.getStatusSelect() != null && loan.getStatusSelect() == LoanRepository.STATUS_DRAFT;
+    addAttr("deferralPanel", "title", I18n.get(draft ? "Deferred" : "Deferral"), attrsMap);
+    addAttr("deferBtn", "title", I18n.get(draft ? "Apply deferral" : "Defer"), attrsMap);
+    addAttr(
+        "cancelDeferralBtn",
+        "title",
+        I18n.get(draft ? "Remove deferral" : "Cancel deferral"),
+        attrsMap);
     return attrsMap;
   }
 

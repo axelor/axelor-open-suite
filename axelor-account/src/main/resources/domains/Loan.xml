@@ -68,8 +68,6 @@
       help="If yes, the installments are recomputed to include the deferred interest; otherwise the original installments are kept."/>
     <boolean name="deferralKeepInsurance" title="Keep insurance"
       help="If yes, the insurance stays due during the deferred installments."/>
-    <boolean name="nextInstallmentIsDeferral" transient="true"
-      help="True when the next planned installment is a deferral installment (drives the cancel deferral button)."/>
 
     <extra-code><![CDATA[
 		// STATUS SELECT

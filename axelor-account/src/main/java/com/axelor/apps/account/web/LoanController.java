@@ -19,7 +19,6 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Loan;
-import com.axelor.apps.account.db.LoanLine;
 import com.axelor.apps.account.db.repo.LoanRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.loan.LoanAdjustmentService;
@@ -53,9 +52,7 @@ public class LoanController {
   public void computeDeferralFlag(ActionRequest request, ActionResponse response) {
     try {
       Loan loan = request.getContext().asType(Loan.class);
-      LoanLine next = Beans.get(LoanAdjustmentService.class).getNextUnpaidLine(loan);
-      response.setValue(
-          "nextInstallmentIsDeferral", next != null && Boolean.TRUE.equals(next.getIsDeferral()));
+      response.setAttrs(Beans.get(LoanAttrsService.class).getDeferralAttrsMap(loan));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -93,15 +90,22 @@ public class LoanController {
     try {
       Loan context = request.getContext().asType(Loan.class);
       Loan loan = Beans.get(LoanRepository.class).find(context.getId());
-      int count =
-          context.getDeferralInstallmentCount() == null ? 0 : context.getDeferralInstallmentCount();
-      Beans.get(LoanAdjustmentService.class)
-          .defer(
-              loan,
-              count,
-              Boolean.TRUE.equals(context.getDeferralCapitalizeInterest()),
-              Boolean.TRUE.equals(context.getDeferralRecomputePayment()),
-              Boolean.TRUE.equals(context.getDeferralKeepInsurance()));
+      if (isDraft(loan)) {
+        // Draft "différé": regenerate the schedule so the parameterised deferral is (re)applied.
+        Beans.get(LoanLineGenerationService.class).generateSchedule(loan);
+      } else {
+        int count =
+            context.getDeferralInstallmentCount() == null
+                ? 0
+                : context.getDeferralInstallmentCount();
+        Beans.get(LoanAdjustmentService.class)
+            .defer(
+                loan,
+                count,
+                Boolean.TRUE.equals(context.getDeferralCapitalizeInterest()),
+                Boolean.TRUE.equals(context.getDeferralRecomputePayment()),
+                Boolean.TRUE.equals(context.getDeferralKeepInsurance()));
+      }
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -112,11 +116,21 @@ public class LoanController {
     try {
       Loan loan =
           Beans.get(LoanRepository.class).find(request.getContext().asType(Loan.class).getId());
-      Beans.get(LoanAdjustmentService.class).cancelDeferral(loan);
+      if (isDraft(loan)) {
+        // Draft "différé": drop the parameter and regenerate the base schedule.
+        loan.setDeferralInstallmentCount(0);
+        Beans.get(LoanLineGenerationService.class).generateSchedule(loan);
+      } else {
+        Beans.get(LoanAdjustmentService.class).cancelDeferral(loan);
+      }
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  protected boolean isDraft(Loan loan) {
+    return loan.getStatusSelect() != null && loan.getStatusSelect() == LoanRepository.STATUS_DRAFT;
   }
 
   public void setDefaultLoanManagementConfig(ActionRequest request, ActionResponse response) {

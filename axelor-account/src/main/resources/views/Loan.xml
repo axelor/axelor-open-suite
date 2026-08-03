@@ -13,7 +13,7 @@
 
   <form name="loan-form" title="Loan" model="com.axelor.apps.account.db.Loan"
     onNew="action-loan-record-default,action-loan-method-set-default-config"
-    onLoad="action-loan-method-compute-deferral-flag,action-loan-method-compute-consistency,action-loan-method-compute-totals">
+    onLoad="action-loan-group-on-load">
     <panel name="mainPanel">
       <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"
         readonly="true"/>
@@ -22,14 +22,14 @@
         onChange="action-loan-method-set-default-config"/>
       <field name="currency" readonlyIf="statusSelect &gt; 1"/>
       <field name="partner" readonlyIf="statusSelect &gt; 1"/>
-      <field name="loanManagementConfig" readonlyIf="statusSelect &gt; 1"
+      <field name="loanManagementConfig" required="true" readonlyIf="statusSelect &gt; 1"
         domain="self.company = :company" onChange="action-loan-method-copy-config"/>
       <field name="currency.numberOfDecimals" hidden="true"/>
     </panel>
     <panel name="conditionsPanel" title="Financial conditions" canCollapse="true"
       collapseIf="statusSelect &gt; 1">
       <field name="amount" readonlyIf="statusSelect &gt; 1"
-        x-scale="currency.numberOfDecimals"/>
+        x-scale="currency.numberOfDecimals" onChange="action-loan-record-default-simulated-amount"/>
       <field name="annualInterestRate" readonlyIf="statusSelect &gt; 1"/>
       <field name="computationModeSelect" readonlyIf="statusSelect &gt; 1"/>
       <field name="durationInMonth" readonlyIf="statusSelect &gt; 1"/>
@@ -65,7 +65,8 @@
       </panel>
     </panel-tabs>
     <panel name="actionsPanel" sidebar="true" showIf="statusSelect == 1">
-      <button name="validateBtn" title="Validate" onClick="save,action-loan-method-validate"/>
+      <button name="validateBtn" title="Validate" onClick="save,action-loan-method-validate"
+        showIf="lineList &amp;&amp; lineList.length &gt; 0"/>
       <button name="generateScheduleBtn" title="Generate schedule"
         onClick="save,action-loan-method-generate-schedule"/>
     </panel>
@@ -78,10 +79,13 @@
       <button name="simulateCapitalBtn" title="Compute borrowable capital"
         onClick="action-loan-method-simulate-capital" colSpan="12"/>
     </panel>
-    <panel name="reportPanel" title="Deferral" sidebar="true"
-      showIf="statusSelect == 2 || statusSelect == 3">
+    <!-- Deferral for both the setting phase (Draft "différé") and the repayment phase ("report"). The
+      panel and button titles are set on load by LoanAttrsService; the buttons dispatch on the loan status
+      in LoanController. -->
+    <panel name="deferralPanel" title="Deferral" sidebar="true"
+      showIf="(statusSelect == 1 || statusSelect == 2 || statusSelect == 3) &amp;&amp; lineList &amp;&amp; lineList.length &gt; 0">
       <field name="scheduleSnapshot" hidden="true"/>
-      <field name="nextInstallmentIsDeferral" hidden="true"/>
+      <field name="$nextInstallmentIsDeferral" type="boolean" hidden="true"/>
       <field name="deferralInstallmentCount" colSpan="12"/>
       <field name="deferralCapitalizeInterest" colSpan="12"/>
       <field name="deferralRecomputePayment" showIf="deferralCapitalizeInterest" colSpan="12"/>
@@ -89,7 +93,8 @@
       <button name="deferBtn" title="Defer" colSpan="12"
         onClick="save,action-loan-method-defer"/>
       <button name="cancelDeferralBtn" title="Cancel deferral" colSpan="12"
-        showIf="nextInstallmentIsDeferral" onClick="save,action-loan-method-cancel-deferral"/>
+        showIf="(statusSelect == 1 &amp;&amp; deferralInstallmentCount &gt; 0) || (statusSelect &gt; 1 &amp;&amp; $nextInstallmentIsDeferral &amp;&amp; scheduleSnapshot)"
+        onClick="save,action-loan-method-cancel-deferral"/>
     </panel>
     <panel name="totalsPanel" title="Totals" sidebar="true"
       hideIf="!lineList || lineList.length == 0">
@@ -112,6 +117,17 @@
     <field name="company" expr="eval: __user__.activeCompany"/>
     <field name="currency" expr="eval: __user__.activeCompany?.currency"/>
   </action-record>
+
+  <action-record name="action-loan-record-default-simulated-amount"
+    model="com.axelor.apps.account.db.Loan">
+    <field name="simulatedAmount" expr="eval: amount" if="!simulatedAmount"/>
+  </action-record>
+
+  <action-group name="action-loan-group-on-load">
+    <action name="action-loan-method-compute-deferral-flag"/>
+    <action name="action-loan-method-compute-consistency"/>
+    <action name="action-loan-method-compute-totals"/>
+  </action-group>
 
   <action-method name="action-loan-method-validate">
     <call class="com.axelor.apps.account.web.LoanController" method="validate"/>

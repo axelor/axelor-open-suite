@@ -156,7 +156,50 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
           I18n.get(AccountExceptionMessage.LOAN_NO_INSTALLMENT_TO_ADJUST));
     }
     takeSnapshot(loan);
+    applyDeferral(
+        loan,
+        planned,
+        installmentCount,
+        capitalizeInterest,
+        recomputePayment,
+        keepInsurance,
+        false);
+    loanRepository.save(loan);
+  }
 
+  @Override
+  public void applyParameterizedDeferral(Loan loan) throws AxelorException {
+    int installmentCount = nz(loan.getDeferralInstallmentCount());
+    List<LoanLine> planned = orderedPlannedLines(loan);
+    if (installmentCount <= 0 || planned.isEmpty()) {
+      return;
+    }
+    applyDeferral(
+        loan,
+        planned,
+        installmentCount,
+        Boolean.TRUE.equals(loan.getDeferralCapitalizeInterest()),
+        Boolean.TRUE.equals(loan.getDeferralRecomputePayment()),
+        Boolean.TRUE.equals(loan.getDeferralKeepInsurance()),
+        true);
+  }
+
+  /**
+   * Builds the deferral installments and grafts them at the head of the given planned schedule,
+   * shifting or recomputing the following installments. Callers own the snapshot policy and the
+   * persistence. When {@code draftDeferral} is true the created installments are flagged as a
+   * deferral negociated during the setting phase, so a later repayment-phase cancellation leaves
+   * them untouched.
+   */
+  protected void applyDeferral(
+      Loan loan,
+      List<LoanLine> planned,
+      int installmentCount,
+      boolean capitalizeInterest,
+      boolean recomputePayment,
+      boolean keepInsurance,
+      boolean draftDeferral)
+      throws AxelorException {
     LoanLine first = planned.get(0);
     LocalDate startDate = first.getInstallmentDate();
     BigDecimal rd = first.getRemainingDebtBefore();
@@ -174,6 +217,7 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
       line.setCapitalAmount(BigDecimal.ZERO);
       line.setIsManuallyModified(true);
       line.setIsDeferral(true);
+      line.setIsDraftDeferral(draftDeferral);
       if (capitalizeInterest) {
         line.setInterestAmount(BigDecimal.ZERO);
         rd = scale(loan, rd.add(interest));
@@ -201,7 +245,6 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
       }
     }
     deferralLines.forEach(loan::addLineListItem);
-    loanRepository.save(loan);
   }
 
   @Override
@@ -215,14 +258,12 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
     }
     // Remove the (planned) deferral installments and shift the other installments back, without
     // resetting their amounts (manual edits are preserved). Booked installments are out of scope.
+    // Deferral installments negociated during the setting phase (draft "différé") are kept: they
+    // are
+    // baked into the schedule and cannot be cancelled once the loan is validated.
     long deferralCount =
-        loan.getLineList().stream()
-            .filter(
-                line -> Boolean.TRUE.equals(line.getIsDeferral()) && line.getAccountMove() == null)
-            .count();
-    loan.getLineList()
-        .removeIf(
-            line -> Boolean.TRUE.equals(line.getIsDeferral()) && line.getAccountMove() == null);
+        loan.getLineList().stream().filter(this::isCancellableDeferralLine).count();
+    loan.getLineList().removeIf(this::isCancellableDeferralLine);
 
     if (deferralCount > 0) {
       for (LoanLine line : orderedPlannedLines(loan)) {
@@ -231,6 +272,15 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
     }
     loan.setScheduleSnapshot(null);
     loanRepository.save(loan);
+  }
+
+  /**
+   * A planned, repayment-phase deferral installment (not a draft "différé"), removable on cancel.
+   */
+  protected boolean isCancellableDeferralLine(LoanLine line) {
+    return Boolean.TRUE.equals(line.getIsDeferral())
+        && !Boolean.TRUE.equals(line.getIsDraftDeferral())
+        && line.getAccountMove() == null;
   }
 
   /** Re-amortizes keeping each installment capital fixed; the last installment reaches zero. */
