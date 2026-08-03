@@ -46,7 +46,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.date.LocalDateHelper;
-import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
@@ -54,6 +53,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetDistributionServiceImpl implements BudgetDistributionService {
@@ -227,49 +227,46 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
               accountConfigService.getAccountConfig(company));
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         if (authorizedAxis.contains(analyticMoveLine.getAnalyticAxis())) {
-          String key = budgetService.computeKey(account, company, analyticMoveLine);
+          Budget budget =
+              budgetService.findBudgetByAccountWithKey(account, company, analyticMoveLine, date);
 
-          if (!Strings.isNullOrEmpty(key)) {
-            Budget budget = budgetService.findBudgetWithKey(key, date);
-
-            if (budget != null) {
-              BigDecimal imputedAmount = amount;
-              if (numberOfAxisWithBudgetKey.signum() > 0) {
-                imputedAmount =
-                    currencyScaleService.getCompanyScaledValue(
-                        budget, amount.divide(numberOfAxisWithBudgetKey));
-              }
-
+          if (budget != null) {
+            BigDecimal imputedAmount = amount;
+            if (numberOfAxisWithBudgetKey.signum() > 0) {
               imputedAmount =
                   currencyScaleService.getCompanyScaledValue(
-                      budget,
-                      imputedAmount
-                          .multiply(analyticMoveLine.getPercentage())
-                          .divide(new BigDecimal(100)));
-
-              if (imputedAmount.subtract(remainingAmount).abs().compareTo(new BigDecimal(0.01))
-                  == 0) {
-                imputedAmount = remainingAmount;
-              }
-
-              remainingAmount = remainingAmount.subtract(imputedAmount);
-
-              BudgetDistribution budgetDistribution =
-                  createDistributionFromBudget(
-                      budget,
-                      currencyScaleService.getCompanyScaledValue(budget, imputedAmount),
-                      date);
-
-              linkBudgetDistributionWithParent(budgetDistribution, object);
-
-            } else {
-              alertMessageTokenList.add(
-                  String.format(
-                      "%s - %s %s",
-                      name,
-                      I18n.get("Analytic account"),
-                      analyticMoveLine.getAnalyticAccount().getCode()));
+                      budget, amount.divide(numberOfAxisWithBudgetKey));
             }
+
+            imputedAmount =
+                currencyScaleService.getCompanyScaledValue(
+                    budget,
+                    imputedAmount
+                        .multiply(analyticMoveLine.getPercentage())
+                        .divide(new BigDecimal(100)));
+
+            if (imputedAmount.subtract(remainingAmount).abs().compareTo(new BigDecimal(0.01))
+                == 0) {
+              imputedAmount = remainingAmount;
+            }
+
+            remainingAmount = remainingAmount.subtract(imputedAmount);
+
+            BudgetDistribution budgetDistribution =
+                createDistributionFromBudget(
+                    budget,
+                    currencyScaleService.getCompanyScaledValue(budget, imputedAmount),
+                    date);
+
+            linkBudgetDistributionWithParent(budgetDistribution, object);
+
+          } else if (analyticMoveLine.getAnalyticAccount() != null) {
+            alertMessageTokenList.add(
+                String.format(
+                    "%s - %s %s",
+                    name,
+                    I18n.get("Analytic account"),
+                    analyticMoveLine.getAnalyticAccount().getCode()));
           }
         }
       }
@@ -360,7 +357,28 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     }
 
     if (account != null && budgetToolsService.checkBudgetKeyInConfig(company)) {
-      query = query.concat(String.format(" AND %d IN (self.accountSet.id) ", account.getId()));
+      List<Long> ancestorIds = new ArrayList<>();
+      Account current = account.getParentAccount();
+      int safety = 0;
+      while (current != null && safety++ < 50) {
+        ancestorIds.add(current.getId());
+        current = current.getParentAccount();
+      }
+
+      if (ancestorIds.isEmpty()) {
+        query = query.concat(String.format(" AND %d IN (self.accountSet.id) ", account.getId()));
+      } else {
+        String ancestorIdsCsv =
+            ancestorIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+        query =
+            query.concat(
+                String.format(
+                    " AND (%1$d IN (self.accountSet.id)"
+                        + " OR (self.allowBudgetImputationOnChildAccounts = true"
+                        + " AND EXISTS (SELECT acc FROM Account acc"
+                        + " WHERE acc MEMBER OF self.accountSet AND acc.id IN (%2$s)))) ",
+                    account.getId(), ancestorIdsCsv));
+      }
     }
 
     return query;
@@ -378,25 +396,22 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
       return;
     }
     for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-      String key = budgetService.computeKey(account, company, analyticMoveLine);
+      Budget budget =
+          budgetService.findBudgetByAccountWithKey(account, company, analyticMoveLine, date);
 
-      if (!Strings.isNullOrEmpty(key)) {
-        Budget budget = budgetService.findBudgetWithKey(key, date);
-
-        if (budget != null) {
-          GlobalBudget globalBudget = budgetToolsService.getGlobalBudgetUsingBudget(budget);
-          if (globalBudget != null && globalBudget.getAutomaticBudgetComputation()) {
-            BudgetDistribution budgetDistribution =
-                createDistributionFromBudget(
-                    budget,
-                    currencyScaleService.getCompanyScaledValue(
-                        budget,
-                        amount
-                            .multiply(analyticMoveLine.getPercentage())
-                            .divide(new BigDecimal(100))),
-                    date);
-            linkBudgetDistributionWithParent(budgetDistribution, object);
-          }
+      if (budget != null) {
+        GlobalBudget globalBudget = budgetToolsService.getGlobalBudgetUsingBudget(budget);
+        if (globalBudget != null && globalBudget.getAutomaticBudgetComputation()) {
+          BudgetDistribution budgetDistribution =
+              createDistributionFromBudget(
+                  budget,
+                  currencyScaleService.getCompanyScaledValue(
+                      budget,
+                      amount
+                          .multiply(analyticMoveLine.getPercentage())
+                          .divide(new BigDecimal(100))),
+                  date);
+          linkBudgetDistributionWithParent(budgetDistribution, object);
         }
       }
     }

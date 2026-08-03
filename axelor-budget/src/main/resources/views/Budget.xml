@@ -147,6 +147,8 @@
       onChange="action-budget-method-compute-total-amount" readonlyIf="statusSelect != 1"
       colSpan="12"/>
     <panel name="budgetKeyPanel" colSpan="12" readonlyIf="statusSelect != 1">
+      <field name="allowBudgetImputationOnChildAccounts" colSpan="12"
+        onChange="action-budget-method-set-account-set-domain"/>
       <field name="accountSet" widget="Tags" canSelect="true" canNew="false" canEdit="false"
         colSpan="12" onSelect="action-budget-method-set-account-set-domain"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
@@ -182,6 +184,8 @@
       <field name="category" required="true" colSpan="3"/>
     </panel>
     <panel colSpan="12" name="keyPanel">
+      <field name="allowBudgetImputationOnChildAccounts" colSpan="12"
+        onChange="action-budget-method-set-account-set-domain"/>
       <field name="accountSet" widget="Tags" canSelect="true" canNew="false" canEdit="false"
         colSpan="12" onSelect="action-budget-method-set-account-set-domain"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
