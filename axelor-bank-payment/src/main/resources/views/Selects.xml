@@ -216,6 +216,7 @@
   <selection name="sequence.generic.code.select"
     id="bankpayment.sequence.generic.code.select">
     <option value="bankOrder">Bank order</option>
+    <option value="bankReconciliation">Bank reconciliation</option>
   </selection>
 
   <selection name="bankpayment.bank.order.technical.origin.select">

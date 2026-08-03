@@ -312,7 +312,7 @@ public final class BankPaymentExceptionMessage {
       "Missing journal while creating a move from a bank reconciliation." /*)*/;
 
   public static final String BANK_RECONCILIATION_MULTIPLE_MOVE_LINE_RECONCILIATION_ERROR = /*$$(*/
-      "The movelines %s are already reconciled with another bank statement line. Multiple bank statement lines can't be reconciled with the same move line." /*)*/;
+      "The sum of the bank reconciliation lines linked to move line(s) %s exceeds the move line's own amount." /*)*/;
 
   public static final String BANK_STATEMENT_XML_FILE_READ_ERROR = /*$$(*/
       "Error while reading the input XML file." /*)*/;
@@ -331,4 +331,41 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BANK_ORDER_MISSING_RECEIVER_BANK_DETAILS = /*$$(*/
       "The recipient partner attached to the employee does not have an associated bank account, please create one." /*)*/;
+
+  public static final String BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_NO_LINE_SELECTED = /*$$(*/
+      "No bank reconciliation line was provided for this reconciliation." /*)*/;
+
+  public static final String
+      BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_WRONG_BANK_RECONCILIATION = /*$$(*/
+          "The bank reconciliation line %s does not belong to this bank reconciliation." /*)*/;
+
+  public static final String BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_ALREADY_RECONCILED = /*$$(*/
+      "The bank reconciliation line %s is already reconciled with a move line." /*)*/;
+
+  public static final String
+      BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_MISSING_BANK_STATEMENT_LINE = /*$$(*/
+          "The bank reconciliation line %s has no bank statement line." /*)*/;
+
+  public static final String BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_NOT_MOVEMENT = /*$$(*/
+      "The bank reconciliation line %s is not a movement line and can't be reconciled to a move line." /*)*/;
+
+  public static final String BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_INCONSISTENT_SIDE = /*$$(*/
+      "The bank reconciliation line %s does not have its %s greater than 0, so it is not on the same side as the other selected lines." /*)*/;
+
+  public static final String
+      BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_MOVE_LINE_SIDE_MISMATCH = /*$$(*/
+          "The move line's %s must be greater than 0 to match the accounting side of the selected bank reconciliation lines." /*)*/;
+
+  public static final String BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_NOT_ELIGIBLE = /*$$(*/
+      "The selected move line is not eligible for this reconciliation: check the company, cash account, and remaining amount to reconcile." /*)*/;
+
+  public static final String BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_CURRENCY_MISMATCH = /*$$(*/
+      "The selected bank reconciliation lines and the move line must be in the same currency as the bank reconciliation." /*)*/;
+
+  public static final String
+      BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_OVERRUN_NOT_CONFIRMED = /*$$(*/
+          "The sum of bank movements exceeds the remaining amount on the move line. Do you want to continue?" /*)*/;
+
+  public static final String BANK_RECONCILIATION_COMPANY_NO_SEQUENCE = /*$$(*/
+      "The company %s does not have bank reconciliation sequence" /*)*/;
 }

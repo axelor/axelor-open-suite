@@ -26,6 +26,7 @@
     <field name="credit" aggregate="sum">
       <hilite color="red" if="credit > 0"/>
     </field>
+    <field name="reconcileNumber" readonly="true"/>
     <field name="postedNbr"/>
     <field name="confidenceIndex" readonly="true">
       <hilite color="green" if="confidenceIndex == 1"/>
@@ -78,6 +79,7 @@
     <button onClick="save,action-bank-reconciliation-line-record-set-selected,save"
       name="unselect" title="Select / Unselect" icon="dash-circle-fill"
       showIf="isSelectedBankReconciliation"/>
+    <field name="reconcileNumber" readonly="true"/>
     <field name="postedNbr"/>
     <field name="confidenceIndex" readonly="true">
       <hilite if="confidenceIndex == 1" color="green"/>
@@ -117,6 +119,15 @@
     <field name="isPosted" readonly="true"/>
     <field name="isSelectedBankReconciliation" hidden="true"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
+  </grid>
+
+  <grid name="bank-reconciliation-line-reconcile-to-move-line-grid"
+    title="Selected bank movements" model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
+    <field name="effectDate"/>
+    <field name="reference"/>
+    <field name="name" title="Description"/>
+    <field name="debit" aggregate="sum"/>
+    <field name="credit" aggregate="sum"/>
   </grid>
 
   <form name="bank-reconciliation-line-form" title="Bank reconciliation Line"

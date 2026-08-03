@@ -75,21 +75,25 @@ public class BankReconciliationLineUnreconciliationServiceImpl
             == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
     if (isUnderCorrection) {
       MoveLine moveLine = bankReconciliationLine.getMoveLine();
+      BigDecimal ownAmount =
+          currencyScaleService.getScaledValue(
+              bankReconciliationLine,
+              bankReconciliationLine.getDebit().add(bankReconciliationLine.getCredit()));
       BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
       if (bankStatementLine != null) {
         bankStatementLine.setAmountRemainToReconcile(
             currencyScaleService.getScaledValue(
-                bankStatementLine,
-                bankStatementLine
-                    .getAmountRemainToReconcile()
-                    .add(moveLine.getBankReconciledAmount())));
+                bankStatementLine, bankStatementLine.getAmountRemainToReconcile().add(ownAmount)));
       }
-      moveLine.setBankReconciledAmount(BigDecimal.ZERO);
+      moveLine.setBankReconciledAmount(
+          currencyScaleService.getScaledValue(
+              bankReconciliationLine, moveLine.getBankReconciledAmount().subtract(ownAmount)));
       moveLineRepository.save(moveLine);
       bankReconciliationLine.setIsPosted(false);
     }
     bankReconciliationLine.setMoveLine(null);
     bankReconciliationLine.setConfidenceIndex(0);
     bankReconciliationLine.setPostedNbr(null);
+    bankReconciliationLine.setReconcileNumber(null);
   }
 }
