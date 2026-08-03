@@ -74,6 +74,8 @@ public final class BankPaymentExceptionMessage {
       "Please fill the bank details" /*)*/;
   public static final String BANK_ORDER_PAYMENT_MODE_MISSING = /*$$(*/
       "Please select a payment mode" /*)*/;
+  public static final String BATCH_BILL_OF_EXCHANGE_BANK_ORDER_PAYMENT_MODE_INVALID = /*$$(*/
+      "Please select a payment mode configured to generate bank orders." /*)*/;
   public static final String BANK_ORDER_WRONG_SENDER_RECORD = /*$$(*/
       "Anomaly has been detected during file generation for the sender record of the bank order %s" /*)*/;
   public static final String BANK_ORDER_WRONG_MAIN_DETAIL_RECORD = /*$$(*/
@@ -304,6 +306,14 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BATCH_BILL_OF_EXCHANGE_BANK_DETAILS_IS_INACTIVE_ON_INVOICE = /*$$(*/
       "The bank details %s attached to the invoice/ invoice term %s and to the partner %s is inactive. Only invoices with active bank details can be processed." /*)*/;
+
+  public static final String
+      BATCH_BILL_OF_EXCHANGE_BANK_DETAILS_IS_MISSING_ON_INVOICE_TERM = /*$$(*/
+          "Bank details is missing on invoice term %s." /*)*/;
+
+  public static final String
+      BATCH_BILL_OF_EXCHANGE_BANK_DETAILS_IS_INACTIVE_ON_INVOICE_TERM = /*$$(*/
+          "The bank details %s attached to the invoice term %s and to the partner %s is inactive. Only invoice terms with active bank details can be processed." /*)*/;
 
   public static final String BANK_ACCOUNT_DIFFERENT_THAN_CASH_ACCOUNT = /*$$(*/
       "Your bank detail's bank account for bank details %s (%s) is different from the cash account of the account config for %s's bank statement rule (%s). Please fix it before auto accounting the bank statement." /*)*/;

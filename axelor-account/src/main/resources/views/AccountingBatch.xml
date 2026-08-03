@@ -65,7 +65,7 @@
       <panel name="billOfExchangePagePanel" title="Bill of exchange configuration"
         hideIf="actionSelect != 24">
         <field name="billOfExchangeStepBatchSelect" widget="NavSelect" colSpan="12"/>
-        <field name="billOfExchangeDataTypeSelect" selection-in="[1]"
+        <field name="billOfExchangeDataTypeSelect" selection-in="[1,4]"
           readonlyIf="billOfExchangeStepBatchSelect != 1"
           requiredIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 1"/>
         <field name="billOfExhangeMailTemplate" showIf="billOfExchangeStepBatchSelect == 2"
@@ -309,7 +309,13 @@
         colSpan="12"/>
       <button name="billOfExchangeInvoicesBtn" title="Display invoices to be processed"
         onClick="save,action-method-accounting-batch-invoice-to-be-processed"
-        showIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 1" colSpan="12"/>
+        showIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 1 &amp;&amp; billOfExchangeDataTypeSelect != 4"
+        colSpan="12"/>
+      <button name="billOfExchangeInvoiceTermsBtn"
+        title="Display invoice terms to be processed"
+        onClick="save,action-method-accounting-batch-invoiceterm-to-be-processed"
+        showIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 1 &amp;&amp; billOfExchangeDataTypeSelect == 4"
+        colSpan="12"/>
       <button name="movesConsistencyControl" title="Control moves consistency"
         showIf="actionSelect == 25"
         onClick="save,action-accounting-batch-method-moves-consistency-control"/>
@@ -332,6 +338,11 @@
   <action-method name="action-method-accounting-batch-invoice-to-be-processed">
     <call class="com.axelor.apps.bankpayment.web.AccountingBatchController"
       method="searchInvoicesToBeProcessed"/>
+  </action-method>
+
+  <action-method name="action-method-accounting-batch-invoiceterm-to-be-processed">
+    <call class="com.axelor.apps.bankpayment.web.AccountingBatchController"
+      method="searchInvoiceTermsToBeProcessed"/>
   </action-method>
 
   <!-- ACTION GROUP -->

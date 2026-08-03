@@ -75,6 +75,9 @@ public class AccountingBatchBankPaymentService extends AccountingBatchService {
     switch (accountingBatch.getBillOfExchangeStepBatchSelect()) {
       case AccountingBatchRepository.BILL_OF_EXCHANGE_BATCH_STATUS_BOE_GENERATION:
         if (accountingBatch.getBillOfExchangeDataTypeSelect()
+            == AccountingBatchRepository.BILL_OF_EXCHANGE_DATA_CUSTOMER_INVOICE_TERM) {
+          return Beans.get(BatchBillOfExchangeInvoiceTerm.class).run(accountingBatch);
+        } else if (accountingBatch.getBillOfExchangeDataTypeSelect()
             == AccountingBatchRepository.BILL_OF_EXCHANGE_DATA_CUSTOMER_INVOICE) {
           return Beans.get(BatchBillOfExchange.class).run(accountingBatch);
         } else {
@@ -82,9 +85,18 @@ public class AccountingBatchBankPaymentService extends AccountingBatchService {
         }
 
       case AccountingBatchRepository.BILL_OF_EXCHANGE_BATCH_STATUS_SEND_BILLING:
+        if (accountingBatch.getBillOfExchangeDataTypeSelect()
+            == AccountingBatchRepository.BILL_OF_EXCHANGE_DATA_CUSTOMER_INVOICE_TERM) {
+          return Beans.get(BatchBillOfExchangeSendBillingInvoiceTerm.class).run(accountingBatch);
+        }
         return Beans.get(BatchBillOfExchangeSendBilling.class).run(accountingBatch);
 
       case AccountingBatchRepository.BILL_OF_EXCHANGE_BATCH_STATUS_BANK_ORDER_GENERATION:
+        if (accountingBatch.getBillOfExchangeDataTypeSelect()
+            == AccountingBatchRepository.BILL_OF_EXCHANGE_DATA_CUSTOMER_INVOICE_TERM) {
+          return Beans.get(BatchBankOrderGenerationBillOfExchangeInvoiceTerm.class)
+              .run(accountingBatch);
+        }
         return Beans.get(BatchBankOrderGenerationBillOfExchange.class).run(accountingBatch);
       default:
         throw new IllegalArgumentException("Invalid data type");

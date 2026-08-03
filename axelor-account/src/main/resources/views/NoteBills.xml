@@ -34,6 +34,8 @@
     </panel>
     <panel-dashlet name="invoicesListPanel"
       action="action-view-account-note-bills-invoice-list" title="Invoices"/>
+    <panel-dashlet name="movesListPanel"
+      action="action-view-account-note-bills-move-list" title="Moves"/>
 
   </form>
 
@@ -48,7 +50,27 @@
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-grid"/>
     <view type="form" name="invoice-form"/>
-    <domain>:_batch MEMBER OF self.batchSet AND self.partner = :_partner</domain>
+    <domain>
+      (:_batch MEMBER OF self.batchSet AND self.partner = :_partner)
+      OR (self.id IN (SELECT
+      it.invoice.id FROM InvoiceTerm it WHERE :_batch MEMBER OF it.batchSet AND it.partner =
+      :_partner AND it.invoice IS NOT NULL))
+    </domain>
+    <context name="_batch" expr="eval: __this__?.batch"/>
+    <context name="_partner" expr="eval: __this__?.partner"/>
+  </action-view>
+
+  <action-view name="action-view-account-note-bills-move-list" title="Moves"
+    model="com.axelor.apps.account.db.Move">
+    <view type="grid" name="move-grid"/>
+    <view type="form" name="move-form"/>
+    <domain>
+      (self.id IN (SELECT i.move.id FROM Invoice i WHERE :_batch MEMBER OF i.batchSet AND
+      i.partner = :_partner AND i.move IS NOT NULL))
+      OR (self.id IN (SELECT it.moveLine.move.id FROM
+      InvoiceTerm it WHERE :_batch MEMBER OF it.batchSet AND it.partner = :_partner AND it.moveLine
+      IS NOT NULL))
+    </domain>
     <context name="_batch" expr="eval: __this__?.batch"/>
     <context name="_partner" expr="eval: __this__?.partner"/>
   </action-view>

@@ -32,6 +32,7 @@
 			public static final int BILL_OF_EXCHANGE_DATA_CUSTOMER_INVOICE = 1;
 			public static final int BILL_OF_EXCHANGE_DATA_PAYMENT_SCHEDULE = 2;
 			public static final int BILL_OF_EXCHANGE_PAYMENT_SCHEDULE = 3;
+			public static final int BILL_OF_EXCHANGE_DATA_CUSTOMER_INVOICE_TERM = 4;
 
 			//BILL OF EXCHANGE BATCH STATUS
 			public static final int BILL_OF_EXCHANGE_BATCH_STATUS_BOE_GENERATION = 1;
