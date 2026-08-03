@@ -364,37 +364,41 @@ public class ReconcileInvoiceTermComputationServiceImpl
     if (move != null
         && move.getPaymentVoucher() != null
         && CollectionUtils.isNotEmpty(move.getPaymentVoucher().getPayVoucherElementToPayList())) {
-      return move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
-          .filter(it -> it.getMoveLine().equals(moveLine) && !it.getInvoiceTerm().getIsPaid())
-          .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
-          .map(PayVoucherElementToPay::getInvoiceTerm)
-          .collect(Collectors.toList());
-    } else {
-      List<InvoiceTerm> invoiceTermsToPay;
-      if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-        invoiceTermsToPay =
-            invoiceTermService.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
-
-      } else if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
-        invoiceTermsToPay =
-            invoiceTermFilterService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
-
-      } else {
-        return null;
-      }
-      if (CollectionUtils.isNotEmpty(invoiceTermsToPay)
-          && move != null
-          && move.getPaymentSession() != null
-          && invoiceTermsToPay.stream().anyMatch(it -> it.getPaymentSession() != null)) {
-        return invoiceTermsToPay.stream()
-            .filter(
-                it ->
-                    it.getPaymentSession() != null
-                        && it.getPaymentSession().equals(move.getPaymentSession()))
-            .collect(Collectors.toList());
-      } else {
+      List<InvoiceTerm> invoiceTermsToPay =
+          move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
+              .filter(it -> it.getMoveLine().equals(moveLine) && !it.getInvoiceTerm().getIsPaid())
+              .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
+              .map(PayVoucherElementToPay::getInvoiceTerm)
+              .collect(Collectors.toList());
+      if (CollectionUtils.isNotEmpty(invoiceTermsToPay)) {
         return invoiceTermsToPay;
       }
+    }
+
+    List<InvoiceTerm> invoiceTermsToPay;
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      invoiceTermsToPay =
+          invoiceTermService.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
+
+    } else if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+      invoiceTermsToPay =
+          invoiceTermFilterService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
+
+    } else {
+      return null;
+    }
+    if (CollectionUtils.isNotEmpty(invoiceTermsToPay)
+        && move != null
+        && move.getPaymentSession() != null
+        && invoiceTermsToPay.stream().anyMatch(it -> it.getPaymentSession() != null)) {
+      return invoiceTermsToPay.stream()
+          .filter(
+              it ->
+                  it.getPaymentSession() != null
+                      && it.getPaymentSession().equals(move.getPaymentSession()))
+          .collect(Collectors.toList());
+    } else {
+      return invoiceTermsToPay;
     }
   }
 }
