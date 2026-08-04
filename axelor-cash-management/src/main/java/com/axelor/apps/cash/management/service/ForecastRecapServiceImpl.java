@@ -907,7 +907,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                       + " AND (0 in (:journalIds) OR self.moveLine.move.journal.id in (:journalIds)) "
                       + " AND (0 in (:functionalOrigin) OR self.moveLine.move.functionalOriginSelect in (:functionalOrigin)) "
                       + " AND (0 in (:bankDetailsSet) OR self.moveLine.move.companyBankDetails.id in (:bankDetailsSet)) "
-                      + " AND self.moveLine.move.statusSelect IN (:moveStatusList) AND self.amount != 0"
+                      + " AND self.moveLine.move.statusSelect IN (:moveStatusList) AND self.amountRemaining != 0"
                       + " AND (self.invoice IS NULL OR self.invoice.statusSelect NOT IN (:invoiceStatusSelectList)) ")
               .bind("fromDate", forecastRecap.getFromDate())
               .bind("toDate", forecastRecap.getToDate())
@@ -933,7 +933,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                 .getAmountCurrencyConvertedAtDate(
                     invoiceTerm.getMoveLine().getMove().getCurrency(),
                     forecastRecap.getCompany().getCurrency(),
-                    invoiceTerm.getAmount(),
+                    invoiceTerm.getAmountRemaining(),
                     appBaseService.getTodayDate(forecastRecap.getCompany()))
                 .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
