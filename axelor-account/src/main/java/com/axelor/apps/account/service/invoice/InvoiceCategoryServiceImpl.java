@@ -60,7 +60,8 @@ public class InvoiceCategoryServiceImpl implements InvoiceCategoryService {
     int operationSubType = invoice.getOperationSubTypeSelect();
 
     if ((operationType != InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-            && operationType != InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+            && operationType != InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+            && operationType != InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
         || (operationSubType != InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT
             && operationSubType != InvoiceRepository.OPERATION_SUB_TYPE_BALANCE)) {
       return null;
