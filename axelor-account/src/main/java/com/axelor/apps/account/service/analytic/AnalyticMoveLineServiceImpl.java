@@ -152,7 +152,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
    * line of each axis absorbs the residual. Axes that do not sum to 100% (partial distributions)
    * are left untouched.
    */
-  protected void reconcileRoundingRemainder(
+  @Override
+  public void reconcileRoundingRemainder(
       List<AnalyticMoveLine> analyticMoveLineList, BigDecimal total) {
     if (total == null || total.signum() <= 0 || CollectionUtils.isEmpty(analyticMoveLineList)) {
       return;
@@ -267,6 +268,19 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     analyticMoveLine.setOriginalPieceAmount(total);
     analyticMoveLine.setAmount(computeAmount(analyticMoveLine));
     analyticMoveLine.setDate(date);
+  }
+
+  @Override
+  public void updateAnalyticMoveLineList(
+      List<AnalyticMoveLine> analyticMoveLineList, BigDecimal total, LocalDate date) {
+    if (CollectionUtils.isEmpty(analyticMoveLineList)) {
+      return;
+    }
+    for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+      updateAnalyticMoveLine(
+          analyticMoveLine, currencyScaleService.getScaledValue(analyticMoveLine, total), date);
+    }
+    reconcileRoundingRemainder(analyticMoveLineList, total);
   }
 
   @Override
