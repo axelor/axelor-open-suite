@@ -68,7 +68,7 @@ public abstract class RegistrationNumberValidator {
       registrationCode = "";
     }
 
-    registrationCode = registrationCode.replace(" ", "");
+    registrationCode = getRegistrationCode(registrationCode);
     RegistrationNumberTemplate registrationNumberTemplate = getRegistrationNumberTemplate(partner);
     if (registrationNumberTemplate == null) {
       return;
@@ -106,6 +106,7 @@ public abstract class RegistrationNumberValidator {
 
     if (registrationNumberTemplate != null
         && !Strings.isNullOrEmpty(partner.getRegistrationCode())) {
+      partner.setRegistrationCode(getRegistrationCode(partner.getRegistrationCode()));
       partner.setTaxNbr(getTaxNbrFromRegistrationCode(partner));
       partner.setNic(getNicFromRegistrationCode(partner));
       partner.setSiren(getSirenFromRegistrationCode(partner));
@@ -129,7 +130,7 @@ public abstract class RegistrationNumberValidator {
     RegistrationNumberTemplate registrationNumberTemplate =
         businessCountry.getRegistrationNumberTemplate();
     if (registrationNumberTemplate.getUseNic() && registrationNumberTemplate.getNicLength() != 0) {
-      regCode = regCode.replaceAll(" ", "");
+      regCode = getRegistrationCode(regCode);
       nic =
           regCode.substring(
               registrationNumberTemplate.getNicPos() - 1,
@@ -150,7 +151,7 @@ public abstract class RegistrationNumberValidator {
         businessCountry.getRegistrationNumberTemplate();
     if (registrationNumberTemplate.getUseSiren()
         && registrationNumberTemplate.getSirenLength() != 0) {
-      regCode = regCode.replaceAll(" ", "");
+      regCode = getRegistrationCode(regCode);
       siren =
           regCode.substring(
               registrationNumberTemplate.getSirenPos() - 1,
@@ -167,5 +168,12 @@ public abstract class RegistrationNumberValidator {
         .map(Address::getCountry)
         .map(Country::getRegistrationNumberTemplate)
         .orElse(null);
+  }
+
+  protected String getRegistrationCode(String registrationCode) {
+    if (registrationCode == null) {
+      return "";
+    }
+    return registrationCode.replaceAll("[ ./-]", "");
   }
 }

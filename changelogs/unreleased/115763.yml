@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed ventilation check on invoice category ignoring displayItemsCategoriesOnPrinting config."
-module: axelor-account
