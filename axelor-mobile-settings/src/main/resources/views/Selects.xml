@@ -18,6 +18,7 @@
     <option value="app-dms">DMS</option>
     <option value="app-purchase">Purchase</option>
     <option value="app-maintenance">Maintenance</option>
+    <option value="app-team">Team</option>
   </selection>
 
   <selection name='trace.back.origin.select' id="trace.back.origin.select.mobilesettings">

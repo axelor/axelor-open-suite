@@ -21,6 +21,7 @@
     <boolean name="isDMSAppEnabled" title="DMS" default="false"/>
     <boolean name="isPurchaseAppEnabled" title="Purchase" default="false"/>
     <boolean name="isMaintenanceAppEnabled" title="Maintenance" default="false"/>
+    <boolean name="isTeamAppEnabled" title="Team" default="false"/>
 
     <many-to-one name="qrCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
 
@@ -180,6 +181,7 @@
       <field name="isDMSAppEnabled" on="UPDATE"/>
       <field name="isPurchaseAppEnabled" on="UPDATE"/>
       <field name="isMaintenanceAppEnabled" on="UPDATE"/>
+      <field name="isTeamAppEnabled" on="UPDATE"/>
       <field name="isLoginUserQrcodeEnabled" on="UPDATE"/>
       <field name="isTrackerMessageEnabled" on="UPDATE"/>
       <field name="isInboxAccessEnabled" on="UPDATE"/>

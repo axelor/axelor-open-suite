@@ -36,6 +36,7 @@
 		public static final String APP_SEQUENCE_DMS = "app-dms";
 		public static final String APP_SEQUENCE_PURCHASE = "app-purchase";
         public static final String APP_SEQUENCE_MAINTENANCE = "app-maintenance";
+        public static final String APP_SEQUENCE_TEAM = "app-team";
 
 	]]></extra-code>
 
