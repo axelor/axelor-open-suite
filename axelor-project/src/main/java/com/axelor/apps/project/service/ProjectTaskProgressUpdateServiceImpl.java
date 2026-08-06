@@ -22,11 +22,17 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.i18n.I18n;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -35,41 +41,126 @@ public class ProjectTaskProgressUpdateServiceImpl implements ProjectTaskProgress
 
   public static final int MAX_ITERATIONS = 100;
 
+  protected final ProjectTaskRepository projectTaskRepository;
+
+  @Inject
+  public ProjectTaskProgressUpdateServiceImpl(ProjectTaskRepository projectTaskRepository) {
+    this.projectTaskRepository = projectTaskRepository;
+  }
+
   @Override
   public ProjectTask updateChildrenProgress(ProjectTask projectTask, BigDecimal progress)
       throws AxelorException {
-    return updateChildrenProgress(projectTask, progress, 0);
+    Map<Long, List<ProjectTask>> childrenByParentId = fetchSubtreeByParentId(projectTask);
+    return updateChildrenProgress(projectTask, progress, 0, childrenByParentId);
   }
 
   protected ProjectTask updateChildrenProgress(
-      ProjectTask projectTask, BigDecimal progress, int counter) throws AxelorException {
+      ProjectTask projectTask,
+      BigDecimal progress,
+      int counter,
+      Map<Long, List<ProjectTask>> childrenByParentId)
+      throws AxelorException {
     checkCounter(counter);
-    List<ProjectTask> projectTaskList = projectTask.getProjectTaskList();
+    List<ProjectTask> projectTaskList;
+    if (projectTask.getId() == null) {
+      projectTaskList = projectTask.getProjectTaskList();
+    } else {
+      projectTaskList = childrenByParentId.get(projectTask.getId());
+    }
 
     if (projectTaskList != null && !projectTaskList.isEmpty()) {
       for (ProjectTask child : projectTaskList) {
         child.setProgress(progress);
-        updateChildrenProgress(child, progress, counter + 1);
+        updateChildrenProgress(child, progress, counter + 1, childrenByParentId);
       }
     }
     return projectTask;
   }
 
-  @Override
-  public ProjectTask updateParentsProgress(ProjectTask projectTask) throws AxelorException {
-    return updateParentsProgress(projectTask, 0);
+  protected Map<Long, List<ProjectTask>> fetchSubtreeByParentId(ProjectTask root) {
+    Map<Long, List<ProjectTask>> childrenByParentId = new HashMap<>();
+    if (root.getId() == null) {
+      return childrenByParentId;
+    }
+
+    List<Long> parentIds = Collections.singletonList(root.getId());
+    for (int level = 0; level < MAX_ITERATIONS && !parentIds.isEmpty(); level++) {
+      List<ProjectTask> children =
+          projectTaskRepository
+              .all()
+              .filter("self.parentTask.id IN :parentIds")
+              .bind("parentIds", parentIds)
+              .fetch();
+
+      if (children.isEmpty()) {
+        break;
+      }
+
+      List<Long> nextParentIds = new ArrayList<>();
+      for (ProjectTask child : children) {
+        childrenByParentId
+            .computeIfAbsent(child.getParentTask().getId(), id -> new ArrayList<>())
+            .add(child);
+        nextParentIds.add(child.getId());
+      }
+      parentIds = nextParentIds;
+    }
+    return childrenByParentId;
   }
 
-  protected ProjectTask updateParentsProgress(ProjectTask projectTask, int counter)
+  @Override
+  public ProjectTask updateParentsProgress(ProjectTask projectTask) throws AxelorException {
+    List<Long> ancestorIds = collectAncestorIds(projectTask);
+    Map<Long, List<ProjectTask>> siblingsByParentId = fetchChildrenByParentIds(ancestorIds);
+    return updateParentsProgress(projectTask, 0, siblingsByParentId);
+  }
+
+  protected List<Long> collectAncestorIds(ProjectTask projectTask) throws AxelorException {
+    List<Long> ancestorIds = new ArrayList<>();
+    ProjectTask current = projectTask;
+    for (int counter = 0; current.getParentTask() != null; counter++) {
+      checkCounter(counter);
+      current = current.getParentTask();
+      ancestorIds.add(current.getId());
+    }
+    return ancestorIds;
+  }
+
+  protected Map<Long, List<ProjectTask>> fetchChildrenByParentIds(List<Long> parentIds) {
+    if (parentIds.isEmpty()) {
+      return Collections.emptyMap();
+    }
+
+    return projectTaskRepository
+        .all()
+        .filter("self.parentTask.id IN :parentIds")
+        .bind("parentIds", parentIds)
+        .fetch()
+        .stream()
+        .collect(Collectors.groupingBy(task -> task.getParentTask().getId()));
+  }
+
+  protected ProjectTask updateParentsProgress(
+      ProjectTask projectTask, int counter, Map<Long, List<ProjectTask>> siblingsByParentId)
       throws AxelorException {
     checkCounter(counter);
     ProjectTask parentTask = projectTask.getParentTask();
     if (parentTask != null) {
-      List<ProjectTask> childProjectTasks = parentTask.getProjectTaskList();
-      childProjectTasks =
-          childProjectTasks.stream()
-              .map(task -> Objects.equals(task, projectTask) ? projectTask : task)
-              .collect(Collectors.toList());
+      List<ProjectTask> childProjectTasks =
+          new ArrayList<>(
+              siblingsByParentId.getOrDefault(parentTask.getId(), Collections.emptyList()));
+      boolean projectTaskFound = false;
+      for (int index = 0; index < childProjectTasks.size(); index++) {
+        if (Objects.equals(childProjectTasks.get(index), projectTask)) {
+          childProjectTasks.set(index, projectTask);
+          projectTaskFound = true;
+          break;
+        }
+      }
+      if (!projectTaskFound) {
+        childProjectTasks.add(projectTask);
+      }
 
       BigDecimal sumProgressTimesPlanifiedTime =
           childProjectTasks.stream()
@@ -107,7 +198,7 @@ public class ProjectTaskProgressUpdateServiceImpl implements ProjectTaskProgress
       }
 
       parentTask.setProgress(averageProgress);
-      updateParentsProgress(parentTask, counter + 1);
+      updateParentsProgress(parentTask, counter + 1, siblingsByParentId);
     }
     return projectTask;
   }
