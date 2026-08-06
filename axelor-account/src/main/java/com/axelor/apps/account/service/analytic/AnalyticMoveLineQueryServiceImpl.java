@@ -28,14 +28,14 @@ import com.axelor.apps.account.db.repo.AnalyticAxisRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineQueryRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
-import jakarta.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -143,26 +143,19 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
                     AnalyticMoveLineQueryParameter::getAnalyticAxis,
                     AnalyticMoveLineQueryParameter::getAnalyticAccountSet));
 
-    StringBuilder queryString =
-        new StringBuilder(
-            "SELECT DISTINCT aml.moveLine.id FROM AnalyticMoveLine aml WHERE aml.moveLine IS NOT NULL");
+    StringBuilder queryString = new StringBuilder(query);
 
     for (Map.Entry<AnalyticAxis, Set<AnalyticAccount>> entry : paramMap.entrySet()) {
       queryString
           .append(
-              " AND EXISTS (SELECT 1 FROM AnalyticMoveLine aml_sub WHERE aml_sub.moveLine = aml.moveLine")
+              " AND EXISTS (SELECT 1 FROM AnalyticMoveLine aml_sub WHERE aml_sub.moveLine = self.moveLine")
           .append(" AND aml_sub.analyticAxis.id = ")
           .append(entry.getKey().getId())
           .append(" AND aml_sub.analyticAccount.id IN ")
           .append("(" + StringHelper.getIdListString(entry.getValue()) + "))");
     }
-    TypedQuery<Long> amlQuery = JPA.em().createQuery(queryString.toString(), Long.class);
-    List<Long> moveLineIds = amlQuery.getResultList();
-    String filteredIds = moveLineIds.stream().map(String::valueOf).collect(Collectors.joining(","));
 
-    return String.format(
-        "%s AND self.moveLine.id in (%s)",
-        query, StringUtils.isEmpty(filteredIds) ? "0" : filteredIds);
+    return queryString.toString();
   }
 
   protected String getStatusQuery(AnalyticMoveLineQuery analyticMoveLineQuery, String query) {
@@ -295,6 +288,48 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
                 ObjectUtils.notEmpty(l.getAnalyticAxis())
                     && ObjectUtils.notEmpty(l.getAnalyticAccount()))
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public AnalyticMoveLineReverseResult reverseAll(AnalyticMoveLineQuery analyticMoveLineQuery)
+      throws AxelorException {
+    analyticMoveLineQueryPercentageService.validateReverseParameterAxisPercentage(
+        analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList());
+
+    List<Long> reverseAxisIds =
+        getReverseRules(analyticMoveLineQuery).stream()
+            .map(AnalyticMoveLineQueryParameter::getAnalyticAxis)
+            .map(AnalyticAxis::getId)
+            .distinct()
+            .collect(Collectors.toList());
+
+    if (reverseAxisIds.isEmpty()) {
+      return new AnalyticMoveLineReverseResult(0, 0);
+    }
+
+    Long analyticMoveLineQueryId = analyticMoveLineQuery.getId();
+    String query =
+        getAnalyticMoveLineQuery(analyticMoveLineQuery)
+            + " AND self.analyticAxis.id IN (:reverseAxisIds)";
+
+    int reverseCount = 0;
+    int newCount = 0;
+    List<AnalyticMoveLine> analyticMoveLines;
+
+    while (!(analyticMoveLines =
+            analyticMoveLineRepository
+                .all()
+                .filter(query)
+                .bind("reverseAxisIds", reverseAxisIds)
+                .fetch(AbstractBatch.FETCH_LIMIT))
+        .isEmpty()) {
+      reverseCount += analyticMoveLineReverses(analyticMoveLineQuery, analyticMoveLines).size();
+      newCount += createAnalyticMoveLines(analyticMoveLineQuery, analyticMoveLines).size();
+      JPA.clear();
+      analyticMoveLineQuery = analyticMoveLineQueryRepository.find(analyticMoveLineQueryId);
+    }
+
+    return new AnalyticMoveLineReverseResult(reverseCount, newCount);
   }
 
   @Override
