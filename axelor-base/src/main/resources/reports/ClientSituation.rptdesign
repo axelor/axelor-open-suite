@@ -396,11 +396,19 @@
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
-                    <property name="paramName">PartnerId</property>
+                    <property name="paramName">CompanyId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">PartnerId</property>
+                    <property name="dataType">decimal</property>
+                    <property name="position">2</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -516,6 +524,7 @@
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
@@ -528,108 +537,126 @@
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">title_select</property>
                     <property name="nativeName">title_select</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">partner_type_select</property>
                     <property name="nativeName">partner_type_select</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">partner_first_name</property>
                     <property name="nativeName">partner_first_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">partner_name</property>
                     <property name="nativeName">partner_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">partner_seq</property>
                     <property name="nativeName">partner_seq</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">invoicing_full_name</property>
                     <property name="nativeName">invoicing_full_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">fixed_phone</property>
                     <property name="nativeName">fixed_phone</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">mobile_phone</property>
                     <property name="nativeName">mobile_phone</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">email_address</property>
                     <property name="nativeName">email_address</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">web_site</property>
                     <property name="nativeName">web_site</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">internal_user_name</property>
                     <property name="nativeName">internal_user_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">team_name</property>
                     <property name="nativeName">team_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
                     <property name="name">balance_cust_account</property>
                     <property name="nativeName">balance_cust_account</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
                     <property name="name">balance_due_cust_account</property>
                     <property name="nativeName">balance_due_cust_account</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
                     <property name="name">balance_due_debt_recovery_cust_account</property>
                     <property name="nativeName">balance_due_debt_recovery_cust_account</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">20</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Partner.id, MetaFile.file_path as logo_path, Company.height as logo_height, Company.width as logo_width, Partner.title_select , Partner.partner_type_select, Partner.first_name as partner_first_name,
@@ -639,7 +666,7 @@ AuthUser.name as internal_user_name, Team.name as team_name,
 AccountingSituation.balance_cust_account, AccountingSituation.balance_due_cust_account, AccountingSituation.balance_due_debt_recovery_cust_account, Currency.symbol as currency
 from base_partner as Partner
 left join auth_user as AuthUser on (Partner.user_id = AuthUser.id)
-left join base_company as Company on (Company.id = AuthUser.active_company)
+left join base_company as Company on (Company.id = COALESCE(AuthUser.active_company, ?))
 left join base_currency as Currency on (Company.currency = Currency.id)
 left join base_partner_address as PartnerAddress on (PartnerAddress.partner = Partner.id and PartnerAddress.is_invoicing_addr is true and PartnerAddress.is_default_addr is true)
 left join base_address as InvoicingAddress on (InvoicingAddress.id = PartnerAddress.address)

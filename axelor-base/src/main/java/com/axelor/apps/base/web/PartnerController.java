@@ -207,7 +207,9 @@ public class PartnerController {
     LinkedHashMap<String, Object> companyMap =
         (LinkedHashMap<String, Object>) context.get("company");
     Object companyId = companyMap != null ? companyMap.get("id") : null;
-    params.put("CompanyId", companyId);
+    if (companyId != null) {
+      params.put("CompanyId", companyId);
+    }
     params.put(
         "TradingNameId",
         (Object)
