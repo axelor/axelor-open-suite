@@ -114,9 +114,9 @@
   </action-view>
 
   <menuitem name="invoice-root-invoice-terms" parent="invoice-root" order="700"
-    title="Terms list" action="invoice.root.invoice.terms"/>
+    title="invoiceTerm.menuTitle" action="invoice.root.invoice.terms"/>
 
-  <action-view name="invoice.root.invoice.terms" title="Terms list"
+  <action-view name="invoice.root.invoice.terms" title="invoiceTerm.menuTitle"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-grid"/>
     <view type="form" name="invoice-term-form"/>
