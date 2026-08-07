@@ -44,6 +44,8 @@
     <field name="dueDate"/>
     <button name="viewMoveBtn" title="View entry" icon="box-arrow-up-right"
       onClick="action-move-line-view-open-move"/>
+    <button name="viewInvoiceBtn" title="View invoice" icon="file-text"
+      onClick="action-move-line-group-view-open-invoice"/>
     <field name="analyticMoveLineList" hidden="true"/>
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
@@ -704,6 +706,9 @@
         colSpan="6"/>
       <button name="showMoveButton" title="View entry" icon="box-arrow-up-right"
         onClick="action-move-line-view-open-move" colSpan="6"/>
+      <spacer colSpan="6"/>
+      <button name="viewInvoiceBtn" title="View invoice" showIf="move.invoice"
+        onClick="action-move-line-view-open-invoice" colSpan="6"/>
       <field name="move.company" colSpan="6"/>
       <field name="move.companyCurrency" colSpan="6"/>
       <field name="move.journal" colSpan="6"/>
@@ -910,6 +915,17 @@
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval: __repo__(MoveLine).find(id).move.id"/>
   </action-view>
+
+  <action-view name="action-move-line-view-open-invoice" title="Invoice"
+    model="com.axelor.apps.account.db.Invoice">
+    <view type="form" name="invoice-form"/>
+    <view type="grid" name="invoice-grid"/>
+    <context name="_showRecord" expr="eval: __repo__(MoveLine).find(id)?.move?.invoice?.id"/>
+  </action-view>
+
+  <action-group name="action-move-line-group-view-open-invoice">
+    <action name="action-move-line-view-open-invoice" if="move.invoice"/>
+  </action-group>
 
   <action-view name="action-move-line-view-show-related-invoice-terms"
     title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm">
