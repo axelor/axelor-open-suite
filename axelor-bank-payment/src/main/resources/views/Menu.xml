@@ -23,14 +23,10 @@
     <context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 2"/>
   </action-view>
 
-  <menuitem title="LCR" name="account-root-bank-order-lcr"
+  <menuitem title="LCR" name="account-root-bank-order-lcr-bank-orders"
     parent="account-root-bank-orders"
-    if="eval: __config__?.app?.getApp('bank-payment')?.manageBillOfExchange" order="200"/>
-
-  <menuitem title="LCR bank orders" name="account-root-bank-order-lcr-bank-orders"
-    parent="account-root-bank-order-lcr"
     if="eval: __config__?.app?.getApp('bank-payment')?.manageBillOfExchange"
-    action="account.bank.payment.bank.order.lcr" order="100"/>
+    action="account.bank.payment.bank.order.lcr" order="200"/>
 
   <action-view name="account.bank.payment.bank.order.lcr" title="LCR Bank orders"
     model="com.axelor.apps.bankpayment.db.BankOrder">

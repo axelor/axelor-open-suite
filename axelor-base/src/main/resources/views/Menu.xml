@@ -531,11 +531,8 @@
     <call method="showSuppliersOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
   </action-method>
 
-  <menuitem name="admin-root-organisation" parent="admin-root" title="Organization"
-    order="400" if="__config__.app.isApp('base')"/>
-
-  <menuitem name="admin-root-organisation-territory" parent="admin-root-organisation"
-    title="Territories" order="100"/>
+  <menuitem name="admin-root-organisation-territory" parent="admin-root"
+    title="Territories" order="400" if="__config__.app.isApp('base')"/>
 
   <menuitem name="admin-root-organisation-territory-street"
     parent="admin-root-organisation-territory" title="Streets"
