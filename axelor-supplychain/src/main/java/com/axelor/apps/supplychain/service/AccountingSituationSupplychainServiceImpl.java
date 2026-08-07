@@ -30,6 +30,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
@@ -43,6 +44,8 @@ import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Singleton
 public class AccountingSituationSupplychainServiceImpl extends AccountingSituationServiceImpl
@@ -202,7 +205,11 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
       if (usedCreditExceeded) {
         saleOrder.setBlockedOnCustCreditExceed(true);
         if (!saleOrder.getManualUnblock()) {
-          String message = company.getOrderBloquedMessage();
+          String message =
+              Optional.ofNullable(company.getSaleConfig())
+                  .filter(Objects::nonNull)
+                  .map(SaleConfig::getOrderBlockedMessage)
+                  .orElse(null);
           if (Strings.isNullOrEmpty(message)) {
             message =
                 String.format(
