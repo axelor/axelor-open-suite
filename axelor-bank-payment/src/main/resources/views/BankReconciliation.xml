@@ -142,27 +142,37 @@
         <label name="accountingLabel" title="Accounting" colSpan="4"/>
         <field name="statementReconciledLineBalance" showTitle="false" colSpan="4"
           readonly="true" x-scale="currency.numberOfDecimals"/>
-        <label name="alreadyPointedLabel" title="Already reconciled" colSpan="4"/>
+        <button name="alreadyPointedBtn" title="Already reconciled" colSpan="4" onClick=""
+          link=""
+          help="Amount already matched and confirmed between the bank statement and the accounting in a previous reconciliation."/>
         <field name="movesReconciledLineBalance" showTitle="false" colSpan="4" readonly="true"
           x-scale="currency.numberOfDecimals"/>
         <field name="statementUnreconciledLineBalance" showTitle="false" colSpan="4"
           readonly="true" x-scale="currency.numberOfDecimals"/>
-        <label name="notPointedLabel" title="Not reconciled and onGoing" colSpan="4"/>
+        <button name="notPointedBtn" title="Not reconciled and onGoing" colSpan="4"
+          onClick="" link=""
+          help="Amount not matched at all yet, on the bank statement side or on the accounting side."/>
         <field name="movesUnreconciledLineBalance" showTitle="false" colSpan="4"
           readonly="true" x-scale="currency.numberOfDecimals"/>
         <field name="statementOngoingReconciledBalance" showTitle="false" colSpan="4"
           readonly="true" x-scale="currency.numberOfDecimals"/>
-        <label name="balanceLabel" title="BankReconciliation.ongoing" colSpan="4"/>
+        <button name="balanceBtn" title="BankReconciliation.ongoing" colSpan="4" onClick=""
+          link=""
+          help="Amount matched between a statement line and an accounting move line during this reconciliation, but not yet validated."/>
         <field name="movesOngoingReconciledBalance" showTitle="false" colSpan="4"
           readonly="true" x-scale="currency.numberOfDecimals"/>
         <field name="statementAmountRemainingToReconcile" showTitle="false" colSpan="4"
           readonly="true" x-scale="currency.numberOfDecimals"/>
-        <label name="selectedLabel" title="Remains to be reconciled" colSpan="4"/>
+        <button name="selectedBtn" title="Remains to be reconciled" colSpan="4" onClick=""
+          link=""
+          help="Amount still to be matched to close the reconciliation. It is the difference between the 'Not reconciled and onGoing amount' and the 'Ongoing amount'."/>
         <field name="movesAmountRemainingToReconcile" showTitle="false" colSpan="4"
           readonly="true" x-scale="currency.numberOfDecimals"/>
         <field name="statementTheoreticalBalance" showTitle="false" colSpan="4"
           readonly="true" x-scale="currency.numberOfDecimals"/>
-        <label name="newBankBalanceLabel" title="New theoretical balance" colSpan="4"/>
+        <button name="newBankBalanceBtn" title="New theoretical balance" colSpan="4"
+          onClick="" link=""
+          help="Balance that will be obtained once the ongoing matches are validated. It is the sum of the 'Already reconciled amount' and the 'Ongoing amount', and must match the ending balance of the bank statement to validate the reconciliation."/>
         <field name="movesTheoreticalBalance" showTitle="false" colSpan="4" readonly="true"
           x-scale="currency.numberOfDecimals"/>
         <label name="balanceEqualLabel"
