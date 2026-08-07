@@ -62,7 +62,6 @@
 "admin-root-calendars-icalendars";"Base Read|Base User|Base Manager"
 "admin-root-calendars-ievents";"Base Read|Base User|Base Manager"
 "admin-root-calendars-config";"Base Read|Base User|Base Manager"
-"admin-root-organisation";"Base Read|Base User|Base Manager"
 "admin-root-organisation-territory-city";"Base Read|Base User|Base Manager"
 "admin-root-organisation-territory-department";"Base Read|Base User|Base Manager"
 "admin-root-organisation-region";"Base Read|Base User|Base Manager"

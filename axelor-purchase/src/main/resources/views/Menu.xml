@@ -121,11 +121,8 @@
   <menuitem name="sc-root-purchase-report" parent="sc-root-purchase" title="Reportings"
     order="1300" icon="bar-chart"/>
 
-  <menuitem name="purchase-report-maps" parent="sc-root-purchase-report" title="Maps"
-    order="300"/>
-
-  <menuitem name="purchase-maps-partner-suppliers" parent="purchase-report-maps"
-    title="Suppliers" action="action-purchase-method-show-suppliers-on-map-page" order="100"/>
+  <menuitem name="purchase-maps-partner-suppliers" parent="sc-root-purchase-report"
+    title="Map - Suppliers" action="action-purchase-method-show-suppliers-on-map-page" order="300"/>
 
   <action-method name="action-purchase-method-show-suppliers-on-map-page">
     <call method="showSuppliersOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
