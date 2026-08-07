@@ -270,10 +270,11 @@
         <field name="paymentMode" requiredIf="invoice != null"/>
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
-          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
+          requiredIf="paymentMode.typeSelect == 9 || ((paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 10) &amp;&amp; paymentMode.inOutSelect != 2)"
           onSelect="action-invoice-term-method-bank-details-from-partner-domain"/>
         <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="paymentMode.inOutSelect" hidden="true"/>
         <field name="company" hidden="true"/>
         <field name="company.currency.numberOfDecimals" hidden="true"/>
         <field name="origin" hidden="true"/>
@@ -442,11 +443,12 @@
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           readonlyIf="isPaid"
-          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
+          requiredIf="paymentMode.typeSelect == 9 || ((paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 10) &amp;&amp; paymentMode.inOutSelect != 2)"
           onSelect="action-invoice-term-method-bank-details-from-partner-domain"/>
         <field name="applyFinancialDiscount" hidden="true"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="paymentMode.inOutSelect" hidden="true"/>
         <field name="company" hidden="true"/>
         <field name="origin" hidden="true"/>
         <field name="originDate" hidden="true"/>
@@ -615,11 +617,12 @@
         <field name="paymentMode" requiredIf="invoice != null"/>
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
-          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
+          requiredIf="paymentMode.typeSelect == 9 || ((paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 10) &amp;&amp; paymentMode.inOutSelect != 2)"
           onSelect="action-invoice-term-method-bank-details-from-partner-domain"/>
 
         <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="paymentMode.inOutSelect" hidden="true"/>
         <field name="company" hidden="true"/>
         <field name="company.currency.numberOfDecimals" hidden="true"/>
         <field name="origin" hidden="true"/>
@@ -794,10 +797,11 @@
         <field name="paymentMode" requiredIf="invoice != null"/>
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
-          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
+          requiredIf="paymentMode.typeSelect == 9 || ((paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 10) &amp;&amp; paymentMode.inOutSelect != 2)"
           onSelect="action-invoice-term-method-bank-details-from-partner-domain"/>
         <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="paymentMode.inOutSelect" hidden="true"/>
         <field name="company" hidden="true"/>
         <field name="company.currency.numberOfDecimals" hidden="true"/>
         <field name="origin" hidden="true"/>
