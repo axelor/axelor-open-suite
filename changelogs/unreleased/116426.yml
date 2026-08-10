@@ -1,0 +1,3 @@
+---
+title: "Invoice/Order line: fixed unit price and discounted price columns sharing the same title."
+module: axelor-supplychain
