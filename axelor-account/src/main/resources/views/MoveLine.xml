@@ -674,9 +674,6 @@
   <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine"
     onNew="action-move-line-method-onnew" canNew="false" canDelete="false" canEdit="false"
     onLoad="action-move-line-method-onload" canArchive="false">
-    <toolbar>
-      <button name="viewMoveBtn" title="View entry" onClick="action-move-line-view-open-move"/>
-    </toolbar>
     <panel-include view="move-line-infos-form"/>
     <panel-include view="move-line-tabs-form"/>
     <panel name="movePanel" title="Move" sidebar="true">
@@ -705,10 +702,12 @@
       </field>
       <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"
         colSpan="6"/>
+      <button name="showMoveButton" title="View entry" icon="box-arrow-up-right"
+        onClick="action-move-line-view-open-move" colSpan="6"/>
       <field name="move.company" colSpan="6"/>
+      <field name="move.companyCurrency" colSpan="6"/>
       <field name="move.journal" colSpan="6"/>
       <field name="move.period" canView="false" colSpan="6"/>
-      <field name="move.companyCurrency" colSpan="6"/>
     </panel>
   </form>
   <form name="move-line-move-form" title="Move line"
