@@ -3,13 +3,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="Company" cacheable="true">
+  <entity name="SaleConfig" cacheable="true">
 
-    <one-to-one name="saleConfig" ref="com.axelor.apps.sale.db.SaleConfig"
-      title="Sale config" mappedBy="company"/>
+    <string name="orderBlockedMessage" multiline="true" massUpdate="true"/>
 
+    <track>
+      <field name="orderBlockedMessage" on="UPDATE"/>
+    </track>
   </entity>
 
 </domain-models>

@@ -131,10 +131,6 @@
         <panel-related name="bankDetailsListPanel" field="bankDetailsList"
           showTitle="false" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid"/>
       </panel>
-      <panel name="orderBloquedMessagePanel" title="Order Bloqued Message"
-        if-module="axelor-sale" if="__config__.app.isApp('sale')">
-        <field name="orderBloquedMessage"/>
-      </panel>
       <panel-related name="emailAccountListPanel" field="emailAccountList"
         if="__config__.app.getApp('base').getEmailAccountByCompany()" colSpan="12"
         form-view="mail-account-form" grid-view="mail-account-grid"/>
@@ -210,7 +206,6 @@
       if="!__config__.app.isApp('cash-management')"/>
     <field name="supplierPaymentDelay" hidden="true"
       if="!__config__.app.isApp('cash-management')"/>
-    <field name="orderBloquedMessage" hidden="true" if="!__config__.app.isApp('sale')"/>
   </search-filters>
 
 </object-views>
