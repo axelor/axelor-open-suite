@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed global percentage discount computing a wrong discount on the last order line when its quantity is greater than 1."
+module: axelor-sale
