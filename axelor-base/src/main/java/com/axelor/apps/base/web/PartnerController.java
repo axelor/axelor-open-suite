@@ -454,7 +454,9 @@ public class PartnerController {
         Beans.get(PartnerRegistrationValidatorFactoryService.class)
             .getRegistrationNumberValidator(partner);
     boolean notValidRegistrationCode =
-        validator != null && !validator.isRegistrationCodeValid(partner);
+        validator != null
+            && !Strings.isNullOrEmpty(partner.getRegistrationCode())
+            && !validator.isRegistrationCodeValid(partner);
     response.setAttr("isValidRegistrationCode", "hidden", !notValidRegistrationCode);
     if (notValidRegistrationCode) {
       response.setAttr(
