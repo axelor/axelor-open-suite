@@ -19,12 +19,12 @@
 101320;101300;"Capital amorti";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 101800;101000;"Capital souscrit soumis à des réglementations particulières";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 102000;100;"Fonds fiduciaires";"FRA_PCG210";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
-104000;100;"Primes liées au capital social";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+104000;100;"Primes liées au capital";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 104100;104000;"Primes d'émission";"FRA_PCG210";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 104200;104000;"Primes de fusion";"FRA_PCG210";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 104300;104000;"Primes d'apport";"FRA_PCG210";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 104400;104000;"Primes de conversion d'obligations en actions";"FRA_PCG210";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
-104500;104000;"Bons de souscription d'actions";"FRA_PCG210";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
+104500;104000;"Bons de souscription de titres en capital";"FRA_PCG210";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 105000;100;"Écarts de réévaluation";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 105100;105000;"Réserve spéciale de réévaluation";"FRA_PCG210";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 105200;105000;"Écart de réévaluation libre";"FRA_PCG210";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
@@ -55,7 +55,7 @@
 120000;120;"Résultat de l'exercice (bénéfice)";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 129000;120;"Résultat de l'exercice (perte)";"FRA_PCG210";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 130;"CL1";"Subventions d'investissement";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-131000;130;"Subventions d'équipement";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+131000;130;"Subventions d'investissement octroyées";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 131100;131000;"État";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 131200;131000;"Régions";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 131300;131000;"Départements";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
@@ -64,7 +64,6 @@
 131600;131000;"Entreprises publiques";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 131700;131000;"Entreprises et organismes privés";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 131800;131000;"Autres";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-138000;130;"Autres subventions d'investissement (même ventilation que celle du compte 131)";"FRA_PCG210";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 139000;130;"Subventions d'investissement inscrites au compte de résultat";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 139100;139000;"Subventions d'équipement";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 139110;139100;"Etat";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
@@ -77,62 +76,37 @@
 139180;139100;"Autres";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 139800;139000;"Autres subventions d'investissement (même ventilation que celle du compte 1391)";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 140;"CL1";"Provisions réglementées";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-142000;140;"Provisions réglementées relatives aux immobilisations";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-142300;142000;"Provisions pour reconstitution des gisements miniers et pétroliers";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-142400;142000;"Provisions pour investissement (participation des salariés)";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-143000;140;"Provisions réglementées relatives aux stocks";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-143100;143000;"Hausse des prix";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-143200;143000;"Fluctuation des cours";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-144000;140;"Provisions réglementées relatives aux autres éléments de l'actif";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+143000;140;"Provisions réglementées pour hausse de prix";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 145000;140;"Amortissements dérogatoires";"FRA_PCG210";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-146000;140;"Provision spéciale de réévaluation";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-147000;140;"Plus-values réinvesties";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 148000;140;"Autres provisions réglementées";"FRA_PCG210";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 150;"CL1";"Provisions";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 151000;150;"Provisions pour risques";"FRA_PCG220";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 151100;151000;"Provisions pour litiges";"FRA_PCG220";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 151200;151000;"Provisions pour garanties données aux clients";"FRA_PCG220";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
-151300;151000;"Provisions pour pertes sur marchés à terme";"FRA_PCG220";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 151400;151000;"Provisions pour amendes et pénalités";"FRA_PCG220";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 151500;151000;"Provisions pour pertes de change";"FRA_PCG220";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 151600;151000;"Provisions pour pertes sur contrats";"FRA_PCG220";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 151800;151000;"Autres provisions pour risques";"FRA_PCG220";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
-153000;150;"Provisions pour pensions et obligations similaires";"FRA_PCG220";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-154000;150;"Provisions pour restructurations";"FRA_PCG220";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-155000;150;"Provisions pour impôts";"FRA_PCG220";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-156000;150;"Provisions pour renouvellement des immobilisations (entreprises concessionnaires)";"FRA_PCG220";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-157000;150;"Provisions pour charges à répartir sur plusieurs exercices";"FRA_PCG220";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-157200;157000;"Provisions pour gros entretiens ou grandes révisions";"FRA_PCG220";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-158000;150;"Autres provisions pour charges";"FRA_PCG220";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-158100;158000;"Provisions pour remises en état";"FRA_PCG220";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-160;"CL1";"Emprunts et dettes assimilées";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-161000;160;"Emprunts obligataires convertibles";"FRA_PCG230";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
-162000;160;"Obligations représentatives de passifs nets remis en fiducie";"FRA_PCG230";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-163000;160;"Autres emprunts obligataires ";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-164000;160;"Emprunts auprès des établissements de crédit";"FRA_PCG230";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
+160;"CL1";"Emprunts et dettes assimilées, fonds non remboursables et avances conditionnées";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
+161000;160;"Emprunts obligataires convertibles si non-inscrits dans le compte 167";"FRA_PCG230";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
+162000;160;"Obligations représentatives de passifs nets remis en fiducie si non-inscrites dans le compte 167";"FRA_PCG230";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
+163000;160;"Autres emprunts obligataires si non-inscrits dans le compte 167";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+164000;160;"Emprunts auprès des établissements de crédit si non-inscrits dans le compte 167";"FRA_PCG230";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 165000;160;"Dépôts et cautionnements reçus";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 165100;165000;"Dépôts";"FRA_PCG230";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 165500;165000;"Cautionnements";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 166000;160;"Participation des salariés aux résultats";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 166100;166000;"Comptes bloqués";"FRA_PCG230";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 166200;166000;"Fonds de participation";"FRA_PCG230";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-167000;160;"Emprunts et dettes assortis de conditions particulières";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-167100;167000;"Emissions de titres participatifs";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-167400;167000;"Avances conditionnées de l'État";"FRA_PCG230";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-167500;167000;"Emprunts participatifs";"FRA_PCG230";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
+167000;160;"Fonds non remboursables et avances conditionnées";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+167100;167000;"Fonds non remboursables montant principal";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+167400;167000;"Avances conditionnées intérêts courus";"FRA_PCG230";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 168000;160;"Autres emprunts et dettes assimilées";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 168100;168000;"Autres emprunts";"FRA_PCG230";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 168500;168000;"Rentes viagères capitalisées";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 168700;168000;"Autres dettes";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 168800;168000;"Intérêts courus";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-168810;168800;"Sur emprunts obligataires convertibles ";"FRA_PCG230";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
-168830;168800;"Sur autres emprunts obligataires";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-168840;168800;"Sur emprunts auprès des établissements de crédit";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-168850;168800;"Sur dépôts et cautionnements reçus";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-168860;168800;"Sur participation des salariés aux résultats";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-168870;168800;"Sur emprunts et dettes assortis de conditions particulières";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-168880;168800;"Sur autres emprunts et dettes assimilées";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-169000;160;"Primes de remboursement des obligations";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+169000;160;"Primes de remboursement des emprunts";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 170;"CL1";"Dettes rattachées à des participations";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 171000;170;"Dettes rattachées à des participations (groupe)";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 174000;170;"Dettes rattachées à des participations (hors groupe)";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
@@ -144,14 +118,14 @@
 186000;180;"Biens et prestations de services échangés entre établissements (charges)";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 187000;180;"Biens et prestations de services échangés entre établissements (produits)";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 188000;180;"Comptes de liaison des sociétés en participation";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-200;"CL2";"Immobilisations incorporelles";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
+200;"CL2";"Immobilisations incorporelles et frais d'établissement";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 201000;200;"Frais d'établissement";"FRA_PCG110";"true";2;;;;"true";;"N_D";2;"false";"NDAS";"false";;;;;;1
 201100;201000;"Frais de constitution";"FRA_PCG110";"true";2;;;;"true";;"N_D";2;"false";"NDAS";"false";;;;;;1
 201200;201000;"Frais de premier établissement";"FRA_PCG110";"true";2;;;;"true";;"N_D";2;"false";"NDAS";"false";;;;;;1
 201210;201200;"Frais de prospection";"FRA_PCG110";"true";2;;;;"true";;"N_D";2;"false";"NDAS";"false";;;;;;1
 201220;201200;"Frais de publicité";"FRA_PCG110";"true";2;;;;"true";;"N_D";2;"false";"NDAS";"false";;;;;;1
 201300;201000;"Frais d'augmentation de capital et d'opérations diverses (fusions, scissions, transformations)";"FRA_PCG110";"true";2;;;;"true";;"N_D";2;"false";"NDAS";"false";;;;;;1
-203000;200;"Frais de recherche et de développement";"FRA_PCG110";"true";2;;;;"true";;"N_D";2;"false";"NDAS";"false";;;;;;1
+203000;200;"Frais de développement";"FRA_PCG110";"true";2;;;;"true";;"N_D";2;"false";"NDAS";"false";;;;;;1
 205000;200;"Concessions et droits similaires, brevets, licences, marques, procédés, solutions informatiques, droits et valeurs similaires";"FRA_PCG110";"true";2;;;;"true";;"N_D";2;"false";"DAUT";"false";;;;;;1
 206000;200;"Droit au bail";"FRA_PCG110";"true";2;;;;"true";;"N_D";2;"false";"NDAS";"false";;;;;;1
 207000;200;"Fonds commercial";"FRA_PCG110";"true";2;;;;"true";;"N_D";2;"false";"NDAS";"false";;;;;;1
@@ -270,9 +244,9 @@
 278000;270;"Mali de fusion sur actifs financiers";"FRA_PCG110";"true";2;;;;"true";;;0;"false";"NDAS";"false";;;;;;1
 279000;270;"Versements restant à effectuer sur titres immobilisés non libérés";"FRA_PCG110";"true";2;;;;"true";;;0;"false";"NDAS";"false";;;;;;1
 280;"CL2";"Amortissement des immobilisations";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-280000;280;"Amortissements des immobilisations incorporelles";"FRA_PCG110";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+280000;280;"Amortissements des immobilisations incorporelles et des frais d'établissement";"FRA_PCG110";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 280100;280000;"Frais d'établissement (même ventilation que celle du compte 201) ";"FRA_PCG110";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
-280300;280000;"Frais de recherche et de développement ";"FRA_PCG110";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
+280300;280000;"Frais de développement";"FRA_PCG110";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 280500;280000;"Concessions et droits similaires, brevets, licences, solutions informatiques, droits et valeurs similaires";"FRA_PCG110";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 280700;280000;"Fonds commercial";"FRA_PCG110";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 280800;280000;"Autres immobilisations incorporelles";"FRA_PCG110";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
@@ -418,27 +392,25 @@
 419800;419000;"Rabais, remises, ristournes à accorder et autres avoirs à établir";"FRA_PCG230";"true";1;"true";;"true";;;;0;"false";"NDAS";"false";;;;;;1
 420;"CL4";"Personnel et comptes rattachés";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 421000;420;"Personnel - Rémunérations dues";"FRA_PCG230";"true";1;"true";;"true";;;;0;"false";"NDAS";"false";;;;;;1
-422000;420;"Comités d'entreprises, d'établissement, …";"FRA_PCG230";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";;;;;;1
+422000;420;"Comité social et économique";"FRA_PCG230";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";;;;;;1
 424000;420;"Participation des salariés aux résultats";"FRA_PCG230";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";;;;;;1
 424600;424000;"Réserve spéciale";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 424800;424000;"Comptes courants";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-425000;420;"Personnel - Avances et acomptes";"FRA_PCG140";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";;;;;;1
+425000;420;"Personnel - Avances et acomptes et autres comptes débiteurs";"FRA_PCG140";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";;;;;;1
 426000;420;"Personnel - Dépôts";"FRA_PCG230";"true";0;"true";;"true";;;;0;"false";"NDAS";"false";;;;;;1
 427000;420;"Personnel - Oppositions";"FRA_PCG230";"true";1;"true";;"true";;;;0;"false";"NDAS";"false";;;;;;1
 428000;420;"Personnel - Charges à payer et produits à recevoir";"FRA_PCG230";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";;;;;;1
 428200;428000;"Dettes provisionnées pour congés à payer";"FRA_PCG230";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 428400;428000;"Dettes provisionnées pour participation des salariés aux résultats";"FRA_PCG230";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 428600;428000;"Autres charges à payer";"FRA_PCG230";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
-428700;428000;"Produits à recevoir";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 430;"CL4";"Sécurité Sociale et autres organismes sociaux";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 431000;430;"Sécurité Sociale";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 437000;430;"Autres organismes sociaux";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-438000;430;"Organismes sociaux - Charges à payer et produits à recevoir";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+438000;430;"Organismes sociaux - Charges à payer";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 438200;438000;"Charges sociales sur congés à payer ";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 438600;438000;"Autres charges à payer";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-438700;438000;"Produits à recevoir";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 440;"CL4";"État et autres collectivités publiques";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-441000;440;"État - Subventions à recevoir";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+441000;440;"État - Subventions et aides à recevoir";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 441100;441000;"Subventions d'investissement";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 441700;441000;"Subventions d'exploitation";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 441800;441000;"Subventions d'équilibre";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
@@ -447,11 +419,6 @@
 442100;442000;"Prélèvements à la source (Impôt sur le revenu)";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 442200;442000;"Prélèvements forfaitaires non libératoires";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 442300;442000;"Retenues et prélèvements sur les distributions";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-442400;442000;"Obligataires";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-442500;442000;"Associés";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-443000;440;"Opérations particulières avec l'État, les collectivités publiques, les organismes internationaux";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-443100;443000;"Créances sur l'État résultant de la suppression de la règle du décalage d'un mois en matière de TVA";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-443800;443000;"Intérêts courus sur créances figurant au compte 4431";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 444000;440;"État - Impôts sur les bénéfices";"FRA_PCG250";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 445000;440;"État - Taxes sur le chiffre d'affaires";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 445200;445000;"TVA due intracommunautaire";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
@@ -484,7 +451,6 @@
 445780;445700;"Taxes assimilées à la TVA";"FRA_PCG250";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 445800;445000;"Taxes sur le chiffre d'affaires à régulariser ou en attente";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 445810;445800;"Acomptes - Régime simplifié d'imposition";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-445820;445800;"Acomptes - Régime du forfait";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 445830;445800;"Remboursement de taxes sur le chiffre d'affaires demandé";"FRA_PCG250";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 445840;445800;"TVA récupérée d'avance";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 445860;445800;"Taxes sur le chiffre d'affaires sur factures non parvenues";"FRA_PCG250";"true";2;;;;"true";;"N_D";1;"false";"NDAS";"false";;;;;;1
@@ -493,8 +459,6 @@
 447000;440;"Autres impôts, taxes et versements assimilés";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 448000;440;"État - Charges à payer et produits à recevoir";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 448200;448000;"Charges fiscales sur congés à payer ";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-448600;448000;"Charges à payer";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-448700;448000;"Produits à recevoir";"FRA_PCG250";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 449000;440;"Quotas d’émission à acquérir";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 450;"CL4";"Groupe et associés";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 451000;450;"Groupe";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
@@ -520,19 +484,18 @@
 462000;460;"Créances sur cessions d'immobilisations";"FRA_PCG140";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 464000;460;"Dettes sur acquisitions de valeurs mobilières de placement";"FRA_PCG230";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 465000;460;"Créances sur cessions de valeurs mobilières de placement";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-467;460;"Autres comptes débiteurs ou créditeurs";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
+467;460;"Divers comptes débiteurs et produits à recevoir";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 467000;467;"Factor 1";"FRA_PCG140";"false";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-468000;460;"Divers - Charges à payer et produits à recevoir";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+468000;460;"Divers comptes créditeurs et charges à payer";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 468600;468000;"Charges à payer";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 468700;468000;"Produits à recevoir";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 470;"CL4";"Comptes transitoires ou d'attente";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 471000;470;"Comptes d'attente 1";"FRA_PCG140";"false";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 472000;470;"Comptes d'attente 2";"FRA_PCG140";"false";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 473000;470;"Comptes d'attente 3";"FRA_PCG140";"false";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-474000;470;"Différences d’évaluation de jetons sur des passifs";"FRA_PCG140";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
+474000;470;"Différences d'évaluation - Actif";"FRA_PCG140";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 474600;474000;"Différence d’évaluation de jetons sur des passifs – ACTIF";"FRA_PCG140";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-474700;474000;"Différence d’évaluation de jetons sur des passifs – PASSIF";"FRA_PCG240";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-475000;470;"Comptes d'attente 5";"FRA_PCG140";"false";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+475000;470;"Différences d'évaluation - Passif";"FRA_PCG240";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 476000;470;"Différences de conversion - ACTIF";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 476100;476000;"Diminution des créances";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 476200;476000;"Augmentation des dettes";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
@@ -542,12 +505,6 @@
 477200;477000;"Diminution des dettes";"FRA_PCG230";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
 477800;477000;"Différences compensées par couverture de change";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 478;470;"Autres comptes transitoires";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-478600;478;"Différences d’évaluation - ACTIF";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-478610;478600;"Différences d’évaluation sur instruments financier à terme - ACTIF";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-478620;478600;"Différences d’évaluation sur jetons détenus - ACTIF";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-478700;478;"Différences d’évaluation - PASSIF";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-478710;478700;"Différences d’évaluation sur instruments financier à terme - PASSIF";"FRA_PCG240";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-478720;478700;"Différences d’évaluation sur jetons détenus - PASSIF";"FRA_PCG240";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 480;"CL4";"Comptes de régularisation";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 481000;480;"Charges à répartir sur plusieurs exercices ";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 481600;481000;"Frais d'émission des emprunts";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
@@ -568,7 +525,6 @@
 496500;496000;"Créances sur cessions de valeurs mobilières de placement";"FRA_PCG140";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 496700;496000;"Autres comptes débiteurs";"FRA_PCG140";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 500;"CL5";"Valeurs mobilières de placement";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-501000;500;"Parts dans des entreprises liées";"FRA_PCG130";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 502000;500;"Actions propres";"FRA_PCG130";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 502100;502000;"Actions destinées à être attribuées aux employés et affectées à des plans déterminés";"FRA_PCG130";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 502200;502000;"Actions disponibles pour être attribuées aux employés ou pour la régularisation des cours de bourse";"FRA_PCG130";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
@@ -592,13 +548,9 @@
 511200;511000;"Chèques à encaisser";"FRA_PCG130";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 511300;511000;"Effets à l'encaissement";"FRA_PCG130";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 511400;511000;"Effets à l'escompte";"FRA_PCG130";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-511500;511000;"CB encaissées";"FRA_PCG130";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 512;510;"Banques";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 512100;512;"Comptes en monnaie nationale";"FRA_PCG130";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 512400;512;"Comptes en devises";"FRA_PCG130";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-514000;510;"Chèques postaux";"FRA_PCG130";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-515000;510;"Caisses du Trésor et des établissements publics";"FRA_PCG130";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
-516000;510;"Sociétés de bourse";"FRA_PCG130";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 517000;510;"Autres organismes financiers";"FRA_PCG130";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 518000;510;"Intérêts courus";"FRA_PCG130";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 518100;518000;"Intérêts courus à payer";"FRA_PCG130";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
@@ -747,8 +699,6 @@
 630;"CL6";"Impôts, taxes et versements assimilés";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 631000;630;"Impôts, taxes et versements assimilés sur rémunérations (administrations des impôts)";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 631100;631000;"Taxe sur les salaires";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-631200;631000;"Taxe d'apprentissage";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-631300;631000;"Participation des employeurs à la formation professionnelle continue";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 631400;631000;"Cotisation pour défaut d'investissement obligatoire dans la construction";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 631800;631000;"Autres";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 633000;630;"Impôts, taxes et versements assimilés sur rémunérations (autres organismes)";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
@@ -782,17 +732,16 @@
 641400;641000;"Indemnités et avantages divers";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 641500;641000;"Supplément familial";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 644000;640;"Rémunération du travail de l'exploitant";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-645;640;"Charges de Sécurité sociale et de prévoyance";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
+645;640;"Cotisations de sécurité sociale et de prévoyance";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 645100;645;"Cotisations à l'URSSAF";"FRA_PCG2000";"true";0;;;;;;;0;"false";"NDAS";"true";;;;;;1
 645200;645;"Cotisations aux mutuelles";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 645300;645;"Cotisations aux caisses de retraites";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-645400;645;"Cotisations aux ASSEDIC";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
+645400;645;"Cotisations à Pôle emploi";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 645800;645;"Cotisations aux autres organismes sociaux";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 646;640;"Cotisations sociales personnelles de l'exploitant";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 647000;640;"Autres charges sociales";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 647100;647000;"Prestations directes";"FRA_PCG2000";"true";2;;;;"true";;"N_D";0;"false";"NDAS";"true";;;;;;1
 647200;647000;"Versements aux comités d'entreprise et d'établissement";"FRA_PCG2000";"true";2;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
-647300;647000;"Versements aux comités d'hygiène et de sécurité";"FRA_PCG2000";"true";2;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
 647400;647000;"Versements aux autres oeuvres sociales";"FRA_PCG2000";"true";0;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
 647500;647000;"Médecine du travail, pharmacie";"FRA_PCG2000";"true";2;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
 648000;640;"Autres charges de personnel";"FRA_PCG2000";"true";2;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
@@ -801,15 +750,15 @@
 651100;651000;"Redevances pour concessions, brevets, licences, marques, procédés, solutions informatiques";"FRA_PCG2000";"true";2;;;;"true";"true";"N_D";2;"false";"NDAS";"true";;;;;;1
 651600;651000;"Droits d'auteur et de reproduction";"FRA_PCG2000";"true";2;;;;"true";"true";"N_D";2;"false";"DAUT";"true";;;;;;1
 651800;651000;"Autres droits et valeurs similaires";"FRA_PCG2000";"true";2;;;;"true";"true";"N_D";2;"false";"NDAS";"true";;;;;;1
-653000;650;"Jetons de présence";"FRA_PCG2000";"true";2;;;;"true";;"N_D";0;"false";"NDAS";"true";;;;;;1
+653000;650;"Rémunérations de l'activité des administrateurs et des gérants";"FRA_PCG2000";"true";2;;;;"true";;"N_D";0;"false";"NDAS";"true";;;;;;1
 654000;650;"Pertes sur créances irrécouvrables";"FRA_PCG2000";"true";2;;;;"true";;"N_D";0;"false";"NDAS";"true";;;;;;1
 654100;654000;"Créances de l'exercice";"FRA_PCG2000";"true";2;;;;"true";;"N_D";0;"false";"NDAS";"true";;;;;;1
 654400;654000;"Créances des exercices antérieurs";"FRA_PCG2000";"true";2;;;;"true";;"N_D";0;"false";"NDAS";"true";;;;;;1
 655000;650;"Quote-part de résultat sur opérations faites en commun";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 655100;655000;"Quote-part de bénéfice transférée (comptabilité du gérant)";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 655500;655000;"Quote-part de perte supportée (comptabilité des associés non gérants)";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-656000;650;"Pertes de change sur créances commerciales";"FRA_PCG2000";"true";2;;;;;;;0;;"NDAS";;;;;;;1
-658000;650;"Charges diverses de gestion courante";"FRA_PCG2000";"true";2;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
+656000;650;"Pertes de change sur créances et dettes commerciales";"FRA_PCG2000";"true";2;;;;;;;0;;"NDAS";;;;;;;1
+658000;650;"Pénalités et autres charges";"FRA_PCG2000";"true";2;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
 660;"CL6";"Charges financières";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 661000;660;"Charges d'intérêts";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 661100;661000;"Charges d'intérêts des emprunts et dettes";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
@@ -825,37 +774,19 @@
 664000;660;"Pertes sur créances liées à des participations";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 665000;660;"Escomptes accordés";"FRA_PCG2000";"true";2;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
 666000;660;"Pertes de change financières";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-667000;660;"Charges nettes sur cessions de valeurs mobilières de placement";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
+667000;660;"Charges sur cession d'éléments financiers";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 668000;660;"Autres charges financières";"FRA_PCG2000";"true";2;;;;"true";;;2;"false";"NDAS";"true";;;;;;1
 670;"CL6";"Charges exceptionnelles";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-671000;670;"Charges exceptionnelles sur opérations de gestion";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-671100;671000;"Pénalités sur marchés (et dédits payés sur achats et ventes)";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-671200;671000;"Pénalités, amendes fiscales et pénales ";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-671300;671000;"Dons, libéralités";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-671400;671000;"Créances devenues irrécouvrables dans l'exercice";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-671500;671000;"Subventions accordées";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-671700;671000;"Rappels d'impôts (autres qu'impôts sur les bénéfices)";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-671800;671000;"Autres charges exceptionnelles sur opérations de gestion";"FRA_PCG2000";"true";2;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
 672000;670;"Charges sur exercices antérieurs (en cours d'exercice seulement)";"FRA_PCG2000";"true";2;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
 674;670;"Opérations de constitution ou liquidation des fiducies";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 674100;674;"Opérations liées à la constitution de fiducie - Transfert des éléments";"FRA_PCG2000";"true";2;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
 674200;674;"Opérations liées à la liquidation de la fiducie";"FRA_PCG2000";"true";2;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
-675000;670;"Valeurs comptables des éléments d'actif cédés";"FRA_PCG2000";"true";2;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
-675100;675000;"Immobilisations incorporelles";"FRA_PCG2000";"true";2;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
-675200;675000;"Immobilisations corporelles";"FRA_PCG2000";"true";2;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
-675600;675000;"Immobilisations financières";"FRA_PCG2000";"true";2;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
-675800;675000;"Autres éléments d'actif";"FRA_PCG2000";"true";2;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
 678000;670;"Autres charges exceptionnelles";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-678100;678000;"Malis provenant de clauses d'indexation ";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-678200;678000;"Lots";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-678300;678000;"Malis provenant du rachat par l'entreprise d'actions et obligations émises par elle-même";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-678800;678000;"Charges exceptionnelles diverses";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 680;"CL6";"Dotations aux amortissements, aux dépréciations et aux provisions";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 681000;680;"Dotations aux amortissements, aux dépréciations et aux provisions - Charges d'exploitation";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 681100;681000;"Dotations aux amortissements sur immobilisations incorporelles et corporelles";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 681110;681100;"Immobilisations incorporelles";"FRA_PCG2000";"true";0;;;;;;;0;"false";"NDAS";"true";;;;;;1
 681120;681100;"Immobilisations corporelles";"FRA_PCG2000";"true";0;;;;;;;0;"false";"NDAS";"true";;;;;;1
-681200;681000;"Dotations aux amortissements des charges d'exploitation à répartir";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 681500;681000;"Dotations aux provisions d'exploitation";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 681600;681000;"Dotations pour dépréciations des immobilisations incorporelles et corporelles";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 681610;681600;"Immobilisations incorporelles";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
@@ -869,7 +800,6 @@
 686600;686000;"Dotations pour dépréciations des éléments financiers";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 686620;686600;"Immobilisations financières";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 686650;686600;"Valeurs mobilières de placement";"FRA_PCG2000";"true";0;;;;;;;0;"false";"NDAS";"true";;;;;;1
-686800;686000;"Autres dotations";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 687000;680;"Dotations aux amortissements, aux dépréciations et aux provisions - Charges exceptionnelles";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 687100;687000;"Dotations aux amortissements exceptionnels des immobilisations";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 687200;687000;"Dotations aux provisions réglementées (immobilisations)";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
@@ -936,19 +866,19 @@
 720;"CL7";"Production immobilisée";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 721000;720;"Immobilisations incorporelles ";"FRA_PCG1000";"true";1;;;;"true";;"N_C";2;"false";"NDAS";"true";;;;;;1
 722000;720;"Immobilisations corporelles";"FRA_PCG1000";"true";1;;;;"true";;"N_C";1;"false";"NDAS";"true";;;;;;1
-740;"CL7";"Subventions d'exploitation";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
+740;"CL7";"Subventions";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 750;"CL7";"Autres produits de gestion courante";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 751000;750;"Redevances pour concessions, brevets, licences, marques, procédés, solutions informatiques droits et valeurs similaires";"FRA_PCG1000";"true";1;;;;"true";"true";"N_C";2;"false";"NDAS";"true";;;;;;1
 751100;751000;"Redevances pour concessions, brevets, licences, marques, procédés, solutions informatiques";"FRA_PCG1000";"true";1;;;;"true";"true";"N_C";2;"false";"NDAS";"true";;;;;;1
 751600;751000;"Droits d'auteur et de reproduction";"FRA_PCG1000";"true";1;;;;"true";;"N_C";2;"false";"NDAS";"true";;;;;;1
 751800;751000;"Autres droits et valeurs similaires";"FRA_PCG1000";"true";1;;;;"true";;"N_C";2;"false";"NDAS";"true";;;;;;1
 752000;750;"Revenus des immeubles non affectés à des activités professionnelles";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
-753000;750;"Jetons de présence et rémunérations d'administrateurs, gérants...";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
+753000;750;"Rémunérations de l'activité des administrateurs et des gérants";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
 754000;750;"Ristournes perçues des coopératives (provenant des excédents)";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
 755000;750;"Quote-parts de résultat sur opérations faites en commun";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
 755100;755000;"Quote-part de perte transférée (comptabilité du gérant)";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
 755500;755000;"Quote-part de bénéfice attribuée (comptabilité des associés non-gérants)";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
-756000;750;"Gains de change sur créances commerciales";"FRA_PCG1000";"true";1;;;;"true";;"N_C";;"false";"NDAS";"true";;;;;;1
+756000;750;"Gains de change sur créances et dettes commerciales";"FRA_PCG1000";"true";1;;;;"true";;"N_C";;"false";"NDAS";"true";;;;;;1
 758000;750;"Produits divers de gestion courante";"FRA_PCG1000";"true";1;;;;"true";"true";"N_C";0;"false";"NDAS";"true";;;;;;1
 760;"CL7";"Produits financiers";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 761000;760;"Produits de participations";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
@@ -966,31 +896,14 @@
 764000;760;"Revenus des valeurs mobilières de placement";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
 765000;760;"Escomptes obtenus";"FRA_PCG1000";"true";1;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
 766000;760;"Gains de change financiers";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
-767000;760;"Produits nets sur cessions de valeurs mobilières de placement";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
+767000;760;"Produits sur cession d'éléments financiers";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
 768000;760;"Autres produits financiers";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
 770;"CL7";"Produits exceptionnels";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-771000;770;"Produits exceptionnels sur opérations de gestion";"FRA_PCG1000";"true";1;;;;"true";"true";"N_C";0;"false";"NDAS";"true";;;;;;1
-771100;771000;"Dédits et pénalités perçus sur achats et sur ventes";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
-771300;771000;"Libéralités reçues";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
-771400;771000;"Rentrées sur créances amorties";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
-771500;771000;"Subventions d'équilibre";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
-771700;771000;"Dégrèvements d'impôts autres qu'impôts sur les bénéfices";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
-771800;771000;"Autres produits exceptionnels sur opérations de gestion";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
 772000;770;"Produits sur exercices antérieurs (en cours d'exercice seulement)";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
 774;770;"Opérations de constitution ou liquidation des fiducies";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 774100;774;"Opérations liées à la constitution de fiducie - Transfert des éléments";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
 774200;774;"Opérations liées à la liquidation de la fiducie";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
-775000;770;"Produits des cessions d'éléments d'actif";"FRA_PCG1000";"true";1;;;;"true";"true";"N_C";0;"false";"NDAS";"true";;;;;;1
-775100;775000;"Immobilisations incorporelles";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
-775200;775000;"Immobilisations corporelles";"FRA_PCG1000";"true";1;;;;"true";"true";"N_C";0;"false";"NDAS";"true";;;;;;1
-775600;775000;"Immobilisations financières";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
-775800;775000;"Autres éléments d'actif";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
-777000;770;"Quote-part des subventions d'investissement virée au résultat de l'exercice";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
 778000;770;"Autres produits exceptionnels";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
-778100;778000;"Bonis provenant de clauses d'indexation ";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
-778200;778000;"Lots";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
-778300;778000;"Bonis provenant du rachat par l'entreprise d'actions et d'obligations émises par elle-même";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
-778800;778000;"Produits exceptionnels divers";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
 780;"CL7";"Reprises sur amortissements, dépréciations et provisions";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 781000;780;"Reprises sur amortissements, dépréciations et provisions (à inscrire dans les produits d'exploitation)";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
 781100;781000;"Reprises sur amortissements des immobilisations incorporelles et corporelles ";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
@@ -1011,16 +924,11 @@
 787000;780;"Reprises sur provisions et dépréciations (à inscrire dans les produits exceptionnels)";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
 787200;787000;"Reprises sur provisions réglementées (immobilisations)";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
 787250;787200;"Amortissements dérogatoires";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
-787260;787200;"Provision spéciale de réévaluation";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
-787270;787200;"Plus-values réinvesties";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
 787300;787000;"Reprises sur provisions réglementées (stocks) ";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
 787400;787000;"Reprises sur autres provisions réglementées ";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
 787500;787000;"Reprises sur provisions exceptionnelles";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
 787600;787000;"Reprises sur dépréciations exceptionnelles";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
 790;"CL7";"Transferts de charges";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
-791000;790;"Transferts de charges d'exploitation";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
-796000;790;"Transferts de charges financières";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
-797000;790;"Transferts de charges exceptionnelles";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
 800;"CL8";"Engagements";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 801000;800;"Engagements donnés par l'entité";"FRA_PCG9010";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 801100;801000;"Avals, cautions, garanties";"FRA_PCG9010";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
@@ -1041,5 +949,77 @@
 809200;809;"Contrepartie 802";"FRA_PCG9010";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 880;"CL8";"Résultat en instance d'affectation";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
 890;"CL8";"Bilan";"FRA_PCG0";"true";0;;;;;;;0;"false";"NDAS";"false";;;;;;1
+120900;120;"Acomptes sur dividendes";"FRA_PCG210";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
+152000;150;"Provisions pour charges";"FRA_PCG220";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+152100;152000;"Provisions pour pensions et obligations similaires";"FRA_PCG220";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+152200;152000;"Provisions pour restructurations";"FRA_PCG220";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+152300;152000;"Provisions pour impôts";"FRA_PCG220";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+152400;152000;"Provisions pour renouvellement des immobilisations (entreprises concessionnaires)";"FRA_PCG220";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+152500;152000;"Provisions pour gros entretien ou grandes révisions";"FRA_PCG220";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+152600;152000;"Provisions pour remise en état";"FRA_PCG220";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+152700;152000;"Autres provisions pour charges";"FRA_PCG220";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+161800;161000;"Intérêts courus sur emprunts obligataires convertibles";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+163800;163000;"Intérêts courus sur autres emprunts obligataires";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+164800;164000;"Intérêts courus sur emprunts auprès des établissements de crédit";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+165800;165000;"Intérêts courus sur dépôts et cautionnements reçus";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+166800;166000;"Intérêts courus sur participation des salariés aux résultats";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+167110;167100;"Titres participatifs montant principal";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+167120;167100;"Autres fonds non remboursables montant principal";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+167300;167000;"Avances conditionnées montant principal";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+168200;168000;"Emprunts participatifs";"FRA_PCG230";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+229000;220;"Droits du concédant (présentés dans la rubrique autres fonds propres)";"FRA_PCG110";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+262000;260;"Titres évalués par équivalence";"FRA_PCG110";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+280600;280000;"Droit au bail";"FRA_PCG110";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
+290100;290000;"Frais d'établissement";"FRA_PCG110";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
+290300;290000;"Frais de développement";"FRA_PCG110";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
+291100;291000;"Terrains";"FRA_PCG110";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+291200;291000;"Agencements et aménagements de terrains";"FRA_PCG110";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+291300;291000;"Constructions";"FRA_PCG110";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+291400;291000;"Constructions sur sol d'autrui";"FRA_PCG110";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+291500;291000;"Installations techniques, matériels et outillages industriels";"FRA_PCG110";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+291800;291000;"Autres immobilisations corporelles";"FRA_PCG110";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+296200;296000;"Titres évalués par équivalence";"FRA_PCG110";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
+439000;430;"Organismes sociaux - Produits à recevoir";"FRA_PCG140";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
+448100;448000;"État - Charges à payer";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+448110;448100;"Charges fiscales sur congés à payer";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+448120;448100;"Charges à payer";"FRA_PCG250";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+474100;474000;"Différences d'évaluation sur instruments financiers à terme - Actif";"FRA_PCG140";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
+474200;474000;"Différences d'évaluation sur jetons détenus - Actif";"FRA_PCG140";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
+475100;475000;"Différences d'évaluation sur instruments financiers à terme - Passif";"FRA_PCG240";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+475200;475000;"Différences d'évaluation sur jetons détenus - Passif";"FRA_PCG240";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+475600;475000;"Différences d'évaluation de jetons sur des passifs - Passif";"FRA_PCG240";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
+478100;478;"Mali de fusion sur actif circulant";"FRA_PCG140";"true";1;;;;;;;0;"false";"NDAS";"false";;;;;;1
+602620;602600;"Malis sur emballage";"FRA_PCG2000";"true";1;;;;"true";"true";"N_D";1;"false";"NDAS";"true";;;;;;1
+638000;630;"Rappel d'impôts (autres qu'impôts sur les bénéfices)";"FRA_PCG2000";"true";1;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
+649000;640;"Remboursements de charges de personnel";"FRA_PCG2000";"true";1;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
+657000;650;"Valeurs comptables des immobilisations incorporelles et corporelles cédées";"FRA_PCG2000";"true";1;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
+658100;658000;"Pénalités sur marchés (et dédits payés sur achats et ventes)";"FRA_PCG2000";"true";1;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
+658200;658000;"Pénalités, amendes fiscales et pénales";"FRA_PCG2000";"true";1;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
+658300;658000;"Malis provenant de clauses d'indexation";"FRA_PCG2000";"true";1;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
+658400;658000;"Lots";"FRA_PCG2000";"true";1;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
+658800;658000;"Opérations de constitution ou liquidation des fiducies";"FRA_PCG2000";"true";1;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
+667100;667000;"Valeurs comptables des immobilisations financières cédées";"FRA_PCG2000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
+667200;667000;"Charges nettes sur cessions de titres immobilisés de l'activité de portefeuille";"FRA_PCG2000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
+667300;667000;"Charges nettes sur cessions de valeurs mobilières de placement";"FRA_PCG2000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
+667400;667000;"Charges nettes sur cessions de jetons";"FRA_PCG2000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
+668300;668000;"Mali provenant du rachat par l'entité d'actions et obligations émises par elle-même";"FRA_PCG2000";"true";1;;;;"true";;;2;"false";"NDAS";"true";;;;;;1
+686200;686000;"Dotations aux amortissements des frais d'émission des emprunts";"FRA_PCG2000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
+741000;740;"Subventions d'exploitation";"FRA_PCG1000";"true";2;;;;"true";"true";"N_C";0;"false";"NDAS";"true";;;;;;1
+742000;740;"Subventions d'équilibre";"FRA_PCG1000";"true";2;;;;"true";"true";"N_C";0;"false";"NDAS";"true";;;;;;1
+747000;740;"Quote-part des subventions d'investissement virée au résultat de l'exercice";"FRA_PCG1000";"true";2;;;;"true";"true";"N_C";0;"false";"NDAS";"true";;;;;;1
+757000;750;"Produits des cessions d'immobilisations incorporelles et corporelles";"FRA_PCG1000";"true";1;;;;"true";"true";"N_C";0;"false";"NDAS";"true";;;;;;1
+758100;758000;"Dédits et pénalités perçus sur achats et ventes";"FRA_PCG1000";"true";1;;;;"true";"true";"N_C";0;"false";"NDAS";"true";;;;;;1
+758200;758000;"Libéralités reçues";"FRA_PCG1000";"true";1;;;;"true";"true";"N_C";0;"false";"NDAS";"true";;;;;;1
+758300;758000;"Rentrées sur créances amorties";"FRA_PCG1000";"true";1;;;;"true";"true";"N_C";0;"false";"NDAS";"true";;;;;;1
+758400;758000;"Dégrèvements d'impôts autres qu'impôts sur les bénéfices";"FRA_PCG1000";"true";1;;;;"true";"true";"N_C";0;"false";"NDAS";"true";;;;;;1
+758500;758000;"Bonis provenant de clauses d'indexation";"FRA_PCG1000";"true";1;;;;"true";"true";"N_C";0;"false";"NDAS";"true";;;;;;1
+758600;758000;"Lots";"FRA_PCG1000";"true";1;;;;"true";"true";"N_C";0;"false";"NDAS";"true";;;;;;1
+758700;758000;"Indemnités d'assurance";"FRA_PCG1000";"true";1;;;;"true";"true";"N_C";0;"false";"NDAS";"true";;;;;;1
+758800;758000;"Opérations de constitution ou liquidation des fiducies";"FRA_PCG1000";"true";1;;;;"true";"true";"N_C";0;"false";"NDAS";"true";;;;;;1
+767100;767000;"Produits des cessions d'immobilisations financières";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
+767200;767000;"Produits nets sur cessions de titres immobilisés de l'activité de portefeuille";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
+767300;767000;"Produits nets sur cessions de valeurs mobilières de placement";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
+767400;767000;"Produits nets sur cessions de jetons";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
+768300;768000;"Bonis provenant du rachat par l'entreprise d'actions et d'obligations émises par elle-même";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
 890000;890;"Bilan d'ouverture";"FRA_PCG9000";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1
 891000;890;"Bilan de clôture";"FRA_PCG9000";"true";2;;;;;;;0;"false";"NDAS";"false";;;;;;1

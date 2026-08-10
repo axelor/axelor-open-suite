@@ -15,8 +15,8 @@
 204;206;21;"Produits finis";"Produits finis";5000;5000;5000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;701000;1;1;1
 205;206;21;"Marchandises";"Marchandises";8000;8000;8000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;707100;1;1;1
 206;206;21;"Activités connexes";"Activités connexes";2700;2700;2700;"TODAY[1d]";"TODAY[30d]";"budget";1;1;708000;1;1;1
-207;202;21;"Subvention1";"Subvention 1";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;777000;1;1;7
-208;202;21;"Subvention2";"Subvention 2";1200;1200;1200;"TODAY[1d]";"TODAY[30d]";"budget";1;1;777000;1;2;7
+207;202;21;"Subvention1";"Subvention 1";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;747000;1;1;7
+208;202;21;"Subvention2";"Subvention 2";1200;1200;1200;"TODAY[1d]";"TODAY[30d]";"budget";1;1;747000;1;2;7
 209;203;21;"Participations";"Participations";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;761000;1;1;7
 210;203;21;"Produits immo fin.";"Produits autres immo fin.";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;762000;1;1;7
 211;203;21;"Revenus autres créances";"Revenus créances";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;763000;1;1;7
@@ -57,7 +57,7 @@
 433;439;41;"Taux d’intérêts";"Taux d’intérêts";149;149;149;"TODAY[1d]";"TODAY[30d]";"budget";1;1;661100;1;1;5
 434;439;41;"Frais de tenue de compte";"Frais de tenue de compte";119;119;119;"TODAY[1d]";"TODAY[30d]";"budget";1;1;627000;1;1;5
 435;409;41;"Cotisation foncière";"Cotisation foncière";800;800;800;"TODAY[1d]";"TODAY[30d]";"budget";1;1;635120;1;1;9
-436;409;41;"Taxe d’apprentissage";"Taxe d’apprentissage";490;490;490;"TODAY[1d]";"TODAY[30d]";"budget";1;1;631200;1;1;9
+436;409;41;"Taxe d’apprentissage";"Taxe d’apprentissage";490;490;490;"TODAY[1d]";"TODAY[30d]";"budget";1;1;633300;1;1;9
 437;409;41;"Impôt sur les sociétés (IS)";"Impôt sur les sociétés (IS)";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;695000;1;1;9
 438;410;41;"TVA";"TVA";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;445510;1;1;9
 439;411;41;"Cadeaux et fournitures clients";"Cadeaux et fournitures clients";930;930;930;"TODAY[1d]";"TODAY[30d]";"budget";1;1;623400;1;1;5
