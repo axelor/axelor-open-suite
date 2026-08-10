@@ -714,6 +714,8 @@
             grid-view="account-grid"/>
           <panel name="movePanel" showIf="move != null">
             <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"/>
+            <button name="viewMoveBtn" title="View move entry" icon="box-arrow-up-right"
+              onClick="action-invoice-view-open-move"/>
             <field name="move.accountingOk" readonly="true"/>
           </panel>
           <field name="doubtfulCustomerOk" readonly="true"
@@ -3116,5 +3118,12 @@
     <action name="action-invoice-record-clear-discount-amount"/>
     <action name="action-invoice-group-invoice-line-list-on-change"/>
   </action-group>
+
+  <action-view name="action-invoice-view-open-move" title="Account move"
+    model="com.axelor.apps.account.db.Move">
+    <view type="form" name="move-form"/>
+    <view type="grid" name="move-grid"/>
+    <context name="_showRecord" expr="eval: __repo__(Invoice).find(id)?.move?.id"/>
+  </action-view>
 
 </object-views>
