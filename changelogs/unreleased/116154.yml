@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed invoice category not being filled for customer refund invoices."
+module: axelor-account

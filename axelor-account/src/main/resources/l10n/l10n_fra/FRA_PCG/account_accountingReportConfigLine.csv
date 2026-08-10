@@ -31,7 +31,7 @@
 "FRA_PCG10234";"FRA_PCG100";;33;1;2;"Avances et acomptes versés sur commandes";"aeavsc";0;;;1;"false";;"4091%";;;;;;
 "FRA_PCG10235";"FRA_PCG100";;34;1;3;"Stocks et en-cours";"seec";0;;;;"false";"matpre + encdep + pief + march + aeavsc";;;;;;;
 "FRA_PCG10237";"FRA_PCG100";;36;1;2;"Créances clients et comptes rattachés";"ccecr";0;;;1;"false";;"411%,413%,416%,418%";;;;;;
-"FRA_PCG10238";"FRA_PCG100";;37;1;2;"Autres créances";"autcr";0;;;1;"false";;"4096%,4097%,4098%,425%,4287%,438700,441%,443%,444%,4452%,4456%,4458%,4487%,451%,455%,4561%,4563%,4564%,4566%,4567%,458%,462%,465%,467%,4687%,478%";;;;;;
+"FRA_PCG10238";"FRA_PCG100";;37;1;2;"Autres créances";"autcr";0;;;1;"false";;"4096%,4097%,4098%,425%,4287%,439000,441%,443%,444%,4452%,4456%,4458%,4487%,451%,455%,4561%,4563%,4564%,4566%,4567%,458%,462%,465%,467%,4687%,478%";;;;;;
 "FRA_PCG10239";"FRA_PCG100";;38;1;3;"Créances";"creances";0;;;;"false";"ccecr + autcr";;;;;;;
 "FRA_PCG10241";"FRA_PCG100";;40;1;2;"Capital souscrit non versé";"csnv";0;;;1;"false";;"4562%";;;;;;
 "FRA_PCG10243";"FRA_PCG100";;42;1;2;"Action propres";"actpro";0;;;1;"false";;"502%";;;;;;

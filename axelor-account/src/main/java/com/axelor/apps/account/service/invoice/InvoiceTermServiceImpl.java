@@ -867,7 +867,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoice.getId() == null
         || ObjectUtils.isEmpty(invoice.getInvoiceTermList())
         || (invoice.getInTaxTotal().signum() == 0
-            && invoice.getStatusSelect() == InvoiceRepository.STATUS_DRAFT
             && !ObjectUtils.isEmpty(invoice.getInvoiceLineList()))
         || ObjectUtils.isEmpty(invoice.getInvoiceLineList())
         || invoice.getAmountRemaining().signum() > 0) {
