@@ -49,7 +49,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -117,12 +116,17 @@ public class AnalyticMoveLineQueryController {
               analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList())) {
         return;
       }
-      String query =
-          Beans.get(AnalyticMoveLineQueryService.class)
-              .getAnalyticMoveLineQuery(analyticMoveLineQuery);
-      List<AnalyticMoveLine> analyticMoveLines =
-          Beans.get(AnalyticMoveLineRepository.class).all().filter(query).fetch();
-      reverses(response, analyticMoveLineQuery, analyticMoveLines);
+      AnalyticMoveLineQueryService analyticMoveLineQueryService =
+          Beans.get(AnalyticMoveLineQueryService.class);
+      AnalyticMoveLineQueryService.AnalyticMoveLineReverseResult result =
+          analyticMoveLineQueryService.reverseAll(analyticMoveLineQuery);
+
+      setReverseResponse(
+          response,
+          analyticMoveLineQueryService,
+          analyticMoveLineQuery,
+          result.reverseCount(),
+          result.newCount());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -141,29 +145,43 @@ public class AnalyticMoveLineQueryController {
         .validateReverseParameterAxisPercentage(
             analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList());
 
-    Set<AnalyticMoveLine> reverseAnalyticMoveLines =
-        analyticMoveLineQueryService.analyticMoveLineReverses(
-            analyticMoveLineQuery, analyticMoveLines);
-    Set<AnalyticMoveLine> newAnalyticMoveLines =
-        analyticMoveLineQueryService.createAnalyticMoveLines(
-            analyticMoveLineQuery, analyticMoveLines);
+    int reverseCount =
+        analyticMoveLineQueryService
+            .analyticMoveLineReverses(analyticMoveLineQuery, analyticMoveLines)
+            .size();
+    int newCount =
+        analyticMoveLineQueryService
+            .createAnalyticMoveLines(analyticMoveLineQuery, analyticMoveLines)
+            .size();
 
-    List<AnalyticMoveLine> filteredAnalyticMoveLineList =
+    setReverseResponse(
+        response, analyticMoveLineQueryService, analyticMoveLineQuery, reverseCount, newCount);
+  }
+
+  protected void setReverseResponse(
+      ActionResponse response,
+      AnalyticMoveLineQueryService analyticMoveLineQueryService,
+      AnalyticMoveLineQuery analyticMoveLineQuery,
+      int reverseCount,
+      int newCount) {
+    List<Long> filteredAnalyticMoveLineIds =
         Beans.get(AnalyticMoveLineRepository.class)
             .all()
             .filter(analyticMoveLineQueryService.getAnalyticMoveLineQuery(analyticMoveLineQuery))
-            .fetch();
+            .select("id")
+            .fetch(0, 0)
+            .stream()
+            .map(m -> (Long) m.get("id"))
+            .collect(Collectors.toList());
 
     response.setInfo(
         String.format(
             I18n.get(
                 "The analytic revision process has ended and generated %s reverse and %s revision analytic move lines."),
-            reverseAnalyticMoveLines.size(),
-            newAnalyticMoveLines.size()));
+            reverseCount,
+            newCount));
 
-    response.setValue(
-        "__analyticMoveLineList",
-        filteredAnalyticMoveLineList.stream().map(l -> l.getId()).collect(Collectors.toList()));
+    response.setValue("__analyticMoveLineList", filteredAnalyticMoveLineIds);
     response.setAttr("filteredAnalyticmoveLinesDashlet", "refresh", true);
   }
 
