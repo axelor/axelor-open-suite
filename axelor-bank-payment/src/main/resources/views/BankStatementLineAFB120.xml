@@ -48,8 +48,8 @@
     <field name="lineTypeSelect" width="90"/>
     <field name="operationDate" width="90"/>
     <field name="valueDate" width="90"/>
-    <field name="debit" width="90" x-scale="$currencyNumberOfDecimals"/>
-    <field name="credit" width="90" x-scale="$currencyNumberOfDecimals"/>
+    <field name="debit" width="90" x-scale="$currencyNumberOfDecimals" aggregate="sum"/>
+    <field name="credit" width="90" x-scale="$currencyNumberOfDecimals" aggregate="sum"/>
     <field name="currency" width="60" form-view="currency-form" grid-view="currency-grid"/>
     <field name="bankDetails" width="375" form-view="bank-details-form"
       grid-view="bank-details-grid"/>
@@ -57,7 +57,8 @@
     <field name="origin" width="70"/>
     <field name="reference" width="100"/>
     <field name="description" width="200"/>
-    <field name="amountRemainToReconcile" width="90" x-scale="$currencyNumberOfDecimals"/>
+    <field name="amountRemainToReconcile" width="90" x-scale="$currencyNumberOfDecimals"
+      aggregate="sum"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 
