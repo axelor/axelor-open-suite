@@ -3761,6 +3761,7 @@
 "View entries",,,
 "View entry",,,
 "View entry lines",,,
+"View move entry",,,
 "WT amount in company currency",,,
 "Warning : One or more invoice terms are presenting a financial discount calculation which is not applicable. Do you wish to proceed ?",,,
 "Warning : The following invoice terms have been paid or partially paid since the payment session was created and thus won't be considered during validation. Do you wish to continue ?",,,
