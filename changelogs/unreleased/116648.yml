@@ -1,0 +1,3 @@
+---
+title: "Payment voucher: fixed the payment wizard showing incorrect due dates and origins on opening, before searching for items to pay, and when loading or resetting selected lines."
+module: axelor-account
