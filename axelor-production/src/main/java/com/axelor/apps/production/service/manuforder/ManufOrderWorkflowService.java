@@ -38,6 +38,8 @@ public interface ManufOrderWorkflowService {
 
   boolean partialFinish(ManufOrder manufOrder) throws AxelorException;
 
+  boolean completeIfFullyProduced(ManufOrder manufOrder) throws AxelorException;
+
   void cancel(ManufOrder manufOrder, CancelReason cancelReason, String cancelReasonStr)
       throws AxelorException;
 
