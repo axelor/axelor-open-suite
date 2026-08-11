@@ -20,17 +20,16 @@ package com.axelor.apps.helpdesk.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.helpdesk.db.Sla;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.TicketStatus;
 import com.axelor.apps.helpdesk.db.repo.SlaRepository;
+import com.axelor.apps.helpdesk.service.app.AppHelpdeskService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.studio.db.AppHelpdesk;
-import com.axelor.studio.db.repo.AppHelpdeskRepository;
 import com.axelor.utils.helpers.date.DurationHelper;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import jakarta.inject.Inject;
@@ -42,7 +41,7 @@ import java.util.Optional;
 
 public class TicketServiceImpl implements TicketService {
 
-  protected AppHelpdeskRepository appHelpdeskRepo;
+  protected AppHelpdeskService appHelpdeskService;
 
   protected SlaRepository slaRepo;
 
@@ -50,22 +49,18 @@ public class TicketServiceImpl implements TicketService {
 
   protected WeeklyPlanningService weeklyPlanningService;
 
-  protected AppBaseService appBaseService;
-
   private LocalDateTime toDate;
 
   @Inject
   public TicketServiceImpl(
-      AppHelpdeskRepository appHelpdeskRepo,
+      AppHelpdeskService appHelpdeskService,
       SlaRepository slaRepo,
       PublicHolidayService publicHolidayService,
-      WeeklyPlanningService weeklyPlanningService,
-      AppBaseService appBaseService) {
-    this.appHelpdeskRepo = appHelpdeskRepo;
+      WeeklyPlanningService weeklyPlanningService) {
+    this.appHelpdeskService = appHelpdeskService;
     this.slaRepo = slaRepo;
     this.publicHolidayService = publicHolidayService;
     this.weeklyPlanningService = weeklyPlanningService;
-    this.appBaseService = appBaseService;
   }
 
   /**
@@ -75,7 +70,7 @@ public class TicketServiceImpl implements TicketService {
   @Override
   public Sla computeSLA(Ticket ticket) {
 
-    AppHelpdesk helpdesk = appHelpdeskRepo.all().fetchOne();
+    AppHelpdesk helpdesk = appHelpdeskService.getHelpdeskApp();
     Sla sla = null;
 
     if (helpdesk.getIsSla()) {
@@ -123,6 +118,10 @@ public class TicketServiceImpl implements TicketService {
 
   @Override
   public void computeSLAAndDeadLine(Ticket ticket) throws AxelorException {
+    if (!appHelpdeskService.getHelpdeskApp().getIsSla()) {
+      return;
+    }
+
     Sla sla = computeSLA(ticket);
 
     if (sla != null) {
