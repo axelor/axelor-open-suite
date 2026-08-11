@@ -25,11 +25,16 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.Strings;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.UriBuilder;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +42,9 @@ import org.slf4j.LoggerFactory;
 public class MapServiceImpl implements MapService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  private static final Cache<String, Optional<Map<String, Object>>> GEOCODE_CACHE =
+      CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).maximumSize(1000).build();
 
   protected final AppBaseService appBaseService;
   protected final MapOsmService mapOsmService;
@@ -59,16 +67,30 @@ public class MapServiceImpl implements MapService {
   public Map<String, Object> getMap(String qString) throws AxelorException {
     LOG.debug("qString = {}", qString);
 
-    switch (appBaseService.getAppBase().getMapApiSelect()) {
+    int mapApiSelect = appBaseService.getAppBase().getMapApiSelect();
+    String cacheKey = mapApiSelect + "|" + qString.trim().toLowerCase(Locale.ROOT);
+
+    Optional<Map<String, Object>> cached = GEOCODE_CACHE.getIfPresent(cacheKey);
+    if (cached != null) {
+      return cached.orElse(null);
+    }
+
+    Map<String, Object> result;
+    switch (mapApiSelect) {
       case AppBaseRepository.MAP_API_GOOGLE:
-        return mapGoogleService.getMapGoogle(qString);
+        result = mapGoogleService.getMapGoogle(qString);
+        break;
 
       case AppBaseRepository.MAP_API_OPEN_STREET_MAP:
-        return mapOsmService.getMapOsm(qString);
+        result = mapOsmService.getMapOsm(qString);
+        break;
 
       default:
-        return null;
+        result = null;
     }
+
+    GEOCODE_CACHE.put(cacheKey, Optional.ofNullable(result));
+    return result;
   }
 
   @Override
