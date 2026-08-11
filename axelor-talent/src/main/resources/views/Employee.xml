@@ -4,24 +4,24 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <form name="talent-employee-form" title="Employee" model="com.axelor.apps.hr.db.Employee">
-    <panel name="skillsPanel" title="Skills" if="__config__.app.isApp('training')"
-      canCollapse="true" collapseIf="true">
+    <panel name="skillsPanel" title="Skills" icon="stars"
+      if="__config__.app.isApp('training')" canCollapse="true" collapseIf="true">
       <field name="trainingSkillList" form-view="training-skill-form"
         grid-view="training-skill-grid" colSpan="12"/>
     </panel>
 
-    <panel name="trainingPanel" title="Training" if="__config__.app.isApp('training')"
-      canCollapse="true" collapseIf="true">
+    <panel name="trainingPanel" title="Training" icon="mortarboard-fill"
+      if="__config__.app.isApp('training')" canCollapse="true" collapseIf="true">
       <panel-dashlet name="employeeTrainingRegisterPanel"
-        action="action-dashlet-employee-training-register" colSpan="12"/>
+        action="action-dashlet-employee-training-register" colSpan="12" height="200%"/>
       <panel-dashlet name="employeeTrainingPerCategoryPanel"
-        action="chart:chart.employee.training.per.category" colSpan="12"/>
+        action="chart:chart.employee.training.per.category" colSpan="12" height="200%"/>
     </panel>
 
-    <panel name="appraisalPanel" title="Appraisals" if="__config__.app.isApp('appraisal')"
-      canCollapse="true" collapseIf="true">
+    <panel name="appraisalPanel" title="Appraisals" icon="clipboard-check-fill"
+      if="__config__.app.isApp('appraisal')" canCollapse="true" collapseIf="true">
       <panel-dashlet name="employeeAppraisalSentPanel"
-        action="action-dashlet-employee-appraisal-sent" colSpan="12"/>
+        action="action-dashlet-employee-appraisal-sent" colSpan="12" height="200%"/>
     </panel>
   </form>
 
