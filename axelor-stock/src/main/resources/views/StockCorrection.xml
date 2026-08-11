@@ -38,7 +38,7 @@
         onSelect="action-stock-correction-on-select-product"
         onChange="action-stock-correction-method-set-deault-qtys" grid-view="product-grid"
         form-view="product-form"/>
-      <field name="trackingNumber" canEdit="false"
+      <field name="trackingNumber" canEdit="false" canNew="true"
         onSelect="action-stock-correction-on-select-tracking-number"
         onChange="action-stock-correction-method-set-deault-qtys"/>
       <spacer name="trackingNumberSpacer"/>
@@ -85,7 +85,20 @@
     <attribute name="domain" for="trackingNumber"
       expr="eval: &quot; self.id IN (0) &quot;" if="stockLocation == null || product == null"/>
     <attribute name="domain" for="trackingNumber"
-      expr="eval: &quot; self IN (SELECT sll.trackingNumber FROM StockLocationLine sll WHERE sll.detailsStockLocation = :stockLocation AND sll.product = :product) &quot;"
+      expr="eval: &quot;
+        self.product = :product AND (
+          EXISTS (
+            SELECT sll.id FROM StockLocationLine sll
+            WHERE sll.trackingNumber.id = self.id
+            AND sll.detailsStockLocation = :stockLocation
+            AND sll.product = :product
+          )
+          OR NOT EXISTS (
+            SELECT sll.id FROM StockLocationLine sll
+            WHERE sll.trackingNumber.id = self.id
+          )
+        )
+      &quot;"
       if="stockLocation != null &amp;&amp; product != null"/>
   </action-attrs>
 
