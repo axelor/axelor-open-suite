@@ -19,6 +19,7 @@
 package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -305,9 +306,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
 
     } else {
       stockMoveList = manufOrder.getOutStockMoveList();
-      fromStockLocation =
-          stockConfigProductionService.getProductionVirtualStockLocation(
-              stockConfig, manufOrderOutsourceService.isOutsource(manufOrder));
+      fromStockLocation = getVirtualStockLocationForProducedStockMove(manufOrder, company);
       toStockLocation = getDefaultOutStockLocation(manufOrder, company);
     }
 
@@ -372,18 +371,28 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     }
 
     // generate new stock move
+    Address fromAddress = null;
+    Address toAddress = null;
+    int stockMoveTypeSelect = StockMoveRepository.TYPE_INTERNAL;
+    if (inOrOut == PART_FINISH_OUT && manufOrder.getOutsourcing()) {
+      fromAddress =
+          partnerService.getDefaultAddress(
+              manufOrderOutsourceService.getOutsourcePartner(manufOrder).orElse(null));
+      toAddress = toStockLocation.getAddress();
+      stockMoveTypeSelect = StockMoveRepository.TYPE_INCOMING;
+    }
 
     StockMove newStockMove =
         stockMoveProductionService.createStockMove(
-            null,
-            null,
+            fromAddress,
+            toAddress,
             company,
             fromStockLocation,
             toStockLocation,
             null,
             manufOrder.getPlannedStartDateT().toLocalDate(),
             null,
-            StockMoveRepository.TYPE_INTERNAL);
+            stockMoveTypeSelect);
 
     newStockMove.setStockMoveLineList(new ArrayList<>());
     newStockMove.setOrigin(manufOrder.getManufOrderSeq());
