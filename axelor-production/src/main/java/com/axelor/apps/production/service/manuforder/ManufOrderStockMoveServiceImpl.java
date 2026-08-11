@@ -342,6 +342,13 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
             productionTrackingPreservationService.getPreservedTrackingNumbersByProduct(
                 reserveLines);
 
+        // Also reclaim tracking numbers orphaned by a manually deleted produced line
+        preservedTrackingNumbersByProduct =
+            productionTrackingPreservationService.reclaimOrphanedTrackingNumbers(
+                preservedTrackingNumbersByProduct,
+                manufOrder.getToProduceProdProductList(),
+                manufOrder);
+
         // Remove reserve lines from stock move so they are not realized
         for (StockMoveLine reserveLine : reserveLines) {
           if (reserveLine.getTrackingNumber() != null) {

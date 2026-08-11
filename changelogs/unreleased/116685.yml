@@ -1,0 +1,3 @@
+---
+title: "Production: fixed a manufacturing order generating new tracking numbers instead of reusing the original ones after a produced stock move line was manually deleted."
+module: axelor-production
