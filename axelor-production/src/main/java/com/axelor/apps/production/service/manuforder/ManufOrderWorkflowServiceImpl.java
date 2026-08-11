@@ -362,6 +362,37 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     return realQty.signum() != 0 ? realQty : manufOrder.getQty();
   }
 
+  /** Unlike {@link #computeRealProducedQty}, does not fall back to {@code manufOrder.getQty()}. */
+  protected BigDecimal computeProducedQtyRealized(ManufOrder manufOrder) {
+    if (ObjectUtils.isEmpty(manufOrder.getProducedStockMoveLineList())) {
+      return BigDecimal.ZERO;
+    }
+    return manufOrder.getProducedStockMoveLineList().stream()
+        .filter(
+            sml ->
+                sml.getProduct() != null
+                    && sml.getProduct().equals(manufOrder.getProduct())
+                    && sml.getStockMove() != null
+                    && sml.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_REALIZED)
+        .map(StockMoveLine::getRealQty)
+        .filter(Objects::nonNull)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public boolean completeIfFullyProduced(ManufOrder manufOrder) throws AxelorException {
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+    if (manufOrder.getStatusSelect() == ManufOrderRepository.STATUS_FINISHED) {
+      return true;
+    }
+    if (computeProducedQtyRealized(manufOrder).compareTo(manufOrder.getQty()) >= 0) {
+      finishManufOrder(manufOrder);
+      return sendFinishedMail(manufOrder);
+    }
+    return true;
+  }
+
   /**
    * Allows to finish partially a manufacturing order, by realizing current stock move and planning
    * the difference with the planned prodproducts.
@@ -412,7 +443,10 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     BigDecimal unitCostThisBatch = computeOneUnitProductionPrice(manufOrder, costSheet);
     manufOrder.setCostPrice(computeCumulativeProductionCost(manufOrder));
     manufOrderStockMoveService.updatePrices(manufOrder, unitCostThisBatch, plannedOutMoveIds);
-    manufOrderStockMoveService.partialFinishOut(manufOrder);
+    manufOrder = manufOrderStockMoveService.partialFinishOut(manufOrder);
+    if (computeProducedQtyRealized(manufOrder).compareTo(manufOrder.getQty()) >= 0) {
+      return completeIfFullyProduced(manufOrder);
+    }
     return sendPartialFinishMail(manufOrder);
   }
 
