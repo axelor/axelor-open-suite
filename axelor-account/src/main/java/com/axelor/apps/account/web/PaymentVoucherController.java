@@ -19,7 +19,9 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
@@ -38,16 +40,21 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Resource;
 import com.google.common.base.Strings;
 import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +85,7 @@ public class PaymentVoucherController {
     try {
       List<PayVoucherDueElement> pvDueElementList =
           Beans.get(PaymentVoucherLoadService.class).searchDueElements(paymentVoucher);
-      response.setValue("payVoucherDueElementList", pvDueElementList);
+      response.setValue("payVoucherDueElementList", toPayVoucherLineMapList(pvDueElementList));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -92,9 +99,12 @@ public class PaymentVoucherController {
     try {
       boolean generateAll =
           Beans.get(PaymentVoucherLoadService.class).loadSelectedLines(paymentVoucher);
-      response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
       response.setValue(
-          "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
+          "payVoucherDueElementList",
+          toPayVoucherLineMapList(paymentVoucher.getPayVoucherDueElementList()));
+      response.setValue(
+          "payVoucherElementToPayList",
+          toPayVoucherLineMapList(paymentVoucher.getPayVoucherElementToPayList()));
 
       if (!generateAll) {
         response.setInfo(I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_NOT_GENERATE_ALL));
@@ -112,9 +122,12 @@ public class PaymentVoucherController {
     try {
       Beans.get(PaymentVoucherLoadService.class).resetImputation(paymentVoucher);
 
-      response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
       response.setValue(
-          "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
+          "payVoucherDueElementList",
+          toPayVoucherLineMapList(paymentVoucher.getPayVoucherDueElementList()));
+      response.setValue(
+          "payVoucherElementToPayList",
+          toPayVoucherLineMapList(paymentVoucher.getPayVoucherElementToPayList()));
       response.setValue("remainingAmount", paymentVoucher.getPaidAmount());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -196,7 +209,19 @@ public class PaymentVoucherController {
 
     try {
       Beans.get(PaymentVoucherLoadService.class).initFromInvoice(paymentVoucher, invoice);
-      response.setValues(paymentVoucher);
+      response.setValue("operationTypeSelect", paymentVoucher.getOperationTypeSelect());
+      response.setValue("partner", paymentVoucher.getPartner());
+      response.setValue("paymentMode", paymentVoucher.getPaymentMode());
+      response.setValue("currency", paymentVoucher.getCurrency());
+      response.setValue("company", paymentVoucher.getCompany());
+      response.setValue("companyBankDetails", paymentVoucher.getCompanyBankDetails());
+      response.setValue("paidAmount", paymentVoucher.getPaidAmount());
+      response.setValue(
+          "payVoucherDueElementList",
+          toPayVoucherLineMapList(paymentVoucher.getPayVoucherDueElementList()));
+      response.setValue(
+          "payVoucherElementToPayList",
+          toPayVoucherLineMapList(paymentVoucher.getPayVoucherElementToPayList()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -240,11 +265,42 @@ public class PaymentVoucherController {
     try {
       Beans.get(PaymentVoucherLoadService.class)
           .resetAndReloadElementToPay(paymentVoucher, invoice);
-      response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
       response.setValue(
-          "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
+          "payVoucherDueElementList",
+          toPayVoucherLineMapList(paymentVoucher.getPayVoucherDueElementList()));
+      response.setValue(
+          "payVoucherElementToPayList",
+          toPayVoucherLineMapList(paymentVoucher.getPayVoucherElementToPayList()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  protected List<Map<String, Object>> toPayVoucherLineMapList(
+      Collection<? extends Model> payVoucherLineList) {
+    if (CollectionUtils.isEmpty(payVoucherLineList)) {
+      return Collections.emptyList();
+    }
+    return payVoucherLineList.stream().map(this::toPayVoucherLineMap).collect(Collectors.toList());
+  }
+
+  @SuppressWarnings("unchecked")
+  protected Map<String, Object> toPayVoucherLineMap(Model payVoucherLine) {
+    Map<String, Object> payVoucherLineMap = Resource.toMap(payVoucherLine);
+    Mapper mapper = Mapper.of(payVoucherLine.getClass());
+
+    Object moveLine = mapper.get(payVoucherLine, "moveLine");
+    Map<String, Object> moveLineMap = (Map<String, Object>) payVoucherLineMap.get("moveLine");
+    if (moveLineMap != null && moveLine instanceof MoveLine) {
+      moveLineMap.put("origin", ((MoveLine) moveLine).getOrigin());
+    }
+
+    Object invoiceTerm = mapper.get(payVoucherLine, "invoiceTerm");
+    Map<String, Object> invoiceTermMap = (Map<String, Object>) payVoucherLineMap.get("invoiceTerm");
+    if (invoiceTermMap != null && invoiceTerm instanceof InvoiceTerm) {
+      invoiceTermMap.put("dueDate", ((InvoiceTerm) invoiceTerm).getDueDate());
+    }
+
+    return payVoucherLineMap;
   }
 }
