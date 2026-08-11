@@ -478,6 +478,50 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
         .divide(manufOrderQty, scale, RoundingMode.HALF_UP);
   }
 
+  @Override
+  public BigDecimal getRemainingQty(
+      ManufOrder manufOrder,
+      ProdProduct prodProduct,
+      BigDecimal qtyToUpdate,
+      List<StockMoveLine> stockMoveLineList) {
+    BigDecimal realizedQty = BigDecimal.ZERO;
+    if (!CollectionUtils.isEmpty(stockMoveLineList)) {
+      realizedQty =
+          stockMoveLineList.stream()
+              .filter(
+                  stockMoveLine ->
+                      stockMoveLine.getProduct() != null
+                          && stockMoveLine.getProduct().equals(prodProduct.getProduct())
+                          && stockMoveLine.getStockMove() != null
+                          && stockMoveLine.getStockMove().getStatusSelect()
+                              == StockMoveRepository.STATUS_REALIZED)
+              .map(StockMoveLine::getRealQty)
+              .filter(Objects::nonNull)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    return getFractionQty(manufOrder, prodProduct, qtyToUpdate)
+        .subtract(realizedQty)
+        .max(BigDecimal.ZERO);
+  }
+
+  @Override
+  public boolean hasRemainingQty(
+      ManufOrder manufOrder,
+      List<ProdProduct> prodProductList,
+      BigDecimal qtyToUpdate,
+      List<StockMoveLine> stockMoveLineList) {
+    if (CollectionUtils.isEmpty(prodProductList)) {
+      return false;
+    }
+
+    return prodProductList.stream()
+        .anyMatch(
+            prodProduct ->
+                getRemainingQty(manufOrder, prodProduct, qtyToUpdate, stockMoveLineList).signum()
+                    > 0);
+  }
+
   public StockLocation getFromStockLocationForConsumedStockMove(
       ManufOrder manufOrder, Company company) throws AxelorException {
     StockLocation fromStockLocation = getDefaultInStockLocation(manufOrder, company);
