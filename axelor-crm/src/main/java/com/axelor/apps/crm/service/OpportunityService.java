@@ -35,7 +35,7 @@ public interface OpportunityService {
 
   void setOpportunityStatusStagedClosedLost(Opportunity opportunity) throws AxelorException;
 
-  void setOpportunityStatusNextStage(Opportunity opportunity);
+  void setOpportunityStatusNextStage(Opportunity opportunity) throws AxelorException;
 
   @CallMethod
   public List<Long> getClosedOpportunityStatusIdList();
@@ -48,4 +48,6 @@ public interface OpportunityService {
       throws AxelorException;
 
   public void kanbanOpportunityOnMove(Opportunity opportunity) throws AxelorException;
+
+  void checkPartner(Opportunity opportunity) throws AxelorException;
 }
