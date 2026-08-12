@@ -1,0 +1,3 @@
+---
+title: "Payment session: fixed missing file error issue on bank order confirmation."
+module: axelor-bank-payment
