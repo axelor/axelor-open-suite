@@ -1,0 +1,3 @@
+---
+title: "Analytic distribution: fixed a rounding drift where the sum of generated analytic move lines could differ from the source amount."
+module: axelor-account
