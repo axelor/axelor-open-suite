@@ -80,9 +80,7 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
       BigDecimal amount =
           currencyScaleService.getCompanyScaledValue(
               moveLine, moveLine.getDebit().add(moveLine.getCredit()));
-      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        analyticMoveLineService.updateAnalyticMoveLine(analyticMoveLine, amount, date);
-      }
+      analyticMoveLineService.updateAnalyticMoveLineList(analyticMoveLineList, amount, date);
     }
     updateAccountTypeOnAnalytic(moveLine, moveLine.getAnalyticMoveLineList());
 

@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface AnalyticMoveLineGenerateRealService {
 
@@ -35,6 +36,18 @@ public interface AnalyticMoveLineGenerateRealService {
    * @return the created real analytic move line
    */
   AnalyticMoveLine createFromForecast(AnalyticMoveLine forecastAnalyticMoveLine, MoveLine moveLine);
+
+  /**
+   * Generate real analytic move lines from a list of forecast move lines, add them to the given
+   * move line and reconcile the per-line rounding so that, for each analytic axis, the sum of the
+   * generated amounts equals the move line amount (debit + credit).
+   *
+   * @param forecastAnalyticMoveLineList the forecast analytic move lines to copy.
+   * @param moveLine the move line that will be linked to and receive the created analytic move
+   *     lines.
+   */
+  void createFromForecastList(
+      List<AnalyticMoveLine> forecastAnalyticMoveLineList, MoveLine moveLine);
 
   void computeAnalyticDistribution(Move move, MoveLine moveLine, BigDecimal amount)
       throws AxelorException;
