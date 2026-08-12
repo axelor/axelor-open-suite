@@ -33,6 +33,8 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AnalyticMoveLineGenerateRealServiceImpl
     implements AnalyticMoveLineGenerateRealService {
@@ -78,6 +80,22 @@ public class AnalyticMoveLineGenerateRealServiceImpl
     analyticMoveLineService.updateAnalyticMoveLine(
         analyticMoveLine, moveLine.getDebit().add(moveLine.getCredit()), moveLine.getDate());
     return analyticMoveLine;
+  }
+
+  @Override
+  public void createFromForecastList(
+      List<AnalyticMoveLine> forecastAnalyticMoveLineList, MoveLine moveLine) {
+    if (CollectionUtils.isEmpty(forecastAnalyticMoveLineList)) {
+      return;
+    }
+    for (AnalyticMoveLine forecastAnalyticMoveLine : forecastAnalyticMoveLineList) {
+      moveLine.addAnalyticMoveLineListItem(
+          this.createFromForecast(forecastAnalyticMoveLine, moveLine));
+    }
+    // Each line amount is already computed by createFromForecast; only the per-line rounding drift
+    // has to be reconciled here.
+    analyticMoveLineService.reconcileRoundingRemainder(
+        moveLine.getAnalyticMoveLineList(), moveLine.getDebit().add(moveLine.getCredit()));
   }
 
   @Override

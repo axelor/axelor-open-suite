@@ -501,13 +501,8 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
             ? new ArrayList<>()
             : new ArrayList<>(moveLine.getAnalyticMoveLineList());
     moveLine.clearAnalyticMoveLineList();
-    expenseLine
-        .getAnalyticMoveLineList()
-        .forEach(
-            analyticMoveLine ->
-                moveLine.addAnalyticMoveLineListItem(
-                    analyticMoveLineGenerateRealService.createFromForecast(
-                        analyticMoveLine, moveLine)));
+    analyticMoveLineGenerateRealService.createFromForecastList(
+        expenseLine.getAnalyticMoveLineList(), moveLine);
     if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
       moveLine.setAnalyticMoveLineList(analyticMoveLineList);
     }
