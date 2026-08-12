@@ -257,6 +257,11 @@ public class CostSheetServiceImpl implements CostSheetService {
     return costSheet;
   }
 
+  @Override
+  public boolean hasPreviousCostSheet(ManufOrder manufOrder) {
+    return resolvePreviousCostSheetDate(manufOrder) != null;
+  }
+
   protected LocalDate resolvePreviousCostSheetDate(ManufOrder manufOrder) {
     LocalDate previousCostSheetDate = null;
     for (CostSheet existingCostSheet : manufOrder.getCostSheetList()) {
