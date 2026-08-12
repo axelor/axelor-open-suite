@@ -1,0 +1,6 @@
+---
+title: "Sale: fixed a quotation line disappearing and a valid quantity being flagged invalid in the confirm/split-order popup."
+module: axelor-sale
+developer: |
+  SaleOrderSplitDummyServiceImpl's constructor no longer takes a SaleOrderLineRepository
+  parameter.

@@ -26,7 +26,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderSplitDummyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderSplitService;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderDummyService;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -34,7 +33,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,19 +112,16 @@ public class SaleOrderConfirmController {
 
   public void orderAll(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
-    List<Map<String, Object>> saleOrderLineListContext = new ArrayList<>();
     SaleOrder saleOrder = context.asType(SaleOrder.class);
-    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
-    SaleOrderSplitService saleOrderSplitService = Beans.get(SaleOrderSplitService.class);
+    List<Map<String, Object>> saleOrderLineListContext =
+        Beans.get(SaleOrderSplitDummyService.class).getSaleOrderLineMapList(saleOrder);
     BigDecimal currentlyTotalOrdered = BigDecimal.ZERO;
-    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      Map<String, Object> map = Mapper.toMap(saleOrderLine);
-      BigDecimal qtyToOrder = saleOrderSplitService.getQtyToOrderLeft(saleOrderLine);
+    for (Map<String, Object> map : saleOrderLineListContext) {
+      BigDecimal qtyToOrder = (BigDecimal) map.get("$qtyToOrderLeft");
       map.put("$qtyToOrder", qtyToOrder);
       BigDecimal price =
-          saleOrder.getInAti() ? saleOrderLine.getInTaxPrice() : saleOrderLine.getPrice();
+          (BigDecimal) (saleOrder.getInAti() ? map.get("inTaxPrice") : map.get("price"));
       currentlyTotalOrdered = currentlyTotalOrdered.add(qtyToOrder.multiply(price));
-      saleOrderLineListContext.add(map);
     }
     response.setValue("$currentlyTotalOrdered", currentlyTotalOrdered);
     response.setValue("$saleOrderLineList", saleOrderLineListContext);
