@@ -624,10 +624,84 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Optional<StockMove> generateNewStockMove(StockMove stockMove) throws AxelorException {
-    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-      stockMoveLine.setQtyInvoiced(stockMoveLine.getQty().subtract(stockMoveLine.getQtyInvoiced()));
+    StockMove originalStockMove = stockMove.getReversionOriginStockMove();
+    Optional<StockMove> newStockMove = super.generateNewStockMove(stockMove);
+    newStockMove.ifPresent(
+        generatedStockMove ->
+            updateQtyInvoicedForNewStockMove(generatedStockMove, originalStockMove));
+    return newStockMove;
+  }
+
+  protected void updateQtyInvoicedForNewStockMove(
+      StockMove generatedStockMove, StockMove originalStockMove) {
+    for (StockMoveLine stockMoveLine : generatedStockMove.getStockMoveLineList()) {
+      stockMoveLine.setQtyInvoiced(
+          computeQtyInvoicedForNewStockMoveLine(stockMoveLine, originalStockMove));
     }
-    return super.generateNewStockMove(stockMove);
+  }
+
+  protected BigDecimal computeQtyInvoicedForNewStockMoveLine(
+      StockMoveLine stockMoveLine, StockMove originalStockMove) {
+    BigDecimal stockMoveLineQty = getPositiveQty(stockMoveLine.getQty());
+    BigDecimal reversionQtyInvoiced = getPositiveQty(stockMoveLine.getQtyInvoiced());
+    Optional<StockMoveLine> originalStockMoveLine =
+        findOriginalStockMoveLine(stockMoveLine, originalStockMove);
+
+    if (originalStockMoveLine.isEmpty()) {
+      return computeNetQtyInvoiced(stockMoveLineQty, reversionQtyInvoiced);
+    }
+
+    BigDecimal originalQtyInvoiced =
+        getPositiveQty(originalStockMoveLine.get().getQtyInvoiced()).min(stockMoveLineQty);
+    return computeNetQtyInvoiced(originalQtyInvoiced, reversionQtyInvoiced);
+  }
+
+  protected Optional<StockMoveLine> findOriginalStockMoveLine(
+      StockMoveLine stockMoveLine, StockMove originalStockMove) {
+    if (originalStockMove == null
+        || ObjectUtils.isEmpty(originalStockMove.getStockMoveLineList())) {
+      return Optional.empty();
+    }
+
+    List<StockMoveLine> matchingStockMoveLineList =
+        originalStockMove.getStockMoveLineList().stream()
+            .filter(
+                originalStockMoveLine -> isSameStockMoveLine(originalStockMoveLine, stockMoveLine))
+            .limit(2)
+            .collect(Collectors.toList());
+
+    return matchingStockMoveLineList.size() == 1
+        ? Optional.of(matchingStockMoveLineList.get(0))
+        : Optional.empty();
+  }
+
+  protected boolean isSameStockMoveLine(
+      StockMoveLine originalStockMoveLine, StockMoveLine stockMoveLine) {
+    return Objects.equals(
+            originalStockMoveLine.getPurchaseOrderLine(), stockMoveLine.getPurchaseOrderLine())
+        && Objects.equals(
+            originalStockMoveLine.getSaleOrderLine(), stockMoveLine.getSaleOrderLine())
+        && Objects.equals(originalStockMoveLine.getProduct(), stockMoveLine.getProduct())
+        && Objects.equals(originalStockMoveLine.getUnit(), stockMoveLine.getUnit())
+        && Objects.equals(
+            originalStockMoveLine.getTrackingNumber(), stockMoveLine.getTrackingNumber())
+        && Objects.equals(
+            originalStockMoveLine.getLineTypeSelect(), stockMoveLine.getLineTypeSelect())
+        && Objects.equals(
+            originalStockMoveLine.getFromStockLocation(), stockMoveLine.getFromStockLocation())
+        && Objects.equals(
+            originalStockMoveLine.getToStockLocation(), stockMoveLine.getToStockLocation());
+  }
+
+  protected BigDecimal computeNetQtyInvoiced(
+      BigDecimal originalQtyInvoiced, BigDecimal reversionQtyInvoiced) {
+    return getPositiveQty(originalQtyInvoiced)
+        .subtract(getPositiveQty(reversionQtyInvoiced))
+        .max(BigDecimal.ZERO);
+  }
+
+  protected BigDecimal getPositiveQty(BigDecimal qty) {
+    return qty == null ? BigDecimal.ZERO : qty.max(BigDecimal.ZERO);
   }
 
   @Override
