@@ -226,10 +226,9 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             .filter(sm -> sm.getStatusSelect() != StockMoveRepository.STATUS_REALIZED)
             .map(StockMove::getId)
             .collect(Collectors.toSet());
-    // Capture stock move line IDs that already belong to a previously realized batch (consumed
-    // and produced). They must be excluded from the cost sheet about to be computed so the
-    // result is strictly batch-specific (avoids double-counting raw materials / finished units
-    // that were already accounted for in a prior partial cost sheet, even on the same day).
+    // After a prior closing cost sheet exists, capture realized stock move line IDs from previous
+    // batches (consumed and produced). Excluding them keeps the next cost sheet batch-specific and
+    // avoids double-counting, including when multiple finishes happen on the same day.
     Set<Long> excludedConsumedLineIds = collectAlreadyAccountedLineIds(manufOrder, true);
     Set<Long> excludedProducedLineIds = collectAlreadyAccountedLineIds(manufOrder, false);
     manufOrder = manufOrderStockMoveService.finishInStockMoves(manufOrder);
@@ -417,9 +416,9 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             .filter(sm -> sm.getStatusSelect() != StockMoveRepository.STATUS_REALIZED)
             .map(StockMove::getId)
             .collect(Collectors.toSet());
-    // Capture stock move line IDs that already belong to a previously realized batch so they are
-    // excluded from this batch's cost sheet (avoids double-counting on partial-then-final, even
-    // when both happen on the same day).
+    // After a prior closing cost sheet exists, capture realized stock move line IDs from previous
+    // batches so they are excluded from this cost sheet (avoids double-counting on
+    // partial-then-final, including when both happen on the same day).
     Set<Long> excludedConsumedLineIds = collectAlreadyAccountedLineIds(manufOrder, true);
     Set<Long> excludedProducedLineIds = collectAlreadyAccountedLineIds(manufOrder, false);
     manufOrder = manufOrderStockMoveService.partialFinishIn(manufOrder);
@@ -473,14 +472,18 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
   /**
    * Collect stock move line IDs that already belong to a stock move with status {@code REALIZED}
-   * before the current finish step. These represent quantities already accounted for in a prior
-   * cost sheet and must be excluded from the cost sheet about to be computed.
+   * before the current finish step, but only when a prior closing cost sheet exists. These
+   * represent quantities already accounted for in that prior cost sheet and must be excluded from
+   * the cost sheet about to be computed.
    *
    * @param manufOrder the manuf order being finished
    * @param consumed {@code true} to collect from {@code consumedStockMoveLineList} (IN side),
    *     {@code false} to collect from {@code producedStockMoveLineList} (OUT side)
    */
   protected Set<Long> collectAlreadyAccountedLineIds(ManufOrder manufOrder, boolean consumed) {
+    if (!Beans.get(CostSheetService.class).hasPreviousCostSheet(manufOrder)) {
+      return new HashSet<>();
+    }
     List<StockMoveLine> source =
         consumed
             ? manufOrder.getConsumedStockMoveLineList()
