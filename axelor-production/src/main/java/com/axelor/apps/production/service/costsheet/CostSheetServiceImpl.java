@@ -276,6 +276,29 @@ public class CostSheetServiceImpl implements CostSheetService {
     return costSheet;
   }
 
+  @Override
+  public boolean hasPreviousCostSheet(ManufOrder manufOrder) {
+    return resolvePreviousCostSheetDate(manufOrder) != null;
+  }
+
+  protected LocalDate resolvePreviousCostSheetDate(ManufOrder manufOrder) {
+    LocalDate previousCostSheetDate = null;
+    for (CostSheet existingCostSheet : manufOrder.getCostSheetList()) {
+      if ((existingCostSheet.getCalculationTypeSelect()
+                  == CostSheetRepository.CALCULATION_END_OF_PRODUCTION
+              || existingCostSheet.getCalculationTypeSelect()
+                  == CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION)
+          && existingCostSheet.getCalculationDate() != null) {
+        if (previousCostSheetDate == null) {
+          previousCostSheetDate = existingCostSheet.getCalculationDate();
+        } else if (existingCostSheet.getCalculationDate().isAfter(previousCostSheetDate)) {
+          previousCostSheetDate = existingCostSheet.getCalculationDate();
+        }
+      }
+    }
+    return previousCostSheetDate;
+  }
+
   protected void computeResidualProduct(BillOfMaterial billOfMaterial) throws AxelorException {
 
     if (this.manageResidualProductOnBom && billOfMaterial.getProdResidualProductList() != null) {
