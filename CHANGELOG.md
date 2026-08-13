@@ -1,3 +1,15 @@
+## [8.3.41] (2026-08-13)
+
+### Fixes
+#### Bank Payment
+
+* Payment session: fixed missing file error issue on bank order confirmation.
+
+#### Budget
+
+* Budget : fixed amount paid not updated at invoice payment (move reconcile).
+* Budget: fixed 'Compute budget distribution' failing with an arithmetic error when the budget key covers an amount that does not divide evenly, and fixed a stray unallocated cent left on the last budget line in that case.
+
 ## [8.3.40] (2026-07-31)
 
 ### Fixes
@@ -3517,6 +3529,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.41]: https://github.com/axelor/axelor-open-suite/compare/v8.3.40...v8.3.41
 [8.3.40]: https://github.com/axelor/axelor-open-suite/compare/v8.3.39...v8.3.40
 [8.3.39]: https://github.com/axelor/axelor-open-suite/compare/v8.3.38...v8.3.39
 [8.3.38]: https://github.com/axelor/axelor-open-suite/compare/v8.3.37...v8.3.38
