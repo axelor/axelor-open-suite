@@ -1,3 +1,0 @@
----
-title: "Partner: fixed clearing the registration code not clearing SIREN, NIC and tax number, and wrongly showing the invalid registration code label."
-module: axelor-base

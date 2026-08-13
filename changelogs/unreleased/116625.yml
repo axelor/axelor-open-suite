@@ -1,3 +1,0 @@
----
-title: "Production: fixed MO and operation staying \"In Progress\" after a partial finish already covers the planned quantity."
-module: axelor-production

@@ -1,3 +1,0 @@
----
-title: "UMR: fixed umrNumber auto-fill generating duplicate values for the same company/partner/date."
-module: axelor-account

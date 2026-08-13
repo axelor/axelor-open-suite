@@ -1,3 +1,0 @@
----
-title: "Manuf order : fixed no session error when partially completing a manufacturing order with tracking number"
-module: axelor-production
