@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLine;
@@ -50,6 +51,7 @@ import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -237,7 +239,11 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
               if (numberOfAxisWithBudgetKey.signum() > 0) {
                 imputedAmount =
                     currencyScaleService.getCompanyScaledValue(
-                        budget, amount.divide(numberOfAxisWithBudgetKey));
+                        budget,
+                        amount.divide(
+                            numberOfAxisWithBudgetKey,
+                            AppBaseService.COMPUTATION_SCALING,
+                            RoundingMode.HALF_UP));
               }
 
               imputedAmount =
@@ -247,7 +253,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
                           .multiply(analyticMoveLine.getPercentage())
                           .divide(new BigDecimal(100)));
 
-              if (imputedAmount.subtract(remainingAmount).abs().compareTo(new BigDecimal(0.01))
+              if (imputedAmount.subtract(remainingAmount).abs().compareTo(new BigDecimal("0.01"))
                   == 0) {
                 imputedAmount = remainingAmount;
               }

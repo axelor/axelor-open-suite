@@ -1,0 +1,3 @@
+---
+title: "Budget: fixed 'Compute budget distribution' failing with an arithmetic error when the budget key covers an amount that does not divide evenly, and fixed a stray unallocated cent left on the last budget line in that case."
+module: axelor-budget
