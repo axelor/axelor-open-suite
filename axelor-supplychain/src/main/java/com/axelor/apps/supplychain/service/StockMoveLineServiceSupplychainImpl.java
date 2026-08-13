@@ -636,8 +636,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     final boolean isOutMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING;
     final boolean isInMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING;
     if ((isOutMove && outSmGenerationService.isGeneratedForServices(supplyChainConfig))
-        || (isInMove && supplyChainConfig.getHasInSmForNonStorableProduct())
-        || stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL) {
+        || (isInMove && supplyChainConfig.getHasInSmForNonStorableProduct())) {
       return " self.productTypeSelect = '" + ProductRepository.PRODUCT_TYPE_SERVICE + "'";
     }
     return "";
