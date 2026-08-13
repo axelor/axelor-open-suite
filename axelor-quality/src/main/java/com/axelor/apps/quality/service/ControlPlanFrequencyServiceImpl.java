@@ -18,10 +18,15 @@
  */
 package com.axelor.apps.quality.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.repo.LanguageRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.quality.db.ControlPlanFrequency;
 import com.axelor.apps.quality.db.repo.ControlPlanFrequencyRepository;
+import com.axelor.apps.quality.exception.QualityExceptionMessage;
+import com.axelor.common.StringUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.utils.service.TranslationService;
 import com.axelor.utils.service.translation.TranslationBaseService;
 import jakarta.inject.Inject;
@@ -86,5 +91,22 @@ public class ControlPlanFrequencyServiceImpl implements ControlPlanFrequencyServ
         controlPlanFrequency.getSampleFrequency().stripTrailingZeros().toPlainString(),
         translationService.getValueTranslation(
             controlPlanFrequency.getSampleFrequencyUnit().getName(), language));
+  }
+
+  @Override
+  public void checkUniqueName(ControlPlanFrequency controlPlanFrequency) throws AxelorException {
+    String name = controlPlanFrequencyComputeNameService.computeName(controlPlanFrequency);
+    if (StringUtils.isBlank(name)) {
+      return;
+    }
+    ControlPlanFrequency existingControlPlanFrequency =
+        controlPlanFrequencyRepository.findByName(name);
+    if (existingControlPlanFrequency != null
+        && !existingControlPlanFrequency.getId().equals(controlPlanFrequency.getId())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
+          I18n.get(QualityExceptionMessage.CONTROL_PLAN_FREQUENCY_ALREADY_EXISTS),
+          name);
+    }
   }
 }

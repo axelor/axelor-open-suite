@@ -18,9 +18,12 @@
  */
 package com.axelor.apps.quality.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.quality.db.ControlPlanFrequency;
 
 public interface ControlPlanFrequencyService {
 
   void createOrUpdateValueTranslations(ControlPlanFrequency controlPlanFrequency);
+
+  void checkUniqueName(ControlPlanFrequency controlPlanFrequency) throws AxelorException;
 }

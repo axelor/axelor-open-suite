@@ -84,4 +84,7 @@ public final class QualityExceptionMessage {
 
   public static final String NO_RECORD_SELECTED_TO_EXPORT = /*$$(*/
       "Please select records having files for export" /*)*/;
+
+  public static final String CONTROL_PLAN_FREQUENCY_ALREADY_EXISTS = /*$$(*/
+      "A control plan frequency with the same name %s already exists." /*)*/;
 }
