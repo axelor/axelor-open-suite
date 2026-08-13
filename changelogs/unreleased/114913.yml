@@ -1,0 +1,5 @@
+---
+title: "Production: replaced a NullPointerException with a clear configuration error when computing cycles without a production process line."
+module: axelor-production
+developer: |
+  - ProdProcessLineComputationService: modified getNbCycle method signature to throw AxelorException.
