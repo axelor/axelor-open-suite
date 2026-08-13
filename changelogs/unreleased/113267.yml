@@ -1,0 +1,5 @@
+---
+title: "Control plan frequency: fixed missing error message when creating a control plan frequency with an already existing name."
+module: axelor-quality
+developer: |
+  Added `ControlPlanFrequencyService.checkUniqueName(ControlPlanFrequency)` method.
