@@ -70,6 +70,9 @@ public final class CrmExceptionMessage {
   public static final String OPPORTUNITY_CLOSE_LOST_KANBAN = /*$$(*/
       "Can only close lost opportunities in form view." /*)*/;
 
+  public static final String OPPORTUNITY_PARTNER_REQUIRED = /*$$(*/
+      "Please select a customer / prospect." /*)*/;
+
   /** Partner */
   public static final String PROSPECT_CLOSE_WIN_KANBAN = /*$$(*/
       "Prospect won and became client." /*)*/;
