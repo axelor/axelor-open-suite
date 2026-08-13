@@ -460,8 +460,12 @@
           onSelect="action-sale-order-supplychain-method-set-delivered-partner-domain"
           form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
 
-        <field if="__config__.app.getApp('sale')?.getManageSaleOrderVersion()"
+        <field
+          if="__config__.app.getApp('sale')?.getManageSaleOrderVersion() &amp;&amp; !__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"
           name="versionNumber" colSpan="3"/>
+        <field
+          if="__config__.app.getApp('sale')?.getManageSaleOrderVersion() &amp;&amp; __config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"
+          name="versionNumber" colSpan="3" showIf="statusSelect &lt;= 2 || statusSelect == 5"/>
         <field name="taxNumber" colSpan="3" canNew="false" canEdit="false"
           readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited"
           onSelect="action-sale-order-attrs-compute-tax-number-domain"

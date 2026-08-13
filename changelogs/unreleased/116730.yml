@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed the version number field being shown on sale orders when the quotation/order split is enabled, since it has no functional purpose there."
+module: axelor-sale
