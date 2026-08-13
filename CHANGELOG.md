@@ -1,3 +1,15 @@
+## [8.2.49] (2026-08-13)
+
+### Fixes
+#### Bank Payment
+
+* Payment session: fixed missing file error issue on bank order confirmation.
+
+#### Budget
+
+* Budget : fixed amount paid not updated at invoice payment (move reconcile).
+* Budget: fixed 'Compute budget distribution' failing with an arithmetic error when the budget key covers an amount that does not divide evenly, and fixed a stray unallocated cent left on the last budget line in that case.
+
 ## [8.2.48] (2026-07-31)
 
 ### Fixes
@@ -2954,6 +2966,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.49]: https://github.com/axelor/axelor-open-suite/compare/v8.2.48...v8.2.49
 [8.2.48]: https://github.com/axelor/axelor-open-suite/compare/v8.2.47...v8.2.48
 [8.2.47]: https://github.com/axelor/axelor-open-suite/compare/v8.2.46...v8.2.47
 [8.2.46]: https://github.com/axelor/axelor-open-suite/compare/v8.2.45...v8.2.46
