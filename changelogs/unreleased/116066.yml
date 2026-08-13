@@ -1,3 +1,0 @@
----
-title: "Stock: fixed invoice ventilation being incorrectly blocked after generating a new stock move from a return."
-module: axelor-stock

@@ -1,3 +1,0 @@
----
-title: "Manufacturing order: fixed inconsistent stock move types generated during partial production declarations of a subcontracted manufacturing order, now generating goods receipts for all declarations."
-module: axelor-production

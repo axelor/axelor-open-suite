@@ -1,3 +1,0 @@
----
-title: "Production: fixed an issue where fully consumed raw materials were omitted from the first manufacturing order closing cost sheet."
-module: axelor-production

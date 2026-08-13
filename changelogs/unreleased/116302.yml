@@ -1,6 +1,0 @@
----
-title: "Helpdesk: fixed deadline date being cleared when saving a ticket with SLA disabled."
-module: axelor-helpdesk
-developer: |
-  TicketServiceImpl constructor changed: AppHelpdeskRepository/AppBaseService params
-  replaced by AppHelpdeskService.
