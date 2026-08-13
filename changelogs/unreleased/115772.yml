@@ -1,3 +1,0 @@
----
-title: "Supplychain: fixed MRP purchase proposals generating duplicate purchase order lines for the same product instead of consolidating them."
-module: axelor-supplychain

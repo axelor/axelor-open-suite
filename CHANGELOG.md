@@ -1,3 +1,101 @@
+## [9.1.5] (2026-08-13)
+
+### Fixes
+#### Base
+
+* Upgrade to AOP 8.2.3
+* Partner: fixed Client Situation report balances not displayed when the partner has no assigned user.
+* Price list line: fixed the number of decimals not taken into account when creating a price list line.
+* Address: remove geocoding call from repository save to prevent latency and failures on bulk/API saves, reuse HTTP client for map geocoding calls, and cache repeated geocoding lookups.
+* Partner: fixed clearing the registration code not clearing SIREN, NIC and tax number, and wrongly showing the invalid registration code label.
+
+#### Account
+
+* Chart of accounts (FR): updated the French general chart of accounts (PCG) to the 2026 version in the l10n referential and demo data.
+* Invoice: fixed invoice category not being filled for customer refund invoices.
+* Invoice: fixed invoice term remaining amount not updated when reconciling a payment voucher's excess payment move line against another invoice from the move line.
+* Invoice term: fixed bank details wrongly required with outgoing Direct debit / IPO / Exchanges payment modes.
+* UMR: fixed umrNumber auto-fill generating duplicate values for the same company/partner/date.
+* Accounting report: fixed account sort order in custom accounting report detail rows.
+* Analytic distribution: fixed a rounding drift where the sum of generated analytic move lines could differ from the source amount.
+* Fixed asset: fixed economic and IFRS duration in month set from periodicity type instead of the category duration when generating a fixed asset.
+* Payment voucher: fixed the payment wizard showing incorrect due dates and origins on opening, before searching for items to pay, and when loading or resetting selected lines.
+* Account: fixed automatic partner account creation mode not being applied during chart of accounts and demo data installation.
+* Invoice: fixed a zero-amount supplier invoice (created from mixed stock moves) being blocked at ventilation with a misleading 'already been paid' error.
+
+#### Bank Payment
+
+* Payment session: fixed missing file error issue on bank order confirmation.
+
+#### Budget
+
+* Budget: fixed 'Compute budget distribution' failing with an arithmetic error when the budget key covers an amount that does not divide evenly, and fixed a stray unallocated cent left on the last budget line in that case.
+
+#### Cash Management
+
+* Forecast recap: fixed an issue where an invoice entry reconciled with its payment was still shown as an outstanding payable in the cash flow forecast
+
+#### Contract
+
+* Contract batch: fixed 'Display related contracts' preview not matching the contracts actually processed by the invoicing batch.
+
+#### CRM
+
+* Opportunity: fixed status changes from the list view allowing a missing partner or loss reason.
+
+#### Helpdesk
+
+* Helpdesk: fixed deadline date being cleared when saving a ticket with SLA disabled.
+
+#### Human Resource
+
+* Project: fixed filter on project task of waiting and validated timesheet line dashlets on saved timesheet lines.
+
+#### Production
+
+* Production: fixed MO and operation staying "In Progress" after a partial finish already covers the planned quantity.
+* Production: replaced a NullPointerException with a clear configuration error when computing cycles without a production process line.
+* Production: fixed an issue where fully consumed raw materials were omitted from the first manufacturing order closing cost sheet.
+* Manuf order: fixed subcontracted manufacturing order production being blocked when the goods receipt lacks a shipment reference/date, by carrying it over automatically from the goods receipt linked to the subcontracting service purchase order.
+* Manufacturing order: fixed inconsistent stock move types generated during partial production declarations of a subcontracted manufacturing order, now generating goods receipts for all declarations.
+* Production: fixed NPE when adding a consumed product to an operation with no consumed products (per-operation consumption mode).
+
+#### Quality
+
+* Control plan frequency: fixed missing error message when creating a control plan frequency with an already existing name.
+
+#### Sale
+
+* Sale order: fixed global percentage discount computing a wrong discount on the last order line when its quantity is greater than 1.
+* Sale order: fixed the version number field being shown on sale orders when the quotation/order split is enabled, since it has no functional purpose there.
+
+#### Stock
+
+* Stock: fixed invoice ventilation being incorrectly blocked after generating a new stock move from a return.
+* Stock correction: allowed selecting or creating a tracking number with no prior stock history.
+
+#### Supply Chain
+
+* Stock move: fixed the invoicing status staying at 'Not invoiced' after ventilating a supplier invoice that was manually linked to the stock move without invoice lines generated from it.
+* Invoice/Order line: fixed unit price and discounted price columns sharing the same title.
+* Supplychain: fixed MRP purchase proposals generating duplicate purchase order lines for the same product instead of consolidating them.
+
+
+### Developer
+
+#### Helpdesk
+
+TicketServiceImpl constructor changed: AppHelpdeskRepository/AppBaseService params
+replaced by AppHelpdeskService.
+
+#### Production
+
+- ProdProcessLineComputationService: modified getNbCycle method signature to throw AxelorException.
+
+#### Quality
+
+Added `ControlPlanFrequencyService.checkUniqueName(ControlPlanFrequency)` method.
+
 ## [9.1.4] (2026-07-31)
 
 ### Fixes
@@ -619,6 +717,7 @@ so existing imports continue to work.
 #### Intervention
 * Fixed intervention generation from a contract.
 
+[9.1.5]: https://github.com/axelor/axelor-open-suite/compare/v9.1.4...v9.1.5
 [9.1.4]: https://github.com/axelor/axelor-open-suite/compare/v9.1.3...v9.1.4
 [9.1.3]: https://github.com/axelor/axelor-open-suite/compare/v9.1.2...v9.1.3
 [9.1.2]: https://github.com/axelor/axelor-open-suite/compare/v9.1.1...v9.1.2

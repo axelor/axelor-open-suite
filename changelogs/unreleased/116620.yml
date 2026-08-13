@@ -1,3 +1,0 @@
----
-title: "Manuf order: fixed subcontracted manufacturing order production being blocked when the goods receipt lacks a shipment reference/date, by carrying it over automatically from the goods receipt linked to the subcontracting service purchase order."
-module: axelor-production

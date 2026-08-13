@@ -1,3 +1,0 @@
----
-title: "Price list line: fixed the number of decimals not taken into account when creating a price list line."
-module: axelor-base
