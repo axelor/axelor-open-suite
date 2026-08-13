@@ -1,3 +1,28 @@
+## [8.4.33] (2026-08-13)
+
+### Fixes
+#### Base
+
+* Upgrade to AOP 7.4.13
+* Price list line: fixed the number of decimals not taken into account when creating a price list line.
+
+#### Account
+
+* Invoice term: fixed bank details wrongly required with outgoing Direct debit / IPO / Exchanges payment modes.
+* Invoice: fixed a zero-amount supplier invoice (created from mixed stock moves) being blocked at ventilation with a misleading 'already been paid' error.
+
+#### Bank Payment
+
+* Payment session: fixed missing file error issue on bank order confirmation.
+
+#### Budget
+
+* Budget: fixed 'Compute budget distribution' failing with an arithmetic error when the budget key covers an amount that does not divide evenly, and fixed a stray unallocated cent left on the last budget line in that case.
+
+#### Supply Chain
+
+* Stock move: fixed the invoicing status staying at 'Not invoiced' after ventilating a supplier invoice that was manually linked to the stock move without invoice lines generated from it.
+
 ## [8.4.32] (2026-07-31)
 
 ### Fixes
@@ -3482,6 +3507,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.33]: https://github.com/axelor/axelor-open-suite/compare/v8.4.32...v8.4.33
 [8.4.32]: https://github.com/axelor/axelor-open-suite/compare/v8.4.31...v8.4.32
 [8.4.31]: https://github.com/axelor/axelor-open-suite/compare/v8.4.30...v8.4.31
 [8.4.30]: https://github.com/axelor/axelor-open-suite/compare/v8.4.29...v8.4.30
