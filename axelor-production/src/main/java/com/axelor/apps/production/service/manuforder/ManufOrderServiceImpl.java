@@ -1264,6 +1264,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
   }
 
+  @Transactional(rollbackOn = Exception.class)
   protected List<ManufOrder> generateChildMOs(
       ManufOrder parentMO, List<Pair<BillOfMaterial, BigDecimal>> childBomList, Integer depth)
       throws AxelorException {
@@ -1298,6 +1299,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       manufOrderList.addAll(
           this.generateChildMOs(
               childMO, getToConsumeSubBomList(childMO.getBillOfMaterial(), childMO, null), depth));
+      manufOrderRepo.save(childMO);
     }
     return manufOrderList;
   }
