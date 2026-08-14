@@ -286,7 +286,7 @@
           x-scale="currency.numberOfDecimals"/>
         <panel-related name="timetableListPanel" field="timetableList" colSpan="12"
           grid-view="timetable-grid-purchase" form-view="timetable-form-purchase"
-          onChange="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable"
+          onChange="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable,action-supplychain-purchase-order-validate-check-amount-timetable"
           if-module="axelor-supplychain"/>
       </panel>
       <panel name="printingPanel" title="Printing">
