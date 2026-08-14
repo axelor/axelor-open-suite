@@ -1,0 +1,3 @@
+---
+title: "Production: fixed incorrect component requirements in MRP calculations for bills of materials producing multiple units."
+module: axelor-production
