@@ -724,6 +724,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean out,
       boolean isGlobal)
       throws AxelorException {
+    // Globalization account is constant for the whole session (depends on payment mode, not on
+    // date), so we resolve it once here instead of once per accounting date.
+    Account globalAccount = isGlobal ? this.getCashAccount(paymentSession, true) : null;
+    boolean reconcileGlobalLines = globalAccount != null && globalAccount.getReconcileOk();
+
     for (LocalDate accountingDate : moveDateMap.keySet()) {
 
       Map<Partner, List<Move>> moveMapIt = moveDateMap.get(accountingDate);
@@ -737,10 +742,58 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
               paymentAmount = paymentAmount.add(paymentAmountMap.get(move));
             }
           }
-          this.generateCashMove(paymentSession, accountingDate, paymentAmount, out);
+          Move cashMove = this.generateCashMove(paymentSession, accountingDate, paymentAmount, out);
+          if (reconcileGlobalLines) {
+            this.reconcileGlobalAccountMoveLines(
+                globalAccount, cashMove, moveMapIt, paymentAmountMap, out);
+          }
         }
       }
     }
+  }
+
+  protected void reconcileGlobalAccountMoveLines(
+      Account globalAccount,
+      Move cashMove,
+      Map<Partner, List<Move>> moveMap,
+      Map<Move, BigDecimal> paymentAmountMap,
+      boolean out)
+      throws AxelorException {
+
+    cashMove = moveRepo.find(cashMove.getId());
+
+    MoveLine cashMoveGlobalLine = findMoveLineByAccount(cashMove, globalAccount);
+    if (cashMoveGlobalLine == null) {
+      return;
+    }
+
+    for (List<Move> moves : moveMap.values()) {
+      for (Move move : moves) {
+        BigDecimal amount = paymentAmountMap.get(move);
+        if (amount == null || amount.signum() <= 0) {
+          continue;
+        }
+        move = moveRepo.find(move.getId());
+        MoveLine partnerGlobalLine = findMoveLineByAccount(move, globalAccount);
+        if (partnerGlobalLine == null) {
+          continue;
+        }
+
+        MoveLine debitMoveLine = out ? cashMoveGlobalLine : partnerGlobalLine;
+        MoveLine creditMoveLine = out ? partnerGlobalLine : cashMoveGlobalLine;
+
+        reconcileService.reconcile(debitMoveLine, creditMoveLine, false, false);
+      }
+    }
+  }
+
+  protected MoveLine findMoveLineByAccount(Move move, Account account) {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (account.equals(moveLine.getAccount())) {
+        return moveLine;
+      }
+    }
+    return null;
   }
 
   protected Move generateCashMove(
