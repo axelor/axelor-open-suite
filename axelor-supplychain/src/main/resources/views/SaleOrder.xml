@@ -384,6 +384,12 @@
     <call class="com.axelor.apps.supplychain.web.TimetableController" method="applyTemplate"/>
   </action-method>
 
+  <action-group name="action-group-sale-order-timetable-template-change">
+    <action name="action-sale-order-method-apply-timetable-template"/>
+    <action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
+    <action name="action-supplychain-sale-order-validate-check-amount-timetable"/>
+  </action-group>
+
   <action-method name="supplychain-action-create-shipment-cost-line">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="createShipmentCostLine"/>

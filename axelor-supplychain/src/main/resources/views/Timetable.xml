@@ -14,10 +14,14 @@
       onChange="action-timetable-method-percentage-onchange"/>
     <field name="comments" readonlyIf="invoiced" width="300%"/>
     <field name="invoiced" readonly="true"/>
-    <button name="generateInvoiceBtn" readonlyIf="!id || invoiced" help="Generate Invoice"
-      icon="credit-card-fill" onClick="save, action-timetable-method-generate-invoice"
+    <button name="generateInvoiceBtn"
+      readonlyIf="!id || invoiced || (invoice != null &amp;&amp; invoice.statusSelect &lt; 3)"
+      help="Generate Invoice" icon="credit-card-fill"
+      onClick="save, action-timetable-method-generate-invoice"
       if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"/>
     <field name="invoice" width="120" hidden="true"/>
+    <field name="invoice.statusSelect" hidden="true"/>
+    <field name="invoicedAmount" readonly="true"/>
     <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
@@ -44,10 +48,12 @@
       <button name="generateInvoiceBtn" colOffset="9" colSpan="3" title="Generate Invoice"
         onClick="save, action-timetable-method-generate-invoice"
         if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"
-        showIf="invoice == null"/>
+        showIf="!invoiced &amp;&amp; (invoice == null || invoice.statusSelect &gt;= 3)"/>
       <field name="invoice" hideIf="!invoice"/>
       <field name="comments" colSpan="12"/>
       <field name="invoiced" hidden="true"/>
+      <field name="invoice.statusSelect" hidden="true"/>
+      <field name="invoicedAmount" readonly="true"/>
       <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
