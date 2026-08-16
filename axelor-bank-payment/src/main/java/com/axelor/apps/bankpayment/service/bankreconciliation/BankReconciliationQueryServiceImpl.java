@@ -25,8 +25,10 @@ import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.AxelorException;
 import jakarta.inject.Inject;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class BankReconciliationQueryServiceImpl implements BankReconciliationQueryService {
 
@@ -56,8 +58,6 @@ public class BankReconciliationQueryServiceImpl implements BankReconciliationQue
   public Map<String, Object> getBindRequestMoveLine(BankReconciliation bankReconciliation)
       throws AxelorException {
     Map<String, Object> params = new HashMap<>();
-    BankPaymentConfig bankPaymentConfig =
-        bankPaymentConfigService.getBankPaymentConfig(bankReconciliation.getCompany());
 
     params.put("statusDaybook", MoveRepository.STATUS_DAYBOOK);
     params.put("statusAccounted", MoveRepository.STATUS_ACCOUNTED);
@@ -66,17 +66,9 @@ public class BankReconciliationQueryServiceImpl implements BankReconciliationQue
 
     params.put("includeOtherBankStatements", bankReconciliation.getIncludeOtherBankStatements());
 
-    int dateMargin = bankPaymentConfig.getBnkStmtAutoReconcileDateMargin();
-    params.put(
-        "fromDate",
-        bankReconciliation.getFromDate() != null
-            ? bankReconciliation.getFromDate().minusDays(dateMargin)
-            : null);
-    params.put(
-        "toDate",
-        bankReconciliation.getToDate() != null
-            ? bankReconciliation.getToDate().plusDays(dateMargin)
-            : null);
+    Pair<LocalDate, LocalDate> dateRange = getDateRange(bankReconciliation);
+    params.put("fromDate", dateRange.getLeft());
+    params.put("toDate", dateRange.getRight());
 
     params.put("journal", bankReconciliation.getJournal());
 
@@ -85,5 +77,24 @@ public class BankReconciliationQueryServiceImpl implements BankReconciliationQue
     params.put("bankReconciliationCurrency", bankReconciliation.getCurrency());
 
     return params;
+  }
+
+  @Override
+  public Pair<LocalDate, LocalDate> getDateRange(BankReconciliation bankReconciliation)
+      throws AxelorException {
+    BankPaymentConfig bankPaymentConfig =
+        bankPaymentConfigService.getBankPaymentConfig(bankReconciliation.getCompany());
+    int dateMargin = bankPaymentConfig.getBnkStmtAutoReconcileDateMargin();
+
+    LocalDate fromDate =
+        bankReconciliation.getFromDate() != null
+            ? bankReconciliation.getFromDate().minusDays(dateMargin)
+            : null;
+    LocalDate toDate =
+        bankReconciliation.getToDate() != null
+            ? bankReconciliation.getToDate().plusDays(dateMargin)
+            : null;
+
+    return Pair.of(fromDate, toDate);
   }
 }
