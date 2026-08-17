@@ -94,6 +94,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected ShippingCoefService shippingCoefService;
   protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
   protected StockMoveService stockMoveService;
+  protected StockMoveInvoiceService stockMoveInvoiceService;
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
   protected ProductCompanyService productCompanyService;
@@ -112,6 +113,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       ShippingCoefService shippingCoefService,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       StockMoveService stockMoveService,
+      StockMoveInvoiceService stockMoveInvoiceService,
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       ProductCompanyService productCompanyService,
@@ -128,6 +130,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.shippingCoefService = shippingCoefService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
     this.stockMoveService = stockMoveService;
+    this.stockMoveInvoiceService = stockMoveInvoiceService;
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
     this.productCompanyService = productCompanyService;
@@ -338,6 +341,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       qualityStockMove = JpaModelHelper.ensureManaged(qualityStockMove);
       stockMoveService.plan(qualityStockMove);
       stockMoveIdList.add(qualityStockMove.getId());
+    }
+    if (!stockMoveIdList.isEmpty()) {
+      stockMoveInvoiceService.updatePurchaseOrderStockMoveInvoicing(purchaseOrder);
     }
 
     return stockMoveIdList;

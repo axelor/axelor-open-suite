@@ -56,6 +56,16 @@ public interface PurchaseOrderInvoiceService {
   public List<InvoiceLine> createInvoiceLine(Invoice invoice, PurchaseOrderLine purchaseOrderLine)
       throws AxelorException;
 
+  /**
+   * Checks that the quantities of the invoice lines do not exceed the remaining quantities of their
+   * purchase order lines.
+   *
+   * @param invoice the invoice to check
+   * @throws AxelorException if a purchase order line is already fully invoiced or would be
+   *     over-invoiced
+   */
+  void checkInvoiceLineQuantities(Invoice invoice) throws AxelorException;
+
   public BigDecimal getInvoicedAmount(PurchaseOrder purchaseOrder);
 
   public BigDecimal getInvoicedAmount(
