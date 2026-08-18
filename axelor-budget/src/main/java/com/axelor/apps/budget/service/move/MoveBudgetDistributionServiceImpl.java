@@ -175,8 +175,7 @@ public class MoveBudgetDistributionServiceImpl implements MoveBudgetDistribution
     if (optBudgetLine.isPresent()) {
       Invoice invoice =
           Optional.of(moveLine).map(MoveLine::getMove).map(Move::getInvoice).orElse(null);
-      if (invoice != null
-          && (invoice.getPurchaseOrder() != null || invoice.getSaleOrder() != null)) {
+      if (invoice != null && isLinkedToOrder(invoice)) {
         budgetService.updateBudgetLineAmountWithPo(optBudgetLine.get(), budget, amount);
       } else {
         budgetService.updateBudgetLineAmounts(optBudgetLine.get(), budget, amount);
@@ -188,5 +187,15 @@ public class MoveBudgetDistributionServiceImpl implements MoveBudgetDistribution
     budgetService.computeTotalSimulatedAmount(moveLine.getMove(), budget, false);
     budgetService.computeTotalAvailableWithSimulatedAmount(budget);
     budgetRepository.save(budget);
+  }
+
+  protected boolean isLinkedToOrder(Invoice invoice) {
+    if (invoice.getPurchaseOrder() != null || invoice.getSaleOrder() != null) {
+      return true;
+    }
+    return invoice.getInvoiceLineList() != null
+        && invoice.getInvoiceLineList().stream()
+            .anyMatch(
+                line -> line.getPurchaseOrderLine() != null || line.getSaleOrderLine() != null);
   }
 }
