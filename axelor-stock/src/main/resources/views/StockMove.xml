@@ -59,7 +59,8 @@
       <button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)"
         onClick="action-print-picking-stock-move" icon="printer"/>
       <button name="seeStockMoveLinesBtn" title="See stock move lines"
-        onClick="action-stock-move-view-stock-move-line" icon="list-task"/>
+        onClick="action-stock-move-validate-stock-moves,action-stock-move-view-stock-move-line"
+        icon="list-task"/>
       <button name="mergeBtn" title="Merge stock moves" icon="merge"
         onClick="action-stock-move-group-merge"/>
       <button name="addToLogisticalFormBtn" title="Add stock move(s) to logistical form"
@@ -131,7 +132,7 @@
       <button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)"
         onClick="action-print-picking-stock-move" icon="printer"/>
       <button name="seeStockMoveLinesBtn" title="See stock move lines"
-        onClick="action-stock-move-view-stock-move-line"/>
+        onClick="action-stock-move-validate-stock-moves,action-stock-move-view-stock-move-line"/>
     </toolbar>
     <field name="stockMoveSeq" width="120">
       <hilite color="warning" strong="true" if="availabilityRequest || pickingIsEdited"/>
@@ -171,7 +172,8 @@
       <button name="printBtn" title="Print StockMove(s)"
         onClick="action-stock-move-group-print-stock-move" icon="printer"/>
       <button name="seeStockMoveLinesBtn" title="See stock move lines"
-        onClick="action-stock-move-view-stock-move-line" icon="list-task"/>
+        onClick="action-stock-move-validate-stock-moves,action-stock-move-view-stock-move-line"
+        icon="list-task"/>
       <button name="mergeBtn" title="Merge stock moves" icon="merge"
         onClick="action-stock-move-group-merge"/>
     </toolbar>
@@ -1538,9 +1540,8 @@
     <view type="grid" name="stock-move-line-all-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
     <view-param name="search-filters" value="stock-move-line-filters"/>
-    <domain>self.stockMove.typeSelect = :_typeSelect AND self.stockMove.isReversion = :_isReversion</domain>
-    <context name="_typeSelect" expr="eval:_typeSelect"/>
-    <context name="_isReversion" expr="eval:_isReversion"/>
+    <domain>self.stockMove.id IN (:_ids)</domain>
+    <context name="_ids" expr="eval: _ids"/>
   </action-view>
 
   <action-method name="action-stock-move-method-is-allocated-stock-move-line-removed">
