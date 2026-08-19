@@ -1,0 +1,8 @@
+---
+title: "Sale: fixed configurator edition setting (enableConfiguratorEdition) not being enforced when editing a configurator from a sale order line."
+module: axelor-sale
+developer: |
+  ConfiguratorCheckServiceImpl now has an explicit constructor requiring AppSaleService, removing
+  its implicit no-arg constructor. Any custom module extending ConfiguratorCheckServiceImpl (or
+  its axelor-supplychain/axelor-production subclasses) and calling super() with the old signature
+  must update its constructor to accept and forward AppSaleService.
