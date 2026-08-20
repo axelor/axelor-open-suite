@@ -572,6 +572,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         computeMaturityDateWithOperations(
             mrp,
             reorderQty,
+            billOfMaterial.getQty(),
             stockLocation,
             maturityDate,
             mrpLineOriginList,
@@ -587,9 +588,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                     mrp,
                     subProduct,
                     manufProposalNeedMrpLineType,
-                    reorderQty
-                        .multiply(billOfMaterialLine.getQty())
-                        .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP),
+                    computeMrpNeedQty(
+                        reorderQty, billOfMaterialLine.getQty(), billOfMaterial.getQty()),
                     stockLocation,
                     maturityDate,
                     mrpLineOriginList,
@@ -605,6 +605,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   protected void computeMaturityDateWithOperations(
       Mrp mrp,
       BigDecimal reorderQty,
+      BigDecimal billOfMaterialQty,
       StockLocation stockLocation,
       LocalDate maturityDate,
       List<MrpLineOrigin> mrpLineOriginList,
@@ -647,9 +648,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
               mrp,
               toConsumeProduct,
               manufProposalNeedMrpLineType,
-              reorderQty
-                  .multiply(prodProduct.getQty())
-                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP),
+              computeMrpNeedQty(reorderQty, prodProduct.getQty(), billOfMaterialQty),
               stockLocation,
               calculatedMaturityDate,
               mrpLineOriginList,
@@ -657,6 +656,17 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         }
       }
     }
+  }
+
+  protected BigDecimal computeMrpNeedQty(
+      BigDecimal reorderQty, BigDecimal componentQty, BigDecimal billOfMaterialQty) {
+    BigDecimal mrpNeedQty = reorderQty.multiply(componentQty);
+    if (billOfMaterialQty != null && billOfMaterialQty.signum() > 0) {
+      mrpNeedQty =
+          mrpNeedQty.divide(
+              billOfMaterialQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
+    }
+    return mrpNeedQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
   }
 
   /**
