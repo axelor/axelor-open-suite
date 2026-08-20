@@ -20,6 +20,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -124,5 +125,12 @@ public interface ProductionTrackingPreservationService {
       StockLocation fromStockLocation,
       StockLocation toStockLocation,
       PreservedTrackingNumbersByProduct preservedTrackingNumbersByProduct)
+      throws AxelorException;
+
+  /** Merge tracking numbers whose origin stock move line was cleared into the preserved map. */
+  PreservedTrackingNumbersByProduct reclaimOrphanedTrackingNumbers(
+      PreservedTrackingNumbersByProduct preservedTrackingNumbersByProduct,
+      List<ProdProduct> prodProductList,
+      ManufOrder manufOrder)
       throws AxelorException;
 }

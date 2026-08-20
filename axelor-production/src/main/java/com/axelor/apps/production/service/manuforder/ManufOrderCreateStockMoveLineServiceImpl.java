@@ -255,6 +255,13 @@ public class ManufOrderCreateStockMoveLineServiceImpl
     PreservedTrackingNumbersByProduct preservedTrackingNumbersByProduct =
         productionTrackingPreservationService.getPreservedTrackingNumbersByProduct(originalLines);
 
+    // Also reclaim tracking numbers orphaned by a manually deleted produced line
+    preservedTrackingNumbersByProduct =
+        productionTrackingPreservationService.reclaimOrphanedTrackingNumbers(
+            preservedTrackingNumbersByProduct,
+            manufOrder.getToProduceProdProductList(),
+            manufOrder);
+
     manufOrder = JpaModelHelper.ensureManaged(manufOrder);
 
     // clear all lists
