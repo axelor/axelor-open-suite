@@ -729,7 +729,8 @@ public class SaleOrderController {
       Beans.get(SaleOrderSupplychainService.class).updateToConfirmedStatus(saleOrder);
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      response.setSignal("refresh-tab", null);
     }
   }
 
