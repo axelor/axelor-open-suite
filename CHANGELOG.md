@@ -1,3 +1,32 @@
+## [9.0.17] (2026-08-20)
+
+### Fixes
+#### Base
+
+* Product: fixed product demo data issue which was showing company specific details after saving it.
+* Address: remove geocoding call from repository save to prevent latency and failures on bulk/API saves, reuse HTTP client for map geocoding calls, and cache repeated geocoding lookups.
+
+#### Account
+
+* Invoice: fixed tax discrepancy error during invoice ventilation caused by inconsistent rounding between the per-line and aggregate tax calculations used in the move's tax consistency check.
+
+#### Production
+
+* Production: fixed incorrect component requirements in MRP calculations for bills of materials producing multiple units.
+* Production: fixed a manufacturing order generating new tracking numbers instead of reusing the original ones after a produced stock move line was manually deleted.
+
+#### Purchase
+
+* Purchase order: fixed unit price not reset to the product default purchase price when the ordered quantity is outside the supplier catalog quantity range.
+
+#### Sale
+
+* Sale order: fixed sale order blocking control is not being checked on order confirmation.
+
+#### Supply Chain
+
+* Stock move: fixed scheduled outgoing stock move invoicing failing when the linked sale order has no team.
+
 ## [9.0.16] (2026-08-13)
 
 ### Fixes
@@ -2653,6 +2682,7 @@ Replaced the attrs action `action-purchase-order-line-attrs-delivery-panel` with
 
 * Project: improve task tree management.
 
+[9.0.17]: https://github.com/axelor/axelor-open-suite/compare/v9.0.16...v9.0.17
 [9.0.16]: https://github.com/axelor/axelor-open-suite/compare/v9.0.15...v9.0.16
 [9.0.15]: https://github.com/axelor/axelor-open-suite/compare/v9.0.14...v9.0.15
 [9.0.14]: https://github.com/axelor/axelor-open-suite/compare/v9.0.13...v9.0.14
