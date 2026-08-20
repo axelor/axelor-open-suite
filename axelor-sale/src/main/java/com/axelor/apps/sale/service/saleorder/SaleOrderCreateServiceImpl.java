@@ -171,7 +171,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     }
     saleOrder.setSalespersonUser(salespersonUser);
 
-    if (team == null) {
+    if (team == null && salespersonUser != null) {
       team = salespersonUser.getActiveTeam();
     }
     saleOrder.setTeam(team);
