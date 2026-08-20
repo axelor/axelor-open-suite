@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <form name="app-base-config-form" title="App base" model="com.axelor.studio.db.AppBase"
+    id="app-base-config-supplychain-form" extension="true">
+    <extend target="//field[@name='isPricingComputingOrder']">
+      <insert position="after">
+        <field name="usePricingForFiscalPosition" widget="boolean-switch"
+          showIf="enablePricingScale" if="__config__.app.isApp('supplychain')"/>
+      </insert>
+    </extend>
+  </form>
+</object-views>

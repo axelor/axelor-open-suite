@@ -10,6 +10,7 @@
 		// TYPE SELECT
 		public static final String PRICING_TYPE_SELECT_FREIGHT_CARRIER_PRICING = "FreightCarrierPricing";
 		public static final String PRICING_TYPE_SELECT_FREIGHT_CARRIER_DELAY = "FreightCarrierDelay";
+		public static final String PRICING_TYPE_SELECT_FISCAL_POSITION_PRICING = "FiscalPosition";
 	]]></extra-code>
   </entity>
 

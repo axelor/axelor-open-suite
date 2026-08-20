@@ -6,3 +6,5 @@
  return new BigDecimal(totalWeight)";;2;1
 4;2;0;"FreightCarrierPricing";"Tarifs";"pricingLine?.resultParam1";"pricingAmount";2;
 5;2;0;"FreightCarrierPricing";"Delai";"pricingLine?.resultParam1";"delay";2;
+11;1;;"SaleOrder";"Sélection à partir du pays";"mainInvoicingAddress?.country?.alpha3Code";;;
+12;2;;"SaleOrder";"Id de la position fiscale";"__repo__(FiscalPosition).all().filter('self.id = ?1', pricingLine.resultParam1.longValue()).fetchOne()";"fiscalPosition";;
