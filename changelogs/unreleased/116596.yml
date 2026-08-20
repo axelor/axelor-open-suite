@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed sale order blocking control is not being checked on order confirmation."
+module: axelor-sale
