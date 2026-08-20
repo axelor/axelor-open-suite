@@ -1,0 +1,3 @@
+---
+title: "Stock move line: fixed the 'Change allocated qty' wizard which reset the entered quantity to zero instead of allocating it."
+module: axelor-supplychain
