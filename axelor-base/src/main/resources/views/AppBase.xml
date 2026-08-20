@@ -24,8 +24,8 @@
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="configurationPanel" title="Configuration" colSpan="12">
-        <panel name="generalConfigurationPanel" title="General configurations" icon="gear-fill"
-          colSpan="12">
+        <panel name="generalConfigurationPanel" title="General configurations"
+          icon="gear-fill" colSpan="12">
           <field name="teamManagement" widget="boolean-switch"/>
           <field name="enableMultiCompany" widget="boolean-switch"
             onChange="action-base-validate-multi-company-boolean"/>
@@ -36,7 +36,8 @@
           <field name="enableTaxNumbers" widget="boolean-switch"/>
           <field name="dailyWorkHours"/>
         </panel>
-        <panel name="partnerConfigurationPanel" title="Partner" icon="people-fill" colSpan="12">
+        <panel name="partnerConfigurationPanel" title="Partner" icon="people-fill"
+          colSpan="12">
           <field name="defaultPartnerLocalization"/>
           <field name="enableTradingNamesManagement" widget="boolean-switch"/>
           <field name="isRegistrationCodeCheckBlocking" widget="boolean-switch"/>
@@ -51,8 +52,8 @@
           <field name="isSharedAddress" widget="boolean-switch"/>
           <field name="defaultAddressTemplate"/>
         </panel>
-        <panel name="decimalsUnitsConfigurationPanel" title="Decimals / Units" icon="calculator"
-          colSpan="12">
+        <panel name="decimalsUnitsConfigurationPanel" title="Decimals / Units"
+          icon="calculator" colSpan="12">
           <field name="nbDecimalDigitForTaxRate"/>
           <field name="nbDecimalDigitForUnitPrice" colSpan="3"/>
           <field name="nbDecimalDigitForQty" colSpan="3"/>
