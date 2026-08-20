@@ -20,8 +20,8 @@ package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
-import javax.persistence.PreRemove;
 import java.util.Objects;
+import javax.persistence.PreRemove;
 
 public class StockMoveLineProductionListener {
 
