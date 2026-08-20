@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed tax discrepancy error during invoice ventilation caused by inconsistent rounding between the per-line and aggregate tax calculations used in the move's tax consistency check."
-module: axelor-account
