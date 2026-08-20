@@ -1,3 +1,32 @@
+## [8.5.26] (2026-08-20)
+
+### Fixes
+#### Base
+
+* Product: fixed product demo data issue which was showing company specific details after saving it.
+* Address: remove geocoding call from repository save to prevent latency and failures on bulk/API saves, reuse HTTP client for map geocoding calls, and cache repeated geocoding lookups.
+
+#### Account
+
+* Invoice: fixed tax discrepancy error during invoice ventilation caused by inconsistent rounding between the per-line and aggregate tax calculations used in the move's tax consistency check.
+
+#### Production
+
+* Production: fixed incorrect component requirements in MRP calculations for bills of materials producing multiple units.
+* Production: fixed a manufacturing order generating new tracking numbers instead of reusing the original ones after a produced stock move line was manually deleted.
+
+#### Purchase
+
+* Purchase order: fixed unit price not reset to the product default purchase price when the ordered quantity is outside the supplier catalog quantity range.
+
+#### Sale
+
+* Sale order: fixed sale order blocking control is not being checked on order confirmation.
+
+#### Supply Chain
+
+* Stock move: fixed scheduled outgoing stock move invoicing failing when the linked sale order has no team.
+
 ## [8.5.25] (2026-08-13)
 
 ### Fixes
@@ -3623,6 +3652,7 @@ Removed CommonInvoiceService.createInvoiceLinesFromOrder Changed the parameter o
 * Bill of material: added default value for calculation quantity.
 * Manuf order: fixed relation with production order.
 
+[8.5.26]: https://github.com/axelor/axelor-open-suite/compare/v8.5.25...v8.5.26
 [8.5.25]: https://github.com/axelor/axelor-open-suite/compare/v8.5.24...v8.5.25
 [8.5.24]: https://github.com/axelor/axelor-open-suite/compare/v8.5.23...v8.5.24
 [8.5.23]: https://github.com/axelor/axelor-open-suite/compare/v8.5.22...v8.5.23

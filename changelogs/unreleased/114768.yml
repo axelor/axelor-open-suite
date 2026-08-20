@@ -1,3 +1,0 @@
----
-title: "Purchase order: fixed unit price not reset to the product default purchase price when the ordered quantity is outside the supplier catalog quantity range."
-module: axelor-purchase
