@@ -229,31 +229,32 @@
             onChange="action-employee-attrs-fill-user">
             <editor x-viewer="true">
               <panel name="contactDetailsPanel" colSpan="12" itemSpan="12">
-                <field name="titleSelect" colSpan="2" showIf="!$readonly()"/>
+                <field name="titleSelect" colSpan="2"/>
                 <field name="firstName"
                   onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url"
-                  colSpan="5" showIf="!$readonly()"/>
+                  colSpan="5"/>
                 <field name="name" title="Name"
                   onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url"
-                  colSpan="5" showIf="!$readonly()"/>
-
+                  colSpan="5"/>
+                <field name="simpleFullName" hidden="true"/>
+              </panel>
+              <panel name="contactInfoPanel" title="Contact details" colSpan="12" itemSpan="12">
                 <field name="emailAddress" colSpan="6" canNew="true"
                   form-view="email-address-simple-form" canSelect="false"/>
-                <field name="webSite" colSpan="6" placeholder="http://www.url.com"
-                  widget="url" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
-
                 <field name="fixedPhone" colSpan="6" widget="phone"
                   x-placeholder-number-type="FIXED_LINE"/>
                 <field name="mobilePhone" colSpan="6" widget="phone"/>
-                <field name="simpleFullName" hidden="true"/>
+                <field name="mainAddress" colSpan="6" canEdit="false" canNew="false"
+                  form-view="address-form" grid-view="address-grid"/>
               </panel>
             </editor>
           </field>
+        </panel>
 
+        <panel name="hrInfoPanel" title="HR information" colSpan="12">
           <field name="managerUser" title="Manager" canEdit="false" canNew="false"
             canView="false" colSpan="4" form-view="user-form" grid-view="user-grid"/>
           <field name="exportCode" colSpan="4"/>
-          <spacer colSpan="4"/>
         </panel>
 
         <panel name="personalInfoPanel" title="Personal information" icon="person-badge"
