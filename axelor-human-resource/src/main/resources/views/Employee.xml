@@ -238,7 +238,8 @@
                   colSpan="5"/>
                 <field name="simpleFullName" hidden="true"/>
               </panel>
-              <panel name="contactInfoPanel" title="Contact details" colSpan="12" itemSpan="12">
+              <panel name="contactInfoPanel" title="Contact details" colSpan="12"
+                itemSpan="12">
                 <field name="emailAddress" colSpan="6" canNew="true"
                   form-view="email-address-simple-form" canSelect="false"/>
                 <field name="fixedPhone" colSpan="6" widget="phone"
