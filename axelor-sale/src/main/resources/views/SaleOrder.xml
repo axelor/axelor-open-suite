@@ -411,7 +411,6 @@
           </viewer>
         </field>
       </panel>
-      <field name="oneoffSale" colSpan="2"/>
       <field name="company.tradingNameList" hidden="true"/>
       <panel name="generalInfoPanel" colSpan="12">
         <field name="company" readonlyIf="statusSelect == 3 || clientPartner != null"
@@ -574,48 +573,69 @@
       </panel>
       <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain"
         name="deliveryInformationPanel" title="Delivery" colSpan="12">
-        <field name="specificPackage" colSpan="12"/>
-        <field name="stockLocation" canEdit="false"
-          onSelect="action-sale-order-attrs-set-stock-location-domain"
-          form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="toStockLocation" canEdit="false"
-          domain="self.company = :company and self.typeSelect != 1 and self.usableOnSaleOrder = true"
-          form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="estimatedShippingDate"
-          onChange="action-sale-order-group-on-estimated-shipping-date-change"/>
-        <field name="estimatedDeliveryDate"
-          onChange="action-sale-order-group-on-estimated-delivery-date-change"/>
-        <field name="deliveryCondition" colSpan="12"/>
-        <field name="shipmentMode" canEdit="false" form-view="shipment-mode-form"
-          grid-view="shipment-mode-grid"/>
-        <field name="freightCarrierMode" canEdit="false"
-          onChange="action-sale-order-record-freight-carrier"
-          domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form"
-          grid-view="freight-carrier-mode-grid"/>
-        <field name="carrierPartner" canEdit="false" x-image-field="picture"
-          domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
-          form-view="partner-form" grid-view="partner-grid"/>
-        <field name="forwarderPartner" canEdit="false" x-image-field="picture"
-          domain="self.isContact = FALSE AND (self.isCarrier = TRUE OR self.isSupplier = TRUE) AND :company MEMBER OF self.companySet"
-          form-view="partner-form" grid-view="partner-grid"/>
-        <field name="incoterm" canEdit="false" form-view="incoterm-form"
-          grid-view="incoterm-grid" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
-        <field name="shippingCost" title="SaleOrder.shippingCost"
-          x-scale="company.currency.numberOfDecimals"
-          onChange="action-sale-order-method-compute-margin"/>
-        <field name="isNeedingConformityCertificate" colSpan="3"/>
-        <field name="isIspmRequired" readonly="true" colSpan="3"/>
-        <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details"
-          showIf="statusSelect >= 3" colSpan="6" onClick="action-view-show-stock-move-line"/>
-        <panel-dashlet name="customerDeliveriesPanel" title="Customer deliveries"
-          showIf="statusSelect >= 3" colSpan="12" action="action-sale-order-view-stock-moves"/>
-        <panel name="deliveryCommentsPanel" title="Comment to display on delivery"
+        <panel name="deliverySourcingPanel" title="Sourcing mode" icon="box-arrow-in-down"
           colSpan="12">
-          <field name="deliveryComments" widget="html" colSpan="12" showTitle="false"/>
+          <field name="oneoffSale" colSpan="3"/>
         </panel>
-        <panel name="pickingOrderCommentsPanel" title="Comment to display on picking order"
+        <panel name="deliveryStockPanel" title="Stock and packaging" icon="box-seam"
           colSpan="12">
-          <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
+          <field name="stockLocation" canEdit="false"
+            onSelect="action-sale-order-attrs-set-stock-location-domain"
+            form-view="stock-location-form" grid-view="stock-location-grid"/>
+          <field name="toStockLocation" canEdit="false"
+            domain="self.company = :company and self.typeSelect != 1 and self.usableOnSaleOrder = true"
+            form-view="stock-location-form" grid-view="stock-location-grid"/>
+          <field name="specificPackage" colSpan="12"/>
+        </panel>
+        <panel name="deliveryDatesPanel" title="Forecast dates" icon="calendar-week"
+          colSpan="12">
+          <field name="estimatedShippingDate"
+            onChange="action-sale-order-group-on-estimated-shipping-date-change"/>
+          <field name="estimatedDeliveryDate"
+            onChange="action-sale-order-group-on-estimated-delivery-date-change"/>
+        </panel>
+        <panel name="deliveryTransportPanel" title="Transport" icon="truck" colSpan="12">
+          <field name="deliveryCondition" colSpan="12"/>
+          <field name="shipmentMode" canEdit="false" form-view="shipment-mode-form"
+            grid-view="shipment-mode-grid"/>
+          <field name="freightCarrierMode" canEdit="false"
+            onChange="action-sale-order-record-freight-carrier"
+            domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form"
+            grid-view="freight-carrier-mode-grid"/>
+          <field name="carrierPartner" canEdit="false" x-image-field="picture"
+            domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
+            form-view="partner-form" grid-view="partner-grid"/>
+          <field name="forwarderPartner" canEdit="false" x-image-field="picture"
+            domain="self.isContact = FALSE AND (self.isCarrier = TRUE OR self.isSupplier = TRUE) AND :company MEMBER OF self.companySet"
+            form-view="partner-form" grid-view="partner-grid"/>
+          <field name="incoterm" canEdit="false" form-view="incoterm-form"
+            grid-view="incoterm-grid" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
+          <field name="shippingCost" title="SaleOrder.shippingCost"
+            x-scale="company.currency.numberOfDecimals"
+            onChange="action-sale-order-method-compute-margin"/>
+        </panel>
+        <panel name="deliveryCompliancePanel" title="Regulatory compliance"
+          icon="shield-check" colSpan="12">
+          <field name="isNeedingConformityCertificate" colSpan="3"/>
+          <field name="isIspmRequired" readonly="true" colSpan="3"/>
+        </panel>
+        <panel name="deliveryTrackingPanel" title="Delivery tracking" icon="geo-alt-fill"
+          showIf="statusSelect >= 3" colSpan="12">
+          <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details"
+            colSpan="6" onClick="action-view-show-stock-move-line"/>
+          <panel-dashlet name="customerDeliveriesPanel" title="Customer deliveries"
+            colSpan="12" action="action-sale-order-view-stock-moves"/>
+        </panel>
+        <panel name="deliveryCommentsGroupPanel" title="Comments" icon="chat-left-text"
+          colSpan="12">
+          <panel name="deliveryCommentsPanel" title="Comment to display on delivery"
+            colSpan="12">
+            <field name="deliveryComments" widget="html" colSpan="12" showTitle="false"/>
+          </panel>
+          <panel name="pickingOrderCommentsPanel" title="Comment to display on picking order"
+            colSpan="12">
+            <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
+          </panel>
         </panel>
       </panel>
       <panel name="invoicingPanel" title="Invoicing">
