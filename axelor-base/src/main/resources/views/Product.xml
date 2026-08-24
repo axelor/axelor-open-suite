@@ -209,13 +209,13 @@
             if="__config__.app.isApp('prestashop')" if-module="axelor-prestashop"/>
           <field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"
             onChange="action-product-record-compute-sale-price"
-            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'autoUpdateSalePrice'})"/>
+            if="!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'autoUpdateSalePrice'})"/>
           <field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable"
             colSpan="12"
-            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'salePrice'})"/>
+            if="!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'salePrice'})"/>
           <field name="saleCurrency" canEdit="false" hideIf="!sellable" colSpan="12"
             form-view="currency-form" grid-view="currency-grid"
-            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'saleCurrency'})"/>
+            if="!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'saleCurrency'})"/>
           <field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="6"
             form-view="unit-form" grid-view="unit-grid"
             if="__config__.app.getApp('sale')?.getManageSalesUnits()"/>
@@ -268,17 +268,17 @@
             if="__config__.app.getApp('purchase')?.getEnablePurchasesProductByTradName()"
             colSpan="12" showIf="purchasable" canSelect="true" canNew="false"/>
           <field name="purchasePrice" showIf="purchasable" colSpan="6"
-            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'purchasePrice'})"/>
+            if="!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'purchasePrice'})"/>
           <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6"
             form-view="currency-form" grid-view="currency-grid"
-            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'purchaseCurrency'})"/>
+            if="!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'purchaseCurrency'})"/>
           <field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="6"
             form-view="unit-form" grid-view="unit-grid"
             if="__config__.app.getApp('purchase')?.getManagePurchasesUnits()"
             onChange="action-product-method-update-cost-price"/>
           <field name="lastPurchaseDate" showIf="purchasable" colSpan="6" readonly="true"/>
           <field name="lastPurchasePrice" showIf="purchasable" colSpan="3" readonly="true"
-            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'lastPurchasePrice'})"/>
+            if="!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'lastPurchasePrice'})"/>
           <field name="defaultSupplierPartner" canEdit="false" showIf="purchasable"
             colSpan="6" domain="self.isContact = false AND self.isSupplier = true"
             form-view="partner-form" grid-view="partner-grid"/>
@@ -294,13 +294,13 @@
         <panel name="costsPanel" title="Costs" colSpan="6">
           <field name="costPrice" colSpan="6" readonlyIf="costTypeSelect != 1"
             onChange="action-product-record-compute-sale-price"
-            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'costPrice'})"/>
+            if="!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'costPrice'})"/>
           <field name="costTypeSelect" colSpan="6"
             onChange="action-product-group-cost-type-select-onchange"
-            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'costTypeSelect'})"/>
+            if="!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'costTypeSelect'})"/>
           <field name="managPriceCoef" colSpan="12"
             onChange="action-product-record-compute-sale-price"
-            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'managPriceCoef'})"/>
+            if="!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'managPriceCoef'})"/>
           <field name="shippingCoef" onChange="action-product-group-cost-type-select-onchange"
             showIf="!defShipCoefByPartner &amp;&amp; purchasable" if-module="axelor-purchase"
             if="__config__.app.isApp('purchase')"/>
@@ -357,9 +357,9 @@
         <panel name="stockPanel" colSpan="12" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')">
           <field name="controlOnReceipt" readonlyIf="productApproval.controlOnReceipt"
-            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'controlOnReceipt'})"/>
+            if="!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'controlOnReceipt'})"/>
           <field name="avgPrice" hideIf="!stockManaged"
-            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'avgPrice'})"/>
+            if="!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'avgPrice'})"/>
           <spacer name="avgPriceSpacer"/>
           <panel-dashlet name="productStockPanel" colSpan="12"
             action="action-product-view-stock" showIf="id &amp;&amp; stockManaged"/>
@@ -533,7 +533,7 @@
           <field name="customsCodeNomenclature"
             requiredIf="usedInDEB &amp;&amp; productTypeSelect !='service'"
             showIf="usedInDEB &amp;&amp; productTypeSelect !='service'" canEdit="false"
-            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'customsCodeNomenclature'})"/>
+            if="!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'customsCodeNomenclature'})"/>
           <field name="countryOfOrigin" showIf="usedInDEB"/>
         </panel>
         <panel name="packagingPanel" title="Packaging details" colSpan="12">
