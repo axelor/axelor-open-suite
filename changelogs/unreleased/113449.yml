@@ -1,0 +1,3 @@
+---
+title: "Purchase order: fixed 'Cancel receipt' not cancelling realized receipts, and handled re-validating a previously cancelled receipt."
+module: axelor-supplychain
