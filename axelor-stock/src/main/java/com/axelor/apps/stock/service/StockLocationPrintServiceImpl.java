@@ -155,7 +155,8 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
             "WithoutDetailsByStockLocation",
             withoutDetailsByStockLocation));
 
-    return printingTemplatePrintService.getPrintLink(stockLocationPrintTemplate, factoryContext);
+    return printingTemplatePrintService.getPrintLink(
+        stockLocationPrintTemplate, factoryContext, true);
   }
 
   @Override
