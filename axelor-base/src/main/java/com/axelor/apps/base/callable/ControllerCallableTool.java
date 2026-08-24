@@ -33,6 +33,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Tool class to call specific callable services in a controller.
@@ -59,11 +60,12 @@ public class ControllerCallableTool<V> {
     Future<V> future =
         executor.submit(
             () -> {
+              AtomicReference<V> resultHolder = new AtomicReference<>();
               TenantAware tenantAware =
                   new TenantAware(
                           () -> {
                             try {
-                              callable.call();
+                              resultHolder.set(callable.call());
                             } catch (Exception e) {
                               throw new RuntimeException(e);
                             }
@@ -72,7 +74,7 @@ public class ControllerCallableTool<V> {
               tenantAware.withTransaction(false);
               tenantAware.start();
               tenantAware.join();
-              return null;
+              return resultHolder.get();
             });
 
     int processTimeout = Beans.get(AppBaseService.class).getProcessTimeout();
