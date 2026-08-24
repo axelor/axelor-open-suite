@@ -19,6 +19,7 @@
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
 import com.axelor.apps.bankpayment.db.BankReconciliation;
+import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
 
@@ -34,7 +35,8 @@ public interface BankReconciliationDomainService {
 
   String getCashAccountDomain(BankReconciliation bankReconciliation);
 
-  String createDomainForMoveLine(BankReconciliation bankReconciliation) throws AxelorException;
+  String createDomainForMoveLine(BankReconciliationLine bankReconciliationLine)
+      throws AxelorException;
 
   String getJournalDomain(BankReconciliation bankReconciliation);
 }

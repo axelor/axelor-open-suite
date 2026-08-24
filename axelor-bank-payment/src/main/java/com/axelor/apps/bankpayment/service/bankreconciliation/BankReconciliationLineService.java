@@ -49,4 +49,6 @@ public interface BankReconciliationLineService {
 
   void fillPartnerAndAccountFromMoveLine(
       BankReconciliationLine bankReconciliationLine, MoveLine moveLine);
+
+  void toggleSelected(BankReconciliationLine bankReconciliationLine);
 }

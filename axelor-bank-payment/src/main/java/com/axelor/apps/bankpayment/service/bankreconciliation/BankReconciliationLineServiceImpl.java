@@ -276,4 +276,12 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
         .map(AccountTypeRepository.TYPE_TAX::equals)
         .orElse(false);
   }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void toggleSelected(BankReconciliationLine bankReconciliationLine) {
+    bankReconciliationLine.setIsSelectedBankReconciliation(
+        !bankReconciliationLine.getIsSelectedBankReconciliation());
+    bankReconciliationLineRepository.save(bankReconciliationLine);
+  }
 }
