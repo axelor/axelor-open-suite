@@ -483,12 +483,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       stockMoveLine.setReservedQty(BigDecimal.ZERO);
     }
     StockMove stockMove = stockMoveLine.getStockMove();
-    if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
-            && appSupplychain.getAutoFillDeliveryRealQty())
-        || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
-            && appSupplychain.getAutoFillReceiptRealQty())) {
-      newStockMoveLine.setRealQty(newStockMoveLine.getQty());
-    }
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
       newStockMoveLine.setRequestedReservedQty(BigDecimal.ZERO);
       newStockMoveLine.setReservedQty(BigDecimal.ZERO);
