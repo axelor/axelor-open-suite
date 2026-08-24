@@ -56,7 +56,7 @@
 
         <button name="searchBtn" title="Search" icon="fa-search"
           onClick="save,action-base-search" colOffset="8" colSpan="4"
-          readonlyIf="(research1 == null &amp;&amp; research2 == null &amp;&amp; research3 == null &amp;&amp; research4 == null ) || (research1 != null &amp;&amp; research1Value == null) || (research2 != null &amp;&amp; research2Value == null  )  || (research3 != null &amp;&amp; research3Value == null)  || (research4 != null &amp;&amp; research4Value == null)"/>
+          readonlyIf="(research1 == null &amp;&amp; research2 == null &amp;&amp; research3 == null &amp;&amp; research4 == null &amp;&amp; dateResearch1 == null) || (research1 != null &amp;&amp; research1Value == null) || (research2 != null &amp;&amp; research2Value == null  )  || (research3 != null &amp;&amp; research3Value == null)  || (research4 != null &amp;&amp; research4Value == null) || (dateResearch1 != null &amp;&amp; dateResearch1Value == null)"/>
         <panel-related name="researchResultsPanel" title="Results"
           field="researchResultLineList" colSpan="12" grid-view="research-result-line-grid"
           form-view="research-result-line-form" canNew="false" canView="false" canRemove="false"
