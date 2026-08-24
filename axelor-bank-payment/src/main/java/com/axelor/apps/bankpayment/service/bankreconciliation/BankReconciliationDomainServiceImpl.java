@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
+import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.common.StringUtils;
@@ -166,13 +167,16 @@ public class BankReconciliationDomainServiceImpl implements BankReconciliationDo
   }
 
   @Override
-  public String createDomainForMoveLine(BankReconciliation bankReconciliation)
+  public String createDomainForMoveLine(BankReconciliationLine bankReconciliationLine)
       throws AxelorException {
+    BankReconciliation bankReconciliation = bankReconciliationLine.getBankReconciliation();
     String domain = "";
     String idList =
         moveLineRepository
             .all()
-            .filter(bankReconciliationQueryService.getRequestMoveLines())
+            .filter(
+                bankReconciliationQueryService.getRequestMoveLines(
+                    bankReconciliationLine.getCredit(), bankReconciliationLine.getDebit()))
             .bind(bankReconciliationQueryService.getBindRequestMoveLine(bankReconciliation))
             .select("id")
             .fetch(0, 0)

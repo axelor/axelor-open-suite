@@ -237,4 +237,12 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
 
     moveLine.setBankReconciledAmount(bankReconciledAmount);
   }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void toggleSelected(BankReconciliationLine bankReconciliationLine) {
+    bankReconciliationLine.setIsSelectedBankReconciliation(
+        !bankReconciliationLine.getIsSelectedBankReconciliation());
+    bankReconciliationLineRepository.save(bankReconciliationLine);
+  }
 }
