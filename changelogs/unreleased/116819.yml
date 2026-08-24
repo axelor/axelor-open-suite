@@ -1,0 +1,3 @@
+---
+title: "Manufacturing order: fixed partial-production unit cost and produced ratio being computed against the wrong quantity, including tracking-number reserve lines and per-piece human resource cost."
+module: axelor-production
