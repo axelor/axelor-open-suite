@@ -750,9 +750,10 @@ public class CostSheetServiceImpl implements CostSheetService {
   /**
    * Ratio used to prorate the full purchase order total against the fraction of the manuf order
    * covered by the current cost sheet batch. Computed locally as {@code batchProducedQty /
-   * manufOrder.qty} so that it stays accurate for partial finishes, where {@link
-   * CostSheet#getManufOrderProducedRatio()} reflects the planned OUT moves at the moment of cost
-   * computation (typically equal to the batch qty, yielding a misleading ratio of 1).
+   * manufOrder.qty} -- the same formula {@link CostSheet#getManufOrderProducedRatio()} now uses,
+   * kept independent here (rather than reusing that shared getter) because {@code
+   * CostSheetServiceMaintenanceImpl} overrides {@code computeManufOrderProducedRatio} to force a
+   * ratio of {@code 1} for maintenance manuf orders, which must not affect subcontracting cost.
    */
   protected BigDecimal computeSubcontractingRatio(
       ManufOrder manufOrder, CostSheetLine parentCostSheetLine) {
@@ -1158,7 +1159,7 @@ public class CostSheetServiceImpl implements CostSheetService {
     BigDecimal consumptionQty = BigDecimal.ZERO;
     Unit unit = null;
     if (costType == WorkCenterRepository.COST_TYPE_PER_PIECE) {
-      consumptionQty = producedQty.multiply(ratio);
+      consumptionQty = producedQty;
       unit = pieceUnit;
     } else if (costType == WorkCenterRepository.COST_TYPE_PER_HOUR) {
       if (workCenter.getIsRevaluationAtActualPrices()) {
@@ -1328,28 +1329,8 @@ public class CostSheetServiceImpl implements CostSheetService {
   }
 
   protected BigDecimal getTotalToProduceQty(ManufOrder manufOrder) throws AxelorException {
-
-    BigDecimal totalProducedQty = BigDecimal.ZERO;
-
-    for (StockMoveLine stockMoveLine : manufOrder.getProducedStockMoveLineList()) {
-
-      if (stockMoveLine.getUnit().equals(manufOrder.getUnit())
-          && (stockMoveLine.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_PLANNED
-              || stockMoveLine.getStockMove().getStatusSelect()
-                  == StockMoveRepository.STATUS_REALIZED)) {
-        Product product = stockMoveLine.getProduct();
-        totalProducedQty =
-            totalProducedQty.add(
-                unitConversionService.convert(
-                    stockMoveLine.getUnit(),
-                    costSheet.getManufOrder().getUnit(),
-                    stockMoveLine.getQty(),
-                    stockMoveLine.getQty().scale(),
-                    product));
-      }
-    }
-
-    return totalProducedQty;
+    BigDecimal totalQty = manufOrder.getQty();
+    return totalQty != null ? totalQty : BigDecimal.ZERO;
   }
 
   protected void computeRealHumanResourceCost(
