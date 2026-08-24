@@ -36,9 +36,12 @@ import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.cache.AxelorCache;
+import com.axelor.cache.CacheBuilder;
 import com.axelor.db.Query;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -56,8 +59,14 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   protected PeriodCheckService periodCheckService;
   protected TraceBackRepository traceBackRepository;
 
-  protected List<Move> moves = new ArrayList<>();
-  protected int anomalyCount = 0;
+  // Per-request closing result must not be held in scalar instance fields on this @Singleton
+  // service: a concurrent close() from another tenant/user would overwrite it. It is stored in a
+  // tenant-aware cache keyed by period id, so each closing keeps its own moves / anomaly count.
+  protected final AxelorCache<Long, Pair<List<Move>, Integer>> periodClosingResultCache =
+      CacheBuilder.newBuilder("periodClosingResult")
+          .maximumSize(1000)
+          .expireAfterWrite(Duration.ofHours(1))
+          .build();
 
   @Inject
   public PeriodServiceAccountImpl(
@@ -80,6 +89,9 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
 
   @Override
   public void close(Period period) throws AxelorException {
+    Long periodId = period.getId();
+    List<Move> moves = new ArrayList<>();
+    int anomalyCount = 0;
     if (period.getYear().getTypeSelect() == YearRepository.TYPE_FISCAL) {
       Pair<List<Move>, Integer> result =
           moveValidateService.accountingMultiple(
@@ -88,6 +100,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
       anomalyCount = result.getRight();
       period = periodRepo.find(period.getId());
     }
+    periodClosingResultCache.put(periodId, Pair.of(moves, anomalyCount));
     if (!CollectionUtils.isEmpty(moves)) {
       return;
     }
@@ -153,19 +166,22 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   public void closePeriod(Period period) {
     int oldPeriodStatusSelect = period.getStatusSelect();
     super.closePeriod(period);
-    if (!CollectionUtils.isEmpty(moves)) {
+    Pair<List<Move>, Integer> result = periodClosingResultCache.get(period.getId());
+    if (result != null && !CollectionUtils.isEmpty(result.getLeft())) {
       resetStatus(period, oldPeriodStatusSelect);
     }
   }
 
   @Override
-  public List<Move> getMoves() {
-    return moves;
+  public List<Move> getMoves(Period period) {
+    Pair<List<Move>, Integer> result = periodClosingResultCache.get(period.getId());
+    return result != null ? result.getLeft() : new ArrayList<>();
   }
 
   @Override
-  public int getAnomalyCount() {
-    return anomalyCount;
+  public int getAnomalyCount(Period period) {
+    Pair<List<Move>, Integer> result = periodClosingResultCache.get(period.getId());
+    return result != null ? result.getRight() : 0;
   }
 
   @Override
