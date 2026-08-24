@@ -30,7 +30,6 @@ import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaTranslation;
-import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.meta.loader.ModuleManager;
@@ -101,14 +100,11 @@ public class ExportDbObjectService {
         return null;
       }
 
-      MetaFile metaFile = new MetaFile();
       String fileName =
           "ExportObject-"
               + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyMMddHHmmSS"))
               + ".csv";
-      metaFile.setFileName(fileName);
-      metaFile.setFilePath(fileName);
-      metaFile = Beans.get(MetaFileRepository.class).save(metaFile);
+      File objectFile = TempFiles.createTempFile("ExportObject", ".csv").toFile();
 
       SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
       saxParserFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
@@ -122,9 +118,11 @@ public class ExportDbObjectService {
 
       updateObjectMap(ModuleManager.getResolution(), parser, new XmlHandler());
 
-      writeObjects(MetaFiles.getPath(metaFile).toFile());
+      writeObjects(objectFile);
 
-      return metaFile;
+      MetaFile metaFile = new MetaFile();
+      metaFile.setFileName(fileName);
+      return Beans.get(MetaFiles.class).upload(objectFile, metaFile);
 
     } catch (ParserConfigurationException | SAXException | IOException e) {
       e.printStackTrace();

@@ -1,0 +1,3 @@
+---
+title: "App base: fixed export objects action failing with a file storage validation error."
+module: axelor-base
