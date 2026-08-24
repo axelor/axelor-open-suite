@@ -1,0 +1,8 @@
+---
+title: "Bank payment: migrated the bank reconciliation exchange rate cache to the tenant-aware cache API."
+module: axelor-bank-payment
+developer: |
+  Replaced the com.google.common.cache Guava cache used for currency conversion rates in
+  BankReconciliationReconciliationServiceImpl (exchangeRateCache) with the sanctioned
+  com.axelor.cache.AxelorCache / CacheBuilder API (tenant-aware by default), keeping the same
+  bounds (maximumSize=100, expireAfterWrite=10min). No functional change.
