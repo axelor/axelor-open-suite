@@ -545,7 +545,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   @Override
   public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product)
       throws AxelorException {
-    assignTrackingNumber(stockMoveLine, product, new HashSet<>());
+    assignTrackingNumber(
+        stockMoveLine, product, getSiblingAssignedTrackingNumberIds(stockMoveLine, product));
   }
 
   @Override
@@ -2188,5 +2189,21 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
     stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
     return stockMoveLine;
+  }
+
+  protected Set<Long> getSiblingAssignedTrackingNumberIds(
+      StockMoveLine stockMoveLine, Product product) {
+    StockMove stockMove = stockMoveLine.getStockMove();
+    if (stockMove == null || CollectionUtils.isEmpty(stockMove.getStockMoveLineList())) {
+      return new HashSet<>();
+    }
+    return stockMove.getStockMoveLineList().stream()
+        .filter(line -> line != stockMoveLine)
+        .filter(line -> product.equals(line.getProduct()))
+        .map(StockMoveLine::getTrackingNumber)
+        .filter(Objects::nonNull)
+        .map(TrackingNumber::getId)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toSet());
   }
 }
