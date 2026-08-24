@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.hr.service.expense;
 
-import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -62,7 +61,6 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
   protected ExpenseLineToolService expenseLineToolService;
   protected EmployeeFetchService employeeFetchService;
   protected ExpenseAnalyticService expenseAnalyticService;
-  protected AppAccountService appAccountService;
 
   @Inject
   public ExpenseLineCreateServiceImpl(
@@ -74,8 +72,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       ExpenseProofFileService expenseProofFileService,
       ExpenseLineToolService expenseLineToolService,
       EmployeeFetchService employeeFetchService,
-      ExpenseAnalyticService expenseAnalyticService,
-      AppAccountService appAccountService) {
+      ExpenseAnalyticService expenseAnalyticService) {
     this.expenseLineRepository = expenseLineRepository;
     this.appHumanResourceService = appHumanResourceService;
     this.kilometricService = kilometricService;
@@ -85,7 +82,6 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     this.expenseLineToolService = expenseLineToolService;
     this.employeeFetchService = employeeFetchService;
     this.expenseAnalyticService = expenseAnalyticService;
-    this.appAccountService = appAccountService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -160,6 +156,7 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
 
     expenseLineToolService.computeDistance(distance, expenseLine);
     expenseLineToolService.computeAmount(employee, expenseLine);
+    expenseAnalyticService.applyAnalyticDistribution(expenseLine);
 
     return expenseLineRepository.save(expenseLine);
   }
@@ -230,11 +227,6 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     expenseLine.setComments(comments);
     expenseLine.setTotalAmount(BigDecimal.ZERO);
     expenseLine.setProjectTask(projectTask);
-    if (appAccountService.isApp("account")
-        && appAccountService.getAppAccount().getManageAnalyticAccounting()) {
-      expenseLine.setAnalyticDistributionTemplate(employee.getAnalyticDistributionTemplate());
-      expenseAnalyticService.createAnalyticDistributionWithTemplate(expenseLine);
-    }
 
     return expenseLine;
   }
