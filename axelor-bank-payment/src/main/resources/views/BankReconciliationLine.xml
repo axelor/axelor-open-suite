@@ -72,10 +72,10 @@
   <grid name="bank-reconciliation-line-bank-reconciliation-grid"
     title="Bank reconciliation Lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine"
     canDelete="false" editable="false" canNew="false">
-    <button onClick="save,action-bank-reconciliation-line-record-set-selected,save"
+    <button onClick="save,action-bank-reconciliation-line-method-toggle-selected"
       name="select" title="Select / Unselect" icon="check-circle-fill"
       showIf="!isSelectedBankReconciliation"/>
-    <button onClick="save,action-bank-reconciliation-line-record-set-selected,save"
+    <button onClick="save,action-bank-reconciliation-line-method-toggle-selected"
       name="unselect" title="Select / Unselect" icon="dash-circle-fill"
       showIf="isSelectedBankReconciliation"/>
     <field name="postedNbr"/>
@@ -202,10 +202,10 @@
       if="typeSelect == 3 &amp;&amp; __parent__?._model != 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
   </action-record>
 
-  <action-record name="action-bank-reconciliation-line-record-set-selected"
-    model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
-    <field name="isSelectedBankReconciliation" expr="eval: !isSelectedBankReconciliation"/>
-  </action-record>
+  <action-method name="action-bank-reconciliation-line-method-toggle-selected">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController"
+      method="toggleSelected"/>
+  </action-method>
 
   <action-method
     name="action-bank-reconciliation-line-unreconcile-unselected-reconcile-selected">
