@@ -22,19 +22,19 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.cache.AxelorCache;
+import com.axelor.cache.CacheBuilder;
 import com.axelor.common.StringUtils;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.Strings;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.UriBuilder;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,8 +43,13 @@ public class MapServiceImpl implements MapService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private static final Cache<String, Optional<Map<String, Object>>> GEOCODE_CACHE =
-      CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.HOURS).maximumSize(1000).build();
+  // Geocoding results are tenant-agnostic, so the cache is shared across tenants.
+  private static final AxelorCache<String, Optional<Map<String, Object>>> GEOCODE_CACHE =
+      CacheBuilder.newBuilder("GEOCODE_CACHE")
+          .expireAfterWrite(Duration.ofHours(1))
+          .maximumSize(1000)
+          .nonTenantAware()
+          .build();
 
   protected final AppBaseService appBaseService;
   protected final MapOsmService mapOsmService;
@@ -70,7 +75,7 @@ public class MapServiceImpl implements MapService {
     int mapApiSelect = appBaseService.getAppBase().getMapApiSelect();
     String cacheKey = mapApiSelect + "|" + qString.trim().toLowerCase(Locale.ROOT);
 
-    Optional<Map<String, Object>> cached = GEOCODE_CACHE.getIfPresent(cacheKey);
+    Optional<Map<String, Object>> cached = GEOCODE_CACHE.get(cacheKey);
     if (cached != null) {
       return cached.orElse(null);
     }
