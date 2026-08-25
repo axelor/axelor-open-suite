@@ -1,0 +1,21 @@
+---
+title: "Base: cleaned up hand-rolled per-instance caches and mutable service state to prevent potential cross-request data mix-ups."
+module: axelor-base
+developer: |
+  Caching conformity clean-up (tech-debt / future-proofing) across several services:
+
+  - axelor-supplychain MrpServiceImpl: reset() now clears the per-run in-memory state
+    (stockLocationList, productMap, productMapToBeAssigned, processedMrpForecastIdSet, currentLevel)
+    so a reused instance no longer carries data over from a previous calculation.
+  - axelor-stock InventoryLineServiceImpl: presenceCache and valuationTypeCache migrated from
+    com.google.common.cache to the tenant-aware com.axelor.cache.AxelorCache / CacheBuilder API.
+  - axelor-production ManufOrderServiceImpl: defaultBomCache is no longer an instance field; it is
+    a traversal-local map threaded through the recursion. Signatures of the protected methods
+    getDefaultBOMCached and generateChildMOs now take an extra Map<Long, BillOfMaterial> parameter,
+    and a protected getToConsumeSubBomList overload with that parameter was added.
+  - axelor-cash-management ForecastRecapServiceImpl: invoiceStatusMap is now a tenant-aware
+    AxelorCache with a loader; the protected fetchAvailableStatusMap() method was replaced by
+    fetchAvailableStatusList(Integer).
+  - axelor-crm CrmReportingServiceImpl: removed the mutable "query" field; the query string is now
+    a local StringBuilder. The protected prepareQuery method now returns a String and addParams now
+    takes the StringBuilder as first parameter.
