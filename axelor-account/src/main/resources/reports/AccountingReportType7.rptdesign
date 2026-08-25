@@ -638,7 +638,19 @@ AND (AccountingReport.display_closing_accounting_moves is true
 AND (AccountingReport.display_opening_accounting_moves is true 
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
-AND (ABS(MoveLine.amount_remaining) > 0 OR not AccountingReport.display_only_not_completely_lettered_move_lines)
+AND (
+    NOT AccountingReport.display_only_not_completely_lettered_move_lines
+    OR MoveLine.amount_remaining <> 0
+    OR (
+        MoveLine.reconcile_group IS NOT NULL
+        AND EXISTS (
+            SELECT 1
+            FROM account_move_line ml2
+            WHERE ml2.reconcile_group = MoveLine.reconcile_group
+            AND ml2.amount_remaining <> 0
+        )
+    )
+)
 GROUP BY MoveLine.id, MoveLine.name, MoveLine.description, MoveLine.date_val, MoveLine.partner_full_name,
 account, MoveLine.debit, MoveLine.credit, ReconcileGroup.code, ReconcileGroup.lettering_date_time, Journal.code, Account.code, Account.name,  Move.reference,
 MoveLine.amount_remaining, MoveLine.currency_amount, Move.currency_code, Currency.number_of_decimals, CompanyCurrency.number_of_decimals, AccountingReport.date_val
