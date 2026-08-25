@@ -1,0 +1,8 @@
+---
+title: "Production: fixed stock moves generated for residual products when partially finishing a manufacturing order."
+module: axelor-production
+developer: |
+  Added ManufOrderCreateStockMoveLineService#createNewResidualStockMoveLineList(ManufOrder, BigDecimal)
+  and ManufOrderPlanStockMoveService#createAndPlanResidualStockMove(ManufOrder).
+  Changed CostSheetServiceImpl#computeRealResidualProduct(ManufOrder) to
+  computeRealResidualProduct(ManufOrder, Set<Long>).
