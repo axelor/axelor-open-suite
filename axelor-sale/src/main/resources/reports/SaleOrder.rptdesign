@@ -1080,6 +1080,11 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                         <property name="name">salesperson_signature_id</property>
                         <property name="dataType">decimal</property>
                     </structure>
+                    <structure>
+                        <property name="position">72</property>
+                        <property name="name">isDisplaySaleOrderLineNumber</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -1509,6 +1514,12 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <property name="name">salesperson_signature_id</property>
                     <property name="nativeName">salesperson_signature_id</property>
                     <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">72</property>
+                    <property name="name">isDisplaySaleOrderLineNumber</property>
+                    <property name="nativeName">isDisplaySaleOrderLineNumber</property>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[WITH SO AS (
@@ -2729,7 +2740,7 @@ where SaleOrderLineTaxLine.sale_sale_order_line = ?;]]></xml-property>
             <list-property name="resultSet"/>
             <xml-property name="queryText"><![CDATA[DROP FUNCTION IF EXISTS sale_order_proc(bigint);
 CREATE OR REPLACE FUNCTION sale_order_proc(saleOrderId bigint)
-RETURNS table(id bigint, "saleOrderSeq" varchar, "CreationDate" date, "SalemanName" text, "SalemanPhone" varchar, "SalemanEmail" varchar, "DisplaySaleman" boolean, "ShipmentDate" date, "ClientBox" text, "LegalNote" text, "DisplayDeliveryCondition" boolean, "CompanyName" varchar, "logo_path" varchar, "logo_height" integer, "logo_width" integer, "CustomerCode" varchar, "partner_type_select" integer, "ClientPartName" varchar, "ClientPartFirstName" varchar, "ClientTitle" integer, "ContactName" varchar, "ContactFirstName" varchar, "invoicecountry" varchar, "DeliveryCountry" varchar, "invoicingAddress" text, "deliveryAddress" text, "PaymentCondName" varchar, "PaymentMode" varchar, "ex_tax_total" numeric, "tax_total" numeric, "in_tax_total" numeric, "bank_address" varchar, "iban" varchar, "bic" varchar, "CurrencyCode" varchar, "number_of_decimals" integer, "external_reference" varchar, "header" text, "footer" text, "description" text, "durationValue" integer, "durationType" integer, "estimatedShippingDate" date, "deliveryCondition" text, "hideDiscount" boolean, "displayProductCodeOnPrinting" boolean, "displayTaxDetailOnPrinting" boolean, "displayEstimShipDateOnPrinting" boolean, "sale_order_type_select" integer, "status_select" integer, "specific_notes" text, "versionNumber" integer, "logoPosition" integer, "salesperson_signature_path" varchar, "periodicity_type_select" integer, "number_of_periods" integer, "subscription_text" text, "end_of_validity_date" date, "in_ati" boolean, "isIspmRequired" boolean, "displayCustomerCodeOnPrinting" boolean, "displayProductPictureOnPrinting" boolean, "ProformaComments" text, "enablePackMangement" boolean, "useSignature" boolean, "contactPartnerTitleSelect" integer, "tableFontSize" numeric, "isDisplaySubLinesOnReport" boolean, "listDisplayTypeSelect" integer, "logo_id" decimal, "salesperson_signature_id" decimal) as
+RETURNS table(id bigint, "saleOrderSeq" varchar, "CreationDate" date, "SalemanName" text, "SalemanPhone" varchar, "SalemanEmail" varchar, "DisplaySaleman" boolean, "ShipmentDate" date, "ClientBox" text, "LegalNote" text, "DisplayDeliveryCondition" boolean, "CompanyName" varchar, "logo_path" varchar, "logo_height" integer, "logo_width" integer, "CustomerCode" varchar, "partner_type_select" integer, "ClientPartName" varchar, "ClientPartFirstName" varchar, "ClientTitle" integer, "ContactName" varchar, "ContactFirstName" varchar, "invoicecountry" varchar, "DeliveryCountry" varchar, "invoicingAddress" text, "deliveryAddress" text, "PaymentCondName" varchar, "PaymentMode" varchar, "ex_tax_total" numeric, "tax_total" numeric, "in_tax_total" numeric, "bank_address" varchar, "iban" varchar, "bic" varchar, "CurrencyCode" varchar, "number_of_decimals" integer, "external_reference" varchar, "header" text, "footer" text, "description" text, "durationValue" integer, "durationType" integer, "estimatedShippingDate" date, "deliveryCondition" text, "hideDiscount" boolean, "displayProductCodeOnPrinting" boolean, "displayTaxDetailOnPrinting" boolean, "displayEstimShipDateOnPrinting" boolean, "sale_order_type_select" integer, "status_select" integer, "specific_notes" text, "versionNumber" integer, "logoPosition" integer, "salesperson_signature_path" varchar, "periodicity_type_select" integer, "number_of_periods" integer, "subscription_text" text, "end_of_validity_date" date, "in_ati" boolean, "isIspmRequired" boolean, "displayCustomerCodeOnPrinting" boolean, "displayProductPictureOnPrinting" boolean, "ProformaComments" text, "enablePackMangement" boolean, "useSignature" boolean, "contactPartnerTitleSelect" integer, "tableFontSize" numeric, "isDisplaySubLinesOnReport" boolean, "listDisplayTypeSelect" integer, "logo_id" decimal, "salesperson_signature_id" decimal, "isDisplaySaleOrderLineNumber" boolean) as
 $func$
 BEGIN
 IF (SELECT COUNT(to_regclass('account_payment_condition')) = 0) THEN
@@ -2776,7 +2787,8 @@ return query
   SaleOrder.is_display_sub_lines_on_report as "isDisplaySubLinesOnReport",
   AppSale.list_display_type_select as "listDisplayTypeSelect",
   coalesce(MetaFileTN.id, MetaFile.id)::decimal as logo_id,
-  SignatureFile.id::decimal as "salesperson_signature_id"
+  SignatureFile.id::decimal as "salesperson_signature_id",
+  AppSale.is_display_sale_order_line_number as "isDisplaySaleOrderLineNumber"
   from sale_sale_order as SaleOrder
   left outer join base_company as Company on (SaleOrder.company = Company.id)
   left outer join studio_app_sale as AppSale on true 
@@ -2848,7 +2860,8 @@ PrintingSettings.table_font_size as "tableFontSize",
 SaleOrder.is_display_sub_lines_on_report as "isDisplaySubLinesOnReport",
 AppSale.list_display_type_select as "listDisplayTypeSelect",
 coalesce(MetaFileTN.id, MetaFile.id)::decimal as logo_id,
-SignatureFile.id::decimal as "salesperson_signature_id"
+SignatureFile.id::decimal as "salesperson_signature_id",
+AppSale.is_display_sale_order_line_number as "isDisplaySaleOrderLineNumber"
 from sale_sale_order as SaleOrder
 left outer join base_company as Company on (SaleOrder.company = Company.id)
 left outer join studio_app_sale as AppSale on true 
@@ -3875,6 +3888,12 @@ $func$ LANGUAGE plpgsql;
                     <text-property name="displayName">logo_id</text-property>
                     <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
                     <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">isDisplaySaleOrderLineNumber</property>
+                    <text-property name="displayName">isDisplaySaleOrderLineNumber</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["isDisplaySaleOrderLineNumber"]</expression>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <method name="onPrepare"><![CDATA[String.prototype.repeat = String.prototype.repeat ||
@@ -6728,7 +6747,7 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">!row._outer["isDisplaySubLinesOnReport"] || row._outer["listDisplayTypeSelect"] != 2</expression>
+                                    <expression name="valueExpr" type="javascript">row._outer["listDisplayTypeSelect"] == 2 ? !row._outer["isDisplaySubLinesOnReport"] : !row._outer["isDisplaySaleOrderLineNumber"]</expression>
                                 </structure>
                             </list-property>
                             <property name="width">5%</property>
