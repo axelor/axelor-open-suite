@@ -74,6 +74,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
 
   public static final int PART_FINISH_IN = 1;
   public static final int PART_FINISH_OUT = 2;
+  public static final int PART_FINISH_RESIDUAL = 3;
   public static final int STOCK_LOCATION_IN = 1;
   public static final int STOCK_LOCATION_OUT = 2;
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -274,6 +275,10 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   @Override
   public ManufOrder partialFinishOut(ManufOrder manufOrder) throws AxelorException {
     manufOrder = partialFinish(manufOrder, PART_FINISH_OUT);
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+    if (Beans.get(ManufOrderResidualProductService.class).hasResidualProduct(manufOrder)) {
+      manufOrder = partialFinish(manufOrder, PART_FINISH_RESIDUAL);
+    }
     return Beans.get(ManufOrderRepository.class).save(manufOrder);
   }
 
@@ -288,7 +293,9 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
    */
   protected ManufOrder partialFinish(ManufOrder manufOrder, int inOrOut) throws AxelorException {
 
-    if (inOrOut != PART_FINISH_IN && inOrOut != PART_FINISH_OUT) {
+    if (inOrOut != PART_FINISH_IN
+        && inOrOut != PART_FINISH_OUT
+        && inOrOut != PART_FINISH_RESIDUAL) {
       throw new IllegalArgumentException(
           I18n.get(ProductionExceptionMessage.IN_OR_OUT_INVALID_ARG));
     }
@@ -307,8 +314,15 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
           stockConfigProductionService.getProductionVirtualStockLocation(
               stockConfig, manufOrderOutsourceService.isOutsource(manufOrder));
 
+    } else if (inOrOut == PART_FINISH_RESIDUAL) {
+      // Residual products have their own outgoing stock move, with its own destination.
+      stockMoveList = manufOrderGetStockMoveService.getResidualOutStockMoveLineList(manufOrder);
+      fromStockLocation = getVirtualStockLocationForProducedStockMove(manufOrder, company);
+      toStockLocation = getResidualProductStockLocation(manufOrder);
+
     } else {
-      stockMoveList = manufOrder.getOutStockMoveList();
+      // Only the finished product moves: the residual one is handled by PART_FINISH_RESIDUAL.
+      stockMoveList = manufOrderGetStockMoveService.getFinishedProductOutStockMoveList(manufOrder);
       fromStockLocation = getVirtualStockLocationForProducedStockMove(manufOrder, company);
       toStockLocation = getDefaultOutStockLocation(manufOrder, company);
     }
@@ -324,12 +338,16 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
       List<StockMoveLine> originalStockMoveLines =
           new ArrayList<>(stockMoveToRealize.get().getStockMoveLineList());
 
-      if (inOrOut == PART_FINISH_OUT) {
-        // Identify reserve lines: on stock move but NOT in producedStockMoveLineList.
+      if (inOrOut == PART_FINISH_OUT || inOrOut == PART_FINISH_RESIDUAL) {
+        // Identify reserve lines: on stock move but NOT in the matching stock move line list.
         // Reserve lines carry forward unused tracking from previous updateRealQty calls.
+        List<StockMoveLine> outStockMoveLineList =
+            inOrOut == PART_FINISH_RESIDUAL
+                ? manufOrder.getResidualStockMoveLineList()
+                : manufOrder.getProducedStockMoveLineList();
         Set<Long> producedLineIds =
-            manufOrder.getProducedStockMoveLineList() != null
-                ? manufOrder.getProducedStockMoveLineList().stream()
+            outStockMoveLineList != null
+                ? outStockMoveLineList.stream()
                     .map(StockMoveLine::getId)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet())
@@ -424,6 +442,9 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
         manufOrder.addInStockMoveListItem(newStockMove);
         newStockMove.getStockMoveLineList().forEach(manufOrder::addConsumedStockMoveLineListItem);
         manufOrder.clearDiffConsumeProdProductList();
+      } else if (inOrOut == PART_FINISH_RESIDUAL) {
+        manufOrder.addOutStockMoveListItem(newStockMove);
+        newStockMove.getStockMoveLineList().forEach(manufOrder::addResidualStockMoveLineListItem);
       } else {
         manufOrder.addOutStockMoveListItem(newStockMove);
         newStockMove.getStockMoveLineList().forEach(manufOrder::addProducedStockMoveLineListItem);

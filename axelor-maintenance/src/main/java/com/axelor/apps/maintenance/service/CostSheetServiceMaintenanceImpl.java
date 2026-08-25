@@ -35,6 +35,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Override of CostSheetService for maintenance orders (typeSelect = 3).
@@ -120,9 +121,10 @@ public class CostSheetServiceMaintenanceImpl extends CostSheetServiceImpl {
   }
 
   @Override
-  protected void computeRealResidualProduct(ManufOrder manufOrder) throws AxelorException {
+  protected void computeRealResidualProduct(ManufOrder manufOrder, Set<Long> excludedLineIds)
+      throws AxelorException {
     if (!isMaintenance(manufOrder)) {
-      super.computeRealResidualProduct(manufOrder);
+      super.computeRealResidualProduct(manufOrder, excludedLineIds);
     }
   }
 

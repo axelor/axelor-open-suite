@@ -622,6 +622,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     manufOrderCreateStockMoveLineService.createNewProducedStockMoveLineList(
         manufOrder, qtyToUpdate);
+
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+    if (Beans.get(ManufOrderResidualProductService.class).hasResidualProduct(manufOrder)) {
+      manufOrderCreateStockMoveLineService.createNewResidualStockMoveLineList(
+          manufOrder, qtyToUpdate);
+    }
   }
 
   @Override
