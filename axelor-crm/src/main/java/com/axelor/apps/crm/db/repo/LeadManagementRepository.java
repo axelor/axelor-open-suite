@@ -72,4 +72,18 @@ public class LeadManagementRepository extends LeadRepository {
       throw new PersistenceException(e.getMessage(), e);
     }
   }
+
+  @Override
+  public Lead copy(Lead entity, boolean deep) {
+    Lead copy = super.copy(entity, deep);
+    try {
+      copy.setIsConverted(false);
+      copy.setPartner(null);
+      copy.setLeadStatus(appCrmService.getLeadDefaultStatus());
+    } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
+    return copy;
+  }
 }
