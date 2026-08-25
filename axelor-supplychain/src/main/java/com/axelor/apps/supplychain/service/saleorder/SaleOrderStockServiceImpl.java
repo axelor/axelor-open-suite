@@ -478,6 +478,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (this.isStockMoveProduct(saleOrderLine)) {
 
       Unit unit = saleOrderLine.getProduct().getUnit();
+      if (unit == null) {
+        unit = saleOrderLine.getUnit();
+      }
       BigDecimal priceDiscounted = saleOrderLine.getPriceDiscounted();
       BigDecimal requestedReservedQty =
           saleOrderLine.getRequestedReservedQty().subtract(saleOrderLine.getDeliveredQty());
