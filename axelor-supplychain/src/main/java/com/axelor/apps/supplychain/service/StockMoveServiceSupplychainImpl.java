@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerLink;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -386,13 +387,20 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
           && stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_NORMAL) {
         SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
 
-        BigDecimal realQty =
-            unitConversionService.convert(
-                stockMoveLine.getUnit(),
-                saleOrderLine.getUnit(),
-                stockMoveLine.getRealQty(),
-                stockMoveLine.getRealQty().scale(),
-                saleOrderLine.getProduct());
+        Unit stockMoveLineUnit = stockMoveLine.getUnit();
+        Unit saleOrderLineUnit = saleOrderLine.getUnit();
+        BigDecimal realQty = stockMoveLine.getRealQty();
+        if (stockMoveLineUnit != null
+            && saleOrderLineUnit != null
+            && !stockMoveLineUnit.equals(saleOrderLineUnit)) {
+          realQty =
+              unitConversionService.convert(
+                  stockMoveLineUnit,
+                  saleOrderLineUnit,
+                  stockMoveLine.getRealQty(),
+                  stockMoveLine.getRealQty().scale(),
+                  saleOrderLine.getProduct());
+        }
         saleOrderLineQtyMap.merge(saleOrderLine, realQty, BigDecimal::add);
       }
     }
