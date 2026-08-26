@@ -190,7 +190,8 @@ public class PaymentServiceImpl implements PaymentService {
         if (creditMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0
             && debitMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
           if (reconcileNumberLimit > 0 && reconcileCount >= reconcileNumberLimit) {
-            traceExcessPaymentReconcileLimitReached(debitMoveLine, reconcileNumberLimit);
+            traceExcessPaymentReconcileLimitReached(
+                debitMoveLine, creditMoveLine, reconcileNumberLimit);
             return errorNumber;
           }
           BigDecimal reconciledAmount = BigDecimal.ZERO;
@@ -248,21 +249,58 @@ public class PaymentServiceImpl implements PaymentService {
 
   /**
    * Record a non-blocking message traceback informing that only the first {@code limit}
-   * reconciliations were performed. It is linked to the invoice when available (so the invoice
-   * ventilation controller surfaces it as a notification), otherwise to the move.
+   * reconciliations were performed. It is linked to the invoice(s) of the debit and credit move
+   * lines so the invoice ventilation controller surfaces it whichever side carries the ventilated
+   * invoice; falls back to the move when no invoice is available.
    */
-  protected void traceExcessPaymentReconcileLimitReached(MoveLine debitMoveLine, int limit) {
-    Move move = debitMoveLine.getMove();
-    Model ref = move != null && move.getInvoice() != null ? move.getInvoice() : move;
+  protected void traceExcessPaymentReconcileLimitReached(
+      MoveLine debitMoveLine, MoveLine creditMoveLine, int limit) {
     String message =
         I18n.get(AccountExceptionMessage.EXCESS_PAYMENT_RECONCILE_NUMBER_LIMIT_REACHED);
-    AxelorMessageException exception =
-        ref != null
-            ? new AxelorMessageException(
-                ref, TraceBackRepository.CATEGORY_INCONSISTENCY, message, limit)
-            : new AxelorMessageException(
-                TraceBackRepository.CATEGORY_INCONSISTENCY, message, limit);
-    TraceBackService.trace(exception);
+    List<Model> references =
+        getExcessPaymentReconcileLimitReferences(debitMoveLine, creditMoveLine);
+    if (references.isEmpty()) {
+      TraceBackService.trace(
+          new AxelorMessageException(TraceBackRepository.CATEGORY_INCONSISTENCY, message, limit));
+      return;
+    }
+    for (Model reference : references) {
+      TraceBackService.trace(
+          new AxelorMessageException(
+              reference, TraceBackRepository.CATEGORY_INCONSISTENCY, message, limit));
+    }
+  }
+
+  /**
+   * Objects the reconcile-limit message should be linked to: the invoice of the debit move line
+   * and, when different, the invoice of the credit move line. Falls back to the (debit, then
+   * credit) move when neither line carries an invoice. Returns an empty list only if neither line
+   * has a move.
+   */
+  protected List<Model> getExcessPaymentReconcileLimitReferences(
+      MoveLine debitMoveLine, MoveLine creditMoveLine) {
+    List<Model> references = new ArrayList<>();
+    Invoice debitInvoice = getMoveInvoice(debitMoveLine);
+    Invoice creditInvoice = getMoveInvoice(creditMoveLine);
+    if (debitInvoice != null) {
+      references.add(debitInvoice);
+    }
+    if (creditInvoice != null && creditInvoice != debitInvoice) {
+      references.add(creditInvoice);
+    }
+    if (references.isEmpty()) {
+      Move move =
+          debitMoveLine.getMove() != null ? debitMoveLine.getMove() : creditMoveLine.getMove();
+      if (move != null) {
+        references.add(move);
+      }
+    }
+    return references;
+  }
+
+  protected Invoice getMoveInvoice(MoveLine moveLine) {
+    Move move = moveLine.getMove();
+    return move != null ? move.getInvoice() : null;
   }
 
   /**

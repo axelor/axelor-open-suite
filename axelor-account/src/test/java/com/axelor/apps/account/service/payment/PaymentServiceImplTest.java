@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.account.service.payment;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
@@ -30,6 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -43,6 +46,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.db.Model;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +79,7 @@ class PaymentServiceImplTest {
 
     // Avoid the heavy reconcile work and the static TraceBackService call.
     doNothing().when(service).createReconcile(any(), any(), any(), any());
-    doNothing().when(service).traceExcessPaymentReconcileLimitReached(any(), anyInt());
+    doNothing().when(service).traceExcessPaymentReconcileLimitReached(any(), any(), anyInt());
   }
 
   private void mockLimit(Integer limit) throws AxelorException {
@@ -102,6 +106,20 @@ class PaymentServiceImplTest {
     return list;
   }
 
+  private MoveLine moveLineWithInvoice(Invoice invoice) {
+    Move move = new Move();
+    move.setInvoice(invoice);
+    MoveLine moveLine = mock(MoveLine.class);
+    when(moveLine.getMove()).thenReturn(move);
+    return moveLine;
+  }
+
+  private MoveLine moveLineWithMoveNoInvoice() {
+    MoveLine moveLine = mock(MoveLine.class);
+    when(moveLine.getMove()).thenReturn(new Move());
+    return moveLine;
+  }
+
   @Test
   void useExcessPaymentOnMoveLines_capsReconciliationsAtLimit() throws AxelorException {
     mockLimit(2);
@@ -109,7 +127,7 @@ class PaymentServiceImplTest {
     service.useExcessPaymentOnMoveLines(moveLines(5), moveLines(1));
 
     verify(service, times(2)).createReconcile(any(), any(), any(), any());
-    verify(service, times(1)).traceExcessPaymentReconcileLimitReached(any(), eq(2));
+    verify(service, times(1)).traceExcessPaymentReconcileLimitReached(any(), any(), eq(2));
   }
 
   @Test
@@ -119,7 +137,7 @@ class PaymentServiceImplTest {
     service.useExcessPaymentOnMoveLines(moveLines(3), moveLines(1));
 
     verify(service, times(3)).createReconcile(any(), any(), any(), any());
-    verify(service, never()).traceExcessPaymentReconcileLimitReached(any(), anyInt());
+    verify(service, never()).traceExcessPaymentReconcileLimitReached(any(), any(), anyInt());
   }
 
   @Test
@@ -129,6 +147,55 @@ class PaymentServiceImplTest {
     service.useExcessPaymentOnMoveLines(moveLines(3), moveLines(1));
 
     verify(service, times(3)).createReconcile(any(), any(), any(), any());
-    verify(service, never()).traceExcessPaymentReconcileLimitReached(any(), anyInt());
+    verify(service, never()).traceExcessPaymentReconcileLimitReached(any(), any(), anyInt());
+  }
+
+  @Test
+  void references_distinctInvoices_linksBoth() {
+    Invoice debitInvoice = new Invoice();
+    Invoice creditInvoice = new Invoice();
+
+    List<Model> references =
+        service.getExcessPaymentReconcileLimitReferences(
+            moveLineWithInvoice(debitInvoice), moveLineWithInvoice(creditInvoice));
+
+    assertEquals(2, references.size());
+    assertSame(debitInvoice, references.get(0));
+    assertSame(creditInvoice, references.get(1));
+  }
+
+  @Test
+  void references_sameInvoiceBothSides_linksOnce() {
+    Invoice invoice = new Invoice();
+
+    List<Model> references =
+        service.getExcessPaymentReconcileLimitReferences(
+            moveLineWithInvoice(invoice), moveLineWithInvoice(invoice));
+
+    assertEquals(1, references.size());
+    assertSame(invoice, references.get(0));
+  }
+
+  @Test
+  void references_onlyCreditInvoice_linksCredit() {
+    Invoice creditInvoice = new Invoice();
+
+    List<Model> references =
+        service.getExcessPaymentReconcileLimitReferences(
+            moveLineWithMoveNoInvoice(), moveLineWithInvoice(creditInvoice));
+
+    assertEquals(1, references.size());
+    assertSame(creditInvoice, references.get(0));
+  }
+
+  @Test
+  void references_noInvoice_fallsBackToMove() {
+    MoveLine debit = moveLineWithMoveNoInvoice();
+
+    List<Model> references =
+        service.getExcessPaymentReconcileLimitReferences(debit, moveLineWithMoveNoInvoice());
+
+    assertEquals(1, references.size());
+    assertSame(debit.getMove(), references.get(0));
   }
 }
