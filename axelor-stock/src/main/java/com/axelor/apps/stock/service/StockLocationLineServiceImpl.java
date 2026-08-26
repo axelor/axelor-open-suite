@@ -54,7 +54,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import org.hibernate.jpa.QueryHints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -642,7 +641,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     if (isDetailsStockLocationLine) {
       query.setParameter("trackingNumberId", trackingNumberId);
     }
-    query.setHint(QueryHints.HINT_CACHEABLE, true);
     query.setFlushMode(FlushModeType.COMMIT);
     List<StockLocationLineQtyView> aggregates = query.getResultList();
 
