@@ -370,9 +370,11 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       throw new AxelorException(
           stockLocationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(StockExceptionMessage.LOCATION_LINE_1),
+          I18n.get(StockExceptionMessage.LOCATION_LINE_NEGATIVE_QTY),
           stockLocationLine.getProduct().getName(),
-          stockLocationLine.getProduct().getCode());
+          stockLocationLine.getProduct().getCode(),
+          stockLocationLine.getCurrentQty().stripTrailingZeros().toPlainString(),
+          stockLocationLine.getStockLocation().getName());
 
     } else if (isDetailLocationLine
         && stockLocationLine.getCurrentQty().compareTo(BigDecimal.ZERO) < 0
@@ -387,14 +389,20 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       if (stockLocationLine.getTrackingNumber() != null) {
         trackingNumber = stockLocationLine.getTrackingNumber().getTrackingNumberSeq();
       }
+      StockLocation stockLocation =
+          stockLocationLine.getDetailsStockLocation() != null
+              ? stockLocationLine.getDetailsStockLocation()
+              : stockLocationLine.getStockLocation();
 
       throw new AxelorException(
           stockLocationLine,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(StockExceptionMessage.LOCATION_LINE_2),
+          I18n.get(StockExceptionMessage.DETAIL_LOCATION_LINE_NEGATIVE_QTY),
           stockLocationLine.getProduct().getName(),
           stockLocationLine.getProduct().getCode(),
-          trackingNumber);
+          trackingNumber,
+          stockLocationLine.getCurrentQty().stripTrailingZeros().toPlainString(),
+          stockLocation != null ? stockLocation.getName() : "");
     }
   }
 
@@ -580,6 +588,33 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
           StockLocationLineHistoryRepository.TYPE_SELECT_UPDATE_STOCK_LOCATION_FROM_PRODUCT);
     }
     return stockLocationLine;
+  }
+
+  @Override
+  public BigDecimal convertToProductUnit(StockLocationLine stockLocationLine, BigDecimal value)
+      throws AxelorException {
+    Product product = stockLocationLine.getProduct();
+    return convert(stockLocationLine.getUnit(), productUnit(product), value, product);
+  }
+
+  @Override
+  public BigDecimal convertFromProductUnit(StockLocationLine stockLocationLine, BigDecimal value)
+      throws AxelorException {
+    Product product = stockLocationLine.getProduct();
+    return convert(productUnit(product), stockLocationLine.getUnit(), value, product);
+  }
+
+  protected Unit productUnit(Product product) {
+    return product == null ? null : product.getUnit();
+  }
+
+  protected BigDecimal convert(Unit startUnit, Unit endUnit, BigDecimal value, Product product)
+      throws AxelorException {
+    if (value == null || startUnit == null || endUnit == null || startUnit.equals(endUnit)) {
+      return value;
+    }
+    return unitConversionService.convertWithAutoFlushFalse(
+        startUnit, endUnit, value, value.scale(), product);
   }
 
   protected static final String STOCK_MOVE_LINE_FILTER =

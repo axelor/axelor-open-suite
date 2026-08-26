@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import java.math.BigDecimal;
 
@@ -48,12 +49,25 @@ public interface InventoryLineService {
       StockLocation detailsStockLocation)
       throws AxelorException;
 
-  public InventoryLine updateInventoryLine(InventoryLine inventoryLine, Inventory inventory);
+  public InventoryLine updateInventoryLine(InventoryLine inventoryLine, Inventory inventory)
+      throws AxelorException;
 
   public InventoryLine compute(InventoryLine inventoryLine, Inventory inventory)
       throws AxelorException;
 
-  public BigDecimal getCurrentQty(StockLocation stockLocation, Product product);
+  public BigDecimal getCurrentQty(StockLocation stockLocation, Product product)
+      throws AxelorException;
+
+  /**
+   * Returns the current quantity of the given stock location line converted into the unit of its
+   * product. The stock location line unit is only set from the product unit when the line is
+   * created, so both units can differ once the product unit is changed.
+   *
+   * @param stockLocationLine a stock location line, may be null
+   * @return the current quantity in the product unit, zero if the line is null
+   * @throws AxelorException if the stock location line has no unit
+   */
+  BigDecimal getCurrentQtyInProductUnit(StockLocationLine stockLocationLine) throws AxelorException;
 
   public void updateInventoryLine(
       InventoryLine inventoryLine,

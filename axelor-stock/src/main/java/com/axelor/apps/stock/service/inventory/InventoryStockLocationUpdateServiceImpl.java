@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.stock.service.inventory;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
@@ -26,6 +27,7 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.db.JPA;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -46,18 +48,21 @@ public class InventoryStockLocationUpdateServiceImpl
 
   protected final StockLocationLineRepository stockLocationLineRepository;
   protected final InventoryLineRepository inventoryLineRepository;
+  protected final StockLocationLineService stockLocationLineService;
 
   @Inject
   public InventoryStockLocationUpdateServiceImpl(
       StockLocationLineRepository stockLocationLineRepository,
-      InventoryLineRepository inventoryLineRepository) {
+      InventoryLineRepository inventoryLineRepository,
+      StockLocationLineService stockLocationLineService) {
     this.stockLocationLineRepository = stockLocationLineRepository;
     this.inventoryLineRepository = inventoryLineRepository;
+    this.stockLocationLineService = stockLocationLineService;
   }
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void storeLastInventoryData(Inventory inventory) {
+  public void storeLastInventoryData(Inventory inventory) throws AxelorException {
     if (inventory == null) {
       return;
     }
@@ -191,7 +196,8 @@ public class InventoryStockLocationUpdateServiceImpl
       Inventory inventory,
       List<InventoryLine> linesForPage,
       List<StockLocationLine> stockLocationLines,
-      List<StockLocationLine> detailsStockLocationLines) {
+      List<StockLocationLine> detailsStockLocationLines)
+      throws AxelorException {
 
     if (CollectionUtils.isEmpty(linesForPage)) {
       return;
@@ -274,7 +280,8 @@ public class InventoryStockLocationUpdateServiceImpl
       Inventory inventory,
       List<InventoryLine> inventoryLines,
       Map<ProductLocationTrackingKey, StockLocationLine> trackedMap,
-      Long productId) {
+      Long productId)
+      throws AxelorException {
 
     for (InventoryLine il : inventoryLines) {
       if (il.getTrackingNumber() == null || il.getStockLocation() == null) {
@@ -309,13 +316,16 @@ public class InventoryStockLocationUpdateServiceImpl
       Inventory inventory,
       List<InventoryLine> inventoryLineList,
       StockLocationLine stockLocationLine,
-      BigDecimal realQty) {
+      BigDecimal realQty)
+      throws AxelorException {
 
     if (stockLocationLine == null || inventory == null) {
       return;
     }
 
-    stockLocationLine.setLastInventoryRealQty(realQty);
+    // realQty is expressed in the product unit, lastInventoryRealQty in the line unit
+    stockLocationLine.setLastInventoryRealQty(
+        stockLocationLineService.convertFromProductUnit(stockLocationLine, realQty));
     stockLocationLine.setLastInventoryDateT(
         inventory.getValidatedOn().atZone(ZoneId.systemDefault()));
 
