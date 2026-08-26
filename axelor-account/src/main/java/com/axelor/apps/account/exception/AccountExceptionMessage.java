@@ -1798,4 +1798,8 @@ public final class AccountExceptionMessage {
   public static final String LOAN_CONSISTENCY_GAP =
       /*$$(*/
       "Inconsistency detected: the theoretical outstanding capital does not match the balance of account %s." /*)*/;
+
+  public static final String EXCESS_PAYMENT_RECONCILE_NUMBER_LIMIT_REACHED =
+      /*$$(*/
+      "Only the first %s records could be reconciled (configuration limit reached). The remaining lines were not reconciled." /*)*/;
 }
