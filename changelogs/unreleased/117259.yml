@@ -1,0 +1,3 @@
+---
+title: "Inventory line: fixed issue of the saved real quantity differs from the displayed quantity and exceeds the configured decimal precision."
+module: axelor-stock
