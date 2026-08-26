@@ -34,7 +34,6 @@ public interface SaleOrderLineMOGenerationSingleLineService {
       BigDecimal qtyRequested,
       LocalDateTime startDate,
       SaleOrder saleOrder,
-      SaleOrderLine saleOrderLine,
-      BigDecimal grossQtyRequested)
+      SaleOrderLine saleOrderLine)
       throws AxelorException;
 }

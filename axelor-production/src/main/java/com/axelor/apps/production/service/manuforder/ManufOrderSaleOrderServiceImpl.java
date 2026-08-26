@@ -65,7 +65,7 @@ public class ManufOrderSaleOrderServiceImpl implements ManufOrderSaleOrderServic
       BigDecimal qtyToProduce = computeQuantityToProduceLeft(saleOrderLine);
 
       return productionOrderSaleOrderMOGenerationService.generateManufOrders(
-          productionOrder, saleOrderLine, product, qtyToProduce, qtyToProduce);
+          productionOrder, saleOrderLine, product, qtyToProduce);
 
     }
     // Produce only missing qty
@@ -77,12 +77,12 @@ public class ManufOrderSaleOrderServiceImpl implements ManufOrderSaleOrderServic
       BigDecimal availableQty =
           stockLocationLineFetchService.getAvailableQty(
               saleOrderLine.getSaleOrder().getStockLocation(), product);
-      BigDecimal grossQtyRequested = computeQuantityToProduceLeft(saleOrderLine);
-      BigDecimal qtyToProduce = grossQtyRequested.subtract(availableQty);
+      BigDecimal qtyToProduceLeft = computeQuantityToProduceLeft(saleOrderLine);
+      BigDecimal qtyToProduce = qtyToProduceLeft.subtract(availableQty);
 
       if (qtyToProduce.compareTo(BigDecimal.ZERO) > 0) {
         return productionOrderSaleOrderMOGenerationService.generateManufOrders(
-            productionOrder, saleOrderLine, product, qtyToProduce, grossQtyRequested);
+            productionOrder, saleOrderLine, product, qtyToProduce);
       }
     }
 

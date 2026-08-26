@@ -1,0 +1,5 @@
+---
+title: "Production: sub manufacturing orders are now sized from the parent manufacturing order quantity to produce."
+module: axelor-production
+developer: |
+  ProductionOrderSaleOrderMOGenerationService, SaleOrderLineMOGenerationService and SaleOrderLineMOGenerationSingleLineService: `generateManufOrders()` signature updated — removed the `BigDecimal grossQtyRequested` parameter.
