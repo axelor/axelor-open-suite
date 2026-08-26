@@ -9,8 +9,8 @@
       <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
       <attribute name="onSave" value="action-supplychain-saleorder-onsave"/>
     </extend>
-    <extend target="//field[@name='versionNumber']">
-      <insert position="after">
+    <extend target="//panel[@name='deliverySourcingPanel']">
+      <insert position="inside">
         <field colSpan="3" name="directOrderLocation"
           onChange="action-sale-order-record-direct-order-location-onchange" widget="boolean-switch"/>
       </insert>
