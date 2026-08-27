@@ -38,6 +38,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -75,6 +76,7 @@ public class InventoryValidateServiceImpl implements InventoryValidateService {
   protected final InventoryStockLocationUpdateService inventoryStockLocationUpdateService;
   protected final AppBaseService appBaseService;
   protected final InventoryLineService inventoryLineService;
+  protected final StockLocationLineService stockLocationLineService;
 
   protected static final int INVENTORY_LINE_WITHOUT_STOCK_LOCATION_DISPLAY_LIMIT = 15;
 
@@ -91,7 +93,8 @@ public class InventoryValidateServiceImpl implements InventoryValidateService {
       StockLocationLineFetchService stockLocationLineFetchService,
       InventoryStockLocationUpdateService inventoryStockLocationUpdateService,
       AppBaseService appBaseService,
-      InventoryLineService inventoryLineService) {
+      InventoryLineService inventoryLineService,
+      StockLocationLineService stockLocationLineService) {
     this.inventoryLineRepository = inventoryLineRepository;
     this.inventoryRepo = inventoryRepo;
     this.stockMoveRepo = stockMoveRepo;
@@ -104,6 +107,7 @@ public class InventoryValidateServiceImpl implements InventoryValidateService {
     this.inventoryStockLocationUpdateService = inventoryStockLocationUpdateService;
     this.appBaseService = appBaseService;
     this.inventoryLineService = inventoryLineService;
+    this.stockLocationLineService = stockLocationLineService;
   }
 
   @Override
@@ -345,14 +349,20 @@ public class InventoryValidateServiceImpl implements InventoryValidateService {
     stockMoveLineRepo.save(stockMoveLine);
   }
 
-  protected BigDecimal getAvgPrice(StockLocationLine stockLocationLine) {
-    BigDecimal avgPrice;
-    if (stockLocationLine != null) {
-      avgPrice = stockLocationLine.getAvgPrice();
-    } else {
-      avgPrice = BigDecimal.ZERO;
+  /**
+   * The stock location line average price is expressed per stock location line unit, while the
+   * generated stock move line is expressed in the product unit. A price converts in the opposite
+   * direction to a quantity, hence the product unit to stock location line unit conversion.
+   */
+  protected BigDecimal getAvgPrice(StockLocationLine stockLocationLine) throws AxelorException {
+    if (stockLocationLine == null) {
+      return BigDecimal.ZERO;
     }
-    return avgPrice;
+
+    BigDecimal avgPrice =
+        stockLocationLineService.convertFromProductUnit(
+            stockLocationLine, stockLocationLine.getAvgPrice());
+    return avgPrice == null ? BigDecimal.ZERO : avgPrice;
   }
 
   protected BigDecimal computeDiff(InventoryLine inventoryLine, boolean isEnteringStock) {

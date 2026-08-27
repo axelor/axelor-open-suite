@@ -180,4 +180,35 @@ public interface StockLocationLineService {
       String origin,
       String typeSelect)
       throws AxelorException;
+
+  /**
+   * Converts a value expressed in the unit of the given stock location line into the unit of its
+   * product. The stock location line unit is only set from the product unit when the line is
+   * created, so both units can differ once the product unit is changed afterwards.
+   *
+   * <p>Use it for quantities. A unit price converts the other way around, see {@link
+   * #convertFromProductUnit(StockLocationLine, BigDecimal)}.
+   *
+   * @param stockLocationLine the line giving the source unit and the product
+   * @param value the value to convert, may be null
+   * @return the converted value, unchanged when either unit is missing or both are equal
+   * @throws AxelorException if no conversion exists between the two units
+   */
+  BigDecimal convertToProductUnit(StockLocationLine stockLocationLine, BigDecimal value)
+      throws AxelorException;
+
+  /**
+   * Converts a value expressed in the unit of the product of the given stock location line into the
+   * unit of that line.
+   *
+   * <p>Use it for values stored on the line itself, and for unit prices, which convert in the
+   * opposite direction to the quantities they apply to.
+   *
+   * @param stockLocationLine the line giving the target unit and the product
+   * @param value the value to convert, may be null
+   * @return the converted value, unchanged when either unit is missing or both are equal
+   * @throws AxelorException if no conversion exists between the two units
+   */
+  BigDecimal convertFromProductUnit(StockLocationLine stockLocationLine, BigDecimal value)
+      throws AxelorException;
 }

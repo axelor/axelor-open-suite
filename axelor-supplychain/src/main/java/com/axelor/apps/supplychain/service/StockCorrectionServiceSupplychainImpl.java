@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -31,6 +32,7 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import jakarta.inject.Inject;
+import java.math.BigDecimal;
 import java.util.Map;
 
 public class StockCorrectionServiceSupplychainImpl extends StockCorrectionServiceImpl {
@@ -62,8 +64,19 @@ public class StockCorrectionServiceSupplychainImpl extends StockCorrectionServic
 
   @Override
   public void getDefaultQtys(
-      StockLocationLine stockLocationLine, Map<String, Object> stockCorrectionQtys) {
+      StockLocationLine stockLocationLine, Map<String, Object> stockCorrectionQtys)
+      throws AxelorException {
     super.getDefaultQtys(stockLocationLine, stockCorrectionQtys);
-    stockCorrectionQtys.put("reservedQty", stockLocationLine.getReservedQty());
+    stockCorrectionQtys.put("reservedQty", convertReservedQtyToProductUnit(stockLocationLine));
+  }
+
+  /**
+   * The reserved quantity is stored in the stock location line unit, like currentQty, while the
+   * defaults filled by the parent are expressed in the product unit.
+   */
+  protected BigDecimal convertReservedQtyToProductUnit(StockLocationLine stockLocationLine)
+      throws AxelorException {
+    return stockLocationLineService.convertToProductUnit(
+        stockLocationLine, stockLocationLine.getReservedQty());
   }
 }
