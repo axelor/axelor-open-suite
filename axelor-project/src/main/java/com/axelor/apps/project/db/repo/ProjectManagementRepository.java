@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectNameComputeService;
 import com.axelor.apps.project.service.ProjectTaskService;
@@ -36,13 +37,18 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppProject;
 import com.axelor.team.db.Team;
+import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectManagementRepository extends ProjectRepository {
 
   @Inject ProjectTaskService projectTaskService;
+  @Inject ProjectTaskRepository projectTaskRepository;
 
   protected void setAllProjectFullName(Project project) throws AxelorException {
     ProjectNameComputeService projectNameComputeService =
@@ -114,10 +120,43 @@ public class ProjectManagementRepository extends ProjectRepository {
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public Project copy(Project entity, boolean deep) {
     Project project = super.copy(entity, false);
     project.setCode(null);
-    return project;
+    copyProjectTaskList(entity, project);
+    return save(project);
+  }
+
+  protected void copyProjectTaskList(Project entity, Project project) {
+    List<ProjectTask> projectTaskList = entity.getProjectTaskList();
+    if (CollectionUtils.isEmpty(projectTaskList)) {
+      return;
+    }
+    Map<ProjectTask, ProjectTask> taskMap = new HashMap<>();
+
+    for (ProjectTask task : projectTaskList) {
+      ProjectTask copiedTask = projectTaskRepository.copy(task, false);
+      copiedTask.setProject(project);
+      copiedTask.setParentTask(null);
+      taskMap.put(task, copiedTask);
+      project.addProjectTaskListItem(copiedTask);
+    }
+
+    for (ProjectTask task : projectTaskList) {
+      ProjectTask copiedTask = taskMap.get(task);
+      ProjectTask parentTask = task.getParentTask();
+
+      if (parentTask != null) {
+        ProjectTask copiedParent = taskMap.get(parentTask);
+        copiedTask.setParentTask(copiedParent);
+
+        if (copiedParent != null) {
+          copiedParent.addProjectTaskListItem(copiedTask);
+        }
+      }
+    }
+    taskMap.values().forEach(projectTaskRepository::save);
   }
 
   @Override
