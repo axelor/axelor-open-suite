@@ -1,0 +1,48 @@
+---
+title: "Analytic distribution template: fixed silent fork on every picker onChange which results immediate orphan clones."
+module: axelor-account
+developer: |
+  The fix stops new orphans only. The following script purges the existing backlog of orphan
+  specific templates (`is_specific=true` with no referencing FK) and their child lines.
+
+  ```sql
+  BEGIN;
+
+  -- Identify orphan specific templates not referenced by any FK-holding table.
+  CREATE TEMPORARY TABLE tmp_orphan_analytic_template AS
+  SELECT t.id, t.name
+  FROM   account_analytic_distribution_template t
+  WHERE  t.is_specific = true
+    AND  NOT EXISTS (SELECT 1 FROM account_account                      WHERE analytic_distribution_template = t.id)
+    AND  NOT EXISTS (SELECT 1 FROM account_account_management           WHERE analytic_distribution_template = t.id)
+    AND  NOT EXISTS (SELECT 1 FROM account_accounting_situation         WHERE analytic_distribution_template = t.id)
+    AND  NOT EXISTS (SELECT 1 FROM account_accounting_report            WHERE analytic_distribution_template = t.id)
+    AND  NOT EXISTS (SELECT 1 FROM account_analytic_move_line           WHERE analytic_distribution_template = t.id)
+    AND  NOT EXISTS (SELECT 1 FROM account_fixed_asset                  WHERE analytic_distribution_template = t.id)
+    AND  NOT EXISTS (SELECT 1 FROM account_fixed_asset_category         WHERE analytic_distribution_template = t.id)
+    AND  NOT EXISTS (SELECT 1 FROM account_invoice_line                 WHERE analytic_distribution_template = t.id)
+    AND  NOT EXISTS (SELECT 1 FROM account_move_line                    WHERE analytic_distribution_template = t.id)
+    AND  NOT EXISTS (SELECT 1 FROM account_move_template_line           WHERE analytic_distribution_template = t.id)
+    AND  NOT EXISTS (SELECT 1 FROM base_trading_name                    WHERE analytic_distribution_template = t.id)
+    AND  NOT EXISTS (SELECT 1 FROM bankpayment_bank_reconciliation_line WHERE analytic_distribution_template = t.id)
+    AND  NOT EXISTS (SELECT 1 FROM bankpayment_bank_statement_rule      WHERE analytic_distribution_template = t.id)
+    AND  NOT EXISTS (SELECT 1 FROM contract_contract_line               WHERE analytic_distribution_template = t.id)
+    AND  NOT EXISTS (SELECT 1 FROM hr_employee                          WHERE analytic_distribution_template = t.id)
+    AND  NOT EXISTS (SELECT 1 FROM hr_expense_line                      WHERE analytic_distribution_template = t.id)
+    AND  NOT EXISTS (SELECT 1 FROM sale_sale_order_line                 WHERE analytic_distribution_template = t.id)
+    AND  NOT EXISTS (SELECT 1 FROM purchase_purchase_order_line         WHERE analytic_distribution_template = t.id);
+
+  -- Dry-run: inspect rows before deleting; roll back if counts are unexpected.
+  SELECT id, name FROM tmp_orphan_analytic_template ORDER BY id;
+
+  -- Delete orphan child lines then the orphan templates.
+  DELETE FROM account_analytic_distribution_line
+  WHERE  analytic_distribution_template IN (SELECT id FROM tmp_orphan_analytic_template);
+
+  DELETE FROM account_analytic_distribution_template
+  WHERE  id IN (SELECT id FROM tmp_orphan_analytic_template);
+
+  DROP TABLE tmp_orphan_analytic_template;
+
+  COMMIT;
+  ```
