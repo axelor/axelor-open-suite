@@ -60,6 +60,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -91,6 +92,8 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
   protected StockMoveLineRepository stockMoveLineRepository;
 
+  protected StockMoveRepository stockMoveRepository;
+
   @Inject
   public WorkflowVentilationServiceSupplychainImpl(
       AccountConfigService accountConfigService,
@@ -108,6 +111,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       AppBaseService appBaseService,
       SupplyChainConfigService supplyChainConfigService,
       StockMoveLineRepository stockMoveLineRepository,
+      StockMoveRepository stockMoveRepository,
       AppAccountService appAccountService,
       InvoiceFinancialDiscountService invoiceFinancialDiscountService,
       InvoiceTermService invoiceTermService) {
@@ -131,6 +135,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     this.appBaseService = appBaseService;
     this.supplyChainConfigService = supplyChainConfigService;
     this.stockMoveLineRepository = stockMoveLineRepository;
+    this.stockMoveRepository = stockMoveRepository;
   }
 
   public void afterVentilation(Invoice invoice) throws AxelorException {
@@ -151,6 +156,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     if (invoice.getStockMoveSet() != null && !invoice.getStockMoveSet().isEmpty()) {
       stockMoveProcess(invoice);
     }
+    updateStockMoveInvoicingStatusFromOrders(invoice);
   }
 
   /**
@@ -489,6 +495,183 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
                 appBaseService.getNbDecimalDigitForQty(),
                 null);
         remainingQtyToInvoice = remainingQtyToInvoice.subtract(qtyAppliedInInvoiceUnit);
+      }
+    }
+  }
+
+  protected void updateStockMoveInvoicingStatusFromOrders(Invoice invoice) throws AxelorException {
+    Set<StockMove> invoiceStockMoveSet = invoice.getStockMoveSet();
+    if (invoiceStockMoveSet == null) {
+      invoiceStockMoveSet = new HashSet<>();
+      invoice.setStockMoveSet(invoiceStockMoveSet);
+    }
+
+    Set<StockMove> additionalStockMoveSet =
+        findStockMovesFromOrderLines(invoice, invoiceStockMoveSet);
+
+    if (CollectionUtils.isEmpty(additionalStockMoveSet)) {
+      return;
+    }
+
+    boolean isPartiallyActivated = isStockMoveInvoicingPartiallyActivated(invoice);
+
+    for (StockMove stockMove : additionalStockMoveSet) {
+      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+        updateStockMoveLinesFromInvoiceLine(invoice, invoiceLine, stockMove, isPartiallyActivated);
+      }
+      invoiceStockMoveSet.add(stockMove);
+      stockMove.addInvoiceSetItem(invoice);
+      stockMoveInvoiceService.computeStockMoveInvoicingStatus(stockMove);
+    }
+  }
+
+  protected Set<StockMove> findStockMovesFromOrderLines(
+      Invoice invoice, Set<StockMove> invoiceStockMoveSet) {
+    Set<SaleOrder> saleOrderSet = new HashSet<>();
+    Set<PurchaseOrder> purchaseOrderSet = new HashSet<>();
+
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      if (invoiceLine.getSaleOrderLine() != null) {
+        SaleOrder saleOrder =
+            SaleOrderLineUtils.getParentSol(invoiceLine.getSaleOrderLine()).getSaleOrder();
+        if (saleOrder != null) {
+          saleOrderSet.add(saleOrder);
+        }
+      }
+      if (invoiceLine.getPurchaseOrderLine() != null) {
+        PurchaseOrder purchaseOrder = invoiceLine.getPurchaseOrderLine().getPurchaseOrder();
+        if (purchaseOrder != null) {
+          purchaseOrderSet.add(purchaseOrder);
+        }
+      }
+    }
+
+    Set<StockMove> additionalStockMoveSet = new HashSet<>();
+
+    for (SaleOrder saleOrder : saleOrderSet) {
+      List<StockMove> stockMoves =
+          stockMoveRepository
+              .findAllBySaleOrderAndStatus(saleOrder, StockMoveRepository.STATUS_REALIZED)
+              .fetch();
+      for (StockMove stockMove : stockMoves) {
+        if (!invoiceStockMoveSet.contains(stockMove)) {
+          additionalStockMoveSet.add(stockMove);
+        }
+      }
+    }
+
+    for (PurchaseOrder purchaseOrder : purchaseOrderSet) {
+      List<StockMove> stockMoveList =
+          stockMoveRepository
+              .findAllByPurchaseOrderAndStatus(purchaseOrder, StockMoveRepository.STATUS_REALIZED)
+              .fetch();
+      for (StockMove stockMove : stockMoveList) {
+        if (!invoiceStockMoveSet.contains(stockMove)) {
+          additionalStockMoveSet.add(stockMove);
+        }
+      }
+    }
+
+    return additionalStockMoveSet;
+  }
+
+  protected void updateStockMoveLinesFromInvoiceLine(
+      Invoice invoice, InvoiceLine invoiceLine, StockMove stockMove, boolean isPartiallyActivated)
+      throws AxelorException {
+    List<StockMoveLine> stockMoveLineList = findMatchingStockMoveLines(invoiceLine, stockMove);
+    if (CollectionUtils.isEmpty(stockMoveLineList)) {
+      return;
+    }
+    if (isPartiallyActivated) {
+      updateStockMoveLinesPartialQtyInvoiced(invoice, invoiceLine, stockMove, stockMoveLineList);
+    } else {
+      updateStockMoveLinesFullQtyInvoiced(invoice, invoiceLine, stockMove, stockMoveLineList);
+    }
+  }
+
+  protected List<StockMoveLine> findMatchingStockMoveLines(
+      InvoiceLine invoiceLine, StockMove stockMove) {
+    if (invoiceLine.getSaleOrderLine() != null) {
+      return stockMoveLineRepository
+          .all()
+          .filter("self.saleOrderLine.id = :saleOrderLineId AND self.stockMove.id = :stockMoveId")
+          .bind("saleOrderLineId", invoiceLine.getSaleOrderLine().getId())
+          .bind("stockMoveId", stockMove.getId())
+          .fetch();
+    } else if (invoiceLine.getPurchaseOrderLine() != null) {
+      return stockMoveLineRepository
+          .all()
+          .filter(
+              "self.purchaseOrderLine.id = :purchaseOrderLineId AND self.stockMove.id = :stockMoveId")
+          .bind("purchaseOrderLineId", invoiceLine.getPurchaseOrderLine().getId())
+          .bind("stockMoveId", stockMove.getId())
+          .fetch();
+    }
+    return List.of();
+  }
+
+  protected void updateStockMoveLinesFullQtyInvoiced(
+      Invoice invoice,
+      InvoiceLine invoiceLine,
+      StockMove stockMove,
+      List<StockMoveLine> stockMoveLineList)
+      throws AxelorException {
+    boolean invoiceIsRefund =
+        stockMoveInvoiceService.isInvoiceRefundingStockMove(stockMove, invoice);
+
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      if (invoiceLine.getQty().compareTo(BigDecimal.ZERO) < 0) {
+        stockMoveLine.setQtyInvoiced(
+            invoiceIsRefund ? stockMoveLine.getRealQty() : BigDecimal.ZERO);
+      } else {
+        stockMoveLine.setQtyInvoiced(
+            invoiceIsRefund ? BigDecimal.ZERO : stockMoveLine.getRealQty());
+      }
+    }
+  }
+
+  protected void updateStockMoveLinesPartialQtyInvoiced(
+      Invoice invoice,
+      InvoiceLine invoiceLine,
+      StockMove stockMove,
+      List<StockMoveLine> stockMoveLineList)
+      throws AxelorException {
+    boolean isRefund = stockMoveInvoiceService.isInvoiceRefundingStockMove(stockMove, invoice);
+    BigDecimal remainingQty = invoiceLine.getQty();
+
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      if (remainingQty.signum() <= 0) {
+        break;
+      }
+
+      BigDecimal invoiceQty =
+          unitConversionService.convert(
+              invoiceLine.getUnit(),
+              stockMoveLine.getUnit(),
+              remainingQty,
+              appBaseService.getNbDecimalDigitForQty(),
+              null);
+
+      BigDecimal qty = stockMoveLine.getQtyInvoiced();
+      if (isRefund) {
+        qty = qty.subtract(invoiceQty);
+        remainingQty = remainingQty.subtract(invoiceLine.getQty());
+      } else {
+        BigDecimal available = stockMoveLine.getRealQty().subtract(qty);
+        BigDecimal toAdd = invoiceQty.min(available);
+        qty = qty.add(toAdd);
+        remainingQty =
+            remainingQty.subtract(
+                unitConversionService.convert(
+                    stockMoveLine.getUnit(),
+                    invoiceLine.getUnit(),
+                    toAdd,
+                    appBaseService.getNbDecimalDigitForQty(),
+                    null));
+      }
+
+      if (stockMoveLine.getRealQty().compareTo(qty) >= 0) {
+        stockMoveLine.setQtyInvoiced(qty);
       }
     }
   }
