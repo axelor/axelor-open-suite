@@ -211,6 +211,8 @@
     <boolean name="isPrintInvoicesInCompanyLanguage"
       title="Print invoices in company localization" default="true"/>
     <boolean name="isInvoiceCoefficientEnabled" title="Enable coefficient in invoice line"/>
+    <boolean name="originalInvoiceRequiredOnSupplierInvoice"
+      title="Original invoice required on supplier invoices" default="true"/>
 
     <!-- Accounting config template -->
     <many-to-one name="accountingConfigTemplate"

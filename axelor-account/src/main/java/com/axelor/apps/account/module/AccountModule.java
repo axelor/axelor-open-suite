@@ -228,6 +228,8 @@ import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoicePfpValidateServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceSupplierDocumentService;
+import com.axelor.apps.account.service.invoice.InvoiceSupplierDocumentServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
 import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
@@ -549,6 +551,7 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceVatLiabilityService.class).to(InvoiceVatLiabilityServiceImpl.class);
 
     bind(InvoicePrintService.class).to(InvoicePrintServiceImpl.class);
+    bind(InvoiceSupplierDocumentService.class).to(InvoiceSupplierDocumentServiceImpl.class);
 
     bind(PartnerBaseRepository.class).to(PartnerAccountRepository.class);
 
