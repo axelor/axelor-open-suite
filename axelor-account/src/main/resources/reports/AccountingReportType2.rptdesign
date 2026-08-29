@@ -405,6 +405,8 @@ left outer join account_accounting_report_partner_tag_set as ReportPartnerTagSet
 left outer join base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
 
 where
+(Move.archived IS NULL OR Move.archived = false) AND
+(MoveLine.archived IS NULL OR MoveLine.archived = false) AND
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
