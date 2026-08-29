@@ -315,4 +315,11 @@
     <view type="form" name="tracking-number-characteristic-form"/>
   </action-view>
 
+  <menuitem name="quality-reportings-control-entry-report" parent="quality-reportings"
+    title="Control entry report" action="control.entry.report.view" order="200"/>
+
+  <action-view name="control.entry.report.view" title="Control entry report"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="control-entry-report-form"/>
+  </action-view>
 </object-views>
