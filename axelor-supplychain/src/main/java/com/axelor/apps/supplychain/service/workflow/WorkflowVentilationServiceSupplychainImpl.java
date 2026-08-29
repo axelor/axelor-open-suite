@@ -151,6 +151,21 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     if (invoice.getStockMoveSet() != null && !invoice.getStockMoveSet().isEmpty()) {
       stockMoveProcess(invoice);
     }
+    if (InvoiceToolService.isPurchase(invoice)) {
+      updatePurchaseOrderStockMoveInvoicing(invoice);
+    }
+  }
+
+  protected void updatePurchaseOrderStockMoveInvoicing(Invoice invoice) throws AxelorException {
+    Set<PurchaseOrder> purchaseOrderSet = new HashSet<>();
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      if (invoiceLine.getPurchaseOrderLine() != null) {
+        purchaseOrderSet.add(invoiceLine.getPurchaseOrderLine().getPurchaseOrder());
+      }
+    }
+    for (PurchaseOrder purchaseOrder : purchaseOrderSet) {
+      stockMoveInvoiceService.updatePurchaseOrderStockMoveInvoicing(purchaseOrder);
+    }
   }
 
   /**

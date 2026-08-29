@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
@@ -71,6 +72,8 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceC
       OrderInvoiceService orderInvoiceService,
       InvoiceTaxService invoiceTaxService,
       InvoiceLineRepository invoiceLineRepository,
+      UnitConversionService unitConversionService,
+      AppBaseService appBaseService,
       BudgetDistributionRepository budgetDistributionRepository,
       BudgetToolsService budgetToolsService,
       AppBudgetService appBudgetService,
@@ -89,7 +92,9 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceC
         currencyScaleService,
         orderInvoiceService,
         invoiceTaxService,
-        invoiceLineRepository);
+        invoiceLineRepository,
+        unitConversionService,
+        appBaseService);
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;

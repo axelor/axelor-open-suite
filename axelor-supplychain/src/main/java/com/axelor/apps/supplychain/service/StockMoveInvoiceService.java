@@ -84,9 +84,9 @@ public interface StockMoveInvoiceService {
   BigDecimal computeNonCanceledInvoiceQty(StockMove stockMove) throws AxelorException;
 
   /**
-   * Compute quantity in stock move line that is not invoiced (e.g. has no invoice line or a
-   * canceled invoice line). It is not the same as {@link StockMoveLine#qtyInvoiced} that takes only
-   * ventilated qty.
+   * Computes the non-canceled invoiced quantity of a stock move line. For an incoming purchase
+   * order receipt, this includes its allocated ventilated {@link StockMoveLine#qtyInvoiced}
+   * quantity and directly linked invoices that are not yet ventilated.
    *
    * @param stockMoveLine a stock move line
    * @return the invoiced quantity
@@ -100,6 +100,10 @@ public interface StockMoveInvoiceService {
    * @param stockMove a stock move
    */
   void computeStockMoveInvoicingStatus(StockMove stockMove);
+
+  /** Recomputes invoiced quantities and statuses of receipt lines linked to the purchase order. */
+  @Transactional(rollbackOn = {Exception.class})
+  void updatePurchaseOrderStockMoveInvoicing(PurchaseOrder purchaseOrder) throws AxelorException;
 
   /**
    * Checks if the given invoice is a refund of a stock move. Either the stock move is not a

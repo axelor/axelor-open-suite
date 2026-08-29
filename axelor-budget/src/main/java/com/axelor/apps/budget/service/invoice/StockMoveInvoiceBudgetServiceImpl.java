@@ -36,6 +36,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingSupplychainService;
@@ -68,6 +69,7 @@ public class StockMoveInvoiceBudgetServiceImpl extends StockMoveInvoiceServiceIm
       SaleOrderRepository saleOrderRepo,
       PurchaseOrderRepository purchaseOrderRepo,
       StockMoveLineRepository stockMoveLineRepository,
+      StockMoveRepository stockMoveRepository,
       InvoiceLineRepository invoiceLineRepository,
       SupplyChainConfigService supplyChainConfigService,
       AppBaseService appBaseService,
@@ -91,6 +93,7 @@ public class StockMoveInvoiceBudgetServiceImpl extends StockMoveInvoiceServiceIm
         saleOrderRepo,
         purchaseOrderRepo,
         stockMoveLineRepository,
+        stockMoveRepository,
         invoiceLineRepository,
         supplyChainConfigService,
         appBaseService,
