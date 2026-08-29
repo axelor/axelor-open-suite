@@ -7,7 +7,7 @@
 
   <entity name="ProjectTask">
 
-    <string name="name" title="Name" required="true"/>
+    <string name="name" title="Name" required="true" translatable="true"/>
     <many-to-one name="assignedTo" title="Assigned to" ref="com.axelor.auth.db.User"
       help="Assign the task to a user.The user has to be created beforehand and recorded as a member of the selected project (in the membersPanelTab of the project)."/>
     <date name="taskDate" title="Start date"/>
@@ -34,7 +34,7 @@
 
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 
-    <string name="fullName" namecolumn="true" title="Name" search="name"/>
+    <string name="fullName" namecolumn="true" title="Name" search="name" translatable="true"/>
 
     <many-to-one name="statusBeforeComplete" title="Last status"
       ref="com.axelor.apps.project.db.TaskStatus"/>

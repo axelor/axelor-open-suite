@@ -25,11 +25,13 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.FrequencyRepository;
+import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -67,8 +69,11 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.utils.helpers.QueryBuilder;
+import com.axelor.utils.service.TranslationService;
+import com.axelor.utils.service.translation.TranslationBaseService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -95,6 +100,10 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
   protected TimesheetLineRepository timesheetLineRepository;
   protected ProjectTimeUnitService projectTimeUnitService;
   protected TaskTemplateService taskTemplateService;
+  protected LanguageRepository languageRepository;
+  protected TranslationBaseService translationBaseService;
+  protected TranslationService translationService;
+  protected MetaTranslationRepository metaTranslationRepository;
 
   @Inject
   public ProjectTaskBusinessProjectServiceImpl(
@@ -112,7 +121,11 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepository,
       ProjectTimeUnitService projectTimeUnitService,
-      TaskTemplateService taskTemplateService) {
+      TaskTemplateService taskTemplateService,
+      LanguageRepository languageRepository,
+      TranslationBaseService translationBaseService,
+      TranslationService translationService,
+      MetaTranslationRepository metaTranslationRepository) {
     super(
         projectTaskRepo,
         frequencyRepo,
@@ -129,6 +142,10 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     this.timesheetLineRepository = timesheetLineRepository;
     this.projectTimeUnitService = projectTimeUnitService;
     this.taskTemplateService = taskTemplateService;
+    this.languageRepository = languageRepository;
+    this.translationBaseService = translationBaseService;
+    this.translationService = translationService;
+    this.metaTranslationRepository = metaTranslationRepository;
   }
 
   @Override
@@ -753,5 +770,23 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       return limit.negate();
     }
     return value;
+  }
+
+  @Override
+  public void createTaskNameTranslations(String name, String fullName) {
+    List<Language> languageList = languageRepository.all().fetch();
+    for (Language language : languageList) {
+      String languageCode = language.getCode();
+      String translation = translationService.getTranslation("_task", languageCode);
+
+      if (metaTranslationRepository.findByKey(name + "_task", languageCode) == null) {
+        translationBaseService.createValueTranslation(
+            languageCode, name + "_task", name + translation);
+      }
+      if (metaTranslationRepository.findByKey(fullName + "_task", languageCode) == null) {
+        translationBaseService.createValueTranslation(
+            languageCode, fullName + "_task", fullName + translation);
+      }
+    }
   }
 }

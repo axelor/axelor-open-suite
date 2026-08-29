@@ -45,4 +45,6 @@ public interface ProjectBusinessService extends ProjectService {
   void transitionBetweenPaidStatus(Project project) throws AxelorException;
 
   List<String> checkPercentagesOver1000OnTasks(Project project);
+
+  void createProjectNameTranslations(String name, String fullName);
 }

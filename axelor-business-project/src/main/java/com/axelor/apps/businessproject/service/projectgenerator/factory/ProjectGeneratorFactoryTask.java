@@ -84,7 +84,6 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
   public Project create(SaleOrder saleOrder) throws AxelorException {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsBusinessProject(true);
-    project = projectRepository.save(project);
     try {
       if (!appProjectService.getAppProject().getGenerateProjectSequence()) {
         project.setCode(sequenceService.getDraftSequenceNumber(project));
@@ -92,7 +91,9 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
     } catch (AxelorException e) {
       TraceBackService.trace(e);
     }
-    return project;
+    projectBusinessService.createProjectNameTranslations(
+        saleOrder.getFullName(), project.getCode() + " - " + saleOrder.getFullName());
+    return projectRepository.save(project);
   }
 
   @Override
@@ -179,6 +180,8 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
     task.setUnitPrice(saleOrderLine.getPrice());
     task.setExTaxTotal(saleOrderLine.getExTaxTotal());
     projectTaskRepo.save(task);
+    projectTaskBusinessProjectService.createTaskNameTranslations(
+        saleOrderLine.getFullName(), "#" + task.getId() + " " + saleOrderLine.getFullName());
     return task;
   }
 
