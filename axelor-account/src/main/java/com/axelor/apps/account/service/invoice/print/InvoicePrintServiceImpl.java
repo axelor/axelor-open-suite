@@ -130,7 +130,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
                   TempFiles.createTempFile(null, ".pdf"),
                   StandardCopyOption.REPLACE_EXISTING);
       fileCopies =
-          Files.move(path, path.resolveSibling(fileName), StandardCopyOption.REPLACE_EXISTING)
+          Files.move(file.toPath(), path.resolveSibling(fileName), StandardCopyOption.REPLACE_EXISTING)
               .toFile();
     }
     return fileCopies;
