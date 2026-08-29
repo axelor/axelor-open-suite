@@ -236,6 +236,7 @@
 "Edit order",,,
 "Editable",,,
 "Editable tree",,,
+"Editing configurator values from the sale order line is not allowed.",,,
 "Editor",,,
 "Either the sale order or the product is null.",,,
 "Empty cart",,,

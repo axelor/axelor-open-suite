@@ -236,6 +236,7 @@
 "Edit order","Modifier la commande",,
 "Editable","Éditable",,
 "Editable tree","Arborescence éditable",,
+"Editing configurator values from the sale order line is not allowed.","La modification des valeurs du configurateur depuis la ligne de devis n'est pas autorisée.",,
 "Editor","Éditeur",,
 "Either the sale order or the product is null.","Soit la commande, soit le produit est nul. ",,
 "Empty cart","Vider le panier",,
