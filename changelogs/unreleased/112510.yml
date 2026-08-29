@@ -1,0 +1,7 @@
+---
+title: "Project: fixed an issue where time entry dashlets overflowed and became invisible in customized project forms."
+module: axelor-project
+developer: |
+  Removed height="200%" from the three panel-dashlets in incl-log-times-panel-form
+  (validatedTimesheetsPanel, waitingTimesheetLinesPanel, allTimesheetsLinesPanel).
+  Dashlet height now adapts to content with internal scroll.

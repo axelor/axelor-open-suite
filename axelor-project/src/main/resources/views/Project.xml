@@ -240,15 +240,15 @@
     model="com.axelor.apps.project.db.Project">
     <panel title="Log Times" name="logTimesPanel" showTitle="false" colSpan="12" itemSpan="12">
       <panel-dashlet name="validatedTimesheetsPanel" x-show-bars="true"
-        if="__config__.app.getApp('timesheet')?.needValidation" height="200%"
+        if="__config__.app.getApp('timesheet')?.needValidation"
         action="action-project-dashlet-validated-timesheet-lines" title="Validated Timesheet lines"
         colSpan="12" canSearch="true"/>
       <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
-        if="__config__.app.getApp('timesheet')?.needValidation" height="200%"
+        if="__config__.app.getApp('timesheet')?.needValidation"
         action="action-project-dashlet-project-waiting-timesheet-lines"
         title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
       <panel-dashlet name="allTimesheetsLinesPanel" x-show-bars="true"
-        if="!__config__.app.getApp('timesheet')?.needValidation" height="200%"
+        if="!__config__.app.getApp('timesheet')?.needValidation"
         action="action-project-dashlet-project-all-timesheet-lines" title="TimesheetLine.timeSpent"
         colSpan="12" canSearch="true"/>
     </panel>
