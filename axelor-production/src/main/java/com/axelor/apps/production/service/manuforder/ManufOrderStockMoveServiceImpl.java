@@ -384,12 +384,19 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     Address fromAddress = null;
     Address toAddress = null;
     int stockMoveTypeSelect = StockMoveRepository.TYPE_INTERNAL;
-    if (inOrOut == PART_FINISH_OUT && manufOrder.getOutsourcing()) {
-      fromAddress =
+    if (manufOrder.getOutsourcing()) {
+      Address outsourcePartnerAddress =
           partnerService.getDefaultAddress(
               manufOrderOutsourceService.getOutsourcePartner(manufOrder).orElse(null));
-      toAddress = toStockLocation.getAddress();
-      stockMoveTypeSelect = StockMoveRepository.TYPE_INCOMING;
+      if (inOrOut == PART_FINISH_OUT) {
+        fromAddress = outsourcePartnerAddress;
+        toAddress = toStockLocation.getAddress();
+        stockMoveTypeSelect = StockMoveRepository.TYPE_INCOMING;
+      } else {
+        fromAddress = fromStockLocation.getAddress();
+        toAddress = outsourcePartnerAddress;
+        stockMoveTypeSelect = StockMoveRepository.TYPE_OUTGOING;
+      }
     }
 
     StockMove newStockMove =
