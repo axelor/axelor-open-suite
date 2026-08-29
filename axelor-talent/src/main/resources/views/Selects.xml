@@ -69,7 +69,7 @@
   </selection>
 
   <selection name="sequence.generic.code.select" id="talent.sequence.generic.code.select">
-    <option value="jobPosition">Job position</option>
+    <option order="23" value="jobPosition">Job position</option>
   </selection>
 
   <selection name="job.application.family.status.select">

@@ -133,7 +133,7 @@
   </selection>
 
   <selection name="sequence.generic.code.select" id="crm.sequence.generic.code.select">
-    <option value="opportunity">Opportunity</option>
+    <option order="32" value="opportunity">Opportunity</option>
   </selection>
 
   <selection name="batch.batch.type.select" id="crm.batch.batch.type.select">

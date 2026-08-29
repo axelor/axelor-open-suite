@@ -35,9 +35,9 @@
 
   <selection name="sequence.generic.code.select"
     id="purchase.sequence.generic.code.select">
-    <option value="purchaseOrder">Purchase order</option>
-    <option value="PurchaseRequest">Purchase request</option>
-    <option value="CallTender">Call for tender</option>
+    <option order="46" value="purchaseOrder">Purchase order</option>
+    <option order="47" value="purchaseRequest">Purchase request</option>
+    <option order="6" value="callTender">Call for tender</option>
   </selection>
 
   <selection name="abc.analysis.type.select" id="purchase.abc.analysis.type.select">

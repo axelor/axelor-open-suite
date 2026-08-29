@@ -83,8 +83,8 @@
 
   <selection name="sequence.generic.code.select"
     id="intervention.sequence.generic.code.select">
-    <option value="customerRequest">Customer request</option>
-    <option value="intervention">Intervention</option>
+    <option order="9" value="customerRequest">Customer request</option>
+    <option order="18" value="intervention">Intervention</option>
   </selection>
 
   <selection name="intervention.batch.action.select">

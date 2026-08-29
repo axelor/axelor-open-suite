@@ -33,7 +33,7 @@
 
   <selection name="sequence.generic.code.select"
     id="helpdesk.sequence.generic.code.select">
-    <option value="ticket">Ticket</option>
+    <option order="63" value="ticket">Ticket</option>
   </selection>
 
 </object-views>
