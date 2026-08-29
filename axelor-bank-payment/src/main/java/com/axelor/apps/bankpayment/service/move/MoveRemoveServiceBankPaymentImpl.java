@@ -18,7 +18,12 @@
  */
 package com.axelor.apps.bankpayment.service.move;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
@@ -38,6 +43,8 @@ import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
 
@@ -95,5 +102,51 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
       bankStatementLineAFB120.setMoveLine(null);
       bankStatementLineAFB120Repository.save(bankStatementLineAFB120);
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void deleteMove(Move move) {
+    resetBankReconciledAmountOnOppositeReconcileMoveLines(move);
+    super.deleteMove(move);
+  }
+
+  @Override
+  protected void cleanMoveToArchived(Move move) throws Exception {
+    resetBankReconciledAmountOnOppositeReconcileMoveLines(move);
+    super.cleanMoveToArchived(move);
+  }
+
+  protected void resetBankReconciledAmountOnOppositeReconcileMoveLines(Move move) {
+    if (move == null || CollectionUtils.isEmpty(move.getMoveLineList())) {
+      return;
+    }
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
+        MoveLine creditMoveLine = reconcile.getCreditMoveLine();
+        if (creditMoveLine != null
+            && hasCashAccountType(creditMoveLine)
+            && creditMoveLine.getBankReconciledAmount().compareTo(BigDecimal.ZERO) > 0) {
+          creditMoveLine.setBankReconciledAmount(BigDecimal.ZERO);
+        }
+      }
+      for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
+        MoveLine debitMoveLine = reconcile.getDebitMoveLine();
+        if (debitMoveLine != null
+            && hasCashAccountType(debitMoveLine)
+            && debitMoveLine.getBankReconciledAmount().compareTo(BigDecimal.ZERO) > 0) {
+          debitMoveLine.setBankReconciledAmount(BigDecimal.ZERO);
+        }
+      }
+    }
+  }
+
+  protected boolean hasCashAccountType(MoveLine moveLine) {
+    return Optional.of(moveLine)
+        .map(MoveLine::getAccount)
+        .map(Account::getAccountType)
+        .map(AccountType::getTechnicalTypeSelect)
+        .map(AccountTypeRepository.TYPE_CASH::equals)
+        .orElse(false);
   }
 }
