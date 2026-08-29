@@ -105,7 +105,19 @@ public final class ProductionExceptionMessage {
 
   /** Production Order Controller */
   public static final String PRODUCTION_ORDER_NO_GENERATION = /*$$(*/
-      "No production order could be generated. Make sure that everything has been configured correctly. Reminder: check that the order lines that should be produced have their supply method set to 'produce' and that the chosen BoM has a production process associated to it." /*)*/;
+      "No production order could be generated. Make sure that everything has been configured correctly." /*)*/;
+
+  public static final String PRODUCTION_ORDER_LINE_WRONG_SUPPLY_TYPE = /*$$(*/
+      "The supply method for product %s must be set to 'Produce' or 'From stock and produce'." /*)*/;
+
+  public static final String PRODUCTION_ORDER_LINE_BLOCKED = /*$$(*/
+      "Production is either blocked or wrong production blocking to date for product %s." /*)*/;
+
+  public static final String PRODUCTION_ORDER_LINE_NO_PRODUCT = /*$$(*/
+      "Sale order line %s has no product configured." /*)*/;
+
+  public static final String PRODUCTION_ORDER_LINE_QTY_ALREADY_PRODUCED = /*$$(*/
+      "All quantities have already been produced for product %s." /*)*/;
 
   /** ProdProcess service */
   public static final String PROD_PROCESS_USELESS_PRODUCT = /*$$(*/

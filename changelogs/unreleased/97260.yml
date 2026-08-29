@@ -1,0 +1,3 @@
+---
+title: "Production order: fixed blocking issue when generating production order from sale order."
+module: axelor-production
