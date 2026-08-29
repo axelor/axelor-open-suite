@@ -1,0 +1,3 @@
+---
+title: "Contract: excluded consumption lines when duplicating a contract."
+module: axelor-contract
