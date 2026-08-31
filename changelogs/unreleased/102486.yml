@@ -1,0 +1,6 @@
+---
+title: "Sale order line: Add 'Cost total' and 'Unit cost in SO currency', fields for cost in sale order currency"
+module: axelor-sale
+developer: |
+  - "SaleOrderLineCostPriceComputeServiceImpl: added currencyService in constructor to compute cost in sale order currency"
+  - "SaleOrderLineCostPriceComputeProductionServiceImpl: adopted the constructor change"
