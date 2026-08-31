@@ -1041,7 +1041,10 @@ public class MrpServiceImpl implements MrpService {
           mrpForecastRepository
               .all()
               .filter(
-                  "self.product.id in (?1) AND self.stockLocation in (?2) AND self.forecastDate >= ?3 AND self.statusSelect = ?4",
+                  "self.product.id in (?1) AND self.stockLocation in (?2) AND self.forecastDate >= ?3 AND self.statusSelect = ?4"
+                      + " AND self.product.excludeFromMrp = false"
+                      + " AND (self.product.productCategory.excludeFromMrp = false OR self.product.productCategory IS NULL)"
+                      + " AND (self.product.productFamily.excludeFromMrp = false OR self.product.productFamily IS NULL)",
                   productMap.keySet(),
                   this.stockLocationList,
                   today,
@@ -1049,7 +1052,19 @@ public class MrpServiceImpl implements MrpService {
               .fetch());
 
     } else {
-      mrpForecastList.addAll(mrp.getMrpForecastSet());
+      mrpForecastList.addAll(
+          mrp.getMrpForecastSet().stream()
+              .filter(
+                  forecast -> {
+                    Product product = forecast.getProduct();
+                    return product != null
+                        && !product.getExcludeFromMrp()
+                        && (product.getProductCategory() == null
+                            || !product.getProductCategory().getExcludeFromMrp())
+                        && (product.getProductFamily() == null
+                            || !product.getProductFamily().getExcludeFromMrp());
+                  })
+              .collect(Collectors.toList()));
     }
 
     for (MrpForecast mrpForecast : mrpForecastList) {
@@ -1465,6 +1480,15 @@ public class MrpServiceImpl implements MrpService {
         productSet.add(mrpForecast.getProduct());
       }
     }
+
+    productSet.removeIf(
+        product ->
+            product == null
+                || product.getExcludeFromMrp()
+                || (product.getProductCategory() != null
+                    && product.getProductCategory().getExcludeFromMrp())
+                || (product.getProductFamily() != null
+                    && product.getProductFamily().getExcludeFromMrp()));
 
     if (productSet.isEmpty()) {
       throw new AxelorException(
