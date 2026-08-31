@@ -1,0 +1,5 @@
+title: "Bank reconciliation: : Add new button to update bankReconciledAmount on moveLine"
+module: axelor-bank-payment
+developer: |
+  - Ajout du bouton "Mettre à jour le montant rapproché" dans le panel rapprochement bancaire de MoveLine pour permettre l'édition manuelle du champ bankReconciledAmount lorsque le mouvement est en statut brouillard comptable ou comptabilisé.
+  - Ajout du suivi des modifications du champ bankReconciledAmount sur MoveLine pour tracer les mises à jour manuelles dans l'historique de la ligne d'écriture.
