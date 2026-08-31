@@ -286,10 +286,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         Product product = purchaseOrderLine.getProduct();
         if (product != null) {
-          BigDecimal lastPurchasePrice =
-              (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany())
-                  ? purchaseOrderLine.getInTaxPrice()
-                  : purchaseOrderLine.getPrice();
+          BigDecimal lastPurchasePrice = purchaseOrderLine.getPrice();
           lastPurchasePrice =
               currencyService.getAmountCurrencyConvertedAtDate(
                   purchaseOrder.getCurrency(),

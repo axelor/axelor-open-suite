@@ -127,7 +127,7 @@ public class ProductPriceServiceImpl implements ProductPriceService {
     BigDecimal price = (BigDecimal) productCompanyService.get(product, "purchasePrice", company);
     Currency currency = (Currency) productCompanyService.get(product, "purchaseCurrency", company);
     return getConvertedPrice(
-        company, product, taxLineSet, resultInAti, localDate, price, currency, toCurrency);
+        company, product, taxLineSet, resultInAti, localDate, price, currency, toCurrency, false);
   }
 
   @Override
@@ -141,13 +141,34 @@ public class ProductPriceServiceImpl implements ProductPriceService {
       Currency fromCurrency,
       Currency toCurrency)
       throws AxelorException {
-    if ((Boolean) productCompanyService.get(product, "inAti", company) != resultInAti) {
+    return getConvertedPrice(
+        company,
+        product,
+        taxLineSet,
+        resultInAti,
+        localDate,
+        price,
+        fromCurrency,
+        toCurrency,
+        (Boolean) productCompanyService.get(product, "inAti", company));
+  }
+
+  @Override
+  public BigDecimal getConvertedPrice(
+      Company company,
+      Product product,
+      Set<TaxLine> taxLineSet,
+      boolean resultInAti,
+      LocalDate localDate,
+      BigDecimal price,
+      Currency fromCurrency,
+      Currency toCurrency,
+      boolean priceIsAti)
+      throws AxelorException {
+    if (priceIsAti != resultInAti) {
       price =
           taxService.convertUnitPrice(
-              (Boolean) productCompanyService.get(product, "inAti", company),
-              taxLineSet,
-              price,
-              AppBaseService.COMPUTATION_SCALING);
+              priceIsAti, taxLineSet, price, AppBaseService.COMPUTATION_SCALING);
     }
     return currencyService
         .getAmountCurrencyConvertedAtDate(fromCurrency, toCurrency, price, localDate)

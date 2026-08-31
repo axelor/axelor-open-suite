@@ -290,30 +290,20 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     if (discounts != null) {
       if (discounts.get("price") != null) {
         BigDecimal discountPrice = (BigDecimal) discounts.get("price");
-        if (product.getInAti()) {
-          inTaxPrice = discountPrice;
-          price =
-              taxService.convertUnitPrice(
-                  true,
-                  line.getTaxLineSet(),
-                  discountPrice,
-                  appBaseService.getNbDecimalDigitForUnitPrice());
-        } else {
-          price = discountPrice;
-          inTaxPrice =
-              taxService.convertUnitPrice(
-                  false,
-                  line.getTaxLineSet(),
-                  discountPrice,
-                  appBaseService.getNbDecimalDigitForUnitPrice());
-        }
+        price = discountPrice;
+        inTaxPrice =
+            taxService.convertUnitPrice(
+                false,
+                line.getTaxLineSet(),
+                discountPrice,
+                appBaseService.getNbDecimalDigitForUnitPrice());
       }
-      if (product.getInAti() != purchaseOrder.getInAti()
+      if (purchaseOrder.getInAti()
           && (Integer) discounts.get("discountTypeSelect")
               != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
         line.setDiscountAmount(
             taxService.convertUnitPrice(
-                product.getInAti(),
+                false,
                 line.getTaxLineSet(),
                 (BigDecimal) discounts.get("discountAmount"),
                 appBaseService.getNbDecimalDigitForUnitPrice()));
