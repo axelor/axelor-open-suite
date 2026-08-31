@@ -5,8 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="FixedAsset" cacheable="true"
-    implements="com.axelor.apps.base.interfaces.Currenciable">
+  <entity name="FixedAsset" implements="com.axelor.apps.base.interfaces.Currenciable">
 
     <string name="reference" title="Reference" readonly="true"/>
     <string name="name" title="Name" required="true"/>
