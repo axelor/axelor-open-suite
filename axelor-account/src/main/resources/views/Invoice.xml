@@ -21,7 +21,7 @@
           prompt="Are you sure you want to ventilate all selected invoices ?"
           if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
-          action="action-invoice-method-convert-selected-lines-to-merge-lines"/>
+          action="action-invoice-method-open-cust-invoice-merge-wizard"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
           action="action-customer-invoice-line-menu"/>
       </menu>
@@ -74,7 +74,7 @@
           prompt="Are you sure you want to ventilate all selected invoices ?"
           if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
-          action="action-invoice-mergecustinvoices"/>
+          action="action-invoice-method-open-cust-invoice-merge-wizard"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
           action="action-customer-invoice-line-menu"/>
       </menu>
@@ -121,7 +121,7 @@
           prompt="Are you sure you want to ventilate all selected invoices ?"
           if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
-          action="action-invoice-mergecustinvoices"/>
+          action="action-invoice-method-open-cust-invoice-merge-wizard"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
           action="action-customer-invoice-line-menu"/>
       </menu>
@@ -233,7 +233,7 @@
         <item name="seeSupplInvoicesLinesItem" title="See suppl. invoices lines"
           action="action-supplier-invoice-line-menu"/>
         <item name="mergeSupplInvoicesItem" title="Merge Suppl. Invoices"
-          action="action-invoice-mergesupplinvoices"/>
+          action="action-invoice-method-open-suppl-invoice-merge-wizard"/>
       </menu>
     </menubar>
     <hilite color="primary" if="statusSelect == 1"/>
@@ -1476,14 +1476,16 @@
 
   <!-- CUSTOMER INVOICES MERGE -->
   <form name="customer-invoices-merge-form" model="com.axelor.utils.db.Wizard"
-    title="Merge Cust. Invoices" width="large">
+    title="Merge Cust. Invoices" width="large"
+    onNew="action-invoice-record-set-credit-notes-to-merge">
     <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
       form-view="invoice-form" grid-view="invoice-grid" title="Cust. Invoices to merge" colSpan="12"
       type="many-to-many" target="com.axelor.apps.account.db.Invoice"
-      domain="self.statusSelect = 1 AND self.operationTypeSelect = 3" canNew="false" canEdit="false"/>
+      domain="self.statusSelect IN (1, 2) AND self.operationTypeSelect = 3" canNew="false"
+      canEdit="false"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="generateMergedCustInvoicesBtn" title="Merge into single cust. invoice"
-        onClick="action-validate-invoice-check-selection,action-invoice-method-merge"/>
+        onClick="action-invoice-group-merge"/>
     </panel>
   </form>
 
@@ -1528,14 +1530,16 @@
 
   <!-- SUPPLIER INVOICES MERGE -->
   <form name="supplier-invoices-merge-form" model="com.axelor.utils.db.Wizard"
-    title="Merge Suppl. Invoices" width="large">
+    title="Merge Suppl. Invoices" width="large"
+    onNew="action-invoice-record-set-credit-notes-to-merge">
     <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
       form-view="invoice-form" grid-view="invoice-grid" title="Suppl. Invoices to merge"
       colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice"
-      domain="self.statusSelect = 1 AND self.operationTypeSelect = 1" canNew="false" canEdit="false"/>
+      domain="self.statusSelect IN (1, 2) AND self.operationTypeSelect = 1" canNew="false"
+      canEdit="false"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="generateMergedSupplInvoicesBtn" title="Merge into single suppl. invoice"
-        onClick="action-validate-invoice-check-selection,action-invoice-method-merge"/>
+        onClick="action-invoice-group-merge"/>
     </panel>
   </form>
 
@@ -1596,8 +1600,7 @@
       canEdit="false"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="generateMergedCustCreditNotesBtn"
-        title="Merge into single cust. credit note"
-        onClick="action-validate-invoice-check-selection,action-invoice-method-merge"/>
+        title="Merge into single cust. credit note" onClick="action-invoice-group-merge"/>
     </panel>
   </form>
 
@@ -1613,8 +1616,7 @@
       canEdit="false"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="generateMergedSupplCreditNotesBtn"
-        title="Merge into single suppl. credit note"
-        onClick="action-validate-invoice-check-selection,action-invoice-method-merge"/>
+        title="Merge into single suppl. credit note" onClick="action-invoice-group-merge"/>
     </panel>
   </form>
 
@@ -1775,6 +1777,11 @@
     <action name="action-invoice-method-fill-advance-payment-set"/>
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-method-check-multi-currency"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-merge">
+    <action name="action-validate-invoice-check-selection"/>
+    <action name="action-invoice-method-merge"/>
   </action-group>
 
   <action-group name="action-invoice-group-saleorder-onchange">
@@ -2292,8 +2299,14 @@
   <!-- ACTION VALIDATE -->
 
   <action-validate name="action-validate-invoice-check-selection">
-    <error message="You have to choose at least one invoice"
-      if="invoiceToMerge == null || invoiceToMerge.size() == 0"/>
+    <error message="You must select at least two customer invoices to merge."
+      if="_operationTypeSelect == 3 &amp;&amp; (invoiceToMerge == null || invoiceToMerge.size() &lt; 2)"/>
+    <error message="You must select at least two supplier invoices to merge."
+      if="_operationTypeSelect == 1 &amp;&amp; (invoiceToMerge == null || invoiceToMerge.size() &lt; 2)"/>
+    <error message="You must select at least two customer credit notes to merge."
+      if="_operationTypeSelect == 4 &amp;&amp; (invoiceToMerge == null || invoiceToMerge.size() &lt; 2)"/>
+    <error message="You must select at least two supplier credit notes to merge."
+      if="_operationTypeSelect == 2 &amp;&amp; (invoiceToMerge == null || invoiceToMerge.size() &lt; 2)"/>
   </action-validate>
 
   <action-validate name="action-validate-send-email-remove-access-for-client">
@@ -2436,14 +2449,9 @@
       method="mergeSupplInvoiceFromPopup"/>
   </action-method>
 
-  <action-method name="action-invoice-method-convert-selected-lines-to-merge-lines">
-    <call class="com.axelor.apps.account.web.InvoiceMergingController"
-      method="convertSelectedLinesToMergeLines"/>
-  </action-method>
-
   <action-record name="action-invoice-record-set-credit-notes-to-merge"
     model="com.axelor.utils.db.Wizard">
-    <field name="$invoiceToMerge" expr="eval: _invoiceToMerge"/>
+    <field name="$invoiceToMerge" expr="eval: _invoiceToMerge" if="_invoiceToMerge != null"/>
   </action-record>
 
   <action-method name="action-invoice-method-open-cust-credit-note-merge-wizard">
@@ -2454,6 +2462,16 @@
   <action-method name="action-invoice-method-open-suppl-credit-note-merge-wizard">
     <call class="com.axelor.apps.account.web.InvoiceMergingController"
       method="openSupplCreditNoteMergeWizard"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-open-cust-invoice-merge-wizard">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController"
+      method="openCustInvoiceMergeWizard"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-open-suppl-invoice-merge-wizard">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController"
+      method="openSupplInvoiceMergeWizard"/>
   </action-method>
 
   <action-method name="action-invoice-method-create-advance-payment-domain">
@@ -2707,16 +2725,6 @@
     <view-param name="show-confirm" value="true"/>
     <context name="_invoice" expr="eval: __this__"/>
     <context name="_operationTypeSelect" expr="eval: operationTypeSelect"/>
-  </action-view>
-
-  <action-view name="action-invoice-mergecustinvoices" title="Merge Cust. Invoices"
-    model="com.axelor.utils.db.Wizard">
-    <view type="form" name="customer-invoices-merge-form"/>
-  </action-view>
-
-  <action-view name="action-invoice-mergesupplinvoices" title="Merge Suppl. Invoices"
-    model="com.axelor.utils.db.Wizard">
-    <view type="form" name="supplier-invoices-merge-form"/>
   </action-view>
 
   <action-view name="action-invoice-view-show-subrogation-release"
