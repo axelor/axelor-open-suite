@@ -1,0 +1,3 @@
+---
+title: "Sequence: fixed duplicate key error when planning a manufacturing order and a released sequence reservation held a number already committed to another entity."
+module: axelor-base
