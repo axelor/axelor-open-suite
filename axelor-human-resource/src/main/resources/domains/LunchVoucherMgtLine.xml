@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="LunchVoucherMgtLine" cacheable="true">
+  <entity name="LunchVoucherMgtLine">
 
     <many-to-one name="lunchVoucherMgt" ref="com.axelor.apps.hr.db.LunchVoucherMgt"
       title="Lunch Voucher" readonly="true"/>

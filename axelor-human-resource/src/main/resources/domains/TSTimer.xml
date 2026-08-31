@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="TSTimer" cacheable="true">
+  <entity name="TSTimer">
 
     <string name="name" title="Name" namecolumn="true"/>
     <many-to-one name="employee" title="Employee" ref="Employee" readonly="true"/>

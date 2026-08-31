@@ -1,0 +1,23 @@
+---
+title: "Human resource: removed frequently updated records from the cache."
+module: axelor-human-resource
+developer: |
+  Removed cacheable="true" from the following domains:
+  - EmployeeAdvance
+  - Expense
+  - ExpenseLine
+  - ExtraHours
+  - ExtraHoursLine
+  - LeaveLine
+  - LeaveRequest
+  - LunchVoucherAdvance
+  - LunchVoucherMgt
+  - LunchVoucherMgtLine
+  - PayrollLeave
+  - PayrollPreparation
+  - ProjectPlanningTime
+  - Timesheet
+  - TimesheetLine
+  - TimesheetReminder
+  - TimesheetReminderLine
+  - TSTimer
