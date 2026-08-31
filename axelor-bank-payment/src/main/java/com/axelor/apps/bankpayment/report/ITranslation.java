@@ -187,6 +187,15 @@ public interface ITranslation {
   public static final String BANK_RECONCILIATION_SELECT_A_LINE = /*$$(*/
       "Please select at least one bank reconciliation line (button on right side of table)."; /*)*/
 
+  public static final String BANK_RECONCILIATION_MAX_TWO_MOVE_LINES = /*$$(*/
+      "A maximum of two moveLines can be selected."; /*)*/
+
+  public static final String BANK_RECONCILIATION_MOVE_LINE_ALREADY_RECONCILED = /*$$(*/
+      "This move line already has a reconciled amount and cannot be reconciled again."; /*)*/
+
+  public static final String BANK_RECONCILIATION_MOVE_LINES_MUST_BE_DEBIT_VS_CREDIT = /*$$(*/
+      "Move lines to reconcile must be one debit and one credit."; /*)*/
+
   public static final String BILL_OF_EXCHANGE_CANCELLATION = /*$$(*/
       "Cancellation of Bill of Exchange for invoice %s"; /*)*/
 
