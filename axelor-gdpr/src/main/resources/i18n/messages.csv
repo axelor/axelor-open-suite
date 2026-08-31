@@ -1,5 +1,6 @@
 "key","message","comment","context"
 "<br>Mapping for the query :<br>First Name -> :firstName <br>Last Name -> :lastName <br>Email -> :email <br>Phone -> :phone <br>",,,
+"A relation anonymizer configuration for the model %s is missing.",,,
 "A replacement object is missing for model %s.",,,
 "Access",,,
 "Activate",,,
