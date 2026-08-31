@@ -85,6 +85,8 @@
 		public static final String FILE_FORMAT_PAIN_008_001_01_SDD = "pain.008.001.01.sdd";
 		public static final String FILE_FORMAT_PAIN_008_001_02_SBB = "pain.008.001.02.sbb";
 		public static final String FILE_FORMAT_PAIN_008_001_02_SDD = "pain.008.001.02.sdd";
+		public static final String FILE_FORMAT_PAIN_008_001_08_SBB = "pain.008.001.08.sbb";
+		public static final String FILE_FORMAT_PAIN_008_001_08_SDD = "pain.008.001.08.sdd";
 		public static final String FILE_FORMAT_PAIN_FIN_MT101_DCT = "pain.fin.mt101.dct";
 		public static final String FILE_FORMAT_PAIN_FIN_MT101_MCT = "pain.fin.mt101.mct";
 		public static final String FILE_FORMAT_PAIN_XXX_CFONB160_DCO = "pain.xxx.cfonb160.dco";

@@ -9,6 +9,8 @@
 8;"pain.008.001.01.sdd";"2";"EUR";"pain.008.001.01.sdd - SDD CORE";"Remise de SDD CORE";"true";;;;;
 9;"pain.008.001.02.sbb";"2";"EUR";"pain.008.001.02.sbb - SDD BtoB";"Remise de SDD BtoB";"true";;;;;
 10;"pain.008.001.02.sdd";"2";"EUR";"pain.008.001.02.sdd - SDD CORE";"Remise de SDD CORE";"true";;;;;
+36;"pain.008.001.08.sbb";"2";"EUR";"pain.008.001.08.sbb - SDD BtoB";"Remise de SDD BtoB";"true";;;;;
+37;"pain.008.001.08.sdd";"2";"EUR";"pain.008.001.08.sdd - SDD CORE";"Remise de SDD CORE";"true";;;;;
 11;"pain.fin.mt101.dct";"1";"EUR";"pain.fin.mt101.dct - Virement domestique France";"Remise de virement domestique France";"false";;;;;
 12;"pain.fin.mt101.mct";"1";"EUR";"pain.fin.mt101.mct - Virement";"Remise de virement";"false";;;;;
 13;"pain.xxx.cfonb160.dco";"8";"EUR";"pain.xxx.cfonb160.dco - LCR";"Remise de LCR";"true";"1";;"3";"0";"1"
