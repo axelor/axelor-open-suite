@@ -30,7 +30,10 @@
     <datetime name="relativeDateTime" title="Relative date to take into account"/>
     <string name="fieldSeparatorSelect" selection="data.backup.field.separator.select"
       title="Field separator" default=","/>
-
+    <boolean name="isIncludeTechnicalFields" title="Include technical fields"
+      help="By enabling this option, the backup will contain technical fields (archived, created by, created on, updated by, updated on, version, processInstanceId)."
+      default="false"/>
+    <boolean name="isIncludeJsonFields" title="Include json fields (attrs)" default="false"/>
 
     <extra-code>
       <![CDATA[
