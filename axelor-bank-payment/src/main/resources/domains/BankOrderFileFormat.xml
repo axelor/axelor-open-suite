@@ -81,6 +81,7 @@
 		public static final String FILE_FORMAT_PAIN_001_001_02_SCT = "pain.001.001.02.sct";
 		public static final String FILE_FORMAT_PAIN_001_001_02_XCT = "pain.001.001.02.xct";
 		public static final String FILE_FORMAT_PAIN_001_001_03_SCT = "pain.001.001.03.sct";
+		public static final String FILE_FORMAT_PAIN_001_001_09_SCT = "pain.001.001.09.sct";
 		public static final String FILE_FORMAT_PAIN_008_001_01_SBB = "pain.008.001.01.sbb";
 		public static final String FILE_FORMAT_PAIN_008_001_01_SDD = "pain.008.001.01.sdd";
 		public static final String FILE_FORMAT_PAIN_008_001_02_SBB = "pain.008.001.02.sbb";
