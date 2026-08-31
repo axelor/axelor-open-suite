@@ -115,7 +115,7 @@
           readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
         <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"
           hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"
-          onChange="action-attrs-account-set-is-retrieved-on-payment-session"/>
+          onChange="action-account-group-use-for-partner-balance-onchange"/>
         <field name="reconcileOk" widget="boolean-switch" colSpan="3"
           hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"
           onChange="action-account-group-reconcile-onChange"/>
@@ -388,6 +388,17 @@
     <action name="save"/>
     <action name="action-account-view-reconcile-wizard-form" if="reconcileOk"/>
   </action-group>
+
+  <action-group name="action-account-group-use-for-partner-balance-onchange">
+    <action name="action-account-validate-use-for-partner-balance-disabled"/>
+    <action name="action-attrs-account-set-is-retrieved-on-payment-session"/>
+  </action-group>
+
+  <action-validate name="action-account-validate-use-for-partner-balance-disabled">
+    <alert
+      message="This account carries ${__repo__(InvoiceTerm).all().filter('self.moveLine.account.id = ?1', __this__.id).count()} invoice term(s) linked to existing accounting moves. Disabling &quot;Use for partner balance&quot; will not remove these invoice terms: they will remain in the database and may cause malfunctions. Do you want to continue?"
+      if="__this__.id != null &amp;&amp; !useForPartnerBalance &amp;&amp; __repo__(Account).find(__this__.id)?.useForPartnerBalance == true &amp;&amp; __repo__(InvoiceTerm).all().filter('self.moveLine.account.id = ?1', __this__.id).count() &gt; 0"/>
+  </action-validate>
 
   <action-record name="action-account-record-new"
     model="com.axelor.apps.account.db.Account">
