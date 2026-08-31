@@ -67,7 +67,9 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -676,6 +678,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     AccountingReport accountingReport = new AccountingReport();
     accountingReport.setCompany(company);
+    if (company != null) {
+      accountingReport.setCompanySet(new HashSet<>(Collections.singleton(company)));
+    }
     accountingReport.setReportType(optionalAccountingReportType.get());
     accountingReport.setDateFrom(startDate);
     accountingReport.setDateTo(endDate);

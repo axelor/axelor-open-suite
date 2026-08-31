@@ -28,7 +28,6 @@ import jakarta.inject.Inject;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingReportToolServiceImpl implements AccountingReportToolService {
@@ -60,37 +59,35 @@ public class AccountingReportToolServiceImpl implements AccountingReportToolServ
   }
 
   @Override
-  public String getAccountingReportTypeIds(AccountingReport accountingReport, boolean isCustom) {
-    String queryStr =
-        String.format(
-            "self.reportExportTypeSelect = :reportType AND self.typeSelect %s :typeCustom",
-            isCustom ? "=" : "<>");
+  public String getAccountingReportTypeIds(AccountingReport accountingReport) {
+    Set<Company> companySet = accountingReport.getCompanySet();
+    boolean isMultiCompany = CollectionUtils.isNotEmpty(companySet) && companySet.size() > 1;
+    Company company = accountingReport.getCompany();
+
+    String queryStr = "self.reportExportTypeSelect = :reportType";
+    if (isMultiCompany) {
+      queryStr +=
+          " AND self.typeSelect = :typeCustom"
+              + " AND EXISTS (SELECT c FROM Company c WHERE c MEMBER OF self.companySet AND c IN :companySet)";
+    } else if (company != null) {
+      queryStr += " AND (self.company = :company OR :company MEMBER OF self.companySet)";
+    }
 
     Query<AccountingReportType> query =
         accountingReportTypeRepository
             .all()
             .filter(queryStr)
-            .bind("reportType", AccountingReportTypeRepository.REPORT)
-            .bind("typeCustom", AccountingReportRepository.REPORT_CUSTOM_STATE);
-
-    Stream<AccountingReportType> accountingReportTypeStream = query.fetch().stream();
-
-    Company company = accountingReport.getCompany();
-    if (!isCustom && company != null) {
-      accountingReportTypeStream =
-          accountingReportTypeStream.filter(it -> company.equals(it.getCompany()));
+            .bind("reportType", AccountingReportTypeRepository.REPORT);
+    if (isMultiCompany) {
+      query =
+          query
+              .bind("typeCustom", AccountingReportRepository.REPORT_CUSTOM_STATE)
+              .bind("companySet", companySet);
+    } else if (company != null) {
+      query = query.bind("company", company);
     }
 
-    Set<Company> companySet = accountingReport.getCompanySet();
-    if (isCustom && CollectionUtils.isNotEmpty(companySet)) {
-      accountingReportTypeStream =
-          accountingReportTypeStream.filter(
-              it ->
-                  CollectionUtils.isNotEmpty(it.getCompanySet())
-                      && it.getCompanySet().stream().anyMatch(companySet::contains));
-    }
-
-    return accountingReportTypeStream
+    return query.fetch().stream()
         .map(AccountingReportType::getId)
         .map(Objects::toString)
         .collect(Collectors.joining(","));
