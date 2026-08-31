@@ -93,9 +93,13 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
 
   @Transactional(rollbackOn = Exception.class)
   @Override
-  public void configurePartner(Partner partner, String siret, Map<String, Boolean> partnerTypeData)
+  public void configurePartner(
+      Partner partner,
+      String identifier,
+      boolean isSirenSearch,
+      Map<String, Boolean> partnerTypeData)
       throws AxelorException {
-    String result = partnerApiFetchService.fetch(siret);
+    String result = partnerApiFetchService.fetch(identifier, isSirenSearch);
     try {
       ObjectMapper objectMapper = new ObjectMapper();
       PartnerDataResponse partnerData = objectMapper.readValue(result, PartnerDataResponse.class);
