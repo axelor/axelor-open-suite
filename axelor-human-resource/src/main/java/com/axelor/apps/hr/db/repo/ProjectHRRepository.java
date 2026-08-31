@@ -38,9 +38,13 @@ public class ProjectHRRepository extends ProjectManagementRepository {
   @Override
   public Project save(Project project) {
     project = super.save(project);
+    updateProjectPlanningTimes(project);
+    return project;
+  }
 
+  protected void updateProjectPlanningTimes(Project project) {
     if (!Beans.get(AppHumanResourceService.class).isApp("employee")) {
-      return project;
+      return;
     }
 
     List<ProjectPlanningTime> projectPlanningTimeList =
@@ -57,7 +61,5 @@ public class ProjectHRRepository extends ProjectManagementRepository {
         }
       }
     }
-
-    return project;
   }
 }

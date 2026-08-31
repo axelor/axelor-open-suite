@@ -70,7 +70,15 @@ public class ProjectManagementRepository extends ProjectRepository {
 
   @Override
   public Project save(Project project) {
+    generateProjectCode(project);
+    ProjectManagementRepository.setAllProjectMembersUserSet(project);
+    syncProjectMembersToTeam(project);
+    computeProjectFullName(project);
+    setProjectDescription(project);
+    return super.save(project);
+  }
 
+  protected void generateProjectCode(Project project) {
     AppProject appProject = Beans.get(AppProjectService.class).getAppProject();
 
     try {
@@ -93,9 +101,9 @@ public class ProjectManagementRepository extends ProjectRepository {
     } catch (AxelorException e) {
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
 
-    ProjectManagementRepository.setAllProjectMembersUserSet(project);
-
+  protected void syncProjectMembersToTeam(Project project) {
     if (project.getSynchronize()) {
       Team team = project.getTeam();
       if (team != null) {
@@ -103,14 +111,19 @@ public class ProjectManagementRepository extends ProjectRepository {
         project.getMembersUserSet().forEach(team::addMember);
       }
     }
+  }
+
+  protected void computeProjectFullName(Project project) {
     try {
       setAllProjectFullName(project);
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e.getCause());
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  protected void setProjectDescription(Project project) {
     project.setDescription(projectTaskService.getTaskLink(project.getDescription()));
-    return super.save(project);
   }
 
   @Override
