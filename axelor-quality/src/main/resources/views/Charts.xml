@@ -189,4 +189,275 @@
     ]]></template>
   </custom>
 
+  <chart name="chart.quality.nc.open.by.gravity"
+    title="Number of open non-conformities by gravity" onInit="action.quality.chart.set.date">
+    <search-fields>
+      <field type="date" name="fromDateT" title="From Date" x-required="true"/>
+      <field type="date" name="toDateT" title="To Date" x-required="true"/>
+    </search-fields>
+    <dataset type="jpql"><![CDATA[
+			SELECT
+				COUNT(self.id) AS _count,
+				COALESCE(
+					(SELECT item.title FROM MetaSelectItem item
+						WHERE item.select.name = 'quality.qi.gravity.type.select'
+						AND item.value = CAST(self.gravityTypeSelect AS string)),
+					'Not defined') AS _gravity
+			FROM
+				QualityImprovement self
+			WHERE
+				self.qiStatus.isClosedStatus = false
+				AND self.qiStatus.isCancelledStatus = false
+				AND (:_company IS NULL OR self.company = :_company)
+				AND DATE(self.createdOn) BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
+			GROUP BY
+				self.gravityTypeSelect
+			ORDER BY
+				self.gravityTypeSelect
+		]]></dataset>
+    <category key="_gravity" type="text"/>
+    <series key="_count" type="bar"/>
+    <config name="onClick" value="action-quality-view-nc-open-by-gravity"/>
+  </chart>
+
+  <chart name="chart.quality.receptions.conformity" title="Reception conformity rate"
+    onInit="action.quality.chart.set.date">
+    <search-fields>
+      <field type="date" name="fromDateT" title="From Date" x-required="true"/>
+      <field type="date" name="toDateT" title="To Date" x-required="true"/>
+    </search-fields>
+    <dataset type="jpql"><![CDATA[
+			SELECT
+				COALESCE(
+					(SELECT item.title FROM MetaSelectItem item
+						WHERE item.select.name = 'stock.move.line.conformity.select'
+						AND item.value = CAST(self.conformitySelect AS string)),
+					'Not assessed') AS _status,
+				COUNT(self.id) AS _count
+			FROM
+				StockMove self
+			WHERE
+				self.typeSelect = 3
+				AND self.statusSelect = 3
+				AND (self.isReversion IS NULL OR self.isReversion = false)
+				AND (:_company IS NULL OR self.company = :_company)
+				AND DATE(self.realDate) BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
+			GROUP BY
+				self.conformitySelect
+			ORDER BY
+				self.conformitySelect
+		]]></dataset>
+    <category key="_status" type="text"/>
+    <series key="_count" type="pie"/>
+    <config name="onClick" value="action-quality-view-receptions-conformity"/>
+  </chart>
+
+  <chart name="chart.quality.top5.suppliers.nc"
+    title="Top 5 suppliers with most non-conformities" onInit="action.quality.chart.set.date">
+    <search-fields>
+      <field type="date" name="fromDateT" title="From Date" x-required="true"/>
+      <field type="date" name="toDateT" title="To Date" x-required="true"/>
+    </search-fields>
+    <dataset type="jpql" limit="5"><![CDATA[
+			SELECT
+				self.qiIdentification.supplierPartner.fullName AS _supplier,
+				COUNT(self.id) AS _count
+			FROM
+				QualityImprovement self
+			WHERE
+				(:_company IS NULL OR self.company = :_company)
+				AND DATE(self.createdOn) BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
+			GROUP BY
+				self.qiIdentification.supplierPartner.id, self.qiIdentification.supplierPartner.fullName
+			ORDER BY
+				COUNT(self.id) DESC
+		]]></dataset>
+    <category key="_supplier" type="text"/>
+    <series key="_count" type="bar"/>
+    <config name="onClick" value="action-quality-view-nc-by-supplier"/>
+  </chart>
+
+  <chart name="chart.quality.top5.products.nc"
+    title="Top 5 products with most non-conformities" onInit="action.quality.chart.set.date">
+    <search-fields>
+      <field type="date" name="fromDateT" title="From Date" x-required="true"/>
+      <field type="date" name="toDateT" title="To Date" x-required="true"/>
+    </search-fields>
+    <dataset type="jpql" limit="5"><![CDATA[
+			SELECT
+				self.qiIdentification.product.code AS _product,
+				COUNT(self.id) AS _count
+			FROM
+				QualityImprovement self
+			WHERE
+				(:_company IS NULL OR self.company = :_company)
+				AND DATE(self.createdOn) BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
+			GROUP BY
+				self.qiIdentification.product.id, self.qiIdentification.product.code
+			ORDER BY
+				COUNT(self.id) DESC
+		]]></dataset>
+    <category key="_product" type="text"/>
+    <series key="_count" type="bar"/>
+    <config name="onClick" value="action-quality-view-nc-by-product"/>
+  </chart>
+
+  <chart name="chart.quality.nc.monthly.trend" title="Number of non-conformities by month"
+    onInit="action.quality.chart.set.date">
+    <search-fields>
+      <field type="date" name="fromDateT" title="From Date" x-required="true"/>
+      <field type="date" name="toDateT" title="To Date" x-required="true"/>
+    </search-fields>
+    <dataset type="jpql"><![CDATA[
+			SELECT
+				TO_CHAR(self.createdOn, 'YYYY-MM') AS _month,
+				COUNT(self.id) AS _count
+			FROM
+				QualityImprovement self
+			WHERE
+				(:_company IS NULL OR self.company = :_company)
+				AND DATE(self.createdOn) BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
+			GROUP BY
+				TO_CHAR(self.createdOn, 'YYYY-MM')
+			ORDER BY
+				TO_CHAR(self.createdOn, 'YYYY-MM')
+		]]></dataset>
+    <category key="_month" type="text"/>
+    <series key="_count" type="bar"/>
+    <config name="onClick" value="action-quality-view-nc-by-month"/>
+  </chart>
+
+  <chart name="chart.quality.control.entries.open" title="Number of open control entries"
+    onInit="action.quality.chart.set.date">
+    <search-fields>
+      <field type="date" name="fromDateT" title="From Date" x-required="true"/>
+      <field type="date" name="toDateT" title="To Date" x-required="true"/>
+    </search-fields>
+    <dataset type="jpql"><![CDATA[
+			SELECT
+				COUNT(*) AS _count,
+				(SELECT item.title FROM MetaSelectItem item
+					WHERE item.select.name = 'quality.control.entry.status.select'
+					AND item.value = CAST(self.statusSelect AS string)) AS _status
+			FROM
+				ControlEntry self
+			WHERE
+				self.statusSelect IN (1, 2)
+				AND DATE(self.entryDateTime) BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
+			GROUP BY
+				self.statusSelect
+			ORDER BY
+				self.statusSelect
+		]]></dataset>
+    <category key="_status" type="text"/>
+    <series key="_count" type="bar"/>
+    <config name="onClick" value="action-quality-view-control-entries-open"/>
+  </chart>
+
+  <action-view name="action-quality-view-nc-open-by-gravity"
+    title="Open non-conformities" model="com.axelor.apps.quality.db.QualityImprovement">
+    <view type="grid" name="quality-improvement-grid"/>
+    <view type="form" name="quality-improvement-form"/>
+    <domain>self.qiStatus.isClosedStatus = false AND self.qiStatus.isCancelledStatus = false
+      AND
+      (:_company IS NULL OR self.company = :_company)
+      AND DATE(self.createdOn) BETWEEN
+      DATE(:_fromDateT) AND DATE(:_toDateT)
+      AND ((:_gravity = 'Critical' AND self.gravityTypeSelect =
+      1)
+      OR (:_gravity = 'Major' AND self.gravityTypeSelect = 2)
+      OR (:_gravity = 'Minor' AND
+      self.gravityTypeSelect = 3)
+      OR (:_gravity = 'Not defined' AND self.gravityTypeSelect = 0))</domain>
+    <context name="_gravity" expr="eval: _gravity"/>
+    <context name="_company" expr="eval: _company"/>
+    <context name="_fromDateT" expr="eval: fromDateT"/>
+    <context name="_toDateT" expr="eval: toDateT"/>
+  </action-view>
+
+  <action-view name="action-quality-view-receptions-conformity" title="Receptions"
+    model="com.axelor.apps.stock.db.StockMove">
+    <view type="grid" name="stock-move-in-grid"/>
+    <view type="form" name="stock-move-form"/>
+    <domain>self.typeSelect = :_typeSelect AND self.statusSelect = :_statusSelect
+      AND
+      (self.isReversion IS NULL OR self.isReversion = false)
+      AND (:_company IS NULL OR self.company =
+      :_company)
+      AND DATE(self.realDate) BETWEEN DATE(:_fromDateT) AND DATE(:_toDateT)
+      AND ((:_status
+      =
+      'Compliant' AND self.conformitySelect = 2)
+      OR (:_status = 'Non-compliant' AND
+      self.conformitySelect = 3)
+      OR (:_status = 'Not assessed'
+      AND (self.conformitySelect = 0 OR
+      self.conformitySelect = 1)))</domain>
+    <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
+    <context name="_statusSelect" expr="eval: __repo__(StockMove).STATUS_REALIZED"/>
+    <context name="_status" expr="eval: _status"/>
+    <context name="_company" expr="eval: _company"/>
+    <context name="_fromDateT" expr="eval: fromDateT"/>
+    <context name="_toDateT" expr="eval: toDateT"/>
+  </action-view>
+
+  <action-view name="action-quality-view-nc-by-supplier" title="Non-conformities"
+    model="com.axelor.apps.quality.db.QualityImprovement">
+    <view type="grid" name="quality-improvement-grid"/>
+    <view type="form" name="quality-improvement-form"/>
+    <domain>(:_company IS NULL OR self.company = :_company)
+      AND DATE(self.createdOn) BETWEEN
+      DATE(:_fromDateT) AND DATE(:_toDateT)
+      AND self.qiIdentification.supplierPartner.fullName =
+      :_supplier</domain>
+    <context name="_supplier" expr="eval: _supplier"/>
+    <context name="_company" expr="eval: _company"/>
+    <context name="_fromDateT" expr="eval: fromDateT"/>
+    <context name="_toDateT" expr="eval: toDateT"/>
+  </action-view>
+
+  <action-view name="action-quality-view-nc-by-product" title="Non-conformities"
+    model="com.axelor.apps.quality.db.QualityImprovement">
+    <view type="grid" name="quality-improvement-grid"/>
+    <view type="form" name="quality-improvement-form"/>
+    <domain>(:_company IS NULL OR self.company = :_company)
+      AND DATE(self.createdOn) BETWEEN
+      DATE(:_fromDateT) AND DATE(:_toDateT)
+      AND self.qiIdentification.product.code = :_product</domain>
+    <context name="_product" expr="eval: _product"/>
+    <context name="_company" expr="eval: _company"/>
+    <context name="_fromDateT" expr="eval: fromDateT"/>
+    <context name="_toDateT" expr="eval: toDateT"/>
+  </action-view>
+
+  <action-view name="action-quality-view-nc-by-month" title="Non-conformities"
+    model="com.axelor.apps.quality.db.QualityImprovement">
+    <view type="grid" name="quality-improvement-grid"/>
+    <view type="form" name="quality-improvement-form"/>
+    <domain>(:_company IS NULL OR self.company = :_company)
+      AND DATE(self.createdOn) BETWEEN
+      DATE(:_monthStart) AND DATE(:_monthEnd)</domain>
+    <context name="_company" expr="eval: _company"/>
+    <context name="_monthStart" expr="eval: java.time.LocalDate.parse(_month + '-01')"/>
+    <context name="_monthEnd"
+      expr="eval: java.time.LocalDate.parse(_month + '-01').plusMonths(1).minusDays(1)"/>
+  </action-view>
+
+  <action-view name="action-quality-view-control-entries-open"
+    title="Open control entries" model="com.axelor.apps.quality.db.ControlEntry">
+    <view type="grid" name="control-entry-grid"/>
+    <view type="form" name="control-entry-form"/>
+    <domain>self.statusSelect IN (:_draftStatus, :_inProgressStatus)
+      AND DATE(self.entryDateTime)
+      BETWEEN DATE(:_fromDateT) AND DATE(:_toDateT)
+      AND ((:_status = 'Draft' AND self.statusSelect =
+      :_draftStatus)
+      OR (:_status = 'In progress' AND self.statusSelect = :_inProgressStatus))</domain>
+    <context name="_draftStatus" expr="eval: __repo__(ControlEntry).DRAFT_STATUS"/>
+    <context name="_inProgressStatus" expr="eval: __repo__(ControlEntry).IN_PROGRESS_STATUS"/>
+    <context name="_status" expr="eval: _status"/>
+    <context name="_fromDateT" expr="eval: fromDateT"/>
+    <context name="_toDateT" expr="eval: toDateT"/>
+  </action-view>
+
 </object-views>
