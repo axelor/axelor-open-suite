@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
-  <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate" title="Bank Orders"
+  <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate,-id" title="Bank Orders"
     model="com.axelor.apps.bankpayment.db.BankOrder">
     <toolbar>
       <button name="mergeBtn" title="Merge bank orders"
@@ -30,7 +30,7 @@
     <field name="statusSelect" widget="single-select"/>
   </grid>
 
-  <grid name="bank-order-grid" orderBy="-bankOrderDate" title="Bank Orders"
+  <grid name="bank-order-grid" orderBy="-bankOrderSeq" title="Bank Orders"
     model="com.axelor.apps.bankpayment.db.BankOrder">
     <toolbar>
       <button name="mergeBtn" title="Merge bank orders"
@@ -57,7 +57,7 @@
     <field name="statusSelect" widget="single-select"/>
   </grid>
 
-  <grid name="bank-order-send-grid" orderBy="-bankOrderDate" title="Bank Orders"
+  <grid name="bank-order-send-grid" orderBy="-bankOrderSeq" title="Bank Orders"
     model="com.axelor.apps.bankpayment.db.BankOrder">
     <toolbar>
       <button name="mergeBtn" title="Merge bank orders"

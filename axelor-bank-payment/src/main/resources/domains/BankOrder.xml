@@ -108,6 +108,7 @@
 		public static final int FUNCTIONAL_ORIGIN_BATCH = 50;
 		public static final int FUNCTIONAL_ORIGIN_BATCH_DEBIT = 51;
 		public static final int FUNCTIONAL_ORIGIN_BATCH_PAYBACK = 52;
+		public static final int FUNCTIONAL_ORIGIN_PAYMENT_VOUCHER = 60;
 
 	]]></extra-code>
 

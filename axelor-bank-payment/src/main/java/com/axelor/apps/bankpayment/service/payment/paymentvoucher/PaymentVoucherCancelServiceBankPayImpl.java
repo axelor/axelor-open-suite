@@ -16,20 +16,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.payment.paymentvoucher;
+package com.axelor.apps.bankpayment.service.payment.paymentvoucher;
 
 import com.axelor.apps.account.db.PaymentVoucher;
-import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelServiceImpl;
+import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelService;
 import com.axelor.apps.base.AxelorException;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
-public class PaymentVoucherCancelServiceImpl implements PaymentVoucherCancelService {
+public class PaymentVoucherCancelServiceBankPayImpl extends PaymentVoucherCancelServiceImpl {
+
+  protected BankOrderCancelService bankOrderCancelService;
+
+  @Inject
+  public PaymentVoucherCancelServiceBankPayImpl(BankOrderCancelService bankOrderCancelService) {
+    this.bankOrderCancelService = bankOrderCancelService;
+  }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public PaymentVoucher cancelPaymentVoucher(PaymentVoucher paymentVoucher) throws AxelorException {
-
-    paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CANCELED);
-    return paymentVoucher;
+    BankOrder bankOrder = paymentVoucher.getBankOrder();
+    if (bankOrder != null && bankOrder.getStatusSelect() != BankOrderRepository.STATUS_CANCELED) {
+      bankOrderCancelService.cancelBankOrder(bankOrder);
+    }
+    return super.cancelPaymentVoucher(paymentVoucher);
   }
 }
