@@ -1,0 +1,241 @@
+# Allowlist of the checkAppOverrideGuard task (RM#117723).
+#
+# One fully qualified class name per line. Everything after a '#' is a comment.
+# A class listed here is not reported by the task even though it overrides a class of
+# a lower module without calling isApp(...).
+#
+# Two kinds of entries are expected here:
+#
+#   1. Justified exceptions: either the override is behaviour-neutral when the app is off, or
+#      the overridden code path is unreachable unless the app of the OVERRIDING module is
+#      installed. Such an entry is permanent and MUST carry a comment explaining why.
+#      "The overridden module and its app are a prerequisite of this module" is NOT a valid
+#      justification: it is true of every cross-module override. See CONTRIBUTING.md.
+#
+#   2. Known debt: overrides that were already there when the check was introduced. They are
+#      listed so that the check can be blocking for new code right away. Removing them is the
+#      job of the sweep tickets listed below, one module at a time. Do NOT add new entries
+#      to those sections.
+#
+# Sweep tickets: #117724 supplychain, #117725 production, #117726 bank-payment,
+# #117727 human-resource, #117728 maintenance, #117729 contract/intervention/cash-management,
+# #117730 sale/crm/account/stock/talent, #117731 budget.
+#
+# Adding a NEW class here instead of guarding it requires a justification in the merge request.
+
+
+# ---------------------------------------------------------------------------
+# KNOWN DEBT - axelor-account (3) - to be emptied by #117730
+# ---------------------------------------------------------------------------
+com.axelor.apps.account.service.AccountManagementServiceAccountImpl  # overrides AccountManagementServiceImpl (axelor-base)
+com.axelor.apps.account.service.FiscalPositionAccountServiceImpl  # overrides FiscalPositionServiceImpl (axelor-base)
+com.axelor.apps.account.service.period.PeriodServiceAccountImpl  # overrides PeriodServiceImpl (axelor-base)
+
+# ---------------------------------------------------------------------------
+# KNOWN DEBT - axelor-bank-payment (25) - to be emptied by #117726
+# ---------------------------------------------------------------------------
+com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl  # overrides InvoicePaymentValidateServiceImpl (axelor-account)
+com.axelor.apps.bankpayment.service.batch.BatchCreditTransferSupplierPaymentBankPayment  # overrides BatchCreditTransferSupplierPayment (axelor-account)
+com.axelor.apps.bankpayment.service.batch.BatchCreditTransferPartnerReimbursementBankPayment  # overrides BatchCreditTransferPartnerReimbursement (axelor-account)
+com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl  # overrides PaymentScheduleLineServiceImpl (axelor-account)
+com.axelor.apps.bankpayment.web.InvoicePaymentBankPayController  # overrides InvoicePaymentController (axelor-account)
+com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository  # overrides MoveManagementRepository (axelor-account)
+com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl  # overrides MoveReverseServiceImpl (axelor-account)
+com.axelor.apps.bankpayment.service.extract.ExtractContextMoveServiceBankPaymentImpl  # overrides ExtractContextMoveServiceImpl (axelor-account)
+com.axelor.apps.bankpayment.service.AccountingReportPrintServiceBankPaymentImpl  # overrides AccountingReportPrintServiceImpl (axelor-account)
+com.axelor.apps.bankpayment.service.PaymentSessionValidateBankPaymentServiceImpl  # overrides PaymentSessionValidateServiceImpl (axelor-account)
+com.axelor.apps.bankpayment.service.PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl  # overrides PaymentSessionBillOfExchangeValidateServiceImpl (axelor-account)
+com.axelor.apps.bankpayment.db.repo.PaymentSessionBankPaymentRepository  # overrides PaymentSessionAccountRepository (axelor-account)
+com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentServiceImpl  # overrides InvoiceTermFilterServiceImpl (axelor-account)
+com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl  # overrides MoveLineGroupServiceImpl (axelor-account)
+com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentMoveCreateServiceBankPayImpl  # overrides InvoicePaymentMoveCreateServiceImpl (axelor-account)
+com.axelor.apps.bankpayment.service.InvoiceTermServiceBankPaymentImpl  # overrides InvoiceTermServiceImpl (axelor-account)
+com.axelor.apps.bankpayment.service.move.MoveCreateBankPaymentServiceImpl  # overrides MoveCreateServiceImpl (axelor-account)
+com.axelor.apps.bankpayment.service.move.MoveRecordSetBankPaymentServiceImpl  # overrides MoveRecordSetServiceImpl (axelor-account)
+com.axelor.apps.bankpayment.service.moveline.MoveLineMassEntryRecordBankPaymentServiceImpl  # overrides MoveLineMassEntryRecordServiceImpl (axelor-account)
+com.axelor.apps.bankpayment.service.move.MoveAttrsBankPaymentServiceImpl  # overrides MoveAttrsServiceImpl (axelor-account)
+com.axelor.apps.bankpayment.service.bankdetails.BankDetailsServiceBankPaymentImpl  # overrides BankDetailsServiceAccountImpl (axelor-account)
+com.axelor.apps.bankpayment.service.move.MoveGroupOnChangeServiceBankPaymentImpl  # overrides MoveGroupOnChangeServiceImpl (axelor-account)
+com.axelor.apps.bankpayment.service.bankdetails.BankDetailsDomainServiceBankPaymentImpl  # overrides BankDetailsDomainServiceAccountImpl (axelor-account)
+com.axelor.apps.bankpayment.service.PaymentScheduleServiceBankPaymentImpl  # overrides PaymentScheduleServiceImpl (axelor-account)
+com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentAlertServiceBankPayImpl  # overrides InvoicePaymentAlertServiceImpl (axelor-account)
+
+# ---------------------------------------------------------------------------
+# KNOWN DEBT - axelor-budget (4) - to be emptied by #117731
+# ---------------------------------------------------------------------------
+com.axelor.apps.budget.service.move.MoveValidateBudgetServiceImpl  # overrides MoveValidateHRServiceImpl (axelor-human-resource)
+com.axelor.apps.budget.service.move.MoveLineCreateBudgetServiceImpl  # overrides MoveLineCreateServiceImpl (axelor-account)
+com.axelor.apps.budget.service.move.MoveLineConsolidateBudgetServiceImpl  # overrides MoveLineConsolidateServiceImpl (axelor-account)
+com.axelor.apps.budget.service.move.MoveGroupBudgetServiceImpl  # overrides MoveGroupServiceImpl (axelor-account)
+
+# ---------------------------------------------------------------------------
+# KNOWN DEBT - axelor-cash-management (1) - to be emptied by #117729
+# ---------------------------------------------------------------------------
+com.axelor.apps.cash.management.service.OpportunitySaleOrderCashManagementServiceImpl  # overrides OpportunitySaleOrderSupplychainServiceImpl (axelor-supplychain)
+
+# ---------------------------------------------------------------------------
+# KNOWN DEBT - axelor-contract (8) - to be emptied by #117729
+# ---------------------------------------------------------------------------
+com.axelor.apps.contract.service.AnalyticMoveLineContractServiceImpl  # overrides AnalyticMoveLineSupplychainServiceImpl (axelor-supplychain)
+com.axelor.apps.contract.service.InvoiceLineAnalyticContractServiceImpl  # overrides InvoiceLineAnalyticSupplychainServiceImpl (axelor-supplychain)
+com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl  # overrides WorkflowCancelServiceSupplychainImpl (axelor-supplychain)
+com.axelor.apps.contract.service.pricing.PricingGroupContractServiceImpl  # overrides PricingGroupSupplyChainServiceImpl (axelor-supplychain)
+com.axelor.apps.contract.service.AccountManagementContractServiceImpl  # overrides AccountManagementServiceAccountImpl (axelor-account)
+com.axelor.apps.contract.service.SaleOrderInvoiceContractServiceImpl  # overrides SaleOrderInvoiceServiceImpl (axelor-supplychain)
+com.axelor.apps.contract.service.PurchaseOrderInvoiceContractServiceImpl  # overrides PurchaseOrderInvoiceServiceImpl (axelor-supplychain)
+com.axelor.apps.contract.service.AnalyticMoveLineParentContractServiceImpl  # overrides AnalyticMoveLineParentSupplychainServiceImpl (axelor-supplychain)
+
+# ---------------------------------------------------------------------------
+# KNOWN DEBT - axelor-crm (4) - to be emptied by #117730
+# ---------------------------------------------------------------------------
+com.axelor.apps.crm.service.CalendarService  # overrides ICalendarService (axelor-base)
+com.axelor.apps.crm.message.MessageServiceCrmImpl  # overrides MessageServiceBaseImpl (axelor-base)
+com.axelor.apps.crm.service.partner.api.CrmPartnerGenerateServiceImpl  # overrides PartnerGenerateServiceImpl (axelor-base)
+com.axelor.apps.crm.service.DuplicateObjectsCrmService  # overrides DuplicateObjectsService (axelor-base)
+
+# ---------------------------------------------------------------------------
+# KNOWN DEBT - axelor-human-resource (14) - to be emptied by #117727
+# ---------------------------------------------------------------------------
+com.axelor.apps.hr.service.config.AccountConfigHRService  # overrides AccountConfigService (axelor-account)
+com.axelor.apps.hr.service.batch.BatchCreditTransferExpensePaymentHR  # overrides BatchCreditTransferExpensePayment (axelor-account)
+com.axelor.apps.hr.service.bankorder.BankOrderLineOriginServiceHRImpl  # overrides BankOrderLineOriginServiceImpl (axelor-bank-payment)
+com.axelor.apps.hr.db.repo.UserHRRepository  # overrides UserBaseRepository (axelor-base)
+com.axelor.apps.hr.db.repo.PartnerHRRepository  # overrides PartnerAccountRepository (axelor-account)
+com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl  # overrides ProjectDashboardServiceImpl (axelor-project)
+com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl  # overrides ProjectActivityDashboardServiceImpl (axelor-project)
+com.axelor.apps.hr.service.analytic.AnalyticMoveLineGenerateRealServiceHrImpl  # overrides AnalyticMoveLineGenerateRealServiceImpl (axelor-account)
+com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl  # overrides MoveValidateServiceImpl (axelor-account)
+com.axelor.apps.hr.service.MoveLineTaxHRServiceImpl  # overrides MoveLineTaxServiceImpl (axelor-account)
+com.axelor.apps.hr.service.ReconcileCheckServiceHRImpl  # overrides ReconcileCheckServiceImpl (axelor-account)
+com.axelor.apps.hr.service.project.TaskTemplateHrServiceImpl  # overrides TaskTemplateServiceImpl (axelor-project)
+com.axelor.apps.hr.service.PartnerConvertHRServiceImpl  # overrides PartnerConvertServiceImpl (axelor-base)
+com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrServiceImpl  # overrides PublicHolidayServiceImpl (axelor-base)
+
+# ---------------------------------------------------------------------------
+# KNOWN DEBT - axelor-intervention (1) - to be emptied by #117729
+# ---------------------------------------------------------------------------
+com.axelor.apps.intervention.service.ContractInterventionServiceImpl  # overrides ContractServiceImpl (axelor-contract)
+
+# ---------------------------------------------------------------------------
+# KNOWN DEBT - axelor-maintenance (9) - to be emptied by #117728
+# ---------------------------------------------------------------------------
+com.axelor.apps.maintenance.service.BillOfMaterialServiceMaintenanceImpl  # overrides BillOfMaterialServiceImpl (axelor-production)
+com.axelor.apps.maintenance.service.ManufOrderWorkflowMaintenanceServiceImpl  # overrides ManufOrderWorkflowServiceImpl (axelor-production)
+com.axelor.apps.maintenance.service.BillOfMaterialComputeNameServiceMaintenanceImpl  # overrides BillOfMaterialComputeNameServiceImpl (axelor-production)
+com.axelor.apps.maintenance.service.ManufOrderPlanServiceMaintenanceImpl  # overrides ManufOrderPlanServiceImpl (axelor-production)
+com.axelor.apps.maintenance.service.batch.ProductionBatchMaintenanceService  # overrides ProductionBatchService (axelor-production)
+com.axelor.apps.maintenance.service.CostSheetServiceMaintenanceImpl  # overrides CostSheetServiceImpl (axelor-production)
+com.axelor.apps.maintenance.service.ManufOrderStockMoveServiceMaintenanceImpl  # overrides ManufOrderStockMoveServiceImpl (axelor-production)
+com.axelor.apps.maintenance.service.OperationOrderStockMoveServiceMaintenanceImpl  # overrides OperationOrderStockMoveServiceImpl (axelor-production)
+com.axelor.apps.maintenance.service.MrpServiceMaintenanceImpl  # overrides MrpServiceProductionImpl (axelor-production)
+
+# ---------------------------------------------------------------------------
+# KNOWN DEBT - axelor-production (29) - to be emptied by #117725
+# ---------------------------------------------------------------------------
+com.axelor.apps.production.service.StockRulesSupplychainServiceProductionImpl  # overrides StockRulesSupplychainServiceImpl (axelor-supplychain)
+com.axelor.apps.production.service.config.StockConfigProductionService  # overrides StockConfigService (axelor-stock)
+com.axelor.apps.production.service.app.ConfiguratorServiceProductionImpl  # overrides ConfiguratorServiceImpl (axelor-sale)
+com.axelor.apps.production.db.repo.StockMoveLineProductionRepository  # overrides StockMoveLineSupplychainRepository (axelor-supplychain)
+com.axelor.apps.production.db.repo.ProductProductionRepository  # overrides ProductStockRepository (axelor-stock)
+com.axelor.apps.production.service.ProductionProductStockLocationServiceImpl  # overrides ProductStockLocationServiceImpl (axelor-supplychain)
+com.axelor.apps.production.db.repo.StockMoveProductionRepository  # overrides StockMoveSupplychainRepository (axelor-supplychain)
+com.axelor.apps.production.service.StockMoveMergingServiceProductionImpl  # overrides StockMoveMergingServiceSupplychainImpl (axelor-supplychain)
+com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionImpl  # overrides PurchaseOrderMergingServiceSupplyChainImpl (axelor-supplychain)
+com.axelor.apps.production.service.SaleOrderLineViewProductionServiceSupplychainImpl  # overrides SaleOrderLineViewServiceSupplychainImpl (axelor-supplychain)
+com.axelor.apps.production.service.SaleOrderLineOnSaleSupplyChangeServiceProductionImpl  # overrides SaleOrderLineOnSaleSupplyChangeServiceImpl (axelor-supplychain)
+com.axelor.apps.production.service.SaleOrderComputeServiceProductionImpl  # overrides SaleOrderComputeServiceSupplychainImpl (axelor-supplychain)
+com.axelor.apps.production.service.SubSaleOrderLineComputeServiceProductionImpl  # overrides SubSaleOrderLineComputeServiceImpl (axelor-sale)
+com.axelor.apps.production.service.PurchaseOrderTypeSelectProductionServiceImpl  # overrides PurchaseOrderTypeSelectServiceImpl (axelor-purchase)
+com.axelor.apps.production.service.PurchaseOrderDomainServiceProductionImpl  # overrides PurchaseOrderDomainServiceImpl (axelor-purchase)
+com.axelor.apps.production.service.TrackingNumberCompanyProductionServiceImpl  # overrides TrackingNumberCompanySupplychainServiceImpl (axelor-supplychain)
+com.axelor.apps.production.service.SaleOrderLineCostPriceComputeProductionServiceImpl  # overrides SaleOrderLineCostPriceComputeServiceImpl (axelor-sale)
+com.axelor.apps.production.service.configurator.ConfiguratorCheckServiceProductionImpl  # overrides ConfiguratorCheckServiceSupplychainImpl (axelor-supplychain)
+com.axelor.apps.production.service.SaleOrderLineOnChangeProductionServiceImpl  # overrides SaleOrderLineOnChangeSupplychainServiceImpl (axelor-supplychain)
+com.axelor.apps.production.service.SaleOrderLineDummyProductionServiceImpl  # overrides SaleOrderLineDummySupplychainServiceImpl (axelor-supplychain)
+com.axelor.apps.production.db.repo.MrpLineProductionRepository  # overrides MrpLineManagementRepository (axelor-supplychain)
+com.axelor.apps.production.db.repo.ProductCompanyProductionRepository  # overrides ProductCompanyStockRepository (axelor-stock)
+com.axelor.apps.production.service.SaleOrderCheckBlockingServiceProductionServiceImpl  # overrides SaleOrderCheckBlockingSupplychainServiceImpl (axelor-supplychain)
+com.axelor.apps.production.service.SaleOrderLineComputeQtyProductionServiceImpl  # overrides SaleOrderLineComputeQtyServiceImpl (axelor-sale)
+com.axelor.apps.production.service.QualityImprovementCheckValuesProductionServiceImpl  # overrides QualityImprovementCheckValuesServiceImpl (axelor-quality)
+com.axelor.apps.production.service.QIIdentificationProductionServiceImpl  # overrides QIIdentificationServiceImpl (axelor-quality)
+com.axelor.apps.production.service.QualityImprovementUpdateProductionServiceImpl  # overrides QualityImprovementUpdateServiceImpl (axelor-quality)
+com.axelor.apps.production.rest.QualityImprovementParseProductionServiceImpl  # overrides QualityImprovementParseServiceImpl (axelor-quality)
+com.axelor.apps.production.service.ControlEntryProductionServiceImpl  # overrides ControlEntryServiceImpl (axelor-quality)
+
+# ---------------------------------------------------------------------------
+# KNOWN DEBT - axelor-sale (6) - to be emptied by #117730
+# ---------------------------------------------------------------------------
+com.axelor.apps.sale.service.saleorder.opportunity.OpportunityServiceSaleImpl  # overrides OpportunityServiceImpl (axelor-crm)
+com.axelor.apps.sale.db.repo.OpportunitySaleRepository  # overrides OpportunityManagementRepository (axelor-crm)
+com.axelor.apps.sale.service.ProductCategoryServiceSaleImpl  # overrides ProductCategoryServiceImpl (axelor-base)
+com.axelor.apps.sale.service.saleorder.pricing.SalePricingGenericServiceImpl  # overrides PricingGenericServiceImpl (axelor-base)
+com.axelor.apps.sale.service.saleorder.pricing.SalePricingMetaServiceImpl  # overrides PricingMetaServiceImpl (axelor-base)
+com.axelor.apps.sale.service.PricingGroupSaleServiceImpl  # overrides PricingGroupServiceImpl (axelor-base)
+
+# ---------------------------------------------------------------------------
+# KNOWN DEBT - axelor-stock (2) - to be emptied by #117730
+# ---------------------------------------------------------------------------
+com.axelor.apps.stock.db.repo.ProductStockRepository  # overrides ProductBaseRepository (axelor-base)
+com.axelor.apps.stock.db.repo.ProductCompanyStockRepository  # overrides ProductCompanyBaseRepository (axelor-base)
+
+# ---------------------------------------------------------------------------
+# KNOWN DEBT - axelor-supplychain (53) - to be emptied by #117724
+# ---------------------------------------------------------------------------
+com.axelor.apps.supplychain.service.purchaseorderline.view.PurchaseOrderLineViewServiceSupplychainImpl  # overrides PurchaseOrderLineViewServiceImpl (axelor-purchase)
+com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository  # overrides SaleOrderManagementRepository (axelor-sale)
+com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCreateSupplychainServiceImpl  # overrides SaleOrderLineCreateServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl  # overrides AdvancePaymentServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.db.repo.AnalyticMoveLineSupplychainRepository  # overrides AnalyticMoveLineMngtRepository (axelor-account)
+com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl  # overrides WorkflowVentilationServiceImpl (axelor-account)
+com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl  # overrides WorkflowCancelServiceImpl (axelor-account)
+com.axelor.apps.supplychain.utils.StockLocationUtilsServiceSupplychainImpl  # overrides StockLocationUtilsServiceImpl (axelor-stock)
+com.axelor.apps.supplychain.service.AccountingCutOffSupplyChainServiceImpl  # overrides AccountingCutOffServiceImpl (axelor-account)
+com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository  # overrides StockMoveManagementRepository (axelor-stock)
+com.axelor.apps.supplychain.service.StockCorrectionServiceSupplychainImpl  # overrides StockCorrectionServiceImpl (axelor-stock)
+com.axelor.apps.supplychain.db.repo.SaleOrderLineSupplychainRepository  # overrides SaleOrderLineSaleRepository (axelor-sale)
+com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository  # overrides StockMoveLineStockRepository (axelor-stock)
+com.axelor.apps.supplychain.service.PurchaseOrderCreateServiceSupplychainImpl  # overrides PurchaseOrderCreateServiceImpl (axelor-purchase)
+com.axelor.apps.supplychain.service.saleorder.opportunity.OpportunitySaleOrderSupplychainServiceImpl  # overrides OpportunitySaleOrderServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.service.PartnerSupplychainServiceImpl  # overrides PartnerSaleServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.service.StockHistoryServiceSupplyChainImpl  # overrides StockHistoryServiceImpl (axelor-stock)
+com.axelor.apps.supplychain.service.invoice.InvoiceMergingServiceSupplychainImpl  # overrides InvoiceMergingServiceImpl (axelor-account)
+com.axelor.apps.supplychain.service.batch.BatchAccountingCutOffSupplyChain  # overrides BatchAccountingCutOff (axelor-account)
+com.axelor.apps.supplychain.rest.StockProductRestServiceSupplychainImpl  # overrides StockProductRestServiceImpl (axelor-stock)
+com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl  # overrides AnalyticMoveLineServiceImpl (axelor-account)
+com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl  # overrides InvoiceLineAnalyticServiceImpl (axelor-account)
+com.axelor.apps.supplychain.service.saleorder.SaleOrderVersionSupplyChainServiceImpl  # overrides SaleOrderVersionServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.service.PartnerLinkSupplychainServiceImpl  # overrides PartnerLinkServiceImpl (axelor-base)
+com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl  # overrides SaleOrderOnLineChangeServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.service.PurchaseOrderMergingServiceSupplyChainImpl  # overrides PurchaseOrderMergingServiceImpl (axelor-purchase)
+com.axelor.apps.supplychain.service.PurchaseOrderMergingViewServiceSupplyChainImpl  # overrides PurchaseOrderMergingViewServiceImpl (axelor-purchase)
+com.axelor.apps.supplychain.service.StockMoveMergingServiceSupplychainImpl  # overrides StockMoveMergingServiceImpl (axelor-stock)
+com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineOnChangeSupplychainServiceImpl  # overrides SaleOrderLineOnChangeServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.service.saleorder.SaleOrderInitValueSupplychainServiceImpl  # overrides SaleOrderInitValueServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnChangeSupplychainServiceImpl  # overrides SaleOrderOnChangeServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.service.StockMoveLineStockLocationServiceSupplychainImpl  # overrides StockMoveLineStockLocationServiceImpl (axelor-stock)
+com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewServiceSupplychainImpl  # overrides SaleOrderLineViewServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineInitValueSupplychainServiceImpl  # overrides SaleOrderLineInitValueServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.service.batch.SaleBatchSupplyChainService  # overrides SaleBatchService (axelor-sale)
+com.axelor.apps.supplychain.db.repo.CartLineSupplychainRepository  # overrides CartLineManagementRepository (axelor-sale)
+com.axelor.apps.supplychain.service.cart.CartSaleOrderGeneratorSupplychainServiceImpl  # overrides CartSaleOrderGeneratorServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.service.cartline.CartLineProductSupplychainServiceImpl  # overrides CartLineProductServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.service.cart.CartResetSupplychainServiceImpl  # overrides CartResetServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.service.ConfiguratorCheckServiceSupplychainImpl  # overrides ConfiguratorCheckServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.service.TrackingNumberCompanySupplychainServiceImpl  # overrides TrackingNumberCompanyServiceImpl (axelor-stock)
+com.axelor.apps.supplychain.service.PurchaseOrderLineTaxComputeSupplychainServiceImp  # overrides PurchaseOrderLineTaxComputeServiceImpl (axelor-purchase)
+com.axelor.apps.supplychain.service.pricing.PricingGroupSupplyChainServiceImpl  # overrides PricingGroupSaleServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.service.saleorder.SaleOrderDummySupplychainServiceImpl  # overrides SaleOrderDummyServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.service.analytic.AnalyticMoveLineParentSupplychainServiceImpl  # overrides AnalyticMoveLineParentServiceImpl (axelor-account)
+com.axelor.apps.supplychain.service.saleorder.SaleOrderGeneratorSupplychainServiceImpl  # overrides SaleOrderGeneratorServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.rest.PartnerCreationServiceSupplychainImpl  # overrides PartnerCreationServiceImpl (axelor-base)
+com.axelor.apps.supplychain.service.CallTenderPurchaseOrderSupplychainServiceImpl  # overrides CallTenderPurchaseOrderServiceImpl (axelor-purchase)
+com.axelor.apps.supplychain.db.repo.LogisticalFormSupplychainRepository  # overrides LogisticalFormStockRepository (axelor-stock)
+com.axelor.apps.supplychain.service.saleorder.SaleOrderMarginSupplychainServiceImpl  # overrides SaleOrderMarginServiceImpl (axelor-sale)
+com.axelor.apps.supplychain.service.LogisticalFormCreateServiceSupplychainImpl  # overrides LogisticalFormCreateServiceImpl (axelor-stock)
+com.axelor.apps.supplychain.service.StockMoveCurrencyServiceSupplychainImpl  # overrides StockMoveCurrencyServiceImpl (axelor-stock)
+com.axelor.apps.supplychain.service.ProductSupplychainServiceImpl  # overrides ProductServicePurchaseImpl (axelor-purchase)
+
+# ---------------------------------------------------------------------------
+# KNOWN DEBT - axelor-talent (1) - to be emptied by #117730
+# ---------------------------------------------------------------------------
+com.axelor.apps.talent.service.MailAccountServiceTalentImpl  # overrides MailAccountServiceBaseImpl (axelor-base)

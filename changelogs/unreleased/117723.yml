@@ -1,0 +1,29 @@
+---
+title: "Added a build check making sure a module does not alter the behaviour of the modules it extends when its own app is not installed."
+module: axelor-base
+developer: |
+  New `checkAppOverrideGuard` gradle task, to be run with `./gradlew checkAppOverrideGuard`.
+
+  It reports every Guice binding that overrides a service, a controller or a repository of a
+  lower module when the overriding implementation contains no `isApp(...)` call. Such an override
+  applies as soon as the module is deployed, even when its app is not installed.
+
+  Guard the overriding methods and delegate to `super` when the app is off:
+
+  ```java
+  @Override
+  public SaleOrder computeSaleOrder(SaleOrder saleOrder) throws AxelorException {
+    if (!appSupplychainService.isApp("supplychain")) {
+      return super.computeSaleOrder(saleOrder);
+    }
+    // Supply Chain specific behaviour
+    return saleOrder;
+  }
+  ```
+
+  Legitimate overrides must be listed in `config/app-override-guard-allowlist.txt` with a
+  justification. That file also carries the 160 overrides that predate the check, grouped by
+  module and removed one module at a time.
+
+  The task only looks for a single `isApp(...)` occurrence per class, so it does not catch a new
+  unguarded override added to an already guarded class. See CONTRIBUTING.md for the full rule.
