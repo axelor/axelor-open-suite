@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.partner.PartnerContactLinkService;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -45,8 +46,11 @@ import java.util.Map;
 public class PartnerSaleServiceImpl extends PartnerServiceImpl implements PartnerSaleService {
 
   @Inject
-  public PartnerSaleServiceImpl(PartnerRepository partnerRepo, AppBaseService appBaseService) {
-    super(partnerRepo, appBaseService);
+  public PartnerSaleServiceImpl(
+      PartnerRepository partnerRepo,
+      AppBaseService appBaseService,
+      PartnerContactLinkService partnerContactLinkService) {
+    super(partnerRepo, appBaseService, partnerContactLinkService);
   }
 
   @Override

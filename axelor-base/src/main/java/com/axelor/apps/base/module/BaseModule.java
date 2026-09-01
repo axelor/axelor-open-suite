@@ -309,6 +309,8 @@ import com.axelor.apps.base.service.observer.PricingLogsObserver;
 import com.axelor.apps.base.service.observer.ProductFireService;
 import com.axelor.apps.base.service.observer.ProductFireServiceImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
+import com.axelor.apps.base.service.partner.PartnerContactLinkService;
+import com.axelor.apps.base.service.partner.PartnerContactLinkServiceImpl;
 import com.axelor.apps.base.service.partner.PartnerCreationService;
 import com.axelor.apps.base.service.partner.PartnerCreationServiceImpl;
 import com.axelor.apps.base.service.partner.api.PartnerApiFetchService;
@@ -616,6 +618,7 @@ public class BaseModule extends AxelorModule {
     bind(ProductCompanyRepository.class).to(ProductCompanyBaseRepository.class);
     bind(MetaThemeFetchService.class).to(MetaThemeFetchServiceImpl.class);
     bind(PartnerCreationService.class).to(PartnerCreationServiceImpl.class);
+    bind(PartnerContactLinkService.class).to(PartnerContactLinkServiceImpl.class);
     bind(PublicHolidayService.class).to(PublicHolidayServiceImpl.class);
     bind(MapGroupService.class).to(MapGroupServiceImpl.class);
     bind(MapViewService.class).to(MapViewServiceImpl.class);

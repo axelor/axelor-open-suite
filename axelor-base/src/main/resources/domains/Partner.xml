@@ -36,6 +36,9 @@
       title="Mother company" massUpdate="true" index="false"/>
     <one-to-many name="partnerAddressList" ref="com.axelor.apps.base.db.PartnerAddress"
       title="Addresses" mappedBy="partner" copy="false"/>
+    <one-to-many name="partnerContactLinkList"
+      ref="com.axelor.apps.base.db.PartnerContactLink" title="Companies" mappedBy="contact"
+      copy="false"/>
 
     <many-to-many name="contactPartnerSet" ref="com.axelor.apps.base.db.Partner"
       title="Contacts"/>

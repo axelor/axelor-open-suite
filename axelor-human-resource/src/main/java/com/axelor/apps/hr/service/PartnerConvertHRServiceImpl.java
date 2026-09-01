@@ -18,9 +18,11 @@
  */
 package com.axelor.apps.hr.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerConvertServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.partner.PartnerContactLinkService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.google.inject.persist.Transactional;
@@ -32,14 +34,16 @@ public class PartnerConvertHRServiceImpl extends PartnerConvertServiceImpl {
 
   @Inject
   public PartnerConvertHRServiceImpl(
-      PartnerService partnerService, EmployeeRepository employeeRepository) {
-    super(partnerService);
+      PartnerService partnerService,
+      PartnerContactLinkService partnerContactLinkService,
+      EmployeeRepository employeeRepository) {
+    super(partnerService, partnerContactLinkService);
     this.employeeRepository = employeeRepository;
   }
 
   @Transactional
   @Override
-  public void convertToIndividualPartner(Partner partner) {
+  public void convertToIndividualPartner(Partner partner) throws AxelorException {
     super.convertToIndividualPartner(partner);
     Employee employee = partner.getEmployee();
     if (employee == null) {
