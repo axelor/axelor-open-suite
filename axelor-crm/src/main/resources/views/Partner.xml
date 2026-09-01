@@ -191,7 +191,9 @@
     </extend>
     <extend target="//field[@name='emailAddress']">
       <replace>
-        <field name="emailAddress">
+        <field name="emailAddress"
+          readonlyIf="partnerContactLinkList != null &amp;&amp; partnerContactLinkList.length &gt; 0"
+          help="Value comes from the company selected as main.">
           <editor x-show-titles="false" x-viewer="true">
             <field name="address" widget="email" colSpan="12"
               placeholder="whatever@example.com"/>
@@ -319,7 +321,9 @@
     </extend>
     <extend target="//field[@name='emailAddress']">
       <replace>
-        <field name="emailAddress">
+        <field name="emailAddress"
+          readonlyIf="partnerContactLinkList != null &amp;&amp; partnerContactLinkList.length &gt; 0"
+          help="Value comes from the company selected as main.">
           <editor x-show-titles="false" x-viewer="true">
             <field name="address" widget="email" colSpan="12"
               placeholder="whatever@example.com"/>

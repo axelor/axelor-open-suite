@@ -21,6 +21,7 @@ package com.axelor.apps.base.service.partner;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerContactLink;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -75,8 +76,11 @@ public class PartnerCreationServiceImpl implements PartnerCreationService {
       partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
       partnerTypeSelect = partner.getPartnerTypeSelect();
       if (mainPartner != null) {
-        partner.setMainPartner(mainPartner);
-        mainPartner.addContactPartnerSetItem(partner);
+        PartnerContactLink partnerContactLink = new PartnerContactLink();
+        partnerContactLink.setPartner(mainPartner);
+        partnerContactLink.setIsActive(true);
+        partnerContactLink.setIsMainCompany(true);
+        partner.addPartnerContactLinkListItem(partnerContactLink);
       }
     }
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="PartnerContactLink">
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Company"
+      required="true"/>
+    <many-to-one name="contact" ref="com.axelor.apps.base.db.Partner" title="Contact"
+      required="true"/>
+    <boolean name="isMainCompany" title="Main company" default="false"/>
+    <boolean name="isActive" title="Active" default="true"/>
+    <many-to-one name="emailAddress" ref="com.axelor.message.db.EmailAddress"
+      title="Email"/>
+    <string name="fixedPhone" title="Phone number"/>
+    <string name="directPhone" title="Direct phone number"/>
+    <many-to-one name="jobTitleFunction" ref="com.axelor.apps.base.db.Function"
+      title="Function"/>
+    <string name="functionBusinessCard" title="Function / Business card"/>
+    <many-to-many name="partnerRoleSet" ref="com.axelor.apps.base.db.PartnerRole"
+      title="Roles"/>
+
+    <unique-constraint columns="partner,contact"/>
+  </entity>
+
+</domain-models>

@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.partner.PartnerContactLinkService;
 import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberValidator;
 import com.axelor.apps.base.service.partner.registrationnumber.factory.PartnerRegistrationValidatorFactoryService;
 import com.axelor.meta.MetaFiles;
@@ -41,6 +42,8 @@ import java.util.Map;
 public class ImportPartner {
 
   @Inject protected PartnerRepository partnerRepo;
+
+  @Inject protected PartnerContactLinkService partnerContactLinkService;
 
   @Inject protected MetaFiles metaFiles;
 
@@ -91,7 +94,7 @@ public class ImportPartner {
     return bean;
   }
 
-  public Object updateContacts(Object bean, Map<String, Object> values) {
+  public Object updateContacts(Object bean, Map<String, Object> values) throws AxelorException {
 
     assert bean instanceof Partner;
 
@@ -101,6 +104,8 @@ public class ImportPartner {
     List<? extends Partner> partnerList =
         partnerRepo.all().filter("self.mainPartner.id = ?1", partner.getId()).fetch();
     for (Partner pt : partnerList) partner.getContactPartnerSet().add(pt);
+
+    partnerContactLinkService.afterPartnerSave(partner);
 
     return partner;
   }

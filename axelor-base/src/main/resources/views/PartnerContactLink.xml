@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <grid name="partner-contact-link-contact-grid" title="Companies"
+    model="com.axelor.apps.base.db.PartnerContactLink" editable="true">
+    <field name="partner" onSelect="action-partner-contact-link-method-set-partner-domain"/>
+    <field name="jobTitleFunction"/>
+    <field name="emailAddress" form-view="email-address-simple-form" canEdit="true"
+      canNew="!emailAddress" canSelect="false" canRemove="false" placeholder="Email address"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+    <field name="directPhone" widget="phone"/>
+    <field name="isMainCompany" hidden="true"/>
+    <button name="setMainCompanyBtn"
+      onClick="action-partner-contact-link-record-toggle-main-company" title="Main company"
+      icon="star" showIf="!isMainCompany"/>
+    <button name="unsetMainCompanyBtn"
+      onClick="action-partner-contact-link-record-toggle-main-company" title="Main company"
+      icon="star-fill" showIf="isMainCompany"/>
+  </grid>
+
+  <form name="partner-contact-link-form" title="Contact company"
+    model="com.axelor.apps.base.db.PartnerContactLink">
+    <panel name="mainPanel">
+      <field name="partner" onSelect="action-partner-contact-link-method-set-partner-domain"/>
+      <field name="jobTitleFunction"/>
+      <field name="functionBusinessCard"/>
+      <field name="emailAddress" canSelect="false" form-view="email-address-simple-form">
+        <editor x-show-titles="false" x-viewer="true">
+          <field name="address" placeholder="whatever@example.com"
+            pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"
+            colSpan="12"/>
+        </editor>
+      </field>
+      <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+      <field name="directPhone" widget="phone"/>
+      <field name="isActive" widget="boolean-switch"/>
+      <field name="isMainCompany" widget="toggle" x-icon="star" x-icon-active="star-fill"/>
+      <field name="partnerRoleSet" widget="Tags" canNew="false" colSpan="12"
+        form-view="partner-role-form" grid-view="partner-role-grid"/>
+    </panel>
+  </form>
+
+  <action-record name="action-partner-contact-link-record-toggle-main-company"
+    model="com.axelor.apps.base.db.PartnerContactLink">
+    <field name="isMainCompany" expr="eval: !isMainCompany"/>
+  </action-record>
+
+  <action-method name="action-partner-contact-link-method-set-partner-domain">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="setPartnerContactLinkPartnerDomain"/>
+  </action-method>
+
+</object-views>

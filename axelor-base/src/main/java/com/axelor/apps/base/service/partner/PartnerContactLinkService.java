@@ -16,11 +16,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.base.service.partner;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import java.util.Map;
 
-public interface PartnerConvertService {
-  void convertToIndividualPartner(Partner partner) throws AxelorException;
+public interface PartnerContactLinkService {
+
+  void onContactSave(Partner contact) throws AxelorException;
+
+  void afterPartnerSave(Partner partner) throws AxelorException;
+
+  void onPartnerRemove(Partner partner) throws AxelorException;
+
+  Map<String, Object> getMainLinkOnChangeValuesMap(Partner contact);
 }
