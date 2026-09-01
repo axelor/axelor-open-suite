@@ -180,7 +180,6 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
         partner.setContactPartnerSet(new HashSet<>());
       }
       partner.getContactPartnerSet().addAll(contactPartnerList);
-      contactPartnerList.stream().forEach(contactPartner -> contactPartner.setMainPartner(partner));
     }
 
     if (partner != null) {

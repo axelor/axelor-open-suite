@@ -20,23 +20,29 @@ package com.axelor.apps.base.service;
 
 import static com.axelor.apps.base.db.repo.PartnerRepository.PARTNER_TYPE_INDIVIDUAL;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.partner.PartnerContactLinkService;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 
 public class PartnerConvertServiceImpl implements PartnerConvertService {
 
   protected final PartnerService partnerService;
+  protected final PartnerContactLinkService partnerContactLinkService;
 
   @Inject
-  public PartnerConvertServiceImpl(PartnerService partnerService) {
+  public PartnerConvertServiceImpl(
+      PartnerService partnerService, PartnerContactLinkService partnerContactLinkService) {
     this.partnerService = partnerService;
+    this.partnerContactLinkService = partnerContactLinkService;
   }
 
   @Transactional
   @Override
-  public void convertToIndividualPartner(Partner partner) {
+  public void convertToIndividualPartner(Partner partner) throws AxelorException {
+    partnerContactLinkService.onPartnerRemove(partner);
     partner.setIsContact(false);
     partner.setPartnerTypeSelect(PARTNER_TYPE_INDIVIDUAL);
     Address mainAddress = partner.getMainAddress();

@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerContactLink;
 import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Tag;
 import com.axelor.apps.base.db.TradingName;
@@ -44,6 +45,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.partner.PartnerContactLinkService;
 import com.axelor.apps.base.service.partner.api.PartnerGenerateService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
 import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberValidator;
@@ -518,6 +520,40 @@ public class PartnerController {
             "self.id IN (%s)",
             StringHelper.getIdListString(
                 Beans.get(PartnerService.class).getFilteredPartners(partner))));
+  }
+
+  public void setPartnerContactLinkPartnerDomain(ActionRequest request, ActionResponse response) {
+    PartnerContactLink partnerContactLink = request.getContext().asType(PartnerContactLink.class);
+    Context parentContext = request.getContext().getParent();
+    if (parentContext == null || !Partner.class.equals(parentContext.getContextClass())) {
+      return;
+    }
+    Partner contact = parentContext.asType(Partner.class);
+
+    List<Partner> companyList = Beans.get(PartnerService.class).getFilteredPartners(contact);
+    if (contact.getPartnerContactLinkList() != null) {
+      companyList.removeAll(
+          contact.getPartnerContactLinkList().stream()
+              .filter(link -> !link.equals(partnerContactLink))
+              .map(PartnerContactLink::getPartner)
+              .filter(Objects::nonNull)
+              .collect(Collectors.toList()));
+    }
+
+    response.setAttr(
+        "partner",
+        "domain",
+        String.format("self.id IN (%s)", StringHelper.getIdListString(companyList)));
+  }
+
+  public void projectMainContactLink(ActionRequest request, ActionResponse response) {
+    try {
+      Partner contact = request.getContext().asType(Partner.class);
+      response.setValues(
+          Beans.get(PartnerContactLinkService.class).getMainLinkOnChangeValuesMap(contact));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void checkIfRegistrationCodeExists(ActionRequest request, ActionResponse response) {

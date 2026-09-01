@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.partner.PartnerContactLinkService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -57,6 +58,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -75,10 +77,16 @@ public class PartnerServiceImpl implements PartnerService {
   protected PartnerRepository partnerRepo;
   protected AppBaseService appBaseService;
 
+  protected PartnerContactLinkService partnerContactLinkService;
+
   @Inject
-  public PartnerServiceImpl(PartnerRepository partnerRepo, AppBaseService appBaseService) {
+  public PartnerServiceImpl(
+      PartnerRepository partnerRepo,
+      AppBaseService appBaseService,
+      PartnerContactLinkService partnerContactLinkService) {
     this.partnerRepo = partnerRepo;
     this.appBaseService = appBaseService;
+    this.partnerContactLinkService = partnerContactLinkService;
   }
 
   private Pattern phoneNumberPattern =
@@ -154,6 +162,8 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public void onSave(Partner partner) throws AxelorException {
 
+    checkDuplicateContactNames(partner);
+
     if (partner.getPartnerSeq() == null
         && appBaseService.getAppBase().getGeneratePartnerSequence()) {
       String seq =
@@ -166,6 +176,8 @@ public class PartnerServiceImpl implements PartnerService {
       }
       partner.setPartnerSeq(seq);
     }
+
+    partnerContactLinkService.onContactSave(partner);
 
     if (partner.getEmailAddress() != null) {
       long existEmailCount =
@@ -190,15 +202,34 @@ public class PartnerServiceImpl implements PartnerService {
       partner.setContactPartnerSet(new HashSet<>());
     }
 
-    if (!partner.getIsContact() && partner.getContactPartnerSet() != null) {
-      for (Partner contact : partner.getContactPartnerSet()) {
-        if (contact.getMainPartner() == null) {
-          contact.setMainPartner(partner);
-        }
-      }
+    this.setPartnerFullName(partner);
+  }
+
+  protected void checkDuplicateContactNames(Partner partner) throws AxelorException {
+    checkDuplicateContactName(partner);
+    if (partner.getIsContact() || ObjectUtils.isEmpty(partner.getContactPartnerSet())) {
+      return;
     }
 
-    this.setPartnerFullName(partner);
+    Set<String> newContactNames = new HashSet<>();
+    for (Partner contact : partner.getContactPartnerSet()) {
+      checkDuplicateContactName(contact);
+      String contactName = computeSimpleFullName(contact);
+      if (!Strings.isNullOrEmpty(contactName)
+          && !newContactNames.add(contactName.toLowerCase(Locale.ROOT))) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(BaseExceptionMessage.PARTNER_CONTACT_NAME_EXIST));
+      }
+    }
+  }
+
+  protected void checkDuplicateContactName(Partner partner) throws AxelorException {
+    if (partner.getIsContact() && isThereDuplicatePartnerQuery(partner, false, true) != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BaseExceptionMessage.PARTNER_CONTACT_NAME_EXIST));
+    }
   }
 
   /**
@@ -631,6 +662,11 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   protected Partner isThereDuplicatePartnerQuery(Partner partner, boolean isInArchived) {
+    return isThereDuplicatePartnerQuery(partner, isInArchived, false);
+  }
+
+  protected Partner isThereDuplicatePartnerQuery(
+      Partner partner, boolean isInArchived, boolean contactOnly) {
     String newName = this.computeSimpleFullName(partner);
     if (Strings.isNullOrEmpty(newName)) {
       return null;
@@ -641,6 +677,9 @@ public class PartnerServiceImpl implements PartnerService {
             + "and self.partnerTypeSelect = :_partnerTypeSelect ";
     if (partnerId != null) {
       filter += "and self.id != :partnerId ";
+    }
+    if (contactOnly) {
+      filter += "and self.isContact = true ";
     }
     if (isInArchived) {
       filter += "and self.archived = true ";

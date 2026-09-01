@@ -648,7 +648,7 @@
   <form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner"
     onNew="action-partner-contact-record-default,action-partner-attrs-partner-seq-editable"
     onLoad="action-group-partner-contact-onload"
-    onSave="save,action-partner-method-set-user-partner,action-partner-method-add-contact-partner">
+    onSave="save,action-partner-method-set-user-partner">
     <toolbar>
       <button name="convertToIndividualPartnerBtn" title="Convert into an individual partner"
         icon="person-fill" onClick="save,action-convert-into-individual-partner,close"
@@ -714,24 +714,39 @@
           </viewer>
         </field>
         <panel name="companyPanel" title="Company" colSpan="12">
-          <field name="mainPartner" onSelect="action-partner-method-set-main-partner-domain"
-            form-view="partner-form" grid-view="partner-grid"/>
+          <field name="mainPartner" readonly="true" form-view="partner-form"
+            grid-view="partner-grid" help="Value comes from the company selected as main."/>
         </panel>
         <field name="isContact" hidden="true" colSpan="12"/>
       </panel>
     </panel>
     <panel-related name="partnerRoleSetPanel" field="partnerRoleSet"
-      form-view="partner-role-form" grid-view="partner-role-grid" canNew="false"/>
+      form-view="partner-role-form" grid-view="partner-role-grid" canNew="false"
+      readonlyIf="partnerContactLinkList != null &amp;&amp; partnerContactLinkList.length &gt; 0"
+      help="Values come from the company selected as main."/>
+
+    <panel-related name="partnerContactLinkListPanel" field="partnerContactLinkList"
+      title="Companies" form-view="partner-contact-link-form"
+      grid-view="partner-contact-link-contact-grid" editable="true"
+      onChange="action-partner-method-project-main-link"/>
 
     <panel-tabs name="mainPanelTab">
       <panel name="contactDetailsPanel" title="Contact details">
-        <field name="jobTitleFunction" onChange="action-record-base-partner-set-business-card"/>
-        <field name="functionBusinessCard"/>
+        <field name="jobTitleFunction" onChange="action-record-base-partner-set-business-card"
+          readonlyIf="partnerContactLinkList != null &amp;&amp; partnerContactLinkList.length &gt; 0"
+          help="Value comes from the company selected as main."/>
+        <field name="functionBusinessCard"
+          readonlyIf="partnerContactLinkList != null &amp;&amp; partnerContactLinkList.length &gt; 0"
+          help="Value comes from the company selected as main."/>
         <field name="reportsTo" domain="self.isContact = true"/>
-        <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+        <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"
+          readonlyIf="partnerContactLinkList != null &amp;&amp; partnerContactLinkList.length &gt; 0"
+          help="Value comes from the company selected as main."/>
         <field name="mobilePhone" widget="phone"/>
         <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
-          x-show-icons="false">
+          x-show-icons="false"
+          readonlyIf="partnerContactLinkList != null &amp;&amp; partnerContactLinkList.length &gt; 0"
+          help="Value comes from the company selected as main.">
           <editor x-show-titles="false" x-viewer="true">
             <field name="address" placeholder="whatever@example.com"
               pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"
@@ -1322,6 +1337,10 @@
     <call class="com.axelor.apps.base.web.PartnerController" method="setContactPartnerDomain"/>
   </action-method>
 
+  <action-method name="action-partner-method-project-main-link">
+    <call class="com.axelor.apps.base.web.PartnerController" method="projectMainContactLink"/>
+  </action-method>
+
   <action-method name="action-partner-method-set-main-partner-domain">
     <call class="com.axelor.apps.base.web.PartnerController" method="setMainPartnerDomain"/>
   </action-method>
@@ -1329,8 +1348,6 @@
   <action-attrs name="action-partner-attrs-partner-seq-editable">
     <attribute name="readonly" for="partnerSeq"
       expr="__config__.app.getApp('base')?.getGeneratePartnerSequence()"/>
-    <attribute name="readonly" for="mainPartner"
-      expr="#{__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
   </action-attrs>
 
   <action-attrs name="action-partner-attrs-change-name">
@@ -1487,6 +1504,7 @@
     <field name="agency" expr="eval:__user__.activeAgency"/>
   </action-record>
 
+
   <action-record name="action-partner-contact-record-default"
     model="com.axelor.apps.base.db.Partner">
     <field name="partnerTypeSelect" expr="#{2}"/>
@@ -1508,8 +1526,6 @@
       if="created_from_user_id != null"/>
     <field name="companySet" expr="eval: __repo__(Company).all().fetchOne()"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <field name="mainPartner" expr="eval: __parent__"
-      if="#{__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
   </action-record>
 
   <action-record name="action-partner-employee-record-default"
