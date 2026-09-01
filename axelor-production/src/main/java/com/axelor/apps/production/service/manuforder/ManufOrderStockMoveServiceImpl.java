@@ -367,7 +367,10 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
         preservedTrackingNumbersByProduct =
             productionTrackingPreservationService.reclaimOrphanedTrackingNumbers(
                 preservedTrackingNumbersByProduct,
-                manufOrder.getToProduceProdProductList(),
+                inOrOut == PART_FINISH_RESIDUAL
+                    ? Beans.get(ManufOrderResidualProductService.class)
+                        .getResidualProdProductList(manufOrder)
+                    : manufOrder.getToProduceProdProductList(),
                 manufOrder);
 
         // Remove reserve lines from stock move so they are not realized
