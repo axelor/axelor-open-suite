@@ -111,25 +111,21 @@ public class ManufOrderCreateStockMoveLineServiceImpl
       StockLocation virtualStockLocation,
       StockLocation residualProductStockLocation)
       throws AxelorException {
-    for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
-
-      // Only manages residual products.
-      if (manufOrderResidualProductService.isResidualProduct(prodProduct, manufOrder)) {
-        BigDecimal productCostPrice =
-            prodProduct.getProduct() != null
-                ? (BigDecimal)
-                    productCompanyService.get(
-                        prodProduct.getProduct(), "costPrice", manufOrder.getCompany())
-                : BigDecimal.ZERO;
-        this._createStockMoveLine(
-            prodProduct,
-            stockMove,
-            StockMoveLineService.TYPE_OUT_PRODUCTIONS,
-            prodProduct.getQty(),
-            productCostPrice,
-            virtualStockLocation,
-            residualProductStockLocation);
-      }
+    for (ProdProduct prodProduct : getOutProdProductList(manufOrder, true)) {
+      BigDecimal productCostPrice =
+          prodProduct.getProduct() != null
+              ? (BigDecimal)
+                  productCompanyService.get(
+                      prodProduct.getProduct(), "costPrice", manufOrder.getCompany())
+              : BigDecimal.ZERO;
+      this._createStockMoveLine(
+          prodProduct,
+          stockMove,
+          StockMoveLineService.TYPE_OUT_PRODUCTIONS,
+          prodProduct.getQty(),
+          productCostPrice,
+          virtualStockLocation,
+          residualProductStockLocation);
     }
   }
 
@@ -373,17 +369,21 @@ public class ManufOrderCreateStockMoveLineServiceImpl
   }
 
   /**
-   * Get the products to produce of the given kind: residual products are discriminated from
-   * finished products by looking them up in the bill of material.
+   * Get the products to produce of the given kind. Residual products are derived from the bill of
+   * material. The stored list holds finished products only, but is still filtered against the bill
+   * of material so that residual entries stored by a previous version are ignored.
    */
   protected List<ProdProduct> getOutProdProductList(ManufOrder manufOrder, boolean residual) {
+    if (residual) {
+      return manufOrderResidualProductService.getResidualProdProductList(manufOrder);
+    }
     List<ProdProduct> toProduceProdProductList = manufOrder.getToProduceProdProductList();
     if (toProduceProdProductList == null) {
       return new ArrayList<>();
     }
     List<ProdProduct> prodProductList = new ArrayList<>();
     for (ProdProduct prodProduct : toProduceProdProductList) {
-      if (manufOrderResidualProductService.isResidualProduct(prodProduct, manufOrder) == residual) {
+      if (!manufOrderResidualProductService.isResidualProduct(prodProduct, manufOrder)) {
         prodProductList.add(prodProduct);
       }
     }
