@@ -1,0 +1,3 @@
+---
+title: "Cost sheet: fixed indirect costs still being computed when cost sheet group management is disabled, and the indirect line showing the cost sheet group code and name in swapped fields."
+module: axelor-production
