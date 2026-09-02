@@ -113,13 +113,18 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       AnalyticMoveLine analyticMoveLine, BigDecimal analyticLineAmount) {
 
     if (analyticLineAmount.signum() > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(analyticLineAmount)
-          .divide(
-              new BigDecimal(100),
-              currencyScaleService.getScale(analyticMoveLine),
-              RoundingMode.HALF_UP);
+      BigDecimal amount =
+          analyticMoveLine
+              .getPercentage()
+              .multiply(analyticLineAmount)
+              .divide(
+                  new BigDecimal(100),
+                  currencyScaleService.getScale(analyticMoveLine),
+                  RoundingMode.HALF_UP);
+      if (analyticMoveLine.getSubTypeSelect() == AnalyticMoveLineRepository.SUB_TYPE_REVERSE) {
+        amount = amount.negate();
+      }
+      return amount;
     }
     return BigDecimal.ZERO;
   }
