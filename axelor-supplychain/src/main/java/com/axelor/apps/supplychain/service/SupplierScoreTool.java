@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -57,6 +58,11 @@ public class SupplierScoreTool {
     return estimatedReceiptDate != null
         && lastReceiptDate != null
         && !lastReceiptDate.isAfter(estimatedReceiptDate);
+  }
+
+  /** Label identifying the month of a snapshot, for instance {@code 2026-09}. */
+  public static String computePeriodLabel(LocalDate snapshotDate) {
+    return YearMonth.from(snapshotDate).toString();
   }
 
   /**

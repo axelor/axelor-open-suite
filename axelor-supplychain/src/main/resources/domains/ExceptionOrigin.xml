@@ -10,6 +10,7 @@
     <extra-code>
             <![CDATA[
 			public static final String UPDATE_STOCK_HISTORY = "updateStockHistory";
+			public static final String SUPPLIER_SCORE_SNAPSHOT = "supplierScoreSnapshot";
 			]]>
     </extra-code>
 

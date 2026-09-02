@@ -18,8 +18,11 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.supplychain.db.SupplierScoreHistory;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public interface SupplierScoreService {
 
@@ -37,4 +40,10 @@ public interface SupplierScoreService {
    * @return the score between 0 and 100, or null when no indicator is available.
    */
   BigDecimal computeGlobalScore(Partner partner);
+
+  /**
+   * Save a snapshot of the indicators and score currently held by the partner. Snapshots freeze the
+   * history and are never recomputed afterwards.
+   */
+  SupplierScoreHistory createSnapshot(Partner partner, LocalDate snapshotDate, Batch batch);
 }

@@ -22,6 +22,9 @@
       max="100"
       help="Percentage of receptions without any non-compliant line, over the rolling period."/>
     <date name="supplierScoreComputedOn" title="Supplier score computed on"/>
+    <one-to-many name="supplierScoreHistoryList"
+      ref="com.axelor.apps.supplychain.db.SupplierScoreHistory" title="Supplier score history"
+      mappedBy="partner" copy="false"/>
 
   </entity>
 

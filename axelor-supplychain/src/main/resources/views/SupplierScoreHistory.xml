@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <grid name="supplier-score-history-grid" title="Supplier score history"
+    model="com.axelor.apps.supplychain.db.SupplierScoreHistory" orderBy="-snapshotDate">
+    <field name="snapshotDate"/>
+    <field name="periodLabel"/>
+    <field name="supplierScore" widget="Progress"/>
+    <field name="supplierOtdRate" x-scale="2"/>
+    <field name="supplierConformityRate" x-scale="2"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+  </grid>
+
+  <form name="supplier-score-history-form" title="Supplier score history"
+    model="com.axelor.apps.supplychain.db.SupplierScoreHistory">
+    <panel name="mainPanel" readonly="true">
+      <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+      <field name="snapshotDate"/>
+      <field name="periodLabel"/>
+      <field name="fromDate"/>
+      <field name="toDate"/>
+      <field name="supplierScore" widget="Progress" colSpan="12"/>
+      <field name="supplierOtdRate" x-scale="2"/>
+      <field name="supplierConformityRate" x-scale="2"/>
+      <field name="batch" form-view="batch-form" grid-view="batch-grid"/>
+    </panel>
+  </form>
+
+</object-views>

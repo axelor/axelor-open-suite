@@ -45,6 +45,7 @@
 		public static final int ACTION_INVOICE_ORDERS = 3;
 		public static final int ACTION_UPDATE_STOCK_HISTORY = 4;
 		public static final int ACTION_RUN_STOCK_RULES_BATCH = 5;
+		public static final int ACTION_SUPPLIER_SCORE_SNAPSHOT = 6;
 
 		public static final String CODE_BATCH_BILL_SUB = "S_B_SUB";
 

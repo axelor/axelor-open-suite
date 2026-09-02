@@ -66,6 +66,9 @@
           <field name="supplierConformityRate" colSpan="6" x-scale="2"
             if="!__config__.app.getApp('supplychain')?.getAutoComputeSupplierConformityRate()"
             onChange="action-partner-method-compute-supplier-score-from-rates"/>
+          <field name="supplierScoreHistoryList" colSpan="12" canNew="false" canEdit="false"
+            canRemove="false" grid-view="supplier-score-history-grid"
+            form-view="supplier-score-history-form"/>
         </panel>
       </insert>
     </extend>

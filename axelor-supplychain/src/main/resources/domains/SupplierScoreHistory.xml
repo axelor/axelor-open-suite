@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+
+  <entity name="SupplierScoreHistory">
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"
+      required="true"/>
+    <date name="snapshotDate" title="Snapshot date" required="true"/>
+    <string name="periodLabel" title="Period" required="true"/>
+    <date name="fromDate" title="From date"/>
+    <date name="toDate" title="To date"/>
+    <decimal name="supplierScore" title="Supplier score"/>
+    <decimal name="supplierOtdRate" title="On-time delivery rate (%)"/>
+    <decimal name="supplierConformityRate" title="Reception conformity rate (%)"/>
+    <many-to-one name="batch" ref="com.axelor.apps.base.db.Batch" title="Batch"/>
+
+    <unique-constraint columns="partner,periodLabel"/>
+  </entity>
+
+</domain-models>

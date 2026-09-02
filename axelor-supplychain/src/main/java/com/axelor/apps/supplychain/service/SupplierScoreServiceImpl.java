@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -25,6 +26,8 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.db.SupplierScoreHistory;
+import com.axelor.apps.supplychain.db.repo.SupplierScoreHistoryRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.studio.db.AppSupplychain;
@@ -55,15 +58,18 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
           + "AND sm.realDate BETWEEN :fromDate AND :toDate";
 
   protected final PartnerRepository partnerRepository;
+  protected final SupplierScoreHistoryRepository supplierScoreHistoryRepository;
   protected final AppSupplychainService appSupplychainService;
   protected final AppBaseService appBaseService;
 
   @Inject
   public SupplierScoreServiceImpl(
       PartnerRepository partnerRepository,
+      SupplierScoreHistoryRepository supplierScoreHistoryRepository,
       AppSupplychainService appSupplychainService,
       AppBaseService appBaseService) {
     this.partnerRepository = partnerRepository;
+    this.supplierScoreHistoryRepository = supplierScoreHistoryRepository;
     this.appSupplychainService = appSupplychainService;
     this.appBaseService = appBaseService;
   }
@@ -94,6 +100,29 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
   public BigDecimal computeGlobalScore(Partner partner) {
     return SupplierScoreTool.computeWeightedAverage(
         getWeightedRates(partner, appSupplychainService.getAppSupplychain()));
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public SupplierScoreHistory createSnapshot(Partner partner, LocalDate snapshotDate, Batch batch) {
+    partner = partnerRepository.find(partner.getId());
+    SupplierScoreHistory supplierScoreHistory = new SupplierScoreHistory();
+    supplierScoreHistory.setPartner(partner);
+    supplierScoreHistory.setSnapshotDate(snapshotDate);
+    supplierScoreHistory.setPeriodLabel(SupplierScoreTool.computePeriodLabel(snapshotDate));
+    supplierScoreHistory.setToDate(snapshotDate);
+    supplierScoreHistory.setFromDate(
+        snapshotDate.minusMonths(
+            appSupplychainService.getAppSupplychain().getSupplierScoreRollingMonths()));
+    supplierScoreHistory.setBatch(batch);
+    fillSnapshot(supplierScoreHistory, partner);
+    return supplierScoreHistoryRepository.save(supplierScoreHistory);
+  }
+
+  protected void fillSnapshot(SupplierScoreHistory supplierScoreHistory, Partner partner) {
+    supplierScoreHistory.setSupplierScore(partner.getSupplierScore());
+    supplierScoreHistory.setSupplierOtdRate(partner.getSupplierOtdRate());
+    supplierScoreHistory.setSupplierConformityRate(partner.getSupplierConformityRate());
   }
 
   protected boolean isSupplierScoreEnabled() {

@@ -76,6 +76,12 @@ class TestSupplierScoreTool {
   }
 
   @Test
+  void testComputePeriodLabel() {
+    Assertions.assertEquals(
+        "2026-09", SupplierScoreTool.computePeriodLabel(LocalDate.of(2026, 9, 2)));
+  }
+
+  @Test
   void testComputeWeightedAverageAllPresent() {
     List<Pair<BigDecimal, BigDecimal>> weightedValues =
         List.of(
