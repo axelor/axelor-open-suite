@@ -26,11 +26,15 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.service.ContractLinePackService;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractVersionService;
+import com.axelor.apps.contract.service.app.AppContractService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
+import java.util.List;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -73,13 +77,27 @@ public class ContractRepository extends AbstractContractRepository {
             contractLineService.computeTotal(contractLine, contract);
           }
         }
+        computePackTotal(currentContractVersion.getContractLineList());
         contractVersionService.computeTotals(contract.getCurrentContractVersion());
       }
+      computePackTotal(contract.getAdditionalBenefitContractLineList());
 
       return super.save(contract);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
+    }
+  }
+
+  protected void computePackTotal(List<ContractLine> contractLineList) {
+    if (CollectionUtils.isEmpty(contractLineList)) {
+      return;
+    }
+    ContractLinePackService contractLinePackService = Beans.get(ContractLinePackService.class);
+    if (Beans.get(AppContractService.class).getAppContract().getIsPackManagement()) {
+      contractLinePackService.computePackTotal(contractLineList);
+    } else {
+      contractLinePackService.resetPackTotal(contractLineList);
     }
   }
 

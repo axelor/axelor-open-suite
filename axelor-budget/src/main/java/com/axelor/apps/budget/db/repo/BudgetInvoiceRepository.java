@@ -24,12 +24,12 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
-import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
+import com.axelor.apps.contract.db.repo.InvoiceContractRepository;
 import com.axelor.inject.Beans;
 import jakarta.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
-public class BudgetInvoiceRepository extends InvoiceSupplychainRepository {
+public class BudgetInvoiceRepository extends InvoiceContractRepository {
 
   @Override
   public Invoice copy(Invoice entity, boolean deep) {
