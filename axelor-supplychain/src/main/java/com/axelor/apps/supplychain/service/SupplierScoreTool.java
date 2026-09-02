@@ -60,6 +60,26 @@ public class SupplierScoreTool {
         && !lastReceiptDate.isAfter(estimatedReceiptDate);
   }
 
+  /**
+   * Convert the number of open quality improvements per reception into a rate: 100 when the
+   * supplier has no open quality improvement, 0 when there is at least one per reception.
+   *
+   * @return the rate rounded to {@link #RATE_SCALE}, or null when there is no reception.
+   */
+  public static BigDecimal computeQiRate(long openQiCount, long receptionCount) {
+    if (receptionCount <= 0) {
+      return null;
+    }
+    BigDecimal openQiPerReception =
+        BigDecimal.valueOf(openQiCount)
+            .divide(BigDecimal.valueOf(receptionCount), 10, RoundingMode.HALF_UP)
+            .min(BigDecimal.ONE);
+    return BigDecimal.ONE
+        .subtract(openQiPerReception)
+        .multiply(HUNDRED)
+        .setScale(RATE_SCALE, RoundingMode.HALF_UP);
+  }
+
   /** Label identifying the month of a snapshot, for instance {@code 2026-09}. */
   public static String computePeriodLabel(LocalDate snapshotDate) {
     return YearMonth.from(snapshotDate).toString();

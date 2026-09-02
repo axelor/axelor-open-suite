@@ -76,6 +76,27 @@ class TestSupplierScoreTool {
   }
 
   @Test
+  void testComputeQiRateNoReception() {
+    Assertions.assertNull(SupplierScoreTool.computeQiRate(2, 0));
+  }
+
+  @Test
+  void testComputeQiRateNoOpenQi() {
+    Assertions.assertEquals(new BigDecimal("100.00"), SupplierScoreTool.computeQiRate(0, 8));
+  }
+
+  @Test
+  void testComputeQiRateOneOpenQiPerReceptionOrMore() {
+    Assertions.assertEquals(new BigDecimal("0.00"), SupplierScoreTool.computeQiRate(8, 8));
+    Assertions.assertEquals(new BigDecimal("0.00"), SupplierScoreTool.computeQiRate(12, 8));
+  }
+
+  @Test
+  void testComputeQiRatePartial() {
+    Assertions.assertEquals(new BigDecimal("75.00"), SupplierScoreTool.computeQiRate(1, 4));
+  }
+
+  @Test
   void testComputePeriodLabel() {
     Assertions.assertEquals(
         "2026-09", SupplierScoreTool.computePeriodLabel(LocalDate.of(2026, 9, 2)));

@@ -30,6 +30,7 @@ import com.axelor.apps.quality.db.QIIdentification;
 import com.axelor.apps.quality.db.QIResolution;
 import com.axelor.apps.quality.db.QualityImprovement;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
+import com.axelor.apps.supplychain.service.SupplierScoreService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
@@ -40,12 +41,16 @@ public class QualityImprovementManagementRepository extends QualityImprovementRe
 
   protected SequenceService sequenceService;
   protected AppBaseService appBaseService;
+  protected SupplierScoreService supplierScoreService;
 
   @Inject
   public QualityImprovementManagementRepository(
-      SequenceService sequenceService, AppBaseService appBaseService) {
+      SequenceService sequenceService,
+      AppBaseService appBaseService,
+      SupplierScoreService supplierScoreService) {
     this.sequenceService = sequenceService;
     this.appBaseService = appBaseService;
+    this.supplierScoreService = supplierScoreService;
   }
 
   @Override
@@ -75,11 +80,21 @@ public class QualityImprovementManagementRepository extends QualityImprovementRe
       getOrCreateQIResolution(qualityImprovement);
       getOrCreateQIAnalysis(qualityImprovement);
 
-      return super.save(qualityImprovement);
+      qualityImprovement = super.save(qualityImprovement);
+      updateSupplierScore(qualityImprovement);
+      return qualityImprovement;
 
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
+    }
+  }
+
+  /** Open quality improvements feed the supplier score, so every save recomputes it. */
+  protected void updateSupplierScore(QualityImprovement qualityImprovement) {
+    QIIdentification qiIdentification = qualityImprovement.getQiIdentification();
+    if (qiIdentification != null && qiIdentification.getSupplierPartner() != null) {
+      supplierScoreService.computeAndSave(qiIdentification.getSupplierPartner());
     }
   }
 
