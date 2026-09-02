@@ -21,7 +21,9 @@ package com.axelor.apps.quality.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.quality.db.*;
 import com.axelor.apps.quality.db.repo.ControlEntryPlanLineRepository;
+import com.axelor.apps.quality.db.repo.ControlTypeRepository;
 import com.axelor.apps.quality.service.ControlEntryPlanLineService;
+import com.axelor.apps.quality.service.ControlTypeFieldValueService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -43,5 +45,25 @@ public class ControlEntryPlanLineController {
               Beans.get(ControlEntryPlanLineRepository.class).find(controlEntryPlanLine.getId()));
       response.setReload(true);
     }
+  }
+
+  /**
+   * Rebuilds the reference values of a control plan line when its control type changes. Works on an
+   * unsaved line: the generated values are pushed back to the form.
+   */
+  public void syncPlanValues(ActionRequest request, ActionResponse response) {
+
+    ControlEntryPlanLine controlEntryPlanLine =
+        request.getContext().asType(ControlEntryPlanLine.class);
+
+    ControlType controlType = controlEntryPlanLine.getControlType();
+    if (controlType != null && controlType.getId() != null) {
+      controlType = Beans.get(ControlTypeRepository.class).find(controlType.getId());
+    }
+
+    response.setValue(
+        "planValueList",
+        Beans.get(ControlTypeFieldValueService.class)
+            .syncPlanValues(controlType, controlEntryPlanLine.getPlanValueList()));
   }
 }

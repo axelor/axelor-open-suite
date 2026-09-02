@@ -11,12 +11,58 @@
 
   <form name="control-type-form" title="Control type"
     model="com.axelor.apps.quality.db.ControlType">
-    <panel name="mainPanel">
-      <field name="name"/>
-      <field name="conformityFormula" colSpan="12" widget="CodeEditor" x-code-syntax="groovy"/>
+    <panel name="mainPanel" colSpan="12">
+      <field name="name" colSpan="12"/>
     </panel>
 
+    <panel-related name="controlTypeFieldPanel" field="controlTypeFieldSet"
+      colSpan="12" grid-view="control-type-field-grid" form-view="control-type-field-form"/>
 
+    <panel name="descriptionPanel" showTitle="false" colSpan="12">
+      <field name="formulaDescription" colSpan="12"/>
+    </panel>
+
+    <panel-tabs name="formulaTabsPanel">
+      <panel name="formulaPanel" title="Formula">
+        <field name="conformityFormula" showTitle="false" colSpan="12" widget="CodeEditor"
+          x-code-syntax="groovy"/>
+      </panel>
+
+      <panel name="formulaHelpPanel" title="Formula help">
+        <field name="$formulaHelpViewer" showTitle="false" readonly="true" colSpan="12">
+          <viewer><![CDATA[
+			<>
+				<p>
+					<span>{_t('A control type describes what is controlled and how. Its fields are split by usage: a field of usage "control plan" carries a reference value, entered once on the control plan line, and a field of usage "control entry" carries a value measured on each sample of the control entry. The formula compares the two and decides whether the sample is compliant.')}</span>
+				</p>
+				<p>
+					<span>{_t('It is evaluated when the inspector clicks "Check conformity" and must return')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>true</Box> <span>{_t('(compliant) or')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>false</Box> <span>{_t('(not compliant)')}</span>.
+				</p>
+				<h4><span>{_t('Access to the values')}</span></h4>
+				<p>
+					<span>{_t('Each field is available through its code, prefixed by its usage')}</span>:
+					<ul>
+						<li> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>plan.code</Box> <span>{_t('the reference value of the control plan line')}</span> </li>
+						<li> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>entry.code</Box> <span>{_t('the value measured on the sample')}</span> </li>
+					</ul>
+					<span>{_t('A decimal field gives a number, a text field a character string, a boolean field true or false, and a selection field the selected value, whose label is read with')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>.name</Box>.
+				</p>
+				<h4><span>{_t('Examples')}</span></h4>
+				<p>
+					<ul>
+						<li> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>return plan.acceptedColor == entry.currentColor;</Box> </li>
+						<li> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>return (entry.mesuredDim &gt;= plan.acceptedDimension - plan.minTolerance) &amp;&amp; (entry.mesuredDim &lt;= plan.acceptedDimension + plan.maxTolerance);</Box> </li>
+						<li> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>return !plan.isLabelRequired || entry.isLabelPresent;</Box> </li>
+					</ul>
+				</p>
+				<p>
+					<span>{_t('A field flagged as required blocks the conformity check while its value is empty.')}</span>
+				</p>
+			</>
+		  ]]></viewer>
+        </field>
+      </panel>
+    </panel-tabs>
   </form>
 
 </object-views>

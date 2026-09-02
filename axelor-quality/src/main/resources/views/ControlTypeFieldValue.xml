@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <grid name="control-type-field-value-grid" title="Values"
+    model="com.axelor.apps.quality.db.ControlTypeFieldValue" canNew="false" canDelete="false"
+    orderBy="controlTypeField.sequence,controlTypeField.name">
+    <field name="controlTypeField" readonly="true" width="300"/>
+    <field name="displayValue"/>
+  </grid>
+
+  <grid name="control-type-field-value-readonly-grid" title="Targets"
+    model="com.axelor.apps.quality.db.ControlTypeFieldValue" canNew="false" canEdit="false"
+    canDelete="false" edit-icon="false" orderBy="controlTypeField.sequence,controlTypeField.name">
+    <field name="controlTypeField"/>
+    <field name="displayValue"/>
+  </grid>
+
+  <form name="control-type-field-value-form" title="Value"
+    model="com.axelor.apps.quality.db.ControlTypeFieldValue">
+    <panel name="mainPanel" colSpan="12">
+      <field name="controlTypeField" colSpan="6" readonly="true"/>
+      <field name="controlTypeField.typeSelect" hidden="true"/>
+
+      <panel name="valuePanel" stacked="true" showTitle="false" colSpan="6" itemSpan="12">
+        <field name="decimalValue" title="Value" x-scale="3"
+          showIf="controlTypeField.typeSelect == 1"/>
+        <field name="textValue" title="Value" showIf="controlTypeField.typeSelect == 2"/>
+        <field name="booleanValue" title="Value" showIf="controlTypeField.typeSelect == 3"/>
+        <field name="selectionValue" title="Value" canNew="false"
+          showIf="controlTypeField.typeSelect == 4"
+          onSelect="action-quality-control-type-field-value-attrs-selection-domain"/>
+      </panel>
+
+    </panel>
+  </form>
+
+  <action-attrs name="action-quality-control-type-field-value-attrs-selection-domain">
+    <attribute for="selectionValue" name="domain"
+      expr="eval: &quot;self.id IN (${controlTypeField?.valueSet?.collect{it.id}?.join(',') ?: 0})&quot;"/>
+  </action-attrs>
+
+  <action-view name="action-quality-control-type-field-value-view-plan-values"
+    title="Targets" model="com.axelor.apps.quality.db.ControlTypeFieldValue">
+    <view type="grid" name="control-type-field-value-readonly-grid"/>
+    <view type="form" name="control-type-field-value-form"/>
+    <domain>self.planLine.id = :_controlPlanLineId</domain>
+    <context name="_controlPlanLineId" expr="eval: controlPlanLine?.id ?: 0"/>
+  </action-view>
+
+</object-views>

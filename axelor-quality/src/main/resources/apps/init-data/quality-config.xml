@@ -25,26 +25,32 @@
       eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
 
-  <input file="quality_controlType.csv" separator=";"
-    type="com.axelor.apps.quality.db.ControlType" search="self.importId = :importId"/>
+  <input file="quality_characteristicProperty.csv" separator=";"
+    type="com.axelor.apps.quality.db.CharacteristicProperty" search="self.importId = :importId"/>
 
-  <input file="quality_controlEntryPlanLineMetaJsonField.csv" separator=";"
-    type="com.axelor.meta.db.MetaJsonField" search="self.importId = :importId">
+  <input file="quality_controlTypeField.csv" separator=";"
+    type="com.axelor.apps.quality.db.ControlTypeField" search="self.importId = :importId">
     <bind to="name" column="name"
       check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
-    <bind to="type" column="type"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaJsonField', 'type', type)"
-      check-message="Invalid type"/>
-    <bind to="model" column="model"
-      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(model)"
-      check-message="Model must not be null"/>
-    <bind to="modelField" column="modelField"
-      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(modelField)"
-      check-message="Model field must not be null"/>
-    <bind to="trackEvent" column="trackEvent"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaJsonField', 'trackEvent', trackEvent)"
-      check-message="Invalid trackEvent"/>
+    <bind to="code" column="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind to="typeSelect" column="typeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.quality.db.ControlTypeField', 'typeSelect', typeSelect)"
+      check-message="Invalid typeSelect"/>
+    <bind to="usageSelect" column="usageSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.quality.db.ControlTypeField', 'usageSelect', usageSelect)"
+      check-message="Invalid usageSelect"/>
+    <bind to="valueSet" column="valueSet" search="self.importId in :valueSet"
+      eval="valueSet.split('\\|') as List" if="!valueSet.empty"/>
+  </input>
+
+  <input file="quality_controlType.csv" separator=";"
+    type="com.axelor.apps.quality.db.ControlType" search="self.importId = :importId">
+    <bind to="controlTypeFieldSet" column="controlTypeFieldSet"
+      search="self.importId in :controlTypeFieldSet" eval="controlTypeFieldSet.split('\\|') as List"
+      if="!controlTypeFieldSet.empty"/>
   </input>
 
   <input file="meta_metaTranslation.csv" separator=";"

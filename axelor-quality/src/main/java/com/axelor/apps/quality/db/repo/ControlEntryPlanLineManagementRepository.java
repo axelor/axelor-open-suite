@@ -19,15 +19,36 @@
 package com.axelor.apps.quality.db.repo;
 
 import com.axelor.apps.quality.db.ControlEntryPlanLine;
+import com.axelor.apps.quality.service.ControlTypeFieldValueService;
+import jakarta.inject.Inject;
 
 public class ControlEntryPlanLineManagementRepository extends ControlEntryPlanLineRepository {
 
+  protected ControlTypeFieldValueService controlTypeFieldValueService;
+
+  @Inject
+  public ControlEntryPlanLineManagementRepository(
+      ControlTypeFieldValueService controlTypeFieldValueService) {
+    this.controlTypeFieldValueService = controlTypeFieldValueService;
+  }
+
+  /**
+   * The measured values are never carried over. The reference values are duplicated on a deep copy
+   * only, so that duplicating a control plan keeps its configuration without making the creation of
+   * the control entry samples, which copies each line shallowly, build values it would throw away.
+   */
   @Override
   public ControlEntryPlanLine copy(ControlEntryPlanLine entity, boolean deep) {
     ControlEntryPlanLine copy = super.copy(entity, deep);
 
-    copy.setEntryAttrs(null);
-    copy.setPlanAttrs(null);
+    copy.clearEntryValueList();
+    copy.clearPlanValueList();
+
+    if (deep && entity.getPlanValueList() != null) {
+      entity.getPlanValueList().stream()
+          .map(controlTypeFieldValueService::copyValue)
+          .forEach(copy::addPlanValueListItem);
+    }
 
     return copy;
   }

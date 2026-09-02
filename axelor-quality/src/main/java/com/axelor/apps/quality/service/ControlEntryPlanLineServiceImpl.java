@@ -22,33 +22,44 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.quality.db.ControlEntryPlanLine;
 import com.axelor.apps.quality.db.ControlType;
+import com.axelor.apps.quality.db.ControlTypeFieldValue;
 import com.axelor.apps.quality.db.repo.ControlEntryPlanLineRepository;
 import com.axelor.apps.quality.db.repo.ControlEntrySampleRepository;
+import com.axelor.apps.quality.db.repo.ControlTypeFieldValueRepository;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
-import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.script.SimpleBindings;
 
 public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineService {
 
   protected ControlEntryPlanLineRepository controlEntryPlanLineRepository;
   protected ControlEntrySampleRepository controlEntrySampleRepository;
   protected ControlEntrySampleUpdateService controlEntrySampleUpdateService;
+  protected ControlTypeFieldValueService controlTypeFieldValueService;
+  protected ControlTypeFieldValueRepository controlTypeFieldValueRepository;
 
   @Inject
   public ControlEntryPlanLineServiceImpl(
       ControlEntryPlanLineRepository controlEntryPlanLineRepository,
       ControlEntrySampleRepository controlEntrySampleRepository,
-      ControlEntrySampleUpdateService controlEntrySampleUpdateService) {
+      ControlEntrySampleUpdateService controlEntrySampleUpdateService,
+      ControlTypeFieldValueService controlTypeFieldValueService,
+      ControlTypeFieldValueRepository controlTypeFieldValueRepository) {
     this.controlEntryPlanLineRepository = controlEntryPlanLineRepository;
     this.controlEntrySampleRepository = controlEntrySampleRepository;
     this.controlEntrySampleUpdateService = controlEntrySampleUpdateService;
+    this.controlTypeFieldValueService = controlTypeFieldValueService;
+    this.controlTypeFieldValueRepository = controlTypeFieldValueRepository;
   }
 
   @Override
@@ -66,18 +77,17 @@ public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineServ
   protected void eval(ControlEntryPlanLine controlEntryPlanLine) throws AxelorException {
     String formula = this.getFormula(controlEntryPlanLine);
 
-    Context scriptContext =
-        new Context(Mapper.toMap(controlEntryPlanLine), ControlEntryPlanLine.class);
-    ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
+    ScriptHelper scriptHelper = new GroovyScriptHelper(getBindings(controlEntryPlanLine));
 
     Object result;
 
     try {
       result = scriptHelper.eval(formula);
-    } catch (IllegalArgumentException e) {
+    } catch (Exception e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(QualityExceptionMessage.EVAL_FORMULA_NULL_FIELDS));
+          I18n.get(QualityExceptionMessage.EVAL_FORMULA_ERROR),
+          e.getMessage());
     }
 
     if (!(result instanceof Boolean)) {
@@ -93,6 +103,48 @@ public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineServ
     } else {
       controlEntryPlanLine.setResultSelect(ControlEntryPlanLineRepository.RESULT_NOT_COMPLIANT);
     }
+  }
+
+  /**
+   * Bindings of the conformity formula: the reference values of the control plan line under {@code
+   * plan}, the values measured on the sample line under {@code entry}, both indexed by field code.
+   * Reference values are read from the control plan line, they are not duplicated on entry lines.
+   */
+  protected SimpleBindings getBindings(ControlEntryPlanLine controlEntryPlanLine)
+      throws AxelorException {
+
+    ControlEntryPlanLine controlPlanLine = controlEntryPlanLine.getControlPlanLine();
+    List<ControlTypeFieldValue> values = fetchValues(controlPlanLine, controlEntryPlanLine);
+
+    List<ControlTypeFieldValue> planValues =
+        values.stream().filter(value -> value.getPlanLine() != null).collect(Collectors.toList());
+    List<ControlTypeFieldValue> entryValues =
+        values.stream().filter(value -> value.getEntryLine() != null).collect(Collectors.toList());
+
+    controlTypeFieldValueService.checkRequiredValues(
+        Optional.ofNullable(controlPlanLine)
+            .map(ControlEntryPlanLine::getControlType)
+            .orElseGet(controlEntryPlanLine::getControlType),
+        planValues,
+        entryValues);
+
+    Map<String, Object> bindings = new HashMap<>();
+    bindings.put("plan", controlTypeFieldValueService.toScriptMap(planValues));
+    bindings.put("entry", controlTypeFieldValueService.toScriptMap(entryValues));
+    bindings.put("line", controlEntryPlanLine);
+
+    return new SimpleBindings(bindings);
+  }
+
+  /** Reference and measured values of the couple (control plan line, entry line), in one query. */
+  protected List<ControlTypeFieldValue> fetchValues(
+      ControlEntryPlanLine controlPlanLine, ControlEntryPlanLine entryLine) {
+    return controlTypeFieldValueRepository
+        .all()
+        .filter("self.planLine = :planLine OR self.entryLine = :entryLine")
+        .bind("planLine", controlPlanLine)
+        .bind("entryLine", entryLine)
+        .fetch();
   }
 
   @Override
@@ -124,9 +176,10 @@ public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineServ
     res.setControlPlanLine(controlEntryPlanLine);
     res.setControlPlan(null);
     res.setResultSelect(ControlEntryPlanLineRepository.RESULT_NOT_CONTROLLED);
-    res.setPlanAttrs(controlEntryPlanLine.getPlanAttrs());
     res.setTypeSelect(ControlEntryPlanLineRepository.TYPE_ENTRY_SAMPLE_LINE);
-    res.setEntryAttrs(controlEntryPlanLine.getEntryAttrs());
+
+    // reference values are read from the control plan line, only the measured values are created
+    controlTypeFieldValueService.createEntryValues(res, controlEntryPlanLine.getControlType());
 
     return res;
   }

@@ -1,3 +1,5 @@
-"importId";"name";"conformityFormula"
-"1";"Color";"return $planAttrs.acceptedColor == $entryAttrs.currentColor;"
-"2";"Dimension";"return ($entryAttrs.mesuredDim >= $planAttrs.acceptedDimension - $planAttrs.minTolerance) && ($entryAttrs.mesuredDim <= $planAttrs.acceptedDimension + $planAttrs.maxTolerance) "
+"importId";"name";"conformityFormula";"formulaDescription";"controlTypeFieldSet"
+"1";"Color";"return plan.acceptedColor == entry.currentColor;";"The color observed on the sample must be exactly the color accepted on the control plan line.";"1|2"
+"2";"Dimension";"return (entry.mesuredDim >= plan.acceptedDimension - plan.minTolerance) && (entry.mesuredDim <= plan.acceptedDimension + plan.maxTolerance);";"The dimension measured on the sample must stay within the nominal dimension of the control plan line, minus the min tolerance and plus the max tolerance.";"3|4|5|6"
+"3";"Label presence";"return !plan.isLabelRequired || entry.isLabelPresent;";"When the control plan line requires a label, the sample is compliant only if the label is present. When no label is required, the sample is always compliant.";"7|8"
+"4";"External condition";"return plan.acceptedExternalCondition == entry.observedExternalCondition;";"The external condition observed on the sample must be the one accepted on the control plan line, among: new, good condition, scratched, damaged.";"9|10"

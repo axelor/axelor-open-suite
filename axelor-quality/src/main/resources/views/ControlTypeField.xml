@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <grid name="control-type-field-grid" title="Control type fields"
+    model="com.axelor.apps.quality.db.ControlTypeField" orderBy="usageSelect,sequence,name">
+    <field name="sequence"/>
+    <field name="name"/>
+    <field name="code"/>
+    <field name="typeSelect"/>
+    <field name="usageSelect"/>
+    <field name="isRequired"/>
+  </grid>
+
+  <form name="control-type-field-form" title="Control type field"
+    model="com.axelor.apps.quality.db.ControlTypeField"
+    onLoad="action-quality-control-type-field-method-set-used-fields-readonly">
+    <panel name="mainPanel" colSpan="12">
+      <field name="$usedFieldMessage" showTitle="false" readonly="true" colSpan="12"
+        hidden="true">
+        <viewer><![CDATA[
+			<>
+				<Alert variant="warning" mb={0} p={2}>
+					<span>{_t('This field is already used by control plan or control entry lines: its type and its usage can no longer be changed.')}</span>
+				</Alert>
+			</>
+		  ]]></viewer>
+      </field>
+      <field name="name" colSpan="6"/>
+      <field name="code" colSpan="6" pattern="^[A-Za-z_]{1}[A-Za-z0-9_]*"
+        help="Technical key used in the conformity formula of the control type, as plan.code or entry.code."/>
+      <field name="typeSelect" colSpan="6"
+        onChange="action-quality-control-type-field-record-reset-type-values"/>
+      <field name="usageSelect" colSpan="6"/>
+      <field name="sequence" colSpan="6"/>
+      <field name="isRequired" colSpan="6"/>
+      <field name="valueSet" colSpan="12" widget="Tags" showIf="typeSelect == 4"/>
+    </panel>
+  </form>
+
+  <action-method
+    name="action-quality-control-type-field-method-set-used-fields-readonly">
+    <call class="com.axelor.apps.quality.web.ControlTypeFieldController"
+      method="setUsedFieldsReadonly"/>
+  </action-method>
+
+  <action-record name="action-quality-control-type-field-record-reset-type-values"
+    model="com.axelor.apps.quality.db.ControlTypeField">
+    <field name="valueSet" expr="eval: []" if="typeSelect != 4"/>
+  </action-record>
+
+</object-views>
