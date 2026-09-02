@@ -100,14 +100,7 @@ public class BatchSupplierScoreSnapshot extends BatchStrategy {
         findBatch();
       }
     } catch (AxelorException e) {
-      TraceBackService.trace(
-          new AxelorException(
-              e,
-              e.getCategory(),
-              I18n.get(SupplychainExceptionMessage.BATCH_SUPPLIER_SCORE_SNAPSHOT_1),
-              batch.getId()),
-          ExceptionOriginRepository.SUPPLIER_SCORE_SNAPSHOT,
-          batch.getId());
+      TraceBackService.trace(e, ExceptionOriginRepository.SUPPLIER_SCORE_SNAPSHOT, batch.getId());
       incrementAnomaly();
     }
   }
