@@ -15,12 +15,15 @@
       title="Supplier shipping carriage paid configuration" mappedBy="supplier" copy="false"/>
 
     <decimal name="supplierScore" title="Supplier score" min="0" max="100"
-      help="Weighted average of the supplier indicators computed over the rolling period configured in the Supply Chain app."/>
+      help="Weighted average of the supplier indicators computed over the rolling period configured in the Supply Chain app."
+      nullable="true"/>
     <decimal name="supplierOtdRate" title="On-time delivery rate (%)" min="0" max="100"
-      help="Percentage of purchase order lines fully received on or before their estimated receipt date, over the rolling period."/>
+      help="Percentage of purchase order lines fully received on or before their estimated receipt date, over the rolling period."
+      nullable="true"/>
     <decimal name="supplierConformityRate" title="Reception conformity rate (%)" min="0"
       max="100"
-      help="Percentage of receptions without any non-compliant line, over the rolling period."/>
+      help="Percentage of receptions without any non-compliant line, over the rolling period."
+      nullable="true"/>
     <date name="supplierScoreComputedOn" title="Supplier score computed on"/>
     <one-to-many name="supplierScoreHistoryList"
       ref="com.axelor.apps.supplychain.db.SupplierScoreHistory" title="Supplier score history"
