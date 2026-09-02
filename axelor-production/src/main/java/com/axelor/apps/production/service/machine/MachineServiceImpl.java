@@ -21,6 +21,7 @@ package com.axelor.apps.production.service.machine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.EventsPlanning;
+import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.dayplanning.DayPlanningService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
@@ -35,6 +36,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -56,6 +58,23 @@ public class MachineServiceImpl implements MachineService {
     this.operationOrderRepository = operationOrderRepository;
     this.weeklyPlanningService = weeklyPlanningService;
     this.dayPlanningService = dayPlanningService;
+  }
+
+  /**
+   * DayPlanningService treats a null DayPlanning as an unrestricted, fully open day. For machine
+   * availability that is the wrong default: a day missing from the machine's WeeklyPlanning (e.g.
+   * no Saturday/Sunday entry at all) must be treated as the machine being unavailable that day, not
+   * available around the clock. This returns a transient, non-persisted closed DayPlanning (all
+   * periods null) in that case, still linked to the weeklyPlanning so day-to-day jumps keep
+   * working.
+   */
+  protected DayPlanning findDayPlanningOrClosed(WeeklyPlanning weeklyPlanning, LocalDate date) {
+    DayPlanning dayPlanning = weeklyPlanningService.findDayPlanning(weeklyPlanning, date);
+    if (dayPlanning == null) {
+      dayPlanning = new DayPlanning();
+      dayPlanning.setWeeklyPlanning(weeklyPlanning);
+    }
+    return dayPlanning;
   }
 
   @Override
@@ -131,8 +150,7 @@ public class MachineServiceImpl implements MachineService {
     if (machine.getWeeklyPlanning() != null) {
       // Planning on date at startDateT
       DayPlanning dayPlanning =
-          weeklyPlanningService.findDayPlanning(
-              machine.getWeeklyPlanning(), startDateT.toLocalDate());
+          findDayPlanningOrClosed(machine.getWeeklyPlanning(), startDateT.toLocalDate());
       Optional<LocalDateTime> allowedStartDateTPeriodAt =
           dayPlanningService.getAllowedStartDateTPeriodAt(dayPlanning, startDateT);
 
@@ -146,9 +164,16 @@ public class MachineServiceImpl implements MachineService {
       plannedStartDateT = allowedStartDateTPeriodAt.get();
       plannedEndDateT = plannedStartDateT.plusSeconds(initialDuration);
 
-      // Must end in a existing period.
+      // Must end in a existing period. The end date may have jumped onto a
+      // different calendar day than startDateT, so its DayPlanning must be
+      // looked up again instead of reusing the one resolved for startDateT.
       plannedEndDateT =
-          dayPlanningService.getAllowedStartDateTPeriodAt(dayPlanning, plannedEndDateT).get();
+          dayPlanningService
+              .getAllowedStartDateTPeriodAt(
+                  findDayPlanningOrClosed(
+                      machine.getWeeklyPlanning(), plannedEndDateT.toLocalDate()),
+                  plannedEndDateT)
+              .get();
       // Void duration is time where machine is not used (not in any period)
       long remainingTime = 0l;
       int counter = 0;
@@ -167,9 +192,14 @@ public class MachineServiceImpl implements MachineService {
         // So the time 'spent' must be reported
         plannedEndDateT = plannedEndDateT.plusSeconds(remainingTime);
 
-        // And of course it must end in a existing period.
+        // And of course it must end in a existing period, resolved for its own day.
         plannedEndDateT =
-            dayPlanningService.getAllowedStartDateTPeriodAt(dayPlanning, plannedEndDateT).get();
+            dayPlanningService
+                .getAllowedStartDateTPeriodAt(
+                    findDayPlanningOrClosed(
+                        machine.getWeeklyPlanning(), plannedEndDateT.toLocalDate()),
+                    plannedEndDateT)
+                .get();
 
         counter++;
 
@@ -337,10 +367,9 @@ public class MachineServiceImpl implements MachineService {
     LocalDateTime plannedEndDateT = null;
 
     if (machine.getWeeklyPlanning() != null) {
-      // Planning on date at startDateT
+      // Planning on date at endDateT
       DayPlanning dayPlanning =
-          weeklyPlanningService.findDayPlanning(
-              machine.getWeeklyPlanning(), startDateT.toLocalDate());
+          findDayPlanningOrClosed(machine.getWeeklyPlanning(), endDateT.toLocalDate());
       Optional<LocalDateTime> allowedEndDateTPeriodAt =
           dayPlanningService.getAllowedEndDateTPeriodAt(dayPlanning, endDateT);
 
@@ -354,9 +383,16 @@ public class MachineServiceImpl implements MachineService {
       plannedEndDateT = allowedEndDateTPeriodAt.get();
       plannedStartDateT = plannedEndDateT.minusSeconds(initialDuration);
 
-      // Must end in an existing period.
+      // Must start in an existing period. The start date may have jumped onto a
+      // different calendar day than endDateT, so its DayPlanning must be looked
+      // up again instead of reusing the one resolved for endDateT.
       plannedStartDateT =
-          dayPlanningService.getAllowedEndDateTPeriodAt(dayPlanning, plannedStartDateT).get();
+          dayPlanningService
+              .getAllowedEndDateTPeriodAt(
+                  findDayPlanningOrClosed(
+                      machine.getWeeklyPlanning(), plannedStartDateT.toLocalDate()),
+                  plannedStartDateT)
+              .get();
       // Void duration is time when machine is not used (not in any period)
 
       long remainingTime = 0l;
@@ -375,9 +411,14 @@ public class MachineServiceImpl implements MachineService {
         // So the time 'spent' must be reported
         plannedStartDateT = plannedStartDateT.minusSeconds(remainingTime);
 
-        // And of course it must start also in an existing period.
+        // And of course it must start also in an existing period, resolved for its own day.
         plannedStartDateT =
-            dayPlanningService.getAllowedEndDateTPeriodAt(dayPlanning, plannedStartDateT).get();
+            dayPlanningService
+                .getAllowedEndDateTPeriodAt(
+                    findDayPlanningOrClosed(
+                        machine.getWeeklyPlanning(), plannedStartDateT.toLocalDate()),
+                    plannedStartDateT)
+                .get();
 
         counter++;
       } while (remainingTime > 0 && counter < MAX_LOOP_CALL);

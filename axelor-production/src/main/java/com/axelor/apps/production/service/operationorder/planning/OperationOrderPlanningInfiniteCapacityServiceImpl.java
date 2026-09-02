@@ -22,7 +22,10 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.model.machine.MachineTimeSlot;
+import com.axelor.apps.production.service.machine.MachineService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.google.inject.Inject;
 import java.time.LocalDateTime;
@@ -31,12 +34,16 @@ public class OperationOrderPlanningInfiniteCapacityServiceImpl
     implements OperationOrderPlanningInfiniteCapacityService {
   protected OperationOrderService operationOrderService;
   protected WeeklyPlanningService weeklyPlanningService;
+  protected MachineService machineService;
 
   @Inject
   public OperationOrderPlanningInfiniteCapacityServiceImpl(
-      OperationOrderService operationOrderService, WeeklyPlanningService weeklyPlanningService) {
+      OperationOrderService operationOrderService,
+      WeeklyPlanningService weeklyPlanningService,
+      MachineService machineService) {
     this.operationOrderService = operationOrderService;
     this.weeklyPlanningService = weeklyPlanningService;
+    this.machineService = machineService;
   }
 
   protected void searchForNextWorkingDay(
@@ -108,12 +115,23 @@ public class OperationOrderPlanningInfiniteCapacityServiceImpl
       throws AxelorException {
 
     if (operationOrder.getWorkCenter() != null) {
-      return operationOrder
-          .getPlannedStartDateT()
-          .plusSeconds(
-              (int)
-                  operationOrderService.computeEntireCycleDuration(
-                      operationOrder, operationOrder.getManufOrder().getQty()));
+      LocalDateTime plannedStartDateT = operationOrder.getPlannedStartDateT();
+      long duration =
+          operationOrderService.computeEntireCycleDuration(
+              operationOrder, operationOrder.getManufOrder().getQty());
+      Machine machine = operationOrder.getMachine();
+
+      if (machine != null) {
+        MachineTimeSlot freeMachineTimeSlot =
+            machineService.getClosestTimeSlotFrom(
+                machine,
+                plannedStartDateT,
+                plannedStartDateT.plusSeconds(duration),
+                operationOrder);
+        return freeMachineTimeSlot.getEndDateT();
+      }
+
+      return plannedStartDateT.plusSeconds(duration);
     }
 
     return operationOrder.getPlannedStartDateT();
