@@ -1,0 +1,24 @@
+---
+title: "Production: fixed stock moves generated for residual products when partially finishing a manufacturing order, and removed residual products from the products to produce list."
+module: axelor-production
+developer: |
+  Added ManufOrderCreateStockMoveLineService#createNewResidualStockMoveLineList(ManufOrder, BigDecimal)
+  and ManufOrderPlanStockMoveService#createAndPlanResidualStockMove(ManufOrder).
+  Changed CostSheetServiceImpl#computeRealResidualProduct(ManufOrder) to
+  computeRealResidualProduct(ManufOrder, Set<Long>).
+  Added ManufOrderResidualProductService#getResidualProdProductList(ManufOrder): residual products
+  are now derived from the bill of material instead of being stored in
+  ManufOrder#toProduceProdProductList.
+  Run the following query to remove the residual products stored in the products to produce list of
+  manufacturing orders created before this version:
+
+  DELETE FROM production_prod_product pp
+  WHERE pp.to_produce_manuf_order IS NOT NULL
+    AND EXISTS (
+      SELECT 1
+      FROM production_manuf_order mo
+      JOIN production_prod_residual_product prp ON prp.bill_of_material = mo.bill_of_material
+      JOIN base_product p ON p.id = pp.product
+      WHERE mo.id = pp.to_produce_manuf_order
+        AND (prp.product = p.id OR prp.product = p.parent_product)
+    );

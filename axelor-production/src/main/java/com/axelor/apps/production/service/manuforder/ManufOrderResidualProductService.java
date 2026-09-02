@@ -20,9 +20,20 @@ package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
+import java.util.List;
 
 public interface ManufOrderResidualProductService {
   boolean hasResidualProduct(ManufOrder manufOrder);
 
   boolean isResidualProduct(ProdProduct prodProduct, ManufOrder manufOrder);
+
+  /**
+   * Compute the residual products of the given manufacturing order from its bill of material. The
+   * returned prod products are not persisted: they are values derived from the bill of material and
+   * the manufacturing order quantity.
+   *
+   * @param manufOrder a manufacturing order
+   * @return the residual products to produce, empty if there is none
+   */
+  List<ProdProduct> getResidualProdProductList(ManufOrder manufOrder);
 }
