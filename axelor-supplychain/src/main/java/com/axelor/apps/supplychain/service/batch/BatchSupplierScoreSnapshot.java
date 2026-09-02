@@ -33,12 +33,14 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.SupplierScoreService;
 import com.axelor.apps.supplychain.service.SupplierScoreTool;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public class BatchSupplierScoreSnapshot extends BatchStrategy {
 
@@ -79,8 +81,7 @@ public class BatchSupplierScoreSnapshot extends BatchStrategy {
 
       LocalDate snapshotDate = appBaseService.getTodayDate(supplychainBatch.getCompany());
       String periodLabel = SupplierScoreTool.computePeriodLabel(snapshotDate);
-      Query<Partner> partnerQuery =
-          partnerRepository.all().filter("self.isSupplier = true").order("id");
+      Query<Partner> partnerQuery = getSupplierQuery(supplychainBatch);
       List<Partner> partnerList;
       int offset = 0;
 
@@ -109,6 +110,19 @@ public class BatchSupplierScoreSnapshot extends BatchStrategy {
           batch.getId());
       incrementAnomaly();
     }
+  }
+
+  protected Query<Partner> getSupplierQuery(SupplychainBatch supplychainBatch) {
+    Set<Partner> supplierPartnerSet = supplychainBatch.getSupplierPartnerSet();
+    if (ObjectUtils.isEmpty(supplierPartnerSet)) {
+      return partnerRepository.all().filter("self.isSupplier = true").order("id");
+    }
+    List<Long> supplierIds = supplierPartnerSet.stream().map(Partner::getId).toList();
+    return partnerRepository
+        .all()
+        .filter("self.isSupplier = true AND self.id IN (:supplierIds)")
+        .bind("supplierIds", supplierIds)
+        .order("id");
   }
 
   /** A snapshot already saved for the period is never recomputed. */

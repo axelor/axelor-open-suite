@@ -38,6 +38,10 @@
     <many-to-many name="usedStockRulesSet" title="Used stock rules"
       ref="com.axelor.apps.stock.db.StockRules"/>
 
+    <many-to-many name="supplierPartnerSet" title="Suppliers"
+      ref="com.axelor.apps.base.db.Partner"
+      help="Suppliers whose score snapshot is created by the batch. All suppliers are processed when this list is empty."/>
+
     <extra-code><![CDATA[
 
 	   	// ACTION TYPE

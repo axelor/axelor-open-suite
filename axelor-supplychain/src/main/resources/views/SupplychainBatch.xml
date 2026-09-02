@@ -75,8 +75,9 @@
       </panel>
       <panel name="supplierScoreSnapshotPanel" title="Supplier score snapshot"
         showIf="actionSelect == 6">
-        <label name="supplierScoreSnapshotLabel" colSpan="12"
-          title="Recomputes the score of every supplier and saves one snapshot per supplier for the current month. Existing snapshots are never recomputed."/>
+        <field name="supplierPartnerSet" colSpan="12" domain="self.isSupplier = true"
+          canNew="false" canEdit="false" canSelect="true" grid-view="partner-grid"
+          form-view="partner-form"/>
       </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
