@@ -6,7 +6,8 @@
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
   <entity name="SupplierScoreHistory">
-    <decimal name="supplierOpenQiRate" title="Open quality improvement rate (%)"/>
+    <decimal name="supplierOpenQiRate" title="Open quality improvement rate (%)"
+      nullable="true"/>
   </entity>
 
 </domain-models>

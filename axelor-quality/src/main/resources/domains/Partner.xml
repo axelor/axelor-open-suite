@@ -8,7 +8,8 @@
   <entity name="Partner">
     <decimal name="supplierOpenQiRate" title="Open quality improvement rate (%)" min="0"
       max="100"
-      help="100 when the supplier has no open quality improvement over the rolling period, decreasing to 0 when there is at least one open quality improvement per reception."/>
+      help="100 when the supplier has no open quality improvement over the rolling period, decreasing to 0 when there is at least one open quality improvement per reception."
+      nullable="true"/>
   </entity>
 
 </domain-models>
