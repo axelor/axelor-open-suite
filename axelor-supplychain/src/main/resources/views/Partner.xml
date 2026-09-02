@@ -47,6 +47,28 @@
           form-view="customer-shipping-carriage-paid-form" colSpan="12"/>
       </insert>
     </extend>
+
+    <extend target="//spacer[@name='supplierSpacer']">
+      <insert position="after">
+        <panel name="supplierScorePanel" title="Supplier score" colSpan="12"
+          if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageSupplierScore()">
+          <field name="supplierScore" widget="Progress" colSpan="6" readonly="true"/>
+          <field name="supplierScoreComputedOn" colSpan="3" readonly="true"/>
+          <button name="computeSupplierScoreBtn" title="Compute supplier score" colSpan="3"
+            showIf="id" onClick="save,action-partner-method-compute-supplier-score"/>
+          <field name="supplierOtdRate" colSpan="6" x-scale="2" readonly="true"
+            if="__config__.app.getApp('supplychain')?.getAutoComputeSupplierOtdRate()"/>
+          <field name="supplierOtdRate" colSpan="6" x-scale="2"
+            if="!__config__.app.getApp('supplychain')?.getAutoComputeSupplierOtdRate()"
+            onChange="action-partner-method-compute-supplier-score-from-rates"/>
+          <field name="supplierConformityRate" colSpan="6" x-scale="2" readonly="true"
+            if="__config__.app.getApp('supplychain')?.getAutoComputeSupplierConformityRate()"/>
+          <field name="supplierConformityRate" colSpan="6" x-scale="2"
+            if="!__config__.app.getApp('supplychain')?.getAutoComputeSupplierConformityRate()"
+            onChange="action-partner-method-compute-supplier-score-from-rates"/>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <form name="incl-purchases-partner-form" title="Partner"
@@ -92,4 +114,14 @@
     <view type="form" name="purchase-order-form"/>
     <domain>(self.supplierPartner.id = :id)</domain>
   </action-view>
+  <action-method name="action-partner-method-compute-supplier-score">
+    <call class="com.axelor.apps.supplychain.web.SupplierScoreController"
+      method="computeSupplierScore"/>
+  </action-method>
+
+  <action-method name="action-partner-method-compute-supplier-score-from-rates">
+    <call class="com.axelor.apps.supplychain.web.SupplierScoreController"
+      method="computeSupplierScoreFromRates"/>
+  </action-method>
+
 </object-views>
