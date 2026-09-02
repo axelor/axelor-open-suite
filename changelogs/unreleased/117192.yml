@@ -1,0 +1,3 @@
+---
+title: "Analytic move line: fixed the reverse analytic line losing its negative sign when the analytic distribution is recomputed, which doubled the distributed amount."
+module: axelor-account
