@@ -1,3 +1,5 @@
 ---
 title: "Manuf order: fixed manuf order planning to take into account machine's planning too."
 module: axelor-production
+developer: |
+ Added MachineService as parameter of the OperationOrderPlanningInfiniteCapacityServiceImpl's constructor
