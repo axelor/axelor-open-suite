@@ -22,6 +22,8 @@
       help="This configuration enables consumption management on contracts, meaning you can add products or services during the contract that are used in addition to the standard invoicing content, and that you want to invoice at the next invoicing date."/>
     <boolean name="isAdditionalBenefitManagement" title="Additional Benefit Management"
       help="This configuration enables additional benefit management on contracts. These are benefits that can be added to the contract and will be invoiced on a one-time basis and not on a recurring basis."/>
+    <boolean name="isPackManagement" title="Pack management"
+      help="This configuration enables pack management on contract lines. Several lines can be grouped between a 'Start of pack' and an 'End of pack' line, with the option to display the pack sub-total and to hide the unit amounts of the lines composing the pack."/>
 
     <boolean name="isConfigContract" title="Configurable contract"
       help="This configuration is essential, it allows configuring contracts."/>
@@ -33,6 +35,7 @@
       <field name="isInvoicingManagement" on="UPDATE"/>
       <field name="isConsumptionManagement" on="UPDATE"/>
       <field name="isAdditionalBenefitManagement" on="UPDATE"/>
+      <field name="isPackManagement" on="UPDATE"/>
       <field name="isConfigContract" on="UPDATE"/>
     </track>
   </entity>

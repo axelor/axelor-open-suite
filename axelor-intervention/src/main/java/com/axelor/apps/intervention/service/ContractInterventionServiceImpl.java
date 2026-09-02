@@ -29,9 +29,11 @@ import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.ContractInvoicingService;
+import com.axelor.apps.contract.service.ContractLinePackService;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractServiceImpl;
 import com.axelor.apps.contract.service.ContractVersionService;
+import com.axelor.apps.contract.service.app.AppContractService;
 import com.axelor.apps.intervention.db.Equipment;
 import com.axelor.apps.intervention.repo.EquipmentRepository;
 import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
@@ -57,6 +59,8 @@ public class ContractInterventionServiceImpl extends ContractServiceImpl {
       ContractRepository contractRepository,
       PartnerLinkSupplychainService partnerLinkSupplychainService,
       ContractInvoicingService contractInvoicingService,
+      ContractLinePackService contractLinePackService,
+      AppContractService appContractService,
       EquipmentRepository equipmentRepository) {
     super(
         contractLineService,
@@ -69,7 +73,9 @@ public class ContractInterventionServiceImpl extends ContractServiceImpl {
         contractLineRepo,
         contractRepository,
         partnerLinkSupplychainService,
-        contractInvoicingService);
+        contractInvoicingService,
+        contractLinePackService,
+        appContractService);
     this.equipmentRepository = equipmentRepository;
   }
 

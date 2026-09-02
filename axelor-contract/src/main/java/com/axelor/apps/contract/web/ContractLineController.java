@@ -34,9 +34,11 @@ import com.axelor.apps.contract.service.ContractLineViewService;
 import com.axelor.apps.contract.service.ContractYearEndBonusService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.contract.service.record.ContractLineRecordSetService;
+import com.axelor.apps.contract.translation.ITranslation;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -311,12 +313,16 @@ public class ContractLineController {
 
   public void emptyLine(ActionRequest request, ActionResponse response) {
     ContractLine contractLine = request.getContext().asType(ContractLine.class);
-    if (contractLine.getTypeSelect() != ContractLineRepository.TYPE_NORMAL) {
+    int typeSelect = contractLine.getTypeSelect();
+    if (typeSelect != ContractLineRepository.TYPE_NORMAL) {
       Map<String, Object> newContractLine = Mapper.toMap(new ContractLine());
       newContractLine.put("qty", BigDecimal.ZERO);
       newContractLine.put("id", contractLine.getId());
       newContractLine.put("version", contractLine.getVersion());
-      newContractLine.put("typeSelect", contractLine.getTypeSelect());
+      newContractLine.put("typeSelect", typeSelect);
+      if (typeSelect == ContractLineRepository.TYPE_END_OF_PACK) {
+        newContractLine.put("productName", I18n.get(ITranslation.CONTRACT_LINE_END_OF_PACK));
+      }
       response.setValues(newContractLine);
     }
   }
