@@ -42,6 +42,8 @@ import com.axelor.apps.contract.service.ContractInvoicingService;
 import com.axelor.apps.contract.service.ContractInvoicingServiceImpl;
 import com.axelor.apps.contract.service.ContractLineContextToolService;
 import com.axelor.apps.contract.service.ContractLineContextToolServiceImpl;
+import com.axelor.apps.contract.service.ContractLinePackService;
+import com.axelor.apps.contract.service.ContractLinePackServiceImpl;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.contract.service.ContractLineViewService;
@@ -70,6 +72,8 @@ import com.axelor.apps.contract.service.PurchaseOrderInvoiceContractServiceImpl;
 import com.axelor.apps.contract.service.SaleOrderInvoiceContractServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
 import com.axelor.apps.contract.service.WorkflowVentilationContractServiceImpl;
+import com.axelor.apps.contract.service.app.AppContractService;
+import com.axelor.apps.contract.service.app.AppContractServiceImpl;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsServiceImpl;
 import com.axelor.apps.contract.service.pricing.ContractPricingService;
@@ -96,6 +100,8 @@ public class ContractModule extends AxelorModule {
     bind(ContractVersionService.class).to(ContractVersionServiceImpl.class);
     bind(ContractVersionMassUpdateService.class).to(ContractVersionMassUpdateServiceImpl.class);
     bind(ContractLineService.class).to(ContractLineServiceImpl.class);
+    bind(ContractLinePackService.class).to(ContractLinePackServiceImpl.class);
+    bind(AppContractService.class).to(AppContractServiceImpl.class);
     bind(ConsumptionLineService.class).to(ConsumptionLineServiceImpl.class);
     bind(ContractBatchRepository.class).to(ContractBatchContractRepository.class);
     bind(AnalyticMoveLineSupplychainServiceImpl.class)

@@ -26,11 +26,14 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.service.ContractLinePackService;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractVersionService;
+import com.axelor.apps.contract.service.app.AppContractService;
 import com.axelor.i18n.I18n;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
+import java.util.List;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -40,17 +43,23 @@ public class ContractRepository extends AbstractContractRepository {
   protected ContractVersionService contractVersionService;
   protected SequenceService sequenceService;
   protected ContractVersionRepository contractVersionRepository;
+  protected ContractLinePackService contractLinePackService;
+  protected AppContractService appContractService;
 
   @Inject
   public ContractRepository(
       ContractLineService contractLineService,
       ContractVersionService contractVersionService,
       SequenceService sequenceService,
-      ContractVersionRepository contractVersionRepository) {
+      ContractVersionRepository contractVersionRepository,
+      ContractLinePackService contractLinePackService,
+      AppContractService appContractService) {
     this.contractLineService = contractLineService;
     this.contractVersionService = contractVersionService;
     this.sequenceService = sequenceService;
     this.contractVersionRepository = contractVersionRepository;
+    this.contractLinePackService = contractLinePackService;
+    this.appContractService = appContractService;
   }
 
   @Override
@@ -73,13 +82,26 @@ public class ContractRepository extends AbstractContractRepository {
             contractLineService.computeTotal(contractLine, contract);
           }
         }
+        computePackTotal(currentContractVersion.getContractLineList());
         contractVersionService.computeTotals(contract.getCurrentContractVersion());
       }
+      computePackTotal(contract.getAdditionalBenefitContractLineList());
 
       return super.save(contract);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
+    }
+  }
+
+  protected void computePackTotal(List<ContractLine> contractLineList) {
+    if (CollectionUtils.isEmpty(contractLineList)) {
+      return;
+    }
+    if (appContractService.getAppContract().getIsPackManagement()) {
+      contractLinePackService.computePackTotal(contractLineList);
+    } else {
+      contractLinePackService.resetPackTotal(contractLineList);
     }
   }
 

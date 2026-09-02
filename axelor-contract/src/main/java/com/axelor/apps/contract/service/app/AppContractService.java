@@ -16,14 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.contract.translation;
+package com.axelor.apps.contract.service.app;
 
-public interface ITranslation {
+import com.axelor.studio.db.AppContract;
 
-  public static final String CONTRACT_APP_NAME = /*$$(*/ "value:Contract"; /*)*/
+public interface AppContractService {
 
-  public static final String CONTRACT_LINE_END_OF_PACK = /*$$(*/ "ContractLine.endOfPack"; /*)*/
-
-  public static final String CONTRACT_BATCH_EXECUTION_RESULT = /*$$(*/
-      "%d contract(s) treated and %d anomaly(ies) reported !"; /*)*/
+  AppContract getAppContract();
 }

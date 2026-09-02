@@ -252,6 +252,7 @@ public class ContractVersionServiceImpl implements ContractVersionService {
     }
     contractVersion.setTotalInvoicedAmount(
         invoiceLineList.stream()
+            .filter(invoiceLine -> invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
             .filter(
                 invoiceLine ->
                     invoiceLine.getInvoice().getStatusSelect()
