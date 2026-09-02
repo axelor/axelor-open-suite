@@ -42,13 +42,18 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class SupplierScoreServiceImpl implements SupplierScoreService {
 
+  /**
+   * Purchase order lines rated for on-time delivery: lines of the period that are either past their
+   * estimated receipt date or already fully received (an early receipt counts at once).
+   */
   protected static final String PURCHASE_ORDER_LINE_FILTER =
       "po.supplierPartner.id = :partnerId "
           + "AND po.statusSelect IN (:statusList) "
           + "AND pol.isTitleLine = false "
           + "AND pol.product IS NOT NULL "
-          + "AND COALESCE(pol.estimatedReceiptDate, po.estimatedReceiptDate) "
-          + "BETWEEN :fromDate AND :toDate";
+          + "AND COALESCE(pol.estimatedReceiptDate, po.estimatedReceiptDate) >= :fromDate "
+          + "AND (COALESCE(pol.estimatedReceiptDate, po.estimatedReceiptDate) <= :toDate "
+          + "OR pol.receiptState = :receivedState)";
 
   protected static final String RECEPTION_FILTER =
       "sm.partner.id = :partnerId "
@@ -212,7 +217,6 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
                     + "GROUP BY pol.id, COALESCE(pol.estimatedReceiptDate, po.estimatedReceiptDate)",
                 Object[].class);
     bindPurchaseOrderLineFilter(query, partner, fromDate, toDate);
-    query.setParameter("receivedState", PurchaseOrderLineRepository.RECEIPT_STATE_RECEIVED);
     query.setParameter("incomingType", StockMoveRepository.TYPE_INCOMING);
     query.setParameter("realizedStatus", StockMoveRepository.STATUS_REALIZED);
     query.setParameter("normalLineType", StockMoveLineRepository.TYPE_NORMAL);
@@ -249,6 +253,7 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
         List.of(PurchaseOrderRepository.STATUS_VALIDATED, PurchaseOrderRepository.STATUS_FINISHED));
     query.setParameter("fromDate", fromDate);
     query.setParameter("toDate", toDate);
+    query.setParameter("receivedState", PurchaseOrderLineRepository.RECEIPT_STATE_RECEIVED);
   }
 
   protected void bindReceptionFilter(
