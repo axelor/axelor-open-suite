@@ -21,15 +21,24 @@ package com.axelor.apps.budget.db.repo;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
-import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
+import com.axelor.apps.contract.db.repo.InvoiceContractRepository;
+import com.axelor.apps.contract.service.app.AppContractService;
 import com.axelor.inject.Beans;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
-public class BudgetInvoiceRepository extends InvoiceSupplychainRepository {
+public class BudgetInvoiceRepository extends InvoiceContractRepository {
+
+  @Inject
+  public BudgetInvoiceRepository(
+      AppBaseService appBaseService, AppContractService appContractService) {
+    super(appBaseService, appContractService);
+  }
 
   @Override
   public Invoice copy(Invoice entity, boolean deep) {

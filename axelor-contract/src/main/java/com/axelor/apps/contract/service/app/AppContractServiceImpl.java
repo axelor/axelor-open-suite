@@ -16,14 +16,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.contract.translation;
+package com.axelor.apps.contract.service.app;
 
-public interface ITranslation {
+import com.axelor.studio.db.AppContract;
+import com.axelor.studio.db.repo.AppContractRepository;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
-  public static final String CONTRACT_APP_NAME = /*$$(*/ "value:Contract"; /*)*/
+@Singleton
+public class AppContractServiceImpl implements AppContractService {
 
-  public static final String CONTRACT_LINE_END_OF_PACK = /*$$(*/ "ContractLine.endOfPack"; /*)*/
+  protected AppContractRepository appContractRepository;
 
-  public static final String CONTRACT_BATCH_EXECUTION_RESULT = /*$$(*/
-      "%d contract(s) treated and %d anomaly(ies) reported !"; /*)*/
+  @Inject
+  public AppContractServiceImpl(AppContractRepository appContractRepository) {
+    this.appContractRepository = appContractRepository;
+  }
+
+  @Override
+  public AppContract getAppContract() {
+    return appContractRepository.all().cacheable().autoFlush(false).fetchOne();
+  }
 }
