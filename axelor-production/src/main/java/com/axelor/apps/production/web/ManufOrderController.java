@@ -829,7 +829,10 @@ public class ManufOrderController {
 
         if (manufOrder != null) {
           fillDomainPartner(manufOrder, response);
-          response.setValue("$prodProductsList", manufOrder.getToConsumeProdProductList());
+          response.setValue(
+              "$prodProductsList",
+              Beans.get(ManufOrderOutsourceService.class)
+                  .getOutsourceDeclarationProdProductList(manufOrder));
         }
       }
 
