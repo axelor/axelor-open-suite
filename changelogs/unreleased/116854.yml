@@ -1,0 +1,3 @@
+---
+title: "Manufacturing order: fixed the outsourcing declaration pop-up displaying no component when consumed products are managed on phases."
+module: axelor-production

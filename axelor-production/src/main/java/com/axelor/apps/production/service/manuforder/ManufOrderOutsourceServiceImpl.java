@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.ProdProcessOutsourceService;
@@ -32,11 +33,15 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.utils.JpaModelHelper;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceService {
 
@@ -84,6 +89,26 @@ public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceServic
   @Override
   public boolean isOutsource(ManufOrder manufOrder) {
     return manufOrder.getOutsourcing();
+  }
+
+  @Override
+  public List<ProdProduct> getOutsourceDeclarationProdProductList(ManufOrder manufOrder) {
+    Objects.requireNonNull(manufOrder);
+
+    if (!manufOrder.getIsConsProOnOperation()) {
+      return manufOrder.getToConsumeProdProductList();
+    }
+
+    if (ObjectUtils.isEmpty(manufOrder.getOperationOrderList())) {
+      return Collections.emptyList();
+    }
+
+    return manufOrder.getOperationOrderList().stream()
+        .filter(OperationOrder::getOutsourcing)
+        .map(OperationOrder::getToConsumeProdProductList)
+        .filter(ObjectUtils::notEmpty)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toList());
   }
 
   @Override
