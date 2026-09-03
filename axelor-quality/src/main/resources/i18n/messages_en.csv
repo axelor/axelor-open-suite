@@ -1,6 +1,6 @@
 "key","message","comment","context"
 "% VOC",,,
-"100 when the supplier has no open quality improvement over the rolling period, decreasing to 0 when there is at least one open quality improvement per reception.",,,
+"100 when the supplier has no open quality improvement, whatever its creation date, decreasing to 0 when there is at least one open quality improvement per reception of the rolling period.",,,
 "Acceptance",,,
 "Acceptance required",,,
 "Accepted",,,

@@ -44,15 +44,17 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
 
   /**
    * Purchase order lines rated for on-time delivery: lines of the period that are either past their
-   * estimated receipt date or already fully received (an early receipt counts at once).
+   * estimated receipt date or already fully received (an early receipt counts at once). A line
+   * without its own estimated receipt date carries no commitment to measure and is not rated.
    */
   protected static final String PURCHASE_ORDER_LINE_FILTER =
       "po.supplierPartner.id = :partnerId "
           + "AND po.statusSelect IN (:statusList) "
           + "AND pol.isTitleLine = false "
           + "AND pol.product IS NOT NULL "
-          + "AND COALESCE(pol.estimatedReceiptDate, po.estimatedReceiptDate) >= :fromDate "
-          + "AND (COALESCE(pol.estimatedReceiptDate, po.estimatedReceiptDate) <= :toDate "
+          + "AND pol.estimatedReceiptDate IS NOT NULL "
+          + "AND pol.estimatedReceiptDate >= :fromDate "
+          + "AND (pol.estimatedReceiptDate <= :toDate "
           + "OR pol.receiptState = :receivedState)";
 
   protected static final String RECEPTION_FILTER =
@@ -128,6 +130,8 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
     supplierScoreHistory.setSupplierScore(partner.getSupplierScore());
     supplierScoreHistory.setSupplierOtdRate(partner.getSupplierOtdRate());
     supplierScoreHistory.setSupplierConformityRate(partner.getSupplierConformityRate());
+    supplierScoreHistory.setSupplierAssessedReceptionCount(
+        partner.getSupplierAssessedReceptionCount());
   }
 
   protected boolean isSupplierScoreEnabled() {
@@ -141,7 +145,10 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
       partner.setSupplierOtdRate(computeOtdRate(partner, fromDate, toDate));
     }
     if (Boolean.TRUE.equals(appSupplychain.getAutoComputeSupplierConformityRate())) {
-      partner.setSupplierConformityRate(computeConformityRate(partner, fromDate, toDate));
+      long assessedReceptionCount = countAssessedReceptions(partner, fromDate, toDate);
+      partner.setSupplierAssessedReceptionCount((int) assessedReceptionCount);
+      partner.setSupplierConformityRate(
+          computeConformityRate(partner, fromDate, toDate, assessedReceptionCount));
     }
   }
 
@@ -170,13 +177,13 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
   }
 
   protected BigDecimal computeConformityRate(
-      Partner partner, LocalDate fromDate, LocalDate toDate) {
-    long receptionCount = countReceptions(partner, fromDate, toDate);
-    if (receptionCount == 0) {
+      Partner partner, LocalDate fromDate, LocalDate toDate, long assessedReceptionCount) {
+    if (assessedReceptionCount == 0) {
       return null;
     }
     long nonConformReceptionCount = countNonConformReceptions(partner, fromDate, toDate);
-    return SupplierScoreTool.computeRate(receptionCount - nonConformReceptionCount, receptionCount);
+    return SupplierScoreTool.computeRate(
+        assessedReceptionCount - nonConformReceptionCount, assessedReceptionCount);
   }
 
   protected long countDuePurchaseOrderLines(Partner partner, LocalDate fromDate, LocalDate toDate) {
@@ -200,7 +207,7 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
         JPA.em()
             .createQuery(
                 "SELECT pol.id, "
-                    + "COALESCE(pol.estimatedReceiptDate, po.estimatedReceiptDate), "
+                    + "pol.estimatedReceiptDate, "
                     + "MAX(sm.realDate) "
                     + "FROM StockMoveLine sml "
                     + "JOIN sml.purchaseOrderLine pol "
@@ -214,7 +221,7 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
                     + "AND sm.isReversion = false "
                     + "AND sml.lineTypeSelect = :normalLineType "
                     + "AND sml.realQty > 0 "
-                    + "GROUP BY pol.id, COALESCE(pol.estimatedReceiptDate, po.estimatedReceiptDate)",
+                    + "GROUP BY pol.id, pol.estimatedReceiptDate",
                 Object[].class);
     bindPurchaseOrderLineFilter(query, partner, fromDate, toDate);
     query.setParameter("incomingType", StockMoveRepository.TYPE_INCOMING);
@@ -229,6 +236,23 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
             .createQuery(
                 "SELECT COUNT(sm.id) FROM StockMove sm WHERE " + RECEPTION_FILTER, Long.class);
     bindReceptionFilter(query, partner, fromDate, toDate);
+    return query.getSingleResult();
+  }
+
+  protected long countAssessedReceptions(Partner partner, LocalDate fromDate, LocalDate toDate) {
+    TypedQuery<Long> query =
+        JPA.em()
+            .createQuery(
+                "SELECT COUNT(DISTINCT sm.id) FROM StockMoveLine sml JOIN sml.stockMove sm WHERE "
+                    + RECEPTION_FILTER
+                    + " AND sml.conformitySelect IN (:assessedList)",
+                Long.class);
+    bindReceptionFilter(query, partner, fromDate, toDate);
+    query.setParameter(
+        "assessedList",
+        List.of(
+            StockMoveLineRepository.CONFORMITY_COMPLIANT,
+            StockMoveLineRepository.CONFORMITY_NON_COMPLIANT));
     return query.getSingleResult();
   }
 

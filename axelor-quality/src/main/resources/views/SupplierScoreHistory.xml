@@ -6,7 +6,7 @@
   <grid name="supplier-score-history-grid" id="quality-supplier-score-history-grid"
     title="Supplier score history" model="com.axelor.apps.supplychain.db.SupplierScoreHistory"
     extension="true">
-    <extend target="//field[@name='supplierConformityRate']">
+    <extend target="//field[@name='supplierAssessedReceptionCount']">
       <insert position="after">
         <field name="supplierOpenQiRate" x-scale="2" if="__config__.app.isApp('quality')"/>
       </insert>
@@ -16,7 +16,7 @@
   <form name="supplier-score-history-form" id="quality-supplier-score-history-form"
     title="Supplier score history" model="com.axelor.apps.supplychain.db.SupplierScoreHistory"
     extension="true">
-    <extend target="//field[@name='supplierConformityRate']">
+    <extend target="//field[@name='supplierAssessedReceptionCount']">
       <insert position="after">
         <field name="supplierOpenQiRate" x-scale="2" if="__config__.app.isApp('quality')"/>
       </insert>

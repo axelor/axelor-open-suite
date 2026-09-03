@@ -16,6 +16,7 @@
     <decimal name="supplierOtdRate" title="On-time delivery rate (%)" nullable="true"/>
     <decimal name="supplierConformityRate" title="Reception conformity rate (%)"
       nullable="true"/>
+    <integer name="supplierAssessedReceptionCount" title="Assessed receptions"/>
     <many-to-one name="batch" ref="com.axelor.apps.base.db.Batch" title="Batch"/>
 
     <unique-constraint columns="partner,periodLabel"/>

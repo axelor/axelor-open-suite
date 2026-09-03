@@ -90,12 +90,10 @@ public class SupplierScoreQualityServiceImpl extends SupplierScoreServiceImpl {
     if (receptionCount == 0) {
       return null;
     }
-    return SupplierScoreTool.computeQiRate(
-        countOpenQualityImprovements(partner, fromDate, toDate), receptionCount);
+    return SupplierScoreTool.computeQiRate(countOpenQualityImprovements(partner), receptionCount);
   }
 
-  protected long countOpenQualityImprovements(
-      Partner partner, LocalDate fromDate, LocalDate toDate) {
+  protected long countOpenQualityImprovements(Partner partner) {
     TypedQuery<Long> query =
         JPA.em()
             .createQuery(
@@ -104,13 +102,9 @@ public class SupplierScoreQualityServiceImpl extends SupplierScoreServiceImpl {
                     + "JOIN qi.qiStatus st "
                     + "WHERE qid.supplierPartner.id = :partnerId "
                     + "AND st.isClosedStatus = false "
-                    + "AND st.isCancelledStatus = false "
-                    + "AND qi.createdOn >= :fromDateTime "
-                    + "AND qi.createdOn < :toDateTime",
+                    + "AND st.isCancelledStatus = false",
                 Long.class);
     query.setParameter("partnerId", partner.getId());
-    query.setParameter("fromDateTime", fromDate.atStartOfDay());
-    query.setParameter("toDateTime", toDate.plusDays(1).atStartOfDay());
     return query.getSingleResult();
   }
 }

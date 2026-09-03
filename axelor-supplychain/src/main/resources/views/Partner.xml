@@ -61,7 +61,9 @@
           <field name="supplierOtdRate" colSpan="6" x-scale="2"
             if="!__config__.app.getApp('supplychain')?.getAutoComputeSupplierOtdRate()"
             onChange="action-partner-method-compute-supplier-score-from-rates"/>
-          <field name="supplierConformityRate" colSpan="6" x-scale="2" readonly="true"
+          <field name="supplierConformityRate" colSpan="3" x-scale="2" readonly="true"
+            if="__config__.app.getApp('supplychain')?.getAutoComputeSupplierConformityRate()"/>
+          <field name="supplierAssessedReceptionCount" colSpan="3" readonly="true"
             if="__config__.app.getApp('supplychain')?.getAutoComputeSupplierConformityRate()"/>
           <field name="supplierConformityRate" colSpan="6" x-scale="2"
             if="!__config__.app.getApp('supplychain')?.getAutoComputeSupplierConformityRate()"

@@ -18,12 +18,14 @@
       help="Weighted average of the supplier indicators computed over the rolling period configured in the Supply Chain app."
       nullable="true"/>
     <decimal name="supplierOtdRate" title="On-time delivery rate (%)" min="0" max="100"
-      help="Percentage of purchase order lines fully received on or before their estimated receipt date, over the rolling period."
+      help="Percentage of purchase order lines fully received on or before their estimated receipt date, over the rolling period. Lines without an estimated receipt date are not rated."
       nullable="true"/>
     <decimal name="supplierConformityRate" title="Reception conformity rate (%)" min="0"
       max="100"
-      help="Percentage of receptions without any non-compliant line, over the rolling period."
+      help="Percentage of assessed receptions without any non-compliant line, over the rolling period. Receptions whose lines were not assessed are ignored."
       nullable="true"/>
+    <integer name="supplierAssessedReceptionCount" title="Assessed receptions"
+      help="Number of receptions of the rolling period with at least one line assessed as compliant or non-compliant. Only these receptions feed the reception conformity rate."/>
     <date name="supplierScoreComputedOn" title="Supplier score computed on"/>
     <one-to-many name="supplierScoreHistoryList"
       ref="com.axelor.apps.supplychain.db.SupplierScoreHistory" title="Supplier score history"

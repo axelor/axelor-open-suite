@@ -1,6 +1,6 @@
 "key","message","comment","context"
 "% VOC","% COV",,
-"100 when the supplier has no open quality improvement over the rolling period, decreasing to 0 when there is at least one open quality improvement per reception.","100 lorsque le fournisseur n'a aucune amélioration qualité ouverte sur la période glissante, décroissant jusqu'à 0 lorsqu'il y a au moins une amélioration qualité ouverte par réception.",,
+"100 when the supplier has no open quality improvement, whatever its creation date, decreasing to 0 when there is at least one open quality improvement per reception of the rolling period.","100 lorsque le fournisseur n'a aucune amélioration qualité ouverte, quelle que soit sa date de création, décroissant jusqu'à 0 lorsqu'il y a au moins une amélioration qualité ouverte par réception de la période glissante.",,
 "Acceptance","Acceptation",,
 "Acceptance required","Acceptation requise",,
 "Accepted","Accepté",,

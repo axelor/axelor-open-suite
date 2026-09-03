@@ -10,6 +10,7 @@
     <field name="supplierScore" widget="Progress"/>
     <field name="supplierOtdRate" x-scale="2"/>
     <field name="supplierConformityRate" x-scale="2"/>
+    <field name="supplierAssessedReceptionCount"/>
     <field name="fromDate"/>
     <field name="toDate"/>
   </grid>
@@ -25,6 +26,7 @@
       <field name="supplierScore" widget="Progress" colSpan="12"/>
       <field name="supplierOtdRate" x-scale="2"/>
       <field name="supplierConformityRate" x-scale="2"/>
+      <field name="supplierAssessedReceptionCount"/>
       <field name="batch" form-view="batch-form" grid-view="batch-grid"/>
     </panel>
   </form>
