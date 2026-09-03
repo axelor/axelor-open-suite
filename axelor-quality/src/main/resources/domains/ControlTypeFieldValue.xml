@@ -11,8 +11,11 @@
       ref="com.axelor.apps.quality.db.ControlTypeField" title="Field" required="true"/>
 
     <!-- copied from the field: a collection order by cannot cross the controlTypeField association,
-      and the editors ignore the order by of their grid view -->
+      the editors ignore the order by of their grid view, and an editor item cannot rely on a dotted field
+      of the control type field either -->
     <integer name="sequence" title="Sequence"/>
+    <integer name="fieldTypeSelect" title="Type"
+      selection="quality.control.type.field.type.select"/>
 
     <many-to-one name="planLine" ref="com.axelor.apps.quality.db.ControlEntryPlanLine"
       title="Control plan line"/>
@@ -32,7 +35,7 @@
         if (controlTypeField == null) {
           return null;
         }
-        switch (controlTypeField.getTypeSelect()) {
+        switch (fieldTypeSelect == null ? controlTypeField.getTypeSelect() : fieldTypeSelect) {
           case com.axelor.apps.quality.db.repo.ControlTypeFieldRepository.TYPE_DECIMAL:
             return decimalValue == null ? null : decimalValue.stripTrailingZeros().toPlainString();
           case com.axelor.apps.quality.db.repo.ControlTypeFieldRepository.TYPE_BOOLEAN:

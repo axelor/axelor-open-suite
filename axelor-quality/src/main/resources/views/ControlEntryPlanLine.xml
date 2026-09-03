@@ -49,13 +49,12 @@
         <editor x-show-titles="false">
           <field name="controlTypeField" readonly="true" canEdit="false" canView="false"/>
           <panel name="valuePanel" stacked="true" showTitle="false" itemSpan="12">
-            <field name="controlTypeField.typeSelect" hidden="true"/>
-            <field name="decimalValue" title="Value" x-scale="3"
-              showIf="controlTypeField.typeSelect == 1"/>
-            <field name="textValue" title="Value" showIf="controlTypeField.typeSelect == 2"/>
-            <field name="booleanValue" title="Value" showIf="controlTypeField.typeSelect == 3"/>
+            <field name="fieldTypeSelect" hidden="true"/>
+            <field name="decimalValue" title="Value" x-scale="3" showIf="fieldTypeSelect == 1"/>
+            <field name="textValue" title="Value" showIf="fieldTypeSelect == 2"/>
+            <field name="booleanValue" title="Value" showIf="fieldTypeSelect == 3"/>
             <field name="selectionValue" title="Value" canNew="false"
-              showIf="controlTypeField.typeSelect == 4"
+              showIf="fieldTypeSelect == 4"
               onSelect="action-quality-control-type-field-value-attrs-selection-domain"/>
           </panel>
         </editor>
@@ -108,14 +107,13 @@
           <editor x-show-titles="false">
             <field name="controlTypeField" readonly="true" canEdit="false" canView="false"/>
             <panel name="valuePanel" stacked="true" showTitle="false" itemSpan="12">
-              <field name="controlTypeField.typeSelect" hidden="true"/>
+              <field name="fieldTypeSelect" hidden="true"/>
               <field name="decimalValue" title="Value" x-scale="3"
-                showIf="controlTypeField.typeSelect == 1"/>
-              <field name="textValue" title="Value" showIf="controlTypeField.typeSelect == 2"/>
-              <field name="booleanValue" title="Value"
-                showIf="controlTypeField.typeSelect == 3"/>
+                showIf="fieldTypeSelect == 1"/>
+              <field name="textValue" title="Value" showIf="fieldTypeSelect == 2"/>
+              <field name="booleanValue" title="Value" showIf="fieldTypeSelect == 3"/>
               <field name="selectionValue" title="Value" canNew="false"
-                showIf="controlTypeField.typeSelect == 4"
+                showIf="fieldTypeSelect == 4"
                 onSelect="action-quality-control-type-field-value-attrs-selection-domain"/>
             </panel>
           </editor>

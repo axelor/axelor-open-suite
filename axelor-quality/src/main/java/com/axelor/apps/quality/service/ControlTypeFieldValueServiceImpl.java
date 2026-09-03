@@ -69,7 +69,7 @@ public class ControlTypeFieldValueServiceImpl implements ControlTypeFieldValueSe
     for (ControlTypeField field : getFields(controlType, ControlTypeFieldRepository.USAGE_PLAN)) {
       ControlTypeFieldValue value =
           Optional.ofNullable(currentValueMap.get(field)).orElseGet(() -> createValue(field));
-      value.setSequence(getSequence(field));
+      copyFieldDefinition(value, field);
       values.add(value);
     }
     return values;
@@ -88,8 +88,18 @@ public class ControlTypeFieldValueServiceImpl implements ControlTypeFieldValueSe
   public ControlTypeFieldValue createValue(ControlTypeField controlTypeField) {
     ControlTypeFieldValue value = new ControlTypeFieldValue();
     value.setControlTypeField(controlTypeField);
-    value.setSequence(getSequence(controlTypeField));
+    copyFieldDefinition(value, controlTypeField);
     return value;
+  }
+
+  /**
+   * The sequence and the type are copied on the value: an editor cannot rely on a dotted field of
+   * the control type field, and a collection order by cannot cross that association either.
+   */
+  protected void copyFieldDefinition(
+      ControlTypeFieldValue value, ControlTypeField controlTypeField) {
+    value.setSequence(getSequence(controlTypeField));
+    value.setFieldTypeSelect(controlTypeField == null ? null : controlTypeField.getTypeSelect());
   }
 
   protected Integer getSequence(ControlTypeField controlTypeField) {
