@@ -1,3 +1,0 @@
----
-title: "Stock: fixed average price precision loss when updating a stock location after changing the product's stock unit."
-module: axelor-stock

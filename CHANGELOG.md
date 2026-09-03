@@ -1,3 +1,19 @@
+## [8.4.34] (2026-09-03)
+
+### Fixes
+#### Base
+
+* Fix separate-thread controller tool discarding the callable result, preventing the global budget export file from being downloaded
+
+#### Account
+
+* Accounting report type: added missing export accounting report types in GBR localization.
+* Accounting report: fixed move line with partial lettering not displayed in 'Partner general ledger'.
+
+#### Stock
+
+* Stock: fixed average price precision loss when updating a stock location after changing the product's stock unit.
+
 ## [8.4.33] (2026-08-13)
 
 ### Fixes
@@ -3507,6 +3523,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.34]: https://github.com/axelor/axelor-open-suite/compare/v8.4.33...v8.4.34
 [8.4.33]: https://github.com/axelor/axelor-open-suite/compare/v8.4.32...v8.4.33
 [8.4.32]: https://github.com/axelor/axelor-open-suite/compare/v8.4.31...v8.4.32
 [8.4.31]: https://github.com/axelor/axelor-open-suite/compare/v8.4.30...v8.4.31
