@@ -1,0 +1,3 @@
+---
+title: "Stock move: fixed real quantity, net mass and quantity remaining to package not correctly filled on backorder lines generated from a partially realized stock move."
+module: axelor-stock
