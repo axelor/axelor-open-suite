@@ -1,0 +1,8 @@
+---
+title: "Contract: removed frequently updated records from the cache."
+module: axelor-contract
+developer: |
+  Removed cacheable="true" from the following domains:
+  - File
+  - Invoice
+  - InvoiceLine
