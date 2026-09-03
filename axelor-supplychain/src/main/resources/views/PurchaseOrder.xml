@@ -3,6 +3,21 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
+  <grid name="purchase-order-invoice-dashlet-grid" title="Purchase orders"
+    model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq"
+    canNew="false" canDelete="false">
+    <field name="purchaseOrderSeq" width="120"/>
+    <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="orderDate"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
+    <field name="receiptState"/>
+    <field name="statusSelect" widget="single-select"/>
+    <button name="openPurchaseOrderBtn" title="Open purchase order" icon="box-arrow-up-right"
+      onClick="action-purchase-order-view-open-purchase-order-from-invoice"/>
+  </grid>
 
   <form name="purchase-order-form" title="Purchase order"
     model="com.axelor.apps.purchase.db.PurchaseOrder" id="supplychain-purchase-order-form"
@@ -112,5 +127,13 @@
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
       method="checkAnalyticAxis"/>
   </action-method>
+
+  <action-view name="action-purchase-order-view-open-purchase-order-from-invoice"
+    title="Purchase order" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <view type="form" name="purchase-order-form"/>
+    <view type="grid" name="purchase-order-grid"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
 
 </object-views>
