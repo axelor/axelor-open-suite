@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.base.AxelorException;
@@ -33,6 +34,7 @@ import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
@@ -75,7 +77,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
 public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImpl
@@ -89,6 +93,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   protected InvoiceLineRepository invoiceLineRepository;
 
   protected AppSupplychainService appSupplychainService;
+  protected TaxService taxService;
 
   @Inject
   public StockMoveLineServiceSupplychainImpl(
@@ -114,7 +119,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       AppSupplychainService appSupplychainService,
       StockLocationLineFetchService stockLocationLineFetchService,
       TrackingNumberCreateService trackingNumberCreateService,
-      StockMoveRepository stockMoveRepository) {
+      StockMoveRepository stockMoveRepository,
+      TaxService taxService) {
     super(
         trackingNumberService,
         appBaseService,
@@ -139,6 +145,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     this.outSmGenerationService = outSmGenerationService;
     this.invoiceLineRepository = invoiceLineRepository;
     this.appSupplychainService = appSupplychainService;
+    this.taxService = taxService;
   }
 
   @Override
@@ -253,6 +260,18 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
       unitPriceUntaxed = saleOrderLine.getPriceDiscounted();
       unitPriceTaxed = saleOrderLine.getInTaxPrice();
+      if (Boolean.TRUE.equals(saleOrderLine.getSaleOrder().getInAti())) {
+        BigDecimal taxRate = BigDecimal.ZERO;
+        Set<TaxLine> taxLineSet = saleOrderLine.getTaxLineSet();
+        if (CollectionUtils.isNotEmpty(taxLineSet)) {
+          taxRate = taxService.getTotalTaxRateInPercentage(taxLineSet);
+        }
+        unitPriceUntaxed =
+            unitPriceUntaxed.divide(
+                taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE),
+                appBaseService.getNbDecimalDigitForUnitPrice(),
+                RoundingMode.HALF_UP);
+      }
       orderUnit = saleOrderLine.getUnit();
     } else if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
       PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
