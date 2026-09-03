@@ -16,7 +16,8 @@
     </panel>
 
     <panel-related name="controlTypeFieldPanel" field="controlTypeFieldSet"
-      colSpan="12" grid-view="control-type-field-grid" form-view="control-type-field-form"/>
+      colSpan="12" canMove="true" orderBy="usageSelect,sequence,name" groupBy="usageSelect"
+      grid-view="control-type-field-grid" form-view="control-type-field-form"/>
 
     <panel name="descriptionPanel" showTitle="false" colSpan="12">
       <field name="formulaDescription" colSpan="12"/>
