@@ -234,6 +234,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
       invoice.setDeliveryAddress(stockMove.getToAddress());
       invoice.setDeliveryAddressStr(stockMove.getToAddressStr());
+      invoice.setDeliveryDate(stockMove.getRealDate());
       invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
       if (appStockService.getAppStock().getIsIncotermEnabled()) {
         invoice.setIncoterm(saleOrder.getIncoterm());
@@ -332,6 +333,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
       invoice.setAddressStr(
           Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
+      invoice.setDeliveryDate(stockMove.getRealDate());
 
       if (invoice != null) {
         Set<StockMove> stockMoveSet = invoice.getStockMoveSet();
@@ -408,6 +410,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       if (stockMoveType == StockMoveRepository.TYPE_OUTGOING) {
         invoice.setHeadOfficeAddress(stockMove.getPartner().getHeadOfficeAddress());
       }
+      invoice.setDeliveryDate(stockMove.getRealDate());
       invoiceRepository.save(invoice);
 
       if (invoice != null) {

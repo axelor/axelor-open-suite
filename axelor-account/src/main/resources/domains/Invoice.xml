@@ -61,6 +61,7 @@
     <date name="nextDueDate" title="Next due date" readonly="true"/>
     <date name="originDate" title="Origin date"/>
     <date name="paymentDate" title="Payment date"/>
+    <date name="deliveryDate" title="Delivery date"/>
 
     <!-- Accounting information -->
     <boolean name="schedulePaymentOk" title="Belong to a payment schedule" default="false"/>
