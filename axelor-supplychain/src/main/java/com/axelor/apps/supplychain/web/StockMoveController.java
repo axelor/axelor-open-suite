@@ -176,4 +176,19 @@ public class StockMoveController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void checkQtyGreaterThanRemainingQtyToReceive(
+      ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      String alertMessage =
+          Beans.get(StockMoveServiceSupplychain.class)
+              .checkQtyGreaterThanRemainingQtyToReceive(stockMove);
+      if (alertMessage != null) {
+        response.setAlert(alertMessage);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

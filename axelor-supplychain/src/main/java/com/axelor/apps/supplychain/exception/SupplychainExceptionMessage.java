@@ -200,6 +200,12 @@ public final class SupplychainExceptionMessage {
   public static final String PO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
       "No delivery stock move to generate for this purchase order" /*)*/;
 
+  public static final String PO_ALREADY_FULLY_RECEIVED = /*$$(*/
+      "Purchase order %s has already been fully received. This stock move cannot be realized." /*)*/;
+
+  public static final String STOCK_MOVE_QTY_GREATER_THAN_REMAINING_QTY_TO_RECEIVE = /*$$(*/
+      "The realized quantity for product %s is greater than the remaining quantity to receive (%s) on purchase order %s." /*)*/;
+
   public static final String RESERVATION_SALE_ORDER_DATE_CONFIG_INCORRECT_VALUE = /*$$(*/
       "Please configure a correct value for the sale order date used for reservation." /*)*/;
 
