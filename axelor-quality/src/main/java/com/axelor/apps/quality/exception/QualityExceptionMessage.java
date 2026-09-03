@@ -93,4 +93,10 @@ public final class QualityExceptionMessage {
 
   public static final String CONTROL_ENTRY_OPEN_QUALITY_IMPROVEMENTS = /*$$(*/
       "The quality improvement(s) %s are already open for this control entry. Create another one?" /*)*/;
+
+  public static final String QUALITY_CONFIG_QUARANTINE_STOCK_LOCATION_MISSING = /*$$(*/
+      "Please configure a quarantine stock location in the quality configuration of the company %s." /*)*/;
+
+  public static final String QUALITY_CONFIG_RECEPTION_QI_DETECTION_MISSING = /*$$(*/
+      "Please configure a detection for reception non-conformities in the quality configuration of the company %s." /*)*/;
 }
