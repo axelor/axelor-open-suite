@@ -1,3 +1,0 @@
----
-title: "Fixed asset: improved performance on fixed asset, depreciation and tax payment records by no longer caching data that changes frequently."
-module: axelor-account

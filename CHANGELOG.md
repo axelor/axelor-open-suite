@@ -1,3 +1,191 @@
+## [9.0.18] (2026-09-03)
+
+### Fixes
+#### Base
+
+* Base: removed inappropriate query-cache flags on message recipient resolution and map group queries.
+* Base: cleaned up hand-rolled per-instance caches and mutable service state to prevent potential cross-request data mix-ups.
+* Research request: fixed the Search button staying disabled when only a date criterion is set.
+* Base: removed frequently updated records from the cache.
+* App base: fixed export objects action failing with a file storage validation error.
+* Base: migrated internal caches (unit conversion, printing template factory, geocoding) to the tenant-aware cache API.
+* Fix separate-thread controller tool discarding the callable result, preventing the global budget export file from being downloaded
+
+#### Account
+
+* Payment session: fixed the amount imputed on the invoice move line when a credit note partially compensates an invoice.
+* Account: made the AccountManagement entity cacheable so its cacheable finder is effective.
+* Account config: fixed wrong factor partner configured in demo data.
+* Accounting report type: added missing export accounting report types in GBR localization.
+* Custom accounting report: fixed wrong line and period numbering that could appear when several reports are generated on the same server.
+* Accounting report: fixed move line with partial lettering not displayed in 'Partner general ledger'.
+* Analytic move line: fixed the reverse analytic line losing its negative sign when the analytic distribution is recomputed, which doubled the distributed amount.
+* Fixed asset: improved performance on fixed asset, depreciation and tax payment records by no longer caching data that changes frequently.
+* Fiscal year period: fixed an issue where closing a fiscal period could display accounting entries and anomaly counts belonging to another company or tenant.
+* Accounting batch: fixed the cut off batch generated move lines being grouped by account only, ignoring the analytic distribution.
+
+#### Bank Payment
+
+* Bank payment: migrated the bank reconciliation exchange rate cache to the tenant-aware cache API.
+* Bank reconciliation: fixed the move line selector and the reconcile dashlet offering move lines of both directions instead of only the opposite direction of the statement line.
+
+#### Budget
+
+* Budget distribution: fixed 'Amount is invalid' error when consulting the budget imputation of a move generated from a supplier refund.
+* Budget: improved performance on budget distribution records by no longer caching data that changes frequently.
+
+#### Contract
+
+* Contract: removed frequently updated records from the cache.
+
+#### CRM
+
+* Lead: fixed status, linked partner and 'Converted' indicator being copied when duplicating a converted lead.
+
+#### Fleet
+
+* Fleet: removed frequently updated records from the cache.
+
+#### Human Resource
+
+* Human resource: removed frequently updated records from the cache.
+
+#### Production
+
+* Cost sheet: fixed indirect costs still being computed when cost sheet group management is disabled, and the indirect line showing the cost sheet group code and name in swapped fields.
+* Manufacturing order: fixed the outsourcing declaration pop-up displaying no component when consumed products are managed on phases.
+* Manuf order: fixed manuf order planning to take into account machine's planning too.
+* Manufacturing order: fixed partial-production unit cost and produced ratio being computed against the wrong quantity, including tracking-number reserve lines and per-piece human resource cost.
+
+#### Stock
+
+* Stock: fixed average price precision loss when updating a stock location after changing the product's stock unit.
+* Stock: fixed timeout when printing a stock location with large quantities in stock.
+* Stock: removed the ineffective query-cache hint on the stock location future quantity computation.
+* Customs code nomenclature: updated demo data to the 2026 Combined Nomenclature (NC8).
+* Stock move: fixed real quantity, net mass and quantity remaining to package not correctly filled on backorder lines generated from a partially realized stock move.
+
+#### Supply Chain
+
+* Purchase order: fixed 'Cancel receipt' not cancelling realized receipts, and handled re-validating a previously cancelled receipt.
+* Stock move: fixed error when processing a delivery note generated from a sale order for service products without a stock unit.
+
+
+### Developer
+
+#### Base
+
+Caching conformity clean-up (tech-debt / future-proofing) across several services:
+
+- axelor-supplychain MrpServiceImpl: reset() now clears the per-run in-memory state
+  (stockLocationList, productMap, productMapToBeAssigned, processedMrpForecastIdSet, currentLevel)
+  so a reused instance no longer carries data over from a previous calculation.
+- axelor-stock InventoryLineServiceImpl: presenceCache and valuationTypeCache migrated from
+  com.google.common.cache to the tenant-aware com.axelor.cache.AxelorCache / CacheBuilder API.
+- axelor-production ManufOrderServiceImpl: defaultBomCache is no longer an instance field; it is
+  a traversal-local map threaded through the recursion. Signatures of the protected methods
+  getDefaultBOMCached and generateChildMOs now take an extra Map<Long, BillOfMaterial> parameter,
+  and a protected getToConsumeSubBomList overload with that parameter was added.
+- axelor-cash-management ForecastRecapServiceImpl: invoiceStatusMap is now a tenant-aware
+  AxelorCache with a loader; the protected fetchAvailableStatusMap() method was replaced by
+  fetchAvailableStatusList(Integer).
+- axelor-crm CrmReportingServiceImpl: removed the mutable "query" field; the query string is now
+  a local StringBuilder. The protected prepareQuery method now returns a String and addParams now
+  takes the StringBuilder as first parameter.
+
+---
+
+Removed cacheable="true" from the following domains:
+- File
+- GlobalTrackingLog
+- GlobalTrackingLogLine
+- MailMessage
+
+---
+
+Migrated the static Guava caches of UnitConversionServiceImpl (unitConversionCache),
+PrintingGeneratorFactoryProviderImpl (CACHE) and MapServiceImpl (GEOCODE_CACHE) from
+com.google.common.cache to the sanctioned com.axelor.cache.AxelorCache / CacheBuilder API.
+
+These caches are now tenant-aware by default. UnitConversionServiceImpl.getKey no longer
+prepends the tenant identifier manually since isolation is handled by the cache.
+MapServiceImpl.GEOCODE_CACHE uses nonTenantAware() as geocoding results are tenant-agnostic.
+
+#### Account
+
+PeriodServiceAccountImpl is a @Singleton but stored the per-request closing result (list of moves
+and anomaly count) in scalar instance fields, which a concurrent close() from another tenant/user
+could overwrite (cross-tenant leak) with unbounded memory growth.
+
+The result is now stored in a tenant-aware com.axelor.cache.AxelorCache keyed by period id (bounded
+and expiring), so each closing keeps its own moves / anomaly count.
+
+API changes (PeriodServiceAccount): getMoves() and getAnomalyCount() now take the Period as a
+parameter (getMoves(Period) / getAnomalyCount(Period)). The moves / anomalyCount instance fields
+were removed.
+
+#### Bank Payment
+
+Replaced the com.google.common.cache Guava cache used for currency conversion rates in
+BankReconciliationReconciliationServiceImpl (exchangeRateCache) with the sanctioned
+com.axelor.cache.AxelorCache / CacheBuilder API (tenant-aware by default), keeping the same
+bounds (maximumSize=100, expireAfterWrite=10min). No functional change.
+
+---
+
+Changed the BankReconciliationDomainService.createDomainForMoveLine to use a BankReconciliationLine instead of a BankReconciliation
+
+#### Contract
+
+Removed cacheable="true" from the following domains:
+- File
+- Invoice
+- InvoiceLine
+
+#### Fleet
+
+Removed cacheable="true" from the following domains:
+- Vehicle
+- VehicleContract
+- VehicleCost
+- VehicleFuelLog
+- VehicleRent
+- VehicleRepair
+- VehicleService
+- VehicleServiceLog
+
+#### Human Resource
+
+Removed cacheable="true" from the following domains:
+- EmployeeAdvance
+- Expense
+- ExpenseLine
+- ExtraHours
+- ExtraHoursLine
+- File
+- LeaveLine
+- LeaveRequest
+- LunchVoucherAdvance
+- LunchVoucherMgt
+- LunchVoucherMgtLine
+- PayrollLeave
+- PayrollPreparation
+- ProjectPlanningTime
+- Timesheet
+- TimesheetLine
+- TimesheetReminder
+- TimesheetReminderLine
+- TSTimer
+
+Note: `File` was also declared cacheable="true" in axelor-base and axelor-contract
+(removed in #117026 / #117028). As the entity declaration is merged across modules and
+the last module setting the attribute wins, the three declarations had to be removed for
+the entity to actually leave the second-level cache.
+
+#### Production
+
+Added MachineService as parameter of the OperationOrderPlanningInfiniteCapacityServiceImpl's constructor
+
 ## [9.0.17] (2026-08-20)
 
 ### Fixes
@@ -2682,6 +2870,7 @@ Replaced the attrs action `action-purchase-order-line-attrs-delivery-panel` with
 
 * Project: improve task tree management.
 
+[9.0.18]: https://github.com/axelor/axelor-open-suite/compare/v9.0.17...v9.0.18
 [9.0.17]: https://github.com/axelor/axelor-open-suite/compare/v9.0.16...v9.0.17
 [9.0.16]: https://github.com/axelor/axelor-open-suite/compare/v9.0.15...v9.0.16
 [9.0.15]: https://github.com/axelor/axelor-open-suite/compare/v9.0.14...v9.0.15

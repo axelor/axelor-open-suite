@@ -1,3 +1,0 @@
----
-title: "Base: removed inappropriate query-cache flags on message recipient resolution and map group queries."
-module: axelor-base

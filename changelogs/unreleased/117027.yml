@@ -1,3 +1,0 @@
----
-title: "Budget: improved performance on budget distribution records by no longer caching data that changes frequently."
-module: axelor-budget

@@ -1,3 +1,0 @@
----
-title: "Stock: removed the ineffective query-cache hint on the stock location future quantity computation."
-module: axelor-stock
