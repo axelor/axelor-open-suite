@@ -22,8 +22,10 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.quality.db.QIDetection;
 import com.axelor.apps.quality.db.QualityConfig;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.i18n.I18n;
 
 public class QualityConfigService {
@@ -62,5 +64,30 @@ public class QualityConfigService {
           I18n.get(QualityExceptionMessage.QI_DECISION_DISTRIBUTION_SEQUENCE_NOT_FOUND));
     }
     return qiDecisionDistributionSequence;
+  }
+
+  public StockLocation getQuarantineStockLocation(QualityConfig qualityConfig)
+      throws AxelorException {
+    StockLocation quarantineStockLocation = qualityConfig.getQuarantineStockLocation();
+
+    if (quarantineStockLocation == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(QualityExceptionMessage.QUALITY_CONFIG_QUARANTINE_STOCK_LOCATION_MISSING),
+          qualityConfig.getCompany().getName());
+    }
+    return quarantineStockLocation;
+  }
+
+  public QIDetection getReceptionQiDetection(QualityConfig qualityConfig) throws AxelorException {
+    QIDetection receptionQiDetection = qualityConfig.getReceptionQiDetection();
+
+    if (receptionQiDetection == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(QualityExceptionMessage.QUALITY_CONFIG_RECEPTION_QI_DETECTION_MISSING),
+          qualityConfig.getCompany().getName());
+    }
+    return receptionQiDetection;
   }
 }
