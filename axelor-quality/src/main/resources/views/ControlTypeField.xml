@@ -5,7 +5,7 @@
 
   <grid name="control-type-field-grid" title="Control type fields"
     model="com.axelor.apps.quality.db.ControlTypeField" canMove="true"
-    orderBy="usageSelect,sequence,name" groupBy="usageSelect">
+    orderBy="sequence,usageSelect,name">
     <field name="sequence"/>
     <field name="name"/>
     <field name="code"/>
