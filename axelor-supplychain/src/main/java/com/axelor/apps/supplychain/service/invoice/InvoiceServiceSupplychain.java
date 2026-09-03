@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.meta.CallMethod;
 import java.util.List;
 
 public interface InvoiceServiceSupplychain {
@@ -50,4 +51,10 @@ public interface InvoiceServiceSupplychain {
   public void swapStockMoveInvoices(List<Invoice> invoiceList, Invoice newInvoice);
 
   boolean hasFiscalPositionMismatch(Invoice invoice);
+
+  @CallMethod
+  List<Long> getSaleOrderIds(Invoice invoice);
+
+  @CallMethod
+  List<Long> getPurchaseOrderIds(Invoice invoice);
 }
