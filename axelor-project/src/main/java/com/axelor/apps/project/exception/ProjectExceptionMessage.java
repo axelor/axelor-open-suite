@@ -106,4 +106,14 @@ public final class ProjectExceptionMessage {
 
   public static final String PROJECT_CHECK_LIST_ITEM_CHOOSE_PROJECT_OR_TASK = /*$$(*/
       "Project and project task must not be chosen together." /*)*/;
+
+  public static final String PROJECT_TASK_NOTIFICATION_OVERDUE = /*$$(*/ "Task overdue: %s" /*)*/;
+
+  public static final String PROJECT_TASK_NOTIFICATION_TODO = /*$$(*/ "Task to do: %s" /*)*/;
+
+  public static final String BATCH_TASK_NOTIFICATION_1 = /*$$(*/
+      "Task notifications completed:" /*)*/;
+
+  public static final String BATCH_TASK_NOTIFICATION_DONE = /*$$(*/
+      "* %s notification(s) created" /*)*/;
 }

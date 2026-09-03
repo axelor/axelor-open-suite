@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.project.db.ProjectBatch;
+import com.axelor.apps.project.db.repo.ProjectBatchRepository;
 import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 
@@ -38,12 +39,23 @@ public class ProjectBatchService extends AbstractBatchService {
     Batch batch;
     ProjectBatch projectBatch = (ProjectBatch) model;
 
-    batch = removeTaskStatus(projectBatch);
+    switch (projectBatch.getActionSelect()) {
+      case ProjectBatchRepository.ACTION_NOTIFY_TASKS:
+        batch = notifyTasks(projectBatch);
+        break;
+      default:
+        batch = removeTaskStatus(projectBatch);
+        break;
+    }
 
     return batch;
   }
 
   public Batch removeTaskStatus(ProjectBatch projectBatch) {
     return Beans.get(BatchRemoveTaskStatusService.class).run(projectBatch);
+  }
+
+  public Batch notifyTasks(ProjectBatch projectBatch) {
+    return Beans.get(BatchProjectTaskNotification.class).run(projectBatch);
   }
 }
