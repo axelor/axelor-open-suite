@@ -1,3 +1,0 @@
----
-title: "Stock move: fixed error when processing a delivery note generated from a sale order for service products without a stock unit."
-module: axelor-supplychain

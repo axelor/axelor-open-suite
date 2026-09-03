@@ -1,3 +1,61 @@
+## [8.5.27] (2026-09-03)
+
+### Fixes
+#### Base
+
+* Research request: fixed the Search button staying disabled when only a date criterion is set.
+* Fix separate-thread controller tool discarding the callable result, preventing the global budget export file from being downloaded
+
+#### Account
+
+* Payment session: fixed the amount imputed on the invoice move line when a credit note partially compensates an invoice.
+* Account config: fixed wrong factor partner configured in demo data.
+* Accounting report type: added missing export accounting report types in GBR localization.
+* Accounting report: fixed move line with partial lettering not displayed in 'Partner general ledger'.
+* Analytic move line: fixed the reverse analytic line losing its negative sign when the analytic distribution is recomputed, which doubled the distributed amount.
+* Accounting batch: fixed the cut off batch generated move lines being grouped by account only, ignoring the analytic distribution.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed the move line selector and the reconcile dashlet offering move lines of both directions instead of only the opposite direction of the statement line.
+
+#### Budget
+
+* Budget distribution: fixed 'Amount is invalid' error when consulting the budget imputation of a move generated from a supplier refund.
+
+#### CRM
+
+* Lead: fixed status, linked partner and 'Converted' indicator being copied when duplicating a converted lead.
+
+#### Production
+
+* Cost sheet: fixed indirect costs still being computed when cost sheet group management is disabled, and the indirect line showing the cost sheet group code and name in swapped fields.
+* Manufacturing order: fixed the outsourcing declaration pop-up displaying no component when consumed products are managed on phases.
+* Manuf order: fixed manuf order planning to take into account machine's planning too.
+* Manufacturing order: fixed partial-production unit cost and produced ratio being computed against the wrong quantity, including tracking-number reserve lines and per-piece human resource cost.
+
+#### Stock
+
+* Stock: fixed average price precision loss when updating a stock location after changing the product's stock unit.
+* Stock: fixed timeout when printing a stock location with large quantities in stock.
+* Stock move: fixed real quantity, net mass and quantity remaining to package not correctly filled on backorder lines generated from a partially realized stock move.
+
+#### Supply Chain
+
+* Purchase order: fixed 'Cancel receipt' not cancelling realized receipts, and handled re-validating a previously cancelled receipt.
+* Stock move: fixed error when processing a delivery note generated from a sale order for service products without a stock unit.
+
+
+### Developer
+
+#### Bank Payment
+
+Changed the BankReconciliationDomainService.createDomainForMoveLine to use a BankReconciliationLine instead of a BankReconciliation
+
+#### Production
+
+Added MachineService as parameter of the OperationOrderPlanningInfiniteCapacityServiceImpl's constructor
+
 ## [8.5.26] (2026-08-20)
 
 ### Fixes
@@ -3652,6 +3710,7 @@ Removed CommonInvoiceService.createInvoiceLinesFromOrder Changed the parameter o
 * Bill of material: added default value for calculation quantity.
 * Manuf order: fixed relation with production order.
 
+[8.5.27]: https://github.com/axelor/axelor-open-suite/compare/v8.5.26...v8.5.27
 [8.5.26]: https://github.com/axelor/axelor-open-suite/compare/v8.5.25...v8.5.26
 [8.5.25]: https://github.com/axelor/axelor-open-suite/compare/v8.5.24...v8.5.25
 [8.5.24]: https://github.com/axelor/axelor-open-suite/compare/v8.5.23...v8.5.24
