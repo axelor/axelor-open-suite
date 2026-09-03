@@ -916,7 +916,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     newStockMoveLine.setQty(stockMoveLine.getQty().subtract(stockMoveLine.getRealQty()));
 
-    newStockMoveLine.setRealQty(BigDecimal.ZERO);
+    stockMoveLineService.fillRealQuantities(
+        newStockMoveLine, stockMoveLine.getStockMove(), newStockMoveLine.getQty());
     return newStockMoveLine;
   }
 
