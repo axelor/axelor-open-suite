@@ -45,8 +45,10 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
@@ -65,6 +67,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -396,5 +399,69 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     SaleOrder saleOrder = invoice.getSaleOrder();
     return saleOrder != null
         && !Objects.equals(saleOrder.getFiscalPosition(), invoice.getFiscalPosition());
+  }
+
+  @Override
+  public List<Long> getSaleOrderIds(Invoice invoice) {
+    return getSaleOrders(invoice).stream().map(SaleOrder::getId).collect(Collectors.toList());
+  }
+
+  protected Set<SaleOrder> getSaleOrders(Invoice invoice) {
+    Set<SaleOrder> saleOrderSet = new LinkedHashSet<>();
+    if (invoice == null) {
+      return saleOrderSet;
+    }
+    if (invoice.getSaleOrder() != null) {
+      saleOrderSet.add(invoice.getSaleOrder());
+    }
+    if (CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())) {
+      invoice.getInvoiceLineList().stream()
+          .map(InvoiceLine::getSaleOrderLine)
+          .filter(Objects::nonNull)
+          .map(SaleOrderLine::getSaleOrder)
+          .filter(Objects::nonNull)
+          .forEach(saleOrderSet::add);
+    }
+    if (CollectionUtils.isNotEmpty(invoice.getStockMoveSet())) {
+      invoice.getStockMoveSet().stream()
+          .map(StockMove::getSaleOrderSet)
+          .filter(CollectionUtils::isNotEmpty)
+          .flatMap(Set::stream)
+          .forEach(saleOrderSet::add);
+    }
+    return saleOrderSet;
+  }
+
+  @Override
+  public List<Long> getPurchaseOrderIds(Invoice invoice) {
+    return getPurchaseOrders(invoice).stream()
+        .map(PurchaseOrder::getId)
+        .collect(Collectors.toList());
+  }
+
+  protected Set<PurchaseOrder> getPurchaseOrders(Invoice invoice) {
+    Set<PurchaseOrder> purchaseOrderSet = new LinkedHashSet<>();
+    if (invoice == null) {
+      return purchaseOrderSet;
+    }
+    if (invoice.getPurchaseOrder() != null) {
+      purchaseOrderSet.add(invoice.getPurchaseOrder());
+    }
+    if (CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())) {
+      invoice.getInvoiceLineList().stream()
+          .map(InvoiceLine::getPurchaseOrderLine)
+          .filter(Objects::nonNull)
+          .map(PurchaseOrderLine::getPurchaseOrder)
+          .filter(Objects::nonNull)
+          .forEach(purchaseOrderSet::add);
+    }
+    if (CollectionUtils.isNotEmpty(invoice.getStockMoveSet())) {
+      invoice.getStockMoveSet().stream()
+          .map(StockMove::getPurchaseOrderSet)
+          .filter(CollectionUtils::isNotEmpty)
+          .flatMap(Set::stream)
+          .forEach(purchaseOrderSet::add);
+    }
+    return purchaseOrderSet;
   }
 }

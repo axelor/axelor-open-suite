@@ -12,6 +12,22 @@
     <field name="inTaxTotal" aggregate="sum"/>
   </grid>
 
+  <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
+    id="supplychain-invoice-form" extension="true">
+    <extend target="//panel[@name='deliveryPanel']">
+      <insert position="after">
+        <panel name="ordersPanel" title="Orders" if="__config__.app.isApp('supplychain')">
+          <panel-dashlet name="saleOrdersPanel"
+            action="action-invoice-view-sale-orders" colSpan="12"
+            showIf="operationTypeSelect == 3 || operationTypeSelect == 4"/>
+          <panel-dashlet name="purchaseOrdersPanel"
+            action="action-invoice-view-purchase-orders" colSpan="12"
+            showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
   <action-method name="action-supplychain-method-generate-subscription-invoice">
     <call class="com.axelor.apps.supplychain.web.InvoiceController"
       method="generateSubscriptionInvoices"/>
@@ -41,5 +57,23 @@
     <attribute name="selection-in" for="operationSubTypeSelect" expr="eval: [1,2,3,6]"
       if="operationTypeSelect == 1"/>
   </action-attrs>
+
+  <action-view name="action-invoice-view-sale-orders" title="Sale orders"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="grid" name="sale-order-grid"/>
+    <view type="form" name="sale-order-form"/>
+    <domain>self.id IN (:_saleOrderIdList)</domain>
+    <context name="_saleOrderIdList"
+      expr="call:com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain:getSaleOrderIds(__self__)"/>
+  </action-view>
+
+  <action-view name="action-invoice-view-purchase-orders" title="Purchase orders"
+    model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <view type="grid" name="purchase-order-grid"/>
+    <view type="form" name="purchase-order-form"/>
+    <domain>self.id IN (:_purchaseOrderIdList)</domain>
+    <context name="_purchaseOrderIdList"
+      expr="call:com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain:getPurchaseOrderIds(__self__)"/>
+  </action-view>
 
 </object-views>
