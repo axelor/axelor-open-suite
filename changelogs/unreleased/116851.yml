@@ -1,0 +1,3 @@
+---
+title: "Fix separate-thread controller tool discarding the callable result, preventing the global budget export file from being downloaded"
+module: axelor-base
