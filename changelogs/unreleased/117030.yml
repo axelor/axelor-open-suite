@@ -1,0 +1,29 @@
+---
+title: "Human resource: removed frequently updated records from the cache."
+module: axelor-human-resource
+developer: |
+  Removed cacheable="true" from the following domains:
+  - EmployeeAdvance
+  - Expense
+  - ExpenseLine
+  - ExtraHours
+  - ExtraHoursLine
+  - File
+  - LeaveLine
+  - LeaveRequest
+  - LunchVoucherAdvance
+  - LunchVoucherMgt
+  - LunchVoucherMgtLine
+  - PayrollLeave
+  - PayrollPreparation
+  - ProjectPlanningTime
+  - Timesheet
+  - TimesheetLine
+  - TimesheetReminder
+  - TimesheetReminderLine
+  - TSTimer
+
+  Note: `File` was also declared cacheable="true" in axelor-base and axelor-contract
+  (removed in #117026 / #117028). As the entity declaration is merged across modules and
+  the last module setting the attribute wins, the three declarations had to be removed for
+  the entity to actually leave the second-level cache.
