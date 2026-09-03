@@ -565,8 +565,10 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         Beans.get(StockMoveRepository.class)
             .all()
             .filter(
-                "? MEMBER OF self.purchaseOrderSet AND self.statusSelect = 2",
-                purchaseOrder.getId())
+                "? MEMBER OF self.purchaseOrderSet AND self.statusSelect IN (?, ?)",
+                purchaseOrder.getId(),
+                StockMoveRepository.STATUS_PLANNED,
+                StockMoveRepository.STATUS_REALIZED)
             .fetch();
 
     for (StockMove stockMove : stockMoveList) {

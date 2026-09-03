@@ -46,4 +46,6 @@ public interface StockMoveServiceSupplychain {
   void fillRealQuantities(StockMove stockMove);
 
   void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove);
+
+  String checkQtyGreaterThanRemainingQtyToReceive(StockMove stockMove) throws AxelorException;
 }
