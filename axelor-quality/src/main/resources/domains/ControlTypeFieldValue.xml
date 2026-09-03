@@ -25,8 +25,9 @@
     <many-to-one name="selectionValue"
       ref="com.axelor.apps.quality.db.CharacteristicProperty" title="Value"/>
 
-    <!-- single column shown in the value grids, the typed field is edited in the form -->
-    <string name="displayValue" title="Value" transient="true">
+    <!-- single column shown in the value grids, the typed field is edited in the editors. Computed but
+      stored: a transient field is not returned by the grid search, only by the form fetch -->
+    <string name="displayValue" title="Value">
       <![CDATA[
         if (controlTypeField == null) {
           return null;
