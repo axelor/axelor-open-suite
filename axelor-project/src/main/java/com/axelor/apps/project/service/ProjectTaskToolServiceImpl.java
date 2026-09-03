@@ -18,8 +18,13 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskStatus;
+import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.studio.db.AppProject;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -27,7 +32,12 @@ import java.util.stream.Collectors;
 
 public class ProjectTaskToolServiceImpl implements ProjectTaskToolService {
 
-  public ProjectTaskToolServiceImpl() {}
+  protected AppProjectService appProjectService;
+
+  @Inject
+  public ProjectTaskToolServiceImpl(AppProjectService appProjectService) {
+    this.appProjectService = appProjectService;
+  }
 
   @Override
   public Optional<TaskStatus> getCompletedTaskStatus(
@@ -49,5 +59,34 @@ public class ProjectTaskToolServiceImpl implements ProjectTaskToolService {
       }
     }
     return completedTaskStatus;
+  }
+
+  @Override
+  public boolean isCompleted(ProjectTask projectTask) {
+    TaskStatus status = projectTask.getStatus();
+    if (status == null) {
+      return false;
+    }
+
+    TaskStatus completedStatus = getEffectiveCompletedTaskStatus(projectTask);
+    if (completedStatus != null) {
+      return completedStatus.equals(status);
+    }
+
+    Project project = projectTask.getProject();
+    return (project != null
+            && project.getProjectStatus() != null
+            && Boolean.TRUE.equals(project.getProjectStatus().getIsCompleted()))
+        || Boolean.TRUE.equals(status.getIsCompleted());
+  }
+
+  protected TaskStatus getEffectiveCompletedTaskStatus(ProjectTask projectTask) {
+    Project project = projectTask.getProject();
+    if (project != null && project.getCompletedTaskStatus() != null) {
+      return project.getCompletedTaskStatus();
+    }
+
+    AppProject appProject = appProjectService.getAppProject();
+    return appProject != null ? appProject.getCompletedTaskStatus() : null;
   }
 }

@@ -1,0 +1,2 @@
+"importId";"active";"name";"job";"cron";"batchServiceSelect";"batchCode"
+11;"true";"Project task notifications every day";"com.axelor.apps.base.job.BatchJob";"0 0 6 * * ?";"com.axelor.apps.project.service.batch.ProjectBatchService";"PROJECT_TASK_NOTIFICATION"
