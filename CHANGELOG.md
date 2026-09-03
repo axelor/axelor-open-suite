@@ -1,3 +1,10 @@
+## [8.3.42] (2026-09-03)
+
+### Fixes
+#### Base
+
+* Fix separate-thread controller tool discarding the callable result, preventing the global budget export file from being downloaded
+
 ## [8.3.41] (2026-08-13)
 
 ### Fixes
@@ -3529,6 +3536,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.42]: https://github.com/axelor/axelor-open-suite/compare/v8.3.41...v8.3.42
 [8.3.41]: https://github.com/axelor/axelor-open-suite/compare/v8.3.40...v8.3.41
 [8.3.40]: https://github.com/axelor/axelor-open-suite/compare/v8.3.39...v8.3.40
 [8.3.39]: https://github.com/axelor/axelor-open-suite/compare/v8.3.38...v8.3.39
