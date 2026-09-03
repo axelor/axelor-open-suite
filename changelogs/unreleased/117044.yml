@@ -1,3 +1,0 @@
----
-title: "Account: made the AccountManagement entity cacheable so its cacheable finder is effective."
-module: axelor-account

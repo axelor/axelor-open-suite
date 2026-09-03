@@ -1,3 +1,0 @@
----
-title: "Accounting batch: fixed the cut off batch generated move lines being grouped by account only, ignoring the analytic distribution."
-module: axelor-account

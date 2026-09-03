@@ -1,3 +1,0 @@
----
-title: "Stock: fixed timeout when printing a stock location with large quantities in stock."
-module: axelor-stock

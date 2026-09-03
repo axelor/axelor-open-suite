@@ -1,9 +1,0 @@
----
-title: "Base: removed frequently updated records from the cache."
-module: axelor-base
-developer: |
-  Removed cacheable="true" from the following domains:
-  - File
-  - GlobalTrackingLog
-  - GlobalTrackingLogLine
-  - MailMessage
