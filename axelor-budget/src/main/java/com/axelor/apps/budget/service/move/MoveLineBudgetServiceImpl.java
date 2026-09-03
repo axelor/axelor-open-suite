@@ -99,6 +99,12 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
         && !moveLine.getBudgetDistributionList().isEmpty()) {
       BigDecimal totalAmount = BigDecimal.ZERO;
       for (BudgetDistribution budgetDistribution : moveLine.getBudgetDistributionList()) {
+        if (budgetDistribution.getAmount().signum() < 0 && !isNegativeAmountAllowed(moveLine)) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_NEGATIVE_AMOUNT_NOT_ALLOWED_MOVE),
+              budgetDistribution.getBudget().getCode());
+        }
         if (currencyScaleService
                 .getCompanyScaledValue(budgetDistribution, budgetDistribution.getAmount().abs())
                 .compareTo(
@@ -247,5 +253,16 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
       removeBudgetDistributionList(moveLine);
       createBudgetDistributionOnMonoBudget(moveLine);
     }
+  }
+
+  protected boolean isNegativeAmountAllowed(MoveLine moveLine) {
+    Account account = moveLine.getAccount();
+    if (account == null) {
+      return false;
+    }
+    return (AccountRepository.COMMON_POSITION_CREDIT == account.getCommonPosition()
+            && moveLine.getDebit().signum() != 0)
+        || (AccountRepository.COMMON_POSITION_DEBIT == account.getCommonPosition()
+            && moveLine.getCredit().signum() != 0);
   }
 }
