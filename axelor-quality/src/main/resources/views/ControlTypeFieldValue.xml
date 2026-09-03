@@ -21,9 +21,9 @@
     model="com.axelor.apps.quality.db.ControlTypeFieldValue">
     <panel name="mainPanel" colSpan="12">
       <field name="controlTypeField" colSpan="6" readonly="true"/>
-      <field name="controlTypeField.typeSelect" hidden="true"/>
 
       <panel name="valuePanel" stacked="true" showTitle="false" colSpan="6" itemSpan="12">
+        <field name="controlTypeField.typeSelect" hidden="true"/>
         <field name="decimalValue" title="Value" x-scale="3"
           showIf="controlTypeField.typeSelect == 1"/>
         <field name="textValue" title="Value" showIf="controlTypeField.typeSelect == 2"/>
