@@ -226,6 +226,7 @@
           colSpan="12">
           <field name="autoReconcileOnInvoice"/>
           <field name="autoReconcileOnPayment"/>
+          <field name="excessPaymentReconcileNumberLimit"/>
         </panel>
         <panel name="exportsPanel" title="Exports" colSpan="12">
           <field name="exportPath"/>

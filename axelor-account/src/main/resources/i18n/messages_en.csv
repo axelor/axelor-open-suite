@@ -3905,3 +3905,5 @@
 "value:Invoicing",,,
 "vat.Delivery","Delivery",,
 "vat.Payment","Payment",,
+"Only the first %s records could be reconciled (configuration limit reached). The remaining lines were not reconciled.","Only the first %s records could be reconciled (configuration limit reached). The remaining lines were not reconciled.",,
+"Max Nbr. of reconciliations on excess payment","Max Nbr. of reconciliations on excess payment",,

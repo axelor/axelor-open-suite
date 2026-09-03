@@ -116,6 +116,9 @@
 
     <boolean name="autoReconcileOnInvoice" title="Authorize auto reconcile on invoice"/>
     <boolean name="autoReconcileOnPayment" title="Authorize auto reconcile on payment"/>
+    <integer name="excessPaymentReconcileNumberLimit"
+      title="Max Nbr. of reconciliations on excess payment" default="50"
+      help="Maximum number of reconciliations performed automatically when using excess/advance payments (e.g. at invoice ventilation). Beyond this limit, remaining lines are left unreconciled."/>
 
     <!-- Default Payment Modes -->
     <many-to-one name="inPaymentMode" ref="com.axelor.apps.account.db.PaymentMode"
@@ -460,6 +463,7 @@
 
       <field name="autoReconcileOnInvoice" on="UPDATE"/>
       <field name="autoReconcileOnPayment" on="UPDATE"/>
+      <field name="excessPaymentReconcileNumberLimit" on="UPDATE"/>
 
       <field name="inPaymentMode" on="UPDATE"/>
       <field name="outPaymentMode" on="UPDATE"/>

@@ -1,0 +1,12 @@
+---
+title: "Account configuration: added a limit on the number of reconciliations performed automatically when using excess/advance payments (e.g. at invoice ventilation), to avoid slowness on mass reconciliation."
+module: axelor-account
+developer: |
+  Added `AccountConfig.excessPaymentReconcileNumberLimit` (integer, default 50). When set,
+  `PaymentServiceImpl.useExcessPaymentOnMoveLines` stops after that many reconciliations and
+  records a message traceback. `PaymentServiceImpl` constructor gained an `AccountConfigService`
+  parameter.
+
+  ```sql
+  UPDATE account_account_config SET excess_payment_reconcile_number_limit = 50 WHERE excess_payment_reconcile_number_limit IS NULL;
+  ```
