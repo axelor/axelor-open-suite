@@ -39,6 +39,8 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -78,6 +80,7 @@ import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -179,6 +182,12 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
     if (!appSupplyChainService.isApp("supplychain")) {
       return super.realizeStockMove(stockMove, check);
+    }
+
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+        && !stockMove.getIsReversion()
+        && CollectionUtils.isNotEmpty(stockMove.getPurchaseOrderSet())) {
+      checkPurchaseOrderLinesNotAlreadyFullyReceived(stockMove);
     }
 
     LOG.debug("Stock move realization: {} ", stockMove.getStockMoveSeq());
@@ -315,7 +324,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SupplychainExceptionMessage.STOCK_MOVE_CANCEL_WRONG_STATUS_ERROR));
     }
-    if (stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED) {
+    int initialStatus = stockMove.getStatusSelect();
+    super.cancel(stockMove);
+    if (initialStatus == StockMoveRepository.STATUS_REALIZED) {
       if (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())) {
         updateSaleOrderOnCancel(stockMove);
       }
@@ -323,7 +334,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         updatePurchaseOrderOnCancel(stockMove);
       }
     }
-    super.cancel(stockMove);
     if (appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
       reservedQtyService.updateReservedQuantity(stockMove, StockMoveRepository.STATUS_CANCELED);
     }
@@ -920,5 +930,64 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
               stockMoveLineRepo.save(copy);
             },
             () -> stockMoveHolder[0] = stockMoveRepo.find(stockMoveId));
+  }
+
+  protected void checkPurchaseOrderLinesNotAlreadyFullyReceived(StockMove stockMove)
+      throws AxelorException {
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (CollectionUtils.isEmpty(stockMoveLineList)) {
+      return;
+    }
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
+      if (purchaseOrderLine != null
+          && purchaseOrderLine.getReceiptState()
+              == PurchaseOrderLineRepository.RECEIPT_STATE_RECEIVED) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SupplychainExceptionMessage.PO_ALREADY_FULLY_RECEIVED),
+            purchaseOrderLine.getPurchaseOrder().getPurchaseOrderSeq());
+      }
+    }
+  }
+
+  @Override
+  public String checkQtyGreaterThanRemainingQtyToReceive(StockMove stockMove)
+      throws AxelorException {
+    if (stockMove.getTypeSelect() != StockMoveRepository.TYPE_INCOMING
+        || stockMove.getIsReversion()
+        || CollectionUtils.isEmpty(stockMove.getStockMoveLineList())) {
+      return null;
+    }
+    StringJoiner alertMessage = new StringJoiner("<br>");
+    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+      PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
+      if (purchaseOrderLine == null
+          || purchaseOrderLine.getReceiptState()
+              == PurchaseOrderLineRepository.RECEIPT_STATE_RECEIVED) {
+        continue;
+      }
+      BigDecimal remainingQtyToReceive =
+          purchaseOrderLine.getQty().subtract(purchaseOrderLine.getReceivedQty());
+      BigDecimal realQty =
+          unitConversionService.convert(
+              stockMoveLine.getUnit(),
+              purchaseOrderLine.getUnit(),
+              stockMoveLine.getRealQty(),
+              stockMoveLine.getRealQty().scale(),
+              purchaseOrderLine.getProduct());
+      if (realQty.compareTo(remainingQtyToReceive) > 0) {
+        alertMessage.add(
+            String.format(
+                I18n.get(
+                    SupplychainExceptionMessage
+                        .STOCK_MOVE_QTY_GREATER_THAN_REMAINING_QTY_TO_RECEIVE),
+                purchaseOrderLine.getProductName(),
+                remainingQtyToReceive.setScale(
+                    appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP),
+                purchaseOrderLine.getPurchaseOrder().getPurchaseOrderSeq()));
+      }
+    }
+    return alertMessage.length() > 0 ? alertMessage.toString() : null;
   }
 }
