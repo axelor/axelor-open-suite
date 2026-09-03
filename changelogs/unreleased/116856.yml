@@ -1,0 +1,3 @@
+---
+title: "Budget distribution: fixed 'Amount is invalid' error when consulting the budget imputation of a move generated from a supplier refund."
+module: axelor-budget
