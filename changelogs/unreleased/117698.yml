@@ -26,5 +26,10 @@ developer: |
   The MetaJsonField init data of the quality module (quality_controlEntryPlanLineMetaJsonField.csv)
   is removed and replaced by quality_controlTypeField.csv and quality_characteristicProperty.csv.
   Existing installations must run the migration script of RM#117699 before starting the
-  application. On control plans with a large number of controlled values, enable
-  hibernate.jdbc.batch_size in axelor-config.properties to speed up control entry sample creation.
+  application.
+
+  Creating the control entry samples writes one row per measured value, that is samples x control
+  plan lines x measure fields of the control type. Measured on PostgreSQL at about 1.3 ms per
+  value: under a second for a usual control plan, around 30 s for an extreme one (20 samples x 30
+  lines x 40 measure fields = 24 000 values). The cost is the per row ORM insert, so enabling
+  hibernate.jdbc.batch_size only saves about 10%.
