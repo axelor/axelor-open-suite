@@ -33,26 +33,29 @@
           <viewer><![CDATA[
 			<>
 				<p>
-					<span>{_t('A control type describes what is controlled and how. Its fields are split by usage: a field of usage "control plan" carries a reference value, entered once on the control plan line, and a field of usage "control entry" carries a value measured on each sample of the control entry. The formula compares the two and decides whether the sample is compliant.')}</span>
+					<span>{_t('A control type describes what is controlled and how.')}</span>
 				</p>
 				<p>
-					<span>{_t('It is evaluated when the inspector clicks "Check conformity" and must return')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>true</Box> <span>{_t('(compliant) or')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>false</Box> <span>{_t('(not compliant)')}</span>.
-				</p>
-				<h4><span>{_t('Access to the values')}</span></h4>
-				<p>
-					<span>{_t('Each field is available through its code, prefixed by its usage')}</span>:
+					<span>{_t('In the field table above there are two usages')}</span>:
 					<ul>
-						<li> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>plan.code</Box> <span>{_t('the reference value of the control plan line')}</span> </li>
-						<li> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>entry.code</Box> <span>{_t('the value measured on the sample')}</span> </li>
+						<li> <span>{_t('the fields with the usage "control plan" carry the reference values configured in the control plans')}</span> </li>
+						<li> <span>{_t('the fields with the usage "control entry" carry the value measured by the operator on each sample of the control entry')}</span> </li>
 					</ul>
+				</p>
+				<p>
+					<span>{_t('The formula defines how the control entry is checked against those fields. It is evaluated when the operator clicks "Check conformity" in the control entry and must return')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>true</Box> <span>{_t('(compliant) or')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>false</Box> <span>{_t('(not compliant)')}</span>.
+				</p>
+				<h4><span>{_t('The fields')}</span></h4>
+				<p>
+					<span>{_t('Each field has a code (the technical name used in the formula), a name (displayed in the application) and a type. They are read in the formula as')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>plan.code</Box> <span>{_t('and')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>entry.code</Box>.<Box/>
 					<span>{_t('A decimal field gives a number, a text field a character string, a boolean field true or false, and a selection field the selected value, whose label is read with')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>.name</Box>.
 				</p>
-				<h4><span>{_t('Examples')}</span></h4>
+				<h4><span>{_t('Formula examples')}</span></h4>
 				<p>
 					<ul>
-						<li> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>return plan.acceptedColor == entry.currentColor;</Box> </li>
-						<li> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>return (entry.mesuredDim &gt;= plan.acceptedDimension - plan.minTolerance) &amp;&amp; (entry.mesuredDim &lt;= plan.acceptedDimension + plan.maxTolerance);</Box> </li>
-						<li> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>return !plan.isLabelRequired || entry.isLabelPresent;</Box> </li>
+						<li> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>return plan.acceptedColor == entry.currentColor;</Box> <span>{_t('(simple equality between the two fields)')}</span> </li>
+						<li> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>return (entry.mesuredDim &gt;= plan.acceptedDimension - plan.minTolerance) &amp;&amp; (entry.mesuredDim &lt;= plan.acceptedDimension + plan.maxTolerance);</Box> <span>{_t('(the measured value must be within the tolerance interval around the nominal value)')}</span> </li>
+						<li> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>return !plan.isLabelRequired || entry.isLabelPresent;</Box> <span>{_t('(checks that the boolean field isLabelPresent is true, that is that the operator ticked the box)')}</span> </li>
 					</ul>
 				</p>
 				<p>

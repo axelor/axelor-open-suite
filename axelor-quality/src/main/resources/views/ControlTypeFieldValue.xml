@@ -18,7 +18,7 @@
   </grid>
 
   <form name="control-type-field-value-form" title="Value"
-    model="com.axelor.apps.quality.db.ControlTypeFieldValue">
+    model="com.axelor.apps.quality.db.ControlTypeFieldValue" readonlyIf="true">
     <panel name="mainPanel" colSpan="12">
       <field name="controlTypeField" colSpan="6" readonly="true"/>
 
@@ -44,6 +44,7 @@
     title="Targets" model="com.axelor.apps.quality.db.ControlTypeFieldValue">
     <view type="grid" name="control-type-field-value-readonly-grid"/>
     <view type="form" name="control-type-field-value-form"/>
+    <view-param name="show-toolbar" value="false"/>
     <domain>self.planLine.id = :_controlPlanLineId</domain>
     <context name="_controlPlanLineId" expr="eval: controlPlanLine?.id ?: 0"/>
   </action-view>
