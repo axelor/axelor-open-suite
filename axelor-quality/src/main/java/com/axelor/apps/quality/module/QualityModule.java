@@ -79,6 +79,8 @@ import com.axelor.apps.quality.service.QualityImprovementService;
 import com.axelor.apps.quality.service.QualityImprovementServiceImpl;
 import com.axelor.apps.quality.service.QualityImprovementUpdateService;
 import com.axelor.apps.quality.service.QualityImprovementUpdateServiceImpl;
+import com.axelor.apps.quality.service.QuarantineStockLocationService;
+import com.axelor.apps.quality.service.QuarantineStockLocationServiceImpl;
 import com.axelor.apps.quality.service.RequiredDocumentDMSService;
 import com.axelor.apps.quality.service.RequiredDocumentDMSServiceImpl;
 import com.axelor.apps.quality.service.RequiredDocumentExportService;
@@ -146,5 +148,6 @@ public class QualityModule extends AxelorModule {
     bind(TrackingNumberCharacteristicService.class)
         .to(TrackingNumberCharacteristicServiceImpl.class);
     bind(TrackingNumberQualityService.class).to(TrackingNumberQualityServiceImpl.class);
+    bind(QuarantineStockLocationService.class).to(QuarantineStockLocationServiceImpl.class);
   }
 }
