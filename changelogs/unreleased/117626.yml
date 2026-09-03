@@ -1,0 +1,3 @@
+---
+title: "Payment session: fixed the amount imputed on the invoice move line when a credit note partially compensates an invoice."
+module: axelor-account
