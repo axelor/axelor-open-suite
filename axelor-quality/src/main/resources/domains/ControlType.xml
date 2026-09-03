@@ -12,7 +12,7 @@
     <string name="formulaDescription" title="Formula description" large="true"/>
 
     <many-to-many name="controlTypeFieldSet"
-      ref="com.axelor.apps.quality.db.ControlTypeField" title="Fields"
+      ref="com.axelor.apps.quality.db.ControlTypeField" mappedBy="controlTypeSet" title="Fields"
       orderBy="usageSelect,sequence,name"/>
 
   </entity>

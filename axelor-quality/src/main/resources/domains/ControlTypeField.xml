@@ -13,6 +13,8 @@
       selection="quality.control.type.field.type.select"/>
     <integer name="usageSelect" title="Usage" required="true"
       selection="quality.control.type.field.usage.select"/>
+    <many-to-many name="controlTypeSet" ref="com.axelor.apps.quality.db.ControlType"
+      title="Control types"/>
     <many-to-many name="valueSet"
       ref="com.axelor.apps.quality.db.CharacteristicProperty" title="Allowed values"/>
     <integer name="sequence" title="Sequence"/>

@@ -28,6 +28,9 @@
   <input file="quality_characteristicProperty.csv" separator=";"
     type="com.axelor.apps.quality.db.CharacteristicProperty" search="self.importId = :importId"/>
 
+  <input file="quality_controlType.csv" separator=";"
+    type="com.axelor.apps.quality.db.ControlType" search="self.importId = :importId"/>
+
   <input file="quality_controlTypeField.csv" separator=";"
     type="com.axelor.apps.quality.db.ControlTypeField" search="self.importId = :importId">
     <bind to="name" column="name"
@@ -44,13 +47,8 @@
       check-message="Invalid usageSelect"/>
     <bind to="valueSet" column="valueSet" search="self.importId in :valueSet"
       eval="valueSet.split('\\|') as List" if="!valueSet.empty"/>
-  </input>
-
-  <input file="quality_controlType.csv" separator=";"
-    type="com.axelor.apps.quality.db.ControlType" search="self.importId = :importId">
-    <bind to="controlTypeFieldSet" column="controlTypeFieldSet"
-      search="self.importId in :controlTypeFieldSet" eval="controlTypeFieldSet.split('\\|') as List"
-      if="!controlTypeFieldSet.empty"/>
+    <bind to="controlTypeSet" column="controlTypeSet" search="self.importId in :controlTypeSet"
+      eval="controlTypeSet.split('\\|') as List" if="!controlTypeSet.empty"/>
   </input>
 
   <input file="meta_metaTranslation.csv" separator=";"

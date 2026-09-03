@@ -14,8 +14,18 @@
     <field name="isRequired"/>
   </grid>
 
+  <grid name="control-type-field-dashlet-grid" title="Fields"
+    model="com.axelor.apps.quality.db.ControlTypeField" canMove="true" orderBy="sequence,name">
+    <field name="sequence"/>
+    <field name="name"/>
+    <field name="code"/>
+    <field name="typeSelect"/>
+    <field name="isRequired"/>
+  </grid>
+
   <form name="control-type-field-form" title="Control type field"
     model="com.axelor.apps.quality.db.ControlTypeField"
+    onNew="action-quality-control-type-field-record-default"
     onLoad="action-quality-control-type-field-method-set-used-fields-readonly">
     <panel name="mainPanel" colSpan="12">
       <field name="$usedFieldMessage" showTitle="false" readonly="true" colSpan="12"
