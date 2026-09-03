@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <form name="partner-form" id="quality-partner-form" title="Partner"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="//field[@name='supplierScoreHistoryList']">
+      <insert position="before">
+        <field name="supplierOpenQiRate" colSpan="6" x-scale="2" readonly="true"
+          if="__config__.app.isApp('quality') &amp;&amp; __config__.app.getApp('supplychain')?.getAutoComputeSupplierOpenQiRate()"/>
+        <field name="supplierOpenQiRate" colSpan="6" x-scale="2"
+          if="__config__.app.isApp('quality') &amp;&amp; !__config__.app.getApp('supplychain')?.getAutoComputeSupplierOpenQiRate()"
+          onChange="action-partner-method-compute-supplier-score-from-rates"/>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>

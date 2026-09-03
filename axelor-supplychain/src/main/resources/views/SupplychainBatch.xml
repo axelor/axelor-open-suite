@@ -73,6 +73,12 @@
         <field name="usedStockRulesSet" domain="self.useCaseSelect=2" canNew="false"
           canSelect="true" colSpan="12"/>
       </panel>
+      <panel name="supplierScoreSnapshotPanel" title="Supplier score snapshot"
+        showIf="actionSelect == 6">
+        <field name="supplierPartnerSet" colSpan="12" widget="Tags"
+          domain="self.isSupplier = true" canNew="false" canEdit="false" canSelect="true"
+          grid-view="partner-grid" form-view="partner-form"/>
+      </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
@@ -92,6 +98,9 @@
         onClick="save,action-supplychain-batch-method-update-stock-history" colSpan="12"/>
       <button name="runStockBatch" title="Run stock batch"
         onClick="save,action-supplychain-batch-method-run-batch" showIf="actionSelect == 5"/>
+      <button name="supplierScoreSnapshotBtn" title="Create supplier score snapshots"
+        onClick="save,action-supplychain-batch-method-run-batch" showIf="actionSelect == 6"
+        colSpan="12"/>
     </panel>
   </form>
 

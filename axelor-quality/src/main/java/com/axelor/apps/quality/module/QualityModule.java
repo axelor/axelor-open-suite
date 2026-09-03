@@ -85,6 +85,7 @@ import com.axelor.apps.quality.service.RequiredDocumentStatusService;
 import com.axelor.apps.quality.service.RequiredDocumentStatusServiceImpl;
 import com.axelor.apps.quality.service.RequiredDocumentVersionService;
 import com.axelor.apps.quality.service.RequiredDocumentVersionServiceImpl;
+import com.axelor.apps.quality.service.SupplierScoreQualityServiceImpl;
 import com.axelor.apps.quality.service.TrackingNumberCharacteristicService;
 import com.axelor.apps.quality.service.TrackingNumberCharacteristicServiceImpl;
 import com.axelor.apps.quality.service.TrackingNumberQualityService;
@@ -93,6 +94,7 @@ import com.axelor.apps.quality.service.app.AppQualityService;
 import com.axelor.apps.quality.service.app.AppQualityServiceImpl;
 import com.axelor.apps.quality.service.app.QIActionDistributionService;
 import com.axelor.apps.quality.service.app.QIActionDistributionServiceImpl;
+import com.axelor.apps.supplychain.service.SupplierScoreServiceImpl;
 
 public class QualityModule extends AxelorModule {
 
@@ -140,5 +142,6 @@ public class QualityModule extends AxelorModule {
     bind(TrackingNumberCharacteristicService.class)
         .to(TrackingNumberCharacteristicServiceImpl.class);
     bind(TrackingNumberQualityService.class).to(TrackingNumberQualityServiceImpl.class);
+    bind(SupplierScoreServiceImpl.class).to(SupplierScoreQualityServiceImpl.class);
   }
 }

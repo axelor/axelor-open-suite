@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Partner">
+    <decimal name="supplierOpenQiRate" title="Open quality improvement rate (%)" min="0"
+      max="100"
+      help="100 when the supplier has no open quality improvement, whatever its creation date, decreasing to 0 when there is at least one open quality improvement per reception of the rolling period."
+      nullable="true"/>
+  </entity>
+
+</domain-models>

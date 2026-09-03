@@ -251,6 +251,8 @@ import com.axelor.apps.supplychain.service.StockRotationCategoryService;
 import com.axelor.apps.supplychain.service.StockRotationCategoryServiceImpl;
 import com.axelor.apps.supplychain.service.StockRulesSupplychainService;
 import com.axelor.apps.supplychain.service.StockRulesSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.SupplierScoreService;
+import com.axelor.apps.supplychain.service.SupplierScoreServiceImpl;
 import com.axelor.apps.supplychain.service.SupplyChainConvertLeadWizardServiceImpl;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigServiceImpl;
@@ -683,5 +685,6 @@ public class SupplychainModule extends AxelorModule {
     bind(ProductStockAnalysisService.class).to(ProductStockAnalysisServiceImpl.class);
     bind(DepRateAggregationService.class).to(DepRateAggregationServiceImpl.class);
     bind(ProductServicePurchaseImpl.class).to(ProductSupplychainServiceImpl.class);
+    bind(SupplierScoreService.class).to(SupplierScoreServiceImpl.class);
   }
 }

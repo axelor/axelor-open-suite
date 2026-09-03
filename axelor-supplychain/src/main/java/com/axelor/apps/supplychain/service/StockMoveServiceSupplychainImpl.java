@@ -108,6 +108,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   protected SaleOrderConfirmService saleOrderConfirmService;
   protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
   protected final PurchaseOrderReceiptStateService purchaseOrderReceiptStateService;
+  protected final SupplierScoreService supplierScoreService;
 
   @Inject
   public StockMoveServiceSupplychainImpl(
@@ -135,7 +136,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       SaleOrderConfirmService saleOrderConfirmService,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       PurchaseOrderReceiptStateService purchaseOrderReceiptStateService,
-      WeightedAveragePriceService weightedAveragePriceService) {
+      WeightedAveragePriceService weightedAveragePriceService,
+      SupplierScoreService supplierScoreService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -162,6 +164,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     this.saleOrderConfirmService = saleOrderConfirmService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
     this.purchaseOrderReceiptStateService = purchaseOrderReceiptStateService;
+    this.supplierScoreService = supplierScoreService;
   }
 
   @Override
@@ -221,6 +224,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
         purchaseOrderRepo.save(purchaseOrder);
       }
+    }
+    if (isSupplierReception(stockMove)) {
+      supplierScoreService.computeAndSave(stockMove.getPartner());
     }
     if (appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
       reservedQtyService.updateReservedQuantity(stockMove, StockMoveRepository.STATUS_REALIZED);
@@ -322,10 +328,22 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         updatePurchaseOrderOnCancel(stockMove);
       }
     }
+    boolean wasRealizedSupplierReception =
+        stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED
+            && isSupplierReception(stockMove);
     super.cancel(stockMove);
+    if (wasRealizedSupplierReception) {
+      supplierScoreService.computeAndSave(stockMove.getPartner());
+    }
     if (appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
       reservedQtyService.updateReservedQuantity(stockMove, StockMoveRepository.STATUS_CANCELED);
     }
+  }
+
+  protected boolean isSupplierReception(StockMove stockMove) {
+    return stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+        && !Boolean.TRUE.equals(stockMove.getIsReversion())
+        && stockMove.getPartner() != null;
   }
 
   @Override
