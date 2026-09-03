@@ -50,15 +50,11 @@
           <field name="controlTypeField" readonly="true" canEdit="false" canView="false"/>
           <panel name="valuePanel" stacked="true" showTitle="false" itemSpan="12">
             <field name="fieldTypeSelect" hidden="true"/>
-            <field name="displayValue" title="Value" readonly="true" showIf="$readonly()"/>
-            <field name="decimalValue" title="Value" x-scale="3"
-              showIf="!$readonly() &amp;&amp; fieldTypeSelect == 1"/>
-            <field name="textValue" title="Value"
-              showIf="!$readonly() &amp;&amp; fieldTypeSelect == 2"/>
-            <field name="booleanValue" title="Value"
-              showIf="!$readonly() &amp;&amp; fieldTypeSelect == 3"/>
+            <field name="decimalValue" title="Value" x-scale="3" showIf="fieldTypeSelect == 1"/>
+            <field name="textValue" title="Value" showIf="fieldTypeSelect == 2"/>
+            <field name="booleanValue" title="Value" showIf="fieldTypeSelect == 3"/>
             <field name="selectionValue" title="Value" canNew="false"
-              showIf="!$readonly() &amp;&amp; fieldTypeSelect == 4"
+              showIf="fieldTypeSelect == 4"
               onSelect="action-quality-control-type-field-value-attrs-selection-domain"/>
           </panel>
         </editor>
@@ -112,16 +108,12 @@
             <field name="controlTypeField" readonly="true" canEdit="false" canView="false"/>
             <panel name="valuePanel" stacked="true" showTitle="false" itemSpan="12">
               <field name="fieldTypeSelect" hidden="true"/>
-              <field name="displayValue" title="Value" readonly="true" showIf="$readonly()"/>
-              <field name="displayValue" title="Value" readonly="true" showIf="$readonly()"/>
               <field name="decimalValue" title="Value" x-scale="3"
-                showIf="!$readonly() &amp;&amp; fieldTypeSelect == 1"/>
-              <field name="textValue" title="Value"
-                showIf="!$readonly() &amp;&amp; fieldTypeSelect == 2"/>
-              <field name="booleanValue" title="Value"
-                showIf="!$readonly() &amp;&amp; fieldTypeSelect == 3"/>
+                showIf="fieldTypeSelect == 1"/>
+              <field name="textValue" title="Value" showIf="fieldTypeSelect == 2"/>
+              <field name="booleanValue" title="Value" showIf="fieldTypeSelect == 3"/>
               <field name="selectionValue" title="Value" canNew="false"
-                showIf="!$readonly() &amp;&amp; fieldTypeSelect == 4"
+                showIf="fieldTypeSelect == 4"
                 onSelect="action-quality-control-type-field-value-attrs-selection-domain"/>
             </panel>
           </editor>
