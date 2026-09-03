@@ -71,6 +71,12 @@
 
   <selection name="project.batch.action.select">
     <option value="1">Remove task status</option>
+    <option value="2">Notify overdue and to-do tasks</option>
+  </selection>
+
+  <selection name="meta.schedule.batch.service.select"
+    id="project.meta.schedule.batch.service.select">
+    <option value="com.axelor.apps.project.service.batch.ProjectBatchService">com.axelor.apps.project.service.batch.ProjectBatchService</option>
   </selection>
 
   <selection name="check.list.template.type.select">
