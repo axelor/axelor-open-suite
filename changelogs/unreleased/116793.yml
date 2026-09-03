@@ -1,0 +1,3 @@
+---
+title: "Product: fixed price fields and product information not displayed on the product form when the 'product by company' configuration is disabled while fields are still selected."
+module: axelor-base

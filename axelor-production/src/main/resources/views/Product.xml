@@ -10,12 +10,12 @@
       <field name="defaultBillOfMaterial" canEdit="false"
         onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form"
         grid-view="bill-of-material-grid"
-        if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
+        if="!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
       <button name="productsTreeBtn" title="Display products tree"
         onClick="action-method-production-open-product-tree"
         showIf="(procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce') &amp;&amp; (productSubTypeSelect == 1 || productSubTypeSelect == 2)"
         readonlyIf="!defaultBillOfMaterial"
-        if="__config__.app.isApp('production') &amp;&amp; !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
+        if="__config__.app.isApp('production') &amp;&amp; (!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'}))"/>
       <field name="lastProductionPrice" readonly="true"/>
       <field name="realOrEstimatedPriceSelect"
         onChange="action-product-group-cost-type-select-onchange"/>
