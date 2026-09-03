@@ -14,12 +14,12 @@
   <form name="project-batch-form" title="Project batch"
     model="com.axelor.apps.project.db.ProjectBatch" onNew="action-project-batch-record-on-new">
     <panel name="mainPanel">
-      <field name="actionSelect" readonly="true"/>
+      <field name="actionSelect"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
     </panel>
 
-    <panel name="removeTaskStatusPanel" title="Remove task status">
+    <panel name="removeTaskStatusPanel" title="Remove task status" showIf="actionSelect == 1">
       <label
         title="The selected statuses will be removed from the allowed status types for these projects and/or categories and, as a result, will no longer be available for associated tasks. In the case of categories, the statuses will only be removed from the tasks if the 'Manage via categories' option is enabled in the project configuration."
         colSpan="12"/>
@@ -41,7 +41,7 @@
     </panel>
 
     <panel name="actionPanel" sidebar="true">
-      <button name="removeTaskStatusBtn" title="Remove task status"
+      <button name="runBatchBtn" title="Run batch"
         onClick="save,action-project-batch-method-run-batch"/>
     </panel>
   </form>
