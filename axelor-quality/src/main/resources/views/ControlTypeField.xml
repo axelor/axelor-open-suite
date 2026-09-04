@@ -13,13 +13,12 @@
   </grid>
 
   <grid name="control-type-field-set-grid" title="Fields"
-    model="com.axelor.apps.quality.db.ControlTypeField" orderBy="sequence,name" editable="true"
-    edit-icon="true">
-    <field name="sequence" width="100"/>
-    <field name="name" readonly="true"/>
-    <field name="code" readonly="true"/>
-    <field name="typeSelect" readonly="true"/>
-    <field name="isRequired" readonly="true"/>
+    model="com.axelor.apps.quality.db.ControlTypeField" canMove="true">
+    <field name="name"/>
+    <field name="code"/>
+    <field name="typeSelect"/>
+    <field name="isRequired"/>
+    <field name="sequence"/>
   </grid>
 
   <form name="control-type-field-form" title="Control type field"

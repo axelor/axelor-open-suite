@@ -16,11 +16,11 @@
     </panel>
 
     <panel-related name="planFieldPanel" field="planFieldSet" colSpan="12"
-      canMove="true" editable="true" orderBy="sequence,name" grid-view="control-type-field-set-grid"
+      canMove="true" orderBy="sequence" grid-view="control-type-field-set-grid"
       form-view="control-type-field-form"/>
 
     <panel-related name="entryFieldPanel" field="entryFieldSet" colSpan="12"
-      canMove="true" editable="true" orderBy="sequence,name" grid-view="control-type-field-set-grid"
+      canMove="true" orderBy="sequence" grid-view="control-type-field-set-grid"
       form-view="control-type-field-form"/>
 
     <panel-tabs name="formulaTabsPanel">
