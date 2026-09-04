@@ -15,13 +15,13 @@
       <field name="name" colSpan="12"/>
     </panel>
 
-    <panel-related name="planFieldPanel" field="planFieldSet" colSpan="12"
-      canMove="true" orderBy="sequence" grid-view="control-type-field-set-grid"
-      form-view="control-type-field-form"/>
+    <panel-related name="planFieldPanel" field="planFieldLineList" colSpan="12"
+      canMove="true" orderBy="sequence" grid-view="control-type-field-line-grid"
+      form-view="control-type-field-line-form"/>
 
-    <panel-related name="entryFieldPanel" field="entryFieldSet" colSpan="12"
-      canMove="true" orderBy="sequence" grid-view="control-type-field-set-grid"
-      form-view="control-type-field-form"/>
+    <panel-related name="entryFieldPanel" field="entryFieldLineList" colSpan="12"
+      canMove="true" orderBy="sequence" grid-view="control-type-field-line-grid"
+      form-view="control-type-field-line-form"/>
 
     <panel-tabs name="formulaTabsPanel">
       <panel name="formulaPanel" title="Formula">

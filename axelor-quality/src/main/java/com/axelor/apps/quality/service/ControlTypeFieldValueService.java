@@ -21,7 +21,7 @@ package com.axelor.apps.quality.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.quality.db.ControlEntryPlanLine;
 import com.axelor.apps.quality.db.ControlType;
-import com.axelor.apps.quality.db.ControlTypeField;
+import com.axelor.apps.quality.db.ControlTypeFieldLine;
 import com.axelor.apps.quality.db.ControlTypeFieldValue;
 import java.util.Collection;
 import java.util.List;
@@ -29,11 +29,11 @@ import java.util.Map;
 
 public interface ControlTypeFieldValueService {
 
-  /** Reference fields of the control type, entered on the control plan line. */
-  List<ControlTypeField> getPlanFields(ControlType controlType);
+  /** Reference fields of the control type, entered on the control plan line, in their order. */
+  List<ControlTypeFieldLine> getPlanFieldLines(ControlType controlType);
 
-  /** Measure fields of the control type, entered on each control entry sample line. */
-  List<ControlTypeField> getEntryFields(ControlType controlType);
+  /** Measure fields of the control type, entered on each sample, in their order. */
+  List<ControlTypeFieldLine> getEntryFieldLines(ControlType controlType);
 
   /**
    * Rebuilds the reference values of a control plan line from its control type: values of fields
@@ -46,7 +46,7 @@ public interface ControlTypeFieldValueService {
   /** Creates the empty measured values of an entry sample line from its control type. */
   void createEntryValues(ControlEntryPlanLine entryLine, ControlType controlType);
 
-  ControlTypeFieldValue createValue(ControlTypeField controlTypeField);
+  ControlTypeFieldValue createValue(ControlTypeFieldLine controlTypeFieldLine);
 
   ControlTypeFieldValue copyValue(ControlTypeFieldValue controlTypeFieldValue);
 

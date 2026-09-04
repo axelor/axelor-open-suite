@@ -46,11 +46,16 @@
   </input>
 
   <input file="quality_controlType.csv" separator=";"
-    type="com.axelor.apps.quality.db.ControlType" search="self.importId = :importId">
-    <bind to="planFieldSet" column="planFieldSet" search="self.importId in :planFieldSet"
-      eval="planFieldSet.split('\\|') as List" if="!planFieldSet.empty"/>
-    <bind to="entryFieldSet" column="entryFieldSet" search="self.importId in :entryFieldSet"
-      eval="entryFieldSet.split('\\|') as List" if="!entryFieldSet.empty"/>
+    type="com.axelor.apps.quality.db.ControlType" search="self.importId = :importId"/>
+
+  <input file="quality_controlTypeFieldLine.csv" separator=";"
+    type="com.axelor.apps.quality.db.ControlTypeFieldLine" search="self.importId = :importId">
+    <bind to="controlTypeField" column="controlTypeField"
+      search="self.importId = :controlTypeField"/>
+    <bind to="planControlType" column="planControlType"
+      search="self.importId = :planControlType" if="!planControlType.empty"/>
+    <bind to="entryControlType" column="entryControlType"
+      search="self.importId = :entryControlType" if="!entryControlType.empty"/>
   </input>
 
   <input file="meta_metaTranslation.csv" separator=";"

@@ -13,7 +13,6 @@
       selection="quality.control.type.field.type.select"/>
     <many-to-many name="valueSet"
       ref="com.axelor.apps.quality.db.CharacteristicProperty" title="Allowed values"/>
-    <integer name="sequence" title="Sequence"/>
     <boolean name="isRequired" title="Required"/>
 
     <extra-code>

@@ -22,13 +22,13 @@ import com.axelor.apps.quality.db.CharacteristicProperty;
 import com.axelor.apps.quality.db.ControlEntryPlanLine;
 import com.axelor.apps.quality.db.ControlType;
 import com.axelor.apps.quality.db.ControlTypeField;
+import com.axelor.apps.quality.db.ControlTypeFieldLine;
 import com.axelor.apps.quality.db.ControlTypeFieldValue;
 import com.axelor.apps.quality.db.repo.ControlTypeFieldRepository;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,6 +41,7 @@ class ControlTypeFieldValueServiceImplTest {
   private static final int USAGE_PLAN = 1;
   private static final int USAGE_ENTRY = 2;
   private static final Map<ControlTypeField, Integer> USAGES = new HashMap<>();
+  private static final Map<ControlTypeField, Integer> SEQUENCES = new HashMap<>();
 
   private static ControlTypeFieldValueService controlTypeFieldValueService;
 
@@ -101,23 +102,37 @@ class ControlTypeFieldValueServiceImplTest {
     field.setName(name);
     field.setCode(code);
     field.setTypeSelect(typeSelect);
-    field.setSequence(sequence);
+    SEQUENCES.put(field, sequence);
     USAGES.put(field, usageSelect);
     return field;
   }
 
-  /** The usage is carried by the collection holding the field, not by the field itself. */
+  /** The usage and the order are carried by the line linking the field to the control type. */
   protected static ControlType createControlType(ControlTypeField... fields) {
     ControlType controlType = new ControlType();
-    controlType.setPlanFieldSet(
-        Arrays.stream(fields)
-            .filter(field -> USAGES.get(field) == USAGE_PLAN)
-            .collect(Collectors.toCollection(LinkedHashSet::new)));
-    controlType.setEntryFieldSet(
-        Arrays.stream(fields)
-            .filter(field -> USAGES.get(field) == USAGE_ENTRY)
-            .collect(Collectors.toCollection(LinkedHashSet::new)));
+    controlType.setPlanFieldLineList(toLines(fields, USAGE_PLAN));
+    controlType.setEntryFieldLineList(toLines(fields, USAGE_ENTRY));
     return controlType;
+  }
+
+  protected static List<ControlTypeFieldLine> toLines(ControlTypeField[] fields, int usage) {
+    return Arrays.stream(fields)
+        .filter(field -> USAGES.get(field) == usage)
+        .map(
+            field -> {
+              ControlTypeFieldLine line = new ControlTypeFieldLine();
+              line.setControlTypeField(field);
+              line.setSequence(SEQUENCES.get(field));
+              return line;
+            })
+        .collect(Collectors.toList());
+  }
+
+  protected static ControlTypeFieldLine lineOf(ControlTypeField field) {
+    ControlTypeFieldLine line = new ControlTypeFieldLine();
+    line.setControlTypeField(field);
+    line.setSequence(SEQUENCES.get(field));
+    return line;
   }
 
   @Test
@@ -125,28 +140,32 @@ class ControlTypeFieldValueServiceImplTest {
     ControlType controlType =
         createControlType(nominalDimension, minTolerance, measuredDimension, acceptedColor);
 
-    List<ControlTypeField> planFields = controlTypeFieldValueService.getPlanFields(controlType);
-
     Assertions.assertEquals(
         Arrays.asList("minTolerance", "acceptedDimension", "acceptedColor"),
-        planFields.stream().map(ControlTypeField::getCode).collect(Collectors.toList()));
+        controlTypeFieldValueService.getPlanFieldLines(controlType).stream()
+            .map(line -> line.getControlTypeField().getCode())
+            .collect(Collectors.toList()));
 
-    List<ControlTypeField> entryFields = controlTypeFieldValueService.getEntryFields(controlType);
+    List<ControlTypeFieldLine> entryLines =
+        controlTypeFieldValueService.getEntryFieldLines(controlType);
 
-    Assertions.assertEquals(1, entryFields.size());
-    Assertions.assertEquals("mesuredDim", entryFields.get(0).getCode());
+    Assertions.assertEquals(1, entryLines.size());
+    Assertions.assertEquals("mesuredDim", entryLines.get(0).getControlTypeField().getCode());
   }
 
   @Test
   void testGetFieldsWithoutControlType() {
-    Assertions.assertTrue(controlTypeFieldValueService.getPlanFields(null).isEmpty());
+    Assertions.assertTrue(controlTypeFieldValueService.getPlanFieldLines(null).isEmpty());
+    Assertions.assertTrue(controlTypeFieldValueService.getEntryFieldLines(null).isEmpty());
   }
 
   @Test
   void testSyncPlanValuesKeepsFilledValuesAndDropsObsoleteOnes() {
-    ControlTypeFieldValue filledValue = controlTypeFieldValueService.createValue(minTolerance);
+    ControlTypeFieldValue filledValue =
+        controlTypeFieldValueService.createValue(lineOf(minTolerance));
     filledValue.setDecimalValue(BigDecimal.ONE);
-    ControlTypeFieldValue obsoleteValue = controlTypeFieldValueService.createValue(acceptedColor);
+    ControlTypeFieldValue obsoleteValue =
+        controlTypeFieldValueService.createValue(lineOf(acceptedColor));
     obsoleteValue.setTextValue("Blue");
 
     List<ControlTypeFieldValue> values =
@@ -190,13 +209,16 @@ class ControlTypeFieldValueServiceImplTest {
     CharacteristicProperty scratched = new CharacteristicProperty();
     scratched.setName("Scratched");
 
-    ControlTypeFieldValue decimalValue = controlTypeFieldValueService.createValue(minTolerance);
+    ControlTypeFieldValue decimalValue =
+        controlTypeFieldValueService.createValue(lineOf(minTolerance));
     decimalValue.setDecimalValue(new BigDecimal("0.500"));
-    ControlTypeFieldValue textValue = controlTypeFieldValueService.createValue(acceptedColor);
+    ControlTypeFieldValue textValue =
+        controlTypeFieldValueService.createValue(lineOf(acceptedColor));
     textValue.setTextValue("Blue");
-    ControlTypeFieldValue booleanValue = controlTypeFieldValueService.createValue(labelRequired);
+    ControlTypeFieldValue booleanValue =
+        controlTypeFieldValueService.createValue(lineOf(labelRequired));
     ControlTypeFieldValue selectionValue =
-        controlTypeFieldValueService.createValue(externalCondition);
+        controlTypeFieldValueService.createValue(lineOf(externalCondition));
     selectionValue.setSelectionValue(scratched);
 
     Map<String, Object> map =
@@ -218,17 +240,20 @@ class ControlTypeFieldValueServiceImplTest {
 
   @Test
   void testIsEmptyDistinguishesEmptyValuesFromZeroAndFalse() {
-    ControlTypeFieldValue decimalValue = controlTypeFieldValueService.createValue(minTolerance);
+    ControlTypeFieldValue decimalValue =
+        controlTypeFieldValueService.createValue(lineOf(minTolerance));
     Assertions.assertTrue(controlTypeFieldValueService.isEmpty(decimalValue));
     decimalValue.setDecimalValue(BigDecimal.ZERO);
     Assertions.assertFalse(controlTypeFieldValueService.isEmpty(decimalValue));
 
-    ControlTypeFieldValue booleanValue = controlTypeFieldValueService.createValue(labelRequired);
+    ControlTypeFieldValue booleanValue =
+        controlTypeFieldValueService.createValue(lineOf(labelRequired));
     Assertions.assertTrue(controlTypeFieldValueService.isEmpty(booleanValue));
     booleanValue.setBooleanValue(Boolean.FALSE);
     Assertions.assertFalse(controlTypeFieldValueService.isEmpty(booleanValue));
 
-    ControlTypeFieldValue textValue = controlTypeFieldValueService.createValue(acceptedColor);
+    ControlTypeFieldValue textValue =
+        controlTypeFieldValueService.createValue(lineOf(acceptedColor));
     Assertions.assertTrue(controlTypeFieldValueService.isEmpty(textValue));
     textValue.setTextValue("");
     Assertions.assertTrue(controlTypeFieldValueService.isEmpty(textValue));
@@ -238,7 +263,7 @@ class ControlTypeFieldValueServiceImplTest {
 
   @Test
   void testCopyValueKeepsFieldAndValue() {
-    ControlTypeFieldValue value = controlTypeFieldValueService.createValue(minTolerance);
+    ControlTypeFieldValue value = controlTypeFieldValueService.createValue(lineOf(minTolerance));
     value.setDecimalValue(new BigDecimal("1.250"));
 
     ControlTypeFieldValue copy = controlTypeFieldValueService.copyValue(value);
@@ -253,14 +278,16 @@ class ControlTypeFieldValueServiceImplTest {
   @Test
   void testGetMissingRequiredFieldNamesIgnoresFilledAndOptionalFields() {
     ControlTypeField requiredReference = createRequiredField("requiredDimension");
-    ControlTypeFieldValue filledValue = controlTypeFieldValueService.createValue(requiredReference);
+    ControlTypeFieldValue filledValue =
+        controlTypeFieldValueService.createValue(lineOf(requiredReference));
     filledValue.setDecimalValue(BigDecimal.TEN);
 
     Assertions.assertTrue(
         controlTypeFieldValueService
             .getMissingRequiredFieldNames(
                 createControlType(requiredReference, minTolerance),
-                Arrays.asList(filledValue, controlTypeFieldValueService.createValue(minTolerance)),
+                Arrays.asList(
+                    filledValue, controlTypeFieldValueService.createValue(lineOf(minTolerance))),
                 null)
             .isEmpty());
   }
@@ -273,7 +300,8 @@ class ControlTypeFieldValueServiceImplTest {
         Collections.singletonList("requiredDimension"),
         controlTypeFieldValueService.getMissingRequiredFieldNames(
             createControlType(requiredReference),
-            Collections.singletonList(controlTypeFieldValueService.createValue(requiredReference)),
+            Collections.singletonList(
+                controlTypeFieldValueService.createValue(lineOf(requiredReference))),
             null));
   }
 
@@ -293,10 +321,10 @@ class ControlTypeFieldValueServiceImplTest {
   }
 
   @Test
-  void testCreateValueCopiesTheSequenceOfTheField() {
+  void testCreateValueCopiesTheSequenceOfTheLine() {
     Assertions.assertEquals(
-        nominalDimension.getSequence(),
-        controlTypeFieldValueService.createValue(nominalDimension).getSequence());
+        SEQUENCES.get(nominalDimension),
+        controlTypeFieldValueService.createValue(lineOf(nominalDimension)).getSequence());
   }
 
   protected static ControlTypeField createRequiredField(String name) {

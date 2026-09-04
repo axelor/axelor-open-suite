@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.quality.db.ControlEntryPlanLine;
 import com.axelor.apps.quality.db.ControlType;
 import com.axelor.apps.quality.db.ControlTypeField;
+import com.axelor.apps.quality.db.ControlTypeFieldLine;
 import com.axelor.apps.quality.db.ControlTypeFieldValue;
 import com.axelor.apps.quality.db.repo.ControlTypeFieldRepository;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
@@ -37,33 +38,38 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ControlTypeFieldValueServiceImpl implements ControlTypeFieldValueService {
 
-  protected static final Comparator<ControlTypeField> FIELD_COMPARATOR =
+  protected static final Comparator<ControlTypeFieldLine> LINE_COMPARATOR =
       Comparator.comparingInt(
-              (ControlTypeField field) -> Optional.ofNullable(field.getSequence()).orElse(0))
+              (ControlTypeFieldLine line) -> Optional.ofNullable(line.getSequence()).orElse(0))
           .thenComparing(
-              field -> Optional.ofNullable(field.getName()).orElse(""),
+              line ->
+                  Optional.ofNullable(line.getControlTypeField())
+                      .map(ControlTypeField::getName)
+                      .orElse(""),
               String.CASE_INSENSITIVE_ORDER);
 
   @Override
-  public List<ControlTypeField> getPlanFields(ControlType controlType) {
-    return sort(controlType == null ? null : controlType.getPlanFieldSet());
+  public List<ControlTypeFieldLine> getPlanFieldLines(ControlType controlType) {
+    return sort(controlType == null ? null : controlType.getPlanFieldLineList());
   }
 
   @Override
-  public List<ControlTypeField> getEntryFields(ControlType controlType) {
-    return sort(controlType == null ? null : controlType.getEntryFieldSet());
+  public List<ControlTypeFieldLine> getEntryFieldLines(ControlType controlType) {
+    return sort(controlType == null ? null : controlType.getEntryFieldLineList());
   }
 
-  protected List<ControlTypeField> sort(Set<ControlTypeField> fields) {
-    if (fields == null) {
+  protected List<ControlTypeFieldLine> sort(List<ControlTypeFieldLine> lines) {
+    if (lines == null) {
       return Collections.emptyList();
     }
-    return fields.stream().sorted(FIELD_COMPARATOR).collect(Collectors.toList());
+    return lines.stream()
+        .filter(line -> line.getControlTypeField() != null)
+        .sorted(LINE_COMPARATOR)
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -73,10 +79,11 @@ public class ControlTypeFieldValueServiceImpl implements ControlTypeFieldValueSe
     Map<ControlTypeField, ControlTypeFieldValue> currentValueMap = indexByField(currentValues);
 
     List<ControlTypeFieldValue> values = new ArrayList<>();
-    for (ControlTypeField field : getPlanFields(controlType)) {
+    for (ControlTypeFieldLine line : getPlanFieldLines(controlType)) {
       ControlTypeFieldValue value =
-          Optional.ofNullable(currentValueMap.get(field)).orElseGet(() -> createValue(field));
-      copyFieldDefinition(value, field);
+          Optional.ofNullable(currentValueMap.get(line.getControlTypeField()))
+              .orElseGet(() -> createValue(line));
+      copyFieldDefinition(value, line);
       values.add(value);
     }
     return values;
@@ -86,16 +93,16 @@ public class ControlTypeFieldValueServiceImpl implements ControlTypeFieldValueSe
   public void createEntryValues(ControlEntryPlanLine entryLine, ControlType controlType) {
     Objects.requireNonNull(entryLine);
 
-    getEntryFields(controlType).stream()
+    getEntryFieldLines(controlType).stream()
         .map(this::createValue)
         .forEach(entryLine::addEntryValueListItem);
   }
 
   @Override
-  public ControlTypeFieldValue createValue(ControlTypeField controlTypeField) {
+  public ControlTypeFieldValue createValue(ControlTypeFieldLine controlTypeFieldLine) {
     ControlTypeFieldValue value = new ControlTypeFieldValue();
-    value.setControlTypeField(controlTypeField);
-    copyFieldDefinition(value, controlTypeField);
+    value.setControlTypeField(controlTypeFieldLine.getControlTypeField());
+    copyFieldDefinition(value, controlTypeFieldLine);
     return value;
   }
 
@@ -103,23 +110,22 @@ public class ControlTypeFieldValueServiceImpl implements ControlTypeFieldValueSe
    * The sequence and the type are copied on the value: an editor cannot rely on a dotted field of
    * the control type field, and a collection order by cannot cross that association either.
    */
-  protected void copyFieldDefinition(
-      ControlTypeFieldValue value, ControlTypeField controlTypeField) {
-    value.setSequence(getSequence(controlTypeField));
-    value.setFieldTypeSelect(controlTypeField == null ? null : controlTypeField.getTypeSelect());
-  }
-
-  protected Integer getSequence(ControlTypeField controlTypeField) {
-    return controlTypeField == null
-        ? 0
-        : Optional.ofNullable(controlTypeField.getSequence()).orElse(0);
+  protected void copyFieldDefinition(ControlTypeFieldValue value, ControlTypeFieldLine line) {
+    value.setSequence(Optional.ofNullable(line.getSequence()).orElse(0));
+    value.setFieldTypeSelect(
+        Optional.ofNullable(line.getControlTypeField())
+            .map(ControlTypeField::getTypeSelect)
+            .orElse(null));
   }
 
   @Override
   public ControlTypeFieldValue copyValue(ControlTypeFieldValue controlTypeFieldValue) {
     Objects.requireNonNull(controlTypeFieldValue);
 
-    ControlTypeFieldValue copy = createValue(controlTypeFieldValue.getControlTypeField());
+    ControlTypeFieldValue copy = new ControlTypeFieldValue();
+    copy.setControlTypeField(controlTypeFieldValue.getControlTypeField());
+    copy.setSequence(controlTypeFieldValue.getSequence());
+    copy.setFieldTypeSelect(controlTypeFieldValue.getFieldTypeSelect());
     copy.setDecimalValue(controlTypeFieldValue.getDecimalValue());
     copy.setTextValue(controlTypeFieldValue.getTextValue());
     copy.setBooleanValue(controlTypeFieldValue.getBooleanValue());
@@ -181,9 +187,17 @@ public class ControlTypeFieldValueServiceImpl implements ControlTypeFieldValueSe
       Collection<ControlTypeFieldValue> entryValues) {
 
     List<String> missingFieldNames = new ArrayList<>();
-    collectMissingRequiredFieldNames(getPlanFields(controlType), planValues, missingFieldNames);
-    collectMissingRequiredFieldNames(getEntryFields(controlType), entryValues, missingFieldNames);
+    collectMissingRequiredFieldNames(
+        toFields(getPlanFieldLines(controlType)), planValues, missingFieldNames);
+    collectMissingRequiredFieldNames(
+        toFields(getEntryFieldLines(controlType)), entryValues, missingFieldNames);
     return missingFieldNames;
+  }
+
+  protected List<ControlTypeField> toFields(List<ControlTypeFieldLine> lines) {
+    return lines.stream()
+        .map(ControlTypeFieldLine::getControlTypeField)
+        .collect(Collectors.toList());
   }
 
   protected void collectMissingRequiredFieldNames(
