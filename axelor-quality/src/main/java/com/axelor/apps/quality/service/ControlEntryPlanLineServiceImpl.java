@@ -29,6 +29,7 @@ import com.axelor.apps.quality.db.repo.ControlTypeFieldValueRepository;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.script.GroovyScriptHelper;
+import com.axelor.script.ScriptBindings;
 import com.axelor.script.ScriptHelper;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -38,7 +39,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.script.SimpleBindings;
 
 public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineService {
 
@@ -110,7 +110,7 @@ public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineServ
    * plan}, the values measured on the sample line under {@code entry}, both indexed by field code.
    * Reference values are read from the control plan line, they are not duplicated on entry lines.
    */
-  protected SimpleBindings getBindings(ControlEntryPlanLine controlEntryPlanLine)
+  protected ScriptBindings getBindings(ControlEntryPlanLine controlEntryPlanLine)
       throws AxelorException {
 
     ControlEntryPlanLine controlPlanLine = controlEntryPlanLine.getControlPlanLine();
@@ -133,7 +133,7 @@ public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineServ
     bindings.put("entry", controlTypeFieldValueService.toScriptMap(entryValues));
     bindings.put("line", controlEntryPlanLine);
 
-    return new SimpleBindings(bindings);
+    return new ScriptBindings(bindings);
   }
 
   /** Reference and measured values of the couple (control plan line, entry line), in one query. */

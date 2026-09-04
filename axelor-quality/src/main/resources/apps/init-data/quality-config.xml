@@ -41,8 +41,6 @@
       check-message="Invalid typeSelect"/>
     <bind to="valueSet" column="valueSet" search="self.importId in :valueSet"
       eval="valueSet.split('\\|') as List" if="!valueSet.empty"/>
-    <bind to="controlTypeSet" column="controlTypeSet" search="self.importId in :controlTypeSet"
-      eval="controlTypeSet.split('\\|') as List" if="!controlTypeSet.empty"/>
   </input>
 
   <input file="quality_controlType.csv" separator=";"
