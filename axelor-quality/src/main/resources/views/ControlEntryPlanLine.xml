@@ -46,7 +46,7 @@
       <field name="planValueList" showTitle="false" colSpan="12" canNew="false"
         canRemove="false" grid-view="control-type-field-value-grid"
         form-view="control-type-field-value-form">
-        <editor x-show-titles="false">
+        <editor x-show-titles="false" x-viewer="true">
           <field name="controlTypeField" readonly="true" canEdit="false" canView="false"/>
           <panel name="valuePanel" stacked="true" showTitle="false" itemSpan="12">
             <field name="fieldTypeSelect" hidden="true"/>
@@ -104,7 +104,7 @@
         <field name="entryValueList" showTitle="false" colSpan="12" canNew="false"
           canRemove="false" grid-view="control-type-field-value-grid"
           form-view="control-type-field-value-form">
-          <editor x-show-titles="false">
+          <editor x-show-titles="false" x-viewer="true">
             <field name="controlTypeField" readonly="true" canEdit="false" canView="false"/>
             <panel name="valuePanel" stacked="true" showTitle="false" itemSpan="12">
               <field name="fieldTypeSelect" hidden="true"/>
