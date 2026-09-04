@@ -5,7 +5,7 @@
 
   <grid name="control-type-field-line-grid" title="Fields"
     model="com.axelor.apps.quality.db.ControlTypeFieldLine" canMove="true">
-    <field name="controlTypeField" form-view="control-type-field-form"
+    <field name="controlTypeField" canNew="true" form-view="control-type-field-form"
       grid-view="control-type-field-grid"/>
     <field name="controlTypeField.code"/>
     <field name="controlTypeField.typeSelect"/>
@@ -16,8 +16,8 @@
   <form name="control-type-field-line-form" title="Field"
     model="com.axelor.apps.quality.db.ControlTypeFieldLine">
     <panel name="mainPanel" colSpan="12">
-      <field name="controlTypeField" colSpan="6" form-view="control-type-field-form"
-        grid-view="control-type-field-grid"/>
+      <field name="controlTypeField" colSpan="6" canNew="true"
+        form-view="control-type-field-form" grid-view="control-type-field-grid"/>
       <field name="sequence" colSpan="6"/>
     </panel>
   </form>
