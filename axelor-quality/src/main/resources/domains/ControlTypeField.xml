@@ -11,10 +11,6 @@
     <string name="code" title="Code" required="true" unique="true"/>
     <integer name="typeSelect" title="Type" required="true"
       selection="quality.control.type.field.type.select"/>
-    <integer name="usageSelect" title="Usage" required="true"
-      selection="quality.control.type.field.usage.select"/>
-    <many-to-many name="controlTypeSet" ref="com.axelor.apps.quality.db.ControlType"
-      title="Control types"/>
     <many-to-many name="valueSet"
       ref="com.axelor.apps.quality.db.CharacteristicProperty" title="Allowed values"/>
     <integer name="sequence" title="Sequence"/>
@@ -27,8 +23,6 @@
 				public static final int TYPE_BOOLEAN = 3;
 				public static final int TYPE_SELECTION = 4;
 
-				public static final int USAGE_PLAN = 1;
-				public static final int USAGE_ENTRY = 2;
 			]]>
     </extra-code>
   </entity>

@@ -4,30 +4,25 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="control-type-field-grid" title="Control type fields"
-    model="com.axelor.apps.quality.db.ControlTypeField" canMove="true"
-    orderBy="sequence,usageSelect,name">
-    <field name="sequence"/>
-    <field name="name"/>
-    <field name="code"/>
-    <field name="typeSelect"/>
-    <field name="usageSelect"/>
-    <field name="isRequired"/>
-  </grid>
-
-  <grid name="control-type-field-dashlet-grid" title="Fields"
     model="com.axelor.apps.quality.db.ControlTypeField" canMove="true" orderBy="sequence,name">
     <field name="sequence"/>
     <field name="name"/>
     <field name="code"/>
     <field name="typeSelect"/>
     <field name="isRequired"/>
-    <button name="removeFromControlTypeBtn" title="Remove from the control type" icon="x-lg"
-      onClick="action-quality-control-type-field-method-remove-from-control-type"/>
+  </grid>
+
+  <grid name="control-type-field-set-grid" title="Fields"
+    model="com.axelor.apps.quality.db.ControlTypeField" orderBy="sequence,name">
+    <field name="sequence"/>
+    <field name="name"/>
+    <field name="code"/>
+    <field name="typeSelect"/>
+    <field name="isRequired"/>
   </grid>
 
   <form name="control-type-field-form" title="Control type field"
     model="com.axelor.apps.quality.db.ControlTypeField"
-    onNew="action-quality-control-type-field-record-default"
     onLoad="action-quality-control-type-field-method-set-used-fields-readonly">
     <panel name="mainPanel" colSpan="12">
       <field name="$usedFieldMessage" showTitle="false" readonly="true" colSpan="12"
@@ -45,7 +40,6 @@
         help="Technical key used in the conformity formula of the control type, as plan.code or entry.code."/>
       <field name="typeSelect" colSpan="6"
         onChange="action-quality-control-type-field-record-reset-type-values"/>
-      <field name="usageSelect" colSpan="6"/>
       <field name="sequence" colSpan="6"/>
       <field name="isRequired" colSpan="6"/>
       <field name="valueSet" colSpan="12" widget="Tags" showIf="typeSelect == 4"/>

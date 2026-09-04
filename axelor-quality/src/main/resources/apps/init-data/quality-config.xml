@@ -28,9 +28,6 @@
   <input file="quality_characteristicProperty.csv" separator=";"
     type="com.axelor.apps.quality.db.CharacteristicProperty" search="self.importId = :importId"/>
 
-  <input file="quality_controlType.csv" separator=";"
-    type="com.axelor.apps.quality.db.ControlType" search="self.importId = :importId"/>
-
   <input file="quality_controlTypeField.csv" separator=";"
     type="com.axelor.apps.quality.db.ControlTypeField" search="self.importId = :importId">
     <bind to="name" column="name"
@@ -42,13 +39,18 @@
     <bind to="typeSelect" column="typeSelect"
       check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.quality.db.ControlTypeField', 'typeSelect', typeSelect)"
       check-message="Invalid typeSelect"/>
-    <bind to="usageSelect" column="usageSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.quality.db.ControlTypeField', 'usageSelect', usageSelect)"
-      check-message="Invalid usageSelect"/>
     <bind to="valueSet" column="valueSet" search="self.importId in :valueSet"
       eval="valueSet.split('\\|') as List" if="!valueSet.empty"/>
     <bind to="controlTypeSet" column="controlTypeSet" search="self.importId in :controlTypeSet"
       eval="controlTypeSet.split('\\|') as List" if="!controlTypeSet.empty"/>
+  </input>
+
+  <input file="quality_controlType.csv" separator=";"
+    type="com.axelor.apps.quality.db.ControlType" search="self.importId = :importId">
+    <bind to="planFieldSet" column="planFieldSet" search="self.importId in :planFieldSet"
+      eval="planFieldSet.split('\\|') as List" if="!planFieldSet.empty"/>
+    <bind to="entryFieldSet" column="entryFieldSet" search="self.importId in :entryFieldSet"
+      eval="entryFieldSet.split('\\|') as List" if="!entryFieldSet.empty"/>
   </input>
 
   <input file="meta_metaTranslation.csv" separator=";"

@@ -27,6 +27,7 @@ import com.axelor.apps.quality.db.repo.ControlTypeFieldRepository;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 class ControlTypeFieldValueServiceImplTest {
+
+  private static final int USAGE_PLAN = 1;
+  private static final int USAGE_ENTRY = 2;
+  private static final Map<ControlTypeField, Integer> USAGES = new HashMap<>();
 
   private static ControlTypeFieldValueService controlTypeFieldValueService;
 
@@ -55,42 +60,38 @@ class ControlTypeFieldValueServiceImplTest {
             "Nominal dimension",
             "acceptedDimension",
             ControlTypeFieldRepository.TYPE_DECIMAL,
-            ControlTypeFieldRepository.USAGE_PLAN,
+            USAGE_PLAN,
             2);
     minTolerance =
         createField(
             "Min tolerance",
             "minTolerance",
             ControlTypeFieldRepository.TYPE_DECIMAL,
-            ControlTypeFieldRepository.USAGE_PLAN,
+            USAGE_PLAN,
             1);
     measuredDimension =
         createField(
             "Measured dimension",
             "mesuredDim",
             ControlTypeFieldRepository.TYPE_DECIMAL,
-            ControlTypeFieldRepository.USAGE_ENTRY,
+            USAGE_ENTRY,
             1);
     acceptedColor =
         createField(
-            "Accepted color",
-            "acceptedColor",
-            ControlTypeFieldRepository.TYPE_TEXT,
-            ControlTypeFieldRepository.USAGE_PLAN,
-            3);
+            "Accepted color", "acceptedColor", ControlTypeFieldRepository.TYPE_TEXT, USAGE_PLAN, 3);
     labelRequired =
         createField(
             "Label required",
             "isLabelRequired",
             ControlTypeFieldRepository.TYPE_BOOLEAN,
-            ControlTypeFieldRepository.USAGE_PLAN,
+            USAGE_PLAN,
             4);
     externalCondition =
         createField(
             "Accepted external condition",
             "acceptedExternalCondition",
             ControlTypeFieldRepository.TYPE_SELECTION,
-            ControlTypeFieldRepository.USAGE_PLAN,
+            USAGE_PLAN,
             5);
   }
 
@@ -100,31 +101,37 @@ class ControlTypeFieldValueServiceImplTest {
     field.setName(name);
     field.setCode(code);
     field.setTypeSelect(typeSelect);
-    field.setUsageSelect(usageSelect);
     field.setSequence(sequence);
+    USAGES.put(field, usageSelect);
     return field;
   }
 
+  /** The usage is carried by the collection holding the field, not by the field itself. */
   protected static ControlType createControlType(ControlTypeField... fields) {
     ControlType controlType = new ControlType();
-    controlType.setControlTypeFieldSet(new LinkedHashSet<>(Arrays.asList(fields)));
+    controlType.setPlanFieldSet(
+        Arrays.stream(fields)
+            .filter(field -> USAGES.get(field) == USAGE_PLAN)
+            .collect(Collectors.toCollection(LinkedHashSet::new)));
+    controlType.setEntryFieldSet(
+        Arrays.stream(fields)
+            .filter(field -> USAGES.get(field) == USAGE_ENTRY)
+            .collect(Collectors.toCollection(LinkedHashSet::new)));
     return controlType;
   }
 
   @Test
-  void testGetFieldsFiltersOnUsageAndOrdersOnSequence() {
+  void testGetFieldsSplitsOnTheCollectionAndOrdersOnSequence() {
     ControlType controlType =
         createControlType(nominalDimension, minTolerance, measuredDimension, acceptedColor);
 
-    List<ControlTypeField> planFields =
-        controlTypeFieldValueService.getFields(controlType, ControlTypeFieldRepository.USAGE_PLAN);
+    List<ControlTypeField> planFields = controlTypeFieldValueService.getPlanFields(controlType);
 
     Assertions.assertEquals(
         Arrays.asList("minTolerance", "acceptedDimension", "acceptedColor"),
         planFields.stream().map(ControlTypeField::getCode).collect(Collectors.toList()));
 
-    List<ControlTypeField> entryFields =
-        controlTypeFieldValueService.getFields(controlType, ControlTypeFieldRepository.USAGE_ENTRY);
+    List<ControlTypeField> entryFields = controlTypeFieldValueService.getEntryFields(controlType);
 
     Assertions.assertEquals(1, entryFields.size());
     Assertions.assertEquals("mesuredDim", entryFields.get(0).getCode());
@@ -132,10 +139,7 @@ class ControlTypeFieldValueServiceImplTest {
 
   @Test
   void testGetFieldsWithoutControlType() {
-    Assertions.assertTrue(
-        controlTypeFieldValueService
-            .getFields(null, ControlTypeFieldRepository.USAGE_PLAN)
-            .isEmpty());
+    Assertions.assertTrue(controlTypeFieldValueService.getPlanFields(null).isEmpty());
   }
 
   @Test
@@ -277,7 +281,7 @@ class ControlTypeFieldValueServiceImplTest {
   void testGetMissingRequiredFieldNamesReportsFieldsWithoutAnyValue() {
     ControlTypeField requiredReference = createRequiredField("requiredDimension");
     ControlTypeField requiredMeasure = createRequiredField("requiredMeasure");
-    requiredMeasure.setUsageSelect(ControlTypeFieldRepository.USAGE_ENTRY);
+    USAGES.put(requiredMeasure, USAGE_ENTRY);
 
     // the fields were added to the control type after the lines were created: no value at all
     Assertions.assertEquals(
@@ -297,12 +301,7 @@ class ControlTypeFieldValueServiceImplTest {
 
   protected static ControlTypeField createRequiredField(String name) {
     ControlTypeField field =
-        createField(
-            name,
-            name,
-            ControlTypeFieldRepository.TYPE_DECIMAL,
-            ControlTypeFieldRepository.USAGE_PLAN,
-            1);
+        createField(name, name, ControlTypeFieldRepository.TYPE_DECIMAL, USAGE_PLAN, 1);
     field.setIsRequired(true);
     return field;
   }

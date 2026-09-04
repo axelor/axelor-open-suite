@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ControlTypeFieldValueServiceImpl implements ControlTypeFieldValueService {
@@ -49,14 +50,20 @@ public class ControlTypeFieldValueServiceImpl implements ControlTypeFieldValueSe
               String.CASE_INSENSITIVE_ORDER);
 
   @Override
-  public List<ControlTypeField> getFields(ControlType controlType, int usageSelect) {
-    if (controlType == null || controlType.getControlTypeFieldSet() == null) {
+  public List<ControlTypeField> getPlanFields(ControlType controlType) {
+    return sort(controlType == null ? null : controlType.getPlanFieldSet());
+  }
+
+  @Override
+  public List<ControlTypeField> getEntryFields(ControlType controlType) {
+    return sort(controlType == null ? null : controlType.getEntryFieldSet());
+  }
+
+  protected List<ControlTypeField> sort(Set<ControlTypeField> fields) {
+    if (fields == null) {
       return Collections.emptyList();
     }
-    return controlType.getControlTypeFieldSet().stream()
-        .filter(field -> Objects.equals(usageSelect, field.getUsageSelect()))
-        .sorted(FIELD_COMPARATOR)
-        .collect(Collectors.toList());
+    return fields.stream().sorted(FIELD_COMPARATOR).collect(Collectors.toList());
   }
 
   @Override
@@ -66,7 +73,7 @@ public class ControlTypeFieldValueServiceImpl implements ControlTypeFieldValueSe
     Map<ControlTypeField, ControlTypeFieldValue> currentValueMap = indexByField(currentValues);
 
     List<ControlTypeFieldValue> values = new ArrayList<>();
-    for (ControlTypeField field : getFields(controlType, ControlTypeFieldRepository.USAGE_PLAN)) {
+    for (ControlTypeField field : getPlanFields(controlType)) {
       ControlTypeFieldValue value =
           Optional.ofNullable(currentValueMap.get(field)).orElseGet(() -> createValue(field));
       copyFieldDefinition(value, field);
@@ -79,7 +86,7 @@ public class ControlTypeFieldValueServiceImpl implements ControlTypeFieldValueSe
   public void createEntryValues(ControlEntryPlanLine entryLine, ControlType controlType) {
     Objects.requireNonNull(entryLine);
 
-    getFields(controlType, ControlTypeFieldRepository.USAGE_ENTRY).stream()
+    getEntryFields(controlType).stream()
         .map(this::createValue)
         .forEach(entryLine::addEntryValueListItem);
   }
@@ -174,14 +181,8 @@ public class ControlTypeFieldValueServiceImpl implements ControlTypeFieldValueSe
       Collection<ControlTypeFieldValue> entryValues) {
 
     List<String> missingFieldNames = new ArrayList<>();
-    collectMissingRequiredFieldNames(
-        getFields(controlType, ControlTypeFieldRepository.USAGE_PLAN),
-        planValues,
-        missingFieldNames);
-    collectMissingRequiredFieldNames(
-        getFields(controlType, ControlTypeFieldRepository.USAGE_ENTRY),
-        entryValues,
-        missingFieldNames);
+    collectMissingRequiredFieldNames(getPlanFields(controlType), planValues, missingFieldNames);
+    collectMissingRequiredFieldNames(getEntryFields(controlType), entryValues, missingFieldNames);
     return missingFieldNames;
   }
 

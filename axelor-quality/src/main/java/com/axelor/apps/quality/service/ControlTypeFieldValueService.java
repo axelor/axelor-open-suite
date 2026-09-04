@@ -29,14 +29,11 @@ import java.util.Map;
 
 public interface ControlTypeFieldValueService {
 
-  /**
-   * Fields of the control type having the given usage, ordered by sequence then name.
-   *
-   * @param controlType the control type, may be null
-   * @param usageSelect {@link com.axelor.apps.quality.db.repo.ControlTypeFieldRepository}
-   *     USAGE_PLAN or USAGE_ENTRY
-   */
-  List<ControlTypeField> getFields(ControlType controlType, int usageSelect);
+  /** Reference fields of the control type, entered on the control plan line. */
+  List<ControlTypeField> getPlanFields(ControlType controlType);
+
+  /** Measure fields of the control type, entered on each control entry sample line. */
+  List<ControlTypeField> getEntryFields(ControlType controlType);
 
   /**
    * Rebuilds the reference values of a control plan line from its control type: values of fields

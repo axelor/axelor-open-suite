@@ -11,9 +11,11 @@
     <string name="conformityFormula" title="Formula" large="true"/>
     <string name="formulaDescription" title="Formula description" large="true"/>
 
-    <many-to-many name="controlTypeFieldSet"
-      ref="com.axelor.apps.quality.db.ControlTypeField" mappedBy="controlTypeSet" title="Fields"
-      orderBy="usageSelect,sequence,name"/>
+    <many-to-many name="planFieldSet" ref="com.axelor.apps.quality.db.ControlTypeField"
+      title="Control plan fields" orderBy="sequence,name"/>
+    <many-to-many name="entryFieldSet"
+      ref="com.axelor.apps.quality.db.ControlTypeField" title="Control entry fields"
+      orderBy="sequence,name"/>
 
   </entity>
 

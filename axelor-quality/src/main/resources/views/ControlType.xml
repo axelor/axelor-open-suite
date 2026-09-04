@@ -15,30 +15,13 @@
       <field name="name" colSpan="12"/>
     </panel>
 
-    <panel name="controlTypeFieldPanel" showTitle="false" colSpan="12" showIf="id">
-      <panel-dashlet name="planFieldDashlet" colSpan="12" height="200%"
-        x-show-bars="true" canSearch="true" canNew="id" canDelete="false"
-        action="action-quality-control-type-field-view-plan-fields"/>
-      <panel-dashlet name="entryFieldDashlet" colSpan="12" height="200%"
-        x-show-bars="true" canSearch="true" canNew="id" canDelete="false"
-        action="action-quality-control-type-field-view-entry-fields"/>
-    </panel>
+    <panel-related name="planFieldPanel" field="planFieldSet" colSpan="12"
+      canMove="true" orderBy="sequence,name" grid-view="control-type-field-set-grid"
+      form-view="control-type-field-form"/>
 
-    <panel name="controlTypeFieldHelpPanel" showTitle="false" colSpan="12" hideIf="id">
-      <field name="$saveFirstViewer" showTitle="false" readonly="true" colSpan="12">
-        <viewer><![CDATA[
-			<>
-				<Alert variant="info" mb={0} p={2}>
-					<span>{_t('Save the control type to configure its fields.')}</span>
-				</Alert>
-			</>
-		  ]]></viewer>
-      </field>
-    </panel>
-
-    <panel name="descriptionPanel" showTitle="false" colSpan="12">
-      <field name="formulaDescription" colSpan="12"/>
-    </panel>
+    <panel-related name="entryFieldPanel" field="entryFieldSet" colSpan="12"
+      canMove="true" orderBy="sequence,name" grid-view="control-type-field-set-grid"
+      form-view="control-type-field-form"/>
 
     <panel-tabs name="formulaTabsPanel">
       <panel name="formulaPanel" title="Formula">
@@ -85,27 +68,5 @@
       </panel>
     </panel-tabs>
   </form>
-
-  <action-view name="action-quality-control-type-field-view-plan-fields"
-    title="Control plan fields" model="com.axelor.apps.quality.db.ControlTypeField">
-    <view type="grid" name="control-type-field-dashlet-grid"/>
-    <view type="form" name="control-type-field-form"/>
-    <domain>self.usageSelect = 1 AND self.id IN (SELECT f.id FROM ControlType t JOIN
-      t.controlTypeFieldSet f WHERE t.id = :_controlTypeId)</domain>
-    <context name="_controlTypeId" expr="eval: id"/>
-    <context name="_controlType" expr="eval: __self__"/>
-    <context name="_usageSelect" expr="eval: 1"/>
-  </action-view>
-
-  <action-view name="action-quality-control-type-field-view-entry-fields"
-    title="Control entry fields" model="com.axelor.apps.quality.db.ControlTypeField">
-    <view type="grid" name="control-type-field-dashlet-grid"/>
-    <view type="form" name="control-type-field-form"/>
-    <domain>self.usageSelect = 2 AND self.id IN (SELECT f.id FROM ControlType t JOIN
-      t.controlTypeFieldSet f WHERE t.id = :_controlTypeId)</domain>
-    <context name="_controlTypeId" expr="eval: id"/>
-    <context name="_controlType" expr="eval: __self__"/>
-    <context name="_usageSelect" expr="eval: 2"/>
-  </action-view>
 
 </object-views>
