@@ -52,26 +52,29 @@ public class ControlTypeFieldController {
     response.setAttr("$usedFieldMessage", "hidden", !isUsed);
   }
 
-  /** Attaches an existing field to the control type the dashlet belongs to. */
+  /** Attaches the existing fields selected in the wizard to the control type of the dashlet. */
+  @SuppressWarnings("unchecked")
   public void addToControlType(ActionRequest request, ActionResponse response) {
 
-    ControlType controlType = getControlType(request.getContext().get("id"));
-    Object selected = request.getContext().get("_fieldToAdd");
+    ControlType controlType = getControlType(request.getContext().get("_controlTypeId"));
+    List<Map<String, Object>> selectedFields =
+        (List<Map<String, Object>>) request.getContext().get("controlTypeFieldSet");
 
-    if (controlType == null || !(selected instanceof Map)) {
+    if (controlType == null || selectedFields == null) {
+      response.setCanClose(true);
       return;
     }
 
-    ControlTypeField controlTypeField =
-        Beans.get(ControlTypeFieldRepository.class)
-            .find(Long.valueOf(((Map<?, ?>) selected).get("id").toString()));
+    ControlTypeFieldRepository controlTypeFieldRepository =
+        Beans.get(ControlTypeFieldRepository.class);
+    selectedFields.stream()
+        .map(
+            selected ->
+                controlTypeFieldRepository.find(Long.valueOf(selected.get("id").toString())))
+        .filter(Objects::nonNull)
+        .forEach(controlTypeField -> link(controlTypeField, controlType, true));
 
-    if (controlTypeField != null) {
-      link(controlTypeField, controlType, true);
-    }
-
-    response.setValue("$fieldToAdd", null);
-    response.setReload(true);
+    response.setCanClose(true);
   }
 
   /** Detaches the fields selected in a dashlet from their control type, without deleting them. */

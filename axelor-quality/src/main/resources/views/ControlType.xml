@@ -17,15 +17,10 @@
 
     <panel name="controlTypeFieldPanel" showTitle="false" colSpan="12" showIf="id">
       <panel-dashlet name="planFieldDashlet" colSpan="12" height="200%"
+        x-show-bars="true" canSearch="true" canNew="id" canDelete="false"
         action="action-quality-control-type-field-view-plan-fields"/>
-      <field name="$fieldToAdd" type="many-to-one" title="Add an existing field" colSpan="6"
-        target="com.axelor.apps.quality.db.ControlTypeField" form-view="control-type-field-form"
-        grid-view="control-type-field-grid" canNew="false" canEdit="false"
-        domain="self.id NOT IN (SELECT f.id FROM ControlType t JOIN t.controlTypeFieldSet f WHERE t.id = :id)"
-        onChange="action-quality-control-type-field-method-add-to-control-type"/>
-      <spacer colSpan="6"/>
-
       <panel-dashlet name="entryFieldDashlet" colSpan="12" height="200%"
+        x-show-bars="true" canSearch="true" canNew="id" canDelete="false"
         action="action-quality-control-type-field-view-entry-fields"/>
     </panel>
 
