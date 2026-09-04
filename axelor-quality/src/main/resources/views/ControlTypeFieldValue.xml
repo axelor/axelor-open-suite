@@ -5,14 +5,14 @@
 
   <grid name="control-type-field-value-grid" title="Values"
     model="com.axelor.apps.quality.db.ControlTypeFieldValue" canNew="false" canDelete="false"
-    orderBy="controlTypeField.sequence,controlTypeField.name">
+    orderBy="sequence">
     <field name="controlTypeField" readonly="true" width="300"/>
     <field name="displayValue"/>
   </grid>
 
   <grid name="control-type-field-value-readonly-grid" title="Targets"
     model="com.axelor.apps.quality.db.ControlTypeFieldValue" canNew="false" canEdit="false"
-    canDelete="false" edit-icon="false" orderBy="controlTypeField.sequence,controlTypeField.name">
+    canDelete="false" edit-icon="false" orderBy="sequence">
     <field name="controlTypeField"/>
     <field name="displayValue"/>
   </grid>
