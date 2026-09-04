@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="ControlTypeFieldValue">
+
+    <many-to-one name="controlTypeField"
+      ref="com.axelor.apps.quality.db.ControlTypeField" title="Field" required="true"/>
+
+    <!-- copied from the field: a collection order by cannot cross the controlTypeField association,
+      the editors ignore the order by of their grid view, and an editor item cannot rely on a dotted field
+      of the control type field either -->
+    <integer name="sequence" title="Sequence"/>
+    <integer name="fieldTypeSelect" title="Type"
+      selection="quality.control.type.field.type.select"/>
+
+    <many-to-one name="planLine" ref="com.axelor.apps.quality.db.ControlEntryPlanLine"
+      title="Control plan line"/>
+    <many-to-one name="entryLine" ref="com.axelor.apps.quality.db.ControlEntryPlanLine"
+      title="Control entry sample line"/>
+
+    <decimal name="decimalValue" title="Value" precision="20" scale="10" nullable="true"/>
+    <string name="textValue" title="Value"/>
+    <boolean name="booleanValue" title="Value" nullable="true"/>
+    <many-to-one name="selectionValue"
+      ref="com.axelor.apps.quality.db.CharacteristicProperty" title="Value"/>
+
+    <!-- single column shown in the value grids, the typed field is edited in the editors. Computed but
+      stored: a transient field is not returned by the grid search, only by the form fetch -->
+    <string name="displayValue" title="Value">
+      <![CDATA[
+        if (controlTypeField == null) {
+          return null;
+        }
+        switch (fieldTypeSelect == null ? controlTypeField.getTypeSelect() : fieldTypeSelect) {
+          case com.axelor.apps.quality.db.repo.ControlTypeFieldRepository.TYPE_DECIMAL:
+            return decimalValue == null ? null : decimalValue.stripTrailingZeros().toPlainString();
+          case com.axelor.apps.quality.db.repo.ControlTypeFieldRepository.TYPE_BOOLEAN:
+            return booleanValue == null
+                ? null
+                : com.axelor.i18n.I18n.get(Boolean.TRUE.equals(booleanValue) ? "Yes" : "No");
+          case com.axelor.apps.quality.db.repo.ControlTypeFieldRepository.TYPE_SELECTION:
+            return selectionValue == null ? null : selectionValue.getName();
+          default:
+            return textValue;
+        }
+      ]]>
+    </string>
+
+    <unique-constraint columns="planLine,controlTypeField"/>
+    <unique-constraint columns="entryLine,controlTypeField"/>
+
+  </entity>
+
+</domain-models>

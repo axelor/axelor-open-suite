@@ -50,6 +50,13 @@
     <option value="2">Entry sample line</option>
   </selection>
 
+  <selection name="quality.control.type.field.type.select">
+    <option value="1">Decimal</option>
+    <option value="2">Text</option>
+    <option value="3">Boolean</option>
+    <option value="4">Selection</option>
+  </selection>
+
   <selection name="quality.control.entry.sample.result.select">
     <option value="1">Not controlled</option>
     <option value="2">Compliant</option>

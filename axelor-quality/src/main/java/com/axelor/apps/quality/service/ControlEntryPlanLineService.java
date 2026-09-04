@@ -30,6 +30,12 @@ public interface ControlEntryPlanLineService {
    */
   void conformityEval(ControlEntryPlanLine controlEntryPlanLine) throws AxelorException;
 
+  /**
+   * Evaluates the formula of an entry sample line and returns the result to store in {@code
+   * resultSelect}, without modifying the line: the caller decides whether to persist it.
+   */
+  int evaluateResult(ControlEntryPlanLine controlEntryPlanLine) throws AxelorException;
+
   String getFormula(ControlEntryPlanLine controlEntryPlanLine) throws AxelorException;
 
   ControlEntryPlanLine createEntryWithPlan(ControlEntryPlanLine controlEntryPlanLine);

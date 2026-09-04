@@ -1,0 +1,35 @@
+---
+title: "Quality: the values controlled on a control plan line are now configured on the control type, with a typed field list, instead of custom fields."
+module: axelor-quality
+developer: |
+  ControlEntryPlanLine.planAttrs and ControlEntryPlanLine.entryAttrs (json custom field containers)
+  are removed. The fields controlled by a control type are now configured on
+  ControlType.controlTypeFieldSet, with the new entity ControlTypeField (name, code, typeSelect,
+  usageSelect, valueSet, sequence, isRequired), and their values are stored in the new entity
+  ControlTypeFieldValue, reachable through ControlEntryPlanLine.planValueList (reference values of a
+  control plan line) and ControlEntryPlanLine.entryValueList (values measured on a control entry
+  sample line).
+
+  Reference values are no longer duplicated on the control entry sample lines: an entry line reads
+  them through controlPlanLine.planValueList, which is what the "Reference" dashlet of the control
+  entry sample line form displays.
+
+  Conformity formulas must be rewritten: $planAttrs.<field> becomes plan.<code> and
+  $entryAttrs.<field> becomes entry.<code>, where <code> is ControlTypeField.code. A decimal field
+  yields a BigDecimal, a text field a String, a boolean field a Boolean and a selection field a
+  CharacteristicProperty record.
+
+  ControlEntryPlanLineServiceImpl and ControlEntryPlanLineManagementRepository have new constructor
+  arguments. QualityExceptionMessage.EVAL_FORMULA_NULL_FIELDS is replaced by
+  QualityExceptionMessage.EVAL_FORMULA_ERROR and CONTROL_TYPE_FIELD_VALUE_REQUIRED.
+
+  The MetaJsonField init data of the quality module (quality_controlEntryPlanLineMetaJsonField.csv)
+  is removed and replaced by quality_controlTypeField.csv and quality_characteristicProperty.csv.
+  Existing installations must run the migration script of RM#117699 before starting the
+  application.
+
+  Creating the control entry samples writes one row per measured value, that is samples x control
+  plan lines x measure fields of the control type. Measured on PostgreSQL at about 1.3 ms per
+  value: under a second for a usual control plan, around 30 s for an extreme one (20 samples x 30
+  lines x 40 measure fields = 24 000 values). The cost is the per row ORM insert, so enabling
+  hibernate.jdbc.batch_size only saves about 10%.

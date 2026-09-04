@@ -11,12 +11,62 @@
 
   <form name="control-type-form" title="Control type"
     model="com.axelor.apps.quality.db.ControlType">
-    <panel name="mainPanel">
-      <field name="name"/>
-      <field name="conformityFormula" colSpan="12" widget="CodeEditor" x-code-syntax="groovy"/>
+    <panel name="mainPanel" colSpan="12">
+      <field name="name" colSpan="12"/>
     </panel>
 
+    <panel-related name="planFieldPanel" field="planFieldLineList" colSpan="12"
+      canMove="true" orderBy="sequence" grid-view="control-type-field-line-grid"
+      form-view="control-type-field-line-form"/>
 
+    <panel-related name="entryFieldPanel" field="entryFieldLineList" colSpan="12"
+      canMove="true" orderBy="sequence" grid-view="control-type-field-line-grid"
+      form-view="control-type-field-line-form"/>
+
+    <panel-tabs name="formulaTabsPanel">
+      <panel name="formulaPanel" title="Formula">
+        <field name="conformityFormula" showTitle="false" colSpan="12" widget="CodeEditor"
+          x-code-syntax="groovy"/>
+      </panel>
+
+      <panel name="formulaHelpPanel" title="Formula help">
+        <field name="$formulaHelpViewer" showTitle="false" readonly="true" colSpan="12">
+          <viewer><![CDATA[
+			<>
+				<p>
+					<span>{_t('A control type describes what is controlled and how.')}</span>
+				</p>
+				<p>
+					<span>{_t('In the field table above there are two usages')}</span>:
+					<ul>
+						<li> <span>{_t('the fields with the usage "control plan" carry the reference values configured in the control plans')}</span> </li>
+						<li> <span>{_t('the fields with the usage "control entry" carry the value measured by the operator on each sample of the control entry')}</span> </li>
+					</ul>
+				</p>
+				<p>
+					<span>{_t('The formula defines how the control entry is checked against those fields. It is evaluated when the operator clicks "Check conformity" in the control entry and must return')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>true</Box> <span>{_t('(compliant) or')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>false</Box> <span>{_t('(not compliant)')}</span>.
+				</p>
+				<h4><span>{_t('The fields')}</span></h4>
+				<p>
+					<span>{_t('Each field has a code (the technical name used in the formula), a name (displayed in the application) and a type. They are read in the formula as')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>plan.code</Box> <span>{_t('and')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>entry.code</Box>.<Box/>
+					<span>{_t('A decimal field gives a number, a text field a character string, a boolean field true or false, and a selection field the selected value, whose label is read with')}</span> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>.name</Box>.
+				</p>
+				<h4><span>{_t('Formula examples')}</span></h4>
+				<p>
+					<ul>
+						<li> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>return plan.acceptedColor == entry.currentColor;</Box> <span>{_t('(simple equality between the two fields)')}</span> </li>
+						<li> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>return (entry.mesuredDim &gt;= plan.acceptedDimension - plan.minTolerance) &amp;&amp; (entry.mesuredDim &lt;= plan.acceptedDimension + plan.maxTolerance);</Box> <span>{_t('(the measured value must be within the tolerance interval around the nominal value)')}</span> </li>
+						<li> <Box border borderColor="dark-subtle" color="red" borderWidth={1} as="code" bg="secondary-subtle" p={1}>return !plan.isLabelRequired || entry.isLabelPresent;</Box> <span>{_t('(checks that the boolean field isLabelPresent is true, that is that the operator ticked the box)')}</span> </li>
+					</ul>
+				</p>
+				<p>
+					<span>{_t('A field flagged as required blocks the conformity check while its value is empty.')}</span>
+				</p>
+			</>
+		  ]]></viewer>
+        </field>
+      </panel>
+    </panel-tabs>
   </form>
 
 </object-views>

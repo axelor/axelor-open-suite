@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <grid name="control-type-field-line-grid" title="Fields"
+    model="com.axelor.apps.quality.db.ControlTypeFieldLine" canMove="true">
+    <field name="controlTypeField" canNew="true" form-view="control-type-field-form"
+      grid-view="control-type-field-grid"/>
+    <field name="controlTypeField.code"/>
+    <field name="controlTypeField.typeSelect"/>
+    <field name="controlTypeField.isRequired"/>
+    <field name="sequence"/>
+  </grid>
+
+  <form name="control-type-field-line-form" title="Field"
+    model="com.axelor.apps.quality.db.ControlTypeFieldLine">
+    <panel name="mainPanel" colSpan="12">
+      <field name="controlTypeField" colSpan="6" canNew="true"
+        form-view="control-type-field-form" grid-view="control-type-field-grid"/>
+      <field name="sequence" colSpan="6"/>
+    </panel>
+  </form>
+
+</object-views>

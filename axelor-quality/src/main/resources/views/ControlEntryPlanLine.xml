@@ -18,7 +18,8 @@
     onNew="action-quality-control-plan-line-record-default">
     <panel name="mainPanel" colSpan="12">
       <field name="priority" colSpan="3"/>
-      <field name="controlType" colSpan="3" required="true"/>
+      <field name="controlType" colSpan="3" required="true"
+        onChange="action-quality-control-plan-line-method-sync-plan-values"/>
       <field name="characteristic" colSpan="6"/>
       <field name="name" required="true" colSpan="6"/>
       <field name="isCustomFrequency" colSpan="3" hidden="true"/>
@@ -26,8 +27,38 @@
       <field name="description" widget="html" colSpan="12"/>
     </panel>
 
-    <panel name="attrsPanel" showIf="controlType">
-      <field name="planAttrs" colSpan="12"/>
+    <panel name="planValuePanel" title="Control type configuration" showIf="controlType"
+      colSpan="12">
+      <field name="controlType.formulaDescription" hidden="true"/>
+      <field name="$formulaDescriptionViewer" showTitle="false" readonly="true" colSpan="12"
+        showIf="controlType.formulaDescription">
+        <viewer><![CDATA[
+			<>
+				<Alert variant="info" mb={0} p={2}>
+					<span style={{whiteSpace: 'pre-line'}}>{controlType && controlType.formulaDescription}</span>
+				</Alert>
+			</>
+		  ]]></viewer>
+      </field>
+      <button name="syncPlanValuesBtn" title="Refresh fields" colSpan="12"
+        onClick="action-quality-control-plan-line-method-sync-plan-values"
+        help="Adds the fields added to the control type since this line was created and removes the ones no longer configured. The values already entered are kept."/>
+      <field name="planValueList" showTitle="false" colSpan="12" canNew="false"
+        canRemove="false" grid-view="control-type-field-value-grid"
+        form-view="control-type-field-value-form">
+        <editor x-show-titles="false" x-viewer="true">
+          <field name="controlTypeField" readonly="true" canEdit="false" canView="false"/>
+          <panel name="valuePanel" stacked="true" showTitle="false" itemSpan="12">
+            <field name="fieldTypeSelect" hidden="true"/>
+            <field name="decimalValue" title="Value" x-scale="3" showIf="fieldTypeSelect == 1"/>
+            <field name="textValue" title="Value" showIf="fieldTypeSelect == 2"/>
+            <field name="booleanValue" title="Value" showIf="fieldTypeSelect == 3"/>
+            <field name="selectionValue" title="Value" canNew="false"
+              showIf="fieldTypeSelect == 4"
+              onSelect="action-quality-control-type-field-value-attrs-selection-domain"/>
+          </panel>
+        </editor>
+      </field>
     </panel>
   </form>
 
@@ -54,13 +85,49 @@
         target="com.axelor.apps.quality.db.ControlPlan" hidden="true"/>
     </panel>
 
-    <panel name="planAttrsPanel" showIf="controlPlanLine" readonly="true">
-      <field name="planAttrs" colSpan="12"/>
+    <panel name="descriptionPanel" showTitle="false" showIf="controlPlanLine" colSpan="12">
+      <field name="controlType.formulaDescription" hidden="true"/>
+      <field name="$formulaDescriptionViewer" showTitle="false" readonly="true" colSpan="12"
+        showIf="controlType.formulaDescription">
+        <viewer><![CDATA[
+			<>
+				<Alert variant="info" mb={0} p={2}>
+					<span style={{whiteSpace: 'pre-line'}}>{controlType && controlType.formulaDescription}</span>
+				</Alert>
+			</>
+		  ]]></viewer>
+      </field>
     </panel>
 
-    <panel name="attrsPanel" showIf="controlPlanLine">
-      <field name="entryAttrs"/>
+    <panel-tabs name="controlValueTabsPanel" showIf="controlPlanLine">
+      <panel name="entryValuePanel" title="Measures">
+        <field name="entryValueList" showTitle="false" colSpan="12" canNew="false"
+          canRemove="false" grid-view="control-type-field-value-grid"
+          form-view="control-type-field-value-form">
+          <editor x-show-titles="false" x-viewer="true">
+            <field name="controlTypeField" readonly="true" canEdit="false" canView="false"/>
+            <panel name="valuePanel" stacked="true" showTitle="false" itemSpan="12">
+              <field name="fieldTypeSelect" hidden="true"/>
+              <field name="decimalValue" title="Value" x-scale="3"
+                showIf="fieldTypeSelect == 1"/>
+              <field name="textValue" title="Value" showIf="fieldTypeSelect == 2"/>
+              <field name="booleanValue" title="Value" showIf="fieldTypeSelect == 3"/>
+              <field name="selectionValue" title="Value" canNew="false"
+                showIf="fieldTypeSelect == 4"
+                onSelect="action-quality-control-type-field-value-attrs-selection-domain"/>
+            </panel>
+          </editor>
+        </field>
+      </panel>
 
+      <panel name="targetPanel" title="Targets">
+        <panel-dashlet name="planValueDashlet" showTitle="false" colSpan="12"
+          height="200%" canSearch="true"
+          action="action-quality-control-type-field-value-view-plan-values"/>
+      </panel>
+    </panel-tabs>
+
+    <panel name="conformityPanel" showTitle="false" showIf="controlPlanLine" colSpan="12">
       <button name="checkConformityBtn" title="Check conformity"
         onClick="save,action-quality-control-entry-line-method-control-conformity"/>
     </panel>
@@ -87,12 +154,13 @@
 
   <action-record name="action-quality-control-entry-line-copy-record"
     model="com.axelor.apps.quality.db.ControlEntryPlanLine">
-    <field name="entryAttrs" expr="eval: controlPlanLine?.entryAttrs" if="controlPlanLine"/>
-    <field name="planAttrs" expr="eval: controlPlanLine?.planAttrs" if="controlPlanLine"/>
-    <field name="entryAttrs" expr="eval: null" if="controlPlanLine == null"/>
-    <field name="planAttrs" expr="eval: null" if="controlPlanLine == null"/>
     <field name="controlType" expr="eval: controlPlanLine?.controlType"/>
   </action-record>
+
+  <action-method name="action-quality-control-plan-line-method-sync-plan-values">
+    <call class="com.axelor.apps.quality.web.ControlEntryPlanLineController"
+      method="syncPlanValues"/>
+  </action-method>
 
   <action-method name="action-quality-control-entry-line-method-control-conformity">
     <call class="com.axelor.apps.quality.web.ControlEntryPlanLineController"
