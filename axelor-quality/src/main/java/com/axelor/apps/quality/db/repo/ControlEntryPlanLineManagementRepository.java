@@ -18,9 +18,13 @@
  */
 package com.axelor.apps.quality.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.quality.db.ControlEntryPlanLine;
+import com.axelor.apps.quality.service.ControlEntrySampleUpdateService;
 import com.axelor.apps.quality.service.ControlTypeFieldValueService;
+import com.axelor.inject.Beans;
 import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 
 public class ControlEntryPlanLineManagementRepository extends ControlEntryPlanLineRepository {
 
@@ -30,6 +34,21 @@ public class ControlEntryPlanLineManagementRepository extends ControlEntryPlanLi
   public ControlEntryPlanLineManagementRepository(
       ControlTypeFieldValueService controlTypeFieldValueService) {
     this.controlTypeFieldValueService = controlTypeFieldValueService;
+  }
+
+  /** A line saved on its own keeps the result of its sample consistent. */
+  @Override
+  public ControlEntryPlanLine save(ControlEntryPlanLine entity) {
+    ControlEntryPlanLine saved = super.save(entity);
+    if (saved.getControlEntrySample() != null) {
+      try {
+        Beans.get(ControlEntrySampleUpdateService.class)
+            .updateResult(saved.getControlEntrySample());
+      } catch (AxelorException e) {
+        throw new PersistenceException(e);
+      }
+    }
+    return saved;
   }
 
   /**

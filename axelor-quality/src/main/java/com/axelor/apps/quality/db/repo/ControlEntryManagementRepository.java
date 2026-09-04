@@ -18,9 +18,14 @@
  */
 package com.axelor.apps.quality.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.quality.db.ControlEntry;
+import com.axelor.apps.quality.db.ControlEntrySample;
+import com.axelor.apps.quality.service.ControlEntrySampleUpdateService;
+import com.axelor.inject.Beans;
 import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 
 public class ControlEntryManagementRepository extends ControlEntryRepository {
 
@@ -29,6 +34,23 @@ public class ControlEntryManagementRepository extends ControlEntryRepository {
   @Inject
   public ControlEntryManagementRepository(AppBaseService appBaseService) {
     this.appBaseService = appBaseService;
+  }
+
+  /** The result of a sample is derived from the results of its lines, whatever the save path. */
+  @Override
+  public ControlEntry save(ControlEntry entity) {
+    if (entity.getControlEntrySamplesList() != null) {
+      ControlEntrySampleUpdateService updateService =
+          Beans.get(ControlEntrySampleUpdateService.class);
+      try {
+        for (ControlEntrySample sample : entity.getControlEntrySamplesList()) {
+          updateService.updateResult(sample);
+        }
+      } catch (AxelorException e) {
+        throw new PersistenceException(e);
+      }
+    }
+    return super.save(entity);
   }
 
   @Override

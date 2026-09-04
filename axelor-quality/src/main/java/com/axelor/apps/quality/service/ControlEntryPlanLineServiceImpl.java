@@ -75,6 +75,11 @@ public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineServ
   }
 
   protected void eval(ControlEntryPlanLine controlEntryPlanLine) throws AxelorException {
+    controlEntryPlanLine.setResultSelect(evaluateResult(controlEntryPlanLine));
+  }
+
+  @Override
+  public int evaluateResult(ControlEntryPlanLine controlEntryPlanLine) throws AxelorException {
     String formula = this.getFormula(controlEntryPlanLine);
 
     ScriptHelper scriptHelper = new GroovyScriptHelper(getBindings(controlEntryPlanLine));
@@ -97,12 +102,9 @@ public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineServ
           result);
     }
 
-    boolean isCompliant = (boolean) result;
-    if (isCompliant) {
-      controlEntryPlanLine.setResultSelect(ControlEntryPlanLineRepository.RESULT_COMPLIANT);
-    } else {
-      controlEntryPlanLine.setResultSelect(ControlEntryPlanLineRepository.RESULT_NOT_COMPLIANT);
-    }
+    return (boolean) result
+        ? ControlEntryPlanLineRepository.RESULT_COMPLIANT
+        : ControlEntryPlanLineRepository.RESULT_NOT_COMPLIANT;
   }
 
   /**

@@ -39,11 +39,15 @@ public class ControlEntryPlanLineController {
     ControlEntryPlanLine controlEntryPlanLine =
         request.getContext().asType(ControlEntryPlanLine.class);
 
+    // the line was saved by the action chain: the values are read from the database, the result is
+    // pushed back to the form so that it stays in edit mode, and the sample result follows on save
     if (controlEntryPlanLine.getId() != null) {
-      Beans.get(ControlEntryPlanLineService.class)
-          .conformityEvalWithUpdate(
-              Beans.get(ControlEntryPlanLineRepository.class).find(controlEntryPlanLine.getId()));
-      response.setReload(true);
+      response.setValue(
+          "resultSelect",
+          Beans.get(ControlEntryPlanLineService.class)
+              .evaluateResult(
+                  Beans.get(ControlEntryPlanLineRepository.class)
+                      .find(controlEntryPlanLine.getId())));
     }
   }
 
