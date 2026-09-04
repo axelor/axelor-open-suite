@@ -77,23 +77,19 @@ public class ControlTypeFieldController {
     response.setCanClose(true);
   }
 
-  /** Detaches the fields selected in a dashlet from their control type, without deleting them. */
-  @SuppressWarnings("unchecked")
+  /** Detaches the field of the clicked row from its control type, without deleting the field. */
   public void removeFromControlType(ActionRequest request, ActionResponse response) {
 
     ControlType controlType = getControlType(request.getContext().get("_controlTypeId"));
-    List<Integer> ids = (List<Integer>) request.getContext().get("_ids");
+    ControlTypeField controlTypeField =
+        Beans.get(ControlTypeFieldRepository.class)
+            .find(request.getContext().asType(ControlTypeField.class).getId());
 
-    if (controlType == null || ids == null) {
+    if (controlType == null || controlTypeField == null) {
       return;
     }
 
-    ControlTypeFieldRepository controlTypeFieldRepository =
-        Beans.get(ControlTypeFieldRepository.class);
-    ids.stream()
-        .map(id -> controlTypeFieldRepository.find(id.longValue()))
-        .filter(Objects::nonNull)
-        .forEach(controlTypeField -> link(controlTypeField, controlType, false));
+    link(controlTypeField, controlType, false);
 
     response.setReload(true);
   }

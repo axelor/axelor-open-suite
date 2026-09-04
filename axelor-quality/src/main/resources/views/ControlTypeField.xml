@@ -21,6 +21,8 @@
     <field name="code"/>
     <field name="typeSelect"/>
     <field name="isRequired"/>
+    <button name="removeFromControlTypeBtn" title="Remove from the control type" icon="x-lg"
+      onClick="action-quality-control-type-field-method-remove-from-control-type"/>
   </grid>
 
   <form name="control-type-field-form" title="Control type field"
