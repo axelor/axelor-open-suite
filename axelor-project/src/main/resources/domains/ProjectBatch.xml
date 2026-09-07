@@ -5,7 +5,7 @@
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
-  <entity name="ProjectBatch" cacheable="true">
+  <entity name="ProjectBatch">
 
     <!-- HEADER -->
     <string name="code" title="Code" namecolumn="true" unique="true"/>
