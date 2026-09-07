@@ -109,6 +109,8 @@ public class ContractSaleOrderGenerationImpl implements ContractSaleOrderGenerat
 
     saleOrderLine.setTaxLineSet(Sets.newHashSet(contractLine.getTaxLineSet()));
     saleOrderLine.setTypeSelect(contractLine.getTypeSelect());
+    saleOrderLine.setIsShowTotal(contractLine.getIsShowTotal());
+    saleOrderLine.setIsHideUnitAmounts(contractLine.getIsHideUnitAmounts());
 
     saleOrderLine.setMainSaleOrder(saleOrder);
     saleOrder.addSaleOrderLineListItem(saleOrderLine);

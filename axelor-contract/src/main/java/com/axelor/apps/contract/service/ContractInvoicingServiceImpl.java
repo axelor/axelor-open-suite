@@ -362,6 +362,7 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
 
     BigDecimal qty = getQty(line, contract);
     Product product = getLineProduct(line, contract);
+    int typeSelect = line.getTypeSelect();
 
     Contract finalContract = contract;
     InvoiceLineGenerator invoiceLineGenerator =
@@ -382,7 +383,7 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
             line.getExTaxTotal(),
             line.getInTaxTotal(),
             false,
-            line.getTypeSelect()) {
+            typeSelect) {
 
           @Override
           public void setProductAccount(
@@ -429,6 +430,11 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
 
     InvoiceLine invoiceLine = invoiceLineGenerator.creates().get(0);
 
+    if (typeSelect == ContractLineRepository.TYPE_END_OF_PACK) {
+      invoiceLine.setIsShowTotal(line.getIsShowTotal());
+      invoiceLine.setIsHideUnitAmounts(line.getIsHideUnitAmounts());
+    }
+
     FiscalPositionAccountService fiscalPositionAccountService =
         Beans.get(FiscalPositionAccountService.class);
     FiscalPosition fiscalPosition = line.getFiscalPosition();
@@ -444,12 +450,14 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
 
     invoiceLine.setAccount(replacedAccount);
 
-    invoiceLine.setAnalyticDistributionTemplate(line.getAnalyticDistributionTemplate());
+    if (typeSelect == ContractLineRepository.TYPE_NORMAL) {
+      invoiceLine.setAnalyticDistributionTemplate(line.getAnalyticDistributionTemplate());
 
-    if (CollectionUtils.isNotEmpty(line.getAnalyticMoveLineList())) {
-      analyticLineModelService.setInvoiceLineAnalyticInfo(
-          new AnalyticLineContractModel(line, null, null), invoiceLine);
-      this.copyAnalyticMoveLines(line.getAnalyticMoveLineList(), invoiceLine);
+      if (CollectionUtils.isNotEmpty(line.getAnalyticMoveLineList())) {
+        analyticLineModelService.setInvoiceLineAnalyticInfo(
+            new AnalyticLineContractModel(line, null, null), invoiceLine);
+        this.copyAnalyticMoveLines(line.getAnalyticMoveLineList(), invoiceLine);
+      }
     }
 
     invoice.addInvoiceLineListItem(invoiceLine);
