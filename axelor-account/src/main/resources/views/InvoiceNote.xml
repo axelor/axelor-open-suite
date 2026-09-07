@@ -5,8 +5,8 @@
 
   <grid name="invoice-note-grid" title="Invoice notes"
     model="com.axelor.apps.account.db.InvoiceNote">
-    <field name="invoiceNoteType.code"/>
-    <field name="invoiceNoteType.name"/>
+    <field name="invoiceNoteType.code" width="100"/>
+    <field name="invoiceNoteType.name" width="300"/>
     <field name="note"/>
   </grid>
 
