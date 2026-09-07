@@ -32,6 +32,7 @@ import com.axelor.apps.hr.rest.dto.LeaveRequestRefusalPutRequest;
 import com.axelor.apps.hr.rest.dto.LeaveRequestResponse;
 import com.axelor.apps.hr.service.leave.LeaveRequestCancelService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCheckResponseService;
+import com.axelor.apps.hr.service.leave.LeaveRequestDraftService;
 import com.axelor.apps.hr.service.leave.LeaveRequestMailService;
 import com.axelor.apps.hr.service.leave.LeaveRequestRefuseService;
 import com.axelor.apps.hr.service.leave.LeaveRequestSendService;
@@ -186,6 +187,28 @@ public class LeaveRequestRestController {
           I18n.get(ITranslation.API_LEAVE_REQUEST_UPDATED_NO_MAIL),
           new LeaveRequestResponse(leaveRequest));
     }
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.API_LEAVE_REQUEST_UPDATED),
+        new LeaveRequestResponse(leaveRequest));
+  }
+
+  @Operation(
+      summary = "Return leave request to draft",
+      tags = {"Leave request"})
+  @Path("/draft/{leaveRequestId}")
+  @PUT
+  @HttpExceptionHandler
+  public Response draftLeaveRequest(
+      @PathParam("leaveRequestId") Long leaveRequestId, RequestStructure requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().writeAccess(LeaveRequest.class, leaveRequestId).check();
+
+    LeaveRequest leaveRequest =
+        ObjectFinder.find(LeaveRequest.class, leaveRequestId, requestBody.getVersion());
+    Beans.get(LeaveRequestDraftService.class).draft(leaveRequest);
 
     return ResponseConstructor.build(
         Response.Status.OK,

@@ -891,6 +891,7 @@
 "On weekly plannings, the Activity percentage field indicates a coefficient taken into account in leave calculation based on the person activity. If the employee works part-time, the coefficient is set to 0.5 and the leave calculation is based on this value, earning fewer days than a full-time person whose coefficient is 1. Always: always uses the planning coefficient. Configurable: can be defined per leave type via the Use planning coefficient checkbox. No: the planning coefficient is not taken into account.",,,
 "One-way",,,
 "Only HR manager can choose this expense type.",,,
+"Only a refused or canceled leave request can be returned to draft.",,,
 "Only missing",,,
 "Open Street Maps error: %s",,,
 "Organization",,,
