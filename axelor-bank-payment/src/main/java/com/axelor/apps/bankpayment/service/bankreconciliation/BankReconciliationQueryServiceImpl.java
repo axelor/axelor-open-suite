@@ -25,6 +25,7 @@ import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.AxelorException;
 import jakarta.inject.Inject;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -85,5 +86,17 @@ public class BankReconciliationQueryServiceImpl implements BankReconciliationQue
     params.put("bankReconciliationCurrency", bankReconciliation.getCurrency());
 
     return params;
+  }
+
+  @Override
+  public String getRequestMoveLines(BigDecimal credit, BigDecimal debit) {
+    String query = getRequestMoveLines();
+    if (credit.signum() > 0) {
+      query = query.concat(" AND self.debit > 0");
+    }
+    if (debit.signum() > 0) {
+      query = query.concat(" AND self.credit > 0");
+    }
+    return query;
   }
 }

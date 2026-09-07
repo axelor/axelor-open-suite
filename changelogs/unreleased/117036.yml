@@ -1,0 +1,10 @@
+---
+title: "Talent: removed frequently updated records from the cache."
+module: axelor-talent
+developer: |
+  Removed cacheable="true" from the following domains:
+  - Appraisal
+  - JobApplication
+  - JobPosition
+  - TrainingRegister
+  - TrainingSession

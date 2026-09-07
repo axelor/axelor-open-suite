@@ -5,7 +5,7 @@
 
   <module name="fleet" package="com.axelor.apps.fleet.db"/>
 
-  <entity name="Vehicle" cacheable="true">
+  <entity name="Vehicle">
     <string name="plateNo" title="Plate number"/>
     <string name="name" title="Name" required="false" readonly="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>

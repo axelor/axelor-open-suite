@@ -59,20 +59,34 @@ public class BatchContractInvoicing extends BatchStrategy {
   public List<List<Long>> getIdsGroupedBy() {
     ContractBatch contractBatch = batch.getContractBatch();
     contractBatch = contractBatchRepository.find(contractBatch.getId());
-    String filter =
-        "SELECT array_to_string(array_agg(self.id), ',') "
-            + "FROM contract_contract as self "
-            + "WHERE self.is_invoicing_management IS TRUE "
-            + "AND self.invoicing_date <= :invoicingDate "
-            + "AND self.status_select != :closedContract "
-            + "AND (SELECT automatic_invoicing FROM contract_contract_version WHERE contract_contract_version.id = self.current_contract_version) IS TRUE "
-            + "GROUP BY self.invoiced_partner, self.invoicing_date, self.invoice_period_end_date, self.invoice_period_start_date, self.is_grouped_invoicing";
+    Integer targetTypeSelect = contractBatch.getTargetTypeSelect();
+    boolean filterOnTargetType = targetTypeSelect != null && targetTypeSelect != 0;
+
+    StringBuilder filter =
+        new StringBuilder(
+            "SELECT array_to_string(array_agg(self.id), ',') "
+                + "FROM contract_contract as self "
+                + "WHERE self.is_invoicing_management IS TRUE "
+                + "AND self.invoicing_date <= :invoicingDate "
+                + "AND self.status_select != :closedContract "
+                + "AND (SELECT automatic_invoicing FROM contract_contract_version WHERE contract_contract_version.id = self.current_contract_version) IS TRUE ");
+
+    if (filterOnTargetType) {
+      filter.append("AND self.target_type_select = :targetTypeSelect ");
+    }
+
+    filter.append(
+        "GROUP BY self.invoiced_partner, self.invoicing_date, self.invoice_period_end_date, self.invoice_period_start_date, self.is_grouped_invoicing");
 
     Query query =
         JPA.em()
-            .createNativeQuery(filter)
+            .createNativeQuery(filter.toString())
             .setParameter("invoicingDate", contractBatch.getInvoicingDate())
             .setParameter("closedContract", AbstractContractRepository.CLOSED_CONTRACT);
+
+    if (filterOnTargetType) {
+      query.setParameter("targetTypeSelect", targetTypeSelect);
+    }
 
     List<String> stringList = query.getResultList();
     return convertStringToLongList(stringList);

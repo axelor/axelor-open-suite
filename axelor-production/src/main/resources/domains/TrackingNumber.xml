@@ -10,6 +10,10 @@
     <many-to-one name="originManufOrder" ref="com.axelor.apps.production.db.ManufOrder"
       title="Origin manuf order"/>
 
+    <finder-method name="findOrphanedByOriginManufOrder" using="originManufOrder"
+      filter="self.originManufOrder = :originManufOrder AND self.originStockMoveLine IS NULL
+        AND self.product IS NOT NULL"
+      all="true"/>
 
     <extra-code>
       <![CDATA[

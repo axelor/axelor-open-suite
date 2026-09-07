@@ -93,7 +93,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -103,10 +102,6 @@ import org.slf4j.LoggerFactory;
 public class ManufOrderServiceImpl implements ManufOrderService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  // Perf: Thread-safe cache for getDefaultBOM lookups during recursive BOM traversal
-  // Key: Product ID, Value: BillOfMaterial (null if no default BOM found)
-  private final Map<Long, BillOfMaterial> defaultBomCache = new ConcurrentHashMap<>();
 
   protected SequenceService sequenceService;
   protected OperationOrderService operationOrderService;
@@ -846,23 +841,30 @@ public class ManufOrderServiceImpl implements ManufOrderService {
    */
   public List<ManufOrder> generateAllSubManufOrder(List<Product> productList, ManufOrder manufOrder)
       throws AxelorException {
-    // Perf: Clear BOM cache before starting recursive BOM traversal
-    defaultBomCache.clear();
-    try {
-      Integer depth = 0;
-      List<ManufOrder> moList = new ArrayList<>();
-      List<Pair<BillOfMaterial, BigDecimal>> childBomList =
-          getToConsumeSubBomList(manufOrder.getBillOfMaterial(), manufOrder, productList);
-      moList.addAll(this.generateChildMOs(manufOrder, childBomList, depth));
-      return moList;
-    } finally {
-      // Clear cache after completion to free memory
-      defaultBomCache.clear();
-    }
+    // Perf: local cache for getDefaultBOM lookups shared across the recursive BOM traversal.
+    // Key: Product ID, Value: BillOfMaterial (absent if no default BOM found).
+    Map<Long, BillOfMaterial> defaultBomCache = new HashMap<>();
+    Integer depth = 0;
+    List<ManufOrder> moList = new ArrayList<>();
+    List<Pair<BillOfMaterial, BigDecimal>> childBomList =
+        getToConsumeSubBomList(
+            manufOrder.getBillOfMaterial(), manufOrder, productList, defaultBomCache);
+    moList.addAll(this.generateChildMOs(manufOrder, childBomList, depth, defaultBomCache));
+    return moList;
   }
 
+  @Override
   public List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
       BillOfMaterial billOfMaterial, ManufOrder mo, List<Product> productList)
+      throws AxelorException {
+    return getToConsumeSubBomList(billOfMaterial, mo, productList, new HashMap<>());
+  }
+
+  protected List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
+      BillOfMaterial billOfMaterial,
+      ManufOrder mo,
+      List<Product> productList,
+      Map<Long, BillOfMaterial> defaultBomCache)
       throws AxelorException {
     List<Pair<BillOfMaterial, BigDecimal>> bomList = new ArrayList<>();
 
@@ -883,7 +885,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         }
       } else {
         // Perf: Use cache for getDefaultBOM to avoid repeated DB lookups for same product
-        BillOfMaterial defaultBOM = getDefaultBOMCached(product);
+        BillOfMaterial defaultBOM = getDefaultBOMCached(product, defaultBomCache);
 
         if ((product.getProductSubTypeSelect()
                     == ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT
@@ -902,10 +904,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
    * Get default BOM for a product with caching to avoid repeated DB lookups.
    *
    * @param product The product to get the default BOM for
+   * @param defaultBomCache The traversal-local cache of default BOMs keyed by product id
    * @return The default BillOfMaterial or null if not found
    * @throws AxelorException if an error occurs during BOM lookup
    */
-  protected BillOfMaterial getDefaultBOMCached(Product product) throws AxelorException {
+  protected BillOfMaterial getDefaultBOMCached(
+      Product product, Map<Long, BillOfMaterial> defaultBomCache) throws AxelorException {
     Long productId = product.getId();
     if (defaultBomCache.containsKey(productId)) {
       return defaultBomCache.get(productId);
@@ -1265,7 +1269,10 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   protected List<ManufOrder> generateChildMOs(
-      ManufOrder parentMO, List<Pair<BillOfMaterial, BigDecimal>> childBomList, Integer depth)
+      ManufOrder parentMO,
+      List<Pair<BillOfMaterial, BigDecimal>> childBomList,
+      Integer depth,
+      Map<Long, BillOfMaterial> defaultBomCache)
       throws AxelorException {
     List<ManufOrder> manufOrderList = new ArrayList<>();
 
@@ -1297,7 +1304,10 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
       manufOrderList.addAll(
           this.generateChildMOs(
-              childMO, getToConsumeSubBomList(childMO.getBillOfMaterial(), childMO, null), depth));
+              childMO,
+              getToConsumeSubBomList(childMO.getBillOfMaterial(), childMO, null, defaultBomCache),
+              depth,
+              defaultBomCache));
     }
     return manufOrderList;
   }

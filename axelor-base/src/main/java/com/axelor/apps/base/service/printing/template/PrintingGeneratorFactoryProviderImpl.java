@@ -18,11 +18,11 @@
  */
 package com.axelor.apps.base.service.printing.template;
 
+import com.axelor.cache.AxelorCache;
+import com.axelor.cache.CacheBuilder;
 import com.axelor.meta.MetaScanner;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.views.Selection.Option;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import java.util.Optional;
 import org.apache.commons.lang3.ClassUtils;
 
@@ -32,12 +32,12 @@ public class PrintingGeneratorFactoryProviderImpl implements PrintingGeneratorFa
   protected static final String PRINTING_TEMPLATE_TYPE_SELECT =
       "base.printing.template.type.select";
 
-  protected static final Cache<Integer, Class<? extends PrintingGeneratorFactory>> CACHE =
-      CacheBuilder.newBuilder().maximumSize(100).weakValues().build();
+  protected static final AxelorCache<Integer, Class<? extends PrintingGeneratorFactory>> CACHE =
+      CacheBuilder.newBuilder("printFactory").maximumSize(100).build();
 
   @Override
   public Class<? extends PrintingGeneratorFactory> get(Integer type) {
-    Class<? extends PrintingGeneratorFactory> klass = CACHE.getIfPresent(type);
+    Class<? extends PrintingGeneratorFactory> klass = CACHE.get(type);
     if (klass != null) {
       return klass;
     }

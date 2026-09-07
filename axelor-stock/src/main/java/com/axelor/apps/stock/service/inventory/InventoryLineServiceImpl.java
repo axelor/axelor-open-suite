@@ -34,24 +34,30 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.cache.AxelorCache;
+import com.axelor.cache.CacheBuilder;
 import com.axelor.inject.Beans;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 public class InventoryLineServiceImpl implements InventoryLineService {
 
-  private final Cache<ImmutablePair<Long, Long>, Boolean> presenceCache =
-      CacheBuilder.newBuilder().maximumSize(1000).expireAfterWrite(5, TimeUnit.MINUTES).build();
+  private final AxelorCache<ImmutablePair<Long, Long>, Boolean> presenceCache =
+      CacheBuilder.newBuilder("presenceCache")
+          .maximumSize(1000)
+          .expireAfterWrite(Duration.ofMinutes(5))
+          .build();
 
-  private final Cache<Long, Integer> valuationTypeCache =
-      CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(5, TimeUnit.MINUTES).build();
+  private final AxelorCache<Long, Integer> valuationTypeCache =
+      CacheBuilder.newBuilder("valuationTypeCache")
+          .maximumSize(100)
+          .expireAfterWrite(Duration.ofMinutes(5))
+          .build();
 
   protected StockConfigService stockConfigService;
   protected InventoryLineRepository inventoryLineRepository;
@@ -296,25 +302,24 @@ public class InventoryLineServiceImpl implements InventoryLineService {
         ImmutablePair.of(
             inventoryLine.getStockLocation().getId(), inventoryLine.getProduct().getId());
 
-    try {
-      return presenceCache.get(
-          key,
-          () ->
-              stockLocationLineFetchService.getStockLocationLine(
-                      inventoryLine.getStockLocation(), inventoryLine.getProduct())
-                  != null);
-    } catch (Exception e) {
-      throw new RuntimeException("Error checking presence in stock location", e);
-    }
+    return presenceCache.get(
+        key,
+        k ->
+            stockLocationLineFetchService.getStockLocationLine(
+                    inventoryLine.getStockLocation(), inventoryLine.getProduct())
+                != null);
   }
 
   protected int getInventoryValuationTypeSelect(Company company) {
-    try {
-      return valuationTypeCache.get(
-          company.getId(),
-          () -> stockConfigService.getStockConfig(company).getInventoryValuationTypeSelect());
-    } catch (Exception e) {
-      throw new RuntimeException("Error fetching valuation type for company " + company.getId(), e);
-    }
+    return valuationTypeCache.get(
+        company.getId(),
+        k -> {
+          try {
+            return stockConfigService.getStockConfig(company).getInventoryValuationTypeSelect();
+          } catch (AxelorException e) {
+            throw new RuntimeException(
+                "Error fetching valuation type for company " + company.getId(), e);
+          }
+        });
   }
 }

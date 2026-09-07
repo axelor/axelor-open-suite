@@ -99,6 +99,13 @@ public abstract class RegistrationNumberValidator {
       return;
     }
 
+    if (Strings.isNullOrEmpty(partner.getRegistrationCode())) {
+      partner.setTaxNbr(null);
+      partner.setNic(null);
+      partner.setSiren(null);
+      return;
+    }
+
     checkRegistrationCode(partner);
     Country businessCountry = mainAddress.getCountry();
     RegistrationNumberTemplate registrationNumberTemplate =

@@ -5,7 +5,7 @@
 
   <module name="quality" package="com.axelor.apps.quality.db"/>
 
-  <entity name="ControlEntryPlanLine" cacheable="true">
+  <entity name="ControlEntryPlanLine">
 
     <integer name="typeSelect" selection="quality.control.entry.plan.line.type.select"
       title="Type"/>

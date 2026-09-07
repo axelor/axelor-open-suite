@@ -617,7 +617,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       CostSheetGroup costSheetGroup, CostSheetLine parentCostSheetLine, BigDecimal costPrice)
       throws AxelorException {
 
-    if (costSheetGroup == null) {
+    if (costSheetGroup == null
+        || !appProductionService.getAppProduction().getManageCostSheetGroup()) {
       return;
     }
 
@@ -637,8 +638,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
     if (indirectCostSheetLine == null) {
       indirectCostSheetLine =
           this.createCostSheetLine(
-              costSheetGroup.getCode(),
               costSheetGroup.getName(),
+              costSheetGroup.getCode(),
               parentCostSheetLine.getBomLevel() + 1,
               BigDecimal.ONE,
               null,

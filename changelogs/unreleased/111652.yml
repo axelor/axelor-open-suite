@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed a zero-amount supplier invoice (created from mixed stock moves) being blocked at ventilation with a misleading 'already been paid' error."
-module: axelor-account

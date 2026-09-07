@@ -318,16 +318,26 @@ public class SaleOrderController {
     response.setReload(true);
   }
 
-  @ErrorException
-  public void checkBeforeConfirm(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void checkBeforeConfirm(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    List<String> alertList = Beans.get(SaleOrderCheckService.class).confirmCheckAlert(saleOrder);
-    if (!CollectionUtils.isEmpty(alertList)) {
-      String msg =
-          alertList.size() == 1 ? alertList.get(0) : StringHtmlListBuilder.formatMessage(alertList);
-      response.setAlert(
-          msg + " " + I18n.get(SaleExceptionMessage.SALE_ORDER_DO_YOU_WANT_TO_PROCEED));
+
+    try {
+      SaleOrder persistedSaleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      Beans.get(SaleOrderConfirmService.class)
+          .checkSaleOrderBlocking(persistedSaleOrder, saleOrder.getManualUnblock());
+
+      List<String> alertList = Beans.get(SaleOrderCheckService.class).confirmCheckAlert(saleOrder);
+      if (!CollectionUtils.isEmpty(alertList)) {
+        String msg =
+            alertList.size() == 1
+                ? alertList.get(0)
+                : StringHtmlListBuilder.formatMessage(alertList);
+        response.setAlert(
+            msg + " " + I18n.get(SaleExceptionMessage.SALE_ORDER_DO_YOU_WANT_TO_PROCEED));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      response.setSignal("refresh-tab", null);
     }
   }
 
@@ -347,6 +357,7 @@ public class SaleOrderController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      response.setSignal("refresh-tab", null);
     }
   }
 
