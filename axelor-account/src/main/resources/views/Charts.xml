@@ -864,7 +864,7 @@ from InvoiceTerm as self
     <field name="period"
       expr="eval: __repo__(Period).all().filter('self.year.company=?1 AND ?2 BETWEEN self.year.fromDate AND self.year.toDate AND self.statusSelect = 1 AND  self.year.typeSelect = 1',active_company,todayDate).fetchOne()"/>
     <field name="year"
-      expr="eval: __repo__(Year).all().filter('self.id IN (select period.year from Period period where period.year.company=?1 AND ?2 BETWEEN period.year.fromDate AND period.year.toDate AND period.statusSelect = 1 AND  period.year.typeSelect = 1)',active_company,todayDate).fetchOne()"/>
+      expr="eval: __repo__(Year).all().filter('self.id IN (select period.year.id from Period period where period.year.company=?1 AND ?2 BETWEEN period.year.fromDate AND period.year.toDate AND period.statusSelect = 1 AND  period.year.typeSelect = 1)',active_company,todayDate).fetchOne()"/>
   </action-record>
 
   <action-attrs

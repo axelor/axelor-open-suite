@@ -1,0 +1,3 @@
+---
+title: "Base: fixed comparisons between a reference field and an id in domains and queries that were rejected since the migration to Hibernate 6."
+module: axelor-base
