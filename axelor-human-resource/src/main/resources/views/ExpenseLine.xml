@@ -504,7 +504,7 @@
 
   <action-attrs name="action-expense-line-attrs-set-site-domain">
     <attribute for="site" name="domain"
-      expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}.join(',')}) AND self.company = ${__parent__?.company?.id}&quot;"
+      expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}.join(',')}) AND self.company.id = ${__parent__?.company?.id}&quot;"
       if="project"/>
     <attribute for="site" name="domain"
       expr="eval: &quot;self.isUsableOnExpense = true AND self.company.id = ${__parent__?.company?.id}&quot;"

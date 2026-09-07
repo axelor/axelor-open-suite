@@ -237,7 +237,7 @@
 
   <action-attrs name="action-accounting-report-config-line-attrs-account-set-domain">
     <attribute for="accountSet" name="domain"
-      expr="eval: &quot; self.company = ${__parent__.company?.id} &quot;"
+      expr="eval: &quot; self.company.id = ${__parent__.company?.id} &quot;"
       if="_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.account.db.AccountingReportType'"/>
   </action-attrs>
 
