@@ -30,6 +30,7 @@
 
 	   	// ACTION TYPE
 		public static final int ACTION_REMOVE_TASK_STATUS = 1;
+		public static final int ACTION_NOTIFY_TASKS = 2;
 
 	]]></extra-code>
 

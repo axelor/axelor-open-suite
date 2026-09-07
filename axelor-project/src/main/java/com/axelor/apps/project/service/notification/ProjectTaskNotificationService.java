@@ -16,21 +16,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service;
+package com.axelor.apps.project.service.notification;
 
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.TaskStatus;
-import java.util.Optional;
-import java.util.Set;
 
-public interface ProjectTaskToolService {
-  Optional<TaskStatus> getCompletedTaskStatus(
-      TaskStatus defaultTaskStatus, Set<TaskStatus> taskStatusSet);
+public interface ProjectTaskNotificationService {
 
   /**
-   * Resolves whether the given task is completed, through {@code Project.completedTaskStatus},
-   * falling back to {@code AppProject.completedTaskStatus}, falling back to {@code
-   * TaskStatus.isCompleted}.
+   * Notifies the task's assignee, in the notification bell, that the task is overdue. Does nothing
+   * if the task has no assignee or was already notified as overdue.
+   *
+   * @return {@code true} if a notification was created.
    */
-  boolean isCompleted(ProjectTask projectTask);
+  boolean notifyOverdueTask(ProjectTask projectTask);
+
+  /**
+   * Notifies the task's assignee, in the notification bell, that the task is to do. Does nothing if
+   * the task has no assignee or was already notified as to do.
+   *
+   * @return {@code true} if a notification was created.
+   */
+  boolean notifyToDoTask(ProjectTask projectTask);
 }

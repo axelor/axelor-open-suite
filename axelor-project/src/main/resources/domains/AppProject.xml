@@ -49,6 +49,13 @@
       title="Enable status management by task category"
       help="By enabling this option you will be able to manage task statuses by task category. You will thus be able to have different statuses on your tasks depending on their category."/>
 
+    <integer name="taskNotificationAnticipationDays"
+      title="To-do notification anticipation (days)" default="7"
+      help="Number of days before a task's due date at which its assignee is notified, in the notification bell, that the task is to do."/>
+    <integer name="taskOverdueReminderFrequencyDays"
+      title="Overdue reminder frequency (days)"
+      help="If set, an assignee already notified that a task is overdue receives a new reminder every N days while the task remains overdue. Leave empty to notify only once."/>
+
     <track>
       <field name="projectLabel" on="UPDATE"/>
       <field name="resourceManagement" on="UPDATE"/>
@@ -61,6 +68,8 @@
       <field name="fullNameGroovyFormula" on="UPDATE"/>
       <field name="selectAutoProgressOnProjectTask" on="UPDATE"/>
       <field name="enableStatusManagementByTaskCategory" on="UPDATE"/>
+      <field name="taskNotificationAnticipationDays" on="UPDATE"/>
+      <field name="taskOverdueReminderFrequencyDays" on="UPDATE"/>
     </track>
   </entity>
 

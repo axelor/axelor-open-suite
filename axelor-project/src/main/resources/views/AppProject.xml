@@ -39,6 +39,11 @@
       <field name="enableStatusManagementByTaskCategory"/>
     </panel>
 
+    <panel name="taskNotificationPanel" title="Task notifications">
+      <field name="taskNotificationAnticipationDays"/>
+      <field name="taskOverdueReminderFrequencyDays"/>
+    </panel>
+
     <panel name="actionsPanel">
       <button name="generateProjectConfigurationsBtn" colSpan="4"
         title="Generate project configurations"
