@@ -1,0 +1,3 @@
+---
+title: "Sale order/Purchase order: fixed order lines not being archived when the order is archived."
+module: axelor-sale
