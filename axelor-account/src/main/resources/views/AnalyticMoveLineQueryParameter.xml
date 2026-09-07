@@ -55,7 +55,7 @@
     name="action-analytic-move-line-query-parameter-record-reverse-on-new"
     model="com.axelor.apps.account.db.AnalyticMoveLineQueryParameter">
     <field name="typeSelect" expr="eval:2"/>
-    <field name="percentage" expr="eval: new BigDecimal(100)"/>
+    <field name="percentage" expr="eval: new BigDecimal(100)" if="percentage == null"/>
   </action-record>
 
 </object-views>
