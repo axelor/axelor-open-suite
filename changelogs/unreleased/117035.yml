@@ -1,0 +1,6 @@
+---
+title: "Supplychain: removed frequently updated records from the cache."
+module: axelor-supplychain
+developer: |
+  Removed cacheable="true" from the following domains:
+  - PurchaseRequest
