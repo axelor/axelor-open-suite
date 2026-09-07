@@ -705,6 +705,12 @@ public final class BaseExceptionMessage {
   public static final String API_INVALID_SIRET_NUMBER = /*$$(*/
       "Invalid SIRET number. It must contain exactly 14 digits." /*)*/;
 
+  public static final String API_WRONG_SIREN_NUMBER = /*$$(*/
+      "Cannot get information with siren: %s ." /*)*/;
+
+  public static final String API_INVALID_SIREN_NUMBER = /*$$(*/
+      "Invalid SIREN number. It must contain exactly 9 digits." /*)*/;
+
   public static final String PARTNER_REGISTRATION_CODE_ALREADY_EXISTS = /*$$(*/
       "Registration number already exists for partner %s." /*)*/;
 

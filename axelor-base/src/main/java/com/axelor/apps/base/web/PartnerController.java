@@ -533,10 +533,18 @@ public class PartnerController {
     }
   }
 
+  protected static final int SIRENE_SEARCH_TYPE_SIREN = 2;
+
   @ErrorException
   public void apiSireneFetchData(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    String siret = request.getContext().get("siretNumber").toString();
+    String identifier = request.getContext().get("siretNumber").toString();
+    boolean isSirenSearch =
+        Optional.ofNullable(request.getContext().get("searchTypeSelect"))
+            .map(Object::toString)
+            .map(Integer::parseInt)
+            .filter(searchTypeSelect -> searchTypeSelect == SIRENE_SEARCH_TYPE_SIREN)
+            .isPresent();
 
     Map<String, Boolean> partnerTypeData = new HashMap<>();
     Object partnerId = request.getContext().get("_id");
@@ -553,7 +561,8 @@ public class PartnerController {
       partnerTypeData.put("isProspect", getBooleanContextValue(request, "_isProspect"));
     }
 
-    Beans.get(PartnerGenerateService.class).configurePartner(partner, siret, partnerTypeData);
+    Beans.get(PartnerGenerateService.class)
+        .configurePartner(partner, identifier, isSirenSearch, partnerTypeData);
 
     if (partnerId != null) {
       response.setValues(partner);
