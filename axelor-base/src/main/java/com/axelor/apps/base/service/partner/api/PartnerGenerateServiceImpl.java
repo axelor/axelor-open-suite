@@ -38,6 +38,7 @@ import com.axelor.apps.base.rest.dto.sirene.PartnerDataResponse;
 import com.axelor.apps.base.rest.dto.sirene.UniteLegaleResponse;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.partner.registrationnumber.TaxNumberHelper;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -140,9 +141,7 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
   }
 
   protected void setPartnerTaxNumber(String sirenNb, Partner partner) {
-    int sirenInt = Integer.parseInt(sirenNb);
-    int keyTVA = (12 + 3 * (sirenInt % 97)) % 97;
-    String taxNbr = "FR" + keyTVA + sirenInt;
+    String taxNbr = TaxNumberHelper.getTaxNbrFromSiren("FR", sirenNb);
     safeSetString(partner::setTaxNbr, partner::getTaxNbr, taxNbr);
   }
 
