@@ -6,3 +6,7 @@ developer: |
   - ControlEntry
   - ControlEntryPlanLine
   - ControlEntrySample
+
+  ControlEntryPlanLine was also declared cacheable="true" by the axelor-production
+  extension of the domain. Since the last declaration site wins when domains are
+  merged, the attribute had to be removed there too for the change to take effect.
