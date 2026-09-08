@@ -28,12 +28,14 @@ import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineSummaryService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -49,9 +51,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.Criteria;
 import jakarta.inject.Singleton;
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,12 +122,18 @@ public class MoveLineController {
 
       MoveLineService moveLineService = Beans.get(MoveLineService.class);
 
+      List<String> pendingPaymentMessages =
+          Beans.get(MoveLineControlService.class)
+              .getPendingPaymentMessages(moveLineService.getMoveLines(idList));
+
       int errorNumber =
           moveLineService.reconcileMoveLinesWithCacheManagement(
               moveLineService.getReconcilableMoveLines(idList));
 
       response.setReload(true);
-      if (errorNumber > 0) {
+      if (!pendingPaymentMessages.isEmpty()) {
+        response.setError(String.join("<br/>", pendingPaymentMessages));
+      } else if (errorNumber > 0) {
         response.setInfo(I18n.get(AccountExceptionMessage.RECONCILE_MASS_ERRORS));
       }
 
@@ -138,29 +144,12 @@ public class MoveLineController {
 
   public void fetchSummary(ActionRequest request, ActionResponse response) {
     try {
-      Criteria criteria = Criteria.parse(request);
-      List<MoveLine> moveLines =
-          criteria != null ? criteria.createQuery(MoveLine.class).fetch() : Collections.emptyList();
+      MoveLineSummaryService.MoveLineSums sums =
+          Beans.get(MoveLineSummaryService.class).computeMoveLineSums(Criteria.parse(request));
 
-      BigDecimal totalDebit = BigDecimal.ZERO;
-      BigDecimal totalCredit = BigDecimal.ZERO;
-      BigDecimal totalAmountRemaining = BigDecimal.ZERO;
-
-      for (MoveLine moveLine : moveLines) {
-        if (moveLine.getDebit() != null) {
-          totalDebit = totalDebit.add(moveLine.getDebit());
-        }
-        if (moveLine.getCredit() != null) {
-          totalCredit = totalCredit.add(moveLine.getCredit());
-        }
-        if (moveLine.getAmountRemaining() != null) {
-          totalAmountRemaining = totalAmountRemaining.add(moveLine.getAmountRemaining());
-        }
-      }
-
-      response.setValue("$totalDebit", totalDebit);
-      response.setValue("$totalCredit", totalCredit);
-      response.setValue("$totalAmountRemaining", totalAmountRemaining);
+      response.setValue("$totalDebit", sums.debit());
+      response.setValue("$totalCredit", sums.credit());
+      response.setValue("$totalAmountRemaining", sums.amountRemaining());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

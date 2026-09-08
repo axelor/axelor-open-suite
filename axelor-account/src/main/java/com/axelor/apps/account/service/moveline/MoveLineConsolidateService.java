@@ -24,7 +24,7 @@ import java.util.Map;
 
 public interface MoveLineConsolidateService {
   public MoveLine findConsolidateMoveLine(
-      Map<List<Object>, MoveLine> map, MoveLine moveLine, List<Object> keys);
+      Map<List<Object>, List<MoveLine>> map, MoveLine moveLine, List<Object> keys);
 
   public List<MoveLine> consolidateMoveLines(List<MoveLine> moveLines);
 

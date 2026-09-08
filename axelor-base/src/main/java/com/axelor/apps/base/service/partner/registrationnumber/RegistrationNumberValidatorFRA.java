@@ -25,7 +25,7 @@ public class RegistrationNumberValidatorFRA extends RegistrationNumberValidator 
   public boolean computeRegistrationCodeValidity(String registrationCode) {
     int sum = 0;
     boolean isOddNumber = true;
-    registrationCode = registrationCode.replace(" ", "");
+    registrationCode = getRegistrationCode(registrationCode);
     if (registrationCode.length() != 14) {
       return false;
     }
@@ -62,7 +62,7 @@ public class RegistrationNumberValidatorFRA extends RegistrationNumberValidator 
       String regCode = partner.getRegistrationCode();
 
       if (regCode != null) {
-        regCode = regCode.replaceAll(" ", "");
+        regCode = getRegistrationCode(regCode);
 
         if (regCode.length() == 14) {
           String siren = regCode.substring(0, 9);

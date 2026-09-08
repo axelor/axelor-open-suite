@@ -45,8 +45,8 @@ import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
-import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.note.InvoiceNoteService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.AxelorMessageException;
@@ -69,6 +69,8 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
+import com.axelor.dms.db.DMSFile;
+import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
@@ -90,6 +92,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -106,6 +109,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected VentilateFactory ventilateFactory;
   protected CancelFactory cancelFactory;
   protected InvoiceRepository invoiceRepo;
+  protected DMSFileRepository dmsFileRepository;
   protected AppAccountService appAccountService;
   protected PartnerService partnerService;
   protected InvoiceLineService invoiceLineService;
@@ -114,11 +118,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected AppBaseService appBaseService;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermPfpService invoiceTermPfpService;
-  protected InvoiceProductStatementService invoiceProductStatementService;
   protected TemplateMessageService templateMessageService;
   protected InvoiceTermFilterService invoiceTermFilterService;
   protected InvoicePrintService invoicePrintService;
   protected InvoiceTermPfpToolService invoiceTermPfpToolService;
+  protected InvoiceCategoryService invoiceCategoryService;
+  protected InvoiceNoteService invoiceNoteService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -126,6 +131,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       VentilateFactory ventilateFactory,
       CancelFactory cancelFactory,
       InvoiceRepository invoiceRepo,
+      DMSFileRepository dmsFileRepository,
       AppAccountService appAccountService,
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
@@ -134,16 +140,18 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceTermService invoiceTermService,
       InvoiceTermPfpService invoiceTermPfpService,
       AppBaseService appBaseService,
-      InvoiceProductStatementService invoiceProductStatementService,
       TemplateMessageService templateMessageService,
       InvoiceTermFilterService invoiceTermFilterService,
       InvoicePrintService invoicePrintService,
-      InvoiceTermPfpToolService invoiceTermPfpToolService) {
+      InvoiceTermPfpToolService invoiceTermPfpToolService,
+      InvoiceCategoryService invoiceCategoryService,
+      InvoiceNoteService invoiceNoteService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
     this.cancelFactory = cancelFactory;
     this.invoiceRepo = invoiceRepo;
+    this.dmsFileRepository = dmsFileRepository;
     this.appAccountService = appAccountService;
     this.partnerService = partnerService;
     this.invoiceLineService = invoiceLineService;
@@ -152,11 +160,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.appBaseService = appBaseService;
-    this.invoiceProductStatementService = invoiceProductStatementService;
     this.templateMessageService = templateMessageService;
     this.invoiceTermFilterService = invoiceTermFilterService;
     this.invoicePrintService = invoicePrintService;
     this.invoiceTermPfpToolService = invoiceTermPfpToolService;
+    this.invoiceCategoryService = invoiceCategoryService;
+    this.invoiceNoteService = invoiceNoteService;
   }
 
   // WKF
@@ -205,10 +214,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
       invoiceMap.put("advancePaymentInvoiceSet", invoice1.getAdvancePaymentInvoiceSet());
     }
-
-    invoice1.setInvoiceProductStatement(
-        invoiceProductStatementService.getInvoiceProductStatement(invoice1));
-    invoiceMap.put("invoiceProductStatement", invoice1.getInvoiceProductStatement());
 
     return invoiceMap;
   }
@@ -260,6 +265,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         && invoice.getInvoiceAutomaticMailOnValidate()) {
       sendMail(invoice, invoice.getInvoiceMessageTemplateOnValidate());
     }
+    invoiceCategoryService.setInvoiceCategory(invoice);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -292,6 +298,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         && operationTypeSelect != InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
       sendMail(invoice, invoice.getInvoiceMessageTemplate());
     }
+    if (operationTypeSelect == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || operationTypeSelect == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      invoiceNoteService.generateInvoiceNote(invoice);
+    }
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -305,6 +315,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     ventilateFactory.getVentilator(invoice).process();
 
     invoiceRepo.save(invoice);
+    resyncDmsHomeFolderName(invoice);
     if (this.checkEnablePDFGenerationOnVentilation(invoice)) {
       invoicePrintService.printAndSave(
           invoice,
@@ -313,6 +324,20 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           null,
           true);
     }
+  }
+
+  protected void resyncDmsHomeFolderName(Invoice invoice) {
+    DMSFile dmsHome = dmsFileRepository.findHomeByRelated(invoice);
+    String invoiceId = invoice.getInvoiceId();
+
+    if (dmsHome == null
+        || StringUtils.isBlank(invoiceId)
+        || Objects.equals(dmsHome.getFileName(), invoiceId)) {
+      return;
+    }
+
+    dmsHome.setFileName(invoiceId);
+    dmsFileRepository.save(dmsHome);
   }
 
   @Override
@@ -460,11 +485,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public String checkNotImputedRefunds(Invoice invoice) throws AxelorException {
     AccountConfig accountConfig = accountConfigService.getAccountConfig(invoice.getCompany());
-    if (!accountConfig.getAutoReconcileOnInvoice()
-        || !Optional.of(invoice)
-            .map(Invoice::getPartner)
-            .map(Partner::getIsCompensation)
-            .orElse(true)) {
+    if (!accountConfig.getAutoReconcileOnInvoice()) {
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
         long clientRefundsAmount =
             getRefundsAmount(
@@ -599,9 +620,15 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       }
     }
 
+    int operationType =
+        invoiceList.stream()
+            .map(Invoice::getOperationTypeSelect)
+            .filter(Objects::nonNull)
+            .findFirst()
+            .orElse(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(
-            InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+            operationType,
             company,
             paymentCondition,
             paymentMode,
@@ -699,9 +726,15 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       }
     }
 
+    int operationType =
+        invoiceList.stream()
+            .map(Invoice::getOperationTypeSelect)
+            .filter(Objects::nonNull)
+            .findFirst()
+            .orElse(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(
-            InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
+            operationType,
             company,
             paymentCondition,
             paymentMode,
@@ -892,8 +925,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         continue;
       }
       for (MoveLine moveLine : moveLineList) {
-        BigDecimal amountRemaining = moveLine.getAmountRemaining().abs();
-        if (amountRemaining != null && amountRemaining.compareTo(BigDecimal.ZERO) > 0) {
+        Account account = moveLine.getAccount();
+        if (account == null || !account.getUseForPartnerBalance()) {
+          continue;
+        }
+        BigDecimal amountRemaining = moveLine.getAmountRemaining();
+        if (amountRemaining != null && amountRemaining.abs().compareTo(BigDecimal.ZERO) > 0) {
           return false;
         }
       }
@@ -1022,8 +1059,13 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
               @Override
               public void accept(Invoice invoice) throws Exception {
                 if (invoice.getStatusSelect() == statusSelect) {
-                  consumer.accept(invoice);
-                  doneCounter.increment();
+                  try {
+                    consumer.accept(invoice);
+                    doneCounter.increment();
+                  } catch (Exception e) {
+                    TraceBackService.trace(e);
+                    throw e;
+                  }
                 }
               }
             });

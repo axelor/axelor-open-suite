@@ -38,9 +38,11 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
+import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -91,8 +93,11 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   @Inject protected CurrencyScaleService currencyScaleService;
 
   @Inject protected FiscalPositionService fiscalPositionService;
+  @Inject protected OrderLineTaxService orderLineTaxService;
 
   @Inject protected PurchaseOrderLinePricingService purchaseOrderLinePricingService;
+
+  @Inject protected ProductPriceService productPriceService;
 
   @Deprecated private int sequence = 0;
 
@@ -272,10 +277,14 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
           I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
     }
 
+    FiscalPosition fiscalPosition = purchaseOrder.getFiscalPosition();
     TaxEquiv taxEquiv =
         accountManagementService.getProductTaxEquiv(
-            product, purchaseOrder.getCompany(), purchaseOrder.getFiscalPosition(), true);
+            product, purchaseOrder.getCompany(), fiscalPosition, true);
     line.setTaxEquiv(taxEquiv);
+    line.setVatExemptionReason(
+        orderLineTaxService.resolveVatExemptionReason(
+            fiscalPosition, taxEquiv, purchaseOrder.getSupplierPartner()));
 
     Map<String, Object> discounts =
         getDiscountsFromPriceLists(
@@ -653,6 +662,9 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
               purchaseOrderLine.getProduct(), purchaseOrder.getCompany(), fiscalPosition, true);
 
       purchaseOrderLine.setTaxEquiv(taxEquiv);
+      purchaseOrderLine.setVatExemptionReason(
+          orderLineTaxService.resolveVatExemptionReason(
+              fiscalPosition, taxEquiv, purchaseOrder.getSupplierPartner()));
 
       BigDecimal exTaxTotal = purchaseOrderLine.getExTaxTotal();
 
@@ -693,6 +705,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     Map<String, Object> valuesMap = new HashMap<>();
     if (fiscalPosition == null || CollectionUtils.isEmpty(taxLineSet)) {
       valuesMap.put("taxEquiv", taxEquiv);
+      valuesMap.put("vatExemptionReason", null);
       return valuesMap;
     }
     taxEquiv = fiscalPositionService.getTaxEquivFromOrToTaxSet(fiscalPosition, taxLineSet);
@@ -702,6 +715,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
     valuesMap.put("taxLineSet", taxLineSet);
     valuesMap.put("taxEquiv", taxEquiv);
+    valuesMap.put(
+        "vatExemptionReason",
+        orderLineTaxService.resolveVatExemptionReason(
+            fiscalPosition, taxEquiv, purchaseOrder.getSupplierPartner()));
     return valuesMap;
   }
 
@@ -722,5 +739,66 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
         compute(purchaseOrderLine, purchaseOrder);
       }
     }
+  }
+
+  @Override
+  public Map<String, Object> updatePriceForQtyLimit(
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, boolean isQtyLimitBroken)
+      throws AxelorException {
+    Map<String, Object> map = new HashMap<>();
+    if (purchaseOrderLine.getEnableFreezeFields()) {
+      return map;
+    }
+
+    Product product = purchaseOrderLine.getProduct();
+    Set<TaxLine> taxLineSet = purchaseOrderLine.getTaxLineSet();
+    BigDecimal price;
+    BigDecimal inTaxPrice;
+
+    if (isQtyLimitBroken) {
+      price =
+          productPriceService.getPurchaseUnitPrice(
+              purchaseOrder.getCompany(),
+              product,
+              taxLineSet,
+              false,
+              purchaseOrder.getOrderDate(),
+              purchaseOrder.getCurrency());
+      inTaxPrice =
+          productPriceService.getPurchaseUnitPrice(
+              purchaseOrder.getCompany(),
+              product,
+              taxLineSet,
+              true,
+              purchaseOrder.getOrderDate(),
+              purchaseOrder.getCurrency());
+    } else {
+      price =
+          supplierCatalogService.getUnitPrice(
+              product,
+              purchaseOrder.getSupplierPartner(),
+              purchaseOrder.getCompany(),
+              purchaseOrder.getCurrency(),
+              purchaseOrder.getOrderDate(),
+              taxLineSet,
+              false);
+      inTaxPrice =
+          supplierCatalogService.getUnitPrice(
+              product,
+              purchaseOrder.getSupplierPartner(),
+              purchaseOrder.getCompany(),
+              purchaseOrder.getCurrency(),
+              purchaseOrder.getOrderDate(),
+              taxLineSet,
+              true);
+    }
+
+    purchaseOrderLine.setPrice(price);
+    purchaseOrderLine.setInTaxPrice(inTaxPrice);
+
+    map.put("price", price);
+    map.put("inTaxPrice", inTaxPrice);
+    map.putAll(compute(purchaseOrderLine, purchaseOrder));
+    return map;
   }
 }

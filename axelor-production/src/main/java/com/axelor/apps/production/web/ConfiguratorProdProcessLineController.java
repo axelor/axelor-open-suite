@@ -36,6 +36,9 @@ public class ConfiguratorProdProcessLineController {
       if (workCenter != null) {
         response.setValue("durationPerCycle", workCenter.getDurationPerCycle());
         response.setValue("humanDuration", workCenter.getHrDurationPerCycle());
+        response.setValue("startingDuration", workCenter.getStartingDuration());
+        response.setValue("endingDuration", workCenter.getEndingDuration());
+        response.setValue("setupDuration", workCenter.getSetupDuration());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

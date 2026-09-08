@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -160,6 +160,7 @@
 
     <boolean name="enableTaxNumbers" title="Enable tax numbers"
       help="This configuration enables the tax number feature. If disabled, the fiscal position no longer depends on tax numbers when creating an order."/>
+    <boolean name="enableEcoTax" title="Enable eco-tax" default="false"/>
     <many-to-one name="defaultAddressTemplate"
       ref="com.axelor.apps.base.db.AddressTemplate" title="Default address template"/>
 
@@ -353,6 +354,7 @@
       <field name="isRegistrationCodeCheckBlocking" on="UPDATE"/>
       <field name="isGlobalDiscountEnabled" on="UPDATE"/>
       <field name="enableTaxNumbers" on="UPDATE"/>
+      <field name="enableEcoTax" on="UPDATE"/>
       <field name="defaultAddressTemplate" on="UPDATE"/>
       <field name="pfxCertificate" on="UPDATE"/>
       <field name="sireneUrl" on="UPDATE"/>

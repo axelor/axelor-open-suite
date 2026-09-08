@@ -783,6 +783,10 @@ public final class AccountExceptionMessage {
       "The partner is required and must be the same for all invoices" /*)*/;
   public static final String INVOICE_MERGE_ERROR_COMPANY = /*$$(*/
       "The company is required and must be the same for all invoices" /*)*/;
+  public static final String INVOICE_MERGE_ERROR_STATUS = /*$$(*/
+      "Only Draft or Validated invoices can be merged." /*)*/;
+  public static final String INVOICE_MERGE_ERROR_STATUS_INVOICE = /*$$(*/
+      "The following invoice(s) cannot be merged because their status is not Draft or Validated:<br/>%s" /*)*/;
   public static final String INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION = /*$$(*/
       "Their is at least one invoice selected that it is not validated to pay" /*)*/;
 
@@ -899,6 +903,8 @@ public final class AccountExceptionMessage {
       "%s : Error : You must configure a sequence for the company %s and a payment mode %s" /*)*/;
   public static final String PAYMENT_MODE_3 = /*$$(*/
       "%s : Error : You must configure a journal for the company %s and a payment mode %s" /*)*/;
+  public static final String PAYMENT_MODE_4 = /*$$(*/
+      "%s : Error : You must configure a check deposit journal for the company %s and a payment mode %s" /*)*/;
 
   public static final String PAYMENT_MODE_ERROR_GETTING_ACCOUNT_FROM_PAYMENT_MODE = /*$$(*/
       "The configuration to retrieve the account on the payment mode is missing:" /*)*/;
@@ -1017,6 +1023,18 @@ public final class AccountExceptionMessage {
 
   public static final String MOVE_TEMPLATE_3 = /*$$(*/ "Generated moves" /*)*/;
   public static final String MOVE_TEMPLATE_4 = /*$$(*/ "Please fill input lines" /*)*/;
+
+  public static final String MOVE_TEMPLATE_PARTNER_INCONSISTENT = /*$$(*/
+      "Move template lines have inconsistent partners: all lines must have the same partner. Found: %s" /*)*/;
+
+  public static final String MOVE_TEMPLATE_TAX_AMOUNT_MISMATCH = /*$$(*/
+      "Tax amount mismatch for tax %s: expected %s (base: %s x rate: %s%%), found %s" /*)*/;
+
+  public static final String MOVE_TEMPLATE_MIXED_COMPUTE_TAX_AT_CREATION = /*$$(*/
+      "Lines with account %s and tax %s have inconsistent 'Compute tax at creation' values. All lines with the same account and tax must have the same setting." /*)*/;
+
+  public static final String MOVE_TEMPLATE_COMPUTE_TAX_AT_CREATION_WITH_TAX_LINES = /*$$(*/
+      "'Compute tax at creation' is enabled on at least one line, but the template also contains tax lines. In this case the tax is not computed automatically and the option is ignored: either remove the tax lines or uncheck 'Compute tax at creation'." /*)*/;
 
   /** Mass entry move controller */
   public static final String MASS_ENTRY_MOVE_CONTROL_ERROR = /*$$(*/
@@ -1334,6 +1352,9 @@ public final class AccountExceptionMessage {
 
   public static final String IMPORT_FEC_FOREIGN_CURRENCY_AMOUNT_REQUIRED = /*$$(*/
       "The amount in currency in %s is required when importing an entry line in a foreign currency (different from company currency)." /*)*/;
+
+  public static final String IMPORT_FEC_CURRENCY_MISSING_FALLBACK = /*$$(*/
+      "Please fill the column currency with the ISO3 Code of the currency used in the CSV file for each line (while AOS uses one currency by entry) or fill the currency field onto the company settings." /*)*/;
 
   public static final String ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT = /*$$(*/
       "Please select a cash account in config of the payment mode %s" /*)*/;
@@ -1729,4 +1750,56 @@ public final class AccountExceptionMessage {
 
   public static final String PERIOD_CLOSE_MOVES_FAILED = /*$$(*/
       "Period closure failed. Some move(s) could not be validated." /*)*/;
+
+  public static final String INVOICE_VAT_SYSTEM_DELIVERY_ON_ADVANCE_PAYMENT_PRODUCT = /*$$(*/
+      "The accounting account for the advance payment product is subject to the VAT on deliveries regime. However, legally, the VAT related to the advance payment becomes due upon receipt of payment. Do you wish to continue or modify the VAT system of the account before validating?" /*)*/;
+
+  public static String MISSING_CASH_DISCOUNT_MENTION =
+      /*$$(*/ "There is no legal notice on financial discount for the invoice %s and the default option to print 'no financial discount applied' is not checked in the config. This legal notice is required, please fix either." /*)*/;
+  public static String MISSING_LEGAL_NOTE =
+      /*$$(*/ "There is no legal note on the invoice %s . This field is required, please fix it." /*)*/;
+  public static String MISSING_PENALTY_RATE_NOTE =
+      /*$$(*/ "There is no penalty rate note on the invoice %s . This field is required, please fix it." /*)*/;
+  public static String UNKNOWN_SCOPE_VALUE = /*$$(*/ "Unknown scope value %s" /*)*/;
+  public static String MISSING_BANK_DETAILS_NOTE_TYPE = /*$$(*/
+      "Bank detail %s doesn't have a note type defined for note %s." /*)*/;
+  public static final String ADVANCE_INVOICE_CAN_NOT_DELETE = /*$$(*/
+      "Validated advance invoices can not be deleted. %s can not be deleted." /*)*/;
+
+  public static final String LOAN_MANAGEMENT_CONFIG_MISSING =
+      /*$$(*/ "No loan configuration found for company %s." /*)*/;
+  public static final String LOAN_NOT_DRAFT = /*$$(*/ "Only a draft loan can be validated." /*)*/;
+  public static final String LOAN_SEQUENCE_MISSING =
+      /*$$(*/ "No active loan sequence configured for company %s." /*)*/;
+  public static final String LOAN_GENERATION_MISSING_DATA =
+      /*$$(*/ "Please fill the amount, the annual interest rate, the duration, the computation mode and the first installment date before generating the schedule." /*)*/;
+  public static final String LOAN_SIMULATION_MISSING_DATA =
+      /*$$(*/ "Please fill the annual interest rate, the duration and the amount or monthly payment to simulate." /*)*/;
+  public static final String LOAN_NOT_VALIDATED =
+      /*$$(*/ "The loan must be validated before booking installments." /*)*/;
+  public static final String LOAN_LINE_ALREADY_POSTED =
+      /*$$(*/ "This installment has already been booked." /*)*/;
+  public static final String LOAN_LINE_NOT_SEQUENTIAL =
+      /*$$(*/ "Installments must be booked in chronological order; book the previous installment first." /*)*/;
+  public static final String LOAN_ACCOUNT_MISSING =
+      /*$$(*/ "The loan %s is missing the journal or one of the accounts required to book the installment." /*)*/;
+  public static final String LOAN_NO_INSTALLMENT_TO_POST =
+      /*$$(*/ "There is no planned installment to book on this loan." /*)*/;
+  public static final String BATCH_POSTED_LOAN_INSTALLMENT =
+      /*$$(*/ "Booked loan installment(s) :" /*)*/;
+  public static final String LOAN_CLOSURE_ACCOUNT_MISSING =
+      /*$$(*/ "The loan %s is missing the journal or one of the accounts required for the closing adjustments." /*)*/;
+  public static final String BATCH_LOAN_CLOSURE =
+      /*$$(*/ "Loan(s) with closing adjustments generated :" /*)*/;
+  public static final String LOAN_NO_INSTALLMENT_TO_ADJUST =
+      /*$$(*/ "There is no planned installment to adjust on this loan." /*)*/;
+  public static final String LOAN_NO_ADJUSTMENT_TO_CANCEL =
+      /*$$(*/ "There is no adjustment to cancel on this loan." /*)*/;
+  public static final String LOAN_LINE_CAPITAL_EXCEEDS_REMAINING_DEBT =
+      /*$$(*/ "The capital repayment cannot exceed the remaining debt of the installment." /*)*/;
+  public static final String LOAN_LINE_NEGATIVE_AMOUNT =
+      /*$$(*/ "The installment amounts cannot be negative." /*)*/;
+  public static final String LOAN_CONSISTENCY_GAP =
+      /*$$(*/
+      "Inconsistency detected: the theoretical outstanding capital does not match the balance of account %s." /*)*/;
 }

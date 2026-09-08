@@ -431,7 +431,9 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
         invoiceTerm.setMoveLine(null);
         invoiceTerm.setInvoice(null);
-        invoiceTermRepository.remove(invoiceTerm);
+        if (invoiceTerm.getId() != null) {
+          invoiceTermRepository.remove(invoiceTerm);
+        }
       }
     }
 

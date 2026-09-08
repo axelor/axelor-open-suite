@@ -20,6 +20,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.MoveLineQuery;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveLineQueryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
@@ -77,6 +78,14 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
 
     if (moveLineQuery.getProcessSelect() == MoveLineQueryRepository.PROCESS_RECONCILE) {
       query += "AND self.amountRemaining != 0 ";
+      query +=
+          "AND NOT EXISTS ("
+              + "SELECT ip FROM InvoicePayment ip "
+              + "JOIN ip.invoiceTermPaymentList itp "
+              + "WHERE itp.invoiceTerm MEMBER OF self.invoiceTermList "
+              + "AND ip.statusSelect = "
+              + InvoicePaymentRepository.STATUS_PENDING
+              + ") ";
     } else if (moveLineQuery.getProcessSelect() == MoveLineQueryRepository.PROCESS_UNRECONCILE) {
       query += "AND self.amountRemaining != debit - credit ";
     }

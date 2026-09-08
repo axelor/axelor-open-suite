@@ -36,8 +36,11 @@ public class BankOrderLineOriginController {
 
     BankOrderLineOrigin bankOrderLineOrigin =
         request.getContext().asType(BankOrderLineOrigin.class);
+    BankOrderLineOriginService bankOrderLineOriginService =
+        Beans.get(BankOrderLineOriginService.class);
+    bankOrderLineOriginService.ensurePrintedPdfAttached(bankOrderLineOrigin);
     Map<String, Object> relatedDataMap =
-        Beans.get(BankOrderLineOriginService.class).getRelatedDataMap(bankOrderLineOrigin);
+        bankOrderLineOriginService.getRelatedDataMap(bankOrderLineOrigin);
 
     response.setView(
         ActionView.define(I18n.get("Files"))

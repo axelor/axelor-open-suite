@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -31,6 +31,8 @@
       selection="product.procurement.method.select" initParam="true"/>
     <boolean name="isPrototype" title="Prototype"/>
     <boolean name="isUnrenewed" title="Unrenewed"/>
+    <decimal name="defaultEcoTaxAmount" title="Default eco-tax amount" min="0"/>
+    <string name="defaultEcoTaxMention" title="Default eco-tax mention"/>
     <integer name="productSubTypeSelect" title="Product Subtype"
       selection="product.sub.type.product.select"/>
     <integer name="inventoryTypeSelect" title="Inventory type"
@@ -51,7 +53,7 @@
       title="Update sale price from cost price"/>
 
     <one-to-many name="priceListLineList" ref="com.axelor.apps.base.db.PriceListLine"
-      mappedBy="product"/>
+      mappedBy="product" copy="false"/>
 
     <decimal name="costPrice" title="Cost price" precision="20" scale="10" massUpdate="true"
       min="0"/>
@@ -133,6 +135,9 @@
 
     <one-to-many name="productCompanyList" ref="com.axelor.apps.base.db.ProductCompany"
       title="Products per companies" mappedBy="product"/>
+
+    <one-to-many name="commercialBomList" ref="com.axelor.apps.base.db.CommercialBom"
+      title="Commercial BOM" mappedBy="parentProduct"/>
 
     <string name="dtype" insertable="false" updatable="false"/>
 

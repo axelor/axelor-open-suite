@@ -46,6 +46,7 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.util.TaxConfiguration;
@@ -62,12 +63,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppAccount;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -89,6 +87,7 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
   protected CurrencyService currencyService;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoiceLineTaxToolService invoiceLineTaxToolService;
+  protected MoveLineTaxService moveLineTaxService;
 
   @Inject
   public InvoicePaymentMoveCreateServiceImpl(
@@ -107,7 +106,8 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
       AccountingSituationService accountingSituationService,
       CurrencyService currencyService,
       InvoicePaymentRepository invoicePaymentRepository,
-      InvoiceLineTaxToolService invoiceLineTaxToolService) {
+      InvoiceLineTaxToolService invoiceLineTaxToolService,
+      MoveLineTaxService moveLineTaxService) {
     this.dateService = dateService;
     this.paymentModeService = paymentModeService;
     this.moveToolService = moveToolService;
@@ -124,6 +124,7 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
     this.currencyService = currencyService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoiceLineTaxToolService = invoiceLineTaxToolService;
+    this.moveLineTaxService = moveLineTaxService;
   }
 
   /**
@@ -237,6 +238,14 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
       if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
           && InvoiceToolService.isRefund(invoice)) {
         invoiceMoveLines = moveToolService.getRefundAdvancePaymentMoveLines(invoicePayment);
+        moveLineTaxService.generateTaxPaymentMoveLineListForAdvancePayment(
+            customerMoveLine, invoice, paymentDate);
+      }
+
+      if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+          && ObjectUtils.isEmpty(invoiceMoveLines)) {
+        moveLineTaxService.generateTaxPaymentMoveLineListForAdvancePayment(
+            customerMoveLine, invoice, paymentDate);
       }
 
       if (!ObjectUtils.isEmpty(invoiceMoveLines)) {
@@ -380,8 +389,7 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
   }
 
   @Override
-  public void createInvoicePaymentMove(InvoicePayment invoicePayment)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+  public void createInvoicePaymentMove(InvoicePayment invoicePayment) throws AxelorException {
     Invoice invoice = invoicePayment.getInvoice();
     if (accountConfigService
         .getAccountConfig(invoice.getCompany())

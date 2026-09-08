@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="timesheet-line-project-grid" title="Log Times"
     model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
@@ -14,7 +14,8 @@
     </toolbar>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="projectTask" onChange="action-timesheet-line-method-set-product"
-      form-view="project-task-form" grid-view="project-task-grid" domain="self.imputable IS TRUE"/>
+      form-view="project-task-form" grid-view="project-task-grid"
+      domain="self.imputable IS TRUE AND self.project.id in (:_projectIds)"/>
     <field name="date"/>
     <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product"
@@ -233,7 +234,8 @@
       <field name="project" onChange="action-timesheet-line-record-set-project-task"
         onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form"
         grid-view="project-grid"/>
-      <field name="projectTask" domain="self.imputable IS TRUE"
+      <field name="projectTask"
+        domain="self.imputable IS TRUE AND self.project.id in (:_projectIds)"
         onChange="action-timesheet-line-method-set-product"/>
       <field name="date" onChange="action-timesheet-line-method-check-daily-limit"/>
       <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
@@ -358,9 +360,11 @@
   </action-attrs>
 
   <action-attrs name="action-timesheet-line-attrs-set-duration-label">
-    <attribute name="title" for="durationLabel" if="__parent__"
+    <attribute name="title" for="durationLabel"
+      if="__parent__ != null &amp;&amp; __parent__?._model == 'com.axelor.apps.hr.db.Timesheet'"
       expr="eval: __parent__?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __parent__?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
-    <attribute name="title" for="durationLabel" if="!__parent__"
+    <attribute name="title" for="durationLabel"
+      if="__parent__ == null || __parent__?._model != 'com.axelor.apps.hr.db.Timesheet'"
       expr="eval: timesheet?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : timesheet?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
   </action-attrs>
 

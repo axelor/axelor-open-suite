@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationLineHistoryService;
@@ -41,6 +42,7 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.config.OutSmGenerationService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -65,11 +67,13 @@ public class StockMoveLineProductionServiceImpl extends StockMoveLineServiceSupp
       ProductCompanyService productCompanyService,
       SupplychainBatchRepository supplychainBatchRepo,
       SupplyChainConfigService supplychainConfigService,
+      OutSmGenerationService outSmGenerationService,
       StockLocationLineHistoryService stockLocationLineHistoryService,
       InvoiceLineRepository invoiceLineRepository,
       AppSupplychainService appSupplychainService,
       StockLocationLineFetchService stockLocationLineFetchService,
-      TrackingNumberCreateService trackingNumberCreateService) {
+      TrackingNumberCreateService trackingNumberCreateService,
+      StockMoveRepository stockMoveRepository) {
     super(
         trackingNumberService,
         appBaseService,
@@ -87,11 +91,13 @@ public class StockMoveLineProductionServiceImpl extends StockMoveLineServiceSupp
         productCompanyService,
         supplychainBatchRepo,
         supplychainConfigService,
+        outSmGenerationService,
         stockLocationLineHistoryService,
         invoiceLineRepository,
         appSupplychainService,
         stockLocationLineFetchService,
-        trackingNumberCreateService);
+        trackingNumberCreateService,
+        stockMoveRepository);
   }
 
   @Override

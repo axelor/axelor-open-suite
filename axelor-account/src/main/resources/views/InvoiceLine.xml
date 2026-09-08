@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="invoice-line-grid" title="Invoice lines"
     model="com.axelor.apps.account.db.InvoiceLine">
@@ -9,8 +9,7 @@
     <field name="product.code" width="120"/>
     <field name="productName"/>
     <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
-    <field name="priceDiscounted" title="Unit price W.T."
-      x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="priceDiscounted" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="coefficient"/>
     <field name="exTaxTotal" aggregate="sum"/>
@@ -44,8 +43,7 @@
     <field name="product.code" title="product.code" width="120"/>
     <field name="productName" width="170"/>
     <field name="qty" width="50" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
-    <field name="priceDiscounted" title="Unit price W.T."
-      x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="priceDiscounted" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="unit" width="60" form-view="unit-form" grid-view="unit-grid"/>
     <field name="coefficient"/>
     <field name="exTaxTotal" aggregate="sum"/>
@@ -89,7 +87,7 @@
 			<![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t("The partner's language is different from the current language. Description and product name are in :")} {$partnerLanguage}</Badge>}</>]]>
           </viewer>
         </field>
-        <panel name="customerInvoicePanel" colSpan="12">
+        <panel name="customerInvoicePanel" colSpan="12" hidden="true">
           <field name="product" canEdit="false" x-image-field="picture"
             onChange="action-group-account-invoice-line-product-onchange"
             onSelect="action-invoice-line-attrs-set-product-domain-onselect"
@@ -101,7 +99,7 @@
             onChange="action-invoice-line-method-empty-line"/>
         </panel>
 
-        <panel name="supplierInvoicePanel" colSpan="12">
+        <panel name="supplierInvoicePanel" colSpan="12" hidden="true">
           <field name="product" canEdit="false" x-image-field="picture"
             onChange="action-group-account-invoice-line-product-onchange"
             onSelect="action-invoice-line-attrs-set-product-domain-onselect"
@@ -126,7 +124,7 @@
           hidden="true" x-scale="$nbDecimalDigitForUnitPrice"/>
         <panel name="discountPanel" colSpan="12" readonlyIf="$isGlobalDiscount">
           <field name="discountTypeSelect" colSpan="3"
-            onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
+            onChange="action-invoice-line-group-discount-type-onchange"/>
           <field name="discountAmount" colSpan="3"
             onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
             hideIf="discountTypeSelect == 0" x-scale="$nbDecimalDigitForUnitPrice"/>
@@ -137,11 +135,17 @@
           onChange="action-invoice-line-group-taxline-onchange" grid-view="tax-line-grid"
           form-view="tax-line-form"
           onSelect="action-invoice-line-method-compute-tax-line-set-on-select" widget="Tags"/>
+        <field name="ecoTaxAmount" colSpan="2"
+          if="__config__.app.getApp('base')?.getEnableEcoTax()"/>
+        <field name="ecoTaxMention" colSpan="4"
+          if="__config__.app.getApp('base')?.getEnableEcoTax()"/>
         <field name="exTaxTotal" colSpan="3" readonly="true"/>
         <field name="inTaxTotal" colSpan="3" readonly="true"/>
         <field name="$isReadOnly" hidden="true"/>
         <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
           form-view="tax-equiv-form"/>
+        <field name="vatExemptionReason" readonly="true" hideIf="!vatExemptionReason"
+          form-view="vat-exemption-reason-form" grid-view="vat-exemption-reason-grid"/>
         <field name="invoice" hidden="true"/>
         <field name="invoice.company.currency.symbol" hidden="true"/>
         <field name="invoice.company.accountConfig.isInvoiceCoefficientEnabled" hidden="true"/>
@@ -279,12 +283,16 @@
         <field name="taxLineSet" canEdit="false" canNew="false"
           onChange="action-invoice-line-group-taxline-onchange" grid-view="tax-line-grid"
           form-view="tax-line-form" widget="Tags"/>
+        <field name="ecoTaxAmount" colSpan="2"
+          if="__config__.app.getApp('base')?.getEnableEcoTax()"/>
+        <field name="ecoTaxMention" colSpan="4"
+          if="__config__.app.getApp('base')?.getEnableEcoTax()"/>
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
         <field name="invoice" hidden="true"/>
         <panel name="discountPanel" title="Financial Discount" colSpan="12">
           <field name="discountTypeSelect"
-            onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
+            onChange="action-invoice-line-group-discount-type-onchange"/>
           <field name="discountAmount"
             onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"
             hideIf="discountTypeSelect == 0"/>
@@ -320,6 +328,7 @@
     <action name="action-invoice-line-method-set-scale"/>
     <action name="action-invoice-line-attrs-display-coefficient"/>
     <action name="action-invoice-line-attrs-compute-is-global-discount"/>
+    <action name="action-invoice-line-method-get-product-information"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-onload">
@@ -352,6 +361,8 @@
     <action name="action-invoice-line-attrs-set-hidden-analytic-distribution-panel"/>
     <action name="action-invoice-line-method-set-scale"/>
     <action name="action-invoice-line-method-set-required-analytic-account"/>
+    <action name="action-record-account-invoice-line-set-default-eco-tax"
+      if="__config__.app.getApp('base')?.getEnableEcoTax()"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-line-qty-onchange">
@@ -439,6 +450,11 @@
       if="!taxLineSet &amp;&amp; account &amp;&amp; account.defaultTaxSet"/>
   </action-record>
 
+  <action-record name="action-record-account-invoice-line-set-default-eco-tax"
+    model="com.axelor.apps.account.db.InvoiceLine">
+    <field name="ecoTaxMention" expr="eval: product?.defaultEcoTaxMention"/>
+    <field name="ecoTaxAmount" expr="eval: product?.defaultEcoTaxAmount"/>
+  </action-record>
 
 
   <!-- ACTION METHOD -->
@@ -726,6 +742,18 @@
       expr="eval: __parent__?.discountTypeSelect != 0"/>
   </action-attrs>
 
+
+  <action-record name="action-invoice-line-record-clear-discount-amount"
+    model="com.axelor.apps.account.db.InvoiceLine">
+    <field name="discountAmount" expr="eval: 0"/>
+  </action-record>
+
+  <action-group name="action-invoice-line-group-discount-type-onchange">
+    <action name="action-invoice-line-record-clear-discount-amount"/>
+    <action name="action-invoice-line-method-compute"/>
+    <action name="action-invoice-line-attrs-discountamount-title"/>
+    <action name="action-invoice-line-method-compute-analytic-distribution"/>
+  </action-group>
 
   <search-filters name="invoice-line-filters"
     model="com.axelor.apps.account.db.InvoiceLine" title="Invoice line filters">

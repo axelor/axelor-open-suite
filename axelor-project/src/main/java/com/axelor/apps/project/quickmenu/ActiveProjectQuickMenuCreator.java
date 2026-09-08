@@ -34,6 +34,8 @@ import com.axelor.ui.QuickMenuCreator;
 import com.axelor.ui.QuickMenuItem;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -85,7 +87,10 @@ public class ActiveProjectQuickMenuCreator implements QuickMenuCreator {
     Project activeProject = user.getActiveProject();
     String action = UserController.class.getName() + ":" + "setActiveProject";
 
-    for (Project project : projectSet) {
+    List<Project> projectList = new ArrayList<>(projectSet);
+    Collections.sort(projectList, Comparator.comparing(Project::getName));
+
+    for (Project project : projectList) {
       if (!Boolean.TRUE.equals(project.getArchived())
           && (project.getCompany() == null
               || user.getActiveCompany() == null

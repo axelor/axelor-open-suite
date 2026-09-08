@@ -262,9 +262,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       FiscalPosition fiscalPosition = null;
       if (move.getInvoice() != null) {
         fiscalPosition = move.getInvoice().getFiscalPosition();
-        if (fiscalPosition == null) {
-          fiscalPosition = move.getInvoice().getPartner().getFiscalPosition();
-        }
       } else {
         fiscalPosition = partner.getFiscalPosition();
       }
@@ -567,12 +564,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     moveLine.setAnalyticDistributionTemplate(invoiceLine.getAnalyticDistributionTemplate());
     if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
-      for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
-        AnalyticMoveLine analyticMoveLine =
-            analyticMoveLineGenerateRealService.createFromForecast(
-                invoiceAnalyticMoveLine, moveLine);
-        moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
-      }
+      analyticMoveLineGenerateRealService.createFromForecastList(
+          invoiceLine.getAnalyticMoveLineList(), moveLine);
     } else {
       moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
     }
@@ -739,6 +732,11 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
       LocalDate todayDate = appBaseService.getTodayDate(move.getCompany());
       TaxEquiv taxEquiv = moveLine.getTaxEquiv();
+      if (taxEquiv == null) {
+        taxEquiv =
+            fiscalPositionAccountService.getTaxEquivFromOrToTaxSet(
+                fiscalPosition, moveLine.getTaxLineSet());
+      }
       if (taxEquiv != null && taxEquiv.getReverseCharge()) {
         if (ObjectUtils.isEmpty(taxEquiv.getReverseChargeTaxSet())) {
           throw new AxelorException(
@@ -755,7 +753,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     int vatSystem = AccountRepository.VAT_SYSTEM_DEFAULT;
     try {
-      vatSystem = moveLineTaxService.getVatSystem(move, moveLine);
+      vatSystem =
+          moveLineTaxService.getVatSystem(move, moveLine.getAccount(), moveLine.getPartner());
     } catch (AxelorException e) {
       if (moveLine.getVatSystemSelect() == null
           || moveLine.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {

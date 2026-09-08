@@ -106,7 +106,7 @@ public class PackagingRestController {
   @DELETE
   @HttpExceptionHandler
   public Response deletePackaging(@PathParam("packagingId") Long packagingId) {
-    new SecurityCheck().removeAccess(Packaging.class);
+    new SecurityCheck().removeAccess(Packaging.class).check();
 
     Packaging packaging = ObjectFinder.find(Packaging.class, packagingId, ObjectFinder.NO_VERSION);
 

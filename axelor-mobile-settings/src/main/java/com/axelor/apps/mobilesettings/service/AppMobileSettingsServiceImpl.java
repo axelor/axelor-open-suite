@@ -24,7 +24,9 @@ import com.axelor.db.Query;
 import com.axelor.studio.db.AppMobileSettings;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
+@Singleton
 public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
 
   private final MobileConfigRepository mobileConfigRepository;
@@ -79,5 +81,7 @@ public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
     updateMobileConfig(
         appMobileSettings.getIsMaintenanceAppEnabled(),
         MobileConfigRepository.APP_SEQUENCE_MAINTENANCE);
+    updateMobileConfig(
+        appMobileSettings.getIsTeamAppEnabled(), MobileConfigRepository.APP_SEQUENCE_TEAM);
   }
 }

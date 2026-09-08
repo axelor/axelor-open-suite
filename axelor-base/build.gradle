@@ -16,6 +16,9 @@ axelor {
 }
 
 dependencies {
+
+	compileOnly libs.jsr305
+
 	api libs.commons_lang3
 	implementation libs.commons_math3
 	implementation libs.commons_validator

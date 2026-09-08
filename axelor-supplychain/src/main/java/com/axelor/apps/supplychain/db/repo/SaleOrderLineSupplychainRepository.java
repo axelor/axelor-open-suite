@@ -18,13 +18,19 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineSaleRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.supplychain.db.SupplyChainConfig;
+import com.axelor.apps.supplychain.service.config.OutSmGenerationService;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineSublineService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
@@ -37,7 +43,10 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleReposit
     Long saleOrderLineId = (Long) json.get("id");
     SaleOrderLine saleOrderLine = find(saleOrderLineId);
 
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    SaleOrder saleOrder =
+        saleOrderLine.getSaleOrder() != null
+            ? saleOrderLine.getSaleOrder()
+            : saleOrderLine.getMainSaleOrder();
 
     if (this.availabilityIsNotManaged(saleOrderLine, saleOrder)) {
       return super.populate(json, context);
@@ -81,15 +90,25 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleReposit
   }
 
   protected boolean availabilityIsNotManaged(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
-    return saleOrder == null
-        || saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL
+    try {
+      SupplyChainConfig supplyChainConfig =
+          Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(saleOrder.getCompany());
+
+      if (Beans.get(OutSmGenerationService.class).isOnlyForManagedLines(supplyChainConfig)) {
+        return !saleOrderLine.getManagedInStockMove();
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+    }
+    return saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL
         || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_CONFIRMED
         || saleOrder.getStockLocation() == null
         || saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED
-        || (saleOrderLine.getProduct() != null
+        || Beans.get(SaleOrderLineSublineService.class).hasAnyManagedChild(saleOrderLine)
+        || saleOrderLine.getProduct() != null
             && saleOrderLine
                 .getProduct()
                 .getProductTypeSelect()
-                .equals(ProductRepository.PRODUCT_TYPE_SERVICE));
+                .equals(ProductRepository.PRODUCT_TYPE_SERVICE);
   }
 }

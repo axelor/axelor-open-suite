@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.contract.batch;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
@@ -73,8 +75,15 @@ public class BatchContract extends BatchStrategy {
           try {
             factory.process(contract);
             incrementDone(contract);
+          } catch (AxelorException e) {
+            TraceBackService.trace(
+                new AxelorException(e, contract, e.getCategory()), null, batch.getId());
+            incrementAnomaly(contract);
           } catch (Exception e) {
-            TraceBackService.trace(e);
+            TraceBackService.trace(
+                new AxelorException(e, contract, TraceBackRepository.CATEGORY_INCONSISTENCY),
+                null,
+                batch.getId());
             incrementAnomaly(contract);
           }
         }

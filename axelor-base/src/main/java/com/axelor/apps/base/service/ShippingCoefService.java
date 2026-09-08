@@ -88,6 +88,9 @@ public class ShippingCoefService {
    */
   public BigDecimal getShippingCoef(
       Product product, Partner supplierPartner, Company company, BigDecimal qty) {
+    if (product == null) {
+      return BigDecimal.ONE;
+    }
     BigDecimal shippingCoef;
 
     if (product.getDefShipCoefByPartner()) {

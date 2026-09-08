@@ -31,6 +31,8 @@ import java.util.Map;
 
 public interface ExpenseViewService {
 
+  Map<String, Object> showMoves(Long expenseId) throws AxelorException;
+
   ActionViewBuilder buildEditExpenseView(User user);
 
   ActionViewBuilder buildEditSelectedExpenseView(Long expenseId);

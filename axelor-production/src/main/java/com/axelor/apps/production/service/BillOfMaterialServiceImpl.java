@@ -34,6 +34,7 @@ import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -596,6 +597,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   @Override
   public Map<BillOfMaterial, BigDecimal> getSubBillOfMaterialMapWithLineQty(
       BillOfMaterial billOfMaterial) {
+    billOfMaterial = JpaModelHelper.ensureManaged(billOfMaterial);
 
     if (billOfMaterial.getBillOfMaterialLineList() != null) {
       return billOfMaterial.getBillOfMaterialLineList().stream()

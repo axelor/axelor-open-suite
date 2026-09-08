@@ -22,7 +22,9 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.helpdesk.db.Ticket;
+import com.axelor.apps.helpdesk.db.TicketStatus;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
+import com.axelor.apps.helpdesk.service.TicketStatusService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -56,6 +58,7 @@ public class ClientViewServiceImpl implements ClientViewService {
   protected ProjectTaskRepository projectTaskRepo;
   protected JpaSecurity security;
   protected AppService appService;
+  protected TicketStatusService ticketStatusService;
 
   static final String CLIENT_PORTAL_NO_DATE = /*$$(*/ "None" /*)*/;
 
@@ -68,7 +71,8 @@ public class ClientViewServiceImpl implements ClientViewService {
       InvoiceRepository invoiceRepo,
       ProjectTaskRepository projectTaskRepo,
       JpaSecurity jpaSecurity,
-      AppService appService) {
+      AppService appService,
+      TicketStatusService ticketStatusService) {
     this.saleOrderRepo = saleOrderRepo;
     this.stockMoveRepo = stockMoveRepo;
     this.projectRepo = projectRepo;
@@ -77,6 +81,7 @@ public class ClientViewServiceImpl implements ClientViewService {
     this.projectTaskRepo = projectTaskRepo;
     this.security = jpaSecurity;
     this.appService = appService;
+    this.ticketStatusService = ticketStatusService;
   }
 
   @Override
@@ -542,7 +547,7 @@ public class ClientViewServiceImpl implements ClientViewService {
         new JPQLFilter(
             "self.customerPartner.id = "
                 + user.getPartner().getId()
-                + " AND self.assignedToUser.id = "
+                + " AND self.assignedToUser.activeCompany.id = "
                 + user.getActiveCompany().getId());
     filters.add(filter);
     addPermissionFilter(filters, filterFromPermission);
@@ -553,16 +558,18 @@ public class ClientViewServiceImpl implements ClientViewService {
   public List<Filter> getResolvedTicketsOfUser(User user) {
     List<Filter> filters = new ArrayList<>();
     Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Ticket.class);
+    TicketStatus resolvedStatus = ticketStatusService.findResolvedStatus();
+    TicketStatus closedStatus = ticketStatusService.findClosedStatus();
     Filter filter =
         new JPQLFilter(
             "self.customerPartner.id = "
                 + user.getPartner().getId()
                 + " AND self.assignedToUser.id = "
                 + user.getId()
-                + " AND self.statusSelect IN ("
-                + TicketRepository.STATUS_RESOLVED
+                + " AND self.ticketStatus.id IN ("
+                + (resolvedStatus != null ? resolvedStatus.getId() : -1)
                 + ", "
-                + TicketRepository.STATUS_CLOSED
+                + (closedStatus != null ? closedStatus.getId() : -1)
                 + ")");
     filters.add(filter);
     addPermissionFilter(filters, filterFromPermission);

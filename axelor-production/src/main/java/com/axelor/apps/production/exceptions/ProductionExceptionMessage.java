@@ -119,6 +119,9 @@ public final class ProductionExceptionMessage {
   public static final String PROD_PROCESS_LINE_MISSING_WORK_CENTER = /*$$(*/
       "Work center is missing from prod process line %s-%s." /*)*/;
 
+  public static final String PROD_PROCESS_LINE_MISSING_FOR_CYCLE_COMPUTATION = /*$$(*/
+      "Cannot compute the number of cycles because the production process line is missing. Please check the manufacturing order routing configuration." /*)*/;
+
   public static final String PROD_PROCESS_NULL_STATUS = /*$$(*/
       "Prod process currently has no status" /*)*/;
 
@@ -436,4 +439,13 @@ public final class ProductionExceptionMessage {
 
   public static final String API_TYPE_SYSTEM_PRODUCT_MANUF_ORDER_FILLED = /*$$(*/
       "Product/ManufOrder fields should not be filled if type is 'System'." /*)*/;
+
+  public static final String BILL_OF_MATERIAL_NAME_TOO_LONG = /*$$(*/
+      "Bill of materials name is too long (maximum 255 characters)." /*)*/;
+
+  public static final String MANUF_ORDER_ALREADY_PLANNED = /*$$(*/
+      "Manufacturing order %s is already planned." /*)*/;
+
+  public static final String MANUF_ORDER_CONCURRENT_MODIFICATION = /*$$(*/
+      "The manufacturing order is being modified by another session. Please refresh the page and try again." /*)*/;
 }

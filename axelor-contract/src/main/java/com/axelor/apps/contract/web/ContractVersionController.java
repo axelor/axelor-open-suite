@@ -31,6 +31,7 @@ import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractService;
+import com.axelor.apps.contract.service.ContractVersionMassUpdateService;
 import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
@@ -42,6 +43,8 @@ import com.axelor.rpc.ActionResponse;
 import jakarta.inject.Singleton;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class ContractVersionController {
@@ -195,5 +198,40 @@ public class ContractVersionController {
 
   protected LocalDate getTodayDate(Company company) {
     return Beans.get(AppBaseService.class).getTodayDate(company);
+  }
+
+  @SuppressWarnings("unchecked")
+  public void massWaiting(ActionRequest request, ActionResponse response) {
+    try {
+      List<Number> ids = (List<Number>) request.getContext().get("_ids");
+
+      if (ids == null || ids.isEmpty()) {
+        response.setInfo(I18n.get("Please select at least one amendment."));
+        return;
+      }
+
+      List<Long> contractVersionIds =
+          ids.stream().map(Number::longValue).collect(Collectors.toList());
+
+      int skippedCount =
+          Beans.get(ContractVersionMassUpdateService.class).massWaiting(contractVersionIds);
+      int processedCount = contractVersionIds.size() - skippedCount;
+
+      if (skippedCount > 0) {
+        response.setInfo(
+            String.format(
+                I18n.get("%d amendment(s) set to Waiting. %d skipped (not in Draft status)."),
+                processedCount,
+                skippedCount));
+      } else {
+        response.setInfo(
+            String.format(
+                I18n.get("%d amendment(s) set to Waiting successfully."), processedCount));
+      }
+
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

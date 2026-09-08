@@ -187,8 +187,8 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
     List<File> printFiles = getPrintFilesList(prints);
     File file = PrintingTemplateHelper.mergeToFile(printFiles, outputFileName);
     if (toAttach && context != null && context.getModel() != null) {
-      try {
-        metaFiles.attach(new FileInputStream(file), file.getName(), context.getModel());
+      try (FileInputStream fis = new FileInputStream(file)) {
+        metaFiles.attach(fis, file.getName(), context.getModel());
       } catch (IOException e) {
         throw new AxelorException(
             e,

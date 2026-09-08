@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
@@ -235,6 +236,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
 
     fillMoveWithMoveLineMassEntry(
         moveResult, parentMove.getMoveLineMassEntryList(), temporaryMoveNumber);
+    moveResult.setPartner(getUniquePartner(moveResult.getMoveLineList()));
 
     return moveResult;
   }
@@ -280,5 +282,20 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
         move.addMoveLineMassEntryListItem(copy);
       }
     }
+  }
+
+  protected Partner getUniquePartner(List<MoveLine> moveLines) {
+    Partner result = null;
+    for (MoveLine line : moveLines) {
+      if (line.getPartner() == null) {
+        continue;
+      }
+      if (result == null) {
+        result = line.getPartner();
+      } else if (!result.equals(line.getPartner())) {
+        return null;
+      }
+    }
+    return result;
   }
 }

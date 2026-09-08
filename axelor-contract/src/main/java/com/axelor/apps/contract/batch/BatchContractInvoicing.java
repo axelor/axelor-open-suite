@@ -20,6 +20,7 @@ package com.axelor.apps.contract.batch;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractBatch;
@@ -58,20 +59,34 @@ public class BatchContractInvoicing extends BatchStrategy {
   public List<List<Long>> getIdsGroupedBy() {
     ContractBatch contractBatch = batch.getContractBatch();
     contractBatch = contractBatchRepository.find(contractBatch.getId());
-    String filter =
-        "SELECT array_to_string(array_agg(self.id), ',') "
-            + "FROM contract_contract as self "
-            + "WHERE self.is_invoicing_management IS TRUE "
-            + "AND self.invoicing_date <= :invoicingDate "
-            + "AND self.status_select != :closedContract "
-            + "AND (SELECT automatic_invoicing FROM contract_contract_version WHERE contract_contract_version.id = self.current_contract_version) IS TRUE "
-            + "GROUP BY self.invoiced_partner, self.invoicing_date, self.invoice_period_end_date, self.invoice_period_start_date, self.is_grouped_invoicing";
+    Integer targetTypeSelect = contractBatch.getTargetTypeSelect();
+    boolean filterOnTargetType = targetTypeSelect != null && targetTypeSelect != 0;
+
+    StringBuilder filter =
+        new StringBuilder(
+            "SELECT array_to_string(array_agg(self.id), ',') "
+                + "FROM contract_contract as self "
+                + "WHERE self.is_invoicing_management IS TRUE "
+                + "AND self.invoicing_date <= :invoicingDate "
+                + "AND self.status_select != :closedContract "
+                + "AND (SELECT automatic_invoicing FROM contract_contract_version WHERE contract_contract_version.id = self.current_contract_version) IS TRUE ");
+
+    if (filterOnTargetType) {
+      filter.append("AND self.target_type_select = :targetTypeSelect ");
+    }
+
+    filter.append(
+        "GROUP BY self.invoiced_partner, self.invoicing_date, self.invoice_period_end_date, self.invoice_period_start_date, self.is_grouped_invoicing");
 
     Query query =
         JPA.em()
-            .createNativeQuery(filter)
+            .createNativeQuery(filter.toString())
             .setParameter("invoicingDate", contractBatch.getInvoicingDate())
             .setParameter("closedContract", AbstractContractRepository.CLOSED_CONTRACT);
+
+    if (filterOnTargetType) {
+      query.setParameter("targetTypeSelect", targetTypeSelect);
+    }
 
     List<String> stringList = query.getResultList();
     return convertStringToLongList(stringList);
@@ -134,9 +149,19 @@ public class BatchContractInvoicing extends BatchStrategy {
             invoice.addBatchSetItem(batchRepo.find(batch.getId()));
             incrementDone(contractsList);
           }
+        } catch (AxelorException e) {
+          incrementAnomaly(contractsList);
+          TraceBackService.trace(
+              new AxelorException(e, contractsList.get(0), e.getCategory()),
+              "Contract invoicing batch",
+              batch.getId());
         } catch (Exception e) {
           incrementAnomaly(contractsList);
-          TraceBackService.trace(e, "Contract invoicing batch", batch.getId());
+          TraceBackService.trace(
+              new AxelorException(
+                  e, contractsList.get(0), TraceBackRepository.CATEGORY_INCONSISTENCY),
+              "Contract invoicing batch",
+              batch.getId());
         }
       }
       if (offset % getFetchLimit() == 0) {

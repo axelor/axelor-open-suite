@@ -32,4 +32,6 @@ public interface BankOrderLineOriginService {
   public Map<String, Object> getRelatedDataMap(BankOrderLineOrigin bankOrderLineOrigin);
 
   boolean dmsFilePresent(BankOrderLineOrigin bankOrderLineOrigin);
+
+  void ensurePrintedPdfAttached(BankOrderLineOrigin bankOrderLineOrigin);
 }

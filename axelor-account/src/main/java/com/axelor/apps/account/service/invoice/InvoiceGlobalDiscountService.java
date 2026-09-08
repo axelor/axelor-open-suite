@@ -27,4 +27,6 @@ public interface InvoiceGlobalDiscountService {
   void applyGlobalDiscountOnLines(GlobalDiscounter globalDiscounter) throws AxelorException;
 
   Map<String, Map<String, Object>> setDiscountDummies(GlobalDiscounter globalDiscounter);
+
+  void computePriceBeforeGlobalDiscount(GlobalDiscounter globalDiscounter);
 }

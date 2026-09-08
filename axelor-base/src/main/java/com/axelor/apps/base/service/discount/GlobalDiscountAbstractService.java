@@ -58,6 +58,24 @@ public abstract class GlobalDiscountAbstractService {
     }
   }
 
+  public void resetGlobalDiscountOnLines(GlobalDiscounter globalDiscounter) {
+    if (globalDiscounter == null
+        || CollectionUtils.isEmpty(getGlobalDiscounterLines(globalDiscounter))) {
+      return;
+    }
+    getGlobalDiscounterLines(globalDiscounter).stream()
+        .filter(
+            globalDiscounterLine ->
+                globalDiscounterLine
+                    .getTypeSelect()
+                    .equals(globalDiscounterLine.getTypeSelectNormal()))
+        .forEach(
+            globalDiscounterLine -> {
+              globalDiscounterLine.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
+              globalDiscounterLine.setDiscountAmount(BigDecimal.ZERO);
+            });
+  }
+
   protected void computePriceBeforeGlobalDiscount(GlobalDiscounter globalDiscounter) {
     globalDiscounter.setPriceBeforeGlobalDiscount(
         getGlobalDiscounterLines(globalDiscounter).stream()
@@ -65,7 +83,8 @@ public abstract class GlobalDiscountAbstractService {
                 globalDiscounterLine ->
                     globalDiscounterLine.getPrice().multiply(globalDiscounterLine.getQty()))
             .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO));
+            .orElse(BigDecimal.ZERO)
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
   }
 
   protected void applyPercentageGlobalDiscountOnLines(GlobalDiscounter globalDiscounter) {
@@ -124,8 +143,12 @@ public abstract class GlobalDiscountAbstractService {
             .get(getGlobalDiscounterLines(globalDiscounter).size() - 1);
 
     BigDecimal price = globalDiscounter.getInAti() ? lastLine.getInTaxPrice() : lastLine.getPrice();
+    BigDecimal qty = lastLine.getQty();
 
-    if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
+    if (price == null
+        || price.compareTo(BigDecimal.ZERO) == 0
+        || qty == null
+        || qty.compareTo(BigDecimal.ZERO) == 0) {
       lastLine.setDiscountAmount(BigDecimal.ZERO);
     } else {
       lastLine.setDiscountAmount(
@@ -133,7 +156,7 @@ public abstract class GlobalDiscountAbstractService {
               .subtract(
                   lastLine
                       .getPriceDiscounted()
-                      .add(differenceInDiscount)
+                      .add(differenceInDiscount.divide(qty, 3, RoundingMode.HALF_UP))
                       .divide(price, 3, RoundingMode.HALF_UP))
               .multiply(BigDecimal.valueOf(100)));
     }

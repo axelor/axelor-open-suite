@@ -24,9 +24,11 @@ import static com.axelor.apps.sale.db.repo.SaleOrderRepository.INVOICING_STATE_N
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.studio.app.service.AppService;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
+import java.util.List;
 
 public class SaleOrderCopySupplychainServiceImpl implements SaleOrderCopySupplychainService {
 
@@ -49,16 +51,23 @@ public class SaleOrderCopySupplychainServiceImpl implements SaleOrderCopySupplyc
     copy.setInvoicingState(INVOICING_STATE_NOT_INVOICED);
     copy.setStockMoveList(null);
 
-    if (copy.getSaleOrderLineList() != null) {
-      for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
-        saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
-        saleOrderLine.setInvoicingState(SaleOrderLineRepository.INVOICING_STATE_NOT_INVOICED);
-        saleOrderLine.setDeliveredQty(null);
-        saleOrderLine.setAmountInvoiced(null);
-        saleOrderLine.setInvoiced(null);
-        saleOrderLine.setIsInvoiceControlled(null);
-        saleOrderLine.setReservedQty(BigDecimal.ZERO);
-      }
+    resetSaleOrderLinesRecursively(copy.getSaleOrderLineList());
+  }
+
+  protected void resetSaleOrderLinesRecursively(List<SaleOrderLine> lines) {
+    if (ObjectUtils.isEmpty(lines)) {
+      return;
+    }
+    for (SaleOrderLine saleOrderLine : lines) {
+      saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
+      saleOrderLine.setInvoicingState(SaleOrderLineRepository.INVOICING_STATE_NOT_INVOICED);
+      saleOrderLine.setDeliveredQty(null);
+      saleOrderLine.setAmountInvoiced(null);
+      saleOrderLine.setInvoiced(null);
+      saleOrderLine.setIsInvoiceControlled(null);
+      saleOrderLine.setReservedQty(BigDecimal.ZERO);
+      saleOrderLine.setQtyToDeliver(BigDecimal.ZERO);
+      resetSaleOrderLinesRecursively(saleOrderLine.getSubSaleOrderLineList());
     }
   }
 }

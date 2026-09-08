@@ -1,0 +1,29 @@
+---
+title: "Sale: the order blocked message configured on a company is now managed from the Supply Chain sale configuration instead of the company form."
+module: axelor-supplychain
+developer: |
+  The `orderBloquedMessage` field has been moved from `Company` (owned by `axelor-sale`) to
+  `SaleConfig` (now owned by `axelor-supplychain`) and renamed to `orderBlockedMessage`. It is
+  no longer displayed on the company form and is now available on the sale configuration form,
+  in the customer credit panel.
+
+  `AccountingSituationSupplychainServiceImpl.checkExceededUsedCredit` now reads the message
+  from `company.getSaleConfig().getOrderBlockedMessage()` instead of
+  `company.getOrderBloquedMessage()`.
+
+  This is a destructive database change: the `base_company.order_bloqued_message` column is
+  dropped and its data is moved to `sale_sale_config.order_blocked_message`. Run the following
+  migration before dropping the column, and validate it against your data before applying to
+  production:
+
+  ```sql
+  ALTER TABLE sale_sale_config ADD COLUMN IF NOT EXISTS order_blocked_message text;
+
+  UPDATE sale_sale_config sc
+  SET order_blocked_message = c.order_bloqued_message
+  FROM base_company c
+  WHERE c.id = sc.company
+    AND c.order_bloqued_message IS NOT NULL;
+
+  ALTER TABLE base_company DROP COLUMN IF EXISTS order_bloqued_message;
+  ```

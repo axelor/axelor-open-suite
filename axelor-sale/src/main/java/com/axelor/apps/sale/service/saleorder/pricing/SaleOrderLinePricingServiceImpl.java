@@ -29,10 +29,12 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
+import com.axelor.db.mapper.Mapper;
 import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class SaleOrderLinePricingServiceImpl implements SaleOrderLinePricingService {
 
@@ -51,17 +53,29 @@ public class SaleOrderLinePricingServiceImpl implements SaleOrderLinePricingServ
   }
 
   @Override
-  public void computePricingScale(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  public Map<String, Object> computePricingScale(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     Map<String, Object> contextMap = new HashMap<>();
     contextMap.put("saleOrder", saleOrder);
 
-    List<StringBuilder> logsList =
-        pricingGenericService.computePricingProcess(
-            saleOrder.getCompany(),
-            saleOrderLine,
-            PricingRepository.PRICING_TYPE_SELECT_SALE_PRICING,
-            contextMap);
+    Map<String, Object> map = Mapper.toMap(saleOrderLine);
+
+    pricingGenericService.computePricingProcess(
+        saleOrder.getCompany(),
+        saleOrderLine,
+        PricingRepository.PRICING_TYPE_SELECT_SALE_PRICING,
+        contextMap);
+
+    Map<String, Object> pricingFieldsMap = new HashMap<>();
+    Mapper.toMap(saleOrderLine)
+        .forEach(
+            (key, afterValue) -> {
+              Object beforeValue = map.get(key);
+              if (!Objects.equals(beforeValue, afterValue)) {
+                pricingFieldsMap.put(key, afterValue);
+              }
+            });
+    return pricingFieldsMap;
   }
 
   @Override

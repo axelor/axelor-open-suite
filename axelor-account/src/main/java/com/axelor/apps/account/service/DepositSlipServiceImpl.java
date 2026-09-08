@@ -286,10 +286,8 @@ public class DepositSlipServiceImpl implements DepositSlipService {
 
     PaymentVoucherConfirmService paymentVoucherConfirmService =
         Beans.get(PaymentVoucherConfirmService.class);
-    for (PaymentVoucher paymentVoucher : depositSlip.getPaymentVoucherList()) {
-      paymentVoucherConfirmService.valueForCollectionMoveToGeneratedMove(
-          paymentVoucher, depositSlip.getDepositDate());
-    }
+    paymentVoucherConfirmService.valueForCollectionMoveToGeneratedMove(
+        depositSlip.getPaymentVoucherList(), depositSlip.getDepositDate());
 
     depositSlip.setIsBankDepositMoveGenerated(true);
   }

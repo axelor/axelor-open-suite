@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -32,6 +32,7 @@
 			public static final int BILL_OF_EXCHANGE_DATA_CUSTOMER_INVOICE = 1;
 			public static final int BILL_OF_EXCHANGE_DATA_PAYMENT_SCHEDULE = 2;
 			public static final int BILL_OF_EXCHANGE_PAYMENT_SCHEDULE = 3;
+			public static final int BILL_OF_EXCHANGE_DATA_CUSTOMER_INVOICE_TERM = 4;
 
 			//BILL OF EXCHANGE BATCH STATUS
 			public static final int BILL_OF_EXCHANGE_BATCH_STATUS_BOE_GENERATION = 1;

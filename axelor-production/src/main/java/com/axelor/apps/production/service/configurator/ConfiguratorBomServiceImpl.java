@@ -43,7 +43,7 @@ import java.util.Optional;
 
 public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
 
-  private static final int MAX_LEVEL = 10;
+  protected static final int MAX_LEVEL = 10;
 
   protected ConfiguratorBOMRepository configuratorBOMRepo;
   protected ConfiguratorService configuratorService;

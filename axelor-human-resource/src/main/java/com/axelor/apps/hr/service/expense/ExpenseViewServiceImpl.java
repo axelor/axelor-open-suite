@@ -18,13 +18,16 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
@@ -44,17 +47,47 @@ import java.util.Optional;
 public class ExpenseViewServiceImpl implements ExpenseViewService {
 
   protected ExpenseRepository expenseRepository;
+  protected ExpenseFetchMoveService expenseFetchMoveService;
   protected UserHrService userHrService;
   protected ExpenseKilometricService expenseKilometricService;
 
   @Inject
   public ExpenseViewServiceImpl(
       ExpenseRepository expenseRepository,
+      ExpenseFetchMoveService expenseFetchMoveService,
       UserHrService userHrService,
       ExpenseKilometricService expenseKilometricService) {
     this.expenseRepository = expenseRepository;
+    this.expenseFetchMoveService = expenseFetchMoveService;
     this.userHrService = userHrService;
     this.expenseKilometricService = expenseKilometricService;
+  }
+
+  @Override
+  public Map<String, Object> showMoves(Long expenseId) throws AxelorException {
+    Expense expense = expenseRepository.find(expenseId);
+    List<Move> moves = expenseFetchMoveService.findAllMovesByExpense(expense);
+
+    if (moves.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_NO_MOVE_LINKED));
+    }
+
+    ActionViewBuilder actionView =
+        ActionView.define(I18n.get(moves.size() == 1 ? "Move" : "Moves"))
+            .model(Move.class.getName())
+            .add("grid", "move-grid")
+            .add("form", "move-form")
+            .param("search-filters", "move-filters")
+            .domain("self.expense.id = :expenseId OR self.expensePayment.id = :expenseId")
+            .context("expenseId", expenseId);
+
+    if (moves.size() == 1) {
+      actionView.context("_showRecord", String.valueOf(moves.get(0).getId()));
+    }
+
+    return actionView.map();
   }
 
   @Override

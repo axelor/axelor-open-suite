@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="sale" package="com.axelor.apps.sale.db"/>
+
+  <entity name="SaleConfig" cacheable="true">
+
+    <string name="orderBlockedMessage" multiline="true" massUpdate="true"/>
+
+    <track>
+      <field name="orderBlockedMessage" on="UPDATE"/>
+    </track>
+  </entity>
+
+</domain-models>

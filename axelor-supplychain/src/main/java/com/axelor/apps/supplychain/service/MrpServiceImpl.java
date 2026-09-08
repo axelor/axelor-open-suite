@@ -102,7 +102,7 @@ import org.slf4j.LoggerFactory;
 public class MrpServiceImpl implements MrpService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private static final Integer ITERATIONS = 100;
+  protected static final Integer ITERATIONS = 100;
 
   protected MrpRepository mrpRepository;
   protected StockLocationRepository stockLocationRepository;
@@ -131,6 +131,7 @@ public class MrpServiceImpl implements MrpService {
   protected List<StockLocation> stockLocationList;
   protected Map<Long, Integer> productMap;
   protected Map<Long, Integer> productMapToBeAssigned;
+  protected Set<Long> processedMrpForecastIdSet;
   protected Integer currentLevel;
   protected Mrp mrp;
   protected LocalDate today;
@@ -223,6 +224,14 @@ public class MrpServiceImpl implements MrpService {
   @Override
   @Transactional
   public void reset(Mrp mrp) {
+    // Clear per-run in-memory state so a reused service instance does not carry over data from a
+    // previous calculation.
+    this.stockLocationList = null;
+    this.productMap = null;
+    this.productMapToBeAssigned = null;
+    this.processedMrpForecastIdSet = null;
+    this.currentLevel = null;
+
     today = appBaseService.getTodayDate(mrp.getStockLocation().getCompany());
 
     mrpLineRepository
@@ -503,23 +512,22 @@ public class MrpServiceImpl implements MrpService {
       StockLocation stockLocation,
       LocalDate maturityDate) {
 
-    LocalDate startPeriodDate = maturityDate;
-
     MrpFamily mrpFamily = product.getMrpFamily();
 
-    if (mrpFamily != null) {
-
-      if (mrpFamily.getDayNb() == 0) {
-        return null;
-      }
-
-      startPeriodDate = maturityDate.minusDays(mrpFamily.getDayNb());
+    if (mrpFamily == null) {
+      return null;
     }
+
+    if (mrpFamily.getDayNb() == 0) {
+      return null;
+    }
+
+    LocalDate startPeriodDate = maturityDate.minusDays(mrpFamily.getDayNb());
 
     return mrpLineRepository
         .all()
         .filter(
-            "self.mrp.id = ?1 AND self.product = ?2 AND self.mrpLineType = ?3 AND self.stockLocation = ?4 AND self.maturityDate > ?5 AND self.maturityDate <= ?6",
+            "self.mrp.id = ?1 AND self.product = ?2 AND self.mrpLineType = ?3 AND self.stockLocation = ?4 AND self.maturityDate >= ?5 AND self.maturityDate <= ?6",
             mrp.getId(),
             product,
             mrpLineType,
@@ -1017,6 +1025,7 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected void createSaleForecastMrpLines() throws AxelorException {
+    this.processedMrpForecastIdSet = new HashSet<>();
     this.createSaleForecastMrpLines(this.productMap);
   }
 
@@ -1053,6 +1062,9 @@ public class MrpServiceImpl implements MrpService {
 
     for (MrpForecast mrpForecast : mrpForecastList) {
 
+      if (!processedMrpForecastIdSet.add(mrpForecast.getId())) {
+        continue;
+      }
       this.createSaleForecastMrpLines(
           mrpRepository.find(mrp.getId()),
           mrpForecastRepository.find(mrpForecast.getId()),
@@ -1407,10 +1419,11 @@ public class MrpServiceImpl implements MrpService {
       Set<ProductCategory> productCategorySet = new HashSet<>(mrp.getProductCategorySet());
 
       if (mrp.getTakeInAccountSubCategories()) {
+        Set<ProductCategory> subCategorySet = new HashSet<>();
         for (ProductCategory productCategory : productCategorySet) {
-          productCategorySet.addAll(
-              productCategoryService.fetchChildrenCategoryList(productCategory));
+          subCategorySet.addAll(productCategoryService.fetchChildrenCategoryList(productCategory));
         }
+        productCategorySet.addAll(subCategorySet);
       }
 
       productSet.addAll(
@@ -1472,8 +1485,8 @@ public class MrpServiceImpl implements MrpService {
 
   public boolean isMrpProduct(Product product) {
     return product != null
-        && !product.getExcludeFromMrp()
-        && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE);
+        && Boolean.FALSE.equals(product.getExcludeFromMrp())
+        && ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect());
   }
 
   protected void assignProductAndLevel(Set<Product> productList) throws AxelorException {
@@ -1621,7 +1634,7 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Override
-  public Mrp call() throws AxelorException {
+  public Mrp call() throws Exception {
     final RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
     try (RequestScoper.CloseableScope ignored = scope.open()) {
       this.runCalculation(mrp);
@@ -1633,30 +1646,37 @@ public class MrpServiceImpl implements MrpService {
               I18n.get(SupplychainExceptionMessage.MRP_FINISHED_MESSAGE_BODY), mrp.getMrpSeq()),
           mrp.getId(),
           mrp.getClass());
-    } catch (Exception e) {
-      onRunnerException(e);
-      throw e;
+    } catch (Throwable t) {
+      onRunnerException(t);
+      if (t instanceof Error) {
+        throw (Error) t;
+      }
+      throw (Exception) t;
     }
     return mrp;
   }
 
   @Transactional
-  protected void onRunnerException(Exception e) {
-    TraceBackService.trace(e);
-    mailMessageService.sendNotification(
-        AuthUtils.getUser(),
-        String.format(
-            I18n.get(SupplychainExceptionMessage.MRP_ERROR_WHILE_COMPUTATION), mrp.getMrpSeq()),
-        e.getMessage(),
-        mrp.getId(),
-        mrp.getClass());
+  protected void onRunnerException(Throwable t) {
+    TraceBackService.trace(t);
     this.reset(mrpRepository.find(mrp.getId()));
-    this.saveErrorInMrp(mrpRepository.find(mrp.getId()), e);
+    this.saveErrorInMrp(mrpRepository.find(mrp.getId()), t);
+    try {
+      mailMessageService.sendNotification(
+          AuthUtils.getUser(),
+          String.format(
+              I18n.get(SupplychainExceptionMessage.MRP_ERROR_WHILE_COMPUTATION), mrp.getMrpSeq()),
+          t.getMessage(),
+          mrp.getId(),
+          mrp.getClass());
+    } catch (Exception notifException) {
+      TraceBackService.trace(notifException);
+    }
   }
 
   @Override
   @Transactional
-  public void saveErrorInMrp(Mrp mrp, Exception e) {
-    mrp.setErrorLog(e.getMessage());
+  public void saveErrorInMrp(Mrp mrp, Throwable t) {
+    mrp.setErrorLog(t.getMessage());
   }
 }

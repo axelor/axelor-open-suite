@@ -21,7 +21,9 @@ package com.axelor.apps.hr.service.app;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
+@Singleton
 public class AppTimesheetServiceImpl implements AppTimesheetService {
   protected TimesheetRepository timesheetRepo;
 

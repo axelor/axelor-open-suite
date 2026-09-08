@@ -78,9 +78,50 @@ public class StockHistoryServiceImpl implements StockHistoryService {
       Long productId, Long companyId, Long stockLocationId, LocalDate beginDate, LocalDate endDate)
       throws AxelorException {
 
-    return stockHistoryLineRepository.save(
-        this.computeStockHistoryLineList(
-            productId, companyId, stockLocationId, beginDate, endDate));
+    // Reconcile the freshly computed (transient) lines with the rows already persisted for the
+    // same natural key, so a rerun updates them in place instead of inserting duplicates (unique
+    // constraint on product, company, label). The reconciliation is confined to this save path;
+    // the read-only UI/export path keeps building transient lines only.
+    List<StockHistoryLine> computedStockHistoryLineList =
+        this.computeStockHistoryLineList(productId, companyId, stockLocationId, beginDate, endDate);
+    List<StockHistoryLine> stockHistoryLineList = new ArrayList<>();
+    for (StockHistoryLine computedStockHistoryLine : computedStockHistoryLineList) {
+      stockHistoryLineList.add(reconcileStockHistoryLine(computedStockHistoryLine));
+    }
+    return stockHistoryLineRepository.save(stockHistoryLineList);
+  }
+
+  /**
+   * Reuse the row already persisted for the natural key (product, company, label) by copying the
+   * freshly computed values onto it, so a batch rerun updates it in place; return the transient
+   * computed line when no row exists yet.
+   */
+  protected StockHistoryLine reconcileStockHistoryLine(StockHistoryLine computedStockHistoryLine) {
+    StockHistoryLine existingStockHistoryLine =
+        stockHistoryLineRepository
+            .all()
+            .filter("self.product = :product AND self.company = :company AND self.label = :label")
+            .bind("product", computedStockHistoryLine.getProduct())
+            .bind("company", computedStockHistoryLine.getCompany())
+            .bind("label", computedStockHistoryLine.getLabel())
+            .fetchOne();
+    if (existingStockHistoryLine == null) {
+      return computedStockHistoryLine;
+    }
+    existingStockHistoryLine.setPeriod(computedStockHistoryLine.getPeriod());
+    existingStockHistoryLine.setCountIncMvtStockPeriod(
+        computedStockHistoryLine.getCountIncMvtStockPeriod());
+    existingStockHistoryLine.setSumIncQtyPeriod(computedStockHistoryLine.getSumIncQtyPeriod());
+    existingStockHistoryLine.setPriceIncStockMovePeriod(
+        computedStockHistoryLine.getPriceIncStockMovePeriod());
+    existingStockHistoryLine.setCountOutMvtStockPeriod(
+        computedStockHistoryLine.getCountOutMvtStockPeriod());
+    existingStockHistoryLine.setSumOutQtyPeriod(computedStockHistoryLine.getSumOutQtyPeriod());
+    existingStockHistoryLine.setPriceOutStockMovePeriod(
+        computedStockHistoryLine.getPriceOutStockMovePeriod());
+    existingStockHistoryLine.setAvgOutQtyOn12PastMonth(
+        computedStockHistoryLine.getAvgOutQtyOn12PastMonth());
+    return existingStockHistoryLine;
   }
 
   public List<StockHistoryLine> computeStockHistoryLineList(
@@ -109,6 +150,8 @@ public class StockHistoryServiceImpl implements StockHistoryService {
 
     CompanyRepository companyRepo = Beans.get(CompanyRepository.class);
     ProductRepository productRepo = Beans.get(ProductRepository.class);
+    Company company = companyRepo.find(companyId);
+    Product product = productRepo.find(productId);
 
     // one line per month
     for (LocalDate periodBeginDate = beginDate.withDayOfMonth(1);
@@ -116,8 +159,6 @@ public class StockHistoryServiceImpl implements StockHistoryService {
         periodBeginDate = periodBeginDate.plusMonths(1)) {
       LocalDate periodEndDate = periodBeginDate.plusMonths(1);
       StockHistoryLine stockHistoryLine = new StockHistoryLine();
-      Company company = companyRepo.find(companyId);
-      Product product = productRepo.find(productId);
       stockHistoryLine.setProduct(product);
       stockHistoryLine.setCompany(company);
       stockHistoryLine.setLabel(periodBeginDate.toString());
@@ -144,9 +185,10 @@ public class StockHistoryServiceImpl implements StockHistoryService {
       }
       stockHistoryLineList.add(stockHistoryLine);
     }
-    StockHistoryLine totalStockHistoryLine = createStockHistoryTotalLine(stockHistoryLineList);
+    StockHistoryLine totalStockHistoryLine =
+        createStockHistoryTotalLine(stockHistoryLineList, product, company);
     StockHistoryLine avgStockHistoryLine =
-        createStockHistoryAvgLine(stockHistoryLineList, totalStockHistoryLine);
+        createStockHistoryAvgLine(stockHistoryLineList, totalStockHistoryLine, product, company);
     stockHistoryLineList.add(totalStockHistoryLine);
     stockHistoryLineList.add(avgStockHistoryLine);
 
@@ -355,8 +397,12 @@ public class StockHistoryServiceImpl implements StockHistoryService {
    * @return the created line.
    */
   protected StockHistoryLine createStockHistoryTotalLine(
-      List<StockHistoryLine> stockHistoryLineList) {
+      List<StockHistoryLine> stockHistoryLineList, Product product, Company company) {
     StockHistoryLine stockHistoryLine = new StockHistoryLine();
+    // Set product and company on the summary line so it is covered by the unique constraint
+    // (product, company, label) and is upserted on rerun instead of accumulating.
+    stockHistoryLine.setProduct(product);
+    stockHistoryLine.setCompany(company);
     stockHistoryLine.setLabel(I18n.get("Total"));
 
     Integer countIncMvtStock =
@@ -418,8 +464,15 @@ public class StockHistoryServiceImpl implements StockHistoryService {
    * @return the created line.
    */
   protected StockHistoryLine createStockHistoryAvgLine(
-      List<StockHistoryLine> stockHistoryLineList, StockHistoryLine totalStockHistoryLine) {
+      List<StockHistoryLine> stockHistoryLineList,
+      StockHistoryLine totalStockHistoryLine,
+      Product product,
+      Company company) {
     StockHistoryLine stockHistoryLine = new StockHistoryLine();
+    // Set product and company on the summary line so it is covered by the unique constraint
+    // (product, company, label) and is upserted on rerun instead of accumulating.
+    stockHistoryLine.setProduct(product);
+    stockHistoryLine.setCompany(company);
     stockHistoryLine.setLabel(I18n.get("Average"));
 
     int qtyScale = Beans.get(AppBaseService.class).getAppBase().getNbDecimalDigitForQty();

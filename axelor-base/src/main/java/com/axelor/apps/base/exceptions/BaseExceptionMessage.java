@@ -73,6 +73,9 @@ public final class BaseExceptionMessage {
   public static final String COEFFICIENT_SHOULD_NOT_BE_ZERO = /*$$(*/
       "The coefficient for unit conversion from %s to %s should not be 0." /*)*/;
 
+  public static final String UNIT_CONVERSION_FORMULA_ERROR = /*$$(*/
+      "Error during unit conversion from %s to %s" /*)*/;
+
   /** Account management service */
   public static final String ACCOUNT_MANAGEMENT_2 = /*$$(*/ "No tax found for product %s" /*)*/;
 
@@ -314,6 +317,8 @@ public final class BaseExceptionMessage {
   public static final String BARCODE_GENERATOR_8 = /*$$(*/
       "Invalid Serial Number '%s' for '%s' barcode type.It must be only number or only alphabets" /*)*/;
   public static final String BARCODE_GENERATOR_9 = /*$$(*/ "Barcode format not supported" /*)*/;
+  public static final String BARCODE_GENERATOR_10 = /*$$(*/
+      "Invalid serial number '%s' for '%s' barcode type. The check digit is invalid." /*)*/;
 
   public static final String MAP_RESPONSE_ERROR = /*$$(*/ "Response error from map API: %s" /*)*/;
   ;
@@ -334,10 +339,6 @@ public final class BaseExceptionMessage {
    */
   public static final String USER_CODE_ALREADY_EXISTS = /*$$(*/
       "A user with this login already exists." /*)*/;
-  public static final String USER_PATTERN_MISMATCH_ACCES_RESTRICTION = /*$$(*/
-      "Password must have at least 8 characters with at least three of these four types: lowercase, uppercase, digit, special." /*)*/;
-  public static final String USER_PATTERN_MISMATCH_CUSTOM = /*$$(*/
-      "Password doesn't match with configured pattern." /*)*/;
   public static final String USER_CODE_LENGTH_SHOULD_BE_GREATER_THAN_2 = /*$$(*/
       "Code length should be greater than 2." /*)*/;
 

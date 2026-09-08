@@ -22,12 +22,15 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.VatExemptionReason;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.interfaces.OrderLineTax;
 import com.axelor.apps.base.interfaces.PricedOrder;
 import com.axelor.apps.base.interfaces.PricedOrderLine;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.StringUtils;
 import com.google.common.base.Joiner;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
@@ -59,8 +62,15 @@ public class OrderLineTaxServiceImpl implements OrderLineTaxService {
       PricedOrderLine pricedOrderLine, boolean customerSpecificNote, Set<String> specificNotes) {
     if (!customerSpecificNote) {
       TaxEquiv taxEquiv = pricedOrderLine.getTaxEquiv();
-      if (taxEquiv != null && taxEquiv.getSpecificNote() != null) {
-        specificNotes.add(taxEquiv.getSpecificNote());
+      if (taxEquiv != null) {
+        String vatNote =
+            taxEquiv.getVatExemptionReason() != null
+                ? taxEquiv.getVatExemptionReason().getNote()
+                : null;
+        String note = StringUtils.notEmpty(vatNote) ? vatNote : taxEquiv.getSpecificNote();
+        if (StringUtils.notEmpty(note)) {
+          specificNotes.add(note);
+        }
       }
     }
   }
@@ -93,11 +103,20 @@ public class OrderLineTaxServiceImpl implements OrderLineTaxService {
       boolean customerSpecificNote,
       PricedOrder pricedOrder,
       Set<String> specificNotes,
-      String partnerNote) {
+      Partner partner) {
     if (!customerSpecificNote) {
       pricedOrder.setSpecificNotes(Joiner.on('\n').join(specificNotes));
     } else {
-      pricedOrder.setSpecificNotes(partnerNote);
+      String fpNote =
+          Optional.ofNullable(pricedOrder.getFiscalPosition())
+              .map(fp -> fp.getCustomerSpecificNoteText())
+              .orElse(null);
+      String partnerNote = null;
+      if (partner != null) {
+        VatExemptionReason vatExemptionReason = partner.getVatExemptionReason();
+        partnerNote = vatExemptionReason != null ? vatExemptionReason.getNote() : null;
+      }
+      pricedOrder.setSpecificNotes(StringUtils.notEmpty(partnerNote) ? partnerNote : fpNote);
     }
   }
 
@@ -118,5 +137,15 @@ public class OrderLineTaxServiceImpl implements OrderLineTaxService {
     }
     return currencyScaleService.getScaledValue(
         orderLineTax.getExTaxBase().add(orderLineTax.getTaxTotal()), currencyScale);
+  }
+
+  @Override
+  public VatExemptionReason resolveVatExemptionReason(
+      FiscalPosition fiscalPosition, TaxEquiv taxEquiv, Partner partner) {
+    if (fiscalPosition != null && fiscalPosition.getCustomerSpecificNote()) {
+      VatExemptionReason partnerReason = partner != null ? partner.getVatExemptionReason() : null;
+      return partnerReason != null ? partnerReason : fiscalPosition.getVatExemptionReason();
+    }
+    return taxEquiv != null ? taxEquiv.getVatExemptionReason() : null;
   }
 }

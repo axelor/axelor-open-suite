@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="tracking-number-grid" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber">
@@ -125,7 +125,7 @@
       <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')"
         colSpan="12">
         <button name="addControlEntryBtn" title="Add a control entry"
-          onClick="save,action-tracking-number-view-add-control-entry" colOffset="6"/>
+          onClick="save,action-control-entry-method-add-control-entry" colOffset="6"/>
         <panel-dashlet action="action-tracking-number-view-control-entry" colSpan="12"/>
       </panel>
     </panel-tabs>
@@ -134,7 +134,7 @@
 
   <form name="tracking-number-stock-move-line-form" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber"
-    onLoad="action-tracking-number-attrs-set-scale,action-tracking-number-method-fill-origin-parents"
+    onLoad="action-tracking-number-method-fill-origin-parents"
     onNew="action-tracking-number-stock-move-line-group-on-new">
     <panel name="mainPanel">
       <field name="trackingNumberSeq"/>
@@ -271,7 +271,6 @@
 
   <action-group name="action-tracking-number-stock-move-line-group-on-new">
     <action name="action-tracking-number-attrs-product-stock-move-line"/>
-    <action name="action-tracking-number-attrs-set-scale"/>
     <action name="action-tracking-number-record-set-supplier"/>
     <action name="action-tracking-number-record-set-origin"/>
     <action name="action-tracking-number-method-set-product-tracking-number-configuration"/>
@@ -298,7 +297,6 @@
   </action-record>
 
   <action-group name="action-tracking-number-group-on-load">
-    <action name="action-tracking-number-attrs-set-scale"/>
     <action name="action-tracking-number-attrs-set-product-readonly"/>
     <action name="action-tracking-number-attrs-set-dimensions-title"/>
     <action name="action-tracking-number-record-set-original-volume-value"/>
@@ -329,6 +327,8 @@
   <action-record name="action-tracking-number-record-set-origin"
     model="com.axelor.apps.stock.db.TrackingNumber">
     <field name="originMoveTypeSelect" expr="eval: 1" if="__parent__ == null"/>
+    <field name="originMoveTypeSelect" expr="eval: 1"
+      if="__parent__?._model == 'com.axelor.apps.stock.db.StockCorrection'"/>
     <field name="originMoveTypeSelect" expr="eval: 2"
       if="__parent__?._model == 'com.axelor.apps.stock.db.InventoryLine'"/>
     <field name="originInventoryLine" expr="eval: __parent__"
@@ -341,7 +341,6 @@
 
 
   <action-group name="action-tracking-number-group-on-new">
-    <action name="action-tracking-number-attrs-set-scale"/>
     <action name="action-tracking-number-record-product"/>
     <action name="action-tracking-number-method-set-product-tracking-number-configuration"/>
     <action name="action-tracking-number-record-set-fields-from-tn-config"/>
@@ -407,15 +406,6 @@
     <domain>self.relatedToSelectId = :trackingNumberId AND self.relatedToSelect =
       'com.axelor.apps.stock.db.TrackingNumber'</domain>
     <context name="trackingNumberId" expr="eval:__self__?.id"/>
-  </action-view>
-
-  <action-view name="action-tracking-number-view-add-control-entry"
-    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
-    <view type="form" name="control-entry-form"/>
-    <view type="grid" name="control-entry-grid"/>
-    <view-param name="popup" value="reload"/>
-    <context name="relatedTo" expr="eval: 'com.axelor.apps.stock.db.TrackingNumber'"/>
-    <context name="relatedToId" expr="eval:__self__?.id"/>
   </action-view>
 
   <action-method

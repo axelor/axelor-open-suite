@@ -626,7 +626,7 @@ public class InvoiceLineController {
                   invoiceLine.getProduct(),
                   invoice.getCompany(),
                   invoice.getTradingName(),
-                  null,
+                  invoiceLine.getAccount(),
                   InvoiceToolService.isPurchase(invoice)));
     } catch (Exception e) {
       TraceBackService.trace(response, e);

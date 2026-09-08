@@ -46,13 +46,18 @@ public class BatchContractFactoryInvoicing extends BatchContractFactory {
   @Override
   public Query<Contract> prepare(Batch batch) {
     this.batch = batch;
-    return repository
-        .all()
-        .filter(this.prepareFilter(true))
-        .bind("date", batch.getContractBatch().getInvoicingDate())
-        .bind("batch", batch)
-        .bind("targetTypeSelect", batch.getContractBatch().getTargetTypeSelect())
-        .bind("statusSelect", AbstractContractRepository.CLOSED_CONTRACT);
+    Integer targetTypeSelect = batch.getContractBatch().getTargetTypeSelect();
+    Query<Contract> query =
+        repository
+            .all()
+            .filter(this.prepareFilter(true, targetTypeSelect))
+            .bind("date", batch.getContractBatch().getInvoicingDate())
+            .bind("batch", batch)
+            .bind("statusSelect", AbstractContractRepository.CLOSED_CONTRACT);
+    if (targetTypeSelect != null && targetTypeSelect != 0) {
+      query.bind("targetTypeSelect", targetTypeSelect);
+    }
+    return query;
   }
 
   @Override
@@ -71,16 +76,20 @@ public class BatchContractFactoryInvoicing extends BatchContractFactory {
    * <p>To display contracts that would be treated by the batch, set considerBatch = false
    *
    * @param considerBatch
+   * @param targetTypeSelect the Type set on the contract batch, or null if not set
    * @return
    */
-  public String prepareFilter(boolean considerBatch) {
+  public String prepareFilter(boolean considerBatch, Integer targetTypeSelect) {
     StringBuilder filter = new StringBuilder();
     filter.append(
         "self.isInvoicingManagement = TRUE "
             + "AND self.currentContractVersion.automaticInvoicing = TRUE "
             + "AND self.invoicingDate <= :date "
-            + "AND self.statusSelect != :statusSelect "
-            + "AND self.targetTypeSelect = :targetTypeSelect ");
+            + "AND self.statusSelect != :statusSelect ");
+
+    if (targetTypeSelect != null && targetTypeSelect != 0) {
+      filter.append("AND self.targetTypeSelect = :targetTypeSelect ");
+    }
 
     if (considerBatch) {
       filter.append("AND :batch NOT MEMBER of self.batchSet");

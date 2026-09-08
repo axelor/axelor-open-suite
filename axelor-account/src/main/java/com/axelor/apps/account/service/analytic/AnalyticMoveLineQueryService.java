@@ -22,10 +22,13 @@ import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.AnalyticMoveLineQuery;
 import com.axelor.apps.account.db.AnalyticMoveLineQueryParameter;
+import com.axelor.apps.base.AxelorException;
 import java.util.List;
 import java.util.Set;
 
 public interface AnalyticMoveLineQueryService {
+
+  record AnalyticMoveLineReverseResult(int reverseCount, int newCount) {}
 
   public String getAnalyticMoveLineQuery(AnalyticMoveLineQuery analyticMoveLineQuery);
 
@@ -40,4 +43,11 @@ public interface AnalyticMoveLineQueryService {
 
   List<AnalyticAxis> getAvailableAnalyticAxes(
       AnalyticMoveLineQuery analyticMoveLineQuery, boolean isReverseQuery);
+
+  /**
+   * Reverses and creates revision lines for every AnalyticMoveLine matching the query's filter,
+   * paginated to avoid loading the full result set into memory at once.
+   */
+  AnalyticMoveLineReverseResult reverseAll(AnalyticMoveLineQuery analyticMoveLineQuery)
+      throws AxelorException;
 }

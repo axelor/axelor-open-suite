@@ -174,12 +174,14 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
         bankStatementLineFetchService
             .findByBankStatementBankDetailsAndLineType(
                 bankStatement, bd, BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE)
+            .order("operationDate")
             .order("sequence")
             .fetch();
     List<BankStatementLine> finalBankStatementLine =
         bankStatementLineFetchService
             .findByBankStatementBankDetailsAndLineType(
                 bankStatement, bd, BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE)
+            .order("operationDate")
             .order("sequence")
             .fetch();
     initialBankStatementLine.remove(0);

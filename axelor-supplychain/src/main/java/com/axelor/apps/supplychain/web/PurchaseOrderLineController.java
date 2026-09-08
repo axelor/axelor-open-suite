@@ -179,12 +179,12 @@ public class PurchaseOrderLineController {
           "analyticDistributionTemplate",
           "domain",
           Beans.get(AnalyticAttrsService.class)
-              .getAnalyticDistributionTemplateDomain(
+              .getAnalyticDistributionTemplateDomainFromProduct(
                   purchaseOrder.getSupplierPartner(),
                   purchaseOrderLine.getProduct(),
                   purchaseOrder.getCompany(),
                   purchaseOrder.getTradingName(),
-                  null,
+                  purchaseOrder.getFiscalPosition(),
                   true));
     } catch (Exception e) {
       TraceBackService.trace(response, e);

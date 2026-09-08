@@ -59,6 +59,8 @@ public interface MoveLineService {
 
   void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner);
 
+  List<MoveLine> getMoveLines(List<Integer> moveLineIds);
+
   List<MoveLine> getReconcilableMoveLines(List<Integer> moveLineIds);
 
   Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> getPopulatedReconcilableMoveLineMap(

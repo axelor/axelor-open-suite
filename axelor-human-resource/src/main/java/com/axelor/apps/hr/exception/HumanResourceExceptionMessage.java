@@ -194,6 +194,8 @@ public final class HumanResourceExceptionMessage {
   public static final String EXPENSE_CLOSED_PERIOD = /*$$(*/ "Period is closed" /*)*/;
   public static final String EXPENSE_MISSING_PAYMENT_MODE = /*$$(*/
       "Please fill the payment mode." /*)*/;
+  public static final String EXPENSE_NO_MOVE_LINKED = /*$$(*/
+      "No move linked to this expense" /*)*/;
   public static final String ALREADY_INVITED_TO_RESTAURANT = /*$$(*/
       "You have already been invited to the restaurant for the following dates:" /*)*/;
 

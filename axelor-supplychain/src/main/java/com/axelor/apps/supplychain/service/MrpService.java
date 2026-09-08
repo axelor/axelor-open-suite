@@ -57,12 +57,12 @@ public interface MrpService extends Callable<Mrp> {
       throws AxelorException;
 
   /**
-   * Called when an exception occurred during the mrp computation. Save the exception message.
+   * Called when a throwable occurred during the mrp computation. Save the throwable message.
    *
    * @param mrp a mrp after computation
-   * @param e the exception thrown during the computation
+   * @param t the throwable thrown during the computation
    */
-  void saveErrorInMrp(Mrp mrp, Exception e);
+  void saveErrorInMrp(Mrp mrp, Throwable t);
 
   /**
    * Methods that checks if mrp is currenctly started.

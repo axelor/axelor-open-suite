@@ -26,6 +26,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
+import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
 import jakarta.inject.Inject;
@@ -41,13 +42,15 @@ public class WorkflowCancelServiceContractImpl extends WorkflowCancelServiceSupp
       SaleOrderRepository saleOrderRepository,
       PurchaseOrderRepository purchaseOrderRepository,
       SaleInvoicingStateService saleInvoicingStateService,
+      TimetableService timetableService,
       ConsumptionLineRepository consumptionLineRepo) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
         saleOrderRepository,
         purchaseOrderRepository,
-        saleInvoicingStateService);
+        saleInvoicingStateService,
+        timetableService);
     this.consumptionLineRepo = consumptionLineRepo;
   }
 

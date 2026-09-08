@@ -23,7 +23,9 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
+import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
@@ -41,6 +43,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
@@ -74,7 +77,10 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       ProductPriceService productPriceService,
       FiscalPositionService fiscalPositionService,
       InvoiceLineCheckService invoiceLineCheckService,
-      InvoiceLineSupplierCatalogService invoiceLineSupplierCatalogService) {
+      OrderLineTaxService orderLineTaxService,
+      InvoiceLineSupplierCatalogService invoiceLineSupplierCatalogService,
+      AccountingSituationService accountingSituationService,
+      FiscalPositionAccountService fiscalPositionAccountService) {
     super(
         currencyService,
         priceListService,
@@ -91,7 +97,10 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         currencyScaleService,
         productPriceService,
         fiscalPositionService,
-        invoiceLineCheckService);
+        invoiceLineCheckService,
+        orderLineTaxService,
+        accountingSituationService,
+        fiscalPositionAccountService);
     this.supplierCatalogService = supplierCatalogService;
     this.invoiceLineSupplierCatalogService = invoiceLineSupplierCatalogService;
   }

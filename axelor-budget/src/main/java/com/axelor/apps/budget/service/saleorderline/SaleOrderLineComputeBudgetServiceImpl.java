@@ -33,6 +33,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.MarginComputeService;
+import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
@@ -64,6 +65,7 @@ public class SaleOrderLineComputeBudgetServiceImpl
       AppAccountService appAccountService,
       AnalyticLineModelService analyticLineModelService,
       SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
+      SaleOrderLinePricingService saleOrderLinePricingService,
       BudgetToolsService budgetToolsService,
       AppBudgetService appBudgetService,
       BudgetDistributionComputeService budgetDistributionComputeService) {
@@ -80,7 +82,8 @@ public class SaleOrderLineComputeBudgetServiceImpl
         appSupplychainService,
         appAccountService,
         analyticLineModelService,
-        saleOrderLineServiceSupplyChain);
+        saleOrderLineServiceSupplyChain,
+        saleOrderLinePricingService);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
     this.budgetDistributionComputeService = budgetDistributionComputeService;

@@ -20,7 +20,9 @@ package com.axelor.apps.intervention.service;
 
 import com.axelor.db.Query;
 import com.axelor.studio.db.AppIntervention;
+import jakarta.inject.Singleton;
 
+@Singleton
 public class AppInterventionServiceImpl implements AppInterventionService {
 
   @Override

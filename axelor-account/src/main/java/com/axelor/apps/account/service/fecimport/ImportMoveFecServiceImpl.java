@@ -125,18 +125,9 @@ public class ImportMoveFecServiceImpl implements ImportMoveFecService {
       }
       move.setPeriod(period);
 
-      Currency companyCurrency = company.getCurrency();
-      Object importedCurrency = values.get("Idevise");
-      if (importMoveLineAmountService.isCompanyCurrency(importedCurrency, companyCurrency)) {
-        move.setCurrency(companyCurrency);
-        if (companyCurrency != null) {
-          move.setCurrencyCode(companyCurrency.getCodeISO());
-        }
-      } else if (importedCurrency != null) {
-        String importedCurrencyValue = importedCurrency.toString().trim();
-        move.setCurrency(currencyRepository.findByCode(importedCurrencyValue));
-        move.setCurrencyCode(importedCurrencyValue);
-      }
+      Currency currency = getMoveCurrency(values.get("Idevise"), company, fecImport);
+      move.setCurrency(currency);
+      move.setCurrencyCode(currency.getCodeISO());
 
       Journal journal = null;
       if (values.get("JournalCode") != null) {
@@ -275,5 +266,23 @@ public class ImportMoveFecServiceImpl implements ImportMoveFecService {
         move.setPartner(null);
       }
     }
+  }
+
+  protected Currency getMoveCurrency(Object idevise, Company company, FECImport fecImport)
+      throws AxelorException {
+    Currency companyCurrency = company.getCurrency();
+    if (importMoveLineAmountService.isCompanyCurrency(idevise, companyCurrency)) {
+      return companyCurrency;
+    }
+    if (idevise != null && StringUtils.notBlank(idevise.toString())) {
+      Currency currency = currencyRepository.findByCode(idevise.toString().trim());
+      if (currency != null) {
+        return currency;
+      }
+    }
+    throw new AxelorException(
+        fecImport,
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(AccountExceptionMessage.IMPORT_FEC_CURRENCY_MISSING_FALLBACK));
   }
 }

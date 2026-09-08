@@ -237,4 +237,15 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
       closureAssistantLineRepository.save(nextClosureAssistantLine);
     }
   }
+
+  @Override
+  public ClosureAssistantLine getClosureAssistantLine(
+      ClosureAssistant closureAssistant, ClosureAssistantLine closureAssistantLine) {
+    return closureAssistantLineRepository
+        .all()
+        .filter("self.closureAssistant = :closureAssistant AND self.sequence = :sequence")
+        .bind("closureAssistant", closureAssistant)
+        .bind("sequence", closureAssistantLine.getSequence())
+        .fetchOne();
+  }
 }

@@ -70,3 +70,4 @@
 182;"fixedAsset";"Fixed assets N°";"NUMBERS";"UPPERCASE";1;3;"IMMO%YYYY";;1;1
 183;"paymentSession";"N° Payment process";"NUMBERS";"UPPERCASE";1;3;"PMTS%YYYY";;1;1
 210;"noteBills";"Note Bills";"NUMBERS";"UPPERCASE";1;3;"NB%YYYY";;1;1
+9970;"loan";"Loans";"NUMBERS";"UPPERCASE";1;5;"EMP";;1;0

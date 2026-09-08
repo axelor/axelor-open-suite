@@ -213,7 +213,9 @@ public class PartnerController {
     LinkedHashMap<String, Object> companyMap =
         (LinkedHashMap<String, Object>) context.get("company");
     Object companyId = companyMap != null ? companyMap.get("id") : null;
-    params.put("CompanyId", companyId);
+    if (companyId != null) {
+      params.put("CompanyId", companyId);
+    }
     params.put(
         "TradingNameId",
         (Object)
@@ -456,7 +458,9 @@ public class PartnerController {
         Beans.get(PartnerRegistrationValidatorFactoryService.class)
             .getRegistrationNumberValidator(partner);
     boolean notValidRegistrationCode =
-        validator != null && !validator.isRegistrationCodeValid(partner);
+        validator != null
+            && !Strings.isNullOrEmpty(partner.getRegistrationCode())
+            && !validator.isRegistrationCodeValid(partner);
     response.setAttr("isValidRegistrationCode", "hidden", !notValidRegistrationCode);
     if (notValidRegistrationCode) {
       response.setAttr(
@@ -499,7 +503,7 @@ public class PartnerController {
   public void setContactPartnerDomain(ActionRequest request, ActionResponse response) {
     Partner partner = request.getContext().asType(Partner.class);
     response.setAttr(
-        "contactPartner",
+        "contactPartnerSet",
         "domain",
         String.format(
             "self.id IN (%s)",
@@ -536,15 +540,22 @@ public class PartnerController {
       throws AxelorException {
     String siret = request.getContext().get("siretNumber").toString();
 
+    Map<String, Boolean> partnerTypeData = new HashMap<>();
     Object partnerId = request.getContext().get("_id");
     Partner partner;
     if (partnerId != null) {
       partner = JPA.find(Partner.class, Long.parseLong(partnerId.toString()));
+      partnerTypeData.put("isCustomer", partner.getIsCustomer());
+      partnerTypeData.put("isSupplier", partner.getIsSupplier());
+      partnerTypeData.put("isProspect", partner.getIsProspect());
     } else {
       partner = new Partner();
+      partnerTypeData.put("isCustomer", getBooleanContextValue(request, "_isCustomer"));
+      partnerTypeData.put("isSupplier", getBooleanContextValue(request, "_isSupplier"));
+      partnerTypeData.put("isProspect", getBooleanContextValue(request, "_isProspect"));
     }
 
-    Beans.get(PartnerGenerateService.class).configurePartner(partner, siret);
+    Beans.get(PartnerGenerateService.class).configurePartner(partner, siret, partnerTypeData);
 
     if (partnerId != null) {
       response.setValues(partner);
@@ -579,8 +590,7 @@ public class PartnerController {
   }
 
   @ErrorException
-  public void filterTagSetOnCompanyChange(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void filterTagSet(ActionRequest request, ActionResponse response) throws AxelorException {
     Partner partner = request.getContext().asType(Partner.class);
     Set<Tag> invalidTags =
         Beans.get(TagService.class)
@@ -591,5 +601,42 @@ public class PartnerController {
       newTagSet.removeAll(invalidTags);
       response.setValue("tagSet", newTagSet);
     }
+  }
+
+  public void updatePartnerAddress(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      PartnerService partnerService = Beans.get(PartnerService.class);
+      partnerService.setDefaultPartnerAddress(partner);
+      partnerService.updatePartnerAddress(partner);
+      response.setValue("mainAddress", partner.getMainAddress());
+      response.setValue("partnerAddressList", partner.getPartnerAddressList());
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void checkRegistrationCodeIfRequired(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      if (!Strings.isNullOrEmpty(partner.getRegistrationCode())) {
+        return;
+      }
+      RegistrationNumberValidator validator =
+          Beans.get(PartnerRegistrationValidatorFactoryService.class)
+              .getRegistrationNumberValidator(partner);
+      if (validator != null && !validator.isRegistrationCodeValid(partner)) {
+        response.setError(I18n.get(BaseExceptionMessage.REGISTRATION_CODE_EMPTY_FOR_COMPANIES));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  protected boolean getBooleanContextValue(ActionRequest request, String key) {
+    return Optional.ofNullable(request.getContext().get(key))
+        .map(Object::toString)
+        .map(Boolean::parseBoolean)
+        .orElse(false);
   }
 }

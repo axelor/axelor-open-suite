@@ -21,6 +21,7 @@ package com.axelor.apps.production.service.manuforder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
+import com.axelor.apps.production.service.ProductionTrackingPreservationService.PreservedTrackingNumbersByProduct;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -58,11 +59,29 @@ public interface ManufOrderCreateStockMoveLineService {
       throws AxelorException;
 
   void createNewStockMoveLines(
+      ManufOrder manufOrder,
+      StockMove stockMove,
+      int inOrOut,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      PreservedTrackingNumbersByProduct preservedTrackingNumbersByProduct)
+      throws AxelorException;
+
+  void createNewStockMoveLines(
       List<ProdProduct> diffProdProductList,
       StockMove stockMove,
       int stockMoveLineType,
       StockLocation fromStockLocation,
       StockLocation toStockLocation)
+      throws AxelorException;
+
+  void createNewStockMoveLines(
+      List<ProdProduct> diffProdProductList,
+      StockMove stockMove,
+      int stockMoveLineType,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      PreservedTrackingNumbersByProduct preservedTrackingNumbersByProduct)
       throws AxelorException;
 
   void createNewConsumedStockMoveLineList(ManufOrder manufOrder, BigDecimal qtyToUpdate)

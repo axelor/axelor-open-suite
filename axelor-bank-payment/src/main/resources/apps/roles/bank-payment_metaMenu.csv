@@ -2,7 +2,6 @@
 "account-root-bank-orders";"Bank Payment Manager|Bank Payment User|Bank Payment Role"
 "account-root-bank-order-direct-debit";"Bank Payment Manager|Bank Payment User|Bank Payment Role"
 "account-root-bank-order-sepa-direct-debit";"Bank Payment Manager|Bank Payment User|Bank Payment Role"
-"account-root-bank-order-lcr";"Bank Payment Manager|Bank Payment User|Bank Payment Role"
 "account-root-bank-order-lcr-bank-orders";"Bank Payment Manager|Bank Payment User|Bank Payment Role"
 "account-root-bank-order-international-direct-debit";"Bank Payment Manager|Bank Payment User|Bank Payment Role"
 "account-root-bank-order-credit-transfer";"Bank Payment Manager|Bank Payment User|Bank Payment Role"

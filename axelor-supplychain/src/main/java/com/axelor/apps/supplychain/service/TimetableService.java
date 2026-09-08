@@ -39,7 +39,11 @@ public interface TimetableService {
       TimetableTemplate template, BigDecimal exTaxTotal, LocalDate computationDate)
       throws AxelorException;
 
-  void deleteInvoiceTimeTable(Invoice invoice);
+  void cancelTimetable(Invoice invoice);
+
+  void updateTimetables(Invoice invoice);
+
+  void reassignInvoice(List<Invoice> invoiceList, Invoice invoiceMerged);
 
   BigDecimal computeAmount(
       Timetable timetable, List<Timetable> timetableList, BigDecimal exTaxTotal, Currency currency);

@@ -194,6 +194,8 @@ public interface StockMoveService {
 
   void setAvailableStatus(StockMove stockMove) throws AxelorException;
 
+  void setAvailableStatusSelect(StockMove stockMove) throws AxelorException;
+
   /**
    * Update editDate of one Outgoing Stock Move
    *

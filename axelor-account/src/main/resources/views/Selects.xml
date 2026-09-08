@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -229,6 +229,8 @@
     <option value="25">Moves consistency control</option>
     <option value="26">Accounting cut-off</option>
     <option value="27">Auto move lettering</option>
+    <option value="28">Post loan installments</option>
+    <option value="29">Post loan closing adjustments</option>
   </selection>
 
   <selection name="iaccount.account.batch.transfer.type.select">
@@ -443,6 +445,7 @@
     <option value="subrogationRelease">Subrogation release</option>
     <option value="partnerAccount">Partner account</option>
     <option value="fixedAsset">Fixed asset</option>
+    <option value="loan">Loan</option>
     <option value="noteBills">Note bills</option>
     <option value="paymentSession">Payment session</option>
   </selection>
@@ -474,6 +477,19 @@
   <selection name="account.fixed.asset.line.status.select">
     <option value="1" color="blue">Planned</option>
     <option value="2" color="green">Realized</option>
+  </selection>
+
+  <selection name="account.loan.status.select">
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Validated</option>
+    <option value="3" color="deeporange">Ongoing</option>
+    <option value="4" color="purple">Closed</option>
+  </selection>
+
+  <selection name="account.loan.computation.mode.select">
+    <option value="1">Constant payment</option>
+    <option value="2">Constant capital</option>
+    <option value="3">In fine</option>
   </selection>
 
   <selection name="account.move.template.type.type.select">
@@ -550,6 +566,8 @@
     <option value='8'>Doubtful customer</option>
     <option value='9'>Irrecoverable</option>
     <option value='10'>Late payment interest</option>
+    <option value='11'>Loan</option>
+    <option value='12'>Loan closure</option>
   </selection>
 
   <selection name='iaccount.move.line.mass.entry.input.action.select'>
@@ -777,6 +795,11 @@
     <option value="2">Option on deliveries</option>
   </selection>
 
+  <selection name='iaccount.vat.liability.invoice.select'>
+    <option value="1">Standard regime</option>
+    <option value="2">Option on deliveries</option>
+  </selection>
+
   <selection name='iaccount.vat.system.moveline.select'>
     <option value="0"></option>
     <option value="1">vat.Delivery</option>
@@ -816,6 +839,12 @@
     <option value="0" order="0">None</option>
     <option value="1" order="1">Immediate</option>
     <option value="5" order="5">Value for collection</option>
+  </selection>
+
+  <selection name="payment.mode.value.for.collection.grouping.select">
+    <option value="1">By payment voucher</option>
+    <option value="2">By partner</option>
+    <option value="3">Global</option>
   </selection>
 
   <selection name="batch.batch.type.select" id="account.batch.batch.type.select">
@@ -884,5 +913,11 @@
   <selection name='account.import.fec.type.select'>
     <option value="import-FEC-config.xml">FEC</option>
     <option value="input-config-with-tva.xml">FEC with TVA</option>
+  </selection>
+
+  <selection name="invoice.category.select">
+    <option value="goods">Goods invoice</option>
+    <option value="services">Services invoice</option>
+    <option value="mixed">Mixed invoice</option>
   </selection>
 </object-views>

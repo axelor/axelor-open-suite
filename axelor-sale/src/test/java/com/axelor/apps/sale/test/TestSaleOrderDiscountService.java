@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -38,6 +39,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountServiceImpl;
+import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeService;
@@ -48,6 +50,7 @@ import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductSe
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
+import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppSale;
 import com.axelor.utils.junit.BaseTest;
 import jakarta.inject.Inject;
@@ -105,6 +108,10 @@ class TestSaleOrderDiscountService extends BaseTest {
 
   protected SaleOrderLineComputeService createSaleOrderLineComputeService(
       AppSaleService appSaleService) {
+    AppBaseService appBaseService = mock(AppBaseService.class);
+    AppBase appBase = mock(AppBase.class);
+    when(appBaseService.getAppBase()).thenReturn(appBase);
+    when(appBase.getEnablePricingScale()).thenReturn(false);
     return new SaleOrderLineComputeServiceImpl(
         mock(TaxService.class),
         currencyScaleService,
@@ -113,7 +120,9 @@ class TestSaleOrderDiscountService extends BaseTest {
         currencyService,
         priceListService,
         mock(SaleOrderLinePackService.class),
-        createSaleOrderLineCostPriceComputeService(appSaleService));
+        createSaleOrderLineCostPriceComputeService(appSaleService),
+        appBaseService,
+        mock(SaleOrderLinePricingService.class));
   }
 
   protected MarginComputeService createSaleOrderMarginService(AppSaleService appSaleService) {
@@ -175,6 +184,61 @@ class TestSaleOrderDiscountService extends BaseTest {
     saleOrderGlobalDiscountService.applyGlobalDiscountOnLines(saleOrder);
     Assertions.assertEquals(
         BigDecimal.valueOf(92).setScale(SCALE_VALUE, RoundingMode.HALF_UP),
+        saleOrder.getExTaxTotal());
+  }
+
+  @Test
+  void testApplyFixedGlobalDiscountOverPreexistingPercentLineDiscount() throws AxelorException {
+    // reporter scenario: line 200 with a manual 10% discount, line 300, then global fixed 50
+    saleOrder.setSaleOrderLineList(new ArrayList<>());
+    SaleOrderLine line200 =
+        createSaleOrderLine(
+            BigDecimal.valueOf(200).setScale(SCALE_VALUE, RoundingMode.HALF_UP), BigDecimal.ONE);
+    line200.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_PERCENT);
+    line200.setDiscountAmount(BigDecimal.TEN);
+    SaleOrderLine line300 =
+        createSaleOrderLine(
+            BigDecimal.valueOf(300).setScale(SCALE_VALUE, RoundingMode.HALF_UP), BigDecimal.ONE);
+    saleOrder.addSaleOrderLineListItem(line200);
+    saleOrder.addSaleOrderLineListItem(line300);
+
+    saleOrder.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_FIXED);
+    saleOrder.setDiscountAmount(BigDecimal.valueOf(50));
+    saleOrderGlobalDiscountService.applyGlobalDiscountOnLines(saleOrder);
+
+    Assertions.assertEquals(
+        PriceListLineRepository.AMOUNT_TYPE_FIXED, line200.getDiscountTypeSelect());
+    Assertions.assertEquals(
+        0, BigDecimal.valueOf(20).compareTo(line200.getDiscountAmount()), "line 200 -> fixed 20");
+    Assertions.assertEquals(
+        PriceListLineRepository.AMOUNT_TYPE_FIXED, line300.getDiscountTypeSelect());
+    Assertions.assertEquals(
+        0, BigDecimal.valueOf(30).compareTo(line300.getDiscountAmount()), "line 300 -> fixed 30");
+  }
+
+  @Test
+  void testResetGlobalDiscountOnLinesClearsLineDiscounts() throws AxelorException {
+    // a global discount is applied: lines carry a derived discount
+    saleOrder.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_PERCENT);
+    saleOrder.setDiscountAmount(BigDecimal.TEN);
+    saleOrderGlobalDiscountService.applyGlobalDiscountOnLines(saleOrder);
+
+    // the global discount is removed: lines must be reset and totals recomputed at full price
+    saleOrder.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
+    saleOrder.setDiscountAmount(BigDecimal.ZERO);
+    saleOrderGlobalDiscountService.resetGlobalDiscountOnLines(saleOrder);
+    saleOrderComputeService.computeSaleOrder(saleOrder);
+
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      Assertions.assertEquals(
+          PriceListLineRepository.AMOUNT_TYPE_NONE, saleOrderLine.getDiscountTypeSelect());
+      Assertions.assertEquals(
+          0,
+          BigDecimal.ZERO.compareTo(saleOrderLine.getDiscountAmount()),
+          "line discount amount should be reset to zero");
+    }
+    Assertions.assertEquals(
+        BigDecimal.valueOf(102).setScale(SCALE_VALUE, RoundingMode.HALF_UP),
         saleOrder.getExTaxTotal());
   }
 }

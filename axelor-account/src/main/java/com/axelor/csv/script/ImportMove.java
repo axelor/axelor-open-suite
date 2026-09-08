@@ -43,8 +43,10 @@ import jakarta.inject.Inject;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class ImportMove {
 
@@ -56,11 +58,13 @@ public class ImportMove {
   @Inject private ImportAnalyticInMoveService importAnalyticInMoveService;
 
   private String lastImportDate;
+  private final Set<String> failedEntryReferences = new HashSet<>();
 
   public Object importFECMove(Object bean, Map<String, Object> values) throws AxelorException {
     assert bean instanceof MoveLine;
     MoveLine moveLine = (MoveLine) bean;
     FECImport fecImport = null;
+    String importReference = null;
     try {
       if (values.get("FECImport") != null) {
         fecImport = fecImportRepository.find(((FECImport) values.get("FECImport")).getId());
@@ -79,7 +83,11 @@ public class ImportMove {
                 .getTodayDateTime(company)
                 .format(DateTimeFormatter.ofPattern("yyyyMMddHH:mm:ss"));
       }
-      String importReference = String.format("#%s@%s", csvReference, lastImportDate);
+      importReference = String.format("#%s@%s", csvReference, lastImportDate);
+
+      if (failedEntryReferences.contains(importReference)) {
+        return null;
+      }
 
       if (values.get("EcritureDate") != null) {
         moveLine.setDate(parseDate(values.get("EcritureDate").toString()));
@@ -99,9 +107,15 @@ public class ImportMove {
       importAnalyticInMoveService.fillAnalyticOnMoveLine(moveLine, move, values, csvReference);
 
     } catch (AxelorException e) {
+      if (importReference != null) {
+        failedEntryReferences.add(importReference);
+      }
       TraceBackService.trace(e);
       throw e;
     } catch (Exception e) {
+      if (importReference != null) {
+        failedEntryReferences.add(importReference);
+      }
       TraceBackService.trace(e);
       throw new AxelorException(
           fecImport, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());

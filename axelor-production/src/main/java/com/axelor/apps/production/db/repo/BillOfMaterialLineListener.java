@@ -28,7 +28,6 @@ import com.axelor.apps.production.service.SaleOrderLineDetailsService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
@@ -94,7 +93,10 @@ public class BillOfMaterialLineListener {
 
     if (CollectionUtils.isNotEmpty(saleOrderLineList)) {
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-        saleOrderSet.add(SaleOrderLineUtils.getParentSol(saleOrderLine).getSaleOrder());
+        SaleOrder mainSaleOrder = saleOrderLine.getMainSaleOrder();
+        if (mainSaleOrder != null) {
+          saleOrderSet.add(mainSaleOrder);
+        }
       }
     }
     SaleOrderLineDetailsService saleOrderLineDetailsService =

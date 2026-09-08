@@ -99,8 +99,10 @@ public class InvoiceTermToolServiceImpl implements InvoiceTermToolService {
   @Override
   public boolean isThresholdNotOnLastUnpaidInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation) {
-    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())
-        && moveLine.getAmountRemaining().abs().compareTo(thresholdDistanceFromRegulation) <= 0) {
+    if (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
+      return false;
+    }
+    if (moveLine.getAmountRemaining().abs().compareTo(thresholdDistanceFromRegulation) <= 0) {
       BigDecimal reconcileAmount = this.getReconcileAmount(moveLine);
       List<InvoiceTerm> unpaidInvoiceTermList =
           moveLine.getInvoiceTermList().stream()

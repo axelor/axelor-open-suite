@@ -37,6 +37,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
@@ -78,6 +79,7 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
     checkBeforeConfirm(saleOrder, qtyToOrderMap);
     SaleOrder confirmedSaleOrder = getConfirmedSaleOrder(saleOrder);
     addLines(qtyToOrderMap, confirmedSaleOrder);
+    addEndOfPackLines(saleOrder, confirmedSaleOrder);
     saleOrderComputeService.computeSaleOrder(confirmedSaleOrder);
     saleOrderFinalizeService.finalizeQuotation(confirmedSaleOrder);
     saleOrderConfirmService.confirmSaleOrder(confirmedSaleOrder);
@@ -119,6 +121,19 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.SALE_QUOTATION_NO_LINE_GENERATED));
+    }
+  }
+
+  protected void addEndOfPackLines(SaleOrder saleOrder, SaleOrder confirmedSaleOrder) {
+    List<SaleOrderLine> endOfPackLines =
+        saleOrder.getSaleOrderLineList().stream()
+            .filter(line -> line.getTypeSelect() == SaleOrderLineRepository.TYPE_END_OF_PACK)
+            .collect(Collectors.toList());
+    for (SaleOrderLine endOfPackLine : endOfPackLines) {
+      SaleOrderLine copy = saleOrderLineRepository.copy(endOfPackLine, true);
+      copy.setSaleOrder(null);
+      saleOrderLineRepository.save(copy);
+      confirmedSaleOrder.addSaleOrderLineListItem(copy);
     }
   }
 

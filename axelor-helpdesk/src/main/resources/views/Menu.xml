@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <menuitem name="helpdesk-root" title="Helpdesk" order="-300"
     if="__config__.app.isApp('helpdesk')" icon="headset" icon-background="#b6473f"/>
@@ -102,7 +102,8 @@
   <action-view name="helpdesk.report.ticket" title="Tickets">
     <view type="dashboard" name="helpdesk.ticket.dashboard"/>
     <context name="_user_id" expr="eval:__user__.id"/>
-    <context name="_language" expr="eval: __user__.getLanguage()"/>
+    <context name="_language"
+      expr="eval: __user__.getLanguage()?.tokenize('-')?.first()?.toLowerCase()"/>
     <context name="_myActiveTeam"
       expr="eval:__user__.activeTeam != null ? __user__.activeTeam.id : 0"/>
   </action-view>
@@ -112,7 +113,8 @@
 
   <action-view name="helpdesk.report.sla" title="SLA">
     <view name="helpdesk.sla.dashboard" type="dashboard"/>
-    <context name="_language" expr="eval: __user__.getLanguage()"/>
+    <context name="_language"
+      expr="eval: __user__.getLanguage()?.tokenize('-')?.first()?.toLowerCase()"/>
     <context name="_user_id" expr="eval:__user__.id"/>
   </action-view>
 

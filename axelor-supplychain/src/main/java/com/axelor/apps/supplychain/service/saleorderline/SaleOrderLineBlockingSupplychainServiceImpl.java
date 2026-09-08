@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service.saleorderline;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import jakarta.inject.Inject;
@@ -34,9 +35,8 @@ public class SaleOrderLineBlockingSupplychainServiceImpl
   }
 
   @Override
-  public boolean isDeliveryBlocked(SaleOrderLine saleOrderLine) {
+  public boolean isDeliveryBlocked(SaleOrderLine saleOrderLine, Company company) {
     Objects.requireNonNull(saleOrderLine);
-    var company = saleOrderLine.getSaleOrder().getCompany();
 
     if (saleOrderLine.getDeliveryBlockingToDate() == null) {
       return saleOrderLine.getIsDeliveryBlocking();

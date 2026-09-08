@@ -27,8 +27,8 @@ import java.util.Map;
 
 public class MoveGroupOnChangeServiceImpl implements MoveGroupOnChangeService {
 
-  private MoveRecordSetService moveRecordSetService;
-  private MoveAttrsService moveAttrsService;
+  protected MoveRecordSetService moveRecordSetService;
+  protected MoveAttrsService moveAttrsService;
 
   @Inject
   public MoveGroupOnChangeServiceImpl(

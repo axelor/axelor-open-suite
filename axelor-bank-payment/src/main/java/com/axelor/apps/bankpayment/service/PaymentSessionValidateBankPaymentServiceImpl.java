@@ -55,7 +55,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.db.JPA;
@@ -63,13 +62,10 @@ import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.persistence.TypedQuery;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class PaymentSessionValidateBankPaymentServiceImpl
@@ -170,13 +166,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
 
       if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()
           && bankOrder.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
-        try {
-          updatePaymentSessionStatus(paymentSession);
-          bankOrderValidationService.confirm(bankOrder);
-        } catch (JAXBException | IOException | DatatypeConfigurationException e) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
-        }
+        updatePaymentSessionStatus(paymentSession);
+        bankOrderValidationService.confirm(bankOrder);
       }
     }
 

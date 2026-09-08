@@ -1,0 +1,3 @@
+---
+title: "Loans: added the technical foundation and data model (config, loan, schedule entities and loan validation)."
+module: axelor-account

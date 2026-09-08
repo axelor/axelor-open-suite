@@ -241,6 +241,26 @@
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
+                <structure>
+                    <property name="name">param_4</property>
+                    <property name="paramName">NoteBillsId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">4</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_5</property>
+                    <property name="paramName">NoteBillsId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">5</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
             </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -317,7 +337,7 @@ Invoice.operation_type_select,
 Currency.code as currency
 from account_invoice as Invoice
 left outer join base_currency as Currency on Invoice.currency = Currency.id
-where (Invoice.id in 
+where (Invoice.id in
 	(select InvoiceBatchSet.account_invoice
 	 from account_invoice_batch_set as InvoiceBatchSet
 	 where InvoiceBatchSet.batch_set = (select NoteBills.batch from account_note_bills as NoteBills where NoteBills.id = ?))
@@ -326,7 +346,23 @@ OR Invoice.operation_type_select = 4 AND  Invoice.status_select = 3 AND Invoice.
 	 from account_invoice_batch_set as InvoiceBatchSet
 	 where InvoiceBatchSet.batch_set = (select NoteBills.batch from account_note_bills as NoteBills where NoteBills.id = ?)))
 AND Invoice.partner = (select NoteBills.partner from account_note_bills as NoteBills where NoteBills.id = ?)
-ORDER BY Invoice.operation_type_select
+UNION ALL
+select
+COALESCE(LinkedInvoice.invoice_id, TermMoveLine.origin, 'IT-' || InvoiceTerm.id::text),
+InvoiceTerm.due_date,
+InvoiceTerm.amount,
+0,
+Currency.code as currency
+from account_invoice_term as InvoiceTerm
+left outer join base_currency as Currency on InvoiceTerm.currency = Currency.id
+left outer join account_invoice as LinkedInvoice on InvoiceTerm.invoice = LinkedInvoice.id
+left outer join account_move_line as TermMoveLine on InvoiceTerm.move_line = TermMoveLine.id
+where InvoiceTerm.id in
+    (select InvoiceTermBatchSet.account_invoice_term
+	 from account_invoice_term_batch_set as InvoiceTermBatchSet
+	 where InvoiceTermBatchSet.batch_set = (select NoteBills.batch from account_note_bills as NoteBills where NoteBills.id = ?))
+AND InvoiceTerm.partner = (select NoteBills.partner from account_note_bills as NoteBills where NoteBills.id = ?)
+ORDER BY operation_type_select
 ]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="PartnerDS" id="125">

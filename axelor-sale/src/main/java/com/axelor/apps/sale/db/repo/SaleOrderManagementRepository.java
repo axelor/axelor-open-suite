@@ -20,6 +20,7 @@ package com.axelor.apps.sale.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -29,6 +30,7 @@ import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCopyService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
@@ -75,6 +77,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       }
       computeSeq(saleOrder);
       computeFullName(saleOrder);
+      syncAddressStr(saleOrder);
 
       if (appSale.getManagePartnerComplementaryProduct()) {
         Beans.get(SaleOrderService.class).manageComplementaryProductSOLines(saleOrder);
@@ -85,8 +88,9 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       if (appSale.getIsQuotationAndOrderSplitEnabled()) {
         saleOrderOrderingStatusService.updateOrderingStatus(saleOrder);
       }
-      Beans.get(SaleOrderLineComputeService.class)
-          .computeLevels(saleOrder.getSaleOrderLineList(), null);
+      SaleOrderLineComputeService saleOrderLineComputeService =
+          Beans.get(SaleOrderLineComputeService.class);
+      saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null, saleOrder);
       return super.save(saleOrder);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
@@ -123,6 +127,20 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     } catch (Exception e) {
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  protected void syncAddressStr(SaleOrder saleOrder) {
+    AddressService addressService = Beans.get(AddressService.class);
+    if (Strings.isNullOrEmpty(saleOrder.getMainInvoicingAddressStr())) {
+      saleOrder.setMainInvoicingAddressStr(
+          addressService.computeAddressStr(saleOrder.getMainInvoicingAddress()));
+    }
+    if (Strings.isNullOrEmpty(saleOrder.getDeliveryAddressStr())) {
+      saleOrder.setDeliveryAddressStr(
+          addressService.computeAddressStr(saleOrder.getDeliveryAddress()));
+    }
+    Beans.get(SaleOrderDeliveryAddressService.class)
+        .updateSaleOrderLinesDeliveryAddressStr(saleOrder);
   }
 
   protected void computeSubMargin(SaleOrder saleOrder) throws AxelorException {

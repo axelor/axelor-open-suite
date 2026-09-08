@@ -67,7 +67,8 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
   @Inject protected ObjectMapper objectMapper;
   @Inject protected ProjectRepository projectRepo;
 
-  private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+  protected static final DateTimeFormatter DATE_FORMATTER =
+      DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
   @Override
   public Map<String, Object> getData(LocalDate startDate, LocalDate endDate, Long projectId) {

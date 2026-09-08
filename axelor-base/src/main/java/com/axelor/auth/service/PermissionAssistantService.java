@@ -28,6 +28,7 @@ import com.axelor.auth.db.repo.GroupRepository;
 import com.axelor.auth.db.repo.PermissionAssistantRepository;
 import com.axelor.auth.db.repo.PermissionRepository;
 import com.axelor.auth.db.repo.RoleRepository;
+import com.axelor.common.StringUtils;
 import com.axelor.common.csv.CSVFile;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -737,8 +738,8 @@ public class PermissionAssistantService {
     permission.setCanCreate(row[2].equalsIgnoreCase("x"));
     permission.setCanRemove(row[3].equalsIgnoreCase("x"));
     permission.setCanExport(row[4].equalsIgnoreCase("x"));
-    permission.setCondition(row[5]);
-    permission.setConditionParams(row[6]);
+    permission.setCondition(StringUtils.isBlank(row[5]) ? null : row[5]);
+    permission.setConditionParams(StringUtils.isBlank(row[6]) ? null : row[6]);
 
     if (newPermission) {
       role.addPermission(permission);

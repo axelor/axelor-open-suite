@@ -64,6 +64,10 @@ public interface ManufOrderStockMoveService {
 
   ManufOrder finish(ManufOrder manufOrder) throws AxelorException;
 
+  ManufOrder finishInStockMoves(ManufOrder manufOrder) throws AxelorException;
+
+  ManufOrder finishOutStockMoves(ManufOrder manufOrder) throws AxelorException;
+
   void finishStockMove(StockMove stockMove) throws AxelorException;
 
   /**
@@ -74,6 +78,10 @@ public interface ManufOrderStockMoveService {
    * @return
    */
   ManufOrder partialFinish(ManufOrder manufOrder) throws AxelorException;
+
+  ManufOrder partialFinishIn(ManufOrder manufOrder) throws AxelorException;
+
+  ManufOrder partialFinishOut(ManufOrder manufOrder) throws AxelorException;
 
   void cancel(ManufOrder manufOrder) throws AxelorException;
 

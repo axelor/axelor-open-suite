@@ -46,8 +46,8 @@ public class IndicatorEvaluationServiceImpl implements IndicatorEvaluationServic
 
   private static final Logger LOG = LoggerFactory.getLogger(IndicatorEvaluationServiceImpl.class);
 
-  private static final String BINDING_INDICATOR = "indicator";
-  private static final String BINDING_TARGET = "target";
+  protected static final String BINDING_INDICATOR = "indicator";
+  protected static final String BINDING_TARGET = "target";
 
   private final ExpressionEvaluatorRegistry evaluatorRegistry;
   private final IndicatorResultLineRepository lineRepo;

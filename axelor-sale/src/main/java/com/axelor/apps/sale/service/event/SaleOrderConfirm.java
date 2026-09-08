@@ -21,7 +21,7 @@ package com.axelor.apps.sale.service.event;
 import com.axelor.apps.sale.db.SaleOrder;
 
 public class SaleOrderConfirm {
-  private final SaleOrder saleOrder;
+  private SaleOrder saleOrder;
   private String notifyMessage;
 
   public SaleOrderConfirm(SaleOrder saleOrder) {
@@ -30,6 +30,10 @@ public class SaleOrderConfirm {
 
   public SaleOrder getSaleOrder() {
     return saleOrder;
+  }
+
+  public void setSaleOrder(SaleOrder saleOrder) {
+    this.saleOrder = saleOrder;
   }
 
   public String getNotifyMessage() {

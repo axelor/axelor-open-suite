@@ -45,11 +45,8 @@ public class BatchController {
               .model(Batch.class.getName())
               .add("grid", "batch-grid")
               .add("form", "batch-form");
-
-      if (field != null && request.getContext().get("id") != null) {
-        actionViewBuilder.domain(String.format("self.%s.id = :_batchId", field));
-        actionViewBuilder.context(
-            "_batchId", Long.parseLong(request.getContext().get("id").toString()));
+      if (field != null) {
+        actionViewBuilder.domain(String.format("self.%s.id = :id", field));
       } else {
         actionViewBuilder.domain("self.id = 0");
       }

@@ -434,12 +434,12 @@ public class SaleOrderLineController {
         "analyticDistributionTemplate",
         "domain",
         Beans.get(AnalyticAttrsService.class)
-            .getAnalyticDistributionTemplateDomain(
+            .getAnalyticDistributionTemplateDomainFromProduct(
                 saleOrderLine.getSupplierPartner(),
                 saleOrderLine.getProduct(),
                 saleOrder.getCompany(),
                 saleOrder.getTradingName(),
-                null,
+                saleOrder.getFiscalPosition(),
                 false));
   }
 

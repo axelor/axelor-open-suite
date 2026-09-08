@@ -1,6 +1,6 @@
 def libs = ext.libs = [:]
 
-libs.axelor_studio = 'com.axelor.addons:axelor-studio:4.0.5'
+libs.axelor_studio = 'com.axelor.addons:axelor-studio:4.0.7'
 libs.axelor_message = 'com.axelor.addons:axelor-message:4.0.3'
 libs.axelor_utils = 'com.axelor.addons:axelor-utils:4.0.2'
 
@@ -54,6 +54,8 @@ libs.xmlsec = 'org.apache.santuario:xmlsec:3.0.2'
 
 libs.jaxb_xjc = 'com.sun.xml.bind:jaxb-xjc:3.0.1'
 libs.jaxb_bind_api = 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.1'
+
+libs.jsr305 = 'com.google.code.findbugs:jsr305:3.0.2'
 
 libs.mockito = 'org.mockito:mockito-core:4.8.0'
 

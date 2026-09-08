@@ -64,5 +64,6 @@ public interface SaleOrderLineComputeService {
       SaleOrderLine saleOrderLine, SaleOrder saleOrder, BigDecimal oldQty, BigDecimal newQty)
       throws AxelorException;
 
-  void computeLevels(List<SaleOrderLine> saleOrderLineList, String parentLevel);
+  void computeLevels(
+      List<SaleOrderLine> saleOrderLineList, String parentLevel, SaleOrder mainSaleOrder);
 }

@@ -54,6 +54,7 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
     if (billOfMaterialLine.getProduct().getProductSubTypeSelect()
         == ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT) {
       SaleOrderLine saleOrderLine = new SaleOrderLine();
+      saleOrderLine.setMainSaleOrder(saleOrder);
       saleOrderLine.setProduct(billOfMaterialLine.getProduct());
       saleOrderLine.setQty(billOfMaterialLine.getQty());
       saleOrderLine.setBillOfMaterialLine(billOfMaterialLine);
@@ -68,6 +69,8 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
 
       // computing the line will generate sub lines.
       saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
+
+      saleOrderLine.setManagedInStockMove(false);
 
       BillOfMaterial billOfMaterial = billOfMaterialLine.getBillOfMaterial();
       if (billOfMaterial != null) {

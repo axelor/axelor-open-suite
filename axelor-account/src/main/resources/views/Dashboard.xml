@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <!-- Account Invoice Dashboard -->
 
@@ -286,7 +286,8 @@
     <view type="chart" name="chart.moveLines.revenues.vs.expenses"/>
     <context name="active_company" expr="eval:__user__.activeCompany"/>
     <context name="todayDate" expr="eval:__config__.date"/>
-    <context name="_language" expr="eval: __user__.getLanguage()"/>
+    <context name="_language"
+      expr="eval: __user__.getLanguage()?.tokenize('-')?.first()?.toLowerCase()"/>
   </action-view>
 
   <action-view title="Invoice Sale by month (tax excl.)"
@@ -335,21 +336,24 @@
     title="Invoice and Credit notes Sale situation (tax incl.)">
     <view type="chart" name="chart.invoice.sale.credit.note.situation"/>
     <context name="todayDate" expr="eval:__config__.date"/>
-    <context name="_language" expr="eval: __user__.getLanguage()"/>
+    <context name="_language"
+      expr="eval: __user__.getLanguage()?.tokenize('-')?.first()?.toLowerCase()"/>
   </action-view>
 
   <action-view name="dashlet.invoice.sale.situation"
     title="Invoice Sale situation (tax incl.)">
     <view type="chart" name="chart.invoice.sale.situation"/>
     <context name="todayDate" expr="eval:__config__.date"/>
-    <context name="_language" expr="eval: __user__.getLanguage()"/>
+    <context name="_language"
+      expr="eval: __user__.getLanguage()?.tokenize('-')?.first()?.toLowerCase()"/>
   </action-view>
 
   <action-view name="dashlet.invoice.purchase.situation"
     title="Invoice Purchase situation (tax incl.)">
     <view type="chart" name="chart.invoice.purchase.situation"/>
     <context name="todayDate" expr="eval:__config__.date"/>
-    <context name="_language" expr="eval: __user__.getLanguage()"/>
+    <context name="_language"
+      expr="eval: __user__.getLanguage()?.tokenize('-')?.first()?.toLowerCase()"/>
   </action-view>
 
   <action-view

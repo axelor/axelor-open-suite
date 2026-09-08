@@ -89,6 +89,9 @@ public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService 
       throws AxelorException {
 
     Product product = saleOrderLine.getProduct();
+    if (product == null) {
+      return BigDecimal.ZERO;
+    }
     Company company = saleOrder.getCompany();
 
     return currencyScaleService.getCompanyScaledValue(

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <menuitem name="account-root-bank-orders" parent="account-root" title="Bank Orders"
     order="900" if="__config__.app.isApp('bank-payment')"/>
@@ -23,14 +23,10 @@
     <context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 2"/>
   </action-view>
 
-  <menuitem title="LCR" name="account-root-bank-order-lcr"
+  <menuitem title="LCR" name="account-root-bank-order-lcr-bank-orders"
     parent="account-root-bank-orders"
-    if="eval: __config__?.app?.getApp('bank-payment')?.manageBillOfExchange" order="200"/>
-
-  <menuitem title="LCR bank orders" name="account-root-bank-order-lcr-bank-orders"
-    parent="account-root-bank-order-lcr"
     if="eval: __config__?.app?.getApp('bank-payment')?.manageBillOfExchange"
-    action="account.bank.payment.bank.order.lcr" order="100"/>
+    action="account.bank.payment.bank.order.lcr" order="200"/>
 
   <action-view name="account.bank.payment.bank.order.lcr" title="LCR Bank orders"
     model="com.axelor.apps.bankpayment.db.BankOrder">

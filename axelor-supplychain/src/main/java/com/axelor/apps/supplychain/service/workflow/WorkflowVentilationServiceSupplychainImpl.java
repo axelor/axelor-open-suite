@@ -41,10 +41,10 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineUtils;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
@@ -61,6 +61,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -206,7 +207,10 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       return null;
     }
 
-    SaleOrder saleOrder = SaleOrderLineUtils.getParentSol(saleOrderLine).getSaleOrder();
+    SaleOrder saleOrder = saleOrderLine.getMainSaleOrder();
+    if (saleOrder == null) {
+      return null;
+    }
 
     // Update invoiced amount on sale order line
     BigDecimal invoicedAmountToAdd = invoiceLine.getExTaxTotal();
@@ -298,9 +302,9 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       if (stockMoveLine == null) {
         continue;
       }
-      if (isStockMoveInvoicingPartiallyActivated(invoice)) {
+      StockMove stockMove = stockMoveLine.getStockMove();
+      if (isStockMoveInvoicingPartiallyActivated(stockMove)) {
         BigDecimal qty = stockMoveLine.getQtyInvoiced();
-        StockMove stockMove = stockMoveLine.getStockMove();
         Unit movUnit = stockMoveLine.getUnit();
         Unit invUnit = invoiceLine.getUnit();
 
@@ -388,13 +392,104 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
     // update stock moves invoicing status
     for (StockMove stockMove : invoice.getStockMoveSet()) {
+      if (isStockMoveWithoutInvoiceLineLink(stockMove, invoice)
+          && CollectionUtils.isNotEmpty(stockMove.getStockMoveLineList())) {
+        updateUnlinkedStockMoveLinesQtyInvoiced(stockMove, invoice);
+      }
       stockMoveInvoiceService.computeStockMoveInvoicingStatus(stockMove);
     }
   }
 
-  protected boolean isStockMoveInvoicingPartiallyActivated(Invoice invoice) throws AxelorException {
+  protected boolean isStockMoveInvoicingPartiallyActivated(StockMove stockMove)
+      throws AxelorException {
     SupplyChainConfig supplyChainConfig =
-        supplyChainConfigService.getSupplyChainConfig(invoice.getCompany());
-    return supplyChainConfig.getActivateOutStockMovePartialInvoicing();
+        supplyChainConfigService.getSupplyChainConfig(stockMove.getCompany());
+    return (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+            && supplyChainConfig.getActivateIncStockMovePartialInvoicing())
+        || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+            && supplyChainConfig.getActivateOutStockMovePartialInvoicing());
+  }
+
+  protected boolean isStockMoveWithoutInvoiceLineLink(StockMove stockMove, Invoice invoice) {
+    if (CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+      return true;
+    }
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      StockMoveLine stockMoveLine = invoiceLine.getStockMoveLine();
+      if (stockMoveLine != null && stockMove.equals(stockMoveLine.getStockMove())) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Matches invoice lines that carry no {@code stockMoveLine} FK (manual invoice linked to the
+   * stock move only through {@code stockMoveSet}) to the stock move lines sharing the same product,
+   * and updates {@code qtyInvoiced} with the actually invoiced quantity instead of assuming the
+   * whole stock move line is invoiced.
+   */
+  protected void updateUnlinkedStockMoveLinesQtyInvoiced(StockMove stockMove, Invoice invoice)
+      throws AxelorException {
+    boolean invoiceIsRefund =
+        stockMoveInvoiceService.isInvoiceRefundingStockMove(stockMove, invoice);
+
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      if (invoiceLine.getStockMoveLine() != null || invoiceLine.getProduct() == null) {
+        continue;
+      }
+
+      BigDecimal remainingQtyToInvoice = invoiceLine.getQty().abs();
+
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        if (remainingQtyToInvoice.signum() <= 0) {
+          break;
+        }
+        if (!invoiceLine.getProduct().equals(stockMoveLine.getProduct())) {
+          continue;
+        }
+
+        BigDecimal currentQtyInvoiced = stockMoveLine.getQtyInvoiced();
+        BigDecimal availableCapacity =
+            invoiceIsRefund
+                ? currentQtyInvoiced
+                : stockMoveLine.getRealQty().subtract(currentQtyInvoiced);
+        if (availableCapacity.signum() <= 0) {
+          continue;
+        }
+
+        BigDecimal invoiceQtyInStockMoveUnit;
+        try {
+          invoiceQtyInStockMoveUnit =
+              unitConversionService.convert(
+                  invoiceLine.getUnit(),
+                  stockMoveLine.getUnit(),
+                  remainingQtyToInvoice,
+                  appBaseService.getNbDecimalDigitForQty(),
+                  null);
+        } catch (AxelorException e) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_QTY_INVONVERTIBLE_UNIT)
+                  + "\n"
+                  + e.getMessage());
+        }
+
+        BigDecimal qtyApplied = invoiceQtyInStockMoveUnit.min(availableCapacity);
+        stockMoveLine.setQtyInvoiced(
+            invoiceIsRefund
+                ? currentQtyInvoiced.subtract(qtyApplied)
+                : currentQtyInvoiced.add(qtyApplied));
+
+        BigDecimal qtyAppliedInInvoiceUnit =
+            unitConversionService.convert(
+                stockMoveLine.getUnit(),
+                invoiceLine.getUnit(),
+                qtyApplied,
+                appBaseService.getNbDecimalDigitForQty(),
+                null);
+        remainingQtyToInvoice = remainingQtyToInvoice.subtract(qtyAppliedInInvoiceUnit);
+      }
+    }
   }
 }

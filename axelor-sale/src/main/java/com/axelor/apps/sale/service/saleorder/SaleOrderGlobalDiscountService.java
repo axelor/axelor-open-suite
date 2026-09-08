@@ -26,5 +26,7 @@ public interface SaleOrderGlobalDiscountService {
 
   void applyGlobalDiscountOnLines(GlobalDiscounter globalDiscounter) throws AxelorException;
 
+  void resetGlobalDiscountOnLines(GlobalDiscounter globalDiscounter);
+
   Map<String, Map<String, Object>> setDiscountDummies(GlobalDiscounter globalDiscounter);
 }

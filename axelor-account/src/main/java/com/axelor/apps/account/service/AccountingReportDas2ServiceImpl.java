@@ -127,6 +127,13 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
     Account supplierAccount = accountConfig.getSupplierAccount();
     Account customerAccount = accountConfig.getCustomerAccount();
 
+    String accountQuery;
+    if (customerAccount != null) {
+      accountQuery = "AND account NOT IN (:supplierAccount, :customerAccount) ";
+    } else {
+      accountQuery = "AND account != :supplierAccount ";
+    }
+
     List<Long> partnerIds = new ArrayList<Long>();
     String sameQuery =
         "FROM PaymentMoveLineDistribution pmvld "
@@ -149,7 +156,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "AND account.serviceType IS NOT NULL  "
             + "AND partner.das2Activity IS NOT NULL  "
             + "AND account.serviceType.isDas2Declarable IS TRUE "
-            + "AND account NOT IN (:supplierAccount, :customerAccount) "
+            + accountQuery
             + "AND journalType = :journalType "
             + "AND company = :company "
             + "AND (:currency is null OR currency = :currency) "
@@ -178,13 +185,16 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             .setParameter("dateFrom", accountingReport.getDateFrom())
             .setParameter("dateTo", accountingReport.getDateTo())
             .setParameter("supplierAccount", supplierAccount)
-            .setParameter("customerAccount", customerAccount)
             .setParameter("journalType", journalType)
             .setParameter("company", accountingReport.getCompany())
             .setParameter("currency", accountingReport.getCurrency())
             .setParameter("accountingReport", accountingReport)
             .setParameter("reportType", accountingReport.getReportType().getTypeSelect())
             .setParameter("inAmountExcl", accountingReport.getMinAmountExcl());
+
+    if (customerAccount != null) {
+      partnerQuery.setParameter("customerAccount", customerAccount);
+    }
     partnerIds = partnerQuery.getResultList();
     if (CollectionUtils.isEmpty(partnerIds)) {
       return new ArrayList<Long>();
@@ -211,7 +221,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             + "AND pmvld1.operationDate >= :dateFrom "
             + "AND pmvld1.operationDate <= :dateTo "
             + "AND (account1.serviceType IS NULL OR partner1.das2Activity IS NULL) "
-            + "AND account NOT IN (:supplierAccount, :customerAccount) "
+            + accountQuery
             + "AND journalType1 = :journalType "
             + "AND company1 = :company "
             + "AND currency1 = :currency "
@@ -241,7 +251,6 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             .setParameter("dateFrom", accountingReport.getDateFrom())
             .setParameter("dateTo", accountingReport.getDateTo())
             .setParameter("supplierAccount", supplierAccount)
-            .setParameter("customerAccount", customerAccount)
             .setParameter("journalType", journalType)
             .setParameter("company", accountingReport.getCompany())
             .setParameter("currency", accountingReport.getCurrency())
@@ -249,6 +258,9 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
             .setParameter("reportType", accountingReport.getReportType().getTypeSelect())
             .setParameter("partnerIds", partnerIds);
 
+    if (customerAccount != null) {
+      query.setParameter("customerAccount", customerAccount);
+    }
     return query.getResultList();
   }
 

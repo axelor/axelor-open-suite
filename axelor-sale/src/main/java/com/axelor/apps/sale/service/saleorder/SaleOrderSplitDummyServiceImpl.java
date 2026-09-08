@@ -52,7 +52,10 @@ public class SaleOrderSplitDummyServiceImpl implements SaleOrderSplitDummyServic
     int nbOfDecimalForPrice = appBaseService.getNbDecimalDigitForUnitPrice();
     List<SaleOrderLine> filteredSaleOrderLineList =
         saleOrder.getSaleOrderLineList().stream()
-            .filter(line -> line.getOrderedQty().compareTo(line.getQty()) != 0)
+            .filter(
+                line ->
+                    line.getTypeSelect() == SaleOrderLineRepository.TYPE_END_OF_PACK
+                        || line.getOrderedQty().compareTo(line.getQty()) != 0)
             .collect(Collectors.toList());
     for (SaleOrderLine saleOrderLine : filteredSaleOrderLineList) {
       Map<String, Object> saleOrderLineMap =

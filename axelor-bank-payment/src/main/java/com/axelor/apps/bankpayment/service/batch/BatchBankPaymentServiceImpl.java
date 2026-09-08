@@ -58,13 +58,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.QueryBuilder;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
   protected AppBaseService appBaseService;
@@ -121,8 +118,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public BankOrder createBankOrder(Batch batch)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+  public BankOrder createBankOrder(Batch batch) throws AxelorException {
 
     PaymentScheduleLine paymentScheduleLine = getPaymentScheduleLineDoneListQuery(batch).fetchOne();
 
@@ -151,8 +147,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public BankOrder createBankOrderFromPaymentScheduleLines(Batch batch)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+  public BankOrder createBankOrderFromPaymentScheduleLines(Batch batch) throws AxelorException {
 
     List<PaymentScheduleLine> paymentScheduleLineList;
     int offset = 0;
@@ -187,7 +182,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
 
   @Transactional(rollbackOn = {Exception.class})
   protected void createBankOrders(Batch batch, Collection<PaymentScheduleLine> paymentScheduleLines)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+      throws AxelorException {
 
     for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLines) {
       PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
@@ -207,8 +202,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void createBankOrders(Batch batch, Reconcile reconcile)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+  protected void createBankOrders(Batch batch, Reconcile reconcile) throws AxelorException {
 
     for (InvoicePayment invoicePayment : invoicePaymentRepo.findByReconcile(reconcile).fetch()) {
       if (invoicePayment.getBankOrder() != null) {
@@ -232,7 +226,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public BankOrder createBankOrderFromMonthlyPaymentScheduleLines(Batch batch)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+      throws AxelorException {
 
     AccountingBatch accountingBatch = batch.getAccountingBatch();
     LocalDate bankOrderDate = accountingBatch.getDueDate();

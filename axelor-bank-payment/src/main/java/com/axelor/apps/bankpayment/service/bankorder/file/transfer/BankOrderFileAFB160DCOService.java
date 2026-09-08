@@ -34,12 +34,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import jakarta.inject.Inject;
-import jakarta.xml.bind.JAXBException;
 import java.io.File;
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 public class BankOrderFileAFB160DCOService extends BankOrderFileService {
 
@@ -59,8 +56,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
   }
 
   @Override
-  public File generateFile()
-      throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
+  public File generateFile() throws AxelorException {
 
     List<String> records = Lists.newArrayList();
 

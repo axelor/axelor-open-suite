@@ -56,7 +56,7 @@ import org.apache.commons.math3.exception.TooManyIterationsException;
 
 public class EventServiceImpl implements EventService {
 
-  private static final DateTimeFormatter MONTH_FORMAT = DateTimeFormatter.ofPattern("dd/MM");
+  protected static final DateTimeFormatter MONTH_FORMAT = DateTimeFormatter.ofPattern("dd/MM");
 
   protected PartnerService partnerService;
 
@@ -71,7 +71,7 @@ public class EventServiceImpl implements EventService {
   protected DateService dateService;
 
   protected OpportunityRepository opportunityRepo;
-  private static final int ITERATION_LIMIT = 1000;
+  protected static final int ITERATION_LIMIT = 1000;
 
   @Inject
   public EventServiceImpl(

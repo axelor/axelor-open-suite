@@ -1,0 +1,3 @@
+---
+title: "Loans: added a year-end closing batch generating accrued-interest and prepaid-insurance adjustment entries, automatically reversed on the first day of the next period."
+module: axelor-account

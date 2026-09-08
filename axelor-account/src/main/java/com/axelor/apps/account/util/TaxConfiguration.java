@@ -20,6 +20,7 @@ package com.axelor.apps.account.util;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.VatExemptionReason;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -28,11 +29,18 @@ public class TaxConfiguration {
   protected TaxLine taxLine;
   protected Account account;
   protected int vatSystem;
+  protected VatExemptionReason vatExemptionReason;
 
   public TaxConfiguration(TaxLine taxLine, Account account, int vatSystem) {
     this.taxLine = taxLine;
     this.account = account;
     this.vatSystem = vatSystem;
+  }
+
+  public TaxConfiguration(
+      TaxLine taxLine, Account account, int vatSystem, VatExemptionReason vatExemptionReason) {
+    this(taxLine, account, vatSystem);
+    this.vatExemptionReason = vatExemptionReason;
   }
 
   public TaxLine getTaxLine() {
@@ -47,10 +55,17 @@ public class TaxConfiguration {
     return vatSystem;
   }
 
+  public VatExemptionReason getVatExemptionReason() {
+    return vatExemptionReason;
+  }
+
   public int hashCode() {
     long accountId = Optional.ofNullable(this.account).map(Account::getId).orElse(0L) * 10000;
+    long reasonId =
+        Optional.ofNullable(this.vatExemptionReason).map(VatExemptionReason::getId).orElse(0L)
+            * 100000000L;
 
-    return (int) (accountId + this.taxLine.getId() * 10 + this.vatSystem);
+    return (int) (accountId + this.taxLine.getId() * 10 + this.vatSystem + reasonId);
   }
 
   public boolean equals(Object o) {
@@ -66,6 +81,7 @@ public class TaxConfiguration {
 
     return this.vatSystem == other.vatSystem
         && this.taxLine.equals(other.taxLine)
-        && Objects.equals(this.account, other.account);
+        && Objects.equals(this.account, other.account)
+        && Objects.equals(this.vatExemptionReason, other.vatExemptionReason);
   }
 }

@@ -166,6 +166,15 @@ public final class StockExceptionMessage {
   public static final String STOCK_LOCATION_PRINT_WIZARD_TITLE = /*$$(*/
       "Select format to Export" /*)*/;
 
+  public static final String STOCK_LOCATION_PRINT_READY_SUBJECT = /*$$(*/
+      "Stock location print ready" /*)*/;
+
+  public static final String STOCK_LOCATION_PRINT_READY_MESSAGE = /*$$(*/
+      "The print for stock location %s is ready, see attached file." /*)*/;
+
+  public static final String STOCK_LOCATION_PRINT_ERROR_SUBJECT = /*$$(*/
+      "Stock location print failed" /*)*/;
+
   /** Stock Move Line Service */
   public static final String STOCK_MOVE_LINE_MUST_FILL_CONFORMITY =
       /*$$(*/ "Please fill the conformity for the product(s) : %s" /*)*/;
@@ -323,6 +332,9 @@ public final class StockExceptionMessage {
 
   public static final String LOGISTICAL_FORM_STOCK_LOCATION_MUST_BE_VIRTUAL = /*$$(*/
       "The stock location must not be virtual and part of the company." /*)*/;
+
+  public static final String STOCK_MOVE_MISSING_SUPPLIER_SHIPMENT_DETAILS = /*$$(*/
+      "Please filled supplier shipment date and supplier shipment reference." /*)*/;
 
   public static final String STOCK_CORRECTION_VALIDATE_ERROR = /*$$(*/
       "You can not validate this stock correction, there is an ongoing inventory for the same stock location." /*)*/;

@@ -173,7 +173,6 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
               JPA.all(klass)
                   .filter(String.format("self.%s = :email", modelEmailLink.getEmailField()))
                   .bind("email", fromEmailAddress.getAddress())
-                  .cacheable()
                   .fetch());
         }
 
@@ -183,7 +182,6 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
               JPA.all(klass)
                   .filter(String.format("self.%s IN :emails", modelEmailLink.getEmailField()))
                   .bind("emails", emailAddresses)
-                  .cacheable()
                   .fetch());
         }
 
@@ -287,5 +285,15 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
     }
 
     return "\"" + partnerName + "\" <" + emailAddress.getAddress() + ">";
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Message sendByEmail(Message message, boolean isTemporaryEmail) throws MessagingException {
+
+    if (appBaseService.getAppBase().getActivateSendingEmail()) {
+      return super.sendByEmail(message, isTemporaryEmail);
+    }
+    return message;
   }
 }

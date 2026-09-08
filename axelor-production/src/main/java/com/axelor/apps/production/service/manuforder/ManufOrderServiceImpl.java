@@ -539,26 +539,30 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             StockMoveRepository.TYPE_INTERNAL);
 
     for (ProdProduct prodProduct : manufOrder.getWasteProdProductList()) {
-      stockMoveLineService.createStockMoveLine(
-          prodProduct.getProduct(),
-          (String) productCompanyService.get(prodProduct.getProduct(), "name", company),
-          (String) productCompanyService.get(prodProduct.getProduct(), "description", company),
-          prodProduct.getQty(),
-          (BigDecimal) productCompanyService.get(prodProduct.getProduct(), "costPrice", company),
-          (BigDecimal) productCompanyService.get(prodProduct.getProduct(), "costPrice", company),
-          prodProduct.getUnit(),
-          wasteStockMove,
-          StockMoveLineService.TYPE_WASTE_PRODUCTIONS,
-          false,
-          BigDecimal.ZERO,
-          virtualStockLocation,
-          wasteStockLocation,
-          prodProduct.getWasteProductTrackingNumber());
+      StockMoveLine stockMoveLine =
+          stockMoveLineService.createStockMoveLine(
+              prodProduct.getProduct(),
+              (String) productCompanyService.get(prodProduct.getProduct(), "name", company),
+              (String) productCompanyService.get(prodProduct.getProduct(), "description", company),
+              prodProduct.getQty(),
+              (BigDecimal)
+                  productCompanyService.get(prodProduct.getProduct(), "costPrice", company),
+              (BigDecimal)
+                  productCompanyService.get(prodProduct.getProduct(), "costPrice", company),
+              prodProduct.getUnit(),
+              wasteStockMove,
+              StockMoveLineService.TYPE_WASTE_PRODUCTIONS,
+              false,
+              BigDecimal.ZERO,
+              virtualStockLocation,
+              wasteStockLocation,
+              prodProduct.getWasteProductTrackingNumber());
+      wasteStockMove.addStockMoveLineListItem(stockMoveLine);
     }
+    manufOrder.setWasteStockMove(wasteStockMove);
+    manufOrderRepo.save(manufOrder);
 
     stockMoveService.validate(wasteStockMove);
-
-    manufOrder.setWasteStockMove(wasteStockMove);
     return wasteStockMove;
   }
 
@@ -731,9 +735,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     String statusListQuery =
         statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
     String query =
-        "self.product.id = "
+        "(self.product.id = "
             + productId
-            + " AND self.stockMove.statusSelect = "
+            + " OR self.product.parentProduct.id = "
+            + productId
+            + ") AND self.stockMove.statusSelect = "
             + StockMoveRepository.STATUS_PLANNED
             + " AND self.fromStockLocation.typeSelect != "
             + StockLocationRepository.TYPE_VIRTUAL
@@ -772,9 +778,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     String statusListQuery =
         statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
     String query =
-        "self.product.id = "
+        "(self.product.id = "
             + productId
-            + " AND self.stockMove.statusSelect = "
+            + " OR self.product.parentProduct.id = "
+            + productId
+            + ") AND self.stockMove.statusSelect = "
             + StockMoveRepository.STATUS_PLANNED
             + " AND self.stockMove.toStockLocation.typeSelect != "
             + StockLocationRepository.TYPE_VIRTUAL

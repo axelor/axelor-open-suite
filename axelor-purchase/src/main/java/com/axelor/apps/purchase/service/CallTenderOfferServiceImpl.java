@@ -57,9 +57,12 @@ public class CallTenderOfferServiceImpl implements CallTenderOfferService {
     callTenderOffer.setCallTenderNeed(need);
     callTenderOffer.setRequestedQty(need.getRequestedQty());
     callTenderOffer.setRequestedDate(need.getRequestedDate());
+    callTenderOffer.setRequestedDeliveryTime(need.getRequestedDeliveryTime());
     callTenderOffer.setRequestedUnit(need.getUnit());
     callTenderOffer.setStatusSelect(CallTenderOfferRepository.STATUS_DRAFT);
     callTenderOffer.setSupplierPartner(supplier.getSupplierPartner());
+    callTenderOffer.setCallTenderAttrConfig(need.getCallTenderAttrConfig());
+    callTenderOffer.setAttrs(need.getAttrs());
     return callTenderOffer;
   }
 
@@ -86,6 +89,7 @@ public class CallTenderOfferServiceImpl implements CallTenderOfferService {
         ObjectUtils.notEmpty(callTender.getCallTenderOfferList())
             ? callTender.getCallTenderOfferList().stream()
                 .map(CallTenderOffer::getCounter)
+                .filter(Objects::nonNull)
                 .max(Comparator.naturalOrder())
                 .orElse(0)
             : 0;

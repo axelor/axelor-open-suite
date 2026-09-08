@@ -46,59 +46,60 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
 
   @Override
   public MoveLine findConsolidateMoveLine(
-      Map<List<Object>, MoveLine> map, MoveLine moveLine, List<Object> keys) {
+      Map<List<Object>, List<MoveLine>> map, MoveLine moveLine, List<Object> keys) {
 
     if (map == null || map.isEmpty() || !map.containsKey(keys)) {
       return null;
     }
 
-    MoveLine moveLineIt = map.get(keys);
+    for (MoveLine moveLineIt : map.get(keys)) {
 
-    // Check cut off dates
-    if (moveLineToolService.isCutOffActive(moveLine)
-        && (!moveLine.getCutOffStartDate().equals(moveLineIt.getCutOffStartDate())
-            || !moveLine.getCutOffEndDate().equals(moveLineIt.getCutOffEndDate()))) {
-      return null;
-    }
+      // Check cut off dates
+      if (moveLineToolService.isCutOffActive(moveLine)
+          && (!moveLine.getCutOffStartDate().equals(moveLineIt.getCutOffStartDate())
+              || !moveLine.getCutOffEndDate().equals(moveLineIt.getCutOffEndDate()))) {
+        continue;
+      }
 
-    List<AnalyticMoveLine> list1 = moveLineIt.getAnalyticMoveLineList();
-    List<AnalyticMoveLine> list2 = moveLine.getAnalyticMoveLineList();
+      List<AnalyticMoveLine> list1 = moveLineIt.getAnalyticMoveLineList();
+      List<AnalyticMoveLine> list2 = moveLine.getAnalyticMoveLineList();
 
-    // Both null = consolidate
-    if (CollectionUtils.isEmpty(list1) && CollectionUtils.isEmpty(list2)) {
-      return moveLineIt;
-    }
+      // Both null = consolidate
+      if (CollectionUtils.isEmpty(list1) && CollectionUtils.isEmpty(list2)) {
+        return moveLineIt;
+      }
 
-    // One null = don't consolidate
-    if (CollectionUtils.isEmpty(list1) || CollectionUtils.isEmpty(list2)) {
-      return null;
-    }
+      // One null = don't consolidate, try next candidate
+      if (CollectionUtils.isEmpty(list1) || CollectionUtils.isEmpty(list2)) {
+        continue;
+      }
 
-    // Different sizes = consolidate
-    if (list1.size() != list2.size()) {
-      return moveLineIt;
-    }
+      // Different sizes = consolidate
+      if (list1.size() != list2.size()) {
+        return moveLineIt;
+      }
 
-    // Same size - compare analytic lines one by one
-    List<AnalyticMoveLine> copyList = new ArrayList<>(list1);
-    int count = 0;
+      // Same size - compare analytic lines one by one
+      List<AnalyticMoveLine> copyList = new ArrayList<>(list1);
+      int count = 0;
 
-    for (AnalyticMoveLine analyticDistributionLine : list2) {
-      for (AnalyticMoveLine analyticDistributionLineIt : copyList) {
-        if (checkAnalyticDistributionLine(analyticDistributionLine, analyticDistributionLineIt)) {
-          copyList.remove(analyticDistributionLineIt);
-          count++;
-          break;
+      for (AnalyticMoveLine analyticDistributionLine : list2) {
+        for (AnalyticMoveLine analyticDistributionLineIt : copyList) {
+          if (checkAnalyticDistributionLine(analyticDistributionLine, analyticDistributionLineIt)) {
+            copyList.remove(analyticDistributionLineIt);
+            count++;
+            break;
+          }
         }
       }
+
+      // All lines match = consolidate
+      if (count == list1.size()) {
+        return moveLineIt;
+      }
+      // Lines don't match - try next candidate
     }
 
-    // All lines match = consolidate
-    if (count == list1.size()) {
-      return moveLineIt;
-    }
-
-    // Lines don't match - don't consolidate
     return null;
   }
 
@@ -110,7 +111,7 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
   @Override
   public List<MoveLine> consolidateMoveLines(List<MoveLine> moveLines) {
 
-    Map<List<Object>, MoveLine> map = new HashMap<>();
+    Map<List<Object>, List<MoveLine>> map = new HashMap<>();
     MoveLine consolidateMoveLine = null;
     boolean haveHoldBack =
         moveLines.stream()
@@ -121,6 +122,8 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
                             .anyMatch(PaymentConditionLine::getIsHoldback));
 
     for (MoveLine moveLine : moveLines) {
+
+      consolidateMoveLine = null;
 
       List<Object> keys = new ArrayList<>();
 
@@ -139,7 +142,7 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
         consolidateMoveLine = consolidateMoveLine(moveLine, consolidateMoveLine);
 
       } else {
-        map.put(keys, moveLine);
+        map.computeIfAbsent(keys, k -> new ArrayList<>()).add(moveLine);
       }
     }
 
@@ -148,32 +151,34 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
     int moveLineId = 1;
     moveLines.clear();
 
-    for (MoveLine moveLine : map.values()) {
+    for (List<MoveLine> moveLineList : map.values()) {
+      for (MoveLine moveLine : moveLineList) {
 
-      credit = moveLine.getCredit();
-      debit = moveLine.getDebit();
+        credit = moveLine.getCredit();
+        debit = moveLine.getDebit();
 
-      boolean isDebit = debit.compareTo(credit) > 0;
-      moveLine.setCurrencyAmount(
-          moveLineToolService.computeCurrencyAmountSign(moveLine.getCurrencyAmount(), isDebit));
+        boolean isDebit = debit.compareTo(credit) > 0;
+        moveLine.setCurrencyAmount(
+            moveLineToolService.computeCurrencyAmountSign(moveLine.getCurrencyAmount(), isDebit));
 
-      if (debit.compareTo(BigDecimal.ZERO) > 0 && credit.compareTo(BigDecimal.ZERO) > 0) {
+        if (debit.compareTo(BigDecimal.ZERO) > 0 && credit.compareTo(BigDecimal.ZERO) > 0) {
 
-        if (debit.compareTo(credit) > 0) {
-          moveLine.setDebit(debit.subtract(credit));
-          moveLine.setCredit(BigDecimal.ZERO);
-          moveLine.setCounter(moveLineId++);
-          moveLines.add(moveLine);
-        } else if (credit.compareTo(debit) > 0) {
-          moveLine.setCredit(credit.subtract(debit));
-          moveLine.setDebit(BigDecimal.ZERO);
+          if (debit.compareTo(credit) > 0) {
+            moveLine.setDebit(debit.subtract(credit));
+            moveLine.setCredit(BigDecimal.ZERO);
+            moveLine.setCounter(moveLineId++);
+            moveLines.add(moveLine);
+          } else if (credit.compareTo(debit) > 0) {
+            moveLine.setCredit(credit.subtract(debit));
+            moveLine.setDebit(BigDecimal.ZERO);
+            moveLine.setCounter(moveLineId++);
+            moveLines.add(moveLine);
+          }
+
+        } else if (debit.compareTo(BigDecimal.ZERO) > 0 || credit.compareTo(BigDecimal.ZERO) > 0) {
           moveLine.setCounter(moveLineId++);
           moveLines.add(moveLine);
         }
-
-      } else if (debit.compareTo(BigDecimal.ZERO) > 0 || credit.compareTo(BigDecimal.ZERO) > 0) {
-        moveLine.setCounter(moveLineId++);
-        moveLines.add(moveLine);
       }
     }
 

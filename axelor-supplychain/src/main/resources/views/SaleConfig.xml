@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <form name="sale-config-form" model="com.axelor.apps.sale.db.SaleConfig"
+    title="Sale configuration" id="supplychain-sale-config-form" extension="true">
+    <extend target="//field[@name='saleOrderLegalNote']">
+      <insert position="after">
+        <field name="orderBlockedMessage"/>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>

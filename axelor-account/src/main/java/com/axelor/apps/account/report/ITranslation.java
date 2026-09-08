@@ -62,6 +62,7 @@ public interface ITranslation {
       "Invoice.invoiceCreditAdvPaymentNo"; /*)*/
   public static final String INVOICE_INVOICE_BALANCE_NO = /*$$(*/ "Invoice.invoiceBalanceNo"; /*)*/
   public static final String INVOICE_DRAFT_INVOICE_NO = /*$$(*/ "Invoice.draftInvoiceNo"; /*)*/
+  public static final String INVOICE_DRAFT_REFUND_NO = /*$$(*/ "Invoice.draftRefundNo"; /*)*/
   public static final String INVOICE_REFUND_NO = /*$$(*/ "Invoice.refundNo"; /*)*/
   public static final String INVOICE_DISCOUNT_AMOUNT = /*$$(*/ "Invoice.discountAmount"; /*)*/
   public static final String INVOICE_ADVANCE_PAYMENT = /*$$(*/ "Invoice.advancePayment"; /*)*/
@@ -129,6 +130,7 @@ public interface ITranslation {
   public static final String INVOICE_NO_DISCOUNT_EARLY_PAYMENT = /*$$(*/
       "Invoice.noDiscountEarlyPayment"; /*)*/
   public static final String INVOICE_COEFIICIENT = /*$$(*/ "Invoice.coefficient"; /*)*/
+  public static final String INVOICE_EXEMPTION_REASON = /*$$(*/ "Invoice.exemptionReason"; /*)*/
 
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/

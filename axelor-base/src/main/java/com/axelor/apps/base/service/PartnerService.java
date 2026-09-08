@@ -53,6 +53,8 @@ public interface PartnerService {
 
   void onSave(Partner partner) throws AxelorException;
 
+  void updatePartnerAddress(Partner partner) throws AxelorException;
+
   void setPartnerFullName(Partner partner);
 
   @CallMethod
@@ -152,4 +154,6 @@ public interface PartnerService {
   List<Partner> getContactFilteredPartners(Partner partner);
 
   String checkIfRegistrationCodeExists(Partner partner);
+
+  void setDefaultPartnerAddress(Partner partner);
 }

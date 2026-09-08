@@ -33,14 +33,15 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.CostSheet;
-import com.axelor.apps.production.db.UnitCostCalcLine;
-import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
-import com.axelor.apps.production.db.repo.UnitCostCalcLineRepository;
-import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.supplychain.db.UnitCostCalcLine;
+import com.axelor.apps.supplychain.db.UnitCostCalculation;
+import com.axelor.apps.supplychain.db.repo.UnitCostCalcLineRepository;
+import com.axelor.apps.supplychain.db.repo.UnitCostCalculationRepository;
+import com.axelor.apps.supplychain.service.DepRateCalculationProductService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -100,6 +101,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   protected ProductCompanyService productCompanyService;
   protected AppBaseService appBaseService;
   protected BillOfMaterialService billOfMaterialService;
+  protected DepRateCalculationProductService depRateCalculationProductService;
 
   protected Map<Long, Integer> productMap;
 
@@ -114,7 +116,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       ProductService productService,
       ProductCompanyService productCompanyService,
       AppBaseService appBaseService,
-      BillOfMaterialService billOfMaterialService) {
+      BillOfMaterialService billOfMaterialService,
+      DepRateCalculationProductService depRateCalculationProductService) {
     this.productRepository = productRepository;
     this.unitCostCalculationRepository = unitCostCalculationRepository;
     this.unitCostCalcLineService = unitCostCalcLineService;
@@ -125,6 +128,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     this.productCompanyService = productCompanyService;
     this.appBaseService = appBaseService;
     this.billOfMaterialService = billOfMaterialService;
+    this.depRateCalculationProductService = depRateCalculationProductService;
   }
 
   @Override
@@ -320,6 +324,11 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     List<Integer> productSubTypeSelects =
         StringHelper.getIntegerList(unitCostCalculation.getProductSubTypeSelect());
 
+    String companyFilter =
+        hasDefaultBOMSelected()
+            ? " AND EXISTS (SELECT pc FROM ProductCompany pc WHERE pc.product = self AND pc.defaultBillOfMaterial.company IN (?4))"
+            : " AND self.defaultBillOfMaterial.company in (?4)";
+
     if (!productCategorySet.isEmpty()) {
 
       productSet.addAll(
@@ -327,7 +336,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               .all()
               .filter(
                   "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
-                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
+                      + companyFilter
+                      + " AND self.procurementMethodSelect in (?5, ?6)"
                       + " AND self.dtype = 'Product'",
                   productCategorySet,
                   ProductRepository.PRODUCT_TYPE_STORABLE,
@@ -345,7 +355,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               .all()
               .filter(
                   "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
-                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
+                      + companyFilter
+                      + " AND self.procurementMethodSelect in (?5, ?6)"
                       + " AND self.dtype = 'Product'",
                   productFamilySet,
                   ProductRepository.PRODUCT_TYPE_STORABLE,
@@ -578,6 +589,19 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   @Override
   public String createProductSetDomain(UnitCostCalculation unitCostCalculation, Company company)
       throws AxelorException {
+
+    // For depreciation rate calculation (typeSelect = 1), delegate to the supplychain service
+    if (unitCostCalculation.getTypeSelect() != null
+        && unitCostCalculation.getTypeSelect() == UnitCostCalculationRepository.TYPE_RATE) {
+      return depRateCalculationProductService.createDepreciationProductSetDomain(
+          unitCostCalculation);
+    }
+
+    return createCostCalculationProductSetDomain(unitCostCalculation, company);
+  }
+
+  protected String createCostCalculationProductSetDomain(
+      UnitCostCalculation unitCostCalculation, Company company) throws AxelorException {
     String domain;
     String bomsProductsList = createBomProductList(unitCostCalculation, company);
     if (bomsProductsList.isEmpty()) {
@@ -596,21 +620,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
         domain = "self.defaultBillOfMaterial IS NOT NULL";
       }
 
-      if (unitCostCalculation.getProductCategorySet() != null
-          && !unitCostCalculation.getProductCategorySet().isEmpty()) {
-        domain +=
-            " AND self.productCategory IN ("
-                + StringHelper.getIdListString(unitCostCalculation.getProductCategorySet())
-                + ")";
-      }
-
-      if (unitCostCalculation.getProductFamilySet() != null
-          && !unitCostCalculation.getProductFamilySet().isEmpty()) {
-        domain +=
-            " AND self.productFamily IN ("
-                + StringHelper.getIdListString(unitCostCalculation.getProductFamilySet())
-                + ")";
-      }
+      domain = filterProduct(unitCostCalculation, domain);
 
       domain +=
           " AND self.productTypeSelect = 'storable' AND self.productSubTypeSelect IN ("
@@ -628,6 +638,25 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               + ") AND self.procurementMethodSelect IN ('produce', 'buyAndProduce') AND self.dtype = 'Product'";
     }
     log.debug("Product Domain: {}", domain);
+    return domain;
+  }
+
+  protected String filterProduct(UnitCostCalculation unitCostCalculation, String domain) {
+    if (unitCostCalculation.getProductCategorySet() != null
+        && !unitCostCalculation.getProductCategorySet().isEmpty()) {
+      domain +=
+          " AND self.productCategory.id IN ("
+              + StringHelper.getIdListString(unitCostCalculation.getProductCategorySet())
+              + ")";
+    }
+
+    if (unitCostCalculation.getProductFamilySet() != null
+        && !unitCostCalculation.getProductFamilySet().isEmpty()) {
+      domain +=
+          " AND self.productFamily.id IN ("
+              + StringHelper.getIdListString(unitCostCalculation.getProductFamilySet())
+              + ")";
+    }
     return domain;
   }
 

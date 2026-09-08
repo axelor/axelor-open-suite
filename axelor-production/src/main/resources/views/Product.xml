@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <form name="product-production-form" title="Product" model="com.axelor.apps.base.db.Product"
     onNew="action-product-attrs-scale-and-precision-production"
@@ -10,12 +10,12 @@
       <field name="defaultBillOfMaterial" canEdit="false"
         onSelect="action-product-attrs-bill-of-material-domain" form-view="bill-of-material-form"
         grid-view="bill-of-material-grid"
-        if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
+        if="!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
       <button name="productsTreeBtn" title="Display products tree"
         onClick="action-method-production-open-product-tree"
         showIf="(procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce') &amp;&amp; (productSubTypeSelect == 1 || productSubTypeSelect == 2)"
         readonlyIf="!defaultBillOfMaterial"
-        if="__config__.app.isApp('production') &amp;&amp; !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
+        if="__config__.app.isApp('production') &amp;&amp; (!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'}))"/>
       <field name="lastProductionPrice" readonly="true"/>
       <field name="realOrEstimatedPriceSelect"
         onChange="action-product-group-cost-type-select-onchange"/>
@@ -42,6 +42,7 @@
       <attribute name="onNew" value="action-product-group-production-onnew"/>
       <attribute name="onLoad" value="action-product-group-production-onload"/>
     </extend>
+
   </form>
 
   <action-view name="action-product-view-production-process"
@@ -54,7 +55,7 @@
   <action-view name="action-product-view-show-used-bill-of-material"
     title="Where-used list" model="com.axelor.apps.production.db.BillOfMaterialLine">
     <view type="grid" name="product-bill-of-material-grid"/>
-    <view type="form" name="bill-of-material-line-form"/>
+    <view type="form" name="product-bill-of-material-line-form"/>
     <domain>self.product.id = :id</domain>
   </action-view>
 

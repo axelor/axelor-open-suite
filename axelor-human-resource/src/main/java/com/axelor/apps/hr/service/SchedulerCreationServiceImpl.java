@@ -37,8 +37,8 @@ public class SchedulerCreationServiceImpl implements SchedulerCreationService {
   protected MetaScheduleRepository metaScheduleRepository;
   protected AppHumanResourceService appHumanResourceService;
 
-  private static final String BATCH_JOB_SELECT = "com.axelor.apps.base.job.BatchJob";
-  private static final String HR_BATCH_SELECT = "com.axelor.apps.hr.service.batch.HrBatchService";
+  protected static final String BATCH_JOB_SELECT = "com.axelor.apps.base.job.BatchJob";
+  protected static final String HR_BATCH_SELECT = "com.axelor.apps.hr.service.batch.HrBatchService";
 
   @Inject
   public SchedulerCreationServiceImpl(

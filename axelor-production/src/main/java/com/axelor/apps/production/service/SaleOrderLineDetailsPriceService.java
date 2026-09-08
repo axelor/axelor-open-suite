@@ -34,5 +34,7 @@ public interface SaleOrderLineDetailsPriceService {
   Map<String, Object> computeTotalPrice(
       SaleOrderLineDetails saleOrderLineDetails, SaleOrder saleOrder) throws AxelorException;
 
+  Map<String, Object> computeSubTotalCostPrice(SaleOrderLineDetails saleOrderLineDetails);
+
   Map<String, Object> computeMarginCoef(SaleOrderLineDetails saleOrderLineDetails);
 }

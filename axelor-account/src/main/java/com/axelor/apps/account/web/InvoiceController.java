@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxNumber;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.BankDetailsDomainServiceAccount;
@@ -37,6 +38,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
 import com.axelor.apps.account.service.invoice.BankDetailsServiceAccount;
+import com.axelor.apps.account.service.invoice.InvoiceCategoryService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
@@ -44,7 +46,6 @@ import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
-import com.axelor.apps.account.service.invoice.InvoiceNoteService;
 import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
@@ -54,9 +55,11 @@ import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidatorSyncServic
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.InvoiceVatLiabilityService;
 import com.axelor.apps.account.service.invoice.LatePaymentInterestInvoiceService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupService;
+import com.axelor.apps.account.service.note.InvoiceNoteService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -228,6 +231,27 @@ public class InvoiceController {
   }
 
   /**
+   * Called from invoice form view before validation, to fill the invoice category. This ensures the
+   * pre-ventilation category check passes even when the ventilation step is skipped.
+   *
+   * @param request
+   * @param response
+   */
+  public void computeInvoiceCategory(ActionRequest request, ActionResponse response) {
+
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+
+    try {
+      response.setValue(
+          "invoiceCategorySelect",
+          Beans.get(InvoiceCategoryService.class).computeInvoiceCategorySelect(invoice));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
    * Passe l'état de la facture à "annulée"
    *
    * @param request
@@ -264,7 +288,7 @@ public class InvoiceController {
             I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_DELETION_PROHIBITED));
         return;
       }
-      if (invoiceTermService.checkIfCustomizedInvoiceTerms(invoice.getInvoiceTermList())) {
+      if (invoiceTermService.checkIfAmountCustomizedInvoiceTerms(invoice.getInvoiceTermList())) {
         if (!invoiceTermService.checkInvoiceTermsSum(invoice)) {
           response.setError(I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_AMOUNT_MISMATCH));
           return;
@@ -1322,6 +1346,35 @@ public class InvoiceController {
     }
   }
 
+  public void checkAdvanceVatSystemOnValidate(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      if (!invoice.getOperationSubTypeSelect().equals(InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+          || InvoiceToolService.isPurchase(invoice)
+          || CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+        return;
+      }
+
+      boolean hasVatOnDeliveriesAccount =
+          invoice.getInvoiceLineList().stream()
+              .anyMatch(
+                  line ->
+                      line != null
+                          && line.getAccount() != null
+                          && line.getAccount().getVatSystemSelect() != null
+                          && line.getAccount().getVatSystemSelect()
+                              == AccountRepository.VAT_SYSTEM_GOODS);
+
+      if (hasVatOnDeliveriesAccount) {
+        response.setAlert(
+            I18n.get(
+                AccountExceptionMessage.INVOICE_VAT_SYSTEM_DELIVERY_ON_ADVANCE_PAYMENT_PRODUCT));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   @ErrorException
   public void updateThirdPartyPayerPartner(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
@@ -1538,8 +1591,15 @@ public class InvoiceController {
   @ErrorException
   public void generateInvoiceNote(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
-    Beans.get(InvoiceNoteService.class).generateInvoiceNote(invoice);
-    response.setValues(invoice);
+    try {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+        Beans.get(InvoiceNoteService.class).generateInvoiceNote(invoice);
+        response.setValues(invoice);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   @ErrorException
@@ -1569,6 +1629,17 @@ public class InvoiceController {
       Beans.get(InvoiceTermDateComputeService.class).fillWithInvoiceDueDate(invoice);
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeVatLiability(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      Integer vatLiability =
+          Beans.get(InvoiceVatLiabilityService.class).computeVatLiability(invoice);
+      response.setValue("vatSystemSelect", vatLiability);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

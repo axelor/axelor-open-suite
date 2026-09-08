@@ -54,7 +54,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import org.hibernate.jpa.QueryHints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -551,7 +550,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
     if (productUnit != null && !productUnit.equals(stockLocationUnit)) {
       int scale = appBaseService.getNbDecimalDigitForUnitPrice();
-      int qtyScale = appBaseService.getNbDecimalDigitForQty();
       BigDecimal oldQty = stockLocationLine.getCurrentQty();
       BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
 
@@ -567,11 +565,10 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       stockLocationLine.setUnit(product.getUnit());
       stockLocationLine.setFutureQty(computeFutureQty(stockLocationLine));
 
-      BigDecimal avgQty = BigDecimal.ZERO;
+      BigDecimal newAvgPrice = BigDecimal.ZERO;
       if (currentQty.compareTo(BigDecimal.ZERO) != 0) {
-        avgQty = oldQty.divide(currentQty, qtyScale, RoundingMode.HALF_UP);
+        newAvgPrice = oldAvgPrice.multiply(oldQty).divide(currentQty, scale, RoundingMode.HALF_UP);
       }
-      BigDecimal newAvgPrice = oldAvgPrice.multiply(avgQty).setScale(scale, RoundingMode.HALF_UP);
       stockLocationLine.setAvgPrice(newAvgPrice);
       updateHistory(
           stockLocationLine,
@@ -642,7 +639,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     if (isDetailsStockLocationLine) {
       query.setParameter("trackingNumberId", trackingNumberId);
     }
-    query.setHint(QueryHints.HINT_CACHEABLE, true);
     query.setFlushMode(FlushModeType.COMMIT);
     List<StockLocationLineQtyView> aggregates = query.getResultList();
 

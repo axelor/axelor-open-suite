@@ -19,6 +19,7 @@
 package com.axelor.apps.stock.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
@@ -57,11 +58,15 @@ public class TrackingNumberController {
       throws AxelorException {
     TrackingNumber trackingNumber = request.getContext().asType(TrackingNumber.class);
 
+    Product product = trackingNumber.getProduct();
+    if (product == null) {
+      return;
+    }
     response.setValue(
         "productTrackingNumberConfiguration",
         Beans.get(ProductCompanyService.class)
             .get(
-                trackingNumber.getProduct(),
+                product,
                 "trackingNumberConfiguration",
                 Beans.get(TrackingNumberCompanyService.class)
                     .getCompany(trackingNumber)

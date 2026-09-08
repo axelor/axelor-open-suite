@@ -20,7 +20,9 @@ package com.axelor.apps.sale.service.cart;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -29,6 +31,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineGeneratorService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -44,17 +47,20 @@ public class CartSaleOrderGeneratorServiceImpl implements CartSaleOrderGenerator
   protected SaleOrderLineGeneratorService saleOrderLineGeneratorService;
   protected SaleOrderLineRepository saleOrderLineRepository;
   protected CartResetService cartResetService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public CartSaleOrderGeneratorServiceImpl(
       SaleOrderGeneratorService saleOrderGeneratorService,
       SaleOrderLineGeneratorService saleOrderLineGeneratorService,
       SaleOrderLineRepository saleOrderLineRepository,
-      CartResetService cartResetService) {
+      CartResetService cartResetService,
+      AppBaseService appBaseService) {
     this.saleOrderGeneratorService = saleOrderGeneratorService;
     this.saleOrderLineGeneratorService = saleOrderLineGeneratorService;
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.cartResetService = cartResetService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -77,10 +83,40 @@ public class CartSaleOrderGeneratorServiceImpl implements CartSaleOrderGenerator
         saleOrderGeneratorService.createSaleOrder(
             cart.getPartner(), null, cart.getCompany(), null, null, null);
 
+    resolveTradingName(saleOrder);
     for (CartLine cartLine : cartLineList) {
       createSaleOrderLine(cartLine, saleOrder);
     }
     return saleOrder;
+  }
+
+  protected void resolveTradingName(SaleOrder saleOrder) throws AxelorException {
+    if (!appBaseService.getAppBase().getEnableTradingNamesManagement()
+        || saleOrder.getTradingName() != null) {
+      return;
+    }
+
+    List<TradingName> tradingNameList = saleOrder.getCompany().getTradingNameList();
+    if (CollectionUtils.isEmpty(tradingNameList)) {
+      return;
+    }
+
+    TradingName userTradingName = AuthUtils.getUser().getTradingName();
+    if (tradingNameList.contains(userTradingName)) {
+      saleOrder.setTradingName(userTradingName);
+      return;
+    }
+
+    if (tradingNameList.size() == 1) {
+      saleOrder.setTradingName(tradingNameList.get(0));
+      return;
+    }
+
+    throw new AxelorException(
+        saleOrder,
+        TraceBackRepository.CATEGORY_INCONSISTENCY,
+        I18n.get(SaleExceptionMessage.CART_SALE_ORDER_TRADING_NAME_NOT_RESOLVED),
+        saleOrder.getCompany().getName());
   }
 
   protected void createSaleOrderLine(CartLine cartLine, SaleOrder saleOrder)

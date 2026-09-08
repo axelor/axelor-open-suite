@@ -605,4 +605,13 @@ public class ExpenseController {
     response.setValue("generalExpenseLineList", expense.getGeneralExpenseLineList());
     response.setValue("kilometricExpenseLineList", expense.getKilometricExpenseLineList());
   }
+
+  public void showRelatedMoves(ActionRequest request, ActionResponse response) {
+    try {
+      Expense expense = request.getContext().asType(Expense.class);
+      response.setView(Beans.get(ExpenseViewService.class).showMoves(expense.getId()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
+    }
+  }
 }

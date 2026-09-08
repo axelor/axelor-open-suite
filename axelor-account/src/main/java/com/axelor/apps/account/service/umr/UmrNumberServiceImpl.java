@@ -19,12 +19,14 @@
 package com.axelor.apps.account.service.umr;
 
 import com.axelor.apps.account.db.InvoicingPaymentSituation;
+import com.axelor.apps.account.db.Umr;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
 import java.util.StringJoiner;
 
 public class UmrNumberServiceImpl implements UmrNumberService {
@@ -55,20 +57,23 @@ public class UmrNumberServiceImpl implements UmrNumberService {
 
     String result = rumNumber.toString();
 
-    if (ObjectUtils.isEmpty(invoicingPaymentSituation.getUmrList())) {
-      return result;
-    }
-
-    long umrSize =
-        invoicingPaymentSituation.getUmrList().stream()
-            .filter(
-                umr ->
-                    StringUtils.notEmpty(umr.getUmrNumber()) && umr.getUmrNumber().contains(result))
-            .count();
+    long umrSize = countExistingUmrNumbers(partner, result);
     if (umrSize == 0) {
       return result;
     }
 
     return String.format("%s -%s", result, umrSize);
+  }
+
+  protected long countExistingUmrNumbers(Partner partner, String result) {
+    return Optional.ofNullable(partner.getInvoicingPaymentSituationList()).stream()
+        .flatMap(List::stream)
+        .flatMap(
+            situation -> Optional.ofNullable(situation.getUmrList()).stream().flatMap(List::stream))
+        .map(Umr::getUmrNumber)
+        .filter(StringUtils::notEmpty)
+        .filter(umrNumber -> umrNumber.contains(result))
+        .distinct()
+        .count();
   }
 }
