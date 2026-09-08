@@ -111,7 +111,8 @@
       grid-view="move-line-grid"/>
     <field name="analyticDistributionTemplate"
       requiredIf="account.analyticDistributionRequiredOnMoveLines"
-      readonlyIf="!account.analyticDistributionAuthorized"/>
+      readonlyIf="!account.analyticDistributionAuthorized"
+      onSelect="action-bank-reconciliation-line-method-set-domain-analytic-distribution-template"/>
     <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
     <field name="account.analyticDistributionAuthorized" hidden="true"/>
     <field name="isPosted" readonly="true"/>
