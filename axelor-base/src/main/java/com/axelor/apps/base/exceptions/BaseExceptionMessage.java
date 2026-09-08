@@ -258,11 +258,12 @@ public final class BaseExceptionMessage {
   public static final String PARTNER_EMAIL_EXIST = /*$$(*/
       "Email address already linked with another partner" /*)*/;
   public static final String PARTNER_CONTACT_NAME_EXIST = /*$$(*/
-      "A contact with the exact same full name already exists." /*)*/;
+      "A contact with the exact same full name already exists: %s (%s)." /*)*/;
+  public static final String PARTNER_CONTACT_NAME_EXIST_IN_COMPANY = /*$$(*/
+      "Contact %s cannot be saved: a contact with the exact same full name already exists: %s (%s)." /*)*/;
+  public static final String PARTNER_CONTACT_WITHOUT_COMPANY = /*$$(*/ "No company" /*)*/;
   public static final String PARTNER_CONTACT_LINK_DUPLICATE_COMPANY = /*$$(*/
       "A contact cannot be associated with the same company more than once." /*)*/;
-  public static final String PARTNER_CONTACT_LINK_MULTIPLE_MAIN_COMPANIES = /*$$(*/
-      "Only one company can be selected as the main company." /*)*/;
 
   public static final String PARTNER_INVALID_REGISTRATION_CODE = /*$$(*/
       "Registration code is invalid." /*)*/;

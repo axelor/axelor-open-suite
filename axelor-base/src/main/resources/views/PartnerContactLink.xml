@@ -7,17 +7,23 @@
     model="com.axelor.apps.base.db.PartnerContactLink" editable="true">
     <field name="partner" onSelect="action-partner-contact-link-method-set-partner-domain"/>
     <field name="jobTitleFunction"/>
+    <field name="functionBusinessCard"/>
     <field name="emailAddress" form-view="email-address-simple-form" canEdit="true"
-      canNew="!emailAddress" canSelect="false" canRemove="false" placeholder="Email address"/>
+      canNew="!emailAddress" canSelect="false" canRemove="false" placeholder="Email address"
+      target-name="address"/>
     <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="directPhone" widget="phone"/>
+    <field name="partnerRoleSet" widget="Tags" canNew="false" form-view="partner-role-form"
+      grid-view="partner-role-grid"/>
+    <field name="isActive"/>
     <field name="isMainCompany" hidden="true"/>
+    <field name="isMainCompanyToggled" hidden="true"/>
     <button name="setMainCompanyBtn"
       onClick="action-partner-contact-link-record-toggle-main-company" title="Main company"
-      icon="star" showIf="!isMainCompany"/>
+      icon="star" showIf="isActive &amp;&amp; !isMainCompany"/>
     <button name="unsetMainCompanyBtn"
       onClick="action-partner-contact-link-record-toggle-main-company" title="Main company"
-      icon="star-fill" showIf="isMainCompany"/>
+      icon="star-fill" showIf="isActive &amp;&amp; isMainCompany"/>
   </grid>
 
   <form name="partner-contact-link-form" title="Contact company"
@@ -35,8 +41,12 @@
       </field>
       <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
       <field name="directPhone" widget="phone"/>
-      <field name="isActive" widget="boolean-switch"/>
-      <field name="isMainCompany" widget="toggle" x-icon="star" x-icon-active="star-fill"/>
+      <field name="isActive" widget="boolean-switch"
+        onChange="action-partner-contact-link-record-unset-main-company-if-inactive"/>
+      <field name="isMainCompany" widget="toggle" x-icon="star" x-icon-active="star-fill"
+        onChange="action-partner-contact-link-record-mark-main-company-toggled"
+        readonlyIf="!isActive"/>
+      <field name="isMainCompanyToggled" hidden="true"/>
       <field name="partnerRoleSet" widget="Tags" canNew="false" colSpan="12"
         form-view="partner-role-form" grid-view="partner-role-grid"/>
     </panel>
@@ -45,6 +55,18 @@
   <action-record name="action-partner-contact-link-record-toggle-main-company"
     model="com.axelor.apps.base.db.PartnerContactLink">
     <field name="isMainCompany" expr="eval: !isMainCompany"/>
+    <field name="isMainCompanyToggled" expr="eval: true"/>
+  </action-record>
+
+  <action-record name="action-partner-contact-link-record-mark-main-company-toggled"
+    model="com.axelor.apps.base.db.PartnerContactLink">
+    <field name="isMainCompanyToggled" expr="eval: true"/>
+  </action-record>
+
+  <action-record
+    name="action-partner-contact-link-record-unset-main-company-if-inactive"
+    model="com.axelor.apps.base.db.PartnerContactLink">
+    <field name="isMainCompany" expr="eval: false" if="!isActive"/>
   </action-record>
 
   <action-method name="action-partner-contact-link-method-set-partner-domain">

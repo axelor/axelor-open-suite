@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerContactLink;
 import com.axelor.apps.base.db.PartnerRole;
 import com.axelor.apps.base.db.repo.PartnerContactLinkRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.EntityHelper;
@@ -43,10 +44,14 @@ import java.util.stream.Collectors;
 public class PartnerContactLinkServiceImpl implements PartnerContactLinkService {
 
   protected PartnerContactLinkRepository partnerContactLinkRepository;
+  protected PartnerRepository partnerRepository;
 
   @Inject
-  public PartnerContactLinkServiceImpl(PartnerContactLinkRepository partnerContactLinkRepository) {
+  public PartnerContactLinkServiceImpl(
+      PartnerContactLinkRepository partnerContactLinkRepository,
+      PartnerRepository partnerRepository) {
     this.partnerContactLinkRepository = partnerContactLinkRepository;
+    this.partnerRepository = partnerRepository;
   }
 
   @Override
@@ -55,10 +60,9 @@ public class PartnerContactLinkServiceImpl implements PartnerContactLinkService 
       return;
     }
 
-    List<PartnerContactLink> links = getLinks(contact);
-    validateLinks(links);
-    synchronizeCompanyMembership(contact, findByContact(contact), links);
-    projectMainLink(contact, links);
+    validateLinks(getLinks(contact));
+    updateMainPartnerLink(contact);
+    synchronizeCompanyMembership(contact, findCompaniesListing(contact), getLinks(contact));
   }
 
   @Override
@@ -74,8 +78,11 @@ public class PartnerContactLinkServiceImpl implements PartnerContactLinkService 
 
     for (Partner contact : new ArrayList<>(partner.getContactPartnerSet())) {
       contactIds.add(contact.getId());
-      if (findLink(persistedLinks, contact) == null) {
+      PartnerContactLink link = findLink(persistedLinks, contact);
+      if (link == null) {
         createLink(partner, contact);
+      } else if (!link.getIsActive()) {
+        link.setIsActive(true);
       }
     }
 
@@ -96,10 +103,11 @@ public class PartnerContactLinkServiceImpl implements PartnerContactLinkService 
   }
 
   @Override
-  public Map<String, Object> getMainLinkOnChangeValuesMap(Partner contact) {
-    projectMainLink(contact, getLinks(contact));
+  public Map<String, Object> getMainPartnerLinkValuesMap(Partner contact) {
+    updateMainPartnerLink(contact);
 
     Map<String, Object> valuesMap = new HashMap<>();
+    valuesMap.put("partnerContactLinkList", getLinks(contact));
     valuesMap.put("mainPartner", EntityHelper.getEntity(contact.getMainPartner()));
     valuesMap.put("emailAddress", EntityHelper.getEntity(contact.getEmailAddress()));
     valuesMap.put("fixedPhone", contact.getFixedPhone());
@@ -109,20 +117,88 @@ public class PartnerContactLinkServiceImpl implements PartnerContactLinkService 
     return valuesMap;
   }
 
-  protected void createLink(Partner company, Partner contact) {
-    boolean isMainCompany = findByContact(contact).isEmpty();
+  @Override
+  public void updateMainPartnerLink(Partner contact) {
+    List<PartnerContactLink> links = getLinks(contact);
+    PartnerContactLink mainLink = findMainLink(contact, links);
 
+    for (PartnerContactLink link : links) {
+      link.setIsMainCompany(link == mainLink);
+      link.setIsMainCompanyToggled(false);
+    }
+    projectMainLink(contact, mainLink);
+  }
+
+  @Override
+  public void updateMainPartnerLinkFromContact(Partner contact) {
+    if (!contact.getIsContact() || contact.getMainPartner() == null) {
+      return;
+    }
+
+    copyContactValues(contact, getOrCreateMainPartnerLink(contact));
+    updateMainPartnerLink(contact);
+  }
+
+  @Override
+  public PartnerContactLink createMainPartnerLink(Partner company) {
+    return newLink(company, true);
+  }
+
+  /**
+   * Finds the link to flag as main, or {@code null} when the contact has no main company.
+   *
+   * <p>Priority: a star the user just toggled, then the main company field (whose link is created
+   * when missing), then the starred link. An inactive link is never main.
+   */
+  protected PartnerContactLink findMainLink(Partner contact, List<PartnerContactLink> links) {
+    PartnerContactLink toggledLink =
+        links.stream().filter(PartnerContactLink::getIsMainCompanyToggled).findFirst().orElse(null);
+    if (toggledLink != null) {
+      return toggledLink.getIsMainCompany() && toggledLink.getIsActive() ? toggledLink : null;
+    }
+
+    if (contact.getMainPartner() != null) {
+      PartnerContactLink mainLink = getOrCreateMainPartnerLink(contact);
+      return mainLink.getIsActive() ? mainLink : null;
+    }
+
+    return links.stream()
+        .filter(link -> link.getIsMainCompany() && link.getIsActive())
+        .findFirst()
+        .orElse(null);
+  }
+
+  protected PartnerContactLink getOrCreateMainPartnerLink(Partner contact) {
+    Partner mainPartner = contact.getMainPartner();
+    PartnerContactLink mainLink = findLinkByPartner(getLinks(contact), mainPartner);
+    if (mainLink == null) {
+      mainLink = createMainPartnerLink(mainPartner);
+      copyContactValues(contact, mainLink);
+      contact.addPartnerContactLinkListItem(mainLink);
+    }
+    return mainLink;
+  }
+
+  protected void createLink(Partner company, Partner contact) {
+    boolean isMainCompany =
+        contact.getMainPartner() == null
+            ? getLinks(contact).isEmpty()
+            : Objects.equals(contact.getMainPartner(), company);
+
+    PartnerContactLink link = newLink(company, isMainCompany);
+    if (isMainCompany) {
+      copyContactValues(contact, link);
+    }
+    contact.addPartnerContactLinkListItem(link);
+    updateMainPartnerLink(contact);
+  }
+
+  protected PartnerContactLink newLink(Partner company, boolean isMainCompany) {
     PartnerContactLink link = new PartnerContactLink();
     link.setPartner(company);
     link.setIsActive(true);
     link.setIsMainCompany(isMainCompany);
-    contact.addPartnerContactLinkListItem(link);
-
-    if (isMainCompany) {
-      copyContactValues(contact, link);
-      projectMainLink(contact, List.of(link));
-    }
-    partnerContactLinkRepository.save(link);
+    return link;
   }
 
   protected void removeLink(PartnerContactLink link) {
@@ -133,48 +209,50 @@ public class PartnerContactLinkServiceImpl implements PartnerContactLinkService 
     partnerContactLinkRepository.remove(link);
 
     if (link.getIsMainCompany()) {
-      projectMainLink(contact, getLinks(contact));
+      contact.setMainPartner(null);
+      updateMainPartnerLink(contact);
     }
   }
 
   protected void validateLinks(List<PartnerContactLink> links) throws AxelorException {
     Set<Long> companyIds = new HashSet<>();
     for (PartnerContactLink link : links) {
-      if (!companyIds.add(link.getPartner().getId())) {
+      if (link.getPartner() != null && !companyIds.add(link.getPartner().getId())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(BaseExceptionMessage.PARTNER_CONTACT_LINK_DUPLICATE_COMPANY));
       }
     }
-
-    if (links.stream().filter(PartnerContactLink::getIsMainCompany).count() > 1) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BaseExceptionMessage.PARTNER_CONTACT_LINK_MULTIPLE_MAIN_COMPANIES));
-    }
   }
 
+  /**
+   * Makes the contact a member of the companies of its active links only.
+   *
+   * <p>The companies currently listing the contact come from their contact set rather than from the
+   * links: a link removed in the same save is already gone from the persistence context.
+   */
   protected void synchronizeCompanyMembership(
-      Partner contact, List<PartnerContactLink> persistedLinks, List<PartnerContactLink> links) {
-    Set<Long> companyIds =
+      Partner contact, List<Partner> listingCompanies, List<PartnerContactLink> links) {
+    Set<Long> activeCompanyIds =
         links.stream()
+            .filter(PartnerContactLink::getIsActive)
             .map(link -> link.getPartner().getId())
             .filter(Objects::nonNull)
             .collect(Collectors.toSet());
 
-    for (PartnerContactLink link : persistedLinks) {
-      if (!companyIds.contains(link.getPartner().getId())) {
-        link.getPartner().removeContactPartnerSetItem(contact);
+    for (Partner company : listingCompanies) {
+      if (!activeCompanyIds.contains(company.getId())) {
+        company.removeContactPartnerSetItem(contact);
       }
     }
     for (PartnerContactLink link : links) {
-      link.getPartner().addContactPartnerSetItem(contact);
+      if (link.getIsActive()) {
+        link.getPartner().addContactPartnerSetItem(contact);
+      }
     }
   }
 
-  protected void projectMainLink(Partner contact, List<PartnerContactLink> links) {
-    PartnerContactLink mainLink =
-        links.stream().filter(PartnerContactLink::getIsMainCompany).findFirst().orElse(null);
+  protected void projectMainLink(Partner contact, PartnerContactLink mainLink) {
     if (mainLink == null) {
       contact.setMainPartner(null);
       return;
@@ -212,6 +290,24 @@ public class PartnerContactLinkServiceImpl implements PartnerContactLinkService 
         .filter(link -> Objects.equals(link.getContact().getId(), contact.getId()))
         .findFirst()
         .orElse(null);
+  }
+
+  protected PartnerContactLink findLinkByPartner(List<PartnerContactLink> links, Partner partner) {
+    return links.stream()
+        .filter(link -> Objects.equals(link.getPartner(), partner))
+        .findFirst()
+        .orElse(null);
+  }
+
+  protected List<Partner> findCompaniesListing(Partner contact) {
+    if (contact.getId() == null) {
+      return List.of();
+    }
+    return partnerRepository
+        .all()
+        .filter(":contact MEMBER OF self.contactPartnerSet")
+        .bind("contact", contact)
+        .fetch();
   }
 
   protected List<PartnerContactLink> findByContact(Partner contact) {

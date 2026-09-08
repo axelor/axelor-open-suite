@@ -12,6 +12,7 @@
       required="true"/>
     <boolean name="isMainCompany" title="Main company" default="false"/>
     <boolean name="isActive" title="Active" default="true"/>
+    <boolean name="isMainCompanyToggled" transient="true"/>
     <many-to-one name="emailAddress" ref="com.axelor.message.db.EmailAddress"
       title="Email"/>
     <string name="fixedPhone" title="Phone number"/>

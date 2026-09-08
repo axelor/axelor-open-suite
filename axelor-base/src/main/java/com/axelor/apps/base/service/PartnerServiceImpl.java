@@ -206,30 +206,45 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   protected void checkDuplicateContactNames(Partner partner) throws AxelorException {
-    checkDuplicateContactName(partner);
+    Partner duplicate = findDuplicateContact(partner);
+    if (duplicate != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BaseExceptionMessage.PARTNER_CONTACT_NAME_EXIST),
+          duplicate.getSimpleFullName(),
+          getContactCompanyName(duplicate));
+    }
     if (partner.getIsContact() || ObjectUtils.isEmpty(partner.getContactPartnerSet())) {
       return;
     }
 
-    Set<String> newContactNames = new HashSet<>();
+    Map<String, Partner> contactsByName = new HashMap<>();
     for (Partner contact : partner.getContactPartnerSet()) {
-      checkDuplicateContactName(contact);
+      Partner duplicateContact = findDuplicateContact(contact);
       String contactName = computeSimpleFullName(contact);
-      if (!Strings.isNullOrEmpty(contactName)
-          && !newContactNames.add(contactName.toLowerCase(Locale.ROOT))) {
+      if (duplicateContact == null && !Strings.isNullOrEmpty(contactName)) {
+        duplicateContact =
+            contactsByName.putIfAbsent(contactName.toLowerCase(Locale.ROOT), contact);
+      }
+      if (duplicateContact != null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(BaseExceptionMessage.PARTNER_CONTACT_NAME_EXIST));
+            I18n.get(BaseExceptionMessage.PARTNER_CONTACT_NAME_EXIST_IN_COMPANY),
+            contactName,
+            duplicateContact.getSimpleFullName(),
+            getContactCompanyName(duplicateContact));
       }
     }
   }
 
-  protected void checkDuplicateContactName(Partner partner) throws AxelorException {
-    if (partner.getIsContact() && isThereDuplicatePartnerQuery(partner, false, true) != null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BaseExceptionMessage.PARTNER_CONTACT_NAME_EXIST));
-    }
+  protected Partner findDuplicateContact(Partner partner) {
+    return partner.getIsContact() ? isThereDuplicatePartnerQuery(partner, false, true) : null;
+  }
+
+  protected String getContactCompanyName(Partner contact) {
+    return contact.getMainPartner() != null
+        ? contact.getMainPartner().getSimpleFullName()
+        : I18n.get(BaseExceptionMessage.PARTNER_CONTACT_WITHOUT_COMPANY);
   }
 
   /**

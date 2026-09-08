@@ -99,6 +99,10 @@ public class ImportPartner {
     assert bean instanceof Partner;
 
     Partner partner = (Partner) bean;
+    if (partner.getIsContact()) {
+      partnerContactLinkService.updateMainPartnerLinkFromContact(partner);
+      return partner;
+    }
     partner.setContactPartnerSet(new HashSet<Partner>());
 
     List<? extends Partner> partnerList =

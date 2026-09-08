@@ -293,13 +293,11 @@ public class PartnerController {
 
   public void addContactToPartner(ActionRequest request, ActionResponse response) {
     try {
-      final Context context = request.getContext();
-      final Partner contact = context.asType(Partner.class);
-      final Context parentContext = context.getParent();
+      final Partner contact = request.getContext().asType(Partner.class);
+      final Optional<Partner> parentPartner = getParentPartner(request);
 
-      if (parentContext != null
-          && Partner.class.isAssignableFrom(parentContext.getContextClass())
-          && Objects.equals(parentContext.asType(Partner.class), contact.getMainPartner())) {
+      if (parentPartner.isPresent()
+          && Objects.equals(parentPartner.get(), contact.getMainPartner())) {
         return;
       }
 
@@ -526,11 +524,11 @@ public class PartnerController {
 
   public void setPartnerContactLinkPartnerDomain(ActionRequest request, ActionResponse response) {
     PartnerContactLink partnerContactLink = request.getContext().asType(PartnerContactLink.class);
-    Context parentContext = request.getContext().getParent();
-    if (parentContext == null || !Partner.class.equals(parentContext.getContextClass())) {
+    Optional<Partner> parentPartner = getParentPartner(request);
+    if (parentPartner.isEmpty()) {
       return;
     }
-    Partner contact = parentContext.asType(Partner.class);
+    Partner contact = parentPartner.get();
 
     List<Partner> companyList = Beans.get(PartnerService.class).getFilteredPartners(contact);
     if (contact.getPartnerContactLinkList() != null) {
@@ -548,11 +546,35 @@ public class PartnerController {
         String.format("self.id IN (%s)", StringHelper.getIdListString(companyList)));
   }
 
-  public void projectMainContactLink(ActionRequest request, ActionResponse response) {
+  public void prefillMainPartnerFromParent(ActionRequest request, ActionResponse response) {
+    try {
+      Partner parent = getParentPartner(request).orElse(null);
+      if (parent == null || parent.getId() == null || parent.getIsContact()) {
+        return;
+      }
+      Partner company = Beans.get(PartnerRepository.class).find(parent.getId());
+      response.setValue("mainPartner", company);
+      response.setValue(
+          "partnerContactLinkList",
+          List.of(Beans.get(PartnerContactLinkService.class).createMainPartnerLink(company)));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  protected Optional<Partner> getParentPartner(ActionRequest request) {
+    Context parentContext = request.getContext().getParent();
+    if (parentContext == null || !Partner.class.isAssignableFrom(parentContext.getContextClass())) {
+      return Optional.empty();
+    }
+    return Optional.of(parentContext.asType(Partner.class));
+  }
+
+  public void updateMainPartnerLink(ActionRequest request, ActionResponse response) {
     try {
       Partner contact = request.getContext().asType(Partner.class);
       response.setValues(
-          Beans.get(PartnerContactLinkService.class).getMainLinkOnChangeValuesMap(contact));
+          Beans.get(PartnerContactLinkService.class).getMainPartnerLinkValuesMap(contact));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

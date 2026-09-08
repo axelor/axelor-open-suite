@@ -646,7 +646,7 @@
   </form>
 
   <form name="partner-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner"
-    onNew="action-partner-contact-record-default,action-partner-attrs-partner-seq-editable"
+    onNew="action-partner-contact-record-default,action-partner-attrs-partner-seq-editable,action-partner-method-prefill-main-partner-from-parent"
     onLoad="action-group-partner-contact-onload"
     onSave="save,action-partner-method-set-user-partner">
     <toolbar>
@@ -713,7 +713,7 @@
             <![CDATA[<><Badge bg="warning">{_t('There is an archived partner with this name.')} ({$duplicatePartnerInArchiveText})</Badge></>]]>
           </viewer>
         </field>
-        <panel name="companyPanel" title="Company" colSpan="12">
+        <panel name="companyPanel" title="Main company" colSpan="12">
           <field name="mainPartner" readonly="true" form-view="partner-form"
             grid-view="partner-grid" help="Value comes from the company selected as main."/>
         </panel>
@@ -722,30 +722,25 @@
     </panel>
     <panel-related name="partnerRoleSetPanel" field="partnerRoleSet"
       form-view="partner-role-form" grid-view="partner-role-grid" canNew="false"
-      readonlyIf="partnerContactLinkList != null &amp;&amp; partnerContactLinkList.length &gt; 0"
-      help="Values come from the company selected as main."/>
+      readonlyIf="mainPartner" help="Values come from the company selected as main."/>
 
     <panel-related name="partnerContactLinkListPanel" field="partnerContactLinkList"
       title="Companies" form-view="partner-contact-link-form"
       grid-view="partner-contact-link-contact-grid" editable="true"
-      onChange="action-partner-method-project-main-link"/>
+      onChange="action-partner-method-update-main-partner-link"/>
 
     <panel-tabs name="mainPanelTab">
       <panel name="contactDetailsPanel" title="Contact details">
         <field name="jobTitleFunction" onChange="action-record-base-partner-set-business-card"
-          readonlyIf="partnerContactLinkList != null &amp;&amp; partnerContactLinkList.length &gt; 0"
-          help="Value comes from the company selected as main."/>
-        <field name="functionBusinessCard"
-          readonlyIf="partnerContactLinkList != null &amp;&amp; partnerContactLinkList.length &gt; 0"
+          readonlyIf="mainPartner" help="Value comes from the company selected as main."/>
+        <field name="functionBusinessCard" readonlyIf="mainPartner"
           help="Value comes from the company selected as main."/>
         <field name="reportsTo" domain="self.isContact = true"/>
         <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"
-          readonlyIf="partnerContactLinkList != null &amp;&amp; partnerContactLinkList.length &gt; 0"
-          help="Value comes from the company selected as main."/>
+          readonlyIf="mainPartner" help="Value comes from the company selected as main."/>
         <field name="mobilePhone" widget="phone"/>
         <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
-          x-show-icons="false"
-          readonlyIf="partnerContactLinkList != null &amp;&amp; partnerContactLinkList.length &gt; 0"
+          x-show-icons="false" readonlyIf="mainPartner"
           help="Value comes from the company selected as main.">
           <editor x-show-titles="false" x-viewer="true">
             <field name="address" placeholder="whatever@example.com"
@@ -1337,8 +1332,13 @@
     <call class="com.axelor.apps.base.web.PartnerController" method="setContactPartnerDomain"/>
   </action-method>
 
-  <action-method name="action-partner-method-project-main-link">
-    <call class="com.axelor.apps.base.web.PartnerController" method="projectMainContactLink"/>
+  <action-method name="action-partner-method-prefill-main-partner-from-parent">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="prefillMainPartnerFromParent"/>
+  </action-method>
+
+  <action-method name="action-partner-method-update-main-partner-link">
+    <call class="com.axelor.apps.base.web.PartnerController" method="updateMainPartnerLink"/>
   </action-method>
 
   <action-method name="action-partner-method-set-main-partner-domain">

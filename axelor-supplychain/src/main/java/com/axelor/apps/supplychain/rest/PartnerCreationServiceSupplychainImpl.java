@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.partner.PartnerContactLinkService;
 import com.axelor.apps.base.service.partner.PartnerCreationServiceImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
@@ -37,8 +38,9 @@ public class PartnerCreationServiceSupplychainImpl extends PartnerCreationServic
       PartnerRepository partnerRepository,
       UserService userService,
       AppBaseService appBaseService,
+      PartnerContactLinkService partnerContactLinkService,
       BaseConvertLeadWizardService baseConvertLeadWizardService) {
-    super(partnerRepository, userService, appBaseService);
+    super(partnerRepository, userService, appBaseService, partnerContactLinkService);
     this.baseConvertLeadWizardService = baseConvertLeadWizardService;
   }
 

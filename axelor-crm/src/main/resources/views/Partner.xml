@@ -191,8 +191,7 @@
     </extend>
     <extend target="//field[@name='emailAddress']">
       <replace>
-        <field name="emailAddress"
-          readonlyIf="partnerContactLinkList != null &amp;&amp; partnerContactLinkList.length &gt; 0"
+        <field name="emailAddress" readonlyIf="mainPartner"
           help="Value comes from the company selected as main.">
           <editor x-show-titles="false" x-viewer="true">
             <field name="address" widget="email" colSpan="12"
@@ -321,8 +320,7 @@
     </extend>
     <extend target="//field[@name='emailAddress']">
       <replace>
-        <field name="emailAddress"
-          readonlyIf="partnerContactLinkList != null &amp;&amp; partnerContactLinkList.length &gt; 0"
+        <field name="emailAddress" readonlyIf="mainPartner"
           help="Value comes from the company selected as main.">
           <editor x-show-titles="false" x-viewer="true">
             <field name="address" widget="email" colSpan="12"
@@ -685,6 +683,7 @@
     <action name="action-partner-contact-record-default"/>
     <action name="action-partner-attrs-partner-seq-editable"/>
     <action name="action-partner-attrs-set-default"/>
+    <action name="action-partner-method-prefill-main-partner-from-parent"/>
   </action-group>
 
   <action-record name="action-partner-record-set-is-prospect"
