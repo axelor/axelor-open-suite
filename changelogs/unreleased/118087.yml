@@ -1,0 +1,3 @@
+---
+title: "ABC Analysis: fixed cumulated percentages never reaching 100% when a product has more than ten order lines."
+module: axelor-base
