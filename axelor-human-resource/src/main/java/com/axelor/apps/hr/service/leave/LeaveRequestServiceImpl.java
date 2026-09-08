@@ -30,6 +30,7 @@ import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.apps.hr.service.leavereason.LeaveReasonService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -48,18 +49,21 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
 
   protected AppBaseService appBaseService;
   protected LeaveReasonService leaveReasonService;
+  protected LeaveManagementService leaveManagementService;
 
   @Inject
   public LeaveRequestServiceImpl(
       LeaveLineRepository leaveLineRepository,
       LeaveRequestRepository leaveRequestRepository,
       AppBaseService appBaseService,
-      LeaveReasonService leaveReasonService) {
+      LeaveReasonService leaveReasonService,
+      LeaveManagementService leaveManagementService) {
 
     this.leaveLineRepository = leaveLineRepository;
     this.leaveRequestRepository = leaveRequestRepository;
     this.appBaseService = appBaseService;
     this.leaveReasonService = leaveReasonService;
+    this.leaveManagementService = leaveManagementService;
   }
 
   public List<LeaveRequest> getLeaves(Employee employee, LocalDate date) {
@@ -109,12 +113,22 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
   public BigDecimal getLeaveDaysToDate(LeaveRequest leaveRequest) throws AxelorException {
 
     return getLeaveDaysToDate(
-        leaveRequest.getToDateT(), leaveRequest.getEmployee(), leaveRequest.getLeaveReason());
+        leaveRequest.getFromDateT(),
+        leaveRequest.getToDateT(),
+        leaveRequest.getEmployee(),
+        leaveRequest.getLeaveReason());
   }
 
   @Override
   public BigDecimal getLeaveDaysToDate(
       LocalDateTime toDateT, Employee employee, LeaveReason leaveReason) throws AxelorException {
+    return getLeaveDaysToDate(null, toDateT, employee, leaveReason);
+  }
+
+  @Override
+  public BigDecimal getLeaveDaysToDate(
+      LocalDateTime fromDateT, LocalDateTime toDateT, Employee employee, LeaveReason leaveReason)
+      throws AxelorException {
     LocalDateTime todayDate = appBaseService.getTodayDateTime().toLocalDateTime();
 
     if (todayDate == null || toDateT == null) {
@@ -143,13 +157,17 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
           I18n.get(HumanResourceExceptionMessage.EMPLOYEE_PLANNING),
           employee.getName());
     }
-    return leaveLine
-        .getQuantity()
-        .add(
-            planning
-                .getLeaveCoef()
-                .multiply(leaveReason.getDefaultDayNumberGain())
-                .multiply(BigDecimal.valueOf(interval)));
+    LocalDate balanceDate = getBalanceDate(fromDateT, toDateT);
+    BigDecimal quantityAvailable =
+        leaveManagementService.computeQuantityAvailable(leaveLine, balanceDate);
+    if (!leaveManagementService.hasActiveLeaveManagement(leaveLine, balanceDate)) {
+      return quantityAvailable;
+    }
+    return quantityAvailable.add(
+        planning
+            .getLeaveCoef()
+            .multiply(leaveReason.getDefaultDayNumberGain())
+            .multiply(BigDecimal.valueOf(interval)));
   }
 
   protected int getInterval(
@@ -186,5 +204,43 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
   @Override
   public boolean isLeaveDay(Employee employee, LocalDate date) {
     return ObjectUtils.notEmpty(getLeaves(employee, date));
+  }
+
+  @Override
+  public BigDecimal getAvailableQuantity(LeaveRequest leaveRequest) {
+    return getAvailableQuantity(
+        leaveRequest.getFromDateT(),
+        leaveRequest.getToDateT(),
+        leaveRequest.getEmployee(),
+        leaveRequest.getLeaveReason());
+  }
+
+  @Override
+  public BigDecimal getAvailableQuantity(
+      LocalDateTime fromDateT, LocalDateTime toDateT, Employee employee, LeaveReason leaveReason) {
+    if (employee == null || leaveReason == null) {
+      return BigDecimal.ZERO;
+    }
+    LeaveLine leaveLine =
+        leaveLineRepository
+            .all()
+            .filter("self.leaveReason = :leaveReason AND self.employee = :employee")
+            .bind("leaveReason", leaveReason)
+            .bind("employee", employee)
+            .fetchOne();
+    if (leaveLine == null) {
+      return BigDecimal.ZERO;
+    }
+    return leaveManagementService.computeQuantityAvailable(
+        leaveLine, getBalanceDate(fromDateT, toDateT));
+  }
+
+  /**
+   * The balance is evaluated at the first day of the requested leave. When it is unknown, the last
+   * day is used instead.
+   */
+  protected LocalDate getBalanceDate(LocalDateTime fromDateT, LocalDateTime toDateT) {
+    LocalDateTime balanceDateT = fromDateT != null ? fromDateT : toDateT;
+    return balanceDateT != null ? balanceDateT.toLocalDate() : null;
   }
 }

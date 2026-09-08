@@ -24,7 +24,6 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
-import com.axelor.apps.hr.service.EmployeeComputeAvailableLeaveService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperDurationService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperService;
 import com.axelor.apps.hr.service.leave.LeaveRequestService;
@@ -162,18 +161,23 @@ public class LeaveRequestCreateController {
         context.get("leaveReason") != null
             ? Long.valueOf(((Map<String, Object>) context.get("leaveReason")).get("id").toString())
             : 0L;
+    LocalDateTime fromDateT =
+        request.getContext().getParent().get("fromDate") != null
+            ? LocalDate.parse((String) request.getContext().getParent().get("fromDate"))
+                .atStartOfDay()
+            : null;
     LocalDateTime toDateT =
         request.getContext().getParent().get("toDate") != null
             ? LocalDate.parse((String) request.getContext().getParent().get("toDate"))
                 .atStartOfDay()
             : null;
     LeaveReason leaveReason = Beans.get(LeaveReasonRepository.class).find(leaveReasonId);
+    LeaveRequestService leaveRequestService = Beans.get(LeaveRequestService.class);
     response.setValue(
         "leaveQuantity",
-        Beans.get(EmployeeComputeAvailableLeaveService.class)
-            .computeAvailableLeaveQuantityForActiveUser(employee, leaveReason));
+        leaveRequestService.getAvailableQuantity(fromDateT, toDateT, employee, leaveReason));
     response.setValue(
         "leaveDaysToDate",
-        Beans.get(LeaveRequestService.class).getLeaveDaysToDate(toDateT, employee, leaveReason));
+        leaveRequestService.getLeaveDaysToDate(fromDateT, toDateT, employee, leaveReason));
   }
 }
