@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -56,6 +56,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -112,13 +113,18 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       AnalyticMoveLine analyticMoveLine, BigDecimal analyticLineAmount) {
 
     if (analyticLineAmount.signum() > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(analyticLineAmount)
-          .divide(
-              new BigDecimal(100),
-              currencyScaleService.getScale(analyticMoveLine),
-              RoundingMode.HALF_UP);
+      BigDecimal amount =
+          analyticMoveLine
+              .getPercentage()
+              .multiply(analyticLineAmount)
+              .divide(
+                  new BigDecimal(100),
+                  currencyScaleService.getScale(analyticMoveLine),
+                  RoundingMode.HALF_UP);
+      if (analyticMoveLine.getSubTypeSelect() == AnalyticMoveLineRepository.SUB_TYPE_REVERSE) {
+        amount = amount.negate();
+      }
+      return amount;
     }
     return BigDecimal.ZERO;
   }
@@ -137,9 +143,54 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
         analyticMoveLineList.add(
             this.createAnalyticMoveLine(analyticDistributionLine, total, typeSelect, date));
       }
+      reconcileRoundingRemainder(analyticMoveLineList, total);
     }
 
     return analyticMoveLineList;
+  }
+
+  /**
+   * Adjusts the generated analytic move lines so that, for each analytic axis distributing 100% of
+   * the amount, the sum of the line amounts equals the source amount. Each line is rounded HALF_UP
+   * independently in {@link #computeAmount}, so the per-line residuals can otherwise accumulate
+   * into a drift (e.g. 4 lines of 25% on 91.51 round to 22.88 each, summing to 91.52). The last
+   * line of each axis absorbs the residual. Axes that do not sum to 100% (partial distributions)
+   * are left untouched.
+   */
+  @Override
+  public void reconcileRoundingRemainder(
+      List<AnalyticMoveLine> analyticMoveLineList, BigDecimal total) {
+    if (total == null || total.signum() <= 0 || CollectionUtils.isEmpty(analyticMoveLineList)) {
+      return;
+    }
+
+    Map<AnalyticAxis, List<AnalyticMoveLine>> analyticMoveLineListByAxis =
+        analyticMoveLineList.stream()
+            .collect(
+                Collectors.groupingBy(
+                    AnalyticMoveLine::getAnalyticAxis, LinkedHashMap::new, Collectors.toList()));
+
+    for (List<AnalyticMoveLine> axisAnalyticMoveLineList : analyticMoveLineListByAxis.values()) {
+      BigDecimal percentageSum =
+          axisAnalyticMoveLineList.stream()
+              .map(AnalyticMoveLine::getPercentage)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+      if (percentageSum.compareTo(new BigDecimal(100)) != 0) {
+        continue;
+      }
+
+      AnalyticMoveLine lastAnalyticMoveLine =
+          axisAnalyticMoveLineList.get(axisAnalyticMoveLineList.size() - 1);
+      BigDecimal generatedSum =
+          axisAnalyticMoveLineList.stream()
+              .map(AnalyticMoveLine::getAmount)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+      BigDecimal residual =
+          currencyScaleService.getScaledValue(lastAnalyticMoveLine, total).subtract(generatedSum);
+      lastAnalyticMoveLine.setAmount(
+          currencyScaleService.getScaledValue(
+              lastAnalyticMoveLine, lastAnalyticMoveLine.getAmount().add(residual)));
+    }
   }
 
   @Override
@@ -225,6 +276,19 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   }
 
   @Override
+  public void updateAnalyticMoveLineList(
+      List<AnalyticMoveLine> analyticMoveLineList, BigDecimal total, LocalDate date) {
+    if (CollectionUtils.isEmpty(analyticMoveLineList)) {
+      return;
+    }
+    for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+      updateAnalyticMoveLine(
+          analyticMoveLine, currencyScaleService.getScaledValue(analyticMoveLine, total), date);
+    }
+    reconcileRoundingRemainder(analyticMoveLineList, total);
+  }
+
+  @Override
   public boolean validateLines(List<AnalyticDistributionLine> analyticDistributionLineList) {
     if (analyticDistributionLineList != null) {
       Map<AnalyticAxis, BigDecimal> map = new HashMap<AnalyticAxis, BigDecimal>();
@@ -256,7 +320,16 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
                 Collectors.groupingBy(
                     AnalyticMoveLine::getAnalyticAxis,
                     Collectors.reducing(
-                        BigDecimal.ZERO, AnalyticMoveLine::getPercentage, BigDecimal::add)))
+                        BigDecimal.ZERO,
+                        analyticMoveLine -> {
+                          BigDecimal percentage = analyticMoveLine.getPercentage();
+                          if (analyticMoveLine.getSubTypeSelect()
+                              == AnalyticMoveLineRepository.SUB_TYPE_REVERSE) {
+                            percentage = percentage.negate();
+                          }
+                          return percentage;
+                        },
+                        BigDecimal::add)))
             .values()
             .stream()
             .allMatch(percentage -> percentage.compareTo(BigDecimal.valueOf(100)) == 0);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,21 +28,21 @@ import com.axelor.meta.schema.views.ChartView;
 import com.axelor.meta.schema.views.ChartView.ChartCategory;
 import com.axelor.meta.schema.views.ChartView.ChartSeries;
 import com.axelor.meta.schema.views.DataSet;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import jakarta.persistence.Query;
 import java.util.*;
 
 public class IndicatorChartServiceImpl implements IndicatorChartService {
 
-  private static final String CHART_NAME_PATTERN = "indicator-result-chart-%d";
-  private static final String DATASET_TYPE = "rpc";
-  private static final String DATASET_METHOD =
+  protected static final String CHART_NAME_PATTERN = "indicator-result-chart-%d";
+  protected static final String DATASET_TYPE = "rpc";
+  protected static final String DATASET_METHOD =
       "com.axelor.apps.base.web.IndicatorController:fetchResultLinesForChart";
-  private static final String CATEGORY_KEY = "date";
-  private static final String CATEGORY_TYPE = "month";
-  private static final String SERIES_KEY = "indicator";
-  private static final String SERIES_TYPE = "bar";
+  protected static final String CATEGORY_KEY = "date";
+  protected static final String CATEGORY_TYPE = "month";
+  protected static final String SERIES_KEY = "indicator";
+  protected static final String SERIES_TYPE = "bar";
 
   protected final MetaViewRepository metaViewRepository;
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -160,12 +160,12 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
     Contract firstContract = contractList.get(0);
     InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(firstContract);
     Invoice invoice = invoiceGenerator.generate();
-    invoice.setInternalReference(firstContract.getContractId());
+    invoice.setInternalReference(InvoiceGeneratorContract.computeInternalReference(firstContract));
     for (Contract contract : contractList) {
-      String contractId = contract.getContractId();
+      String contractReference = InvoiceGeneratorContract.computeInternalReference(contract);
       invoice.addContractSetItem(contract);
-      if (!invoice.getInternalReference().contains(contractId)) {
-        invoice.setInternalReference(invoice.getInternalReference() + ", " + contractId);
+      if (!invoice.getInternalReference().contains(contractReference)) {
+        invoice.setInternalReference(invoice.getInternalReference() + ", " + contractReference);
       }
     }
     return invoice;
@@ -557,7 +557,11 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
     if (contract.getCurrentContractVersion().getIsConsumptionBeforeEndDate()) {
       consumptionLineList =
           consumptionLineList.stream()
-              .filter(line -> line.getLineDate().isBefore(contract.getInvoicePeriodEndDate()))
+              .filter(
+                  line ->
+                      line.getLineDate() != null
+                          && contract.getInvoicePeriodEndDate() != null
+                          && line.getLineDate().isBefore(contract.getInvoicePeriodEndDate()))
               .collect(Collectors.toList());
     }
 

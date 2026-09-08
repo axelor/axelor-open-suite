@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -74,13 +74,8 @@ public class StockMoveLineController {
 
     StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
     StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
-    StockMove stockMove = stockMoveLine.getStockMove();
+    StockMove stockMove = getStockMove(request, stockMoveLine);
     try {
-
-      if (stockMove == null) {
-        stockMove = request.getContext().getParent().asType(StockMove.class);
-      }
-
       if (stockMoveLine.getProduct() == null) {
         stockMoveLineService.resetStockMoveLine(stockMoveLine);
         stockMoveLine.setStockMove(stockMove);
@@ -253,11 +248,11 @@ public class StockMoveLineController {
   public void setProductDomain(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
-    StockMove stockMove =
-        context.getParent() != null
-            ? context.getParent().asType(StockMove.class)
-            : stockMoveLine.getStockMove();
+    StockMove stockMove = getStockMove(request, stockMoveLine);
     try {
+      if (stockMove == null) {
+        return;
+      }
       String domain =
           Beans.get(StockMoveLineService.class).createDomainForProduct(stockMoveLine, stockMove);
       response.setAttr("product", "domain", domain);
@@ -269,7 +264,8 @@ public class StockMoveLineController {
   public void setAvailableStatus(ActionRequest request, ActionResponse response) {
     try {
       StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
-      Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine);
+      StockMove stockMove = getStockMove(request, stockMoveLine);
+      Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine, stockMove);
       response.setValue("availableStatus", stockMoveLine.getAvailableStatus());
       response.setValue("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
     } catch (Exception e) {
@@ -395,18 +391,26 @@ public class StockMoveLineController {
 
   protected StockMove getStockMove(ActionRequest request, StockMoveLine stockMoveLine) {
     StockMove stockMove = stockMoveLine.getStockMove();
-    if (stockMove == null) {
-      Context parentContext = request.getContext().getParent();
-      Context superParentContext = parentContext.getParent();
-      if (parentContext.getContextClass().equals(StockMove.class)) {
-        stockMove = parentContext.asType(StockMove.class);
-      } else if (superParentContext.getContextClass().equals(StockMove.class)) {
-        stockMove = superParentContext.asType(StockMove.class);
-      } else {
-        return null;
-      }
+    if (stockMove != null) {
+      return stockMove;
     }
-    return stockMove;
+
+    Context parentContext = request.getContext().getParent();
+    if (parentContext == null) {
+      return null;
+    }
+
+    if (parentContext.getContextClass().equals(StockMove.class)) {
+      return parentContext.asType(StockMove.class);
+    }
+
+    Context superParentContext = parentContext.getParent();
+    if (superParentContext != null
+        && superParentContext.getContextClass().equals(StockMove.class)) {
+      return superParentContext.asType(StockMove.class);
+    }
+
+    return null;
   }
 
   public void setRealQty(ActionRequest request, ActionResponse response) {
@@ -453,5 +457,27 @@ public class StockMoveLineController {
 
     response.setValue("fromStockLocation", stockMoveLine.getFromStockLocation());
     response.setValue("toStockLocation", stockMoveLine.getToStockLocation());
+  }
+
+  public void qtyOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMove stockMove = getStockMove(request, stockMoveLine);
+    Beans.get(StockMoveLineService.class).qtyOnChange(stockMoveLine, stockMove);
+    response.setValue("companyPurchasePrice", stockMoveLine.getCompanyPurchasePrice());
+  }
+
+  public void fillStockLocationFromTrackingNumber(ActionRequest request, ActionResponse response) {
+    try {
+      StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+      StockMove stockMove = getStockMove(request, stockMoveLine);
+      if (stockMove != null) {
+        Beans.get(StockMoveLineStockLocationService.class)
+            .fillStockLocationFromTrackingNumber(stockMoveLine, stockMove);
+        response.setValue("fromStockLocation", stockMoveLine.getFromStockLocation());
+        response.setValue("toStockLocation", stockMoveLine.getToStockLocation());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

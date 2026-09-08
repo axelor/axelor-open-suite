@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -57,9 +57,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PayrollPreparationExportServiceImpl implements PayrollPreparationExportService {
-  private static final DateTimeFormatter NIBELIS_EXPORT_DATE_FORMATTER =
+  protected static final DateTimeFormatter NIBELIS_EXPORT_DATE_FORMATTER =
       DateTimeFormatter.ofPattern("dd/MM/yyyy");
-  private static final DateTimeFormatter SILAE_EXPORT_DATE_FORMATTER =
+  protected static final DateTimeFormatter SILAE_EXPORT_DATE_FORMATTER =
       DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
   protected PayrollPreparationRepository payrollPreparationRepository;

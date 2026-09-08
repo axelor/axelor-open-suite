@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,7 @@ public class RegistrationNumberValidatorFRA extends RegistrationNumberValidator 
   public boolean computeRegistrationCodeValidity(String registrationCode) {
     int sum = 0;
     boolean isOddNumber = true;
-    registrationCode = registrationCode.replace(" ", "");
+    registrationCode = getRegistrationCode(registrationCode);
     if (registrationCode.length() != 14) {
       return false;
     }
@@ -62,7 +62,7 @@ public class RegistrationNumberValidatorFRA extends RegistrationNumberValidator 
       String regCode = partner.getRegistrationCode();
 
       if (regCode != null) {
-        regCode = regCode.replaceAll(" ", "");
+        regCode = getRegistrationCode(regCode);
 
         if (regCode.length() == 14) {
           String siren = regCode.substring(0, 9);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -135,7 +135,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   }
 
   protected void testCloseAnnualBatchFields(BigDecimal resultMoveAmount) throws AxelorException {
-    if (CollectionUtils.isEmpty(accountingBatch.getClosureAccountSet())) {
+    if (accountingBatch.getCloseYear()
+        && CollectionUtils.isEmpty(accountingBatch.getClosureAccountSet())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_1),
@@ -261,9 +262,9 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       boolean close,
       boolean open,
       LinkedHashMap<AccountByPartner, Map<Boolean, Boolean>> map) {
-    List<Long> idsDone = new ArrayList<>();
+    List<Pair<Long, Long>> consumedPairs = new ArrayList<>();
     for (Account account : getSortedAccountList(accountAndPartnerPairList)) {
-      Partner partner = getPartner(accountAndPartnerPairList, account, idsDone);
+      Partner partner = getPartner(accountAndPartnerPairList, account, consumedPairs);
 
       Map<Boolean, Boolean> value = new HashMap<>();
       if (close) {
@@ -294,22 +295,22 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   }
 
   protected Partner getPartner(
-      List<Pair<Long, Long>> accountAndPartnerPairList, Account account, List<Long> idsDone) {
-    Partner partner =
+      List<Pair<Long, Long>> accountAndPartnerPairList,
+      Account account,
+      List<Pair<Long, Long>> consumedPairs) {
+    Pair<Long, Long> matchedPair =
         accountAndPartnerPairList.stream()
-            .filter(
-                pair ->
-                    pair.getLeft().equals(account.getId()) && !idsDone.contains(pair.getRight()))
+            .filter(pair -> pair.getLeft().equals(account.getId()) && !consumedPairs.contains(pair))
             .findFirst()
-            .map(Pair::getRight)
-            .map(id -> partnerRepository.find(id))
             .orElse(null);
 
-    if (partner != null) {
-      idsDone.add(partner.getId());
+    if (matchedPair == null) {
+      return null;
     }
 
-    return partner;
+    consumedPairs.add(matchedPair);
+
+    return matchedPair.getRight() != null ? partnerRepository.find(matchedPair.getRight()) : null;
   }
 
   protected void generateMoves(Map<AccountByPartner, Map<Boolean, Boolean>> map) {
@@ -484,13 +485,13 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                 .map(account -> account.getId())
                 .map(id -> id.toString())
                 .collect(Collectors.joining(","));
-        query = "self.account in (" + idListStr + ") AND ";
+        query = "self.account.id in (" + idListStr + ") AND ";
       }
       query =
           query.concat(
               "self.move.statusSelect = "
                   + MoveRepository.STATUS_ACCOUNTED
-                  + " AND self.move.period.year = "
+                  + " AND self.move.period.year.id = "
                   + accountingBatch.getYear().getId());
       Query qIncome =
           JPA.em()

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,14 +20,10 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.base.AxelorException;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 public interface InvoicePaymentMoveCreateService {
 
   InvoicePayment createMoveForInvoicePayment(InvoicePayment invoicePayment) throws AxelorException;
 
-  void createInvoicePaymentMove(InvoicePayment invoicePayment)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
+  void createInvoicePaymentMove(InvoicePayment invoicePayment) throws AxelorException;
 }

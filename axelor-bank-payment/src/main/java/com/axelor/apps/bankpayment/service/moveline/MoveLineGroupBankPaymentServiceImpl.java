@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticAxisService;
+import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
@@ -68,7 +69,8 @@ public class MoveLineGroupBankPaymentServiceImpl extends MoveLineGroupServiceImp
       MoveLineRecordBankPaymentService moveLineRecordBankPaymentService,
       FiscalPositionService fiscalPositionService,
       TaxService taxService,
-      AnalyticAxisService analyticAxisService) {
+      AnalyticAxisService analyticAxisService,
+      AnalyticGroupService analyticGroupService) {
     super(
         moveLineService,
         moveLineDefaultService,
@@ -86,7 +88,8 @@ public class MoveLineGroupBankPaymentServiceImpl extends MoveLineGroupServiceImp
         moveLineFinancialDiscountService,
         fiscalPositionService,
         taxService,
-        analyticAxisService);
+        analyticAxisService,
+        analyticGroupService);
     this.moveLineCheckBankPaymentService = moveLineCheckBankPaymentService;
     this.moveLineRecordBankPaymentService = moveLineRecordBankPaymentService;
   }

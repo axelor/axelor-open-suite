@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -95,9 +95,6 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
       throws AxelorException {
     checkSaleOrderAndProduct(saleOrder, product);
     SaleOrderLine saleOrderLine = new SaleOrderLine();
-    saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine, null);
-    checkProduct(saleOrder, saleOrderLine, product);
-    saleOrderLine.setProduct(product);
     if (appSaleService.getAppSale().getManageMultipleSaleQuantity()) {
       productMultipleQtyService.checkMultipleQty(product.getSaleProductMultipleQtyList(), qty);
     }
@@ -105,6 +102,9 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
       qty = BigDecimal.ONE;
     }
     saleOrderLine.setQty(qty);
+    saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine, null);
+    checkProduct(saleOrder, saleOrderLine, product);
+    saleOrderLine.setProduct(product);
     saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
 
     saleOrderLineRepository.save(saleOrderLine);
@@ -124,7 +124,9 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(SaleExceptionMessage.EITHER_PRODUCT_OR_SALE_ORDER_ARE_NULL));
     }
-    if (saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
+    if (saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_DRAFT_QUOTATION
+        && !(saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED
+            && saleOrder.getOrderBeingEdited())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.SALE_ORDER_NOT_DRAFT));
@@ -135,12 +137,13 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
       throws AxelorException {
     String domain =
         saleOrderLineDomainService.computeProductDomain(saleOrderLine, saleOrder, false);
-    if (!productRepository
-        .all()
-        .filter(domain)
-        .bind("__date__", appSaleService.getTodayDate(saleOrder.getCompany()))
-        .fetch()
-        .contains(product)) {
+    if (productRepository
+            .all()
+            .filter(domain + " AND self.id = :productId")
+            .bind("__date__", appSaleService.getTodayDate(saleOrder.getCompany()))
+            .bind("productId", product.getId())
+            .fetchOne()
+        == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.PRODUCT_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS),

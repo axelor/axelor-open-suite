@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.project.db.PlannedTimeValue;
@@ -301,7 +302,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         projectPlanningTime.getDisplayTimeUnit(),
         projectPlanningTime.getTimeUnit(),
         projectPlanningTime.getDisplayPlannedTime(),
-        projectPlanningTime.getDisplayPlannedTime().scale(),
+        AppBaseService.COMPUTATION_SCALING,
         projectPlanningTime.getProject());
   }
 
@@ -320,7 +321,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         projectPlanningTime.getDisplayTimeUnit(),
         projectPlanningTime.getTimeUnit(),
         plannedTime.get(),
-        plannedTime.get().scale(),
+        AppBaseService.COMPUTATION_SCALING,
         projectPlanningTime.getProject());
   }
 
@@ -399,7 +400,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       throws AxelorException {
     ProjectConfig projectConfig = getProjectConfig(projectPlanningTime);
     if (projectConfig != null) {
-      projectConfig.getValueByDefaultOnDisplayPlannedTime();
+      return projectConfig.getValueByDefaultOnDisplayPlannedTime();
     }
     return BigDecimal.ZERO;
   }

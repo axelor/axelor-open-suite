@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -49,7 +49,10 @@ public class MassEntryMoveUpdateServiceImpl implements MassEntryMoveUpdateServic
     updateMap.put("temporaryMoveNumber", Math.toIntExact(generatedMove.getId()));
     updateMap.put("isGenerated", true);
 
-    Query.of(MoveLineMassEntry.class).filter("self.id in :ids", moveLineIds).update(updateMap);
+    Query.of(MoveLineMassEntry.class)
+        .filter("self.id in :ids")
+        .bind("ids", moveLineIds)
+        .update(updateMap);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -57,7 +60,8 @@ public class MassEntryMoveUpdateServiceImpl implements MassEntryMoveUpdateServic
     List<Long> moveLineIds = this.getMoveLineMassEntryIds(errorId, moveId);
 
     Query.of(MoveLineMassEntry.class)
-        .filter("self.id in :ids", moveLineIds)
+        .filter("self.id in :ids")
+        .bind("ids", moveLineIds)
         .update("moveStatusSelect", MoveRepository.STATUS_NEW);
   }
 
@@ -75,7 +79,8 @@ public class MassEntryMoveUpdateServiceImpl implements MassEntryMoveUpdateServic
             .collect(Collectors.toList());
     if (ObjectUtils.isEmpty(moveLineIds)) {
       Query.of(Move.class)
-          .filter("self.id = :id", moveId)
+          .filter("self.id = :id")
+          .bind("id", moveId)
           .update("massEntryStatusSelect", MoveRepository.MASS_ENTRY_STATUS_VALIDATED);
     }
   }

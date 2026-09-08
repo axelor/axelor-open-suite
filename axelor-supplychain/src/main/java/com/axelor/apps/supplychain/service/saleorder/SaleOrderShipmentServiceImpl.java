@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -139,6 +139,7 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
     SaleOrderLine shippingCostLine = new SaleOrderLine();
     saleOrderLineInitValueService.onNewInitValues(saleOrder, shippingCostLine, null);
     shippingCostLine.setSaleOrder(saleOrder);
+    shippingCostLine.setMainSaleOrder(saleOrder);
     shippingCostLine.setProduct(shippingCostProduct);
     saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, shippingCostLine);
     return shippingCostLine;

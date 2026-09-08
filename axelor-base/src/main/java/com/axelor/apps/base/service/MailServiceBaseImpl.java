@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -306,7 +306,9 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
   @Override
   public void send(final MailMessage message) throws MailException {
-    if (!appBaseService.isApp("base") || !appBaseService.getAppBase().getActivateSendingEmail()) {
+    if (!appBaseService.isApp("base")
+        || !appBaseService.getAppBase().getActivateSendingEmail()
+        || !appBaseService.getAppBase().getActivateStreamEmailSending()) {
       return;
     }
     final EmailAccount emailAccount = mailAccountService.getDefaultSender();

@@ -19,6 +19,8 @@
 504;28;"GroupProductLevel";"${__bean__(com.axelor.apps.base.service.app.AppBaseService.class).getAppBase().getRegroupProductsLevelSelect()}";"string"
 505;28;"GroupProductProductTitle";"${__bean__(com.axelor.apps.base.service.app.AppBaseService.class).getAppBase().getRegroupProductsLabelProducts()}";"string"
 506;28;"GroupProductServiceTitle";"${__bean__(com.axelor.apps.base.service.app.AppBaseService.class).getAppBase().getRegroupProductsLabelServices()}";"string"
+507;28;"PrimaryColor";"#D3D3D3";"string"
+508;28;"SecondaryColor";"#E6E6E6";"string"
 511;71;"Timezone";"${stockMove.company?.timezone}";"string"
 512;71;"__locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale(stockMove.partner)}";"string"
 513;71;"StockMoveId";"$stockMove.id";"decimal"

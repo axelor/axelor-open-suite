@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="sale-order-quotation-grid" title="Sale quotations"
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
@@ -14,7 +14,7 @@
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-sale-order-method-convert-selected-lines-to-merge-lines"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
-          action="action-view-open-quotation-lines"/>
+          action="action-sale-order-method-show-quotation-lines"/>
       </menu>
     </menubar>
     <hilite background="warning"
@@ -217,7 +217,7 @@
         if="__config__.app.getApp('base')?.enableTradingNamesManagement" title="Trading name"
         type="many-to-one" form-view="trading-name-form" grid-view="trading-name-grid"
         target="com.axelor.apps.base.db.TradingName" colOffset="3" colSpan="6" width="200px"
-        showIf="tradingNameToCheck" domain=":company MEMBER OF self.companySet"
+        showIf="tradingNameToCheck" domain="self.company = :company"
         requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"/>
       <button name="confirmBtn" title="Confirmer"
         onClick="action-sale-order-method-merge-from-pop-up" colSpan="12" width="200px"
@@ -411,7 +411,6 @@
           </viewer>
         </field>
       </panel>
-      <field name="oneoffSale" colSpan="2"/>
       <field name="company.tradingNameList" hidden="true"/>
       <panel name="generalInfoPanel" colSpan="12">
         <field name="company" readonlyIf="statusSelect == 3 || clientPartner != null"
@@ -460,8 +459,12 @@
           onSelect="action-sale-order-supplychain-method-set-delivered-partner-domain"
           form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
 
-        <field if="__config__.app.getApp('sale')?.getManageSaleOrderVersion()"
+        <field
+          if="__config__.app.getApp('sale')?.getManageSaleOrderVersion() &amp;&amp; !__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"
           name="versionNumber" colSpan="3"/>
+        <field
+          if="__config__.app.getApp('sale')?.getManageSaleOrderVersion() &amp;&amp; __config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"
+          name="versionNumber" colSpan="3" showIf="statusSelect &lt;= 2 || statusSelect == 5"/>
         <field name="taxNumber" colSpan="3" canNew="false" canEdit="false"
           readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited"
           onSelect="action-sale-order-attrs-compute-tax-number-domain"
@@ -501,6 +504,7 @@
             onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-form"
             grid-view="address-grid"/>
           <field name="deliveryAddressStr"
+            onChange="action-sale-order-method-update-sale-order-lines-delivery-address-str"
             readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited" height="5">
             <viewer><![CDATA[<>{deliveryAddressStr}</>]]></viewer>
           </field>
@@ -573,49 +577,69 @@
       </panel>
       <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain"
         name="deliveryInformationPanel" title="Delivery" colSpan="12">
-        <field name="specificPackage" colSpan="12"/>
-        <field name="stockLocation" canEdit="false"
-          onSelect="action-sale-order-attrs-set-stock-location-domain"
-          form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="toStockLocation" canEdit="false"
-          domain="self.company = :company and self.typeSelect != 1 and self.usableOnSaleOrder = true"
-          form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="estimatedShippingDate"
-          onChange="action-sale-order-group-on-estimated-shipping-date-change"/>
-        <field name="estimatedDeliveryDate"
-          onChange="action-sale-order-group-on-estimated-delivery-date-change"/>
-        <field name="deliveryCondition" colSpan="12"/>
-        <field name="shipmentMode" canEdit="false" form-view="shipment-mode-form"
-          grid-view="shipment-mode-grid"/>
-        <field name="freightCarrierMode" canEdit="false"
-          onChange="action-sale-order-record-freight-carrier"
-          domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form"
-          grid-view="freight-carrier-mode-grid"/>
-        <field name="carrierPartner" canEdit="false" x-image-field="picture"
-          domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
-          form-view="partner-form" grid-view="partner-grid"/>
-        <field name="forwarderPartner" canEdit="false" x-image-field="picture"
-          domain="self.isContact = FALSE AND (self.isCarrier = TRUE OR self.isSupplier = TRUE) AND :company MEMBER OF self.companySet"
-          form-view="partner-form" grid-view="partner-grid"/>
-        <field name="incoterm" canEdit="false" form-view="incoterm-form"
-          grid-view="incoterm-grid" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
-        <field name="shippingCost" title="SaleOrder.shippingCost"
-          x-scale="company.currency.numberOfDecimals"
-          onChange="action-sale-order-method-compute-margin"/>
-        <field name="isNeedingConformityCertificate" colSpan="3"/>
-        <field name="isIspmRequired" readonly="true" colSpan="3"/>
-        <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details"
-          showIf="statusSelect >= 3" colSpan="6" onClick="action-view-show-stock-move-line"/>
-        <panel-related name="stockMovesPanel" field="stockMoveList"
-          grid-view="stock-move-sale-order-grid" form-view="stock-move-form"
-          showIf="statusSelect >= 3" colSpan="12" readonly="true"/>
-        <panel name="deliveryCommentsPanel" title="Comment to display on delivery"
+        <panel name="deliverySourcingPanel" title="Sourcing mode" icon="box-arrow-in-down"
           colSpan="12">
-          <field name="deliveryComments" widget="html" colSpan="12" showTitle="false"/>
+          <field name="oneoffSale" colSpan="3"/>
         </panel>
-        <panel name="pickingOrderCommentsPanel" title="Comment to display on picking order"
+        <panel name="deliveryStockPanel" title="Stock and packaging" icon="box-seam"
           colSpan="12">
-          <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
+          <field name="stockLocation" canEdit="false"
+            onSelect="action-sale-order-attrs-set-stock-location-domain"
+            form-view="stock-location-form" grid-view="stock-location-grid"/>
+          <field name="toStockLocation" canEdit="false"
+            domain="self.company = :company and self.typeSelect != 1 and self.usableOnSaleOrder = true"
+            form-view="stock-location-form" grid-view="stock-location-grid"/>
+          <field name="specificPackage" colSpan="12"/>
+        </panel>
+        <panel name="deliveryDatesPanel" title="Forecast dates" icon="calendar-week"
+          colSpan="12">
+          <field name="estimatedShippingDate"
+            onChange="action-sale-order-group-on-estimated-shipping-date-change"/>
+          <field name="estimatedDeliveryDate"
+            onChange="action-sale-order-group-on-estimated-delivery-date-change"/>
+        </panel>
+        <panel name="deliveryTransportPanel" title="Transport" icon="truck" colSpan="12">
+          <field name="deliveryCondition" colSpan="12"/>
+          <field name="shipmentMode" canEdit="false" form-view="shipment-mode-form"
+            grid-view="shipment-mode-grid"/>
+          <field name="freightCarrierMode" canEdit="false"
+            onChange="action-sale-order-record-freight-carrier"
+            domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form"
+            grid-view="freight-carrier-mode-grid"/>
+          <field name="carrierPartner" canEdit="false" x-image-field="picture"
+            domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
+            form-view="partner-form" grid-view="partner-grid"/>
+          <field name="forwarderPartner" canEdit="false" x-image-field="picture"
+            domain="self.isContact = FALSE AND (self.isCarrier = TRUE OR self.isSupplier = TRUE) AND :company MEMBER OF self.companySet"
+            form-view="partner-form" grid-view="partner-grid"/>
+          <field name="incoterm" canEdit="false" form-view="incoterm-form"
+            grid-view="incoterm-grid" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
+          <field name="shippingCost" title="SaleOrder.shippingCost"
+            x-scale="company.currency.numberOfDecimals"
+            onChange="action-sale-order-method-compute-margin"/>
+        </panel>
+        <panel name="deliveryCompliancePanel" title="Regulatory compliance"
+          icon="shield-check" colSpan="12">
+          <field name="isNeedingConformityCertificate" colSpan="3"/>
+          <field name="isIspmRequired" readonly="true" colSpan="3"/>
+        </panel>
+        <panel name="deliveryTrackingPanel" title="Delivery tracking" icon="geo-alt-fill"
+          showIf="statusSelect >= 3" colSpan="12">
+          <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details"
+            colSpan="6" onClick="action-view-show-stock-move-line"/>
+          <panel-dashlet name="customerDeliveriesPanel" title="Customer deliveries"
+            colSpan="12" action="action-sale-order-view-stock-moves"/>
+        </panel>
+        <panel name="deliveryCommentsGroupPanel" title="Comments" icon="chat-left-text"
+          colSpan="12">
+          <panel name="deliveryCommentsPanel" title="Comment to display on delivery"
+            colSpan="12">
+            <field name="deliveryComments" widget="html" colSpan="12" showTitle="false"/>
+          </panel>
+          <panel name="pickingOrderCommentsPanel" title="Comment to display on picking order"
+            colSpan="12">
+            <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
+          </panel>
         </panel>
       </panel>
       <panel name="invoicingPanel" title="Invoicing">
@@ -647,9 +671,9 @@
         <field name="expectedRealisationDate" colSpan="12" width="50%"/>
         <label name="orLabel" title="OR" colSpan="12"/>
         <field name="timetableTemplate"
-          onChange="action-sale-order-method-apply-timetable-template,action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
+          onChange="action-group-sale-order-timetable-template-change"/>
         <field name="computationDate"
-          onChange="action-sale-order-method-apply-timetable-template,action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
+          onChange="action-group-sale-order-timetable-template-change"/>
         <field name="amountToBeSpreadOverTheTimetable" colSpan="12"
           x-scale="currency.numberOfDecimals"/>
         <panel-related name="timetableListPanel" if-module="axelor-supplychain"
@@ -789,8 +813,8 @@
         icon="box-seam-fill"/>
       <button if="__config__.app.getApp('sale')?.getEnableConfigurator()"
         name="addLineFromConfiguratorBtn" title="Add Line from Configurator"
-        showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"
-        icon="ui-checks"/>
+        showIf="statusSelect == 1 || (statusSelect == 3 &amp;&amp; orderBeingEdited)"
+        onClick="save,action-sale-order-view-generate-line" icon="ui-checks"/>
       <button
         if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto"
         name="generateCustomerStockMoveBtn" title="Generate customer deliveries"
@@ -864,13 +888,14 @@
       if="__config__.app.getApp('base')?.getIsGlobalDiscountEnabled()"
       showIf="clientPartner &amp;&amp; saleOrderLineList &amp;&amp; saleOrderLineList.length != 0"
       sidebar="true" readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited">
-      <field name="discountTypeSelect" onChange="action-sale-order-method-on-line-change"/>
+      <field name="discountTypeSelect"
+        onChange="action-sale-order-group-discount-type-onchange"/>
       <field name="discountAmount" showIf="discountTypeSelect != 0"
         x-currency="discountCurrency" x-scale="discountScale" colSpan="6"
-        onChange="action-sale-order-method-on-line-change"/>
+        onChange="action-sale-order-method-on-global-discount-change, action-sale-order-method-on-line-change"/>
       <button name="$swapDiscountTypeBtn" title="Swap discount type" widget="info-button"
         showIf="discountTypeSelect != 0" icon="arrow-left-right" colSpan="6"
-        onClick="action-sale-order-attrs-swap-discount-type, action-sale-order-method-on-line-change"/>
+        onClick="action-sale-order-attrs-swap-discount-type, action-sale-order-method-on-global-discount-change, action-sale-order-method-on-line-change"/>
       <field name="priceBeforeGlobalDiscount" type="decimal" x-currency="currency.symbol"
         x-scale="currency.numberOfDecimals" hidden="true"/>
       <field name="discountCurrency" hidden="true" x-dirty="false"/>
@@ -903,13 +928,7 @@
     <panel name="referencePanel" title="References" hideIf="clientPartner == null"
       itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
       <field name="externalReference" hideIf="company == null"
-        onChange="action-sale-sale-order-attrs-external-reference"/>
-      <field name="$duplicateExternalReference" hidden="true" colSpan="12" showTitle="false"
-        readonly="true">
-        <viewer>
-          <![CDATA[<><Badge bg="warning">{_t('Watch out, a sale order was already created with this external reference.')}</Badge></>]]>
-        </viewer>
-      </field>
+        onChange="action-sale-order-attrs-external-reference"/>
       <field name="opportunity" readonlyIf="statusSelect >= 2" form-view="opportunity-form"
         grid-view="opportunity-grid" canEdit="false"/>
       <field name="duplicateReferenceLabel" showTitle="false" readonly="true" hidden="true">
@@ -1477,7 +1496,7 @@
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-open-sale-quotation-merge-form"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
-          action="action-view-open-quotation-lines"/>
+          action="action-sale-order-method-show-quotation-lines"/>
       </menu>
     </menubar>
     <field name="saleOrderSeq"/>
@@ -1542,7 +1561,8 @@
   </action-attrs>
 
   <action-attrs name="action-attrs-sale-other-reason">
-    <attribute for="cancelReasonStr" name="hidden" expr="cancelReason.freeText == false"/>
+    <attribute for="cancelReasonStr" name="hidden"
+      expr="eval: !cancelReason || !cancelReason.freeText"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-supplychain-attrs-fiscal-position-domain">
@@ -1589,12 +1609,12 @@
     <action name="action-sale-order-attrs-hidden-bank-details"/>
     <action name="action-sale-order-attrs-external-reference"/>
     <action name="action-sale-order-attrs-availability"/>
-    <action name="action-sale-order-attrs-set-discounts-need-review"/>
     <action name="action-sale-order-record-get-trading-names-management-config"/>
     <action name="action-sale-order-method-is-incoterm-required"/>
     <action name="action-sale-order-method-get-last-version"/>
     <action name="action-sale-order-attrs-set-save-actual-version"/>
     <action name="action-sale-order-attrs-list-selection-in-type-select"/>
+    <action name="action-sale-order-attrs-line-discount-readonly"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
@@ -1649,12 +1669,6 @@
       expr=" eval: __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 1
     									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2"
       if="company != null"/>
-    <attribute name="title" for="saleOrderLineList.priceDiscounted"
-      expr="eval:com.axelor.i18n.I18n.get('Unit price A.T.I.')"
-      if="eval: inAti &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_CLASSIC"/>
-    <attribute name="title" for="saleOrderLineList.priceDiscounted"
-      expr="eval:com.axelor.i18n.I18n.get('Unit price W.T.')"
-      if="eval: !inAti &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_CLASSIC"/>
   </action-attrs>
 
   <action-record name="action-sale-order-record-from-partner"
@@ -1755,6 +1769,10 @@
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="onLineChange"/>
   </action-method>
 
+  <action-method name="action-sale-order-method-on-global-discount-change">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="onGlobalDiscountChange"/>
+  </action-method>
+
   <action-method name="action-sale-order-method-new-version">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="createNewVersion"/>
   </action-method>
@@ -1852,6 +1870,13 @@
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"
       if="__config__.app.getApp('sale')?.getSalespersonSelect() == 1"/>
+    <field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"
+      if="__config__.app.isApp('supplychain') &amp;&amp; clientPartner?.shipmentMode != null"/>
+    <field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"
+      if="__config__.app.isApp('supplychain')"/>
+    <field name="carrierPartner"
+      expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"
+      if="__config__.app.isApp('supplychain')"/>
   </action-record>
 
   <action-record name="action-sale-order-record-hide-discount"
@@ -2040,13 +2065,18 @@
     <context name="saleOrder" expr="eval: __self__.id"/>
   </action-view>
 
-  <action-view name="action-view-open-quotation-lines" title="Quotation lines"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
-    <view type="grid" name="sale-order-line-menu-grid"/>
-    <view type="form" name="sale-order-line-all-form"/>
-    <view-param name="search-filters" value="sale-order-lines-filter"/>
-    <domain>self.saleOrder.statusSelect in (1,2)</domain>
+  <action-view name="action-sale-order-view-stock-moves" title="Stock moves"
+    model="com.axelor.apps.stock.db.StockMove">
+    <view type="grid" name="stock-move-sale-order-grid"/>
+    <view type="form" name="stock-move-form"/>
+    <domain>:saleOrder MEMBER OF self.saleOrderSet</domain>
+    <context name="saleOrder" expr="eval: __this__.id"/>
+    <context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
   </action-view>
+
+  <action-method name="action-sale-order-method-show-quotation-lines">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="showQuotationLines"/>
+  </action-method>
 
   <action-view name="action-view-open-sale-order-lines" title="Sale order lines"
     model="com.axelor.apps.sale.db.SaleOrderLine">
@@ -2105,13 +2135,13 @@
   </action-view>
 
   <action-validate name="action-validate-sale-order-check-selection">
-    <error message="You have to choose at least one sale order"
-      if="saleOrderToMerge == null || (saleOrderToMerge != null &amp;&amp; saleOrderToMerge.size() == 0)"/>
+    <error message="You have to choose at least two sale orders"
+      if="saleOrderToMerge == null || (saleOrderToMerge != null &amp;&amp; saleOrderToMerge.size() &lt; 2)"/>
   </action-validate>
 
   <action-validate name="action-validate-sale-quotation-check-selection">
-    <error message="You have to choose at least one sale quotation"
-      if="saleQuotationToMerge == null || (saleQuotationToMerge != null &amp;&amp; saleQuotationToMerge.size() == 0)"/>
+    <error message="You have to choose at least two sale quotations"
+      if="saleQuotationToMerge == null || (saleQuotationToMerge != null &amp;&amp; saleQuotationToMerge.size() &lt; 2)"/>
   </action-validate>
 
   <action-record name="action-saleorder-record-template"
@@ -2192,11 +2222,6 @@
       for="saleOrderLineList.availableStatus" if="__config__.app.isApp('supplychain')"/>
   </action-attrs>
 
-  <action-attrs name="action-sale-order-attrs-set-discounts-need-review">
-    <attribute name="value" for="$discountsNeedReview"
-      expr="eval: (statusSelect == __repo__(SaleOrder).STATUS_DRAFT_QUOTATION || (orderBeingEdited &amp;&amp; __repo__(SaleOrder).STATUS_ORDER_CONFIRMED)) &amp;&amp; saleOrderLineList?.any{it.discountsNeedReview}"/>
-  </action-attrs>
-
   <action-group name="action-sale-order-group-on-estimated-shipping-date-change">
     <action name="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
     <action name="save"/>
@@ -2274,12 +2299,6 @@
       for="computationDate"/>
   </action-attrs>
 
-  <action-attrs name="action-sale-sale-order-attrs-external-reference">
-    <attribute name="hidden" for="$duplicateExternalReference"
-      expr="eval: !((externalReference != null &amp;&amp; id != null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ? AND self.id != ?', externalReference , id).count() > 0)
-                 || (externalReference != null &amp;&amp; id == null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ?', externalReference).count() > 0))"/>
-  </action-attrs>
-
   <action-record name="action-sale-order-record-set-stock-location"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="stockLocation"
@@ -2322,6 +2341,12 @@
       method="updateSaleOrderLinesDeliveryAddress"/>
   </action-method>
 
+  <action-method
+    name="action-sale-order-method-update-sale-order-lines-delivery-address-str">
+    <call class="com.axelor.apps.sale.web.SaleOrderController"
+      method="updateSaleOrderLinesDeliveryAddressStr"/>
+  </action-method>
+
   <action-method name="action-sale-order-duplicate-sale-order-with-configurator">
     <call class="com.axelor.apps.sale.web.SaleOrderController"
       method="duplicateWithConfigurator"/>
@@ -2349,5 +2374,23 @@
   <action-method name="action-sale-order-method-compute-margin">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="computeMargin"/>
   </action-method>
+
+  <action-record name="action-sale-order-record-clear-discount-amount"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="discountAmount" expr="eval: 0"/>
+  </action-record>
+
+  <action-group name="action-sale-order-group-discount-type-onchange">
+    <action name="action-sale-order-record-clear-discount-amount"/>
+    <action name="action-sale-order-attrs-line-discount-readonly"/>
+    <action name="action-sale-order-method-on-line-change"/>
+  </action-group>
+
+  <action-attrs name="action-sale-order-attrs-line-discount-readonly">
+    <attribute name="readonly" for="saleOrderLineList.discountTypeSelect"
+      expr="eval: discountTypeSelect > 0"/>
+    <attribute name="readonly" for="saleOrderLineList.discountAmount"
+      expr="eval: discountTypeSelect > 0"/>
+  </action-attrs>
 
 </object-views>

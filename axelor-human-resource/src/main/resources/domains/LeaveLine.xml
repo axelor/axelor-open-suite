@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="LeaveLine" cacheable="true">
+  <entity name="LeaveLine">
     <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" required="true"/>
     <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Type"
       required="true"/>

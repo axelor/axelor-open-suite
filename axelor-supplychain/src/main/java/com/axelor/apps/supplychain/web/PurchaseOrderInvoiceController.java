@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -49,6 +49,8 @@ public class PurchaseOrderInvoiceController {
     purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 
     try {
+      Beans.get(PurchaseOrderInvoiceService.class)
+          .displayErrorMessageBtnGenerateInvoice(purchaseOrder);
 
       BigDecimal amountToInvoice =
           purchaseOrder
@@ -81,6 +83,8 @@ public class PurchaseOrderInvoiceController {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+      Beans.get(PurchaseOrderInvoiceService.class)
+          .displayErrorMessageBtnGenerateInvoice(purchaseOrder);
       response.setView(
           ActionView.define(I18n.get("Invoicing"))
               .model(PurchaseOrder.class.getName())

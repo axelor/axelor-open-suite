@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,21 +31,21 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.cache.AxelorCache;
+import com.axelor.cache.CacheBuilder;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.template.TemplateMaker;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import jakarta.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.codehaus.groovy.control.CompilationFailedException;
@@ -54,14 +54,13 @@ import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
 public class UnitConversionServiceImpl implements UnitConversionService {
 
-  private static final char TEMPLATE_DELIMITER = '$';
-  private static final int DEFAULT_COEFFICIENT_SCALE = 12;
+  protected static final char TEMPLATE_DELIMITER = '$';
+  protected static final int DEFAULT_COEFFICIENT_SCALE = 12;
 
-  private final Cache<String, List<UnitConversion>> unitConversionCache =
-      CacheBuilder.newBuilder()
-          .expireAfterWrite(10, TimeUnit.MINUTES)
-          .maximumSize(100)
-          .recordStats()
+  private static final AxelorCache<String, List<UnitConversion>> unitConversionCache =
+      CacheBuilder.newBuilder("unitConversionCache")
+          .expireAfterWrite(Duration.ofMinutes(10))
+          .maximumSize(500)
           .build();
 
   protected AppBaseService appBaseService;
@@ -209,7 +208,15 @@ public class UnitConversionServiceImpl implements UnitConversionService {
           conf.addCompilationCustomizers(customizer);
           Binding binding = new Binding();
           GroovyShell shell = new GroovyShell(binding, conf);
-          return new BigDecimal(shell.evaluate(eval).toString());
+          try {
+            return new BigDecimal(shell.evaluate(eval).toString());
+          } catch (Exception e) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(BaseExceptionMessage.UNIT_CONVERSION_FORMULA_ERROR),
+                startUnit.getName(),
+                endUnit.getName());
+          }
         }
       }
 
@@ -230,7 +237,16 @@ public class UnitConversionServiceImpl implements UnitConversionService {
           conf.addCompilationCustomizers(customizer);
           Binding binding = new Binding();
           GroovyShell shell = new GroovyShell(binding, conf);
-          BigDecimal result = new BigDecimal(shell.evaluate(eval).toString());
+          BigDecimal result;
+          try {
+            result = new BigDecimal(shell.evaluate(eval).toString());
+          } catch (Exception e) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(BaseExceptionMessage.UNIT_CONVERSION_FORMULA_ERROR),
+                startUnit.getName(),
+                endUnit.getName());
+          }
           if (result.compareTo(BigDecimal.ZERO) != 0) {
             return BigDecimal.ONE.divide(result, DEFAULT_COEFFICIENT_SCALE, RoundingMode.HALF_UP);
           }
@@ -248,7 +264,7 @@ public class UnitConversionServiceImpl implements UnitConversionService {
   protected List<UnitConversion> fetchUnitConversionList(
       Unit startUnit, Unit endUnit, boolean autoFlush) {
     String key = getKey(startUnit, endUnit);
-    List<UnitConversion> unitConversionList = unitConversionCache.getIfPresent(key);
+    List<UnitConversion> unitConversionList = unitConversionCache.get(key);
     if (unitConversionList != null) {
       return unitConversionList;
     }
@@ -267,6 +283,8 @@ public class UnitConversionServiceImpl implements UnitConversionService {
   }
 
   protected String getKey(Unit startUnit, Unit endUnit) {
+    // Tenant segregation is handled by the tenant-aware AxelorCache, so the key only needs the
+    // units.
     return Stream.of(startUnit.getId(), endUnit.getId())
         .sorted()
         .map(String::valueOf)

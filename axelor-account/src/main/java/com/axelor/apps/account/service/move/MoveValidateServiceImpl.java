@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -90,6 +90,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -719,13 +720,34 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     return errors;
   }
 
-  public void accountingMultiple(Query<Move> moveListQuery) throws AxelorException {
-    Move move;
+  @Override
+  public Pair<List<Move>, Integer> accountingMultiple(Query<Move> moveListQuery) {
+    List<Move> moveWithErrors = new ArrayList<>();
+    int anomalyCount = 0;
+    List<Move> moveList = moveListQuery.fetch();
 
-    while (!((move = moveListQuery.fetchOne()) == null)) {
-      accounting(move);
-      JPA.clear();
+    if (CollectionUtils.isEmpty(moveList)) {
+      return Pair.of(moveWithErrors, anomalyCount);
     }
+    List<Long> moveIds = moveList.stream().map(Move::getId).collect(Collectors.toList());
+    int i = 0;
+
+    for (Long moveId : moveIds) {
+      Move move = moveRepository.find(moveId);
+      try {
+        accounting(move);
+      } catch (Exception e) {
+        TraceBackService.trace(
+            new AxelorException(e, move, TraceBackRepository.CATEGORY_INCONSISTENCY));
+        moveWithErrors.add(move);
+        anomalyCount++;
+      } finally {
+        if (++i % jpaLimit == 0) {
+          JPA.clear();
+        }
+      }
+    }
+    return Pair.of(moveWithErrors, anomalyCount);
   }
 
   protected void checkInactiveAnalyticAccount(Move move) throws AxelorException {
@@ -1006,12 +1028,17 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected boolean isFinancialDiscount(Move move) throws AxelorException {
 
     AppAccount account = appAccountService.getAppAccount();
-    if (account == null || !account.getManageFinancialDiscount()) {
+    if (account == null
+        || !account.getManageFinancialDiscount()
+        || (move.getInvoice() != null && move.getInvoice().getFinancialDiscount() == null)) {
       return false;
     }
 
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLineFinancialDiscountService.isFinancialDiscountLine(moveLine, move.getCompany())) {
+      if (moveLineFinancialDiscountService.isFinancialDiscountLine(
+          moveLine,
+          move.getCompany(),
+          move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)) {
         return true;
       }
     }

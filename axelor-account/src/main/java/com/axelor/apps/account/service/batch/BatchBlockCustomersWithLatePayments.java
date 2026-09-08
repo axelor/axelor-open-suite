@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -147,7 +147,7 @@ public class BatchBlockCustomersWithLatePayments extends BatchStrategy {
               customersToBlock.add(partner.getId());
               customersToBlock.addAll(
                   Query.of(Partner.class)
-                      .filter("self.parentPartner = :parentPartner")
+                      .filter("self.parentPartner.id = :parentPartner")
                       .bind("parentPartner", partner.getId())
                       .fetchStream()
                       .map(parentPartner -> parentPartner.getId())

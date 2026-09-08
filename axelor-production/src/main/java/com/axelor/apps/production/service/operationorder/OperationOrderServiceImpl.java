@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,6 +41,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveSe
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
@@ -203,6 +204,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   @Override
   public OperationOrder updateDiffProdProductList(OperationOrder operationOrder)
       throws AxelorException {
+    operationOrder = JpaModelHelper.ensureManaged(operationOrder);
     List<ProdProduct> toConsumeList = operationOrder.getToConsumeProdProductList();
     List<StockMoveLine> consumedList = operationOrder.getConsumedStockMoveLineList();
     if (toConsumeList == null || consumedList == null) {
@@ -252,6 +254,10 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     } else {
       return manufOrderPlanStockMoveService
           .createAndPlanToConsumeStockMove(manufOrder)
+          .filter(
+              sm ->
+                  CollectionUtils.isEmpty(sm.getStockMoveLineList())
+                      || sm.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
           .map(
               sm -> {
                 operationOrder.addInStockMoveListItem(sm);

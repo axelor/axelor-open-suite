@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,10 +20,14 @@ package com.axelor.apps.hr.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.service.expense.KilometricComputationResult;
 import java.math.BigDecimal;
 
 public interface KilometricService {
   BigDecimal computeDistance(ExpenseLine expenseLine) throws AxelorException;
 
   BigDecimal computeDistance(String fromCity, String toCity) throws AxelorException;
+
+  KilometricComputationResult computeDistanceAndExpense(ExpenseLine expenseLine)
+      throws AxelorException;
 }

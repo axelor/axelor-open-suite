@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -74,6 +74,10 @@ public class SolBomCustomizationServiceImpl implements SolBomCustomizationServic
     if (billOfMaterial == null) {
       return null;
     }
+    billOfMaterial = billOfMaterialRepository.find(billOfMaterial.getId());
+    if (billOfMaterial == null) {
+      return null;
+    }
     BillOfMaterial personalizedBOM =
         billOfMaterialService.getCustomizedBom(billOfMaterial, depth, false);
 
@@ -115,7 +119,8 @@ public class SolBomCustomizationServiceImpl implements SolBomCustomizationServic
       List<SaleOrderLineDetails> saleOrderLineDetailsList, BillOfMaterial personalizedBOM) {
     if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
       for (SaleOrderLineDetails saleOrderLineDetails : saleOrderLineDetailsList) {
-        if (saleOrderLineDetails.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT) {
+        if (saleOrderLineDetails.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_COMPONENT
+            && saleOrderLineDetails.getProduct() != null) {
           var bomLine = bomLineCreationService.createBomLineFromSolDetails(saleOrderLineDetails);
           saleOrderLineDetails.setBillOfMaterialLine(bomLine);
           personalizedBOM.addBillOfMaterialLineListItem(bomLine);

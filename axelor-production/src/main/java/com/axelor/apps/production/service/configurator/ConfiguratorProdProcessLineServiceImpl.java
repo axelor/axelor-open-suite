@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -213,6 +213,45 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     } else {
       humanDuration = confProdProcessLine.getHumanDuration();
     }
+    long startingDuration;
+    if (confProdProcessLine.getDefStartingDurationFormula()) {
+      startingDuration =
+          Long.decode(
+              configuratorService
+                  .computeFormula(confProdProcessLine.getStartingDurationFormula(), attributes)
+                  .toString());
+    } else {
+      startingDuration =
+          confProdProcessLine.getStartingDuration() > 0
+              ? confProdProcessLine.getStartingDuration()
+              : workCenter.getStartingDuration();
+    }
+    long endingDuration;
+    if (confProdProcessLine.getDefEndingDurationFormula()) {
+      endingDuration =
+          Long.decode(
+              configuratorService
+                  .computeFormula(confProdProcessLine.getEndingDurationFormula(), attributes)
+                  .toString());
+    } else {
+      endingDuration =
+          confProdProcessLine.getEndingDuration() > 0
+              ? confProdProcessLine.getEndingDuration()
+              : workCenter.getEndingDuration();
+    }
+    long setupDuration;
+    if (confProdProcessLine.getDefSetupDurationFormula()) {
+      setupDuration =
+          Long.decode(
+              configuratorService
+                  .computeFormula(confProdProcessLine.getSetupDurationFormula(), attributes)
+                  .toString());
+    } else {
+      setupDuration =
+          confProdProcessLine.getSetupDuration() > 0
+              ? confProdProcessLine.getSetupDuration()
+              : workCenter.getSetupDuration();
+    }
 
     if (confProdProcessLine.getDefStockLocationAsFormula()) {
       stockLocation =
@@ -241,6 +280,9 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
     prodProcessLine.setHumanDurationDecimal(
         BigDecimal.valueOf(prodProcessLine.getHumanDuration())
             .divide(BigDecimal.valueOf(3600), 2, RoundingMode.HALF_UP));
+    prodProcessLine.setStartingDuration(startingDuration);
+    prodProcessLine.setEndingDuration(endingDuration);
+    prodProcessLine.setSetupDuration(setupDuration);
 
     if (isConsProOnOperation) {
       List<ConfiguratorProdProduct> confProdProductLines =

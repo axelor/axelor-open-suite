@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
@@ -35,16 +36,16 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineBomSyncServiceImpl implements SaleOrderLineBomSyncService {
 
-  protected final AppSaleRepository appSaleRepository;
+  protected final AppSaleService appSaleService;
 
   @Inject
-  public SaleOrderLineBomSyncServiceImpl(AppSaleRepository appSaleRepository) {
-    this.appSaleRepository = appSaleRepository;
+  public SaleOrderLineBomSyncServiceImpl(AppSaleService appSaleService) {
+    this.appSaleService = appSaleService;
   }
 
   @Override
   public void removeBomLines(SaleOrderLine saleOrderLine) {
-    if (appSaleRepository.all().autoFlush(false).fetchOne().getListDisplayTypeSelect()
+    if (appSaleService.getAppSale().getListDisplayTypeSelect()
         != AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
       return;
     }

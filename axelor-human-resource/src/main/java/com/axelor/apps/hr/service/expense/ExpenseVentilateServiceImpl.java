@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,12 +21,16 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -34,6 +38,8 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineRecordService;
+import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -46,6 +52,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
@@ -54,15 +61,18 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.i18n.I18n;
+import com.google.common.collect.Sets;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -85,6 +95,10 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
   protected AccountManagementAccountService accountManagementAccountService;
   protected AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService;
   protected ExpenseRepository expenseRepository;
+  protected MoveLineRecordService moveLineRecordService;
+  protected AnalyticLineService analyticLineService;
+  protected AccountManagementService accountManagementService;
+  protected TaxAccountToolService taxAccountToolService;
 
   @Inject
   public ExpenseVentilateServiceImpl(
@@ -104,7 +118,11 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
       MoveValidateService moveValidateService,
       AccountManagementAccountService accountManagementAccountService,
       AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService,
-      ExpenseRepository expenseRepository) {
+      ExpenseRepository expenseRepository,
+      MoveLineRecordService moveLineRecordService,
+      AnalyticLineService analyticLineService,
+      AccountManagementService accountManagementService,
+      TaxAccountToolService taxAccountToolService) {
     this.appAccountService = appAccountService;
     this.sequenceService = sequenceService;
     this.hrConfigService = hrConfigService;
@@ -122,6 +140,10 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
     this.accountManagementAccountService = accountManagementAccountService;
     this.analyticMoveLineGenerateRealService = analyticMoveLineGenerateRealService;
     this.expenseRepository = expenseRepository;
+    this.moveLineRecordService = moveLineRecordService;
+    this.analyticLineService = analyticLineService;
+    this.accountManagementService = accountManagementService;
+    this.taxAccountToolService = taxAccountToolService;
   }
 
   @Override
@@ -230,38 +252,51 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
             .orElse(BigDecimal.ZERO);
 
     moveLineConsolidateService.consolidateMoveLines(moveLines);
-    Account productAccount = accountConfigHRService.getExpenseTaxAccount(accountConfig);
+    Account taxAccount = accountConfigHRService.getExpenseTaxAccount(accountConfig);
+
+    for (MoveLine moveLine : moveLines) {
+      moveLineRecordService.refreshAccountInformation(moveLine, move);
+    }
 
     if (taxTotal.signum() != 0) {
-      Map<LocalDate, BigDecimal> expenseLinesTotalTax =
-          this.computeExpenseLinesTotalTax(expenseLineList);
+      Map<ExpenseTaxConfiguration, BigDecimal> expenseLinesTotalTax =
+          this.computeExpenseLinesTotalTax(expenseLineList, expense, taxAccount);
 
-      for (Map.Entry<LocalDate, BigDecimal> entry : expenseLinesTotalTax.entrySet()) {
-        Currency currency = move.getCurrency();
-        Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
+      Currency currency = move.getCurrency();
+      Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
+      BigDecimal currencyRate =
+          currencyService.getCurrencyConversionRate(currency, companyCurrency, moveDate);
 
-        BigDecimal currencyRate =
-            currencyService.getCurrencyConversionRate(currency, companyCurrency, entry.getKey());
+      for (Map.Entry<ExpenseTaxConfiguration, BigDecimal> entry : expenseLinesTotalTax.entrySet()) {
+        ExpenseTaxConfiguration taxConfig = entry.getKey();
 
         BigDecimal amountConvertedInCompanyCurrency =
             currencyService.getAmountCurrencyConvertedUsingExchangeRate(
                 entry.getValue(), currencyRate, companyCurrency);
 
-        moveLines.add(
+        MoveLine taxMoveLine =
             moveLineCreateService.createMoveLine(
                 move,
                 partner,
-                productAccount,
+                taxAccount,
                 entry.getValue(),
                 amountConvertedInCompanyCurrency,
                 currencyRate,
                 true,
                 moveDate,
                 moveDate,
-                entry.getKey(),
+                moveDate,
                 moveLineCounter++,
                 expense.getExpenseSeq(),
-                expense.getFullName()));
+                expense.getFullName());
+
+        taxMoveLine.setTaxLineSet(Sets.newHashSet(taxConfig.getTaxLine()));
+        taxMoveLine.setTaxRate(taxConfig.getTaxLine().getValue());
+        taxMoveLine.setTaxCode(taxConfig.getTaxLine().getTax().getCode());
+        taxMoveLine.setVatSystemSelect(taxConfig.getVatSystem());
+        taxMoveLine.setIsNonDeductibleTax(taxConfig.getTaxLine().getTax().getIsNonDeductibleTax());
+
+        moveLines.add(taxMoveLine);
       }
     }
 
@@ -303,21 +338,92 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
     return move;
   }
 
-  protected Map<LocalDate, BigDecimal> computeExpenseLinesTotalTax(
-      List<ExpenseLine> expenseLineList) {
-    Map<LocalDate, List<ExpenseLine>> expenseLinesByExpenseDate =
-        expenseLineList.stream()
-            .filter(expenseLine -> expenseLine.getTotalTax().signum() != 0)
-            .collect(Collectors.groupingBy(ExpenseLine::getExpenseDate));
+  protected Map<ExpenseTaxConfiguration, BigDecimal> computeExpenseLinesTotalTax(
+      List<ExpenseLine> expenseLineList, Expense expense, Account taxAccount)
+      throws AxelorException {
+    Map<ExpenseTaxConfiguration, BigDecimal> result = new HashMap<>();
 
-    return expenseLinesByExpenseDate.entrySet().stream()
-        .collect(
-            Collectors.toMap(
-                Map.Entry::getKey,
-                entry ->
-                    entry.getValue().stream()
-                        .map(ExpenseLine::getTotalTax)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add)));
+    Partner partner = expense.getEmployee().getContactPartner();
+    FiscalPosition fiscalPosition = partner != null ? partner.getFiscalPosition() : null;
+
+    List<ExpenseLine> taxedExpenseLines =
+        expenseLineList.stream().filter(this::expenseLineHasTax).toList();
+
+    for (ExpenseLine expenseLine : taxedExpenseLines) {
+      addExpenseLineTaxesToMap(result, expenseLine, expense, taxAccount, fiscalPosition);
+    }
+
+    return result;
+  }
+
+  protected boolean expenseLineHasTax(ExpenseLine expenseLine) {
+    return expenseLine.getTotalTax() != null && expenseLine.getTotalTax().signum() != 0;
+  }
+
+  protected void addExpenseLineTaxesToMap(
+      Map<ExpenseTaxConfiguration, BigDecimal> taxMap,
+      ExpenseLine expenseLine,
+      Expense expense,
+      Account taxAccount,
+      FiscalPosition fiscalPosition)
+      throws AxelorException {
+
+    Set<TaxLine> taxLineSet = getTaxLineSetForExpenseLine(expenseLine, expense, fiscalPosition);
+    if (CollectionUtils.isEmpty(taxLineSet)) {
+      return;
+    }
+
+    int vatSystem = computeVatSystem(expense, taxAccount);
+    BigDecimal totalTaxRate = computeTotalTaxRate(taxLineSet);
+
+    for (TaxLine taxLine : taxLineSet) {
+      ExpenseTaxConfiguration taxConfig = new ExpenseTaxConfiguration(taxLine, vatSystem);
+      BigDecimal taxAmount =
+          computeProportionalTaxAmount(
+              expenseLine.getTotalTax(), taxLine, totalTaxRate, taxLineSet.size());
+      taxMap.merge(taxConfig, taxAmount, BigDecimal::add);
+    }
+  }
+
+  protected Set<TaxLine> getTaxLineSetForExpenseLine(
+      ExpenseLine expenseLine, Expense expense, FiscalPosition fiscalPosition)
+      throws AxelorException {
+    return accountManagementService.getTaxLineSet(
+        expenseLine.getExpenseDate(),
+        expenseLine.getExpenseProduct(),
+        expense.getCompany(),
+        fiscalPosition,
+        true);
+  }
+
+  protected int computeVatSystem(Expense expense, Account taxAccount) throws AxelorException {
+    Partner partner = expense.getEmployee().getContactPartner();
+    Integer vatSystemSelect = MoveLineRepository.VAT_SYSTEM_DEFAULT;
+    try {
+      vatSystemSelect =
+          taxAccountToolService.resolveVatLiabilityFromAccountingSituation(
+              partner, expense.getCompany(), taxAccount, true, false);
+    } catch (AxelorException e) {
+      taxAccountToolService.checkAccountVatSystem(taxAccount);
+    }
+
+    return taxAccountToolService.calculateVatSystem(vatSystemSelect, taxAccount);
+  }
+
+  protected BigDecimal computeTotalTaxRate(Set<TaxLine> taxLineSet) {
+    return taxLineSet.stream()
+        .map(TaxLine::getValue)
+        .filter(java.util.Objects::nonNull)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  protected BigDecimal computeProportionalTaxAmount(
+      BigDecimal totalTax, TaxLine taxLine, BigDecimal totalTaxRate, int taxLineCount) {
+    if (taxLineCount == 1 || totalTaxRate.signum() == 0) {
+      return totalTax;
+    }
+    BigDecimal taxLineRate = taxLine.getValue() != null ? taxLine.getValue() : BigDecimal.ZERO;
+    return totalTax.multiply(taxLineRate).divide(totalTaxRate, 2, RoundingMode.HALF_UP);
   }
 
   /**
@@ -381,22 +487,26 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
                 ? expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " ")
                 : "");
 
+    Set<TaxLine> taxLineSet =
+        accountManagementService.getTaxLineSet(
+            expenseLine.getExpenseDate(), product, company, partner.getFiscalPosition(), true);
+    if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      moveLine.setTaxLineSet(Sets.newHashSet(taxLineSet));
+    }
+
     moveLine.setAnalyticDistributionTemplate(expenseLine.getAnalyticDistributionTemplate());
     List<AnalyticMoveLine> analyticMoveLineList =
         CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
             ? new ArrayList<>()
             : new ArrayList<>(moveLine.getAnalyticMoveLineList());
     moveLine.clearAnalyticMoveLineList();
-    expenseLine
-        .getAnalyticMoveLineList()
-        .forEach(
-            analyticMoveLine ->
-                moveLine.addAnalyticMoveLineListItem(
-                    analyticMoveLineGenerateRealService.createFromForecast(
-                        analyticMoveLine, moveLine)));
+    analyticMoveLineGenerateRealService.createFromForecastList(
+        expenseLine.getAnalyticMoveLineList(), moveLine);
     if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
       moveLine.setAnalyticMoveLineList(analyticMoveLineList);
     }
+    analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
+
     return moveLine;
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,21 +23,16 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.persist.Transactional;
-import jakarta.xml.bind.JAXBException;
 import java.io.File;
-import java.io.IOException;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 public interface BankOrderService {
 
   @Transactional(rollbackOn = {Exception.class})
   public void sign(BankOrder bankOrder);
 
-  public void validate(BankOrder bankOrder)
-      throws JAXBException, IOException, AxelorException, DatatypeConfigurationException;
+  public void validate(BankOrder bankOrder) throws AxelorException;
 
-  public File generateFile(BankOrder bankOrder)
-      throws JAXBException, IOException, AxelorException, DatatypeConfigurationException;
+  public File generateFile(BankOrder bankOrder) throws AxelorException;
 
   public String createDomainForBankDetails(BankOrder bankOrder);
 

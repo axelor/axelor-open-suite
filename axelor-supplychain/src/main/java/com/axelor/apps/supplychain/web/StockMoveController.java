@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,8 @@ import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.LogisticalFormCreateService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveReservedQtyService;
@@ -150,11 +152,41 @@ public class StockMoveController {
   public void fillRealQuantities(ActionRequest request, ActionResponse response) {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
-
+      stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
       Beans.get(StockMoveServiceSupplychain.class).fillRealQuantities(stockMove);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
-      response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
+  public void createLogisticalForm(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      if (stockMove.getId() == null
+          || stockMove.getTypeSelect() != StockMoveRepository.TYPE_OUTGOING
+          || stockMove.getPartner() == null
+          || stockMove.getLogisticalForm() != null) {
+        return;
+      }
+      stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+      Beans.get(LogisticalFormCreateService.class).createLogisticalFormFromStockMove(stockMove);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
+  public void checkQtyGreaterThanRemainingQtyToReceive(
+      ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      String alertMessage =
+          Beans.get(StockMoveServiceSupplychain.class)
+              .checkQtyGreaterThanRemainingQtyToReceive(stockMove);
+      if (alertMessage != null) {
+        response.setAlert(alertMessage);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

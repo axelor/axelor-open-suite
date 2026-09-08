@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -77,6 +78,7 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
       SaleOrderLineTaxService saleOrderLineTaxService,
       ProductCompanyService productCompanyService,
       CurrencyScaleService currencyScaleService,
+      OrderLineTaxService orderLineTaxService,
       BlockingService blockingService,
       AnalyticLineModelService analyticLineModelService,
       AppSupplychainService appSupplychainService,
@@ -96,7 +98,8 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
         saleOrderLinePriceService,
         saleOrderLineTaxService,
         productCompanyService,
-        currencyScaleService);
+        currencyScaleService,
+        orderLineTaxService);
     this.blockingService = blockingService;
     this.analyticLineModelService = analyticLineModelService;
     this.appSupplychainService = appSupplychainService;
@@ -120,6 +123,8 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
       saleOrderLine.setSaleSupplySelect(product.getSaleSupplySelect());
       saleOrderLineMap.put("saleSupplySelect", product.getSaleSupplySelect());
 
+      saleOrderLineMap.putAll(setManagedInStockMove(saleOrderLine, product));
+
       saleOrderLineMap.putAll(setStandardDelay(saleOrderLine));
       saleOrderLineMap.putAll(setSupplierPartnerDefault(saleOrderLine, saleOrder));
       saleOrderLineMap.putAll(setAnalyticMap(saleOrderLine, saleOrder));
@@ -137,6 +142,12 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
       return saleOrderLineMap;
     }
     return saleOrderLineMap;
+  }
+
+  protected Map<String, Object> setManagedInStockMove(
+      SaleOrderLine saleOrderLine, Product product) {
+    saleOrderLine.setManagedInStockMove(product.getManagedInStockMove());
+    return Map.of("managedInStockMove", product.getManagedInStockMove());
   }
 
   protected Map<String, Object> setEstimatedShippingDate(SaleOrder saleOrder, Product product) {

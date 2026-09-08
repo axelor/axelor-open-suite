@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -62,6 +62,14 @@ public class MarginComputeServiceImpl implements MarginComputeService {
   @Override
   public void computeSubMargin(SaleOrder saleOrder, MarginLine marginLine, BigDecimal totalPrice)
       throws AxelorException {
+    computeSubMargin(
+        saleOrder, marginLine, totalPrice, appSaleService.getAppSale().getConsiderZeroCost());
+  }
+
+  @Override
+  public void computeSubMargin(
+      SaleOrder saleOrder, MarginLine marginLine, BigDecimal totalPrice, boolean considerZeroCost)
+      throws AxelorException {
 
     Company company = saleOrder.getCompany();
     BigDecimal subTotalCostPrice = marginLine.getSubTotalCostPrice();
@@ -82,7 +90,7 @@ public class MarginComputeServiceImpl implements MarginComputeService {
       subMarginRate = computeRate(totalWT, subTotalGrossMargin);
     }
 
-    if (appSaleService.getAppSale().getConsiderZeroCost()
+    if (considerZeroCost
         && (totalPrice.compareTo(BigDecimal.ZERO) == 0
             || subTotalCostPrice.compareTo(BigDecimal.ZERO) == 0)) {
       subTotalGrossMargin =

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.event.SaleOrderConfirm;
 import com.axelor.apps.sale.service.event.SaleOrderCopy;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderConfirmSupplychainService;
 import com.axelor.event.Observes;
@@ -35,6 +36,8 @@ public class SaleOrderSupplychainObserver {
     SaleOrder saleOrder = event.getSaleOrder();
     event.setNotifyMessage(
         Beans.get(SaleOrderConfirmSupplychainService.class).confirmProcess(saleOrder));
+    saleOrder = JpaModelHelper.ensureManaged(saleOrder);
+    event.setSaleOrder(saleOrder);
   }
 
   public void copySaleOrder(@Observes @Priority(value = 20) SaleOrderCopy event) {

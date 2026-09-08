@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -96,7 +96,9 @@ public class MrpFilterSaleOrderLineServiceImpl implements MrpFilterSaleOrderLine
             + " AND (:mrpTypeSelect = :mrpTypeMrp OR self.product.productSubTypeSelect = :productSubTypeFinished)"
             + " AND self.saleOrder.statusSelect IN (:saleOrderStatusList)"
             + " AND self.deliveredQty < self.qty"
-            + " AND (self.saleOrder.archived = false OR self.saleOrder.archived is null)";
+            + " AND (self.saleOrder.archived = false OR self.saleOrder.archived is null)"
+            + " AND (self.product.productCategory.excludeFromMrp = false OR self.product.productCategory IS NULL)"
+            + " AND (self.product.productFamily.excludeFromMrp = false OR self.product.productFamily IS NULL)";
 
     // Checking the one off sales parameter
     if (saleOrderMrpLineType.getIncludeOneOffSalesSelect()

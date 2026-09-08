@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,6 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
@@ -30,32 +29,29 @@ import com.axelor.apps.account.service.analytic.AnalyticLineModelInitAccountServ
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineSummaryService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Batch;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.db.Wizard;
+import com.axelor.rpc.Criteria;
 import jakarta.inject.Singleton;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -127,82 +123,34 @@ public class MoveLineController {
 
       MoveLineService moveLineService = Beans.get(MoveLineService.class);
 
-      moveLineService.reconcileMoveLinesWithCacheManagement(
-          moveLineService.getReconcilableMoveLines(idList));
+      List<String> pendingPaymentMessages =
+          Beans.get(MoveLineControlService.class)
+              .getPendingPaymentMessages(moveLineService.getMoveLines(idList));
+
+      int errorNumber =
+          moveLineService.reconcileMoveLinesWithCacheManagement(
+              moveLineService.getReconcilableMoveLines(idList));
 
       response.setReload(true);
+      if (!pendingPaymentMessages.isEmpty()) {
+        response.setError(String.join("<br/>", pendingPaymentMessages));
+      } else if (errorNumber > 0) {
+        response.setInfo(I18n.get(AccountExceptionMessage.RECONCILE_MASS_ERRORS));
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  public void showCalculatedBalance(ActionRequest request, ActionResponse response) {
-    BigDecimal totalCredit = new BigDecimal(0), totalDebit = new BigDecimal(0), finalBalance;
-    @SuppressWarnings("unchecked")
-    List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
-
+  public void fetchSummary(ActionRequest request, ActionResponse response) {
     try {
-      if (idList != null && !idList.isEmpty()) {
-        MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
-        Company company = null;
-        boolean differentCompanies = false;
+      MoveLineSummaryService.MoveLineSums sums =
+          Beans.get(MoveLineSummaryService.class).computeMoveLineSums(Criteria.parse(request));
 
-        for (Integer id : idList) {
-          if (id != null) {
-            MoveLine moveLine = moveLineRepository.find(id.longValue());
-            if (moveLine != null && moveLine.getMove() != null) {
-              Integer statusSelect = moveLine.getMove().getStatusSelect();
-              if (statusSelect.equals(MoveRepository.STATUS_ACCOUNTED)
-                  || statusSelect.equals(MoveRepository.STATUS_DAYBOOK)
-                  || statusSelect.equals(MoveRepository.STATUS_SIMULATED)) {
-                totalCredit = totalCredit.add(moveLine.getCredit());
-                totalDebit = totalDebit.add(moveLine.getDebit());
-              }
-
-              if (company == null && moveLine.getMove().getCompany() != null) {
-                company = moveLine.getMove().getCompany();
-              } else if (moveLine.getMove().getCompany() != null
-                  && company != moveLine.getMove().getCompany()) {
-                differentCompanies = true;
-              }
-            } else {
-              throw new AxelorException(
-                  TraceBackRepository.CATEGORY_NO_VALUE,
-                  I18n.get("Cannot find the move line with id: %s"),
-                  id.longValue());
-            }
-          } else {
-            throw new AxelorException(
-                MoveLine.class, TraceBackRepository.CATEGORY_NO_VALUE, I18n.get("One id is null"));
-          }
-        }
-        finalBalance = totalDebit.subtract(totalCredit);
-
-        if (!differentCompanies) {
-          CurrencyScaleService currencyScaleService = Beans.get(CurrencyScaleService.class);
-          int scale = currencyScaleService.getCompanyCurrencyScale(company);
-
-          totalCredit = totalCredit.setScale(scale, RoundingMode.HALF_UP);
-          totalDebit = totalDebit.setScale(scale, RoundingMode.HALF_UP);
-          finalBalance = finalBalance.setScale(scale, RoundingMode.HALF_UP);
-        }
-
-        response.setView(
-            ActionView.define(I18n.get("Calculation"))
-                .model(Wizard.class.getName())
-                .add("form", "account-move-line-calculation-wizard-form")
-                .param("popup", "true")
-                .param("show-toolbar", "false")
-                .param("show-confirm", "false")
-                .param("width", "500")
-                .param("popup-save", "false")
-                .context("_credit", totalCredit)
-                .context("_debit", totalDebit)
-                .context("_balance", finalBalance)
-                .map());
-      } else {
-        response.setAlert(I18n.get(AccountExceptionMessage.NO_MOVE_LINE_SELECTED));
-      }
+      response.setValue("$totalDebit", sums.debit());
+      response.setValue("$totalCredit", sums.credit());
+      response.setValue("$totalAmountRemaining", sums.amountRemaining());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -321,7 +269,7 @@ public class MoveLineController {
   public void updateDueDates(ActionRequest request, ActionResponse response) {
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
     moveLine.setMove(this.getMove(request, moveLine));
-    if (moveLine.getMove() != null && moveLine.getMove().getOriginDate() != null) {
+    if (moveLine.getMove() != null) {
       LocalDate dueDate =
           Beans.get(InvoiceTermService.class)
               .getDueDate(moveLine.getInvoiceTermList(), moveLine.getMove().getOriginDate());
@@ -538,20 +486,6 @@ public class MoveLineController {
       response.setValues(
           Beans.get(MoveLineGroupService.class)
               .getCurrencyAmountRateOnChangeValuesMap(moveLine, move, dueDate));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void accountOnSelect(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = this.getMove(request, moveLine);
-      if (move != null) {
-        response.setAttrs(
-            Beans.get(MoveLineGroupService.class)
-                .getAccountOnSelectAttrsMap(move.getJournal(), move.getCompany()));
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

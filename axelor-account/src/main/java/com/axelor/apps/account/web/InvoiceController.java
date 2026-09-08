@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,9 +23,11 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxNumber;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.BankDetailsDomainServiceAccount;
@@ -36,6 +38,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
 import com.axelor.apps.account.service.invoice.BankDetailsServiceAccount;
+import com.axelor.apps.account.service.invoice.InvoiceCategoryService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
@@ -43,18 +46,20 @@ import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
-import com.axelor.apps.account.service.invoice.InvoiceNoteService;
 import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidatorSyncService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.InvoiceVatLiabilityService;
 import com.axelor.apps.account.service.invoice.LatePaymentInterestInvoiceService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxGroupService;
+import com.axelor.apps.account.service.note.InvoiceNoteService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -63,11 +68,13 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.LocalizationRepository;
+import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PrintingTemplateRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
@@ -224,6 +231,27 @@ public class InvoiceController {
   }
 
   /**
+   * Called from invoice form view before validation, to fill the invoice category. This ensures the
+   * pre-ventilation category check passes even when the ventilation step is skipped.
+   *
+   * @param request
+   * @param response
+   */
+  public void computeInvoiceCategory(ActionRequest request, ActionResponse response) {
+
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+
+    try {
+      response.setValue(
+          "invoiceCategorySelect",
+          Beans.get(InvoiceCategoryService.class).computeInvoiceCategorySelect(invoice));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
    * Passe l'état de la facture à "annulée"
    *
    * @param request
@@ -260,7 +288,7 @@ public class InvoiceController {
             I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_DELETION_PROHIBITED));
         return;
       }
-      if (invoiceTermService.checkIfCustomizedInvoiceTerms(invoice.getInvoiceTermList())) {
+      if (invoiceTermService.checkIfAmountCustomizedInvoiceTerms(invoice.getInvoiceTermList())) {
         if (!invoiceTermService.checkInvoiceTermsSum(invoice)) {
           response.setError(I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_AMOUNT_MISMATCH));
           return;
@@ -892,6 +920,30 @@ public class InvoiceController {
         Beans.get(InvoiceService.class).isSelectedPfpValidatorEqualsPartnerPfpValidator(invoice));
   }
 
+  public void syncPfpValidatorToInvoiceTerms(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    Beans.get(InvoiceTermPfpValidatorSyncService.class).syncPfpValidatorFromInvoiceToTerms(invoice);
+
+    response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+  }
+
+  public void syncPfpValidatorFromInvoiceTerms(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    InvoiceTermPfpValidatorSyncService syncService =
+        Beans.get(InvoiceTermPfpValidatorSyncService.class);
+
+    List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
+    if (!ObjectUtils.isEmpty(invoiceTermList)) {
+      InvoiceTerm firstTerm = invoiceTermList.get(0);
+      firstTerm.setInvoice(invoice);
+      if (syncService.syncPfpValidatorFromTermToInvoice(firstTerm)) {
+        response.setValue("pfpValidatorUser", invoice.getPfpValidatorUser());
+      }
+    }
+  }
+
   public void getInvoicePartnerDomain(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
@@ -1294,6 +1346,35 @@ public class InvoiceController {
     }
   }
 
+  public void checkAdvanceVatSystemOnValidate(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      if (!invoice.getOperationSubTypeSelect().equals(InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+          || InvoiceToolService.isPurchase(invoice)
+          || CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+        return;
+      }
+
+      boolean hasVatOnDeliveriesAccount =
+          invoice.getInvoiceLineList().stream()
+              .anyMatch(
+                  line ->
+                      line != null
+                          && line.getAccount() != null
+                          && line.getAccount().getVatSystemSelect() != null
+                          && line.getAccount().getVatSystemSelect()
+                              == AccountRepository.VAT_SYSTEM_GOODS);
+
+      if (hasVatOnDeliveriesAccount) {
+        response.setAlert(
+            I18n.get(
+                AccountExceptionMessage.INVOICE_VAT_SYSTEM_DELIVERY_ON_ADVANCE_PAYMENT_PRODUCT));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   @ErrorException
   public void updateThirdPartyPayerPartner(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
@@ -1301,6 +1382,19 @@ public class InvoiceController {
     Beans.get(InvoiceService.class).updateThirdPartyPayerPartner(invoice);
 
     response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+  }
+
+  public void setThirdPartyPayerPartnerDomain(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    Partner partner = invoice.getPartner();
+    if (partner == null) {
+      response.setAttr("thirdPartyPayerPartner", "domain", "self.isThirdPartyPayer IS TRUE");
+      return;
+    }
+    String domain =
+        Beans.get(PartnerLinkService.class)
+            .computePartnerFilter(partner, PartnerLinkTypeRepository.TYPE_SELECT_PAYED_BY);
+    response.setAttr("thirdPartyPayerPartner", "domain", domain);
   }
 
   public void setInvoiceLinesScale(ActionRequest request, ActionResponse response) {
@@ -1497,8 +1591,15 @@ public class InvoiceController {
   @ErrorException
   public void generateInvoiceNote(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
-    Beans.get(InvoiceNoteService.class).generateInvoiceNote(invoice);
-    response.setValues(invoice);
+    try {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+        Beans.get(InvoiceNoteService.class).generateInvoiceNote(invoice);
+        response.setValues(invoice);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   @ErrorException
@@ -1528,6 +1629,17 @@ public class InvoiceController {
       Beans.get(InvoiceTermDateComputeService.class).fillWithInvoiceDueDate(invoice);
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeVatLiability(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      Integer vatLiability =
+          Beans.get(InvoiceVatLiabilityService.class).computeVatLiability(invoice);
+      response.setValue("vatSystemSelect", vatLiability);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,6 +38,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineWarningService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.purchase.service.purchaseorderline.view.PurchaseOrderLineViewService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -334,21 +335,28 @@ public class PurchaseOrderLineController {
       Company company = purchaseOrder.getCompany();
       Partner supplierPartner = purchaseOrder.getSupplierPartner();
 
-      if (!supplierCatalogService.checkMinQty(
-          purchaseOrderLine.getProduct(),
-          supplierPartner,
-          company,
-          purchaseOrderLine.getQty(),
-          request,
-          response)) {
-        supplierCatalogService.checkMaxQty(
-            purchaseOrderLine.getProduct(),
-            supplierPartner,
-            company,
-            purchaseOrderLine.getQty(),
-            request,
-            response);
-      }
+      boolean isBreakMinQtyLimit =
+          supplierCatalogService.checkMinQty(
+              purchaseOrderLine.getProduct(),
+              supplierPartner,
+              company,
+              purchaseOrderLine.getQty(),
+              request,
+              response);
+      boolean isBreakMaxQtyLimit =
+          !isBreakMinQtyLimit
+              && supplierCatalogService.checkMaxQty(
+                  purchaseOrderLine.getProduct(),
+                  supplierPartner,
+                  company,
+                  purchaseOrderLine.getQty(),
+                  request,
+                  response);
+
+      response.setValues(
+          Beans.get(PurchaseOrderLineService.class)
+              .updatePriceForQtyLimit(
+                  purchaseOrderLine, purchaseOrder, isBreakMinQtyLimit || isBreakMaxQtyLimit));
 
       Beans.get(PurchaseOrderLineService.class)
           .checkMultipleQty(company, supplierPartner, purchaseOrderLine, response);
@@ -462,5 +470,18 @@ public class PurchaseOrderLineController {
         "hidden",
         !Beans.get(PurchaseOrderLineWarningService.class)
             .checkSupplierCatalogUnit(purchaseOrderLine, purchaseOrder));
+  }
+
+  public void updateDeliveryPanelVisibility(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+
+      Map<String, Map<String, Object>> attrs =
+          Beans.get(PurchaseOrderLineViewService.class).hideDeliveryPanel(purchaseOrderLine);
+
+      response.setAttrs(attrs);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

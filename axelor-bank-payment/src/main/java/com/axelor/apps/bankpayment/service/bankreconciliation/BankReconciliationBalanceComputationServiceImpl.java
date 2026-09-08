@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,7 @@ import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.bankpayment.service.BankReconciliationToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
@@ -238,7 +239,14 @@ public class BankReconciliationBalanceComputationServiceImpl
     if (!brl.getIsPosted() && !Strings.isNullOrEmpty(brl.getPostedNbr())) {
       String query = "self.postedNbr LIKE '%%s%'";
       query = query.replace("%s", brl.getPostedNbr());
-      List<MoveLine> moveLines = moveLineRepository.all().filter(query).fetch();
+      query += " AND self.move.company = :company";
+
+      List<MoveLine> moveLines =
+          moveLineRepository
+              .all()
+              .filter(query)
+              .bind("company", brl.getBankReconciliation().getCompany())
+              .fetch();
       for (MoveLine moveLine : moveLines) {
         // To avoid the fact that a moveline can be related to multiple brl and so, the update of
         // the amount can be duplicated
@@ -248,12 +256,18 @@ public class BankReconciliationBalanceComputationServiceImpl
           moveLineSet.add(moveLine);
         }
 
-        if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
+        if (BankReconciliationToolService.isForeignCurrency(brl.getBankReconciliation())) {
           movesOngoingReconciledBalance =
-              movesOngoingReconciledBalance.add(moveLine.getCredit().add(moveLine.getDebit()));
+              movesOngoingReconciledBalance.add(moveLine.getCurrencyAmount());
         } else {
-          movesOngoingReconciledBalance =
-              movesOngoingReconciledBalance.subtract(moveLine.getCredit().add(moveLine.getDebit()));
+          if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
+            movesOngoingReconciledBalance =
+                movesOngoingReconciledBalance.add(moveLine.getCredit().add(moveLine.getDebit()));
+          } else {
+            movesOngoingReconciledBalance =
+                movesOngoingReconciledBalance.subtract(
+                    moveLine.getCredit().add(moveLine.getDebit()));
+          }
         }
       }
     }

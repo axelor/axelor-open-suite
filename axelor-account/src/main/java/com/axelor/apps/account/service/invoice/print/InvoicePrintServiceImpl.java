@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,6 +41,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.EntityHelper;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -121,12 +122,34 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     File fileCopies = file;
     String fileName = file.getName();
     if (ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(fileName))) {
-      Path path = PdfHelper.printCopiesToFile(file, copyNumber).toPath();
+      Path path =
+          copyNumber > 1
+              ? printSignedCopies(file, copyNumber).toPath()
+              : Files.copy(
+                  file.toPath(),
+                  TempFiles.createTempFile(null, ".pdf"),
+                  StandardCopyOption.REPLACE_EXISTING);
       fileCopies =
           Files.move(path, path.resolveSibling(fileName), StandardCopyOption.REPLACE_EXISTING)
               .toFile();
     }
     return fileCopies;
+  }
+
+  protected File printSignedCopies(File file, int copyNumber) throws AxelorException, IOException {
+    File sourceCopy =
+        Files.copy(
+                file.toPath(),
+                TempFiles.createTempFile(null, ".pdf"),
+                StandardCopyOption.REPLACE_EXISTING)
+            .toFile();
+    pdfSignatureService.removeSignatureFields(sourceCopy);
+    File copies = PdfHelper.printCopiesToFile(sourceCopy, copyNumber);
+    PfxCertificate pfxCertificate = appBaseService.getAppBase().getPfxCertificate();
+    if (pfxCertificate == null) {
+      return copies;
+    }
+    return pdfSignatureService.digitallySignPdf(copies, pfxCertificate, "Invoice");
   }
 
   @Override
@@ -158,7 +181,12 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         return reportType != null
                 && reportType == InvoiceRepository.REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS
             ? print(invoice, reportType, invoicePrintTemplate, locale)
-            : printAndSave(invoice, reportType, invoicePrintTemplate, locale);
+            : printAndSave(
+                invoice,
+                reportType,
+                invoicePrintTemplate,
+                locale,
+                invoicePrintTemplate.getToAttach());
       }
     } else {
       // invoice is not ventilated (or validated for advance payment invoices) --> generate and
@@ -186,7 +214,11 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   }
 
   public File printAndSave(
-      Invoice invoice, Integer reportType, PrintingTemplate invoicePrintTemplate, String locale)
+      Invoice invoice,
+      Integer reportType,
+      PrintingTemplate invoicePrintTemplate,
+      String locale,
+      boolean toAttach)
       throws AxelorException {
     PrintingGenFactoryContext factoryContext =
         buildPrintingContext(invoice, reportType, invoicePrintTemplate, locale);
@@ -201,11 +233,11 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(file.getName()))
               ? getSignedPdf(metaFile)
               : metaFile;
-      if (invoicePrintTemplate.getToAttach()) {
+      if (toAttach) {
         metaFiles.attach(signedMetaFile, signedMetaFile.getFileName(), invoice);
       }
       invoice.setPrintedPDF(signedMetaFile);
-      return MetaFiles.getPath(metaFile).toFile();
+      return MetaFiles.getPath(signedMetaFile).toFile();
     } catch (IOException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

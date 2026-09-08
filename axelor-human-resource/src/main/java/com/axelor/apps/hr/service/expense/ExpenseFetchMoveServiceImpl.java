@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.hr.db.Expense;
 import jakarta.inject.Inject;
+import java.util.List;
 
 public class ExpenseFetchMoveServiceImpl implements ExpenseFetchMoveService {
   protected MoveRepository moveRepository;
@@ -47,5 +48,14 @@ public class ExpenseFetchMoveServiceImpl implements ExpenseFetchMoveService {
         .filter("self.expensePayment.id = :expenseId")
         .bind("expenseId", expense.getId())
         .fetchOne();
+  }
+
+  @Override
+  public List<Move> findAllMovesByExpense(Expense expense) {
+    return moveRepository
+        .all()
+        .filter("self.expense.id = :expenseId OR self.expensePayment.id = :expenseId")
+        .bind("expenseId", expense.getId())
+        .fetch();
   }
 }

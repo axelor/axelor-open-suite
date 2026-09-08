@@ -35,7 +35,7 @@
 135;"move";"Clearance Move Live";"NUMBERS";"UPPERCASE";1;4;"MVCLR_%YY_";;1;1
 136;"move";"Irrecovrable Move Line";"NUMBERS";"UPPERCASE";1;4;"MVIRREC%YY_";;1;1
 137;"moveLineExport";"Accounting Export";"NUMBERS";"UPPERCASE";1;4;"ACCEXP_%YY_";;1;1
-138;"moveLineReport";"Accounting Report";"NUMBERS";"UPPERCASE";1;4;"ACCREP_%YY_";;1;1
+138;"accountingReport";"Accounting Report";"NUMBERS";"UPPERCASE";1;4;"ACCREP_%YY_";;1;1
 139;"paymentSchedule";"Installment N°";"NUMBERS";"UPPERCASE";1;4;"INSTAL_%YY_";;1;1
 140;"paymentVoucher";"N° for payments received in Cash";"NUMBERS";"UPPERCASE";1;4;"PI_ESP_%YY_";;1;1
 141;"paymentVoucher";"N° for payments received in Cheque";"NUMBERS";"UPPERCASE";1;4;"PI_CHQ_%YY_";;1;1
@@ -70,3 +70,4 @@
 182;"fixedAsset";"Fixed assets N°";"NUMBERS";"UPPERCASE";1;3;"IMMO%YYYY";;1;1
 183;"paymentSession";"N° Payment process";"NUMBERS";"UPPERCASE";1;3;"PMTS%YYYY";;1;1
 210;"noteBills";"Note Bills";"NUMBERS";"UPPERCASE";1;3;"NB%YYYY";;1;1
+9970;"loan";"Loans";"NUMBERS";"UPPERCASE";1;5;"EMP";;1;0

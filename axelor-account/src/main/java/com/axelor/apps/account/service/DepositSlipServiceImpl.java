@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,6 +37,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
@@ -162,6 +163,8 @@ public class DepositSlipServiceImpl implements DepositSlipService {
         .bind("filename", filename + ".pdf")
         .fetchStream()
         .forEach(metaFiles::delete);
+
+    JPA.flush();
   }
 
   public String getFilename(
@@ -283,10 +286,8 @@ public class DepositSlipServiceImpl implements DepositSlipService {
 
     PaymentVoucherConfirmService paymentVoucherConfirmService =
         Beans.get(PaymentVoucherConfirmService.class);
-    for (PaymentVoucher paymentVoucher : depositSlip.getPaymentVoucherList()) {
-      paymentVoucherConfirmService.valueForCollectionMoveToGeneratedMove(
-          paymentVoucher, depositSlip.getDepositDate());
-    }
+    paymentVoucherConfirmService.valueForCollectionMoveToGeneratedMove(
+        depositSlip.getPaymentVoucherList(), depositSlip.getDepositDate());
 
     depositSlip.setIsBankDepositMoveGenerated(true);
   }

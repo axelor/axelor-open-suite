@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -588,6 +588,14 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
   /** Remove old sale orders after merge */
   protected void removeOldSaleOrders(List<SaleOrder> saleOrderList) {
     for (SaleOrder saleOrder : saleOrderList) {
+      List<SaleOrderLine> saleOrderLineList =
+          saleOrderLineRepository
+              .all()
+              .filter("self.saleOrder = ?1 OR self.oldVersionSaleOrder = ?1", saleOrder)
+              .fetch();
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        saleOrderLineRepository.remove(saleOrderLine);
+      }
       saleOrderRepository.remove(saleOrder);
     }
   }

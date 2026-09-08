@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -73,6 +73,7 @@ public class MoveBudgetManagementRepository extends MoveBankPaymentRepository {
         ml.setIsBudgetImputed(false);
         if (!CollectionUtils.isEmpty(ml.getBudgetDistributionList())) {
           for (BudgetDistribution bd : ml.getBudgetDistributionList()) {
+            bd.setInvoiceLine(null);
             budgetDistributionService.computeBudgetDistributionSumAmount(bd, copy.getDate());
           }
         }

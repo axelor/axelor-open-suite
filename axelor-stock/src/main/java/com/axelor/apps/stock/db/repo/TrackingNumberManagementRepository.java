@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,7 +31,6 @@ import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.TrackingNumberCompanyService;
 import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.apps.stock.service.app.AppStockService;
-import com.axelor.db.JPA;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppStock;
 import jakarta.inject.Inject;
@@ -71,22 +70,14 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
       Long trackingNumberId = (Long) json.get("id");
       TrackingNumber trackingNumber = find(trackingNumberId);
 
-      if (trackingNumber.getProduct() != null && context.get("_parent") != null) {
-        Map<String, Object> _parent = (Map<String, Object>) context.get("_parent");
+      if (trackingNumber.getProduct() != null && context.get("fromStockLocation") != null) {
+        StockLocation stockLocation = (StockLocation) context.get("fromStockLocation");
 
-        if (_parent.get("fromStockLocation") != null) {
-          StockLocation stockLocation =
-              JPA.find(
-                  StockLocation.class,
-                  Long.parseLong(((Map) _parent.get("fromStockLocation")).get("id").toString()));
-
-          if (stockLocation != null) {
-            BigDecimal availableQty =
-                stockLocationLineFetchService.getTrackingNumberAvailableQty(
-                    stockLocation, trackingNumber);
-
-            json.put("$availableQty", availableQty);
-          }
+        if (stockLocation != null) {
+          json.put(
+              "$availableQty",
+              stockLocationLineFetchService.getTrackingNumberAvailableQtyIncludingSubLocations(
+                  stockLocation, trackingNumber));
         }
       } else if (trackingNumber.getProduct() != null) {
         json.put(

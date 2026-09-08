@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
@@ -33,8 +34,8 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -125,5 +126,23 @@ public class LogisticalFormCreateServiceImpl implements LogisticalFormCreateServ
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(StockExceptionMessage.LOGISTICAL_FORM_STOCK_LOCATION_MUST_BE_VIRTUAL));
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public LogisticalForm createLogisticalFormFromStockMove(StockMove stockMove)
+      throws AxelorException {
+    LogisticalForm logisticalForm = new LogisticalForm();
+    Company company = stockMove.getCompany();
+    logisticalForm.setCompany(company);
+    logisticalForm.setStockLocation(stockMove.getFromStockLocation());
+    logisticalForm.setDeliverToCustomerPartner(stockMove.getPartner());
+    logisticalForm.setCarrierPartner(stockMove.getCarrierPartner());
+    logisticalForm.setForwarderPartner(stockMove.getForwarderPartner());
+    logisticalForm.setIncoterm(stockMove.getIncoterm());
+    logisticalForm.setCollectionDate(appBaseService.getTodayDate(company));
+    logisticalForm.setAccountSelectionToCarrierSelect(LogisticalFormRepository.ACCOUNT_COMPANY);
+    logisticalForm.addStockMoveListItem(stockMove);
+    return logisticalFormRepository.save(logisticalForm);
   }
 }

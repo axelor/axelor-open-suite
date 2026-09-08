@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -40,8 +40,20 @@ public class InvoiceMergingViewServiceImpl implements InvoiceMergingViewService 
     this.invoiceMergingService = invoiceMergingService;
   }
 
+  @Override
+  public ActionViewBuilder buildMergeWizardView(
+      String title, String formViewName, List<Invoice> invoicesToMerge, int operationTypeSelect) {
+    return ActionView.define(I18n.get(title))
+        .model(Wizard.class.getName())
+        .add("form", formViewName)
+        .param("show-toolbar", Boolean.FALSE.toString())
+        .context("_operationTypeSelect", operationTypeSelect)
+        .context("_invoiceToMerge", invoicesToMerge);
+  }
+
   protected String getMergeConfirmFormViewName(InvoiceMergingResult result) {
-    if (result.getInvoiceType() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE) {
+    if (result.getInvoiceType() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || result.getInvoiceType() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
       return "supplier-invoices-merge-confirm-form";
     }
     return "customer-invoices-merge-confirm-form";
@@ -85,7 +97,8 @@ public class InvoiceMergingViewServiceImpl implements InvoiceMergingViewService 
     if (invoiceMergingService.getChecks(result).isExistFiscalPositionDiff()) {
       confirmView.context("contextFiscalPositionToCheck", Boolean.TRUE.toString());
     }
-    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
+    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
+        || result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)) {
       if (invoiceMergingService.getChecks(result).isExistSupplierInvoiceNbDiff()) {
         confirmView.context("contextSupplierInvoiceNbToCheck", Boolean.TRUE.toString());
       }

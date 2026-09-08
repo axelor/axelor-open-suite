@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="payment-session-grid" title="Payment sessions" canDelete="false"
     model="com.axelor.apps.account.db.PaymentSession" orderBy="-paymentDate,-sequence">
@@ -208,6 +208,16 @@
       <panel-dashlet name="releasedInvoiceTermsPanel" showTitle="false"
         action="action-payment-session-view-released-invoice-terms" readonly="true"/>
       <field name="$isAllInvoiceTerms" type="boolean" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="payment-session-financial-discount-confirm-wizard" title="Validation"
+    model="com.axelor.apps.account.db.PaymentSession">
+    <panel name="mainPanel" itemSpan="12">
+      <label
+        title="Warning : One or more invoice terms are presenting a financial discount calculation which is not applicable. Do you wish to proceed ?"/>
+      <button name="validateBtn" title="Continue"
+        onClick="action-payment-session-method-process-invoice-terms,close"/>
     </panel>
   </form>
 

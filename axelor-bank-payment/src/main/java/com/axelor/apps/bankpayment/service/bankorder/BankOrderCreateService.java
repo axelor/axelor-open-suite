@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -133,7 +133,8 @@ public class BankOrderCreateService {
     Partner partner = invoice.getPartner();
     BigDecimal amount = invoicePayment.getAmount();
     Currency currency = invoicePayment.getCurrency();
-    LocalDate paymentDate = invoicePayment.getPaymentDate();
+    LocalDate dueDate = invoice.getDueDate();
+
     BankDetails companyBankDetails =
         invoicePayment.getCompanyBankDetails() != null
             ? invoicePayment.getCompanyBankDetails()
@@ -148,7 +149,7 @@ public class BankOrderCreateService {
         this.createBankOrder(
             paymentMode,
             this.getBankOrderPartnerType(invoice),
-            paymentDate,
+            dueDate,
             company,
             companyBankDetails,
             currency,
@@ -167,7 +168,7 @@ public class BankOrderCreateService {
             receiverBankDetails,
             amount,
             currency,
-            paymentDate,
+            dueDate,
             reference,
             null,
             invoice);

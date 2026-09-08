@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -65,6 +65,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -226,19 +228,59 @@ public class MrpLineServiceImpl implements MrpLineService {
               .convert(product.getUnit(), unit, qty, qty.scale(), product);
     }
     purchaseOrder.setNotes(supplierPartner.getPurchaseOrderComments());
-    PurchaseOrderLine poLine =
-        purchaseOrderLineService.createPurchaseOrderLine(
-            purchaseOrder, product, null, null, qty, unit);
-    poLine.setDesiredReceiptDate(maturityDate);
+    LocalDate desiredReceiptDate = maturityDate;
     if (mrpLine.getEstimatedDeliveryMrpLine() != null) {
-      poLine.setDesiredReceiptDate(mrpLine.getEstimatedDeliveryMrpLine().getMaturityDate());
+      desiredReceiptDate = mrpLine.getEstimatedDeliveryMrpLine().getMaturityDate();
     }
-    poLine.setEstimatedReceiptDate(poLine.getDesiredReceiptDate());
-    purchaseOrder.addPurchaseOrderLineListItem(poLine);
+
+    PurchaseOrderLine poLine =
+        createOrUpdatePurchaseOrderLine(purchaseOrder, product, unit, qty, desiredReceiptDate);
+
+    purchaseOrderLineService.compute(poLine, purchaseOrder);
 
     purchaseOrderService.computePurchaseOrder(purchaseOrder);
 
     linkToOrder(mrpLine, purchaseOrder);
+  }
+
+  protected PurchaseOrderLine createOrUpdatePurchaseOrderLine(
+      PurchaseOrder purchaseOrder,
+      Product product,
+      Unit unit,
+      BigDecimal qty,
+      LocalDate desiredReceiptDate)
+      throws AxelorException {
+    PurchaseOrderLine poLine =
+        findMatchingPurchaseOrderLine(purchaseOrder, product, unit, desiredReceiptDate);
+    if (poLine != null) {
+      poLine.setQty(poLine.getQty().add(qty));
+      return poLine;
+    }
+
+    poLine =
+        purchaseOrderLineService.createPurchaseOrderLine(
+            purchaseOrder, product, null, null, qty, unit);
+    poLine.setDesiredReceiptDate(desiredReceiptDate);
+    poLine.setEstimatedReceiptDate(desiredReceiptDate);
+    purchaseOrder.addPurchaseOrderLineListItem(poLine);
+    return poLine;
+  }
+
+  protected PurchaseOrderLine findMatchingPurchaseOrderLine(
+      PurchaseOrder purchaseOrder, Product product, Unit unit, LocalDate desiredReceiptDate) {
+    if (purchaseOrder.getPurchaseOrderLineList() == null) {
+      return null;
+    }
+
+    return purchaseOrder.getPurchaseOrderLineList().stream()
+        .filter(Objects::nonNull)
+        .filter(purchaseOrderLine -> product.equals(purchaseOrderLine.getProduct()))
+        .filter(purchaseOrderLine -> Objects.equals(unit, purchaseOrderLine.getUnit()))
+        .filter(
+            purchaseOrderLine ->
+                Objects.equals(desiredReceiptDate, purchaseOrderLine.getDesiredReceiptDate()))
+        .findFirst()
+        .orElse(null);
   }
 
   protected String getPurchaseOrderOrigin(MrpLine mrpLine) {
@@ -447,6 +489,9 @@ public class MrpLineServiceImpl implements MrpLineService {
   @Override
   public List<MrpLine> getMrpLineListCopy(List<MrpLine> mrpLineList) {
     List<MrpLine> copyMrpLineList = new ArrayList<>();
+    mrpLineList =
+        mrpLineRepo.findByIds(
+            mrpLineList.stream().map(MrpLine::getId).collect(Collectors.toList()));
     for (MrpLine mrpLine : mrpLineList) {
       copyMrpLineList.add(mrpLineRepo.copy(mrpLine, true));
     }

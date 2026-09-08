@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -79,14 +79,17 @@ public class MrpJob implements Job {
   /*
    * Might have to move this method to a more appropriate service.
    */
-  protected void runCalculationWithExceptionManagement(Mrp mrp) throws AxelorException {
+  protected void runCalculationWithExceptionManagement(Mrp mrp) throws Exception {
     MrpService mrpService = Beans.get(MrpService.class);
     try {
       mrpService.runCalculation(mrp);
-    } catch (Exception e) {
+    } catch (Throwable t) {
       mrpService.reset(mrp);
-      mrpService.saveErrorInMrp(mrp, e);
-      throw e;
+      mrpService.saveErrorInMrp(mrp, t);
+      if (t instanceof Error) {
+        throw (Error) t;
+      }
+      throw (Exception) t;
     }
   }
 }

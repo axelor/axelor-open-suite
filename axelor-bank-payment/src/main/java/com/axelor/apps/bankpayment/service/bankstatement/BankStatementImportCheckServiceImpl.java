@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -174,12 +174,14 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
         bankStatementLineFetchService
             .findByBankStatementBankDetailsAndLineType(
                 bankStatement, bd, BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE)
+            .order("operationDate")
             .order("sequence")
             .fetch();
     List<BankStatementLine> finalBankStatementLine =
         bankStatementLineFetchService
             .findByBankStatementBankDetailsAndLineType(
                 bankStatement, bd, BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE)
+            .order("operationDate")
             .order("sequence")
             .fetch();
     initialBankStatementLine.remove(0);

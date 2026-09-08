@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
@@ -67,7 +68,8 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
       MoveInvoiceTermService moveInvoiceTermService,
       AnalyticLineService analyticLineService,
       ExpensePaymentService expensePaymentService,
-      AppService appService) {
+      AppService appService,
+      PaymentVoucherCancelService paymentVoucherCancelService) {
     super(
         moveCreateService,
         reconcileService,
@@ -84,7 +86,8 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
         currencyScaleService,
         unReconcileService,
         moveInvoiceTermService,
-        analyticLineService);
+        analyticLineService,
+        paymentVoucherCancelService);
     this.expensePaymentService = expensePaymentService;
     this.appService = appService;
   }

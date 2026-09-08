@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,10 +31,12 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;
 import jakarta.inject.Inject;
+import jakarta.persistence.Entity;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -49,6 +51,8 @@ import org.slf4j.LoggerFactory;
 public class DataBackupServiceImpl implements DataBackupService {
 
   public static final String CONFIG_FILE_NAME = "config.xml";
+
+  protected static final char SEPARATOR = ',';
 
   @Inject private DataBackupCreateService createService;
 
@@ -142,8 +146,10 @@ public class DataBackupServiceImpl implements DataBackupService {
           public Boolean call() throws Exception {
             Logger LOG = LoggerFactory.getLogger(getClass());
             DataBackup obj = dataBackupRepository.find(dataBackup.getId());
+            char separator = getSeparator(obj.getFieldSeparatorSelect());
             File logFile =
-                restoreService.restore(obj.getBackupMetaFile(), obj.getIsTemplateWithDescription());
+                restoreService.restore(
+                    obj.getBackupMetaFile(), obj.getIsTemplateWithDescription(), separator);
             save(logFile, obj);
             LOG.info("Data Restore Saved");
             return true;
@@ -198,7 +204,11 @@ public class DataBackupServiceImpl implements DataBackupService {
 
     for (MetaModel metaModel : metaModelList) {
       try {
-        Class.forName(metaModel.getFullName());
+        Class<?> entityClass = Class.forName(metaModel.getFullName());
+        Class<?> superClass = entityClass.getSuperclass();
+        if (superClass != null && superClass.isAnnotationPresent(Entity.class)) {
+          continue;
+        }
         String currentDateTimeStr = "'" + LocalDateTime.now().format(formatter) + "'";
         String query =
             "Update "
@@ -211,5 +221,16 @@ public class DataBackupServiceImpl implements DataBackupService {
         TraceBackService.trace(e);
       }
     }
+  }
+
+  @Override
+  public char getSeparator(String separator) {
+    if (Strings.isNullOrEmpty(separator)) {
+      return SEPARATOR;
+    }
+    if ("\\t".equals(separator)) {
+      return '\t';
+    }
+    return separator.charAt(0);
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,17 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.auth.AuthUtils;
@@ -69,10 +74,8 @@ public class ExpenseAnalyticServiceImpl implements ExpenseAnalyticService {
                   : Optional.ofNullable(AuthUtils.getUser())
                       .map(User::getActiveCompany)
                       .orElse(null));
-      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        analyticMoveLineService.updateAnalyticMoveLine(
-            analyticMoveLine, expenseLine.getCompanyUntaxedAmount(), date);
-      }
+      analyticMoveLineService.updateAnalyticMoveLineList(
+          analyticMoveLineList, expenseLine.getCompanyUntaxedAmount(), date);
     }
     return expenseLine;
   }
@@ -115,5 +118,42 @@ public class ExpenseAnalyticServiceImpl implements ExpenseAnalyticService {
                 .collect(Collectors.toList()));
       }
     }
+  }
+
+  @Override
+  public AnalyticDistributionTemplate computeAnalyticDistributionTemplate(ExpenseLine expenseLine)
+      throws AxelorException {
+    Employee employee = expenseLine.getEmployee();
+    if (employee != null && employee.getAnalyticDistributionTemplate() != null) {
+      return employee.getAnalyticDistributionTemplate();
+    }
+
+    Product product = expenseLine.getExpenseProduct();
+    Company company = getCompany(expenseLine);
+    if (product == null || company == null) {
+      return null;
+    }
+
+    return analyticMoveLineService.getAnalyticDistributionTemplate(
+        null, product, company, null, null, true);
+  }
+
+  @Override
+  public void applyAnalyticDistribution(ExpenseLine expenseLine) throws AxelorException {
+    if (appAccountService.isApp("account")
+        && appAccountService.getAppAccount().getManageAnalyticAccounting()) {
+      expenseLine.setAnalyticDistributionTemplate(computeAnalyticDistributionTemplate(expenseLine));
+      createAnalyticDistributionWithTemplate(expenseLine);
+    }
+  }
+
+  protected Company getCompany(ExpenseLine expenseLine) {
+    if (expenseLine.getExpense() != null && expenseLine.getExpense().getCompany() != null) {
+      return expenseLine.getExpense().getCompany();
+    }
+    return Optional.ofNullable(expenseLine.getEmployee())
+        .map(Employee::getMainEmploymentContract)
+        .map(EmploymentContract::getPayCompany)
+        .orElse(null);
   }
 }

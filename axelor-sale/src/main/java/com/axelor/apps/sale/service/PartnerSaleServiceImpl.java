@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -68,7 +68,7 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
                 + " FROM Message AS email"
                 + " JOIN email.multiRelatedList AS related"
                 + " JOIN SaleOrder AS so ON so.id = related.relatedToSelectId"
-                + " JOIN Partner AS part ON part.id = so."
+                + " JOIN Partner AS part ON part = so."
                 + partnerField
                 + " WHERE part.id = :partnerId"
                 + " AND related.relatedToSelect = :relatedToSelect"

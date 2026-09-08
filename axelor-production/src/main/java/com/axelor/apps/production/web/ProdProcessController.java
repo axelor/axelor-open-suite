@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,12 +20,15 @@ package com.axelor.apps.production.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
+import com.axelor.apps.production.service.BillOfMaterialHazardPhraseService;
 import com.axelor.apps.production.service.ProdProcessComputationService;
+import com.axelor.apps.production.service.ProdProcessHazardPhraseService;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.production.service.ProdProcessWorkflowService;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -201,5 +204,17 @@ public class ProdProcessController {
       response.setValue(
           "leadTime", Beans.get(ProdProcessComputationService.class).getLeadTime(prodProcess, qty));
     }
+  }
+
+  public void computeHazardPhrases(ActionRequest request, ActionResponse response) {
+    ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+
+    List<Product> allLineProducts =
+        Beans.get(BillOfMaterialHazardPhraseService.class)
+            .getLineProductsForProdProcess(prodProcess);
+
+    Beans.get(ProdProcessHazardPhraseService.class)
+        .computeHazardPhrases(prodProcess, allLineProducts);
+    response.setValue("hazardPhraseSet", prodProcess.getHazardPhraseSet());
   }
 }

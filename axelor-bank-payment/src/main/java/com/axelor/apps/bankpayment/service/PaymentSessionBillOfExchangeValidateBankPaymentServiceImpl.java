@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,16 +41,12 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderComputeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
@@ -129,12 +125,8 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
 
       if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()
           && bankOrder.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
-        try {
-          bankOrderValidationService.confirm(bankOrder);
-        } catch (IOException | DatatypeConfigurationException | JAXBException e) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
-        }
+        updatePaymentSessionStatus(paymentSession);
+        bankOrderValidationService.confirm(bankOrder);
       }
     }
 
@@ -150,16 +142,23 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
       List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund)
       throws AxelorException {
 
+    paymentSessionBankOrderService.manageInvoicePayment(
+        paymentSession, invoiceTerm, invoiceTerm.getAmountPaid());
+
     if (paymentSession.getBankOrder() != null
         && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       paymentSessionBankOrderService.createOrUpdateBankOrderLineFromInvoiceTerm(
           paymentSession, invoiceTerm, paymentSession.getBankOrder(), invoiceTermLinkWithRefund);
     }
 
-    paymentSessionBankOrderService.manageInvoicePayment(
-        paymentSession, invoiceTerm, invoiceTerm.getAmountPaid());
-
     super.processInvoiceTermBillOfExchange(
         paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, invoiceTermLinkWithRefund);
+  }
+
+  @Transactional
+  protected void updatePaymentSessionStatus(PaymentSession paymentSession) {
+    paymentSession = paymentSessionRepo.find(paymentSession.getId());
+    paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_AWAITING_PAYMENT);
+    paymentSessionRepo.save(paymentSession);
   }
 }

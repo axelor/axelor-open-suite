@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -282,7 +282,7 @@ public class PaymentModeServiceImpl implements PaymentModeService {
       throw new AxelorException(
           paymentMode,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.PAYMENT_MODE_3),
+          I18n.get(AccountExceptionMessage.PAYMENT_MODE_2),
           I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName(),
           paymentMode.getName());
@@ -300,7 +300,10 @@ public class PaymentModeServiceImpl implements PaymentModeService {
     throw new AxelorException(
         paymentMode,
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(AccountExceptionMessage.PAYMENT_MODE_2),
+        I18n.get(
+            global
+                ? AccountExceptionMessage.PAYMENT_MODE_4
+                : AccountExceptionMessage.PAYMENT_MODE_3),
         I18n.get(BaseExceptionMessage.EXCEPTION),
         company.getName(),
         paymentMode.getName());

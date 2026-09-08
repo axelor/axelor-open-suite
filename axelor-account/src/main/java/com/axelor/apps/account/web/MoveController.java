@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -248,6 +248,7 @@ public class MoveController {
                 .add("grid", "move-grid")
                 .add("form", "move-form")
                 .param("search-filters", "move-filters")
+                .domain("self.massEntryStatusSelect = 0")
                 .context("_isActivateSimulatedMoves", isActivateSimulatedMoves)
                 .map());
         response.setCanClose(true);
@@ -283,7 +284,7 @@ public class MoveController {
         List<Move> moveList =
             Beans.get(MoveRepository.class)
                 .all()
-                .filter("self.id in :moveIds AND (self.archived = false or self.archived = null)")
+                .filter("self.id in :moveIds AND (self.archived = false or self.archived IS null)")
                 .bind("moveIds", moveIds)
                 .fetch();
         if (ObjectUtils.notEmpty(moveList)
@@ -629,16 +630,6 @@ public class MoveController {
     }
   }
 
-  public void onSelectPartner(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-
-      response.setAttrs(Beans.get(MoveGroupService.class).getPartnerOnSelectAttrsMap(move));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void onClickApplyCutOffDates(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
@@ -712,19 +703,8 @@ public class MoveController {
     }
   }
 
-  public void onSelectTradingName(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-
-      response.setAttrs(Beans.get(MoveGroupService.class).getTradingNameOnSelectAttrsMap(move));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   @ErrorException
-  public void onSelectJournal(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void onSelectJournal(ActionRequest request, ActionResponse response) {
     Move move = request.getContext().asType(Move.class);
 
     response.setAttrs(Beans.get(MoveGroupService.class).getJournalOnSelectAttrsMap(move));
@@ -928,16 +908,6 @@ public class MoveController {
       Beans.get(MoveCheckService.class).checkPeriodPermission(move);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void onSelectCompany(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-
-      response.setAttrs(Beans.get(MoveGroupService.class).getCompanyOnSelectAttrsMap(move));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 

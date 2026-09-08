@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -92,6 +92,12 @@ public class AccountingBatchService extends AbstractBatchService {
         break;
       case AccountingBatchRepository.ACTION_AUTO_MOVE_LETTERING:
         batch = autoMoveLettering(accountingBatch);
+        break;
+      case AccountingBatchRepository.ACTION_POST_LOAN_INSTALLMENT:
+        batch = postLoanInstallment(accountingBatch);
+        break;
+      case AccountingBatchRepository.ACTION_POST_LOAN_CLOSING:
+        batch = postLoanClosing(accountingBatch);
         break;
       default:
         throw new AxelorException(
@@ -200,6 +206,14 @@ public class AccountingBatchService extends AbstractBatchService {
 
   public Batch autoMoveLettering(AccountingBatch accountingBatch) {
     return Beans.get(BatchAutoMoveLettering.class).run(accountingBatch);
+  }
+
+  public Batch postLoanInstallment(AccountingBatch accountingBatch) {
+    return Beans.get(BatchPostLoanInstallment.class).run(accountingBatch);
+  }
+
+  public Batch postLoanClosing(AccountingBatch accountingBatch) {
+    return Beans.get(BatchLoanClosure.class).run(accountingBatch);
   }
 
   @Transactional

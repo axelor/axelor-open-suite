@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,8 +35,8 @@ import jakarta.inject.Inject;
 public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
     implements PartnerSupplychainService {
 
-  private InvoiceRepository invoiceRepository;
-  private AccountConfigService accountConfigService;
+  protected InvoiceRepository invoiceRepository;
+  protected AccountConfigService accountConfigService;
   public PartnerService partnerService;
 
   @Inject

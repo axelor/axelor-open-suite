@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,8 +23,6 @@ public final class SupplierManagementExceptionMessage {
   private SupplierManagementExceptionMessage() {}
 
   /** Purchase order supplier line service */
-  public static final String CURRENCY_CONVERSION_2 = /*$$(*/
-      "WARNING : To Date must be after or equals to From Date" /*)*/;
 
   /** Purchase order Controller */
   public static final String PURCHASE_ORDER_1 = /*$$(*/

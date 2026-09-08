@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,8 +34,13 @@ import java.util.Objects;
 
 public class ProdProcessLineComputationServiceImpl implements ProdProcessLineComputationService {
   @Override
-  public BigDecimal getNbCycle(ProdProcessLine prodProcessLine, BigDecimal qty) {
-    Objects.requireNonNull(prodProcessLine);
+  public BigDecimal getNbCycle(ProdProcessLine prodProcessLine, BigDecimal qty)
+      throws AxelorException {
+    if (prodProcessLine == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProductionExceptionMessage.PROD_PROCESS_LINE_MISSING_FOR_CYCLE_COMPUTATION));
+    }
     BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
     return computeNbCycle(qty, maxCapacityPerCycle);
   }

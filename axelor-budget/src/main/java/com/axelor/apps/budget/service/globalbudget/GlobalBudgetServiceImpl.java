@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -152,6 +152,9 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     if (budgetVersion == null) {
       return globalBudget;
     }
+
+    globalBudget = globalBudgetRepository.find(globalBudget.getId());
+    budgetVersion = budgetVersionRepo.find(budgetVersion.getId());
 
     List<Budget> budgetList = globalBudgetToolsService.getAllBudgets(globalBudget);
     List<VersionExpectedAmountsLine> versionExpectedAmountsLineList =
@@ -337,8 +340,12 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
             .orElse(null);
     if (versionExpectedAmountsLine != null) {
       budget.setActiveVersionExpectedAmountsLine(versionExpectedAmountsLine);
-      budget.setAmountForGeneration(versionExpectedAmountsLine.getExpectedAmount());
-      budget.setTotalAmountExpected(versionExpectedAmountsLine.getExpectedAmount());
+      BigDecimal expectedAmount = versionExpectedAmountsLine.getExpectedAmount();
+      budget.setAmountForGeneration(expectedAmount);
+      budget.setTotalAmountExpected(expectedAmount);
+      BigDecimal firmGap =
+          expectedAmount.subtract(budget.getRealizedWithPo().add(budget.getRealizedWithNoPo()));
+      budget.setTotalFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
       if (needRecomputeBudgetLine) {
         budget.setPeriodDurationSelect(BudgetRepository.BUDGET_PERIOD_SELECT_ONE_TIME);
         budget.clearBudgetLineList();

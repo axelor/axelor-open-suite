@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -53,6 +53,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -293,7 +294,7 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
       AccountingReportConfigLine configLine, Set<AccountType> accountTypeSet) {
     return this.getAccountSet(configLine, accountTypeSet).stream()
         .map(Account::getId)
-        .collect(Collectors.toSet());
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   protected Set<Long> getAccountIdSet(AccountingReportConfigLine configLine) {

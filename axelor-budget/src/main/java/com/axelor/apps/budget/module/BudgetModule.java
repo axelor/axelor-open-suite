@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -195,7 +195,6 @@ public class BudgetModule extends AxelorModule {
     bind(BudgetInvoiceService.class).to(BudgetInvoiceServiceImpl.class);
     bind(InvoiceToolBudgetService.class).to(InvoiceToolBudgetServiceImpl.class);
     bind(InvoiceLineSupplychainService.class).to(BudgetInvoiceLineComputeServiceImpl.class);
-    bind(BudgetLevelService.class).to(BudgetLevelServiceImpl.class);
     bind(PurchaseOrderWorkflowServiceSupplychainImpl.class)
         .to(PurchaseOrderWorkflowBudgetServiceImpl.class);
     bind(SaleOrderLineBudgetService.class).to(SaleOrderLineBudgetServiceImpl.class);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -120,7 +120,7 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
       saleOrder.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
       saleOrder.setDiscountAmount(BigDecimal.ZERO);
     }
-    saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null);
+    saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null, null);
     saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderMarginService.computeMarginSaleOrder(saleOrder);
     return message;

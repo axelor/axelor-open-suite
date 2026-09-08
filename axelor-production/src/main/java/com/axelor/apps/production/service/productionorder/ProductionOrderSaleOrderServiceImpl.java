@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -179,7 +179,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       return productionOrder;
     }
 
-    return productionOrderService.createProductionOrder(saleOrder, null);
+    return productionOrderRepo.save(productionOrderService.createProductionOrder(saleOrder, null));
   }
 
   @Override
@@ -198,7 +198,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
             .filter("self.saleOrder = :saleOrder")
             .bind("saleOrder", saleOrder)
             .fetchOne();
-    if (productionOrder != null) {
+    if (productionOrder != null && CollectionUtils.isNotEmpty(productionOrder.getManufOrderSet())) {
       return productionOrder.getManufOrderSet().size();
     }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -117,12 +117,8 @@ public class BankReconciliationComputeServiceImpl implements BankReconciliationC
     for (BankReconciliationLine bankReconciliationLine :
         bankReconciliation.getBankReconciliationLineList()) {
       amount = BigDecimal.ZERO;
-      if (bankReconciliationLine.getMoveLine() != null) {
-        amount =
-            bankReconciliationLine
-                .getMoveLine()
-                .getDebit()
-                .subtract(bankReconciliationLine.getMoveLine().getCredit());
+      if (bankReconciliationLine.getPostedNbr() != null) {
+        amount = bankReconciliationLine.getCredit().subtract(bankReconciliationLine.getDebit());
       }
       endingBalance = endingBalance.add(amount);
     }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceI
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.db.Model;
 import com.axelor.dms.db.repo.DMSFileRepository;
+import com.axelor.meta.MetaFiles;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
 
@@ -35,9 +36,14 @@ public class BankOrderLineOriginServiceHRImpl extends BankOrderLineOriginService
       BankOrderLineOriginRepository bankOrderLineOriginRepository,
       InvoiceTermRepository invoiceTermRepository,
       InvoiceRepository invoiceRepository,
-      DMSFileRepository dmsFileRepository) {
+      DMSFileRepository dmsFileRepository,
+      MetaFiles metaFiles) {
     super(
-        bankOrderLineOriginRepository, invoiceTermRepository, invoiceRepository, dmsFileRepository);
+        bankOrderLineOriginRepository,
+        invoiceTermRepository,
+        invoiceRepository,
+        dmsFileRepository,
+        metaFiles);
   }
 
   @Override

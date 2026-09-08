@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,4 +33,13 @@ public final class MaintenanceExceptionMessage {
 
   public static final String MAINTENANCE_REQUEST_CREATION_EXPECTED_DATE_MISSING = /*$$(*/
       "Please indicate an expected date for the maintenance request." /*)*/;
+
+  public static final String BATCH_PREVENTIVE_MAINTENANCE_REPORT = /*$$(*/
+      "Preventive maintenance batch report: %d request(s) created, %d error(s)" /*)*/;
+
+  public static final String MAINTENANCE_COMPONENTS_STOCK_LOCATION_MISSING = /*$$(*/
+      "Please configure the maintenance components stock location in the stock configuration for company %s." /*)*/;
+
+  public static final String MAINTENANCE_VIRTUAL_STOCK_LOCATION_MISSING = /*$$(*/
+      "Please configure the maintenance virtual stock location in the stock configuration for company %s." /*)*/;
 }

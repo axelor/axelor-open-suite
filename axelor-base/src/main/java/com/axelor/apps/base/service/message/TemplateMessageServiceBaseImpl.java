@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
+import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.EmailAddressRepository;
@@ -109,6 +110,11 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     logger.debug("Generate birt metafile: {}", printingTemplate.getName());
     PrintingGenFactoryContext templatesPrintingContext =
         new PrintingGenFactoryContext(templatesContext);
+
+    if (printingTemplate.getMetaModel() != null
+        && templatesContext.get(printingTemplate.getMetaModel().getName()) instanceof Model model) {
+      templatesPrintingContext.setModel(model);
+    }
 
     String fileName =
         printTemplatePrintService.getPrintFileName(printingTemplate, templatesPrintingContext);

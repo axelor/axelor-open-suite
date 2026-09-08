@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,7 @@ import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface StockMoveLineService {
 
@@ -138,8 +139,16 @@ public interface StockMoveLineService {
   public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product)
       throws AxelorException;
 
+  public void assignTrackingNumber(
+      StockMoveLine stockMoveLine, Product product, Set<Long> excludedTrackingNumberIds)
+      throws AxelorException;
+
   public List<? extends StockLocationLine> getStockLocationLines(
       Product product, StockLocation stockLocation) throws AxelorException;
+
+  public List<? extends StockLocationLine> getStockLocationLines(
+      Product product, StockLocation stockLocation, Set<Long> excludedTrackingNumberIds)
+      throws AxelorException;
 
   public StockMoveLine splitStockMoveLine(
       StockMoveLine stockMoveLine, BigDecimal qty, TrackingNumber trackingNumber)
@@ -179,10 +188,10 @@ public interface StockMoveLineService {
    *
    * @param stockMoveLine
    * @param stockMove
-   * @throws AxelorException if the stock move line needs to have a conformity selected and it is
-   *     not selected.
+   * @return true if the stock move line needs to have a conformity selected and it is not selected
+   * @throws AxelorException if a technical error occurs during product company field resolution
    */
-  public void checkConformitySelection(StockMoveLine stockMoveLine, StockMove stockMove)
+  public boolean checkConformitySelection(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException;
 
   /**
@@ -213,10 +222,10 @@ public interface StockMoveLineService {
   /**
    * Store customs code information on each stock move line from its product.
    *
-   * @param stockMoveLineList List of StockMoveLines on which to operate
+   * @param stockMoveLine StockMoveLine on which to operate
    * @throws AxelorException
    */
-  public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList) throws AxelorException;
+  public void storeCustomsCodes(StockMoveLine stockMoveLine) throws AxelorException;
 
   /**
    * Set product information.
@@ -253,7 +262,8 @@ public interface StockMoveLineService {
   public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException;
 
-  public Map<String, Object> setAvailableStatus(StockMoveLine stockMoveLine) throws AxelorException;
+  public Map<String, Object> setAvailableStatus(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException;
 
   public List<TrackingNumber> getAvailableTrackingNumbers(StockMoveLine stockMoveLine);
 
@@ -290,6 +300,25 @@ public interface StockMoveLineService {
       String description)
       throws AxelorException;
 
+  void updateLocations(
+      int fromStatus,
+      int toStatus,
+      Set<Long> stockMoveLineIds,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      boolean generateOrder)
+      throws AxelorException;
+
+  void updateLocations(
+      int fromStatus,
+      int toStatus,
+      Set<Long> stockMoveLineIds,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      boolean generateOrder,
+      boolean clearBatch)
+      throws AxelorException;
+
   /**
    * Same as {@link #updateLocations(StockLocation, StockLocation, int, int, List, LocalDate,
    * boolean)} But instead of creating wap history at with today date,they will be created at date
@@ -314,6 +343,29 @@ public interface StockMoveLineService {
       LocalDate date,
       String origin,
       boolean generateOrder)
+      throws AxelorException;
+
+  void updateLocations(
+      int fromStatus,
+      int toStatus,
+      Set<Long> stockMoveLineIds,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      LocalDate date,
+      String origin,
+      boolean generateOrder)
+      throws AxelorException;
+
+  void updateLocations(
+      int fromStatus,
+      int toStatus,
+      Set<Long> stockMoveLineIds,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      LocalDate date,
+      String origin,
+      boolean generateOrder,
+      boolean clearBatch)
       throws AxelorException;
 
   BigDecimal computeNewAveragePriceLocationLine(
@@ -353,4 +405,9 @@ public interface StockMoveLineService {
    */
   void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine)
       throws AxelorException;
+
+  StockMoveLine qtyOnChange(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException;
+
+  StockMoveLine createStockMoveLine(String productName, int lineTypeSelect, StockMove stockMove);
 }

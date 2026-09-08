@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,6 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapRestService;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -45,17 +44,15 @@ import jakarta.ws.rs.core.MediaType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Path("/map")
-@Deprecated
 public class MapRest {
 
   @Inject private MapRestService mapRestService;
 
   @Inject private TranslationService translationService;
-
-  @Inject private PartnerService partnerService;
 
   @Inject private PartnerRepository partnerRepo;
 
@@ -64,7 +61,6 @@ public class MapRest {
   @Path("/partner")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @Deprecated
   public JsonNode getPartners() {
     ObjectNode mainNode = nodeFactory.objectNode();
 
@@ -73,8 +69,11 @@ public class MapRest {
           partnerRepo
               .all()
               .filter(
-                  "self.isCustomer = true OR self.isSupplier = true AND self.isContact=?", false)
+                  "(self.isCustomer = true OR self.isSupplier = true) AND self.isContact = ? AND (self.archived IS NULL OR self.archived = false)",
+                  false)
               .fetch();
+
+      Map<Partner, Address> invoicingAddressMap = mapRestService.getInvoicingAddresses(partners);
 
       ArrayNode arrayNode = nodeFactory.arrayNode();
 
@@ -82,7 +81,7 @@ public class MapRest {
 
         ObjectNode objectNode = nodeFactory.objectNode();
 
-        Address address = partnerService.getInvoicingAddress(partner);
+        Address address = invoicingAddressMap.get(partner);
         if (address != null
             && StringUtils.notBlank(address.getFullName())
             && address.getIsValidLatLong()) {
@@ -119,7 +118,6 @@ public class MapRest {
   @Path("/partner/{id}")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @Deprecated
   public JsonNode getPartner(@PathParam("id") long id) {
     ObjectNode mainNode = nodeFactory.objectNode();
 
@@ -183,13 +181,19 @@ public class MapRest {
   @Path("/customer")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @Deprecated
   public JsonNode getCustomers() {
 
     ObjectNode mainNode = nodeFactory.objectNode();
     try {
       List<? extends Partner> customers =
-          partnerRepo.all().filter("self.isCustomer = true AND self.isContact=?", false).fetch();
+          partnerRepo
+              .all()
+              .filter(
+                  "self.isCustomer = true AND self.isContact = ? AND (self.archived IS NULL OR self.archived = false)",
+                  false)
+              .fetch();
+
+      Map<Partner, Address> invoicingAddressMap = mapRestService.getInvoicingAddresses(customers);
 
       ArrayNode arrayNode = nodeFactory.arrayNode();
 
@@ -197,7 +201,7 @@ public class MapRest {
 
         ObjectNode objectNode = nodeFactory.objectNode();
 
-        Address address = partnerService.getInvoicingAddress(customer);
+        Address address = invoicingAddressMap.get(customer);
         if (address != null && address.getIsValidLatLong()) {
           String addressString = mapRestService.makeAddressString(address, objectNode);
           if (StringUtils.isBlank(addressString)) {
@@ -230,21 +234,28 @@ public class MapRest {
   @Path("/prospect")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @Deprecated
   public JsonNode getProspects() {
 
     ObjectNode mainNode = nodeFactory.objectNode();
 
     try {
       List<? extends Partner> customers =
-          partnerRepo.all().filter("self.isProspect = true AND self.isContact=?", false).fetch();
+          partnerRepo
+              .all()
+              .filter(
+                  "self.isProspect = true AND self.isContact = ? AND (self.archived IS NULL OR self.archived = false)",
+                  false)
+              .fetch();
+
+      Map<Partner, Address> invoicingAddressMap = mapRestService.getInvoicingAddresses(customers);
+
       ArrayNode arrayNode = nodeFactory.arrayNode();
 
       for (Partner prospect : customers) {
 
         ObjectNode objectNode = nodeFactory.objectNode();
 
-        Address address = partnerService.getInvoicingAddress(prospect);
+        Address address = invoicingAddressMap.get(prospect);
         if (address != null && address.getIsValidLatLong()) {
           String addressString = mapRestService.makeAddressString(address, objectNode);
           if (StringUtils.isBlank(addressString)) {
@@ -277,20 +288,26 @@ public class MapRest {
   @Path("/supplier")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @Deprecated
   public JsonNode getSuppliers() {
     ObjectNode mainNode = nodeFactory.objectNode();
 
     try {
       ArrayNode arrayNode = nodeFactory.arrayNode();
       List<? extends Partner> customers =
-          partnerRepo.all().filter("self.isSupplier = true AND self.isContact=?", false).fetch();
+          partnerRepo
+              .all()
+              .filter(
+                  "self.isSupplier = true AND self.isContact = ? AND (self.archived IS NULL OR self.archived = false)",
+                  false)
+              .fetch();
+
+      Map<Partner, Address> invoicingAddressMap = mapRestService.getInvoicingAddresses(customers);
 
       for (Partner supplier : customers) {
 
         ObjectNode objectNode = nodeFactory.objectNode();
 
-        Address address = partnerService.getInvoicingAddress(supplier);
+        Address address = invoicingAddressMap.get(supplier);
         if (address != null && address.getIsValidLatLong()) {
           String addressString = mapRestService.makeAddressString(address, objectNode);
           if (StringUtils.isBlank(addressString)) {
@@ -323,7 +340,6 @@ public class MapRest {
   @Path("translation/{key}")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @Deprecated
   public JsonNode getTranslation(@PathParam("key") String key) {
 
     ObjectNode mainNode = nodeFactory.objectNode();

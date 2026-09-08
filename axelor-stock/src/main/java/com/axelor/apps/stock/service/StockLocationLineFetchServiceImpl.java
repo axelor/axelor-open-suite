@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ import com.axelor.utils.helpers.StringHelper;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 
 public class StockLocationLineFetchServiceImpl implements StockLocationLineFetchService {
 
@@ -88,6 +89,7 @@ public class StockLocationLineFetchServiceImpl implements StockLocationLineFetch
         .bind("_productId", product.getId())
         .bind("_trackingNumberId", trackingNumber.getId())
         .bind("internalType", StockLocationRepository.TYPE_INTERNAL)
+        .order("-currentQty")
         .fetch();
   }
 
@@ -131,9 +133,11 @@ public class StockLocationLineFetchServiceImpl implements StockLocationLineFetch
       Long productId, Long companyId, Long stockLocationId) {
 
     String query =
-        "self.product.id = "
+        "(self.product.id = "
             + productId
-            + " AND self.stockLocation.typeSelect != "
+            + " OR self.product.parentProduct.id = "
+            + productId
+            + ") AND self.stockLocation.typeSelect != "
             + StockLocationRepository.TYPE_VIRTUAL;
 
     if (companyId != 0L) {
@@ -169,5 +173,23 @@ public class StockLocationLineFetchServiceImpl implements StockLocationLineFetch
     String query = this.getStockLocationLineListForAProduct(productId, companyId, stockLocationId);
     query += " AND self.requestedReservedQty > 0";
     return query;
+  }
+
+  @Override
+  public BigDecimal getTrackingNumberAvailableQtyIncludingSubLocations(
+      StockLocation stockLocation, TrackingNumber trackingNumber) {
+    BigDecimal availableQty = getTrackingNumberAvailableQty(stockLocation, trackingNumber);
+    List<StockLocation> subStockLocations =
+        JPA.all(StockLocation.class)
+            .filter("self.parentStockLocation = :stockLocation")
+            .bind("stockLocation", stockLocation)
+            .fetch();
+    if (CollectionUtils.isEmpty(subStockLocations)) {
+      return availableQty;
+    }
+    for (StockLocation location : subStockLocations) {
+      availableQty = availableQty.add(getTrackingNumberAvailableQty(location, trackingNumber));
+    }
+    return availableQty;
   }
 }

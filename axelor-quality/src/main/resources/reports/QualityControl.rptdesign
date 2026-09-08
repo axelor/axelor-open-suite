@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -354,7 +354,7 @@ MetaFile1.file_path as inspector_signature_path,
 MetaFile2.file_path as customer_signature_path
 from quality_quality_control as QualityControl
 left outer join base_printing_settings as PrintingSetting on (QualityControl.printing_settings = PrintingSetting.id)
-left outer join project_project as Project on (QualityControl.project = Project.id)
+left outer join project_project as Project on (QualityControl.related_to_select_id = Project.id and QualityControl.related_to_select = 'com.axelor.apps.project.db.Project')
 left outer join base_company as Company on (Project.company = Company.id)
 left outer join base_partner as Partner on (Project.client_partner = Partner.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)

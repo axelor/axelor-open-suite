@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,53 +46,58 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
 
   @Override
   public MoveLine findConsolidateMoveLine(
-      Map<List<Object>, MoveLine> map, MoveLine moveLine, List<Object> keys) {
-    if (map != null && !map.isEmpty()) {
+      Map<List<Object>, List<MoveLine>> map, MoveLine moveLine, List<Object> keys) {
 
-      Map<List<Object>, MoveLine> copyMap = new HashMap<List<Object>, MoveLine>(map);
-      while (!copyMap.isEmpty()) {
+    if (map == null || map.isEmpty() || !map.containsKey(keys)) {
+      return null;
+    }
 
-        if (map.containsKey(keys)) {
+    for (MoveLine moveLineIt : map.get(keys)) {
 
-          MoveLine moveLineIt = map.get(keys);
+      // Check cut off dates
+      if (moveLineToolService.isCutOffActive(moveLine)
+          && (!moveLine.getCutOffStartDate().equals(moveLineIt.getCutOffStartDate())
+              || !moveLine.getCutOffEndDate().equals(moveLineIt.getCutOffEndDate()))) {
+        continue;
+      }
 
-          // Check cut off dates
-          if (moveLineToolService.isCutOffActive(moveLine)
-              && (!moveLine.getCutOffStartDate().equals(moveLineIt.getCutOffStartDate())
-                  || !moveLine.getCutOffEndDate().equals(moveLineIt.getCutOffEndDate()))) {
-            return null;
-          }
+      List<AnalyticMoveLine> list1 = moveLineIt.getAnalyticMoveLineList();
+      List<AnalyticMoveLine> list2 = moveLine.getAnalyticMoveLineList();
 
-          int count = 0;
-          if (moveLineIt.getAnalyticMoveLineList() == null
-              && moveLine.getAnalyticMoveLineList() == null) {
-            return moveLineIt;
-          } else if (moveLineIt.getAnalyticMoveLineList() == null
-              || moveLine.getAnalyticMoveLineList() == null) {
+      // Both null = consolidate
+      if (CollectionUtils.isEmpty(list1) && CollectionUtils.isEmpty(list2)) {
+        return moveLineIt;
+      }
+
+      // One null = don't consolidate, try next candidate
+      if (CollectionUtils.isEmpty(list1) || CollectionUtils.isEmpty(list2)) {
+        continue;
+      }
+
+      // Different sizes = consolidate
+      if (list1.size() != list2.size()) {
+        return moveLineIt;
+      }
+
+      // Same size - compare analytic lines one by one
+      List<AnalyticMoveLine> copyList = new ArrayList<>(list1);
+      int count = 0;
+
+      for (AnalyticMoveLine analyticDistributionLine : list2) {
+        for (AnalyticMoveLine analyticDistributionLineIt : copyList) {
+          if (checkAnalyticDistributionLine(analyticDistributionLine, analyticDistributionLineIt)) {
+            copyList.remove(analyticDistributionLineIt);
+            count++;
             break;
           }
-          List<AnalyticMoveLine> list1 = moveLineIt.getAnalyticMoveLineList();
-          List<AnalyticMoveLine> list2 = moveLine.getAnalyticMoveLineList();
-          List<AnalyticMoveLine> copyList = new ArrayList<AnalyticMoveLine>(list1);
-          if (list1.size() == list2.size()) {
-            for (AnalyticMoveLine analyticDistributionLine : list2) {
-              for (AnalyticMoveLine analyticDistributionLineIt : copyList) {
-                if (checkAnalyticDistributionLine(
-                    analyticDistributionLine, analyticDistributionLineIt)) {
-                  copyList.remove(analyticDistributionLineIt);
-                  count++;
-                  break;
-                }
-              }
-            }
-            if (count == list1.size()) {
-              return moveLineIt;
-            }
-          }
-        } else {
-          return null;
         }
       }
+
+      // All lines match = consolidate
+      if (count == list1.size()) {
+        return moveLineIt;
+      }
+      // Lines don't match - try next candidate
     }
 
     return null;
@@ -105,7 +111,7 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
   @Override
   public List<MoveLine> consolidateMoveLines(List<MoveLine> moveLines) {
 
-    Map<List<Object>, MoveLine> map = new HashMap<>();
+    Map<List<Object>, List<MoveLine>> map = new HashMap<>();
     MoveLine consolidateMoveLine = null;
     boolean haveHoldBack =
         moveLines.stream()
@@ -116,6 +122,8 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
                             .anyMatch(PaymentConditionLine::getIsHoldback));
 
     for (MoveLine moveLine : moveLines) {
+
+      consolidateMoveLine = null;
 
       List<Object> keys = new ArrayList<>();
 
@@ -134,7 +142,7 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
         consolidateMoveLine = consolidateMoveLine(moveLine, consolidateMoveLine);
 
       } else {
-        map.put(keys, moveLine);
+        map.computeIfAbsent(keys, k -> new ArrayList<>()).add(moveLine);
       }
     }
 
@@ -143,32 +151,34 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
     int moveLineId = 1;
     moveLines.clear();
 
-    for (MoveLine moveLine : map.values()) {
+    for (List<MoveLine> moveLineList : map.values()) {
+      for (MoveLine moveLine : moveLineList) {
 
-      credit = moveLine.getCredit();
-      debit = moveLine.getDebit();
+        credit = moveLine.getCredit();
+        debit = moveLine.getDebit();
 
-      boolean isDebit = debit.compareTo(credit) > 0;
-      moveLine.setCurrencyAmount(
-          moveLineToolService.computeCurrencyAmountSign(moveLine.getCurrencyAmount(), isDebit));
+        boolean isDebit = debit.compareTo(credit) > 0;
+        moveLine.setCurrencyAmount(
+            moveLineToolService.computeCurrencyAmountSign(moveLine.getCurrencyAmount(), isDebit));
 
-      if (debit.compareTo(BigDecimal.ZERO) > 0 && credit.compareTo(BigDecimal.ZERO) > 0) {
+        if (debit.compareTo(BigDecimal.ZERO) > 0 && credit.compareTo(BigDecimal.ZERO) > 0) {
 
-        if (debit.compareTo(credit) > 0) {
-          moveLine.setDebit(debit.subtract(credit));
-          moveLine.setCredit(BigDecimal.ZERO);
-          moveLine.setCounter(moveLineId++);
-          moveLines.add(moveLine);
-        } else if (credit.compareTo(debit) > 0) {
-          moveLine.setCredit(credit.subtract(debit));
-          moveLine.setDebit(BigDecimal.ZERO);
+          if (debit.compareTo(credit) > 0) {
+            moveLine.setDebit(debit.subtract(credit));
+            moveLine.setCredit(BigDecimal.ZERO);
+            moveLine.setCounter(moveLineId++);
+            moveLines.add(moveLine);
+          } else if (credit.compareTo(debit) > 0) {
+            moveLine.setCredit(credit.subtract(debit));
+            moveLine.setDebit(BigDecimal.ZERO);
+            moveLine.setCounter(moveLineId++);
+            moveLines.add(moveLine);
+          }
+
+        } else if (debit.compareTo(BigDecimal.ZERO) > 0 || credit.compareTo(BigDecimal.ZERO) > 0) {
           moveLine.setCounter(moveLineId++);
           moveLines.add(moveLine);
         }
-
-      } else if (debit.compareTo(BigDecimal.ZERO) > 0 || credit.compareTo(BigDecimal.ZERO) > 0) {
-        moveLine.setCounter(moveLineId++);
-        moveLines.add(moveLine);
       }
     }
 

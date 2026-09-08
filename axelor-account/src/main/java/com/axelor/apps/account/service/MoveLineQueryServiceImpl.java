@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.MoveLineQuery;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveLineQueryRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
@@ -63,8 +64,11 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
       query += " AND self.move.tradingName.id = " + moveLineQuery.getTradingName().getId();
     }
 
-    query += String.format(" AND self.date >= '%s'", moveLineQuery.getFromDate().toString());
-    query += String.format(" AND self.date <= '%s'", moveLineQuery.getToDate().toString());
+    query +=
+        String.format(
+            " AND self.date >= CAST('%s' AS date)", moveLineQuery.getFromDate().toString());
+    query +=
+        String.format(" AND self.date <= CAST('%s' AS date)", moveLineQuery.getToDate().toString());
 
     query += " AND self.account.id = " + moveLineQuery.getAccount().getId();
 
@@ -74,8 +78,16 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
 
     if (moveLineQuery.getProcessSelect() == MoveLineQueryRepository.PROCESS_RECONCILE) {
       query += "AND self.amountRemaining != 0 ";
+      query +=
+          "AND NOT EXISTS ("
+              + "SELECT ip FROM InvoicePayment ip "
+              + "JOIN ip.invoiceTermPaymentList itp "
+              + "WHERE itp.invoiceTerm MEMBER OF self.invoiceTermList "
+              + "AND ip.statusSelect = "
+              + InvoicePaymentRepository.STATUS_PENDING
+              + ") ";
     } else if (moveLineQuery.getProcessSelect() == MoveLineQueryRepository.PROCESS_UNRECONCILE) {
-      query += "AND self.amountRemaining != debit + credit ";
+      query += "AND self.amountRemaining != debit - credit ";
     }
 
     query +=

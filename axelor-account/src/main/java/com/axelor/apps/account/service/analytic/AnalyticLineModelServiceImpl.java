@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,13 +18,13 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AnalyticLine;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -122,7 +122,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     analyticMoveLine.setDate(appBaseService.getTodayDate(company));
     analyticMoveLine.setAmount(
         currencyScaleService.getScaledValue(analyticMoveLine, analyticLineModel.getLineAmount()));
-    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
+    analyticMoveLine.setTypeSelect(analyticLineModel.getTypeSelect());
 
     return analyticMoveLine;
   }
@@ -166,16 +166,19 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   public boolean productAccountManageAnalytic(AnalyticLineModel analyticLineModel)
       throws AxelorException {
     Product product = analyticLineModel.getProduct();
+    if (product == null) {
+      return false;
+    }
+    Account account =
+        accountManagementAccountService.getProductAccount(
+            product,
+            analyticLineModel.getCompany(),
+            analyticLineModel.getFiscalPosition(),
+            analyticLineModel.getIsPurchase(),
+            false);
     return analyticToolService.isManageAnalytic(analyticLineModel.getCompany())
-        && product != null
-        && accountManagementAccountService
-            .getProductAccount(
-                product,
-                analyticLineModel.getCompany(),
-                analyticLineModel.getFiscalPosition(),
-                analyticLineModel.getIsPurchase(),
-                false)
-            .getAnalyticDistributionAuthorized();
+        && account != null
+        && account.getAnalyticDistributionAuthorized();
   }
 
   @Override
@@ -190,13 +193,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     if (analyticMoveLineList != null) {
       LocalDate date = appAccountService.getTodayDate(this.getCompany(analyticLineModel));
 
-      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        analyticMoveLineService.updateAnalyticMoveLine(
-            analyticMoveLine,
-            currencyScaleService.getScaledValue(
-                analyticMoveLine, analyticLineModel.getLineAmount()),
-            date);
-      }
+      analyticMoveLineService.updateAnalyticMoveLineList(
+          analyticMoveLineList, analyticLineModel.getLineAmount(), date);
     }
 
     // analyticLineModel.copyToModel();
@@ -216,7 +214,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
             analyticLineModel.getAnalyticDistributionTemplate(),
             currencyScaleService.getCompanyScaledValue(
                 analyticLineModel.getCompany(), analyticLineModel.getLineAmount()),
-            AnalyticMoveLineRepository.STATUS_FORECAST_ORDER,
+            analyticLineModel.getTypeSelect(),
             appBaseService.getTodayDate(this.getCompany(analyticLineModel)));
 
     analyticLine.clearAnalyticMoveLineList();

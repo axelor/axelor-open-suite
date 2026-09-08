@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineCheckService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.InvoiceVatLiabilityService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolService;
 import com.axelor.apps.account.service.invoice.tax.InvoiceTaxComputeService;
@@ -217,8 +218,15 @@ public abstract class InvoiceGenerator {
     if (accountingSituation != null) {
       invoice.setInvoiceAutomaticMail(accountingSituation.getInvoiceAutomaticMail());
       invoice.setInvoiceMessageTemplate(accountingSituation.getInvoiceMessageTemplate());
+      invoice.setInvoiceAutomaticMailOnValidate(
+          accountingSituation.getInvoiceAutomaticMailOnValidate());
+      invoice.setInvoiceMessageTemplateOnValidate(
+          accountingSituation.getInvoiceMessageTemplateOnValidate());
       invoice.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
     }
+
+    invoice.setVatSystemSelect(
+        Beans.get(InvoiceVatLiabilityService.class).computeVatLiability(invoice));
 
     if (paymentCondition == null) {
       paymentCondition = InvoiceToolService.getPaymentCondition(invoice);

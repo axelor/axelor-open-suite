@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,7 +47,7 @@ public class CatalogServiceImpl implements CatalogService {
   }
 
   @Override
-  public void sendEmail(Catalog catalog, Template template, List<Partner> contactList)
+  public Message sendEmail(Catalog catalog, Template template, List<Partner> contactList)
       throws ClassNotFoundException,
           InstantiationException,
           IllegalAccessException,
@@ -66,6 +66,6 @@ public class CatalogServiceImpl implements CatalogService {
     message.setToEmailAddressSet(toEmailAddressSet);
     messageService.attachMetaFiles(message, Set.of(catalog.getPdfFile()));
 
-    messageService.sendByEmail(message);
+    return messageService.sendByEmail(message);
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -168,10 +168,13 @@ import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentService;
 import com.axelor.apps.bankpayment.service.batch.BatchBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.batch.BatchCreditTransferPartnerReimbursementBankPayment;
 import com.axelor.apps.bankpayment.service.batch.BatchCreditTransferSupplierPaymentBankPayment;
+import com.axelor.apps.bankpayment.service.batch.BillOfExchangeInvoiceTermQueryService;
+import com.axelor.apps.bankpayment.service.batch.BillOfExchangeInvoiceTermQueryServiceImpl;
 import com.axelor.apps.bankpayment.service.extract.ExtractContextMoveServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentAlertServiceBankPayImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentBankPaymentCancelService;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCancelServiceBankPayImpl;
+import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCreateServiceBankPay;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCreateServiceBankPayImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentMoveCreateServiceBankPayImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
@@ -233,6 +236,7 @@ public class BankPaymentModule extends AxelorModule {
         .to(PaymentScheduleLineBankPaymentServiceImpl.class);
 
     bind(InvoicePaymentCreateServiceImpl.class).to(InvoicePaymentCreateServiceBankPayImpl.class);
+    bind(InvoicePaymentCreateServiceBankPay.class).to(InvoicePaymentCreateServiceBankPayImpl.class);
 
     bind(InvoicePaymentController.class).to(InvoicePaymentBankPayController.class);
 
@@ -261,8 +265,6 @@ public class BankPaymentModule extends AxelorModule {
 
     bind(PaymentSessionBankOrderService.class).to(PaymentSessionBankOrderServiceImpl.class);
 
-    bind(PaymentSessionValidateServiceImpl.class)
-        .to(PaymentSessionValidateBankPaymentServiceImpl.class);
     bind(PaymentSessionAccountRepository.class).to(PaymentSessionBankPaymentRepository.class);
 
     bind(BankStatementRemoveService.class).to(BankStatementRemoveServiceImpl.class);
@@ -271,6 +273,9 @@ public class BankPaymentModule extends AxelorModule {
         .to(InvoiceTermFilterBankPaymentServiceImpl.class);
 
     bind(InvoiceTermFilterServiceImpl.class).to(InvoiceTermFilterBankPaymentServiceImpl.class);
+
+    bind(BillOfExchangeInvoiceTermQueryService.class)
+        .to(BillOfExchangeInvoiceTermQueryServiceImpl.class);
 
     bind(MoveLineGroupServiceImpl.class).to(MoveLineGroupBankPaymentServiceImpl.class);
     bind(MoveLineGroupBankPaymentService.class).to(MoveLineGroupBankPaymentServiceImpl.class);

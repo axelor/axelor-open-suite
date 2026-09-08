@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,11 +25,15 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
+import com.axelor.apps.production.service.ProductionTrackingPreservationService;
+import com.axelor.apps.production.service.ProductionTrackingPreservationService.PreservedTrackingNumbersByProduct;
+import com.axelor.apps.production.service.StockMoveProductionService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveLineService;
 import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -38,12 +42,15 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -57,6 +64,9 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
   protected ManufOrderOutsourceService manufOrderOutsourceService;
   protected ManufOrderGetStockMoveService manufOrderGetStockMoveService;
   protected ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService;
+  protected StockMoveProductionService stockMoveProductionService;
+  protected OperationOrderService operationOrderService;
+  protected final ProductionTrackingPreservationService productionTrackingPreservationService;
 
   @Inject
   public OperationOrderStockMoveServiceImpl(
@@ -67,7 +77,10 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
       ManufOrderStockMoveService manufOrderStockMoveService,
       ManufOrderOutsourceService manufOrderOutsourceService,
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
-      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService,
+      StockMoveProductionService stockMoveProductionService,
+      OperationOrderService operationOrderService,
+      ProductionTrackingPreservationService productionTrackingPreservationService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockLocationRepo = stockLocationRepo;
@@ -76,6 +89,9 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
     this.manufOrderOutsourceService = manufOrderOutsourceService;
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
+    this.stockMoveProductionService = stockMoveProductionService;
+    this.operationOrderService = operationOrderService;
+    this.productionTrackingPreservationService = productionTrackingPreservationService;
   }
 
   @Override
@@ -115,24 +131,20 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
                 manufOrder.getWorkshopStockLocation(), stockConfig);
       }
 
+      stockMove.setStockMoveLineList(new ArrayList<>());
+      stockMove.setInOperationOrder(operationOrder);
+
       for (ProdProduct prodProduct : operationOrder.getToConsumeProdProductList()) {
 
         StockMoveLine stockMoveLine =
             this._createStockMoveLine(
                 prodProduct, stockMove, fromStockLocation, virtualStockLocation);
+        stockMoveLine.setConsumedOperationOrder(operationOrder);
+        stockMove.addStockMoveLineListItem(stockMoveLine);
       }
 
-      if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
+      if (!stockMove.getStockMoveLineList().isEmpty()) {
         stockMoveService.plan(stockMove);
-        operationOrder.addInStockMoveListItem(stockMove);
-      }
-
-      // fill here the consumed stock move line list item to manage the
-      // case where we had to split tracked stock move lines
-      if (stockMove.getStockMoveLineList() != null) {
-        for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-          operationOrder.addConsumedStockMoveLineListItem(stockMoveLine);
-        }
       }
     }
   }
@@ -208,6 +220,7 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void finish(OperationOrder operationOrder) throws AxelorException {
 
     List<StockMove> stockMoveList = operationOrder.getInStockMoveList();
@@ -256,8 +269,25 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
                     stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
                         && !CollectionUtils.isEmpty(stockMove.getStockMoveLineList()))
             .findFirst();
+
+    // Snapshot tracking numbers before realization changes line state
+    List<StockMoveLine> originalStockMoveLines =
+        stockMoveToRealize.isPresent()
+            ? new ArrayList<>(stockMoveToRealize.get().getStockMoveLineList())
+            : Collections.emptyList();
+    PreservedTrackingNumbersByProduct preservedTrackingNumbersByProduct =
+        new PreservedTrackingNumbersByProduct(null);
+
     if (stockMoveToRealize.isPresent()) {
       manufOrderStockMoveService.finishStockMove(stockMoveToRealize.get());
+      operationOrder = JpaModelHelper.ensureManaged(operationOrder);
+      company = JpaModelHelper.ensureManaged(company);
+      fromStockLocation = JpaModelHelper.ensureManaged(fromStockLocation);
+      toStockLocation = JpaModelHelper.ensureManaged(toStockLocation);
+      StockMove realizedStockMove = JpaModelHelper.ensureManaged(stockMoveToRealize.get());
+      preservedTrackingNumbersByProduct =
+          productionTrackingPreservationService.getPreservedTrackingNumbersByProduct(
+              originalStockMoveLines, realizedStockMove.getStockMoveLineList());
     }
 
     // generate new stock move
@@ -277,16 +307,25 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
     newStockMove.setOperationOrder(operationOrder);
 
     newStockMove.setStockMoveLineList(new ArrayList<>());
-    createNewStockMoveLines(operationOrder, newStockMove, fromStockLocation, toStockLocation);
+    createNewStockMoveLines(
+        operationOrder,
+        newStockMove,
+        fromStockLocation,
+        toStockLocation,
+        preservedTrackingNumbersByProduct);
 
     if (!newStockMove.getStockMoveLineList().isEmpty()) {
       // plan the stockmove
       stockMoveService.plan(newStockMove);
+      newStockMove = JpaModelHelper.ensureManaged(newStockMove);
+      operationOrder = JpaModelHelper.ensureManaged(operationOrder);
 
       operationOrder.addInStockMoveListItem(newStockMove);
       newStockMove.getStockMoveLineList().forEach(operationOrder::addConsumedStockMoveLineListItem);
       operationOrder.clearDiffConsumeProdProductList();
     }
+
+    Beans.get(ManufOrderWorkflowService.class).completeIfFullyProduced(manufOrder);
   }
 
   /**
@@ -302,6 +341,17 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
       StockLocation fromStockLocation,
       StockLocation toStockLocation)
       throws AxelorException {
+    createNewStockMoveLines(operationOrder, stockMove, fromStockLocation, toStockLocation, null);
+  }
+
+  @Override
+  public void createNewStockMoveLines(
+      OperationOrder operationOrder,
+      StockMove stockMove,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation,
+      PreservedTrackingNumbersByProduct preservedTrackingNumbersByProduct)
+      throws AxelorException {
     List<ProdProduct> diffProdProductList;
     Beans.get(OperationOrderService.class).updateDiffProdProductList(operationOrder);
     diffProdProductList = new ArrayList<>(operationOrder.getDiffConsumeProdProductList());
@@ -310,7 +360,21 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
         stockMove,
         StockMoveLineService.TYPE_IN_PRODUCTIONS,
         fromStockLocation,
-        toStockLocation);
+        toStockLocation,
+        preservedTrackingNumbersByProduct);
+  }
+
+  @Override
+  public boolean hasPlannedConsumeStockMove(OperationOrder operationOrder) {
+    List<StockMove> inStockMoveList = operationOrder.getInStockMoveList();
+    if (inStockMoveList == null) {
+      return false;
+    }
+    return inStockMoveList.stream()
+        .anyMatch(
+            stockMove ->
+                stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
+                    || stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED);
   }
 
   @Override
@@ -344,14 +408,33 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
     // find planned stock move
     Optional<StockMove> stockMoveOpt =
         manufOrderGetStockMoveService.getPlannedStockMove(operationOrder.getInStockMoveList());
+
     if (!stockMoveOpt.isPresent()) {
-      return;
+      // After a partial finish, the consumed stock move is REALIZED.
+      // Create a new planned stock move for the remaining quantity.
+      StockMove newStockMove =
+          operationOrderService.getConsumedStockMoveFromOperationOrder(operationOrder);
+      if (newStockMove == null) {
+        return;
+      }
+      operationOrder = JpaModelHelper.ensureManaged(operationOrder);
+      stockMoveOpt = Optional.of(newStockMove);
     }
 
     StockMove stockMove = stockMoveOpt.get();
 
-    stockMoveService.cancel(stockMove);
+    // Snapshot tracking numbers before cancellation mutates the lines
+    List<StockMoveLine> originalLines =
+        stockMove.getStockMoveLineList() != null
+            ? new ArrayList<>(stockMove.getStockMoveLineList())
+            : Collections.emptyList();
 
+    stockMoveProductionService.cancelFromManufOrder(stockMove);
+
+    PreservedTrackingNumbersByProduct preservedTrackingNumbersByProduct =
+        productionTrackingPreservationService.getPreservedTrackingNumbersByProduct(originalLines);
+
+    operationOrder = JpaModelHelper.ensureManaged(operationOrder);
     // clear all lists from planned lines
     operationOrder
         .getConsumedStockMoveLineList()
@@ -359,21 +442,45 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
             stockMoveLine ->
                 stockMoveLine.getStockMove().getStatusSelect()
                     == StockMoveRepository.STATUS_CANCELED);
+
+    stockMove = JpaModelHelper.ensureManaged(stockMove);
     stockMove.clearStockMoveLineList();
 
-    // create a new list
+    // create a new list, reusing preserved tracking numbers
     for (ProdProduct prodProduct : operationOrder.getToConsumeProdProductList()) {
       BigDecimal qty =
           manufOrderStockMoveService.getFractionQty(
               operationOrder.getManufOrder(), prodProduct, qtyToUpdate);
-      manufOrderCreateStockMoveLineService._createStockMoveLine(
-          prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty, null, null);
+      BigDecimal realizedQty =
+          operationOrder.getConsumedStockMoveLineList().stream()
+              .filter(
+                  sml ->
+                      sml.getProduct() != null
+                          && sml.getProduct().equals(prodProduct.getProduct())
+                          && sml.getStockMove() != null
+                          && sml.getStockMove().getStatusSelect()
+                              == StockMoveRepository.STATUS_REALIZED)
+              .map(StockMoveLine::getRealQty)
+              .filter(Objects::nonNull)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+      qty = qty.subtract(realizedQty).max(BigDecimal.ZERO);
+
+      productionTrackingPreservationService.createStockMoveLinesWithPreservedTracking(
+          prodProduct,
+          stockMove,
+          StockMoveLineService.TYPE_IN_PRODUCTIONS,
+          qty,
+          stockMove.getFromStockLocation(),
+          stockMove.getToStockLocation(),
+          preservedTrackingNumbersByProduct);
+
       // Update consumed StockMoveLineList with created stock move lines
-      stockMove.getStockMoveLineList().stream()
-          .filter(
-              stockMoveLine1 ->
-                  !operationOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
-          .forEach(operationOrder::addConsumedStockMoveLineListItem);
+      List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        if (!operationOrder.getConsumedStockMoveLineList().contains(stockMoveLine)) {
+          operationOrder.addConsumedStockMoveLineListItem(stockMoveLine);
+        }
+      }
     }
     stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);

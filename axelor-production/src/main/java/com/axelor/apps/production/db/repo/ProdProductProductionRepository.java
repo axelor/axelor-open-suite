@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -57,7 +57,6 @@ public class ProdProductProductionRepository extends ProdProductRepository {
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
 
     if (!appProductionService.isApp("production")) {
-
       return super.populate(json, context);
     }
 
@@ -74,7 +73,8 @@ public class ProdProductProductionRepository extends ProdProductRepository {
       toProduceManufOrderIdFromView =
           Optional.ofNullable(context.get("_parent"))
               .map(o -> (Map<String, Object>) o)
-              .map(parentMap -> Long.parseLong(parentMap.get("id").toString()))
+              .map(parentMap -> parentMap.get("id"))
+              .map(id -> Long.parseLong(id.toString()))
               .orElse(null);
     }
     if (productFromView == null || qtyFromView == null || toProduceManufOrderIdFromView == null) {
@@ -102,11 +102,14 @@ public class ProdProductProductionRepository extends ProdProductRepository {
     List<Object[]> queryResult =
         JPA.em()
             .createQuery(
-                "SELECT locationLine.currentQty, locationLine.unit.id "
+                "SELECT locationLine.currentQty, locationLine.unit.id, locationLine.reservedQty, stockMoveLine.reservedQty "
                     + "FROM ManufOrder manufOrder "
                     + "LEFT JOIN StockLocationLine locationLine "
                     + "ON locationLine.stockLocation.id = manufOrder.prodProcess.stockLocation.id "
+                    + "LEFT JOIN StockMoveLine stockMoveLine "
+                    + "ON stockMoveLine.consumedManufOrder.id = :manufOrderId "
                     + "WHERE locationLine.product.id = :productId "
+                    + "AND stockMoveLine.product.id = :productId "
                     + "AND manufOrder.id = :manufOrderId")
             .setParameter("productId", productId)
             .setParameter("manufOrderId", toProduceManufOrderId)
@@ -125,10 +128,23 @@ public class ProdProductProductionRepository extends ProdProductRepository {
             Optional.ofNullable(resultTab[1])
                 .map(unitObj -> unitRepository.find(Long.valueOf(unitObj.toString())))
                 .orElse(null);
+        BigDecimal reservedQtyInLocationUnit =
+            Optional.ofNullable(resultTab[2])
+                .map(reservedQtyObj -> new BigDecimal(reservedQtyObj.toString()))
+                .orElse(BigDecimal.ZERO);
+        BigDecimal reservedQtyInStockMoveLine =
+            Optional.ofNullable(resultTab[3])
+                .map(
+                    stockMoveLinereservedQtyObj ->
+                        new BigDecimal(stockMoveLinereservedQtyObj.toString()))
+                .orElse(BigDecimal.ZERO);
         if (locationUnit != null) {
           availableQty =
-              unitConversionService.convert(
-                  locationUnit, targetUnit, availableQtyInLocationUnit, scale, null);
+              availableQtyInLocationUnit
+                  .add(reservedQtyInStockMoveLine)
+                  .subtract(reservedQtyInLocationUnit);
+          availableQty =
+              unitConversionService.convert(locationUnit, targetUnit, availableQty, scale, null);
         }
 
       } catch (Exception e) {

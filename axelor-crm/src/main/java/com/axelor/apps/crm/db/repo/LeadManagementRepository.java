@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -71,5 +71,19 @@ public class LeadManagementRepository extends LeadRepository {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  @Override
+  public Lead copy(Lead entity, boolean deep) {
+    Lead copy = super.copy(entity, deep);
+    try {
+      copy.setIsConverted(false);
+      copy.setPartner(null);
+      copy.setLeadStatus(appCrmService.getLeadDefaultStatus());
+    } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
+    return copy;
   }
 }

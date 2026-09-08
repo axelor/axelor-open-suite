@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,6 +28,7 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.auth.AuthService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.inject.Beans;
@@ -136,7 +137,7 @@ public class UserHrServiceImpl implements UserHrService {
     employeeUser.setGroup(user.getGroup());
 
     CharSequence password = userService.generateRandomPassword();
-    employeeUser.setPassword(password.toString());
+    employeeUser.setPassword(Beans.get(AuthService.class).encrypt(password.toString()));
   }
 
   protected void setUserInfoFromEmployee(User employeeUser, Employee employee) {

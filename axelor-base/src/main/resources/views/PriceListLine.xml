@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
 
   <grid name="price-list-line-grid" title="Price list lines"
@@ -13,15 +13,16 @@
       grid-view="product-category-grid"/>
     <field name="typeSelect"/>
     <field name="amountTypeSelect"/>
-    <field name="amount" x-scale="2"/>
-    <field name="minQty" x-scale="2"/>
+    <field name="amount" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="minQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="anomalySelect" expr="1"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <form name="price-list-line-form" title="Price list line"
     model="com.axelor.apps.base.db.PriceListLine" onNew="action-group-base-pricelistline-onnew"
-    onLoad="action-price-list-line-attrs-scale-and-precision,action-price-list-line-attrs-amount-title-change"
-    width="large">
+    onLoad="action-price-list-line-attrs-amount-title-change" width="large">
     <panel name="anomalyPanel" title="Anomaly" colSpan="12" showIf="anomalySelect > 0">
       <field name="anomalySelect" readonly="true" showTitle="false"/>
     </panel>
@@ -45,14 +46,16 @@
         onChange="action-price-list-line-record-type-select,action-price-list-line-attrs-amount-title-change"/>
       <field name="amountTypeSelect" colSpan="12" hideIf="typeSelect == 3"
         onChange="action-price-list-line-attrs-amount-title-change"/>
-      <field name="amount" colSpan="12" hideIf="amountTypeSelect == 3"/>
+      <field name="amount" colSpan="12" hideIf="amountTypeSelect == 3"
+        x-scale="$nbDecimalDigitForUnitPrice"/>
       <field name="priceList.currency" showIf="id"/>
-      <field name="minQty" colSpan="12"/>
+      <field name="minQty" colSpan="12" x-scale="$nbDecimalDigitForQty"/>
+      <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+      <field name="$nbDecimalDigitForQty" hidden="true"/>
     </panel>
   </form>
 
   <action-group name="action-group-base-pricelistline-onnew">
-    <action name="action-price-list-line-attrs-scale-and-precision"/>
     <action name="action-price-list-line-record-default"/>
     <action name="action-price-list-line-record-type-select"/>
     <action name="action-price-list-line-attrs-amount-title-change"/>
@@ -61,6 +64,9 @@
   <action-record name="action-price-list-line-record-default"
     model="com.axelor.apps.base.db.PriceListLine">
     <field name="typeSelect" expr="3"/>
+    <field name="$nbDecimalDigitForUnitPrice"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <field name="$nbDecimalDigitForQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-record>
 
   <action-record name="action-price-list-line-record-product"
@@ -78,13 +84,6 @@
     model="com.axelor.apps.base.db.PriceListLine">
     <field name="amountTypeSelect" expr="2" if="typeSelect == 3"/>
   </action-record>
-
-  <action-attrs name="action-price-list-line-attrs-scale-and-precision">
-    <attribute name="scale" for="amount"
-      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-    <attribute name="scale" for="minQty"
-      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-  </action-attrs>
 
   <action-attrs name="action-price-list-line-attrs-amount-title-change">
     <attribute name="title" for="amount" expr="%" if="amountTypeSelect == 1"/>

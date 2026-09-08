@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,8 +19,19 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.InvoicingPaymentSituation;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import java.util.List;
 
 public interface InvoicingPaymentSituationService {
   String getCompanyDomain(InvoicingPaymentSituation invoicingPaymentSituation, Partner partner);
+
+  String getBankDetailsDomain(InvoicingPaymentSituation invoicingPaymentSituation, Partner partner);
+
+  List<BankDetails> getAvailableBankDetailsList(
+      InvoicingPaymentSituation invoicingPaymentSituation, Partner partner, Company company);
+
+  InvoicingPaymentSituation initInvoicingPaymentSituation(
+      InvoicingPaymentSituation invoicingPaymentSituation, Partner partner);
 }

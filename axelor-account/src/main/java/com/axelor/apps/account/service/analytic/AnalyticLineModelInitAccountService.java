@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,8 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.MoveTemplate;
+import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -110,5 +112,35 @@ public class AnalyticLineModelInitAccountService {
         isPurchase,
         moveLine.getCredit().max(moveLine.getDebit()),
         fiscalPosition);
+  }
+
+  public static AnalyticLineModel castAsAnalyticLineModel(
+      MoveTemplateLine moveTemplateLine, MoveTemplate moveTemplate) {
+    Preconditions.checkNotNull(moveTemplateLine);
+
+    if (moveTemplate == null && moveTemplateLine.getMoveTemplate() != null) {
+      moveTemplate = moveTemplateLine.getMoveTemplate();
+    }
+
+    String technicalTypeSelect =
+        Optional.of(moveTemplateLine)
+            .map(MoveTemplateLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(null);
+
+    boolean isPurchase = !AccountTypeRepository.TYPE_INCOME.equals(technicalTypeSelect);
+    Company company = moveTemplate != null ? moveTemplate.getCompany() : null;
+
+    return new AnalyticLineModel(
+        moveTemplateLine,
+        moveTemplateLine.getProduct(),
+        moveTemplateLine.getAccount(),
+        company,
+        null,
+        moveTemplateLine.getPartner(),
+        isPurchase,
+        moveTemplateLine.getLineAmount(),
+        null);
   }
 }

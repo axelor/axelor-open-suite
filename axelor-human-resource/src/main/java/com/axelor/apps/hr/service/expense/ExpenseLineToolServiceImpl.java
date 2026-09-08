@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -40,15 +40,18 @@ public class ExpenseLineToolServiceImpl implements ExpenseLineToolService {
   protected AppHumanResourceService appHumanResourceService;
   protected KilometricService kilometricService;
   protected final KilometricExpenseService kilometricExpenseService;
+  protected final ExpenseAnalyticService expenseAnalyticService;
 
   @Inject
   public ExpenseLineToolServiceImpl(
       AppHumanResourceService appHumanResourceService,
       KilometricService kilometricService,
-      KilometricExpenseService kilometricExpenseService) {
+      KilometricExpenseService kilometricExpenseService,
+      ExpenseAnalyticService expenseAnalyticService) {
     this.appHumanResourceService = appHumanResourceService;
     this.kilometricService = kilometricService;
     this.kilometricExpenseService = kilometricExpenseService;
+    this.expenseAnalyticService = expenseAnalyticService;
   }
 
   @Override
@@ -124,6 +127,7 @@ public class ExpenseLineToolServiceImpl implements ExpenseLineToolService {
             CollectionUtils.isEmpty(expenseLine.getInvitedCollaboratorSet()));
       }
       expenseLine.setExpenseProduct(expenseProduct);
+      expenseAnalyticService.applyAnalyticDistribution(expenseLine);
     }
 
     if (justificationMetaFile != null) {

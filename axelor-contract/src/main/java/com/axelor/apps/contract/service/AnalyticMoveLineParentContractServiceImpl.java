@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -87,8 +87,53 @@ public class AnalyticMoveLineParentContractServiceImpl
     }
 
     if (ContractLine.class.equals(parentClass)) {
+      ContractLine contractLine = parentContext.asType(ContractLine.class);
+      ContractVersion contractVersion = getContractVersionFromContext(contractLine, parentContext);
+
       return AnalyticLineModelInitContractService.castAsAnalyticLineModel(
-          parentContext.asType(ContractLine.class), null, null);
+          contractLine, contractVersion, getContractFromContext(contractVersion, parentContext));
+    }
+
+    return null;
+  }
+
+  /**
+   * Retrieves the contract version of a line that is not persisted yet, by looking it up in the
+   * grand parent context when the line does not carry it.
+   */
+  protected ContractVersion getContractVersionFromContext(
+      ContractLine contractLine, Context parentContext) {
+    if (contractLine.getContractVersion() != null) {
+      return contractLine.getContractVersion();
+    }
+
+    Context grandParentContext = parentContext.getParent();
+    if (grandParentContext != null
+        && ContractVersion.class.isAssignableFrom(grandParentContext.getContextClass())) {
+      return grandParentContext.asType(ContractVersion.class);
+    }
+
+    return null;
+  }
+
+  /**
+   * Retrieves the contract of a version that is not persisted yet, by looking it up in the grand
+   * parent context when the version does not carry it.
+   */
+  protected Contract getContractFromContext(
+      ContractVersion contractVersion, Context parentContext) {
+    Contract contract =
+        Optional.ofNullable(contractVersion).map(ContractVersion::getContract).orElse(null);
+    if (contract != null) {
+      return contract;
+    }
+
+    Context grandParentContext = parentContext.getParent();
+    while (grandParentContext != null) {
+      if (Contract.class.isAssignableFrom(grandParentContext.getContextClass())) {
+        return grandParentContext.asType(Contract.class);
+      }
+      grandParentContext = grandParentContext.getParent();
     }
 
     return null;

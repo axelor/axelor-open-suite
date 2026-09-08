@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,10 +44,13 @@ import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.compute.BudgetLineComputeService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
@@ -58,8 +61,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -124,10 +129,13 @@ public class BudgetServiceImpl implements BudgetService {
           budgetDistributionRepository
               .all()
               .filter(
-                  "self.budget.id = ?1 AND ((self.purchaseOrderLine IS NOT NULL AND self.purchaseOrderLine.purchaseOrder.statusSelect NOT IN (?2)) OR (self.saleOrderLine IS NOT NULL AND self.saleOrderLine.saleOrder.statusSelect NOT IN (?3)))",
+                  // Draft orders must not contribute to the committed amount.
+                  "self.budget.id = ?1 AND ((self.purchaseOrderLine IS NOT NULL AND self.purchaseOrderLine.purchaseOrder.statusSelect NOT IN (?2, ?3)) OR (self.saleOrderLine IS NOT NULL AND self.saleOrderLine.saleOrder.statusSelect NOT IN (?4, ?5)))",
                   budget.getId(),
                   PurchaseOrderRepository.STATUS_CANCELED,
-                  SaleOrderRepository.STATUS_CANCELED)
+                  PurchaseOrderRepository.STATUS_DRAFT,
+                  SaleOrderRepository.STATUS_CANCELED,
+                  SaleOrderRepository.STATUS_DRAFT_QUOTATION)
               .fetch();
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
         LocalDate orderDate = null;
@@ -140,31 +148,35 @@ public class BudgetServiceImpl implements BudgetService {
         SaleOrderLine saleOrderLine = budgetDistribution.getSaleOrderLine();
 
         if (purchaseOrderLine != null && purchaseOrderLine.getPurchaseOrder() != null) {
-          orderDate = purchaseOrderLine.getPurchaseOrder().getOrderDate();
+          PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+          if (purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_DRAFT) {
+            continue;
+          }
+          orderDate = purchaseOrder.getOrderDate();
           amountInvoiced =
-              currencyScaleService.getCompanyScaledValue(
-                  budget, purchaseOrderLine.getPurchaseOrder().getAmountInvoiced());
+              currencyScaleService.getCompanyScaledValue(budget, purchaseOrder.getAmountInvoiced());
           budgetFromDate = purchaseOrderLine.getBudgetFromDate();
           budgetToDate = purchaseOrderLine.getBudgetToDate();
           amount =
-              purchaseOrderLine.getPurchaseOrder().getStatusSelect()
-                      == PurchaseOrderRepository.STATUS_CANCELED
+              purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_CANCELED
                   ? budgetDistribution.getAmount().negate()
                   : budgetDistribution.getAmount();
 
         } else if (saleOrderLine != null && saleOrderLine.getSaleOrder() != null) {
-
+          SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+          if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
+            continue;
+          }
           orderDate =
-              saleOrderLine.getSaleOrder().getOrderDate() != null
-                  ? saleOrderLine.getSaleOrder().getOrderDate()
-                  : saleOrderLine.getSaleOrder().getCreationDate();
+              saleOrder.getOrderDate() != null
+                  ? saleOrder.getOrderDate()
+                  : saleOrder.getCreationDate();
           amountInvoiced =
-              currencyScaleService.getCompanyScaledValue(
-                  budget, saleOrderLine.getSaleOrder().getAmountInvoiced());
+              currencyScaleService.getCompanyScaledValue(budget, saleOrder.getAmountInvoiced());
           budgetFromDate = saleOrderLine.getBudgetFromDate();
           budgetToDate = saleOrderLine.getBudgetToDate();
           amount =
-              saleOrderLine.getSaleOrder().getStatusSelect() == SaleOrderRepository.STATUS_CANCELED
+              saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_CANCELED
                   ? budgetDistribution.getAmount().negate()
                   : budgetDistribution.getAmount();
         }
@@ -513,7 +525,7 @@ public class BudgetServiceImpl implements BudgetService {
           budgetRepository
               .all()
               .filter(
-                  "self.budgetKey != null and self.id != ?1 AND self.globalBudget.statusSelect != ?2",
+                  "self.budgetKey is not null and self.budgetKey != '' and self.id != ?1 AND self.globalBudget.statusSelect != ?2",
                   budget.getId() != null ? budget.getId() : Long.valueOf(0),
                   GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_ARCHIVED)
               .fetch();
@@ -555,6 +567,29 @@ public class BudgetServiceImpl implements BudgetService {
           return budget;
         }
       }
+    }
+    return null;
+  }
+
+  @Override
+  public Budget findBudgetByAccountWithKey(
+      Account account, Company company, AnalyticMoveLine analyticMoveLine, LocalDate date) {
+    Account currentAccount = account;
+    int safety = 0;
+    while (currentAccount != null && safety++ < 50) {
+      String key = computeKey(currentAccount, company, analyticMoveLine);
+      if (!Strings.isNullOrEmpty(key)) {
+        Budget budget = findBudgetWithKey(key, date);
+        if (budget != null) {
+          if (!Boolean.TRUE.equals(budget.getAllowBudgetImputationOnChildAccounts())
+              && !budget.getAccountSet().contains(account)) {
+            currentAccount = currentAccount.getParentAccount();
+            continue;
+          }
+          return budget;
+        }
+      }
+      currentAccount = currentAccount.getParentAccount();
     }
     return null;
   }
@@ -700,6 +735,40 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     return "(0)";
+  }
+
+  @Override
+  public String getAccountDomainWithParents(Long companyId, int budgetType) throws AxelorException {
+    String originalIds = getAccountIdList(companyId, budgetType);
+
+    if ("(0)".equals(originalIds)) {
+      return "self.id IN (0)";
+    }
+
+    Set<Long> closure =
+        Arrays.stream(originalIds.split(","))
+            .map(String::trim)
+            .filter(s -> !s.isEmpty())
+            .map(Long::valueOf)
+            .collect(Collectors.toCollection(HashSet::new));
+
+    Set<Long> frontier = new HashSet<>(closure);
+    int safety = 0;
+    while (!frontier.isEmpty() && safety++ < 50) {
+      List<Long> parents =
+          JPA.em()
+              .createQuery(
+                  "SELECT a.parentAccount.id FROM Account a "
+                      + "WHERE a.id IN :ids AND a.parentAccount IS NOT NULL",
+                  Long.class)
+              .setParameter("ids", frontier)
+              .getResultList();
+      frontier = parents.stream().filter(closure::add).collect(Collectors.toSet());
+    }
+
+    return "self.id IN ("
+        + closure.stream().map(String::valueOf).collect(Collectors.joining(","))
+        + ")";
   }
 
   @Override
@@ -909,6 +978,7 @@ public class BudgetServiceImpl implements BudgetService {
     optBudget.setTypeSelect(BudgetRepository.BUDGET_TYPE_SELECT_BUDGET);
     optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
     optBudget.setCategory(budgetScenarioVariable.getCategory());
+    optBudget.setCompany(globalBudget.getCompany());
     BigDecimal calculatedAmount =
         currencyScaleService.getCompanyScaledValue(
             parent,

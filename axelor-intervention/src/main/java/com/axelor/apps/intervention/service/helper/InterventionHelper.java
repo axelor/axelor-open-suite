@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.intervention.service.helper;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.intervention.db.AnswerValue;
 import com.axelor.apps.intervention.db.CustomerRequest;
 import com.axelor.apps.intervention.db.Equipment;
 import com.axelor.apps.intervention.db.Intervention;
@@ -34,6 +35,7 @@ import com.axelor.inject.Beans;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.util.HashSet;
@@ -67,11 +69,17 @@ public class InterventionHelper {
     CriteriaQuery<Long> countFollowing = cb.createQuery(Long.class);
     Root<InterventionQuestion> rootFollowing = countFollowing.from(InterventionQuestion.class);
     countFollowing.select(cb.count(rootFollowing));
+    Join<InterventionQuestion, AnswerValue> listAnswerJoinFollowing =
+        rootFollowing.join("listAnswer");
+    Join<InterventionQuestion, InterventionRange> interventionRangeJoinFollowing =
+        rootFollowing.join("interventionRange");
+    Join<InterventionRange, Intervention> interventionJoinFollowing =
+        interventionRangeJoinFollowing.join("intervention");
     Predicate questionHasFollowing =
-        cb.equal(rootFollowing.get("listAnswer").get("following"), Boolean.TRUE);
-    countFollowing.where(
-        belongToInterventionFromInterventionQuestion(cb, rootFollowing, intervention.getId()),
-        questionHasFollowing);
+        cb.equal(listAnswerJoinFollowing.get("following"), Boolean.TRUE);
+    Predicate belongsToInterventionFollowing =
+        cb.equal(interventionJoinFollowing.get("id"), intervention.getId());
+    countFollowing.where(belongsToInterventionFollowing, questionHasFollowing);
     if (JPA.em().createQuery(countFollowing).getSingleResult() > 0) {
       intervention.setFollowing(Boolean.TRUE);
     } else {
@@ -82,11 +90,17 @@ public class InterventionHelper {
     Root<InterventionQuestion> rootNonConforming =
         countNonConforming.from(InterventionQuestion.class);
     countNonConforming.select(cb.count(rootNonConforming));
+    Join<InterventionQuestion, AnswerValue> listAnswerJoinNonConforming =
+        rootNonConforming.join("listAnswer");
+    Join<InterventionQuestion, InterventionRange> interventionRangeJoinNonConforming =
+        rootNonConforming.join("interventionRange");
+    Join<InterventionRange, Intervention> interventionJoinNonConforming =
+        interventionRangeJoinNonConforming.join("intervention");
     Predicate questionHasNonConforming =
-        cb.equal(rootFollowing.get("listAnswer").get("nonConforming"), Boolean.TRUE);
-    countNonConforming.where(
-        belongToInterventionFromInterventionQuestion(cb, rootFollowing, intervention.getId()),
-        questionHasNonConforming);
+        cb.equal(listAnswerJoinNonConforming.get("nonConforming"), Boolean.TRUE);
+    Predicate belongsToInterventionNonConforming =
+        cb.equal(interventionJoinNonConforming.get("id"), intervention.getId());
+    countNonConforming.where(belongsToInterventionNonConforming, questionHasNonConforming);
     intervention.setNonConforming(
         JPA.em().createQuery(countNonConforming).getSingleResult().intValue());
   }

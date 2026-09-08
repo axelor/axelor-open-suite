@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,11 +26,12 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -82,11 +83,14 @@ public class LogisticalFormSupplychainServiceImpl implements LogisticalFormSuppl
     StockConfig stockConfig = stockConfigService.getStockConfig(logisticalForm.getCompany());
     if (stockConfig.getRealizeStockMovesUponParcelPalletCollection()) {
       for (StockMove stockMove : stockMoveList) {
+        stockMove = JpaModelHelper.ensureManaged(stockMove);
         if (stockMove.getFullySpreadOverLogisticalFormsFlag()) {
           stockMoveService.realize(stockMove);
         }
       }
     }
+    // Re-attach logisticalForm after realize() may have called JPA.clear()
+    logisticalForm = JpaModelHelper.ensureManaged(logisticalForm);
     logisticalForm.setStatusSelect(LogisticalFormRepository.STATUS_COLLECTED);
   }
 }

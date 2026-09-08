@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,6 +31,7 @@ import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -44,6 +45,7 @@ import com.axelor.db.mapper.Mapper;
 import com.google.common.collect.Sets;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -63,6 +65,7 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
   protected SaleOrderLineTaxService saleOrderLineTaxService;
   protected ProductCompanyService productCompanyService;
   protected CurrencyScaleService currencyScaleService;
+  protected OrderLineTaxService orderLineTaxService;
 
   @Inject
   public SaleOrderLineProductServiceImpl(
@@ -77,7 +80,8 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
       SaleOrderLinePriceService saleOrderLinePriceService,
       SaleOrderLineTaxService saleOrderLineTaxService,
       ProductCompanyService productCompanyService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      OrderLineTaxService orderLineTaxService) {
     this.appSaleService = appSaleService;
     this.appBaseService = appBaseService;
     this.saleOrderLineComplementaryProductService = saleOrderLineComplementaryProductService;
@@ -90,6 +94,7 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     this.saleOrderLineTaxService = saleOrderLineTaxService;
     this.productCompanyService = productCompanyService;
     this.currencyScaleService = currencyScaleService;
+    this.orderLineTaxService = orderLineTaxService;
   }
 
   @Override
@@ -117,6 +122,7 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     saleOrderLineMap.put("typeSelect", SaleOrderLineRepository.TYPE_NORMAL);
 
     saleOrderLineMap.putAll(fillPrice(saleOrderLine, saleOrder));
+    saleOrderLineMap.putAll(fillEcoTaxInformation(saleOrderLine));
     saleOrderLineMap.putAll(
         saleOrderLineComplementaryProductService.fillComplementaryProductList(saleOrderLine));
     saleOrderLineMap.putAll(translateProductNameAndDescription(saleOrderLine, saleOrder));
@@ -124,6 +130,12 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
         saleOrderLineComplementaryProductService.setIsComplementaryProductsUnhandledYet(
             saleOrderLine));
     saleOrderLineMap.putAll(fillCostPrice(saleOrderLine, saleOrder));
+
+    if (appBaseService.getAppBase().getEnablePricingScale()) {
+      saleOrderLineMap.putAll(
+          saleOrderLinePricingService.computePricingScale(saleOrderLine, saleOrder));
+      saleOrderLineMap.put("pricingScaleLogs", saleOrderLine.getPricingScaleLogs());
+    }
 
     return saleOrderLineMap;
   }
@@ -166,9 +178,11 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
       return saleOrderLineMap;
     }
     BigDecimal costPrice =
-        ((BigDecimal)
-            productCompanyService.get(
-                saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()));
+        saleOrderLine.getIsSubTotalCostPriceManuallyEdited()
+            ? saleOrderLine.getManualSubTotalCostPrice()
+            : (BigDecimal)
+                productCompanyService.get(
+                    saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany());
     if (costPrice.compareTo(BigDecimal.ZERO) != 0) {
       saleOrderLine.setSubTotalCostPrice(
           currencyScaleService.getCompanyScaledValue(
@@ -184,9 +198,14 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
 
     Map<String, Object> saleOrderLineMap = new HashMap<>();
 
+    if (saleOrderLine.getProduct() == null) {
+      return saleOrderLineMap;
+    }
+
     // Populate fields from pricing scale before starting process of fillPrice
     if (appBaseService.getAppBase().getEnablePricingScale()) {
-      saleOrderLinePricingService.computePricingScale(saleOrderLine, saleOrder);
+      saleOrderLineMap.putAll(
+          saleOrderLinePricingService.computePricingScale(saleOrderLine, saleOrder));
       saleOrderLineMap.put("pricingScaleLogs", saleOrderLine.getPricingScaleLogs());
     }
 
@@ -196,9 +215,12 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     BigDecimal exTaxPrice;
     BigDecimal inTaxPrice;
     if (saleOrderLine.getProduct().getInAti()) {
-      inTaxPrice =
-          saleOrderLinePriceService.getInTaxUnitPrice(
-              saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
+      inTaxPrice = saleOrderLine.getPrice();
+      if (inTaxPrice == null || inTaxPrice.compareTo(BigDecimal.ZERO) == 0) {
+        inTaxPrice =
+            saleOrderLinePriceService.getInTaxUnitPrice(
+                saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
+      }
       saleOrderLineMap.putAll(
           saleOrderLineDiscountService.fillDiscount(saleOrderLine, saleOrder, inTaxPrice));
       inTaxPrice =
@@ -213,9 +235,12 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
         saleOrderLine.setInTaxPrice(inTaxPrice);
       }
     } else {
-      exTaxPrice =
-          saleOrderLinePriceService.getExTaxUnitPrice(
-              saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
+      exTaxPrice = saleOrderLine.getPrice();
+      if (exTaxPrice == null || exTaxPrice.compareTo(BigDecimal.ZERO) == 0) {
+        exTaxPrice =
+            saleOrderLinePriceService.getExTaxUnitPrice(
+                saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
+      }
       saleOrderLineMap.putAll(
           saleOrderLineDiscountService.fillDiscount(saleOrderLine, saleOrder, exTaxPrice));
       exTaxPrice =
@@ -254,14 +279,35 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
               saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
 
       saleOrderLine.setTaxEquiv(taxEquiv);
+      saleOrderLine.setVatExemptionReason(
+          orderLineTaxService.resolveVatExemptionReason(
+              fiscalPosition, taxEquiv, saleOrder.getClientPartner()));
     } else {
       saleOrderLine.setTaxLineSet(Sets.newHashSet());
       saleOrderLine.setTaxEquiv(null);
+      saleOrderLine.setVatExemptionReason(null);
     }
 
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.put("taxEquiv", taxEquiv);
+    saleOrderLineMap.put("vatExemptionReason", saleOrderLine.getVatExemptionReason());
     saleOrderLineMap.put("taxLineSet", taxLineSet);
+    return saleOrderLineMap;
+  }
+
+  @Override
+  public Map<String, Object> fillEcoTaxInformation(SaleOrderLine saleOrderLine) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+
+    Product product = saleOrderLine.getProduct();
+    if (product == null || !Boolean.TRUE.equals(appBaseService.getAppBase().getEnableEcoTax())) {
+      return saleOrderLineMap;
+    }
+
+    saleOrderLine.setEcoTaxAmount(product.getDefaultEcoTaxAmount());
+    saleOrderLine.setEcoTaxMention(product.getDefaultEcoTaxMention());
+    saleOrderLineMap.put("ecoTaxAmount", saleOrderLine.getEcoTaxAmount());
+    saleOrderLineMap.put("ecoTaxMention", saleOrderLine.getEcoTaxMention());
     return saleOrderLineMap;
   }
 
@@ -291,6 +337,8 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     saleOrderLineMap.put("companyInTaxTotal", null);
     saleOrderLineMap.put("companyExTaxTotal", null);
     saleOrderLineMap.put("description", null);
+    saleOrderLineMap.put("ecoTaxAmount", null);
+    saleOrderLineMap.put("ecoTaxMention", null);
     saleOrderLineMap.put("typeSelect", SaleOrderLineRepository.TYPE_NORMAL);
     if (CollectionUtils.isNotEmpty(line.getSelectedComplementaryProductList())) {
       line.clearSelectedComplementaryProductList();
@@ -299,6 +347,8 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     }
     saleOrderLineMap.put("taxLineSet", Sets.newHashSet());
     saleOrderLineMap.put("taxEquiv", null);
+    saleOrderLineMap.put("isSubTotalCostPriceManuallyEdited", false);
+    saleOrderLineMap.put("manualSubTotalCostPrice", BigDecimal.ZERO);
 
     return saleOrderLineMap;
   }
@@ -313,5 +363,22 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
       unit = product.getUnit();
     }
     return unit;
+  }
+
+  @Override
+  public Map<String, Object> setSubTotalCostPriceManually(SaleOrderLine saleOrderLine) {
+    BigDecimal qty = saleOrderLine.getQty();
+    BigDecimal manualCostPrice =
+        qty.compareTo(BigDecimal.ZERO) != 0
+            ? saleOrderLine.getSubTotalCostPrice().divide(qty, 3, RoundingMode.HALF_UP)
+            : BigDecimal.ZERO;
+
+    saleOrderLine.setManualSubTotalCostPrice(manualCostPrice);
+    saleOrderLine.setIsSubTotalCostPriceManuallyEdited(true);
+
+    Map<String, Object> map = new HashMap<>();
+    map.put("manualSubTotalCostPrice", manualCostPrice);
+    map.put("isSubTotalCostPriceManuallyEdited", true);
+    return map;
   }
 }

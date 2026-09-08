@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,10 +20,13 @@ package com.axelor.apps.bankpayment.service.bankreconciliation;
 
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.base.AxelorException;
+import java.math.BigDecimal;
 import java.util.Map;
 
 public interface BankReconciliationQueryService {
   String getRequestMoveLines();
+
+  String getRequestMoveLines(BigDecimal credit, BigDecimal debit);
 
   Map<String, Object> getBindRequestMoveLine(BankReconciliation bankReconciliation)
       throws AxelorException;

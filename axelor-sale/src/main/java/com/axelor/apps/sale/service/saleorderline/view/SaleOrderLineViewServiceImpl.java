@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
@@ -219,9 +220,8 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
     if (appSale.getEnablePackManagement()) {
       selection.add(SaleOrderLineRepository.TYPE_START_OF_PACK);
       selection.add(SaleOrderLineRepository.TYPE_END_OF_PACK);
-      attrs.put("typeSelect", Map.of(SELECTION_IN_ATTR, selection));
     }
-
+    attrs.put("typeSelect", Map.of(SELECTION_IN_ATTR, selection));
     return attrs;
   }
 
@@ -258,6 +258,30 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
     boolean orderBeingEdited = saleOrder.getOrderBeingEdited();
     attrs.put("deliveryAddress", Map.of(HIDDEN_ATTR, statusSelect > 1 && !orderBeingEdited));
     attrs.put("deliveryAddressStr", Map.of(READONLY_ATTR, statusSelect > 1 && !orderBeingEdited));
+    return attrs;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getDiscountReadonlyAttrs(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, SaleOrderLine parentSaleOrderLine) {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+
+    PriceList priceList = saleOrder.getPriceList();
+    boolean nonNegotiable = priceList != null && priceList.getNonNegotiable();
+    boolean parentTitleLine =
+        parentSaleOrderLine != null
+            && parentSaleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE;
+    boolean globalDiscount = saleOrder.getDiscountTypeSelect() > 0;
+    boolean noLineDiscount =
+        saleOrderLine.getDiscountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_NONE;
+
+    attrs.put(
+        "discountTypeSelect",
+        Map.of(READONLY_ATTR, nonNegotiable || parentTitleLine || globalDiscount));
+    attrs.put(
+        "discountAmount",
+        Map.of(
+            READONLY_ATTR, nonNegotiable || noLineDiscount || parentTitleLine || globalDiscount));
     return attrs;
   }
 }

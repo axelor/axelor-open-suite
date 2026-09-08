@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,9 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.PartnerAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -39,10 +42,11 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
 import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
@@ -61,7 +65,8 @@ public class SaleOrderInvoiceContractServiceImpl extends SaleOrderInvoiceService
       AppSupplychainService appSupplychainService,
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
-      InvoiceServiceSupplychainImpl invoiceService,
+      InvoiceService invoiceService,
+      InvoiceServiceSupplychain invoiceServiceSupplychain,
       StockMoveRepository stockMoveRepository,
       SaleOrderWorkflowService saleOrderWorkflowService,
       InvoiceTermService invoiceTermService,
@@ -71,7 +76,10 @@ public class SaleOrderInvoiceContractServiceImpl extends SaleOrderInvoiceService
       CurrencyScaleService currencyScaleService,
       OrderInvoiceService orderInvoiceService,
       InvoiceTaxService invoiceTaxService,
-      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService) {
+      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
+      PartnerAccountService partnerAccountService,
+      InvoiceGlobalDiscountService invoiceGlobalDiscountService,
+      TimetableRepository timetableRepo) {
     super(
         appBaseService,
         appStockService,
@@ -79,6 +87,7 @@ public class SaleOrderInvoiceContractServiceImpl extends SaleOrderInvoiceService
         saleOrderRepo,
         invoiceRepo,
         invoiceService,
+        invoiceServiceSupplychain,
         stockMoveRepository,
         saleOrderWorkflowService,
         invoiceTermService,
@@ -88,7 +97,10 @@ public class SaleOrderInvoiceContractServiceImpl extends SaleOrderInvoiceService
         currencyScaleService,
         orderInvoiceService,
         invoiceTaxService,
-        saleOrderDeliveryAddressService);
+        saleOrderDeliveryAddressService,
+        partnerAccountService,
+        invoiceGlobalDiscountService,
+        timetableRepo);
   }
 
   @Transactional(rollbackOn = {Exception.class})

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -46,6 +47,12 @@ public class AnalyticLineModel {
   protected boolean isPurchase;
   protected BigDecimal lineAmount;
   protected FiscalPosition fiscalPosition;
+
+  /**
+   * Type of the analytic move lines generated from this model. Defaults to the order forecast type;
+   * documents with their own forecast type (contracts) override it through their init service.
+   */
+  protected int typeSelect = AnalyticMoveLineRepository.STATUS_FORECAST_ORDER;
 
   public AnalyticLineModel(
       AnalyticLine analyticLine,
@@ -107,6 +114,14 @@ public class AnalyticLineModel {
 
   public FiscalPosition getFiscalPosition() {
     return fiscalPosition;
+  }
+
+  public int getTypeSelect() {
+    return this.typeSelect;
+  }
+
+  public void setTypeSelect(int typeSelect) {
+    this.typeSelect = typeSelect;
   }
 
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate() {

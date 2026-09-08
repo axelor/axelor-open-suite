@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -52,6 +52,8 @@ public interface PartnerService {
       Address mainAddress);
 
   void onSave(Partner partner) throws AxelorException;
+
+  void updatePartnerAddress(Partner partner) throws AxelorException;
 
   void setPartnerFullName(Partner partner);
 
@@ -152,4 +154,6 @@ public interface PartnerService {
   List<Partner> getContactFilteredPartners(Partner partner);
 
   String checkIfRegistrationCodeExists(Partner partner);
+
+  void setDefaultPartnerAddress(Partner partner);
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,6 +34,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpUpdateService;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
+import com.axelor.apps.account.service.invoiceterm.InvoiceTermRecordService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
 import com.axelor.apps.base.AxelorException;
@@ -70,6 +71,7 @@ public class InvoiceTermServiceBankPaymentImpl extends InvoiceTermServiceImpl {
       InvoiceTermToolService invoiceTermToolService,
       InvoiceTermPfpToolService invoiceTermPfpToolService,
       InvoiceTermDateComputeService invoiceTermDateComputeService,
+      InvoiceTermRecordService invoiceTermRecordService,
       BankDetailsBankPaymentService bankDetailsBankPaymentService) {
     super(
         invoiceTermRepo,
@@ -87,7 +89,8 @@ public class InvoiceTermServiceBankPaymentImpl extends InvoiceTermServiceImpl {
         invoiceTermPfpUpdateService,
         invoiceTermToolService,
         invoiceTermPfpToolService,
-        invoiceTermDateComputeService);
+        invoiceTermDateComputeService,
+        invoiceTermRecordService);
     this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
   }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,11 +47,8 @@ import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.google.common.base.Strings;
 import jakarta.inject.Inject;
-import jakarta.xml.bind.JAXBException;
 import java.io.File;
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 public class BankOrderFile00100102Service extends BankOrderFileService {
@@ -71,15 +68,10 @@ public class BankOrderFile00100102Service extends BankOrderFileService {
    * Method to create an XML file for SEPA transfer pain.001.001.02
    *
    * @throws AxelorException
-   * @throws DatatypeConfigurationException
-   * @throws JAXBException
-   * @throws IOException
    */
   @Override
-  public File generateFile()
-      throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
-
-    DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
+  public File generateFile() throws AxelorException {
+    DatatypeFactory datatypeFactory = DatatypeFactory.newDefaultInstance();
 
     ObjectFactory factory = new ObjectFactory();
 
@@ -148,8 +140,8 @@ public class BankOrderFile00100102Service extends BankOrderFileService {
 
       // Amount
       instdAmt = factory.createCurrencyAndAmount();
-      instdAmt.setCcy(bankOrderCurrency.getCodeISO());
-      instdAmt.setValue(bankOrderLine.getBankOrderAmount());
+      instdAmt.setCcy(companyCurrency.getCodeISO());
+      instdAmt.setValue(bankOrderLine.getCompanyCurrencyAmount());
 
       amt = factory.createAmountType2Choice();
       amt.setInstdAmt(instdAmt);
@@ -187,7 +179,7 @@ public class BankOrderFile00100102Service extends BankOrderFileService {
       }
 
       if (!Strings.isNullOrEmpty(ustrd)) {
-        rmtInf.getUstrd().add(ustrd);
+        rmtInf.getUstrd().add(ustrd.substring(0, Math.min(140, ustrd.length() - 1)));
       }
 
       //			StructuredRemittanceInformation6 strd = factory.createStructuredRemittanceInformation6();

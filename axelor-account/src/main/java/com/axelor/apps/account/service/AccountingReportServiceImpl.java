@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -298,8 +298,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       if (journalType != null) {
         this.addParams("self.move.journal.journalType.id = ?%d", journalType.getId());
       }
-      String dateFromStr = "'" + accountingReport.getDateFrom().toString() + "'";
-      String dateToStr = "'" + accountingReport.getDateTo().toString() + "'";
+      String dateFromStr = "CAST('" + accountingReport.getDateFrom().toString() + "' AS date)";
+      String dateToStr = "CAST('" + accountingReport.getDateTo().toString() + "' AS date)";
       String reconcileDateConditionQuery =
           String.format(
               "reconcile.statusSelect = %s AND reconcile.effectiveDate >= %s AND reconcile.effectiveDate <= %s",
@@ -330,7 +330,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
       if (typeSelect == AccountingReportRepository.REPORT_AGED_BALANCE) {
         this.addParams("(self.account is null OR self.account.reconcileOk = true)");
-        this.addParams("self.amountRemaining != 0 AND self.debit > 0");
+        this.addParams("self.amountRemaining != 0");
       }
 
       if (typeSelect == AccountingReportRepository.REPORT_PARNER_GENERAL_LEDGER) {
@@ -404,7 +404,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     // FOR EXPORT ONLY :
     if (accountingReportType != null) {
-      if (typeSelect > AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY) {
+      if (typeSelect > AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY
+          && accountingReport.getId() != null) {
         this.addParams(
             "(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.accountingReport.id = ?%d))",
             accountingReport.getId());
@@ -416,7 +417,13 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
       if (typeSelect >= AccountingReportRepository.REPORT_PARNER_GENERAL_LEDGER
           && accountingReport.getDisplayOnlyNotCompletelyLetteredMoveLines()) {
-        this.addParams("self.amountRemaining != 0");
+        this.addParams(
+            "(self.amountRemaining != 0 "
+                + "OR (self.reconcileGroup IS NOT NULL "
+                + "AND EXISTS ("
+                + "SELECT 1 FROM MoveLine ml2 "
+                + "WHERE ml2.reconcileGroup = self.reconcileGroup "
+                + "AND ml2.amountRemaining != 0)))");
       }
     }
 
@@ -950,6 +957,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         modelAccountingReportCopy.setBalance(null);
         modelAccountingReportCopy.setDate(accountingReport.getDate());
         modelAccountingReportCopy.setStatusSelect(accountingReport.getStatusSelect());
+        modelAccountingReportCopy.setReportType(accountingReport.getReportType());
         Map<String, Object> modelAccountingReportCopyMap = Mapper.toMap(modelAccountingReportCopy);
         return modelAccountingReportCopyMap;
       }

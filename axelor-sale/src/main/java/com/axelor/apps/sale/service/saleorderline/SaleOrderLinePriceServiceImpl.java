@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -89,6 +89,9 @@ public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService 
       throws AxelorException {
 
     Product product = saleOrderLine.getProduct();
+    if (product == null) {
+      return BigDecimal.ZERO;
+    }
     Company company = saleOrder.getCompany();
 
     return currencyScaleService.getCompanyScaledValue(
@@ -163,29 +166,12 @@ public class SaleOrderLinePriceServiceImpl implements SaleOrderLinePriceService 
       throws AxelorException {
     Product product = saleOrderLine.getProduct();
     Company company = saleOrder.getCompany();
-
-    // Consider price if already computed from pricing scale else get it from product
-    BigDecimal productSalePrice = saleOrderLine.getPrice();
-
-    Currency fromCurrency = (Currency) productCompanyService.get(product, "saleCurrency", company);
-    if (productSalePrice.compareTo(BigDecimal.ZERO) == 0) {
-      return productPriceService.getSaleUnitPrice(
-          company,
-          product,
-          taxLineSet,
-          resultInAti,
-          saleOrder.getCreationDate(),
-          saleOrder.getCurrency());
-    }
-
-    return productPriceService.getConvertedPrice(
+    return productPriceService.getSaleUnitPrice(
         company,
         product,
         taxLineSet,
         resultInAti,
         saleOrder.getCreationDate(),
-        productSalePrice,
-        fromCurrency,
         saleOrder.getCurrency());
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -186,12 +186,12 @@ public class PurchaseOrderLineController {
           "analyticDistributionTemplate",
           "domain",
           Beans.get(AnalyticAttrsService.class)
-              .getAnalyticDistributionTemplateDomain(
+              .getAnalyticDistributionTemplateDomainFromProduct(
                   purchaseOrder.getSupplierPartner(),
                   purchaseOrderLine.getProduct(),
                   purchaseOrder.getCompany(),
                   purchaseOrder.getTradingName(),
-                  null,
+                  purchaseOrder.getFiscalPosition(),
                   true));
     } catch (Exception e) {
       TraceBackService.trace(response, e);

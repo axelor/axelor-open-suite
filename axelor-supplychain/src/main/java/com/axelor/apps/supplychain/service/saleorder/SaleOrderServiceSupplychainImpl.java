@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,14 +29,17 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineCreateService;
@@ -48,6 +51,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
@@ -56,6 +60,7 @@ import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.TrackingNumberSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineQtyToDeliverService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSupplychain;
@@ -64,6 +69,7 @@ import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -81,6 +87,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   protected PartnerLinkSupplychainService partnerLinkSupplychainService;
   protected SaleInvoicingStateService saleInvoicingStateService;
   protected SaleOrderLineAnalyticService saleOrderLineAnalyticService;
+  protected SaleOrderLineQtyToDeliverService saleOrderLineQtyToDeliverService;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
@@ -101,7 +108,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       TrackingNumberSupplychainService trackingNumberSupplychainService,
       PartnerLinkSupplychainService partnerLinkSupplychainService,
       SaleInvoicingStateService saleInvoicingStateService,
-      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService,
+      SaleOrderLineQtyToDeliverService saleOrderLineQtyToDeliverService) {
     super(
         appBaseService,
         saleOrderLineRepo,
@@ -121,6 +129,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     this.partnerLinkSupplychainService = partnerLinkSupplychainService;
     this.saleInvoicingStateService = saleInvoicingStateService;
     this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;
+    this.saleOrderLineQtyToDeliverService = saleOrderLineQtyToDeliverService;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -189,6 +198,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       }
       for (StockMove stockMove : stockMoves) {
         stockMoveService.cancel(stockMove, cancelReason);
+        stockMove = JpaModelHelper.ensureManaged(stockMove);
         stockMove.setArchived(true);
         for (StockMoveLine stockMoveline : stockMove.getStockMoveLineList()) {
           TrackingNumber trackingNumber = stockMoveline.getTrackingNumber();
@@ -279,6 +289,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       return;
     }
 
+    saleOrderLineQtyToDeliverService.initQtyToDeliverForAll(saleOrder.getSaleOrderLineList());
     saleOrderStockService.fullyUpdateDeliveryState(saleOrder);
     saleInvoicingStateService.updateInvoicingState(saleOrder);
     saleOrder.setOrderBeingEdited(false);
@@ -289,7 +300,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional(
+      rollbackOn = {Exception.class},
+      ignore = {BlockedSaleOrderException.class})
   public void updateToConfirmedStatus(SaleOrder saleOrder) throws AxelorException {
     if (saleOrder.getStatusSelect() == null
         || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_COMPLETED) {
@@ -297,6 +310,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SupplychainExceptionMessage.SALE_ORDER_BACK_TO_CONFIRMED_WRONG_STATUS));
     }
+
+    Beans.get(SaleOrderConfirmService.class).checkSaleOrderBlocking(saleOrder);
+
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     saleOrderRepo.save(saleOrder);
     accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
@@ -400,18 +416,28 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   @Override
   public boolean isIncotermRequired(SaleOrder saleOrder) {
     Partner clientPartner = saleOrder.getClientPartner();
-    return saleOrder.getSaleOrderLineList() != null
-        && saleOrder.getSaleOrderLineList().stream()
-            .anyMatch(
-                saleOrderLine ->
-                    saleOrderLine.getProduct() != null
-                        && saleOrderLine
-                            .getProduct()
-                            .getProductTypeSelect()
-                            .equals(ProductRepository.PRODUCT_TYPE_STORABLE))
-        && isSameAlpha2Code(saleOrder)
-        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION
-            & clientPartner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_COMPANY;
+    if (saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_FINALIZED_QUOTATION
+        || clientPartner == null
+        || clientPartner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_COMPANY
+        || !isSameAlpha2Code(saleOrder)) {
+      return false;
+    }
+    if (saleOrder.getId() == null) {
+      return saleOrder.getSaleOrderLineList() != null
+          && saleOrder.getSaleOrderLineList().stream()
+              .anyMatch(
+                  sol ->
+                      sol.getProduct() != null
+                          && ProductRepository.PRODUCT_TYPE_STORABLE.equals(
+                              sol.getProduct().getProductTypeSelect()));
+    }
+    return saleOrderLineRepo
+            .all()
+            .filter("self.saleOrder.id = :id AND self.product.productTypeSelect = :type")
+            .bind("id", saleOrder.getId())
+            .bind("type", ProductRepository.PRODUCT_TYPE_STORABLE)
+            .fetchOne()
+        != null;
   }
 
   protected boolean isSameAlpha2Code(SaleOrder saleOrder) {
@@ -435,5 +461,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     }
     return stockLocation != null && saleOrderA2C != null && !saleOrderA2C.equals(stockLocationA2C)
         || stockLocation == null && saleOrderA2C != null && !saleOrderA2C.equals(companyA2C);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty)
+      throws AxelorException, MalformedURLException {
+    saleOrder = super.addPack(saleOrder, pack, packQty);
+    this.setAdvancePayment(saleOrder);
+    return saleOrder;
   }
 }

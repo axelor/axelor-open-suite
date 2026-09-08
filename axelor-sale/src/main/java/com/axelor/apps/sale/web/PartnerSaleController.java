@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,6 +37,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -76,7 +77,10 @@ public class PartnerSaleController {
                   .divide(qty, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
         }
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("name", product.getName());
+        map.put(
+            "name",
+            Optional.ofNullable(product.getName())
+                .orElse(Optional.ofNullable(product.getCode()).orElse("")));
         map.put("$quantitySold", qty);
         map.put("$totalPrice", qtyAndPrice.get("price"));
         map.put("$averagePrice", averagePrice);

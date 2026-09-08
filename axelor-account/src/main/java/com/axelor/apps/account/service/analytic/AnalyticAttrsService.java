@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -48,5 +49,34 @@ public interface AnalyticAttrsService {
       TradingName tradingName,
       Account account,
       boolean isPurchase)
+      throws AxelorException;
+
+  /**
+   * Same as {@link #getAnalyticDistributionTemplateDomain(Partner, Product, Company, TradingName,
+   * Account, boolean)} but derives the accounting account from the product. Used for documents
+   * whose lines have no accounting account (sale/purchase orders, contracts).
+   */
+  String getAnalyticDistributionTemplateDomainFromProduct(
+      Partner partner,
+      Product product,
+      Company company,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition,
+      boolean isPurchase)
+      throws AxelorException;
+
+  void addAnalyticAccountRequired(
+      AnalyticLineModel analyticLineModel,
+      Company company,
+      Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
+
+  void addAnalyticDistributionTemplateDomain(
+      AnalyticLineModel analyticLineModel,
+      Partner partner,
+      Product product,
+      Company company,
+      TradingName tradingName,
+      Map<String, Map<String, Object>> attrsMap)
       throws AxelorException;
 }

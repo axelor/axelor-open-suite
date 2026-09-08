@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,11 +22,13 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -73,6 +75,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -315,14 +318,24 @@ public class ReconcileServiceImpl implements ReconcileService {
     Move debitMove = reconcile.getDebitMoveLine().getMove();
     Move creditMove = reconcile.getCreditMoveLine().getMove();
 
-    if (debitMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT) {
+    if (debitMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT
+        && creditMove.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT
+        && !isAdvancePaymentInvoiceMove(creditMove)) {
       moveLineTaxService.generateTaxPaymentMoveLineList(
           reconcile.getDebitMoveLine(), reconcile.getCreditMoveLine(), reconcile);
     }
-    if (creditMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT) {
+    if (creditMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT
+        && debitMove.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT
+        && !isAdvancePaymentInvoiceMove(debitMove)) {
       moveLineTaxService.generateTaxPaymentMoveLineList(
           reconcile.getCreditMoveLine(), reconcile.getDebitMoveLine(), reconcile);
     }
+  }
+
+  protected boolean isAdvancePaymentInvoiceMove(Move move) {
+    return move.getInvoice() != null
+        && move.getInvoice().getOperationSubTypeSelect()
+            == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE;
   }
 
   /**
@@ -552,6 +565,11 @@ public class ReconcileServiceImpl implements ReconcileService {
           MoveLine debitAdjustmentMoveLine =
               moveAdjustementService.createAdjustmentMove(creditMoveLine, creditAccount);
 
+          if (debitAdjustmentMoveLine == null) {
+            handleNullAdjustmentMoveLine(creditMoveLine, creditAmountRemaining);
+            return;
+          }
+
           // Création de la réconciliation
           Reconcile newReconcile =
               this.createReconcile(
@@ -601,6 +619,11 @@ public class ReconcileServiceImpl implements ReconcileService {
 
           MoveLine creditAdjustMoveLine =
               moveAdjustementService.createAdjustmentMove(debitMoveLine, debitAccount);
+
+          if (creditAdjustMoveLine == null) {
+            handleNullAdjustmentMoveLine(debitMoveLine, debitAmountRemaining);
+            return;
+          }
 
           // Création de la réconciliation
           Reconcile newReconcile =
@@ -829,7 +852,7 @@ public class ReconcileServiceImpl implements ReconcileService {
               foreignExchangeGapMove.getMove(),
               false,
               true,
-              foreignExchangeGapMove.getUpdateInvoiceTerms());
+              true);
       if (foreignExchangeReconcile != null) {
         InvoicePayment invoicePayment =
             invoicePaymentRepository.findByReconcile(foreignExchangeReconcile).fetchOne();
@@ -850,6 +873,19 @@ public class ReconcileServiceImpl implements ReconcileService {
                   .min(reconcile.getDebitMoveLine().getAmountRemaining().abs()));
         }
       }
+    }
+  }
+
+  protected void handleNullAdjustmentMoveLine(MoveLine moveLine, BigDecimal amountRemaining) {
+    moveLine.setAmountPaid(moveLine.getAmountPaid().add(amountRemaining));
+    List<InvoiceTerm> invoiceTermList = moveLine.getInvoiceTermList();
+    if (CollectionUtils.isEmpty(invoiceTermList)) {
+      return;
+    }
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
+      invoiceTerm.setCompanyAmountRemaining(BigDecimal.ZERO);
+      invoiceTerm.setIsPaid(true);
     }
   }
 }

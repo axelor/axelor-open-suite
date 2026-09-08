@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,8 +36,11 @@ public class BankOrderLineOriginController {
 
     BankOrderLineOrigin bankOrderLineOrigin =
         request.getContext().asType(BankOrderLineOrigin.class);
+    BankOrderLineOriginService bankOrderLineOriginService =
+        Beans.get(BankOrderLineOriginService.class);
+    bankOrderLineOriginService.ensurePrintedPdfAttached(bankOrderLineOrigin);
     Map<String, Object> relatedDataMap =
-        Beans.get(BankOrderLineOriginService.class).getRelatedDataMap(bankOrderLineOrigin);
+        bankOrderLineOriginService.getRelatedDataMap(bankOrderLineOrigin);
 
     response.setView(
         ActionView.define(I18n.get("Files"))

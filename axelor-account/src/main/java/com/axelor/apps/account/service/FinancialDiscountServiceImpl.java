@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -54,14 +54,7 @@ public class FinancialDiscountServiceImpl implements FinancialDiscountService {
         == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
       return this.getFinancialDiscountAmount(financialDiscount, inTaxTotal, currency);
     } else {
-      BigDecimal financialDiscountAmountWithoutTax =
-          this.getFinancialDiscountAmount(financialDiscount, exTaxTotal, currency);
-
-      BigDecimal financialDiscountTaxAmount =
-          this.getFinancialDiscountTaxAmount(
-              financialDiscount, inTaxTotal, exTaxTotal, taxTotal, currency);
-
-      return financialDiscountAmountWithoutTax.add(financialDiscountTaxAmount);
+      return this.getFinancialDiscountAmount(financialDiscount, exTaxTotal, currency);
     }
   }
 
@@ -76,23 +69,6 @@ public class FinancialDiscountServiceImpl implements FinancialDiscountService {
             RoundingMode.HALF_UP);
   }
 
-  protected BigDecimal getFinancialDiscountTaxAmount(
-      FinancialDiscount financialDiscount,
-      BigDecimal inTaxTotal,
-      BigDecimal exTaxTotal,
-      BigDecimal taxTotal,
-      Currency currency) {
-    return inTaxTotal.signum() == 0
-        ? BigDecimal.ZERO
-        : taxTotal
-            .multiply(exTaxTotal)
-            .multiply(financialDiscount.getDiscountRate())
-            .divide(
-                inTaxTotal.multiply(BigDecimal.valueOf(100)),
-                currencyScaleService.getCurrencyScale(currency),
-                RoundingMode.HALF_UP);
-  }
-
   @Override
   public Account getFinancialDiscountAccount(Company company, boolean isPurchase)
       throws AxelorException {
@@ -102,6 +78,20 @@ public class FinancialDiscountServiceImpl implements FinancialDiscountService {
       return accountConfigService.getPurchFinancialDiscountAccount(accountConfig);
     } else {
       return accountConfigService.getSaleFinancialDiscountAccount(accountConfig);
+    }
+  }
+
+  @Override
+  public Account getFinancialDiscountAccountOrNull(Company company, boolean isPurchase) {
+    try {
+      AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+      if (isPurchase) {
+        return accountConfig.getPurchFinancialDiscountAccount();
+      } else {
+        return accountConfig.getSaleFinancialDiscountAccount();
+      }
+    } catch (AxelorException e) {
+      return null;
     }
   }
 }

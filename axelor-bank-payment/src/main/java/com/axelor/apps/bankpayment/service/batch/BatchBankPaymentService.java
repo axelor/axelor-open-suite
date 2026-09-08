@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,9 +21,6 @@ package com.axelor.apps.bankpayment.service.batch;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 public interface BatchBankPaymentService {
 
@@ -41,12 +38,8 @@ public interface BatchBankPaymentService {
    * @param batch
    * @return
    * @throws AxelorException
-   * @throws JAXBException
-   * @throws IOException
-   * @throws DatatypeConfigurationException
    */
-  BankOrder createBankOrder(Batch batch)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
+  BankOrder createBankOrder(Batch batch) throws AxelorException;
 
   /**
    * Create bank order from processed payment schedule lines.
@@ -54,12 +47,8 @@ public interface BatchBankPaymentService {
    * @param batch
    * @return
    * @throws AxelorException
-   * @throws JAXBException
-   * @throws IOException
-   * @throws DatatypeConfigurationException
    */
-  BankOrder createBankOrderFromPaymentScheduleLines(Batch batch)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
+  BankOrder createBankOrderFromPaymentScheduleLines(Batch batch) throws AxelorException;
 
   /**
    * Create bank order from processed monthly payment schedule lines.
@@ -67,10 +56,6 @@ public interface BatchBankPaymentService {
    * @param batch
    * @return
    * @throws AxelorException
-   * @throws JAXBException
-   * @throws IOException
-   * @throws DatatypeConfigurationException
    */
-  BankOrder createBankOrderFromMonthlyPaymentScheduleLines(Batch batch)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
+  BankOrder createBankOrderFromMonthlyPaymentScheduleLines(Batch batch) throws AxelorException;
 }

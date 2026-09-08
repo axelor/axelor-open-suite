@@ -1,0 +1,6 @@
+"importId";"sequence";"code";"name";"color";"formula";"description"
+1;10;"NEW";"New items";"blue";"salesLast12Months == 0 && stock6MonthsAgo == 0 && currentStock > 0";"Products just introduced in stock: no past sales and no stock six months ago."
+2;20;"FAST";"Fast movers";"green";"coverageInDays > 0 && coverageInDays < 60";"High rotation products with less than 2 months of stock coverage."
+3;30;"NORMAL";"Normal rotation";"indigo";"coverageInDays >= 60 && coverageInDays < 180";"Regular rotation between 2 and 6 months of coverage."
+4;40;"SLOW";"Slow movers";"orange";"coverageInDays >= 180 && coverageInDays < 365";"Slow rotation between 6 and 12 months of coverage."
+5;50;"DEAD";"Non-movers";"red";"coverageInDays >= 365 || (salesLast12Months == 0 && currentStock > 0)";"Dormant stock: over 12 months of coverage or no sales over the last year."

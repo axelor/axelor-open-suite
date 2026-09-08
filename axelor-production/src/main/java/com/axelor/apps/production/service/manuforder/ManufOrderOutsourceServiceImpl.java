@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.ProdProcessOutsourceService;
@@ -31,11 +32,16 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceService {
 
@@ -46,6 +52,7 @@ public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceServic
   protected StockMoveService stockMoveService;
   protected AppBaseService appBaseService;
   protected ManufOrderRepository manufOrderRepository;
+  protected StockMoveRepository stockMoveRepository;
 
   @Inject
   public ManufOrderOutsourceServiceImpl(
@@ -54,12 +61,14 @@ public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceServic
       StockMoveService stockMoveService,
       AppBaseService appBaseService,
       ManufOrderRepository manufOrderRepository,
+      StockMoveRepository stockMoveRepository,
       ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
     this.prodProcessOutsourceService = prodProcessOutsourceService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.stockMoveService = stockMoveService;
     this.appBaseService = appBaseService;
     this.manufOrderRepository = manufOrderRepository;
+    this.stockMoveRepository = stockMoveRepository;
     this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
   }
 
@@ -80,6 +89,26 @@ public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceServic
   @Override
   public boolean isOutsource(ManufOrder manufOrder) {
     return manufOrder.getOutsourcing();
+  }
+
+  @Override
+  public List<ProdProduct> getOutsourceDeclarationProdProductList(ManufOrder manufOrder) {
+    Objects.requireNonNull(manufOrder);
+
+    if (!manufOrder.getIsConsProOnOperation()) {
+      return manufOrder.getToConsumeProdProductList();
+    }
+
+    if (ObjectUtils.isEmpty(manufOrder.getOperationOrderList())) {
+      return Collections.emptyList();
+    }
+
+    return manufOrder.getOperationOrderList().stream()
+        .filter(OperationOrder::getOutsourcing)
+        .map(OperationOrder::getToConsumeProdProductList)
+        .filter(ObjectUtils::notEmpty)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -105,6 +134,8 @@ public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceServic
               virtualStockLocation,
               prodProductList);
       stockMoveService.plan(stockMove);
+      manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+      stockMove = JpaModelHelper.ensureManaged(stockMove);
       manufOrder.addOutsourcingStockMoveListItem(stockMove);
       manufOrderRepository.save(manufOrder);
     }
@@ -154,6 +185,6 @@ public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceServic
           toStockLocation);
     }
 
-    return stockMove;
+    return stockMoveRepository.save(stockMove);
   }
 }

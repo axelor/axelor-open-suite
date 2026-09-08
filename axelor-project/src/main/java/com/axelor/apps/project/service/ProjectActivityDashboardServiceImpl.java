@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -67,7 +67,8 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
   @Inject protected ObjectMapper objectMapper;
   @Inject protected ProjectRepository projectRepo;
 
-  private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+  protected static final DateTimeFormatter DATE_FORMATTER =
+      DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
   @Override
   public Map<String, Object> getData(LocalDate startDate, LocalDate endDate, Long projectId) {

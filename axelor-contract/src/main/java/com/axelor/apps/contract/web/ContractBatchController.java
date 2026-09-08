@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -59,17 +59,21 @@ public class ContractBatchController {
     try {
       ContractBatch contractBatch = request.getContext().asType(ContractBatch.class);
       contractBatch = Beans.get(ContractBatchRepository.class).find(contractBatch.getId());
-      String domainFilter = Beans.get(BatchContractFactoryInvoicing.class).prepareFilter(false);
-      response.setView(
+      Integer targetTypeSelect = contractBatch.getTargetTypeSelect();
+      String domainFilter =
+          Beans.get(BatchContractFactoryInvoicing.class).prepareFilter(false, targetTypeSelect);
+      ActionView.ActionViewBuilder actionViewBuilder =
           ActionView.define(I18n.get("Contracts"))
               .model(Contract.class.getName())
               .add("grid", "contract-grid")
               .add("form", "contract-form")
               .domain(domainFilter)
               .context("date", contractBatch.getInvoicingDate())
-              .context("targetTypeSelect", contractBatch.getTargetTypeSelect())
-              .context("statusSelect", ContractRepository.CLOSED_CONTRACT)
-              .map());
+              .context("statusSelect", ContractRepository.CLOSED_CONTRACT);
+      if (targetTypeSelect != null && targetTypeSelect != 0) {
+        actionViewBuilder.context("targetTypeSelect", targetTypeSelect);
+      }
+      response.setView(actionViewBuilder.map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     } finally {

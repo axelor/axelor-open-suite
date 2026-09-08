@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -79,8 +79,8 @@ public class SaleOrderMergingController {
       List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
       List<SaleOrder> saleOrdersToMerge =
           Beans.get(SaleOrderMergingService.class).convertSelectedLinesToMergeLines(idList);
-      if (saleOrdersToMerge == null || saleOrdersToMerge.isEmpty()) {
-        response.setError(I18n.get("You have to choose at least one sale quotation"));
+      if (saleOrdersToMerge == null || saleOrdersToMerge.size() < 2) {
+        response.setError(I18n.get("You have to choose at least two sale quotations"));
         return;
       }
       if (CollectionUtils.isNotEmpty(saleOrdersToMerge)) {

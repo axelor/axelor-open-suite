@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailService {
   protected TemplateMessageService templateMessageService;
@@ -136,7 +137,10 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
   protected void sendEmailToPartner(
       PaymentSession paymentSession, Partner partner, List<Long> partnerIdList)
       throws ClassNotFoundException, IOException {
-    if (partner == null || partnerIdList.contains(partner.getId())) {
+    if (partner == null
+        || partnerIdList.contains(partner.getId())
+        || partner.getEmailAddress() == null
+        || StringUtils.isBlank(partner.getEmailAddress().getAddress())) {
       return;
     }
 

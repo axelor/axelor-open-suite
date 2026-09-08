@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.utils.helpers.ModelHelper;
 import jakarta.inject.Inject;
+import java.util.Comparator;
 import java.util.List;
 
 public class ContractVersionRepository extends AbstractContractVersionRepository {
@@ -68,9 +69,9 @@ public class ContractVersionRepository extends AbstractContractVersionRepository
     List<ContractLine> lines =
         ModelHelper.copy(contractLineRepository, currentVersion.getContractLineList(), true);
 
-    for (ContractLine line : lines) {
-      newVersion.addContractLineListItem(line);
-    }
+    lines.stream()
+        .sorted(Comparator.comparing(ContractLine::getSequence))
+        .forEach(newVersion::addContractLineListItem);
 
     newVersion.setIsTimeProratedInvoice(currentVersion.getIsTimeProratedInvoice());
     newVersion.setIsVersionProratedInvoice(currentVersion.getIsVersionProratedInvoice());

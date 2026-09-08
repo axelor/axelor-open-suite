@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="prod-process-grid" title="Production process"
     model="com.axelor.apps.production.db.ProdProcess">
@@ -64,7 +64,9 @@
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="product" requiredIf="!isEnabledForAllProducts" canEdit="false"
         grid-view="product-grid" form-view="product-form"
-        domain="self.productTypeSelect = 'storable' AND self.dtype = 'Product'"/>
+        domain="self.productTypeSelect = 'storable' AND self.dtype = 'Product'" hidden="true"
+        showIf="!isEnabledForAllProducts"
+        onChange="action-prod-process-method-compute-hazard-phrases"/>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
         grid-view="company-grid" onChange="action-prod-process-default-stock-locations-record"/>
       <field name="workshopStockLocation" canEdit="false"
@@ -125,7 +127,8 @@
             colSpan="12" canEdit="false" canNew="false" canSelect="true"/>
         </panel>
 
-        <field name="isEnabledForAllProducts" colSpan="4" readonlyIf="isConsProOnOperation"/>
+        <field name="isEnabledForAllProducts" colSpan="4" readonlyIf="isConsProOnOperation"
+          onChange="action-prod-process-record-reset-product"/>
         <spacer colSpan="2"/>
         <field name="operationContinuity"/>
 
@@ -133,6 +136,13 @@
 
       <panel-dashlet name="viewBillOfMaterialsPanel"
         action="action-prod-process-view-bill-of-materials" title="Bills of material"/>
+
+      <panel name="hazardPhrasePanel" title="Safety"
+        if="__config__.app.getApp('base')?.getEnableProductsSafety()">
+        <panel-related field="hazardPhraseSet" colSpan="12" readonly="true"
+          canNew="false" canSelect="false" canRemove="false" form-view="base-hazard-phrase-form"
+          grid-view="base-hazard-phrase-grid"/>
+      </panel>
 
     </panel-tabs>
 
@@ -277,7 +287,7 @@
   <action-record name="action-prod-process-record-set-realize-order-select"
     model="com.axelor.apps.production.db.ProdProcess">
     <field name="stockMoveRealizeOrderSelect"
-      expr="__config__.app.getApp('production')?.getStockMoveRealizeOrderSelect()"/>
+      expr="eval: company?.productionConfig?.stockMoveRealizeOrderSelect"/>
   </action-record>
 
   <action-record name="action-prod-process-record-count-number-of-phases"
@@ -295,12 +305,12 @@
 
   <action-attrs name="action-prod-process-attrs-residual-stocklocation-domain">
     <attribute name="domain" for="residualProductsDefaultStockLocation"
-      expr="eval: &quot; self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3 AND self.id != ${producedProductStockLocation?.id} &quot;"/>
+      expr="eval: &quot; self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3 AND self.id != ${producedProductStockLocation?.id ?: 0} &quot;"/>
   </action-attrs>
 
   <action-attrs name="action-prod-process-attrs-produced-product-stocklocation-domain">
     <attribute name="domain" for="producedProductStockLocation"
-      expr="eval: &quot; self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3 AND self.id != ${residualProductsDefaultStockLocation?.id} &quot;"/>
+      expr="eval: &quot; self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3 AND self.id != ${residualProductsDefaultStockLocation?.id ?: 0} &quot;"/>
   </action-attrs>
 
   <search-filters name="prod-process-filters"
@@ -334,5 +344,20 @@
     <call class="com.axelor.apps.production.web.ProdProcessController"
       method="recomputeLeadTime"/>
   </action-method>
+
+  <action-method name="action-prod-process-method-compute-hazard-phrases">
+    <call class="com.axelor.apps.production.web.ProdProcessController"
+      method="computeHazardPhrases"/>
+  </action-method>
+
+  <action-method name="action-prod-process-method-compute-hazard-phrases">
+    <call class="com.axelor.apps.production.web.ProdProcessController"
+      method="computeHazardPhrases"/>
+  </action-method>
+
+  <action-record name="action-prod-process-record-reset-product"
+    model="com.axelor.apps.production.db.ProdProcess">
+    <field name="product" expr="eval: null" if="isEnabledForAllProducts"/>
+  </action-record>
 
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,6 +36,7 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.studio.db.AppProject;
+import com.axelor.utils.api.SecurityCheck;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
@@ -46,6 +47,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskServiceImpl implements ProjectTaskService {
 
@@ -58,7 +61,8 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   protected TaskStatusToolService taskStatusToolService;
   protected TaskStatusProgressByCategoryRepository taskStatusProgressByCategoryRepository;
 
-  private static final String TASK_LINK = "<a href=\"#/ds/all.open.project.tasks/edit/%s\">@%s</a>";
+  protected static final String TASK_LINK =
+      "<a href=\"#/ds/all.open.project.tasks/edit/%s\">@%s</a>";
 
   @Inject
   public ProjectTaskServiceImpl(
@@ -240,6 +244,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
   @Transactional
   public void deleteProjectTask(ProjectTask projectTask) {
+    new SecurityCheck().removeAccess(ProjectTask.class, projectTask.getId()).check();
     projectTaskRepo.remove(projectTask);
   }
 
@@ -321,5 +326,34 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     }
 
     return projectTask.getProgress();
+  }
+
+  @Override
+  @Transactional
+  public void computeProjectTaskLevels(Project project) {
+    List<ProjectTask> projectTaskList =
+        project.getProjectTaskList().stream()
+            .filter(task -> task.getParentTask() == null)
+            .collect(Collectors.toList());
+    computeLevels(projectTaskList, null);
+  }
+
+  protected void computeLevels(List<ProjectTask> projectTaskList, String parentLevel) {
+    if (CollectionUtils.isEmpty(projectTaskList)) {
+      return;
+    }
+    projectTaskList.sort(
+        Comparator.comparing(
+            ProjectTask::getCreatedOn, Comparator.nullsLast(Comparator.naturalOrder())));
+    int count = 1;
+    for (ProjectTask projectTask : projectTaskList) {
+      String levelIndicator =
+          StringUtils.isBlank(parentLevel)
+              ? String.valueOf(count)
+              : String.format("%s.%s", parentLevel, count);
+      projectTask.setLevelIndicator(levelIndicator);
+      count++;
+      computeLevels(projectTask.getProjectTaskList(), levelIndicator);
+    }
   }
 }

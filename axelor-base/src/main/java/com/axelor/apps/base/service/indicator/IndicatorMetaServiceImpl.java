@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,7 @@ import com.axelor.meta.schema.views.Button;
 import com.axelor.meta.schema.views.Dashlet;
 import com.axelor.meta.schema.views.FormView;
 import com.axelor.web.ITranslation;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import net.fortuna.ical4j.util.Optional;
@@ -33,10 +33,10 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class IndicatorMetaServiceImpl implements IndicatorMetaService {
 
-  private static final String INDICATOR_TITLE = "Indicators";
-  private static final String BASE_ACTION =
+  protected static final String INDICATOR_TITLE = "Indicators";
+  protected static final String BASE_ACTION =
       "action-indicator-result-line-view-indicator-result-line";
-  private static final String CHART_ACTION_PREFIX = "chart:indicator-result-chart-";
+  protected static final String CHART_ACTION_PREFIX = "chart:indicator-result-chart-";
 
   private final IndicatorConfigRepository configRepo;
 

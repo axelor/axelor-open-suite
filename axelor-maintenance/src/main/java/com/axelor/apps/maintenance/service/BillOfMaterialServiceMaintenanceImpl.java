@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,8 +31,8 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
 import com.axelor.apps.production.service.BillOfMaterialLineService;
-import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.common.ObjectUtils;
@@ -52,18 +52,18 @@ public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceI
       ProductRepository productRepo,
       ProductCompanyService productCompanyService,
       BillOfMaterialLineService billOfMaterialLineService,
-      BillOfMaterialService billOfMaterialService,
       CostSheetService costSheetService,
       ProductionConfigService productionConfigService,
-      PrintingTemplatePrintService printingTemplatePrintService) {
+      PrintingTemplatePrintService printingTemplatePrintService,
+      AppProductionService appProductionService) {
     super(
         billOfMaterialRepo,
         tempBomTreeRepo,
         productRepo,
         productCompanyService,
         billOfMaterialLineService,
-        billOfMaterialService,
-        costSheetService);
+        costSheetService,
+        appProductionService);
     this.productionConfigService = productionConfigService;
     this.printingTemplatePrintService = printingTemplatePrintService;
   }

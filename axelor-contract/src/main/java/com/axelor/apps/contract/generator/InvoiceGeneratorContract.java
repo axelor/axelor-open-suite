@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,7 +44,7 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
             : contract.getPartner(),
         null,
         null,
-        contract.getContractId(),
+        computeInternalReference(contract),
         null,
         null,
         null);
@@ -55,10 +55,22 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
     this.appBaseService = Beans.get(AppBaseService.class);
   }
 
+  public static String computeInternalReference(Contract contract) {
+    String contractId = contract.getContractId();
+    Integer versionNumber = contract.getVersionNumber();
+    if (versionNumber != null && versionNumber > 0) {
+      return contractId + " - " + versionNumber;
+    }
+    return contractId;
+  }
+
   @Override
   protected Invoice createInvoiceHeader() throws AxelorException {
     Invoice invoice = super.createInvoiceHeader();
 
+    if (partner != null) {
+      invoice.setFiscalPosition(partner.getFiscalPosition());
+    }
     ContractVersion version = contract.getCurrentContractVersion();
     if (contract.getIsInvoicingManagement() && version.getIsPeriodicInvoicing()) {
       invoice.setOperationSubTypeSelect(

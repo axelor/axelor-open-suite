@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
@@ -43,6 +44,8 @@ import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Singleton
 public class AccountingSituationSupplychainServiceImpl extends AccountingSituationServiceImpl
@@ -195,15 +198,18 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
       return;
     }
 
-    updateCustomerCreditFromSaleOrder(saleOrder);
     Partner partner = saleOrder.getClientPartner();
     for (AccountingSituation accountingSituation : partner.getAccountingSituationList()) {
       Company company = accountingSituation.getCompany();
-      boolean usedCreditExceeded = isUsedCreditExceeded(accountingSituation);
+      boolean usedCreditExceeded = isUsedCreditExceeded(accountingSituation, saleOrder);
       if (usedCreditExceeded) {
         saleOrder.setBlockedOnCustCreditExceed(true);
         if (!saleOrder.getManualUnblock()) {
-          String message = company.getOrderBloquedMessage();
+          String message =
+              Optional.ofNullable(company.getSaleConfig())
+                  .filter(Objects::nonNull)
+                  .map(SaleConfig::getOrderBlockedMessage)
+                  .orElse(null);
           if (Strings.isNullOrEmpty(message)) {
             message =
                 String.format(
@@ -222,11 +228,24 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
         > 0;
   }
 
+  protected boolean isUsedCreditExceeded(
+      AccountingSituation accountingSituation, SaleOrder saleOrder) {
+    BigDecimal usedCredit = accountingSituation.getUsedCredit();
+    if (accountingSituation.getCompany().equals(saleOrder.getCompany())) {
+      usedCredit =
+          usedCredit.add(saleOrder.getInTaxTotal().subtract(getInTaxInvoicedAmount(saleOrder)));
+    }
+    return usedCredit.compareTo(accountingSituation.getAcceptedCredit()) > 0;
+  }
+
   @Transactional(
       rollbackOn = {Exception.class},
       ignore = {BlockedSaleOrderException.class})
   @Override
   public void updateCustomerCreditFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
+    if (!appAccountService.getAppAccount().getManageCustomerCredit()) {
+      return;
+    }
     boolean isSeparationEnabled = appSaleService.getAppSale().getIsQuotationAndOrderSplitEnabled();
     Partner partner = saleOrder.getClientPartner();
     List<AccountingSituation> accountingSituationList = partner.getAccountingSituationList();

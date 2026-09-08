@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,20 +38,19 @@ import java.util.Optional;
 public class TaskTemplateHrServiceImpl extends TaskTemplateServiceImpl {
 
   protected ProjectPlanningTimeCreateService projectPlanningTimeCreateService;
-  protected AppBaseService appBaseService;
   protected ProjectPlanningTimeComputeService projectPlanningTimeComputeService;
   protected AppProjectService appProjectService;
   protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
 
   @Inject
   public TaskTemplateHrServiceImpl(
-      ProjectPlanningTimeCreateService projectPlanningTimeCreateService,
       AppBaseService appBaseService,
+      ProjectPlanningTimeCreateService projectPlanningTimeCreateService,
       ProjectPlanningTimeComputeService projectPlanningTimeComputeService,
       AppProjectService appProjectService,
       ProjectPlanningTimeRepository projectPlanningTimeRepository) {
+    super(appBaseService);
     this.projectPlanningTimeCreateService = projectPlanningTimeCreateService;
-    this.appBaseService = appBaseService;
     this.projectPlanningTimeComputeService = projectPlanningTimeComputeService;
     this.appProjectService = appProjectService;
     this.projectPlanningTimeRepository = projectPlanningTimeRepository;

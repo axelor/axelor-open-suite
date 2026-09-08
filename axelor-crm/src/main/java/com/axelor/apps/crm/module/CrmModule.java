@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.ical.ICalendarEventFactory;
 import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.apps.base.service.DuplicateObjectsService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.partner.api.PartnerGenerateServiceImpl;
 import com.axelor.apps.crm.db.Event;
@@ -47,6 +48,7 @@ import com.axelor.apps.crm.service.CrmActivityService;
 import com.axelor.apps.crm.service.CrmActivityServiceImpl;
 import com.axelor.apps.crm.service.CrmReportingService;
 import com.axelor.apps.crm.service.CrmReportingServiceImpl;
+import com.axelor.apps.crm.service.DuplicateObjectsCrmService;
 import com.axelor.apps.crm.service.EventService;
 import com.axelor.apps.crm.service.EventServiceImpl;
 import com.axelor.apps.crm.service.LeadComputeNameService;
@@ -100,5 +102,6 @@ public class CrmModule extends AxelorModule {
     bind(LeadComputeNameService.class).to(LeadComputeNameServiceImpl.class);
     bind(OpportunitySequenceService.class).to(OpportunitySequenceServiceImpl.class);
     bind(PartnerGenerateServiceImpl.class).to(CrmPartnerGenerateServiceImpl.class);
+    bind(DuplicateObjectsService.class).to(DuplicateObjectsCrmService.class);
   }
 }

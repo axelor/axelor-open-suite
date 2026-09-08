@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="move-line-grid" orderBy="-date,-name" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine" canArchive="false" canDelete="false" canNew="false">
     <toolbar>
       <button name="accountingReconcileBtn" title="Accounting Reconcile"
         onClick="action-method-accounting-reconcile"/>
-      <button name="calculateBtn" title="Calculation of totals"
-        onClick="action-account-move-line-method-calculate-balance"/>
     </toolbar>
     <hilite color="info" if="$get('move.statusSelect') == 1"/>
     <hilite color="danger" if="$get('move.statusSelect') == 4"/>
@@ -28,6 +26,7 @@
     <field name="credit" aggregate="sum" width="100" x-scale="companyCurrencyDecimals"/>
     <field name="amountRemaining" aggregate="sum" width="100"
       x-scale="companyCurrencyDecimals"/>
+    <field name="move.companyCurrency"/>
     <field name="taxLineSet" domain="self.endDate > :date OR self.endDate IS NULL"
       readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
       requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
@@ -45,10 +44,22 @@
     <field name="dueDate"/>
     <button name="viewMoveBtn" title="View entry" icon="box-arrow-up-right"
       onClick="action-move-line-view-open-move"/>
+    <button name="viewInvoiceBtn" title="View invoice" icon="file-text"
+      onClick="action-move-line-group-view-open-invoice"/>
     <field name="analyticMoveLineList" hidden="true"/>
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
     <field name="taxLineBeforeReverseSet" hidden="true"/>
+    <summary-bar>
+      <field name="debit" title="Selected debit" aggregate="sum" on="selection"/>
+      <field name="credit" title="Selected credit" aggregate="sum" on="selection"/>
+      <call action="com.axelor.apps.account.web.MoveLineController:fetchSummary">
+        <field name="$totalDebit" title="Total debit" type="decimal" align="end"/>
+        <field name="$totalCredit" title="Total credit" type="decimal" align="end"/>
+        <field name="$totalAmountRemaining" title="Amount remaining" type="decimal"
+          align="end"/>
+      </call>
+    </summary-bar>
   </grid>
 
   <grid name="move-line-account-grid" title="Move lines"
@@ -61,6 +72,7 @@
     <field name="debit" x-scale="companyCurrencyDecimals"/>
     <field name="credit" x-scale="companyCurrencyDecimals"/>
     <field name="amountRemaining" x-scale="companyCurrencyDecimals"/>
+    <field name="move.companyCurrency"/>
     <field name="taxLineSet" onChange="account-move-line-update-tax-equiv" widget="Tags"/>
     <field name="move.statusSelect"/>
     <field name="description"/>
@@ -77,8 +89,6 @@
     <toolbar>
       <button name="accountingReconcileBtn" title="Accounting Reconcile"
         onClick="action-method-accounting-reconcile"/>
-      <button name="calculateBtn" title="Calculation of totals"
-        onClick="action-account-move-line-method-calculate-balance"/>
     </toolbar>
     <field name="name"/>
     <field name="date"/>
@@ -88,6 +98,7 @@
     <field name="debit" x-scale="companyCurrencyDecimals"/>
     <field name="credit" x-scale="companyCurrencyDecimals"/>
     <field name="amountRemaining" x-scale="companyCurrencyDecimals"/>
+    <field name="move.companyCurrency"/>
     <field name="taxLineSet" onChange="account-move-line-update-tax-equiv" widget="Tags"/>
     <field name="move.statusSelect"/>
     <field name="reconcileGroup"/>
@@ -98,6 +109,16 @@
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
     <field name="taxLineBeforeReverseSet" hidden="true"/>
+    <summary-bar>
+      <field name="debit" title="Selected debit" aggregate="sum" on="selection"/>
+      <field name="credit" title="Selected credit" aggregate="sum" on="selection"/>
+      <call action="com.axelor.apps.account.web.MoveLineController:fetchSummary">
+        <field name="$totalDebit" title="Total debit" type="decimal" align="end"/>
+        <field name="$totalCredit" title="Total credit" type="decimal" align="end"/>
+        <field name="$totalAmountRemaining" title="Amount remaining" type="decimal"
+          align="end"/>
+      </call>
+    </summary-bar>
   </grid>
 
   <grid name="move-line-account-batch-auto-move-lettering-grid" title="Move lines reconciled"
@@ -143,11 +164,11 @@
     <field name="date" width="100" onChange="account-move-line-method-date-onchange"
       hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
-      onSelect="action-move-line-method-partner-onselect"
+      onSelect="action-move-line-attrs-partner-onselect"
       onChange="action-move-line-method-partner-onchange" width="120" canEdit="false"
-      readonly="false"/>
+      readonly="false" requiredIf="account.useForPartnerBalance"/>
     <field name="account" form-view="account-form" grid-view="account-grid"
-      onSelect="action-move-line-method-account-onselect" width="150" canEdit="false"
+      onSelect="action-move-line-attrs-account-onselect" width="150" canEdit="false"
       readonlyIf="amountPaid &gt; 0" onChange="action-move-line-group-account-onchange"/>
     <field name="currencyAmount"
       onChange="action-move-line-method-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"
@@ -169,7 +190,7 @@
     <field name="vatSystemSelect"
       validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax' || !account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.accountType.technicalTypeSelect == 'tax' &amp;&amp; !account.useForPartnerBalance &amp;&amp; account.isTaxAuthorizedOnMoveLine"
-      readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || ![1,5].includes(move.statusSelect)"
+      readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
       width="80"/>
     <field name="account.useForPartnerBalance" hidden="true"/>
     <field name="account.accountType.technicalTypeSelect" hidden="true"/>
@@ -249,6 +270,7 @@
     <field name="debit" aggregate="sum" x-scale="companyCurrencyDecimals"/>
     <field name="credit" aggregate="sum" x-scale="companyCurrencyDecimals"/>
     <field name="amountRemaining" aggregate="sum" x-scale="companyCurrencyDecimals"/>
+    <field name="move.companyCurrency"/>
     <field name="taxLineSet"
       requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
       readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
@@ -286,6 +308,7 @@
     <field name="debit" aggregate="sum"/>
     <field name="credit" aggregate="sum"/>
     <field name="amountRemaining" aggregate="sum"/>
+    <field name="move.companyCurrency"/>
     <field name="taxLineSet"
       requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
       readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
@@ -347,6 +370,7 @@
     <field name="debit"/>
     <field name="credit"/>
     <field name="amountRemaining"/>
+    <field name="move.companyCurrency"/>
     <field name="move.statusSelect"/>
     <field name="description"/>
     <field name="dueDate"/>
@@ -447,10 +471,10 @@
         </viewer>
       </field>
       <field name="account" form-view="account-form" grid-view="account-grid"
-        onSelect="action-move-line-method-account-onselect" canEdit="false" colSpan="8"
+        onSelect="action-move-line-attrs-account-onselect" canEdit="false" colSpan="8"
         readonlyIf="amountPaid &gt; 0" onChange="action-move-line-group-account-onchange"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
-        onSelect="action-move-line-method-partner-onselect" canEdit="false" colSpan="4"
+        onSelect="action-move-line-attrs-partner-onselect" canEdit="false" colSpan="4"
         onChange="action-move-line-method-partner-onchange"
         requiredIf="account.useForPartnerBalance"/>
       <panel name="datesPanel" colSpan="12" itemSpan="3">
@@ -522,7 +546,7 @@
             onChange="account-move-line-update-tax-equiv" widget="Tags"/>
           <field name="vatSystemSelect"
             validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax' || !account.isTaxAuthorizedOnMoveLine"
-            readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || ![1,5].includes(move.statusSelect)"
+            readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
             requiredIf="account.accountType.technicalTypeSelect == 'tax' &amp;&amp; !account.useForPartnerBalance &amp;&amp; account.isTaxAuthorizedOnMoveLine"/>
         </panel>
         <panel name="das2Panel" title="DAS2" colSpan="6">
@@ -566,7 +590,7 @@
         </field>
         <field name="invoiceTermList" colSpan="12" form-view="invoice-term-related-form"
           grid-view="invoice-term-move-line-invoice-grid"
-          onChange="action-move-line-method-update-due-dates"/>
+          onChange="action-group-moveline-invoice-term-list-onchange"/>
       </panel>
       <panel name="generateFixedAssetPanel" title="Generate fixed asset">
         <field name="$generateFixedAsset" title="Generate a fixed asset from this line ?"
@@ -652,9 +676,6 @@
   <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine"
     onNew="action-move-line-method-onnew" canNew="false" canDelete="false" canEdit="false"
     onLoad="action-move-line-method-onload" canArchive="false">
-    <toolbar>
-      <button name="viewMoveBtn" title="View entry" onClick="action-move-line-view-open-move"/>
-    </toolbar>
     <panel-include view="move-line-infos-form"/>
     <panel-include view="move-line-tabs-form"/>
     <panel name="movePanel" title="Move" sidebar="true">
@@ -683,7 +704,13 @@
       </field>
       <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"
         colSpan="6"/>
+      <button name="showMoveButton" title="View entry" icon="box-arrow-up-right"
+        onClick="action-move-line-view-open-move" colSpan="6"/>
+      <spacer colSpan="6"/>
+      <button name="viewInvoiceBtn" title="View invoice" showIf="move.invoice"
+        onClick="action-move-line-view-open-invoice" colSpan="6"/>
       <field name="move.company" colSpan="6"/>
+      <field name="move.companyCurrency" colSpan="6"/>
       <field name="move.journal" colSpan="6"/>
       <field name="move.period" canView="false" colSpan="6"/>
     </panel>
@@ -697,16 +724,6 @@
       <mail-messages limit="4"/>
       <mail-followers/>
     </panel-mail>
-  </form>
-
-  <form name="account-move-line-calculation-wizard-form" title="Calculation"
-    model="com.axelor.utils.db.Wizard" onNew="action-account-move-line-record-calculate-balance"
-    canArchive="false">
-    <panel name="mainPanel" colSpan="12" title="Total of the selected lines (without New) :">
-      <field name="$debit" title="Debit :" readonly="true" colSpan="4"/>
-      <field name="$credit" title="Credit :" readonly="true" colSpan="4"/>
-      <field name="$balance" title="Balance :" readonly="true" colSpan="4"/>
-    </panel>
   </form>
 
   <action-group name="action-group-account-moveline-usher-process-onchange">
@@ -798,17 +815,6 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="usherProcess"/>
   </action-method>
 
-  <action-method name="action-account-move-line-method-calculate-balance">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="showCalculatedBalance"/>
-  </action-method>
-
-  <action-method name="action-move-line-method-account-onselect">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="accountOnSelect"/>
-  </action-method>
-
-  <action-method name="action-move-line-method-partner-onselect">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="partnerOnSelect"/>
-  </action-method>
 
   <action-method
     name="action-move-line-method-analytic-distribution-template-onselect">
@@ -873,13 +879,6 @@
       method="analyticMoveLineOnChange"/>
   </action-method>
 
-  <action-record name="action-account-move-line-record-calculate-balance"
-    model="com.axelor.utils.db.Wizard">
-    <field name="$credit" expr="eval: _credit" if="_credit != null"/>
-    <field name="$debit" expr="eval: _debit" if="_debit != null"/>
-    <field name="$balance" expr="eval: _balance" if="_balance != null"/>
-  </action-record>
-
   <action-method
     name="action-method-batch-auto-lettering-validate-all-reconcile-groups">
     <call class="com.axelor.apps.account.web.BatchAccountController"
@@ -917,6 +916,17 @@
     <context name="_showRecord" expr="eval: __repo__(MoveLine).find(id).move.id"/>
   </action-view>
 
+  <action-view name="action-move-line-view-open-invoice" title="Invoice"
+    model="com.axelor.apps.account.db.Invoice">
+    <view type="form" name="invoice-form"/>
+    <view type="grid" name="invoice-grid"/>
+    <context name="_showRecord" expr="eval: __repo__(MoveLine).find(id)?.move?.invoice?.id"/>
+  </action-view>
+
+  <action-group name="action-move-line-group-view-open-invoice">
+    <action name="action-move-line-view-open-invoice" if="move.invoice"/>
+  </action-group>
+
   <action-view name="action-move-line-view-show-related-invoice-terms"
     title="Invoice terms" model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-move-line-grid"/>
@@ -945,7 +955,7 @@
     title="Bank reconciliation lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
     <view type="grid" name="bank-reconciliation-line-grid"/>
     <view type="form" name="bank-reconciliation-line-form"/>
-    <domain>self.moveLine = :_id</domain>
+    <domain>self.moveLine.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
 
@@ -956,6 +966,25 @@
     <domain>self.move.id = :_moveId</domain>
     <context name="_moveId" expr="eval: id"/>
   </action-view>
+
+  <action-attrs name="action-move-line-attrs-account-onselect">
+    <attribute for="account" name="domain"
+      if="__parent__ == null || __parent__?._model != 'com.axelor.apps.account.db.Move'"
+      expr="eval: &quot; self.statusSelect = 1 AND self.company.id = ${move?.company?.id} AND (self.accountType.id IN (${(move?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(move?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')})) &quot;"/>
+    <attribute for="account" name="domain"
+      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'"
+      expr="eval: &quot; self.statusSelect = 1 AND self.company.id = ${__parent__?.company?.id} AND (self.accountType.id IN (${(__parent__?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(__parent__?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')})) &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-line-attrs-partner-onselect">
+    <attribute name="domain" expr="eval: 'self.isContact IS FALSE'" for="partner"/>
+    <attribute name="domain" for="partner"
+      if="__parent__ &amp;&amp; __parent__?._model == 'com.axelor.apps.account.db.Move' &amp;&amp; __parent__?.company"
+      expr="eval: &quot;self.isContact IS FALSE AND EXISTS (SELECT 1 FROM self.companySet c WHERE c.id = ${__parent__?.company?.id})&quot;"/>
+    <attribute name="domain" for="partner"
+      if="(!__parent__ || __parent__?._model != 'com.axelor.apps.account.db.Move') &amp;&amp; move?.company"
+      expr="eval: &quot;self.isContact IS FALSE AND EXISTS (SELECT 1 FROM self.companySet c WHERE c.id = ${move?.company?.id})&quot;"/>
+  </action-attrs>
 
   <search-filters name="move-line-filters"
     model="com.axelor.apps.account.db.MoveLine" title="Move line filters">
@@ -993,7 +1022,7 @@
     </filter>
     <filter name="move-line-filters-entries-to-reconcile" title="Entries to reconcile">
       <domain>self.account.reconcileOk = TRUE AND self.account.statusSelect = 1 AND
-        self.amountRemaining != 0 AND (self.reconcileGroup = null OR
+        self.amountRemaining != 0 AND (self.reconcileGroup IS null OR
         self.reconcileGroup.statusSelect = 3) AND (self.move.statusSelect = 2 OR
         self.move.statusSelect = 3)</domain>
     </filter>

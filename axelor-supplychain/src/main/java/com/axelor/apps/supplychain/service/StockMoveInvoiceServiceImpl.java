@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
@@ -38,6 +39,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -46,6 +48,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
@@ -61,6 +64,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +88,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   protected SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain;
   protected PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService;
   protected UnitConversionService unitConversionService;
+  protected InvoiceService invoiceService;
+  protected AppSupplychainService appSupplychainService;
+  protected InvoiceGlobalDiscountService invoiceGlobalDiscountService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -100,7 +107,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       AppStockService appStockService,
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
       PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
-      UnitConversionService unitConversionService) {
+      UnitConversionService unitConversionService,
+      InvoiceService invoiceService,
+      AppSupplychainService appSupplychainService,
+      InvoiceGlobalDiscountService invoiceGlobalDiscountService) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
@@ -115,6 +125,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     this.saleOrderMergingServiceSupplyChain = saleOrderMergingServiceSupplyChain;
     this.purchaseOrderMergingSupplychainService = purchaseOrderMergingSupplychainService;
     this.unitConversionService = unitConversionService;
+    this.invoiceService = invoiceService;
+    this.appSupplychainService = appSupplychainService;
+    this.invoiceGlobalDiscountService = invoiceGlobalDiscountService;
   }
 
   @Override
@@ -230,6 +243,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       invoice.setNote(fillInvoiceNoteFromOutStockMove(saleOrderSet));
       invoice.setProformaComments(fillInvoiceProformaCommentsFromOutStockMove(saleOrderSet));
 
+      invoice.setDiscountTypeSelect(saleOrder.getDiscountTypeSelect());
+      invoice.setDiscountAmount(saleOrder.getDiscountAmount());
+      invoiceGlobalDiscountService.computePriceBeforeGlobalDiscount(invoice);
+
       Set<StockMove> stockMoveSet = invoice.getStockMoveSet();
       if (stockMoveSet == null) {
         stockMoveSet = new HashSet<>();
@@ -240,7 +257,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       // fill default advance payment invoice
       if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
         invoice.setAdvancePaymentInvoiceSet(
-            Beans.get(InvoiceService.class).getDefaultAdvancePaymentInvoice(invoice));
+            invoiceService.getDefaultAdvancePaymentInvoice(invoice));
       }
 
       invoiceRepository.save(invoice);
@@ -309,6 +326,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       invoice.setInternalReference(
           fillInternalReferenceInvoiceFromInStockMove(stockMove, purchaseOrderSet));
 
+      if (purchaseOrderSet.size() == 1) {
+        invoice.setPurchaseOrder(purchaseOrder);
+      }
+
       invoice.setAddressStr(
           Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
 
@@ -319,6 +340,12 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
           invoice.setStockMoveSet(stockMoveSet);
         }
         stockMoveSet.add(stockMove);
+      }
+
+      // fill default advance payment invoice
+      if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+        invoice.setAdvancePaymentInvoiceSet(
+            invoiceService.getDefaultAdvancePaymentInvoice(invoice));
       }
 
       invoiceRepository.save(invoice);
@@ -451,7 +478,38 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       }
     }
 
+    linkParentChildInvoiceLines(invoiceLineList);
+
     return invoiceLineList;
+  }
+
+  protected void linkParentChildInvoiceLines(List<InvoiceLine> invoiceLineList) {
+    // Identity map is the fallback for unsaved sub-lines (id == null) where the by-id lookup fails.
+    Map<Long, InvoiceLine> solIdToInvoiceLine = new HashMap<>();
+    Map<SaleOrderLine, InvoiceLine> solInstanceToInvoiceLine = new IdentityHashMap<>();
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      SaleOrderLine sol = invoiceLine.getSaleOrderLine();
+      if (sol != null) {
+        solInstanceToInvoiceLine.put(sol, invoiceLine);
+        if (sol.getId() != null) {
+          solIdToInvoiceLine.put(sol.getId(), invoiceLine);
+        }
+      }
+    }
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
+      if (saleOrderLine == null || saleOrderLine.getParentSaleOrderLine() == null) {
+        continue;
+      }
+      SaleOrderLine parentSol = saleOrderLine.getParentSaleOrderLine();
+      InvoiceLine parentInvoiceLine =
+          parentSol.getId() != null
+              ? solIdToInvoiceLine.get(parentSol.getId())
+              : solInstanceToInvoiceLine.get(parentSol);
+      if (parentInvoiceLine != null) {
+        invoiceLine.setParentLine(parentInvoiceLine);
+      }
+    }
   }
 
   @Override
@@ -460,18 +518,27 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
     Product product = stockMoveLine.getProduct();
     boolean isTitleLine = false;
+    boolean isTitleLineManaged = appSupplychainService.getAppSupplychain().getIsTitleLineManaged();
 
     int sequence = InvoiceLineGenerator.DEFAULT_SEQUENCE;
     SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
     PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
 
     if (saleOrderLine != null) {
+      if (isTitleLineManaged
+          && saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE) {
+        isTitleLine = true;
+      }
       sequence = saleOrderLine.getSequence();
     } else if (purchaseOrderLine != null) {
-      if (purchaseOrderLine.getIsTitleLine()) {
+      if (isTitleLineManaged && purchaseOrderLine.getIsTitleLine()) {
         isTitleLine = true;
       }
       sequence = purchaseOrderLine.getSequence();
+    } else if (stockMoveLine != null
+        && isTitleLineManaged
+        && stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_TITLE) {
+      isTitleLine = true;
     }
 
     // do not create lines with no qties
@@ -515,6 +582,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     InvoiceLine invoiceLine = null;
     if (invoiceLines != null && !invoiceLines.isEmpty()) {
       invoiceLine = invoiceLines.get(0);
+      copyEcoTaxInformation(invoiceLine, saleOrderLine);
       if (!stockMoveLine.getIsMergedStockMoveLine()) {
         // not a consolidated line so we can set the reference.
         invoiceLine.setStockMoveLine(stockMoveLine);
@@ -558,12 +626,25 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     return invoiceLine;
   }
 
+  protected void copyEcoTaxInformation(InvoiceLine invoiceLine, SaleOrderLine saleOrderLine) {
+    if (invoiceLine == null
+        || saleOrderLine == null
+        || !Boolean.TRUE.equals(appBaseService.getAppBase().getEnableEcoTax())) {
+      return;
+    }
+
+    invoiceLine.setEcoTaxAmount(saleOrderLine.getEcoTaxAmount());
+    invoiceLine.setEcoTaxMention(saleOrderLine.getEcoTaxMention());
+  }
+
   protected void deleteConsolidatedStockMoveLine(StockMoveLine stockMoveLine) {
     if (stockMoveLine.getStockMove() != null
         && stockMoveLine.getStockMove().getStockMoveLineList() != null) {
       stockMoveLine.getStockMove().getStockMoveLineList().remove(stockMoveLine);
     }
-    stockMoveLineRepository.remove(stockMoveLine);
+    if (stockMoveLine.getId() != null) {
+      stockMoveLineRepository.remove(stockMoveLine);
+    }
   }
 
   /**
@@ -654,14 +735,18 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   @Override
   public BigDecimal computeNonCanceledInvoiceQty(StockMoveLine stockMoveLine)
       throws AxelorException {
+    if (stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_NORMAL) {
+      return BigDecimal.ZERO;
+    }
     List<InvoiceLine> nonCanceledInvoiceLineList =
         invoiceLineRepository
             .all()
             .filter(
                 "self.invoice.statusSelect != :invoiceCanceled "
-                    + "AND self.stockMoveLine.id = :stockMoveLineId")
+                    + "AND self.stockMoveLine.id = :stockMoveLineId AND self.stockMoveLine.lineTypeSelect = :lineTypeSelect")
             .bind("invoiceCanceled", InvoiceRepository.STATUS_CANCELED)
             .bind("stockMoveLineId", stockMoveLine.getId())
+            .bind("lineTypeSelect", StockMoveLineRepository.TYPE_NORMAL)
             .fetch();
     BigDecimal nonCanceledInvoiceQty = BigDecimal.ZERO;
     for (InvoiceLine invoiceLine : nonCanceledInvoiceLineList) {
@@ -680,7 +765,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     BigDecimal qty = invoiceLine.getQty();
     Unit invoiceLineUnit = invoiceLine.getUnit();
     Unit stockMoveLineUnit = stockMoveLine.getUnit();
-    if (!invoiceLineUnit.equals(stockMoveLineUnit)) {
+    if (invoiceLineUnit != null
+        && stockMoveLineUnit != null
+        && !Objects.equals(invoiceLineUnit, stockMoveLineUnit)) {
       qty =
           unitConversionService.convert(
               invoiceLineUnit,

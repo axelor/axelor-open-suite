@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -135,6 +135,14 @@ public class AccountingBatchController {
 
   public void actionRealizeFixedAssetLines(ActionRequest request, ActionResponse response) {
     runBatch(AccountingBatchRepository.ACTION_REALIZE_FIXED_ASSET_LINES, request, response);
+  }
+
+  public void actionPostLoanInstallment(ActionRequest request, ActionResponse response) {
+    runBatch(AccountingBatchRepository.ACTION_POST_LOAN_INSTALLMENT, request, response);
+  }
+
+  public void actionPostLoanClosing(ActionRequest request, ActionResponse response) {
+    runBatch(AccountingBatchRepository.ACTION_POST_LOAN_CLOSING, request, response);
   }
 
   public void actionBillOfExchange(ActionRequest request, ActionResponse response) {

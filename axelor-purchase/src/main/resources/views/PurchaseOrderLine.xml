@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="purchase-order-line-purchase-order-grid" title="PO lines"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -21,8 +21,7 @@
     <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="priceDiscounted" title="Unit price W.T."
-      x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="priceDiscounted" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="purchaseOrder.currency.numberOfDecimals"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="purchaseOrder.currency.numberOfDecimals"/>
     <field name="isTitleLine" hidden="true"/>
@@ -52,8 +51,7 @@
     <field name="productName"/>
     <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="priceDiscounted" title="Unit price W.T."
-      x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="priceDiscounted" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="purchaseOrder.currency"/>
     <field name="purchaseOrder.buyerUser"/>
     <field name="desiredReceiptDate"/>
@@ -190,7 +188,7 @@
           </panel>
           <panel name="discountPanel" colSpan="12">
             <field name="discountTypeSelect" colSpan="3"
-              onChange="action-purchase-order-line-method-compute,action-purchase-order-line-attrs-discountamount-title,action-purchase-order-line-method-compute-analytic-distribution"/>
+              onChange="action-purchase-order-line-group-discount-type-onchange"/>
             <field name="discountAmount" colSpan="3"
               onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution"
               hideIf="discountTypeSelect == 3" x-scale="$nbDecimalDigitForUnitPrice"/>
@@ -209,6 +207,8 @@
             hidden="true"/>
           <field name="$currency.numberOfDecimals" hidden="true"/>
           <field name="fixedAssets" widget="boolean-switch"/>
+          <field name="vatExemptionReason" readonly="true" hideIf="!vatExemptionReason"
+            form-view="vat-exemption-reason-form" grid-view="vat-exemption-reason-grid" colSpan="6"/>
           <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
             form-view="tax-equiv-form"/>
           <panel name="descriptionPanel" title="Description" colSpan="12">
@@ -264,6 +264,10 @@
         <field name="amountInvoiced" x-scale="$nbDecimalDigitForUnitPrice"/>
         <panel-dashlet name="POLineInvoicelinesPanel"
           action="action-purchase-order-line-view-show-invoice-lines" colSpan="12"/>
+      </panel>
+      <panel name="settingsPanel" title="Configuration"
+        showIf="pricingScaleLogs &amp;&amp; product">
+        <field name="pricingScaleLogs" colSpan="12"/>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">
@@ -349,7 +353,7 @@
     <action name="action-purchase-order-line-attrs-scale-and-precision"/>
     <action name="action-purchase-order-attrs-hide-ati"/>
     <action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
-    <action name="action-purchase-order-line-attrs-delivery-panel"/>
+    <action name="action-purchase-order-line-method-manage-delivery-panel-visibility"/>
     <action name="action-purchase-order-line-attrs-set-isFilterOnSupplier"/>
     <action name="action-purchase-order-line-attrs-set-currency"/>
     <action name="action-purchase-order-line-attrs-display-different-language-message"/>
@@ -358,7 +362,7 @@
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-product-onchange">
-    <action name="action-purchase-order-line-attrs-delivery-panel"/>
+    <action name="action-purchase-order-line-method-manage-delivery-panel-visibility"/>
     <action name="action-purchase-order-line-method-get-product-information"/>
     <action name="action-purchase-order-line-method-compute" if="price != 0"/>
     <action name="action-purchase-order-line-method-check-qty" if="price != 0"/>
@@ -404,11 +408,6 @@
   </action-group>
 
   <!-- ACTION ATTRS -->
-
-  <action-attrs name="action-purchase-order-line-attrs-delivery-panel">
-    <attribute name="hidden" for="deliveryPanel"
-      expr="eval: product?.productTypeSelect != 'storable'"/>
-  </action-attrs>
 
   <action-attrs name="action-purchase-order-attrs-hide-ati">
     <attribute name="hidden" for="exTaxTotal" expr="eval:__parent__?.inAti"
@@ -559,6 +558,12 @@
 
   <!-- ACTION METHOD -->
 
+  <action-method
+    name="action-purchase-order-line-method-manage-delivery-panel-visibility">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController"
+      method="updateDeliveryPanelVisibility"/>
+  </action-method>
+
   <action-method name="action-purchase-order-line-method-convert-tax">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController"
       method="convertUnitPrice"/>
@@ -650,5 +655,17 @@
     <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController"
       method="differentUnitMessage"/>
   </action-method>
+
+  <action-record name="action-purchase-order-line-record-clear-discount-amount"
+    model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    <field name="discountAmount" expr="eval: 0"/>
+  </action-record>
+
+  <action-group name="action-purchase-order-line-group-discount-type-onchange">
+    <action name="action-purchase-order-line-record-clear-discount-amount"/>
+    <action name="action-purchase-order-line-method-compute"/>
+    <action name="action-purchase-order-line-attrs-discountamount-title"/>
+    <action name="action-purchase-order-line-method-compute-analytic-distribution"/>
+  </action-group>
 
 </object-views>

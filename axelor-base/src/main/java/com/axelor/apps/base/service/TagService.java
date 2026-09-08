@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,12 +20,19 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Tag;
+import com.axelor.apps.base.db.TradingName;
 import java.util.Map;
+import java.util.Set;
 
 public interface TagService {
   void addMetaModelToTag(Tag tag, String fullName);
 
   Map<String, Object> getOnNewValuesMap(Tag tag, String fullNameModel, String fieldModel);
 
-  String getTagDomain(String metaModelName, Company company);
+  String getTagDomain(String metaModelName, Company company, TradingName tradingName);
+
+  Set<Tag> getInvalidTagsFromTagSet(Set<Tag> tagSet, Company company);
+
+  Set<Tag> getInvalidTagsFromTagSet(
+      Set<Tag> tagSet, Set<Company> companySet, Set<TradingName> tradingNameSet);
 }

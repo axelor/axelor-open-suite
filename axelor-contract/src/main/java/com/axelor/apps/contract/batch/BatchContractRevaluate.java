@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -129,8 +129,16 @@ public class BatchContractRevaluate extends BatchStrategy {
       processContract(newContract, idsOk, idsReevaluated);
       contractService.activeNextVersion(
           newContract, appBaseService.getTodayDate(newContract.getCompany()));
+    } catch (AxelorException e) {
+      TraceBackService.trace(
+          new AxelorException(e, contract, e.getCategory()), null, batch.getId());
+      idsFail.add(contract);
+      incrementAnomaly();
     } catch (Exception e) {
-      TraceBackService.trace(e, null, batch.getId());
+      TraceBackService.trace(
+          new AxelorException(e, contract, TraceBackRepository.CATEGORY_INCONSISTENCY),
+          null,
+          batch.getId());
       idsFail.add(contract);
       incrementAnomaly();
     }

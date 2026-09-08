@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -105,4 +105,9 @@ public interface PurchaseOrderInvoiceService {
   void displayErrorMessageIfPurchaseOrderIsInvoiceable(
       PurchaseOrder purchaseOrder, BigDecimal amountToInvoice, boolean isPercent)
       throws AxelorException;
+
+  void displayErrorMessageBtnGenerateInvoice(PurchaseOrder purchaseOrder) throws AxelorException;
+
+  void displayErrorMessageIfExceedsInvoiceableAmount(
+      PurchaseOrder purchaseOrder, BigDecimal amountToInvoice) throws AxelorException;
 }

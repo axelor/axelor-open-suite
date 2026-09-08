@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -105,15 +105,8 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
       return createAnalyticDistributionWithTemplate(invoiceLine);
     } else {
-      if (invoiceLine.getAnalyticMoveLineList() != null) {
-        for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-          analyticMoveLineService.updateAnalyticMoveLine(
-              analyticMoveLine,
-              currencyScaleService.getScaledValue(
-                  analyticMoveLine, invoiceLine.getCompanyExTaxTotal()),
-              date);
-        }
-      }
+      analyticMoveLineService.updateAnalyticMoveLineList(
+          analyticMoveLineList, invoiceLine.getCompanyExTaxTotal(), date);
       return analyticMoveLineList;
     }
   }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -206,7 +206,11 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     // Credit move line creation
     this.miscOperationMoveCreation(move, partner, creditAccount, foreignExchangeAmount, false, 2);
 
+    // Unlink invoice before accounting so generated invoice terms are not linked to the invoice;
+    // restore after so the FX gap move remains visible on the invoice.
+    move.setInvoice(null);
     moveValidateService.accounting(move);
+    move.setInvoice(invoice);
 
     return move;
   }

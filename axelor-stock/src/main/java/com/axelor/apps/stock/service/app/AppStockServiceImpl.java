@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,8 +26,10 @@ import com.axelor.studio.db.AppStock;
 import com.axelor.studio.db.repo.AppStockRepository;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
+@Singleton
 public class AppStockServiceImpl implements AppStockService {
 
   @Inject private CompanyRepository companyRepo;

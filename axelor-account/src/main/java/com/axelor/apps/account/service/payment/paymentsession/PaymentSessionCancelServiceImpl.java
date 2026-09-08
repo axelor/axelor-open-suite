@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,9 +19,12 @@
 package com.axelor.apps.account.service.payment.paymentsession;
 
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
+import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.google.inject.persist.Transactional;
@@ -81,5 +84,30 @@ public class PaymentSessionCancelServiceImpl implements PaymentSessionCancelServ
     invoiceTerm.setApplyFinancialDiscountOnPaymentSession(false);
     invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
     invoiceTerm.setAmountPaid(BigDecimal.ZERO);
+    invoiceTerm.setIsPaid(false);
+
+    MoveLine moveLine = invoiceTerm.getMoveLine();
+    if (moveLine != null) {
+      moveLine.setAmountPaid(computeAmountPaidFromConfirmedReconciles(moveLine));
+    }
+  }
+
+  protected BigDecimal computeAmountPaidFromConfirmedReconciles(MoveLine moveLine) {
+    BigDecimal amountPaid = BigDecimal.ZERO;
+    if (moveLine.getDebitReconcileList() != null) {
+      for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
+        if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
+          amountPaid = amountPaid.add(reconcile.getAmount());
+        }
+      }
+    }
+    if (moveLine.getCreditReconcileList() != null) {
+      for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
+        if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
+          amountPaid = amountPaid.add(reconcile.getAmount());
+        }
+      }
+    }
+    return amountPaid;
   }
 }

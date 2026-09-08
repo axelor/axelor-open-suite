@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -73,7 +73,7 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             .subtract(expense.getAdvanceAmount())
             .subtract(expense.getWithdrawnCash())
             .subtract(expense.getPersonalExpenseAmount());
-    Currency currency = company.getCurrency();
+    Currency currency = expense.getCurrency();
     LocalDate paymentDate =
         expense.getPaymentDate() != null
             ? expense.getPaymentDate()
@@ -112,6 +112,7 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
   protected int getAccountingTriggerSelect(PaymentMode paymentMode) {
     int accountingTriggerSelect = paymentMode.getAccountingTriggerSelect();
     switch (accountingTriggerSelect) {
+      case PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE:
       case PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION:
       case PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION:
         return accountingTriggerSelect;

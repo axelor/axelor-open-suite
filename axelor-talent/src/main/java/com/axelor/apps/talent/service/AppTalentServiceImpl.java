@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,29 +19,20 @@
 package com.axelor.apps.talent.service;
 
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.meta.loader.AppVersionService;
+import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppRecruitment;
 import com.axelor.studio.db.repo.AppRecruitmentRepository;
-import com.axelor.studio.db.repo.AppRepository;
-import com.axelor.studio.service.AppSettingsStudioService;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
+@Singleton
 public class AppTalentServiceImpl extends AppBaseServiceImpl implements AppTalentService {
   protected AppRecruitmentRepository appRecruitmentRepository;
 
   @Inject
   public AppTalentServiceImpl(
-      AppRepository appRepo,
-      MetaFiles metaFiles,
-      AppVersionService appVersionService,
-      AppSettingsStudioService appSettingsService,
-      MetaModuleRepository metaModuleRepo,
-      MetaFileRepository metaFileRepo,
-      AppRecruitmentRepository appRecruitmentRepository) {
-    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
+      AppService appService, AppRecruitmentRepository appRecruitmentRepository) {
+    super(appService);
     this.appRecruitmentRepository = appRecruitmentRepository;
   }
 

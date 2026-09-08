@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -96,11 +96,52 @@ public class AnalyticMoveLineParentSupplychainServiceImpl
     }
 
     if (PurchaseOrderLine.class.equals(parentClass)) {
+      PurchaseOrderLine purchaseOrderLine = parentContext.asType(PurchaseOrderLine.class);
+
       return AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
-          parentContext.asType(PurchaseOrderLine.class), null);
+          purchaseOrderLine, getPurchaseOrderFromContext(purchaseOrderLine, parentContext));
     } else if (SaleOrderLine.class.equals(parentClass)) {
+      SaleOrderLine saleOrderLine = parentContext.asType(SaleOrderLine.class);
+
       return AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
-          parentContext.asType(SaleOrderLine.class), null);
+          saleOrderLine, getSaleOrderFromContext(saleOrderLine, parentContext));
+    }
+
+    return null;
+  }
+
+  /**
+   * Retrieves the sale order of a line that is not persisted yet, by looking it up in the grand
+   * parent context when the line does not carry it.
+   */
+  protected SaleOrder getSaleOrderFromContext(SaleOrderLine saleOrderLine, Context parentContext) {
+    if (saleOrderLine.getSaleOrder() != null) {
+      return saleOrderLine.getSaleOrder();
+    }
+
+    Context grandParentContext = parentContext.getParent();
+    if (grandParentContext != null
+        && SaleOrder.class.isAssignableFrom(grandParentContext.getContextClass())) {
+      return grandParentContext.asType(SaleOrder.class);
+    }
+
+    return null;
+  }
+
+  /**
+   * Retrieves the purchase order of a line that is not persisted yet, by looking it up in the grand
+   * parent context when the line does not carry it.
+   */
+  protected PurchaseOrder getPurchaseOrderFromContext(
+      PurchaseOrderLine purchaseOrderLine, Context parentContext) {
+    if (purchaseOrderLine.getPurchaseOrder() != null) {
+      return purchaseOrderLine.getPurchaseOrder();
+    }
+
+    Context grandParentContext = parentContext.getParent();
+    if (grandParentContext != null
+        && PurchaseOrder.class.isAssignableFrom(grandParentContext.getContextClass())) {
+      return grandParentContext.asType(PurchaseOrder.class);
     }
 
     return null;

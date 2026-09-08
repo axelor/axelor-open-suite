@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,6 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
-import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.productionorder.manuforder.ManufOrderGenerationService;
@@ -46,7 +45,6 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
 
   protected UnitConversionService unitConversionService;
   protected ProductionConfigService productionConfigService;
-  protected BillOfMaterialService billOfMaterialService;
   protected ManufOrderService manufOrderService;
   protected ProductionOrderUpdateService productionOrderUpdateService;
   protected AppBaseService appBaseService;
@@ -57,7 +55,6 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
   public ProductionOrderSaleOrderMOGenerationServiceImpl(
       UnitConversionService unitConversionService,
       ProductionConfigService productionConfigService,
-      BillOfMaterialService billOfMaterialService,
       ManufOrderService manufOrderService,
       ProductionOrderUpdateService productionOrderUpdateService,
       AppBaseService appBaseService,
@@ -65,7 +62,6 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
       ManufOrderGenerationService manufOrderGenerationService) {
     this.unitConversionService = unitConversionService;
     this.productionConfigService = productionConfigService;
-    this.billOfMaterialService = billOfMaterialService;
     this.manufOrderService = manufOrderService;
     this.productionOrderUpdateService = productionOrderUpdateService;
     this.appBaseService = appBaseService;
@@ -78,7 +74,8 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
       ProductionOrder productionOrder,
       SaleOrderLine saleOrderLine,
       Product product,
-      BigDecimal qtyToProduce)
+      BigDecimal qtyToProduce,
+      BigDecimal grossQtyRequested)
       throws AxelorException {
     BillOfMaterial billOfMaterial = getBillOfMaterial(saleOrderLine, product);
     if (billOfMaterial.getProdProcess() == null) {
@@ -86,9 +83,10 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
     }
 
     BigDecimal qty = convertToProductUnit(product, saleOrderLine.getUnit(), qtyToProduce);
+    BigDecimal grossQty = convertToProductUnit(product, saleOrderLine.getUnit(), grossQtyRequested);
 
     return saleOrderLineMOGenerationService.generateManufOrders(
-        saleOrderLine, saleOrderLine.getSaleOrder(), productionOrder, qty);
+        saleOrderLine, saleOrderLine.getSaleOrder(), productionOrder, qty, grossQty);
   }
 
   protected BigDecimal convertToProductUnit(Product product, Unit saleOrderLineUnit, BigDecimal qty)

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,9 @@ package com.axelor.apps.base.service.partner.api;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import java.util.Map;
 
 public interface PartnerGenerateService {
-  void configurePartner(Partner partner, String siret) throws AxelorException;
+  void configurePartner(Partner partner, String siret, Map<String, Boolean> partnerTypeData)
+      throws AxelorException;
 }

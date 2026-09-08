@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,8 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -39,6 +41,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingSupplychainService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
@@ -72,6 +75,9 @@ public class StockMoveInvoiceBudgetServiceImpl extends StockMoveInvoiceServiceIm
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
       PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
       UnitConversionService unitConversionService,
+      InvoiceService invoiceService,
+      AppSupplychainService appSupplychainService,
+      InvoiceGlobalDiscountService invoiceGlobalDiscountService,
       BudgetInvoiceService budgetInvoiceService,
       AppBudgetService appBudgetService,
       InvoiceToolBudgetService invoiceToolBudgetService,
@@ -91,7 +97,10 @@ public class StockMoveInvoiceBudgetServiceImpl extends StockMoveInvoiceServiceIm
         appStockService,
         saleOrderMergingServiceSupplyChain,
         purchaseOrderMergingSupplychainService,
-        unitConversionService);
+        unitConversionService,
+        invoiceService,
+        appSupplychainService,
+        invoiceGlobalDiscountService);
     this.budgetInvoiceService = budgetInvoiceService;
     this.appBudgetService = appBudgetService;
     this.invoiceToolBudgetService = invoiceToolBudgetService;

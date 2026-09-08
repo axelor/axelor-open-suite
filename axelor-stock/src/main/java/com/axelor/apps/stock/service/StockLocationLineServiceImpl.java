@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,13 +38,15 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.apps.stock.utils.StockLocationLineQtyView;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.db.Query;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.FlushModeType;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -494,7 +496,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     StockLocationLine stockLocationLine = new StockLocationLine();
 
     stockLocationLine.setStockLocation(stockLocation);
-    stockLocation.addStockLocationLineListItem(stockLocationLine);
     stockLocationLine.setProduct(product);
     stockLocationLine.setUnit(product.getUnit());
     stockLocationLine.setCurrentQty(BigDecimal.ZERO);
@@ -522,7 +523,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     StockLocationLine detailLocationLine = new StockLocationLine();
 
     detailLocationLine.setDetailsStockLocation(stockLocation);
-    stockLocation.addDetailsStockLocationLineListItem(detailLocationLine);
     detailLocationLine.setProduct(product);
     detailLocationLine.setUnit(product.getUnit());
     detailLocationLine.setCurrentQty(qty);
@@ -550,7 +550,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
     if (productUnit != null && !productUnit.equals(stockLocationUnit)) {
       int scale = appBaseService.getNbDecimalDigitForUnitPrice();
-      int qtyScale = appBaseService.getNbDecimalDigitForQty();
       BigDecimal oldQty = stockLocationLine.getCurrentQty();
       BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
 
@@ -566,11 +565,10 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       stockLocationLine.setUnit(product.getUnit());
       stockLocationLine.setFutureQty(computeFutureQty(stockLocationLine));
 
-      BigDecimal avgQty = BigDecimal.ZERO;
+      BigDecimal newAvgPrice = BigDecimal.ZERO;
       if (currentQty.compareTo(BigDecimal.ZERO) != 0) {
-        avgQty = oldQty.divide(currentQty, qtyScale, RoundingMode.HALF_UP);
+        newAvgPrice = oldAvgPrice.multiply(oldQty).divide(currentQty, scale, RoundingMode.HALF_UP);
       }
-      BigDecimal newAvgPrice = oldAvgPrice.multiply(avgQty).setScale(scale, RoundingMode.HALF_UP);
       stockLocationLine.setAvgPrice(newAvgPrice);
       updateHistory(
           stockLocationLine,
@@ -589,17 +587,13 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
   @Override
   public BigDecimal computeFutureQty(StockLocationLine stockLocationLine) throws AxelorException {
-    // future quantity is current quantity minus planned outgoing stock move lines plus planned
-    // incoming stock move lines.
+    // future quantity = current quantity - planned outgoing + planned incoming
+    BigDecimal futureQty =
+        stockLocationLine.getCurrentQty() != null
+            ? stockLocationLine.getCurrentQty()
+            : BigDecimal.ZERO;
 
     Product product = stockLocationLine.getProduct();
-
-    BigDecimal futureQty = stockLocationLine.getCurrentQty();
-
-    List<StockMoveLine> incomingStockMoveLineList =
-        findIncomingPlannedStockMoveLines(stockLocationLine);
-    List<StockMoveLine> outgoingStockMoveLineList =
-        findOutgoingPlannedStockMoveLines(stockLocationLine);
 
     if (stockLocationLine.getUnit() == null) {
       throw new AxelorException(
@@ -609,145 +603,66 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
           product.getFullName());
     }
 
-    for (StockMoveLine incomingStockMoveLine : incomingStockMoveLineList) {
-      BigDecimal qtyToAdd =
-          unitConversionService.convert(
-              incomingStockMoveLine.getUnit(),
-              stockLocationLine.getUnit(),
-              incomingStockMoveLine.getRealQty(),
-              incomingStockMoveLine.getRealQty().scale(),
-              product);
-      futureQty = futureQty.add(qtyToAdd);
-    }
+    boolean isDetailsStockLocationLine = stockLocationLine.getDetailsStockLocation() != null;
+    Long stockLocationId =
+        isDetailsStockLocationLine
+            ? stockLocationLine.getDetailsStockLocation().getId()
+            : stockLocationLine.getStockLocation().getId();
+    Long trackingNumberId =
+        isDetailsStockLocationLine && stockLocationLine.getTrackingNumber() != null
+            ? stockLocationLine.getTrackingNumber().getId()
+            : null;
 
-    for (StockMoveLine outgoingStockMoveLine : outgoingStockMoveLineList) {
-      BigDecimal qtyToSubtract =
-          unitConversionService.convert(
-              outgoingStockMoveLine.getUnit(),
-              stockLocationLine.getUnit(),
-              outgoingStockMoveLine.getRealQty(),
-              outgoingStockMoveLine.getRealQty().scale(),
-              product);
-      futureQty = futureQty.subtract(qtyToSubtract);
+    StringBuilder jpql = new StringBuilder();
+    jpql.append(
+        "SELECT new com.axelor.apps.stock.utils.StockLocationLineQtyView("
+            + " self.unit, "
+            + " SUM(CASE WHEN self.toStockLocation.id = :stockLocationId THEN COALESCE(self.qty, 0) ELSE 0 END), "
+            + " SUM(CASE WHEN self.fromStockLocation.id = :stockLocationId THEN COALESCE(self.qty, 0) ELSE 0 END) "
+            + ") "
+            + " FROM StockMoveLine self "
+            + " WHERE (self.stockMove.archived IS NULL OR self.archived IS FALSE) "
+            + " AND self.stockMove.statusSelect = :planned "
+            + " AND self.product.id = :productId "
+            + " AND (self.toStockLocation.id = :stockLocationId OR self.fromStockLocation.id = :stockLocationId) ");
+    if (isDetailsStockLocationLine) {
+      jpql.append(" AND self.trackingNumber.id = :trackingNumberId ");
+    }
+    jpql.append(" GROUP BY self.unit");
+
+    var query =
+        JPA.em()
+            .createQuery(jpql.toString(), StockLocationLineQtyView.class)
+            .setParameter("planned", StockMoveRepository.STATUS_PLANNED)
+            .setParameter("productId", product.getId())
+            .setParameter("stockLocationId", stockLocationId);
+    if (isDetailsStockLocationLine) {
+      query.setParameter("trackingNumberId", trackingNumberId);
+    }
+    query.setFlushMode(FlushModeType.COMMIT);
+    List<StockLocationLineQtyView> aggregates = query.getResultList();
+
+    for (StockLocationLineQtyView agg : aggregates) {
+      Unit aggUnit = agg.getUnit();
+      BigDecimal incoming = agg.getIncoming() != null ? agg.getIncoming() : BigDecimal.ZERO;
+      BigDecimal outgoing = agg.getOutgoing() != null ? agg.getOutgoing() : BigDecimal.ZERO;
+
+      if (incoming.compareTo(BigDecimal.ZERO) != 0) {
+        BigDecimal incConverted =
+            unitConversionService.convertWithAutoFlushFalse(
+                aggUnit, stockLocationLine.getUnit(), incoming, incoming.scale(), product);
+        futureQty = futureQty.add(incConverted);
+      }
+
+      if (outgoing.compareTo(BigDecimal.ZERO) != 0) {
+        BigDecimal outConverted =
+            unitConversionService.convertWithAutoFlushFalse(
+                aggUnit, stockLocationLine.getUnit(), outgoing, outgoing.scale(), product);
+        futureQty = futureQty.subtract(outConverted);
+      }
     }
 
     return futureQty;
-  }
-
-  protected List<StockMoveLine> findIncomingPlannedStockMoveLines(
-      StockLocationLine stockLocationLine) {
-    boolean isDetailsStockLocationLine = stockLocationLine.getDetailsStockLocation() != null;
-    String incomingStockMoveLineFilter =
-        STOCK_MOVE_LINE_FILTER + "AND self.toStockLocation.id = :stockLocationId";
-    if (isDetailsStockLocationLine) {
-      incomingStockMoveLineFilter =
-          incomingStockMoveLineFilter + " AND self.trackingNumber.id = :trackingNumberId";
-    }
-    Query<StockMoveLine> stockMoveLineQuery =
-        stockMoveLineRepository
-            .all()
-            .filter(incomingStockMoveLineFilter)
-            .bind("planned", StockMoveRepository.STATUS_PLANNED)
-            .bind("productId", stockLocationLine.getProduct().getId());
-    if (isDetailsStockLocationLine) {
-      stockMoveLineQuery
-          .bind("stockLocationId", stockLocationLine.getDetailsStockLocation().getId())
-          .bind("trackingNumberId", stockLocationLine.getTrackingNumber().getId());
-    } else {
-      stockMoveLineQuery.bind("stockLocationId", stockLocationLine.getStockLocation().getId());
-    }
-    return stockMoveLineQuery.fetch();
-  }
-
-  protected List<StockMoveLine> findOutgoingPlannedStockMoveLines(
-      StockLocationLine stockLocationLine) {
-    boolean isDetailsStockLocationLine = stockLocationLine.getDetailsStockLocation() != null;
-    String outgoingStockMoveLineFilter =
-        STOCK_MOVE_LINE_FILTER + "AND self.fromStockLocation.id = :stockLocationId";
-    if (isDetailsStockLocationLine) {
-      outgoingStockMoveLineFilter =
-          outgoingStockMoveLineFilter + " AND self.trackingNumber.id = :trackingNumberId";
-    }
-    Query<StockMoveLine> stockMoveLineQuery =
-        stockMoveLineRepository
-            .all()
-            .filter(outgoingStockMoveLineFilter)
-            .bind("planned", StockMoveRepository.STATUS_PLANNED)
-            .bind("productId", stockLocationLine.getProduct().getId());
-
-    if (isDetailsStockLocationLine) {
-      stockMoveLineQuery
-          .bind("stockLocationId", stockLocationLine.getDetailsStockLocation().getId())
-          .bind("trackingNumberId", stockLocationLine.getTrackingNumber().getId());
-    } else {
-      stockMoveLineQuery.bind("stockLocationId", stockLocationLine.getStockLocation().getId());
-    }
-    return stockMoveLineQuery.fetch();
-  }
-
-  @Override
-  public void updateWap(StockLocationLine stockLocationLine, BigDecimal wap)
-      throws AxelorException {
-    updateWap(stockLocationLine, wap, null);
-  }
-
-  @Override
-  public void updateWap(
-      StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine)
-      throws AxelorException {
-
-    LocalDateTime dateT =
-        appBaseService
-            .getTodayDateTime(
-                stockLocationLine.getStockLocation() != null
-                    ? stockLocationLine.getStockLocation().getCompany()
-                    : Optional.ofNullable(AuthUtils.getUser())
-                        .map(User::getActiveCompany)
-                        .orElse(null))
-            .toLocalDateTime();
-
-    String origin =
-        Optional.ofNullable(stockMoveLine)
-            .map(StockMoveLine::getStockMove)
-            .map(StockMove::getStockMoveSeq)
-            .orElse("");
-    stockLocationLine.setAvgPrice(wap);
-    stockLocationLineHistoryService.saveHistory(stockLocationLine, dateT, origin, "");
-  }
-
-  @Override
-  public void updateWap(
-      StockLocationLine stockLocationLine,
-      BigDecimal wap,
-      StockMoveLine stockMoveLine,
-      LocalDate date,
-      String origin)
-      throws AxelorException {
-    if (origin == null) {
-      origin =
-          Optional.ofNullable(stockMoveLine)
-              .map(StockMoveLine::getStockMove)
-              .map(StockMove::getStockMoveSeq)
-              .orElse("");
-    }
-
-    LocalDateTime dateT = null;
-    if (date != null) {
-      dateT = date.atStartOfDay();
-    } else {
-      dateT =
-          appBaseService
-              .getTodayDateTime(
-                  stockLocationLine.getStockLocation() != null
-                      ? stockLocationLine.getStockLocation().getCompany()
-                      : Optional.ofNullable(AuthUtils.getUser())
-                          .map(User::getActiveCompany)
-                          .orElse(null))
-              .toLocalDateTime();
-    }
-
-    stockLocationLine.setAvgPrice(wap);
-    stockLocationLineHistoryService.saveHistory(stockLocationLine, dateT, origin, "");
   }
 
   @Override

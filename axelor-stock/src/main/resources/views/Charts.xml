@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
-  <chart onInit="action.base.default.month.value"
+  <chart onInit="action.stock.chart.set.month.and.from.date"
     name="chart.stockMove.nbr.delivery.by.country" title="Customer deliveries by country">
     <search-fields>
       <field type="string" name="monthSelect" title="Historical Period"
-        selection="base.month.select" x-required="true"/>
+        selection="base.month.select" x-required="true"
+        onChange="action.stock.chart.compute.from.date"/>
+      <field type="date" name="fromDate" hidden="true"/>
     </search-fields>
     <dataset type="jpql">
       SELECT
@@ -34,9 +36,7 @@
       address.country =
       country
       AND
-      self.realDate BETWEEN
-      DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND
-      DATE(:todayDate)
+      self.realDate BETWEEN :fromDate AND :todayDate
       GROUP BY
       country.name
     </dataset>
@@ -135,20 +135,19 @@
         selection="base.month.select" x-required="true"/>
     </search-fields>
     <dataset type="sql">
+      <![CDATA[
       SELECT moves,
       (CASE
       WHEN (translation.message_value IS NULL OR
       translation.message_value = '') THEN label
       ELSE translation.message_value
       END) AS status
-
       FROM (
       SELECT
       COUNT(self.id) AS moves,
       (CASE
-      when self.estimated_date >= self.real_date then 'OnTime
-      Deliveries'
-      when self.estimated_date &lt; self.real_date then 'Late Deliveries'
+      when self.estimated_date >= self.real_date then 'OnTime Deliveries'
+      when self.estimated_date < self.real_date then 'Late Deliveries'
       END) AS label
       FROM
       stock_stock_move AS self
@@ -177,6 +176,7 @@
       ON
       translation.message_key = label AND
       translation.language = :_language
+      ]]>
     </dataset>
     <category key="status" type="text" title="Status"/>
     <series key="moves" type="donut" title="Stock Moves"/>
@@ -189,6 +189,7 @@
       <field type="date" name="toDate" title="To Date" x-required="true"/>
     </search-fields>
     <dataset type="sql">
+      <![CDATA[
       SELECT
       ROUND(AVG((self.estimated_date - self.real_date)*-1)) AS days,
       (CASE
@@ -220,6 +221,7 @@
       DATE(:fromDate) AND DATE(:toDate)
       GROUP BY
       label
+      ]]>
     </dataset>
     <category key="label" type="text" title="Delay"/>
     <series key="days" type="bar" title="Days"/>
@@ -228,7 +230,7 @@
   <chart name="chart.stock.report.for.product" title="Stock"
     onInit="action-product-set-today-date">
     <search-fields>
-      <field name="todayDate" type="date" title="Today" x-required="true"/>
+      <field name="todayDate" type="date" title="Today" x-required="true" readonly="true"/>
     </search-fields>
     <dataset type="sql">
 	    <![CDATA[
@@ -274,7 +276,7 @@
 				               AND move.status_select in (2,3)
 				               AND line.product = :id
 				               AND loc.id = location.id
-				               AND loc.type_select = 1
+				               AND loc.type_select IN (1,2)
 				           ) AS qty
 				    FROM stock_stock_location_line loc_line
 				    JOIN stock_stock_location location ON loc_line.stock_location = location.id
@@ -284,7 +286,8 @@
 				  )
 				  UNION ALL
 				  (
-				    SELECT estimated_date AS dt,
+				    SELECT dt, locat, SUM(qty) AS qty FROM (
+				    SELECT GREATEST(move.estimated_date, DATE(:todayDate) + 1) AS dt,
 				           location.name AS locat,
 				           SUM(
 				             CASE
@@ -317,11 +320,12 @@
 				      LIMIT 1
 				    ) uc ON true
 				    WHERE line.product = :id
-				      AND move.estimated_date > DATE(:todayDate)
+				      AND move.estimated_date IS NOT NULL
 				      AND move.real_date IS NULL
-				      AND location.type_select = 1
+				      AND location.type_select IN (1,2)
 				      AND move.status_select IN (2, 3)
 				    GROUP BY move.estimated_date, location.name
+				    ) planned_moves GROUP BY dt, locat
 				  )
 				) location_stock
 				ORDER BY locat, estimatedate;
@@ -329,6 +333,7 @@
     </dataset>
     <category key="estimatedate" type="date" title="Estimated Date"/>
     <series key="qty" groupBy="locat" type="line" aggregate="sum" title="Quantity"/>
+    <config name="onClick" value="action-stock-view-report-for-product-chart"/>
   </chart>
 
   <chart name="chart.stock.history.report.for.product" title="Stock History"
@@ -402,7 +407,7 @@
 			  WHERE ln.product = :id
 			    AND mv.real_date <= DATE(:fromDate)
 			    AND mv.status_select IN (2, 3)
-			    AND loc.type_select = 1
+			    AND loc.type_select IN (1,2)
 			  GROUP BY loc.name
 
 			  UNION ALL
@@ -443,7 +448,7 @@
 			  WHERE ln.product = :id
 			    AND mv.real_date > DATE(:fromDate)
 			    AND mv.real_date <= DATE(:toDate)
-			    AND loc.type_select = 1
+			    AND loc.type_select IN (1,2)
 			     AND mv.status_select IN (2, 3)
 			) AS movs
 			ON movs.real_date = dates.d
@@ -614,5 +619,44 @@
     <category key="real_date" type="date" title="Date"/>
     <series key="qty" groupBy="locat" type="line" aggregate="sum" title="Quantity"/>
   </chart>
+
+  <action-record model="com.axelor.apps.stock.db.StockMove"
+    name="action.stock.chart.set.month.and.from.date">
+    <field name="monthSelect" expr="eval:12"/>
+    <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(12)"/>
+  </action-record>
+
+  <action-record model="com.axelor.apps.stock.db.StockMove"
+    name="action.stock.chart.compute.from.date">
+    <field name="fromDate"
+      expr="eval:LocalDate.parse(todayDate).minusMonths(monthSelect ? Integer.parseInt(monthSelect) : 12)"/>
+  </action-record>
+
+  <action-view name="action-stock-view-report-for-product-chart" title="Stock movements"
+    model="com.axelor.apps.stock.db.StockMoveLine">
+    <view type="grid" name="stock-move-line-all-grid"/>
+    <view type="form" name="stock-move-line-all-form"/>
+    <domain>self.product.id = :_productId
+      AND self.stockMove.statusSelect IN (2, 3)
+      AND
+      (self.stockMove.fromStockLocation.name = :_locat
+      OR self.stockMove.toStockLocation.name =
+      :_locat)
+      AND (
+      (self.stockMove.realDate IS NOT NULL
+      AND DATE(self.stockMove.realDate) &lt;=
+      DATE(:_todayDate))
+      OR (self.stockMove.realDate IS NULL
+      AND self.stockMove.estimatedDate IS NOT
+      NULL
+      AND DATE(self.stockMove.estimatedDate) &gt; DATE(:_todayDate)
+      AND
+      DATE(self.stockMove.estimatedDate) &lt;= DATE(:_estimatedate))
+      )</domain>
+    <context name="_productId" expr="eval: _id"/>
+    <context name="_locat" expr="eval: locat"/>
+    <context name="_todayDate" expr="eval: todayDate"/>
+    <context name="_estimatedate" expr="eval: estimatedate"/>
+  </action-view>
 
 </object-views>

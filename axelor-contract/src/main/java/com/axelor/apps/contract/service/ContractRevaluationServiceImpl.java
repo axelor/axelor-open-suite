@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,14 +23,15 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.RevaluationFormula;
 import com.axelor.apps.contract.db.repo.ContractRepository;
+import com.axelor.script.GroovyScriptHelper;
+import com.axelor.script.ScriptBindings;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringJoiner;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -88,9 +89,13 @@ public class ContractRevaluationServiceImpl implements ContractRevaluationServic
                 allPf.add(results.getPrice().toString());
               }
             });
-    ScriptEngineManager mgr = new ScriptEngineManager();
-    ScriptEngine engine = mgr.getEngineByName("JavaScript");
-    BigDecimal value = BigDecimal.valueOf((Double) engine.eval(formula));
+    Object evalResult;
+    try {
+      evalResult = new GroovyScriptHelper(new ScriptBindings(new HashMap<>())).eval(formula);
+    } catch (Exception e) {
+      throw new ScriptException(e.getMessage());
+    }
+    BigDecimal value = BigDecimal.valueOf(((Number) evalResult).doubleValue());
     contractLine.setPrice(value.setScale(2, RoundingMode.HALF_UP));
   }
 }

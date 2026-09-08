@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -21,6 +21,7 @@
     <boolean name="isDMSAppEnabled" title="DMS" default="false"/>
     <boolean name="isPurchaseAppEnabled" title="Purchase" default="false"/>
     <boolean name="isMaintenanceAppEnabled" title="Maintenance" default="false"/>
+    <boolean name="isTeamAppEnabled" title="Team" default="false"/>
 
     <many-to-one name="qrCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
 
@@ -39,6 +40,8 @@
       title="Enable addition of new lines in customer delivery." default="false"/>
     <boolean name="isSupplierArrivalLineAdditionEnabled"
       title="Enable addition of new lines in supplier arrival." default="false"/>
+    <string name="freightCarrierModeTrackingIds"
+      title="Freight carrier mode requiring a tracking number during shipment"/>
 
     <string name="minimalRequiredMobileAppVersion"
       title="Minimal required version of the mobile application."
@@ -83,6 +86,9 @@
       selection="mobilesettings.employee.timesheet.imputation.select"/>
     <boolean name="isStockLocationManagementEnabled"
       title="Enable default stock location management"/>
+    <boolean name="isSimplifiedStockMoveLineDisplayEnabled"
+      title="Simplified display of stock move lines" default="true"
+      help="Allows stock move lines to be displayed one by one on the mobile app, with a link to the full list. If the option is unchecked, all lines are displayed directly. By default, the simplified mode is enabled."/>
 
     <many-to-many name="inventoryValidationRoleSet" ref="com.axelor.auth.db.Role"
       title="Authorized roles"
@@ -175,6 +181,7 @@
       <field name="isDMSAppEnabled" on="UPDATE"/>
       <field name="isPurchaseAppEnabled" on="UPDATE"/>
       <field name="isMaintenanceAppEnabled" on="UPDATE"/>
+      <field name="isTeamAppEnabled" on="UPDATE"/>
       <field name="isLoginUserQrcodeEnabled" on="UPDATE"/>
       <field name="isTrackerMessageEnabled" on="UPDATE"/>
       <field name="isInboxAccessEnabled" on="UPDATE"/>
@@ -188,7 +195,9 @@
       <field name="isVerifyInventoryLineEnabled" on="UPDATE"/>
       <field name="isCustomerDeliveryLineAdditionEnabled" on="UPDATE"/>
       <field name="isSupplierArrivalLineAdditionEnabled" on="UPDATE"/>
+      <field name="freightCarrierModeTrackingIds" on="UPDATE"/>
       <field name="minimalRequiredMobileAppVersion" on="UPDATE"/>
+      <field name="currentApkFile" on="UPDATE"/>
       <field name="isMultiCurrencyEnabled" on="UPDATE"/>
       <field name="isExpenseProjectInvoicingEnabled" on="UPDATE"/>
       <field name="isKilometricExpenseLineAllowed" on="UPDATE"/>
@@ -211,6 +220,7 @@
       <field name="isFileDeletionAllowed" on="UPDATE"/>
       <field name="fieldsToShowOnTimesheet" on="UPDATE"/>
       <field name="isStockLocationManagementEnabled" on="UPDATE"/>
+      <field name="isSimplifiedStockMoveLineDisplayEnabled" on="UPDATE"/>
       <field name="isOneLineShortcut" on="UPDATE"/>
       <field name="defaultQiDetectionId" on="UPDATE"/>
     </track>

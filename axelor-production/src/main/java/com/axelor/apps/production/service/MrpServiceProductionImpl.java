@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,6 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCategoryService;
@@ -66,6 +65,7 @@ import com.axelor.apps.supplychain.service.MrpLineTypeService;
 import com.axelor.apps.supplychain.service.MrpSaleOrderCheckLateSaleService;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.db.JPA;
+import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.message.service.MailMessageService;
 import com.axelor.utils.helpers.StringHelper;
@@ -77,8 +77,10 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -88,6 +90,10 @@ import org.slf4j.LoggerFactory;
 public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected Set<Long> processedManufOrderIds;
+
+  protected Set<Long> processedConsumingManufOrderIds;
 
   protected ManufOrderRepository manufOrderRepository;
 
@@ -173,7 +179,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     super.completeMrp(mrp);
 
     if (appProductionService.isApp("production")) {
+      this.processedManufOrderIds = new HashSet<>();
+      this.processedConsumingManufOrderIds = new HashSet<>();
       this.createManufOrderMrpLines();
+      this.createConsumingManufOrderMrpLines();
       this.createMPSLines();
     }
   }
@@ -183,6 +192,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     super.fillMrpLinesForProductMap(productMap);
     if (appProductionService.isApp("production")) {
       this.createManufOrderMrpLines(productMap);
+      this.createConsumingManufOrderMrpLines(productMap);
       this.createMPSLines(productMap);
     }
   }
@@ -217,12 +227,17 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         manufOrderRepository
             .all()
             .filter(
-                "self.product.id in (?1) AND (self.prodProcess.stockLocation in (?2) OR "
-                    + "self.prodProcess.producedProductStockLocation in (?2)) "
-                    + "AND self.statusSelect IN (?3)",
-                productMap.keySet(),
-                this.stockLocationList,
-                statusList)
+                "self.product.id IN (:productIds) "
+                    + "AND (self.prodProcess.stockLocation IN (:stockLocations) "
+                    + "OR self.prodProcess.producedProductStockLocation IN (:stockLocations)) "
+                    + "AND self.statusSelect IN (:statusList) "
+                    + "AND self.typeSelect IN (:manufOrderTypeList)")
+            .bind("productIds", productMap.keySet())
+            .bind("stockLocations", this.stockLocationList)
+            .bind("statusList", statusList)
+            .bind(
+                "manufOrderTypeList",
+                List.of(ManufOrderRepository.TYPE_PRODUCTION, ManufOrderRepository.TYPE_PERMANENT))
             .fetch();
 
     for (ManufOrder manufOrder : manufOrderList) {
@@ -231,7 +246,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           mrpRepository.find(mrp.getId()),
           manufOrderRepository.find(manufOrder.getId()),
           mrpLineTypeRepository.find(manufOrderMrpLineType.getId()),
-          mrpLineTypeRepository.find(manufOrderNeedMrpLineType.getId()));
+          manufOrderNeedMrpLineType != null
+              ? mrpLineTypeRepository.find(manufOrderNeedMrpLineType.getId())
+              : null,
+          true);
       JPA.clear();
     }
   }
@@ -241,33 +259,83 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       Mrp mrp,
       ManufOrder manufOrder,
       MrpLineType manufOrderMrpLineType,
-      MrpLineType manufOrderNeedMrpLineType)
+      MrpLineType manufOrderNeedMrpLineType,
+      boolean producedProductInScope)
       throws AxelorException {
+
+    Set<Long> processedIds =
+        producedProductInScope ? processedManufOrderIds : processedConsumingManufOrderIds;
+    if (processedIds != null && !processedIds.add(manufOrder.getId())) {
+      return;
+    }
 
     StockLocation stockLocation = manufOrder.getProdProcess().getStockLocation();
 
     LocalDate maturityDate = null;
 
-    if (manufOrder.getPlannedEndDateT() != null) {
-      maturityDate = manufOrder.getPlannedEndDateT().toLocalDate();
-    } else if (manufOrder.getPlannedStartDateT() != null) {
+    if (manufOrder.getPlannedStartDateT() != null) {
       maturityDate = manufOrder.getPlannedStartDateT().toLocalDate();
+    } else if (manufOrder.getPlannedEndDateT() != null) {
+      maturityDate = manufOrder.getPlannedEndDateT().toLocalDate();
     }
 
     maturityDate = this.computeMaturityDate(maturityDate, manufOrderMrpLineType);
 
-    for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
+    if (producedProductInScope) {
+      createProducedProductMrpLines(
+          mrp, manufOrder, manufOrderMrpLineType, maturityDate, stockLocation);
+    }
 
-      Product product = prodProduct.getProduct();
+    if (manufOrderNeedMrpLineType == null) {
+      return;
+    }
 
+    if (manufOrder.getIsConsProOnOperation()) {
+      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+        LocalDate operationMaturityDate = maturityDate;
+        if (operationOrder.getPlannedStartDateT() != null) {
+          operationMaturityDate = operationOrder.getPlannedStartDateT().toLocalDate();
+        } else if (operationOrder.getPlannedEndDateT() != null) {
+          operationMaturityDate = operationOrder.getPlannedEndDateT().toLocalDate();
+        }
+        operationMaturityDate =
+            this.computeMaturityDate(operationMaturityDate, manufOrderNeedMrpLineType);
+        createConsumedNeedMrpLines(
+            mrp,
+            getConsumedStockMoveLineList(
+                operationOrder.getConsumedStockMoveLineList(), producedProductInScope),
+            manufOrderNeedMrpLineType,
+            operationMaturityDate,
+            stockLocation,
+            operationOrder,
+            null);
+      }
+    } else {
+      createConsumedNeedMrpLines(
+          mrp,
+          getConsumedStockMoveLineList(
+              manufOrder.getConsumedStockMoveLineList(), producedProductInScope),
+          manufOrderNeedMrpLineType,
+          maturityDate,
+          stockLocation,
+          manufOrder,
+          producedProductInScope ? manufOrder.getProduct() : null);
+    }
+  }
+
+  protected void createProducedProductMrpLines(
+      Mrp mrp,
+      ManufOrder manufOrder,
+      MrpLineType manufOrderMrpLineType,
+      LocalDate maturityDate,
+      StockLocation stockLocation)
+      throws AxelorException {
+    for (Map.Entry<Product, BigDecimal> entry :
+        computePlannedQtyByProduct(manufOrder.getProducedStockMoveLineList()).entrySet()) {
+      Product product = entry.getKey();
+      BigDecimal qty = entry.getValue();
       if ((this.isBeforeEndDate(maturityDate) || manufOrderMrpLineType.getIgnoreEndDate())
           && this.isMrpProduct(product)) {
-        Unit unit = prodProduct.getUnit();
-        BigDecimal qty = computeQtyLeftToProduce(manufOrder, prodProduct);
-        if (!unit.equals(product.getUnit())) {
-          qty =
-              unitConversionService.convert(prodProduct.getUnit(), unit, qty, qty.scale(), product);
-        }
         MrpLine mrpLine =
             this.createMrpLine(
                 mrp,
@@ -283,121 +351,73 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         }
       }
     }
+  }
 
-    if (manufOrderNeedMrpLineType == null) {
-      return;
-    }
-
-    if (manufOrder.getIsConsProOnOperation()) {
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-        for (ProdProduct prodProduct : operationOrder.getToConsumeProdProductList()) {
-
-          Product product = prodProduct.getProduct();
-
-          if (this.isMrpProduct(product)) {
-
-            if (operationOrder.getPlannedStartDateT() != null) {
-              maturityDate = operationOrder.getPlannedStartDateT().toLocalDate();
-            } else if (operationOrder.getPlannedEndDateT() != null) {
-              maturityDate = operationOrder.getPlannedEndDateT().toLocalDate();
-            }
-
-            maturityDate = this.computeMaturityDate(maturityDate, manufOrderNeedMrpLineType);
-
-            Unit unit = product.getUnit();
-            BigDecimal qty = computeQtyLeftToConsume(operationOrder, prodProduct);
-            if (!unit.equals(prodProduct.getUnit())) {
-              qty =
-                  unitConversionService.convert(
-                      prodProduct.getUnit(), unit, qty, qty.scale(), product);
-            }
-
-            MrpLine mrpLine =
-                this.createMrpLine(
-                    mrp,
-                    prodProduct.getProduct(),
-                    manufOrderNeedMrpLineType,
-                    qty,
-                    maturityDate,
-                    BigDecimal.ZERO,
-                    stockLocation,
-                    operationOrder);
-            if (mrpLine != null) {
-              mrpLineRepository.save(mrpLine);
-            }
-          }
+  protected void createConsumedNeedMrpLines(
+      Mrp mrp,
+      List<StockMoveLine> stockMoveLineList,
+      MrpLineType manufOrderNeedMrpLineType,
+      LocalDate maturityDate,
+      StockLocation stockLocation,
+      Model originModel,
+      Product autoInjectLevelReference)
+      throws AxelorException {
+    for (Map.Entry<Product, BigDecimal> entry :
+        computePlannedQtyByProduct(stockMoveLineList).entrySet()) {
+      Product product = entry.getKey();
+      BigDecimal qty = entry.getValue();
+      if (this.isMrpProduct(product)) {
+        // A component not in MRP scope (no default BOM or off-BOM substitution) is added
+        // at the level of the manuf order product + 1 so MRP recursively explodes the BOM.
+        if (autoInjectLevelReference != null && !this.productMap.containsKey(product.getId())) {
+          this.assignProductAndLevel(product, autoInjectLevelReference);
+          this.createAvailableStockMrpLine(product, stockLocation);
         }
-      }
-    } else {
-      for (ProdProduct prodProduct : manufOrder.getToConsumeProdProductList()) {
-
-        Product product = prodProduct.getProduct();
-
-        if (this.isMrpProduct(product)) {
-
-          // A component of a manuf order that is not loaded on MRP because there is no default
-          // BOM or
-          // because the component of manuf order is not a component of the bill of materials, we
-          // add it with the level of manuf order product + 1.
-          if (!this.productMap.containsKey(product.getId())) {
-            this.assignProductAndLevel(product, manufOrder.getProduct());
-            this.createAvailableStockMrpLine(
-                product, manufOrder.getProdProcess().getStockLocation());
-          }
-
-          Unit unit = product.getUnit();
-          BigDecimal qty = computeQtyLeftToConsume(manufOrder, prodProduct);
-          if (!unit.equals(prodProduct.getUnit())) {
-            qty =
-                unitConversionService.convert(
-                    prodProduct.getUnit(), unit, qty, qty.scale(), product);
-          }
-
-          MrpLine mrpLine =
-              this.createMrpLine(
-                  mrp,
-                  product,
-                  manufOrderNeedMrpLineType,
-                  qty,
-                  maturityDate,
-                  BigDecimal.ZERO,
-                  stockLocation,
-                  manufOrder);
-          if (mrpLine != null) {
-            mrpLineRepository.save(mrpLine);
-          }
+        MrpLine mrpLine =
+            this.createMrpLine(
+                mrp,
+                product,
+                manufOrderNeedMrpLineType,
+                qty,
+                maturityDate,
+                BigDecimal.ZERO,
+                stockLocation,
+                originModel);
+        if (mrpLine != null) {
+          mrpLineRepository.save(mrpLine);
         }
       }
     }
   }
 
-  protected BigDecimal computeQtyLeftToConsume(ManufOrder manufOrder, ProdProduct prodProduct) {
-    return computeQtyLeftToProcess(manufOrder.getConsumedStockMoveLineList(), prodProduct);
+  protected List<StockMoveLine> getConsumedStockMoveLineList(
+      List<StockMoveLine> stockMoveLineList, boolean producedProductInScope) {
+    if (producedProductInScope) {
+      return stockMoveLineList;
+    }
+    return stockMoveLineList.stream()
+        .filter(stockMoveLine -> this.productMap.containsKey(stockMoveLine.getProduct().getId()))
+        .collect(Collectors.toList());
   }
 
-  protected BigDecimal computeQtyLeftToConsume(
-      OperationOrder operationOrder, ProdProduct prodProduct) {
-    return computeQtyLeftToProcess(operationOrder.getConsumedStockMoveLineList(), prodProduct);
-  }
-
-  protected BigDecimal computeQtyLeftToProduce(ManufOrder manufOrder, ProdProduct prodProduct) {
-    return computeQtyLeftToProcess(manufOrder.getProducedStockMoveLineList(), prodProduct);
-  }
-
-  protected BigDecimal computeQtyLeftToProcess(
-      List<StockMoveLine> stockMoveLineList, ProdProduct prodProduct) {
-    BigDecimal qtyToProcess = prodProduct.getQty();
-    BigDecimal processedQty =
-        stockMoveLineList.stream()
-            .filter(
-                stockMoveLine ->
-                    stockMoveLine.getStockMove().getStatusSelect()
-                            == StockMoveRepository.STATUS_REALIZED
-                        && stockMoveLine.getProduct().equals(prodProduct.getProduct()))
-            .map(StockMoveLine::getQty)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-    return qtyToProcess.subtract(processedQty);
+  protected Map<Product, BigDecimal> computePlannedQtyByProduct(
+      List<StockMoveLine> stockMoveLineList) throws AxelorException {
+    Map<Product, BigDecimal> qtyMap = new HashMap<>();
+    for (StockMoveLine sml : stockMoveLineList) {
+      if (sml.getStockMove() == null
+          || sml.getStockMove().getStatusSelect() != StockMoveRepository.STATUS_PLANNED) {
+        continue;
+      }
+      Product product = sml.getProduct();
+      BigDecimal qty = sml.getQty();
+      if (sml.getUnit() != null && !sml.getUnit().equals(product.getUnit())) {
+        qty =
+            unitConversionService.convert(
+                sml.getUnit(), product.getUnit(), qty, qty.scale(), product);
+      }
+      qtyMap.merge(product, qty, BigDecimal::add);
+    }
+    return qtyMap;
   }
 
   protected void createMPSLines() throws AxelorException {
@@ -489,12 +509,20 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
             .orElse(billOfMaterialService.getDefaultBOM(product, company));
 
     if (appProductionService.isApp("production")
+        && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL) {
+      BigDecimal economicManufOrderQty =
+          (BigDecimal) productCompanyService.get(product, "economicManufOrderQty", company);
+      reorderQty = reorderQty.max(economicManufOrderQty);
+    }
+
+    if (appProductionService.isApp("production")
         && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         && billOfMaterial != null) {
       maturityDate =
           updateMaturityDate(maturityDate, billOfMaterial, reorderQty)
               .minusDays(mrpLineType.getSecurityDelay());
     }
+
     MrpLine mrpLine =
         super.createProposalMrpLine(
             mrp,
@@ -541,6 +569,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         computeMaturityDateWithOperations(
             mrp,
             reorderQty,
+            billOfMaterial.getQty(),
             stockLocation,
             maturityDate,
             mrpLineOriginList,
@@ -556,9 +585,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                     mrp,
                     subProduct,
                     manufProposalNeedMrpLineType,
-                    reorderQty
-                        .multiply(billOfMaterialLine.getQty())
-                        .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP),
+                    computeMrpNeedQty(
+                        reorderQty, billOfMaterialLine.getQty(), billOfMaterial.getQty()),
                     stockLocation,
                     maturityDate,
                     mrpLineOriginList,
@@ -574,6 +602,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   protected void computeMaturityDateWithOperations(
       Mrp mrp,
       BigDecimal reorderQty,
+      BigDecimal billOfMaterialQty,
       StockLocation stockLocation,
       LocalDate maturityDate,
       List<MrpLineOrigin> mrpLineOriginList,
@@ -616,9 +645,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
               mrp,
               toConsumeProduct,
               manufProposalNeedMrpLineType,
-              reorderQty
-                  .multiply(prodProduct.getQty())
-                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP),
+              computeMrpNeedQty(reorderQty, prodProduct.getQty(), billOfMaterialQty),
               stockLocation,
               calculatedMaturityDate,
               mrpLineOriginList,
@@ -626,6 +653,17 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         }
       }
     }
+  }
+
+  protected BigDecimal computeMrpNeedQty(
+      BigDecimal reorderQty, BigDecimal componentQty, BigDecimal billOfMaterialQty) {
+    BigDecimal mrpNeedQty = reorderQty.multiply(componentQty);
+    if (billOfMaterialQty != null && billOfMaterialQty.signum() > 0) {
+      mrpNeedQty =
+          mrpNeedQty.divide(
+              billOfMaterialQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
+    }
+    return mrpNeedQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
   }
 
   /**
@@ -864,6 +902,74 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       throws AxelorException {
     super.completeProjectedStock(mrp, product, company, stockLocation);
     this.createManufOrderMrpLines();
+    this.createConsumingManufOrderMrpLines();
     return mrp;
+  }
+
+  /**
+   * Find ManufOrders that consume products in {@link #productMap} but produce a different product,
+   * and create MRP lines for them. This ensures projected stock for a BOM component shows the
+   * planned consumption from manufacturing orders.
+   */
+  protected void createConsumingManufOrderMrpLines() throws AxelorException {
+    this.createConsumingManufOrderMrpLines(this.productMap);
+  }
+
+  protected void createConsumingManufOrderMrpLines(Map<Long, Integer> consumedProductMap)
+      throws AxelorException {
+
+    MrpLineType manufOrderMrpLineType =
+        mrpLineTypeService.getMrpLineType(
+            MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER, mrp.getMrpTypeSelect());
+
+    if (manufOrderMrpLineType == null) {
+      return;
+    }
+
+    MrpLineType manufOrderNeedMrpLineType =
+        mrpLineTypeService.getMrpLineType(
+            MrpLineTypeRepository.ELEMENT_MANUFACTURING_ORDER_NEED, mrp.getMrpTypeSelect());
+
+    String statusSelect = manufOrderMrpLineType.getStatusSelect();
+    List<Integer> statusList = StringHelper.getIntegerList(statusSelect);
+
+    if (statusList.isEmpty()) {
+      statusList.add(ManufOrderRepository.STATUS_FINISHED);
+    }
+
+    List<ManufOrder> manufOrderList =
+        manufOrderRepository
+            .all()
+            .filter(
+                "(self.id IN (SELECT sml.consumedManufOrder.id FROM StockMoveLine sml "
+                    + "WHERE sml.product.id IN (?1) "
+                    + "AND sml.stockMove.statusSelect = ?2 "
+                    + "AND sml.consumedManufOrder IS NOT NULL) "
+                    + "OR self.id IN (SELECT sml2.consumedOperationOrder.manufOrder.id "
+                    + "FROM StockMoveLine sml2 "
+                    + "WHERE sml2.product.id IN (?1) "
+                    + "AND sml2.stockMove.statusSelect = ?2 "
+                    + "AND sml2.consumedOperationOrder IS NOT NULL)) "
+                    + "AND self.product.id NOT IN (?5) "
+                    + "AND self.statusSelect IN (?3) "
+                    + "AND self.prodProcess.stockLocation IN (?4)",
+                consumedProductMap.keySet(),
+                StockMoveRepository.STATUS_PLANNED,
+                statusList,
+                this.stockLocationList,
+                this.productMap.keySet())
+            .fetch();
+
+    for (ManufOrder manufOrder : manufOrderList) {
+      this.createManufOrderMrpLines(
+          mrpRepository.find(mrp.getId()),
+          manufOrderRepository.find(manufOrder.getId()),
+          mrpLineTypeRepository.find(manufOrderMrpLineType.getId()),
+          manufOrderNeedMrpLineType != null
+              ? mrpLineTypeRepository.find(manufOrderNeedMrpLineType.getId())
+              : null,
+          false);
+      JPA.clear();
+    }
   }
 }

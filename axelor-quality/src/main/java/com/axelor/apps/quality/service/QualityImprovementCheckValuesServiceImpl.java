@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,9 +20,7 @@ package com.axelor.apps.quality.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.quality.db.QIDetection;
 import com.axelor.apps.quality.db.QIIdentification;
@@ -45,7 +43,7 @@ public class QualityImprovementCheckValuesServiceImpl
     String detectionOriginValue = getDetectionOrigin(qiDetection);
     QIIdentification qiIdentification = qualityImprovement.getQiIdentification();
 
-    checkFieldsByType(type, qiIdentification.getProduct(), qiIdentification.getManufOrder());
+    checkFieldsByType(type, qiIdentification);
 
     if (qiDetection.getOrigin() == QIDetectionRepository.ORIGIN_SUPPLIER) {
       checkSupplierOriginFields(
@@ -133,9 +131,9 @@ public class QualityImprovementCheckValuesServiceImpl
     }
   }
 
-  protected void checkFieldsByType(int type, Product product, ManufOrder manufOrder)
+  protected void checkFieldsByType(int type, QIIdentification qiIdentification)
       throws AxelorException {
-    if (type == 2 && (product != null || manufOrder != null)) {
+    if (type == 2 && qiIdentification.getProduct() != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(QualityExceptionMessage.API_TYPE_SYSTEM_PRODUCT_MANUF_ORDER_FILLED));

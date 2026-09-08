@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -105,6 +105,33 @@ public class ContractLineController {
       response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setDomainAnalyticDistributionTemplate(
+      ActionRequest request, ActionResponse response) {
+    try {
+      ContractLine contractLine = request.getContext().asType(ContractLine.class);
+      ContractVersion contractVersion = this.getContractVersionFromContext(request);
+      Contract contract = this.getContractFromContext(request);
+
+      AnalyticLineModel analyticLineModel =
+          AnalyticLineModelInitContractService.castAsAnalyticLineModel(
+              contractLine, contractVersion, contract);
+
+      response.setAttr(
+          "analyticDistributionTemplate",
+          "domain",
+          Beans.get(AnalyticAttrsService.class)
+              .getAnalyticDistributionTemplateDomainFromProduct(
+                  analyticLineModel.getPartner(),
+                  contractLine.getProduct(),
+                  analyticLineModel.getCompany(),
+                  null,
+                  analyticLineModel.getFiscalPosition(),
+                  analyticLineModel.getIsPurchase()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 

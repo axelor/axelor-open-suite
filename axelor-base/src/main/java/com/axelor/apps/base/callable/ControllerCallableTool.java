@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -64,11 +64,10 @@ public class ControllerCallableTool<V> {
                 .build(
                     () -> {
                       try {
-                        callable.call();
+                        return callable.call();
                       } catch (Exception e) {
                         throw new RuntimeException(e);
                       }
-                      return null;
                     }));
 
     int processTimeout = Beans.get(AppBaseService.class).getProcessTimeout();

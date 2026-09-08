@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -162,50 +162,6 @@ public interface StockLocationLineService {
    * @return the future quantity of the stock location line.
    */
   BigDecimal computeFutureQty(StockLocationLine stockLocationLine) throws AxelorException;
-
-  /**
-   * Update avgPrice in stock location line and save wap history in the line.
-   *
-   * @param stockLocationLine stock location line to updated.
-   * @param wap weighted average price which will update the field avgPrice.
-   * @throws AxelorException
-   * @deprecated Please use updateHistory this method will not create a proper history
-   */
-  @Deprecated
-  void updateWap(StockLocationLine stockLocationLine, BigDecimal wap) throws AxelorException;
-
-  /**
-   * Update avgPrice in stock location line and save wap history in the line.
-   *
-   * @param stockLocationLine stock location line to updated.
-   * @param wap weighted average price which will update the field avgPrice.
-   * @param stockMoveLine the move line responsible for the WAP change.
-   * @throws AxelorException
-   * @deprecated Please use updateHistory this method will not create a proper history
-   */
-  @Deprecated
-  void updateWap(StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine)
-      throws AxelorException;
-
-  /**
-   * Same as {@link #updateWap(StockLocationLine, BigDecimal, StockMoveLine)} but date and origin
-   * can be personalized.
-   *
-   * @param stockLocationLine
-   * @param wap
-   * @param stockMoveLine
-   * @param date
-   * @throws AxelorException
-   * @deprecated Please use updateHistory this method will not create a proper history
-   */
-  @Deprecated
-  void updateWap(
-      StockLocationLine stockLocationLine,
-      BigDecimal wap,
-      StockMoveLine stockMoveLine,
-      LocalDate date,
-      String origin)
-      throws AxelorException;
 
   /**
    * Update stock location line history

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,12 +44,25 @@ public class AccountManagementAccountRepository extends AccountManagementReposit
       try {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.ACCOUNT_MANAGEMENT_ALREADY_EXISTS));
+            I18n.get(AccountExceptionMessage.ACCOUNT_MANAGEMENT_ALREADY_EXISTS),
+            getFieldName(json, "bankDetails", "fullName"),
+            getFieldName(json, "paymentMode", "name"),
+            getFieldName(json, "company", "name"));
       } catch (AxelorException e) {
         TraceBackService.traceExceptionFromSaveMethod(e);
         throw new PersistenceException(e.getMessage(), e);
       }
     }
     return super.validate(json, context);
+  }
+
+  @SuppressWarnings("unchecked")
+  protected String getFieldName(Map<String, Object> json, String field, String nameField) {
+    Object value = json.get(field);
+    if (value instanceof Map) {
+      Object name = ((Map<String, Object>) value).get(nameField);
+      return name != null ? name.toString() : null;
+    }
+    return null;
   }
 }

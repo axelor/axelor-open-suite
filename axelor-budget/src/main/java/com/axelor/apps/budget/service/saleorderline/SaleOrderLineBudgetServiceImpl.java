@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -149,6 +149,13 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
         && !saleOrderLine.getBudgetDistributionList().isEmpty()) {
       BigDecimal totalAmount = BigDecimal.ZERO;
       for (BudgetDistribution budgetDistribution : saleOrderLine.getBudgetDistributionList()) {
+        if (budgetDistribution.getAmount().signum() < 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(
+                  BudgetExceptionMessage.BUDGET_DISTRIBUTION_NEGATIVE_AMOUNT_NOT_ALLOWED_ORDER),
+              budgetDistribution.getBudget().getCode());
+        }
         if (budgetDistribution.getAmount().compareTo(saleOrderLine.getCompanyExTaxTotal()) > 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -185,9 +192,10 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
               saleOrder.getFiscalPosition(),
               false,
               false);
-      if (account.getCode().startsWith("2")
-          || account.getCode().startsWith("4")
-          || account.getCode().startsWith("7")) {
+      if (account != null
+          && (account.getCode().startsWith("2")
+              || account.getCode().startsWith("4")
+              || account.getCode().startsWith("7"))) {
         values.put("account", account);
         saleOrderLine.setAccount(account);
       }

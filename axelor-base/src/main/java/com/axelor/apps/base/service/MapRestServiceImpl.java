@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,16 +20,25 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class MapRestServiceImpl implements MapRestService {
@@ -37,8 +46,7 @@ public class MapRestServiceImpl implements MapRestService {
   @Override
   public String makeAddressString(Address address, ObjectNode objectNode) throws AxelorException {
 
-    Optional<Pair<BigDecimal, BigDecimal>> latLong =
-        Beans.get(AddressService.class).getOrUpdateLatLong(address);
+    Optional<Pair<BigDecimal, BigDecimal>> latLong = getOrUpdateLatLong(address);
 
     if (!latLong.isPresent()) {
       return "";
@@ -58,8 +66,7 @@ public class MapRestServiceImpl implements MapRestService {
     Optional<Address> optionalAddress = Beans.get(UserService.class).getUserActiveCompanyAddress();
 
     if (optionalAddress.isPresent()) {
-      Optional<Pair<BigDecimal, BigDecimal>> latLong =
-          Beans.get(AddressService.class).getOrUpdateLatLong(optionalAddress.get());
+      Optional<Pair<BigDecimal, BigDecimal>> latLong = getOrUpdateLatLong(optionalAddress.get());
 
       if (latLong.isPresent()) {
         JsonNodeFactory factory = JsonNodeFactory.instance;
@@ -106,5 +113,87 @@ public class MapRestServiceImpl implements MapRestService {
     }
 
     return addressString.toString();
+  }
+
+  @Override
+  public Map<Partner, Address> getInvoicingAddresses(List<? extends Partner> partnerList) {
+    Map<Partner, Address> invoicingAddressMap = new HashMap<>();
+
+    if (CollectionUtils.isEmpty(partnerList)) {
+      return invoicingAddressMap;
+    }
+
+    List<PartnerAddress> partnerAddressList =
+        JPA.em()
+            .createQuery(
+                "SELECT self FROM PartnerAddress self "
+                    + "JOIN FETCH self.address address "
+                    + "LEFT JOIN FETCH address.country "
+                    + "WHERE self.partner IN :partnerList",
+                PartnerAddress.class)
+            .setParameter("partnerList", partnerList)
+            .getResultList();
+
+    Map<Partner, List<PartnerAddress>> partnerAddressListMap = new HashMap<>();
+    for (PartnerAddress partnerAddress : partnerAddressList) {
+      partnerAddressListMap
+          .computeIfAbsent(partnerAddress.getPartner(), partner -> new ArrayList<>())
+          .add(partnerAddress);
+    }
+
+    for (Map.Entry<Partner, List<PartnerAddress>> entry : partnerAddressListMap.entrySet()) {
+      Address invoicingAddress = selectInvoicingAddress(entry.getValue());
+      if (invoicingAddress != null) {
+        invoicingAddressMap.put(entry.getKey(), invoicingAddress);
+      }
+    }
+
+    return invoicingAddressMap;
+  }
+
+  /**
+   * Select the invoicing address among a partner's addresses, with the same priority rules as
+   * {@link PartnerService#getInvoicingAddress(Partner)}.
+   */
+  protected Address selectInvoicingAddress(List<PartnerAddress> partnerAddressList) {
+    List<PartnerAddress> list =
+        partnerAddressList.stream()
+            .filter(
+                partnerAddress ->
+                    partnerAddress.getIsInvoicingAddr()
+                        && !partnerAddress.getIsDeliveryAddr()
+                        && partnerAddress.getIsDefaultAddr())
+            .collect(Collectors.toList());
+
+    if (list.isEmpty()) {
+      list =
+          partnerAddressList.stream()
+              .filter(PartnerAddress::getIsInvoicingAddr)
+              .collect(Collectors.toList());
+    }
+
+    if (list.isEmpty()) {
+      list = partnerAddressList;
+    }
+
+    if (list.size() == 1) {
+      return list.get(0).getAddress();
+    }
+
+    for (PartnerAddress partnerAddress : list) {
+      if (partnerAddress.getIsDefaultAddr()) {
+        return partnerAddress.getAddress();
+      }
+    }
+
+    return null;
+  }
+
+  protected Optional<Pair<BigDecimal, BigDecimal>> getOrUpdateLatLong(Address address)
+      throws AxelorException {
+    if (address.getLatit() == null || address.getLongit() == null) {
+      JPA.refresh(address);
+    }
+    return Beans.get(AddressService.class).getOrUpdateLatLong(address);
   }
 }

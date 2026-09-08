@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,12 +19,15 @@
 package com.axelor.apps.sale.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderSplitDummyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderSplitService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderDummyService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -42,12 +45,20 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderConfirmController {
 
-  public void showPopUpConfirmWizard(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void showPopUpConfirmWizard(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-    SaleOrderSplitService saleOrderSplitService = Beans.get(SaleOrderSplitService.class);
-    saleOrderSplitService.checkSolOrderedQty(saleOrder);
+
+    try {
+      SaleOrderSplitService saleOrderSplitService = Beans.get(SaleOrderSplitService.class);
+      saleOrderSplitService.checkSolOrderedQty(saleOrder);
+      Beans.get(SaleOrderConfirmService.class).checkSaleOrderBlocking(saleOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      response.setSignal("refresh-tab", null);
+      return;
+    }
+
     response.setView(
         ActionView.define(I18n.get("Confirm"))
             .model(SaleOrder.class.getName())
@@ -118,11 +129,17 @@ public class SaleOrderConfirmController {
     SaleOrder saleOrder = context.asType(SaleOrder.class);
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     SaleOrderSplitService saleOrderSplitService = Beans.get(SaleOrderSplitService.class);
+    BigDecimal currentlyTotalOrdered = BigDecimal.ZERO;
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       Map<String, Object> map = Mapper.toMap(saleOrderLine);
-      map.put("$qtyToOrder", saleOrderSplitService.getQtyToOrderLeft(saleOrderLine));
+      BigDecimal qtyToOrder = saleOrderSplitService.getQtyToOrderLeft(saleOrderLine);
+      map.put("$qtyToOrder", qtyToOrder);
+      BigDecimal price =
+          saleOrder.getInAti() ? saleOrderLine.getInTaxPrice() : saleOrderLine.getPrice();
+      currentlyTotalOrdered = currentlyTotalOrdered.add(qtyToOrder.multiply(price));
       saleOrderLineListContext.add(map);
     }
+    response.setValue("$currentlyTotalOrdered", currentlyTotalOrdered);
     response.setValue("$saleOrderLineList", saleOrderLineListContext);
   }
 

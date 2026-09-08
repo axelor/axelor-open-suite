@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,13 +20,21 @@ package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountType;
+import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticDistributionTemplateRepository;
+import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.model.AnalyticLineModel;
+import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
@@ -40,6 +48,8 @@ import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
@@ -54,6 +64,8 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
   protected AnalyticAccountService analyticAccountService;
   protected AnalyticDistributionTemplateRepository analyticDistributionTemplateRepository;
   protected AnalyticMoveLineService analyticMoveLineService;
+  protected AccountService accountService;
+  protected AccountManagementAccountService accountManagementAccountService;
 
   @Inject
   public AnalyticAttrsServiceImpl(
@@ -63,7 +75,9 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
       AnalyticToolService analyticToolService,
       AnalyticAccountService analyticAccountService,
       AnalyticDistributionTemplateRepository analyticDistributionTemplateRepository,
-      AnalyticMoveLineService analyticMoveLineService) {
+      AnalyticMoveLineService analyticMoveLineService,
+      AccountService accountService,
+      AccountManagementAccountService accountManagementAccountService) {
     this.accountConfigService = accountConfigService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.analyticLineService = analyticLineService;
@@ -71,6 +85,8 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
     this.analyticAccountService = analyticAccountService;
     this.analyticDistributionTemplateRepository = analyticDistributionTemplateRepository;
     this.analyticMoveLineService = analyticMoveLineService;
+    this.accountService = accountService;
+    this.accountManagementAccountService = accountManagementAccountService;
   }
 
   protected void addAttr(
@@ -193,6 +209,121 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
         analyticMoveLineService.getAnalyticDistributionTemplate(
             partner, product, company, tradingName, account, isPurchase));
 
+    analyticDistributionTemplateList =
+        this.filterTemplatesByAnalyticRules(analyticDistributionTemplateList, account);
+
     return "self.id IN (" + StringHelper.getIdListString(analyticDistributionTemplateList) + ")";
+  }
+
+  @Override
+  public String getAnalyticDistributionTemplateDomainFromProduct(
+      Partner partner,
+      Product product,
+      Company company,
+      TradingName tradingName,
+      FiscalPosition fiscalPosition,
+      boolean isPurchase)
+      throws AxelorException {
+    Account account = this.getProductAccount(product, company, fiscalPosition, isPurchase);
+
+    return this.getAnalyticDistributionTemplateDomain(
+        partner, product, company, tradingName, account, isPurchase);
+  }
+
+  /**
+   * Derives the accounting account from the product so the analytic distribution templates can be
+   * filtered by analytic rules. Returns null when the account cannot be determined so that no
+   * rule-based restriction is applied.
+   */
+  protected Account getProductAccount(
+      Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase) {
+    if (product == null || company == null) {
+      return null;
+    }
+
+    try {
+      return accountManagementAccountService.getProductAccount(
+          product, company, fiscalPosition, isPurchase, false);
+    } catch (AxelorException e) {
+      return null;
+    }
+  }
+
+  /**
+   * Excludes the analytic distribution templates that use at least one analytic account not
+   * authorized by the analytic rules configured for the given accounting account. A template is
+   * kept only if every analytic account used by its distribution lines is authorized. When the
+   * account is null or has no matching analytic rule, no restriction is applied.
+   */
+  protected List<AnalyticDistributionTemplate> filterTemplatesByAnalyticRules(
+      List<AnalyticDistributionTemplate> templateList, Account account) {
+    if (account == null) {
+      return templateList.stream().filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    List<Long> authorizedAnalyticAccountIdList = accountService.getAnalyticAccountsIds(account);
+    if (ObjectUtils.isEmpty(authorizedAnalyticAccountIdList)) {
+      return templateList.stream().filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    return templateList.stream()
+        .filter(Objects::nonNull)
+        .filter(template -> this.isTemplateAuthorized(template, authorizedAnalyticAccountIdList))
+        .collect(Collectors.toList());
+  }
+
+  protected boolean isTemplateAuthorized(
+      AnalyticDistributionTemplate template, List<Long> authorizedAnalyticAccountIdList) {
+    if (ObjectUtils.isEmpty(template.getAnalyticDistributionLineList())) {
+      return true;
+    }
+
+    return template.getAnalyticDistributionLineList().stream()
+        .map(AnalyticDistributionLine::getAnalyticAccount)
+        .filter(Objects::nonNull)
+        .map(AnalyticAccount::getId)
+        .allMatch(authorizedAnalyticAccountIdList::contains);
+  }
+
+  @Override
+  public void addAnalyticDistributionTemplateDomain(
+      AnalyticLineModel analyticLineModel,
+      Partner partner,
+      Product product,
+      Company company,
+      TradingName tradingName,
+      Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException {
+    String technicalTypeSelect =
+        Optional.ofNullable(analyticLineModel.getAccount())
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(null);
+
+    boolean isPurchase = !AccountTypeRepository.TYPE_INCOME.equals(technicalTypeSelect);
+
+    String domain =
+        getAnalyticDistributionTemplateDomain(
+            partner, product, company, tradingName, analyticLineModel.getAccount(), isPurchase);
+
+    this.addAttr("analyticDistributionTemplate", "domain", domain, attrsMap);
+  }
+
+  @Override
+  public void addAnalyticAccountRequired(
+      AnalyticLineModel analyticLineModel,
+      Company company,
+      Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException {
+    AnalyticLine analyticLine = analyticLineModel.getAnalyticLine();
+
+    for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+      this.addAttr(
+          "axis" + i + "AnalyticAccount",
+          "required",
+          analyticLineService.isAxisRequired(analyticLineModel, i)
+              && !analyticLineService.checkAnalyticLinesByAxis(analyticLine, i, company),
+          attrsMap);
+    }
   }
 }

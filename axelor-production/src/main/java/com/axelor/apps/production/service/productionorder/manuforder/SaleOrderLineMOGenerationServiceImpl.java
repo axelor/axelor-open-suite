@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -66,7 +66,8 @@ public class SaleOrderLineMOGenerationServiceImpl implements SaleOrderLineMOGene
       SaleOrderLine saleOrderLine,
       SaleOrder saleOrder,
       ProductionOrder productionOrder,
-      BigDecimal qtyRequested)
+      BigDecimal qtyRequested,
+      BigDecimal grossQtyRequested)
       throws AxelorException {
 
     Objects.requireNonNull(saleOrderLine);
@@ -85,7 +86,8 @@ public class SaleOrderLineMOGenerationServiceImpl implements SaleOrderLineMOGene
             qtyRequested,
             startDateTime,
             saleOrder,
-            saleOrderLine);
+            saleOrderLine,
+            grossQtyRequested);
         break;
       case AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI:
         // Generation through SaleOrderLines

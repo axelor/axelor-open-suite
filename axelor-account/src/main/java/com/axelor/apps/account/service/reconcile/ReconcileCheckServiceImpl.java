@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -179,7 +179,9 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
   }
 
   protected void taxLinePrecondition(Move move) throws AxelorException {
-    if (!Arrays.asList(
+    if (move.getFunctionalOriginSelect() != null
+        && move.getFunctionalOriginSelect() != 0
+        && !Arrays.asList(
                 MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE, MoveRepository.FUNCTIONAL_ORIGIN_OPENING)
             .contains(move.getFunctionalOriginSelect())
         && !move.getMoveLineList().stream().allMatch(this::hasPayableReceivableAccount)

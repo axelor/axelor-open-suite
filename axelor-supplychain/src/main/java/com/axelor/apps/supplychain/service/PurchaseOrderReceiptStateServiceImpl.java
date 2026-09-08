@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,7 +27,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -103,9 +103,10 @@ public class PurchaseOrderReceiptStateServiceImpl implements PurchaseOrderReceip
           stockMoveLineRepository
               .all()
               .filter(
-                  "self.stockMove.statusSelect = :realizedStatus AND self.purchaseOrderLine = :purchaseOrderLine")
+                  "self.stockMove.statusSelect = :realizedStatus AND self.purchaseOrderLine = :purchaseOrderLine AND self.lineTypeSelect = :lineTypeSelect")
               .bind("realizedStatus", StockMoveRepository.STATUS_REALIZED)
               .bind("purchaseOrderLine", purchaseOrderLine)
+              .bind("lineTypeSelect", StockMoveLineRepository.TYPE_NORMAL)
               .fetch();
       BigDecimal receivedQty = BigDecimal.ZERO;
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
@@ -129,12 +130,13 @@ public class PurchaseOrderReceiptStateServiceImpl implements PurchaseOrderReceip
   }
 
   protected void computePurchaseOrderLineReceiptState(PurchaseOrderLine purchaseOrderLine) {
-    if (purchaseOrderLine.getReceivedQty().signum() == 0) {
-      purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);
-    } else if (purchaseOrderLine.getReceivedQty().compareTo(purchaseOrderLine.getQty()) < 0) {
-      purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED);
-    } else {
+    if (purchaseOrderLine.getQty().signum() == 0
+        || purchaseOrderLine.getReceivedQty().compareTo(purchaseOrderLine.getQty()) >= 0) {
       purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_RECEIVED);
+    } else if (purchaseOrderLine.getReceivedQty().signum() == 0) {
+      purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);
+    } else {
+      purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED);
     }
   }
 }

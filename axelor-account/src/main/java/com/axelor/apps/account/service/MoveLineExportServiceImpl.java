@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -337,6 +337,16 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
             "%s %s%s.csv", I18n.get("General balance"), accountingReport.getRef(), dateStr);
     writeMoveLineToCsvFile(
         accountingReport.getCompany(), fileName, null, allMoveLineData, accountingReport);
+
+    @SuppressWarnings("unchecked")
+    List<Move> moveList =
+        JPA.em()
+            .createQuery(
+                "SELECT DISTINCT self.move FROM MoveLine self WHERE " + filterStr, Move.class)
+            .getResultList();
+    if (!moveList.isEmpty()) {
+      updateMoveList(moveList, accountingReport, accountingReport.getDate(), null);
+    }
   }
 
   /**
@@ -375,12 +385,15 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     List<Move> moveList = new ArrayList<>();
     String exportNumber = null;
     int endSubListIndex = Math.min(idList.size(), EXPORT_LINES_LIMIT);
-
+    BigDecimal debitBalance = BigDecimal.ZERO;
+    BigDecimal creditBalance = BigDecimal.ZERO;
     while (!(moveLineIdList = idList.subList(offset, endSubListIndex)).isEmpty()) {
       for (Long id : moveLineIdList) {
         MoveLine moveLine = moveLineRepo.find(id);
         offset++;
         allMoveLineData.add(createItemForExportMoveLine(moveLine, moveList));
+        debitBalance = debitBalance.add(moveLine.getDebit());
+        creditBalance = creditBalance.add(moveLine.getCredit());
       }
 
       JPA.clear();
@@ -397,6 +410,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     accountingReport = accountingReportRepo.find(accountingReport.getId());
 
     String fileName = this.setFileName(accountingReport);
+    accountingReport.setTotalDebit(debitBalance);
+    accountingReport.setTotalCredit(creditBalance);
+    accountingReport.setBalance(debitBalance.subtract(creditBalance));
     accountingReportRepo.save(accountingReport);
     return writeMoveLineToCsvFile(
         company, fileName, this.createHeaderForJournalEntry(), allMoveLineData, accountingReport);
@@ -417,10 +433,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       moveLineQueryList.add("self.move.period = :period");
     } else {
       if (accountingReport.getDateFrom() != null) {
-        moveLineQueryList.add("self.date >= :toDate");
+        moveLineQueryList.add("self.date >= :fromDate");
       }
       if (accountingReport.getDateTo() != null) {
-        moveLineQueryList.add("self.date <= :fromDate");
+        moveLineQueryList.add("self.date <= :toDate");
       }
     }
 
@@ -452,38 +468,38 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       AccountingReport accountingReport, boolean administration, boolean replay, Company company) {
     Map<String, Object> moveLineBindingMap = new HashMap<>();
 
-    moveLineBindingMap.put(":accountedStatus", MoveRepository.STATUS_ACCOUNTED);
+    moveLineBindingMap.put("accountedStatus", MoveRepository.STATUS_ACCOUNTED);
     moveLineBindingMap.put(
-        ":daybookStatus",
+        "daybookStatus",
         administration ? MoveRepository.STATUS_ACCOUNTED : MoveRepository.STATUS_DAYBOOK);
 
-    moveLineBindingMap.put(":company", company);
+    moveLineBindingMap.put("company", company);
     if (accountingReport.getYear() != null) {
-      moveLineBindingMap.put(":year", accountingReport.getYear());
+      moveLineBindingMap.put("year", accountingReport.getYear());
     }
 
     if (accountingReport.getPeriod() != null) {
-      moveLineBindingMap.put(":period", accountingReport.getPeriod());
+      moveLineBindingMap.put("period", accountingReport.getPeriod());
     } else {
       if (accountingReport.getDateFrom() != null) {
-        moveLineBindingMap.put(":fromDate'", accountingReport.getDateFrom());
+        moveLineBindingMap.put("fromDate", accountingReport.getDateFrom());
       }
       if (accountingReport.getDateTo() != null) {
-        moveLineBindingMap.put(":toDate", accountingReport.getDateTo());
+        moveLineBindingMap.put("toDate", accountingReport.getDateTo());
       }
     }
 
     if (accountingReport.getDate() != null) {
-      moveLineBindingMap.put(":date", accountingReport.getDate());
+      moveLineBindingMap.put("date", accountingReport.getDate());
     }
 
     if (!administration) {
       if (accountingReport.getJournal() != null) {
-        moveLineBindingMap.put(":journal", accountingReport.getJournal());
+        moveLineBindingMap.put("journal", accountingReport.getJournal());
       }
 
       if (replay) {
-        moveLineBindingMap.put(":accountingReport", accountingReport);
+        moveLineBindingMap.put("accountingReport", accountingReport);
       }
     }
 

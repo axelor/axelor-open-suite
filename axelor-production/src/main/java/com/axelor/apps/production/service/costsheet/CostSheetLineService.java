@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,8 +24,8 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.production.db.CostSheetGroup;
 import com.axelor.apps.production.db.CostSheetLine;
-import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.supplychain.db.UnitCostCalculation;
 import java.math.BigDecimal;
 
 public interface CostSheetLineService {
@@ -63,6 +63,18 @@ public interface CostSheetLineService {
       UnitCostCalculation unitCostCalculation)
       throws AxelorException;
 
+  public CostSheetLine createConsumedProductCostSheetLine(
+      Company company,
+      Product product,
+      Unit unit,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal consumptionQty,
+      int origin,
+      UnitCostCalculation unitCostCalculation,
+      int valuationMethod)
+      throws AxelorException;
+
   public CostSheetLine createConsumedProductWasteCostSheetLine(
       Company company,
       Product product,
@@ -73,6 +85,19 @@ public interface CostSheetLineService {
       BigDecimal wasteRate,
       int origin,
       UnitCostCalculation unitCostCalculation)
+      throws AxelorException;
+
+  public CostSheetLine createConsumedProductWasteCostSheetLine(
+      Company company,
+      Product product,
+      Unit unit,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal consumptionQty,
+      BigDecimal wasteRate,
+      int origin,
+      UnitCostCalculation unitCostCalculation,
+      int valuationMethod)
       throws AxelorException;
 
   public CostSheetLine createWorkCenterHRCostSheetLine(

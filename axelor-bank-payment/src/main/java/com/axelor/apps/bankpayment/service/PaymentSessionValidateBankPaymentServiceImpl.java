@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -55,7 +55,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.db.JPA;
@@ -63,13 +62,10 @@ import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.persistence.TypedQuery;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class PaymentSessionValidateBankPaymentServiceImpl
@@ -170,12 +166,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
 
       if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()
           && bankOrder.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
-        try {
-          bankOrderValidationService.confirm(bankOrder);
-        } catch (JAXBException | IOException | DatatypeConfigurationException e) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
-        }
+        updatePaymentSessionStatus(paymentSession);
+        bankOrderValidationService.confirm(bankOrder);
       }
     }
 
@@ -193,14 +185,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       boolean isGlobal)
       throws AxelorException {
 
-    if (paymentSession.getBankOrder() != null
-        && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
-      paymentSessionBankOrderService.createOrUpdateBankOrderLineFromInvoiceTerm(
-          paymentSession,
-          invoiceTerm,
-          paymentSession.getBankOrder(),
-          invoiceTermLinkWithRefundList);
-    }
+    BigDecimal originalAmountPaid = invoiceTerm.getAmountPaid();
 
     paymentSession =
         super.processInvoiceTerm(
@@ -211,6 +196,18 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             invoiceTermLinkWithRefundList,
             out,
             isGlobal);
+
+    if (paymentSession.getBankOrder() != null
+        && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
+      BigDecimal postProcessAmountPaid = invoiceTerm.getAmountPaid();
+      invoiceTerm.setAmountPaid(originalAmountPaid);
+      paymentSessionBankOrderService.createOrUpdateBankOrderLineFromInvoiceTerm(
+          paymentSession,
+          invoiceTerm,
+          paymentSession.getBankOrder(),
+          invoiceTermLinkWithRefundList);
+      invoiceTerm.setAmountPaid(postProcessAmountPaid);
+    }
 
     return paymentSession;
   }
@@ -258,8 +255,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         JPA.em()
             .createQuery(
                 "SELECT DISTINCT Partner FROM Partner Partner "
-                    + " FULL JOIN MoveLine MoveLine on Partner.id = MoveLine.partner "
-                    + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine "
+                    + " FULL JOIN MoveLine MoveLine on Partner.id = MoveLine.partner.id "
+                    + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine.id "
                     + " WHERE InvoiceTerm.paymentSession = :paymentSession "
                     + " AND InvoiceTerm.isSelectedOnPaymentSession = true "
                     + " GROUP BY Partner.id , InvoiceTerm.bankDetails "
@@ -329,5 +326,12 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       return paymentSession.getBankOrder().getBankOrderSeq();
     }
     return super.getMoveOrigin(paymentSession);
+  }
+
+  @Transactional
+  protected void updatePaymentSessionStatus(PaymentSession paymentSession) {
+    paymentSession = paymentSessionRepo.find(paymentSession.getId());
+    paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_AWAITING_PAYMENT);
+    paymentSessionRepo.save(paymentSession);
   }
 }

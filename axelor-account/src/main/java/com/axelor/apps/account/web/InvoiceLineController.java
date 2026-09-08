@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -190,18 +190,9 @@ public class InvoiceLineController {
                   invoice,
                   invoiceLine,
                   invoiceLine.getProduct().getInAti()
-                      ? Beans.get(InvoiceLineService.class)
-                          .getInTaxUnitPrice(
-                              invoice,
-                              invoiceLine,
-                              invoiceLine.getTaxLineSet(),
-                              InvoiceToolService.isPurchase(invoice))
-                      : Beans.get(InvoiceLineService.class)
-                          .getExTaxUnitPrice(
-                              invoice,
-                              invoiceLine,
-                              invoiceLine.getTaxLineSet(),
-                              InvoiceToolService.isPurchase(invoice)));
+                      ? invoiceLine.getInTaxPrice()
+                      : invoiceLine.getPrice());
+
       discounts.remove("price");
       for (Entry<String, Object> entry : discounts.entrySet()) {
         response.setValue(entry.getKey(), entry.getValue());
@@ -640,7 +631,7 @@ public class InvoiceLineController {
                   invoiceLine.getProduct(),
                   invoice.getCompany(),
                   invoice.getTradingName(),
-                  null,
+                  invoiceLine.getAccount(),
                   InvoiceToolService.isPurchase(invoice)));
     } catch (Exception e) {
       TraceBackService.trace(response, e);

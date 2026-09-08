@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,8 @@ public interface SaleOrderLineDetailsPriceService {
 
   Map<String, Object> computeTotalPrice(
       SaleOrderLineDetails saleOrderLineDetails, SaleOrder saleOrder) throws AxelorException;
+
+  Map<String, Object> computeSubTotalCostPrice(SaleOrderLineDetails saleOrderLineDetails);
 
   Map<String, Object> computeMarginCoef(SaleOrderLineDetails saleOrderLineDetails);
 }

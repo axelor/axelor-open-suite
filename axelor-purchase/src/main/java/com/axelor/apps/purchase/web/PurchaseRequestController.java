@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -94,9 +94,7 @@ public class PurchaseRequestController {
 
         List<PurchaseOrder> purchaseOrderList = generationResult.getPurchaseOrders();
         ActionViewBuilder actionViewBuilder =
-            ActionView.define(
-                    String.format(
-                        "Purchase Order%s generated", (purchaseOrderList.size() > 1 ? "s" : "")))
+            ActionView.define(I18n.get("Purchase orders"))
                 .model(PurchaseOrder.class.getName())
                 .add("grid", "purchase-order-quotation-grid")
                 .add("form", "purchase-order-form")

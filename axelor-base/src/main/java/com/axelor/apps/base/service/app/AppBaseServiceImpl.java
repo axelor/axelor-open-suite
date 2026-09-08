@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,39 +33,33 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.meta.loader.AppVersionService;
 import com.axelor.studio.app.service.AppService;
-import com.axelor.studio.app.service.AppServiceImpl;
+import com.axelor.studio.app.service.ScriptAppServiceImpl;
 import com.axelor.studio.db.AppBase;
-import com.axelor.studio.db.repo.AppRepository;
-import com.axelor.studio.service.AppSettingsStudioService;
-import com.axelor.utils.helpers.date.LocalDateTimeHelper;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Singleton
-public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService {
+public class AppBaseServiceImpl extends ScriptAppServiceImpl implements AppBaseService {
 
   protected static String DEFAULT_LOCALE = "en_GB";
 
   @Inject
-  public AppBaseServiceImpl(
-      AppRepository appRepo,
-      MetaFiles metaFiles,
-      AppVersionService appVersionService,
-      AppSettingsStudioService appSettingsService,
-      MetaModuleRepository metaModuleRepo,
-      MetaFileRepository metaFileRepo) {
-    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
+  public AppBaseServiceImpl(AppService appService) {
+    super(appService);
   }
 
   @Override
@@ -80,21 +74,22 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
   public ZonedDateTime getTodayDateTime(Company company) {
 
-    ZonedDateTime todayDateTime = ZonedDateTime.now();
-    if (company != null) {
-      todayDateTime = LocalDateTimeHelper.getTodayDateTime(company.getTimezone());
-    }
+    ZoneId targetZone =
+        (company != null && StringUtils.notBlank(company.getTimezone()))
+            ? ZoneId.of(company.getTimezone())
+            : ZoneId.systemDefault();
+    ZonedDateTime todayDateTime = ZonedDateTime.now(targetZone);
 
     String applicationMode = AppSettings.get().get("application.mode", "prod");
 
     if ("dev".equals(applicationMode)) {
       User user = AuthUtils.getUser();
       if (user != null && user.getTodayDateT() != null) {
-        todayDateTime = user.getTodayDateT();
+        todayDateTime = user.getTodayDateT().withZoneSameInstant(targetZone);
       } else {
         AppBase appBase = getAppBase();
         if (appBase != null && appBase.getTodayDateT() != null) {
-          return appBase.getTodayDateT();
+          return appBase.getTodayDateT().withZoneSameInstant(targetZone);
         }
       }
     }
@@ -136,6 +131,18 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
     if (appBase != null) {
       return appBase.getNbDecimalDigitForQty();
+    }
+
+    return DEFAULT_NB_DECIMAL_DIGITS;
+  }
+
+  @Override
+  public int getNbDecimalDigitForTaxRate() {
+
+    AppBase appBase = getAppBase();
+
+    if (appBase != null) {
+      return appBase.getNbDecimalDigitForTaxRate();
     }
 
     return DEFAULT_NB_DECIMAL_DIGITS;
@@ -320,12 +327,19 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   }
 
   @Override
-  public String getImportErrorPath() {
-    String importErrorPath = AppService.getFileUploadDir();
+  public String getImportErrorPath() throws IOException {
     AppBase appBase = getAppBase();
+    String dir =
+        String.format(
+            "import_error_%s", getTodayDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     if (appBase != null && StringUtils.notEmpty(appBase.getImportErrorPath())) {
-      return importErrorPath + appBase.getImportErrorPath();
+      return appBase.getImportErrorPath() + File.separator + dir;
     }
-    return importErrorPath;
+    return createTempDir(dir).toFile().getPath();
+  }
+
+  protected Path createTempDir(String dir) throws IOException {
+    Path tmp = MetaFiles.getPath("tmp");
+    return Files.createDirectories(tmp.resolve(dir));
   }
 }

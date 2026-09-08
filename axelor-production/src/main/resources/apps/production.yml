@@ -9,5 +9,5 @@ image: app-production.png
 modules: 
    axelor-production
 dependsOn:
-   - supplychain
+   - quality
 sequence: 15

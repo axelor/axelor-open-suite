@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -71,9 +71,14 @@ public class EmployeeHRRepository extends EmployeeRepository {
       Beans.get(PartnerService.class).setPartnerFullName(partner);
     }
     EmploymentContract employmentContract = entity.getMainEmploymentContract();
-    if ((partner.getCompanySet() == null || partner.getCompanySet().isEmpty())
-        && employmentContract != null) {
-      partner.addCompanySetItem(employmentContract.getPayCompany());
+    if (partner.getCompanySet() == null || partner.getCompanySet().isEmpty()) {
+      if (employmentContract != null) {
+        partner.addCompanySetItem(employmentContract.getPayCompany());
+      } else {
+        Optional.ofNullable(AuthUtils.getUser())
+            .map(User::getActiveCompany)
+            .ifPresent(partner::addCompanySetItem);
+      }
     }
 
     if (employmentContract != null && employmentContract.getEmployee() == null) {

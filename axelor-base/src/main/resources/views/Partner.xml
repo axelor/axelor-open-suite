@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner"
     orderBy="name">
@@ -52,6 +52,8 @@
           action="action-general-check-duplicate-records"/>
         <item name="mergeDuplicatedItem" title="Merge duplicated"
           action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+        <item name="sirenApiItem" action="action-partner-view-wizard-api-sirene-configuration"
+          title="Create from Sirene API"/>
       </menu>
     </menubar>
     <field name="partnerSeq" width="120"/>
@@ -85,6 +87,8 @@
           action="action-general-check-duplicate-records"/>
         <item name="mergeDuplicatedItem" title="Merge duplicated"
           action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+        <item name="sirenApiItem" action="action-partner-view-wizard-api-sirene-configuration"
+          title="Create from Sirene API"/>
       </menu>
     </menubar>
     <field name="partnerSeq" width="120"/>
@@ -142,12 +146,14 @@
   <form name="partner-customer-form" title="Customer" model="com.axelor.apps.base.db.Partner"
     onNew="action-group-base-partner-onnew"
     onLoad="action-group-partner-onload,action-partner-attrs-hide-customer-recovery"
-    onSave="action-partner-validate-partner-stock-settings-list" width="large">
+    onSave="action-partner-validate-partner-stock-settings-list,action-partner-group-onsave"
+    width="large">
     <panel-include view="partner-form"/>
   </form>
 
   <form name="partner-supplier-form" title="Supplier" model="com.axelor.apps.base.db.Partner"
-    onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload" width="large">
+    onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload"
+    onSave="action-partner-group-onsave" width="large">
     <panel-include view="partner-form"/>
   </form>
 
@@ -158,8 +164,10 @@
         <item name="sendEmailItem" title="Send email"
           action="save,action-send-by-email-with-template" readonlyIf="id == null"
           if-module="axelor-message"/>
-        <item name="sirenApiBtn" title="Fill from Sirene API"
-          action="save,action-partner-view-wizard-api-sirene-configuration"/>
+        <item name="sirenApiCreateBtn" title="Create from Sirene API"
+          action="action-partner-group-sirene-api-configuration" showIf="id == null"/>
+        <item name="sirenApiFillBtn" title="Fill from Sirene API"
+          action="action-partner-group-sirene-api-configuration" showIf="id != null"/>
       </menu>
     </menubar>
   </form>
@@ -395,6 +403,13 @@
           <field name="mainAddress" form-view="address-form" grid-view="address-grid"
             canNew="true" colSpan="12"/>
         </panel>
+        <panel name="LinkPanel" title="Link" showIf="!isContact &amp;&amp; isCustomer"
+          colSpan="12">
+          <field name="tradingNameSet" requiredIf="!isContact &amp;&amp; isCustomer"
+            colSpan="6" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
+            widget="Tags" onSelect="action-partner-attrs-set-trading-name-domain"
+            onChange="action-partner-method-filter-tag-set"/>
+        </panel>
         <panel name="postalAddressesPanel" title="Postal addresses" colSpan="12"
           hideIf="isEmployee">
           <static name="invoiceAndDeliveryAddressText" hidden="true" colSpan="12">
@@ -415,12 +430,12 @@
                   <field name="address" canNew="true" canEdit="true" form-view="address-form"
                     grid-view="address-grid" canSelect="false" required="true"
                     if="!__config__.app.getApp('base')?.getIsSharedAddress()"/>
-                  <field name="isInvoicingAddr" widget="toggle" hideIf="$readonly()"
-                    x-icon="card-list"/>
-                  <field name="isDeliveryAddr" widget="toggle" hideIf="$readonly()"
-                    x-icon="cart-fill"/>
-                  <field name="isDefaultAddr" widget="toggle" hideIf="$readonly()"
-                    x-icon="star"/>
+                  <field name="isInvoicingAddr" widget="toggle"
+                    hideIf="$readonly() &amp;&amp; !isInvoicingAddr" x-icon="card-list"/>
+                  <field name="isDeliveryAddr" widget="toggle"
+                    hideIf="$readonly() &amp;&amp; !isDeliveryAddr" x-icon="cart-fill"/>
+                  <field name="isDefaultAddr" widget="toggle"
+                    hideIf="$readonly() &amp;&amp; !isDefaultAddr" x-icon="star"/>
                   <field name="address.addressL4" hidden="true"/>
                 </panel>
               </panel>
@@ -465,13 +480,15 @@
               grid-view="team-grid" if="__config__.app.getApp('base')?.getTeamManagement()"
               hideIf="isEmployee"/>
             <field name="companySet" colSpan="12" widget="Tags" canNew="false"
-              form-view="company-form" grid-view="company-grid"/>
+              form-view="company-form" grid-view="company-grid"
+              onChange="action-partner-group-company-change"/>
           </panel>
         </panel>
         <panel name="notesPanel" title="Notes" colSpan="12">
           <field name="description" colSpan="12" height="8" showTitle="false" widget="Html"/>
         </panel>
       </panel>
+      <panel-include view="incl-blocking-partner-form"/>
       <panel name="eventPanel" title="Events" showIf="id != null &amp;&amp; !isEmployee"
         if-module="axelor-crm" hidden="true" if="__config__.app.isApp('crm')">
         <button name="meetingBtn" title="Create a meeting" link="" icon="pencil-square"
@@ -1092,7 +1109,7 @@
 
   <action-group name="action-group-partner-onload">
     <action name="action-partner-attrs-change-name"/>
-    <action name="action-partner-attrs-show-specific-tax-note"/>
+    <action name="action-partner-attrs-show-vat-exemption-reason"/>
     <action name="action-partner-method-set-social-network-url"/>
     <action name="action-partner-attrs-hide-employee-panel"
       if="__config__.app.isApp('employee')"/>
@@ -1176,6 +1193,9 @@
   <action-group name="action-partner-group-onsave">
     <action name="action-partner-iban-check-on-save"/>
     <action name="action-partner-method-check-if-registration-code-already-exists" if="!id"/>
+    <action name="action-partner-method-update-partner-address"/>
+    <action name="action-method-partner-registration-code-onChange"/>
+    <action name="action-partner-method-check-registration-code-if-required"/>
     <action name="save"/>
     <action name="action-partner-method-set-user-partner"/>
   </action-group>
@@ -1309,7 +1329,7 @@
   <action-attrs name="action-partner-attrs-partner-seq-editable">
     <attribute name="readonly" for="partnerSeq"
       expr="__config__.app.getApp('base')?.getGeneratePartnerSequence()"/>
-    <attribute name="readonly" for="companyPanel"
+    <attribute name="readonly" for="mainPartner"
       expr="#{__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
   </action-attrs>
 
@@ -1449,8 +1469,12 @@
     model="com.axelor.apps.base.db.Partner">
     <field name="currency" expr="eval: __user__.activeCompany?.currency" if="#{!isContact}"/>
     <field name="invoiceSendingFormatSelect" expr="#{'emailpaper'}" if="#{!isContact}"/>
-    <field name="user" expr="#{__user__}"/>
-    <field name="team" expr="#{__user__.activeTeam}"/>
+    <field name="user" expr="#{__user__}" if="created_from_user_id == null"/>
+    <field name="team" expr="#{__user__.activeTeam}" if="created_from_user_id == null"/>
+    <field name="user" expr="eval: __repo__(User).find(created_from_user_id)"
+      if="created_from_user_id != null"/>
+    <field name="team" expr="eval: __repo__(User).find(created_from_user_id)?.activeTeam"
+      if="created_from_user_id != null"/>
     <field name="localization"
       expr="eval: __config__.app.getApp('base')?.getDefaultPartnerLocalization()"/>
     <field name="isCustomer" expr="true"
@@ -1471,13 +1495,17 @@
     <field name="localization"
       expr="eval: __parent__ != null ? __parent__.localization : __config__.app.getApp('base')?.getDefaultPartnerLocalization()"/>
     <field name="user" expr="#{__parent__.user}"
-      if="#{__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
+      if="#{created_from_user_id == null &amp;&amp; __parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
     <field name="team" expr="#{__parent__.team}"
-      if="#{__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
+      if="#{created_from_user_id == null &amp;&amp; __parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
     <field name="user" expr="#{__user__}"
-      if="#{__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner'}"/>
+      if="#{created_from_user_id == null &amp;&amp; (__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner')}"/>
     <field name="team" expr="#{__user__.activeTeam}"
-      if="#{__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner'}"/>
+      if="#{created_from_user_id == null &amp;&amp; (__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner')}"/>
+    <field name="user" expr="eval: __repo__(User).find(created_from_user_id)"
+      if="created_from_user_id != null"/>
+    <field name="team" expr="eval: __repo__(User).find(created_from_user_id)?.activeTeam"
+      if="created_from_user_id != null"/>
     <field name="companySet" expr="eval: __repo__(Company).all().fetchOne()"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="mainPartner" expr="eval: __parent__"
@@ -1493,13 +1521,17 @@
     <field name="localization"
       expr="eval: __parent__ != null ? __parent__.localization : __config__.app.getApp('base')?.getDefaultPartnerLocalization()"/>
     <field name="user" expr="#{__parent__.user}"
-      if="#{__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
+      if="#{created_from_user_id == null &amp;&amp; __parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
     <field name="team" expr="#{__parent__.team}"
-      if="#{__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
+      if="#{created_from_user_id == null &amp;&amp; __parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
     <field name="user" expr="#{__user__}"
-      if="#{__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner'}"/>
+      if="#{created_from_user_id == null &amp;&amp; (__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner')}"/>
     <field name="team" expr="#{__user__.activeTeam}"
-      if="#{__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner'}"/>
+      if="#{created_from_user_id == null &amp;&amp; (__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner')}"/>
+    <field name="user" expr="eval: __repo__(User).find(created_from_user_id)"
+      if="created_from_user_id != null"/>
+    <field name="team" expr="eval: __repo__(User).find(created_from_user_id)?.activeTeam"
+      if="created_from_user_id != null"/>
     <field name="mainPartner" expr="#{__repo__(Partner).find(__parent__.id)}"
       if="#{__parent__ &amp;&amp; __parent__.id != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
   </action-record>
@@ -1568,6 +1600,15 @@
     <call class="com.axelor.apps.base.web.PartnerController" method="checkRegistrationCode"/>
   </action-method>
 
+  <action-method name="action-partner-method-update-partner-address">
+    <call class="com.axelor.apps.base.web.PartnerController" method="updatePartnerAddress"/>
+  </action-method>
+
+  <action-method name="action-partner-method-check-registration-code-if-required">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="checkRegistrationCodeIfRequired"/>
+  </action-method>
+
   <action-method name="action-partner-method-set-positive-balance">
     <call class="com.axelor.apps.base.web.PartnerController" method="setPositiveBalance"/>
   </action-method>
@@ -1585,7 +1626,8 @@
     <view type="grid" name="move-line-grid"/>
     <view type="form" name="move-line-form"/>
     <view-param name="search-filters" value="move-line-filters"/>
-    <domain>self.partner.id = :partnerId AND self.account.useForPartnerBalance = true</domain>
+    <domain>self.partner.id = :partnerId AND self.account.useForPartnerBalance = true AND self.move
+      IS NOT NULL</domain>
     <context name="partnerId" expr="eval: id"/>
   </action-view>
 
@@ -1632,7 +1674,7 @@
     model="com.axelor.apps.base.db.Partner">
     <view type="grid" name="partner-grid"/>
     <view type="form" name="partner-form"/>
-    <domain>self.parentPartner = :id</domain>
+    <domain>self.parentPartner.id = :id</domain>
   </action-view>
 
   <action-record name="action-record-base-partner-set-business-card"
@@ -1799,7 +1841,7 @@
 
   <action-attrs name="action-partner-attrs-set-partner-tag-domain">
     <attribute name="domain" for="tagSet"
-      expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} IN (self.concernedModelSet.id) OR self.concernedModelSet IS EMPTY) AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
+      expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} IN (self.concernedModelSet.id) OR self.concernedModelSet IS EMPTY) AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${((companySet?.collect{it.id} ?: []) + [0]).join(',')}))) AND (self.tradingNameSet IS EMPTY OR EXISTS(SELECT 1 FROM TradingName tn WHERE tn MEMBER OF self.tradingNameSet AND tn.id IN (${((tradingNameSet?.collect{it.id} ?: []) + [0]).join(',')}))) &quot;"/>
   </action-attrs>
 
   <action-view name="action-partner-view-wizard-api-sirene-configuration"
@@ -1811,6 +1853,9 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="popup-save" value="false"/>
     <context name="_parentSiret" expr="eval: __this__.registrationCode"/>
+    <context name="_isCustomer" expr="eval: _isCustomer"/>
+    <context name="_isSupplier" expr="eval: _isSupplier"/>
+    <context name="_isProspect" expr="eval: _isProspect"/>
   </action-view>
 
   <action-method name="action-partner-method-sale-partner-price-list-domain">
@@ -1847,4 +1892,37 @@
       'com.axelor.apps.base.db.Partner'</domain>
     <context name="partnerId" expr="eval:__self__?.id"/>
   </action-view>
+
+  <action-method name="action-partner-method-filter-tag-set">
+    <call class="com.axelor.apps.base.web.PartnerController" method="filterTagSet"/>
+  </action-method>
+
+  <action-group name="action-partner-group-company-change">
+    <action name="action-partner-record-change-trading-name-set"/>
+    <action name="action-partner-method-filter-tag-set"/>
+  </action-group>
+
+  <action-record name="action-partner-record-change-trading-name-set"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="tradingNameSet"
+      expr="eval: tradingNameSet?.findAll{ it.company == null || it.company?.id in companySet*.id }"
+      if="tradingNameSet &amp;&amp; tradingNameSet.size() > 0"/>
+  </action-record>
+
+  <action-attrs name="action-partner-attrs-set-trading-name-domain">
+    <attribute name="domain" for="tradingNameSet"
+      expr="eval: &quot; self.company IS NULL OR self.company.id IN (${((companySet ?: [])*.id+[0]).join(',')})&quot;"/>
+  </action-attrs>
+
+  <action-validate name="action-partner-validate-sirene-api-configuration">
+    <alert
+      message="You're about to create a partner using the Sirene API. Current changes will be lost. Do you really want to proceed?"/>
+  </action-validate>
+
+  <action-group name="action-partner-group-sirene-api-configuration">
+    <action name="action-partner-validate-sirene-api-configuration" if="id == null"/>
+    <action name="save" if="id != null"/>
+    <action name="action-partner-view-wizard-api-sirene-configuration"/>
+  </action-group>
+
 </object-views>

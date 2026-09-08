@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -48,6 +48,7 @@ import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.TrackingNumberCreateService;
 import com.axelor.apps.stock.service.TrackingNumberService;
@@ -57,6 +58,7 @@ import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.batch.BatchAccountingCutOffSupplyChain;
+import com.axelor.apps.supplychain.service.config.OutSmGenerationService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -83,6 +85,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   protected PriceListService priceListService;
   protected SupplychainBatchRepository supplychainBatchRepo;
   protected SupplyChainConfigService supplychainConfigService;
+  protected OutSmGenerationService outSmGenerationService;
   protected InvoiceLineRepository invoiceLineRepository;
 
   protected AppSupplychainService appSupplychainService;
@@ -100,15 +103,18 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       TrackingNumberRepository trackingNumberRepo,
       ShippingCoefService shippingCoefService,
       AccountManagementService accountManagementService,
+      StockMoveService stockMoveService,
       PriceListService priceListService,
       ProductCompanyService productCompanyService,
       SupplychainBatchRepository supplychainBatchRepo,
       SupplyChainConfigService supplychainConfigService,
+      OutSmGenerationService outSmGenerationService,
       StockLocationLineHistoryService stockLocationLineHistoryService,
       InvoiceLineRepository invoiceLineRepository,
       AppSupplychainService appSupplychainService,
       StockLocationLineFetchService stockLocationLineFetchService,
-      TrackingNumberCreateService trackingNumberCreateService) {
+      TrackingNumberCreateService trackingNumberCreateService,
+      StockMoveRepository stockMoveRepository) {
     super(
         trackingNumberService,
         appBaseService,
@@ -123,11 +129,14 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         shippingCoefService,
         stockLocationLineHistoryService,
         stockLocationLineFetchService,
-        trackingNumberCreateService);
+        trackingNumberCreateService,
+        stockMoveService,
+        stockMoveRepository);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
     this.supplychainBatchRepo = supplychainBatchRepo;
     this.supplychainConfigService = supplychainConfigService;
+    this.outSmGenerationService = outSmGenerationService;
     this.invoiceLineRepository = invoiceLineRepository;
     this.appSupplychainService = appSupplychainService;
   }
@@ -208,6 +217,11 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       return super.compute(stockMoveLine, null);
     }
 
+    return computePriceFromOrder(stockMoveLine, stockMove);
+  }
+
+  protected StockMoveLine computePriceFromOrder(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException {
     if ((ObjectUtils.notEmpty(stockMove.getSaleOrderSet())
             && stockMoveLine.getSaleOrderLine() != null)
         || (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())
@@ -218,6 +232,16 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       stockMoveLine = super.compute(stockMoveLine, stockMove);
     }
     return stockMoveLine;
+  }
+
+  @Override
+  public StockMoveLine qtyOnChange(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException {
+
+    if (stockMove == null || !appBaseService.isApp("supplychain")) {
+      return super.qtyOnChange(stockMoveLine, stockMove);
+    }
+    return computePriceFromOrder(stockMoveLine, stockMove);
   }
 
   protected StockMoveLine computeFromOrder(StockMoveLine stockMoveLine, StockMove stockMove)
@@ -305,76 +329,24 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   }
 
   @Override
-  public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation)
+  protected BigDecimal computeAvailableQtyInMoveLineUnit(
+      StockMoveLine stockMoveLine, StockLocationLine stockLocationLine, Unit targetUnit)
       throws AxelorException {
-
+    BigDecimal currentQtyInStockMoveLineUnit =
+        super.computeAvailableQtyInMoveLineUnit(stockMoveLine, stockLocationLine, targetUnit);
     if (!appBaseService.isApp("supplychain")) {
-      super.updateAvailableQty(stockMoveLine, stockLocation);
-      return;
+      return currentQtyInStockMoveLineUnit;
     }
+    BigDecimal stockLocationReservedQtyInStockMoveLineUnit =
+        convertQtyToMoveLineUnit(
+            stockMoveLine,
+            stockLocationLine.getReservedQty(),
+            stockLocationLine.getUnit(),
+            targetUnit);
 
-    BigDecimal availableQty = BigDecimal.ZERO;
-    BigDecimal availableQtyForProduct = BigDecimal.ZERO;
-
-    TrackingNumberConfiguration trackingNumberConfiguration;
-
-    if (stockMoveLine.getProduct() != null) {
-      trackingNumberConfiguration =
-          (TrackingNumberConfiguration)
-              productCompanyService.get(
-                  stockMoveLine.getProduct(),
-                  "trackingNumberConfiguration",
-                  stockLocation.getCompany());
-    } else {
-      trackingNumberConfiguration = null;
-    }
-
-    if (stockMoveLine.getProduct() != null) {
-      if (trackingNumberConfiguration != null) {
-
-        if (stockMoveLine.getTrackingNumber() != null) {
-          StockLocationLine stockLocationLine =
-              stockLocationLineFetchService.getDetailLocationLine(
-                  stockLocation, stockMoveLine.getProduct(), stockMoveLine.getTrackingNumber());
-
-          if (stockLocationLine != null) {
-            availableQty =
-                stockLocationLine
-                    .getCurrentQty()
-                    .add(stockMoveLine.getReservedQty())
-                    .subtract(stockLocationLine.getReservedQty());
-          }
-        }
-
-        if (availableQty.compareTo(stockMoveLine.getRealQty()) < 0) {
-          StockLocationLine stockLocationLineForProduct =
-              stockLocationLineFetchService.getStockLocationLine(
-                  stockLocation, stockMoveLine.getProduct());
-
-          if (stockLocationLineForProduct != null) {
-            availableQtyForProduct =
-                stockLocationLineForProduct
-                    .getCurrentQty()
-                    .add(stockMoveLine.getReservedQty())
-                    .subtract(stockLocationLineForProduct.getReservedQty());
-          }
-        }
-      } else {
-        StockLocationLine stockLocationLine =
-            stockLocationLineFetchService.getStockLocationLine(
-                stockLocation, stockMoveLine.getProduct());
-
-        if (stockLocationLine != null) {
-          availableQty =
-              stockLocationLine
-                  .getCurrentQty()
-                  .add(stockMoveLine.getReservedQty())
-                  .subtract(stockLocationLine.getReservedQty());
-        }
-      }
-    }
-    stockMoveLine.setAvailableQty(availableQty);
-    stockMoveLine.setAvailableQtyForProduct(availableQtyForProduct);
+    return currentQtyInStockMoveLineUnit
+        .add(stockMoveLine.getReservedQty())
+        .subtract(stockLocationReservedQtyInStockMoveLineUnit);
   }
 
   @Override
@@ -648,7 +620,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     final boolean isOutMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING;
     final boolean isInMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING;
 
-    if ((isOutMove && supplyChainConfig.getHasOutSmForStorableProduct())
+    if ((isOutMove && outSmGenerationService.isGeneratedForStorable(supplyChainConfig))
         || (isInMove && supplyChainConfig.getHasInSmForStorableProduct())
         || stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL) {
       storableFilter =
@@ -663,9 +635,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         supplychainConfigService.getSupplyChainConfig(stockMove.getCompany());
     final boolean isOutMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING;
     final boolean isInMove = stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING;
-    if ((isOutMove && supplyChainConfig.getHasOutSmForNonStorableProduct())
-        || (isInMove && supplyChainConfig.getHasInSmForNonStorableProduct())
-        || stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL) {
+    if ((isOutMove && outSmGenerationService.isGeneratedForServices(supplyChainConfig))
+        || (isInMove && supplyChainConfig.getHasInSmForNonStorableProduct())) {
       return " self.productTypeSelect = '" + ProductRepository.PRODUCT_TYPE_SERVICE + "'";
     }
     return "";
@@ -731,5 +702,24 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         trackingNumberRepo.save(trackingNumber);
       }
     }
+  }
+
+  @Override
+  public StockMoveLine createStockMoveTitleLine(
+      StockMove stockMove, SaleOrderLine saleOrderLine, PurchaseOrderLine purchaseOrderLine) {
+    String productName = null;
+    if (saleOrderLine != null) {
+      productName = saleOrderLine.getProductName();
+    } else if (purchaseOrderLine != null) {
+      productName = purchaseOrderLine.getProductName();
+    }
+    StockMoveLine stockMoveLine =
+        createStockMoveLine(productName, StockMoveLineRepository.TYPE_TITLE, stockMove);
+    stockMoveLine.setSaleOrderLine(saleOrderLine);
+    stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
+    if (saleOrderLine != null && saleOrderLine.getLevelIndicator() != null) {
+      stockMoveLine.setLevelIndicator(saleOrderLine.getLevelIndicator());
+    }
+    return stockMoveLine;
   }
 }

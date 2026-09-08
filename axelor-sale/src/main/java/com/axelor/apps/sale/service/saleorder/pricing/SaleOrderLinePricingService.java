@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.sale.service.saleorder.pricing;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import java.util.Map;
 
 public interface SaleOrderLinePricingService {
 
@@ -31,9 +32,12 @@ public interface SaleOrderLinePricingService {
    * more than one pricing matched may result on a unexpected result
    *
    * @param saleOrderLine
+   * @return map of field names to values actually written by pricing rules (empty if no pricing
+   *     matched)
    * @throws AxelorException
    */
-  void computePricingScale(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
+  Map<String, Object> computePricingScale(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
 
   /**
    * Methods that checks if saleOrderLine can be can classified with a pricing line of a existing

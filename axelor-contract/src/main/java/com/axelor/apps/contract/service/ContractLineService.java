@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.ContractVersion;
 import java.math.BigDecimal;
 import java.util.Map;
@@ -99,4 +100,7 @@ public interface ContractLineService {
   String computeProductDomain(Contract contract);
 
   void checkAnalyticAxisByCompany(Contract contract) throws AxelorException;
+
+  ContractLine fill(ContractLine contractLine, ContractTemplate contractTemplate, Product product)
+      throws AxelorException;
 }

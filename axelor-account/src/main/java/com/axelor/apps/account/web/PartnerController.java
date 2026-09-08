@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -56,7 +56,7 @@ public class PartnerController {
         long accountConfigCount =
             Beans.get(AccountConfigRepository.class)
                 .all()
-                .filter("self.factorPartner = :factorPartner")
+                .filter("self.factorPartner.id = :factorPartner")
                 .bind("factorPartner", partner.getId())
                 .count();
         if (accountConfigCount > 0) {
@@ -75,7 +75,7 @@ public class PartnerController {
         long notificationCount =
             Beans.get(NotificationRepository.class)
                 .all()
-                .filter("self.factorPartner = :factorPartner")
+                .filter("self.factorPartner.id = :factorPartner")
                 .bind("factorPartner", partner.getId())
                 .count();
         if (notificationCount > 0) {

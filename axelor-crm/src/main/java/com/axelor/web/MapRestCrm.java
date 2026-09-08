@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,41 +21,35 @@ package com.axelor.web;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.MapRestService;
-import com.axelor.apps.base.service.MapService;
-import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.Tour;
 import com.axelor.apps.crm.db.TourLine;
-import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.db.repo.TourRepository;
-import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Strings;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 @Path("/map")
-@Deprecated
 public class MapRestCrm {
 
   @Inject private MapRestService mapRestService;
-
-  @Inject private LeadRepository leadRepo;
 
   @Inject private OpportunityRepository opportunityRepo;
 
@@ -66,15 +60,35 @@ public class MapRestCrm {
   @Path("/lead")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @Deprecated
   public JsonNode getLeads() {
     ObjectNode mainNode = factory.objectNode();
 
     try {
-      List<? extends Lead> leads = leadRepo.all().fetch();
+      List<Lead> leads =
+          JPA.em()
+              .createQuery(
+                  "SELECT self FROM Lead self "
+                      + "LEFT JOIN FETCH self.address address "
+                      + "LEFT JOIN FETCH address.country "
+                      + "LEFT JOIN FETCH self.emailAddress",
+                  Lead.class)
+              .getResultList();
       ArrayNode arrayNode = factory.arrayNode();
 
       for (Lead lead : leads) {
+
+        Address address = lead.getAddress();
+        if (address == null || !address.getIsValidLatLong()) {
+          continue;
+        }
+
+        ObjectNode objectNode = factory.objectNode();
+
+        String addressString = mapRestService.makeAddressString(address, objectNode);
+        if (StringUtils.isBlank(addressString)) {
+          continue;
+        }
+        objectNode.put("address", addressString);
 
         String fullName = lead.getFirstName() + " " + lead.getName();
 
@@ -82,22 +96,11 @@ public class MapRestCrm {
           fullName = lead.getEnterpriseName() + "<br/>" + fullName;
         }
 
-        ObjectNode objectNode = factory.objectNode();
         objectNode.put("fullName", fullName);
         objectNode.put("fixedPhone", lead.getFixedPhone() != null ? lead.getFixedPhone() : " ");
 
         if (lead.getEmailAddress() != null) {
           objectNode.put("emailAddress", lead.getEmailAddress().getAddress());
-        }
-
-        String addressFullname = lead.getAddress() != null ? lead.getAddress().getFullName() : "";
-        objectNode.put("address", addressFullname);
-
-        Map<String, Object> result = Beans.get(MapService.class).getMap(addressFullname);
-
-        if (result != null) {
-          objectNode.put("latit", (BigDecimal) result.get("latitude"));
-          objectNode.put("longit", (BigDecimal) result.get("longitude"));
         }
 
         arrayNode.add(objectNode);
@@ -114,12 +117,20 @@ public class MapRestCrm {
   @Path("/opportunity")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @Deprecated
   public JsonNode getOpportunities() {
     ObjectNode mainNode = factory.objectNode();
 
     try {
       List<? extends Opportunity> opportunities = opportunityRepo.all().fetch();
+
+      List<Partner> partnerList =
+          opportunities.stream()
+              .map(Opportunity::getPartner)
+              .filter(Objects::nonNull)
+              .distinct()
+              .collect(Collectors.toList());
+      Map<Partner, Address> invoicingAddressMap = mapRestService.getInvoicingAddresses(partnerList);
+
       ArrayNode arrayNode = factory.arrayNode();
 
       for (Opportunity opportunity : opportunities) {
@@ -130,7 +141,18 @@ public class MapRestCrm {
           continue;
         }
 
+        Address address = invoicingAddressMap.get(partner);
+        if (address == null || !address.getIsValidLatLong()) {
+          continue;
+        }
+
         ObjectNode objectNode = factory.objectNode();
+
+        String addressString = mapRestService.makeAddressString(address, objectNode);
+        if (StringUtils.isBlank(addressString)) {
+          continue;
+        }
+        objectNode.put("address", addressString);
 
         String currencyCode = "";
 
@@ -138,13 +160,7 @@ public class MapRestCrm {
           currencyCode = opportunity.getCurrency().getCodeISO();
         }
 
-        String amtLabel = "Amount";
-
-        if (!Strings.isNullOrEmpty(I18n.get("amount"))) {
-          amtLabel = I18n.get("amount");
-        }
-
-        String amount = amtLabel + " : " + opportunity.getAmount() + " " + currencyCode;
+        String amount = I18n.get("Amount") + " : " + opportunity.getAmount() + " " + currencyCode;
 
         objectNode.put("fullName", opportunity.getName() + "<br/>" + amount);
         objectNode.put(
@@ -152,13 +168,6 @@ public class MapRestCrm {
 
         if (partner.getEmailAddress() != null) {
           objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
-        }
-
-        Address address = Beans.get(PartnerService.class).getInvoicingAddress(partner);
-
-        if (address != null) {
-          String addressString = mapRestService.makeAddressString(address, objectNode);
-          objectNode.put("address", addressString);
         }
 
         arrayNode.add(objectNode);
@@ -175,32 +184,37 @@ public class MapRestCrm {
   @Path("/tour/{id}")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @Deprecated
   public JsonNode getTour(@PathParam("id") long id) {
     ObjectNode mainNode = factory.objectNode();
 
     try {
       Tour tour = tourRepo.find(id);
-      List<TourLine> tourLineList = tour.getTourLineList();
-      if (ObjectUtils.isEmpty(tourLineList)) {
+      if (tour == null || CollectionUtils.isEmpty(tour.getTourLineList())) {
         return mainNode;
       }
+      List<TourLine> tourLineList = tour.getTourLineList();
 
       ArrayNode arrayNode = factory.arrayNode();
 
       for (TourLine tourLine : tourLineList) {
-        ObjectNode objectNode = factory.objectNode();
-        Partner partner = tourLine.getPartner();
-        objectNode.put("fullName", partner.getFullName());
 
         Address address = tourLine.getAddress();
-        if (!StringUtils.isBlank(address.getFullName())) {
-          String addressString = mapRestService.makeAddressString(address, objectNode);
-          if (StringUtils.isBlank(addressString)) {
-            continue;
-          }
-          objectNode.put("address", addressString);
+        if (address == null
+            || !address.getIsValidLatLong()
+            || StringUtils.isBlank(address.getFullName())) {
+          continue;
         }
+
+        ObjectNode objectNode = factory.objectNode();
+
+        String addressString = mapRestService.makeAddressString(address, objectNode);
+        if (StringUtils.isBlank(addressString)) {
+          continue;
+        }
+        objectNode.put("address", addressString);
+
+        Partner partner = tourLine.getPartner();
+        objectNode.put("fullName", partner.getFullName());
         objectNode.put(
             "fixedPhone", partner.getFixedPhone() != null ? partner.getFixedPhone() : "");
         objectNode.put(

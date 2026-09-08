@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="accounting-batch-grid" title="Accounting batches"
     model="com.axelor.apps.account.db.AccountingBatch">
@@ -65,7 +65,7 @@
       <panel name="billOfExchangePagePanel" title="Bill of exchange configuration"
         hideIf="actionSelect != 24">
         <field name="billOfExchangeStepBatchSelect" widget="NavSelect" colSpan="12"/>
-        <field name="billOfExchangeDataTypeSelect" selection-in="[1]"
+        <field name="billOfExchangeDataTypeSelect" selection-in="[1,4]"
           readonlyIf="billOfExchangeStepBatchSelect != 1"
           requiredIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 1"/>
         <field name="billOfExhangeMailTemplate" showIf="billOfExchangeStepBatchSelect == 2"
@@ -126,6 +126,16 @@
         <field name="endDate"
           requiredIf="!updateAllRealizedFixedAssetLines &amp;&amp; actionSelect == 20"
           showIf="!updateAllRealizedFixedAssetLines"/>
+      </panel>
+      <panel name="postLoanInstallmentPanel" title="Post loan installments up to a date"
+        itemSpan="4" hideIf="actionSelect != 28">
+        <field name="endDate" title="Up to date"
+          help="Installments planned up to this date are booked. If left empty, today's date is used."/>
+      </panel>
+      <panel name="postLoanClosingPanel" title="Loan closing adjustments" itemSpan="4"
+        hideIf="actionSelect != 29">
+        <field name="moveDate" title="Closing date"
+          help="Year-end date for which accrued interest and prepaid insurance are generated, then reversed the next day. If left empty, today's date is used."/>
       </panel>
       <panel name="yearOpeningOrClosureAccountsPagePanel" title="Close/open the accounts"
         hideIf="actionSelect != 21">
@@ -276,6 +286,12 @@
       <button name="realizeFixedAssetLinesBatchBtn" title="Realize Fixed asset lines Batch"
         showIf="actionSelect == 20"
         onClick="save,action-accounting-batch-group-realize-fixed-asset-lines" colSpan="12"/>
+      <button name="postLoanInstallmentBatchBtn" title="Post loan installments"
+        showIf="actionSelect == 28"
+        onClick="save,action-accounting-batch-method-action-post-loan-installment" colSpan="12"/>
+      <button name="postLoanClosingBatchBtn" title="Post loan closing adjustments"
+        showIf="actionSelect == 29"
+        onClick="save,action-accounting-batch-method-action-post-loan-closing" colSpan="12"/>
       <button name="closeAnnualAccountsBatchBtn" title="Start" showIf="actionSelect == 21"
         onClick="save,action-accounting-batch-group-close-annual-accounts" colSpan="12"/>
       <button name="blockCustomerWithLatePayments" title="Block customers with late payments"
@@ -293,7 +309,13 @@
         colSpan="12"/>
       <button name="billOfExchangeInvoicesBtn" title="Display invoices to be processed"
         onClick="save,action-method-accounting-batch-invoice-to-be-processed"
-        showIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 1" colSpan="12"/>
+        showIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 1 &amp;&amp; billOfExchangeDataTypeSelect != 4"
+        colSpan="12"/>
+      <button name="billOfExchangeInvoiceTermsBtn"
+        title="Display invoice terms to be processed"
+        onClick="save,action-method-accounting-batch-invoiceterm-to-be-processed"
+        showIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 1 &amp;&amp; billOfExchangeDataTypeSelect == 4"
+        colSpan="12"/>
       <button name="movesConsistencyControl" title="Control moves consistency"
         showIf="actionSelect == 25"
         onClick="save,action-accounting-batch-method-moves-consistency-control"/>
@@ -318,6 +340,11 @@
       method="searchInvoicesToBeProcessed"/>
   </action-method>
 
+  <action-method name="action-method-accounting-batch-invoiceterm-to-be-processed">
+    <call class="com.axelor.apps.bankpayment.web.AccountingBatchController"
+      method="searchInvoiceTermsToBeProcessed"/>
+  </action-method>
+
   <!-- ACTION GROUP -->
   <action-group name="action-accounting-batch-group-close-annual-accounts">
     <action name="action-accounting-batch-validate-batchlist-not-empty"/>
@@ -330,6 +357,16 @@
     <action name="action-accounting-batch-validate-realized-fixed-date"/>
     <action name="action-accounting-batch-method-action-fixed-asset-lines-realize"/>
   </action-group>
+
+  <action-method name="action-accounting-batch-method-action-post-loan-installment">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="actionPostLoanInstallment"/>
+  </action-method>
+
+  <action-method name="action-accounting-batch-method-action-post-loan-closing">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="actionPostLoanClosing"/>
+  </action-method>
 
   <action-group name="action-accounting-batch-group-on-new">
     <action name="action-accounting-batch-record-on-new"/>
@@ -664,10 +701,11 @@
       OR (0 IN (:_journalSet) AND
       self.move.journal.journalType.technicalTypeSelect =
       :_journalType))
-      AND DATE(:_moveDate) >=
+      AND :_moveDate >=
       self.move.date
       AND self.move.statusSelect IN (2, 3, 5)
-      AND self.cutOffEndDate > DATE(:_moveDate)
+      AND
+      self.cutOffEndDate > :_moveDate
       AND self.move.company.id = :_company
     </domain>
     <context name="_journalSet"

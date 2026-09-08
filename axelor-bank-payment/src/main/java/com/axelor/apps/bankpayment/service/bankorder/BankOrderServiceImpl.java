@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,7 +47,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
-import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -55,7 +54,6 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 public class BankOrderServiceImpl implements BankOrderService {
 
@@ -133,8 +131,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   @Override
-  public File generateFile(BankOrder bankOrder)
-      throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
+  public File generateFile(BankOrder bankOrder) throws AxelorException {
 
     if (bankOrder.getBankOrderLineList() == null || bankOrder.getBankOrderLineList().isEmpty()) {
       return null;
@@ -213,8 +210,10 @@ public class BankOrderServiceImpl implements BankOrderService {
     MetaFiles metaFiles = Beans.get(MetaFiles.class);
 
     try (InputStream is = new FileInputStream(file)) {
-      metaFiles.attach(is, file.getName(), bankOrder);
-      bankOrder.setGeneratedMetaFile(metaFiles.upload(file));
+      bankOrder.setGeneratedMetaFile(metaFiles.upload(is, file.getName()));
+    } catch (IOException e) {
+      throw new AxelorException(
+          e, bankOrder, TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
     }
 
     return file;

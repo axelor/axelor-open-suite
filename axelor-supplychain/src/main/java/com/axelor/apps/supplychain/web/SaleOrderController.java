@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -182,7 +182,14 @@ public class SaleOrderController {
 
   public void generatePurchaseOrdersFromSelectedSOLines(
       ActionRequest request, ActionResponse response) {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    SaleOrder saleOrder;
+    if (request.getContext().getContextClass().equals(SaleOrder.class)) {
+      saleOrder = request.getContext().asType(SaleOrder.class);
+    } else {
+      Long saleOrderId = Long.valueOf(request.getContext().get("saleOrderId").toString());
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrderId);
+    }
+
     List<SaleOrderLine> saleOrderLines =
         saleOrder.getSaleOrderLineList().stream()
             .filter(Model::isSelected)
@@ -481,7 +488,9 @@ public class SaleOrderController {
    * @param response
    */
   public void supplierPartnerSelectDomain(ActionRequest request, ActionResponse response) {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Long saleOrderId = Long.valueOf(request.getContext().get("saleOrderId").toString());
+
+    SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrderId);
     String domain = "self.isContact = false AND self.isSupplier = true";
 
     if (saleOrder.getCompany() != null) {
@@ -721,7 +730,8 @@ public class SaleOrderController {
       Beans.get(SaleOrderSupplychainService.class).updateToConfirmedStatus(saleOrder);
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      response.setSignal("refresh-tab", null);
     }
   }
 

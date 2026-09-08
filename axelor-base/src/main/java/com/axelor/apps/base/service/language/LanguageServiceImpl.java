@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,9 +32,9 @@ public class LanguageServiceImpl implements LanguageService {
   protected MetaSelectRepository metaSelectRepository;
   protected MetaSelectItemRepository metaSelectItemRepository;
 
-  private static final String SELECT_NAME = "select.language";
-  private static final String NATIVE_SELECT_LANGUAGE_MODULE = "axelor-core";
-  private static final String NEW_SELECT_LANGUAGE_MODULE = "axelor-base";
+  protected static final String SELECT_NAME = "select.language";
+  protected static final String NATIVE_SELECT_LANGUAGE_MODULE = "axelor-core";
+  protected static final String NEW_SELECT_LANGUAGE_MODULE = "axelor-base";
 
   @Inject
   public LanguageServiceImpl(

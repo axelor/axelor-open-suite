@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,9 +42,12 @@ import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
@@ -228,22 +231,25 @@ public class PurchaseOrderBudgetServiceImpl implements PurchaseOrderBudgetServic
   @Override
   public void updateBudgetLinesFromPurchaseOrder(PurchaseOrder purchaseOrder) {
 
-    if (CollectionUtils.isNotEmpty(purchaseOrder.getPurchaseOrderLineList())) {
-      for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-        if (CollectionUtils.isNotEmpty(purchaseOrderLine.getBudgetDistributionList())) {
-          purchaseOrderLine.getBudgetDistributionList().stream()
-              .forEach(
-                  budgetDistribution -> {
-                    budgetDistribution.setImputationDate(purchaseOrder.getOrderDate());
-                    Budget budget = budgetDistribution.getBudget();
-                    budgetService.updateLines(budget);
-                    budgetService.computeTotalAmountCommitted(budget);
-                    budgetService.computeTotalAmountPaid(budget);
-                    budgetService.computeToBeCommittedAmount(budget);
-                  });
-        }
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    if (CollectionUtils.isEmpty(purchaseOrderLineList)) {
+      return;
+    }
+
+    Set<Budget> budgetSet = new HashSet<>();
+
+    for (PurchaseOrderLine poLine : purchaseOrderLineList) {
+      List<BudgetDistribution> budgetDistributionList = poLine.getBudgetDistributionList();
+      if (CollectionUtils.isEmpty(budgetDistributionList)) {
+        continue;
+      }
+      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
+        budgetDistribution.setImputationDate(purchaseOrder.getOrderDate());
+        budgetSet.add(budgetDistribution.getBudget());
       }
     }
+
+    recomputeBudgets(budgetSet);
   }
 
   @Override
@@ -326,5 +332,33 @@ public class PurchaseOrderBudgetServiceImpl implements PurchaseOrderBudgetServic
       purchaseOrderLineBudgetService.fillBudgetStrOnLine(purchaseOrderLine, multiBudget);
     }
     purchaseOrderRepo.save(purchaseOrder);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void createNewVersion(PurchaseOrder purchaseOrder) {
+    recomputeBudgets(collectAffectedBudgets(purchaseOrder));
+  }
+
+  protected Set<Budget> collectAffectedBudgets(PurchaseOrder purchaseOrder) {
+    Set<Budget> budgets = new LinkedHashSet<>();
+    if (CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+      return budgets;
+    }
+    for (PurchaseOrderLine poLine : purchaseOrder.getPurchaseOrderLineList()) {
+      if (CollectionUtils.isNotEmpty(poLine.getBudgetDistributionList())) {
+        poLine.getBudgetDistributionList().forEach(bd -> budgets.add(bd.getBudget()));
+      }
+    }
+    return budgets;
+  }
+
+  protected void recomputeBudgets(Set<Budget> budgets) {
+    for (Budget budget : budgets) {
+      budgetService.updateLines(budget);
+      budgetService.computeTotalAmountCommitted(budget);
+      budgetService.computeTotalAmountPaid(budget);
+      budgetService.computeToBeCommittedAmount(budget);
+    }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,23 +26,27 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.utils.MapTools;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppSale;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Inject;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SaleOrderViewServiceImpl implements SaleOrderViewService {
 
   public static final String HIDDEN_ATTRS = "hidden";
-  public static final String TITLE_ATTRS = "title";
   public static final String SELECTION_IN_ATTRS = "selection-in";
   public static final String READONLY_ATTRS = "readonly";
   public static final String REFRESH_ATTRS = "refresh";
@@ -74,7 +78,6 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
     MapTools.addMap(attrs, collapseSpecificSettings());
     MapTools.addMap(attrs, inAti(saleOrder));
     MapTools.addMap(attrs, hideBankDetails(saleOrder));
-    MapTools.addMap(attrs, hideDuplicateReferenceLabel(saleOrder));
     MapTools.addMap(attrs, getTypeSelectSelection());
     MapTools.addMap(attrs, hideDiscount());
     MapTools.addMap(attrs, refreshVersionPanel());
@@ -88,7 +91,9 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     MapTools.addMap(attrs, hideContactPartner(saleOrder));
     MapTools.addMap(attrs, hideDiscount());
+    MapTools.addMap(attrs, hideDuplicateReferenceLabel(saleOrder));
     saleOrderAttrsService.setSaleOrderGlobalDiscountDummies(saleOrder, attrs);
+    saleOrderAttrsService.setDiscountsNeedReview(saleOrder, attrs);
     return attrs;
   }
 
@@ -116,10 +121,6 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
 
   protected Map<String, Map<String, Object>> inAti(SaleOrder saleOrder) throws AxelorException {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    AppSale appSale = appSaleService.getAppSale();
-    boolean isClassicLineList =
-        appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_CLASSIC;
-
     boolean inAti = saleOrder.getInAti();
     attrs.put("saleOrderLineList.exTaxTotal", Map.of(HIDDEN_ATTRS, inAti));
     attrs.put("saleOrderLineList.price", Map.of(HIDDEN_ATTRS, inAti));
@@ -135,16 +136,6 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
               || saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_ALWAYS;
       attrs.put("inAti", Map.of(HIDDEN_ATTRS, hideInAti));
     }
-
-    if (inAti && isClassicLineList) {
-      attrs.put(
-          "saleOrderLineList.priceDiscounted", Map.of(TITLE_ATTRS, I18n.get("Unit price A.T.I.")));
-    }
-
-    if (!inAti && isClassicLineList) {
-      attrs.put(
-          "saleOrderLineList.priceDiscounted", Map.of(TITLE_ATTRS, I18n.get("Unit price W.T.")));
-    }
     return attrs;
   }
 
@@ -159,32 +150,28 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     Long saleOrderId = saleOrder.getId();
     String externalReference = saleOrder.getExternalReference();
+    boolean duplicateExists;
     if (saleOrderId != null) {
-      boolean saleOrderExists =
+      duplicateExists =
           saleOrderRepository
                   .all()
-                  .filter("self.externalReference = :externalReference AND self.id = :saleOrderId")
+                  .filter("self.externalReference = :externalReference AND self.id != :saleOrderId")
                   .bind("externalReference", externalReference)
                   .bind("saleOrderId", saleOrderId)
                   .count()
               > 0;
-      attrs.put(
-          "duplicateReferenceLabel",
-          Map.of(HIDDEN_ATTRS, StringUtils.notEmpty(externalReference) && saleOrderExists));
-      return attrs;
     } else {
-      boolean saleOrderExists =
+      duplicateExists =
           saleOrderRepository
                   .all()
                   .filter("self.externalReference = :externalReference")
                   .bind("externalReference", externalReference)
                   .count()
               > 0;
-      attrs.put(
-          "duplicateReferenceLabel",
-          Map.of(HIDDEN_ATTRS, StringUtils.notEmpty(externalReference) && saleOrderExists));
-      return attrs;
     }
+    boolean shouldShowWarning = StringUtils.notEmpty(externalReference) && duplicateExists;
+    attrs.put("duplicateReferenceLabel", Map.of(HIDDEN_ATTRS, !shouldShowWarning));
+    return attrs;
   }
 
   protected Map<String, Map<String, Object>> getTypeSelectSelection() {
@@ -235,5 +222,22 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
                     && clientPartner.getPartnerTypeSelect()
                         == PartnerRepository.PARTNER_TYPE_INDIVIDUAL)));
     return attrs;
+  }
+
+  @Override
+  public ActionViewBuilder buildQuotationLinesView(List<Long> saleOrderIds) {
+    return ActionView.define(I18n.get("Quotation lines"))
+        .model(SaleOrderLine.class.getName())
+        .add("grid", "sale-order-line-menu-grid")
+        .add("form", "sale-order-line-all-form")
+        .param("search-filters", "sale-order-lines-filter")
+        .domain(
+            "self.saleOrder.id IN (:saleOrderIds) AND self.saleOrder.statusSelect IN (:statusList)")
+        .context("saleOrderIds", saleOrderIds)
+        .context(
+            "statusList",
+            Arrays.asList(
+                SaleOrderRepository.STATUS_DRAFT_QUOTATION,
+                SaleOrderRepository.STATUS_FINALIZED_QUOTATION));
   }
 }

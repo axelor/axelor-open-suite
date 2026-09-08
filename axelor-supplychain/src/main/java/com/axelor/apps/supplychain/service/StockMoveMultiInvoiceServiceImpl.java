@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
@@ -41,9 +42,11 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -51,12 +54,15 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import java.math.BigDecimal;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -74,6 +80,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected final AppStockService appStockService;
   protected final SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain;
   protected final PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService;
+  protected final SupplyChainConfigService supplyChainConfigService;
+  protected final StockMoveRepository stockMoveRepository;
 
   @Inject
   public StockMoveMultiInvoiceServiceImpl(
@@ -83,7 +91,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       StockMoveInvoiceService stockMoveInvoiceService,
       AppStockService appStockService,
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
-      PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService) {
+      PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
+      SupplyChainConfigService supplyChainConfigService,
+      StockMoveRepository stockMoveRepository) {
     this.invoiceRepository = invoiceRepository;
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
@@ -91,11 +101,12 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     this.appStockService = appStockService;
     this.saleOrderMergingServiceSupplyChain = saleOrderMergingServiceSupplyChain;
     this.purchaseOrderMergingSupplychainService = purchaseOrderMergingSupplychainService;
+    this.supplyChainConfigService = supplyChainConfigService;
+    this.stockMoveRepository = stockMoveRepository;
   }
 
   @Override
   public Entry<List<Long>, String> generateMultipleInvoices(List<Long> stockMoveIdList) {
-    StockMoveRepository stockMoveRepository = Beans.get(StockMoveRepository.class);
     List<Long> invoiceIdList = new ArrayList<>();
 
     StringBuilder stockMovesInError = new StringBuilder();
@@ -388,7 +399,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     // Check if field constraints are respected
     for (StockMove stockMove : stockMoveList) {
       completeInvoiceInMultiOutgoingStockMove(dummyInvoice, stockMove);
-      if (stockMove.getToAddressStr() != null) {
+      if (stockMove.getToAddress() != null) {
         deliveryAddressSet.add(stockMove.getToAddress());
       }
     }
@@ -640,6 +651,12 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     invoice.setContactPartner(contactPartnerIn);
   }
 
+  protected void setFiscalPositionFromPartner(Invoice invoice) {
+    if (invoice.getPartner() != null) {
+      invoice.setFiscalPosition(invoice.getPartner().getFiscalPosition());
+    }
+  }
+
   /**
    * Create a dummy invoice to hold fields used to generate the invoice which will be saved.
    *
@@ -682,6 +699,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
           stockMove.getInvoicedPartner() != null
               ? stockMove.getInvoicedPartner()
               : stockMove.getPartner());
+      setFiscalPositionFromPartner(dummyInvoice);
       dummyInvoice.setCompany(stockMove.getCompany());
       dummyInvoice.setTradingName(stockMove.getTradingName());
       dummyInvoice.setAddress(stockMove.getToAddress());
@@ -719,7 +737,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setInAti(purchaseOrder.getInAti());
       dummyInvoice.setFiscalPosition(purchaseOrder.getFiscalPosition());
     } else {
-      if (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())) {
+      Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
+      if (ObjectUtils.notEmpty(saleOrderSet)) {
         SaleOrder saleOrder = saleOrderMergingServiceSupplyChain.getDummyMergedSaleOrder(stockMove);
         if (appStockService.getAppStock().getIsIncotermEnabled()) {
           dummyInvoice.setIncoterm(saleOrder.getIncoterm());
@@ -728,6 +747,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       }
       dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
       dummyInvoice.setPartner(stockMove.getPartner());
+      if (ObjectUtils.isEmpty(saleOrderSet)) {
+        setFiscalPositionFromPartner(dummyInvoice);
+      }
       dummyInvoice.setCompany(stockMove.getCompany());
       dummyInvoice.setTradingName(stockMove.getTradingName());
       dummyInvoice.setAddress(stockMove.getFromAddress());
@@ -769,6 +791,17 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     if (stockMove.getInvoiceSet() != null
         && stockMove.getInvoiceSet().stream()
             .anyMatch(invoice -> invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED)) {
+      Company company = stockMove.getCompany();
+      if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+              && supplyChainConfigService
+                  .getSupplyChainConfig(company)
+                  .getActivateOutStockMovePartialInvoicing())
+          || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+              && supplyChainConfigService
+                  .getSupplyChainConfig(company)
+                  .getActivateIncStockMovePartialInvoicing())) {
+        return;
+      }
       String templateMessage;
       if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
         templateMessage = SupplychainExceptionMessage.OUTGOING_STOCK_MOVE_INVOICE_EXISTS;
@@ -877,8 +910,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
    */
   protected void fillReferenceInvoiceFromMultiOutStockMove(
       List<StockMove> stockMoveList, Invoice dummyInvoice) {
-    // Concat sequence, internal ref and external ref from all saleOrder
-    StringJoiner externalRef = new StringJoiner("|");
+    Set<SaleOrder> allSaleOrders = new LinkedHashSet<>();
     StringJoiner internalRef = new StringJoiner("|");
 
     for (StockMove stockMove : stockMoveList) {
@@ -887,11 +919,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       if (ObjectUtils.isEmpty(saleOrderSet)) {
         continue;
       }
-      String externalReference =
-          stockMoveInvoiceService.fillExternalReferenceInvoiceFromOutStockMove(saleOrderSet);
-      if (StringUtils.notEmpty(externalReference)) {
-        externalRef.add(externalReference);
-      }
+      allSaleOrders.addAll(saleOrderSet);
       String internalReference =
           stockMoveInvoiceService.fillInternalReferenceInvoiceFromOutStockMove(
               stockMove, saleOrderSet);
@@ -899,7 +927,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
         internalRef.add(internalReference);
       }
     }
-    dummyInvoice.setExternalReference(externalRef.toString());
+    dummyInvoice.setExternalReference(
+        stockMoveInvoiceService.fillExternalReferenceInvoiceFromOutStockMove(allSaleOrders));
     dummyInvoice.setInternalReference(internalRef.toString());
   }
 
@@ -911,8 +940,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
    */
   protected void fillReferenceInvoiceFromMultiInStockMove(
       List<StockMove> stockMoveList, Invoice dummyInvoice) {
-    // Concat sequence, internal ref and external ref from all purchaseOrder
-    StringJoiner externalRef = new StringJoiner("|");
+    Set<PurchaseOrder> allPurchaseOrders = new LinkedHashSet<>();
     StringJoiner internalRef = new StringJoiner("|");
 
     for (StockMove stockMove : stockMoveList) {
@@ -921,11 +949,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       if (ObjectUtils.isEmpty(purchaseOrderSet)) {
         continue;
       }
-      String externalReference =
-          stockMoveInvoiceService.fillExternalReferenceInvoiceFromInStockMove(purchaseOrderSet);
-      if (StringUtils.notEmpty(externalReference)) {
-        externalRef.add(externalReference);
-      }
+      allPurchaseOrders.addAll(purchaseOrderSet);
       String internalReference =
           stockMoveInvoiceService.fillInternalReferenceInvoiceFromInStockMove(
               stockMove, purchaseOrderSet);
@@ -933,7 +957,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
         internalRef.add(internalReference);
       }
     }
-    dummyInvoice.setExternalReference(externalRef.toString());
+    dummyInvoice.setExternalReference(
+        stockMoveInvoiceService.fillExternalReferenceInvoiceFromInStockMove(allPurchaseOrders));
     dummyInvoice.setInternalReference(internalRef.toString());
   }
 
@@ -977,5 +1002,45 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     }
     invoice.setNote(notes.toString());
     invoice.setProformaComments(proformaComments.toString());
+  }
+
+  @Override
+  public String getStockMoveDomain(
+      int primaryType, int reversionType, boolean primaryIsNonReversion) throws AxelorException {
+    List<StockMove> stockMoveList =
+        stockMoveRepository
+            .all()
+            .filter(
+                "self.statusSelect = :realized "
+                    + "AND ((self.typeSelect = :primaryType AND self.isReversion = :isReversion) "
+                    + "OR (self.typeSelect = :reversionType AND self.isReversion = :notIsReversion)) "
+                    + "AND self.invoicingStatusSelect IN :invoicingStatuses")
+            .bind("realized", StockMoveRepository.STATUS_REALIZED)
+            .bind("primaryType", primaryType)
+            .bind("reversionType", reversionType)
+            .bind("isReversion", !primaryIsNonReversion)
+            .bind("notIsReversion", primaryIsNonReversion)
+            .bind(
+                "invoicingStatuses",
+                List.of(
+                    StockMoveRepository.STATUS_NOT_INVOICED,
+                    StockMoveRepository.STATUS_PARTIALLY_INVOICED,
+                    StockMoveRepository.STATUS_DELAYED_INVOICE))
+            .fetch();
+
+    List<StockMove> filteredStockMoves = new ArrayList<StockMove>();
+    for (StockMove stockMove : stockMoveList) {
+      BigDecimal totalRealQty =
+          ObjectUtils.isEmpty(stockMove.getStockMoveLineList())
+              ? BigDecimal.ZERO
+              : stockMove.getStockMoveLineList().stream()
+                  .map(StockMoveLine::getRealQty)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add);
+      if (stockMoveInvoiceService.computeNonCanceledInvoiceQty(stockMove).compareTo(totalRealQty)
+          < 0) {
+        filteredStockMoves.add(stockMove);
+      }
+    }
+    return "self.id IN (" + StringHelper.getIdListString(filteredStockMoves) + ")";
   }
 }

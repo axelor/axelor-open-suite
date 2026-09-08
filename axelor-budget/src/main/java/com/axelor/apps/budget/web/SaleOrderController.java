@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -95,6 +95,7 @@ public class SaleOrderController {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       Beans.get(SaleOrderBudgetService.class).fillBudgetStrOnLine(saleOrder);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -116,6 +117,7 @@ public class SaleOrderController {
   public void autoComputeBudgetDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
     SaleOrderBudgetService saleOrderBudgetService = Beans.get(SaleOrderBudgetService.class);
     if (saleOrder != null
         && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())

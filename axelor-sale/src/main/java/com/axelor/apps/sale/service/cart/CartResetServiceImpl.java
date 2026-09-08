@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,6 +36,7 @@ public class CartResetServiceImpl implements CartResetService {
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void emptyCart(Cart cart) {
+    cart = cartRepository.find(cart.getId());
     if (!CollectionUtils.isEmpty(cart.getCartLineList())) {
       cart.getCartLineList().clear();
     }

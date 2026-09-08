@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,9 @@ package com.axelor.apps.budget.service.saleorder;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.PartnerAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
@@ -42,10 +45,11 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
 import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
@@ -82,7 +86,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceContractServiceI
       AppSupplychainService appSupplychainService,
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
-      InvoiceServiceSupplychainImpl invoiceService,
+      InvoiceService invoiceService,
+      InvoiceServiceSupplychain invoiceServiceSupplychain,
       StockMoveRepository stockMoveRepository,
       SaleOrderWorkflowService saleOrderWorkflowService,
       InvoiceTermService invoiceTermService,
@@ -93,6 +98,9 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceContractServiceI
       OrderInvoiceService orderInvoiceService,
       InvoiceTaxService invoiceTaxService,
       SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
+      PartnerAccountService partnerAccountService,
+      InvoiceGlobalDiscountService invoiceGlobalDiscountService,
+      TimetableRepository timetableRepo,
       AppBudgetService appBudgetService,
       BudgetDistributionService budgetDistributionService,
       SaleOrderLineBudgetService saleOrderLineBudgetService,
@@ -106,6 +114,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceContractServiceI
         saleOrderRepo,
         invoiceRepo,
         invoiceService,
+        invoiceServiceSupplychain,
         stockMoveRepository,
         saleOrderWorkflowService,
         invoiceTermService,
@@ -115,7 +124,10 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceContractServiceI
         currencyScaleService,
         orderInvoiceService,
         invoiceTaxService,
-        saleOrderDeliveryAddressService);
+        saleOrderDeliveryAddressService,
+        partnerAccountService,
+        invoiceGlobalDiscountService,
+        timetableRepo);
     this.appBudgetService = appBudgetService;
     this.budgetDistributionService = budgetDistributionService;
     this.saleOrderLineBudgetService = saleOrderLineBudgetService;

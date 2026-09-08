@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.io.Files;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.Map;
 
@@ -43,32 +43,18 @@ class ImporterCSV extends Importer {
   @Override
   protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
       throws IOException, AxelorException {
-    return process(bind, data, getErrorDirectory(), importContext);
-  }
 
-  @Override
-  protected ImportHistory process(String bind, String data) throws IOException, AxelorException {
-    return process(bind, data, getErrorDirectory());
-  }
-
-  @Override
-  protected ImportHistory process(String bind, String data, String errorDir)
-      throws IOException, AxelorException {
-    return process(bind, data, errorDir, null);
-  }
-
-  @Override
-  protected ImportHistory process(
-      String bind, String data, String errorDir, Map<String, Object> importContext)
-      throws IOException, AxelorException {
-
+    String errorDir = getErrorDirectory();
     CSVImporter importer = new CSVImporter(bind, data, errorDir);
     ImporterListener listener = new ImporterListener(getConfiguration().getName());
     importer.addListener(listener);
     importer.setContext(importContext);
     importer.run();
 
-    return addHistory(listener, errorDir);
+    ImportHistory history = addHistory(listener);
+    history.setErrorMetaFile(getErrorMetaFile(errorDir));
+
+    return history;
   }
 
   @Override

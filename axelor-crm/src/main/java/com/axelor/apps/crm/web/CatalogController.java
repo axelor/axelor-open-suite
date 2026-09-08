@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,9 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Catalog;
 import com.axelor.apps.crm.db.repo.CatalogRepository;
 import com.axelor.apps.crm.service.CatalogService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.TemplateRepository;
 import com.axelor.meta.MetaFiles;
@@ -84,8 +86,13 @@ public class CatalogController {
         Partner contact = partnerRepository.find(Long.parseLong(contactData.get("id").toString()));
         contactList.add(contact);
       }
-
-      Beans.get(CatalogService.class).sendEmail(catalog, template, contactList);
+      Message message = Beans.get(CatalogService.class).sendEmail(catalog, template, contactList);
+      response.setView(
+          ActionView.define(I18n.get("Email"))
+              .model(Message.class.getName())
+              .add("form", "message-form")
+              .context("_showRecord", String.valueOf(message.getId()))
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

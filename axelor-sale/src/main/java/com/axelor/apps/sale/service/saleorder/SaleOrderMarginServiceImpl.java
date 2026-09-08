@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -59,10 +59,11 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
     BigDecimal totalGrossMargin = BigDecimal.ZERO;
 
     if (saleOrder.getSaleOrderLineList() != null && !saleOrder.getSaleOrderLineList().isEmpty()) {
+      boolean considerZeroCost = appSaleService.getAppSale().getConsiderZeroCost();
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
         if (saleOrderLine.getProduct() == null
             || (saleOrderLine.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0
-                && !appSaleService.getAppSale().getConsiderZeroCost())) {
+                && !considerZeroCost)) {
           continue;
         }
         totalGrossMargin = totalGrossMargin.add(saleOrderLine.getSubTotalGrossMargin());

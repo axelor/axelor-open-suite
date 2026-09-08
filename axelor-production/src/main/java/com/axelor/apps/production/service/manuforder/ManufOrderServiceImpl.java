@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -64,6 +64,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -528,7 +529,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
 
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
-    StockMoveService stockMoveService = Beans.get(StockMoveService.class);
     StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
 
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
@@ -549,26 +549,30 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             StockMoveRepository.TYPE_INTERNAL);
 
     for (ProdProduct prodProduct : manufOrder.getWasteProdProductList()) {
-      stockMoveLineService.createStockMoveLine(
-          prodProduct.getProduct(),
-          (String) productCompanyService.get(prodProduct.getProduct(), "name", company),
-          (String) productCompanyService.get(prodProduct.getProduct(), "description", company),
-          prodProduct.getQty(),
-          (BigDecimal) productCompanyService.get(prodProduct.getProduct(), "costPrice", company),
-          (BigDecimal) productCompanyService.get(prodProduct.getProduct(), "costPrice", company),
-          prodProduct.getUnit(),
-          wasteStockMove,
-          StockMoveLineService.TYPE_WASTE_PRODUCTIONS,
-          false,
-          BigDecimal.ZERO,
-          virtualStockLocation,
-          wasteStockLocation,
-          prodProduct.getWasteProductTrackingNumber());
+      StockMoveLine stockMoveLine =
+          stockMoveLineService.createStockMoveLine(
+              prodProduct.getProduct(),
+              (String) productCompanyService.get(prodProduct.getProduct(), "name", company),
+              (String) productCompanyService.get(prodProduct.getProduct(), "description", company),
+              prodProduct.getQty(),
+              (BigDecimal)
+                  productCompanyService.get(prodProduct.getProduct(), "costPrice", company),
+              (BigDecimal)
+                  productCompanyService.get(prodProduct.getProduct(), "costPrice", company),
+              prodProduct.getUnit(),
+              wasteStockMove,
+              StockMoveLineService.TYPE_WASTE_PRODUCTIONS,
+              false,
+              BigDecimal.ZERO,
+              virtualStockLocation,
+              wasteStockLocation,
+              prodProduct.getWasteProductTrackingNumber());
+      wasteStockMove.addStockMoveLineListItem(stockMoveLine);
     }
+    manufOrder.setWasteStockMove(wasteStockMove);
+    manufOrderRepo.save(manufOrder);
 
     stockMoveService.validate(wasteStockMove);
-
-    manufOrder.setWasteStockMove(wasteStockMove);
     return wasteStockMove;
   }
 
@@ -579,7 +583,15 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     manufOrder.clearToProduceProdProductList();
     this.createToConsumeProdProductList(manufOrder);
     this.createToProduceProdProductList(manufOrder);
+    if (manufOrder.getIsConsProOnOperation()) {
+      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+        operationOrder = JpaModelHelper.ensureManaged(operationOrder);
+        operationOrder.clearToConsumeProdProductList();
+        operationOrderService.createToConsumeProdProductList(operationOrder);
+      }
+    }
     updateRealQty(manufOrder, manufOrder.getQty());
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     LocalDateTime plannedStartDateT = manufOrder.getPlannedStartDateT();
     manufOrderPlanService.updatePlannedDates(
         manufOrder,
@@ -593,17 +605,18 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateRealQty(ManufOrder manufOrder, BigDecimal qtyToUpdate) throws AxelorException {
-    ManufOrderStockMoveService manufOrderStockMoveService =
-        Beans.get(ManufOrderStockMoveService.class);
     if (!manufOrder.getIsConsProOnOperation()) {
       manufOrderCreateStockMoveLineService.createNewConsumedStockMoveLineList(
           manufOrder, qtyToUpdate);
       updateDiffProdProductList(manufOrder);
     } else {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+        operationOrder = JpaModelHelper.ensureManaged(operationOrder);
         Beans.get(OperationOrderStockMoveService.class)
             .createNewConsumedStockMoveLineList(operationOrder, qtyToUpdate);
+        operationOrder = JpaModelHelper.ensureManaged(operationOrder);
         operationOrderService.updateDiffProdProductList(operationOrder);
+        manufOrder = JpaModelHelper.ensureManaged(manufOrder);
       }
     }
 
@@ -613,6 +626,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
   @Override
   public ManufOrder updateDiffProdProductList(ManufOrder manufOrder) throws AxelorException {
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     List<ProdProduct> toConsumeList = manufOrder.getToConsumeProdProductList();
     List<StockMoveLine> consumedList = manufOrder.getConsumedStockMoveLineList();
     if (toConsumeList == null || consumedList == null) {
@@ -711,13 +725,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       if (stockMoveLine.getUnit() != null && prodProduct.getUnit() != null) {
         consumedQty =
             consumedQty.add(
-                Beans.get(UnitConversionService.class)
-                    .convert(
-                        stockMoveLine.getUnit(),
-                        prodProduct.getUnit(),
-                        stockMoveLine.getQty(),
-                        stockMoveLine.getQty().scale(),
-                        product));
+                unitConversionService.convert(
+                    stockMoveLine.getUnit(),
+                    prodProduct.getUnit(),
+                    stockMoveLine.getQty(),
+                    stockMoveLine.getQty().scale(),
+                    product));
       } else {
         consumedQty = consumedQty.add(stockMoveLine.getQty());
       }
@@ -732,9 +745,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     String statusListQuery =
         statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
     String query =
-        "self.product.id = "
+        "(self.product.id = "
             + productId
-            + " AND self.stockMove.statusSelect = "
+            + " OR self.product.parentProduct.id = "
+            + productId
+            + ") AND self.stockMove.statusSelect = "
             + StockMoveRepository.STATUS_PLANNED
             + " AND self.fromStockLocation.typeSelect != "
             + StockLocationRepository.TYPE_VIRTUAL
@@ -773,9 +788,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     String statusListQuery =
         statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
     String query =
-        "self.product.id = "
+        "(self.product.id = "
             + productId
-            + " AND self.stockMove.statusSelect = "
+            + " OR self.product.parentProduct.id = "
+            + productId
+            + ") AND self.stockMove.statusSelect = "
             + StockMoveRepository.STATUS_PLANNED
             + " AND self.stockMove.toStockLocation.typeSelect != "
             + StockLocationRepository.TYPE_VIRTUAL
@@ -824,16 +841,30 @@ public class ManufOrderServiceImpl implements ManufOrderService {
    */
   public List<ManufOrder> generateAllSubManufOrder(List<Product> productList, ManufOrder manufOrder)
       throws AxelorException {
+    // Perf: local cache for getDefaultBOM lookups shared across the recursive BOM traversal.
+    // Key: Product ID, Value: BillOfMaterial (absent if no default BOM found).
+    Map<Long, BillOfMaterial> defaultBomCache = new HashMap<>();
     Integer depth = 0;
     List<ManufOrder> moList = new ArrayList<>();
     List<Pair<BillOfMaterial, BigDecimal>> childBomList =
-        getToConsumeSubBomList(manufOrder.getBillOfMaterial(), manufOrder, productList);
-    moList.addAll(this.generateChildMOs(manufOrder, childBomList, depth));
+        getToConsumeSubBomList(
+            manufOrder.getBillOfMaterial(), manufOrder, productList, defaultBomCache);
+    moList.addAll(this.generateChildMOs(manufOrder, childBomList, depth, defaultBomCache));
     return moList;
   }
 
+  @Override
   public List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
       BillOfMaterial billOfMaterial, ManufOrder mo, List<Product> productList)
+      throws AxelorException {
+    return getToConsumeSubBomList(billOfMaterial, mo, productList, new HashMap<>());
+  }
+
+  protected List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
+      BillOfMaterial billOfMaterial,
+      ManufOrder mo,
+      List<Product> productList,
+      Map<Long, BillOfMaterial> defaultBomCache)
       throws AxelorException {
     List<Pair<BillOfMaterial, BigDecimal>> bomList = new ArrayList<>();
 
@@ -853,8 +884,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           bomList.add(Pair.of(bom, qtyReq));
         }
       } else {
-        BillOfMaterial defaultBOM =
-            Beans.get(BillOfMaterialService.class).getDefaultBOM(product, null);
+        // Perf: Use cache for getDefaultBOM to avoid repeated DB lookups for same product
+        BillOfMaterial defaultBOM = getDefaultBOMCached(product, defaultBomCache);
 
         if ((product.getProductSubTypeSelect()
                     == ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT
@@ -867,6 +898,27 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       }
     }
     return bomList;
+  }
+
+  /**
+   * Get default BOM for a product with caching to avoid repeated DB lookups.
+   *
+   * @param product The product to get the default BOM for
+   * @param defaultBomCache The traversal-local cache of default BOMs keyed by product id
+   * @return The default BillOfMaterial or null if not found
+   * @throws AxelorException if an error occurs during BOM lookup
+   */
+  protected BillOfMaterial getDefaultBOMCached(
+      Product product, Map<Long, BillOfMaterial> defaultBomCache) throws AxelorException {
+    Long productId = product.getId();
+    if (defaultBomCache.containsKey(productId)) {
+      return defaultBomCache.get(productId);
+    }
+    BillOfMaterial defaultBOM = billOfMaterialService.getDefaultBOM(product, null);
+    if (defaultBOM != null) {
+      defaultBomCache.put(productId, defaultBOM);
+    }
+    return defaultBOM;
   }
 
   protected ManufOrder createDraftManufOrder(
@@ -957,13 +1009,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         qty = qty.add(manufOrder.getQty());
       } else {
         BigDecimal qtyConverted =
-            Beans.get(UnitConversionService.class)
-                .convert(
-                    manufOrder.getUnit(),
-                    unit,
-                    manufOrder.getQty(),
-                    appBaseService.getNbDecimalDigitForQty(),
-                    null);
+            unitConversionService.convert(
+                manufOrder.getUnit(),
+                unit,
+                manufOrder.getQty(),
+                appBaseService.getNbDecimalDigitForQty(),
+                null);
         qty = qty.add(qtyConverted);
       }
       if (manufOrder.getNote() != null && !manufOrder.getNote().equals("")) {
@@ -1031,8 +1082,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     } else {
       preFillOperations(mergedManufOrder);
     }
-
-    manufOrderRepo.save(mergedManufOrder);
   }
 
   public boolean canMerge(List<Long> ids) {
@@ -1125,62 +1174,105 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public List<Long> planSelectedOrdersAndDiscardOthers(List<Map<String, Object>> manufOrders)
       throws AxelorException {
     List<Long> ids = new ArrayList<>();
-    Map<String, String> sequenceParentSeqMap = new HashMap<>();
-    Map<String, ManufOrder> seqMOMap = new HashMap<>();
-    List<ManufOrder> generatedMOList = new ArrayList<>();
+    // Maps each draft MO's BOM ID to the ID of the real ManufOrder generated from it.
+    // Used to resolve parent links for grandchildren, whose draft parentMO has id=null
+    // but whose parentMO.billOfMaterial.id is preserved across the wizard round-trip.
+    // Storing IDs (not entity references) avoids detached-entity errors caused by JPA
+    // flush/clear operations inside generateManufOrder.
+    Map<Long, Long> bomIdToGeneratedMOId = new HashMap<>();
 
     for (Map<String, Object> manufOrderMap : manufOrders) {
-      ManufOrder manufOrder = Mapper.toBean(ManufOrder.class, manufOrderMap);
-      Product product = Beans.get(ProductRepository.class).find(manufOrder.getProduct().getId());
+      ManufOrder draftMO = Mapper.toBean(ManufOrder.class, manufOrderMap);
 
-      String backupSeq = manufOrder.getManualMOSeq();
-
-      ManufOrder parentMO = manufOrder.getParentMO();
-      Long parentMOId = parentMO.getId();
-      if (parentMOId != null) {
-        if (!seqMOMap.containsKey(parentMOId.toString())) {
-          seqMOMap.put(parentMOId.toString(), parentMO);
-        }
-        sequenceParentSeqMap.put(backupSeq, parentMOId.toString());
-      } else {
-        sequenceParentSeqMap.put(backupSeq, parentMO.getManualMOSeq());
+      if (!(boolean) manufOrderMap.get("selected")) {
+        continue;
       }
 
-      if ((boolean) manufOrderMap.get("selected")) {
-        BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
-        billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
-        Partner clientPartner = manufOrder.getClientPartner();
-        if (ObjectUtils.notEmpty(clientPartner)) {
-          clientPartner = partnerRepository.find(clientPartner.getId());
-        }
-        manufOrder =
-            generateManufOrder(
-                product,
-                manufOrder.getQty().multiply(billOfMaterial.getQty()),
-                manufOrder.getPrioritySelect(),
-                IS_TO_INVOICE,
-                billOfMaterial,
-                manufOrder.getPlannedStartDateT(),
-                manufOrder.getPlannedEndDateT(),
-                ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
+      Product product = Beans.get(ProductRepository.class).find(draftMO.getProduct().getId());
 
-        manufOrder.setClientPartner(clientPartner);
-        manufOrder.setManualMOSeq(backupSeq);
-        seqMOMap.put(backupSeq, manufOrder);
-        ids.add(manufOrder.getId());
-        generatedMOList.add(manufOrder);
+      BillOfMaterial billOfMaterial = draftMO.getBillOfMaterial();
+      Long draftBomId = billOfMaterial != null ? billOfMaterial.getId() : null;
+      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(draftBomId);
+
+      Partner clientPartner = draftMO.getClientPartner();
+      if (ObjectUtils.notEmpty(clientPartner)) {
+        clientPartner = partnerRepository.find(clientPartner.getId());
       }
+
+      ManufOrder generated =
+          generateManufOrder(
+              product,
+              draftMO.getQty().multiply(billOfMaterial.getQty()),
+              draftMO.getPrioritySelect(),
+              IS_TO_INVOICE,
+              billOfMaterial,
+              draftMO.getPlannedStartDateT(),
+              draftMO.getPlannedEndDateT(),
+              ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
+
+      if (appProductionService.getAppProduction().getManageWorkshop()
+          && generated.getWorkshopStockLocation() == null) {
+        StockLocation parentWorkshop = null;
+        ManufOrder draftParentMO = draftMO.getParentMO();
+        if (draftParentMO != null) {
+          if (draftParentMO.getId() != null) {
+            ManufOrder dbParentMO = manufOrderRepo.find(draftParentMO.getId());
+            parentWorkshop = dbParentMO.getWorkshopStockLocation();
+          } else {
+            BillOfMaterial parentBom = draftParentMO.getBillOfMaterial();
+            if (parentBom != null) {
+              Long parentMOId = bomIdToGeneratedMOId.get(parentBom.getId());
+              if (parentMOId != null) {
+                ManufOrder generatedParentMO = manufOrderRepo.find(parentMOId);
+                parentWorkshop = generatedParentMO.getWorkshopStockLocation();
+              }
+            }
+          }
+        }
+        generated.setWorkshopStockLocation(parentWorkshop);
+      }
+
+      generated.setClientPartner(clientPartner);
+
+      setParentMo(draftMO, generated, bomIdToGeneratedMOId);
+
+      if (draftBomId != null) {
+        bomIdToGeneratedMOId.put(draftBomId, generated.getId());
+      }
+
+      ids.add(generated.getId());
     }
-    this.setParentMos(sequenceParentSeqMap, seqMOMap, generatedMOList);
     return ids;
   }
 
+  protected void setParentMo(
+      ManufOrder draftMO, ManufOrder generated, Map<Long, Long> bomIdToGeneratedMOId) {
+    // Set parentMO: for root children the draft parentMO has a real id (saved entity);
+    // for deeper levels the draft parentMO has id=null but its billOfMaterial.id identifies
+    // the previously generated ManufOrder that acts as the parent.
+    ManufOrder draftParentMO = draftMO.getParentMO();
+    if (draftParentMO != null && draftParentMO.getId() != null) {
+      generated.setParentMO(manufOrderRepo.find(draftParentMO.getId()));
+    } else if (draftParentMO != null) {
+      BillOfMaterial parentBom = draftParentMO.getBillOfMaterial();
+      if (parentBom != null) {
+        Long parentMOId = bomIdToGeneratedMOId.get(parentBom.getId());
+        if (parentMOId != null) {
+          generated.setParentMO(manufOrderRepo.find(parentMOId));
+        }
+      }
+    }
+  }
+
   protected List<ManufOrder> generateChildMOs(
-      ManufOrder parentMO, List<Pair<BillOfMaterial, BigDecimal>> childBomList, Integer depth)
+      ManufOrder parentMO,
+      List<Pair<BillOfMaterial, BigDecimal>> childBomList,
+      Integer depth,
+      Map<Long, BillOfMaterial> defaultBomCache)
       throws AxelorException {
     List<ManufOrder> manufOrderList = new ArrayList<>();
 
@@ -1212,39 +1304,16 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
       manufOrderList.addAll(
           this.generateChildMOs(
-              childMO, getToConsumeSubBomList(childMO.getBillOfMaterial(), childMO, null), depth));
+              childMO,
+              getToConsumeSubBomList(childMO.getBillOfMaterial(), childMO, null, defaultBomCache),
+              depth,
+              defaultBomCache));
     }
     return manufOrderList;
   }
 
   protected String getManualSequence() {
     return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
-  }
-
-  @Transactional
-  protected void setParentMos(
-      Map<String, String> sequenceParentSeqMap,
-      Map<String, ManufOrder> seqMOMap,
-      List<ManufOrder> generatedMOList) {
-    for (ManufOrder mo : generatedMOList) {
-      String seq = mo.getManualMOSeq();
-      ManufOrder parentMO = this.getParentMO(sequenceParentSeqMap, seqMOMap, seq);
-      mo.setParentMO(parentMO);
-    }
-  }
-
-  protected ManufOrder getParentMO(
-      Map<String, String> sequenceParentSeqMap, Map<String, ManufOrder> seqMOMap, String seq) {
-    ManufOrder parentMO = null;
-    String parentSeq = sequenceParentSeqMap.get(seq);
-
-    if (seqMOMap.containsKey(parentSeq)) {
-      parentMO = seqMOMap.get(parentSeq);
-      parentMO = manufOrderRepo.find(parentMO.getId());
-    } else {
-      parentMO = this.getParentMO(sequenceParentSeqMap, seqMOMap, parentSeq);
-    }
-    return parentMO;
   }
 
   @Override
@@ -1269,6 +1338,17 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       Product product = billOfMaterialLine.getProduct();
       BigDecimal availableQty = productStockLocationService.getAvailableQty(product, company, null);
       BigDecimal qtyNeeded = billOfMaterialLine.getQty();
+      Unit bomLineUnit = billOfMaterialLine.getUnit();
+      Unit productUnit = product.getUnit();
+      if (productUnit != null && bomLineUnit != null && !bomLineUnit.equals(productUnit)) {
+        availableQty =
+            unitConversionService.convert(
+                productUnit,
+                bomLineUnit,
+                availableQty,
+                appBaseService.getNbDecimalDigitForQty(),
+                product);
+      }
       if (availableQty.compareTo(BigDecimal.ZERO) >= 0
           && qtyNeeded.compareTo(BigDecimal.ZERO) > 0) {
         BigDecimal qtyToUse = availableQty.divideToIntegralValue(qtyNeeded);

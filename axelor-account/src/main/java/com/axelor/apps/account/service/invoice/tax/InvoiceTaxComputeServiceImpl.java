@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,8 +21,10 @@ package com.axelor.apps.account.service.invoice.tax;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class InvoiceTaxComputeServiceImpl implements InvoiceTaxComputeService {
 
@@ -67,5 +69,26 @@ public class InvoiceTaxComputeServiceImpl implements InvoiceTaxComputeService {
     invoice.setCompanyInTaxTotalRemaining(invoice.getCompanyInTaxTotal());
 
     invoice.setAmountRemaining(invoice.getInTaxTotal());
+  }
+
+  @Override
+  public BigDecimal computeTaxAmount(
+      InvoiceLineTax invoiceLineTax,
+      BigDecimal exTaxBase,
+      BigDecimal taxValue,
+      BigDecimal inTaxTotal) {
+    Invoice invoice = invoiceLineTax.getInvoice();
+    BigDecimal taxAmount =
+        exTaxBase
+            .multiply(taxValue)
+            .setScale(AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+
+    if (invoice != null) {
+      BigDecimal diff = taxAmount.subtract(inTaxTotal.subtract(exTaxBase)).abs();
+      if (diff.compareTo(BigDecimal.ZERO) >= 0 && diff.compareTo(new BigDecimal("0.01")) <= 0) {
+        return inTaxTotal.subtract(exTaxBase);
+      }
+    }
+    return taxAmount.setScale(currencyScaleService.getScale(invoice), RoundingMode.HALF_UP);
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -92,8 +92,7 @@ public class DurationServiceImpl implements DurationService {
     if (duration.getTypeSelect() == DurationRepository.TYPE_MONTH) {
       long months = ChronoUnit.MONTHS.between(totalStart, totalEnd);
       if (months < durationValue) {
-        LocalDate theoryStart = totalStart.minusMonths(duration.getValue() - months);
-        totalDays = ChronoUnit.DAYS.between(theoryStart, totalEnd);
+        totalDays = ChronoUnit.DAYS.between(totalStart, totalStart.plusMonths(durationValue));
       }
     } else {
       if (totalDays < durationValue) {

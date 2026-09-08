@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,13 +41,10 @@ import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import jakarta.inject.Inject;
-import jakarta.xml.bind.JAXBException;
 import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 public class BankOrderFileAFB320XCTService extends BankOrderFileService {
 
@@ -97,13 +94,9 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
    * Method to create an XML file for SEPA transfer pain.001.001.02
    *
    * @throws AxelorException
-   * @throws DatatypeConfigurationException
-   * @throws JAXBException
-   * @throws IOException
    */
   @Override
-  public File generateFile()
-      throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
+  public File generateFile() throws AxelorException {
 
     List<String> records = Lists.newArrayList();
 

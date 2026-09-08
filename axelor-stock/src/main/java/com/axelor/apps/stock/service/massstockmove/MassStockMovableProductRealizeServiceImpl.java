@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,8 @@ import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.interfaces.massstockmove.MassStockMovableProduct;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
+import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -93,6 +95,8 @@ public class MassStockMovableProductRealizeServiceImpl
       MassStockMovableProductLocationService locationService)
       throws AxelorException {
 
+    movableProduct = (MassStockMovableProduct) JpaModelHelper.ensureManaged((Model) movableProduct);
+
     var massStockMove = movableProduct.getMassStockMove();
     var fromStockLocation = locationService.getFromStockLocation(movableProduct);
     var toStockLocation = locationService.getToStockLocation(movableProduct);
@@ -131,6 +135,10 @@ public class MassStockMovableProductRealizeServiceImpl
 
       stockMoveService.plan(stockMove);
       stockMoveService.realize(stockMove);
+
+      stockMoveLine = JpaModelHelper.ensureManaged(stockMoveLine);
+      movableProduct =
+          (MassStockMovableProduct) JpaModelHelper.ensureManaged((Model) movableProduct);
       movableProduct.setStockMoveLine(stockMoveLine);
 
       processingService.postRealize(movableProduct);

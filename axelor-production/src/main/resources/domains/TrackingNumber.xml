@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -10,6 +10,10 @@
     <many-to-one name="originManufOrder" ref="com.axelor.apps.production.db.ManufOrder"
       title="Origin manuf order"/>
 
+    <finder-method name="findOrphanedByOriginManufOrder" using="originManufOrder"
+      filter="self.originManufOrder = :originManufOrder AND self.originStockMoveLine IS NULL
+        AND self.product IS NOT NULL"
+      all="true"/>
 
     <extra-code>
       <![CDATA[

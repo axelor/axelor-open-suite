@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -66,7 +66,7 @@ public class KilometricLogServiceImpl implements KilometricLogService {
     kilometricLog.setDistanceTravelled(
         expenseLineList.stream()
             .filter(
-                line -> line.getExpense().getStatusSelect() == ExpenseRepository.STATUS_VALIDATED)
+                line -> line.getExpense().getStatusSelect() != ExpenseRepository.STATUS_CANCELED)
             .map(ExpenseLine::getDistance)
             .reduce(BigDecimal.ZERO, BigDecimal::add));
   }

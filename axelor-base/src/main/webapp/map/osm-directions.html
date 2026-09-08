@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Leaflet Routing</title>
+<link rel="stylesheet"
+	href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+<link rel="stylesheet"
+	href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+
+</head>
+<body>
+	<div id="map" style="width: 100%; height: 100%; position: absolute;"></div>
+	<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+	<script
+		src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/perliedman-leaflet-control-geocoder/1.7.0/Control.Geocoder.js"></script>
+
+	<script>
+		function getQueryVariable(variable) {
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+			for (var i = 0; i < vars.length; i++) {
+				var pair = vars[i].split("=");
+				if (pair[0] == variable) {
+					return pair[1];
+				}
+			}
+			return (false);
+		}
+	</script>
+
+	<script>
+		var map = L.map('map').setView([44.907852, 7.673789],16);
+		var dx = getQueryVariable("dx");
+		var dy = getQueryVariable("dy");
+		var ax = getQueryVariable("ax");
+		var ay = getQueryVariable("ay");
+		
+		var bounds = new L.LatLngBounds();
+		var marker1 = new L.marker(dx, dy);
+		var marker2 = new L.marker(ax, ay);
+		bounds.extend(marker1.getLatLng());
+		bounds.extend(marker2.getLatLng());
+
+		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			maxZoom: 18,
+			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
+		}).addTo(map);
+
+		
+		L.Routing.control({
+			waypoints : [ L.latLng(dx, dy), L.latLng(ax, ay) ],
+			routeWhileDragging: true,
+		    geocoder: L.Control.Geocoder.nominatim()
+		}).on('routingerror', function(e) {	        
+	        alert('Route not Found !');
+	    })
+	    .addTo(map);
+		
+		map.fitBounds(bounds);
+
+	</script>
+</body>
+</html>

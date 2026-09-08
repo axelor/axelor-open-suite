@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,6 +36,7 @@ import jakarta.inject.Singleton;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class ExpenseKilometricServiceImpl implements ExpenseKilometricService {
@@ -52,6 +53,9 @@ public class ExpenseKilometricServiceImpl implements ExpenseKilometricService {
 
   @Override
   public Product getKilometricExpenseProduct(Expense expense) throws AxelorException {
+    if (expense.getCompany() == null) {
+      return null;
+    }
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
     return hrConfigService.getKilometricExpenseProduct(hrConfig);
   }
@@ -146,5 +150,27 @@ public class ExpenseKilometricServiceImpl implements ExpenseKilometricService {
       }
     }
     return kilometricAllowParamList;
+  }
+
+  @Override
+  public KilometricAllowParam updateKAPOfKilometricAllowance(
+      ExpenseLine expenseLine, List<KilometricAllowParam> kilometricAllowParamList) {
+
+    KilometricAllowParam currentKap = expenseLine.getKilometricAllowParam();
+    if (CollectionUtils.isEmpty(kilometricAllowParamList) || currentKap == null) {
+      return null;
+    }
+
+    if (kilometricAllowParamList.size() == 1) {
+      return kilometricAllowParamList.get(0);
+    }
+
+    for (KilometricAllowParam kap : kilometricAllowParamList) {
+      if (currentKap.equals(kap)) {
+        expenseLine.setKilometricAllowParam(kap);
+        return kap;
+      }
+    }
+    return null;
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -569,9 +569,15 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
           invoiceTermList, invoicePayment, amount, reconcile, new HashMap<>());
     } else {
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
+      invoiceTerm.setCompanyAmountRemaining(
+          invoiceTerm.getCompanyAmountRemaining().subtract(reconcile.getAmount()));
     }
 
     invoiceTerm = invoiceTermService.updateInvoiceTermsAmountsSessionPart(invoiceTerm, isRefund);
+
+    if (isRefund && invoiceTerm.getInvoice() != null) {
+      invoicePaymentToolService.updateAmountPaid(invoiceTerm.getInvoice());
+    }
 
     return invoiceTerm;
   }

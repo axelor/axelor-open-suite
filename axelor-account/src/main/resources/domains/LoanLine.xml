@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="LoanLine">
+
+    <many-to-one name="loan" ref="com.axelor.apps.account.db.Loan" title="Loan"/>
+
+    <date name="installmentDate" title="Installment date"/>
+    <decimal name="remainingDebtBefore" title="Remaining debt before" precision="20"
+      scale="3"/>
+    <decimal name="interestAmount" title="Interest" precision="20" scale="3"/>
+    <decimal name="capitalAmount" title="Capital" precision="20" scale="3"/>
+    <decimal name="insuranceAmount" title="Insurance" precision="20" scale="3"/>
+    <decimal name="totalAmount" title="Total" precision="20" scale="3"/>
+    <decimal name="remainingDebtAfter" title="Remaining debt after" precision="20" scale="3"/>
+
+    <many-to-one name="accountMove" ref="com.axelor.apps.account.db.Move"
+      title="Accounting entry"
+      help="Accounting entry of this installment. A line with a move is considered booked."/>
+    <boolean name="isManuallyModified" title="Manually modified"/>
+    <boolean name="isDeferral" title="Deferral installment"
+      help="Installment created by a deferral; removed when the deferral is cancelled."/>
+    <boolean name="isDraftDeferral" title="Draft deferral installment"
+      help="Installment created by a deferral negociated during the setting phase (Draft status); baked into the schedule and never removed by a repayment-phase deferral cancellation."/>
+
+    <integer name="editedFieldSelect" transient="true"
+      help="Marks which amount was manually edited, to drive the recomputation of the following installments."/>
+
+    <extra-code><![CDATA[
+		// EDITED FIELD SELECT
+		public static final int EDITED_FIELD_NONE = 0;
+		public static final int EDITED_FIELD_INTEREST = 1;
+		public static final int EDITED_FIELD_CAPITAL = 2;
+		public static final int EDITED_FIELD_INSURANCE = 3;
+	]]></extra-code>
+
+    <track>
+      <field name="installmentDate"/>
+      <field name="remainingDebtBefore"/>
+      <field name="interestAmount"/>
+      <field name="capitalAmount"/>
+      <field name="insuranceAmount"/>
+      <field name="totalAmount"/>
+      <field name="remainingDebtAfter"/>
+    </track>
+
+  </entity>
+
+</domain-models>

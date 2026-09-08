@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.db.Query;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface MoveValidateService {
 
@@ -72,7 +73,7 @@ public interface MoveValidateService {
 
   void freezeFieldsOnMoveLines(Move move) throws AxelorException;
 
-  void accountingMultiple(Query<Move> moveListQuery) throws AxelorException;
+  Pair<List<Move>, Integer> accountingMultiple(Query<Move> moveListQuery);
 
   void checkMoveLinesPartner(Move move) throws AxelorException;
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,7 +39,11 @@ public interface TimetableService {
       TimetableTemplate template, BigDecimal exTaxTotal, LocalDate computationDate)
       throws AxelorException;
 
-  void deleteInvoiceTimeTable(Invoice invoice);
+  void cancelTimetable(Invoice invoice);
+
+  void updateTimetables(Invoice invoice);
+
+  void reassignInvoice(List<Invoice> invoiceList, Invoice invoiceMerged);
 
   BigDecimal computeAmount(
       Timetable timetable, List<Timetable> timetableList, BigDecimal exTaxTotal, Currency currency);

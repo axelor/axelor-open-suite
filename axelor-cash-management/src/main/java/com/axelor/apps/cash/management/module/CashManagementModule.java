@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,8 @@ import com.axelor.apps.cash.management.service.CashManagementChartService;
 import com.axelor.apps.cash.management.service.CashManagementChartServiceImpl;
 import com.axelor.apps.cash.management.service.ForecastRecapService;
 import com.axelor.apps.cash.management.service.ForecastRecapServiceImpl;
+import com.axelor.apps.cash.management.service.OpportunitySaleOrderCashManagementServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.opportunity.OpportunitySaleOrderSupplychainServiceImpl;
 
 public class CashManagementModule extends AxelorModule {
 
@@ -39,5 +41,7 @@ public class CashManagementModule extends AxelorModule {
     bind(ForecastRepository.class).to(CashManagementForecastRepository.class);
     bind(ForecastRecapService.class).to(ForecastRecapServiceImpl.class);
     bind(CashManagementChartService.class).to(CashManagementChartServiceImpl.class);
+    bind(OpportunitySaleOrderSupplychainServiceImpl.class)
+        .to(OpportunitySaleOrderCashManagementServiceImpl.class);
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,13 +18,18 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
+import com.axelor.studio.db.AppSale;
+import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -36,8 +41,39 @@ public class SubSaleOrderLineComputeServiceProductionImpl
   public SubSaleOrderLineComputeServiceProductionImpl(
       SaleOrderLineComputeService saleOrderLineComputeService,
       AppSaleService appSaleService,
-      CurrencyScaleService currencyScaleService) {
-    super(saleOrderLineComputeService, appSaleService, currencyScaleService);
+      CurrencyScaleService currencyScaleService,
+      SaleOrderLinePriceService saleOrderLinePriceService,
+      SaleOrderLineProductService saleOrderLineProductService) {
+    super(
+        saleOrderLineComputeService,
+        appSaleService,
+        currencyScaleService,
+        saleOrderLinePriceService,
+        saleOrderLineProductService);
+  }
+
+  @Override
+  public void computeSumSubLineList(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
+    AppSale appSale = appSaleService.getAppSale();
+    if (appSale.getListDisplayTypeSelect() != AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
+      super.computeSumSubLineList(saleOrderLine, saleOrder);
+      return;
+    }
+    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    if (appSale.getIsSOLPriceTotalOfSubLines()
+        && (CollectionUtils.isNotEmpty(subSaleOrderLineList)
+            || CollectionUtils.isNotEmpty(saleOrderLine.getSaleOrderLineDetailsList()))) {
+      if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
+        for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
+          computeSumSubLineList(subSaleOrderLine, saleOrder);
+        }
+      }
+      computePrices(saleOrderLine, saleOrder);
+    } else {
+      saleOrderLineProductService.fillPrice(saleOrderLine, saleOrder);
+    }
+    saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
   }
 
   @Override
@@ -50,9 +86,32 @@ public class SubSaleOrderLineComputeServiceProductionImpl
       return;
     }
     saleOrderLine.setPrice(computeTotalPrice(saleOrderLine));
+    saleOrderLine.setInTaxPrice(computeTotalInTaxPrice(saleOrderLine));
     saleOrderLine.setSubTotalCostPrice(
         currencyScaleService.getCompanyScaledValue(
             saleOrder, computeTotalCostPrice(saleOrderLine)));
+  }
+
+  protected BigDecimal computeTotalInTaxPrice(SaleOrderLine saleOrderLine) {
+    BigDecimal totalInTaxPrice = BigDecimal.ZERO;
+    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    List<SaleOrderLineDetails> saleOrderLineDetailsList =
+        saleOrderLine.getSaleOrderLineDetailsList();
+    if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
+      totalInTaxPrice =
+          totalInTaxPrice.add(
+              subSaleOrderLineList.stream()
+                  .map(SaleOrderLine::getInTaxTotal)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add));
+    }
+    if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
+      totalInTaxPrice =
+          totalInTaxPrice.add(
+              saleOrderLineDetailsList.stream()
+                  .map(SaleOrderLineDetails::getTotalPrice)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add));
+    }
+    return totalInTaxPrice;
   }
 
   protected BigDecimal computeTotalPrice(SaleOrderLine saleOrderLine) {

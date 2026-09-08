@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.contract.service.analytic;
 
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -27,6 +28,7 @@ import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.google.common.base.Preconditions;
+import java.util.Optional;
 
 public class AnalyticLineModelInitContractService {
 
@@ -35,7 +37,10 @@ public class AnalyticLineModelInitContractService {
     Preconditions.checkNotNull(contractLine);
 
     contractVersion = contractVersion != null ? contractVersion : contractLine.getContractVersion();
-    contract = contract != null ? contract : contractVersion.getContract();
+    contract =
+        contract != null
+            ? contract
+            : Optional.ofNullable(contractVersion).map(ContractVersion::getContract).orElse(null);
 
     Company company = null;
     TradingName tradingName = null;
@@ -49,15 +54,19 @@ public class AnalyticLineModelInitContractService {
       isPurchase = contract.getTargetTypeSelect() == ContractRepository.SUPPLIER_CONTRACT;
     }
 
-    return new AnalyticLineModel(
-        contractLine,
-        contractLine.getProduct(),
-        null,
-        company,
-        tradingName,
-        partner,
-        isPurchase,
-        contractLine.getExTaxTotal(),
-        null);
+    AnalyticLineModel analyticLineModel =
+        new AnalyticLineModel(
+            contractLine,
+            contractLine.getProduct(),
+            null,
+            company,
+            tradingName,
+            partner,
+            isPurchase,
+            contractLine.getExTaxTotal(),
+            null);
+    analyticLineModel.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_CONTRACT);
+
+    return analyticLineModel;
   }
 }

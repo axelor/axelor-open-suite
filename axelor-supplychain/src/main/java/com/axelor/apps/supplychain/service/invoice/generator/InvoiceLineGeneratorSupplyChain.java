@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,6 +43,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.supplychain.service.analytic.AnalyticLineModelInitSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainService;
@@ -51,6 +52,7 @@ import com.axelor.inject.Beans;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -107,6 +109,12 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     this.stockMoveLine = stockMoveLine;
     this.appBaseService = Beans.get(AppBaseService.class);
     this.unitConversionService = Beans.get(UnitConversionService.class);
+
+    if (saleOrderLine != null) {
+      this.typeSelect = saleOrderLine.getTypeSelect();
+    } else if (purchaseOrderLine != null && purchaseOrderLine.getIsTitleLine()) {
+      this.typeSelect = InvoiceLineRepository.TYPE_TITLE;
+    }
   }
 
   protected InvoiceLineGeneratorSupplyChain(
@@ -162,6 +170,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       this.taxLineSet = purchaseOrderLine.getTaxLineSet();
       this.discountTypeSelect = purchaseOrderLine.getDiscountTypeSelect();
     } else if (stockMoveLine != null) {
+      this.typeSelect = stockMoveLine.getLineTypeSelect();
       this.priceDiscounted = stockMoveLine.getUnitPriceUntaxed();
       Unit saleOrPurchaseUnit = this.getSaleOrPurchaseUnit();
 
@@ -178,6 +187,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
                 this.priceDiscounted,
                 appBaseService.getNbDecimalDigitForUnitPrice(),
                 product);
+        this.unit = saleOrPurchaseUnit;
+      } else if (saleOrPurchaseUnit != null && this.unit == null) {
         this.unit = saleOrPurchaseUnit;
       }
     }
@@ -216,7 +227,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
                 invoiceLine,
                 invoice,
                 AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
-                    saleOrderLine, null));
+                    saleOrderLine, saleOrderLine.getMainSaleOrder()));
           }
           break;
 
@@ -244,28 +255,40 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         invoiceLine.setFixedAssetCategory(fixedAssetCategory);
       }
     } else if (stockMoveLine != null) {
-      this.price = stockMoveLine.getUnitPriceUntaxed();
-      this.inTaxPrice = stockMoveLine.getUnitPriceTaxed();
+      switch (stockMoveLine.getLineTypeSelect()) {
+        case StockMoveLineRepository.TYPE_NORMAL:
+          this.price = stockMoveLine.getUnitPriceUntaxed();
+          this.inTaxPrice = stockMoveLine.getUnitPriceTaxed();
 
-      this.price =
-          unitConversionService.convert(
-              stockMoveLine.getUnit(),
-              this.unit,
-              this.price,
-              appBaseService.getNbDecimalDigitForUnitPrice(),
-              product);
-      this.inTaxPrice =
-          unitConversionService.convert(
-              stockMoveLine.getUnit(),
-              this.unit,
-              this.inTaxPrice,
-              appBaseService.getNbDecimalDigitForUnitPrice(),
-              product);
+          Unit stockMoveLineUnit = stockMoveLine.getUnit();
+          if (stockMoveLineUnit != null
+              && this.unit != null
+              && !Objects.equals(stockMoveLineUnit, this.unit)) {
+            this.price =
+                unitConversionService.convert(
+                    stockMoveLineUnit,
+                    this.unit,
+                    this.price,
+                    appBaseService.getNbDecimalDigitForUnitPrice(),
+                    product);
+            this.inTaxPrice =
+                unitConversionService.convert(
+                    stockMoveLineUnit,
+                    this.unit,
+                    this.inTaxPrice,
+                    appBaseService.getNbDecimalDigitForUnitPrice(),
+                    product);
+          }
 
-      invoiceLine.setPrice(price);
-      invoiceLine.setInTaxPrice(inTaxPrice);
+          invoiceLine.setPrice(price);
+          invoiceLine.setInTaxPrice(inTaxPrice);
 
-      invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+          invoiceLineAnalyticService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+          break;
+
+        default:
+          return invoiceLine;
+      }
     }
 
     FiscalPosition fiscalPosition = invoice.getFiscalPosition();
@@ -324,7 +347,9 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   }
 
   public Unit getSaleOrPurchaseUnit() throws AxelorException {
-
+    if (product == null) {
+      return null;
+    }
     if (!InvoiceToolService.isPurchase(invoice)) {
       return product.getSalesUnit();
     } else {
@@ -337,7 +362,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     if (saleOrderLine != null) {
       analyticLineModel =
-          AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(saleOrderLine, null);
+          AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
+              saleOrderLine, saleOrderLine.getMainSaleOrder());
     } else if (purchaseOrderLine != null) {
       analyticLineModel =
           AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(purchaseOrderLine, null);

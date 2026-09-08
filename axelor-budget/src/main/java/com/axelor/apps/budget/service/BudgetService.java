@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -155,6 +155,27 @@ public interface BudgetService {
    * @return Budget
    */
   public Budget findBudgetWithKey(String key, LocalDate date);
+
+  /**
+   * Find the budget matching the account (or one of its parent accounts) and the analytic move line
+   * through the budget key. When a budget is found for a parent account, it is only returned if it
+   * allows budget imputation on child accounts or if it directly contains the account.
+   *
+   * @param account, company, analyticMoveLine, date
+   * @return Budget
+   */
+  Budget findBudgetByAccountWithKey(
+      Account account, Company company, AnalyticMoveLine analyticMoveLine, LocalDate date);
+
+  /**
+   * Build the account domain for the account set of a budget, extended with all the parent accounts
+   * of the accounts eligible for the given company and budget type. Used when the budget allows
+   * budget imputation on child accounts.
+   *
+   * @param companyId, budgetType
+   * @return String
+   */
+  String getAccountDomainWithParents(Long companyId, int budgetType) throws AxelorException;
 
   /**
    * Take the analytic distribution line and concat their axis and account to create the analytic

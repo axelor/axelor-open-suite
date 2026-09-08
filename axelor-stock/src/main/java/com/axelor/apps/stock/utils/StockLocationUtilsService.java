@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,6 @@
 package com.axelor.apps.stock.utils;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.util.List;
@@ -33,6 +32,4 @@ public interface StockLocationUtilsService {
   @CallMethod
   BigDecimal getFutureQtyOfProductInStockLocations(
       Long productId, List<Long> stockLocationIds, Long companyId) throws AxelorException;
-
-  public BigDecimal getStockLocationValue(StockLocation stockLocation);
 }

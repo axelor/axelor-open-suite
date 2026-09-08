@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -67,18 +67,21 @@ public class OpportunityServiceImpl implements OpportunityService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void setOpportunityStatusStagedClosedWon(Opportunity opportunity) throws AxelorException {
+    checkPartner(opportunity);
     opportunity.setOpportunityStatus(appCrmService.getClosedWinOpportunityStatus());
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void setOpportunityStatusStagedClosedLost(Opportunity opportunity) throws AxelorException {
+    checkPartner(opportunity);
     opportunity.setOpportunityStatus(appCrmService.getClosedLostOpportunityStatus());
   }
 
   @Override
   @Transactional
-  public void setOpportunityStatusNextStage(Opportunity opportunity) {
+  public void setOpportunityStatusNextStage(Opportunity opportunity) throws AxelorException {
+    checkPartner(opportunity);
     OpportunityStatus status = opportunity.getOpportunityStatus();
     status = Beans.get(OpportunityStatusRepository.class).findByNextSequence(status.getSequence());
     opportunity.setOpportunityStatus(status);
@@ -169,6 +172,15 @@ public class OpportunityServiceImpl implements OpportunityService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.OPPORTUNITY_CLOSE_LOST_KANBAN));
+    }
+  }
+
+  @Override
+  public void checkPartner(Opportunity opportunity) throws AxelorException {
+    if (opportunity.getPartner() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.OPPORTUNITY_PARTNER_REQUIRED));
     }
   }
 }

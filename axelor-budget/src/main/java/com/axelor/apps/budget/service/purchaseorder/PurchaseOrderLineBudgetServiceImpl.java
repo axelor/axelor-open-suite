@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -156,6 +156,13 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
         && !purchaseOrderLine.getBudgetDistributionList().isEmpty()) {
       BigDecimal totalAmount = BigDecimal.ZERO;
       for (BudgetDistribution budgetDistribution : purchaseOrderLine.getBudgetDistributionList()) {
+        if (budgetDistribution.getAmount().signum() < 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(
+                  BudgetExceptionMessage.BUDGET_DISTRIBUTION_NEGATIVE_AMOUNT_NOT_ALLOWED_ORDER),
+              budgetDistribution.getBudget().getCode());
+        }
         if (currencyScaleService
                 .getCompanyScaledValue(budgetDistribution, budgetDistribution.getAmount())
                 .compareTo(

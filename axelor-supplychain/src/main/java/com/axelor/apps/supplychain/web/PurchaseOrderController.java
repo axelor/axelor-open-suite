@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -103,11 +103,16 @@ public class PurchaseOrderController {
     }
   }
 
-  public void cancelReceipt(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void cancelReceipt(ActionRequest request, ActionResponse response) {
 
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-    Beans.get(PurchaseOrderStockServiceImpl.class).cancelReceipt(purchaseOrder);
+    try {
+      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+      Beans.get(PurchaseOrderStockServiceImpl.class).cancelReceipt(purchaseOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void updateAmountToBeSpreadOverTheTimetable(

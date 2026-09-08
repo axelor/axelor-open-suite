@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,4 +44,5 @@ public interface ITranslation {
       "Wasted product quantity successfully updated." /*)*/;
   public static final String MANUFACTURING_OPERATION_STATUS_UPDATED = /*$$(*/
       "Manufacturing operation status successfully updated." /*)*/;
+  public static final String WARNING = /*$$(*/ "Warning :" /*)*/;
 }

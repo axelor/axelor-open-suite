@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -53,6 +53,7 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
   protected ExpenseLineRepository expenseLineRepository;
   protected ExpenseRepository expenseRepository;
   protected EmployeeFetchService employeeFetchService;
+  protected ExpenseAnalyticService expenseAnalyticService;
 
   @Inject
   public ExpenseLineUpdateServiceImpl(
@@ -61,13 +62,15 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       ExpenseLineToolService expenseLineToolService,
       ExpenseLineRepository expenseLineRepository,
       ExpenseRepository expenseRepository,
-      EmployeeFetchService employeeFetchService) {
+      EmployeeFetchService employeeFetchService,
+      ExpenseAnalyticService expenseAnalyticService) {
     this.expenseToolService = expenseToolService;
     this.expenseComputationService = expenseComputationService;
     this.expenseLineToolService = expenseLineToolService;
     this.expenseLineRepository = expenseLineRepository;
     this.expenseRepository = expenseRepository;
     this.employeeFetchService = employeeFetchService;
+    this.expenseAnalyticService = expenseAnalyticService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -362,6 +365,7 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     }
 
     expenseLineToolService.computeAmount(expenseLine.getEmployee(), expenseLine);
+    expenseAnalyticService.applyAnalyticDistribution(expenseLine);
 
     expenseLineRepository.save(expenseLine);
   }
@@ -394,6 +398,22 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       for (ExpenseLine expenseLine : expense.getKilometricExpenseLineList()) {
         expenseLine.setCurrency(currency);
       }
+    }
+  }
+
+  @Override
+  public void updateEmployeeOnLines(Expense expense) {
+    Employee employee = expense.getEmployee();
+    if (employee == null) {
+      return;
+    }
+    updateEmployee(expense.getGeneralExpenseLineList(), employee);
+    updateEmployee(expense.getKilometricExpenseLineList(), employee);
+  }
+
+  protected void updateEmployee(List<ExpenseLine> lines, Employee employee) {
+    if (ObjectUtils.notEmpty(lines)) {
+      lines.forEach(line -> line.setEmployee(employee));
     }
   }
 }

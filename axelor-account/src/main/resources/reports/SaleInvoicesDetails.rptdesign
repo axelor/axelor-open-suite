@@ -1902,7 +1902,7 @@ GROUP BY date, number_of_decimals
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF format="dd/MM/YYYY">row._outer._outer["to_date"]</VALUE-OF><VALUE-OF format="^">" : "</VALUE-OF><VALUE-OF>Formatter.format(row._outer["InvoicedTotal"], row._outer["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row._outer["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer["companyCurrency"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF format="dd/MM/yyyy">row._outer._outer["to_date"]</VALUE-OF><VALUE-OF format="^">" : "</VALUE-OF><VALUE-OF>Formatter.format(row._outer["InvoicedTotal"], row._outer["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row._outer["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer["companyCurrency"]</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
@@ -1973,7 +1973,7 @@ GROUP BY date, number_of_decimals
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF format="dd/MM/YYYY">row._outer._outer["to_date"]</VALUE-OF><VALUE-OF format="^">" : "</VALUE-OF><VALUE-OF>Formatter.format(row._outer["OrderedTotal"], row._outer["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row._outer["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer["companyCurrency"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF format="dd/MM/yyyy">row._outer._outer["to_date"]</VALUE-OF><VALUE-OF format="^">" : "</VALUE-OF><VALUE-OF>Formatter.format(row._outer["OrderedTotal"], row._outer["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row._outer["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer["companyCurrency"]</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>

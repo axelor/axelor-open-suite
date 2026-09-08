@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -63,9 +63,9 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private static final String forSelectUseValues = "values";
-  private static final String forSelectUseTitles = "titles";
-  private static final String forSelectUseTranslatedTitles = "translated titles";
+  protected static final String forSelectUseValues = "values";
+  protected static final String forSelectUseTitles = "titles";
+  protected static final String forSelectUseTranslatedTitles = "translated titles";
 
   private Inflector inflector = Inflector.getInstance();
 

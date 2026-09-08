@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,8 +31,10 @@ import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -43,6 +45,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.Query;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -70,9 +73,9 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
   protected BillOfMaterialLineService billOfMaterialLineService;
 
-  protected BillOfMaterialService billOfMaterialService;
-
   protected CostSheetService costSheetService;
+
+  protected AppProductionService appProductionService;
 
   @Inject
   public BillOfMaterialServiceImpl(
@@ -81,15 +84,15 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       ProductRepository productRepo,
       ProductCompanyService productCompanyService,
       BillOfMaterialLineService billOfMaterialLineService,
-      BillOfMaterialService billOfMaterialService,
-      CostSheetService costSheetService) {
+      CostSheetService costSheetService,
+      AppProductionService appProductionService) {
     this.billOfMaterialRepo = billOfMaterialRepo;
     this.tempBomTreeRepo = tempBomTreeRepo;
     this.productRepo = productRepo;
     this.productCompanyService = productCompanyService;
     this.billOfMaterialLineService = billOfMaterialLineService;
-    this.billOfMaterialService = billOfMaterialService;
     this.costSheetService = costSheetService;
+    this.appProductionService = appProductionService;
   }
 
   private List<Long> processedBom;
@@ -275,11 +278,19 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     if (bom != null) {
       bomTree.setProdProcess(bom.getProdProcess());
       bomTree.setProduct(bom.getProduct());
-      bomTree.setQty(bom.getQty());
-      bomTree.setUnit(bom.getUnit());
+      bomTree.setQty(
+          Optional.ofNullable(bomLine).map(BillOfMaterialLine::getQty).orElse(bom.getQty()));
+      bomTree.setUnit(
+          Optional.ofNullable(bomLine).map(BillOfMaterialLine::getUnit).orElse(bom.getUnit()));
     } else if (bomLine != null) {
       bomTree.setProduct(bomLine.getProduct());
-      bomTree.setQty(bomLine.getQty());
+      bomTree.setQty(
+          Optional.ofNullable(parent)
+              .map(boml -> bomLine.getQty().multiply(parent.getQty()))
+              .orElse(bomLine.getQty())
+              .setScale(
+                  appProductionService.getAppProduction().getNbDecimalDigitForBomQty(),
+                  RoundingMode.HALF_UP));
       bomTree.setUnit(bomLine.getUnit());
     }
     bomTree.setParentBom(parentBom);
@@ -319,7 +330,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
           && ((bomChild != null && CollectionUtils.isEmpty(bomChild.getBillOfMaterialLineList()))
               || bomChild == null)
           && bomLineChild.getProduct() != null) {
-        bomChild = billOfMaterialService.getBOM(bomLineChild.getProduct(), bom.getCompany());
+        bomChild = getBOM(bomLineChild.getProduct(), bom.getCompany());
       }
 
       if (bomLineChild != null && !processedBomLine.contains(bomLineChild.getId())) {
@@ -586,6 +597,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   @Override
   public Map<BillOfMaterial, BigDecimal> getSubBillOfMaterialMapWithLineQty(
       BillOfMaterial billOfMaterial) {
+    billOfMaterial = JpaModelHelper.ensureManaged(billOfMaterial);
 
     if (billOfMaterial.getBillOfMaterialLineList() != null) {
       return billOfMaterial.getBillOfMaterialLineList().stream()

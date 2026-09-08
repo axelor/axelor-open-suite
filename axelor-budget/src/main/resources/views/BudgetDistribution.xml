@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="budget-distribution-grid" title="Budget distributions"
     model="com.axelor.apps.budget.db.BudgetDistribution">
@@ -18,7 +18,7 @@
       onChange="action-method-budget-budget-distribution-set-amount-available"/>
     <field name="budgetAmountAvailable" readonly="true"
       x-scale="budget.company.currency.numberOfDecimals"/>
-    <field name="amount" validIf="amount &gt; 0"
+    <field name="amount" validIf="amount != 0"
       onChange="action-method-budget-budget-distribution-set-amount-available"
       x-scale="budget.company.currency.numberOfDecimals"/>
     <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
@@ -133,12 +133,13 @@
   </grid>
 
   <grid name="move-line-budget-distribution-grid" title="Budget distributions"
-    model="com.axelor.apps.budget.db.BudgetDistribution">
+    model="com.axelor.apps.budget.db.BudgetDistribution"
+    onNew="action-budget-distribution-method-move-onnew">
     <field name="budget" onSelect="action-method-budget-distribution-set-domain-budget"
       onChange="action-method-budget-budget-distribution-set-amount-available"/>
     <field name="budgetAmountAvailable" readonly="true"
       x-scale="budget.company.currency.numberOfDecimals"/>
-    <field name="amount" validIf="amount &gt; 0"
+    <field name="amount" validIf="amount != 0"
       x-scale="budget.company.currency.numberOfDecimals"/>
     <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
@@ -210,7 +211,7 @@
       <field name="budgetAmountAvailable" readonly="true"
         if="__config__.app.getApp('budget')?.getManageMultiBudget()"
         x-scale="budget.company.currency.numberOfDecimals"/>
-      <field name="amount" validIf="amount &gt; 0"
+      <field name="amount" validIf="amount != 0"
         x-scale="budget.company.currency.numberOfDecimals"/>
       <field name="purchaseOrderLine" readonly="true" showIf="_purchaseOrderId"/>
       <field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
@@ -341,7 +342,7 @@
         onChange="action-method-budget-budget-distribution-set-amount-available"/>
       <field name="budgetAmountAvailable" readonly="true"
         x-scale="budget.company.currency.numberOfDecimals"/>
-      <field name="amount" validIf="amount &gt; 0"
+      <field name="amount" validIf="amount != 0"
         x-scale="budget.company.currency.numberOfDecimals"/>
       <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
     </panel>
@@ -434,6 +435,11 @@
 
   <action-method name="action-reset-budget-method">
     <call class="com.axelor.apps.budget.web.BudgetDistributionController" method="resetBudget"/>
+  </action-method>
+
+  <action-method name="action-budget-distribution-method-move-onnew">
+    <call class="com.axelor.apps.budget.web.BudgetDistributionController"
+      method="fillInvoiceLineField"/>
   </action-method>
 
   <action-attrs name="action-purchase-order-line-attrs-dashlet-onload">

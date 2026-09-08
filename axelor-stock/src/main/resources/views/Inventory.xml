@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="inventory-grid" title="Inventory" model="com.axelor.apps.stock.db.Inventory">
     <field name="inventorySeq" width="120"/>
@@ -59,7 +59,9 @@
           <field name="stockLocation" canEdit="false"
             onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2"
             grid-view="stock-location-grid" form-view="stock-location-form"/>
-          <field name="typeSelect" validIf="typeSelect > 0"/>
+          <field name="typeSelect" validIf="typeSelect > 0" colSpan="3"/>
+          <field name="isStockMoveBlocked" showIf="statusSelect == 3 || statusSelect == 4"
+            colSpan="3"/>
           <field name="completedBy" readonly="true" showIf="completedBy"/>
           <field name="validatedBy" readonly="true" showIf="validatedBy"/>
           <field name="validatedOn" readonly="true" showIf="validatedOn"/>
@@ -81,7 +83,7 @@
         </panel>
 
         <panel name="importPanel" title="import.name"
-          showIf="statusSelect == 3 || statusSelect == 4" colSpan="12">
+          showIf="statusSelect == 3 || statusSelect == 4" colSpan="12">
           <field name="importFile" widget="binary-link"/>
           <button name="importFileBtn" title="import.verb" readonlyIf="importFile == null"
             onClick="action-group-stock-inventory-importfile-click" colSpan="3"/>
@@ -98,7 +100,7 @@
         <field name="productCategory" grid-view="product-category-grid"
           form-view="product-category-form"/>
         <field name="product" grid-view="product-grid" form-view="product-form"
-          domain="self.dtype = 'Product'"/>
+          domain="self.dtype = 'Product' AND self.isModel = false"/>
         <field name="excludeOutOfStock" colSpan="3"/>
         <field name="includeObsolete" colSpan="3"/>
         <spacer name="includeObsoleteSpacer" colSpan="6"/>
@@ -118,7 +120,7 @@
         form-view="product-category-form"/>
       <field name="product" canEdit="false" onSelect="action-inventory-on-select-product"
         onChange="action-inventory-on-change-product" grid-view="product-grid"
-        form-view="product-form" domain="self.dtype = 'Product'"/>
+        form-view="product-form" domain="self.dtype = 'Product' AND self.isModel = false"/>
       <field name="excludeOutOfStock" colSpan="3"/>
       <field name="includeObsolete" colSpan="3"/>
       <spacer name="includeObsoleteSpacer" colSpan="6"/>
@@ -259,21 +261,22 @@
 
   <action-attrs name="action-inventory-on-select-product">
     <attribute name="domain" for="product"
-      expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product'&quot;"
+      expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory != null &amp;&amp; typeSelect == 2"/>
     <attribute name="domain" for="product"
-      expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND self.dtype = 'Product'&quot;"
+      expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory != null &amp;&amp; typeSelect != 2"/>
     <attribute name="domain" for="product"
-      expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product'&quot;"
+      expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory == null &amp;&amp; productFamily != null &amp;&amp; typeSelect == 2"/>
     <attribute name="domain" for="product"
-      expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND self.dtype = 'Product'&quot;"
+      expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory == null &amp;&amp; productFamily != null &amp;&amp; typeSelect != 2"/>
     <attribute name="domain" for="product"
-      expr="eval:&quot;self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product'&quot;"
+      expr="eval:&quot;self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory == null &amp;&amp; productFamily == null &amp;&amp; typeSelect == 2"/>
-    <attribute name="domain" for="product" expr="eval:&quot;self.dtype = 'Product'&quot;"
+    <attribute name="domain" for="product"
+      expr="eval:&quot;self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory == null &amp;&amp; productFamily == null &amp;&amp; typeSelect != 2"/>
   </action-attrs>
 

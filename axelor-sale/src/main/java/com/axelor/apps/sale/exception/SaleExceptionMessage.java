@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,8 +23,6 @@ public final class SaleExceptionMessage {
   private SaleExceptionMessage() {}
 
   /** Sales Order Stock Move Service */
-  public static final String SALES_ORDER_STOCK_MOVE_1 = /*$$(*/
-      "Invoice by delivery impose that all sale order lines must have service or stockable product with provision from stock" /*)*/;
 
   /** Sales Order Service Impl */
   public static final String SALES_ORDER_1 = /*$$(*/
@@ -147,10 +145,6 @@ public final class SaleExceptionMessage {
   public static final String PRODUCT_CURRENCY_IS_NULL = /*$$(*/
       "This product currency is empty: %s" /*)*/;
 
-  public static final String NO_PRODUCT_FAMILY =
-      /*$$(*/ "No product family is set for this product: %s" /*)*/;
-  public static final String PRODUCT_IS_NULL = /*$$(*/ "Product should not be null" /*)*/;
-
   public static final String PRODUCT_ADDED_TO_CART = /*$$(*/
       "%s has been added to your cart." /*)*/;
 
@@ -168,6 +162,9 @@ public final class SaleExceptionMessage {
 
   public static final String NO_ORDER_LINE_NEEDS_TO_BE_GENERATED = /*$$(*/
       "No order line needs to be generated for this cart." /*)*/;
+
+  public static final String CART_SALE_ORDER_TRADING_NAME_NOT_RESOLVED = /*$$(*/
+      "Unable to generate the sale order: company %s has several trading names. Please create the sale order manually to select a trading name." /*)*/;
 
   public static final String SALE_ORDER_LINE_PARENT_WRONG_TYPE = /*$$(*/
       "Title type line can not have sublines." /*)*/;

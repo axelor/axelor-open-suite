@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,8 +20,6 @@ package com.axelor.apps.quality.rest.dto;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -164,20 +162,6 @@ public class QIIdentificationRequest extends RequestStructure {
       return null;
     }
     return ObjectFinder.find(SaleOrderLine.class, customerSaleOrderLineId, ObjectFinder.NO_VERSION);
-  }
-
-  public ManufOrder fetchManufOrder() {
-    if (manufOrderId == null || manufOrderId == 0L) {
-      return null;
-    }
-    return ObjectFinder.find(ManufOrder.class, manufOrderId, ObjectFinder.NO_VERSION);
-  }
-
-  public OperationOrder fetchOperationOrder() {
-    if (operationOrderId == null || operationOrderId == 0L) {
-      return null;
-    }
-    return ObjectFinder.find(OperationOrder.class, operationOrderId, ObjectFinder.NO_VERSION);
   }
 
   public Product fetchProduct() {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,8 +37,8 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -86,6 +86,11 @@ public class CallTenderPurchaseOrderServiceImpl implements CallTenderPurchaseOrd
     List<PurchaseOrder> purchaseOrderList = new ArrayList<>();
 
     Company company = callTender.getCompany();
+    if (company == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(PurchaseExceptionMessage.CALL_FOR_TENDER_MISSING_COMPANY));
+    }
 
     List<Partner> partnerList =
         selectedCallTenderOfferList.stream()

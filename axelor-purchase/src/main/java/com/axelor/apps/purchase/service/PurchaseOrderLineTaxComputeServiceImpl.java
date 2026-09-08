@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.common.ObjectUtils;
 import jakarta.inject.Inject;
@@ -31,6 +32,7 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +48,8 @@ public class PurchaseOrderLineTaxComputeServiceImpl implements PurchaseOrderLine
   }
 
   public void computeAndAddTaxToList(
-      Map<TaxLine, PurchaseOrderLineTax> map,
+      Map<?, PurchaseOrderLineTax> map,
+      Map<PurchaseOrderLineTax, Set<PurchaseOrderLine>> purchaseOrderLineSetByTax,
       List<PurchaseOrderLineTax> purchaseOrderLineTaxList,
       Currency currency,
       List<PurchaseOrderLineTax> currentPurchaseOrderLineTaxList) {
@@ -130,10 +133,7 @@ public class PurchaseOrderLineTaxComputeServiceImpl implements PurchaseOrderLine
     BigDecimal taxTotal = BigDecimal.ZERO;
 
     // Dans la devise de la commande
-    BigDecimal exTaxBase =
-        purchaseOrderLineTax.getReverseCharged()
-            ? purchaseOrderLineTax.getExTaxBase().negate()
-            : purchaseOrderLineTax.getExTaxBase();
+    BigDecimal exTaxBase = purchaseOrderLineTax.getExTaxBase();
 
     if (taxLine != null) {
       taxTotal =
@@ -144,8 +144,19 @@ public class PurchaseOrderLineTaxComputeServiceImpl implements PurchaseOrderLine
                       new BigDecimal(100),
                       AppBaseService.COMPUTATION_SCALING,
                       RoundingMode.HALF_UP));
+
+      if (purchaseOrderLineTax.getPurchaseOrder() != null) {
+        BigDecimal diff =
+            taxTotal.subtract(purchaseOrderLineTax.getInTaxTotal().subtract(exTaxBase)).abs();
+        if (diff.compareTo(BigDecimal.ZERO) >= 0 && diff.compareTo(new BigDecimal("0.01")) <= 0) {
+          taxTotal = purchaseOrderLineTax.getInTaxTotal().subtract(exTaxBase);
+        }
+      }
     }
 
+    if (purchaseOrderLineTax.getReverseCharged()) {
+      taxTotal = taxTotal.negate();
+    }
     return taxTotal;
   }
 }

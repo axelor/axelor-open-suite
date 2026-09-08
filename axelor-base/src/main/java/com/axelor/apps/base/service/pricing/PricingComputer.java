@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -213,8 +213,6 @@ public class PricingComputer extends AbstractObservablePricing {
       if (resultPricingRule != null) {
         MetaField fieldToPopulate = resultPricingRule.getFieldToPopulate();
         Object result = scriptHelper.eval(resultPricingRule.getFormula());
-        notifyResultPricingRule(resultPricingRule, result);
-        notifyFieldToPopulate(fieldToPopulate);
         String typeName = getTypeNameFieldToPopulate(resultPricingRule);
         if (fieldToPopulate != null) {
           if (typeName.equals("BigDecimal")) {
@@ -231,6 +229,8 @@ public class PricingComputer extends AbstractObservablePricing {
             putInContext(fieldToPopulate.getName(), result);
           }
         }
+        notifyResultPricingRule(resultPricingRule, result);
+        notifyFieldToPopulate(fieldToPopulate);
         if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
           LOG.debug(
               "Adding result temp variable {} in context", resultPricingRule.getTempVarName());

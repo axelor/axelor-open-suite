@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import jakarta.inject.Singleton;
+import java.util.Map;
 import java.util.Optional;
 
 @Singleton
@@ -39,5 +40,18 @@ public class ControlEntryController {
             controlEntry -> Beans.get(ControlEntryService.class).createSamples(controlEntry));
 
     response.setReload(true);
+  }
+
+  public void addControlEntry(ActionRequest request, ActionResponse response) {
+    Map<String, Object> actionView =
+        Beans.get(ControlEntryService.class).addControlEntry(request.getContext());
+    response.setView(actionView);
+  }
+
+  public void onControlPlanChange(ActionRequest request, ActionResponse response) {
+    ControlEntry controlEntry = request.getContext().asType(ControlEntry.class);
+    Map<String, Object> values =
+        Beans.get(ControlEntryService.class).onControlPlanChange(controlEntry);
+    response.setValues(values);
   }
 }

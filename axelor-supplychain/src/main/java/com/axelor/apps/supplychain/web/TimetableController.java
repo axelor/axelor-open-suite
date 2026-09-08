@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,9 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -29,7 +31,9 @@ import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.TimetableTemplate;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.TimetableService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -53,12 +57,21 @@ public class TimetableController {
     timetable = Beans.get(TimetableRepository.class).find(timetable.getId());
 
     Context parentContext = request.getContext().getParent();
+    if (timetable.getSaleOrder() == null && timetable.getPurchaseOrder() == null) {
+      throw new AxelorException(
+          timetable,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(SupplychainExceptionMessage.TIMETABLE_NOT_LINKED_TO_ORDER));
+    }
+
     if (parentContext != null && parentContext.getContextClass().equals(SaleOrder.class)) {
       SaleOrder saleOrder = parentContext.asType(SaleOrder.class);
       if (saleOrder.getStatusSelect() < SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
         response.setAlert(I18n.get(SupplychainExceptionMessage.TIMETABLE_SALE_ORDER_NOT_CONFIRMED));
         return;
       }
+      Beans.get(SaleOrderInvoiceService.class)
+          .displayErrorMessageIfExceedsInvoiceableAmount(saleOrder, timetable.getAmount());
     }
 
     if (parentContext != null && parentContext.getContextClass().equals(PurchaseOrder.class)) {
@@ -68,9 +81,13 @@ public class TimetableController {
             I18n.get(SupplychainExceptionMessage.TIMETABLE_PURCHASE_OREDR_NOT_VALIDATED));
         return;
       }
+      Beans.get(PurchaseOrderInvoiceService.class)
+          .displayErrorMessageIfExceedsInvoiceableAmount(purchaseOrder, timetable.getAmount());
     }
 
-    if (timetable.getInvoice() != null) {
+    if (timetable.getInvoiced()
+        || (timetable.getInvoice() != null
+            && timetable.getInvoice().getStatusSelect() < InvoiceRepository.STATUS_VENTILATED)) {
       response.setAlert(I18n.get(SupplychainExceptionMessage.TIMETABLE_INVOICE_ALREADY_GENERATED));
       return;
     }

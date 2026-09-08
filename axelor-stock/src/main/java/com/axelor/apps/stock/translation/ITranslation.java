@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,9 @@ public interface ITranslation {
   public static final String STOCK_ON_TIME_DELIVERIES = /*$$(*/ "OnTime Deliveries"; /*)*/
 
   String MANUAL_CORRECTION = /*$$(*/ "value:Manual correction"; /*)*/
+
+  String STOCK_DEPRECIATION = /*$$(*/ "Stock depreciation"; /*)*/
+  String STOCK_VALORIZATION = /*$$(*/ "Stock valorization"; /*)*/
 
   String MASS_STOCK_MOVE_NEED_CREATED = /*$$(*/ "Lines created successfully"; /*)*/
   String MASS_STOCK_MOVE_NEED_PICKED = /*$$(*/ "Picked"; /*)*/

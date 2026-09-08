@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -116,12 +116,17 @@ public class BudgetController {
         budgetType = globalBudget.getBudgetTypeSelect();
       }
 
-      response.setAttr(
-          "accountSet",
-          "domain",
-          "self.id IN ("
-              + Beans.get(BudgetService.class).getAccountIdList(companyId, budgetType)
-              + ")");
+      String domain;
+      if (Boolean.TRUE.equals(budget.getAllowBudgetImputationOnChildAccounts())) {
+        domain = Beans.get(BudgetService.class).getAccountDomainWithParents(companyId, budgetType);
+      } else {
+        domain =
+            "self.id IN ("
+                + Beans.get(BudgetService.class).getAccountIdList(companyId, budgetType)
+                + ")";
+      }
+
+      response.setAttr("accountSet", "domain", domain);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
