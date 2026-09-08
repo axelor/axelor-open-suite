@@ -28,27 +28,26 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectNameComputeService;
+import com.axelor.apps.project.service.ProjectTaskCopyService;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.service.roadmap.ProjectVersionRemoveService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JpaSecurity;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppProject;
 import com.axelor.team.db.Team;
-import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectManagementRepository extends ProjectRepository {
 
   @Inject ProjectTaskService projectTaskService;
-  @Inject ProjectTaskRepository projectTaskRepository;
+  @Inject ProjectTaskCopyService projectTaskCopyService;
 
   protected void setAllProjectFullName(Project project) throws AxelorException {
     ProjectNameComputeService projectNameComputeService =
@@ -116,47 +115,38 @@ public class ProjectManagementRepository extends ProjectRepository {
       throw new PersistenceException(e.getMessage(), e);
     }
     project.setDescription(projectTaskService.getTaskLink(project.getDescription()));
-    return super.save(project);
+
+    Project copiedFromProject = project.getCopiedFromProject();
+    // the tasks are copied once, on the first save of the copy
+    if (copiedFromProject == null || ObjectUtils.notEmpty(project.getProjectTaskList())) {
+      return super.save(project);
+    }
+    // the copied project is sent by the client: its tasks must not become readable through a copy
+    Beans.get(JpaSecurity.class)
+        .check(JpaSecurity.CAN_READ, Project.class, copiedFromProject.getId());
+
+    // the tasks of a copied project are created on its first save: they are copied here to be
+    // persisted with the project, then saved again so that the fields computed on save are based
+    // on their new ids
+    project.setCopiedFromProject(null);
+    List<ProjectTask> copiedTaskList =
+        projectTaskCopyService.copyProjectTaskList(copiedFromProject, project);
+    project = super.save(project);
+    projectTaskCopyService.saveProjectTaskList(copiedTaskList);
+    return project;
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
   public Project copy(Project entity, boolean deep) {
     Project project = super.copy(entity, false);
     project.setCode(null);
-    copyProjectTaskList(entity, project);
-    return save(project);
-  }
-
-  protected void copyProjectTaskList(Project entity, Project project) {
-    List<ProjectTask> projectTaskList = entity.getProjectTaskList();
-    if (CollectionUtils.isEmpty(projectTaskList)) {
-      return;
+    // the tasks are numbered per project
+    project.setNextProjectTaskSequence(1);
+    if (deep) {
+      // the tasks are copied on save, once the copy has an id
+      project.setCopiedFromProject(entity);
     }
-    Map<ProjectTask, ProjectTask> taskMap = new HashMap<>();
-
-    for (ProjectTask task : projectTaskList) {
-      ProjectTask copiedTask = projectTaskRepository.copy(task, false);
-      copiedTask.setProject(project);
-      copiedTask.setParentTask(null);
-      taskMap.put(task, copiedTask);
-      project.addProjectTaskListItem(copiedTask);
-    }
-
-    for (ProjectTask task : projectTaskList) {
-      ProjectTask copiedTask = taskMap.get(task);
-      ProjectTask parentTask = task.getParentTask();
-
-      if (parentTask != null) {
-        ProjectTask copiedParent = taskMap.get(parentTask);
-        copiedTask.setParentTask(copiedParent);
-
-        if (copiedParent != null) {
-          copiedParent.addProjectTaskListItem(copiedTask);
-        }
-      }
-    }
-    taskMap.values().forEach(projectTaskRepository::save);
+    return project;
   }
 
   @Override

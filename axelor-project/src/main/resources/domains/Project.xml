@@ -66,6 +66,9 @@
       default="BUSINESS_PROJECT"/>
     <integer name="nextProjectTaskSequence" title="Next project sequence" hidden="true"
       default="1"/>
+    <many-to-one name="copiedFromProject" title="Copied from project" transient="true"
+      ref="com.axelor.apps.project.db.Project"
+      help="Project this project has been copied from. Set by the copy process, the tasks are copied from it on the first save."/>
 
     <many-to-one name="projectTimeUnit" ref="com.axelor.apps.base.db.Unit"
       title="Project time unit"

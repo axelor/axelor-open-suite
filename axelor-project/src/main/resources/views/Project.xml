@@ -117,6 +117,7 @@
           icon="skip-backward-fill" onClick="action-project-record-status-new,save"/>
         <field name="projectStatus.isCompleted" hidden="true"/>
       </panel>
+      <field name="copiedFromProject" hidden="true"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
@@ -130,7 +131,7 @@
         <panel-include view="incl-project-overview-panel-form"/>
       </panel>
 
-      <panel title="Tasks" name="taskPanel">
+      <panel title="Tasks" name="taskPanel" showIf="id">
         <panel-dashlet name="projectTaskDashletPanel" title="Tasks" x-show-bars="true"
           colSpan="12" action="action-project-view-show-project-task" height="200%" canSearch="true"
           x-order="createdOn"/>
