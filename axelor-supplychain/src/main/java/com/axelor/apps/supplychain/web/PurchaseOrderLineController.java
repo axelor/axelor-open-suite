@@ -213,8 +213,11 @@ public class PurchaseOrderLineController {
               purchaseOrderLine, purchaseOrder);
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-      Beans.get(AnalyticAttrsSupplychainService.class)
-          .addAnalyticDistributionPanelHiddenAttrs(analyticLineModel, attrsMap);
+      AnalyticAttrsSupplychainService analyticAttrsSupplychainService =
+          Beans.get(AnalyticAttrsSupplychainService.class);
+      analyticAttrsSupplychainService.addAnalyticDistributionPanelHiddenAttrs(
+          analyticLineModel, attrsMap);
+      analyticAttrsSupplychainService.addAnalyticAccountRequiredAttrs(analyticLineModel, attrsMap);
       response.setAttrs(attrsMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

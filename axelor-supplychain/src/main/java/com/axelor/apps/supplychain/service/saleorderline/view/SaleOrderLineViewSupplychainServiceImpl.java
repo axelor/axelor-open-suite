@@ -113,6 +113,7 @@ public class SaleOrderLineViewSupplychainServiceImpl
         AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(saleOrderLine, saleOrder);
     analyticAttrsSupplychainService.addAnalyticDistributionPanelHiddenAttrs(
         analyticLineModel, attrs);
+    analyticAttrsSupplychainService.addAnalyticAccountRequiredAttrs(analyticLineModel, attrs);
     return attrs;
   }
 

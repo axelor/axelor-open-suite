@@ -29,11 +29,14 @@ import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.model.AnalyticLineModel;
+import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import java.util.Optional;
 
@@ -142,5 +145,25 @@ public class AnalyticLineModelInitAccountService {
         isPurchase,
         moveTemplateLine.getLineAmount(),
         null);
+  }
+
+  /**
+   * Resolves the accounting account of a product, for documents whose lines do not carry one (sale
+   * orders, purchase orders, contracts). Without it the analytic configuration held by the account
+   * (authorization, required axes, analytic rules) could not be applied to those lines. Returns
+   * null when the account cannot be determined, in which case no account based restriction applies.
+   */
+  public static Account getProductAccount(
+      Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase) {
+    if (product == null || company == null) {
+      return null;
+    }
+
+    try {
+      return Beans.get(AccountManagementAccountService.class)
+          .getProductAccount(product, company, fiscalPosition, isPurchase, false);
+    } catch (AxelorException e) {
+      return null;
+    }
   }
 }

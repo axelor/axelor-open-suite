@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.service.analytic;
 
 import com.axelor.apps.account.model.AnalyticLineModel;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticLineModelService;
 import com.axelor.apps.base.AxelorException;
 import jakarta.inject.Inject;
@@ -28,10 +29,14 @@ import java.util.Map;
 public class AnalyticAttrsSupplychainServiceImpl implements AnalyticAttrsSupplychainService {
 
   protected AnalyticLineModelService analyticLineModelService;
+  protected AnalyticAttrsService analyticAttrsService;
 
   @Inject
-  public AnalyticAttrsSupplychainServiceImpl(AnalyticLineModelService analyticLineModelService) {
+  public AnalyticAttrsSupplychainServiceImpl(
+      AnalyticLineModelService analyticLineModelService,
+      AnalyticAttrsService analyticAttrsService) {
     this.analyticLineModelService = analyticLineModelService;
+    this.analyticAttrsService = analyticAttrsService;
   }
 
   protected void addAttr(
@@ -41,6 +46,14 @@ public class AnalyticAttrsSupplychainServiceImpl implements AnalyticAttrsSupplyc
     }
 
     attrsMap.get(field).put(attr, value);
+  }
+
+  @Override
+  public void addAnalyticAccountRequiredAttrs(
+      AnalyticLineModel analyticLineModel, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException {
+    analyticAttrsService.addAnalyticAccountRequired(
+        analyticLineModel, analyticLineModel.getCompany(), attrsMap);
   }
 
   @Override

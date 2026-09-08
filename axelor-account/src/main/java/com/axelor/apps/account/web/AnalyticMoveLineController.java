@@ -23,6 +23,7 @@ import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineComputeService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -46,6 +47,23 @@ public class AnalyticMoveLineController {
                   analyticMoveLine, parent.getLineAmount())
               : analyticMoveLineComputeService.computePercentage(analyticMoveLine);
       response.setValue("percentage", percentage);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called on change of the analytic distribution lines of an analytic line. When the user empties
+   * the distribution, the template no longer describes the line, so it is cleared as well.
+   *
+   * <p>The context is the parent analytic line (move, invoice, order, contract or expense line),
+   * not the analytic move line itself.
+   */
+  public void clearDistributionTemplateIfNoLine(ActionRequest request, ActionResponse response) {
+    try {
+      if (ObjectUtils.isEmpty(request.getContext().get("analyticMoveLineList"))) {
+        response.setValue("analyticDistributionTemplate", null);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

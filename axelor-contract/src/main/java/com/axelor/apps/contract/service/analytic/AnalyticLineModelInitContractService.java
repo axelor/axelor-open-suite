@@ -20,6 +20,7 @@ package com.axelor.apps.contract.service.analytic;
 
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.model.AnalyticLineModel;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelInitAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
@@ -58,7 +59,8 @@ public class AnalyticLineModelInitContractService {
         new AnalyticLineModel(
             contractLine,
             contractLine.getProduct(),
-            null,
+            AnalyticLineModelInitAccountService.getProductAccount(
+                contractLine.getProduct(), company, null, isPurchase),
             company,
             tradingName,
             partner,

@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.service.analytic;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.model.AnalyticLineModel;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelInitAccountService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
@@ -55,7 +56,8 @@ public class AnalyticLineModelInitSupplychainService {
     return new AnalyticLineModel(
         (AnalyticLine) saleOrderLine,
         saleOrderLine.getProduct(),
-        null,
+        AnalyticLineModelInitAccountService.getProductAccount(
+            saleOrderLine.getProduct(), company, fiscalPosition, false),
         company,
         tradingName,
         partner,
@@ -86,7 +88,8 @@ public class AnalyticLineModelInitSupplychainService {
     return new AnalyticLineModel(
         (AnalyticLine) purchaseOrderLine,
         purchaseOrderLine.getProduct(),
-        null,
+        AnalyticLineModelInitAccountService.getProductAccount(
+            purchaseOrderLine.getProduct(), company, fiscalPosition, true),
         company,
         tradingName,
         partner,
