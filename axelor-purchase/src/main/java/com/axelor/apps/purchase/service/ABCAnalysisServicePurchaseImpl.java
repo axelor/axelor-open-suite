@@ -108,11 +108,11 @@ public class ABCAnalysisServicePurchaseImpl extends ABCAnalysisServiceImpl {
         productWorth = productWorth.add(purchaseOrderLine.getCompanyExTaxTotal());
       }
 
-      super.incTotalQty(productQty);
-      super.incTotalWorth(productWorth);
-
       JPA.clear();
     }
+
+    super.incTotalQty(productQty);
+    super.incTotalWorth(productWorth);
 
     if (abcAnalysisLine != null) {
       setQtyWorth(
