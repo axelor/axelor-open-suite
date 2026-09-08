@@ -25,23 +25,29 @@ import java.util.List;
 public interface ProjectTaskCopyService {
 
   /**
-   * Copies the tasks of the source project on the target project, rebuilding the parent/child
-   * hierarchy between the copied tasks. A parent task belonging to another project is dropped, its
-   * copy becomes a root task. The copied tasks are only attached to the target project: they are
-   * persisted with it, so this must be called before saving the target project.
+   * Copies the tasks of the source project on the target project, rebuilding the links between the
+   * copied tasks so that none of them refers to a task of the source project: parent task,
+   * recurrence chain and dependency sets are remapped on the copies. A parent or a next task
+   * belonging to another project is dropped, a dependency on another project is kept as is.
    *
-   * @param sourceProject the copied project
+   * <p>The copied tasks are only attached to the target project, they are persisted by the cascade
+   * with it: this must be called before saving the target project, and {@link
+   * #saveCopiedProjectTaskList(List)} must be called after.
+   *
+   * @param sourceProject the copied project, persisted with its tasks
    * @param targetProject the project to attach the copied tasks to
    * @return the copied tasks
    */
   List<ProjectTask> copyProjectTaskList(Project sourceProject, Project targetProject);
 
   /**
-   * Saves the given tasks through their repository, so that the fields computed on save (full name,
-   * ticket number, level indicator, followers) are based on their new ids. To be called once the
-   * tasks are persisted.
+   * Saves the tasks returned by {@link #copyProjectTaskList(Project, Project)} through their
+   * repository, once they are persisted, so that the fields computed on save (full name, ticket
+   * number, level indicator, followers) are based on their new ids.
    *
-   * @param projectTaskList the tasks to save
+   * <p>Runs in the transaction of the caller, it does not open one.
+   *
+   * @param copiedTaskList the copied tasks, already persisted
    */
-  void saveProjectTaskList(List<ProjectTask> projectTaskList);
+  void saveCopiedProjectTaskList(List<ProjectTask> copiedTaskList);
 }

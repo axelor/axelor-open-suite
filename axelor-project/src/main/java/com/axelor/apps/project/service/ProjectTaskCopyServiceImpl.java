@@ -24,8 +24,10 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskCopyServiceImpl implements ProjectTaskCopyService {
@@ -52,30 +54,79 @@ public class ProjectTaskCopyServiceImpl implements ProjectTaskCopyService {
       copiedTask.setParentTask(null);
       // the ticket number is numbered per project
       copiedTask.setTicketNumber(null);
+      // the recurrence chain is copied as is, the copy must not generate a new one
+      copiedTask.setIsFirst(false);
+      // a sprint belongs to the source project and is not copied with it
+      copiedTask.setActiveSprint(null);
+      copiedTask.setOldActiveSprint(null);
       targetProject.addProjectTaskListItem(copiedTask);
       copiedTaskMap.put(sourceTask.getId(), copiedTask);
       copiedTaskList.add(copiedTask);
     }
 
     for (ProjectTask sourceTask : sourceTaskList) {
-      ProjectTask sourceParentTask = sourceTask.getParentTask();
-      if (sourceParentTask == null) {
-        continue;
-      }
-      // a parent task belonging to another project has no copy: its child becomes a root task
-      ProjectTask copiedParentTask = copiedTaskMap.get(sourceParentTask.getId());
-      if (copiedParentTask != null) {
-        copiedParentTask.addProjectTaskListItem(copiedTaskMap.get(sourceTask.getId()));
-      }
+      relinkCopiedTask(sourceTask, copiedTaskMap);
     }
 
     return copiedTaskList;
   }
 
   @Override
-  public void saveProjectTaskList(List<ProjectTask> projectTaskList) {
-    for (ProjectTask projectTask : projectTaskList) {
-      projectTaskRepository.save(projectTask);
+  public void saveCopiedProjectTaskList(List<ProjectTask> copiedTaskList) {
+    // each save recomputes the levels of the whole task tree of the project, which is quadratic on
+    // the number of copied tasks, but it is the only way to apply the whole task save process
+    for (ProjectTask copiedTask : copiedTaskList) {
+      projectTaskRepository.save(copiedTask);
     }
+  }
+
+  /**
+   * Replaces on the copied task the links that still refer to the tasks of the source project.
+   *
+   * @param sourceTask the copied task
+   * @param copiedTaskMap the copies, by id of the source task
+   */
+  protected void relinkCopiedTask(ProjectTask sourceTask, Map<Long, ProjectTask> copiedTaskMap) {
+    ProjectTask copiedTask = copiedTaskMap.get(sourceTask.getId());
+
+    // a parent task belonging to another project has no copy: its child becomes a root task
+    ProjectTask copiedParentTask = getCopiedTask(sourceTask.getParentTask(), copiedTaskMap);
+    if (copiedParentTask != null) {
+      copiedParentTask.addProjectTaskListItem(copiedTask);
+    }
+
+    // a recurrence chain never crosses a project, it is dropped when it is not copied
+    copiedTask.setNextProjectTask(getCopiedTask(sourceTask.getNextProjectTask(), copiedTaskMap));
+
+    copiedTask.setFinishToStartSet(copyTaskSet(sourceTask.getFinishToStartSet(), copiedTaskMap));
+    copiedTask.setStartToStartSet(copyTaskSet(sourceTask.getStartToStartSet(), copiedTaskMap));
+    copiedTask.setFinishToFinishSet(copyTaskSet(sourceTask.getFinishToFinishSet(), copiedTaskMap));
+  }
+
+  /**
+   * Returns the set of tasks to set on a copy, where every task of the source project is replaced
+   * by its copy. A dependency on the task of another project is a real one, it is kept as is.
+   *
+   * @param sourceTaskSet the dependencies of the copied task
+   * @param copiedTaskMap the copies, by id of the source task
+   * @return the dependencies of the copy
+   */
+  protected Set<ProjectTask> copyTaskSet(
+      Set<ProjectTask> sourceTaskSet, Map<Long, ProjectTask> copiedTaskMap) {
+    if (CollectionUtils.isEmpty(sourceTaskSet)) {
+      return sourceTaskSet;
+    }
+
+    Set<ProjectTask> taskSet = new HashSet<>();
+    for (ProjectTask sourceTask : sourceTaskSet) {
+      ProjectTask copiedTask = getCopiedTask(sourceTask, copiedTaskMap);
+      taskSet.add(copiedTask != null ? copiedTask : sourceTask);
+    }
+    return taskSet;
+  }
+
+  protected ProjectTask getCopiedTask(
+      ProjectTask sourceTask, Map<Long, ProjectTask> copiedTaskMap) {
+    return sourceTask != null ? copiedTaskMap.get(sourceTask.getId()) : null;
   }
 }

@@ -27,8 +27,11 @@ import static org.mockito.Mockito.when;
 
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,12 +50,20 @@ class ProjectTaskCopyServiceImplTest {
     when(projectTaskRepository.copy(any(ProjectTask.class), eq(false)))
         .thenAnswer(
             invocation -> {
-              // JPA.copy keeps the many-to-one fields and skips the one-to-many ones
+              // JPA.copy keeps the many-to-one fields and the many-to-many sets, and skips the
+              // one-to-many ones
               ProjectTask sourceTask = invocation.getArgument(0);
               ProjectTask copiedTask = new ProjectTask(sourceTask.getName());
               copiedTask.setProject(sourceTask.getProject());
               copiedTask.setParentTask(sourceTask.getParentTask());
+              copiedTask.setNextProjectTask(sourceTask.getNextProjectTask());
               copiedTask.setTicketNumber(sourceTask.getTicketNumber());
+              copiedTask.setIsFirst(sourceTask.getIsFirst());
+              copiedTask.setActiveSprint(sourceTask.getActiveSprint());
+              copiedTask.setOldActiveSprint(sourceTask.getActiveSprint());
+              copiedTask.setFinishToStartSet(copySet(sourceTask.getFinishToStartSet()));
+              copiedTask.setStartToStartSet(copySet(sourceTask.getStartToStartSet()));
+              copiedTask.setFinishToFinishSet(copySet(sourceTask.getFinishToFinishSet()));
               return copiedTask;
             });
     projectTaskCopyService = new ProjectTaskCopyServiceImpl(projectTaskRepository);
@@ -129,11 +140,60 @@ class ProjectTaskCopyServiceImplTest {
   }
 
   @Test
-  void testSaveProjectTaskListSavesEveryTaskInOrder() {
+  void testCopyProjectTaskListRemapsRecurrenceChainOnCopiedTasks() {
+    Project sourceProject = new Project();
+    ProjectTask firstTask = createTask(sourceProject, "First", null, null);
+    ProjectTask secondTask = createTask(sourceProject, "Second", null, null);
+    firstTask.setIsFirst(true);
+    firstTask.setNextProjectTask(secondTask);
+    secondTask.setNextProjectTask(createTask(new Project(), "Task of another project", null, null));
+
+    List<ProjectTask> copiedTaskList =
+        projectTaskCopyService.copyProjectTaskList(sourceProject, new Project());
+
+    ProjectTask copiedFirstTask = copiedTaskList.get(0);
+    ProjectTask copiedSecondTask = copiedTaskList.get(1);
+    Assertions.assertSame(copiedSecondTask, copiedFirstTask.getNextProjectTask());
+    // a chain leaving the project is dropped instead of pointing back to another project
+    Assertions.assertNull(copiedSecondTask.getNextProjectTask());
+    // the chain is copied as is, the copy must not generate a new one
+    Assertions.assertFalse(copiedFirstTask.getIsFirst());
+    Assertions.assertTrue(firstTask.getIsFirst());
+  }
+
+  @Test
+  void testCopyProjectTaskListRemapsDependenciesAndResetsSprint() {
+    Project sourceProject = new Project();
+    ProjectTask predecessorTask = createTask(sourceProject, "Predecessor", null, null);
+    ProjectTask task = createTask(sourceProject, "Task", null, null);
+    ProjectTask externalTask = createTask(new Project(), "External", null, null);
+    task.setFinishToStartSet(new HashSet<>(Set.of(predecessorTask, externalTask)));
+    task.setStartToStartSet(new HashSet<>(Set.of(predecessorTask)));
+    task.setActiveSprint(new Sprint());
+
+    List<ProjectTask> copiedTaskList =
+        projectTaskCopyService.copyProjectTaskList(sourceProject, new Project());
+
+    ProjectTask copiedPredecessorTask = copiedTaskList.get(0);
+    ProjectTask copiedTask = copiedTaskList.get(1);
+    // a dependency inside the project follows the copies, one on another project is a real
+    // dependency and is kept
+    Assertions.assertEquals(
+        Set.of(copiedPredecessorTask, externalTask), copiedTask.getFinishToStartSet());
+    Assertions.assertEquals(Set.of(copiedPredecessorTask), copiedTask.getStartToStartSet());
+    Assertions.assertTrue(task.getFinishToStartSet().contains(predecessorTask));
+    // the sprints belong to the source project and are not copied with it
+    Assertions.assertNull(copiedTask.getActiveSprint());
+    Assertions.assertNull(copiedTask.getOldActiveSprint());
+    Assertions.assertNotNull(task.getActiveSprint());
+  }
+
+  @Test
+  void testSaveCopiedProjectTaskListSavesEveryTaskInOrder() {
     ProjectTask rootTask = new ProjectTask("Root");
     ProjectTask childTask = new ProjectTask("Child");
 
-    projectTaskCopyService.saveProjectTaskList(List.of(rootTask, childTask));
+    projectTaskCopyService.saveCopiedProjectTaskList(List.of(rootTask, childTask));
 
     InOrder inOrder = inOrder(projectTaskRepository);
     inOrder.verify(projectTaskRepository).save(rootTask);
@@ -141,7 +201,7 @@ class ProjectTaskCopyServiceImplTest {
     inOrder.verifyNoMoreInteractions();
   }
 
-  protected ProjectTask createTask(
+  private ProjectTask createTask(
       Project project, String name, ProjectTask parentTask, String ticketNumber) {
     ProjectTask task = new ProjectTask(name);
     task.setId(++sequence);
@@ -153,7 +213,11 @@ class ProjectTaskCopyServiceImplTest {
     return task;
   }
 
-  protected List<String> names(List<ProjectTask> projectTaskList) {
+  private Set<ProjectTask> copySet(Set<ProjectTask> taskSet) {
+    return taskSet != null ? new HashSet<>(taskSet) : null;
+  }
+
+  private List<String> names(List<ProjectTask> projectTaskList) {
     return projectTaskList.stream().map(ProjectTask::getName).toList();
   }
 }
