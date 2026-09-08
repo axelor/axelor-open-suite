@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerContactLink;
 import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.Tag;
 import com.axelor.apps.base.db.TradingName;
@@ -44,6 +45,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.partner.PartnerContactLinkService;
 import com.axelor.apps.base.service.partner.api.PartnerGenerateService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
 import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberValidator;
@@ -291,13 +293,11 @@ public class PartnerController {
 
   public void addContactToPartner(ActionRequest request, ActionResponse response) {
     try {
-      final Context context = request.getContext();
-      final Partner contact = context.asType(Partner.class);
-      final Context parentContext = context.getParent();
+      final Partner contact = request.getContext().asType(Partner.class);
+      final Optional<Partner> parentPartner = getParentPartner(request);
 
-      if (parentContext != null
-          && Partner.class.isAssignableFrom(parentContext.getContextClass())
-          && Objects.equals(parentContext.asType(Partner.class), contact.getMainPartner())) {
+      if (parentPartner.isPresent()
+          && Objects.equals(parentPartner.get(), contact.getMainPartner())) {
         return;
       }
 
@@ -520,6 +520,64 @@ public class PartnerController {
             "self.id IN (%s)",
             StringHelper.getIdListString(
                 Beans.get(PartnerService.class).getFilteredPartners(partner))));
+  }
+
+  public void setPartnerContactLinkPartnerDomain(ActionRequest request, ActionResponse response) {
+    PartnerContactLink partnerContactLink = request.getContext().asType(PartnerContactLink.class);
+    Optional<Partner> parentPartner = getParentPartner(request);
+    if (parentPartner.isEmpty()) {
+      return;
+    }
+    Partner contact = parentPartner.get();
+
+    List<Partner> companyList = Beans.get(PartnerService.class).getFilteredPartners(contact);
+    if (contact.getPartnerContactLinkList() != null) {
+      companyList.removeAll(
+          contact.getPartnerContactLinkList().stream()
+              .filter(link -> !link.equals(partnerContactLink))
+              .map(PartnerContactLink::getPartner)
+              .filter(Objects::nonNull)
+              .collect(Collectors.toList()));
+    }
+
+    response.setAttr(
+        "partner",
+        "domain",
+        String.format("self.id IN (%s)", StringHelper.getIdListString(companyList)));
+  }
+
+  public void prefillMainPartnerFromParent(ActionRequest request, ActionResponse response) {
+    try {
+      Partner parent = getParentPartner(request).orElse(null);
+      if (parent == null || parent.getId() == null || parent.getIsContact()) {
+        return;
+      }
+      Partner company = Beans.get(PartnerRepository.class).find(parent.getId());
+      response.setValue("mainPartner", company);
+      response.setValue(
+          "partnerContactLinkList",
+          List.of(Beans.get(PartnerContactLinkService.class).createMainPartnerLink(company)));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  protected Optional<Partner> getParentPartner(ActionRequest request) {
+    Context parentContext = request.getContext().getParent();
+    if (parentContext == null || !Partner.class.isAssignableFrom(parentContext.getContextClass())) {
+      return Optional.empty();
+    }
+    return Optional.of(parentContext.asType(Partner.class));
+  }
+
+  public void updateMainPartnerLink(ActionRequest request, ActionResponse response) {
+    try {
+      Partner contact = request.getContext().asType(Partner.class);
+      response.setValues(
+          Beans.get(PartnerContactLinkService.class).getMainPartnerLinkValuesMap(contact));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void checkIfRegistrationCodeExists(ActionRequest request, ActionResponse response) {

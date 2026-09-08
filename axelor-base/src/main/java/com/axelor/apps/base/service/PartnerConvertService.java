@@ -18,8 +18,9 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 
 public interface PartnerConvertService {
-  void convertToIndividualPartner(Partner partner);
+  void convertToIndividualPartner(Partner partner) throws AxelorException;
 }

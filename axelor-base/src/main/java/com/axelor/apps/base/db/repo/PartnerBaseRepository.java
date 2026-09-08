@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.MetaFileService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.partner.PartnerContactLinkService;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -35,7 +36,9 @@ public class PartnerBaseRepository extends PartnerRepository {
       PartnerService partnerService = Beans.get(PartnerService.class);
       partnerService.onSave(partner);
       partnerService.setDefaultPartnerAddress(partner);
-      return super.save(partner);
+      Partner savedPartner = super.save(partner);
+      Beans.get(PartnerContactLinkService.class).afterPartnerSave(savedPartner);
+      return savedPartner;
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
@@ -49,6 +52,10 @@ public class PartnerBaseRepository extends PartnerRepository {
 
     copy.setPartnerSeq(null);
     copy.setEmailAddress(null);
+    if (copy.getIsContact()) {
+      copy.setMainPartner(null);
+      copy.setPartnerContactLinkList(null);
+    }
 
     try {
       MetaFile picture = copy.getPicture();
@@ -65,6 +72,13 @@ public class PartnerBaseRepository extends PartnerRepository {
 
   @Override
   public void remove(Partner partner) {
+    try {
+      Beans.get(PartnerContactLinkService.class).onPartnerRemove(partner);
+    } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
+
     if (partner.getLinkedUser() != null) {
       UserBaseRepository userRepo = Beans.get(UserBaseRepository.class);
       User user = userRepo.find(partner.getLinkedUser().getId());

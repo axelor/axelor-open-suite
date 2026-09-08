@@ -36,13 +36,18 @@ public class PartnerCreationServiceImpl implements PartnerCreationService {
   protected PartnerRepository partnerRepository;
   protected UserService userService;
   protected AppBaseService appBaseService;
+  protected PartnerContactLinkService partnerContactLinkService;
 
   @Inject
   public PartnerCreationServiceImpl(
-      PartnerRepository partnerRepository, UserService userService, AppBaseService appBaseService) {
+      PartnerRepository partnerRepository,
+      UserService userService,
+      AppBaseService appBaseService,
+      PartnerContactLinkService partnerContactLinkService) {
     this.partnerRepository = partnerRepository;
     this.userService = userService;
     this.appBaseService = appBaseService;
+    this.partnerContactLinkService = partnerContactLinkService;
   }
 
   @Override
@@ -75,8 +80,8 @@ public class PartnerCreationServiceImpl implements PartnerCreationService {
       partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
       partnerTypeSelect = partner.getPartnerTypeSelect();
       if (mainPartner != null) {
-        partner.setMainPartner(mainPartner);
-        mainPartner.addContactPartnerSetItem(partner);
+        partner.addPartnerContactLinkListItem(
+            partnerContactLinkService.createMainPartnerLink(mainPartner));
       }
     }
 
