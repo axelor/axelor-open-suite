@@ -50,7 +50,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -410,6 +409,16 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
         manufOrderGetStockMoveService.getPlannedStockMove(operationOrder.getInStockMoveList());
 
     if (!stockMoveOpt.isPresent()) {
+      List<ProdProduct> toConsumeProdProductList = operationOrder.getToConsumeProdProductList();
+      List<StockMoveLine> consumedStockMoveLineList = operationOrder.getConsumedStockMoveLineList();
+      if (!manufOrderStockMoveService.hasRemainingQty(
+          operationOrder.getManufOrder(),
+          toConsumeProdProductList,
+          qtyToUpdate,
+          consumedStockMoveLineList)) {
+        return;
+      }
+
       // After a partial finish, the consumed stock move is REALIZED.
       // Create a new planned stock move for the remaining quantity.
       StockMove newStockMove =
@@ -435,35 +444,21 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
         productionTrackingPreservationService.getPreservedTrackingNumbersByProduct(originalLines);
 
     operationOrder = JpaModelHelper.ensureManaged(operationOrder);
+    List<StockMoveLine> consumedStockMoveLineList = operationOrder.getConsumedStockMoveLineList();
     // clear all lists from planned lines
-    operationOrder
-        .getConsumedStockMoveLineList()
-        .removeIf(
-            stockMoveLine ->
-                stockMoveLine.getStockMove().getStatusSelect()
-                    == StockMoveRepository.STATUS_CANCELED);
+    consumedStockMoveLineList.removeIf(
+        stockMoveLine ->
+            stockMoveLine.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_CANCELED);
 
     stockMove = JpaModelHelper.ensureManaged(stockMove);
     stockMove.clearStockMoveLineList();
 
     // create a new list, reusing preserved tracking numbers
-    for (ProdProduct prodProduct : operationOrder.getToConsumeProdProductList()) {
+    List<ProdProduct> toConsumeProdProductList = operationOrder.getToConsumeProdProductList();
+    for (ProdProduct prodProduct : toConsumeProdProductList) {
       BigDecimal qty =
-          manufOrderStockMoveService.getFractionQty(
-              operationOrder.getManufOrder(), prodProduct, qtyToUpdate);
-      BigDecimal realizedQty =
-          operationOrder.getConsumedStockMoveLineList().stream()
-              .filter(
-                  sml ->
-                      sml.getProduct() != null
-                          && sml.getProduct().equals(prodProduct.getProduct())
-                          && sml.getStockMove() != null
-                          && sml.getStockMove().getStatusSelect()
-                              == StockMoveRepository.STATUS_REALIZED)
-              .map(StockMoveLine::getRealQty)
-              .filter(Objects::nonNull)
-              .reduce(BigDecimal.ZERO, BigDecimal::add);
-      qty = qty.subtract(realizedQty).max(BigDecimal.ZERO);
+          manufOrderStockMoveService.getRemainingQty(
+              operationOrder.getManufOrder(), prodProduct, qtyToUpdate, consumedStockMoveLineList);
 
       productionTrackingPreservationService.createStockMoveLinesWithPreservedTracking(
           prodProduct,
@@ -477,10 +472,14 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
       // Update consumed StockMoveLineList with created stock move lines
       List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
-        if (!operationOrder.getConsumedStockMoveLineList().contains(stockMoveLine)) {
+        if (!consumedStockMoveLineList.contains(stockMoveLine)) {
           operationOrder.addConsumedStockMoveLineListItem(stockMoveLine);
         }
       }
+    }
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (CollectionUtils.isEmpty(stockMoveLineList)) {
+      return;
     }
     stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);

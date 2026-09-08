@@ -47,6 +47,9 @@ public interface ManufOrderCreateStockMoveLineService {
       StockLocation toStockLocation)
       throws AxelorException;
 
+  void createNewResidualStockMoveLineList(ManufOrder manufOrder, BigDecimal qtyToUpdate)
+      throws AxelorException;
+
   void createNewProducedStockMoveLineList(ManufOrder manufOrder, BigDecimal qtyToUpdate)
       throws AxelorException;
 

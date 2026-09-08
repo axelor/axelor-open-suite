@@ -24,6 +24,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
@@ -96,6 +97,36 @@ public interface ManufOrderStockMoveService {
    * @return
    */
   BigDecimal getFractionQty(ManufOrder manufOrder, ProdProduct prodProduct, BigDecimal qtyToUpdate);
+
+  /**
+   * Compute the quantity still to move after subtracting matching realized stock move lines.
+   *
+   * @param manufOrder the manufacturing order
+   * @param prodProduct the product requirement
+   * @param qtyToUpdate the manufacturing quantity to apply
+   * @param stockMoveLineList the stock move lines already linked to the requirement
+   * @return the remaining quantity, floored at zero
+   */
+  BigDecimal getRemainingQty(
+      ManufOrder manufOrder,
+      ProdProduct prodProduct,
+      BigDecimal qtyToUpdate,
+      List<StockMoveLine> stockMoveLineList);
+
+  /**
+   * Check whether at least one product requirement still has a quantity to move.
+   *
+   * @param manufOrder the manufacturing order
+   * @param prodProductList the product requirements to check
+   * @param qtyToUpdate the manufacturing quantity to apply
+   * @param stockMoveLineList the stock move lines already linked to the requirements
+   * @return {@code true} if at least one remaining quantity is positive
+   */
+  boolean hasRemainingQty(
+      ManufOrder manufOrder,
+      List<ProdProduct> prodProductList,
+      BigDecimal qtyToUpdate,
+      List<StockMoveLine> stockMoveLineList);
 
   StockLocation getFromStockLocationForConsumedStockMove(ManufOrder manufOrder, Company company)
       throws AxelorException;
