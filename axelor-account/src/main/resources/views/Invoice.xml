@@ -692,7 +692,7 @@
             if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled)"/>
           <field name="deliveryAddressStr" colSpan="6" readonlyIf="statusSelect &gt; 1"
             height="5">
-            <viewer><![CDATA[<>{addressStr}</>]]></viewer>
+            <viewer><![CDATA[<>{deliveryAddressStr}</>]]></viewer>
           </field>
         </panel>
         <panel-related field="stockMoveSet"
