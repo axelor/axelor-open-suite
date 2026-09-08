@@ -160,35 +160,54 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   @Override
   public boolean isAxisRequired(AnalyticLineModel analyticLineModel, int position)
       throws AxelorException {
-    Account account = analyticLineModel.getAccount();
-    Company company = analyticLineModel.getCompany();
-    if (!analyticToolService.isManageAnalytic(company)
-        || !analyticToolService.isPositionUnderAnalyticAxisSelect(company, position)
-        || account == null
-        || !account.getAnalyticDistributionAuthorized()) {
+    if (!this.isAxisRequirementApplicable(analyticLineModel, position)) {
       return false;
     }
 
-    if (analyticToolService.isFreeAnalyticDistribution(company)) {
-      AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-      List<AnalyticAxisByCompany> analyticAxisByCompanyList =
-          accountConfig.getAnalyticAxisByCompanyList();
-      if (ObjectUtils.isEmpty(analyticAxisByCompanyList)
-          || analyticAxisByCompanyList.size() < position) {
-        return false;
-      }
-      return Optional.ofNullable(
-              analyticAxisByCompanyList.stream()
-                  .sorted(Comparator.comparing(AnalyticAxisByCompany::getSequence))
-                  .collect(Collectors.toList())
-                  .get(position - 1))
-          .map(AnalyticAxisByCompany::getIsRequired)
-          .orElse(false);
-
-    } else {
-      return account.getAnalyticDistributionRequiredOnMoveLines()
-          && analyticLineModel.getAnalyticDistributionTemplate() == null;
+    if (analyticToolService.isFreeAnalyticDistribution(analyticLineModel.getCompany())) {
+      return this.isAxisRequiredByCompanyConfig(analyticLineModel.getCompany(), position);
     }
+
+    return this.isAxisRequiredByAccount(analyticLineModel);
+  }
+
+  /** Common prerequisites without which no axis can be required, whatever the configuration. */
+  protected boolean isAxisRequirementApplicable(AnalyticLineModel analyticLineModel, int position)
+      throws AxelorException {
+    Account account = analyticLineModel.getAccount();
+    Company company = analyticLineModel.getCompany();
+
+    return analyticToolService.isManageAnalytic(company)
+        && analyticToolService.isPositionUnderAnalyticAxisSelect(company, position)
+        && account != null
+        && account.getAnalyticDistributionAuthorized();
+  }
+
+  /** Reads the isRequired flag of the analytic axis configured at the given position. */
+  protected boolean isAxisRequiredByCompanyConfig(Company company, int position)
+      throws AxelorException {
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    List<AnalyticAxisByCompany> analyticAxisByCompanyList =
+        accountConfig.getAnalyticAxisByCompanyList();
+
+    if (ObjectUtils.isEmpty(analyticAxisByCompanyList)
+        || analyticAxisByCompanyList.size() < position) {
+      return false;
+    }
+
+    return Optional.ofNullable(
+            analyticAxisByCompanyList.stream()
+                .sorted(Comparator.comparing(AnalyticAxisByCompany::getSequence))
+                .collect(Collectors.toList())
+                .get(position - 1))
+        .map(AnalyticAxisByCompany::getIsRequired)
+        .orElse(false);
+  }
+
+  /** Requirement carried by the accounting account of the line. */
+  protected boolean isAxisRequiredByAccount(AnalyticLineModel analyticLineModel) {
+    return analyticLineModel.getAccount().getAnalyticDistributionRequiredOnMoveLines()
+        && analyticLineModel.getAnalyticDistributionTemplate() == null;
   }
 
   @Override
