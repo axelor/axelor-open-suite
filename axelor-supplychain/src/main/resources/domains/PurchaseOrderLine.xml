@@ -5,7 +5,7 @@
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
-  <entity name="PurchaseOrderLine">
+  <entity name="PurchaseOrderLine" implements="com.axelor.apps.account.db.repo.AnalyticLine">
 
     <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"
       precision="20" scale="3"/>

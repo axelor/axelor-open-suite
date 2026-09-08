@@ -25,9 +25,10 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.AnalyticMoveLineQuery;
 import com.axelor.apps.account.db.AnalyticMoveLineQueryParameter;
-import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -47,14 +48,16 @@ public class AnalyticDistributionLineController {
   public void computeAmount(ActionRequest request, ActionResponse response) {
     try {
       AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-      AnalyticLine parent =
-          Beans.get(AnalyticControllerUtils.class).getParentWithContext(request, analyticMoveLine);
+      AnalyticLineModel analyticLineModel =
+          Beans.get(AnalyticMoveLineParentService.class)
+              .getModelUsingAnalyticMoveLine(analyticMoveLine, request.getContext());
 
       AnalyticMoveLineService analyticMoveLineService = Beans.get(AnalyticMoveLineService.class);
 
       BigDecimal amount =
-          parent != null
-              ? analyticMoveLineService.computeAmount(analyticMoveLine, parent.getLineAmount())
+          analyticLineModel != null
+              ? analyticMoveLineService.computeAmount(
+                  analyticMoveLine, analyticLineModel.getLineAmount())
               : analyticMoveLineService.computeAmount(analyticMoveLine);
       response.setValue("amount", amount);
     } catch (Exception e) {
@@ -81,15 +84,20 @@ public class AnalyticDistributionLineController {
       throws AxelorException {
     try {
       AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+      AnalyticLineModel analyticLineModel =
+          Beans.get(AnalyticMoveLineParentService.class)
+              .getModelUsingAnalyticMoveLine(analyticMoveLine, request.getContext());
 
-      AnalyticLine parent =
-          Beans.get(AnalyticControllerUtils.class).getParentWithContext(request, analyticMoveLine);
-
-      if (parent != null) {
+      if (analyticLineModel != null) {
         AnalyticLineService analyticMoveLineService = Beans.get(AnalyticLineService.class);
-        response.setValue("analyticJournal", analyticMoveLineService.getAnalyticJournal(parent));
-        response.setValue("date", analyticMoveLineService.getDate(parent));
-        response.setValue("currency", analyticMoveLineService.getCompanyCurrency(parent));
+        response.setValue(
+            "analyticJournal", analyticMoveLineService.getAnalyticJournal(analyticLineModel));
+        response.setValue(
+            "date",
+            analyticMoveLineService.getDate(
+                analyticLineModel.getAnalyticLine(), analyticLineModel.getCompany()));
+        response.setValue(
+            "currency", analyticMoveLineService.getCompanyCurrency(analyticLineModel));
       }
 
     } catch (Exception e) {

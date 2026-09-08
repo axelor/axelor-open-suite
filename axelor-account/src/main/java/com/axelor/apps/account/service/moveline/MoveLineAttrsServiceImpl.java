@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelInitAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
@@ -88,7 +89,10 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
       MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
     Company company = move != null ? move.getCompany() : null;
-    analyticAttrsService.addAnalyticAccountRequired(moveLine, company, attrsMap);
+    analyticAttrsService.addAnalyticAccountRequired(
+        AnalyticLineModelInitAccountService.castAsAnalyticLineModel(moveLine, move),
+        company,
+        attrsMap);
   }
 
   @Override
@@ -241,7 +245,12 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     }
 
     analyticAttrsService.addAnalyticDistributionTemplateDomain(
-        moveLine, moveLine.getPartner(), null, move.getCompany(), move.getTradingName(), attrsMap);
+        AnalyticLineModelInitAccountService.castAsAnalyticLineModel(moveLine, move),
+        moveLine.getPartner(),
+        null,
+        move.getCompany(),
+        move.getTradingName(),
+        attrsMap);
   }
 
   @Override

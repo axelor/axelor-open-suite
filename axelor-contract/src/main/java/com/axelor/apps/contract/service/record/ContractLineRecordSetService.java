@@ -18,13 +18,14 @@
  */
 package com.axelor.apps.contract.service.record;
 
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
-import com.axelor.apps.contract.model.AnalyticLineContractModel;
 
 public interface ContractLineRecordSetService {
 
   void setCompanyExTaxTotal(
-      AnalyticLineContractModel analyticLineContractModel, ContractLine contractLine)
+      AnalyticLineModel analyticLineModel, ContractLine contractLine, Contract contract)
       throws AxelorException;
 }

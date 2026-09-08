@@ -19,8 +19,13 @@
 package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.rpc.Context;
 
 public interface AnalyticMoveLineParentService {
   void refreshAxisOnParent(AnalyticMoveLine analyticMoveLine) throws AxelorException;
+
+  AnalyticLineModel getModelUsingAnalyticMoveLine(
+      AnalyticMoveLine analyticMoveLine, Context context) throws AxelorException;
 }

@@ -19,8 +19,8 @@
 package com.axelor.apps.supplychain.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
 
 public interface AnalyticMoveLineRecordService {
   void onNew(AnalyticLineModel analyticLineModel, AnalyticMoveLine analyticMoveLine)

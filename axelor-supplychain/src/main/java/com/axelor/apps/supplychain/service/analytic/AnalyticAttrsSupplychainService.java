@@ -18,11 +18,20 @@
  */
 package com.axelor.apps.supplychain.service.analytic;
 
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import java.util.Map;
 
 public interface AnalyticAttrsSupplychainService {
+
+  /**
+   * Adds the "required" attribute of the five analytic axis fields, so that the isRequired flag
+   * configured on the analytic axis by company also applies to lines that carry no accounting
+   * account of their own (sale and purchase order lines, contract lines).
+   */
+  void addAnalyticAccountRequiredAttrs(
+      AnalyticLineModel analyticLineModel, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
 
   void addAnalyticDistributionPanelHiddenAttrs(
       AnalyticLineModel analyticLineModel, Map<String, Map<String, Object>> attrsMap)

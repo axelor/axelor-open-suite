@@ -20,6 +20,8 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.model.AnalyticLineModel;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -40,7 +42,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import com.axelor.apps.supplychain.service.analytic.AnalyticLineModelInitSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
@@ -118,7 +120,9 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
 
     var company = purchaseOrder.getCompany();
     var product = purchaseOrderLine.getProduct();
-    AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
+    AnalyticLineModel analyticLineModel =
+        AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
+            purchaseOrderLine, purchaseOrder);
     analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
 
     var supplierDeliveryTime =
@@ -187,7 +191,9 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
 
     purchaseOrderLine.setIsTitleLine(!isNormalLine);
 
-    AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
+    AnalyticLineModel analyticLineModel =
+        AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
+            purchaseOrderLine, purchaseOrder);
     analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
 
     return purchaseOrderLine;

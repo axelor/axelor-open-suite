@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
@@ -50,8 +51,6 @@ import com.axelor.apps.contract.db.RevaluationFormula;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.generator.InvoiceGeneratorContract;
-import com.axelor.apps.contract.model.AnalyticLineContractModel;
-import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppAccount;
@@ -447,8 +446,7 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
     invoiceLine.setAnalyticDistributionTemplate(line.getAnalyticDistributionTemplate());
 
     if (CollectionUtils.isNotEmpty(line.getAnalyticMoveLineList())) {
-      analyticLineModelService.setInvoiceLineAnalyticInfo(
-          new AnalyticLineContractModel(line, null, null), invoiceLine);
+      analyticLineModelService.setInvoiceLineAnalyticInfo(line, invoiceLine);
       this.copyAnalyticMoveLines(line.getAnalyticMoveLineList(), invoiceLine);
     }
 

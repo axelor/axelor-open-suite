@@ -19,6 +19,7 @@
 package com.axelor.apps.budget.service.purchaseorder;
 
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -32,7 +33,6 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
-import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import jakarta.inject.Inject;

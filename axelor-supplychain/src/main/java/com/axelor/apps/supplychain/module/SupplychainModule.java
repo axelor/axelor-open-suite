@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.AccountingCutOffServiceImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationGroupServiceImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationInitServiceImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
@@ -144,8 +145,6 @@ import com.axelor.apps.supplychain.service.AccountingSituationInitSupplychainSer
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.AnalyticLineModelService;
-import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.CallTenderPurchaseOrderSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
@@ -261,6 +260,7 @@ import com.axelor.apps.supplychain.service.TrackingNumberSupplychainService;
 import com.axelor.apps.supplychain.service.TrackingNumberSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.analytic.AnalyticLineModelSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.analytic.AnalyticMoveLineParentSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.analytic.AnalyticMoveLineRecordService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticMoveLineRecordServiceImpl;
@@ -541,7 +541,6 @@ public class SupplychainModule extends AxelorModule {
     bind(PurchaseOrderFromSaleOrderLinesService.class)
         .to(PurchaseOrderFromSaleOrderLinesServiceImpl.class);
     bind(SaleOrderVersionServiceImpl.class).to(SaleOrderVersionSupplyChainServiceImpl.class);
-    bind(AnalyticLineModelService.class).to(AnalyticLineModelServiceImpl.class);
     bind(AnalyticMoveLineRecordService.class).to(AnalyticMoveLineRecordServiceImpl.class);
     bind(AnalyticAttrsSupplychainService.class).to(AnalyticAttrsSupplychainServiceImpl.class);
     bind(PartnerLinkSupplychainService.class).to(PartnerLinkSupplychainServiceImpl.class);
@@ -683,5 +682,6 @@ public class SupplychainModule extends AxelorModule {
     bind(ProductStockAnalysisService.class).to(ProductStockAnalysisServiceImpl.class);
     bind(DepRateAggregationService.class).to(DepRateAggregationServiceImpl.class);
     bind(ProductServicePurchaseImpl.class).to(ProductSupplychainServiceImpl.class);
+    bind(AnalyticLineModelServiceImpl.class).to(AnalyticLineModelSupplychainServiceImpl.class);
   }
 }

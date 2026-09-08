@@ -5,7 +5,8 @@
 
   <module name="contract" package="com.axelor.apps.contract.db"/>
 
-  <entity name="ContractLine" implements="com.axelor.apps.base.interfaces.Currenciable">
+  <entity name="ContractLine"
+    implements="com.axelor.apps.base.interfaces.Currenciable,com.axelor.apps.account.db.repo.AnalyticLine">
 
     <integer name="sequence"/>
 

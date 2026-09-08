@@ -16,17 +16,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
 
 public interface AnalyticLineModelService {
 
-  boolean analyzeAnalyticLineModel(AnalyticLineModel analyticLineModel, Company company)
-      throws AxelorException;
+  boolean analyzeAnalyticLineModel(AnalyticLineModel analyticLineModel) throws AxelorException;
 
   AnalyticLineModel getAndComputeAnalyticDistribution(AnalyticLineModel analyticLineModel)
       throws AxelorException;
@@ -41,7 +41,7 @@ public interface AnalyticLineModelService {
   AnalyticLineModel createAnalyticDistributionWithTemplate(AnalyticLineModel analyticLineModel)
       throws AxelorException;
 
-  void setInvoiceLineAnalyticInfo(AnalyticLineModel analyticLineModel, InvoiceLine invoiceLine);
+  void setInvoiceLineAnalyticInfo(AnalyticLine analyticLine, InvoiceLine invoiceLine);
 
   boolean analyticDistributionTemplateRequired(boolean isPurchase, Company company)
       throws AxelorException;
