@@ -184,11 +184,13 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   @Override
   public AnalyticLineModel computeAnalyticDistribution(AnalyticLineModel analyticLineModel)
       throws AxelorException {
-    List<AnalyticMoveLine> analyticMoveLineList = analyticLineModel.getAnalyticMoveLineList();
-
-    if (CollectionUtils.isEmpty(analyticMoveLineList)) {
+    if (CollectionUtils.isEmpty(analyticLineModel.getAnalyticMoveLineList())) {
       this.createAnalyticDistributionWithTemplate(analyticLineModel);
     }
+
+    // Re-read the list: createAnalyticDistributionWithTemplate replaces it on the line, so a
+    // reference taken before would no longer be the list carried by the line.
+    List<AnalyticMoveLine> analyticMoveLineList = analyticLineModel.getAnalyticMoveLineList();
 
     if (analyticMoveLineList != null) {
       LocalDate date = appAccountService.getTodayDate(this.getCompany(analyticLineModel));
