@@ -58,8 +58,8 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
   protected AppBaseService appBaseService;
   protected StockMoveRepository stockMoveRepo;
   protected PartnerProductQualityRatingService partnerProductQualityRatingService;
-  private SequenceService sequenceService;
-  private StockMoveLineRepository stockMoveLineRepo;
+  protected SequenceService sequenceService;
+  protected StockMoveLineRepository stockMoveLineRepo;
 
   @Inject
   public StockMoveToolServiceImpl(

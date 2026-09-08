@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="sale-order-quotation-grid" title="Sale quotations"
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
@@ -14,7 +14,7 @@
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-sale-order-method-convert-selected-lines-to-merge-lines"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
-          action="action-view-open-quotation-lines"/>
+          action="action-sale-order-method-show-quotation-lines"/>
       </menu>
     </menubar>
     <hilite background="warning"
@@ -460,8 +460,12 @@
           onSelect="action-sale-order-supplychain-method-set-delivered-partner-domain"
           form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
 
-        <field if="__config__.app.getApp('sale')?.getManageSaleOrderVersion()"
+        <field
+          if="__config__.app.getApp('sale')?.getManageSaleOrderVersion() &amp;&amp; !__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"
           name="versionNumber" colSpan="3"/>
+        <field
+          if="__config__.app.getApp('sale')?.getManageSaleOrderVersion() &amp;&amp; __config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"
+          name="versionNumber" colSpan="3" showIf="statusSelect &lt;= 2 || statusSelect == 5"/>
         <field name="taxNumber" colSpan="3" canNew="false" canEdit="false"
           readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited"
           onSelect="action-sale-order-attrs-compute-tax-number-domain"
@@ -789,8 +793,8 @@
         icon="box-seam-fill"/>
       <button if="__config__.app.getApp('sale')?.getEnableConfigurator()"
         name="addLineFromConfiguratorBtn" title="Add Line from Configurator"
-        showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"
-        icon="ui-checks"/>
+        showIf="statusSelect == 1 || (statusSelect == 3 &amp;&amp; orderBeingEdited)"
+        onClick="save,action-sale-order-view-generate-line" icon="ui-checks"/>
       <button
         if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto"
         name="generateCustomerStockMoveBtn" title="Generate customer deliveries"
@@ -864,13 +868,14 @@
       if="__config__.app.getApp('base')?.getIsGlobalDiscountEnabled()"
       showIf="clientPartner &amp;&amp; saleOrderLineList &amp;&amp; saleOrderLineList.length != 0"
       sidebar="true" readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited">
-      <field name="discountTypeSelect" onChange="action-sale-order-method-on-line-change"/>
+      <field name="discountTypeSelect"
+        onChange="action-sale-order-group-discount-type-onchange"/>
       <field name="discountAmount" showIf="discountTypeSelect != 0"
         x-currency="discountCurrency" x-scale="discountScale" colSpan="6"
-        onChange="action-sale-order-method-on-line-change"/>
+        onChange="action-sale-order-method-on-global-discount-change, action-sale-order-method-on-line-change"/>
       <button name="$swapDiscountTypeBtn" title="Swap discount type" widget="info-button"
         showIf="discountTypeSelect != 0" icon="arrow-left-right" colSpan="6"
-        onClick="action-sale-order-attrs-swap-discount-type, action-sale-order-method-on-line-change"/>
+        onClick="action-sale-order-attrs-swap-discount-type, action-sale-order-method-on-global-discount-change, action-sale-order-method-on-line-change"/>
       <field name="priceBeforeGlobalDiscount" type="decimal" x-currency="currency.symbol"
         x-scale="currency.numberOfDecimals" hidden="true"/>
       <field name="discountCurrency" hidden="true" x-dirty="false"/>
@@ -903,13 +908,7 @@
     <panel name="referencePanel" title="References" hideIf="clientPartner == null"
       itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
       <field name="externalReference" hideIf="company == null"
-        onChange="action-sale-sale-order-attrs-external-reference"/>
-      <field name="$duplicateExternalReference" hidden="true" colSpan="12" showTitle="false"
-        readonly="true">
-        <viewer>
-          <![CDATA[<><Badge bg="warning">{_t('Watch out, a sale order was already created with this external reference.')}</Badge></>]]>
-        </viewer>
-      </field>
+        onChange="action-sale-order-attrs-external-reference"/>
       <field name="opportunity" readonlyIf="statusSelect >= 2" form-view="opportunity-form"
         grid-view="opportunity-grid" canEdit="false"/>
       <field name="duplicateReferenceLabel" showTitle="false" readonly="true" hidden="true">
@@ -1477,7 +1476,7 @@
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-open-sale-quotation-merge-form"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
-          action="action-view-open-quotation-lines"/>
+          action="action-sale-order-method-show-quotation-lines"/>
       </menu>
     </menubar>
     <field name="saleOrderSeq"/>
@@ -1590,12 +1589,12 @@
     <action name="action-sale-order-attrs-hidden-bank-details"/>
     <action name="action-sale-order-attrs-external-reference"/>
     <action name="action-sale-order-attrs-availability"/>
-    <action name="action-sale-order-attrs-set-discounts-need-review"/>
     <action name="action-sale-order-record-get-trading-names-management-config"/>
     <action name="action-sale-order-method-is-incoterm-required"/>
     <action name="action-sale-order-method-get-last-version"/>
     <action name="action-sale-order-attrs-set-save-actual-version"/>
     <action name="action-sale-order-attrs-list-selection-in-type-select"/>
+    <action name="action-sale-order-attrs-line-discount-readonly"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
@@ -1650,12 +1649,6 @@
       expr=" eval: __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 1
     									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2"
       if="company != null"/>
-    <attribute name="title" for="saleOrderLineList.priceDiscounted"
-      expr="eval:com.axelor.i18n.I18n.get('Unit price A.T.I.')"
-      if="eval: inAti &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_CLASSIC"/>
-    <attribute name="title" for="saleOrderLineList.priceDiscounted"
-      expr="eval:com.axelor.i18n.I18n.get('Unit price W.T.')"
-      if="eval: !inAti &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_CLASSIC"/>
   </action-attrs>
 
   <action-record name="action-sale-order-record-from-partner"
@@ -1754,6 +1747,10 @@
 
   <action-method name="action-sale-order-method-on-line-change">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="onLineChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-on-global-discount-change">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="onGlobalDiscountChange"/>
   </action-method>
 
   <action-method name="action-sale-order-method-new-version">
@@ -2057,13 +2054,9 @@
     <context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
   </action-view>
 
-  <action-view name="action-view-open-quotation-lines" title="Quotation lines"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
-    <view type="grid" name="sale-order-line-menu-grid"/>
-    <view type="form" name="sale-order-line-all-form"/>
-    <view-param name="search-filters" value="sale-order-lines-filter"/>
-    <domain>self.saleOrder.statusSelect in (1,2)</domain>
-  </action-view>
+  <action-method name="action-sale-order-method-show-quotation-lines">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="showQuotationLines"/>
+  </action-method>
 
   <action-view name="action-view-open-sale-order-lines" title="Sale order lines"
     model="com.axelor.apps.sale.db.SaleOrderLine">
@@ -2122,13 +2115,13 @@
   </action-view>
 
   <action-validate name="action-validate-sale-order-check-selection">
-    <error message="You have to choose at least one sale order"
-      if="saleOrderToMerge == null || (saleOrderToMerge != null &amp;&amp; saleOrderToMerge.size() == 0)"/>
+    <error message="You have to choose at least two sale orders"
+      if="saleOrderToMerge == null || (saleOrderToMerge != null &amp;&amp; saleOrderToMerge.size() &lt; 2)"/>
   </action-validate>
 
   <action-validate name="action-validate-sale-quotation-check-selection">
-    <error message="You have to choose at least one sale quotation"
-      if="saleQuotationToMerge == null || (saleQuotationToMerge != null &amp;&amp; saleQuotationToMerge.size() == 0)"/>
+    <error message="You have to choose at least two sale quotations"
+      if="saleQuotationToMerge == null || (saleQuotationToMerge != null &amp;&amp; saleQuotationToMerge.size() &lt; 2)"/>
   </action-validate>
 
   <action-record name="action-saleorder-record-template"
@@ -2209,11 +2202,6 @@
       for="saleOrderLineList.availableStatus" if="__config__.app.isApp('supplychain')"/>
   </action-attrs>
 
-  <action-attrs name="action-sale-order-attrs-set-discounts-need-review">
-    <attribute name="value" for="$discountsNeedReview"
-      expr="eval: (statusSelect == __repo__(SaleOrder).STATUS_DRAFT_QUOTATION || (orderBeingEdited &amp;&amp; __repo__(SaleOrder).STATUS_ORDER_CONFIRMED)) &amp;&amp; saleOrderLineList?.any{it.discountsNeedReview}"/>
-  </action-attrs>
-
   <action-group name="action-sale-order-group-on-estimated-shipping-date-change">
     <action name="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
     <action name="save"/>
@@ -2291,12 +2279,6 @@
       for="computationDate"/>
   </action-attrs>
 
-  <action-attrs name="action-sale-sale-order-attrs-external-reference">
-    <attribute name="hidden" for="$duplicateExternalReference"
-      expr="eval: !((externalReference != null &amp;&amp; id != null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ? AND self.id != ?', externalReference , id).count() > 0)
-                 || (externalReference != null &amp;&amp; id == null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ?', externalReference).count() > 0))"/>
-  </action-attrs>
-
   <action-record name="action-sale-order-record-set-stock-location"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="stockLocation"
@@ -2372,5 +2354,23 @@
   <action-method name="action-sale-order-method-compute-margin">
     <call class="com.axelor.apps.sale.web.SaleOrderController" method="computeMargin"/>
   </action-method>
+
+  <action-record name="action-sale-order-record-clear-discount-amount"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <field name="discountAmount" expr="eval: 0"/>
+  </action-record>
+
+  <action-group name="action-sale-order-group-discount-type-onchange">
+    <action name="action-sale-order-record-clear-discount-amount"/>
+    <action name="action-sale-order-attrs-line-discount-readonly"/>
+    <action name="action-sale-order-method-on-line-change"/>
+  </action-group>
+
+  <action-attrs name="action-sale-order-attrs-line-discount-readonly">
+    <attribute name="readonly" for="saleOrderLineList.discountTypeSelect"
+      expr="eval: discountTypeSelect > 0"/>
+    <attribute name="readonly" for="saleOrderLineList.discountAmount"
+      expr="eval: discountTypeSelect > 0"/>
+  </action-attrs>
 
 </object-views>

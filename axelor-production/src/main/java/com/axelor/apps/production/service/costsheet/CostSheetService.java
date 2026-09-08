@@ -22,7 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.UnitCostCalculation;
+import com.axelor.apps.supplychain.db.UnitCostCalculation;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
@@ -84,6 +84,14 @@ public interface CostSheetService {
       Set<Long> excludedConsumedLineIds,
       Set<Long> excludedProducedLineIds)
       throws AxelorException;
+
+  /**
+   * Check whether the manufacturing order already has a dated partial or final closing cost sheet.
+   *
+   * @param manufOrder the manufacturing order to check
+   * @return {@code true} if a previous closing cost sheet exists
+   */
+  boolean hasPreviousCostSheet(ManufOrder manufOrder);
 
   BigDecimal getQtyRatio(BillOfMaterial billOfMaterial) throws AxelorException;
 

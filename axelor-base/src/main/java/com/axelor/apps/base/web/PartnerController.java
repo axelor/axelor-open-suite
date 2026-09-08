@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingTemplate;
+import com.axelor.apps.base.db.Tag;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -38,6 +39,7 @@ import com.axelor.apps.base.service.MapOsmService;
 import com.axelor.apps.base.service.PartnerConvertService;
 import com.axelor.apps.base.service.PartnerPriceListDomainService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.TagService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
@@ -74,11 +76,13 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.exception.BirtException;
@@ -209,7 +213,9 @@ public class PartnerController {
     LinkedHashMap<String, Object> companyMap =
         (LinkedHashMap<String, Object>) context.get("company");
     Object companyId = companyMap != null ? companyMap.get("id") : null;
-    params.put("CompanyId", companyId);
+    if (companyId != null) {
+      params.put("CompanyId", companyId);
+    }
     params.put(
         "TradingNameId",
         (Object)
@@ -452,7 +458,9 @@ public class PartnerController {
         Beans.get(PartnerRegistrationValidatorFactoryService.class)
             .getRegistrationNumberValidator(partner);
     boolean notValidRegistrationCode =
-        validator != null && !validator.isRegistrationCodeValid(partner);
+        validator != null
+            && !Strings.isNullOrEmpty(partner.getRegistrationCode())
+            && !validator.isRegistrationCodeValid(partner);
     response.setAttr("isValidRegistrationCode", "hidden", !notValidRegistrationCode);
     if (notValidRegistrationCode) {
       response.setAttr(
@@ -537,6 +545,9 @@ public class PartnerController {
     Partner partner;
     if (partnerId != null) {
       partner = JPA.find(Partner.class, Long.parseLong(partnerId.toString()));
+      partnerTypeData.put("isCustomer", partner.getIsCustomer());
+      partnerTypeData.put("isSupplier", partner.getIsSupplier());
+      partnerTypeData.put("isProspect", partner.getIsProspect());
     } else {
       partner = new Partner();
       partnerTypeData.put("isCustomer", getBooleanContextValue(request, "_isCustomer"));
@@ -576,6 +587,20 @@ public class PartnerController {
         "purchasePartnerPriceList",
         "domain",
         Beans.get(PartnerPriceListDomainService.class).getPurchasePartnerPriceListDomain(partner));
+  }
+
+  @ErrorException
+  public void filterTagSet(ActionRequest request, ActionResponse response) throws AxelorException {
+    Partner partner = request.getContext().asType(Partner.class);
+    Set<Tag> invalidTags =
+        Beans.get(TagService.class)
+            .getInvalidTagsFromTagSet(
+                partner.getTagSet(), partner.getCompanySet(), partner.getTradingNameSet());
+    if (!ObjectUtils.isEmpty(invalidTags)) {
+      Set<Tag> newTagSet = new HashSet<>(partner.getTagSet());
+      newTagSet.removeAll(invalidTags);
+      response.setValue("tagSet", newTagSet);
+    }
   }
 
   public void updatePartnerAddress(ActionRequest request, ActionResponse response) {

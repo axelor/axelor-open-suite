@@ -19,8 +19,10 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.base.db.ProductFamily;
 
 public interface AccountManagementAttrsService {
-  String getCompanyDomain(AccountManagement accountManagement, ProductFamily productFamily);
+  String getCompanyDomain(
+      AccountManagement accountManagement, ProductFamily productFamily, Tax tax);
 }

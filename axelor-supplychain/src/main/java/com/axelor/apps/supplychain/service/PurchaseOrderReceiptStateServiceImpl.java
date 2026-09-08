@@ -103,9 +103,10 @@ public class PurchaseOrderReceiptStateServiceImpl implements PurchaseOrderReceip
           stockMoveLineRepository
               .all()
               .filter(
-                  "self.stockMove.statusSelect = :realizedStatus AND self.purchaseOrderLine = :purchaseOrderLine")
+                  "self.stockMove.statusSelect = :realizedStatus AND self.purchaseOrderLine = :purchaseOrderLine AND self.lineTypeSelect = :lineTypeSelect")
               .bind("realizedStatus", StockMoveRepository.STATUS_REALIZED)
               .bind("purchaseOrderLine", purchaseOrderLine)
+              .bind("lineTypeSelect", StockMoveLineRepository.TYPE_NORMAL)
               .fetch();
       BigDecimal receivedQty = BigDecimal.ZERO;
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
@@ -129,12 +130,13 @@ public class PurchaseOrderReceiptStateServiceImpl implements PurchaseOrderReceip
   }
 
   protected void computePurchaseOrderLineReceiptState(PurchaseOrderLine purchaseOrderLine) {
-    if (purchaseOrderLine.getReceivedQty().signum() == 0) {
-      purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);
-    } else if (purchaseOrderLine.getReceivedQty().compareTo(purchaseOrderLine.getQty()) < 0) {
-      purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED);
-    } else {
+    if (purchaseOrderLine.getQty().signum() == 0
+        || purchaseOrderLine.getReceivedQty().compareTo(purchaseOrderLine.getQty()) >= 0) {
       purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_RECEIVED);
+    } else if (purchaseOrderLine.getReceivedQty().signum() == 0) {
+      purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);
+    } else {
+      purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED);
     }
   }
 }

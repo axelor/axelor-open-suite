@@ -206,7 +206,11 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     // Credit move line creation
     this.miscOperationMoveCreation(move, partner, creditAccount, foreignExchangeAmount, false, 2);
 
+    // Unlink invoice before accounting so generated invoice terms are not linked to the invoice;
+    // restore after so the FX gap move remains visible on the invoice.
+    move.setInvoice(null);
     moveValidateService.accounting(move);
+    move.setInvoice(invoice);
 
     return move;
   }

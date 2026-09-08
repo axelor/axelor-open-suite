@@ -26,7 +26,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.theme.MetaThemeFetchService;
 import com.axelor.auth.AuthService;
@@ -36,7 +35,6 @@ import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
-import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
@@ -52,20 +50,16 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
-import jakarta.validation.ValidationException;
 import java.io.IOException;
 import java.security.SecureRandom;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.exception.TooManyIterationsException;
-import org.apache.shiro.session.Session;
 
 public class UserServiceImpl implements UserService {
 
@@ -75,23 +69,21 @@ public class UserServiceImpl implements UserService {
 
   public static final String DEFAULT_LOCALIZATION_CODE = "en_GB";
 
-  private static final String PATTERN_ACCESS_RESTRICTION =
+  protected static final String PATTERN_ACCESS_RESTRICTION =
       "(((?=.*[a-z])(?=.*[A-Z])(?=.*\\d))|((?=.*[a-z])(?=.*[A-Z])(?=.*\\W))|((?=.*[a-z])(?=.*\\d)(?=.*\\W))|((?=.*[A-Z])(?=.*\\d)(?=.*\\W))).{8,}";
-  private static final Pattern PATTERN =
+  // Regex used only to generate policy-compliant random passwords. Password validation at
+  // change-time is handled by the platform password policies (AOP 8.2+), configured through
+  // user.password.pattern.value. Falls back to the historical AOS complexity requirement.
+  protected static final Pattern PATTERN =
       Pattern.compile(
           MoreObjects.firstNonNull(
-              AppSettings.get().get("user.password.pattern"), PATTERN_ACCESS_RESTRICTION));
+              AppSettings.get().get("user.password.pattern.value"), PATTERN_ACCESS_RESTRICTION));
 
-  private static final String PATTERN_DESCRIPTION =
-      PATTERN.pattern().equals(PATTERN_ACCESS_RESTRICTION)
-          ? BaseExceptionMessage.USER_PATTERN_MISMATCH_ACCES_RESTRICTION
-          : BaseExceptionMessage.USER_PATTERN_MISMATCH_CUSTOM;
-
-  private static final String GEN_CHARS =
+  protected static final String GEN_CHARS =
       "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
-  private static final Pair<Integer, Integer> GEN_BOUNDS = Pair.of(12, 22);
-  private static final int GEN_LOOP_LIMIT = 1000;
-  private static final SecureRandom random = new SecureRandom();
+  protected static final Pair<Integer, Integer> GEN_BOUNDS = Pair.of(12, 22);
+  protected static final int GEN_LOOP_LIMIT = 1000;
+  protected static final SecureRandom random = new SecureRandom();
 
   @Inject
   public UserServiceImpl(
@@ -101,11 +93,6 @@ public class UserServiceImpl implements UserService {
     this.metaThemeFetchService = metaThemeFetchService;
   }
 
-  /**
-   * Method that return the current connected user
-   *
-   * @return user the current connected user
-   */
   @Override
   public User getUser() {
     User user = null;
@@ -119,11 +106,6 @@ public class UserServiceImpl implements UserService {
     return user;
   }
 
-  /**
-   * Method that return the id of the current connected user
-   *
-   * @return user the id of current connected user
-   */
   @Override
   public Long getUserId() {
 
@@ -136,11 +118,6 @@ public class UserServiceImpl implements UserService {
     return user.getId();
   }
 
-  /**
-   * Method that return the active company of the current connected user
-   *
-   * @return Company the active company
-   */
   @Override
   public Company getUserActiveCompany() {
 
@@ -153,11 +130,6 @@ public class UserServiceImpl implements UserService {
     return user.getActiveCompany();
   }
 
-  /**
-   * Method that return the active company id of the current connected user
-   *
-   * @return Company the active company id
-   */
   @Override
   public Long getUserActiveCompanyId() {
 
@@ -209,11 +181,6 @@ public class UserServiceImpl implements UserService {
     return Optional.empty();
   }
 
-  /**
-   * Method that return the active team of the current connected user
-   *
-   * @return Team the active team
-   */
   @Override
   public Team getUserActiveTeam() {
 
@@ -226,11 +193,6 @@ public class UserServiceImpl implements UserService {
     return user.getActiveTeam();
   }
 
-  /**
-   * Method that return the active team of the current connected user
-   *
-   * @return Team the active team id
-   */
   @Override
   public Long getUserActiveTeamId() {
 
@@ -243,11 +205,6 @@ public class UserServiceImpl implements UserService {
     return team.getId();
   }
 
-  /**
-   * Method that return the partner of the current connected user
-   *
-   * @return Partner the user partner
-   */
   @Override
   public Partner getUserPartner() {
 
@@ -294,44 +251,6 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User changeUserPassword(User user, Map<String, Object> values) {
-    Preconditions.checkNotNull(user, I18n.get("User cannot be null."));
-    Preconditions.checkNotNull(values, I18n.get("User context cannot be null."));
-
-    final String oldPassword = (String) values.get("oldPassword");
-    final String newPassword = (String) values.get("newPassword");
-    final String chkPassword = (String) values.get("chkPassword");
-
-    // no password change
-    if (StringUtils.isBlank(newPassword)) {
-      return user;
-    }
-
-    if (StringUtils.isBlank(oldPassword)) {
-      throw new ValidationException(I18n.get("Current user password is not provided."));
-    }
-
-    if (!newPassword.equals(chkPassword)) {
-      throw new ValidationException(I18n.get("Confirm password doesn't match with new password."));
-    }
-
-    if (!matchPasswordPattern(newPassword)) {
-      throw new ValidationException(I18n.get(PATTERN_DESCRIPTION));
-    }
-
-    final User current = AuthUtils.getUser();
-    final AuthService authService = AuthService.getInstance();
-
-    if (!authService.match(oldPassword, current.getPassword())) {
-      throw new ValidationException(I18n.get("Current user password is wrong."));
-    }
-
-    user.setTransientPassword(newPassword);
-
-    return user;
-  }
-
-  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void processChangedPassword(User user)
       throws AxelorException, ClassNotFoundException, IOException {
@@ -357,6 +276,9 @@ public class UserServiceImpl implements UserService {
 
     } finally {
       user.setTransientPassword(null);
+      // One-shot: reset the opt-in so a later self-initiated change (e.g. the forced change at
+      // next login after a batch reset) does not re-send the freshly chosen password by email.
+      user.setSendEmailUponPasswordChange(false);
     }
   }
 
@@ -381,30 +303,15 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public String getPasswordPatternDescription() {
-    return I18n.get(PATTERN_DESCRIPTION);
-  }
-
-  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void generateRandomPasswordForUser(User user) {
     AuthService authService = Beans.get(AuthService.class);
-    LocalDateTime todayDateTime =
-        Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
-
     String password = this.generateRandomPassword().toString();
+    // Keep the plain password in a transient field so the notification email
+    // (sent from the repository save hook) can include it, then store it encrypted.
     user.setTransientPassword(password);
-    password = authService.encrypt(password);
-    user.setPassword(password);
-    user.setPasswordUpdatedOn(todayDateTime);
-
-    User loginUser = this.getUser();
-
-    // Update login date in session so that user changing own password doesn't get logged out.
-    if (loginUser.equals(user)) {
-      Session session = AuthUtils.getSubject().getSession();
-      session.setAttribute("com.axelor.internal.loginDate", todayDateTime);
-    }
+    user.setPassword(authService.encrypt(password));
+    user.setPasswordUpdatedOn(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
   }
 
   @Override

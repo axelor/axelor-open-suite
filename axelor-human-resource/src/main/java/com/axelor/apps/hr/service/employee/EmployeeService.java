@@ -21,7 +21,6 @@ package com.axelor.apps.hr.service.employee;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingTemplate;
-import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.auth.db.User;
@@ -29,7 +28,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
 
-public interface EmployeeService extends UserService {
+public interface EmployeeService {
 
   public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException;
 

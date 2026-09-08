@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -16,7 +16,7 @@
 	    <![CDATA[
 	    	String name = "";
 	    	if(tax != null)  { name += tax.getCode();  }
-	    	name += " : " + value.setScale(2);
+	    	name += " : " + value.setScale(Beans.get(AppBaseService.class).getNbDecimalDigitForTaxRate(), RoundingMode.HALF_UP);
 	    	return name;
 	   	]]>
     </string>
@@ -24,12 +24,20 @@
       <![CDATA[
 	    	String name = "";
 	    	if(tax != null)  { name += tax.getCode();  }
-	    	name += " : " + value.setScale(2);
+	    	name += " : " + value.setScale(Beans.get(AppBaseService.class).getNbDecimalDigitForTaxRate(), RoundingMode.HALF_UP);
 	    	name += " : " + startDate;
 			if (endDate != null) { name += " - " + endDate; }
 	    	return name;
 	   	]]>
     </string>
+
+    <extra-imports>
+      <![CDATA[
+      import com.axelor.inject.Beans;
+      import com.axelor.apps.base.service.app.AppBaseService;
+      import java.math.RoundingMode;
+      ]]>
+    </extra-imports>
 
   </entity>
 

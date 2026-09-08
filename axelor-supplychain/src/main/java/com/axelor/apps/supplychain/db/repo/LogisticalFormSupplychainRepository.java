@@ -20,12 +20,15 @@ package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.LogisticalForm;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.LogisticalFormStockRepository;
 import com.axelor.apps.stock.service.LogisticalFormSequenceService;
 import com.axelor.apps.supplychain.service.LogisticalFormComputeService;
 import com.axelor.apps.supplychain.service.packaging.PackagingSequenceService;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class LogisticalFormSupplychainRepository extends LogisticalFormStockRepository {
 
@@ -51,6 +54,15 @@ public class LogisticalFormSupplychainRepository extends LogisticalFormStockRepo
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
+    }
+  }
+
+  @Override
+  public void remove(LogisticalForm logisticalForm) {
+    List<StockMove> stockMoveList = logisticalForm.getStockMoveList();
+    super.remove(logisticalForm);
+    if (CollectionUtils.isNotEmpty(stockMoveList)) {
+      stockMoveList.forEach(stockMove -> stockMove.setFullySpreadOverLogisticalFormsFlag(false));
     }
   }
 }

@@ -35,13 +35,16 @@ public class LeaveRequestComputeDurationServiceImpl implements LeaveRequestCompu
 
   protected final LeaveRequestComputeDayDurationService leaveRequestComputeDayDurationService;
   protected final LeaveRequestComputeHourDurationService leaveRequestComputeHourDurationService;
+  protected final LeaveRequestComputeCalendarDayService leaveRequestComputeCalendarDayService;
 
   @Inject
   public LeaveRequestComputeDurationServiceImpl(
       LeaveRequestComputeDayDurationService leaveRequestComputeDayDurationService,
-      LeaveRequestComputeHourDurationService leaveRequestComputeHourDurationService) {
+      LeaveRequestComputeHourDurationService leaveRequestComputeHourDurationService,
+      LeaveRequestComputeCalendarDayService leaveRequestComputeCalendarDayService) {
     this.leaveRequestComputeDayDurationService = leaveRequestComputeDayDurationService;
     this.leaveRequestComputeHourDurationService = leaveRequestComputeHourDurationService;
+    this.leaveRequestComputeCalendarDayService = leaveRequestComputeCalendarDayService;
   }
 
   /**
@@ -125,20 +128,32 @@ public class LeaveRequestComputeDurationServiceImpl implements LeaveRequestCompu
     }
     if (from != null && to != null && leave.getLeaveReason() != null) {
       Employee employee = leave.getEmployee();
+      LocalDate fromDate = from.toLocalDate();
+      LocalDate toDate = to.toLocalDate();
 
       switch (leave.getLeaveReason().getUnitSelect()) {
         case LeaveReasonRepository.UNIT_SELECT_DAYS:
-          LocalDate fromDate = from.toLocalDate();
-          LocalDate toDate = to.toLocalDate();
           duration =
               leaveRequestComputeDayDurationService.computeDurationInDays(
-                  leave, employee, fromDate, toDate, startOn, endOn);
+                  leave, employee, fromDate, toDate, startOn, endOn, 2);
           break;
 
         case LeaveReasonRepository.UNIT_SELECT_HOURS:
           duration =
               leaveRequestComputeHourDurationService.computeDurationInHours(
                   leave, employee, from, to);
+          break;
+
+        case LeaveReasonRepository.UNIT_SELECT_CALENDAR_DAYS:
+          duration =
+              leaveRequestComputeCalendarDayService.computeDurationInCalendarDays(
+                  from.toLocalDate(), to.toLocalDate(), startOn, endOn);
+          break;
+
+        case LeaveReasonRepository.UNIT_SELECT_BUSINESS_DAYS:
+          duration =
+              leaveRequestComputeDayDurationService.computeDurationInDays(
+                  leave, employee, fromDate, toDate, startOn, endOn, 1);
           break;
 
         default:

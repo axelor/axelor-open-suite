@@ -254,7 +254,10 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     } else {
       return manufOrderPlanStockMoveService
           .createAndPlanToConsumeStockMove(manufOrder)
-          .filter(sm -> sm.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
+          .filter(
+              sm ->
+                  CollectionUtils.isEmpty(sm.getStockMoveLineList())
+                      || sm.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
           .map(
               sm -> {
                 operationOrder.addInStockMoveListItem(sm);

@@ -29,7 +29,7 @@ import java.util.Optional;
 @Singleton
 public class PurchaseOrderLineViewServiceImpl implements PurchaseOrderLineViewService {
 
-  private static final String HIDDEN_ATTR = "hidden";
+  protected static final String HIDDEN_ATTR = "hidden";
 
   @Override
   public Map<String, Map<String, Object>> hideDeliveryPanel(PurchaseOrderLine purchaseOrderLine) {

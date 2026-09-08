@@ -1,0 +1,115 @@
+<!--
+
+    Axelor Business Solutions
+
+    Copyright (C) 2012-2014 Axelor (<http://axelor.com>).
+
+    This program is free software: you can redistribute it and/or  modify
+    it under the terms of the GNU Affero General Public License, version 3,
+    as published by the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map-canvas { height: 100% }
+    </style>
+	<script>
+	function getQueryVariable(variable) {
+		var query = window.location.search.substring(1);
+		var vars = query.split("&");
+		for ( var i = 0; i < vars.length; i++) {
+			var pair = vars[i].split("=");
+			if (pair[0] == variable) {
+				return pair[1];
+			}
+		}
+		return (false);
+	}
+	</script>
+
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC8gJZgJCUFJYAkUuFBR9C6qw-I100wA3w&sensor=false&region=FR">
+    </script>
+
+    <script type="text/javascript" src="markerclusterer/src/markerclusterer.js"></script>
+    <script type="text/javascript">
+
+	function initialize() {
+
+		function reqListener() {
+
+			var lines = this.responseText.split("\n");
+			for ( var i = 0; i < lines.length; i++) {
+				// document.write(lines[i] + "<br>");
+				var values = lines[i].split(",")
+				var lat = values[0]
+				var lng = values[1]
+				var name = values[2]+"/"+values[3]
+
+				var myLatlng = new google.maps.LatLng(lat, lng);
+
+				var marker = new google.maps.Marker({
+					position : myLatlng,
+					//map: map,
+					title : name
+				});
+
+				markers.push(marker);
+				console.log("-markers :" + markers.length);
+
+			}
+			var mcOptions = {
+				gridSize : 50,
+				maxZoom : 15
+			};
+			console.log("markers :" + markers.length);
+			var mc = new MarkerClusterer(map, markers, mcOptions);
+
+
+		}
+		;
+
+		var myLatlng = new google.maps.LatLng(43.6841007000, 7.1882719000);
+
+		var mapOptions = {
+			center : myLatlng,
+			zoom : 2,
+			mapTypeId : google.maps.MapTypeId.ROADMAP
+		};
+		var map = new google.maps.Map(document.getElementById("map-canvas"),
+				mapOptions);
+		var markers = new Array();
+
+		var file = getQueryVariable("file");
+		console.log("File provided :" + file);
+
+		var client = new XMLHttpRequest();
+		client.onload = reqListener;
+
+		client.open("GET", '/HTML/' + file, true);
+
+		client.send();
+
+
+	}
+
+	google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"/>
+  </body>
+</html>

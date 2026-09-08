@@ -19,7 +19,9 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.service.AccountManagementAttrsService;
+import com.axelor.apps.account.service.AccountManagementCheckService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ProductFamily;
@@ -67,11 +69,33 @@ public class AccountManagementController {
       throws AxelorException {
     AccountManagement accountManagement = request.getContext().asType(AccountManagement.class);
     ProductFamily productFamily = getProductFamily(request, accountManagement);
+    Tax tax = getTax(request, accountManagement);
 
     String domain =
         Beans.get(AccountManagementAttrsService.class)
-            .getCompanyDomain(accountManagement, productFamily);
+            .getCompanyDomain(accountManagement, productFamily, tax);
 
     response.setAttr("company", "domain", domain);
+  }
+
+  @ErrorException
+  public void checkPaymentModeUniqueness(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    AccountManagement accountManagement = request.getContext().asType(AccountManagement.class);
+
+    if (accountManagement == null || accountManagement.getPaymentMode() == null) {
+      return;
+    }
+
+    Beans.get(AccountManagementCheckService.class)
+        .checkDuplicateAccountManagement(accountManagement, accountManagement.getPaymentMode());
+  }
+
+  protected Tax getTax(ActionRequest request, AccountManagement accountManagement) {
+    if (accountManagement != null && accountManagement.getTax() != null) {
+      return accountManagement.getTax();
+    }
+
+    return ContextHelper.getContextParent(request.getContext(), Tax.class, 1);
   }
 }

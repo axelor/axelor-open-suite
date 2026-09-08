@@ -43,4 +43,9 @@ public interface ITranslation {
       /*$$(*/ "The selected fiscal year %s still contains %d entry/ies in Daybook" /*)*/;
   public static final String CLOSURE_OPENING_BATCH_DAYBOOK_MOVE_ERROR_LABEL =
       /*$$(*/ "The fiscal year %s still contains %s entry/ies in Daybook which may subsequently lead to inconsistencies with the calculations of the balances to be carried forward with this closure process if they are modified. We recommand to post those entries or close definitely the periods before proceeding with the closure. Do you still wish to continue ?" /*)*/;
+
+  public static final String CLOSURE_ASSISTANT_INCOME_MOVE_LABEL =
+      /*$$(*/ "There are still %d accounting entry(ies) in Daybook status on the income type accounts." /*)*/;
+  public static final String CLOSURE_ASSISTANT_CHARGE_MOVE_LABEL =
+      /*$$(*/ "There are still %d accounting entry(ies) in Daybook status on the expense type accounts." /*)*/;
 }

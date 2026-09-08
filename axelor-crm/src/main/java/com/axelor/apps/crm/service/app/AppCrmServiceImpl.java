@@ -35,8 +35,10 @@ import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppCrm;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
+@Singleton
 public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmService {
 
   protected CompanyRepository companyRepo;

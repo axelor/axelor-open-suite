@@ -1,0 +1,147 @@
+<!--
+
+    Axelor Business Solutions
+
+    Copyright (C) 2012-2018 Axelor (<http://axelor.com>).
+
+    This program is free software: you can redistribute it and/or  modify
+    it under the terms of the GNU Affero General Public License, version 3,
+    as published by the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map-canvas { height: 100% }
+    </style>
+
+    <!-- <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?sensor=false&region=FR">
+    </script> -->
+	<script src="../lib/jquery.ui/js/jquery.js" type="text/javascript"></script>
+	<script type="text/javascript" src="js/apphome.js"></script>
+	<script type="text/javascript">
+
+		var query = window.location.search.substring(1);
+		query = decodeURIComponent(query);
+
+		function loadGoogleMapAPIJS(key, callback) {
+			if (!key) {
+				throw 'Google Maps API key is missing.';
+			}
+
+			var url = 'https://maps.googleapis.com/maps/api/js?v=3&key=' + key;
+		    var script = document.createElement('script');
+		    script.src = url;
+		    script.onload = callback;
+		    document.body.appendChild(script);
+		}
+
+		function getQueryVariable(variable) {
+	        var vars = query.split("&");
+	        for (var i = 0; i < vars.length; i++) {
+	            var pair = vars[i].split("=");
+	            if (pair[0] == variable) {
+	                return pair[1];
+	            }
+	        }
+	        return (false);
+	    }
+
+		function computeTotalDistance(result) {
+		  var total = 0;
+		  var myroute = result.routes[0];
+		  for (var i = 0; i < myroute.legs.length; i++) {
+		    total += myroute.legs[i].distance.value;
+		  }
+		  total = total / 1000.
+		  document.getElementById('total').innerHTML = total + ' km';
+		}
+
+		function translateResult(element, status) {
+			var url = getAppHome() + "/ws/map/translation/" + "MapRest." + status;
+			$.get(url)
+				.done(function(data) {
+					element.innerHTML = data.translation;
+				})
+				.fail(function (jqXHR, textStatus, errorThrown) {
+					console.log(jqXHR);
+					console.log(textStatus);
+					console.log(errorThrown );
+					element.innerHTML = status;
+				});
+		}
+
+		function initialize() {
+		 	var directionsDisplay;
+			var directionsService = new google.maps.DirectionsService();
+			var map;
+			var dx = getQueryVariable("dx");
+			var dy = getQueryVariable("dy");
+			var ax = getQueryVariable("ax");
+			var ay = getQueryVariable("ay");
+
+		  var rendererOptions = {
+		    draggable: true
+		  };
+
+		  directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+		  var start = new google.maps.LatLng(dx, dy);
+		  var end = new google.maps.LatLng(ax, ay);
+		  var request = {
+		      origin:start,
+		      destination:end,
+		      travelMode: google.maps.DirectionsTravelMode.DRIVING
+		  };
+		  directionsService.route(request, function(response, status) {
+		    if (status == google.maps.DirectionsStatus.OK) {
+		      directionsDisplay.setDirections(response);
+		  } else {
+			  translateResult(document.getElementById('directionsPanel') , status);
+		  }
+		  });
+		  var mapOptions = {
+		    zoom:7,
+		    mapTypeId: google.maps.MapTypeId.ROADMAP,
+		    center: start
+		  }
+		  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+		  directionsDisplay.setMap(map);
+		  directionsDisplay.setPanel(document.getElementById('directionsPanel'));
+
+		  google.maps.event.addListener(directionsDisplay, 'directions_changed', function() {
+		    computeTotalDistance(directionsDisplay.directions);
+		  });
+
+		}
+
+		window.onload = function() {
+			try {
+		        loadGoogleMapAPIJS(getQueryVariable('key'), function() {
+		        	initialize();
+		        });
+			} catch (err) {
+				alert(err);
+			}
+	    }
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas" style="float:left;width:70%; height:100%"></div>
+    <div id="directionsPanel" style="float:right;width:30%;height:100%">
+    <p>Distance: <span id="total"></span></p>
+    </div>
+  </body>
+</html>

@@ -19,6 +19,8 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.ClosureAssistant;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Year;
 
 public interface ClosureAssistantService {
 
@@ -31,4 +33,6 @@ public interface ClosureAssistantService {
   public boolean checkNoExistingClosureAssistantForSameYear(ClosureAssistant closureAssistant);
 
   public boolean setStatusWithLines(ClosureAssistant closureAssistant);
+
+  Long getDaybookMovesCount(Year year, String accountType, Company company);
 }

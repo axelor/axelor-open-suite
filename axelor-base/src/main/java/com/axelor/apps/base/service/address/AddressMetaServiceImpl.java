@@ -26,7 +26,6 @@ public class AddressMetaServiceImpl implements AddressMetaService {
   public List<String> getAddressFormFieldsList() {
 
     return List.of(
-        "department",
         "subDepartment",
         "buildingName",
         "townName",

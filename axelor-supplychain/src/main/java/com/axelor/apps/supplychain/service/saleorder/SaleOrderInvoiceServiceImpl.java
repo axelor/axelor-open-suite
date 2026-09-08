@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -59,6 +60,7 @@ import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
+import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
@@ -118,6 +120,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected InvoiceTaxService invoiceTaxService;
   protected SaleOrderDeliveryAddressService saleOrderDeliveryAddressService;
   protected PartnerAccountService partnerAccountService;
+  protected InvoiceGlobalDiscountService invoiceGlobalDiscountService;
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
@@ -138,7 +141,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       OrderInvoiceService orderInvoiceService,
       InvoiceTaxService invoiceTaxService,
       SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
-      PartnerAccountService partnerAccountService) {
+      PartnerAccountService partnerAccountService,
+      InvoiceGlobalDiscountService invoiceGlobalDiscountService) {
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
     this.appSupplychainService = appSupplychainService;
@@ -157,6 +161,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.invoiceTaxService = invoiceTaxService;
     this.saleOrderDeliveryAddressService = saleOrderDeliveryAddressService;
     this.partnerAccountService = partnerAccountService;
+    this.invoiceGlobalDiscountService = invoiceGlobalDiscountService;
   }
 
   @Override
@@ -244,6 +249,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     invoice.setHideDiscount(saleOrder.getHideDiscount());
 
+    invoice.setDiscountTypeSelect(saleOrder.getDiscountTypeSelect());
+    invoice.setDiscountAmount(saleOrder.getDiscountAmount());
+    invoiceGlobalDiscountService.computePriceBeforeGlobalDiscount(invoice);
+
     invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
     invoice.setCompanyTaxNumber(saleOrder.getTaxNumber());
 
@@ -296,7 +305,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                     .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
           }
           amountToInvoice =
-              amountToInvoice.add(qtyToInvoice.multiply(priceMap.get(saleOrderLineId)));
+              amountToInvoice.add(
+                  currencyScaleService.getScaledValue(
+                      saleOrder, qtyToInvoice.multiply(priceMap.get(saleOrderLineId))));
         }
       }
     } else if (operationSelect == SaleOrderRepository.INVOICE_ADVANCE_PAYMENT && isPercent) {
@@ -896,8 +907,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       List<InvoiceLine> invoiceLines = invoiceService.getInvoiceLinesFromInvoiceList(invoiceList);
       invoiceGenerator.populate(invoiceMerged, invoiceLines);
       invoiceService.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
-      invoiceMerged.setSaleOrder(null);
+      invoiceMerged.setSaleOrder(saleOrder);
       invoiceRepo.save(invoiceMerged);
+      Beans.get(TimetableService.class).reassignInvoice(invoiceList, invoiceMerged);
       invoiceServiceSupplychain.swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;
@@ -915,6 +927,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
               paymentCondition,
               tradingName,
               fiscalPosition);
+      Beans.get(TimetableService.class).reassignInvoice(invoiceList, invoiceMerged);
       invoiceServiceSupplychain.swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;
@@ -980,6 +993,19 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   public void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException {
     if (orderInvoiceService.amountToBeInvoiced(saleOrder).compareTo(saleOrder.getExTaxTotal())
         >= 0) {
+      throw new AxelorException(
+          saleOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.SO_INVOICE_GENERATE_ALL_INVOICES));
+    }
+  }
+
+  @Override
+  public void displayErrorMessageIfExceedsInvoiceableAmount(
+      SaleOrder saleOrder, BigDecimal amountToInvoice) throws AxelorException {
+    BigDecimal sumInvoices = orderInvoiceService.amountToBeInvoiced(saleOrder);
+    sumInvoices = sumInvoices.add(amountToInvoice);
+    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,

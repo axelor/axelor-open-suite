@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.PartnerAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
@@ -97,6 +98,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceContractServiceI
       InvoiceTaxService invoiceTaxService,
       SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
       PartnerAccountService partnerAccountService,
+      InvoiceGlobalDiscountService invoiceGlobalDiscountService,
       AppBudgetService appBudgetService,
       BudgetDistributionService budgetDistributionService,
       SaleOrderLineBudgetService saleOrderLineBudgetService,
@@ -121,7 +123,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceContractServiceI
         orderInvoiceService,
         invoiceTaxService,
         saleOrderDeliveryAddressService,
-        partnerAccountService);
+        partnerAccountService,
+        invoiceGlobalDiscountService);
     this.appBudgetService = appBudgetService;
     this.budgetDistributionService = budgetDistributionService;
     this.saleOrderLineBudgetService = saleOrderLineBudgetService;

@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.period;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -35,11 +36,16 @@ import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.cache.AxelorCache;
+import com.axelor.cache.CacheBuilder;
 import com.axelor.db.Query;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -53,8 +59,14 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   protected PeriodCheckService periodCheckService;
   protected TraceBackRepository traceBackRepository;
 
-  protected List<Move> moves = new ArrayList<>();
-  protected int anomalyCount = 0;
+  // Per-request closing result must not be held in scalar instance fields on this @Singleton
+  // service: a concurrent close() from another tenant/user would overwrite it. It is stored in a
+  // tenant-aware cache keyed by period id, so each closing keeps its own moves / anomaly count.
+  protected final AxelorCache<Long, Pair<List<Move>, Integer>> periodClosingResultCache =
+      CacheBuilder.newBuilder("periodClosingResult")
+          .maximumSize(1000)
+          .expireAfterWrite(Duration.ofHours(1))
+          .build();
 
   @Inject
   public PeriodServiceAccountImpl(
@@ -77,6 +89,9 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
 
   @Override
   public void close(Period period) throws AxelorException {
+    Long periodId = period.getId();
+    List<Move> moves = new ArrayList<>();
+    int anomalyCount = 0;
     if (period.getYear().getTypeSelect() == YearRepository.TYPE_FISCAL) {
       Pair<List<Move>, Integer> result =
           moveValidateService.accountingMultiple(
@@ -85,6 +100,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
       anomalyCount = result.getRight();
       period = periodRepo.find(period.getId());
     }
+    periodClosingResultCache.put(periodId, Pair.of(moves, anomalyCount));
     if (!CollectionUtils.isEmpty(moves)) {
       return;
     }
@@ -97,14 +113,23 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   }
 
   public Query<Move> getMoveListByPeriodAndStatusQuery(Period period, int status) {
-    return moveRepository
-        .all()
-        .filter(
-            "self.period.id = ?1 AND self.statusSelect = ?2 AND (self.archived = false OR self.archived is null)",
-            period.getId(),
-            status)
-        .order("date")
-        .order("id");
+    String filter =
+        "self.period.id = :periodId AND self.statusSelect = :status AND (self.archived = false OR self.archived is null)";
+
+    Set<Journal> closedJournalSet = period.getClosedJournalSet();
+    if (!CollectionUtils.isEmpty(closedJournalSet)) {
+      filter += " AND self.journal.id IN :journalIdList";
+    }
+    Query<Move> query =
+        moveRepository.all().filter(filter).bind("periodId", period.getId()).bind("status", status);
+
+    if (!CollectionUtils.isEmpty(closedJournalSet)) {
+      query =
+          query.bind(
+              "journalIdList",
+              closedJournalSet.stream().map(Journal::getId).collect(Collectors.toList()));
+    }
+    return query.order("date").order("id");
   }
 
   public boolean isManageClosedPeriod(Period period, User user) throws AxelorException {
@@ -141,19 +166,22 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   public void closePeriod(Period period) {
     int oldPeriodStatusSelect = period.getStatusSelect();
     super.closePeriod(period);
-    if (!CollectionUtils.isEmpty(moves)) {
+    Pair<List<Move>, Integer> result = periodClosingResultCache.get(period.getId());
+    if (result != null && !CollectionUtils.isEmpty(result.getLeft())) {
       resetStatus(period, oldPeriodStatusSelect);
     }
   }
 
   @Override
-  public List<Move> getMoves() {
-    return moves;
+  public List<Move> getMoves(Period period) {
+    Pair<List<Move>, Integer> result = periodClosingResultCache.get(period.getId());
+    return result != null ? result.getLeft() : new ArrayList<>();
   }
 
   @Override
-  public int getAnomalyCount() {
-    return anomalyCount;
+  public int getAnomalyCount(Period period) {
+    Pair<List<Move>, Integer> result = periodClosingResultCache.get(period.getId());
+    return result != null ? result.getRight() : 0;
   }
 
   @Override

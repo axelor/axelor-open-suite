@@ -54,12 +54,14 @@ public class InvoiceCategoryServiceImpl implements InvoiceCategoryService {
     invoiceRepository.save(invoice);
   }
 
-  protected String computeInvoiceCategorySelect(Invoice invoice) throws AxelorException {
+  @Override
+  public String computeInvoiceCategorySelect(Invoice invoice) throws AxelorException {
     int operationType = invoice.getOperationTypeSelect();
     int operationSubType = invoice.getOperationSubTypeSelect();
 
     if ((operationType != InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-            && operationType != InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+            && operationType != InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+            && operationType != InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
         || (operationSubType != InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT
             && operationSubType != InvoiceRepository.OPERATION_SUB_TYPE_BALANCE)) {
       return null;

@@ -61,7 +61,7 @@ public class ImportSaleOrder {
 
     saleOrderService.computeAddressStr(saleOrder);
 
-    saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null);
+    saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null, saleOrder);
     saleOrder = saleOrderComputeService.computeSaleOrder(saleOrder);
 
     if (saleOrder.getStatusSelect() == 1) {

@@ -38,6 +38,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentRefundService;
 import com.axelor.apps.account.service.invoice.BankDetailsServiceAccount;
+import com.axelor.apps.account.service.invoice.InvoiceCategoryService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
@@ -230,6 +231,27 @@ public class InvoiceController {
   }
 
   /**
+   * Called from invoice form view before validation, to fill the invoice category. This ensures the
+   * pre-ventilation category check passes even when the ventilation step is skipped.
+   *
+   * @param request
+   * @param response
+   */
+  public void computeInvoiceCategory(ActionRequest request, ActionResponse response) {
+
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+
+    try {
+      response.setValue(
+          "invoiceCategorySelect",
+          Beans.get(InvoiceCategoryService.class).computeInvoiceCategorySelect(invoice));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
    * Passe l'état de la facture à "annulée"
    *
    * @param request
@@ -266,7 +288,7 @@ public class InvoiceController {
             I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_DELETION_PROHIBITED));
         return;
       }
-      if (invoiceTermService.checkIfCustomizedInvoiceTerms(invoice.getInvoiceTermList())) {
+      if (invoiceTermService.checkIfAmountCustomizedInvoiceTerms(invoice.getInvoiceTermList())) {
         if (!invoiceTermService.checkInvoiceTermsSum(invoice)) {
           response.setError(I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_AMOUNT_MISMATCH));
           return;

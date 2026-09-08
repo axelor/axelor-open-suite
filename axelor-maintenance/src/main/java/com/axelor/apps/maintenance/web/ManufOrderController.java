@@ -22,6 +22,8 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.maintenance.exception.MaintenanceExceptionMessage;
 import com.axelor.apps.maintenance.service.ManufOrderPrintService;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -75,6 +77,17 @@ public class ManufOrderController {
       } else {
         response.setInfo(I18n.get(MaintenanceExceptionMessage.MANUF_ORDER_1));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void consumeInStockMoves(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      Beans.get(ManufOrderStockMoveService.class).consumeInStockMoves(manufOrder);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

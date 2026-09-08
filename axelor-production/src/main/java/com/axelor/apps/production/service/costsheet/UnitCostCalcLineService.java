@@ -22,7 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.CostSheet;
-import com.axelor.apps.production.db.UnitCostCalcLine;
+import com.axelor.apps.supplychain.db.UnitCostCalcLine;
 
 public interface UnitCostCalcLineService {
 

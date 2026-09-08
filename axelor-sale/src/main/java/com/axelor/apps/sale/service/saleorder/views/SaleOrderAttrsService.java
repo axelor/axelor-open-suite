@@ -31,4 +31,6 @@ public interface SaleOrderAttrsService {
 
   void setSaleOrderGlobalDiscountDummies(
       SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap);
+
+  void setDiscountsNeedReview(SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap);
 }

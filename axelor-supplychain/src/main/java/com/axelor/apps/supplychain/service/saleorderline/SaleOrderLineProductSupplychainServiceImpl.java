@@ -122,6 +122,8 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
       saleOrderLine.setSaleSupplySelect(product.getSaleSupplySelect());
       saleOrderLineMap.put("saleSupplySelect", product.getSaleSupplySelect());
 
+      saleOrderLineMap.putAll(setManagedInStockMove(saleOrderLine, product));
+
       saleOrderLineMap.putAll(setStandardDelay(saleOrderLine));
       saleOrderLineMap.putAll(setSupplierPartnerDefault(saleOrderLine, saleOrder));
       saleOrderLineMap.putAll(setAnalyticMap(saleOrderLine, saleOrder));
@@ -139,6 +141,12 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
       return saleOrderLineMap;
     }
     return saleOrderLineMap;
+  }
+
+  protected Map<String, Object> setManagedInStockMove(
+      SaleOrderLine saleOrderLine, Product product) {
+    saleOrderLine.setManagedInStockMove(product.getManagedInStockMove());
+    return Map.of("managedInStockMove", product.getManagedInStockMove());
   }
 
   protected Map<String, Object> setEstimatedShippingDate(SaleOrder saleOrder, Product product) {

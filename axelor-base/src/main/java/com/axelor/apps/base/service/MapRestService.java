@@ -20,8 +20,11 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Partner;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.List;
+import java.util.Map;
 
 public interface MapRestService {
 
@@ -51,4 +54,12 @@ public interface MapRestService {
    * @throws AxelorException
    */
   String makeAddressString(Address address, ObjectNode objectNode) throws AxelorException;
+
+  /**
+   * Get the invoicing address of each partner, resolved in bulk with a single query.
+   *
+   * @param partnerList
+   * @return map of partner to its invoicing address (partners without address are absent)
+   */
+  Map<Partner, Address> getInvoicingAddresses(List<? extends Partner> partnerList);
 }

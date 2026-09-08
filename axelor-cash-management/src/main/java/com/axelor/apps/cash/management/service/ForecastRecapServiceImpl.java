@@ -55,6 +55,8 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
+import com.axelor.cache.AxelorCache;
+import com.axelor.cache.CacheBuilder;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -67,10 +69,10 @@ import jakarta.persistence.TypedQuery;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -97,7 +99,10 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   protected InvoiceTermRepository invoiceTermRepo;
   protected JournalService journalService;
 
-  protected Map<Integer, List<Integer>> invoiceStatusMap;
+  protected final AxelorCache<Integer, List<Integer>> invoiceStatusMap =
+      CacheBuilder.newBuilder("invoiceStatusMap")
+          .expireAfterWrite(Duration.ofMinutes(5))
+          .build(this::fetchAvailableStatusList);
 
   @Inject
   public ForecastRecapServiceImpl(
@@ -123,36 +128,35 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     forecastRecap.clearForecastRecapLineList();
     forecastRecap.setCurrentBalance(forecastRecap.getStartingBalance());
 
-    invoiceStatusMap = fetchAvailableStatusMap();
     forecastRecapRepo.save(forecastRecap);
   }
 
-  protected Map<Integer, List<Integer>> fetchAvailableStatusMap() {
-    List<Integer> supportedOperationTypeSelect =
-        Arrays.asList(
-            InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
-            InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND,
-            InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
-            InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
-    Map<Integer, List<Integer>> invStatusMap = new HashMap<>();
-
-    for (int operationTypeSelect : supportedOperationTypeSelect) {
-      List<Integer> statusSelectList =
-          forecastRecapLineTypeRepo
-              .all()
-              .filter("self.operationTypeSelect = :operationTypeSelect")
-              .bind("operationTypeSelect", operationTypeSelect)
-              .fetchStream()
-              .map(ForecastRecapLineType::getStatusSelect)
-              .map(StringHelper::getIntegerList)
-              .flatMap(Collection::stream)
-              .collect(Collectors.toList());
-      if (statusSelectList.isEmpty()) {
-        statusSelectList.add(0);
-      }
-      invStatusMap.put(operationTypeSelect, statusSelectList);
+  protected List<Integer> getDeductionStatusList(int operationTypeSelect) {
+    List<Integer> statusList =
+        new ArrayList<>(
+            Optional.ofNullable(invoiceStatusMap.get(operationTypeSelect))
+                .orElse(Collections.emptyList()));
+    if (!statusList.contains(InvoiceRepository.STATUS_VENTILATED)) {
+      statusList.add(InvoiceRepository.STATUS_VENTILATED);
     }
-    return invStatusMap;
+    return statusList;
+  }
+
+  protected List<Integer> fetchAvailableStatusList(Integer operationTypeSelect) {
+    List<Integer> statusSelectList =
+        forecastRecapLineTypeRepo
+            .all()
+            .filter("self.operationTypeSelect = :operationTypeSelect")
+            .bind("operationTypeSelect", operationTypeSelect)
+            .fetchStream()
+            .map(ForecastRecapLineType::getStatusSelect)
+            .map(StringHelper::getIntegerList)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+    if (statusSelectList.isEmpty()) {
+      statusSelectList.add(0);
+    }
+    return statusSelectList;
   }
 
   @Override
@@ -578,11 +582,11 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             .setParameter("operationTypeInvoice", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
             .setParameter(
                 "invoiceStatusSelect",
-                invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE))
+                getDeductionStatusList(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE))
             .setParameter("operationTypeRefund", InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
             .setParameter(
                 "refundStatusSelect",
-                invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
+                getDeductionStatusList(InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
 
     return Optional.ofNullable(sumAmountInvoiceQuery.getSingleResult()).orElse(BigDecimal.ZERO);
   }
@@ -895,7 +899,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                       + " AND (0 in (:journalIds) OR self.moveLine.move.journal.id in (:journalIds)) "
                       + " AND (0 in (:functionalOrigin) OR self.moveLine.move.functionalOriginSelect in (:functionalOrigin)) "
                       + " AND (0 in (:bankDetailsSet) OR self.moveLine.move.companyBankDetails.id in (:bankDetailsSet)) "
-                      + " AND self.moveLine.move.statusSelect IN (:moveStatusList) AND self.amount != 0"
+                      + " AND self.moveLine.move.statusSelect IN (:moveStatusList) AND self.amountRemaining != 0"
                       + " AND (self.invoice IS NULL OR self.invoice.statusSelect NOT IN (:invoiceStatusSelectList)) ")
               .bind("fromDate", forecastRecap.getFromDate())
               .bind("toDate", forecastRecap.getToDate())
@@ -921,7 +925,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                 .getAmountCurrencyConvertedAtDate(
                     invoiceTerm.getMoveLine().getMove().getCurrency(),
                     forecastRecap.getCompany().getCurrency(),
-                    invoiceTerm.getAmount(),
+                    invoiceTerm.getAmountRemaining(),
                     appBaseService.getTodayDate(forecastRecap.getCompany()))
                 .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
@@ -1291,11 +1295,11 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     query.setParameter("operationTypeInvoice", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
     query.setParameter(
         "invoiceStatusSelect",
-        invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE));
+        getDeductionStatusList(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE));
     query.setParameter("operationTypeRefund", InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
     query.setParameter(
         "refundStatusSelect",
-        invoiceStatusMap.get(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
+        getDeductionStatusList(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
 
     return Optional.ofNullable(query.getSingleResult()).orElse(BigDecimal.ZERO);
   }

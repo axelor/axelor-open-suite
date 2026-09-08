@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <action-record name="action-product-set-stock"
     model="com.axelor.apps.base.db.Product" if-module="axelor-stock">
@@ -135,7 +135,7 @@
       <insert position="after">
         <panel name="trackingNumberPanel" title="Tracking number" showTitle="false"
           showIf="productTypeSelect == 'storable'"
-          if="__config__.app.isApp('stock') &amp;&amp; !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'trackingNumberConfiguration'})">
+          if="__config__.app.isApp('stock') &amp;&amp; (!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'trackingNumberConfiguration'}))">
           <panel colSpan="12" name="trackingConfigPanel">
             <field name="trackingNumberConfiguration" canNew="true"
               form-view="tracking-number-configuration-form"
@@ -268,6 +268,14 @@
     <view type="grid" name="stock-location-line-history-grid"/>
     <view type="form" name="stock-location-line-history-form"/>
     <domain>self.stockLocationLine.product.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-stock-view-stock-history-line" title="Stock history"
+    model="com.axelor.apps.stock.db.StockHistoryLine">
+    <view type="grid" name="stock-history-line-all-grid"/>
+    <view type="form" name="stock-history-line-all-form"/>
+    <domain>self.product.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
 

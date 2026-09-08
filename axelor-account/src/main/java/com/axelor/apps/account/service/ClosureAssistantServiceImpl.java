@@ -21,6 +21,7 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.ClosureAssistant;
 import com.axelor.apps.account.db.ClosureAssistantLine;
 import com.axelor.apps.account.db.repo.ClosureAssistantRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.YearRepository;
@@ -145,5 +146,24 @@ public class ClosureAssistantServiceImpl implements ClosureAssistantService {
       }
     }
     return false;
+  }
+
+  @Override
+  public Long getDaybookMovesCount(Year year, String accountType, Company company) {
+    if (company != null && !company.getAccountConfig().getAccountingDaybook()) {
+      return 0l;
+    }
+    return JPA.em()
+        .createQuery(
+            "SELECT COUNT(DISTINCT ml.move.id) "
+                + "FROM MoveLine ml "
+                + "WHERE ml.move.period.year = :year "
+                + "AND ml.account.accountType.technicalTypeSelect = :accountType "
+                + "AND ml.move.statusSelect = :statusSelect",
+            Long.class)
+        .setParameter("year", year)
+        .setParameter("accountType", accountType)
+        .setParameter("statusSelect", MoveRepository.STATUS_DAYBOOK)
+        .getSingleResult();
   }
 }

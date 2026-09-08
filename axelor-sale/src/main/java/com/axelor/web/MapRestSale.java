@@ -18,10 +18,13 @@
  */
 package com.axelor.web;
 
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
+import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.i18n.I18n;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -38,59 +41,69 @@ import java.util.List;
 import java.util.Map;
 
 @Path("/map")
-@Deprecated
 public class MapRestSale {
 
   @Inject MapService mapService;
+
+  @Inject private MapRestService mapRestService;
 
   @Inject private SaleOrderRepository saleOrderRepo;
 
   @Path("/geomap/turnover")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  @Deprecated
   public JsonNode getGeoMapData() {
 
-    Map<String, BigDecimal> data = new HashMap<String, BigDecimal>();
-    List<? extends SaleOrder> orders = saleOrderRepo.all().filter("self.statusSelect=?", 3).fetch();
     JsonNodeFactory factory = JsonNodeFactory.instance;
     ObjectNode mainNode = factory.objectNode();
-    ArrayNode arrayNode = factory.arrayNode();
 
-    ArrayNode labelNode = factory.arrayNode();
-    labelNode.add("Country");
-    labelNode.add("Turnover");
-    arrayNode.add(labelNode);
+    try {
+      Map<String, BigDecimal> data = new HashMap<String, BigDecimal>();
+      List<? extends SaleOrder> orders =
+          saleOrderRepo.all().filter("self.statusSelect=?", 3).fetch();
+      ArrayNode arrayNode = factory.arrayNode();
 
-    for (SaleOrder so : orders) {
+      ArrayNode labelNode = factory.arrayNode();
+      labelNode.add(I18n.get("Country"));
+      labelNode.add(I18n.get("Turnover"));
+      arrayNode.add(labelNode);
 
-      Country country = so.getMainInvoicingAddress().getCountry();
-      BigDecimal value = so.getExTaxTotal();
+      for (SaleOrder so : orders) {
 
-      if (country != null) {
-        String key = country.getName();
+        Address mainInvoicingAddress = so.getMainInvoicingAddress();
+        if (mainInvoicingAddress == null) {
+          continue;
+        }
 
-        if (data.containsKey(key)) {
-          BigDecimal oldValue = data.get(key);
-          oldValue = oldValue.add(value);
-          data.put(key, oldValue);
-        } else {
-          data.put(key, value);
+        Country country = mainInvoicingAddress.getCountry();
+        BigDecimal value = so.getExTaxTotal();
+
+        if (country != null) {
+          String key = country.getName();
+
+          if (data.containsKey(key)) {
+            BigDecimal oldValue = data.get(key);
+            oldValue = oldValue.add(value);
+            data.put(key, oldValue);
+          } else {
+            data.put(key, value);
+          }
         }
       }
-    }
 
-    Iterator<String> keys = data.keySet().iterator();
-    while (keys.hasNext()) {
-      String key = keys.next();
-      ArrayNode dataNode = factory.arrayNode();
-      dataNode.add(key);
-      dataNode.add(data.get(key));
-      arrayNode.add(dataNode);
-    }
+      Iterator<String> keys = data.keySet().iterator();
+      while (keys.hasNext()) {
+        String key = keys.next();
+        ArrayNode dataNode = factory.arrayNode();
+        dataNode.add(key);
+        dataNode.add(data.get(key));
+        arrayNode.add(dataNode);
+      }
 
-    mainNode.put("status", 0);
-    mainNode.set("data", arrayNode);
+      mapRestService.setData(mainNode, arrayNode);
+    } catch (Exception e) {
+      mapRestService.setError(mainNode, e);
+    }
 
     return mainNode;
   }

@@ -34,6 +34,7 @@ import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainServi
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineQtyToDeliverService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -54,6 +55,7 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
   protected StockMoveRepository stockMoveRepository;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
   protected SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain;
+  protected SaleOrderLineQtyToDeliverService saleOrderLineQtyToDeliverService;
 
   @Inject
   public SaleOrderConfirmSupplychainServiceImpl(
@@ -65,7 +67,8 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
       IntercoService intercoService,
       StockMoveRepository stockMoveRepository,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
-      SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain) {
+      SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
+      SaleOrderLineQtyToDeliverService saleOrderLineQtyToDeliverService) {
     this.appSupplychainService = appSupplychainService;
     this.analyticToolSupplychainService = analyticToolSupplychainService;
     this.partnerSupplychainService = partnerSupplychainService;
@@ -74,6 +77,7 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
     this.intercoService = intercoService;
     this.stockMoveRepository = stockMoveRepository;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
+    this.saleOrderLineQtyToDeliverService = saleOrderLineQtyToDeliverService;
     this.saleOrderLineServiceSupplyChain = saleOrderLineServiceSupplyChain;
   }
 
@@ -95,6 +99,8 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
 
       saleOrder.setEstimatedShippingDate(estimatedShippingDate);
     }
+
+    saleOrderLineQtyToDeliverService.initQtyToDeliverForAll(saleOrder.getSaleOrderLineList());
 
     analyticToolSupplychainService.checkSaleOrderLinesAnalyticDistribution(saleOrder);
 

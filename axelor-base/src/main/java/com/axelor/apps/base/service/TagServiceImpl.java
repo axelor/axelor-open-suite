@@ -21,6 +21,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Tag;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.db.repo.TagRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -29,17 +30,24 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import jakarta.inject.Inject;
 import jakarta.persistence.Query;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TagServiceImpl implements TagService {
 
   protected MetaModelRepository metaModelRepository;
+  protected TagRepository tagRepository;
 
   @Inject
-  public TagServiceImpl(MetaModelRepository metaModelRepository) {
+  public TagServiceImpl(MetaModelRepository metaModelRepository, TagRepository tagRepository) {
     this.metaModelRepository = metaModelRepository;
+    this.tagRepository = tagRepository;
   }
 
   @Override
@@ -96,5 +104,45 @@ public class TagServiceImpl implements TagService {
         resultQuery.getResultList().stream()
             .map(Object::toString)
             .collect(Collectors.joining(",")));
+  }
+
+  @Override
+  public Set<Tag> getInvalidTagsFromTagSet(Set<Tag> tagSet, Company company) {
+    return getInvalidTagsFromTagSet(
+        tagSet,
+        company != null ? Collections.singleton(company) : Collections.emptySet(),
+        Collections.emptySet());
+  }
+
+  @Override
+  public Set<Tag> getInvalidTagsFromTagSet(
+      Set<Tag> tagSet, Set<Company> companySet, Set<TradingName> tradingNameSet) {
+    if (ObjectUtils.isEmpty(tagSet)) {
+      return Collections.emptySet();
+    }
+    List<Long> tagIds =
+        tagSet.stream().map(Tag::getId).filter(Objects::nonNull).collect(Collectors.toList());
+    if (tagIds.isEmpty()) {
+      return Collections.emptySet();
+    }
+    List<Tag> persistedTags = tagRepository.all().filter("self.id IN ?1", tagIds).fetch();
+    Set<Long> invalidIds = new HashSet<>();
+    for (Tag tag : persistedTags) {
+      boolean isValidForCompany =
+          ObjectUtils.isEmpty(tag.getCompanySet())
+              || (!ObjectUtils.isEmpty(companySet)
+                  && !Collections.disjoint(tag.getCompanySet(), companySet));
+      boolean isValidForTradingName =
+          ObjectUtils.isEmpty(tag.getTradingNameSet())
+              || (!ObjectUtils.isEmpty(tradingNameSet)
+                  && !Collections.disjoint(tag.getTradingNameSet(), tradingNameSet));
+      if (!isValidForCompany || !isValidForTradingName) {
+        invalidIds.add(tag.getId());
+      }
+    }
+    if (invalidIds.isEmpty()) {
+      return Collections.emptySet();
+    }
+    return tagSet.stream().filter(t -> invalidIds.contains(t.getId())).collect(Collectors.toSet());
   }
 }

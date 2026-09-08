@@ -46,8 +46,6 @@ import com.axelor.apps.production.db.repo.StockMoveLineProductionRepository;
 import com.axelor.apps.production.db.repo.StockMoveProductionRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeManagementRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
-import com.axelor.apps.production.db.repo.UnitCostCalculationManagementRepository;
-import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.production.rest.ManufOrderProductRestService;
 import com.axelor.apps.production.rest.ManufOrderProductRestServiceImpl;
 import com.axelor.apps.production.rest.ManufOrderRestService;
@@ -61,6 +59,10 @@ import com.axelor.apps.production.service.BillOfMaterialComputeNameService;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialDummyService;
 import com.axelor.apps.production.service.BillOfMaterialDummyServiceImpl;
+import com.axelor.apps.production.service.BillOfMaterialHazardPhraseRefreshService;
+import com.axelor.apps.production.service.BillOfMaterialHazardPhraseRefreshServiceImpl;
+import com.axelor.apps.production.service.BillOfMaterialHazardPhraseService;
+import com.axelor.apps.production.service.BillOfMaterialHazardPhraseServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialLineService;
 import com.axelor.apps.production.service.BillOfMaterialLineServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialMrpLineService;
@@ -74,6 +76,8 @@ import com.axelor.apps.production.service.BomLineCreationServiceImpl;
 import com.axelor.apps.production.service.BomTreeRemoveService;
 import com.axelor.apps.production.service.BomTreeRemoveServiceImpl;
 import com.axelor.apps.production.service.ControlEntryProductionServiceImpl;
+import com.axelor.apps.production.service.ManufOrderMessageService;
+import com.axelor.apps.production.service.ManufOrderMessageServiceImpl;
 import com.axelor.apps.production.service.MpsChargeService;
 import com.axelor.apps.production.service.MpsChargeServiceImpl;
 import com.axelor.apps.production.service.MpsWeeklyScheduleService;
@@ -82,8 +86,12 @@ import com.axelor.apps.production.service.MrpForecastProductionService;
 import com.axelor.apps.production.service.MrpForecastProductionServiceImpl;
 import com.axelor.apps.production.service.MrpLineServiceProductionImpl;
 import com.axelor.apps.production.service.MrpServiceProductionImpl;
+import com.axelor.apps.production.service.OperationOrderHazardPhraseService;
+import com.axelor.apps.production.service.OperationOrderHazardPhraseServiceImpl;
 import com.axelor.apps.production.service.ProdProcessComputationService;
 import com.axelor.apps.production.service.ProdProcessComputationServiceImpl;
+import com.axelor.apps.production.service.ProdProcessHazardPhraseService;
+import com.axelor.apps.production.service.ProdProcessHazardPhraseServiceImpl;
 import com.axelor.apps.production.service.ProdProcessLineComputationService;
 import com.axelor.apps.production.service.ProdProcessLineComputationServiceImpl;
 import com.axelor.apps.production.service.ProdProcessLineHourlyCostComputeService;
@@ -101,6 +109,8 @@ import com.axelor.apps.production.service.ProdProductAttrsServiceImpl;
 import com.axelor.apps.production.service.ProdProductService;
 import com.axelor.apps.production.service.ProdProductServiceImpl;
 import com.axelor.apps.production.service.ProductionProductStockLocationServiceImpl;
+import com.axelor.apps.production.service.ProductionTrackingPreservationService;
+import com.axelor.apps.production.service.ProductionTrackingPreservationServiceImpl;
 import com.axelor.apps.production.service.PurchaseOrderDomainServiceProductionImpl;
 import com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionImpl;
 import com.axelor.apps.production.service.PurchaseOrderTypeSelectProductionServiceImpl;
@@ -308,6 +318,12 @@ import com.axelor.apps.supplychain.db.repo.MrpLineManagementRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
 import com.axelor.apps.supplychain.service.ConfiguratorCheckServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.DepRateCalculationCsvService;
+import com.axelor.apps.supplychain.service.DepRateCalculationCsvServiceImpl;
+import com.axelor.apps.supplychain.service.DepRateCalculationProductService;
+import com.axelor.apps.supplychain.service.DepRateCalculationProductServiceImpl;
+import com.axelor.apps.supplychain.service.DepRateCalculationService;
+import com.axelor.apps.supplychain.service.DepRateCalculationServiceImpl;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
@@ -360,7 +376,6 @@ public class ProductionModule extends AxelorModule {
     bind(RawMaterialRequirementRepository.class)
         .to(RawMaterialRequirementProductionRepository.class);
     bind(ProductionBatchRepository.class).to(ProductionBatchManagementRepository.class);
-    bind(UnitCostCalculationRepository.class).to(UnitCostCalculationManagementRepository.class);
     bind(UnitCostCalculationService.class).to(UnitCostCalculationServiceImpl.class);
     bind(UnitCostCalcLineService.class).to(UnitCostCalcLineServiceImpl.class);
     bind(ProductStockRepository.class).to(ProductProductionRepository.class);
@@ -414,6 +429,8 @@ public class ProductionModule extends AxelorModule {
     bind(ManufOrderCreateStockMoveService.class).to(ManufOrderCreateStockMoveServiceImpl.class);
     bind(ManufOrderCreateStockMoveLineService.class)
         .to(ManufOrderCreateStockMoveLineServiceImpl.class);
+    bind(ProductionTrackingPreservationService.class)
+        .to(ProductionTrackingPreservationServiceImpl.class);
     bind(ManufOrderUpdateStockMoveService.class).to(ManufOrderUpdateStockMoveServiceImpl.class);
     bind(OperationOrderStockMoveService.class).to(OperationOrderStockMoveServiceImpl.class);
     bind(OperationOrderPlanningInfiniteCapacityService.class)
@@ -449,8 +466,6 @@ public class ProductionModule extends AxelorModule {
     bind(ProdProductAttrsService.class).to(ProdProductAttrsServiceImpl.class);
     bind(ProdProductService.class).to(ProdProductServiceImpl.class);
     bind(SaleOrderLineBomSyncService.class).to(SaleOrderLineBomSyncServiceImpl.class);
-    bind(SaleOrderLineDetailsService.class).to(SaleOrderLineDetailsServiceImpl.class);
-    bind(SaleOrderLineDetailsRepository.class).to(SaleOrderLineDetailsManagementRepository.class);
     bind(SaleOrderLineDetailsService.class).to(SaleOrderLineDetailsServiceImpl.class);
     bind(SaleOrderLineDetailsRepository.class).to(SaleOrderLineDetailsManagementRepository.class);
     bind(SaleOrderLineDetailsBomService.class).to(SaleOrderLineDetailsBomServiceImpl.class);
@@ -526,7 +541,17 @@ public class ProductionModule extends AxelorModule {
         .to(QualityImprovementUpdateProductionServiceImpl.class);
     bind(QualityImprovementParseServiceImpl.class)
         .to(QualityImprovementParseProductionServiceImpl.class);
+    bind(ProdProcessHazardPhraseService.class).to(ProdProcessHazardPhraseServiceImpl.class);
+    bind(BillOfMaterialHazardPhraseService.class).to(BillOfMaterialHazardPhraseServiceImpl.class);
+    bind(BillOfMaterialHazardPhraseRefreshService.class)
+        .to(BillOfMaterialHazardPhraseRefreshServiceImpl.class);
+    bind(OperationOrderHazardPhraseService.class).to(OperationOrderHazardPhraseServiceImpl.class);
+    bind(ManufOrderMessageService.class).to(ManufOrderMessageServiceImpl.class);
     bind(ManufOrderQueryService.class).to(ManufOrderQueryServiceImpl.class);
     bind(ControlEntryServiceImpl.class).to(ControlEntryProductionServiceImpl.class);
+
+    bind(DepRateCalculationService.class).to(DepRateCalculationServiceImpl.class);
+    bind(DepRateCalculationProductService.class).to(DepRateCalculationProductServiceImpl.class);
+    bind(DepRateCalculationCsvService.class).to(DepRateCalculationCsvServiceImpl.class);
   }
 }

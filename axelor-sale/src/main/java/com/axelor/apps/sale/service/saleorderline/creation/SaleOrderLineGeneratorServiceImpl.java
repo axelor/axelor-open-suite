@@ -124,7 +124,9 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(SaleExceptionMessage.EITHER_PRODUCT_OR_SALE_ORDER_ARE_NULL));
     }
-    if (saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
+    if (saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_DRAFT_QUOTATION
+        && !(saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED
+            && saleOrder.getOrderBeingEdited())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.SALE_ORDER_NOT_DRAFT));

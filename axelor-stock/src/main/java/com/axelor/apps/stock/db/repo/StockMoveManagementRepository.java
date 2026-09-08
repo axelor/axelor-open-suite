@@ -18,14 +18,18 @@
  */
 package com.axelor.apps.stock.db.repo;
 
+import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.studio.db.AppStock;
 import com.google.common.base.Strings;
 import jakarta.persistence.PersistenceException;
 import java.util.Map;
@@ -65,6 +69,27 @@ public class StockMoveManagementRepository extends StockMoveRepository {
       if (Strings.isNullOrEmpty(stockMove.getName())
           || stockMove.getName().startsWith(stockMove.getStockMoveSeq())) {
         stockMove.setName(Beans.get(StockMoveToolService.class).computeName(stockMove));
+      }
+
+      // Barcode generation
+
+      BarcodeGeneratorService barcodeGeneratorService = Beans.get(BarcodeGeneratorService.class);
+      AppStock appStock = Beans.get(AppStockService.class).getAppStock();
+
+      if (stockMove.getStockMoveBarcode() == null
+          && appStock.getActivateStockMoveBarcodeGeneration()
+          && stockMove.getStatusSelect() >= STATUS_PLANNED) {
+        MetaFile barcodeFile =
+            barcodeGeneratorService.createBarCode(
+                stockMove.getId(),
+                "StockMoveBarCode%d.png",
+                stockMove.getStockMoveSeq(),
+                appStock.getStockMoveBarcodeTypeConfig(),
+                false);
+
+        if (barcodeFile != null) {
+          stockMove.setStockMoveBarcode(barcodeFile);
+        }
       }
 
       return stockMove;

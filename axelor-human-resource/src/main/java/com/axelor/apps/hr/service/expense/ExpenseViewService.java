@@ -19,9 +19,30 @@
 package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.db.KilometricAllowParam;
+import com.axelor.auth.db.User;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import com.axelor.rpc.ActionRequest;
+import java.util.List;
 import java.util.Map;
 
 public interface ExpenseViewService {
 
   Map<String, Object> showMoves(Long expenseId) throws AxelorException;
+
+  ActionViewBuilder buildEditExpenseView(User user);
+
+  ActionViewBuilder buildEditSelectedExpenseView(Long expenseId);
+
+  ActionViewBuilder buildHistoricExpenseView(User user, Employee employee);
+
+  ActionViewBuilder buildSubordinateExpensesView(User user, Company activeCompany);
+
+  void setExpense(ActionRequest request, ExpenseLine expenseLine);
+
+  List<KilometricAllowParam> domainOnSelectOnKAP(
+      ExpenseLine expenseLine, Map<String, Map<String, Object>> attrsMap) throws AxelorException;
 }

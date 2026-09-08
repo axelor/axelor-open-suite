@@ -66,6 +66,7 @@ public class SaleOrderLineComplementaryProductServiceImpl
         getOrCreateComplementryLine(
             complementaryProduct.getProduct(), saleOrderLine, newComplementarySOLines);
 
+    complementarySOLine.setMainSaleOrder(saleOrder);
     complementarySOLine.setQty(complementaryProduct.getQty());
     complementarySOLine.setIsComplementaryPartnerProductsHandled(
         complementaryProduct.getGenerationTypeSelect()

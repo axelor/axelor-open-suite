@@ -39,7 +39,10 @@ public class SaleOrderBlockingSupplychainServiceImpl
     Objects.requireNonNull(saleOrder);
     if (saleOrder.getSaleOrderLineList() != null) {
       return saleOrder.getSaleOrderLineList().stream()
-          .anyMatch(saleOrderLineBlockingSupplychainService::isDeliveryBlocked);
+          .anyMatch(
+              sol ->
+                  saleOrderLineBlockingSupplychainService.isDeliveryBlocked(
+                      sol, saleOrder.getCompany()));
     }
     return false;
   }

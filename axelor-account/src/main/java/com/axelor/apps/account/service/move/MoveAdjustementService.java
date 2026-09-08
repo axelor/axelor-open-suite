@@ -102,6 +102,10 @@ public class MoveAdjustementService {
         amountRemaining.divide(
             currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
+    if (amountRemainingInSpecificMoveCurrency.signum() == 0) {
+      return null;
+    }
+
     Move adjustmentMove =
         moveCreateService.createMove(
             miscOperationJournal,

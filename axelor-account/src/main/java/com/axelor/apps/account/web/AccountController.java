@@ -38,8 +38,10 @@ import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Tag;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.TagService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
@@ -54,9 +56,11 @@ import com.axelor.utils.helpers.MassUpdateHelper;
 import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -410,6 +414,20 @@ public class AccountController {
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  @ErrorException
+  public void filterTagSetOnCompanyChange(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Account account = request.getContext().asType(Account.class);
+    Set<Tag> invalidTags =
+        Beans.get(TagService.class)
+            .getInvalidTagsFromTagSet(account.getTagSet(), account.getCompany());
+    if (!ObjectUtils.isEmpty(invalidTags)) {
+      Set<Tag> newTagSet = new HashSet<>(account.getTagSet());
+      newTagSet.removeAll(invalidTags);
+      response.setValue("tagSet", newTagSet);
     }
   }
 

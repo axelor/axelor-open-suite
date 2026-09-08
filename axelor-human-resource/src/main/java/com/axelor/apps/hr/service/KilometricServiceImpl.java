@@ -21,10 +21,16 @@ package com.axelor.apps.hr.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.expense.KilometricComputationResult;
+import com.axelor.auth.AuthUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppBaseRepository;
+import com.google.common.base.Strings;
 import jakarta.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -35,15 +41,18 @@ public class KilometricServiceImpl implements KilometricService {
   protected final AppBaseService appBaseService;
   protected final KilometricGoogleService kilometricGoogleService;
   protected final KilometricOsmService kilometricOsmService;
+  protected final KilometricExpenseService kilometricExpenseService;
 
   @Inject
   public KilometricServiceImpl(
       AppBaseService appBaseService,
       KilometricGoogleService kilometricGoogleService,
-      KilometricOsmService kilometricOsmService) {
+      KilometricOsmService kilometricOsmService,
+      KilometricExpenseService kilometricExpenseService) {
     this.appBaseService = appBaseService;
     this.kilometricGoogleService = kilometricGoogleService;
     this.kilometricOsmService = kilometricOsmService;
+    this.kilometricExpenseService = kilometricExpenseService;
   }
 
   @Override
@@ -86,5 +95,42 @@ public class KilometricServiceImpl implements KilometricService {
     } catch (IOException e) {
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
+  }
+
+  @Override
+  public KilometricComputationResult computeDistanceAndExpense(ExpenseLine expenseLine)
+      throws AxelorException {
+    // Compute distance.
+
+    BigDecimal distance = BigDecimal.ZERO;
+    BigDecimal amount = BigDecimal.ZERO;
+
+    if (Strings.isNullOrEmpty(expenseLine.getFromCity())
+        || Strings.isNullOrEmpty(expenseLine.getToCity())
+        || expenseLine.getKilometricTypeSelect() == null
+        || expenseLine.getKilometricTypeSelect() == 0) {
+      return new KilometricComputationResult(distance, amount);
+    }
+
+    distance = computeDistance(expenseLine);
+    expenseLine.setDistance(distance);
+
+    // Compute kilometric expense.
+
+    if (expenseLine.getKilometricAllowParam() == null || expenseLine.getExpenseDate() == null) {
+      return new KilometricComputationResult(distance, amount);
+    }
+
+    Employee employee = expenseLine.getEmployee();
+    if (employee == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
+          AuthUtils.getUser().getName());
+    }
+
+    amount = kilometricExpenseService.computeKilometricExpense(expenseLine, employee);
+
+    return new KilometricComputationResult(distance, amount);
   }
 }

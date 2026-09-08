@@ -22,10 +22,13 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import java.math.BigDecimal;
+import java.util.Set;
 
 public interface WeightedAveragePriceService {
 
   void computeAvgPriceForProduct(Product product) throws AxelorException;
 
   BigDecimal computeAvgPriceForCompany(Product product, Company company);
+
+  void resetAvgPriceForProducts(Set<Long> productIds) throws AxelorException;
 }

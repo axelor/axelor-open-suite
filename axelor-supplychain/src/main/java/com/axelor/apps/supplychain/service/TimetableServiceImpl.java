@@ -148,6 +148,20 @@ public class TimetableServiceImpl implements TimetableService {
   }
 
   @Override
+  public void reassignInvoice(List<Invoice> invoiceList, Invoice invoiceMerged) {
+    List<Timetable> timetableList =
+        timetableRepository
+            .all()
+            .filter("self.invoice IN (:invoiceList)")
+            .bind("invoiceList", invoiceList)
+            .fetch();
+    for (Timetable timetable : timetableList) {
+      timetable.setInvoice(invoiceMerged);
+      timetableRepository.save(timetable);
+    }
+  }
+
+  @Override
   public BigDecimal computeAmount(
       Timetable timetable,
       List<Timetable> timetableList,

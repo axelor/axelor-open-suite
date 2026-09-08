@@ -104,6 +104,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
           I18n.get(BaseExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
     }
     AccountingBatch accountingBatch = new AccountingBatch();
+    ClosureAssistant closureAssistant = closureAssistantLine.getClosureAssistant();
     switch (closureAssistantLine.getActionSelect()) {
       case ClosureAssistantLineRepository.ACTION_CUT_OF_GENERATION:
         accountingBatch =
@@ -141,7 +142,8 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
         return ActionView.define(I18n.get("Outrun result"))
             .model(Wizard.class.getName())
             .add("form", "closure-assistant-line-outrun-wizard")
-            .context("_year", closureAssistantLine.getClosureAssistant().getFiscalYear().getId())
+            .context("_year", closureAssistant.getFiscalYear().getId())
+            .context("_company", closureAssistant.getCompany().getId())
             .map();
       case ClosureAssistantLineRepository.ACTION_CLOSURE_AND_OPENING_OF_FISCAL_YEAR_BATCH:
         accountingBatch =
@@ -156,8 +158,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
         return ActionView.define(I18n.get("Fiscal year"))
             .model(Year.class.getName())
             .add("form", "year-account-form")
-            .context(
-                "_showRecord", closureAssistantLine.getClosureAssistant().getFiscalYear().getId())
+            .context("_showRecord", closureAssistant.getFiscalYear().getId())
             .map();
       default:
         return null;

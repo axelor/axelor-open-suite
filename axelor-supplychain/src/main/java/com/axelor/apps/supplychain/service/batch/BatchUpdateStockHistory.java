@@ -31,6 +31,7 @@ import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.service.StockHistoryService;
 import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.StockRotationCategoryService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -45,13 +46,16 @@ public class BatchUpdateStockHistory extends BatchStrategy {
 
   protected StockHistoryService stockHistoryService;
   protected ProductCategoryRepository productCategoryRepository;
+  protected StockRotationCategoryService stockRotationCategoryService;
 
   @Inject
   public BatchUpdateStockHistory(
       StockHistoryService stockHistoryService,
-      ProductCategoryRepository productCategoryRepository) {
+      ProductCategoryRepository productCategoryRepository,
+      StockRotationCategoryService stockRotationCategoryService) {
     this.stockHistoryService = stockHistoryService;
     this.productCategoryRepository = productCategoryRepository;
+    this.stockRotationCategoryService = stockRotationCategoryService;
   }
 
   @Override
@@ -93,6 +97,7 @@ public class BatchUpdateStockHistory extends BatchStrategy {
                     null,
                     supplychainBatch.getPeriod().getFromDate(),
                     supplychainBatch.getPeriod().getToDate()));
+            stockRotationCategoryService.assignStockRotationCategory(product);
             incrementDone();
           } catch (Exception e) {
             incrementAnomaly();

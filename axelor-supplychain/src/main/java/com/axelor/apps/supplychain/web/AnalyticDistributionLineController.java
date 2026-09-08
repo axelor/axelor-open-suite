@@ -23,6 +23,9 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import com.axelor.apps.supplychain.service.analytic.AnalyticLineModelFindService;
+import com.axelor.apps.supplychain.service.analytic.AnalyticMoveLineRecordService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -56,6 +59,21 @@ public class AnalyticDistributionLineController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void initModelFields(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+
+    AnalyticLineModel parent =
+        AnalyticLineModelFindService.getAnalyticLineModel(request, analyticMoveLine);
+
+    if (parent != null) {
+      Beans.get(AnalyticMoveLineRecordService.class).onNew(parent, analyticMoveLine);
+      response.setValue("analyticJournal", analyticMoveLine.getAnalyticJournal());
+      response.setValue("date", analyticMoveLine.getDate());
+      response.setValue("currency", analyticMoveLine.getCompanyCurrency());
     }
   }
 }

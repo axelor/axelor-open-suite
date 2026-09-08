@@ -30,7 +30,9 @@ import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.TimetableTemplate;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.TimetableService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -67,6 +69,8 @@ public class TimetableController {
         response.setAlert(I18n.get(SupplychainExceptionMessage.TIMETABLE_SALE_ORDER_NOT_CONFIRMED));
         return;
       }
+      Beans.get(SaleOrderInvoiceService.class)
+          .displayErrorMessageIfExceedsInvoiceableAmount(saleOrder, timetable.getAmount());
     }
 
     if (parentContext != null && parentContext.getContextClass().equals(PurchaseOrder.class)) {
@@ -76,6 +80,8 @@ public class TimetableController {
             I18n.get(SupplychainExceptionMessage.TIMETABLE_PURCHASE_OREDR_NOT_VALIDATED));
         return;
       }
+      Beans.get(PurchaseOrderInvoiceService.class)
+          .displayErrorMessageIfExceedsInvoiceableAmount(purchaseOrder, timetable.getAmount());
     }
 
     if (timetable.getInvoice() != null) {

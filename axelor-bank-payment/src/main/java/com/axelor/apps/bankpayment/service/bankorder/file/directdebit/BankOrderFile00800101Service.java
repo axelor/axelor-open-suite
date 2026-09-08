@@ -61,12 +61,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import jakarta.inject.Inject;
-import jakarta.xml.bind.JAXBException;
 import java.io.File;
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 public class BankOrderFile00800101Service extends BankOrderFile008Service {
@@ -88,14 +85,10 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
    * Generates the XML SEPA Direct Debit file (pain.008.001.01)
    *
    * @return the SEPA Direct Debit file (pain.008.001.01)
-   * @throws JAXBException
-   * @throws IOException
    * @throws AxelorException
-   * @throws DatatypeConfigurationException
    */
   @Override
-  public File generateFile()
-      throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
+  public File generateFile() throws AxelorException {
     // Creditor
     PartyIdentification8 creditor = factory.createPartyIdentification8();
     creditor.setNm(senderBankDetails.getOwnerName());
@@ -163,11 +156,11 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
    *
    * @param groupHeader the {@link GroupHeader1} to build
    * @param creditor the creditor of the SEPA Direct Debit file
-   * @throws DatatypeConfigurationException
+   * @throws AxelorException
    */
   protected void createGrpHdr(GroupHeader1 groupHeader, PartyIdentification8 creditor)
-      throws DatatypeConfigurationException {
-    DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
+      throws AxelorException {
+    DatatypeFactory datatypeFactory = DatatypeFactory.newDefaultInstance();
 
     /*
      * Message Identification (mandatory)
@@ -237,13 +230,13 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
    * @param paymentInstructionInformationList the list to add the {@link
    *     PaymentInstructionInformation2} objects into
    * @param creditor the creditor of the SEPA Direct Debit file
-   * @throws DatatypeConfigurationException
+   * @throws AxelorException
    */
   protected void createPmtInf(
       List<PaymentInstructionInformation2> paymentInstructionInformationList,
       PartyIdentification8 creditor)
-      throws AxelorException, DatatypeConfigurationException {
-    DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
+      throws AxelorException {
+    DatatypeFactory datatypeFactory = DatatypeFactory.newDefaultInstance();
 
     /*
      * Payment Information (mandatory)
@@ -417,14 +410,13 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
    * @param directDebitTransactionInformation1List the list to add the {@link
    *     DirectDebitTransactionInformation1} objects into
    * @param creditor the creditor of the SEPA Direct Debit file
-   * @throws DatatypeConfigurationException
    * @throws AxelorException
    */
   protected void createDrctDbtTxInf(
       List<DirectDebitTransactionInformation1> directDebitTransactionInformation1List,
       PartyIdentification8 creditor)
-      throws DatatypeConfigurationException, AxelorException {
-    DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
+      throws AxelorException {
+    DatatypeFactory datatypeFactory = DatatypeFactory.newDefaultInstance();
 
     for (BankOrderLine bankOrderLine : bankOrderLineList) {
 

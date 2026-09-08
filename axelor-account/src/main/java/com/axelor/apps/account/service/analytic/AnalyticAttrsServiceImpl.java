@@ -20,9 +20,11 @@ package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticDistributionTemplateRepository;
 import com.axelor.apps.account.db.repo.AnalyticLine;
@@ -40,6 +42,7 @@ import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
@@ -192,5 +195,43 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
             partner, product, company, tradingName, account, isPurchase));
 
     return "self.id IN (" + StringHelper.getIdListString(analyticDistributionTemplateList) + ")";
+  }
+
+  @Override
+  public void addAnalyticDistributionTemplateDomain(
+      AnalyticLine analyticLine,
+      Partner partner,
+      Product product,
+      Company company,
+      TradingName tradingName,
+      Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException {
+    String technicalTypeSelect =
+        Optional.ofNullable(analyticLine.getAccount())
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(null);
+
+    boolean isPurchase = !AccountTypeRepository.TYPE_INCOME.equals(technicalTypeSelect);
+
+    String domain =
+        getAnalyticDistributionTemplateDomain(
+            partner, product, company, tradingName, analyticLine.getAccount(), isPurchase);
+
+    this.addAttr("analyticDistributionTemplate", "domain", domain, attrsMap);
+  }
+
+  @Override
+  public void addAnalyticAccountRequired(
+      AnalyticLine analyticLine, Company company, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException {
+    for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+      this.addAttr(
+          "axis" + i + "AnalyticAccount",
+          "required",
+          analyticLineService.isAxisRequired(analyticLine, company, i)
+              && !analyticLineService.checkAnalyticLinesByAxis(analyticLine, i, company),
+          attrsMap);
+    }
   }
 }

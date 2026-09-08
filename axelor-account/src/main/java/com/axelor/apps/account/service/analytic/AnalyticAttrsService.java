@@ -49,4 +49,17 @@ public interface AnalyticAttrsService {
       Account account,
       boolean isPurchase)
       throws AxelorException;
+
+  void addAnalyticAccountRequired(
+      AnalyticLine analyticLine, Company company, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
+
+  void addAnalyticDistributionTemplateDomain(
+      AnalyticLine analyticLine,
+      Partner partner,
+      Product product,
+      Company company,
+      TradingName tradingName,
+      Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
 }

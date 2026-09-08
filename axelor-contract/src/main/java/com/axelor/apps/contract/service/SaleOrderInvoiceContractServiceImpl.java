@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.PartnerAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
@@ -75,7 +76,8 @@ public class SaleOrderInvoiceContractServiceImpl extends SaleOrderInvoiceService
       OrderInvoiceService orderInvoiceService,
       InvoiceTaxService invoiceTaxService,
       SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
-      PartnerAccountService partnerAccountService) {
+      PartnerAccountService partnerAccountService,
+      InvoiceGlobalDiscountService invoiceGlobalDiscountService) {
     super(
         appBaseService,
         appStockService,
@@ -94,7 +96,8 @@ public class SaleOrderInvoiceContractServiceImpl extends SaleOrderInvoiceService
         orderInvoiceService,
         invoiceTaxService,
         saleOrderDeliveryAddressService,
-        partnerAccountService);
+        partnerAccountService,
+        invoiceGlobalDiscountService);
   }
 
   @Transactional(rollbackOn = {Exception.class})

@@ -54,7 +54,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import org.hibernate.jpa.QueryHints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -551,7 +550,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
     if (productUnit != null && !productUnit.equals(stockLocationUnit)) {
       int scale = appBaseService.getNbDecimalDigitForUnitPrice();
-      int qtyScale = appBaseService.getNbDecimalDigitForQty();
       BigDecimal oldQty = stockLocationLine.getCurrentQty();
       BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
 
@@ -567,11 +565,10 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       stockLocationLine.setUnit(product.getUnit());
       stockLocationLine.setFutureQty(computeFutureQty(stockLocationLine));
 
-      BigDecimal avgQty = BigDecimal.ZERO;
+      BigDecimal newAvgPrice = BigDecimal.ZERO;
       if (currentQty.compareTo(BigDecimal.ZERO) != 0) {
-        avgQty = oldQty.divide(currentQty, qtyScale, RoundingMode.HALF_UP);
+        newAvgPrice = oldAvgPrice.multiply(oldQty).divide(currentQty, scale, RoundingMode.HALF_UP);
       }
-      BigDecimal newAvgPrice = oldAvgPrice.multiply(avgQty).setScale(scale, RoundingMode.HALF_UP);
       stockLocationLine.setAvgPrice(newAvgPrice);
       updateHistory(
           stockLocationLine,
@@ -642,7 +639,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     if (isDetailsStockLocationLine) {
       query.setParameter("trackingNumberId", trackingNumberId);
     }
-    query.setHint(QueryHints.HINT_CACHEABLE, true);
     query.setFlushMode(FlushModeType.COMMIT);
     List<StockLocationLineQtyView> aggregates = query.getResultList();
 
@@ -667,71 +663,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
 
     return futureQty;
-  }
-
-  @Override
-  public void updateWap(StockLocationLine stockLocationLine, BigDecimal wap)
-      throws AxelorException {
-    updateWap(stockLocationLine, wap, null);
-  }
-
-  @Override
-  public void updateWap(
-      StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine)
-      throws AxelorException {
-
-    LocalDateTime dateT =
-        appBaseService
-            .getTodayDateTime(
-                stockLocationLine.getStockLocation() != null
-                    ? stockLocationLine.getStockLocation().getCompany()
-                    : Optional.ofNullable(AuthUtils.getUser())
-                        .map(User::getActiveCompany)
-                        .orElse(null))
-            .toLocalDateTime();
-
-    String origin =
-        Optional.ofNullable(stockMoveLine)
-            .map(StockMoveLine::getStockMove)
-            .map(StockMove::getStockMoveSeq)
-            .orElse("");
-    stockLocationLine.setAvgPrice(wap);
-    stockLocationLineHistoryService.saveHistory(stockLocationLine, dateT, origin, "");
-  }
-
-  @Override
-  public void updateWap(
-      StockLocationLine stockLocationLine,
-      BigDecimal wap,
-      StockMoveLine stockMoveLine,
-      LocalDate date,
-      String origin)
-      throws AxelorException {
-    if (origin == null) {
-      origin =
-          Optional.ofNullable(stockMoveLine)
-              .map(StockMoveLine::getStockMove)
-              .map(StockMove::getStockMoveSeq)
-              .orElse("");
-    }
-
-    LocalDateTime dateT = null;
-    if (date != null) {
-      dateT = date.atStartOfDay();
-    } else {
-      dateT =
-          appBaseService
-              .getTodayDateTime(
-                  stockLocationLine.getStockLocation() != null
-                      ? stockLocationLine.getStockLocation().getCompany()
-                      : Optional.ofNullable(AuthUtils.getUser())
-                          .map(User::getActiveCompany)
-                          .orElse(null))
-              .toLocalDateTime();
-    }
-
-    stockLocationLine.setAvgPrice(wap);
-    stockLocationLineHistoryService.saveHistory(stockLocationLine, dateT, origin, "");
   }
 
   @Override

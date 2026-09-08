@@ -28,4 +28,6 @@ public interface SaleOrderLineCheckSupplychainService {
       throws AxelorException;
 
   void checkLinkedPackagingLine(SaleOrderLine saleOrderLine) throws AxelorException;
+
+  void detachCanceledStockMoveLines(SaleOrderLine saleOrderLine);
 }

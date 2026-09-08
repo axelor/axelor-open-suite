@@ -218,17 +218,10 @@ public class StockMoveInvoiceController {
   public void generateInvoiceConcatOutStockMoveCheckMissingFields(
       ActionRequest request, ActionResponse response) {
     try {
-      List<StockMove> stockMoveList = new ArrayList<>();
-      List<Long> stockMoveIdList = new ArrayList<>();
-
-      // No confirmation popup, stock Moves are content in a parameter list
       List<Map> stockMoveMap = (List<Map>) request.getContext().get("customerStockMoveToInvoice");
-      for (Map map : stockMoveMap) {
-        stockMoveIdList.add(Long.valueOf((Integer) map.get("id")));
-      }
-      for (Long stockMoveId : stockMoveIdList) {
-        stockMoveList.add(JPA.em().find(StockMove.class, stockMoveId));
-      }
+      List<StockMove> stockMoveList = getSelectedOrAllStockMoves(stockMoveMap);
+      List<Long> stockMoveIdList =
+          stockMoveList.stream().map(StockMove::getId).collect(Collectors.toList());
 
       Map<String, Object> mapResult =
           Beans.get(StockMoveMultiInvoiceService.class)
@@ -396,16 +389,11 @@ public class StockMoveInvoiceController {
   public void generateInvoiceConcatInStockMoveCheckMissingFields(
       ActionRequest request, ActionResponse response) {
     try {
-      List<StockMove> stockMoveList = new ArrayList<>();
-      List<Long> stockMoveIdList = new ArrayList<>();
-
       List<Map> stockMoveMap = (List<Map>) request.getContext().get("supplierStockMoveToInvoice");
-      for (Map map : stockMoveMap) {
-        stockMoveIdList.add(Long.valueOf((Integer) map.get("id")));
-      }
-      for (Long stockMoveId : stockMoveIdList) {
-        stockMoveList.add(JPA.em().find(StockMove.class, stockMoveId));
-      }
+      List<StockMove> stockMoveList = getSelectedOrAllStockMoves(stockMoveMap);
+      List<Long> stockMoveIdList =
+          stockMoveList.stream().map(StockMove::getId).collect(Collectors.toList());
+
       Map<String, Object> mapResult =
           Beans.get(StockMoveMultiInvoiceService.class)
               .areFieldsConflictedToGenerateSupplierInvoice(stockMoveList);
@@ -477,6 +465,19 @@ public class StockMoveInvoiceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @SuppressWarnings("rawtypes")
+  protected List<StockMove> getSelectedOrAllStockMoves(List<Map> stockMoveMap) {
+    List<Map> selectedStockMoveMap =
+        stockMoveMap.stream()
+            .filter(map -> Boolean.TRUE.equals(map.get("selected")))
+            .collect(Collectors.toList());
+
+    return (selectedStockMoveMap.isEmpty() ? stockMoveMap : selectedStockMoveMap)
+        .stream()
+            .map(map -> JPA.em().find(StockMove.class, ((Number) map.get("id")).longValue()))
+            .collect(Collectors.toList());
   }
 
   /**
@@ -739,22 +740,28 @@ public class StockMoveInvoiceController {
           }
           invoice = stockMoveInvoiceService.createInvoiceFromSaleOrder(stockMove, saleOrder, null);
         } else if (ObjectUtils.notEmpty(purchaseOrderSet)) {
-          PurchaseOrderMergingResult result =
-              Beans.get(PurchaseOrderMergingService.class)
-                  .simulateMergePurchaseOrders(new ArrayList<>(purchaseOrderSet));
-          if (result.isConfirmationNeeded()) {
-            ActionViewBuilder confirmView =
-                Beans.get(PurchaseOrderMergingViewService.class)
-                    .buildConfirmView(result, new ArrayList<>(purchaseOrderSet));
-            confirmView.context("stockMoveId", stockMove.getId());
-            confirmView.context("toStockMove", true);
+          PurchaseOrder purchaseOrder;
+          if (purchaseOrderSet.size() == 1) {
+            purchaseOrder = purchaseOrderSet.iterator().next();
+          } else {
+            PurchaseOrderMergingResult result =
+                Beans.get(PurchaseOrderMergingService.class)
+                    .simulateMergePurchaseOrders(new ArrayList<>(purchaseOrderSet));
+            if (result.isConfirmationNeeded()) {
+              ActionViewBuilder confirmView =
+                  Beans.get(PurchaseOrderMergingViewService.class)
+                      .buildConfirmView(result, new ArrayList<>(purchaseOrderSet));
+              confirmView.context("stockMoveId", stockMove.getId());
+              confirmView.context("toStockMove", true);
 
-            response.setView(confirmView.map());
-            return;
+              response.setView(confirmView.map());
+              return;
+            }
+            purchaseOrder = result.getPurchaseOrder();
           }
           invoice =
               stockMoveInvoiceService.createInvoiceFromPurchaseOrder(
-                  stockMove, result.getPurchaseOrder(), null);
+                  stockMove, purchaseOrder, null);
         } else {
           invoice = stockMoveInvoiceService.createInvoiceFromOrderlessStockMove(stockMove, null);
         }

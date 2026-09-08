@@ -20,7 +20,9 @@ package com.axelor.apps.base.service.pricing;
 
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.PricingRule;
+import com.axelor.apps.base.service.observer.PricingLogs;
 import com.axelor.db.Model;
+import com.axelor.event.Event;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
@@ -31,9 +33,12 @@ public class PricingObserverImpl implements PricingObserver {
 
   protected StringBuilder logs;
   protected Model model;
+  protected Event<PricingLogs> pricingLogsEvent;
 
   @Inject
-  public PricingObserverImpl() {}
+  public PricingObserverImpl(Event<PricingLogs> pricingLogsEvent) {
+    this.pricingLogsEvent = pricingLogsEvent;
+  }
 
   @Override
   public StringBuilder getLogs() {
@@ -104,7 +109,10 @@ public class PricingObserverImpl implements PricingObserver {
   }
 
   @Override
-  public void fillPricingScaleLogs(String pricingScaleLogs) {}
+  public void fillPricingScaleLogs(String pricingScaleLogs) {
+    PricingLogs pricingLogs = new PricingLogs(this.model, pricingScaleLogs);
+    pricingLogsEvent.fire(pricingLogs);
+  }
 
   @Override
   public void updateMetaJsonFieldToPopulate(MetaJsonField field) {

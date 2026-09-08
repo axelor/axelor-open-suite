@@ -41,23 +41,12 @@ public class SaleOrderLineContextHelper {
   }
 
   protected static SaleOrder getParentSaleOrderFromOtherFormView(SaleOrderLine saleOrderLine) {
-    SaleOrder saleOrder;
     SaleOrderLineRepository saleOrderLineRepository = Beans.get(SaleOrderLineRepository.class);
 
     // We only work with persisted line
-
-    // Not a subline
     if (saleOrderLine.getId() != null) {
-      saleOrder = saleOrderLineRepository.find(saleOrderLine.getId()).getSaleOrder();
-      if (saleOrder != null) {
-        return saleOrder;
-      }
+      return saleOrderLineRepository.find(saleOrderLine.getId()).getMainSaleOrder();
     }
-
-    // Is a subline
-    SaleOrderLine parentSol = SaleOrderLineUtils.getParentSol(saleOrderLine);
-    parentSol = saleOrderLineRepository.find(parentSol.getId());
-    saleOrder = parentSol.getSaleOrder();
-    return saleOrder;
+    return null;
   }
 }

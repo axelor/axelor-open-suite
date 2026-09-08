@@ -183,6 +183,7 @@ public class InventoryService {
           I18n.get(StockExceptionMessage.INVENTORY_START_WRONG_STATUS));
     }
     inventory.setStatusSelect(InventoryRepository.STATUS_IN_PROGRESS);
+    inventory.setIsStockMoveBlocked(true);
 
     Query<InventoryLine> query =
         inventoryLineRepository
@@ -212,6 +213,8 @@ public class InventoryService {
     if (ObjectUtils.notEmpty(trackingNumber)) {
       query += " AND self.trackingNumber = :trackingNumber";
       stockLocationLineQuery.bind("trackingNumber", trackingNumber);
+    } else {
+      query += " AND self.trackingNumber IS NULL";
     }
 
     BigDecimal currentQty =
@@ -282,6 +285,7 @@ public class InventoryService {
 
     inventory = inventoryRepo.find(inventory.getId());
     inventory.setStatusSelect(InventoryRepository.STATUS_CANCELED);
+    inventory.setIsStockMoveBlocked(false);
     inventoryRepo.save(inventory);
   }
 

@@ -95,6 +95,8 @@ public class MassStockMovableProductRealizeServiceImpl
       MassStockMovableProductLocationService locationService)
       throws AxelorException {
 
+    movableProduct = (MassStockMovableProduct) JpaModelHelper.ensureManaged((Model) movableProduct);
+
     var massStockMove = movableProduct.getMassStockMove();
     var fromStockLocation = locationService.getFromStockLocation(movableProduct);
     var toStockLocation = locationService.getToStockLocation(movableProduct);

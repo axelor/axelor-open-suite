@@ -19,11 +19,13 @@
 package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateBarcodeService;
@@ -37,10 +39,15 @@ import com.axelor.apps.production.service.operationorder.OperationOrderPlanningS
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.utils.JpaModelHelper;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceImpl {
@@ -89,6 +96,20 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
       return super.plan(manufOrder);
     }
 
+    if (manufOrder.getStatusSelect() == ManufOrderRepository.STATUS_PLANNED) {
+      throw new AxelorException(
+          manufOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.MANUF_ORDER_ALREADY_PLANNED),
+          manufOrder.getManufOrderSeq());
+    }
+
+    // Set qty from BOM if not set
+    if (manufOrder.getBillOfMaterial() != null
+        && (manufOrder.getQty() == null || manufOrder.getQty().signum() == 0)) {
+      manufOrder.setQty(manufOrder.getBillOfMaterial().getQty());
+    }
+
     ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
 
     if (Beans.get(SequenceService.class)
@@ -128,6 +149,23 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_PLANNED);
     manufOrder.setCancelReason(null);
     manufOrder.setCancelReasonStr(null);
+
+    // Create IN stock moves for maintenance orders
+    if (!manufOrder.getIsConsProOnOperation()) {
+      Optional<StockMove> stockMoveOpt =
+          manufOrderPlanStockMoveService.createAndPlanToConsumeStockMoveWithLines(manufOrder);
+
+      if (stockMoveOpt.isPresent()) {
+        StockMove sm = JpaModelHelper.ensureManaged(stockMoveOpt.get());
+        manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+        manufOrder.addInStockMoveListItem(sm);
+        if (sm.getStockMoveLineList() != null) {
+          for (StockMoveLine stockMoveLine : sm.getStockMoveLineList()) {
+            manufOrder.addConsumedStockMoveLineListItem(stockMoveLine);
+          }
+        }
+      }
+    }
 
     return manufOrderRepo.save(manufOrder);
   }

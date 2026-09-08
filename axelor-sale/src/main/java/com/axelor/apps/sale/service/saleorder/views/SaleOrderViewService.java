@@ -20,6 +20,8 @@ package com.axelor.apps.sale.service.saleorder.views;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import java.util.List;
 import java.util.Map;
 
 public interface SaleOrderViewService {
@@ -32,4 +34,6 @@ public interface SaleOrderViewService {
       throws AxelorException;
 
   Map<String, Map<String, Object>> getCompanyAttrs(SaleOrder saleOrder) throws AxelorException;
+
+  ActionViewBuilder buildQuotationLinesView(List<Long> saleOrderIds);
 }

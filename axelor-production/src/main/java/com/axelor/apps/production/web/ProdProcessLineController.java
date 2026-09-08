@@ -19,8 +19,10 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.WorkCenterService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -57,5 +59,13 @@ public class ProdProcessLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setHazardPhraseDomain(ActionRequest request, ActionResponse response) {
+    ProdProcess prodProcess = request.getContext().getParent().asType(ProdProcess.class);
+    response.setAttr(
+        "hazardPhraseSet",
+        "domain",
+        Beans.get(ProdProcessLineService.class).getHazardPhraseDomain(prodProcess));
   }
 }

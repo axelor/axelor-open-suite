@@ -570,10 +570,14 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     } else {
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
       invoiceTerm.setCompanyAmountRemaining(
-          invoiceTerm.getCompanyAmountRemaining().subtract(amount));
+          invoiceTerm.getCompanyAmountRemaining().subtract(reconcile.getAmount()));
     }
 
     invoiceTerm = invoiceTermService.updateInvoiceTermsAmountsSessionPart(invoiceTerm, isRefund);
+
+    if (isRefund && invoiceTerm.getInvoice() != null) {
+      invoicePaymentToolService.updateAmountPaid(invoiceTerm.getInvoice());
+    }
 
     return invoiceTerm;
   }

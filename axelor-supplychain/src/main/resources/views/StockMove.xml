@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="in-stock-move-manuf-order-grid" title="Stock moves"
     model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate" edit-icon="true">
@@ -69,6 +69,8 @@
         value="action-group-stock-stockmove-onnew, action-stock-move-attrs-fill-ctx"/>
       <attribute name="onLoad"
         value="action-group-stock-stockmove-onload, action-stock-move-attrs-fill-ctx"/>
+      <attribute name="onSave"
+        value="action-stock-move-group-save-and-update-stocks, action-supplychain-stock-move-method-create-logistical-form"/>
     </extend>
     <extend target="//panel[@name='configPanel']">
       <insert position="after">
@@ -99,6 +101,10 @@
         <item name="fillRealQties" title="Fill real quantities"
           action="save,action-supplychain-stock-move-method-fill-real-quantities"/>
       </insert>
+    </extend>
+    <extend target="//button[@name='realizeBtn']">
+      <attribute name="onClick"
+        value="action-supplychain-stock-move-method-check-qty-greater-than-remaining-qty-to-receive,action-group-stock-stockmove-realize-click"/>
     </extend>
   </form>
 
@@ -283,6 +289,12 @@
   </action-method>
 
   <action-method
+    name="action-supplychain-stock-move-method-check-qty-greater-than-remaining-qty-to-receive">
+    <call class="com.axelor.apps.supplychain.web.StockMoveController"
+      method="checkQtyGreaterThanRemainingQtyToReceive"/>
+  </action-method>
+
+  <action-method
     name="action-stock-move-supplychain-method-set-default-invoiced-partner">
     <call class="com.axelor.apps.supplychain.web.StockMoveController"
       method="setDefaultInvoicedPartner"/>
@@ -392,6 +404,11 @@
     name="action-mass-stock-move-invoicing-method-filter-supplier-stock-move">
     <call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController"
       method="filterSupplierStockMoveForMassInvoicing"/>
+  </action-method>
+
+  <action-method name="action-supplychain-stock-move-method-create-logistical-form">
+    <call class="com.axelor.apps.supplychain.web.StockMoveController"
+      method="createLogisticalForm"/>
   </action-method>
 
   <search-filters id="supplychain-customer-deliveries-filter"

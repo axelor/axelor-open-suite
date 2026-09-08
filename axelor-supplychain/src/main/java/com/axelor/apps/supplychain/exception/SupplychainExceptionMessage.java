@@ -34,6 +34,8 @@ public final class SupplychainExceptionMessage {
 
   public static final String PO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/
       "The purchase order %s invoiced amount cannot be greater than its total amount." /*)*/;
+  public static final String PO_INVOICE_GENERATE_ALL_INVOICES = /*$$(*/
+      "All invoices have been generated for this purchase order." /*)*/;
   public static final String PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS = /*$$(*/
       "Can only return to validated from finished purchase order." /*)*/;
 
@@ -52,8 +54,6 @@ public final class SupplychainExceptionMessage {
       "The quantity to invoice is greater than the quantity in the sale order" /*)*/;
   public static final String SO_INVOICE_AMOUNT_MAX = /*$$(*/
       "The amount to invoice is superior than the amount in the sale order" /*)*/;
-  public static final String SO_INVOICE_MISSING_INVOICING_PRODUCT = /*$$(*/
-      "Please configure the sale order invoicing product" /*)*/;
   public static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_PRODUCT = /*$$(*/
       "Please configure the advance payment product" /*)*/;
   public static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_ACCOUNT = /*$$(*/
@@ -98,8 +98,6 @@ public final class SupplychainExceptionMessage {
       "Unit prices in A.T.I and in W.T. can't be mix" /*)*/;
   public static final String STOCK_MOVE_MULTI_INVOICE_INCOTERM = /*$$(*/
       "The incoterm must be the same for all sale orders." /*)*/;
-  public static final String STOCK_MOVE_NO_INVOICE_GENERATED = /*$$(*/
-      "No invoice was generated" /*)*/;
   public static final String STOCK_MOVE_GENERATE_INVOICE = /*$$(*/
       "The invoice for the stock move %s can't be generated because of this following error : %s" /*)*/;
   public static final String OUTGOING_STOCK_MOVE_INVOICE_EXISTS = /*$$(*/
@@ -154,9 +152,6 @@ public final class SupplychainExceptionMessage {
 
   public static final String MRP_NO_PRODUCT_UNIT = /*$$(*/ "Please fill unit for product %s" /*)*/;
 
-  public static final String MRP_NO_PRODUCT_ID = /*$$(*/
-      "The component %s - %s not referenced in the product list selected for the MRP or in the BOM route should be added on the MRP." /*)*/;
-
   public static final String MRP_TOO_MANY_ITERATIONS = /*$$(*/
       "The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error." /*)*/;
   public static final String MRP_ALREADY_STARTED = /*$$(*/
@@ -186,8 +181,6 @@ public final class SupplychainExceptionMessage {
   public static final String SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
       "No delivery stock move to generate for this sale order" /*)*/;
 
-  public static final String SO_ACTIVE_DELIVERY_STOCK_MOVE_ALREADY_EXISTS = /*$$(*/
-      "An active stock move (%s) already exists for the sale order %s." /*)*/;
   public static final String SO_CANT_REMOVED_DELIVERED_LINE = /*$$(*/
       "Can't remove delivered detail line %s." /*)*/;
   public static final String SO_CANT_DECREASE_QTY_ON_DELIVERED_LINE = /*$$(*/
@@ -197,6 +190,12 @@ public final class SupplychainExceptionMessage {
 
   public static final String PO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
       "No delivery stock move to generate for this purchase order" /*)*/;
+
+  public static final String PO_ALREADY_FULLY_RECEIVED = /*$$(*/
+      "Purchase order %s has already been fully received. This stock move cannot be realized." /*)*/;
+
+  public static final String STOCK_MOVE_QTY_GREATER_THAN_REMAINING_QTY_TO_RECEIVE = /*$$(*/
+      "The realized quantity for product %s is greater than the remaining quantity to receive (%s) on purchase order %s." /*)*/;
 
   public static final String RESERVATION_SALE_ORDER_DATE_CONFIG_INCORRECT_VALUE = /*$$(*/
       "Please configure a correct value for the sale order date used for reservation." /*)*/;
@@ -216,8 +215,6 @@ public final class SupplychainExceptionMessage {
       "Timetables can only be invoiced from a sale order or a purchase order." /*)*/;
 
   /** Ventilate State Service */
-  public static final String VENTILATE_STATE_MISSING_ADVANCE_ACCOUNT = /*$$(*/
-      "Please configure the advance payment account for the company %s" /*)*/;
 
   /** Supply Chain Config */
   public static final String SUPPLY_CHAIN_CONFIG = /*$$(*/
@@ -282,9 +279,6 @@ public final class SupplychainExceptionMessage {
       "You must configure a forecasted invoiced supplier account for the company %s" /*)*/;
 
   /** Accounting cut off service */
-  public static final String ACCOUNTING_CUT_OFF_GENERATION_REPORT = /*$$(*/
-      "Accounting cut off generation report :" /*)*/;
-
   public static final String ACCOUNTING_CUT_OFF_STOCK_MOVE_PROCESSED = /*$$(*/
       "Stock move(s) processed" /*)*/;
 
@@ -371,9 +365,6 @@ public final class SupplychainExceptionMessage {
   public static final String PURCHASE_ORDER_MERGE_ERROR_INTERCO_CONFIG = /*$$(*/
       "The interco configuration must be the same for all purchase orders" /*)*/;
 
-  public static final String PURCHASE_ORDER_MERGE_CONFIRMATION_NEEDED = /*$$(*/
-      "The stock location must be the same for all purchase orders." /*)*/;
-
   public static final String MISSING_FORECASTED_INV_CUST_ACCOUNT = /*$$(*/
       "Please select a forecasted invoice customer account in the accounting batch" /*)*/;
   public static final String MISSING_FORECASTED_INV_SUPP_ACCOUNT = /*$$(*/
@@ -393,9 +384,6 @@ public final class SupplychainExceptionMessage {
 
   public static final String STOCK_MOVE_INVOICING_ERROR = /*$$(*/
       "This stock move needs to be invoiced manually, manual intervention is needed : %s" /*)*/;
-
-  public static final String SALE_ORDER_CONFIRM_INCOTERM_REQUIRED = /*$$(*/
-      "Incoterm must be filled" /*)*/;
 
   public static final String STOCK_LOCATION_PRODUCTS_ADDED_TO_CART = /*$$(*/
       "Products of %s have been added to your cart." /*)*/;
@@ -484,4 +472,22 @@ public final class SupplychainExceptionMessage {
 
   public static final String PACKAGING_LINE_STOCK_MOVE_LINE_NOT_VALID = /*$$(*/
       "This stock move line can not be chosen." /*)*/;
+
+  public static final String STOCK_ROTATION_CATEGORY_FORMULA_ERROR = /*$$(*/
+      "The formula is not valid: " /*)*/;
+
+  public static final String DEPRECIATION_CALCULATION_INVALID_RATES = /*$$(*/
+      "One or several rates are invalid." /*)*/;
+
+  public static final String DEPRECIATION_CHOOSE_FILTERS = /*$$(*/
+      "Please select at least one product, product category or product family." /*)*/;
+
+  public static final String DEPRECIATION_NO_ELIGIBLE_PRODUCT = /*$$(*/
+      "No product matches the selected filters. Products must have a stock rotation category to be revalued; run the \"Update stock history\" batch to assign them automatically." /*)*/;
+
+  public static final String DEPRECIATION_IMPORT_CSV_ERROR = /*$$(*/
+      "Only CSV files are supported for import." /*)*/;
+
+  public static final String DEPRECIATION_IMPORT_FAIL_ERROR = /*$$(*/
+      "Failed to load depreciation rate import configuration." /*)*/;
 }

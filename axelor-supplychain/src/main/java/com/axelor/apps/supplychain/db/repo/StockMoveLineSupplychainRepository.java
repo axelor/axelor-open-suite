@@ -75,8 +75,9 @@ public class StockMoveLineSupplychainRepository extends StockMoveLineStockReposi
   @Override
   public void remove(StockMoveLine stockMoveLine) {
     try {
-      if (Beans.get(StockMoveLineServiceSupplychain.class)
-          .isAllocatedStockMoveLine(stockMoveLine)) {
+      if (stockMoveLine.getPlannedStockMove() == null
+          && Beans.get(StockMoveLineServiceSupplychain.class)
+              .isAllocatedStockMoveLine(stockMoveLine)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(SupplychainExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR));

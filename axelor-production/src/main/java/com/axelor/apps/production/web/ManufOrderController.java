@@ -42,6 +42,7 @@ import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProdProductProductionRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.ManufOrderMessageService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
@@ -68,8 +69,10 @@ import com.axelor.utils.db.Wizard;
 import com.axelor.utils.service.TranslationService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import jakarta.inject.Singleton;
+import jakarta.persistence.OptimisticLockException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -94,24 +97,10 @@ public class ManufOrderController {
       ManufOrder manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrderId);
       Beans.get(ManufOrderWorkflowService.class).start(manufOrder);
       response.setReload(true);
-      String message = "";
-      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
-        message = manufOrder.getMoCommentFromSaleOrder();
-      }
-
-      if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
-        message =
-            message
-                .concat(System.lineSeparator())
-                .concat(manufOrder.getMoCommentFromSaleOrderLine());
-      }
-
-      if (!message.isEmpty()) {
-        message =
-            I18n.get(ITranslation.PRODUCTION_COMMENT)
-                .concat(System.lineSeparator())
-                .concat(message);
-        response.setInfo(message);
+      String startMessage =
+          Beans.get(ManufOrderMessageService.class).getManufOrderStartMessage(manufOrder);
+      if (!Strings.isNullOrEmpty(startMessage)) {
+        response.setInfo(startMessage);
         response.setCanClose(true);
       }
     } catch (Exception e) {
@@ -255,7 +244,12 @@ public class ManufOrderController {
         response.setCanClose(true);
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      if (Throwables.getCausalChain(e).stream()
+          .anyMatch(cause -> cause instanceof OptimisticLockException)) {
+        response.setError(I18n.get(ProductionExceptionMessage.MANUF_ORDER_CONCURRENT_MODIFICATION));
+      } else {
+        TraceBackService.trace(response, e);
+      }
     }
   }
 
@@ -835,7 +829,10 @@ public class ManufOrderController {
 
         if (manufOrder != null) {
           fillDomainPartner(manufOrder, response);
-          response.setValue("$prodProductsList", manufOrder.getToConsumeProdProductList());
+          response.setValue(
+              "$prodProductsList",
+              Beans.get(ManufOrderOutsourceService.class)
+                  .getOutsourceDeclarationProdProductList(manufOrder));
         }
       }
 

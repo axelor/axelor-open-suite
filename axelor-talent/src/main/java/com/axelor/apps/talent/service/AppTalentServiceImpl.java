@@ -23,7 +23,9 @@ import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppRecruitment;
 import com.axelor.studio.db.repo.AppRecruitmentRepository;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
+@Singleton
 public class AppTalentServiceImpl extends AppBaseServiceImpl implements AppTalentService {
   protected AppRecruitmentRepository appRecruitmentRepository;
 

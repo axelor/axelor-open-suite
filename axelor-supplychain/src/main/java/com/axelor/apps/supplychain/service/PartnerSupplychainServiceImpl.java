@@ -35,8 +35,8 @@ import jakarta.inject.Inject;
 public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
     implements PartnerSupplychainService {
 
-  private InvoiceRepository invoiceRepository;
-  private AccountConfigService accountConfigService;
+  protected InvoiceRepository invoiceRepository;
+  protected AccountConfigService accountConfigService;
   public PartnerService partnerService;
 
   @Inject

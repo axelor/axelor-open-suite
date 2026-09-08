@@ -44,6 +44,7 @@ import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineInitValu
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
+import com.axelor.apps.sale.service.saleorderline.subline.SaleOrderLineCommercialBomService;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDomainService;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDummyService;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewService;
@@ -113,7 +114,11 @@ public class SaleOrderLineController {
     }
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
-    response.setAttrs(Beans.get(SaleOrderLineViewService.class).focusProduct());
+    SaleOrderLineViewService saleOrderLineViewService = Beans.get(SaleOrderLineViewService.class);
+    Map<String, Map<String, Object>> attrs = saleOrderLineViewService.focusProduct();
+    attrs.putAll(
+        saleOrderLineViewService.getDiscountReadonlyAttrs(saleOrderLine, saleOrder, parentSol));
+    response.setAttrs(attrs);
 
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     saleOrderLineMap.putAll(
@@ -160,6 +165,10 @@ public class SaleOrderLineController {
         saleOrderLineMap.putAll(
             Beans.get(SaleOrderLineDummyService.class)
                 .getOnProductChangeDummies(saleOrderLine, saleOrder));
+        saleOrderLineMap.put(
+            "subSaleOrderLineList",
+            Beans.get(SaleOrderLineCommercialBomService.class)
+                .createSubLinesFromCommercialBom(saleOrderLine, saleOrder));
         response.setAttrs(
             Beans.get(SaleOrderLineViewService.class)
                 .getProductOnChangeAttrs(saleOrderLine, saleOrder));
@@ -443,5 +452,11 @@ public class SaleOrderLineController {
         .isConfiguratorVersionDifferent(saleOrderLine.getConfigurator())) {
       response.setError(I18n.get(SaleExceptionMessage.CONFIGURATOR_VERSION_IS_DIFFERENT));
     }
+  }
+
+  public void setSubTotalCostPriceManually(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    response.setValues(
+        Beans.get(SaleOrderLineProductService.class).setSubTotalCostPriceManually(saleOrderLine));
   }
 }

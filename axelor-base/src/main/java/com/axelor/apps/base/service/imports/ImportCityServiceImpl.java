@@ -62,9 +62,9 @@ import org.slf4j.LoggerFactory;
 
 public class ImportCityServiceImpl implements ImportCityService {
 
-  private FactoryImporter factoryImporter;
+  protected FactoryImporter factoryImporter;
 
-  private MetaFiles metaFiles;
+  protected MetaFiles metaFiles;
 
   protected AppBaseService appBaseService;
 

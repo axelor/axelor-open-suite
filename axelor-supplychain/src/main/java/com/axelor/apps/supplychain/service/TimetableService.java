@@ -41,6 +41,8 @@ public interface TimetableService {
 
   void deleteInvoiceTimeTable(Invoice invoice);
 
+  void reassignInvoice(List<Invoice> invoiceList, Invoice invoiceMerged);
+
   BigDecimal computeAmount(
       Timetable timetable, List<Timetable> timetableList, BigDecimal exTaxTotal, Currency currency);
 }

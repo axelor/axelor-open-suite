@@ -48,10 +48,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
 import java.util.Optional;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 public class InvoicePaymentMoveCreateServiceBankPayImpl
     extends InvoicePaymentMoveCreateServiceImpl {
@@ -103,8 +100,7 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
   }
 
   @Override
-  public void createInvoicePaymentMove(InvoicePayment invoicePayment)
-      throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {
+  public void createInvoicePaymentMove(InvoicePayment invoicePayment) throws AxelorException {
     Invoice invoice = invoicePayment.getInvoice();
     Company company = invoice.getCompany();
     PaymentSession paymentSession = invoicePayment.getPaymentSession();
@@ -135,13 +131,9 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
    *
    * @param invoicePayment An invoice payment
    * @throws AxelorException
-   * @throws DatatypeConfigurationException
-   * @throws IOException
-   * @throws JAXBException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public void createBankOrder(InvoicePayment invoicePayment)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
+  public void createBankOrder(InvoicePayment invoicePayment) throws AxelorException {
 
     BankOrder bankOrder = bankOrderCreateService.createBankOrder(invoicePayment);
 

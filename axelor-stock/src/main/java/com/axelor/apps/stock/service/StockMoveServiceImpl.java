@@ -50,7 +50,6 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
-import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -60,6 +59,7 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.stock.utils.BatchProcessorHelper;
 import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -104,6 +104,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected AppStockService appStockService;
   protected ProductCompanyService productCompanyService;
   protected StockLocationService stockLocationService;
+  protected WeightedAveragePriceService weightedAveragePriceService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -118,7 +119,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockConfigService stockConfigService,
       AppStockService appStockService,
       ProductCompanyService productCompanyService,
-      StockLocationService stockLocationService) {
+      StockLocationService stockLocationService,
+      WeightedAveragePriceService weightedAveragePriceService) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
@@ -131,6 +133,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.appStockService = appStockService;
     this.productCompanyService = productCompanyService;
     this.stockLocationService = stockLocationService;
+    this.weightedAveragePriceService = weightedAveragePriceService;
   }
 
   /**
@@ -663,7 +666,8 @@ public class StockMoveServiceImpl implements StockMoveService {
           stockMove);
     }
     try {
-      Beans.get(TemplateMessageService.class).generateAndSendMessage(stockMove, template);
+      Beans.get(TemplateMessageService.class)
+          .generateAndSendMessage(stockMove, JPA.find(Template.class, template.getId()));
     } catch (Exception e) {
       TraceBackService.trace(
           new AxelorMessageException(
@@ -726,11 +730,9 @@ public class StockMoveServiceImpl implements StockMoveService {
         inventoryLineRepo
             .all()
             .filter(
-                "self.inventory.statusSelect BETWEEN :startStatus AND :endStatus\n"
+                "self.inventory.isStockMoveBlocked = true\n"
                     + "AND self.inventory.stockLocation.id IN (:stockLocationIds)\n"
                     + "AND self.product.id IN (:productList)")
-            .bind("startStatus", InventoryRepository.STATUS_IN_PROGRESS)
-            .bind("endStatus", InventoryRepository.STATUS_COMPLETED)
             .bind("stockLocationIds", stockLocationIds)
             .bind("productList", productIds)
             .fetchOne();
@@ -911,7 +913,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     newStockMoveLine.setQty(stockMoveLine.getQty().subtract(stockMoveLine.getRealQty()));
 
-    newStockMoveLine.setRealQty(BigDecimal.ZERO);
+    stockMoveLineService.fillRealQuantities(
+        newStockMoveLine, stockMoveLine.getStockMove(), newStockMoveLine.getQty());
     return newStockMoveLine;
   }
 
@@ -1122,6 +1125,13 @@ public class StockMoveServiceImpl implements StockMoveService {
           true,
           true);
       stockMove.setRealDate(appBaseService.getTodayDate(stockMove.getCompany()));
+      Set<Long> productIds =
+          stockMove.getStockMoveLineList().stream()
+              .map(StockMoveLine::getProduct)
+              .filter(p -> p != null)
+              .map(Product::getId)
+              .collect(Collectors.toSet());
+      weightedAveragePriceService.resetAvgPriceForProducts(productIds);
     }
 
     clearPlannedStockMoveLine(stockMove, false);
@@ -1206,7 +1216,10 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     modifiedStockMoveLines =
         modifiedStockMoveLines.stream()
-            .filter(stockMoveLine -> stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0)
+            .filter(
+                stockMoveLine ->
+                    stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0
+                        && stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_NORMAL)
             .collect(Collectors.toList());
     for (StockMoveLine moveLine : modifiedStockMoveLines) {
 

@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.supplychain.service.config.OutSmGenerationService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineViewSupplychainService;
 import jakarta.inject.Inject;
@@ -42,13 +43,15 @@ public class SaleOrderLineViewProductionServiceSupplychainImpl
       ProductMultipleQtyService productMultipleQtyService,
       AnalyticAttrsService analyticAttrsService,
       SaleOrderLineViewSupplychainService saleOrderLineViewSupplychainService,
+      OutSmGenerationService outSmGenerationService,
       SaleOrderLineViewProductionService saleOrderLineViewProductionService) {
     super(
         appBaseService,
         appSaleService,
         productMultipleQtyService,
         analyticAttrsService,
-        saleOrderLineViewSupplychainService);
+        saleOrderLineViewSupplychainService,
+        outSmGenerationService);
     this.saleOrderLineViewProductionService = saleOrderLineViewProductionService;
   }
 

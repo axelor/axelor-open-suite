@@ -19,26 +19,41 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountManagement;
+import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.utils.helpers.StringHelper;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AccountManagementAttrsServiceImpl implements AccountManagementAttrsService {
   @Override
-  public String getCompanyDomain(AccountManagement accountManagement, ProductFamily productFamily) {
+  public String getCompanyDomain(
+      AccountManagement accountManagement, ProductFamily productFamily, Tax tax) {
     String domain = "(self.archived IS NULL OR self.archived = false)";
-    if (productFamily != null && productFamily.getAccountManagementList() != null) {
-      List<AccountManagement> accountManagementList = productFamily.getAccountManagementList();
-      if (!accountManagementList.isEmpty()) {
-        domain +=
-            String.format(
-                " AND self.id NOT IN (%s)",
-                StringHelper.getIdListString(
-                    accountManagementList.stream()
-                        .map(AccountManagement::getCompany)
-                        .collect(Collectors.toList())));
-      }
+
+    List<AccountManagement> accountManagementList = null;
+    if (productFamily != null) {
+      accountManagementList = productFamily.getAccountManagementList();
+    } else if (tax != null) {
+      accountManagementList = tax.getAccountManagementList();
+    }
+    if (CollectionUtils.isEmpty(accountManagementList)) {
+      return domain;
+    }
+    Long id = accountManagement != null ? accountManagement.getId() : null;
+    List<Company> companyList =
+        accountManagementList.stream()
+            .filter(am -> id == null || !id.equals(am.getId()))
+            .map(AccountManagement::getCompany)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+
+    if (!CollectionUtils.isEmpty(companyList)) {
+      domain +=
+          String.format(" AND self.id NOT IN (%s)", StringHelper.getIdListString(companyList));
     }
     return domain;
   }

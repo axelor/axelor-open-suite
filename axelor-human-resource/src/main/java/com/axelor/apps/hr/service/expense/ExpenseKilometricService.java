@@ -37,4 +37,7 @@ public interface ExpenseKilometricService {
       ExpenseLine expenseLine, Expense expense) throws AxelorException;
 
   List<KilometricAllowParam> getKilometricAllowParams(Employee employee, LocalDate expenseDate);
+
+  public KilometricAllowParam updateKAPOfKilometricAllowance(
+      ExpenseLine expenseLine, List<KilometricAllowParam> kilometricAllowParamList);
 }

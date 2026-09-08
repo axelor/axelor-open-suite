@@ -438,7 +438,14 @@ public class BankReconciliationController {
       }
 
       actionViewBuilder.add("form", "move-line-form");
-      actionViewBuilder.domain(bankReconciliationQueryService.getRequestMoveLines());
+      BigDecimal selectedLinesBalance =
+          Beans.get(BankReconciliationSelectedLineComputationService.class)
+              .computeBankReconciliationLinesSelection(bankReconciliation);
+      BigDecimal credit =
+          selectedLinesBalance.signum() > 0 ? selectedLinesBalance : BigDecimal.ZERO;
+      BigDecimal debit =
+          selectedLinesBalance.signum() < 0 ? selectedLinesBalance.abs() : BigDecimal.ZERO;
+      actionViewBuilder.domain(bankReconciliationQueryService.getRequestMoveLines(credit, debit));
       if (bankReconciliation.getCompany() == null) {
         return;
       }

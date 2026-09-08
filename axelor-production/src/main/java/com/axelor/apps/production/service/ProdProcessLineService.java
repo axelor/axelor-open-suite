@@ -27,4 +27,6 @@ public interface ProdProcessLineService {
   long computeEntireDuration(ProdProcess prodProcess, BigDecimal qty) throws AxelorException;
 
   Integer getNextPriority(ProdProcess prodProcess, Integer priority);
+
+  String getHazardPhraseDomain(ProdProcess prodProcess);
 }

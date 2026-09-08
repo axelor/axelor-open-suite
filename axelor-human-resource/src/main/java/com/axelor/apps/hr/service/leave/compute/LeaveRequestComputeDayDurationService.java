@@ -33,7 +33,8 @@ public interface LeaveRequestComputeDayDurationService {
       LocalDate fromDate,
       LocalDate toDate,
       int startOn,
-      int endOn)
+      int endOn,
+      int offDays)
       throws AxelorException;
 
   BigDecimal computeDurationInDays(

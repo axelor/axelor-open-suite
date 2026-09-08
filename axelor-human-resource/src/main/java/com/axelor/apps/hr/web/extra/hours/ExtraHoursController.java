@@ -19,8 +19,8 @@
 package com.axelor.apps.hr.web.extra.hours;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
@@ -31,9 +31,9 @@ import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursDomainService;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
+import com.axelor.apps.hr.service.extra.hours.ExtraHoursViewService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
@@ -43,9 +43,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.db.Wizard;
 import jakarta.inject.Singleton;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -53,43 +51,11 @@ import java.util.Optional;
 public class ExtraHoursController {
 
   public void editExtraHours(ActionRequest request, ActionResponse response) {
-    List<ExtraHours> extraHoursList =
-        Beans.get(ExtraHoursRepository.class)
-            .all()
-            .filter(
-                "self.employee.user.id = ?1 AND self.company = ?2 AND self.statusSelect = 1",
-                AuthUtils.getUser().getId(),
-                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
-            .fetch();
-    if (extraHoursList.isEmpty()) {
-      response.setView(
-          ActionView.define(I18n.get("Extra Hours"))
-              .model(ExtraHours.class.getName())
-              .add("form", "extra-hours-request-form")
-              .context("_isEmployeeReadOnly", true)
-              .map());
-    } else if (extraHoursList.size() == 1) {
-      response.setView(
-          ActionView.define(I18n.get("ExtraHours"))
-              .model(ExtraHours.class.getName())
-              .add("form", "extra-hours-request-form")
-              .param("forceEdit", "true")
-              .context("_showRecord", String.valueOf(extraHoursList.get(0).getId()))
-              .context("_isEmployeeReadOnly", true)
-              .map());
-    } else {
-      response.setView(
-          ActionView.define(I18n.get("ExtraHours"))
-              .model(Wizard.class.getName())
-              .add("form", "popup-extra-hours-form")
-              .param("forceEdit", "true")
-              .param("popup", "true")
-              .param("show-toolbar", "false")
-              .param("show-confirm", "false")
-              .param("forceEdit", "true")
-              .param("popup-save", "false")
-              .map());
-    }
+    User user = AuthUtils.getUser();
+    Company company = Optional.ofNullable(user).map(User::getActiveCompany).orElse(null);
+
+    response.setView(
+        Beans.get(ExtraHoursViewService.class).buildEditExtraHoursView(user, company).map());
   }
 
   public void validateExtraHours(ActionRequest request, ActionResponse response)
@@ -112,81 +78,30 @@ public class ExtraHoursController {
 
   public void editExtraHoursSelected(ActionRequest request, ActionResponse response) {
     Map extraHoursMap = (Map) request.getContext().get("extraHoursSelect");
-    ExtraHours extraHours =
-        Beans.get(ExtraHoursRepository.class).find(Long.valueOf((Integer) extraHoursMap.get("id")));
+    Long extraHoursId = Long.valueOf((Integer) extraHoursMap.get("id"));
+
     response.setView(
-        ActionView.define(I18n.get("Extra hours"))
-            .model(ExtraHours.class.getName())
-            .add("form", "extra-hours-request-form")
-            .param("forceEdit", "true")
-            .domain("self.id = " + extraHoursMap.get("id"))
-            .context("_showRecord", String.valueOf(extraHours.getId()))
-            .context("_isEmployeeReadOnly", true)
-            .map());
+        Beans.get(ExtraHoursViewService.class).buildEditSelectedExtraHoursView(extraHoursId).map());
   }
 
   public void historicExtraHours(ActionRequest request, ActionResponse response) {
-
     User user = AuthUtils.getUser();
-    Employee employee = user.getEmployee();
 
-    ActionViewBuilder actionView =
-        ActionView.define(I18n.get("Historic colleague extra hours"))
-            .model(ExtraHours.class.getName())
-            .add("grid", "extra-hours-grid")
-            .add("form", "extra-hours-form")
-            .param("search-filters", "extra-hours-filters");
-
-    actionView
-        .domain(
-            "self.company = :_activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
-        .context("_activeCompany", user.getActiveCompany());
-
-    if (employee == null || !employee.getHrManager()) {
-      actionView
-          .domain(actionView.get().getDomain() + " AND self.employee.managerUser = :_user")
-          .context("_user", user);
-    }
-
-    response.setView(actionView.map());
+    response.setView(
+        Beans.get(ExtraHoursViewService.class)
+            .buildHistoricExtraHoursView(user, user.getEmployee(), user.getActiveCompany())
+            .map());
   }
 
   public void showSubordinateExtraHours(ActionRequest request, ActionResponse response) {
-
-    User user = AuthUtils.getUser();
-    Company activeCompany = user.getActiveCompany();
-
-    if (activeCompany == null) {
-      response.setError(I18n.get(BaseExceptionMessage.NO_ACTIVE_COMPANY));
-      return;
-    }
-
-    ActionViewBuilder actionView =
-        ActionView.define(I18n.get("Extra hours to be Validated by your subordinates"))
-            .model(ExtraHours.class.getName())
-            .add("grid", "extra-hours-grid")
-            .add("form", "extra-hours-form")
-            .param("search-filters", "extra-hours-filters");
-
-    String domain =
-        "self.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
-
-    long nbExtraHours =
-        Query.of(ExtraHours.class)
-            .filter(domain)
-            .bind("_user", user)
-            .bind("_activeCompany", activeCompany)
-            .count();
-
-    if (nbExtraHours == 0) {
-      response.setNotify(I18n.get("No extra hours to be validated by your subordinates"));
-    } else {
+    try {
+      User user = AuthUtils.getUser();
       response.setView(
-          actionView
-              .domain(domain)
-              .context("_user", user)
-              .context("_activeCompany", activeCompany)
+          Beans.get(ExtraHoursViewService.class)
+              .buildSubordinateExtraHoursView(user, user.getActiveCompany())
               .map());
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
     }
   }
 

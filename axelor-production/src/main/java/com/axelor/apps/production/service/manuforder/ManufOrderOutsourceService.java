@@ -31,6 +31,8 @@ public interface ManufOrderOutsourceService {
 
   boolean isOutsource(ManufOrder manufOrder);
 
+  List<ProdProduct> getOutsourceDeclarationProdProductList(ManufOrder manufOrder);
+
   void validateOutsourceDeclaration(
       ManufOrder manufOrder, Partner outsourcePartner, List<ProdProduct> productList)
       throws AxelorException;

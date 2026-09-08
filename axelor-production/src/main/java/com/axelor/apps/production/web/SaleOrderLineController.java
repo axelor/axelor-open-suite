@@ -103,18 +103,28 @@ public class SaleOrderLineController {
 
   public void setBomDomain(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    if (saleOrder == null) {
+      saleOrder = SaleOrderLineContextHelper.getSaleOrder(request.getContext(), saleOrderLine);
+    }
     response.setAttr(
         "billOfMaterial",
         "domain",
-        Beans.get(SaleOrderLineDomainProductionService.class).getBomDomain(saleOrderLine));
+        Beans.get(SaleOrderLineDomainProductionService.class)
+            .getBomDomain(saleOrderLine, saleOrder));
   }
 
   public void setProdProcessDomain(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    if (saleOrder == null) {
+      saleOrder = SaleOrderLineContextHelper.getSaleOrder(request.getContext(), saleOrderLine);
+    }
     response.setAttr(
         "prodProcess",
         "domain",
-        Beans.get(SaleOrderLineDomainProductionService.class).getProdProcessDomain(saleOrderLine));
+        Beans.get(SaleOrderLineDomainProductionService.class)
+            .getProdProcessDomain(saleOrderLine, saleOrder));
   }
 
   public void bomOnChange(ActionRequest request, ActionResponse response) throws Exception {

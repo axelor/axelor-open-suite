@@ -111,8 +111,12 @@ import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticGroupingService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupingServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticLineComputeService;
+import com.axelor.apps.account.service.analytic.AnalyticLineComputeServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticLineServiceImpl;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineComputeService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineComputeServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentService;
@@ -352,10 +356,18 @@ import com.axelor.apps.account.service.move.record.MoveRecordSetService;
 import com.axelor.apps.account.service.move.record.MoveRecordSetServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
 import com.axelor.apps.account.service.move.record.MoveRecordUpdateServiceImpl;
+import com.axelor.apps.account.service.move.template.MoveTemplateCheckService;
+import com.axelor.apps.account.service.move.template.MoveTemplateCheckServiceImpl;
 import com.axelor.apps.account.service.move.template.MoveTemplateGroupService;
 import com.axelor.apps.account.service.move.template.MoveTemplateGroupServiceImpl;
+import com.axelor.apps.account.service.move.template.MoveTemplateLineAnalyticService;
+import com.axelor.apps.account.service.move.template.MoveTemplateLineAnalyticServiceImpl;
+import com.axelor.apps.account.service.move.template.MoveTemplateLineComputeAnalyticService;
+import com.axelor.apps.account.service.move.template.MoveTemplateLineComputeAnalyticServiceImpl;
 import com.axelor.apps.account.service.move.template.MoveTemplateService;
 import com.axelor.apps.account.service.move.template.MoveTemplateServiceImpl;
+import com.axelor.apps.account.service.move.template.MoveTemplateTaxService;
+import com.axelor.apps.account.service.move.template.MoveTemplateTaxServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineAttrsService;
 import com.axelor.apps.account.service.moveline.MoveLineAttrsServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
@@ -394,6 +406,8 @@ import com.axelor.apps.account.service.note.InvoiceNoteService;
 import com.axelor.apps.account.service.note.InvoiceNoteServiceImpl;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateService;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateServiceImpl;
+import com.axelor.apps.account.service.payment.PaymentModeInitService;
+import com.axelor.apps.account.service.payment.PaymentModeInitServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeInterestRateService;
 import com.axelor.apps.account.service.payment.PaymentModeInterestRateServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -494,6 +508,8 @@ public class AccountModule extends AxelorModule {
 
     bind(AccountManagementAttrsService.class).to(AccountManagementAttrsServiceImpl.class);
 
+    bind(AccountManagementCheckService.class).to(AccountManagementCheckServiceImpl.class);
+
     bind(AccountManagementServiceImpl.class).to(AccountManagementServiceAccountImpl.class);
 
     bind(AccountManagementAccountService.class).to(AccountManagementServiceAccountImpl.class);
@@ -538,6 +554,8 @@ public class AccountModule extends AxelorModule {
 
     bind(AnalyticMoveLineService.class).to(AnalyticMoveLineServiceImpl.class);
 
+    bind(AnalyticMoveLineComputeService.class).to(AnalyticMoveLineComputeServiceImpl.class);
+
     bind(InvoicePaymentRepository.class).to(InvoicePaymentManagementRepository.class);
 
     bind(InvoicePaymentValidateService.class).to(InvoicePaymentValidateServiceImpl.class);
@@ -565,6 +583,8 @@ public class AccountModule extends AxelorModule {
     bind(AccountingSituationAttrsService.class).to(AccountingSituationAttrsServiceImpl.class);
 
     bind(AccountingSituationCheckService.class).to(AccountingSituationCheckServiceImpl.class);
+
+    bind(PaymentModeInitService.class).to(PaymentModeInitServiceImpl.class);
 
     bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
 
@@ -809,8 +829,6 @@ public class AccountModule extends AxelorModule {
 
     bind(InvoiceDomainService.class).to(InvoiceDomainServiceImpl.class);
 
-    bind(AnalyticLineService.class).to(AnalyticLineServiceImpl.class);
-
     bind(AnalyticMoveLineGenerateRealService.class)
         .to(AnalyticMoveLineGenerateRealServiceImpl.class);
 
@@ -821,8 +839,6 @@ public class AccountModule extends AxelorModule {
     bind(MoveControlService.class).to(MoveControlServiceImpl.class);
 
     bind(PaymentVoucherCancelService.class).to(PaymentVoucherCancelServiceImpl.class);
-
-    bind(AccountingCutOffService.class).to(AccountingCutOffServiceImpl.class);
 
     bind(MoveLineQueryService.class).to(MoveLineQueryServiceImpl.class);
 
@@ -915,6 +931,10 @@ public class AccountModule extends AxelorModule {
     bind(YearAccountService.class).to(YearAccountServiceImpl.class);
 
     bind(MoveTemplateService.class).to(MoveTemplateServiceImpl.class);
+
+    bind(MoveTemplateCheckService.class).to(MoveTemplateCheckServiceImpl.class);
+
+    bind(MoveTemplateTaxService.class).to(MoveTemplateTaxServiceImpl.class);
 
     bind(MoveTemplateGroupService.class).to(MoveTemplateGroupServiceImpl.class);
 
@@ -1043,5 +1063,9 @@ public class AccountModule extends AxelorModule {
 
     bind(InvoiceNoteService.class).to(InvoiceNoteServiceImpl.class);
     bind(InvoiceCategoryService.class).to(InvoiceCategoryServiceImpl.class);
+    bind(AnalyticLineComputeService.class).to(AnalyticLineComputeServiceImpl.class);
+    bind(MoveTemplateLineAnalyticService.class).to(MoveTemplateLineAnalyticServiceImpl.class);
+    bind(MoveTemplateLineComputeAnalyticService.class)
+        .to(MoveTemplateLineComputeAnalyticServiceImpl.class);
   }
 }

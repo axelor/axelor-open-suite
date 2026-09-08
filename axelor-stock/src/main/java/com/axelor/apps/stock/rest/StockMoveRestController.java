@@ -22,14 +22,12 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.rest.dto.StockInternalMovePostRequest;
-import com.axelor.apps.stock.rest.dto.StockInternalMovePutRequest;
 import com.axelor.apps.stock.rest.dto.StockInternalMoveResponse;
 import com.axelor.apps.stock.rest.dto.StockMoveLinePostRequest;
 import com.axelor.apps.stock.rest.mapper.StockInternalMoveStockMoveLinePostRequestMapper;
 import com.axelor.apps.stock.rest.validator.StockMoveLineRequestValidator;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.apps.stock.service.StockMoveUpdateService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.translation.ITranslation;
 import com.axelor.i18n.I18n;
@@ -144,37 +142,5 @@ public class StockMoveRestController {
 
     return ResponseConstructor.buildCreateResponse(
         stockmove, new StockInternalMoveResponse(stockmove));
-  }
-
-  /**
-   * Update an internal stock move depending on the elements given in requestBody. Full path to
-   * request is /ws/aos/stock-move/internal/{id}
-   */
-  @Operation(
-      summary = "Update internal stock move",
-      tags = {"Stock move"})
-  @Deprecated
-  @Path("/internal/{id}")
-  @PUT
-  @HttpExceptionHandler
-  public Response updateInternalStockMove(
-      @PathParam("id") long stockMoveId, StockInternalMovePutRequest requestBody)
-      throws AxelorException {
-    RequestValidator.validateBody(requestBody);
-    new SecurityCheck().writeAccess(StockMove.class, stockMoveId).check();
-
-    StockMove stockmove = ObjectFinder.find(StockMove.class, stockMoveId, requestBody.getVersion());
-
-    Beans.get(StockMoveUpdateService.class)
-        .updateStockMoveMobility(stockmove, requestBody.getMovedQty(), requestBody.fetchUnit());
-
-    if (requestBody.getStatus() != null) {
-      Beans.get(StockMoveUpdateService.class).updateStatus(stockmove, requestBody.getStatus());
-    }
-
-    return ResponseConstructor.build(
-        Response.Status.OK,
-        I18n.get(ITranslation.STOCK_MOVE_UPDATED),
-        new StockInternalMoveResponse(stockmove));
   }
 }

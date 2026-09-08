@@ -44,8 +44,10 @@ import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.compute.BudgetLineComputeService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.i18n.I18n;
@@ -124,10 +126,13 @@ public class BudgetServiceImpl implements BudgetService {
           budgetDistributionRepository
               .all()
               .filter(
-                  "self.budget.id = ?1 AND ((self.purchaseOrderLine IS NOT NULL AND self.purchaseOrderLine.purchaseOrder.statusSelect NOT IN (?2)) OR (self.saleOrderLine IS NOT NULL AND self.saleOrderLine.saleOrder.statusSelect NOT IN (?3)))",
+                  // Draft orders must not contribute to the committed amount.
+                  "self.budget.id = ?1 AND ((self.purchaseOrderLine IS NOT NULL AND self.purchaseOrderLine.purchaseOrder.statusSelect NOT IN (?2, ?3)) OR (self.saleOrderLine IS NOT NULL AND self.saleOrderLine.saleOrder.statusSelect NOT IN (?4, ?5)))",
                   budget.getId(),
                   PurchaseOrderRepository.STATUS_CANCELED,
-                  SaleOrderRepository.STATUS_CANCELED)
+                  PurchaseOrderRepository.STATUS_DRAFT,
+                  SaleOrderRepository.STATUS_CANCELED,
+                  SaleOrderRepository.STATUS_DRAFT_QUOTATION)
               .fetch();
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
         LocalDate orderDate = null;
@@ -140,31 +145,35 @@ public class BudgetServiceImpl implements BudgetService {
         SaleOrderLine saleOrderLine = budgetDistribution.getSaleOrderLine();
 
         if (purchaseOrderLine != null && purchaseOrderLine.getPurchaseOrder() != null) {
-          orderDate = purchaseOrderLine.getPurchaseOrder().getOrderDate();
+          PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+          if (purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_DRAFT) {
+            continue;
+          }
+          orderDate = purchaseOrder.getOrderDate();
           amountInvoiced =
-              currencyScaleService.getCompanyScaledValue(
-                  budget, purchaseOrderLine.getPurchaseOrder().getAmountInvoiced());
+              currencyScaleService.getCompanyScaledValue(budget, purchaseOrder.getAmountInvoiced());
           budgetFromDate = purchaseOrderLine.getBudgetFromDate();
           budgetToDate = purchaseOrderLine.getBudgetToDate();
           amount =
-              purchaseOrderLine.getPurchaseOrder().getStatusSelect()
-                      == PurchaseOrderRepository.STATUS_CANCELED
+              purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_CANCELED
                   ? budgetDistribution.getAmount().negate()
                   : budgetDistribution.getAmount();
 
         } else if (saleOrderLine != null && saleOrderLine.getSaleOrder() != null) {
-
+          SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+          if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
+            continue;
+          }
           orderDate =
-              saleOrderLine.getSaleOrder().getOrderDate() != null
-                  ? saleOrderLine.getSaleOrder().getOrderDate()
-                  : saleOrderLine.getSaleOrder().getCreationDate();
+              saleOrder.getOrderDate() != null
+                  ? saleOrder.getOrderDate()
+                  : saleOrder.getCreationDate();
           amountInvoiced =
-              currencyScaleService.getCompanyScaledValue(
-                  budget, saleOrderLine.getSaleOrder().getAmountInvoiced());
+              currencyScaleService.getCompanyScaledValue(budget, saleOrder.getAmountInvoiced());
           budgetFromDate = saleOrderLine.getBudgetFromDate();
           budgetToDate = saleOrderLine.getBudgetToDate();
           amount =
-              saleOrderLine.getSaleOrder().getStatusSelect() == SaleOrderRepository.STATUS_CANCELED
+              saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_CANCELED
                   ? budgetDistribution.getAmount().negate()
                   : budgetDistribution.getAmount();
         }

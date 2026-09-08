@@ -21,9 +21,12 @@ package com.axelor.apps.crm.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Tag;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.TagService;
 import com.axelor.apps.base.service.address.AddressAttrsService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
@@ -45,9 +48,11 @@ import com.google.inject.Provider;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -241,6 +246,19 @@ public class LeadController {
               .collect(Collectors.toMap(entry -> "address." + entry.getKey(), Map.Entry::getValue));
 
       response.setAttrs(attrsMap);
+    }
+  }
+
+  @ErrorException
+  public void filterTagSetOnCompanyChange(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Lead lead = request.getContext().asType(Lead.class);
+    Set<Tag> invalidTags =
+        Beans.get(TagService.class).getInvalidTagsFromTagSet(lead.getTagSet(), lead.getCompany());
+    if (!ObjectUtils.isEmpty(invalidTags)) {
+      Set<Tag> newTagSet = new HashSet<>(lead.getTagSet());
+      newTagSet.removeAll(invalidTags);
+      response.setValue("tagSet", newTagSet);
     }
   }
 }

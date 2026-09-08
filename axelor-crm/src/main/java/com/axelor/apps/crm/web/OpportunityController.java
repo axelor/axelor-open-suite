@@ -100,9 +100,19 @@ public class OpportunityController {
       Opportunity opportunity = request.getContext().asType(Opportunity.class);
       opportunity = Beans.get(OpportunityRepository.class).find(opportunity.getId());
 
-      Beans.get(OpportunityService.class).setOpportunityStatusStagedClosedLost(opportunity);
+      Beans.get(OpportunityService.class).checkPartner(opportunity);
 
-      response.setReload(true);
+      response.setView(
+          ActionView.define(I18n.get("Lost reason"))
+              .model(Opportunity.class.getName())
+              .add("form", "opportunity-form-lost-popup")
+              .param("popup", "reload")
+              .param("show-toolbar", "false")
+              .param("show-confirm", "false")
+              .param("popup-save", "true")
+              .param("forceEdit", "true")
+              .context("_showRecord", opportunity.getId())
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner"
     orderBy="name">
@@ -52,6 +52,8 @@
           action="action-general-check-duplicate-records"/>
         <item name="mergeDuplicatedItem" title="Merge duplicated"
           action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+        <item name="sirenApiItem" action="action-partner-view-wizard-api-sirene-configuration"
+          title="Create from Sirene API"/>
       </menu>
     </menubar>
     <field name="partnerSeq" width="120"/>
@@ -85,6 +87,8 @@
           action="action-general-check-duplicate-records"/>
         <item name="mergeDuplicatedItem" title="Merge duplicated"
           action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+        <item name="sirenApiItem" action="action-partner-view-wizard-api-sirene-configuration"
+          title="Create from Sirene API"/>
       </menu>
     </menubar>
     <field name="partnerSeq" width="120"/>
@@ -160,8 +164,10 @@
         <item name="sendEmailItem" title="Send email"
           action="save,action-send-by-email-with-template" readonlyIf="id == null"
           if-module="axelor-message"/>
-        <item name="sirenApiBtn" title="Fill from Sirene API"
-          action="save,action-partner-view-wizard-api-sirene-configuration"/>
+        <item name="sirenApiCreateBtn" title="Create from Sirene API"
+          action="action-partner-group-sirene-api-configuration" showIf="id == null"/>
+        <item name="sirenApiFillBtn" title="Fill from Sirene API"
+          action="action-partner-group-sirene-api-configuration" showIf="id != null"/>
       </menu>
     </menubar>
   </form>
@@ -397,6 +403,13 @@
           <field name="mainAddress" form-view="address-form" grid-view="address-grid"
             canNew="true" colSpan="12"/>
         </panel>
+        <panel name="LinkPanel" title="Link" showIf="!isContact &amp;&amp; isCustomer"
+          colSpan="12">
+          <field name="tradingNameSet" requiredIf="!isContact &amp;&amp; isCustomer"
+            colSpan="6" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
+            widget="Tags" onSelect="action-partner-attrs-set-trading-name-domain"
+            onChange="action-partner-method-filter-tag-set"/>
+        </panel>
         <panel name="postalAddressesPanel" title="Postal addresses" colSpan="12"
           hideIf="isEmployee">
           <static name="invoiceAndDeliveryAddressText" hidden="true" colSpan="12">
@@ -467,13 +480,15 @@
               grid-view="team-grid" if="__config__.app.getApp('base')?.getTeamManagement()"
               hideIf="isEmployee"/>
             <field name="companySet" colSpan="12" widget="Tags" canNew="false"
-              form-view="company-form" grid-view="company-grid"/>
+              form-view="company-form" grid-view="company-grid"
+              onChange="action-partner-group-company-change"/>
           </panel>
         </panel>
         <panel name="notesPanel" title="Notes" colSpan="12">
           <field name="description" colSpan="12" height="8" showTitle="false" widget="Html"/>
         </panel>
       </panel>
+      <panel-include view="incl-blocking-partner-form"/>
       <panel name="eventPanel" title="Events" showIf="id != null &amp;&amp; !isEmployee"
         if-module="axelor-crm" hidden="true" if="__config__.app.isApp('crm')">
         <button name="meetingBtn" title="Create a meeting" link="" icon="pencil-square"
@@ -1179,6 +1194,7 @@
     <action name="action-partner-iban-check-on-save"/>
     <action name="action-partner-method-check-if-registration-code-already-exists" if="!id"/>
     <action name="action-partner-method-update-partner-address"/>
+    <action name="action-method-partner-registration-code-onChange"/>
     <action name="action-partner-method-check-registration-code-if-required"/>
     <action name="save"/>
     <action name="action-partner-method-set-user-partner"/>
@@ -1876,4 +1892,37 @@
       'com.axelor.apps.base.db.Partner'</domain>
     <context name="partnerId" expr="eval:__self__?.id"/>
   </action-view>
+
+  <action-method name="action-partner-method-filter-tag-set">
+    <call class="com.axelor.apps.base.web.PartnerController" method="filterTagSet"/>
+  </action-method>
+
+  <action-group name="action-partner-group-company-change">
+    <action name="action-partner-record-change-trading-name-set"/>
+    <action name="action-partner-method-filter-tag-set"/>
+  </action-group>
+
+  <action-record name="action-partner-record-change-trading-name-set"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="tradingNameSet"
+      expr="eval: tradingNameSet?.findAll{ it.company == null || it.company?.id in companySet*.id }"
+      if="tradingNameSet &amp;&amp; tradingNameSet.size() > 0"/>
+  </action-record>
+
+  <action-attrs name="action-partner-attrs-set-trading-name-domain">
+    <attribute name="domain" for="tradingNameSet"
+      expr="eval: &quot; self.company IS NULL OR self.company.id IN (${((companySet ?: [])*.id+[0]).join(',')})&quot;"/>
+  </action-attrs>
+
+  <action-validate name="action-partner-validate-sirene-api-configuration">
+    <alert
+      message="You're about to create a partner using the Sirene API. Current changes will be lost. Do you really want to proceed?"/>
+  </action-validate>
+
+  <action-group name="action-partner-group-sirene-api-configuration">
+    <action name="action-partner-validate-sirene-api-configuration" if="id == null"/>
+    <action name="save" if="id != null"/>
+    <action name="action-partner-view-wizard-api-sirene-configuration"/>
+  </action-group>
+
 </object-views>

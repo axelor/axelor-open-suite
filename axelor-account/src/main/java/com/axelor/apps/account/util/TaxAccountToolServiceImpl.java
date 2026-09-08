@@ -106,6 +106,11 @@ public class TaxAccountToolServiceImpl implements TaxAccountToolService {
           company.getName(),
           partner.getFullName());
     }
+    checkAccountVatSystem(account);
+  }
+
+  @Override
+  public void checkAccountVatSystem(Account account) throws AxelorException {
     if (account != null
         && (account.getVatSystemSelect() == null
             || account.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT)) {

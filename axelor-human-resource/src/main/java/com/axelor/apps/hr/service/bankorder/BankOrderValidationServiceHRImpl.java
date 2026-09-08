@@ -41,10 +41,7 @@ import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.expense.ExpensePaymentService;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
 import java.util.List;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 public class BankOrderValidationServiceHRImpl extends BankOrderValidationServiceImpl {
 
@@ -91,8 +88,7 @@ public class BankOrderValidationServiceHRImpl extends BankOrderValidationService
   }
 
   @Override
-  protected BankOrder generateMoves(BankOrder bankOrder)
-      throws AxelorException, DatatypeConfigurationException, JAXBException, IOException {
+  protected BankOrder generateMoves(BankOrder bankOrder) throws AxelorException {
     if (bankOrder
         .getFunctionalOriginSelect()
         .equals(BankOrderRepository.FUNCTIONAL_ORIGIN_EXPENSE)) {

@@ -32,13 +32,10 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import jakarta.inject.Inject;
-import jakarta.xml.bind.JAXBException;
 import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
 
@@ -74,13 +71,9 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
    * Method to create an XML file for SEPA transfer pain.001.001.02
    *
    * @throws AxelorException
-   * @throws DatatypeConfigurationException
-   * @throws JAXBException
-   * @throws IOException
    */
   @Override
-  public File generateFile()
-      throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
+  public File generateFile() throws AxelorException {
 
     List<String> records = Lists.newArrayList();
 

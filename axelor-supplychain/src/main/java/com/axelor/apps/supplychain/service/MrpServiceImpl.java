@@ -102,7 +102,7 @@ import org.slf4j.LoggerFactory;
 public class MrpServiceImpl implements MrpService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private static final Integer ITERATIONS = 100;
+  protected static final Integer ITERATIONS = 100;
 
   protected MrpRepository mrpRepository;
   protected StockLocationRepository stockLocationRepository;
@@ -131,6 +131,7 @@ public class MrpServiceImpl implements MrpService {
   protected List<StockLocation> stockLocationList;
   protected Map<Long, Integer> productMap;
   protected Map<Long, Integer> productMapToBeAssigned;
+  protected Set<Long> processedMrpForecastIdSet;
   protected Integer currentLevel;
   protected Mrp mrp;
   protected LocalDate today;
@@ -223,6 +224,14 @@ public class MrpServiceImpl implements MrpService {
   @Override
   @Transactional
   public void reset(Mrp mrp) {
+    // Clear per-run in-memory state so a reused service instance does not carry over data from a
+    // previous calculation.
+    this.stockLocationList = null;
+    this.productMap = null;
+    this.productMapToBeAssigned = null;
+    this.processedMrpForecastIdSet = null;
+    this.currentLevel = null;
+
     today = appBaseService.getTodayDate(mrp.getStockLocation().getCompany());
 
     mrpLineRepository
@@ -503,23 +512,22 @@ public class MrpServiceImpl implements MrpService {
       StockLocation stockLocation,
       LocalDate maturityDate) {
 
-    LocalDate startPeriodDate = maturityDate;
-
     MrpFamily mrpFamily = product.getMrpFamily();
 
-    if (mrpFamily != null) {
-
-      if (mrpFamily.getDayNb() == 0) {
-        return null;
-      }
-
-      startPeriodDate = maturityDate.minusDays(mrpFamily.getDayNb());
+    if (mrpFamily == null) {
+      return null;
     }
+
+    if (mrpFamily.getDayNb() == 0) {
+      return null;
+    }
+
+    LocalDate startPeriodDate = maturityDate.minusDays(mrpFamily.getDayNb());
 
     return mrpLineRepository
         .all()
         .filter(
-            "self.mrp.id = ?1 AND self.product = ?2 AND self.mrpLineType = ?3 AND self.stockLocation = ?4 AND self.maturityDate > ?5 AND self.maturityDate <= ?6",
+            "self.mrp.id = ?1 AND self.product = ?2 AND self.mrpLineType = ?3 AND self.stockLocation = ?4 AND self.maturityDate >= ?5 AND self.maturityDate <= ?6",
             mrp.getId(),
             product,
             mrpLineType,
@@ -1017,6 +1025,7 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected void createSaleForecastMrpLines() throws AxelorException {
+    this.processedMrpForecastIdSet = new HashSet<>();
     this.createSaleForecastMrpLines(this.productMap);
   }
 
@@ -1053,6 +1062,9 @@ public class MrpServiceImpl implements MrpService {
 
     for (MrpForecast mrpForecast : mrpForecastList) {
 
+      if (!processedMrpForecastIdSet.add(mrpForecast.getId())) {
+        continue;
+      }
       this.createSaleForecastMrpLines(
           mrpRepository.find(mrp.getId()),
           mrpForecastRepository.find(mrpForecast.getId()),
@@ -1407,10 +1419,11 @@ public class MrpServiceImpl implements MrpService {
       Set<ProductCategory> productCategorySet = new HashSet<>(mrp.getProductCategorySet());
 
       if (mrp.getTakeInAccountSubCategories()) {
+        Set<ProductCategory> subCategorySet = new HashSet<>();
         for (ProductCategory productCategory : productCategorySet) {
-          productCategorySet.addAll(
-              productCategoryService.fetchChildrenCategoryList(productCategory));
+          subCategorySet.addAll(productCategoryService.fetchChildrenCategoryList(productCategory));
         }
+        productCategorySet.addAll(subCategorySet);
       }
 
       productSet.addAll(

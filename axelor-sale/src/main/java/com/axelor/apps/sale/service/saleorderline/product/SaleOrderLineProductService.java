@@ -59,4 +59,6 @@ public interface SaleOrderLineProductService {
 
   Map<String, Object> fillCostPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
+
+  Map<String, Object> setSubTotalCostPriceManually(SaleOrderLine saleOrderLine);
 }

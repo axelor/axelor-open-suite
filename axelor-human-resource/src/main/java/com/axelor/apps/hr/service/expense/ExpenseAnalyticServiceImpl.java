@@ -69,10 +69,8 @@ public class ExpenseAnalyticServiceImpl implements ExpenseAnalyticService {
                   : Optional.ofNullable(AuthUtils.getUser())
                       .map(User::getActiveCompany)
                       .orElse(null));
-      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        analyticMoveLineService.updateAnalyticMoveLine(
-            analyticMoveLine, expenseLine.getCompanyUntaxedAmount(), date);
-      }
+      analyticMoveLineService.updateAnalyticMoveLineList(
+          analyticMoveLineList, expenseLine.getCompanyUntaxedAmount(), date);
     }
     return expenseLine;
   }

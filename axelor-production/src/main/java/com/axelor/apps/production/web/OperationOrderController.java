@@ -25,10 +25,12 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.service.OperationOrderHazardPhraseService;
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -115,6 +117,13 @@ public class OperationOrderController {
       operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
       Beans.get(OperationOrderWorkflowService.class).start(operationOrder);
       response.setReload(true);
+      String hazardPhraseAlert =
+          Beans.get(OperationOrderHazardPhraseService.class)
+              .getOperationOrderHazardPhrases(operationOrder);
+      if (StringUtils.notBlank(hazardPhraseAlert)) {
+        response.setInfo(hazardPhraseAlert);
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

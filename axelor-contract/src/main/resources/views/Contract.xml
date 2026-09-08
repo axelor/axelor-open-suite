@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+              https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract"
     orderBy="-contractId" groupBy="statusSelect">
@@ -559,7 +559,7 @@
 
   <action-attrs name="action-contract-attrs-show-close-btn">
     <attribute for="closeContractBtn" name="hidden"
-      expr="terminatedDate == null || statusSelect != 2 || __config__.date &lt; terminatedDate"/>
+      expr="terminatedDate == null || statusSelect != 2 || __config__.date &lt; terminatedDate || !terminatedManually"/>
   </action-attrs>
 
   <action-method name="action-contract-method-close">
@@ -1001,6 +1001,10 @@
     <error
       message="The first period end date cannot be earlier than the supposed activation date."
       if="firstPeriodEndDate != null &amp;&amp; currentContractVersion != null &amp;&amp; currentContractVersion.supposedActivationDate != null &amp;&amp; firstPeriodEndDate &lt; currentContractVersion.supposedActivationDate"
+      action="action-contract-record-reset-first-period-end-date"/>
+    <error
+      message="The first period end date cannot be earlier than today if there is no supposed activation date."
+      if="firstPeriodEndDate != null &amp;&amp; currentContractVersion != null &amp;&amp; currentContractVersion.supposedActivationDate == null &amp;&amp; firstPeriodEndDate &lt; __config__.date"
       action="action-contract-record-reset-first-period-end-date"/>
   </action-validate>
 

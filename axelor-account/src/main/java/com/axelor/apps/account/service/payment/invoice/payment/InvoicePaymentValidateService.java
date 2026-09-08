@@ -20,18 +20,13 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.base.AxelorException;
-import jakarta.xml.bind.JAXBException;
-import java.io.IOException;
 import java.util.List;
-import javax.xml.datatype.DatatypeConfigurationException;
 
 public interface InvoicePaymentValidateService {
 
-  public void validate(InvoicePayment invoicePayment, boolean force)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
+  public void validate(InvoicePayment invoicePayment, boolean force) throws AxelorException;
 
   void validateMultipleInvoicePayment(List<InvoicePayment> invoicePaymentList, boolean force);
 
-  public void validate(InvoicePayment invoicePayment)
-      throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
+  public void validate(InvoicePayment invoicePayment) throws AxelorException;
 }

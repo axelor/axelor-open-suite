@@ -28,6 +28,9 @@ public class SaleOrderLineSupplychainListener {
 
   @PreRemove
   public void preRemove(SaleOrderLine saleOrderLine) throws AxelorException {
-    Beans.get(SaleOrderLineCheckSupplychainService.class).checkLinkedPackagingLine(saleOrderLine);
+    SaleOrderLineCheckSupplychainService saleOrderLineCheckSupplychainService =
+        Beans.get(SaleOrderLineCheckSupplychainService.class);
+    saleOrderLineCheckSupplychainService.checkLinkedPackagingLine(saleOrderLine);
+    saleOrderLineCheckSupplychainService.detachCanceledStockMoveLines(saleOrderLine);
   }
 }

@@ -31,6 +31,9 @@ import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderAttrsService;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderViewServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.db.SupplyChainConfig;
+import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.studio.db.AppSale;
 import jakarta.inject.Inject;
 import java.util.HashMap;
@@ -40,6 +43,7 @@ public class SaleOrderViewSupplychainServiceImpl extends SaleOrderViewServiceImp
 
   protected StockMoveRepository stockMoveRepository;
   protected CompanyRepository companyRepository;
+  protected SupplyChainConfigService supplyChainConfigService;
 
   @Inject
   public SaleOrderViewSupplychainServiceImpl(
@@ -49,7 +53,8 @@ public class SaleOrderViewSupplychainServiceImpl extends SaleOrderViewServiceImp
       AppSaleService appSaleService,
       SaleOrderAttrsService saleOrderAttrsService,
       StockMoveRepository stockMoveRepository,
-      CompanyRepository companyRepository) {
+      CompanyRepository companyRepository,
+      SupplyChainConfigService supplyChainConfigService) {
     super(
         saleConfigService,
         appBaseService,
@@ -58,6 +63,7 @@ public class SaleOrderViewSupplychainServiceImpl extends SaleOrderViewServiceImp
         saleOrderAttrsService);
     this.stockMoveRepository = stockMoveRepository;
     this.companyRepository = companyRepository;
+    this.supplyChainConfigService = supplyChainConfigService;
   }
 
   @Override
@@ -68,6 +74,7 @@ public class SaleOrderViewSupplychainServiceImpl extends SaleOrderViewServiceImp
     MapTools.addMap(attrs, hideAvailabilityLabel(saleOrder));
     MapTools.addMap(attrs, hideInterco(saleOrder));
     MapTools.addMap(attrs, hideTimetable(saleOrder));
+    MapTools.addMap(attrs, hideManagedLinesFields(saleOrder));
     return attrs;
   }
 
@@ -76,6 +83,15 @@ public class SaleOrderViewSupplychainServiceImpl extends SaleOrderViewServiceImp
       throws AxelorException {
     Map<String, Map<String, Object>> attrs = super.getOnLoadAttrs(saleOrder);
     MapTools.addMap(attrs, hideTimetable(saleOrder));
+    MapTools.addMap(attrs, hideManagedLinesFields(saleOrder));
+    return attrs;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getCompanyAttrs(SaleOrder saleOrder)
+      throws AxelorException {
+    Map<String, Map<String, Object>> attrs = super.getCompanyAttrs(saleOrder);
+    MapTools.addMap(attrs, hideManagedLinesFields(saleOrder));
     return attrs;
   }
 
@@ -83,6 +99,22 @@ public class SaleOrderViewSupplychainServiceImpl extends SaleOrderViewServiceImp
   public Map<String, Map<String, Object>> getPartnerOnChangeAttrs(SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs = super.getPartnerOnChangeAttrs(saleOrder);
     MapTools.addMap(attrs, hideInterco(saleOrder));
+    return attrs;
+  }
+
+  protected Map<String, Map<String, Object>> hideManagedLinesFields(SaleOrder saleOrder)
+      throws AxelorException {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    Company company = saleOrder.getCompany();
+    boolean hidden = true;
+    if (company != null) {
+      SupplyChainConfig config = supplyChainConfigService.getSupplyChainConfig(company);
+      hidden =
+          config == null
+              || config.getOutSmGenerationSelect()
+                  != SupplyChainConfigRepository.OUT_SM_GENERATION_MANAGED_LINES;
+    }
+    attrs.put("saleOrderLineList.qtyToDeliver", Map.of(HIDDEN_ATTRS, hidden));
     return attrs;
   }
 

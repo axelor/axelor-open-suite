@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="partner-related-contact-grid" model="com.axelor.apps.base.db.Partner"
     title="Contacts">
@@ -39,8 +39,10 @@
     model="com.axelor.apps.base.db.Partner" id="incl-event-actions-crm-partner-form">
     <menubar>
       <menu name="partnerToolsMenu" title="Tools" icon="wrench" showTitle="true">
-        <item name="sirenApiBtn" title="Fill from Sirene API"
-          action="save,action-partner-view-wizard-api-sirene-configuration"/>
+        <item name="sirenApiCreateBtn" title="Create from Sirene API"
+          action="action-partner-group-sirene-api-configuration" showIf="id == null"/>
+        <item name="sirenApiFillBtn" title="Fill from Sirene API"
+          action="action-partner-group-sirene-api-configuration" showIf="id != null"/>
         <item title="Customer recovery" name="customerRecoveryItem"
           action="action-partner-view-show-customer-debt-recovery"
           if="__config__.app.isApp('account')" showIf="isCustomer"/>
@@ -149,7 +151,8 @@
               hideIf="isEmployee" colSpan="6" canEdit="false" form-view="team-form"
               grid-view="team-grid"/>
             <field name="companySet" colSpan="12" widget="Tags" canNew="false"
-              form-view="company-form" grid-view="company-grid"/>
+              form-view="company-form" grid-view="company-grid"
+              onChange="action-partner-group-company-change"/>
             <field if="__config__.app.getApp('crm')?.getAgenciesManagement()" name="agency"/>
           </panel>
         </panel>

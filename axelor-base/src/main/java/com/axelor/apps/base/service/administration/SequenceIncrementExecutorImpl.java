@@ -90,18 +90,19 @@ public class SequenceIncrementExecutorImpl implements SequenceIncrementExecutor 
     AtomicReference<IncrementResult> resultRef = new AtomicReference<>();
     AtomicReference<Exception> exceptionRef = new AtomicReference<>();
 
+    TenantAware tenantAware =
+        new TenantAware(
+            () -> {
+              try {
+                IncrementResult result = doIncrement(sequenceId, refDate);
+                resultRef.set(result);
+              } catch (Exception e) {
+                exceptionRef.set(e);
+              }
+            });
+
     Callable<Void> callable =
         () -> {
-          TenantAware tenantAware =
-              new TenantAware(
-                  () -> {
-                    try {
-                      IncrementResult result = doIncrement(sequenceId, refDate);
-                      resultRef.set(result);
-                    } catch (Exception e) {
-                      exceptionRef.set(e);
-                    }
-                  });
           tenantAware.start();
           tenantAware.join();
           return null;
