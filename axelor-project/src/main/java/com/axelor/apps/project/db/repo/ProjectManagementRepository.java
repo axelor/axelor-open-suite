@@ -25,24 +25,29 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectNameComputeService;
+import com.axelor.apps.project.service.ProjectTaskCopyService;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.service.roadmap.ProjectVersionRemoveService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JpaSecurity;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppProject;
 import com.axelor.team.db.Team;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
+import java.util.List;
 import java.util.Map;
 
 public class ProjectManagementRepository extends ProjectRepository {
 
   @Inject ProjectTaskService projectTaskService;
+  @Inject protected ProjectTaskCopyService projectTaskCopyService;
 
   protected void setAllProjectFullName(Project project) throws AxelorException {
     ProjectNameComputeService projectNameComputeService =
@@ -110,13 +115,43 @@ public class ProjectManagementRepository extends ProjectRepository {
       throw new PersistenceException(e.getMessage(), e);
     }
     project.setDescription(projectTaskService.getTaskLink(project.getDescription()));
-    return super.save(project);
+
+    Project copiedFromProject = project.getCopiedFromProject();
+    // the tasks are copied once, on the first save of the copy
+    if (copiedFromProject == null
+        || copiedFromProject.getId() == null
+        || ObjectUtils.notEmpty(project.getProjectTaskList())) {
+      return super.save(project);
+    }
+    // the copied project is sent by the client, so the rights on what is read and created here
+    // cannot be assumed from the rights on the saved project
+    JpaSecurity jpaSecurity = Beans.get(JpaSecurity.class);
+    jpaSecurity.check(JpaSecurity.CAN_READ, Project.class, copiedFromProject.getId());
+    jpaSecurity.check(JpaSecurity.CAN_CREATE, ProjectTask.class);
+
+    // the tasks of a copied project are created on its first save: they are copied here to be
+    // persisted with the project, then saved again so that the fields computed on save are based
+    // on their new ids
+    project.setCopiedFromProject(null);
+    List<ProjectTask> copiedTaskList =
+        projectTaskCopyService.copyProjectTaskList(copiedFromProject, project);
+    project = super.save(project);
+    projectTaskCopyService.saveCopiedProjectTaskList(copiedTaskList);
+    return project;
   }
 
   @Override
   public Project copy(Project entity, boolean deep) {
+    // deep is deliberately not forwarded: a deep copy would also duplicate the sub-projects, the
+    // wiki pages and the resource bookings. Only the tasks are handled, on save.
     Project project = super.copy(entity, false);
     project.setCode(null);
+    // the tasks are numbered per project
+    project.setNextProjectTaskSequence(1);
+    if (deep) {
+      // the tasks are copied on save, once the copy has an id
+      project.setCopiedFromProject(entity);
+    }
     return project;
   }
 

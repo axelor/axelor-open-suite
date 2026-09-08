@@ -57,6 +57,8 @@ import com.axelor.apps.project.service.ProjectTaskCategoryService;
 import com.axelor.apps.project.service.ProjectTaskCategoryServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskComputeService;
 import com.axelor.apps.project.service.ProjectTaskComputeServiceImpl;
+import com.axelor.apps.project.service.ProjectTaskCopyService;
+import com.axelor.apps.project.service.ProjectTaskCopyServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskGroupService;
 import com.axelor.apps.project.service.ProjectTaskGroupServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskProgressUpdateService;
@@ -160,5 +162,6 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectCheckListItemUpdateAPIService.class)
         .to(ProjectCheckListItemUpdateAPIServiceImpl.class);
     bind(ProjectTaskProgressUpdateService.class).to(ProjectTaskProgressUpdateServiceImpl.class);
+    bind(ProjectTaskCopyService.class).to(ProjectTaskCopyServiceImpl.class);
   }
 }
