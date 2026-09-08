@@ -189,6 +189,28 @@ class ProjectTaskCopyServiceImplTest {
   }
 
   @Test
+  void testCopyProjectTaskListNeverSharesDependencySetsWithSourceTasks() {
+    Project sourceProject = new Project();
+    ProjectTask task = createTask(sourceProject, "Task", null, null);
+    ProjectTask externalTask = createTask(new Project(), "External", null, null);
+    // Hibernate gives an empty collection, not null, to a task without dependency
+    task.setFinishToStartSet(new HashSet<>(Set.of(externalTask)));
+    task.setStartToStartSet(new HashSet<>());
+    task.setFinishToFinishSet(new HashSet<>());
+
+    List<ProjectTask> copiedTaskList =
+        projectTaskCopyService.copyProjectTaskList(sourceProject, new Project());
+
+    // a collection shared by two entities makes Hibernate fail on flush
+    ProjectTask copiedTask = copiedTaskList.get(0);
+    Assertions.assertNotSame(task.getFinishToStartSet(), copiedTask.getFinishToStartSet());
+    Assertions.assertNotSame(task.getStartToStartSet(), copiedTask.getStartToStartSet());
+    Assertions.assertNotSame(task.getFinishToFinishSet(), copiedTask.getFinishToFinishSet());
+    Assertions.assertTrue(copiedTask.getStartToStartSet().isEmpty());
+    Assertions.assertTrue(copiedTask.getFinishToFinishSet().isEmpty());
+  }
+
+  @Test
   void testSaveCopiedProjectTaskListSavesEveryTaskInOrder() {
     ProjectTask rootTask = new ProjectTask("Root");
     ProjectTask childTask = new ProjectTask("Child");

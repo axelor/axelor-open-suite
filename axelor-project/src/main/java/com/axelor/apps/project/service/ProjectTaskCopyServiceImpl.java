@@ -109,14 +109,16 @@ public class ProjectTaskCopyServiceImpl implements ProjectTaskCopyService {
    *
    * @param sourceTaskSet the dependencies of the copied task
    * @param copiedTaskMap the copies, by id of the source task
-   * @return the dependencies of the copy
+   * @return a new set holding the dependencies of the copy
    */
   protected Set<ProjectTask> copyTaskSet(
       Set<ProjectTask> sourceTaskSet, Map<Long, ProjectTask> copiedTaskMap) {
-    if (CollectionUtils.isEmpty(sourceTaskSet)) {
-      return sourceTaskSet;
+    if (sourceTaskSet == null) {
+      return null;
     }
 
+    // never give the collection of the source task to its copy, Hibernate rejects a collection
+    // shared by two entities
     Set<ProjectTask> taskSet = new HashSet<>();
     for (ProjectTask sourceTask : sourceTaskSet) {
       ProjectTask copiedTask = getCopiedTask(sourceTask, copiedTaskMap);
