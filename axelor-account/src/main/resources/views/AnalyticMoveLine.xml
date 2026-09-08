@@ -253,13 +253,13 @@
   </action-condition>
 
   <action-method
-    name="action-analytic-move-line-method-clear-empty-distribution-template">
+    name="action-analytic-move-line-method-clear-outdated-distribution-template">
     <call class="com.axelor.apps.account.web.AnalyticMoveLineController"
-      method="clearDistributionTemplateIfNoLine"/>
+      method="clearDistributionTemplateOnLineChange"/>
   </action-method>
 
   <action-group name="action-analytic-move-line-group-analytic-move-line-list-onchange">
-    <action name="action-analytic-move-line-method-clear-empty-distribution-template"/>
+    <action name="action-analytic-move-line-method-clear-outdated-distribution-template"/>
     <action name="action-analytic-move-line-attrs-valid-analytic-move-line-list"/>
     <action name="action-analytic-move-line-condition-valid-analytic-move-line-list"/>
   </action-group>
