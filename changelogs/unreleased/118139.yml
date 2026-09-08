@@ -1,0 +1,3 @@
+---
+title: "Analytic distribution template: fixed error on first save when the template has no distribution line."
+module: axelor-account
