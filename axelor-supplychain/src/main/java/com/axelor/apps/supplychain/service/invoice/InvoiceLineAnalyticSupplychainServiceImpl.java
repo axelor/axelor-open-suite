@@ -81,7 +81,8 @@ public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyt
       InvoiceLine invoiceLine, Invoice invoice, AnalyticLineModel analyticLineModel) {
     if (analyticLineModel.getAnalyticDistributionTemplate() != null
         || CollectionUtils.isNotEmpty(analyticLineModel.getAnalyticMoveLineList())) {
-      analyticLineModelService.setInvoiceLineAnalyticInfo(invoiceLine, invoiceLine);
+      analyticLineModelService.setInvoiceLineAnalyticInfo(
+          analyticLineModel.getAnalyticLine(), invoiceLine);
 
       this.copyAnalyticMoveLines(analyticLineModel.getAnalyticMoveLineList(), invoiceLine);
       this.computeAnalyticDistribution(invoiceLine);
