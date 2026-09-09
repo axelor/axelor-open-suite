@@ -25,7 +25,7 @@
 "Add a complete control",,,
 "Add a quality improvement",,,
 "Add optional control points",,,
-"Adds the fields added to the control type since this line was created and removes the ones no longer configured. The values already entered are kept.",,,
+"Updates the fields of this control plan line with the changes made to the control type. The values already entered are kept.",,,
 "Advancement",,,
 "Alert calendar",,,
 "All fields related to the order will be reset, continue ?",,,

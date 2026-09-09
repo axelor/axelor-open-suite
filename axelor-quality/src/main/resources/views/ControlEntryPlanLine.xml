@@ -29,6 +29,9 @@
 
     <panel name="planValuePanel" title="Control type configuration" showIf="controlType"
       colSpan="12">
+      <button name="syncPlanValuesBtn" title="Refresh fields" colSpan="3"
+        showIf="!$readonly()" onClick="action-quality-control-plan-line-method-sync-plan-values"
+        help="Updates the fields of this control plan line with the changes made to the control type. The values already entered are kept."/>
       <field name="controlType.formulaDescription" hidden="true"/>
       <field name="$formulaDescriptionViewer" showTitle="false" readonly="true" colSpan="12"
         showIf="controlType.formulaDescription">
@@ -40,9 +43,6 @@
 			</>
 		  ]]></viewer>
       </field>
-      <button name="syncPlanValuesBtn" title="Refresh fields" colSpan="12"
-        onClick="action-quality-control-plan-line-method-sync-plan-values"
-        help="Adds the fields added to the control type since this line was created and removes the ones no longer configured. The values already entered are kept."/>
       <field name="planValueList" showTitle="false" colSpan="12" canNew="false"
         canRemove="false" grid-view="control-type-field-value-grid"
         form-view="control-type-field-value-form">

@@ -25,7 +25,7 @@
 "Add a complete control","Ajouter un contrôle complet",,
 "Add a quality improvement","Ajouter une amélioration qualité",,
 "Add optional control points","Ajouter points de contrôle optionnel",,
-"Adds the fields added to the control type since this line was created and removes the ones no longer configured. The values already entered are kept.","Ajoute les champs ajoutés au type de contrôle depuis la création de cette ligne et retire ceux qui ne sont plus configurés. Les valeurs déjà saisies sont conservées.",,
+"Updates the fields of this control plan line with the changes made to the control type. The values already entered are kept.","Mettre à jour les champs de cette ligne de gamme de contrôle avec les modifications apportées au type de contrôle. Les valeurs déjà renseignées sont conservées.",,
 "Advancement","Avancement",,
 "Alert calendar","Calendrier des alertes",,
 "All fields related to the order will be reset, continue ?","Tous les champs de la commande seront réinitialisés, voulez-vous continuer ?",,
