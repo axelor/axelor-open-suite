@@ -40,7 +40,8 @@
         title="Finish" showIf="statusSelect == 2"/>
       <button name="cancelBtn" onClick="action-record-quality-control-cancel,save"
         title="Cancel" showIf="statusSelect == 2"/>
-      <button onClick="save,action-view-quality-control-create-qi"
+      <button
+        onClick="save,action-control-entry-method-check-open-qi,action-view-quality-control-create-qi"
         name="addQualityImprovement" title="Add a quality improvement"/>
     </panel>
     <panel name="relatedPanel" sidebar="true">
@@ -87,6 +88,11 @@
 
   <action-method name="action-control-entry-method-add-control-entry">
     <call class="com.axelor.apps.quality.web.ControlEntryController" method="addControlEntry"/>
+  </action-method>
+
+  <action-method name="action-control-entry-method-check-open-qi">
+    <call class="com.axelor.apps.quality.web.ControlEntryController"
+      method="checkOpenQualityImprovements"/>
   </action-method>
 
   <action-view name="action-control-entry-view-quality-improvements"
