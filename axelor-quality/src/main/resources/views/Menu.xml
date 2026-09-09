@@ -134,9 +134,18 @@
     <view type="form" name="control-type-form"/>
   </action-view>
 
+  <menuitem name="quality-control-type-field" parent="quality-configurations"
+    title="Control type fields" action="quality.control.type.field.view" order="90"/>
+
+  <action-view name="quality.control.type.field.view" title="Control type fields"
+    model="com.axelor.apps.quality.db.ControlTypeField">
+    <view type="grid" name="control-type-field-grid"/>
+    <view type="form" name="control-type-field-form"/>
+  </action-view>
+
   <menuitem name="quality-control-plan-characteristics" parent="quality-configurations"
     title="Control plan characteristics" action="quality.control.plan.characteristics.view"
-    order="90"/>
+    order="91"/>
 
   <action-view name="quality.control.plan.characteristics.view"
     title="Control plan characteristics"

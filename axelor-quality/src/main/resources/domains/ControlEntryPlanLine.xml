@@ -28,8 +28,12 @@
 
     <string name="description" large="true" title="Description"/>
 
-    <string name="entryAttrs" json="true"/>
-    <string name="planAttrs" json="true"/>
+    <one-to-many name="planValueList"
+      ref="com.axelor.apps.quality.db.ControlTypeFieldValue" mappedBy="planLine"
+      title="Reference values" orderBy="sequence"/>
+    <one-to-many name="entryValueList"
+      ref="com.axelor.apps.quality.db.ControlTypeFieldValue" mappedBy="entryLine"
+      title="Measured values" orderBy="sequence"/>
 
 
     <!-- Type entry sample line part -->
