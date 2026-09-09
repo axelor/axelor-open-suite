@@ -107,8 +107,8 @@ public class PurchaseRequestToPoCreateServiceSupplychainImpl
   }
 
   @Override
-  protected String getGroupBySupplierKey(PurchaseRequest purchaseRequest) {
-    String key = super.getGroupBySupplierKey(purchaseRequest);
+  protected String getGroupBySupplierKey(PurchaseRequest purchaseRequest, Partner supplier) {
+    String key = super.getGroupBySupplierKey(purchaseRequest, supplier);
 
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
       return key;

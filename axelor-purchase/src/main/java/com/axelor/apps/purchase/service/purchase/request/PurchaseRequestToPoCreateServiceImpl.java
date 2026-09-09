@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
@@ -114,33 +115,43 @@ public class PurchaseRequestToPoCreateServiceImpl implements PurchaseRequestToPo
       Company company,
       Partner defaultSupplier)
       throws AxelorException {
-    final Map<String, PurchaseOrder> poMap = new HashMap<>();
+    final boolean grouped = Boolean.TRUE.equals(groupBySupplier);
+    final Map<String, PoGroup> poMap = new HashMap<>();
     for (PurchaseRequest purchaseRequest : validRequests) {
       String key;
-      if (groupBySupplier) {
-        key =
-            purchaseRequest.getSupplierPartner() != null
-                ? getGroupBySupplierKey(purchaseRequest)
-                : (defaultSupplier != null
-                    ? defaultSupplier.getId().toString()
-                    : purchaseRequest.getId().toString());
+      Partner supplier =
+          Optional.ofNullable(purchaseRequest.getSupplierPartner()).orElse(defaultSupplier);
+      if (grouped && supplier != null) {
+        key = getGroupBySupplierKey(purchaseRequest, supplier);
       } else {
         key = purchaseRequest.getId().toString();
       }
-      PurchaseOrder po = poMap.get(key);
-      if (po == null) {
-        po = createPurchaseOrder(purchaseRequest, company, defaultSupplier);
-        poMap.put(key, po);
+      PoGroup poGroup = poMap.get(key);
+      if (poGroup == null) {
+        poGroup =
+            new PoGroup(
+                createPurchaseOrder(purchaseRequest, company, defaultSupplier), new ArrayList<>());
+        poMap.put(key, poGroup);
       }
-      generatePoLinesPurchaseRequest(purchaseRequest, po);
-      purchaseRequest.setPurchaseOrder(po);
+      if (grouped) {
+        poGroup.lines().addAll(purchaseRequest.getPurchaseRequestLineList());
+      } else {
+        generatePoLinesPurchaseRequest(purchaseRequest, poGroup.purchaseOrder());
+      }
+      purchaseRequest.setPurchaseOrder(poGroup.purchaseOrder());
       purchaseRequestRepo.save(purchaseRequest);
     }
-    for (PurchaseOrder po : poMap.values()) {
+    List<PurchaseOrder> createdPos = new ArrayList<>();
+    for (PoGroup poGroup : poMap.values()) {
+      PurchaseOrder po = poGroup.purchaseOrder();
+      if (grouped) {
+        generateGroupedPoLines(poGroup.lines(), po);
+      }
       purchaseOrderService.computePurchaseOrder(po);
       purchaseOrderRepo.save(po);
+      createdPos.add(po);
     }
-    return new ArrayList<>(poMap.values());
+    return createdPos;
   }
 
   @Override
@@ -198,8 +209,8 @@ public class PurchaseRequestToPoCreateServiceImpl implements PurchaseRequestToPo
     return valid;
   }
 
-  protected String getGroupBySupplierKey(PurchaseRequest pr) {
-    return String.valueOf(pr.getSupplierPartner().getId());
+  protected String getGroupBySupplierKey(PurchaseRequest pr, Partner supplier) {
+    return String.valueOf(supplier.getId());
   }
 
   protected PurchaseOrder createPurchaseOrder(
@@ -249,19 +260,60 @@ public class PurchaseRequestToPoCreateServiceImpl implements PurchaseRequestToPo
 
   protected void generatePoLinesPurchaseRequest(
       PurchaseRequest purchaseRequest, PurchaseOrder purchaseOrder) throws AxelorException {
-    for (PurchaseRequestLine prl : purchaseRequest.getPurchaseRequestLineList()) {
-      PurchaseOrderLine pol =
-          purchaseOrderLineService.createPurchaseOrderLine(
-              purchaseOrder,
-              prl.getProduct(),
-              prl.getNewProduct() ? prl.getProductTitle() : null,
-              null,
-              prl.getQuantity(),
-              prl.getUnit());
-      purchaseOrder.addPurchaseOrderLineListItem(pol);
-      purchaseOrderLineService.compute(pol, purchaseOrder);
+    for (PurchaseRequestLine line : purchaseRequest.getPurchaseRequestLineList()) {
+      addPurchaseOrderLine(purchaseOrder, line, line.getQuantity());
     }
   }
+
+  protected void generateGroupedPoLines(
+      List<PurchaseRequestLine> requestLines, PurchaseOrder purchaseOrder) throws AxelorException {
+    Map<ProductUnit, List<PurchaseRequestLine>> linesByProductUnit = new LinkedHashMap<>();
+    List<List<PurchaseRequestLine>> lineGroups = new ArrayList<>();
+    for (PurchaseRequestLine line : requestLines) {
+      if (line.getProduct() == null || line.getNewProduct() || line.getUnit() == null) {
+        lineGroups.add(List.of(line));
+        continue;
+      }
+      ProductUnit key = new ProductUnit(line.getProduct(), line.getUnit());
+      List<PurchaseRequestLine> group = linesByProductUnit.get(key);
+      if (group == null) {
+        group = new ArrayList<>();
+        linesByProductUnit.put(key, group);
+        lineGroups.add(group);
+      }
+      group.add(line);
+    }
+
+    for (List<PurchaseRequestLine> group : lineGroups) {
+      BigDecimal quantity =
+          group.stream()
+              .map(PurchaseRequestLine::getQuantity)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+      addPurchaseOrderLine(purchaseOrder, group.get(0), quantity);
+    }
+  }
+
+  protected void addPurchaseOrderLine(
+      PurchaseOrder purchaseOrder, PurchaseRequestLine requestLine, BigDecimal quantity)
+      throws AxelorException {
+    PurchaseOrderLine purchaseOrderLine =
+        purchaseOrderLineService.createPurchaseOrderLine(
+            purchaseOrder,
+            requestLine.getProduct(),
+            requestLine.getNewProduct() ? requestLine.getProductTitle() : null,
+            null,
+            quantity,
+            requestLine.getUnit());
+    purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
+    if (purchaseOrderLine.getProduct() != null) {
+      purchaseOrderLineService.fillPrice(purchaseOrderLine, purchaseOrder);
+    }
+    purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
+  }
+
+  protected record PoGroup(PurchaseOrder purchaseOrder, List<PurchaseRequestLine> lines) {}
+
+  protected record ProductUnit(Product product, Unit unit) {}
 
   protected List<PurchaseOrder> createFromRequestsGroupedByProduct(
       List<PurchaseRequest> validRequests, Company company, Partner defaultSupplier)
