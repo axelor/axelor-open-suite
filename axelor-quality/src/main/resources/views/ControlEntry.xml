@@ -94,6 +94,8 @@
     <view-param name="popup-save" value="false"/>
     <view-param name="show-toolbar" value="false"/>
     <context name="_controlEntryId" expr="eval: id"/>
+    <context name="_qiDetection"
+      expr="eval: __bean__(com.axelor.apps.quality.service.QualityImprovementPrefillService.class).getDefaultDetection(__self__)"/>
   </action-view>
 
 </object-views>

@@ -116,6 +116,7 @@ import com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionI
 import com.axelor.apps.production.service.PurchaseOrderTypeSelectProductionServiceImpl;
 import com.axelor.apps.production.service.QIIdentificationProductionServiceImpl;
 import com.axelor.apps.production.service.QualityImprovementCheckValuesProductionServiceImpl;
+import com.axelor.apps.production.service.QualityImprovementPrefillProductionServiceImpl;
 import com.axelor.apps.production.service.QualityImprovementUpdateProductionServiceImpl;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
 import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
@@ -305,6 +306,7 @@ import com.axelor.apps.quality.rest.service.QualityImprovementParseServiceImpl;
 import com.axelor.apps.quality.service.ControlEntryServiceImpl;
 import com.axelor.apps.quality.service.QIIdentificationServiceImpl;
 import com.axelor.apps.quality.service.QualityImprovementCheckValuesServiceImpl;
+import com.axelor.apps.quality.service.QualityImprovementPrefillServiceImpl;
 import com.axelor.apps.quality.service.QualityImprovementUpdateServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
@@ -541,6 +543,8 @@ public class ProductionModule extends AxelorModule {
         .to(QualityImprovementUpdateProductionServiceImpl.class);
     bind(QualityImprovementParseServiceImpl.class)
         .to(QualityImprovementParseProductionServiceImpl.class);
+    bind(QualityImprovementPrefillServiceImpl.class)
+        .to(QualityImprovementPrefillProductionServiceImpl.class);
     bind(ProdProcessHazardPhraseService.class).to(ProdProcessHazardPhraseServiceImpl.class);
     bind(BillOfMaterialHazardPhraseService.class).to(BillOfMaterialHazardPhraseServiceImpl.class);
     bind(BillOfMaterialHazardPhraseRefreshService.class)

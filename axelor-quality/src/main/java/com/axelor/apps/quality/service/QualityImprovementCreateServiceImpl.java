@@ -39,6 +39,8 @@ public class QualityImprovementCreateServiceImpl implements QualityImprovementCr
   protected QualityImprovementRepository qualityImprovementRepository;
   protected QualityImprovementService qualityImprovementService;
   protected QualityImprovementCheckValuesService qualityImprovementCheckValuesService;
+  protected QualityImprovementPrefillService qualityImprovementPrefillService;
+  protected QIIdentificationService qiIdentificationService;
   protected MetaFiles metaFiles;
 
   @Inject
@@ -46,25 +48,37 @@ public class QualityImprovementCreateServiceImpl implements QualityImprovementCr
       QualityImprovementRepository qualityImprovementRepository,
       QualityImprovementService qualityImprovementService,
       QualityImprovementCheckValuesService qualityImprovementCheckValuesService,
+      QualityImprovementPrefillService qualityImprovementPrefillService,
+      QIIdentificationService qiIdentificationService,
       MetaFiles metaFiles) {
     this.qualityImprovementRepository = qualityImprovementRepository;
     this.qualityImprovementService = qualityImprovementService;
     this.qualityImprovementCheckValuesService = qualityImprovementCheckValuesService;
+    this.qualityImprovementPrefillService = qualityImprovementPrefillService;
+    this.qiIdentificationService = qiIdentificationService;
     this.metaFiles = metaFiles;
   }
 
   @Transactional(rollbackOn = Exception.class)
   @Override
   public QualityImprovement createQualityImprovementFromControlEntry(
-      ControlEntry controlEntry, QIDetection qiDetection) throws AxelorException {
+      ControlEntry controlEntry, QIDetection qiDetection, int type) throws AxelorException {
 
     QualityImprovement qi = new QualityImprovement();
     setDefaultValues(qi);
     qi.setQiDetection(qiDetection);
+    qi.setType(type);
     qi = qualityImprovementRepository.save(qi);
 
     QIIdentification qiIdentification = qi.getQiIdentification();
     qiIdentification.setControlEntry(controlEntry);
+    if (type == QualityImprovementRepository.TYPE_PRODUCT) {
+      qualityImprovementPrefillService.fillFromControlEntry(
+          qiIdentification, controlEntry, qiDetection);
+    } else {
+      qualityImprovementPrefillService.fillDetectedBy(qiIdentification, controlEntry);
+    }
+    qiIdentificationService.updateQIIdentification(qiIdentification);
     return qi;
   }
 
