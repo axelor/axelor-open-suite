@@ -23,6 +23,10 @@
       canMove="true" orderBy="sequence" grid-view="control-type-field-line-grid"
       form-view="control-type-field-line-form"/>
 
+    <panel name="descriptionPanel" showTitle="false" colSpan="12">
+      <field name="formulaDescription" colSpan="12"/>
+    </panel>
+
     <panel-tabs name="formulaTabsPanel">
       <panel name="formulaPanel" title="Formula">
         <field name="conformityFormula" showTitle="false" colSpan="12" widget="CodeEditor"
