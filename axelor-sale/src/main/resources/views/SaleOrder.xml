@@ -43,6 +43,14 @@
       onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
+    <summary-bar>
+      <field name="exTaxTotal" title="Selected W.T." aggregate="sum" on="selection"/>
+      <field name="inTaxTotal" title="Selected A.T.I." aggregate="sum" on="selection"/>
+      <call action="com.axelor.apps.sale.web.SaleOrderController:fetchSummary">
+        <field name="$totalExTaxTotal" title="Total W.T." type="decimal" align="end"/>
+        <field name="$totalInTaxTotal" title="Total A.T.I." type="decimal" align="end"/>
+      </call>
+    </summary-bar>
   </grid>
 
   <grid name="sale-order-grid" title="Sale orders" model="com.axelor.apps.sale.db.SaleOrder"
@@ -85,6 +93,14 @@
       onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
+    <summary-bar>
+      <field name="exTaxTotal" title="Selected W.T." aggregate="sum" on="selection"/>
+      <field name="inTaxTotal" title="Selected A.T.I." aggregate="sum" on="selection"/>
+      <call action="com.axelor.apps.sale.web.SaleOrderController:fetchSummary">
+        <field name="$totalExTaxTotal" title="Total W.T." type="decimal" align="end"/>
+        <field name="$totalInTaxTotal" title="Total A.T.I." type="decimal" align="end"/>
+      </call>
+    </summary-bar>
   </grid>
 
   <grid name="sale-order-partner-grid" title="Sale orders"
