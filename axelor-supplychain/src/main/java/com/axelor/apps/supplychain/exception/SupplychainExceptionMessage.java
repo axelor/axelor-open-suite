@@ -492,4 +492,50 @@ public final class SupplychainExceptionMessage {
 
   public static final String DEPRECIATION_IMPORT_FAIL_ERROR = /*$$(*/
       "Failed to load depreciation rate import configuration." /*)*/;
+
+  /** Product merge */
+  public static final String PRODUCT_MERGE_APP_NOT_INSTALLED = /*$$(*/
+      "The Supplychain app must be installed to merge products." /*)*/;
+
+  public static final String PRODUCT_MERGE_NO_AUTHORIZED_USER = /*$$(*/
+      "No user is authorized to merge products. Please fill in the authorized users in the Supplychain app configuration." /*)*/;
+
+  public static final String PRODUCT_MERGE_USER_NOT_AUTHORIZED = /*$$(*/
+      "You are not authorized to merge products. Please contact one of the following users: %s" /*)*/;
+
+  public static final String PRODUCT_MERGE_MISSING_PRODUCT = /*$$(*/
+      "Please select the product to absorb and the product to keep." /*)*/;
+
+  public static final String PRODUCT_MERGE_SAME_PRODUCT = /*$$(*/
+      "The product to absorb and the product to keep must be different." /*)*/;
+
+  public static final String PRODUCT_MERGE_ARCHIVED_PRODUCT = /*$$(*/
+      "An archived product cannot be merged." /*)*/;
+
+  public static final String PRODUCT_MERGE_ALREADY_MERGED = /*$$(*/
+      "The product %s has already been merged into the product %s." /*)*/;
+
+  public static final String PRODUCT_MERGE_DIFFERENT_UNIT = /*$$(*/
+      "The two products must have the same unit." /*)*/;
+
+  public static final String PRODUCT_MERGE_DIFFERENT_SALES_UNIT = /*$$(*/
+      "The two products must have the same sales unit." /*)*/;
+
+  public static final String PRODUCT_MERGE_DIFFERENT_PURCHASES_UNIT = /*$$(*/
+      "The two products must have the same purchase unit." /*)*/;
+
+  public static final String PRODUCT_MERGE_DIFFERENT_TYPE = /*$$(*/
+      "The two products must have the same type." /*)*/;
+
+  public static final String PRODUCT_MERGE_DIFFERENT_SUB_TYPE = /*$$(*/
+      "The two products must have the same subtype." /*)*/;
+
+  public static final String PRODUCT_MERGE_VARIANT_OR_MODEL = /*$$(*/
+      "The product %s is a product model or a product variant and cannot be merged." /*)*/;
+
+  public static final String PRODUCT_MERGE_MRP_IN_PROGRESS = /*$$(*/
+      "A MRP calculation is in progress. Products cannot be merged while it is running." /*)*/;
+
+  public static final String PRODUCT_MERGE_CHECK_SUCCESS = /*$$(*/
+      "No blocking condition found: these two products can be merged." /*)*/;
 }

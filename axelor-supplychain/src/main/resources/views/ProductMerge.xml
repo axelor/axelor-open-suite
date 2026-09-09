@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <form name="product-merge-wizard-form" title="Product merge"
+    model="com.axelor.utils.db.Wizard" canNew="false" canSave="false" canCopy="false"
+    canDelete="false">
+    <panel name="mainPanel">
+      <field name="$absorbedProduct" title="Product to absorb" type="many-to-one"
+        target="com.axelor.apps.base.db.Product" form-view="product-form" grid-view="product-grid"
+        domain="self.mergedIntoProduct IS NULL" required="true" canNew="false" canEdit="false"
+        colSpan="12"/>
+      <field name="$keptProduct" title="Product to keep" type="many-to-one"
+        target="com.axelor.apps.base.db.Product" form-view="product-form" grid-view="product-grid"
+        domain="self.mergedIntoProduct IS NULL" required="true" canNew="false" canEdit="false"
+        colSpan="12"/>
+    </panel>
+    <panel name="actionsPanel">
+      <button name="checkMergeBtn" title="Check merge" colSpan="4"
+        showIf="$absorbedProduct &amp;&amp; $keptProduct"
+        onClick="action-supplychain-method-product-merge-check"/>
+    </panel>
+  </form>
+
+  <action-method name="action-supplychain-method-product-merge-open">
+    <call class="com.axelor.apps.supplychain.web.ProductMergeController" method="openWizard"/>
+  </action-method>
+
+  <action-method name="action-supplychain-method-product-merge-check">
+    <call class="com.axelor.apps.supplychain.web.ProductMergeController" method="checkMerge"/>
+  </action-method>
+
+</object-views>
