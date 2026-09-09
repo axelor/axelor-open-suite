@@ -243,6 +243,7 @@ import com.axelor.apps.base.service.advanced.imports.SearchCallService;
 import com.axelor.apps.base.service.advanced.imports.SearchCallServiceImpl;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportServiceImpl;
+import com.axelor.apps.base.service.app.AppActiveCacheObserver;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
@@ -648,6 +649,7 @@ public class BaseModule extends AxelorModule {
     bind(MapGoogleService.class).to(MapGoogleServiceImpl.class);
     bind(MapToolService.class).to(MapToolServiceImpl.class);
     bind(PricingLogsObserver.class);
+    bind(AppActiveCacheObserver.class);
     bind(PriceListLineRepository.class).to(PriceListLineManagementRepository.class);
     bind(TaxArchiveService.class).to(TaxArchiveServiceImpl.class);
   }

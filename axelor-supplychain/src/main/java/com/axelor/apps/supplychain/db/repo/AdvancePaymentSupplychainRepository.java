@@ -18,23 +18,23 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.repo.AdvancePaymentSaleRepository;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.inject.Beans;
-import com.axelor.studio.app.service.AppService;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 
 public class AdvancePaymentSupplychainRepository extends AdvancePaymentSaleRepository {
 
-  @Inject private AppService appService;
+  @Inject private AppBaseService appBaseService;
 
   @Override
   public AdvancePayment save(AdvancePayment advancePayment) {
     try {
-      if (appService.isApp("supplychain")) {
+      if (appBaseService.isApp("supplychain")) {
         Beans.get(AdvancePaymentServiceSupplychainImpl.class).validate(advancePayment);
       }
       return super.save(advancePayment);

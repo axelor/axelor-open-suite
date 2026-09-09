@@ -38,8 +38,8 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliation
 import com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
-import com.axelor.studio.app.service.AppService;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
@@ -47,7 +47,7 @@ import java.time.LocalDate;
 public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPaymentImpl {
 
   protected ExpensePaymentService expensePaymentService;
-  protected AppService appService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public ExpenseMoveReverseServiceImpl(
@@ -68,7 +68,7 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
       MoveInvoiceTermService moveInvoiceTermService,
       AnalyticLineService analyticLineService,
       ExpensePaymentService expensePaymentService,
-      AppService appService,
+      AppBaseService appBaseService,
       PaymentVoucherCancelService paymentVoucherCancelService) {
     super(
         moveCreateService,
@@ -89,7 +89,7 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
         analyticLineService,
         paymentVoucherCancelService);
     this.expensePaymentService = expensePaymentService;
-    this.appService = appService;
+    this.appBaseService = appBaseService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -108,7 +108,7 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
             isAutomaticAccounting,
             isUnreconcileOriginalMove,
             dateOfReversion);
-    if (!appService.isApp("expense")) {
+    if (!appBaseService.isApp("expense")) {
       return reverseMove;
     }
 

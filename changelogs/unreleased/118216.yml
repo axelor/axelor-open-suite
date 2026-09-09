@@ -1,0 +1,3 @@
+---
+title: "App check: cached the app active flag in memory so the app checks guarding the service overrides no longer query the database."
+module: axelor-base

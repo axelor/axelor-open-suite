@@ -21,27 +21,27 @@ package com.axelor.apps.supplychain.service.saleorder;
 import static com.axelor.apps.sale.db.repo.SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED;
 import static com.axelor.apps.sale.db.repo.SaleOrderRepository.INVOICING_STATE_NOT_INVOICED;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.common.ObjectUtils;
-import com.axelor.studio.app.service.AppService;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 
 public class SaleOrderCopySupplychainServiceImpl implements SaleOrderCopySupplychainService {
 
-  protected final AppService appService;
+  protected final AppBaseService appBaseService;
 
   @Inject
-  public SaleOrderCopySupplychainServiceImpl(AppService appService) {
-    this.appService = appService;
+  public SaleOrderCopySupplychainServiceImpl(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
   }
 
   @Override
   public void copySaleOrderSupplychainProcess(SaleOrder copy) {
-    if (!appService.isApp("supplychain")) {
+    if (!appBaseService.isApp("supplychain")) {
       return;
     }
 

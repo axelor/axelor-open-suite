@@ -67,6 +67,14 @@ public class AppBaseServiceImpl extends ScriptAppServiceImpl implements AppBaseS
     return Query.of(AppBase.class).cacheable().autoFlush(false).fetchOne();
   }
 
+  /**
+   * Served from {@link AppActiveCache}, as this check runs on every cross-module service override.
+   */
+  @Override
+  public boolean isApp(String code) {
+    return AppActiveCache.get().isActive(code);
+  }
+
   @Override
   public ZonedDateTime getTodayDateTime() {
     return getTodayDateTime(null);
