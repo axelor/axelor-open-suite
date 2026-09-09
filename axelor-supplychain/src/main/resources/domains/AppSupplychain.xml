@@ -135,6 +135,9 @@
     <boolean name="isTitleLineManaged" title="Include title lines on stock move"
       default="false"/>
 
+    <many-to-many name="productMergeAuthorizedUserSet" ref="com.axelor.auth.db.User"
+      title="Users authorized to merge products"/>
+
     <track>
       <field name="custStockMoveMgtOnSO" on="UPDATE"/>
       <field name="customerStockMoveGenerationAuto" on="UPDATE"/>

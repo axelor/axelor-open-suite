@@ -91,6 +91,10 @@
       <field name="intercoPurchaseOrderCreateRequested" widget="boolean-switch"/>
       <field name="intercoInvoiceCreateValidated" widget="boolean-switch"/>
     </panel>
+    <panel name="productMergePanel" title="Product merge">
+      <field name="productMergeAuthorizedUserSet" colSpan="12" canNew="false" canEdit="false"
+        form-view="user-form" grid-view="user-grid"/>
+    </panel>
     <panel name="actionPanel">
       <button name="generateSupplychainConfigurationsBtn" colSpan="4"
         title="Generate supply chain configurations"

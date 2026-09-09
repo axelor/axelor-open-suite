@@ -1,0 +1,9 @@
+---
+title: "Product: added a manual merge of two products, transferring the references of the absorbed product to the kept one, archiving the absorbed product and recording the operation in a merge log."
+module: axelor-supplychain
+developer: |
+  Added the entity ProductMergeLog, the field Product.mergedIntoProduct and the
+  configuration AppSupplychain.productMergeAuthorizedUserSet, which lists the users
+  allowed to run a product merge.
+
+  New menu entry "Product merge logs" under Referential > Configuration.
