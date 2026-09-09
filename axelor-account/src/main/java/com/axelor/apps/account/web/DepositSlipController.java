@@ -110,7 +110,22 @@ public class DepositSlipController {
             .map(DepositSlip::getPaymentVoucherList)
             .orElse(new ArrayList<>());
     paymentVoucherList.addAll(selectedPaymentVoucherDueList);
+    depositSlip.setPaymentVoucherList(paymentVoucherList);
+    depositSlipService.computeTotals(depositSlip);
     response.setValue("paymentVoucherList", paymentVoucherList);
+    response.setValue("totalAmount", depositSlip.getTotalAmount());
+    response.setValue("chequeCount", depositSlip.getChequeCount());
+  }
+
+  public void computeTotals(ActionRequest request, ActionResponse response) {
+    try {
+      DepositSlip depositSlip = request.getContext().asType(DepositSlip.class);
+      Beans.get(DepositSlipService.class).computeTotals(depositSlip);
+      response.setValue("totalAmount", depositSlip.getTotalAmount());
+      response.setValue("chequeCount", depositSlip.getChequeCount());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void updateInvoicePayments(ActionRequest request, ActionResponse response) {

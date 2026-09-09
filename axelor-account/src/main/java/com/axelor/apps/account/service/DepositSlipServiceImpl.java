@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -341,5 +342,21 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     invoicePayment.setBankDepositDate(depositDate);
     invoicePayment.setDescription(invoicePayment.getDescription() + ":" + depositNumber);
     invoicePaymentRepository.save(invoicePayment);
+  }
+
+  @Override
+  public void removePaymentVoucher(DepositSlip depositSlip, PaymentVoucher paymentVoucher) {
+    depositSlip.removePaymentVoucherListItem(paymentVoucher);
+  }
+
+  @Override
+  public void computeTotals(DepositSlip depositSlip) {
+    List<PaymentVoucher> paymentVoucherList =
+        Optional.ofNullable(depositSlip.getPaymentVoucherList()).orElseGet(ArrayList::new);
+    depositSlip.setTotalAmount(
+        paymentVoucherList.stream()
+            .map(PaymentVoucher::getPaidAmount)
+            .reduce(BigDecimal.ZERO, BigDecimal::add));
+    depositSlip.setChequeCount(paymentVoucherList.size());
   }
 }

@@ -63,4 +63,26 @@ public interface DepositSlipService {
   BigDecimal getTotalAmount(DepositSlip depositSlip, List<Integer> selectedPaymentVoucherDueIdList);
 
   void updateInvoicePayments(DepositSlip depositSlip, LocalDate depositDate);
+
+  /**
+   * Removes a payment voucher from the given deposit slip.
+   *
+   * <p>The voucher is taken out of {@link DepositSlip#getPaymentVoucherList()} and its {@code
+   * depositSlip} reference is cleared. The slip totals are left untouched; call {@link
+   * #computeTotals(DepositSlip)} afterwards to keep them consistent.
+   *
+   * @param depositSlip the deposit slip currently holding the voucher
+   * @param paymentVoucher the payment voucher to detach
+   */
+  void removePaymentVoucher(DepositSlip depositSlip, PaymentVoucher paymentVoucher);
+
+  /**
+   * Recomputes the totals of a deposit slip from its payment voucher list.
+   *
+   * <p>Sets {@code totalAmount} to the sum of the vouchers' paid amounts and {@code chequeCount} to
+   * the number of vouchers. An empty or {@code null} list yields zero for both.
+   *
+   * @param depositSlip the deposit slip whose totals are recomputed
+   */
+  void computeTotals(DepositSlip depositSlip);
 }
