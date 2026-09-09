@@ -18,16 +18,30 @@
  */
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
+import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
+import com.axelor.apps.account.service.DepositSlipService;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class PaymentVoucherCancelServiceImpl implements PaymentVoucherCancelService {
+
+  protected DepositSlipService depositSlipService;
+
+  @Inject
+  public PaymentVoucherCancelServiceImpl(DepositSlipService depositSlipService) {
+    this.depositSlipService = depositSlipService;
+  }
 
   @Override
   @Transactional
   public PaymentVoucher cancelPaymentVoucher(PaymentVoucher paymentVoucher) {
-
+    DepositSlip depositSlip = paymentVoucher.getDepositSlip();
+    if (depositSlip != null && !depositSlip.getIsBankDepositMoveGenerated()) {
+      depositSlipService.removePaymentVoucher(depositSlip, paymentVoucher);
+      depositSlipService.computeTotals(depositSlip);
+    }
     paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CANCELED);
     return paymentVoucher;
   }

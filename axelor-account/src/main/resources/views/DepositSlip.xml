@@ -68,7 +68,7 @@
         canRemove="false" grid-view="selector-payment-voucher-deposit-slip-grid"
         form-view="payment-voucher-deposit-slip-form" colSpan="12"/>
       <button
-        onClick="action-deposit-slip-method-load-payment-voucher,action-deposit-slip-record-total-amount-cheque-count,save,action-deposit-slip-load-payment-voucher-due-list"
+        onClick="action-deposit-slip-method-load-payment-voucher,save,action-deposit-slip-load-payment-voucher-due-list"
         name="loadSelectedLinesBtn" title="Load selected lines" colOffset="6" colSpan="3"
         readonlyIf="__paymentVoucherDueList.length == 0" css="btn-success"/>
       <button
@@ -82,7 +82,7 @@
         grid-view="payment-voucher-deposit-slip-grid" form-view="payment-voucher-deposit-slip-form"
         readonlyIf="isBankDepositMoveGenerated" canNew="false" canRemove="true" colSpan="12"
         editable="true"
-        onChange="action-deposit-slip-record-total-amount-cheque-count,save,action-deposit-slip-load-payment-voucher-due-list"/>
+        onChange="action-deposit-slip-method-compute-totals,save,action-deposit-slip-load-payment-voucher-due-list"/>
       <panel colSpan="5" hidden="true"
         hideIf="isBankDepositMoveGenerated || !paymentVoucherList || paymentVoucherList.length == 0">
         <field name="__depositDate" type="Date" title="Date of the deposit slip"/>
@@ -136,11 +136,9 @@
     <call class="com.axelor.apps.account.web.DepositSlipController" method="loadPaymentVoucher"/>
   </action-method>
 
-  <action-record name="action-deposit-slip-record-total-amount-cheque-count"
-    model="com.axelor.apps.account.db.DepositSlip">
-    <field name="totalAmount" expr="eval: paymentVoucherList?.sum{it.paidAmount}"/>
-    <field name="chequeCount" expr="eval: paymentVoucherList?.size()"/>
-  </action-record>
+  <action-method name="action-deposit-slip-method-compute-totals">
+    <call class="com.axelor.apps.account.web.DepositSlipController" method="computeTotals"/>
+  </action-method>
 
   <action-attrs name="action-cheque-deposit-slip-attrs-reset-payment-vouchers">
     <attribute name="value:del" for="paymentVoucherList" expr="eval: paymentVoucherList"/>
