@@ -783,6 +783,10 @@ public final class AccountExceptionMessage {
       "The partner is required and must be the same for all invoices" /*)*/;
   public static final String INVOICE_MERGE_ERROR_COMPANY = /*$$(*/
       "The company is required and must be the same for all invoices" /*)*/;
+  public static final String INVOICE_MERGE_ERROR_STATUS = /*$$(*/
+      "Only Draft or Validated invoices can be merged." /*)*/;
+  public static final String INVOICE_MERGE_ERROR_STATUS_INVOICE = /*$$(*/
+      "The following invoice(s) cannot be merged because their status is not Draft or Validated:<br/>%s" /*)*/;
   public static final String INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION = /*$$(*/
       "Their is at least one invoice selected that it is not validated to pay" /*)*/;
 

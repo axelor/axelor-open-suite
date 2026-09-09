@@ -49,6 +49,12 @@ public class MapOsmServiceImpl implements MapOsmService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  private static final HttpClient HTTP_CLIENT =
+      HttpClient.newBuilder()
+          .connectTimeout(Duration.ofMillis(10000))
+          .followRedirects(HttpClient.Redirect.NEVER)
+          .build();
+
   private BigDecimal lat;
   private BigDecimal lon;
 
@@ -116,14 +122,6 @@ public class MapOsmServiceImpl implements MapOsmService {
 
     String url = "https://nominatim.openstreetmap.org/search?" + query;
 
-    // Create HttpClient with custom options
-    HttpClient client =
-        HttpClient.newBuilder()
-            .connectTimeout(Duration.ofMillis(10000))
-            .followRedirects(HttpClient.Redirect.NEVER) // Do not follow redirects
-            .build();
-
-    // Build request
     HttpRequest request =
         HttpRequest.newBuilder()
             .uri(URI.create(url))
@@ -132,7 +130,7 @@ public class MapOsmServiceImpl implements MapOsmService {
             .GET()
             .build();
 
-    return client.send(request, HttpResponse.BodyHandlers.ofString());
+    return HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
   }
 
   @Override

@@ -1,0 +1,6 @@
+---
+title: "Purchase: removed frequently updated records from the cache."
+module: axelor-purchase
+developer: |
+  Removed cacheable="true" from the following domains:
+  - PurchaseRequest

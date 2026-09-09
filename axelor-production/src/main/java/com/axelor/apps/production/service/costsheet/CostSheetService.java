@@ -85,6 +85,14 @@ public interface CostSheetService {
       Set<Long> excludedProducedLineIds)
       throws AxelorException;
 
+  /**
+   * Check whether the manufacturing order already has a dated partial or final closing cost sheet.
+   *
+   * @param manufOrder the manufacturing order to check
+   * @return {@code true} if a previous closing cost sheet exists
+   */
+  boolean hasPreviousCostSheet(ManufOrder manufOrder);
+
   BigDecimal getQtyRatio(BillOfMaterial billOfMaterial) throws AxelorException;
 
   BigDecimal getQtyRatio(

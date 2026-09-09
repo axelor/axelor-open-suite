@@ -103,4 +103,13 @@ public final class BudgetExceptionMessage {
 
   public static final String BUDGET_LINE_MISSING_ON_DATES = /*$$(*/
       "The period %s to %s is not covered by any budget line for budget %s. Please correct it." /*)*/;
+
+  public static final String BUDGET_DISTRIBUTION_NEGATIVE_AMOUNT_NOT_ALLOWED_ORDER = /*$$(*/
+      "The budget distribution amount for budget %s cannot be negative." /*)*/;
+
+  public static final String BUDGET_DISTRIBUTION_NEGATIVE_AMOUNT_NOT_ALLOWED_INVOICE = /*$$(*/
+      "The budget distribution amount for budget %s cannot be negative unless it comes from a refund, an advance or a reversal, please correct it" /*)*/;
+
+  public static final String BUDGET_DISTRIBUTION_NEGATIVE_AMOUNT_NOT_ALLOWED_MOVE = /*$$(*/
+      "The budget distribution amount for budget %s cannot be negative unless the move line reverses the account's usual position, please correct it" /*)*/;
 }

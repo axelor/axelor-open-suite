@@ -1,3 +1,0 @@
----
-title: "Production: fixed NPE when adding a consumed product to an operation with no consumed products (per-operation consumption mode)."
-module: axelor-production

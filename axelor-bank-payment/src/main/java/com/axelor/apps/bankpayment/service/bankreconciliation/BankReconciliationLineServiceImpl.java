@@ -302,4 +302,12 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
     }
     return bankReconciliationLine;
   }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void toggleSelected(BankReconciliationLine bankReconciliationLine) {
+    bankReconciliationLine.setIsSelectedBankReconciliation(
+        !bankReconciliationLine.getIsSelectedBankReconciliation());
+    bankReconciliationLineRepository.save(bankReconciliationLine);
+  }
 }

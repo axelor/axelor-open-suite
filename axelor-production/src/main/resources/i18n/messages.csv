@@ -109,6 +109,7 @@
 "Cancelled MOs",,,
 "Cancelled Operations",,,
 "Cannot add a manufacturing order without a production process. Please check that your chosen bill of materials has a valid production process.",,,
+"Cannot compute the number of cycles because the production process line is missing. Please check the manufacturing order routing configuration.",,,
 "Cannot make BOM applicable that is not validated",,,
 "Cannot make BOM obsolete that is not applicable",,,
 "Cannot make prod process applicable that is not validated",,,

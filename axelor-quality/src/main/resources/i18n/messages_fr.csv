@@ -5,6 +5,7 @@
 "(not compliant)","(non conforme)",,
 "(simple equality between the two fields)","(simple égalité entre les deux champs)",,
 "(the measured value must be within the tolerance interval around the nominal value)","(il faut que la valeur de mesuredDim soit comprise dans l'intervalle de tolérance autour de la valeur de acceptedDimension)",,
+"A control plan frequency with the same name %s already exists.","Une fréquence de contrôle avec le même nom %s existe déjà.",,
 "A control type describes what is controlled and how.","Un type de contrôle décrit ce qui est contrôlé et comment.",,
 "A decimal field gives a number, a text field a character string, a boolean field true or false, and a selection field the selected value, whose label is read with","Un champ décimal donne un nombre, un champ texte une chaîne de caractères, un champ booléen vrai ou faux, et un champ sélection la valeur sélectionnée, dont le libellé se lit avec",,
 "A field flagged as required blocks the conformity check while its value is empty.","Un champ marqué comme obligatoire bloque le contrôle de conformité tant que sa valeur n'est pas renseignée.",,

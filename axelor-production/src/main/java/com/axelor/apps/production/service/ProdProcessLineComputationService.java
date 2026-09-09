@@ -31,8 +31,9 @@ public interface ProdProcessLineComputationService {
    * @param prodProcessLine
    * @param qty
    * @return Number of cycle.
+   * @throws AxelorException if the production process line is missing.
    */
-  BigDecimal getNbCycle(ProdProcessLine prodProcessLine, BigDecimal qty);
+  BigDecimal getNbCycle(ProdProcessLine prodProcessLine, BigDecimal qty) throws AxelorException;
 
   BigDecimal computeNbCycle(BigDecimal qty, BigDecimal maxCapacityPerCycle);
 

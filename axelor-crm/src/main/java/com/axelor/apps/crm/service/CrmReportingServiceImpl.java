@@ -40,8 +40,6 @@ import java.util.Set;
 
 public class CrmReportingServiceImpl implements CrmReportingService {
 
-  protected String query = "";
-
   protected AppBaseService appBaseService;
   protected static final String PARTNER = "Partner";
   protected static final String LEAD = "eventLead";
@@ -77,7 +75,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
         }
       }
 
-      this.prepareQuery(crmReporting, isPartner, model);
+      String query = this.prepareQuery(crmReporting, isPartner, model);
       String idList = null;
       Query<Model> q = Query.of((Class<Model>) klass).filter(query);
 
@@ -120,18 +118,20 @@ public class CrmReportingServiceImpl implements CrmReportingService {
     return companySet;
   }
 
-  protected void prepareQuery(CrmReporting crmReporting, boolean isPartner, String model) {
+  protected String prepareQuery(CrmReporting crmReporting, boolean isPartner, String model) {
+    StringBuilder query = new StringBuilder();
     model = Strings.isNullOrEmpty(model) ? "" : model + ".";
 
     if (isPartner) {
-      partnerQuery(crmReporting, model);
+      partnerQuery(query, crmReporting, model);
     } else {
-      leadQuery(crmReporting, model);
+      leadQuery(query, crmReporting, model);
     }
 
     if (!crmReporting.getAgencySet().isEmpty()
         && ((AppCrm) appBaseService.getApp("crm")).getAgenciesManagement())
       this.addParams(
+          query,
           "self."
               + model
               + "agency.id IN ("
@@ -140,6 +140,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
 
     if (!crmReporting.getIndustrySectorSet().isEmpty())
       this.addParams(
+          query,
           "self."
               + model
               + "industrySector.id IN ("
@@ -148,21 +149,27 @@ public class CrmReportingServiceImpl implements CrmReportingService {
 
     if (appBaseService.getAppBase().getTeamManagement() && !crmReporting.getTeamSet().isEmpty())
       this.addParams(
+          query,
           "self.team.id IN (" + StringHelper.getIdListString(crmReporting.getTeamSet()) + ")");
 
-    if (crmReporting.getFromDate() != null) this.addParams("date(self.createdOn) >= :fromDate");
+    if (crmReporting.getFromDate() != null)
+      this.addParams(query, "date(self.createdOn) >= :fromDate");
 
-    if (crmReporting.getToDate() != null) this.addParams("date(self.createdOn) <= :toDate");
+    if (crmReporting.getToDate() != null) this.addParams(query, "date(self.createdOn) <= :toDate");
+
+    return query.toString();
   }
 
-  private void partnerQuery(CrmReporting crmReporting, String model) {
+  private void partnerQuery(StringBuilder query, CrmReporting crmReporting, String model) {
     if (appBaseService.getAppBase().getEnableMultiCompany()
         && !crmReporting.getCompanySet().isEmpty())
       this.addParams(
+          query,
           "(" + companyQuery("self." + model + "companySet", crmReporting.getCompanySet()) + ")");
 
     if (!crmReporting.getCategorySet().isEmpty())
       this.addParams(
+          query,
           "self."
               + model
               + "partnerCategory.id "
@@ -172,6 +179,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
 
     if (!crmReporting.getCountrySet().isEmpty())
       this.addParams(
+          query,
           "self."
               + model
               + "partnerAddressList.address.country.id "
@@ -180,10 +188,11 @@ public class CrmReportingServiceImpl implements CrmReportingService {
               + ")");
   }
 
-  private void leadQuery(CrmReporting crmReporting, String model) {
+  private void leadQuery(StringBuilder query, CrmReporting crmReporting, String model) {
     if (appBaseService.getAppBase().getEnableMultiCompany()
         && !crmReporting.getCompanySet().isEmpty())
       this.addParams(
+          query,
           "self."
               + model
               + "company.id IN ("
@@ -192,6 +201,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
 
     if (!crmReporting.getCategorySet().isEmpty())
       this.addParams(
+          query,
           "self."
               + model
               + "type.id "
@@ -201,6 +211,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
 
     if (!crmReporting.getCountrySet().isEmpty())
       this.addParams(
+          query,
           "self."
               + model
               + "address.country.id "
@@ -213,11 +224,11 @@ public class CrmReportingServiceImpl implements CrmReportingService {
     return queryStr + ".id IN (" + StringHelper.getIdListString(companies) + ")";
   }
 
-  protected void addParams(String paramQuery) {
-    if (!Strings.isNullOrEmpty(query)) {
-      this.query += " AND ";
+  protected void addParams(StringBuilder query, String paramQuery) {
+    if (query.length() > 0) {
+      query.append(" AND ");
     }
 
-    this.query += paramQuery;
+    query.append(paramQuery);
   }
 }

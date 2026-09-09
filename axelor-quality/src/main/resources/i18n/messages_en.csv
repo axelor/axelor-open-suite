@@ -5,6 +5,7 @@
 "(not compliant)",,,
 "(simple equality between the two fields)",,,
 "(the measured value must be within the tolerance interval around the nominal value)",,,
+"A control plan frequency with the same name %s already exists.",,,
 "A control type describes what is controlled and how.",,,
 "A decimal field gives a number, a text field a character string, a boolean field true or false, and a selection field the selected value, whose label is read with",,,
 "A field flagged as required blocks the conformity check while its value is empty.",,,

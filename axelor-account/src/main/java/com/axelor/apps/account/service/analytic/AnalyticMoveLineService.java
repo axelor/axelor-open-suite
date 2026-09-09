@@ -63,6 +63,25 @@ public interface AnalyticMoveLineService {
   public void updateAnalyticMoveLine(
       AnalyticMoveLine analyticMoveLine, BigDecimal total, LocalDate date);
 
+  /**
+   * Recomputes every analytic move line of the list for the given total then reconciles the
+   * per-line rounding so that, for each analytic axis distributing 100%, the sum of the line
+   * amounts equals the total. Must be used instead of looping over {@link #updateAnalyticMoveLine}
+   * whenever a whole distribution is recomputed, otherwise the per-line HALF_UP rounding drifts.
+   */
+  public void updateAnalyticMoveLineList(
+      List<AnalyticMoveLine> analyticMoveLineList, BigDecimal total, LocalDate date);
+
+  /**
+   * Reconciles the per-line HALF_UP rounding of already-computed analytic move lines so that, for
+   * each analytic axis distributing 100%, the sum of the line amounts equals the total (the last
+   * line of each axis absorbs the residual). Use this when the line amounts are already up to date
+   * and only the rounding drift needs to be corrected; use {@link #updateAnalyticMoveLineList} when
+   * the amounts must be recomputed first.
+   */
+  public void reconcileRoundingRemainder(
+      List<AnalyticMoveLine> analyticMoveLineList, BigDecimal total);
+
   public boolean validateLines(List<AnalyticDistributionLine> analyticDistributionLineList);
 
   @CallMethod

@@ -226,10 +226,9 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             .filter(sm -> sm.getStatusSelect() != StockMoveRepository.STATUS_REALIZED)
             .map(StockMove::getId)
             .collect(Collectors.toSet());
-    // Capture stock move line IDs that already belong to a previously realized batch (consumed
-    // and produced). They must be excluded from the cost sheet about to be computed so the
-    // result is strictly batch-specific (avoids double-counting raw materials / finished units
-    // that were already accounted for in a prior partial cost sheet, even on the same day).
+    // After a prior closing cost sheet exists, capture realized stock move line IDs from previous
+    // batches (consumed and produced). Excluding them keeps the next cost sheet batch-specific and
+    // avoids double-counting, including when multiple finishes happen on the same day.
     Set<Long> excludedConsumedLineIds = collectAlreadyAccountedLineIds(manufOrder, true);
     Set<Long> excludedProducedLineIds = collectAlreadyAccountedLineIds(manufOrder, false);
     manufOrder = manufOrderStockMoveService.finishInStockMoves(manufOrder);
@@ -362,6 +361,37 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     return realQty.signum() != 0 ? realQty : manufOrder.getQty();
   }
 
+  /** Unlike {@link #computeRealProducedQty}, does not fall back to {@code manufOrder.getQty()}. */
+  protected BigDecimal computeProducedQtyRealized(ManufOrder manufOrder) {
+    if (ObjectUtils.isEmpty(manufOrder.getProducedStockMoveLineList())) {
+      return BigDecimal.ZERO;
+    }
+    return manufOrder.getProducedStockMoveLineList().stream()
+        .filter(
+            sml ->
+                sml.getProduct() != null
+                    && sml.getProduct().equals(manufOrder.getProduct())
+                    && sml.getStockMove() != null
+                    && sml.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_REALIZED)
+        .map(StockMoveLine::getRealQty)
+        .filter(Objects::nonNull)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public boolean completeIfFullyProduced(ManufOrder manufOrder) throws AxelorException {
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+    if (manufOrder.getStatusSelect() == ManufOrderRepository.STATUS_FINISHED) {
+      return true;
+    }
+    if (computeProducedQtyRealized(manufOrder).compareTo(manufOrder.getQty()) >= 0) {
+      finishManufOrder(manufOrder);
+      return sendFinishedMail(manufOrder);
+    }
+    return true;
+  }
+
   /**
    * Allows to finish partially a manufacturing order, by realizing current stock move and planning
    * the difference with the planned prodproducts.
@@ -386,9 +416,9 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             .filter(sm -> sm.getStatusSelect() != StockMoveRepository.STATUS_REALIZED)
             .map(StockMove::getId)
             .collect(Collectors.toSet());
-    // Capture stock move line IDs that already belong to a previously realized batch so they are
-    // excluded from this batch's cost sheet (avoids double-counting on partial-then-final, even
-    // when both happen on the same day).
+    // After a prior closing cost sheet exists, capture realized stock move line IDs from previous
+    // batches so they are excluded from this cost sheet (avoids double-counting on
+    // partial-then-final, including when both happen on the same day).
     Set<Long> excludedConsumedLineIds = collectAlreadyAccountedLineIds(manufOrder, true);
     Set<Long> excludedProducedLineIds = collectAlreadyAccountedLineIds(manufOrder, false);
     manufOrder = manufOrderStockMoveService.partialFinishIn(manufOrder);
@@ -396,8 +426,11 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     // Compute the produced quantity for this partial batch from the still-PLANNED OUT moves.
     // The cost sheet's default producedQty only counts realized stock moves, so it would
     // return 0 here (current OUT moves not realized yet). Passing the planned qty keeps both
-    // the produced cost sheet line and the manufOrderProducedRatio accurate.
-    BigDecimal producedQty = computePlannedProducedQty(manufOrder, plannedOutMoveIds);
+    // the produced cost sheet line and the manufOrderProducedRatio accurate. Reserve quantity
+    // (tracking-number remainder held back for a later batch) is excluded, since it's not
+    // actually realized in this batch either -- see computePlannedProducedQtyExcludingReserves.
+    BigDecimal producedQty =
+        computePlannedProducedQtyExcludingReserves(manufOrder, plannedOutMoveIds);
 
     CostSheet costSheet =
         Beans.get(CostSheetService.class)
@@ -412,7 +445,10 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     BigDecimal unitCostThisBatch = computeOneUnitProductionPrice(manufOrder, costSheet);
     manufOrder.setCostPrice(computeCumulativeProductionCost(manufOrder));
     manufOrderStockMoveService.updatePrices(manufOrder, unitCostThisBatch, plannedOutMoveIds);
-    manufOrderStockMoveService.partialFinishOut(manufOrder);
+    manufOrder = manufOrderStockMoveService.partialFinishOut(manufOrder);
+    if (computeProducedQtyRealized(manufOrder).compareTo(manufOrder.getQty()) >= 0) {
+      return completeIfFullyProduced(manufOrder);
+    }
     return sendPartialFinishMail(manufOrder);
   }
 
@@ -439,14 +475,18 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
   /**
    * Collect stock move line IDs that already belong to a stock move with status {@code REALIZED}
-   * before the current finish step. These represent quantities already accounted for in a prior
-   * cost sheet and must be excluded from the cost sheet about to be computed.
+   * before the current finish step, but only when a prior closing cost sheet exists. These
+   * represent quantities already accounted for in that prior cost sheet and must be excluded from
+   * the cost sheet about to be computed.
    *
    * @param manufOrder the manuf order being finished
    * @param consumed {@code true} to collect from {@code consumedStockMoveLineList} (IN side),
    *     {@code false} to collect from {@code producedStockMoveLineList} (OUT side)
    */
   protected Set<Long> collectAlreadyAccountedLineIds(ManufOrder manufOrder, boolean consumed) {
+    if (!Beans.get(CostSheetService.class).hasPreviousCostSheet(manufOrder)) {
+      return new HashSet<>();
+    }
     List<StockMoveLine> source =
         consumed
             ? manufOrder.getConsumedStockMoveLineList()
@@ -505,6 +545,61 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       totalQty = totalQty.add(convertToUnit(line.getQty(), line.getUnit(), targetUnit, product));
     }
     return totalQty;
+  }
+
+  /**
+   * Sum the "reserve" quantity for {@code manufOrder.product} across the given planned OUT moves --
+   * leftover tracking-number quantity explicitly held back for a later batch by {@link
+   * ManufOrderCreateStockMoveLineServiceImpl#createNewProducedStockMoveLineList}, which leaves
+   * {@code producedManufOrder} unset on those lines (i.e. they are not in {@code
+   * manufOrder.producedStockMoveLineList}, mapped by {@code producedManufOrder}).
+   */
+  protected BigDecimal computeReservedQty(ManufOrder manufOrder, Set<Long> plannedOutMoveIds)
+      throws AxelorException {
+    if (plannedOutMoveIds == null || plannedOutMoveIds.isEmpty()) {
+      return BigDecimal.ZERO;
+    }
+    Product manufProduct = manufOrder.getProduct();
+    if (manufProduct == null) {
+      return BigDecimal.ZERO;
+    }
+    Unit targetUnit = manufOrder.getUnit();
+    BigDecimal totalQty = BigDecimal.ZERO;
+    for (StockMove stockMove : manufOrder.getOutStockMoveList()) {
+      if (!plannedOutMoveIds.contains(stockMove.getId())) {
+        continue;
+      }
+      List<StockMoveLine> lineList = stockMove.getStockMoveLineList();
+      if (lineList == null) {
+        continue;
+      }
+      for (StockMoveLine line : lineList) {
+        if (line.getProduct() == null
+            || !manufProduct.equals(line.getProduct())
+            || line.getQty() == null
+            || manufOrder.equals(line.getProducedManufOrder())) {
+          continue; // not a reserve line -- either a different product, or genuine production
+        }
+        totalQty =
+            totalQty.add(convertToUnit(line.getQty(), line.getUnit(), targetUnit, manufProduct));
+      }
+    }
+    return totalQty;
+  }
+
+  /**
+   * Like {@link #computePlannedProducedQty}, but excludes reserve quantity (see {@link
+   * #computeReservedQty}) -- used only by {@link #partialFinish}, which itself strips reserve lines
+   * from the stock move before realizing it ({@link ManufOrderStockMoveServiceImpl#partialFinish}),
+   * so the produced qty used for costing must match what actually gets realized in this batch. Full
+   * Finish ({@link #finishManufOrder}) realizes every OUT line unfiltered (reserves included), so
+   * it keeps using {@link #computePlannedProducedQty} directly, unchanged.
+   */
+  protected BigDecimal computePlannedProducedQtyExcludingReserves(
+      ManufOrder manufOrder, Set<Long> plannedOutMoveIds) throws AxelorException {
+    BigDecimal totalQty = computePlannedProducedQty(manufOrder, plannedOutMoveIds);
+    BigDecimal reservedQty = computeReservedQty(manufOrder, plannedOutMoveIds);
+    return totalQty.subtract(reservedQty).max(BigDecimal.ZERO);
   }
 
   /**

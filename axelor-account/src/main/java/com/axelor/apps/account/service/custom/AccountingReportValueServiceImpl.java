@@ -74,8 +74,9 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   protected AppBaseService appBaseService;
   protected TraceBackRepository traceBackRepository;
 
-  protected static int lineOffset = 0;
-  protected static int periodNumber = 0;
+  private static final ThreadLocal<AccountingReportValueContext> CONTEXT =
+      ThreadLocal.withInitial(AccountingReportValueContext::new);
+
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -97,20 +98,20 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     this.traceBackRepository = traceBackRepository;
   }
 
-  public static synchronized void incrementLineOffset() {
-    lineOffset++;
+  public static void incrementLineOffset() {
+    CONTEXT.get().incrementLineOffset();
   }
 
-  public static synchronized int getLineOffset() {
-    return lineOffset;
+  public static int getLineOffset() {
+    return CONTEXT.get().getLineOffset();
   }
 
-  public static synchronized void incrementPeriodNumber() {
-    periodNumber++;
+  public static void incrementPeriodNumber() {
+    CONTEXT.get().incrementPeriodNumber();
   }
 
-  public static synchronized int getPeriodNumber() {
-    return periodNumber;
+  public static int getPeriodNumber() {
+    return CONTEXT.get().getPeriodNumber();
   }
 
   @Override
@@ -121,12 +122,17 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
 
   @Override
   public void computeReportValues(AccountingReport accountingReport) throws AxelorException {
-    for (Company company : accountingReport.getCompanySet()) {
-      this.computeReportValues(accountingReport, Sets.newHashSet(company));
-    }
+    CONTEXT.set(new AccountingReportValueContext());
+    try {
+      for (Company company : accountingReport.getCompanySet()) {
+        this.computeReportValues(accountingReport, Sets.newHashSet(company));
+      }
 
-    if (accountingReport.getCompanySet().size() > 1) {
-      this.computeReportValues(accountingReport, accountingReport.getCompanySet());
+      if (accountingReport.getCompanySet().size() > 1) {
+        this.computeReportValues(accountingReport, accountingReport.getCompanySet());
+      }
+    } finally {
+      CONTEXT.remove();
     }
   }
 

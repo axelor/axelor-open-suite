@@ -331,7 +331,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     fixedAsset.setNumberOfDepreciation(fixedAsset.getFiscalNumberOfDepreciation());
     fixedAsset.setPeriodicityInMonth(fixedAsset.getFiscalPeriodicityInMonth());
     fixedAsset.setPeriodicityTypeSelect(fixedAsset.getFiscalPeriodicityTypeSelect());
-    fixedAsset.setDurationInMonth(fixedAsset.getFiscalPeriodicityTypeSelect());
+    fixedAsset.setDurationInMonth(fixedAsset.getFiscalDurationInMonth());
     fixedAsset.setDegressiveCoef(fixedAsset.getFiscalDegressiveCoef());
     fixedAsset.setIsEqualToFiscalDepreciation(isFiscal(fixedAsset));
   }
@@ -343,7 +343,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     fixedAsset.setIfrsNumberOfDepreciation(fixedAsset.getFiscalNumberOfDepreciation());
     fixedAsset.setIfrsPeriodicityInMonth(fixedAsset.getFiscalPeriodicityInMonth());
     fixedAsset.setIfrsPeriodicityTypeSelect(fixedAsset.getFiscalPeriodicityTypeSelect());
-    fixedAsset.setIfrsDurationInMonth(fixedAsset.getFiscalPeriodicityTypeSelect());
+    fixedAsset.setIfrsDurationInMonth(fixedAsset.getFiscalDurationInMonth());
     fixedAsset.setIfrsDegressiveCoef(fixedAsset.getFiscalDegressiveCoef());
     fixedAsset.setIsIfrsEqualToFiscalDepreciation(isFiscal(fixedAsset));
   }

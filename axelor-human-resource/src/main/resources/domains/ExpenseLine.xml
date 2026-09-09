@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="ExpenseLine" cacheable="true">
+  <entity name="ExpenseLine">
     <!-- Original part of expenseLine -->
     <many-to-one name="employee" ref="Employee" title="Employee"/>
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>

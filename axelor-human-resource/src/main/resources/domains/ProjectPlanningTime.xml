@@ -5,7 +5,7 @@
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
-  <entity name="ProjectPlanningTime" cacheable="true">
+  <entity name="ProjectPlanningTime">
 
     <decimal name="plannedTime" title="Planned time"/>
 

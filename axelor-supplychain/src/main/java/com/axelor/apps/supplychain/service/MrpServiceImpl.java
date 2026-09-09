@@ -224,6 +224,14 @@ public class MrpServiceImpl implements MrpService {
   @Override
   @Transactional
   public void reset(Mrp mrp) {
+    // Clear per-run in-memory state so a reused service instance does not carry over data from a
+    // previous calculation.
+    this.stockLocationList = null;
+    this.productMap = null;
+    this.productMapToBeAssigned = null;
+    this.processedMrpForecastIdSet = null;
+    this.currentLevel = null;
+
     today = appBaseService.getTodayDate(mrp.getStockLocation().getCompany());
 
     mrpLineRepository

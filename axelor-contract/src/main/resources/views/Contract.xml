@@ -22,6 +22,18 @@
       x-scale="currency.numberOfDecimals"/>
     <field name="currentContractVersion.yearlyExTaxTotalRevalued"
       x-scale="currency.numberOfDecimals"/>
+    <summary-bar>
+      <field name="currentContractVersion.initialExTaxTotalPerYear"
+        title="Selected initial total" aggregate="sum" on="selection"/>
+      <field name="currentContractVersion.yearlyExTaxTotalRevalued"
+        title="Selected revalued total" aggregate="sum" on="selection"/>
+      <call action="com.axelor.apps.contract.web.ContractController:fetchSummary">
+        <field name="$totalInitialExTaxTotalPerYear" title="Total initial" type="decimal"
+          align="end"/>
+        <field name="$totalYearlyExTaxTotalRevalued" title="Total revalued" type="decimal"
+          align="end"/>
+      </call>
+    </summary-bar>
   </grid>
 
   <grid name="supplier-contract-grid" title="Contracts"
@@ -42,6 +54,18 @@
       x-scale="currency.numberOfDecimals"/>
     <field name="currentContractVersion.yearlyExTaxTotalRevalued"
       x-scale="currency.numberOfDecimals"/>
+    <summary-bar>
+      <field name="currentContractVersion.initialExTaxTotalPerYear"
+        title="Selected initial total" aggregate="sum" on="selection"/>
+      <field name="currentContractVersion.yearlyExTaxTotalRevalued"
+        title="Selected revalued total" aggregate="sum" on="selection"/>
+      <call action="com.axelor.apps.contract.web.ContractController:fetchSummary">
+        <field name="$totalInitialExTaxTotalPerYear" title="Total initial" type="decimal"
+          align="end"/>
+        <field name="$totalYearlyExTaxTotalRevalued" title="Total revalued" type="decimal"
+          align="end"/>
+      </call>
+    </summary-bar>
   </grid>
 
   <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract"
