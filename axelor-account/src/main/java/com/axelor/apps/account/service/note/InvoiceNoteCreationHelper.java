@@ -34,6 +34,7 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
+import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,12 +67,13 @@ public class InvoiceNoteCreationHelper {
       return;
     }
 
-    if (invoice.getFinancialDiscount() != null
-        && !StringUtils.isBlank(invoice.getFinancialDiscount().getLegalNotice())) {
-      String noteContent = invoice.getFinancialDiscount().getLegalNotice();
-      InvoiceNote invoiceNote = createInvoiceNote(noteTypeAAB, noteContent);
-      invoice.addInvoiceNoteListItem(invoiceNote);
-      return;
+    if (invoice.getFinancialDiscount() != null) {
+      String noteContent = htmlToText(invoice.getFinancialDiscount().getLegalNotice());
+      if (!StringUtils.isBlank(noteContent)) {
+        InvoiceNote invoiceNote = createInvoiceNote(noteTypeAAB, noteContent);
+        invoice.addInvoiceNoteListItem(invoiceNote);
+        return;
+      }
     }
     if (company.getAccountConfig().getDisplayNoFinancialDiscountAppliedOnPrinting()) {
       String noteContent = I18n.get("No discount will be granted for early payment.");
@@ -92,15 +94,17 @@ public class InvoiceNoteCreationHelper {
 
     String noteContent = "";
     String termsAndConditions =
-        Optional.ofNullable(company.getAccountConfig())
-            .map(AccountConfig::getTermsAndConditions)
-            .orElse(null);
+        htmlToText(
+            Optional.ofNullable(company.getAccountConfig())
+                .map(AccountConfig::getTermsAndConditions)
+                .orElse(null));
     if (!StringUtils.isBlank(termsAndConditions)) {
       noteContent = termsAndConditions;
       String invoiceClientBox =
-          Optional.ofNullable(company.getAccountConfig())
-              .map(AccountConfig::getInvoiceClientBox)
-              .orElse(null);
+          htmlToText(
+              Optional.ofNullable(company.getAccountConfig())
+                  .map(AccountConfig::getInvoiceClientBox)
+                  .orElse(null));
       if (!StringUtils.isBlank(invoiceClientBox)) {
         noteContent += "\n" + invoiceClientBox;
       }
@@ -121,7 +125,7 @@ public class InvoiceNoteCreationHelper {
       return;
     }
 
-    String noteContent = company.getLegalInformation();
+    String noteContent = htmlToText(company.getLegalInformation());
     if (StringUtils.isBlank(noteContent)) {
       logger.info(
           "No content to display for note ABL, seller information. Note creation was skipped");
@@ -140,9 +144,10 @@ public class InvoiceNoteCreationHelper {
     }
 
     String noteContent =
-        Optional.ofNullable(company.getAccountConfig())
-            .map(AccountConfig::getSaleInvoiceLegalNote)
-            .orElse(null);
+        htmlToText(
+            Optional.ofNullable(company.getAccountConfig())
+                .map(AccountConfig::getSaleInvoiceLegalNote)
+                .orElse(null));
     if (StringUtils.isBlank(noteContent)) {
       logger.info(
           "No content to display for note PMT, lump sum indemnity. Note creation was skipped");
@@ -160,9 +165,10 @@ public class InvoiceNoteCreationHelper {
     }
 
     String noteContent =
-        Optional.ofNullable(company.getAccountConfig())
-            .map(AccountConfig::getPenaltyRateNote)
-            .orElse(null);
+        htmlToText(
+            Optional.ofNullable(company.getAccountConfig())
+                .map(AccountConfig::getPenaltyRateNote)
+                .orElse(null));
     if (StringUtils.isBlank(noteContent)) {
       logger.info(
           "No content to display for note PMD, late interest charges. Note creation was skipped");
@@ -179,7 +185,7 @@ public class InvoiceNoteCreationHelper {
       return;
     }
 
-    String noteContent = company.getLegalFormAndCapital();
+    String noteContent = htmlToText(company.getLegalFormAndCapital());
     if (StringUtils.isBlank(noteContent)) {
       logger.info(
           "No content to display for note REG, legal form and capital. Note creation was skipped");
@@ -191,13 +197,14 @@ public class InvoiceNoteCreationHelper {
 
   protected static void generateBankDetailsNote(Invoice invoice) {
     BankDetails bankDetails = invoice.getCompanyBankDetails();
-    if (bankDetails == null
-        || StringUtils.isBlank(bankDetails.getSpecificNoteOnInvoice())
-        || bankDetails.getInvoiceNoteType() == null) {
+    if (bankDetails == null || bankDetails.getInvoiceNoteType() == null) {
       return;
     }
-    InvoiceNote invoiceNote =
-        createInvoiceNote(bankDetails.getInvoiceNoteType(), bankDetails.getSpecificNoteOnInvoice());
+    String noteContent = htmlToText(bankDetails.getSpecificNoteOnInvoice());
+    if (StringUtils.isBlank(noteContent)) {
+      return;
+    }
+    InvoiceNote invoiceNote = createInvoiceNote(bankDetails.getInvoiceNoteType(), noteContent);
     invoice.addInvoiceNoteListItem(invoiceNote);
   }
 
@@ -208,7 +215,7 @@ public class InvoiceNoteCreationHelper {
       return;
     }
 
-    String noteContent = invoice.getNote();
+    String noteContent = htmlToText(invoice.getNote());
     if (StringUtils.isBlank(noteContent)) {
       logger.info(
           "No content to display for note SUR, supplier information. Note creation was skipped");
@@ -256,5 +263,12 @@ public class InvoiceNoteCreationHelper {
               InvoiceNote invoiceNote = createInvoiceNote(noteTypeREG, statement);
               invoice.addInvoiceNoteListItem(invoiceNote);
             });
+  }
+
+  protected static String htmlToText(String html) {
+    if (StringUtils.isBlank(html)) {
+      return null;
+    }
+    return Jsoup.parse(html).text();
   }
 }

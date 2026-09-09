@@ -60,6 +60,7 @@ import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
+import com.axelor.apps.supplychain.service.TimetableService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
@@ -120,6 +121,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected SaleOrderDeliveryAddressService saleOrderDeliveryAddressService;
   protected PartnerAccountService partnerAccountService;
   protected InvoiceGlobalDiscountService invoiceGlobalDiscountService;
+  protected TimetableRepository timetableRepo;
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
@@ -141,7 +143,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       InvoiceTaxService invoiceTaxService,
       SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
       PartnerAccountService partnerAccountService,
-      InvoiceGlobalDiscountService invoiceGlobalDiscountService) {
+      InvoiceGlobalDiscountService invoiceGlobalDiscountService,
+      TimetableRepository timetableRepo) {
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
     this.appSupplychainService = appSupplychainService;
@@ -161,6 +164,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.saleOrderDeliveryAddressService = saleOrderDeliveryAddressService;
     this.partnerAccountService = partnerAccountService;
     this.invoiceGlobalDiscountService = invoiceGlobalDiscountService;
+    this.timetableRepo = timetableRepo;
   }
 
   @Override
@@ -189,41 +193,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         break;
 
       case SaleOrderRepository.INVOICE_TIMETABLES:
-        BigDecimal percentSum = BigDecimal.ZERO;
-        TimetableRepository timetableRepo = Beans.get(TimetableRepository.class);
-        List<Timetable> timetableList = new ArrayList<>();
-        if (timetableIdList == null || timetableIdList.isEmpty()) {
-          throw new AxelorException(
-              saleOrder,
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(SupplychainExceptionMessage.SO_INVOICE_NO_TIMETABLES_SELECTED));
-        }
-        for (Long timetableId : timetableIdList) {
-          Timetable timetable = timetableRepo.find(timetableId);
-          timetableList.add(timetable);
-          percentSum =
-              percentSum.add(
-                  timetable
-                      .getAmount()
-                      .divide(
-                          saleOrder.getInAti()
-                              ? saleOrder.getInTaxTotal()
-                              : saleOrder.getExTaxTotal(),
-                          AppBaseService.COMPUTATION_SCALING,
-                          RoundingMode.HALF_UP)
-                      .multiply(BigDecimal.valueOf(100)));
-        }
-        invoice =
-            generateInvoiceFromLines(
-                saleOrder, this.generateQtyToInvoiceMap(saleOrder, percentSum), true);
-
-        if (!timetableList.isEmpty()) {
-          for (Timetable timetable : timetableList) {
-            timetable.setInvoice(invoice);
-            timetableRepo.save(timetable);
-          }
-        }
-
+        invoice = generateInvoiceFromTimetables(saleOrder, timetableIdList);
         break;
 
       default:
@@ -280,6 +250,48 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleOrder saleOrder, BigDecimal amount, boolean isPercent) throws AxelorException {
     BigDecimal total = Beans.get(SaleOrderComputeService.class).getTotalSaleOrderPrice(saleOrder);
     return commonInvoiceService.computeAmountToInvoicePercent(saleOrder, amount, isPercent, total);
+  }
+
+  protected Invoice generateInvoiceFromTimetables(SaleOrder saleOrder, List<Long> timetableIdList)
+      throws AxelorException {
+    if (timetableIdList == null || timetableIdList.isEmpty()) {
+      throw new AxelorException(
+          saleOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.SO_INVOICE_NO_TIMETABLES_SELECTED));
+    }
+    List<Timetable> timetableList = timetableRepo.findByIds(timetableIdList);
+    BigDecimal denominator =
+        saleOrder.getInAti() ? saleOrder.getInTaxTotal() : saleOrder.getExTaxTotal();
+    BigDecimal percentSum =
+        timetableList.stream()
+            .map(t -> t.getAmount().subtract(t.getInvoicedAmount()))
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .divide(denominator, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP)
+            .multiply(BigDecimal.valueOf(100));
+    checkTimetableInvoiceAmount(saleOrder, timetableList);
+    Invoice invoice =
+        generateInvoiceFromLines(saleOrder, generateQtyToInvoiceMap(saleOrder, percentSum), true);
+    for (Timetable timetable : timetableList) {
+      timetable.setInvoice(invoice);
+      timetableRepo.save(timetable);
+    }
+    return invoice;
+  }
+
+  protected void checkTimetableInvoiceAmount(SaleOrder saleOrder, List<Timetable> timetableList)
+      throws AxelorException {
+    BigDecimal alreadyInvoiced = orderInvoiceService.amountToBeInvoiced(saleOrder);
+    BigDecimal selectedAmount =
+        timetableList.stream()
+            .map(t -> t.getAmount().subtract(t.getInvoicedAmount()))
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    if (alreadyInvoiced.add(selectedAmount).compareTo(saleOrder.getExTaxTotal()) > 0) {
+      throw new AxelorException(
+          saleOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.SO_INVOICE_AMOUNT_MAX));
+    }
   }
 
   protected BigDecimal computeAmountToInvoice(
@@ -692,6 +704,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           public List<InvoiceLine> creates() throws AxelorException {
 
             InvoiceLine invoiceLine = this.createInvoiceLine();
+            copyEcoTaxInformation(invoiceLine, saleOrderLine);
 
             List<InvoiceLine> invoiceLines = new ArrayList<>();
             invoiceLines.add(invoiceLine);
@@ -701,6 +714,17 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         };
 
     return invoiceLineGenerator.creates();
+  }
+
+  protected void copyEcoTaxInformation(InvoiceLine invoiceLine, SaleOrderLine saleOrderLine) {
+    if (invoiceLine == null
+        || saleOrderLine == null
+        || !Boolean.TRUE.equals(appBaseService.getAppBase().getEnableEcoTax())) {
+      return;
+    }
+
+    invoiceLine.setEcoTaxAmount(saleOrderLine.getEcoTaxAmount());
+    invoiceLine.setEcoTaxMention(saleOrderLine.getEcoTaxMention());
   }
 
   @Override
@@ -906,8 +930,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       List<InvoiceLine> invoiceLines = invoiceService.getInvoiceLinesFromInvoiceList(invoiceList);
       invoiceGenerator.populate(invoiceMerged, invoiceLines);
       invoiceService.setInvoiceForInvoiceLines(invoiceLines, invoiceMerged);
-      invoiceMerged.setSaleOrder(null);
+      invoiceMerged.setSaleOrder(saleOrder);
       invoiceRepo.save(invoiceMerged);
+      Beans.get(TimetableService.class).reassignInvoice(invoiceList, invoiceMerged);
       invoiceServiceSupplychain.swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;
@@ -925,6 +950,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
               paymentCondition,
               tradingName,
               fiscalPosition);
+      Beans.get(TimetableService.class).reassignInvoice(invoiceList, invoiceMerged);
       invoiceServiceSupplychain.swapStockMoveInvoices(invoiceList, invoiceMerged);
       invoiceService.deleteOldInvoices(invoiceList);
       return invoiceMerged;
@@ -990,6 +1016,19 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   public void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException {
     if (orderInvoiceService.amountToBeInvoiced(saleOrder).compareTo(saleOrder.getExTaxTotal())
         >= 0) {
+      throw new AxelorException(
+          saleOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.SO_INVOICE_GENERATE_ALL_INVOICES));
+    }
+  }
+
+  @Override
+  public void displayErrorMessageIfExceedsInvoiceableAmount(
+      SaleOrder saleOrder, BigDecimal amountToInvoice) throws AxelorException {
+    BigDecimal sumInvoices = orderInvoiceService.amountToBeInvoiced(saleOrder);
+    sumInvoices = sumInvoices.add(amountToInvoice);
+    if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,

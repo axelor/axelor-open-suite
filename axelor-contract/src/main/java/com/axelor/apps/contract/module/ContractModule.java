@@ -54,6 +54,8 @@ import com.axelor.apps.contract.service.ContractSaleOrderGeneration;
 import com.axelor.apps.contract.service.ContractSaleOrderGenerationImpl;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.apps.contract.service.ContractServiceImpl;
+import com.axelor.apps.contract.service.ContractVersionMassUpdateService;
+import com.axelor.apps.contract.service.ContractVersionMassUpdateServiceImpl;
 import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.apps.contract.service.ContractVersionServiceImpl;
 import com.axelor.apps.contract.service.ContractYearEndBonusService;
@@ -92,6 +94,7 @@ public class ContractModule extends AxelorModule {
     bind(AbstractContractRepository.class).to(ContractRepository.class);
     bind(ContractService.class).to(ContractServiceImpl.class);
     bind(ContractVersionService.class).to(ContractVersionServiceImpl.class);
+    bind(ContractVersionMassUpdateService.class).to(ContractVersionMassUpdateServiceImpl.class);
     bind(ContractLineService.class).to(ContractLineServiceImpl.class);
     bind(ConsumptionLineService.class).to(ConsumptionLineServiceImpl.class);
     bind(ContractBatchRepository.class).to(ContractBatchContractRepository.class);

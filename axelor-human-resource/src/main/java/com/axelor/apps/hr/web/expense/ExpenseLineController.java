@@ -19,13 +19,16 @@
 package com.axelor.apps.hr.web.expense;
 
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.expense.ExpenseAnalyticService;
 import com.axelor.apps.hr.service.expense.ExpenseCreateWizardService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
+import com.axelor.apps.hr.service.expense.ExpenseViewService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineComputeService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineDomainService;
 import com.axelor.i18n.I18n;
@@ -131,6 +134,23 @@ public class ExpenseLineController {
             Beans.get(AnalyticAttrsService.class)
                 .getAnalyticDistributionTemplateDomain(
                     null, expenseLine.getExpenseProduct(), expense.getCompany(), null, null, true));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void refreshAnalyticDistributionTemplate(ActionRequest request, ActionResponse response) {
+    try {
+      ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+      Beans.get(ExpenseViewService.class).setExpense(request, expenseLine);
+
+      if (Beans.get(AppAccountService.class).isApp("account")
+          && Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
+        response.setValue(
+            "analyticDistributionTemplate",
+            Beans.get(ExpenseAnalyticService.class)
+                .computeAnalyticDistributionTemplate(expenseLine));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

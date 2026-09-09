@@ -32,7 +32,6 @@ import com.axelor.script.ScriptAllowed;
 import com.axelor.team.db.Team;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /** Service for managing user-related operations. */
@@ -144,15 +143,6 @@ public interface UserService {
   Optional<Address> getUserActiveCompanyAddress();
 
   /**
-   * Changes the user password.
-   *
-   * @param user the user whose password will be changed
-   * @param values map containing oldPassword, newPassword, and chkPassword
-   * @return the updated user
-   */
-  User changeUserPassword(User user, Map<String, Object> values);
-
-  /**
    * Triggers post-processes after a change of the user password.
    *
    * @param user the user whose password was changed
@@ -164,8 +154,10 @@ public interface UserService {
       throws AxelorException, ClassNotFoundException, IOException;
 
   /**
-   * Returns whether the password matches the pattern in {@code user.password.pattern} property,
-   * with a fallback to the default password pattern if property is not set.
+   * Returns whether the password matches the pattern in {@code user.password.pattern.value}
+   * property, with a fallback to the default password pattern if property is not set. Used to
+   * produce policy-compliant random passwords; password validation at change-time is handled by the
+   * platform password policies (AOP 8.2+).
    *
    * @param password the password to validate
    * @return true if the password matches the pattern, false otherwise
@@ -178,14 +170,6 @@ public interface UserService {
    * @return the generated password
    */
   CharSequence generateRandomPassword();
-
-  /**
-   * Returns the password pattern description.
-   *
-   * @return the password pattern description
-   */
-  @CallMethod
-  String getPasswordPatternDescription();
 
   /**
    * Sets the partner of the user.

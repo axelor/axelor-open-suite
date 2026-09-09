@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <!-- VUE GENERALE -->
 
@@ -21,7 +21,7 @@
           prompt="Are you sure you want to ventilate all selected invoices ?"
           if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
-          action="action-invoice-method-convert-selected-lines-to-merge-lines"/>
+          action="action-invoice-method-open-cust-invoice-merge-wizard"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
           action="action-customer-invoice-line-menu"/>
       </menu>
@@ -84,7 +84,7 @@
           prompt="Are you sure you want to ventilate all selected invoices ?"
           if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
-          action="action-invoice-mergecustinvoices"/>
+          action="action-invoice-method-open-cust-invoice-merge-wizard"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
           action="action-customer-invoice-line-menu"/>
       </menu>
@@ -131,7 +131,7 @@
           prompt="Are you sure you want to ventilate all selected invoices ?"
           if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
-          action="action-invoice-mergecustinvoices"/>
+          action="action-invoice-method-open-cust-invoice-merge-wizard"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
           action="action-customer-invoice-line-menu"/>
       </menu>
@@ -168,8 +168,8 @@
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
   </grid>
 
-  <grid name="invoice-refund-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice"
-    orderBy="-invoiceDate">
+  <grid name="invoice-refund-grid" title="Cust. Credit notes"
+    model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
         onClick="action-invoice-method-show-invoice" icon="printer"/>
@@ -243,7 +243,7 @@
         <item name="seeSupplInvoicesLinesItem" title="See suppl. invoices lines"
           action="action-supplier-invoice-line-menu"/>
         <item name="mergeSupplInvoicesItem" title="Merge Suppl. Invoices"
-          action="action-invoice-mergesupplinvoices"/>
+          action="action-invoice-method-open-suppl-invoice-merge-wizard"/>
       </menu>
     </menubar>
     <hilite color="primary" if="statusSelect == 1"/>
@@ -285,7 +285,7 @@
       onClick="action-send-by-email-with-template"/>
   </grid>
 
-  <grid name="invoice-supplier-refund-grid" title="Invoices"
+  <grid name="invoice-supplier-refund-grid" title="Suppl. Credit notes"
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
@@ -648,8 +648,8 @@
     <panel-tabs name="mainPanelTab" hideIf="partner == null">
       <panel name="invoiceContentPanel" title="Content" showTitle="false" itemSpan="12">
         <field name="invoiceCategorySelect"
-          showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting &amp;&amp; statusSelect >= 2"
-          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; statusSelect >= 2 &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
+          showIf="(operationTypeSelect == 1 || operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting &amp;&amp; statusSelect >= 2"
+          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
           readonlyIf="statusSelect &gt;= 3" colSpan="2"/>
         <field name="company.accountConfig.displayItemsCategoriesOnPrinting" hidden="true"/>
         <panel name="cutOffPanel" title="Cut off period" itemSpan="4"
@@ -724,6 +724,8 @@
             grid-view="account-grid"/>
           <panel name="movePanel" showIf="move != null">
             <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"/>
+            <button name="viewMoveBtn" title="View move entry" icon="box-arrow-up-right"
+              onClick="action-invoice-view-open-move"/>
             <field name="move.accountingOk" readonly="true"/>
           </panel>
           <field name="doubtfulCustomerOk" readonly="true"
@@ -809,11 +811,6 @@
         <panel name="descriptionToDisplayOnProformaPanel"
           title="Comment to display on proforma" colSpan="12">
           <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
-        </panel>
-        <panel name="specificNoteOnInvoiceToDisplayPanel" title="Bank details specific note"
-          colSpan="12" hidden="true" showIf="companyBankDetails.specificNoteOnInvoice">
-          <field name="companyBankDetails.specificNoteOnInvoice" widget="html" colSpan="12"
-            showTitle="false"/>
         </panel>
         <panel name="legalNoticePanel" title="Legal Notice" colSpan="12"
           if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
@@ -1135,7 +1132,7 @@
         showIf="partner &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0"
         canCollapse="true" collapseIf="true">
         <field name="discountTypeSelect" colSpan="12"
-          onChange="action-invoice-group-invoice-line-list-on-change"/>
+          onChange="action-invoice-group-discount-type-onchange"/>
         <field name="discountAmount" showIf="discountTypeSelect != 0"
           x-currency="discountCurrency" x-scale="discountScale"
           onChange="action-invoice-group-invoice-line-list-on-change"/>
@@ -1174,6 +1171,33 @@
     </panel-mail>
   </form>
 
+  <form name="invoice-customer-form" title="Cust. invoice"
+    model="com.axelor.apps.account.db.Invoice" onNew="action-account-invoice-onnew-group"
+    onLoad="action-account-invoice-onload-group" onSave="action-invoice-onsave-group"
+    canDelete="statusSelect == 4 || (operationSubTypeSelect == 2 &amp;&amp; statusSelect == 1)">
+    <panel-include view="invoice-form"/>
+  </form>
+
+  <form name="invoice-supplier-form" title="Suppl. invoice"
+    model="com.axelor.apps.account.db.Invoice" onNew="action-account-invoice-onnew-group"
+    onLoad="action-account-invoice-onload-group" onSave="action-invoice-onsave-group"
+    canDelete="statusSelect == 4 || (operationSubTypeSelect == 2 &amp;&amp; statusSelect == 1)">
+    <panel-include view="invoice-form"/>
+  </form>
+
+  <form name="invoice-customer-refund-form" title="Cust. credit note"
+    model="com.axelor.apps.account.db.Invoice" onNew="action-account-invoice-onnew-group"
+    onLoad="action-account-invoice-onload-group" onSave="action-invoice-onsave-group"
+    canDelete="statusSelect == 4 || (operationSubTypeSelect == 2 &amp;&amp; statusSelect == 1)">
+    <panel-include view="invoice-form"/>
+  </form>
+
+  <form name="invoice-supplier-refund-form" title="Suppl. credit note"
+    model="com.axelor.apps.account.db.Invoice" onNew="action-account-invoice-onnew-group"
+    onLoad="action-account-invoice-onload-group" onSave="action-invoice-onsave-group"
+    canDelete="statusSelect == 4 || (operationSubTypeSelect == 2 &amp;&amp; statusSelect == 1)">
+    <panel-include view="invoice-form"/>
+  </form>
 
   <form name="invoice-reports-wizard-form" title="Reports" model="com.axelor.utils.db.Wizard"
     onNew="action-invoice-reports-wizard-attrs-set-report-type-select,action-invoice-reports-wizard-method-set-invoice-print-template">
@@ -1185,11 +1209,11 @@
           readonly="true" colSpan="12"/>
         <field name="$reportType" title="Invoice type" type="integer" selection-in="[2,3]"
           selection="invoice.report.type" required="true"
-          showIf="(_statusSelect == 3  || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF == null"
+          showIf="(_statusSelect == 3  || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; (_printedPDF == null || _operationTypeSelect == 1 || _operationTypeSelect == 2)"
           colSpan="12"/>
         <field name="$reportType" title="Invoice type" type="integer" selection-in="[2,3,4]"
           selection="invoice.report.type" colSpan="12" required="true"
-          showIf="(_statusSelect == 3 || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF != null"/>
+          showIf="(_statusSelect == 3 || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF != null &amp;&amp; (_operationTypeSelect == 3 || _operationTypeSelect == 4)"/>
       </panel>
       <field name="$invoicePrintTemplate" title="Invoice template" type="many-to-one"
         target="com.axelor.apps.base.db.PrintingTemplate" required="true"
@@ -1300,8 +1324,8 @@
     <panel-tabs name="invoiceDetails">
       <panel name="invoiceContentPanel" title="Invoice content" showTitle="false">
         <field name="invoiceCategorySelect"
-          showIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting &amp;&amp; statusSelect >= 2"
-          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; statusSelect >= 2 &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
+          showIf="(operationTypeSelect == 1 || operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting &amp;&amp; statusSelect >= 2"
+          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
           readonlyIf="statusSelect &gt;= 3" colSpan="2"/>
         <field name="company.accountConfig.displayItemsCategoriesOnPrinting" hidden="true"/>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
@@ -1489,14 +1513,16 @@
 
   <!-- CUSTOMER INVOICES MERGE -->
   <form name="customer-invoices-merge-form" model="com.axelor.utils.db.Wizard"
-    title="Merge Cust. Invoices" width="large">
+    title="Merge Cust. Invoices" width="large"
+    onNew="action-invoice-record-set-credit-notes-to-merge">
     <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
       form-view="invoice-form" grid-view="invoice-grid" title="Cust. Invoices to merge" colSpan="12"
       type="many-to-many" target="com.axelor.apps.account.db.Invoice"
-      domain="self.statusSelect = 1 AND self.operationTypeSelect = 3" canNew="false" canEdit="false"/>
+      domain="self.statusSelect IN (1, 2) AND self.operationTypeSelect = 3" canNew="false"
+      canEdit="false"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="generateMergedCustInvoicesBtn" title="Merge into single cust. invoice"
-        onClick="action-validate-invoice-check-selection,action-invoice-method-merge"/>
+        onClick="action-invoice-group-merge"/>
     </panel>
   </form>
 
@@ -1541,14 +1567,16 @@
 
   <!-- SUPPLIER INVOICES MERGE -->
   <form name="supplier-invoices-merge-form" model="com.axelor.utils.db.Wizard"
-    title="Merge Suppl. Invoices" width="large">
+    title="Merge Suppl. Invoices" width="large"
+    onNew="action-invoice-record-set-credit-notes-to-merge">
     <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
       form-view="invoice-form" grid-view="invoice-grid" title="Suppl. Invoices to merge"
       colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice"
-      domain="self.statusSelect = 1 AND self.operationTypeSelect = 1" canNew="false" canEdit="false"/>
+      domain="self.statusSelect IN (1, 2) AND self.operationTypeSelect = 1" canNew="false"
+      canEdit="false"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="generateMergedSupplInvoicesBtn" title="Merge into single suppl. invoice"
-        onClick="action-validate-invoice-check-selection,action-invoice-method-merge"/>
+        onClick="action-invoice-group-merge"/>
     </panel>
   </form>
 
@@ -1603,14 +1631,13 @@
     title="Merge Cust. Credit notes" width="large"
     onNew="action-invoice-record-set-credit-notes-to-merge">
     <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
-      form-view="invoice-form" grid-view="invoice-grid" title="Cust. credit notes to merge"
+      form-view="invoice-form" grid-view="invoice-refund-grid" title="Cust. credit notes to merge"
       colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice"
       domain="self.statusSelect IN (1, 2) AND self.operationTypeSelect = 4" canNew="false"
       canEdit="false"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="generateMergedCustCreditNotesBtn"
-        title="Merge into single cust. credit note"
-        onClick="action-validate-invoice-check-selection,action-invoice-method-merge"/>
+        title="Merge into single cust. credit note" onClick="action-invoice-group-merge"/>
     </panel>
   </form>
 
@@ -1619,14 +1646,14 @@
     title="Merge Suppl. Credit notes" width="large"
     onNew="action-invoice-record-set-credit-notes-to-merge">
     <panel-related name="$invoiceToMergePanel" field="$invoiceToMerge"
-      form-view="invoice-form" grid-view="invoice-grid" title="Suppl. credit notes to merge"
-      colSpan="12" type="many-to-many" target="com.axelor.apps.account.db.Invoice"
+      form-view="invoice-form" grid-view="invoice-supplier-refund-grid"
+      title="Suppl. credit notes to merge" colSpan="12" type="many-to-many"
+      target="com.axelor.apps.account.db.Invoice"
       domain="self.statusSelect IN (1, 2) AND self.operationTypeSelect = 2" canNew="false"
       canEdit="false"/>
     <panel name="actionsPanel" sidebar="true" title="Actions">
       <button name="generateMergedSupplCreditNotesBtn"
-        title="Merge into single suppl. credit note"
-        onClick="action-validate-invoice-check-selection,action-invoice-method-merge"/>
+        title="Merge into single suppl. credit note" onClick="action-invoice-group-merge"/>
     </panel>
   </form>
 
@@ -1789,6 +1816,11 @@
     <action name="action-invoice-method-check-multi-currency"/>
   </action-group>
 
+  <action-group name="action-invoice-group-merge">
+    <action name="action-validate-invoice-check-selection"/>
+    <action name="action-invoice-method-merge"/>
+  </action-group>
+
   <action-group name="action-invoice-group-saleorder-onchange">
     <action name="action-invoice-method-fill-in-lines"/>
     <action name="action-invoice-method-fill-advance-payment-set"/>
@@ -1872,6 +1904,7 @@
     <action name="action-invoice-method-validate-advance-vat-system"/>
     <action name="action-invoice-method-generate-invoice-terms" if="!invoiceTermList"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
+    <action name="action-invoice-method-compute-invoice-category"/>
     <action name="save"/>
     <action name="action-record-invoice-set-discount-values"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; [1,3].contains(operationTypeSelect) &amp;&amp; operationSubTypeSelect != 2"/>
@@ -1985,10 +2018,6 @@
 										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2"
       if="company != null"/>
     <attribute name="hidden" for="inAti" expr="eval: true" if="company == null"/>
-    <attribute name="title" for="invoiceLineList.priceDiscounted"
-      expr="eval:com.axelor.i18n.I18n.get('Unit price A.T.I.')" if="inAti"/>
-    <attribute name="title" for="invoiceLineList.priceDiscounted"
-      expr="eval:com.axelor.i18n.I18n.get('Unit price W.T.')" if="!inAti"/>
   </action-attrs>
 
   <action-attrs name="action-invoice-attrs-display-line-coefficient">
@@ -2071,7 +2100,7 @@
     <field name="tradingName" expr="eval: __user__?.tradingName"/>
     <field name="invoiceCategorySelect"
       expr="eval: __user__?.activeCompany?.accountConfig?.defaultInvoiceCategorySelect"
-      if="(_operationTypeSelect == 1 || _operationTypeSelect == 3) &amp;&amp; (!_operationSubTypeSelect || _operationSubTypeSelect == 1 || operationSubTypeSelect == 3)"/>
+      if="(_operationTypeSelect == 1 || _operationTypeSelect == 3 || _operationTypeSelect == 4) &amp;&amp; (!_operationSubTypeSelect || _operationSubTypeSelect == 1 || operationSubTypeSelect == 3)"/>
   </action-record>
 
   <action-record name="action-invoice-record-partner-change"
@@ -2307,8 +2336,14 @@
   <!-- ACTION VALIDATE -->
 
   <action-validate name="action-validate-invoice-check-selection">
-    <error message="You have to choose at least one invoice"
-      if="invoiceToMerge == null || invoiceToMerge.size() == 0"/>
+    <error message="You must select at least two customer invoices to merge."
+      if="_operationTypeSelect == 3 &amp;&amp; (invoiceToMerge == null || invoiceToMerge.size() &lt; 2)"/>
+    <error message="You must select at least two supplier invoices to merge."
+      if="_operationTypeSelect == 1 &amp;&amp; (invoiceToMerge == null || invoiceToMerge.size() &lt; 2)"/>
+    <error message="You must select at least two customer credit notes to merge."
+      if="_operationTypeSelect == 4 &amp;&amp; (invoiceToMerge == null || invoiceToMerge.size() &lt; 2)"/>
+    <error message="You must select at least two supplier credit notes to merge."
+      if="_operationTypeSelect == 2 &amp;&amp; (invoiceToMerge == null || invoiceToMerge.size() &lt; 2)"/>
   </action-validate>
 
   <action-validate name="action-validate-send-email-remove-access-for-client">
@@ -2413,6 +2448,10 @@
     <call class="com.axelor.apps.account.web.InvoiceController" method="validateAndVentilate"/>
   </action-method>
 
+  <action-method name="action-invoice-method-compute-invoice-category">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="computeInvoiceCategory"/>
+  </action-method>
+
   <action-method name="action-invoice-method-cancel">
     <call class="com.axelor.apps.account.web.InvoiceController" method="cancel"/>
   </action-method>
@@ -2447,14 +2486,9 @@
       method="mergeSupplInvoiceFromPopup"/>
   </action-method>
 
-  <action-method name="action-invoice-method-convert-selected-lines-to-merge-lines">
-    <call class="com.axelor.apps.account.web.InvoiceMergingController"
-      method="convertSelectedLinesToMergeLines"/>
-  </action-method>
-
   <action-record name="action-invoice-record-set-credit-notes-to-merge"
     model="com.axelor.utils.db.Wizard">
-    <field name="$invoiceToMerge" expr="eval: _invoiceToMerge"/>
+    <field name="$invoiceToMerge" expr="eval: _invoiceToMerge" if="_invoiceToMerge != null"/>
   </action-record>
 
   <action-method name="action-invoice-method-open-cust-credit-note-merge-wizard">
@@ -2465,6 +2499,16 @@
   <action-method name="action-invoice-method-open-suppl-credit-note-merge-wizard">
     <call class="com.axelor.apps.account.web.InvoiceMergingController"
       method="openSupplCreditNoteMergeWizard"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-open-cust-invoice-merge-wizard">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController"
+      method="openCustInvoiceMergeWizard"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-open-suppl-invoice-merge-wizard">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController"
+      method="openSupplInvoiceMergeWizard"/>
   </action-method>
 
   <action-method name="action-invoice-method-create-advance-payment-domain">
@@ -2720,16 +2764,6 @@
     <context name="_operationTypeSelect" expr="eval: operationTypeSelect"/>
   </action-view>
 
-  <action-view name="action-invoice-mergecustinvoices" title="Merge Cust. Invoices"
-    model="com.axelor.utils.db.Wizard">
-    <view type="form" name="customer-invoices-merge-form"/>
-  </action-view>
-
-  <action-view name="action-invoice-mergesupplinvoices" title="Merge Suppl. Invoices"
-    model="com.axelor.utils.db.Wizard">
-    <view type="form" name="supplier-invoices-merge-form"/>
-  </action-view>
-
   <action-view name="action-invoice-view-show-subrogation-release"
     title="Subrogation releases" model="com.axelor.apps.account.db.SubrogationRelease">
     <view type="grid" name="subrogation-release-grid"/>
@@ -2747,6 +2781,7 @@
     <view-param name="show-confirm" value="false"/>
     <context name="_statusSelect" expr="eval: statusSelect"/>
     <context name="_operationSubTypeSelect" expr="eval: operationSubTypeSelect"/>
+    <context name="_operationTypeSelect" expr="eval: operationTypeSelect"/>
     <context name="_printedPDF" expr="eval: printedPDF"/>
     <context name="_invoiceId" expr="eval: id"/>
     <context name="_localization" expr="eval: localization"/>
@@ -3116,7 +3151,24 @@
 
   <action-validate name="action-invoice-validate-check-invoice-category">
     <error message="Please select an invoice category before ventilating."
-      if="(operationTypeSelect == 1 || operationTypeSelect == 3) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceCategorySelect == null"/>
+      if="(operationTypeSelect == 1 || operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting &amp;&amp; invoiceCategorySelect == null"/>
   </action-validate>
+
+  <action-record name="action-invoice-record-clear-discount-amount"
+    model="com.axelor.apps.account.db.Invoice">
+    <field name="discountAmount" expr="eval: 0"/>
+  </action-record>
+
+  <action-group name="action-invoice-group-discount-type-onchange">
+    <action name="action-invoice-record-clear-discount-amount"/>
+    <action name="action-invoice-group-invoice-line-list-on-change"/>
+  </action-group>
+
+  <action-view name="action-invoice-view-open-move" title="Account move"
+    model="com.axelor.apps.account.db.Move">
+    <view type="form" name="move-form"/>
+    <view type="grid" name="move-grid"/>
+    <context name="_showRecord" expr="eval: __repo__(Invoice).find(id)?.move?.id"/>
+  </action-view>
 
 </object-views>

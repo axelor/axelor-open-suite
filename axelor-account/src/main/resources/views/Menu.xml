@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <menuitem name="invoice-root" title="Invoicing" order="-1000"
     if="__config__.app.isApp('invoice')" icon="file-text" icon-background="#31b4a9"/>
 
   <menuitem name="invoice-root-custinvoices" parent="invoice-root" order="100"
-    title="Cust. Invoices" action="invoice.root.custinvoices"/>
+    title="Cust. invoices" action="invoice.root.custinvoices"/>
 
-  <action-view name="invoice.root.custinvoices" title="Cust. Invoices"
+  <action-view name="invoice.root.custinvoices" title="Cust. invoices"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-grid"/>
-    <view type="form" name="invoice-form"/>
+    <view type="form" name="invoice-customer-form"/>
     <view-param name="search-filters" value="customer-invoices-filters"/>
     <domain>self.operationTypeSelect = 3</domain>
     <context name="_operationTypeSelect" expr="eval:3"/>
@@ -20,12 +20,12 @@
   </action-view>
 
   <menuitem name="invoice-root-cust-credit-note" parent="invoice-root" order="200"
-    title="Cust. Credit notes" action="invoice.root.custrefunds"/>
+    title="Cust. credit notes" action="invoice.root.custrefunds"/>
 
-  <action-view name="invoice.root.custrefunds" title="Cust. Credit notes"
+  <action-view name="invoice.root.custrefunds" title="Cust. credit notes"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-refund-grid"/>
-    <view type="form" name="invoice-form"/>
+    <view type="form" name="invoice-customer-refund-form"/>
     <view-param name="search-filters" value="customer-refunds-filters"/>
     <domain>self.operationTypeSelect = 4</domain>
     <context name="_operationTypeSelect" expr="eval:4"/>
@@ -34,12 +34,12 @@
   </action-view>
 
   <menuitem name="invoice-root-purchase-supinvoices" parent="invoice-root" order="300"
-    title="Suppl. Invoices" action="invoice.root.purchase.supinvoices"/>
+    title="Suppl. invoices" action="invoice.root.purchase.supinvoices"/>
 
-  <action-view name="invoice.root.purchase.supinvoices" title="Suppl. Invoices"
+  <action-view name="invoice.root.purchase.supinvoices" title="Suppl. invoices"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-supplier-grid"/>
-    <view type="form" name="invoice-form"/>
+    <view type="form" name="invoice-supplier-form"/>
     <view-param name="search-filters" value="supplier-invoices-filters"/>
     <domain>self.operationTypeSelect = 1</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
@@ -100,12 +100,12 @@
   </action-view>
 
   <menuitem name="invoice-root-purchase-sup-credit-note" parent="invoice-root" order="600"
-    title="Suppl. Credit notes" action="invoice.root.purchase.sup.credit.note"/>
+    title="Suppl. credit notes" action="invoice.root.purchase.sup.credit.note"/>
 
-  <action-view name="invoice.root.purchase.sup.credit.note" title="Suppl. Credit notes"
+  <action-view name="invoice.root.purchase.sup.credit.note" title="Suppl. credit notes"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-supplier-refund-grid"/>
-    <view type="form" name="invoice-form"/>
+    <view type="form" name="invoice-supplier-refund-form"/>
     <view-param name="search-filters" value="supplier-refunds-filters"/>
     <domain>self.operationTypeSelect = 2</domain>
     <context name="_operationTypeSelect" expr="eval:2"/>
@@ -114,9 +114,9 @@
   </action-view>
 
   <menuitem name="invoice-root-invoice-terms" parent="invoice-root" order="700"
-    title="Terms list" action="invoice.root.invoice.terms"/>
+    title="invoiceTerm.menuTitle" action="invoice.root.invoice.terms"/>
 
-  <action-view name="invoice.root.invoice.terms" title="Terms list"
+  <action-view name="invoice.root.invoice.terms" title="invoiceTerm.menuTitle"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-grid"/>
     <view type="form" name="invoice-term-form"/>
@@ -1027,6 +1027,31 @@
     model="com.axelor.apps.account.db.FECImport">
     <view type="grid" name="fec-import-grid"/>
     <view type="form" name="fec-import-form"/>
+  </action-view>
+
+  <menuitem title="Loans" name="account-root-loan-management" parent="account-root"
+    order="1150"/>
+
+  <menuitem title="Loans" name="account-root-loan-management-loans"
+    parent="account-root-loan-management" action="account.root.loan.management.loans" order="100"/>
+
+  <action-view name="account.root.loan.management.loans" title="Loans"
+    model="com.axelor.apps.account.db.Loan">
+    <view type="grid" name="loan-grid"/>
+    <view type="form" name="loan-form"/>
+  </action-view>
+
+  <menuitem title="Configurations" name="account-root-loan-management-conf"
+    parent="account-root-loan-management" icon="gear" order="200"/>
+
+  <menuitem title="Loan configurations" name="account-root-loan-management-conf-config"
+    parent="account-root-loan-management-conf" action="account.root.loan.management.conf.config"
+    order="100"/>
+
+  <action-view name="account.root.loan.management.conf.config"
+    title="Loan configurations" model="com.axelor.apps.account.db.LoanManagementConfig">
+    <view type="grid" name="loan-management-config-grid"/>
+    <view type="form" name="loan-management-config-form"/>
   </action-view>
 
   <!-- Delay Reason -->

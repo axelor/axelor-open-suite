@@ -149,6 +149,13 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
         && !saleOrderLine.getBudgetDistributionList().isEmpty()) {
       BigDecimal totalAmount = BigDecimal.ZERO;
       for (BudgetDistribution budgetDistribution : saleOrderLine.getBudgetDistributionList()) {
+        if (budgetDistribution.getAmount().signum() < 0) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(
+                  BudgetExceptionMessage.BUDGET_DISTRIBUTION_NEGATIVE_AMOUNT_NOT_ALLOWED_ORDER),
+              budgetDistribution.getBudget().getCode());
+        }
         if (budgetDistribution.getAmount().compareTo(saleOrderLine.getCompanyExTaxTotal()) > 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

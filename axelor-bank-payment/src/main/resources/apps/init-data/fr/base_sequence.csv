@@ -6,3 +6,4 @@
 167;"bankOrder";"International Treasury Transfers";1;4;"ITT%YY%FM";;1;1
 168;"bankOrder";"SEPA Treasury Transfers";1;4;"STT%YY%FM";;1;1
 220;"bankOrder";"LCR Ordre bancaire";1;4;"OBLCR%YY";;1;1
+221;"bankReconciliation";"Rapprochement bancaire";1;4;"BREC%YY%FM";;1;1

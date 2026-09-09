@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -44,6 +44,8 @@
       title="Tax Equiv"/>
     <many-to-one name="vatExemptionReason"
       ref="com.axelor.apps.account.db.VatExemptionReason" title="VAT exemption reason"/>
+    <decimal name="ecoTaxAmount" title="Eco-tax amount" min="0"/>
+    <string name="ecoTaxMention" title="Eco-tax mention"/>
     <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="3" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." precision="20" scale="3" readonly="true"/>
 
@@ -85,6 +87,8 @@
 
     <!-- Margins -->
     <decimal name="subTotalCostPrice" title="SubTotal cost price" precision="20" scale="3"/>
+    <decimal name="manualSubTotalCostPrice" hidden="true" precision="20" scale="3"/>
+    <boolean name="isSubTotalCostPriceManuallyEdited" hidden="true"/>
     <decimal name="subTotalGrossMargin" title="Sub Total gross profit" precision="20"
       scale="3"/>
     <decimal name="subMarginRate" title="Sub margin rate"/>

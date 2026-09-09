@@ -651,6 +651,12 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     invoice.setContactPartner(contactPartnerIn);
   }
 
+  protected void setFiscalPositionFromPartner(Invoice invoice) {
+    if (invoice.getPartner() != null) {
+      invoice.setFiscalPosition(invoice.getPartner().getFiscalPosition());
+    }
+  }
+
   /**
    * Create a dummy invoice to hold fields used to generate the invoice which will be saved.
    *
@@ -693,6 +699,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
           stockMove.getInvoicedPartner() != null
               ? stockMove.getInvoicedPartner()
               : stockMove.getPartner());
+      setFiscalPositionFromPartner(dummyInvoice);
       dummyInvoice.setCompany(stockMove.getCompany());
       dummyInvoice.setTradingName(stockMove.getTradingName());
       dummyInvoice.setAddress(stockMove.getToAddress());
@@ -730,7 +737,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setInAti(purchaseOrder.getInAti());
       dummyInvoice.setFiscalPosition(purchaseOrder.getFiscalPosition());
     } else {
-      if (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())) {
+      Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
+      if (ObjectUtils.notEmpty(saleOrderSet)) {
         SaleOrder saleOrder = saleOrderMergingServiceSupplyChain.getDummyMergedSaleOrder(stockMove);
         if (appStockService.getAppStock().getIsIncotermEnabled()) {
           dummyInvoice.setIncoterm(saleOrder.getIncoterm());
@@ -739,6 +747,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       }
       dummyInvoice.setCurrency(stockMove.getCompany().getCurrency());
       dummyInvoice.setPartner(stockMove.getPartner());
+      if (ObjectUtils.isEmpty(saleOrderSet)) {
+        setFiscalPositionFromPartner(dummyInvoice);
+      }
       dummyInvoice.setCompany(stockMove.getCompany());
       dummyInvoice.setTradingName(stockMove.getTradingName());
       dummyInvoice.setAddress(stockMove.getFromAddress());

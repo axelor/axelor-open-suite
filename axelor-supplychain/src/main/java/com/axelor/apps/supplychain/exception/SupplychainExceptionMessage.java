@@ -34,6 +34,8 @@ public final class SupplychainExceptionMessage {
 
   public static final String PO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/
       "The purchase order %s invoiced amount cannot be greater than its total amount." /*)*/;
+  public static final String PO_INVOICE_GENERATE_ALL_INVOICES = /*$$(*/
+      "All invoices have been generated for this purchase order." /*)*/;
   public static final String PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS = /*$$(*/
       "Can only return to validated from finished purchase order." /*)*/;
 
@@ -52,6 +54,8 @@ public final class SupplychainExceptionMessage {
       "The quantity to invoice is greater than the quantity in the sale order" /*)*/;
   public static final String SO_INVOICE_AMOUNT_MAX = /*$$(*/
       "The amount to invoice is superior than the amount in the sale order" /*)*/;
+  public static final String PO_INVOICE_AMOUNT_MAX = /*$$(*/
+      "The amount to invoice is superior than the amount in the purchase order" /*)*/;
   public static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_PRODUCT = /*$$(*/
       "Please configure the advance payment product" /*)*/;
   public static final String SO_INVOICE_MISSING_ADVANCE_PAYMENT_ACCOUNT = /*$$(*/
@@ -188,6 +192,12 @@ public final class SupplychainExceptionMessage {
 
   public static final String PO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
       "No delivery stock move to generate for this purchase order" /*)*/;
+
+  public static final String PO_ALREADY_FULLY_RECEIVED = /*$$(*/
+      "Purchase order %s has already been fully received. This stock move cannot be realized." /*)*/;
+
+  public static final String STOCK_MOVE_QTY_GREATER_THAN_REMAINING_QTY_TO_RECEIVE = /*$$(*/
+      "The realized quantity for product %s is greater than the remaining quantity to receive (%s) on purchase order %s." /*)*/;
 
   public static final String RESERVATION_SALE_ORDER_DATE_CONFIG_INCORRECT_VALUE = /*$$(*/
       "Please configure a correct value for the sale order date used for reservation." /*)*/;

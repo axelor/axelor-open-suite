@@ -213,7 +213,9 @@ public class PartnerController {
     LinkedHashMap<String, Object> companyMap =
         (LinkedHashMap<String, Object>) context.get("company");
     Object companyId = companyMap != null ? companyMap.get("id") : null;
-    params.put("CompanyId", companyId);
+    if (companyId != null) {
+      params.put("CompanyId", companyId);
+    }
     params.put(
         "TradingNameId",
         (Object)
@@ -456,7 +458,9 @@ public class PartnerController {
         Beans.get(PartnerRegistrationValidatorFactoryService.class)
             .getRegistrationNumberValidator(partner);
     boolean notValidRegistrationCode =
-        validator != null && !validator.isRegistrationCodeValid(partner);
+        validator != null
+            && !Strings.isNullOrEmpty(partner.getRegistrationCode())
+            && !validator.isRegistrationCodeValid(partner);
     response.setAttr("isValidRegistrationCode", "hidden", !notValidRegistrationCode);
     if (notValidRegistrationCode) {
       response.setAttr(

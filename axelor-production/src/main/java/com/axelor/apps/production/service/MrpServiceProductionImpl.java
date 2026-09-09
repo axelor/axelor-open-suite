@@ -93,6 +93,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   protected Set<Long> processedManufOrderIds;
 
+  protected Set<Long> processedConsumingManufOrderIds;
+
   protected ManufOrderRepository manufOrderRepository;
 
   protected ProductCompanyService productCompanyService;
@@ -178,6 +180,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     if (appProductionService.isApp("production")) {
       this.processedManufOrderIds = new HashSet<>();
+      this.processedConsumingManufOrderIds = new HashSet<>();
       this.createManufOrderMrpLines();
       this.createConsumingManufOrderMrpLines();
       this.createMPSLines();
@@ -243,7 +246,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           mrpRepository.find(mrp.getId()),
           manufOrderRepository.find(manufOrder.getId()),
           mrpLineTypeRepository.find(manufOrderMrpLineType.getId()),
-          mrpLineTypeRepository.find(manufOrderNeedMrpLineType.getId()));
+          manufOrderNeedMrpLineType != null
+              ? mrpLineTypeRepository.find(manufOrderNeedMrpLineType.getId())
+              : null,
+          true);
       JPA.clear();
     }
   }
@@ -253,10 +259,13 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       Mrp mrp,
       ManufOrder manufOrder,
       MrpLineType manufOrderMrpLineType,
-      MrpLineType manufOrderNeedMrpLineType)
+      MrpLineType manufOrderNeedMrpLineType,
+      boolean producedProductInScope)
       throws AxelorException {
 
-    if (processedManufOrderIds != null && !processedManufOrderIds.add(manufOrder.getId())) {
+    Set<Long> processedIds =
+        producedProductInScope ? processedManufOrderIds : processedConsumingManufOrderIds;
+    if (processedIds != null && !processedIds.add(manufOrder.getId())) {
       return;
     }
 
@@ -272,6 +281,55 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     maturityDate = this.computeMaturityDate(maturityDate, manufOrderMrpLineType);
 
+    if (producedProductInScope) {
+      createProducedProductMrpLines(
+          mrp, manufOrder, manufOrderMrpLineType, maturityDate, stockLocation);
+    }
+
+    if (manufOrderNeedMrpLineType == null) {
+      return;
+    }
+
+    if (manufOrder.getIsConsProOnOperation()) {
+      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+        LocalDate operationMaturityDate = maturityDate;
+        if (operationOrder.getPlannedStartDateT() != null) {
+          operationMaturityDate = operationOrder.getPlannedStartDateT().toLocalDate();
+        } else if (operationOrder.getPlannedEndDateT() != null) {
+          operationMaturityDate = operationOrder.getPlannedEndDateT().toLocalDate();
+        }
+        operationMaturityDate =
+            this.computeMaturityDate(operationMaturityDate, manufOrderNeedMrpLineType);
+        createConsumedNeedMrpLines(
+            mrp,
+            getConsumedStockMoveLineList(
+                operationOrder.getConsumedStockMoveLineList(), producedProductInScope),
+            manufOrderNeedMrpLineType,
+            operationMaturityDate,
+            stockLocation,
+            operationOrder,
+            null);
+      }
+    } else {
+      createConsumedNeedMrpLines(
+          mrp,
+          getConsumedStockMoveLineList(
+              manufOrder.getConsumedStockMoveLineList(), producedProductInScope),
+          manufOrderNeedMrpLineType,
+          maturityDate,
+          stockLocation,
+          manufOrder,
+          producedProductInScope ? manufOrder.getProduct() : null);
+    }
+  }
+
+  protected void createProducedProductMrpLines(
+      Mrp mrp,
+      ManufOrder manufOrder,
+      MrpLineType manufOrderMrpLineType,
+      LocalDate maturityDate,
+      StockLocation stockLocation)
+      throws AxelorException {
     for (Map.Entry<Product, BigDecimal> entry :
         computePlannedQtyByProduct(manufOrder.getProducedStockMoveLineList()).entrySet()) {
       Product product = entry.getKey();
@@ -292,40 +350,6 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           mrpLineRepository.save(mrpLine);
         }
       }
-    }
-
-    if (manufOrderNeedMrpLineType == null) {
-      return;
-    }
-
-    if (manufOrder.getIsConsProOnOperation()) {
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-        LocalDate operationMaturityDate = maturityDate;
-        if (operationOrder.getPlannedStartDateT() != null) {
-          operationMaturityDate = operationOrder.getPlannedStartDateT().toLocalDate();
-        } else if (operationOrder.getPlannedEndDateT() != null) {
-          operationMaturityDate = operationOrder.getPlannedEndDateT().toLocalDate();
-        }
-        operationMaturityDate =
-            this.computeMaturityDate(operationMaturityDate, manufOrderNeedMrpLineType);
-        createConsumedNeedMrpLines(
-            mrp,
-            operationOrder.getConsumedStockMoveLineList(),
-            manufOrderNeedMrpLineType,
-            operationMaturityDate,
-            stockLocation,
-            operationOrder,
-            null);
-      }
-    } else {
-      createConsumedNeedMrpLines(
-          mrp,
-          manufOrder.getConsumedStockMoveLineList(),
-          manufOrderNeedMrpLineType,
-          maturityDate,
-          stockLocation,
-          manufOrder,
-          manufOrder.getProduct());
     }
   }
 
@@ -364,6 +388,16 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         }
       }
     }
+  }
+
+  protected List<StockMoveLine> getConsumedStockMoveLineList(
+      List<StockMoveLine> stockMoveLineList, boolean producedProductInScope) {
+    if (producedProductInScope) {
+      return stockMoveLineList;
+    }
+    return stockMoveLineList.stream()
+        .filter(stockMoveLine -> this.productMap.containsKey(stockMoveLine.getProduct().getId()))
+        .collect(Collectors.toList());
   }
 
   protected Map<Product, BigDecimal> computePlannedQtyByProduct(
@@ -535,6 +569,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         computeMaturityDateWithOperations(
             mrp,
             reorderQty,
+            billOfMaterial.getQty(),
             stockLocation,
             maturityDate,
             mrpLineOriginList,
@@ -550,9 +585,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                     mrp,
                     subProduct,
                     manufProposalNeedMrpLineType,
-                    reorderQty
-                        .multiply(billOfMaterialLine.getQty())
-                        .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP),
+                    computeMrpNeedQty(
+                        reorderQty, billOfMaterialLine.getQty(), billOfMaterial.getQty()),
                     stockLocation,
                     maturityDate,
                     mrpLineOriginList,
@@ -568,6 +602,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   protected void computeMaturityDateWithOperations(
       Mrp mrp,
       BigDecimal reorderQty,
+      BigDecimal billOfMaterialQty,
       StockLocation stockLocation,
       LocalDate maturityDate,
       List<MrpLineOrigin> mrpLineOriginList,
@@ -610,9 +645,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
               mrp,
               toConsumeProduct,
               manufProposalNeedMrpLineType,
-              reorderQty
-                  .multiply(prodProduct.getQty())
-                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP),
+              computeMrpNeedQty(reorderQty, prodProduct.getQty(), billOfMaterialQty),
               stockLocation,
               calculatedMaturityDate,
               mrpLineOriginList,
@@ -620,6 +653,17 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         }
       }
     }
+  }
+
+  protected BigDecimal computeMrpNeedQty(
+      BigDecimal reorderQty, BigDecimal componentQty, BigDecimal billOfMaterialQty) {
+    BigDecimal mrpNeedQty = reorderQty.multiply(componentQty);
+    if (billOfMaterialQty != null && billOfMaterialQty.signum() > 0) {
+      mrpNeedQty =
+          mrpNeedQty.divide(
+              billOfMaterialQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
+    }
+    return mrpNeedQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
   }
 
   /**
@@ -921,7 +965,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           mrpRepository.find(mrp.getId()),
           manufOrderRepository.find(manufOrder.getId()),
           mrpLineTypeRepository.find(manufOrderMrpLineType.getId()),
-          mrpLineTypeRepository.find(manufOrderNeedMrpLineType.getId()));
+          manufOrderNeedMrpLineType != null
+              ? mrpLineTypeRepository.find(manufOrderNeedMrpLineType.getId())
+              : null,
+          false);
       JPA.clear();
     }
   }

@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -106,6 +107,14 @@ public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
               .map(Product::getCode)
               .orElse(invoiceLine.getProductName());
       for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
+        if (budgetDistribution.getAmount().signum() < 0
+            && !isNegativeAmountAllowed(invoiceLine.getInvoice())) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(
+                  BudgetExceptionMessage.BUDGET_DISTRIBUTION_NEGATIVE_AMOUNT_NOT_ALLOWED_INVOICE),
+              budgetDistribution.getBudget().getCode());
+        }
         if (budgetDistribution.getAmount().abs().compareTo(invoiceLine.getCompanyExTaxTotal())
             > 0) {
           throw new AxelorException(
@@ -164,5 +173,12 @@ public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
     invoiceLine.setBudgetRemainingAmountToAllocate(
         budgetToolsService.getBudgetRemainingAmountToAllocate(
             invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
+  }
+
+  protected boolean isNegativeAmountAllowed(Invoice invoice) {
+    return invoice != null
+        && (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+            || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
+            || invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE);
   }
 }

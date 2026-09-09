@@ -29,21 +29,29 @@ import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.BankReconciliationToolService;
 import com.axelor.apps.bankpayment.service.moveline.MoveLinePostedNbrService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BankReconciliationValidateService {
 
@@ -57,6 +65,9 @@ public class BankReconciliationValidateService {
   protected BankReconciliationComputeService bankReconciliationComputeService;
   protected CurrencyScaleService currencyScaleService;
   protected MoveLinePostedNbrService moveLinePostedNbrService;
+  protected BankReconciliationSelectedLineComputationService
+      bankReconciliationSelectedLineComputationService;
+  protected SequenceService sequenceService;
 
   @Inject
   public BankReconciliationValidateService(
@@ -69,7 +80,10 @@ public class BankReconciliationValidateService {
       BankReconciliationLineService bankReconciliationLineService,
       BankReconciliationComputeService bankReconciliationComputeService,
       CurrencyScaleService currencyScaleService,
-      MoveLinePostedNbrService moveLinePostedNbrService) {
+      MoveLinePostedNbrService moveLinePostedNbrService,
+      BankReconciliationSelectedLineComputationService
+          bankReconciliationSelectedLineComputationService,
+      SequenceService sequenceService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -81,6 +95,9 @@ public class BankReconciliationValidateService {
     this.bankReconciliationComputeService = bankReconciliationComputeService;
     this.currencyScaleService = currencyScaleService;
     this.moveLinePostedNbrService = moveLinePostedNbrService;
+    this.bankReconciliationSelectedLineComputationService =
+        bankReconciliationSelectedLineComputationService;
+    this.sequenceService = sequenceService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -328,5 +345,215 @@ public class BankReconciliationValidateService {
 
       bankReconciliationRepository.save(bankReconciliation);
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void validateReconcileToMoveLine(
+      BankReconciliation bankReconciliation,
+      MoveLine moveLine,
+      List<BankReconciliationLine> bankReconciliationLineList,
+      boolean userConfirmedOverrun)
+      throws AxelorException {
+
+    checkReconcileToMoveLineEligibility(bankReconciliation, moveLine, bankReconciliationLineList);
+
+    List<BankReconciliationLine> consumedLineList =
+        capBankReconciliationLinesToMoveLineRemaining(
+            bankReconciliation, moveLine, bankReconciliationLineList, userConfirmedOverrun);
+
+    reconcileBankReconciliationLinesToMoveLine(bankReconciliation, moveLine, consumedLineList);
+  }
+
+  protected void checkReconcileToMoveLineEligibility(
+      BankReconciliation bankReconciliation,
+      MoveLine moveLine,
+      List<BankReconciliationLine> bankReconciliationLineList)
+      throws AxelorException {
+
+    if (CollectionUtils.isEmpty(bankReconciliationLineList)) {
+      throw new AxelorException(
+          bankReconciliation,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              BankPaymentExceptionMessage
+                  .BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_NO_LINE_SELECTED));
+    }
+
+    for (BankReconciliationLine bankReconciliationLine : bankReconciliationLineList) {
+      String reference =
+          bankReconciliationLine.getReference() != null
+              ? bankReconciliationLine.getReference()
+              : "";
+      if (!bankReconciliation.equals(bankReconciliationLine.getBankReconciliation())) {
+        throw new AxelorException(
+            bankReconciliationLine,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                BankPaymentExceptionMessage
+                    .BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_WRONG_BANK_RECONCILIATION),
+            reference);
+      }
+      if (bankReconciliationLine.getMoveLine() != null) {
+        throw new AxelorException(
+            bankReconciliationLine,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                BankPaymentExceptionMessage
+                    .BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_ALREADY_RECONCILED),
+            reference);
+      }
+      if (bankReconciliationLine.getBankStatementLine() == null) {
+        throw new AxelorException(
+            bankReconciliationLine,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                BankPaymentExceptionMessage
+                    .BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_MISSING_BANK_STATEMENT_LINE),
+            reference);
+      }
+      if (bankReconciliationLine.getBankStatementLine().getLineTypeSelect()
+          != BankStatementLineRepository.LINE_TYPE_MOVEMENT) {
+        throw new AxelorException(
+            bankReconciliationLine,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                BankPaymentExceptionMessage
+                    .BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_NOT_MOVEMENT),
+            reference);
+      }
+    }
+    bankReconciliationLineService.checkReconcileToMoveLine(bankReconciliationLineList, moveLine);
+
+    Company company = bankReconciliation.getCompany();
+    if (company == null
+        || !company.equals(moveLine.getMove().getCompany())
+        || bankReconciliation.getCashAccount() == null
+        || !bankReconciliation.getCashAccount().equals(moveLine.getAccount())
+        || bankReconciliationSelectedLineComputationService
+                .getMoveLineRemainingAmount(moveLine, bankReconciliation)
+                .compareTo(BigDecimal.ZERO)
+            <= 0) {
+      throw new AxelorException(
+          moveLine,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              BankPaymentExceptionMessage.BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_NOT_ELIGIBLE));
+    }
+
+    if (!moveLine.getMove().getCurrency().equals(bankReconciliation.getCurrency())) {
+      throw new AxelorException(
+          moveLine,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              BankPaymentExceptionMessage
+                  .BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_CURRENCY_MISMATCH));
+    }
+  }
+
+  protected List<BankReconciliationLine> capBankReconciliationLinesToMoveLineRemaining(
+      BankReconciliation bankReconciliation,
+      MoveLine moveLine,
+      List<BankReconciliationLine> bankReconciliationLineList,
+      boolean userConfirmedOverrun)
+      throws AxelorException {
+
+    BigDecimal bankMovementsTotal =
+        bankReconciliationSelectedLineComputationService.computeBankReconciliationLinesTotal(
+            bankReconciliation, bankReconciliationLineList);
+
+    BigDecimal moveLineRemaining =
+        bankReconciliationSelectedLineComputationService.getMoveLineRemainingAmount(
+            moveLine, bankReconciliation);
+
+    if (bankMovementsTotal.compareTo(moveLineRemaining) <= 0) {
+      return new ArrayList<>(bankReconciliationLineList);
+    }
+
+    if (!userConfirmedOverrun) {
+      throw new AxelorException(
+          moveLine,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              BankPaymentExceptionMessage
+                  .BANK_RECONCILIATION_RECONCILE_TO_MOVE_LINE_OVERRUN_NOT_CONFIRMED));
+    }
+
+    List<BankReconciliationLine> consumedLineList = new ArrayList<>();
+    BigDecimal remainingCapacity = moveLineRemaining;
+
+    for (BankReconciliationLine bankReconciliationLine : bankReconciliationLineList) {
+      if (remainingCapacity.compareTo(BigDecimal.ZERO) <= 0) {
+        break;
+      }
+
+      BigDecimal lineAmount =
+          currencyScaleService.getScaledValue(
+              bankReconciliation,
+              bankReconciliationLine.getDebit().add(bankReconciliationLine.getCredit()));
+
+      if (lineAmount.compareTo(remainingCapacity) <= 0) {
+        consumedLineList.add(bankReconciliationLine);
+        remainingCapacity =
+            currencyScaleService.getScaledValue(
+                bankReconciliation, remainingCapacity.subtract(lineAmount));
+        continue;
+      }
+
+      boolean isDebit = bankReconciliationLine.getDebit().compareTo(BigDecimal.ZERO) > 0;
+      BigDecimal keepAmount = remainingCapacity;
+      BigDecimal excess =
+          currencyScaleService.getScaledValue(bankReconciliation, lineAmount.subtract(keepAmount));
+
+      BankReconciliationLine leftoverLine =
+          bankReconciliationLineService.createBankReconciliationLine(
+              bankReconciliationLine.getEffectDate(),
+              isDebit ? excess : BigDecimal.ZERO,
+              isDebit ? BigDecimal.ZERO : excess,
+              bankReconciliationLine.getName(),
+              bankReconciliationLine.getReference(),
+              bankReconciliationLine.getBankStatementLine(),
+              null);
+      bankReconciliation.addBankReconciliationLineListItem(leftoverLine);
+
+      bankReconciliationLine.setDebit(isDebit ? keepAmount : BigDecimal.ZERO);
+      bankReconciliationLine.setCredit(isDebit ? BigDecimal.ZERO : keepAmount);
+      consumedLineList.add(bankReconciliationLine);
+      remainingCapacity = BigDecimal.ZERO;
+    }
+
+    return consumedLineList;
+  }
+
+  protected void reconcileBankReconciliationLinesToMoveLine(
+      BankReconciliation bankReconciliation,
+      MoveLine moveLine,
+      List<BankReconciliationLine> consumedLineList)
+      throws AxelorException {
+
+    String reconcileNumber =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.BANK_RECONCILIATION,
+            bankReconciliation.getCompany(),
+            BankReconciliationLine.class,
+            "reconcileNumber",
+            consumedLineList.get(0));
+
+    if (reconcileNumber == null) {
+      throw new AxelorException(
+          bankReconciliation,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_COMPANY_NO_SEQUENCE),
+          bankReconciliation.getCompany().getName());
+    }
+
+    for (BankReconciliationLine bankReconciliationLine : consumedLineList) {
+      bankReconciliationLineService.reconcileBRLToMoveLine(
+          bankReconciliationLine, moveLine, reconcileNumber);
+      bankReconciliationLine.setIsPosted(true);
+      bankReconciliationLineService.checkAmount(bankReconciliationLine);
+      bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
+    }
+
+    bankReconciliationRepository.save(bankReconciliation);
   }
 }

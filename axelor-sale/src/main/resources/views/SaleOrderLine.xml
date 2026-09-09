@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="sale-order-line-grid" title="SO lines"
     model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence">
@@ -44,8 +44,7 @@
       readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == 0 || deliveryState == 3"
       onClick="save,action-supplychain-sale-order-line-deallocate-all"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="priceDiscounted" title="Unit price W.T."
-      x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="priceDiscounted" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"/>
     <field name="estimatedShippingDate"/>
@@ -129,10 +128,8 @@
       onChange="action-sale-order-line-method-onchange-intaxprice"
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="discountTypeSelect" colSpan="3"
-      readonlyIf="$nonNegotiable || $isParentTitleLine"
-      onChange="action-sale-order-line-method-discount-type-onchange"/>
+      onChange="action-sale-order-line-group-discount-type-onchange"/>
     <field name="discountAmount" colSpan="3"
-      readonlyIf="$nonNegotiable || discountTypeSelect == 0 || $isParentTitleLine"
       validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
       onChange="action-sale-order-line-method-discount-amount-onchange"
       x-scale="$nbDecimalDigitForUnitPrice"/>
@@ -142,6 +139,10 @@
       onChange="action-sale-order-line-method-tax-line-onchange"
       domain="self.endDate IS null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
       form-view="tax-line-form" widget="Tags"/>
+    <field name="ecoTaxAmount" colSpan="2"
+      if="__config__.app.getApp('base')?.getEnableEcoTax()"/>
+    <field name="ecoTaxMention" colSpan="4"
+      if="__config__.app.getApp('base')?.getEnableEcoTax()"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"
       readonly="true"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"
@@ -169,6 +170,7 @@
     <field name="configurator" hidden="true"/>
     <field name="saleOrder" hidden="true"/>
     <field name="saleOrder.id" hidden="true"/>
+    <field name="saleOrder.discountTypeSelect" hidden="true"/>
     <field name="subSaleOrderLineList" hidden="true"/>
     <field name="saleOrderLineDetailsList" hidden="true"/>
   </grid>
@@ -189,8 +191,7 @@
       if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum"
       x-scale="$nbDecimalDigitForQty"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="priceDiscounted" title="Unit price W.T."
-      x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="priceDiscounted" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="estimatedShippingDate"/>
     <field name="estimatedDeliveryDate"/>
@@ -370,7 +371,7 @@
           <panel name="discountPanel" colSpan="12"
             readonlyIf="$isGlobalDiscount || $isReadOnly !== false || deliveryState == 3">
             <field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable"
-              onChange="action-sale-order-line-method-discount-type-onchange"/>
+              onChange="action-sale-order-line-group-discount-type-onchange"/>
             <!--This panel purpose is to avoid issues with permission by field -->
             <panel name="discountAmountPanel" colSpan="9" hideIf="discountTypeSelect == 0">
               <field name="discountAmount" colSpan="3" readonlyIf="$nonNegotiable"
@@ -402,6 +403,10 @@
             onChange="action-sale-order-line-method-tax-line-onchange"
             domain="self.endDate IS null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
             form-view="tax-line-form" widget="Tags"/>
+          <field name="ecoTaxAmount" colSpan="2"
+            if="__config__.app.getApp('base')?.getEnableEcoTax()"/>
+          <field name="ecoTaxMention" colSpan="4"
+            if="__config__.app.getApp('base')?.getEnableEcoTax()"/>
           <field name="exTaxTotal" readonly="true" colSpan="3"
             x-scale="$currency.numberOfDecimals"/>
           <field name="inTaxTotal" readonly="true" colSpan="3"
@@ -484,7 +489,7 @@
       </panel>
       <panel name="marginPanel" title="Margin" readonlyIf="$isReadOnly !== false">
         <field name="subTotalCostPrice"
-          onChange="action-sale-order-line-method-compute-subMargin"
+          onChange="action-sale-order-line-sub-total-cost-price-onchange"
           x-scale="$companyCurrency.numberOfDecimals"
           readonlyIf="subSaleOrderLineList.length &gt; 0 &amp;&amp; $computeWithSOL"/>
         <field name="subTotalGrossMargin" readonly="true"
@@ -580,7 +585,7 @@
           colSpan="4" hidden="true"/>
         <panel name="discountPanel" title="Discount">
           <field name="discountTypeSelect"
-            onChange="action-sale-order-line-method-discount-type-onchange"/>
+            onChange="action-sale-order-line-group-discount-type-onchange"/>
           <field name="discountAmount"
             onChange="action-sale-order-line-method-discount-amount-onchange"
             hideIf="discountTypeSelect == 0"/>
@@ -591,6 +596,10 @@
         onChange="action-sale-order-line-method-tax-line-onchange"
         domain="self.endDate IS null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
         form-view="tax-line-form" widget="Tags"/>
+      <field name="ecoTaxAmount" colSpan="2"
+        if="__config__.app.getApp('base')?.getEnableEcoTax()"/>
+      <field name="ecoTaxMention" colSpan="4"
+        if="__config__.app.getApp('base')?.getEnableEcoTax()"/>
       <field name="exTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"/>
       <field name="inTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"/>
       <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
@@ -612,7 +621,7 @@
     <panel-tabs hideIf="typeSelect == 1" name="allPanelTab">
       <panel name="marginPanel" title="Margin">
         <field name="subTotalCostPrice"
-          onChange="action-sale-order-line-method-compute-subMargin"
+          onChange="action-sale-order-line-sub-total-cost-price-onchange"
           x-scale="$companyCurrency.numberOfDecimals"/>
         <field name="subTotalGrossMargin" readonly="true"
           x-scale="$companyCurrency.numberOfDecimals"/>
@@ -858,4 +867,32 @@
     <call class="com.axelor.apps.sale.web.SaleOrderLineController"
       method="checkEditConfiguratorSaleOrderLine"/>
   </action-method>
+
+  <action-record name="action-sale-order-line-record-clear-discount-amount"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="discountAmount" expr="eval: 0"/>
+  </action-record>
+
+  <action-group name="action-sale-order-line-group-discount-type-onchange">
+    <action name="action-sale-order-line-record-clear-discount-amount"/>
+    <action name="action-sale-order-line-attrs-readonly-discount-amount"/>
+    <action name="action-sale-order-line-method-discount-type-onchange"/>
+  </action-group>
+
+  <action-attrs name="action-sale-order-line-attrs-readonly-discount-amount">
+    <attribute name="readonly" for="discountAmount"
+      expr="eval: __parent__?.discountTypeSelect > 0 || discountTypeSelect == 0"/>
+  </action-attrs>
+
+  <action-group name="action-sale-order-line-sub-total-cost-price-onchange">
+    <action name="action-sale-order-line-method-set-sub-total-cost-price-manually"/>
+    <action name="action-sale-order-line-method-compute-subMargin"/>
+  </action-group>
+
+  <action-method
+    name="action-sale-order-line-method-set-sub-total-cost-price-manually">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="setSubTotalCostPriceManually"/>
+  </action-method>
+
 </object-views>

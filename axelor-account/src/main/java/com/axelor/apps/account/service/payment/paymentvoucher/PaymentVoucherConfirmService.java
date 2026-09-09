@@ -71,6 +71,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -375,29 +376,294 @@ public class PaymentVoucherConfirmService {
     move.addMoveLineListItem(moveLineToValueForCollectionAccount);
 
     MoveLine valueForCollectionMoveLine = optionalValueForCollectionMoveLine.get();
-    Reconcile reconcile;
+    reconcileValueForCollectionMoveLines(
+        valueForCollectionMoveLine,
+        moveLineToValueForCollectionAccount,
+        paymentVoucher.getPaidAmount(),
+        isDebitToPay);
 
+    moveCutOffService.autoApplyCutOffDates(move);
+    moveValidateService.accounting(move);
+  }
+
+  /**
+   * Generates the bank deposit moves for a list of payment vouchers (value for collection),
+   * grouping the generated move lines according to the grouping configured on each payment
+   * voucher's payment mode ({@code valueForCollectionGroupingSelect}) :
+   *
+   * <ul>
+   *   <li>By payment voucher : one move is generated per payment voucher (legacy behavior).
+   *   <li>By partner : a single move is generated per group, with one value for collection line and
+   *       one bank account line per partner.
+   *   <li>Global : a single move is generated per group, with one value for collection line and one
+   *       bank account line for the whole group.
+   * </ul>
+   *
+   * @param paymentVoucherList the payment vouchers to process
+   * @param date the accounting date of the generated moves
+   * @throws AxelorException
+   */
+  @Transactional(rollbackOn = {Exception.class})
+  public void valueForCollectionMoveToGeneratedMove(
+      List<PaymentVoucher> paymentVoucherList, LocalDate date) throws AxelorException {
+    if (ObjectUtils.isEmpty(paymentVoucherList)) {
+      return;
+    }
+
+    List<PaymentVoucher> byPartnerPaymentVoucherList = new ArrayList<>();
+    List<PaymentVoucher> globalPaymentVoucherList = new ArrayList<>();
+
+    for (PaymentVoucher paymentVoucher : paymentVoucherList) {
+      switch (getValueForCollectionGroupingSelect(paymentVoucher)) {
+        case PaymentModeRepository.VALUE_FOR_COLLECTION_GROUPING_BY_PARTNER:
+          byPartnerPaymentVoucherList.add(paymentVoucher);
+          break;
+        case PaymentModeRepository.VALUE_FOR_COLLECTION_GROUPING_GLOBAL:
+          globalPaymentVoucherList.add(paymentVoucher);
+          break;
+        default:
+          valueForCollectionMoveToGeneratedMove(paymentVoucher, date);
+      }
+    }
+
+    generateGroupedValueForCollectionMoves(byPartnerPaymentVoucherList, date, true);
+    generateGroupedValueForCollectionMoves(globalPaymentVoucherList, date, false);
+  }
+
+  protected int getValueForCollectionGroupingSelect(PaymentVoucher paymentVoucher) {
+    if (!isPaymentValueForCollection(paymentVoucher)
+        || Objects.isNull(paymentVoucher.getValueForCollectionMove())) {
+      return PaymentModeRepository.VALUE_FOR_COLLECTION_GROUPING_BY_PAYMENT_VOUCHER;
+    }
+    Integer groupingSelect = paymentVoucher.getPaymentMode().getValueForCollectionGroupingSelect();
+    return groupingSelect == null
+        ? PaymentModeRepository.VALUE_FOR_COLLECTION_GROUPING_BY_PAYMENT_VOUCHER
+        : groupingSelect;
+  }
+
+  protected void generateGroupedValueForCollectionMoves(
+      List<PaymentVoucher> paymentVoucherList, LocalDate date, boolean byPartner)
+      throws AxelorException {
+    if (ObjectUtils.isEmpty(paymentVoucherList)) {
+      return;
+    }
+
+    Map<String, List<PaymentVoucher>> groupMap = new LinkedHashMap<>();
+    for (PaymentVoucher paymentVoucher : paymentVoucherList) {
+      groupMap
+          .computeIfAbsent(getValueForCollectionGroupKey(paymentVoucher), key -> new ArrayList<>())
+          .add(paymentVoucher);
+    }
+
+    for (List<PaymentVoucher> group : groupMap.values()) {
+      generateGroupedValueForCollectionMove(group, date, byPartner);
+    }
+  }
+
+  /**
+   * Builds a grouping key ensuring that only payment vouchers sharing the same accounting context
+   * (company, payment mode, bank details, value for collection account and payment direction) end
+   * up in the same generated move.
+   */
+  protected String getValueForCollectionGroupKey(PaymentVoucher paymentVoucher)
+      throws AxelorException {
+    BankDetails bankDetails = getValueForCollectionBankDetails(paymentVoucher);
+    return String.join(
+        "-",
+        getEntityId(paymentVoucher.getCompany()),
+        getEntityId(paymentVoucher.getPaymentMode()),
+        getEntityId(bankDetails),
+        getEntityId(paymentVoucher.getValueForCollectionAccount()),
+        String.valueOf(paymentVoucherToolService.isDebitToPay(paymentVoucher)));
+  }
+
+  protected String getEntityId(com.axelor.db.Model entity) {
+    return entity == null || entity.getId() == null ? "null" : entity.getId().toString();
+  }
+
+  protected BankDetails getValueForCollectionBankDetails(PaymentVoucher paymentVoucher) {
+    return paymentVoucher.getDepositBankDetails() != null
+        ? paymentVoucher.getDepositBankDetails()
+        : paymentVoucher.getCompanyBankDetails();
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void generateGroupedValueForCollectionMove(
+      List<PaymentVoucher> paymentVoucherList, LocalDate date, boolean byPartner)
+      throws AxelorException {
+    PaymentVoucher firstPaymentVoucher = paymentVoucherList.get(0);
+    Account valueForCollectionAccount = firstPaymentVoucher.getValueForCollectionAccount();
+    PaymentMode paymentMode = firstPaymentVoucher.getPaymentMode();
+    Company company = firstPaymentVoucher.getCompany();
+    BankDetails bankDetails = getValueForCollectionBankDetails(firstPaymentVoucher);
+    boolean isDebitToPay = paymentVoucherToolService.isDebitToPay(firstPaymentVoucher);
+
+    Journal journal =
+        paymentModeService.getPaymentModeJournal(paymentMode, company, bankDetails, false);
+    Account paymentModeAccount =
+        paymentModeService.getPaymentModeAccount(paymentMode, company, bankDetails, false);
+
+    Move move =
+        moveCreateService.createMoveWithPaymentVoucher(
+            journal,
+            company,
+            firstPaymentVoucher,
+            null,
+            date,
+            paymentMode,
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            firstPaymentVoucher.getRef(),
+            journal.getDescriptionIdentificationOk() ? journal.getDescriptionModel() : null,
+            bankDetails);
+    move.setTradingName(firstPaymentVoucher.getTradingName());
+
+    int moveLineNo = 1;
+    if (byPartner) {
+      Map<Partner, List<PaymentVoucher>> partnerMap = new LinkedHashMap<>();
+      for (PaymentVoucher paymentVoucher : paymentVoucherList) {
+        partnerMap
+            .computeIfAbsent(paymentVoucher.getPartner(), key -> new ArrayList<>())
+            .add(paymentVoucher);
+      }
+      for (Map.Entry<Partner, List<PaymentVoucher>> entry : partnerMap.entrySet()) {
+        moveLineNo =
+            generateGroupedValueForCollectionMoveLines(
+                move,
+                entry.getKey(),
+                valueForCollectionAccount,
+                paymentModeAccount,
+                isDebitToPay,
+                date,
+                moveLineNo,
+                firstPaymentVoucher.getRef(),
+                entry.getValue());
+      }
+    } else {
+      moveLineNo =
+          generateGroupedValueForCollectionMoveLines(
+              move,
+              null,
+              valueForCollectionAccount,
+              paymentModeAccount,
+              isDebitToPay,
+              date,
+              moveLineNo,
+              firstPaymentVoucher.getRef(),
+              paymentVoucherList);
+    }
+
+    moveCutOffService.autoApplyCutOffDates(move);
+    moveValidateService.accounting(move);
+
+    for (PaymentVoucher paymentVoucher : paymentVoucherList) {
+      setMove(paymentVoucher, move, false);
+    }
+  }
+
+  /**
+   * Creates the bank account ({@code paymentModeAccount}) and value for collection move lines for a
+   * group of payment vouchers (summing their paid amounts) and reconciles the generated value for
+   * collection line with each original value for collection move line.
+   *
+   * @return the next move line counter to use
+   */
+  protected int generateGroupedValueForCollectionMoveLines(
+      Move move,
+      Partner partner,
+      Account valueForCollectionAccount,
+      Account paymentModeAccount,
+      boolean isDebitToPay,
+      LocalDate date,
+      int moveLineNo,
+      String ref,
+      List<PaymentVoucher> paymentVoucherList)
+      throws AxelorException {
+
+    List<Pair<MoveLine, BigDecimal>> reconcileEntryList = new ArrayList<>();
+    BigDecimal totalAmount = BigDecimal.ZERO;
+    for (PaymentVoucher paymentVoucher : paymentVoucherList) {
+      Move valueForCollectionMove = paymentVoucher.getValueForCollectionMove();
+      if (Objects.isNull(valueForCollectionMove)) {
+        continue;
+      }
+      Optional<MoveLine> optionalMoveLine =
+          extractMoveLineFromValueForCollectionMove(
+              valueForCollectionMove, paymentVoucher.getValueForCollectionAccount());
+      if (!optionalMoveLine.isPresent()) {
+        continue;
+      }
+      reconcileEntryList.add(Pair.of(optionalMoveLine.get(), paymentVoucher.getPaidAmount()));
+      totalAmount = totalAmount.add(paymentVoucher.getPaidAmount());
+    }
+
+    if (reconcileEntryList.isEmpty()) {
+      return moveLineNo;
+    }
+
+    MoveLine moveLineToPaymentModeAccount =
+        moveLineCreateService.createMoveLine(
+            move,
+            partner,
+            paymentModeAccount,
+            totalAmount,
+            isDebitToPay,
+            date,
+            moveLineNo++,
+            ref,
+            null);
+    move.addMoveLineListItem(moveLineToPaymentModeAccount);
+
+    MoveLine moveLineToValueForCollectionAccount =
+        moveLineCreateService.createMoveLine(
+            move,
+            partner,
+            valueForCollectionAccount,
+            totalAmount,
+            !isDebitToPay,
+            date,
+            moveLineNo++,
+            ref,
+            null);
+    move.addMoveLineListItem(moveLineToValueForCollectionAccount);
+
+    for (Pair<MoveLine, BigDecimal> reconcileEntry : reconcileEntryList) {
+      reconcileValueForCollectionMoveLines(
+          reconcileEntry.getLeft(),
+          moveLineToValueForCollectionAccount,
+          reconcileEntry.getRight(),
+          isDebitToPay);
+    }
+
+    return moveLineNo;
+  }
+
+  protected void reconcileValueForCollectionMoveLines(
+      MoveLine originalValueForCollectionMoveLine,
+      MoveLine generatedValueForCollectionMoveLine,
+      BigDecimal amount,
+      boolean isDebitToPay)
+      throws AxelorException {
+    Reconcile reconcile;
     if (isDebitToPay) {
       reconcile =
           reconcileService.createReconcile(
-              valueForCollectionMoveLine,
-              moveLineToValueForCollectionAccount,
-              paymentVoucher.getPaidAmount(),
+              originalValueForCollectionMoveLine,
+              generatedValueForCollectionMoveLine,
+              amount,
               true);
     } else {
       reconcile =
           reconcileService.createReconcile(
-              moveLineToValueForCollectionAccount,
-              valueForCollectionMoveLine,
-              paymentVoucher.getPaidAmount(),
+              generatedValueForCollectionMoveLine,
+              originalValueForCollectionMoveLine,
+              amount,
               true);
     }
     if (reconcile != null) {
       reconcileService.confirmReconcile(reconcile, true, true);
     }
-
-    moveCutOffService.autoApplyCutOffDates(move);
-    moveValidateService.accounting(move);
   }
 
   protected Optional<MoveLine> extractMoveLineFromValueForCollectionMove(

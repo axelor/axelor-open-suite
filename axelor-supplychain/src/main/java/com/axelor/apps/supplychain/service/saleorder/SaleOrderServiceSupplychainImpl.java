@@ -34,10 +34,12 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineCreateService;
@@ -58,6 +60,7 @@ import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.TrackingNumberSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineQtyToDeliverService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSupplychain;
@@ -84,6 +87,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   protected PartnerLinkSupplychainService partnerLinkSupplychainService;
   protected SaleInvoicingStateService saleInvoicingStateService;
   protected SaleOrderLineAnalyticService saleOrderLineAnalyticService;
+  protected SaleOrderLineQtyToDeliverService saleOrderLineQtyToDeliverService;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
@@ -104,7 +108,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       TrackingNumberSupplychainService trackingNumberSupplychainService,
       PartnerLinkSupplychainService partnerLinkSupplychainService,
       SaleInvoicingStateService saleInvoicingStateService,
-      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService,
+      SaleOrderLineQtyToDeliverService saleOrderLineQtyToDeliverService) {
     super(
         appBaseService,
         saleOrderLineRepo,
@@ -124,6 +129,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     this.partnerLinkSupplychainService = partnerLinkSupplychainService;
     this.saleInvoicingStateService = saleInvoicingStateService;
     this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;
+    this.saleOrderLineQtyToDeliverService = saleOrderLineQtyToDeliverService;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -283,6 +289,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       return;
     }
 
+    saleOrderLineQtyToDeliverService.initQtyToDeliverForAll(saleOrder.getSaleOrderLineList());
     saleOrderStockService.fullyUpdateDeliveryState(saleOrder);
     saleInvoicingStateService.updateInvoicingState(saleOrder);
     saleOrder.setOrderBeingEdited(false);
@@ -293,7 +300,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional(
+      rollbackOn = {Exception.class},
+      ignore = {BlockedSaleOrderException.class})
   public void updateToConfirmedStatus(SaleOrder saleOrder) throws AxelorException {
     if (saleOrder.getStatusSelect() == null
         || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_COMPLETED) {
@@ -301,6 +310,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SupplychainExceptionMessage.SALE_ORDER_BACK_TO_CONFIRMED_WRONG_STATUS));
     }
+
+    Beans.get(SaleOrderConfirmService.class).checkSaleOrderBlocking(saleOrder);
+
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     saleOrderRepo.save(saleOrder);
     accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());

@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
@@ -257,6 +258,30 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
     boolean orderBeingEdited = saleOrder.getOrderBeingEdited();
     attrs.put("deliveryAddress", Map.of(HIDDEN_ATTR, statusSelect > 1 && !orderBeingEdited));
     attrs.put("deliveryAddressStr", Map.of(READONLY_ATTR, statusSelect > 1 && !orderBeingEdited));
+    return attrs;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getDiscountReadonlyAttrs(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, SaleOrderLine parentSaleOrderLine) {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+
+    PriceList priceList = saleOrder.getPriceList();
+    boolean nonNegotiable = priceList != null && priceList.getNonNegotiable();
+    boolean parentTitleLine =
+        parentSaleOrderLine != null
+            && parentSaleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE;
+    boolean globalDiscount = saleOrder.getDiscountTypeSelect() > 0;
+    boolean noLineDiscount =
+        saleOrderLine.getDiscountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_NONE;
+
+    attrs.put(
+        "discountTypeSelect",
+        Map.of(READONLY_ATTR, nonNegotiable || parentTitleLine || globalDiscount));
+    attrs.put(
+        "discountAmount",
+        Map.of(
+            READONLY_ATTR, nonNegotiable || noLineDiscount || parentTitleLine || globalDiscount));
     return attrs;
   }
 }

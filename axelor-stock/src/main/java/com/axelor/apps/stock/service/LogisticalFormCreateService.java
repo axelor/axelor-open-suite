@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockMove;
 import java.time.LocalDate;
 
 public interface LogisticalFormCreateService {
@@ -34,4 +35,6 @@ public interface LogisticalFormCreateService {
       String internalDeliveryComment,
       String externalDeliveryComment)
       throws AxelorException;
+
+  LogisticalForm createLogisticalFormFromStockMove(StockMove stockMove) throws AxelorException;
 }

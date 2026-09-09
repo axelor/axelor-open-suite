@@ -75,7 +75,7 @@ public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
   public void remove(Invoice entity) {
 
     if (Beans.get(AppSupplychainService.class).isApp("supplychain")) {
-      Beans.get(TimetableService.class).deleteInvoiceTimeTable(entity);
+      Beans.get(TimetableService.class).cancelTimetable(entity);
     }
 
     super.remove(entity);

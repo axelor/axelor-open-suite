@@ -30,4 +30,6 @@ public interface TaxAccountToolService {
   Integer resolveVatLiabilityFromAccountingSituation(
       Partner partner, Company company, Account account, boolean isExpense, boolean isSale)
       throws AxelorException;
+
+  void checkAccountVatSystem(Account account) throws AxelorException;
 }

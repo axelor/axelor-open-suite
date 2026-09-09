@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+              https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="contract-line-grid" title="Contract Lines"
     model="com.axelor.apps.contract.db.ContractLine" canMove="true" orderBy="sequence">
@@ -15,8 +15,10 @@
     <field name="exTaxTotal" x-scale="$currencyNumberOfDecimals"/>
     <field name="inTaxTotal" x-scale="$currencyNumberOfDecimals"/>
     <field name="isToRevaluate"/>
-    <field name="initialPricePerYear" readonly="true" x-scale="$currencyNumberOfDecimals"/>
-    <field name="yearlyPriceRevalued" readonly="true" x-scale="$currencyNumberOfDecimals"/>
+    <field name="initialPricePerYear" readonly="true" hidden="true"
+      x-scale="$currencyNumberOfDecimals"/>
+    <field name="yearlyPriceRevalued" readonly="true" hidden="true"
+      x-scale="$currencyNumberOfDecimals"/>
     <field name="typeSelect" hidden="true"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
@@ -96,7 +98,7 @@
           onChange="action-method-contract-line-compute-total"/>
         <panel name="discountPanel" colSpan="12">
           <field name="discountTypeSelect" colSpan="3"
-            onChange="action-method-contract-line-compute-total"/>
+            onChange="action-contract-line-group-discount-type-onchange"/>
           <field name="discountAmount" hideIf="discountTypeSelect == 0" colSpan="3"
             onChange="action-method-contract-line-compute-total"
             x-scale="$nbDecimalDigitForUnitPrice"/>
@@ -129,6 +131,7 @@
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form" canEdit="false"
+          onSelect="action-contract-line-method-set-domain-analytic-distribution-template"
           onChange="action-contract-line-group-analytic-distribution-template-onchange"/>
         <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
@@ -199,7 +202,7 @@
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form" canEdit="false"
-          onSelect="action-contract-line-attrs-set-analytic-distribution-template-domain"
+          onSelect="action-contract-line-method-set-domain-analytic-distribution-template"
           onChange="action-contract-line-group-analytic-distribution-template-onchange"/>
         <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
           form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
@@ -395,11 +398,11 @@
       expr="eval: (__parent__ &amp;&amp; __parent__?._parent) ? !__parent__?._parent?.isConsumptionManagement : !__parent__?.isConsumptionManagement"/>
   </action-attrs>
 
-  <action-attrs
-    name="action-contract-line-attrs-set-analytic-distribution-template-domain">
-    <attribute name="domain" for="analyticDistributionTemplate"
-      expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
-  </action-attrs>
+  <action-method
+    name="action-contract-line-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
 
   <action-attrs name="action-contract-line-attrs-read-only-distribution-lines">
     <attribute name="readonly" for="analyticMoveLineList"
@@ -534,4 +537,15 @@ In case you have contract lines with different invoicing duration, you can activ
     <call class="com.axelor.apps.contract.web.ContractLineController"
       method="computeProductDomain"/>
   </action-method>
+
+  <action-record name="action-contract-line-record-clear-discount-amount"
+    model="com.axelor.apps.contract.db.ContractLine">
+    <field name="discountAmount" expr="eval: 0"/>
+  </action-record>
+
+  <action-group name="action-contract-line-group-discount-type-onchange">
+    <action name="action-contract-line-record-clear-discount-amount"/>
+    <action name="action-method-contract-line-compute-total"/>
+  </action-group>
+
 </object-views>

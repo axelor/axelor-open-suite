@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -71,6 +72,7 @@ public class ProductionTrackingPreservationServiceImpl
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public PreservedTrackingNumbersByProduct getPreservedTrackingNumbersByProduct(
       List<StockMoveLine> stockMoveLines) {
     Map<Long, Deque<PreservedTrackingNumber>> result = new HashMap<>();
@@ -79,21 +81,30 @@ public class ProductionTrackingPreservationServiceImpl
     }
 
     for (StockMoveLine line : stockMoveLines) {
-      TrackingNumber trackingNumber = line.getTrackingNumber();
-      Product product = line.getProduct();
-      BigDecimal qty = line.getQty();
+      StockMoveLine managedLine = JpaModelHelper.ensureManaged(line);
+      if (managedLine == null) {
+        continue;
+      }
+      TrackingNumber trackingNumber = managedLine.getTrackingNumber();
+      Product product = managedLine.getProduct();
+      BigDecimal qty = managedLine.getQty();
       if (trackingNumber == null || product == null || qty == null) {
         continue;
       }
       boolean restoreOrigin =
           Optional.ofNullable(trackingNumber.getOriginStockMoveLine())
               .map(StockMoveLine::getId)
-              .filter(originLineId -> Objects.equals(originLineId, line.getId()))
+              .filter(originLineId -> Objects.equals(originLineId, managedLine.getId()))
               .isPresent();
 
       result
           .computeIfAbsent(product.getId(), k -> new ArrayDeque<>())
-          .add(new PreservedTrackingNumber(trackingNumber, qty, line.getUnit(), restoreOrigin));
+          .add(
+              new PreservedTrackingNumber(
+                  trackingNumber,
+                  qty,
+                  JpaModelHelper.ensureManaged(managedLine.getUnit()),
+                  restoreOrigin));
     }
 
     return new PreservedTrackingNumbersByProduct(result);
@@ -339,6 +350,74 @@ public class ProductionTrackingPreservationServiceImpl
         }
       }
     }
+  }
+
+  @Override
+  public PreservedTrackingNumbersByProduct reclaimOrphanedTrackingNumbers(
+      PreservedTrackingNumbersByProduct preservedTrackingNumbersByProduct,
+      List<ProdProduct> prodProductList,
+      ManufOrder manufOrder)
+      throws AxelorException {
+    Map<Long, Deque<PreservedTrackingNumber>> result =
+        preservedTrackingNumbersByProduct != null
+                && preservedTrackingNumbersByProduct.values() != null
+            ? preservedTrackingNumbersByProduct.values()
+            : new HashMap<>();
+    if (prodProductList == null || prodProductList.isEmpty() || manufOrder == null) {
+      return new PreservedTrackingNumbersByProduct(result);
+    }
+
+    List<TrackingNumber> orphanedTrackingNumbers =
+        trackingNumberRepo.findOrphanedByOriginManufOrder(manufOrder).fetch();
+    if (orphanedTrackingNumbers.isEmpty()) {
+      return new PreservedTrackingNumbersByProduct(result);
+    }
+
+    Map<Long, List<TrackingNumber>> orphanedTrackingNumbersByProductId =
+        orphanedTrackingNumbers.stream()
+            .collect(Collectors.groupingBy(trackingNumber -> trackingNumber.getProduct().getId()));
+
+    for (ProdProduct prodProduct : prodProductList) {
+      if (orphanedTrackingNumbersByProductId.isEmpty()) {
+        break;
+      }
+      Product product = prodProduct.getProduct();
+      if (product == null) {
+        continue;
+      }
+      List<TrackingNumber> orphanedTrackingNumbersForProduct =
+          orphanedTrackingNumbersByProductId.remove(product.getId());
+      if (orphanedTrackingNumbersForProduct == null) {
+        continue;
+      }
+      Deque<PreservedTrackingNumber> deque =
+          result.computeIfAbsent(product.getId(), k -> new ArrayDeque<>());
+      BigDecimal reclaimQty = getReclaimQty(prodProduct, manufOrder);
+      Unit unit = JpaModelHelper.ensureManaged(prodProduct.getUnit());
+      for (TrackingNumber trackingNumber : orphanedTrackingNumbersForProduct) {
+        deque.addLast(new PreservedTrackingNumber(trackingNumber, reclaimQty, unit, true));
+      }
+    }
+
+    return new PreservedTrackingNumbersByProduct(result);
+  }
+
+  protected BigDecimal getReclaimQty(ProdProduct prodProduct, ManufOrder manufOrder)
+      throws AxelorException {
+    TrackingNumberConfiguration trackingNumberConfiguration =
+        (TrackingNumberConfiguration)
+            productCompanyService.get(
+                prodProduct.getProduct(), "trackingNumberConfiguration", manufOrder.getCompany());
+    BigDecimal productionQtyByTracking =
+        trackingNumberConfiguration != null
+            ? trackingNumberConfiguration.getProductionQtyByTracking()
+            : null;
+    if (productionQtyByTracking != null && productionQtyByTracking.signum() > 0) {
+      return productionQtyByTracking;
+    }
+    // No configured batch size: the caller's remainingQty.min(...) already caps consumption, so an
+    // oversized capacity here just means "take as much as is needed".
+    return new BigDecimal(Integer.MAX_VALUE);
   }
 
   protected boolean hasProductAutoSelectTracking(

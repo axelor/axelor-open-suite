@@ -598,8 +598,10 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         Beans.get(StockMoveRepository.class)
             .all()
             .filter(
-                "? IN (SELECT po.id FROM self.purchaseOrderSet po) AND self.statusSelect = 2",
-                purchaseOrder.getId())
+                "? IN (SELECT po.id FROM self.purchaseOrderSet po) AND self.statusSelect IN (?, ?)",
+                purchaseOrder.getId(),
+                StockMoveRepository.STATUS_PLANNED,
+                StockMoveRepository.STATUS_REALIZED)
             .fetch();
 
     for (StockMove stockMove : stockMoveList) {
@@ -672,9 +674,11 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     String statusListQuery =
         statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
     String query =
-        "self.product.id = "
+        "(self.product.id = "
             + productId
-            + " AND self.receiptState != "
+            + " OR self.product.parentProduct.id = "
+            + productId
+            + ") AND self.receiptState != "
             + PurchaseOrderLineRepository.RECEIPT_STATE_RECEIVED
             + " AND self.purchaseOrder.statusSelect IN ("
             + statusListQuery

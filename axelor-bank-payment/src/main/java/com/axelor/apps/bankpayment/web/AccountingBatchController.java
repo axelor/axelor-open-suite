@@ -20,10 +20,15 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.bankpayment.service.batch.BillOfExchangeInvoiceTermQueryService;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -31,6 +36,7 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -97,6 +103,47 @@ public class AccountingBatchController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void searchInvoiceTermsToBeProcessed(ActionRequest request, ActionResponse response) {
+    try {
+      AccountingBatch accountingBatch = request.getContext().asType(AccountingBatch.class);
+      List<Long> invoiceTermIds = fetchEligibleInvoiceTermIds(accountingBatch);
+
+      ActionViewBuilder actionViewBuilder =
+          ActionView.define(I18n.get("Invoice terms to be processed"));
+      actionViewBuilder.model(InvoiceTerm.class.getName());
+      actionViewBuilder.add("grid", "invoice-term-grid");
+      actionViewBuilder.add("form", "invoice-term-form");
+      actionViewBuilder.domain(invoiceTermIds.isEmpty() ? "self.id IN (0)" : "self.id IN (:ids)");
+      if (!invoiceTermIds.isEmpty()) {
+        actionViewBuilder.context("ids", invoiceTermIds);
+      }
+      response.setReload(true);
+      response.setView(actionViewBuilder.map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  protected List<Long> fetchEligibleInvoiceTermIds(AccountingBatch accountingBatch) {
+    List<Long> anomalyList = Lists.newArrayList(0L);
+    List<Long> invoiceTermIds = new ArrayList<>();
+    Query<InvoiceTerm> query =
+        Beans.get(BillOfExchangeInvoiceTermQueryService.class)
+            .buildOrderedQueryFetchEligibleInvoiceTerms(accountingBatch, anomalyList);
+
+    List<InvoiceTerm> invoiceTermList;
+    while (!(invoiceTermList =
+            query.bind("anomalyList", anomalyList).fetch(AbstractBatch.FETCH_LIMIT))
+        .isEmpty()) {
+      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+        invoiceTermIds.add(invoiceTerm.getId());
+        anomalyList.add(invoiceTerm.getId());
+      }
+      JPA.clear();
+    }
+    return invoiceTermIds;
   }
 
   protected List<Long> getPartnersIdList(String query, AccountingBatch accountingBatch) {

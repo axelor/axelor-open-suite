@@ -42,6 +42,7 @@ import com.axelor.apps.base.service.partner.PartnerCreationServiceImpl;
 import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.service.CallTenderPurchaseOrderServiceImpl;
+import com.axelor.apps.purchase.service.ProductServicePurchaseImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderLineTaxComputeServiceImpl;
@@ -191,6 +192,7 @@ import com.axelor.apps.supplychain.service.ProductStockAnalysisService;
 import com.axelor.apps.supplychain.service.ProductStockAnalysisServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
+import com.axelor.apps.supplychain.service.ProductSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.apps.supplychain.service.ProjectedStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderChangeValidationSupplychainService;
@@ -680,5 +682,6 @@ public class SupplychainModule extends AxelorModule {
     bind(StockRotationCategoryService.class).to(StockRotationCategoryServiceImpl.class);
     bind(ProductStockAnalysisService.class).to(ProductStockAnalysisServiceImpl.class);
     bind(DepRateAggregationService.class).to(DepRateAggregationServiceImpl.class);
+    bind(ProductServicePurchaseImpl.class).to(ProductSupplychainServiceImpl.class);
   }
 }

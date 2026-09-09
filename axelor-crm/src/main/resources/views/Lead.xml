@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <kanban columnBy="leadStatus" model="com.axelor.apps.crm.db.Lead" sequenceBy="sequence"
     title="Leads" name="lead-kanban" draggable="true" limit="10"
@@ -231,7 +231,7 @@
                   <field name="countrySubDivision" colSpan="12"
                     x-bind="{{countrySubDivision|uppercase}}"/>
                   <field name="city" colSpan="12" canNew="true" canEdit="false"
-                    onChange="action-address-change-city, action-address-validate-change-city"
+                    onChange="action-address-change-city"
                     onSelect="action-address-attrs-update-domain-city" form-view="city-form"
                     grid-view="city-grid"/>
                   <field name="zip" colSpan="12"

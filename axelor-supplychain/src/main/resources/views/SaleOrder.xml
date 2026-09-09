@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     id="supplychain-sale-order-form" extension="true">
@@ -9,8 +9,8 @@
       <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
       <attribute name="onSave" value="action-supplychain-saleorder-onsave"/>
     </extend>
-    <extend target="//field[@name='versionNumber']">
-      <insert position="after">
+    <extend target="//panel[@name='deliverySourcingPanel']">
+      <insert position="inside">
         <field colSpan="3" name="directOrderLocation"
           onChange="action-sale-order-record-direct-order-location-onchange" widget="boolean-switch"/>
       </insert>
@@ -383,6 +383,12 @@
   <action-method name="action-sale-order-method-apply-timetable-template">
     <call class="com.axelor.apps.supplychain.web.TimetableController" method="applyTemplate"/>
   </action-method>
+
+  <action-group name="action-group-sale-order-timetable-template-change">
+    <action name="action-sale-order-method-apply-timetable-template"/>
+    <action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
+    <action name="action-supplychain-sale-order-validate-check-amount-timetable"/>
+  </action-group>
 
   <action-method name="supplychain-action-create-shipment-cost-line">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"

@@ -18,7 +18,9 @@
  */
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
+import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
@@ -34,4 +36,14 @@ public interface BankReconciliationSelectedLineComputationService {
 
   BigDecimal getSelectedMoveLineTotal(
       BankReconciliation bankReconciliation, List<LinkedHashMap> toReconcileMoveLineSet);
+
+  BigDecimal getMoveLineRemainingAmount(MoveLine moveLine, BankReconciliation bankReconciliation);
+
+  BigDecimal computeSelectedBankReconciliationLinesTotal(
+      BankReconciliation bankReconciliation,
+      List<LinkedHashMap> selectedBankReconciliationLineList);
+
+  BigDecimal computeBankReconciliationLinesTotal(
+      BankReconciliation bankReconciliation,
+      List<BankReconciliationLine> bankReconciliationLineList);
 }

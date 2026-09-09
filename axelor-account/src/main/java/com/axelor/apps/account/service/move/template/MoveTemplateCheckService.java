@@ -31,4 +31,14 @@ public interface MoveTemplateCheckService {
    * @throws AxelorException if validation fails with an error
    */
   boolean checkValidity(MoveTemplate moveTemplate) throws AxelorException;
+
+  /**
+   * Returns a non-blocking warning message when at least one line has 'Compute tax at creation'
+   * enabled while the template also contains explicit tax lines. In that configuration the tax is
+   * not computed automatically and the option is ignored.
+   *
+   * @param moveTemplate the move template to check
+   * @return the warning message, or {@code null} if there is nothing to warn about
+   */
+  String getComputeTaxAtCreationWarning(MoveTemplate moveTemplate);
 }

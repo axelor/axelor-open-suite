@@ -2,7 +2,6 @@
 264;"account-root-bank-orders";"Admin"
 265;"account-root-bank-order-direct-debit";"Admin"
 266;"account-root-bank-order-sepa-direct-debit";"Admin"
-267;"account-root-bank-order-lcr";"Admin"
 268;"account-root-bank-order-lcr-bank-orders";"Admin"
 269;"account-root-bank-order-international-direct-debit";"Admin"
 270;"account-root-bank-order-credit-transfer";"Admin"

@@ -53,6 +53,7 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
   protected ExpenseLineRepository expenseLineRepository;
   protected ExpenseRepository expenseRepository;
   protected EmployeeFetchService employeeFetchService;
+  protected ExpenseAnalyticService expenseAnalyticService;
 
   @Inject
   public ExpenseLineUpdateServiceImpl(
@@ -61,13 +62,15 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       ExpenseLineToolService expenseLineToolService,
       ExpenseLineRepository expenseLineRepository,
       ExpenseRepository expenseRepository,
-      EmployeeFetchService employeeFetchService) {
+      EmployeeFetchService employeeFetchService,
+      ExpenseAnalyticService expenseAnalyticService) {
     this.expenseToolService = expenseToolService;
     this.expenseComputationService = expenseComputationService;
     this.expenseLineToolService = expenseLineToolService;
     this.expenseLineRepository = expenseLineRepository;
     this.expenseRepository = expenseRepository;
     this.employeeFetchService = employeeFetchService;
+    this.expenseAnalyticService = expenseAnalyticService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -362,6 +365,7 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     }
 
     expenseLineToolService.computeAmount(expenseLine.getEmployee(), expenseLine);
+    expenseAnalyticService.applyAnalyticDistribution(expenseLine);
 
     expenseLineRepository.save(expenseLine);
   }

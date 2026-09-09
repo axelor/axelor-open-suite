@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
 
   <action-view title="Customer deliveries by country"
@@ -32,14 +32,16 @@
     name="dashlet.stockMove.deliveries.time.delay.in.nbr">
     <view type="chart" name="chart.stockMove.deliveries.time.delay.in.nbr"/>
     <context name="todayDate" expr="eval:__config__.date"/>
-    <context name="_language" expr="eval:__user__.getLanguage()"/>
+    <context name="_language"
+      expr="eval:__user__.getLanguage()?.tokenize('-')?.first()?.toLowerCase()"/>
   </action-view>
 
   <action-view title="Customer average delivery delay"
     name="dashlet.stockMove.average.delivery.time.delay">
     <view type="chart" name="chart.stockMove.average.delivery.time.delay"/>
     <context name="todayDate" expr="eval:__config__.date"/>
-    <context name="_language" expr="eval:__user__.getLanguage()"/>
+    <context name="_language"
+      expr="eval:__user__.getLanguage()?.tokenize('-')?.first()?.toLowerCase()"/>
   </action-view>
 
   <!-- Stock Dashboard -->

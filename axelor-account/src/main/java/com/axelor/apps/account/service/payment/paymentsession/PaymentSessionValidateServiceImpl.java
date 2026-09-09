@@ -621,11 +621,16 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             this.getMoveLineDescription(paymentSession),
             out);
 
-    moveLine.setAmountPaid(reconciliedAmount);
+    BigDecimal moveLineCurrencyRate =
+        moveLine.getCurrencyRate().compareTo(BigDecimal.ZERO) != 0
+            ? moveLine.getCurrencyRate()
+            : BigDecimal.ONE;
+    moveLine.setAmountPaid(
+        reconciliedAmount
+            .multiply(moveLineCurrencyRate)
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
 
     this.reconcile(paymentSession, invoiceTerm, moveLine);
-
-    recomputeAmountPaid(invoiceTerm.getMoveLine());
 
     return move;
   }
@@ -664,8 +669,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       PaymentSession paymentSession, InvoiceTerm invoiceTerm, MoveLine moveLine)
       throws AxelorException {
     MoveLine debitMoveLine, creditMoveLine;
-    BigDecimal amountPaid =
-        moveLine.getAmountRemaining().signum() == 0 ? moveLine.getAmountPaid() : BigDecimal.ZERO;
+    BigDecimal compensatedAmount = moveLine.getAmountPaid();
 
     if (paymentSession.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT) {
       debitMoveLine = moveLine;
@@ -684,14 +688,32 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       }
     }
 
-    if (paymentSession.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT) {
-      debitMoveLine.setAmountPaid(debitMoveLine.getAmountPaid().subtract(amountPaid));
-    } else {
-      creditMoveLine.setAmountPaid(creditMoveLine.getAmountPaid().subtract(amountPaid));
+    Reconcile reconcile = null;
+
+    if (moveLine.getAmountRemaining().signum() != 0) {
+      reconcile =
+          reconcileService.reconcile(debitMoveLine, creditMoveLine, invoicePayment, false, true);
     }
 
-    return reconcileService.reconcile(
-        debitMoveLine, creditMoveLine, invoicePayment, false, amountPaid.signum() == 0);
+    if (compensatedAmount.signum() != 0) {
+      // The compensated amount was written on the move line without any reconcile record, so it
+      // must be released then reconciled with the invoice move line to be imputed on it.
+      moveLine.setAmountPaid(moveLine.getAmountPaid().subtract(compensatedAmount));
+
+      Reconcile compensationReconcile =
+          reconcileService.reconcile(
+              debitMoveLine,
+              creditMoveLine,
+              reconcile == null ? invoicePayment : null,
+              false,
+              false);
+
+      if (reconcile == null) {
+        reconcile = compensationReconcile;
+      }
+    }
+
+    return reconcile;
   }
 
   protected InvoicePayment findInvoicePayment(
@@ -842,8 +864,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       partner = partnerRepo.find(partner.getId());
     }
 
-    this.generateMoveLine(
-        move, partner, cashAccount, paymentAmount, move.getOrigin(), description, !out);
+    MoveLine cashMoveLine =
+        this.generateMoveLine(
+            move, partner, cashAccount, paymentAmount, move.getOrigin(), description, !out);
+    cashMoveLine.setAmountPaid(out ? cashMoveLine.getCredit() : cashMoveLine.getDebit());
 
     return moveRepo.save(move);
   }

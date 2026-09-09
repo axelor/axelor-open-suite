@@ -80,8 +80,8 @@ public class PurchaseOrderMergingController {
       List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
       List<PurchaseOrder> purchaseOrdersToMerge =
           Beans.get(PurchaseOrderMergingService.class).convertSelectedLinesToMergeLines(idList);
-      if (purchaseOrdersToMerge == null || purchaseOrdersToMerge.isEmpty()) {
-        response.setError(I18n.get("You have to choose at least one purchase quotation"));
+      if (purchaseOrdersToMerge == null || purchaseOrdersToMerge.size() < 2) {
+        response.setError(I18n.get("You have to choose at least two purchase quotations"));
         return;
       }
       if (CollectionUtils.isNotEmpty(purchaseOrdersToMerge)) {

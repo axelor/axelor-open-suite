@@ -19,6 +19,7 @@
 package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -38,6 +39,7 @@ import com.axelor.apps.production.service.ProductionTrackingPreservationService.
 import com.axelor.apps.production.service.StockMoveProductionService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -51,6 +53,7 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -237,6 +240,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     if (stockMove != null && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
       stockMove.setIsWithBackorder(false);
       stockMoveProductionService.copyQtyToRealQty(stockMove);
+      stockMove = fillSupplierShipmentDetailsFromPurchaseOrder(stockMove);
       stockMoveProductionService.realize(stockMove);
     }
   }
@@ -305,9 +309,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
 
     } else {
       stockMoveList = manufOrder.getOutStockMoveList();
-      fromStockLocation =
-          stockConfigProductionService.getProductionVirtualStockLocation(
-              stockConfig, manufOrderOutsourceService.isOutsource(manufOrder));
+      fromStockLocation = getVirtualStockLocationForProducedStockMove(manufOrder, company);
       toStockLocation = getDefaultOutStockLocation(manufOrder, company);
     }
 
@@ -343,6 +345,13 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
             productionTrackingPreservationService.getPreservedTrackingNumbersByProduct(
                 reserveLines);
 
+        // Also reclaim tracking numbers orphaned by a manually deleted produced line
+        preservedTrackingNumbersByProduct =
+            productionTrackingPreservationService.reclaimOrphanedTrackingNumbers(
+                preservedTrackingNumbersByProduct,
+                manufOrder.getToProduceProdProductList(),
+                manufOrder);
+
         // Remove reserve lines from stock move so they are not realized
         for (StockMoveLine reserveLine : reserveLines) {
           if (reserveLine.getTrackingNumber() != null) {
@@ -372,18 +381,28 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     }
 
     // generate new stock move
+    Address fromAddress = null;
+    Address toAddress = null;
+    int stockMoveTypeSelect = StockMoveRepository.TYPE_INTERNAL;
+    if (inOrOut == PART_FINISH_OUT && manufOrder.getOutsourcing()) {
+      fromAddress =
+          partnerService.getDefaultAddress(
+              manufOrderOutsourceService.getOutsourcePartner(manufOrder).orElse(null));
+      toAddress = toStockLocation.getAddress();
+      stockMoveTypeSelect = StockMoveRepository.TYPE_INCOMING;
+    }
 
     StockMove newStockMove =
         stockMoveProductionService.createStockMove(
-            null,
-            null,
+            fromAddress,
+            toAddress,
             company,
             fromStockLocation,
             toStockLocation,
             null,
             manufOrder.getPlannedStartDateT().toLocalDate(),
             null,
-            StockMoveRepository.TYPE_INTERNAL);
+            stockMoveTypeSelect);
 
     newStockMove.setStockMoveLineList(new ArrayList<>());
     newStockMove.setOrigin(manufOrder.getManufOrderSeq());
@@ -598,5 +617,44 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
       // relationship).
       stockMoveLineRepository.save(stockMoveLine);
     }
+  }
+
+  protected StockMove fillSupplierShipmentDetailsFromPurchaseOrder(StockMove stockMove)
+      throws AxelorException {
+    stockMove = JpaModelHelper.ensureManaged(stockMove);
+    ManufOrder manufOrder = JpaModelHelper.ensureManaged(stockMove.getManufOrder());
+    if (stockMove.getTypeSelect() != StockMoveRepository.TYPE_INCOMING
+        || manufOrder == null
+        || !manufOrder.getOutsourcing()
+        || CollectionUtils.isEmpty(manufOrder.getPurchaseOrderSet())
+        || (stockMove.getSupplierShipmentDate() != null
+            && !Strings.isNullOrEmpty(stockMove.getSupplierShipmentRef()))) {
+      return stockMove;
+    }
+
+    if (!supplyChainConfigService
+        .getSupplyChainConfig(manufOrder.getCompany())
+        .getHasInSmForNonStorableProduct()) {
+      return stockMove;
+    }
+
+    for (PurchaseOrder purchaseOrder : manufOrder.getPurchaseOrderSet()) {
+      StockMove stockMoveReceipt =
+          stockMoveRepository
+              .all()
+              .filter(
+                  "self.typeSelect = :typeSelect AND self.supplierShipmentRef IS NOT NULL"
+                      + " AND :purchaseOrder MEMBER OF self.purchaseOrderSet")
+              .bind("typeSelect", StockMoveRepository.TYPE_INCOMING)
+              .bind("purchaseOrder", purchaseOrder)
+              .order("-id")
+              .fetchOne();
+      if (stockMoveReceipt != null) {
+        stockMove.setSupplierShipmentRef(stockMoveReceipt.getSupplierShipmentRef());
+        stockMove.setSupplierShipmentDate(stockMoveReceipt.getSupplierShipmentDate());
+        return stockMoveRepository.save(stockMove);
+      }
+    }
+    return stockMove;
   }
 }

@@ -582,6 +582,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     InvoiceLine invoiceLine = null;
     if (invoiceLines != null && !invoiceLines.isEmpty()) {
       invoiceLine = invoiceLines.get(0);
+      copyEcoTaxInformation(invoiceLine, saleOrderLine);
       if (!stockMoveLine.getIsMergedStockMoveLine()) {
         // not a consolidated line so we can set the reference.
         invoiceLine.setStockMoveLine(stockMoveLine);
@@ -625,12 +626,25 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     return invoiceLine;
   }
 
+  protected void copyEcoTaxInformation(InvoiceLine invoiceLine, SaleOrderLine saleOrderLine) {
+    if (invoiceLine == null
+        || saleOrderLine == null
+        || !Boolean.TRUE.equals(appBaseService.getAppBase().getEnableEcoTax())) {
+      return;
+    }
+
+    invoiceLine.setEcoTaxAmount(saleOrderLine.getEcoTaxAmount());
+    invoiceLine.setEcoTaxMention(saleOrderLine.getEcoTaxMention());
+  }
+
   protected void deleteConsolidatedStockMoveLine(StockMoveLine stockMoveLine) {
     if (stockMoveLine.getStockMove() != null
         && stockMoveLine.getStockMove().getStockMoveLineList() != null) {
       stockMoveLine.getStockMove().getStockMoveLineList().remove(stockMoveLine);
     }
-    stockMoveLineRepository.remove(stockMoveLine);
+    if (stockMoveLine.getId() != null) {
+      stockMoveLineRepository.remove(stockMoveLine);
+    }
   }
 
   /**
@@ -751,7 +765,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     BigDecimal qty = invoiceLine.getQty();
     Unit invoiceLineUnit = invoiceLine.getUnit();
     Unit stockMoveLineUnit = stockMoveLine.getUnit();
-    if (!Objects.equals(invoiceLineUnit, stockMoveLineUnit)) {
+    if (invoiceLineUnit != null
+        && stockMoveLineUnit != null
+        && !Objects.equals(invoiceLineUnit, stockMoveLineUnit)) {
       qty =
           unitConversionService.convert(
               invoiceLineUnit,

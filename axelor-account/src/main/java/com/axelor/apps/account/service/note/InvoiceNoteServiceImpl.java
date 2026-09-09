@@ -61,6 +61,8 @@ public class InvoiceNoteServiceImpl implements InvoiceNoteService {
 
     InvoiceNoteCreationHelper.generateFinancialDiscountNote(invoice, invoice.getCompany());
 
+    InvoiceNoteCreationHelper.generateBankDetailsNote(invoice);
+
     InvoiceNoteCreationHelper.generateInvoiceCategoryNote(invoice);
   }
 }

@@ -81,5 +81,7 @@ public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
     updateMobileConfig(
         appMobileSettings.getIsMaintenanceAppEnabled(),
         MobileConfigRepository.APP_SEQUENCE_MAINTENANCE);
+    updateMobileConfig(
+        appMobileSettings.getIsTeamAppEnabled(), MobileConfigRepository.APP_SEQUENCE_TEAM);
   }
 }

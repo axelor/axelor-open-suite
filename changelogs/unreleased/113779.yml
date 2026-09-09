@@ -1,6 +1,0 @@
----
-title: "Bank order: included the invoice's printedPDF file in the 'Display invoice' document list."
-module: axelor-bank-payment
-developer: |
-  Added MetaFiles as parameter in BankOrderLineOriginServiceImpl constructor
-  Added MetaFiles as parameter in BankOrderLineOriginServiceHRImpl constructor

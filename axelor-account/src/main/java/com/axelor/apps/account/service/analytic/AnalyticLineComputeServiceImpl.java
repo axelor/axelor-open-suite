@@ -58,11 +58,9 @@ public class AnalyticLineComputeServiceImpl implements AnalyticLineComputeServic
     if (analyticMoveLineList == null || analyticMoveLineList.isEmpty()) {
       createAnalyticDistributionWithTemplate(analyticLine, amount, date);
     } else {
-      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        analyticMoveLineService.updateAnalyticMoveLine(analyticMoveLine, amount, date);
-      }
+      analyticMoveLineService.updateAnalyticMoveLineList(analyticMoveLineList, amount, date);
     }
-    updateAccountTypeOnAnalytic(analyticLine, analyticMoveLineList);
+    updateAccountTypeOnAnalytic(analyticLine, analyticLine.getAnalyticMoveLineList());
 
     return analyticLine;
   }
@@ -86,6 +84,7 @@ public class AnalyticLineComputeServiceImpl implements AnalyticLineComputeServic
     for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
       analyticLine.addAnalyticMoveLineListItem(analyticMoveLine);
     }
+    updateAccountTypeOnAnalytic(analyticLine, analyticLine.getAnalyticMoveLineList());
     return analyticLine;
   }
 

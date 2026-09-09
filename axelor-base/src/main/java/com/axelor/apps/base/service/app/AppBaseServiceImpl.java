@@ -137,6 +137,18 @@ public class AppBaseServiceImpl extends ScriptAppServiceImpl implements AppBaseS
   }
 
   @Override
+  public int getNbDecimalDigitForTaxRate() {
+
+    AppBase appBase = getAppBase();
+
+    if (appBase != null) {
+      return appBase.getNbDecimalDigitForTaxRate();
+    }
+
+    return DEFAULT_NB_DECIMAL_DIGITS;
+  }
+
+  @Override
   public String getDefaultPartnerLocale() {
 
     AppBase appBase = getAppBase();

@@ -558,26 +558,26 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       boolean isRefund)
       throws AxelorException {
 
-    BigDecimal companyAmount = reconcile != null ? reconcile.getAmount() : amount;
     if (invoiceTerm.getInvoice() != null) {
       InvoicePayment invoicePayment =
           this.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
-      if (paymentSession != null && paymentSession.getPaymentDate() != null) {
-        invoicePayment.setPaymentDate(paymentSession.getPaymentDate());
-      }
       invoicePayment.setReconcile(reconcile);
 
       List<InvoiceTerm> invoiceTermList = Arrays.asList(invoiceTerm);
 
       invoiceTermService.updateInvoiceTerms(
-          invoiceTermList, invoicePayment, companyAmount, reconcile, new HashMap<>());
+          invoiceTermList, invoicePayment, amount, reconcile, new HashMap<>());
     } else {
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
       invoiceTerm.setCompanyAmountRemaining(
-          invoiceTerm.getCompanyAmountRemaining().subtract(companyAmount));
+          invoiceTerm.getCompanyAmountRemaining().subtract(reconcile.getAmount()));
     }
 
     invoiceTerm = invoiceTermService.updateInvoiceTermsAmountsSessionPart(invoiceTerm, isRefund);
+
+    if (isRefund && invoiceTerm.getInvoice() != null) {
+      invoicePaymentToolService.updateAmountPaid(invoiceTerm.getInvoice());
+    }
 
     return invoiceTerm;
   }

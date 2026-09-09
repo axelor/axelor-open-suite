@@ -148,6 +148,7 @@ public class ContractController {
       service.terminateContract(contract, true, contract.getTerminatedDate());
       response.setReload(true);
     } catch (Exception e) {
+      response.setValue("terminatedDate", null);
       TraceBackService.trace(response, e);
     }
   }
@@ -290,14 +291,18 @@ public class ContractController {
         "hidden",
         !contract.getCurrentContractVersion().getIsPeriodicInvoicing()
             || !contract.getIsToRevaluate());
+    boolean hideRevaluationColumns =
+        !contract.getCurrentContractVersion().getIsPeriodicInvoicing()
+            || contract.getCurrentContractVersion().getStatusSelect()
+                == ContractVersionRepository.DRAFT_VERSION;
     response.setAttr(
         "currentContractVersion.contractLineList.initialPricePerYear",
         "hidden",
-        !contract.getCurrentContractVersion().getIsPeriodicInvoicing());
+        hideRevaluationColumns);
     response.setAttr(
         "currentContractVersion.contractLineList.yearlyPriceRevalued",
         "hidden",
-        !contract.getCurrentContractVersion().getIsPeriodicInvoicing());
+        hideRevaluationColumns);
   }
 
   public void setInvoicedPartnerDomain(ActionRequest request, ActionResponse response) {

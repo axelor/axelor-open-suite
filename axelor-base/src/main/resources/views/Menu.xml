@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <menuitem id="abs-menu-mail" name="menu-mail"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getEnterpriseCommunication()"
@@ -306,6 +306,7 @@
     <view type="cards" name="product-cards"/>
     <view type="grid" name="product-grid"/>
     <view type="form" name="product-form"/>
+    <view-param name="forceTitle" value="true"/>
     <view-param name="limit" value="39"/>
     <view-param name="search-filters" value="products-filters"/>
     <domain>self.isModel = :_isModel AND self.dtype = 'Product'</domain>
@@ -530,11 +531,8 @@
     <call method="showSuppliersOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
   </action-method>
 
-  <menuitem name="admin-root-organisation" parent="admin-root" title="Organization"
-    order="400" if="__config__.app.isApp('base')"/>
-
-  <menuitem name="admin-root-organisation-territory" parent="admin-root-organisation"
-    title="Territories" order="100"/>
+  <menuitem name="admin-root-organisation-territory" parent="admin-root"
+    title="Territories" order="400" if="__config__.app.isApp('base')"/>
 
   <menuitem name="admin-root-organisation-territory-street"
     parent="admin-root-organisation-territory" title="Streets"

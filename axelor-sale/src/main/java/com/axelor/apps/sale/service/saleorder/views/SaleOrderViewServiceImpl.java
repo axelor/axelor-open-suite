@@ -47,7 +47,6 @@ import java.util.Map;
 public class SaleOrderViewServiceImpl implements SaleOrderViewService {
 
   public static final String HIDDEN_ATTRS = "hidden";
-  public static final String TITLE_ATTRS = "title";
   public static final String SELECTION_IN_ATTRS = "selection-in";
   public static final String READONLY_ATTRS = "readonly";
   public static final String REFRESH_ATTRS = "refresh";
@@ -122,10 +121,6 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
 
   protected Map<String, Map<String, Object>> inAti(SaleOrder saleOrder) throws AxelorException {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    AppSale appSale = appSaleService.getAppSale();
-    boolean isClassicLineList =
-        appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_CLASSIC;
-
     boolean inAti = saleOrder.getInAti();
     attrs.put("saleOrderLineList.exTaxTotal", Map.of(HIDDEN_ATTRS, inAti));
     attrs.put("saleOrderLineList.price", Map.of(HIDDEN_ATTRS, inAti));
@@ -140,16 +135,6 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
           saleOrderInAtiSelect == SaleConfigRepository.SALE_WT_ALWAYS
               || saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_ALWAYS;
       attrs.put("inAti", Map.of(HIDDEN_ATTRS, hideInAti));
-    }
-
-    if (inAti && isClassicLineList) {
-      attrs.put(
-          "saleOrderLineList.priceDiscounted", Map.of(TITLE_ATTRS, I18n.get("Unit price A.T.I.")));
-    }
-
-    if (!inAti && isClassicLineList) {
-      attrs.put(
-          "saleOrderLineList.priceDiscounted", Map.of(TITLE_ATTRS, I18n.get("Unit price W.T.")));
     }
     return attrs;
   }

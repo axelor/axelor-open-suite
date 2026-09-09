@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
 
   <menuitem name="sc-root-purchase" title="Purchases" order="-1800"
@@ -121,11 +121,8 @@
   <menuitem name="sc-root-purchase-report" parent="sc-root-purchase" title="Reportings"
     order="1300" icon="bar-chart"/>
 
-  <menuitem name="purchase-report-maps" parent="sc-root-purchase-report" title="Maps"
-    order="300"/>
-
-  <menuitem name="purchase-maps-partner-suppliers" parent="purchase-report-maps"
-    title="Suppliers" action="action-purchase-method-show-suppliers-on-map-page" order="100"/>
+  <menuitem name="purchase-maps-partner-suppliers" parent="sc-root-purchase-report"
+    title="Map - Suppliers" action="action-purchase-method-show-suppliers-on-map-page" order="300"/>
 
   <action-method name="action-purchase-method-show-suppliers-on-map-page">
     <call method="showSuppliersOnMap" class="com.axelor.apps.base.web.AppBaseController"/>

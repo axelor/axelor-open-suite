@@ -326,6 +326,13 @@ public class InvoiceToolService {
         && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency());
   }
 
+  public static boolean isInvoiceStatusMergeable(Invoice invoice) {
+    return invoice != null
+        && invoice.getStatusSelect() != null
+        && (invoice.getStatusSelect() == InvoiceRepository.STATUS_DRAFT
+            || invoice.getStatusSelect() == InvoiceRepository.STATUS_VALIDATED);
+  }
+
   public static void checkUseForPartnerBalanceAndReconcileOk(Invoice invoice)
       throws AxelorException {
     if (invoice.getPartnerAccount() != null

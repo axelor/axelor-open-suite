@@ -66,9 +66,15 @@ public class MoveTemplateController {
       MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
       moveTemplate = Beans.get(MoveTemplateRepository.class).find(moveTemplate.getId());
 
-      boolean valid = Beans.get(MoveTemplateCheckService.class).checkValidity(moveTemplate);
+      MoveTemplateCheckService moveTemplateCheckService = Beans.get(MoveTemplateCheckService.class);
+      boolean valid = moveTemplateCheckService.checkValidity(moveTemplate);
 
       if (valid) {
+        String computeTaxAtCreationWarning =
+            moveTemplateCheckService.getComputeTaxAtCreationWarning(moveTemplate);
+        if (computeTaxAtCreationWarning != null) {
+          response.setInfo(computeTaxAtCreationWarning);
+        }
         response.setReload(true);
       } else {
         response.setInfo(I18n.get(AccountExceptionMessage.MOVE_TEMPLATE_1));

@@ -20,7 +20,10 @@ package com.axelor.apps.purchase.service.purchase.request;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -35,6 +38,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
@@ -164,7 +168,7 @@ public class PurchaseRequestToPoCreateServiceImpl implements PurchaseRequestToPo
   protected PurchaseOrder createPurchaseOrder(
       PurchaseRequest purchaseRequest, Company defaultCompany) throws AxelorException {
     Company company = Optional.ofNullable(purchaseRequest.getCompany()).orElse(defaultCompany);
-    return purchaseOrderRepo.save(
+    PurchaseOrder purchaseOrder =
         purchaseOrderCreateService.createPurchaseOrder(
             AuthUtils.getUser(),
             company,
@@ -176,7 +180,26 @@ public class PurchaseRequestToPoCreateServiceImpl implements PurchaseRequestToPo
             appBaseService.getTodayDate(company),
             null,
             purchaseRequest.getSupplierPartner(),
-            purchaseRequest.getTradingName()));
+            purchaseRequest.getTradingName());
+    setPurchaseOrderSupplierDetails(purchaseOrder);
+    return purchaseOrderRepo.save(purchaseOrder);
+  }
+
+  protected void setPurchaseOrderSupplierDetails(PurchaseOrder purchaseOrder)
+      throws AxelorException {
+    Partner supplierPartner = purchaseOrder.getSupplierPartner();
+    if (supplierPartner == null) {
+      return;
+    }
+    purchaseOrder.setNotes(supplierPartner.getPurchaseOrderComments());
+
+    if (supplierPartner.getContactPartnerSet().size() == 1) {
+      purchaseOrder.setContactPartner(supplierPartner.getContactPartnerSet().iterator().next());
+    }
+
+    purchaseOrder.setPriceList(
+        Beans.get(PartnerPriceListService.class)
+            .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE));
   }
 
   protected void generatePoLinesPurchaseRequest(

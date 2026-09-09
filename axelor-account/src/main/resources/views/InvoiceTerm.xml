@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <grid name="invoice-term-grid" title="Invoice terms" orderBy="sequence"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
@@ -160,6 +160,7 @@
     <field name="paymentMode"/>
     <field name="amountRemaining" x-scale="currency.numberOfDecimals"/>
     <field name="isPaid"/>
+    <field name="lcrAccounted" title="LCR"/>
     <field name="isHoldBack"/>
     <field name="percentage"/>
     <field name="financialDiscount" hidden="true"
@@ -239,6 +240,7 @@
         <field name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
         <field name="isCustomized"/>
         <field name="isPaid"/>
+        <field name="lcrAccounted"/>
         <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="thirdPartyPayerPartner" domain="self.isThirdPartyPayer IS TRUE"
@@ -250,8 +252,7 @@
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
         readonlyIf="isPaid || $number(amountRemaining) != $number(amount) || paymentSession">
-        <field name="dueDate"
-          readonlyIf="invoice == null || !invoice.paymentCondition.isFree || isPaid || pfpValidateStatusSelect > 1"
+        <field name="dueDate" readonlyIf="$isPaymentConditionFree == false"
           onChange="action-invoice-term-record-update-customized-true"/>
         <field name="isHoldBack" readonly="true"
           onChange="action-invoice-term-group-holdback-change"/>
@@ -271,10 +272,11 @@
         <field name="paymentMode" requiredIf="invoice != null"/>
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
-          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
+          requiredIf="paymentMode.typeSelect == 9 || ((paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 10) &amp;&amp; paymentMode.inOutSelect != 2)"
           onSelect="action-invoice-term-method-bank-details-from-partner-domain"/>
         <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="paymentMode.inOutSelect" hidden="true"/>
         <field name="company" hidden="true"/>
         <field name="company.currency.numberOfDecimals" hidden="true"/>
         <field name="origin" hidden="true"/>
@@ -406,6 +408,7 @@
           grid-view="invoice-grid"/>
         <field name="isCustomized" readonly="true"/>
         <field name="isPaid" readonly="true"/>
+        <field name="lcrAccounted" readonly="true"/>
         <field name="moveLine" readonly="true" form-view="move-line-form"
           grid-view="move-line-grid"/>
         <field name="partner" readonly="true" form-view="partner-form"
@@ -443,11 +446,12 @@
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           readonlyIf="isPaid"
-          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
+          requiredIf="paymentMode.typeSelect == 9 || ((paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 10) &amp;&amp; paymentMode.inOutSelect != 2)"
           onSelect="action-invoice-term-method-bank-details-from-partner-domain"/>
         <field name="applyFinancialDiscount" hidden="true"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="paymentMode.inOutSelect" hidden="true"/>
         <field name="company" hidden="true"/>
         <field name="origin" hidden="true"/>
         <field name="originDate" hidden="true"/>
@@ -577,6 +581,7 @@
           grid-view="invoice-grid"/>
         <field name="isCustomized" readonly="true"/>
         <field name="isPaid" title="Paid / Used" readonly="true"/>
+        <field name="lcrAccounted" readonly="true"/>
         <field name="moveLine" readonly="true" form-view="move-line-form"
           grid-view="move-line-grid"/>
         <field name="partner" readonly="true" form-view="partner-form"
@@ -616,11 +621,12 @@
         <field name="paymentMode" requiredIf="invoice != null"/>
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
-          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
+          requiredIf="paymentMode.typeSelect == 9 || ((paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 10) &amp;&amp; paymentMode.inOutSelect != 2)"
           onSelect="action-invoice-term-method-bank-details-from-partner-domain"/>
 
         <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="paymentMode.inOutSelect" hidden="true"/>
         <field name="company" hidden="true"/>
         <field name="company.currency.numberOfDecimals" hidden="true"/>
         <field name="origin" hidden="true"/>
@@ -795,10 +801,11 @@
         <field name="paymentMode" requiredIf="invoice != null"/>
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
-          requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
+          requiredIf="paymentMode.typeSelect == 9 || ((paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 10) &amp;&amp; paymentMode.inOutSelect != 2)"
           onSelect="action-invoice-term-method-bank-details-from-partner-domain"/>
         <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="paymentMode.inOutSelect" hidden="true"/>
         <field name="company" hidden="true"/>
         <field name="company.currency.numberOfDecimals" hidden="true"/>
         <field name="origin" hidden="true"/>

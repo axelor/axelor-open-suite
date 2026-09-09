@@ -300,7 +300,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     List<TaxPaymentMoveLine> reverseTaxPaymentMoveLines = new ArrayList<TaxPaymentMoveLine>();
     for (TaxPaymentMoveLine taxPaymentMoveLine : customerMoveLine.getTaxPaymentMoveLineList()) {
       if (!taxPaymentMoveLine.getIsAlreadyReverse()
-          && taxPaymentMoveLine.getReconcile().equals(reconcile)) {
+          && Objects.equals(taxPaymentMoveLine.getReconcile(), reconcile)) {
         TaxPaymentMoveLine reverseTaxPaymentMoveLine =
             taxPaymentMoveLineService.getReverseTaxPaymentMoveLine(taxPaymentMoveLine);
 

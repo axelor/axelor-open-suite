@@ -18,12 +18,14 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class AnalyticGroupServiceImpl implements AnalyticGroupService {
 
@@ -52,13 +54,29 @@ public class AnalyticGroupServiceImpl implements AnalyticGroupService {
       throws AxelorException {
     Map<String, Object> valuesMap = new HashMap<>();
 
+    AnalyticAccount axis1AnalyticAccount = analyticLine.getAxis1AnalyticAccount();
+    AnalyticAccount axis2AnalyticAccount = analyticLine.getAxis2AnalyticAccount();
+    AnalyticAccount axis3AnalyticAccount = analyticLine.getAxis3AnalyticAccount();
+    AnalyticAccount axis4AnalyticAccount = analyticLine.getAxis4AnalyticAccount();
+    AnalyticAccount axis5AnalyticAccount = analyticLine.getAxis5AnalyticAccount();
+
     analyticLineService.setAnalyticAccount(analyticLine, company);
 
-    valuesMap.put("axis1AnalyticAccount", analyticLine.getAxis1AnalyticAccount());
-    valuesMap.put("axis2AnalyticAccount", analyticLine.getAxis2AnalyticAccount());
-    valuesMap.put("axis3AnalyticAccount", analyticLine.getAxis3AnalyticAccount());
-    valuesMap.put("axis4AnalyticAccount", analyticLine.getAxis4AnalyticAccount());
-    valuesMap.put("axis5AnalyticAccount", analyticLine.getAxis5AnalyticAccount());
+    if (!Objects.equals(axis1AnalyticAccount, analyticLine.getAxis1AnalyticAccount())) {
+      valuesMap.put("axis1AnalyticAccount", analyticLine.getAxis1AnalyticAccount());
+    }
+    if (!Objects.equals(axis2AnalyticAccount, analyticLine.getAxis2AnalyticAccount())) {
+      valuesMap.put("axis2AnalyticAccount", analyticLine.getAxis2AnalyticAccount());
+    }
+    if (!Objects.equals(axis3AnalyticAccount, analyticLine.getAxis3AnalyticAccount())) {
+      valuesMap.put("axis3AnalyticAccount", analyticLine.getAxis3AnalyticAccount());
+    }
+    if (!Objects.equals(axis4AnalyticAccount, analyticLine.getAxis4AnalyticAccount())) {
+      valuesMap.put("axis4AnalyticAccount", analyticLine.getAxis4AnalyticAccount());
+    }
+    if (!Objects.equals(axis5AnalyticAccount, analyticLine.getAxis5AnalyticAccount())) {
+      valuesMap.put("axis5AnalyticAccount", analyticLine.getAxis5AnalyticAccount());
+    }
 
     return valuesMap;
   }

@@ -28,7 +28,6 @@ import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.supplychain.db.UnitCostCalculation;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.common.collect.Sets;
 import jakarta.inject.Inject;
 import java.util.HashSet;
@@ -157,34 +156,6 @@ public class DepRateCalculationProductServiceImpl implements DepRateCalculationP
   @Override
   public String createDepreciationProductSetDomain(UnitCostCalculation unitCostCalculation)
       throws AxelorException {
-    StringBuilder domain =
-        new StringBuilder(
-            "self.productTypeSelect = 'storable' AND self.dtype = 'Product' AND self.stockManaged IS TRUE AND self.stockRotationCategory IS NOT NULL");
-
-    if (unitCostCalculation.getProductCategorySet() != null
-        && !unitCostCalculation.getProductCategorySet().isEmpty()) {
-      domain
-          .append(" AND self.productCategory.id IN (")
-          .append(StringHelper.getIdListString(expandProductCategorySet(unitCostCalculation)))
-          .append(")");
-    }
-
-    if (unitCostCalculation.getProductFamilySet() != null
-        && !unitCostCalculation.getProductFamilySet().isEmpty()) {
-      domain
-          .append(" AND self.productFamily.id IN (")
-          .append(StringHelper.getIdListString(unitCostCalculation.getProductFamilySet()))
-          .append(")");
-    }
-
-    if (unitCostCalculation.getStockRotationCategorySet() != null
-        && !unitCostCalculation.getStockRotationCategorySet().isEmpty()) {
-      domain
-          .append(" AND self.stockRotationCategory.id IN (")
-          .append(StringHelper.getIdListString(unitCostCalculation.getStockRotationCategorySet()))
-          .append(")");
-    }
-
-    return domain.toString();
+    return "self.productTypeSelect = 'storable' AND self.dtype = 'Product' AND self.stockManaged IS TRUE AND self.stockRotationCategory IS NOT NULL";
   }
 }

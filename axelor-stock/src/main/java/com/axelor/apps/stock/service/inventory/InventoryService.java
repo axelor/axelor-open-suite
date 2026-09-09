@@ -213,6 +213,8 @@ public class InventoryService {
     if (ObjectUtils.notEmpty(trackingNumber)) {
       query += " AND self.trackingNumber = :trackingNumber";
       stockLocationLineQuery.bind("trackingNumber", trackingNumber);
+    } else {
+      query += " AND self.trackingNumber IS NULL";
     }
 
     BigDecimal currentQty =

@@ -300,6 +300,16 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
   public String checkTypeForEan13(String serialno, BarcodeFormat barcodeFormat, Boolean isPadding)
       throws AxelorException {
 
+    if (isNumber(serialno) && serialno.length() == 13) {
+      if (!isValidEan13CheckDigit(serialno)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BaseExceptionMessage.BARCODE_GENERATOR_10),
+            serialno,
+            barcodeFormat);
+      }
+      return serialno.substring(0, 12);
+    }
     if (isPadding) {
       serialno = addPaddingBits(12, serialno, barcodeFormat);
     }
@@ -453,5 +463,15 @@ public class BarcodeGeneratorServiceImpl implements BarcodeGeneratorService {
       return true;
     }
     return false;
+  }
+
+  protected boolean isValidEan13CheckDigit(String serialno) {
+    int sum = 0;
+    for (int i = 0; i < 12; i++) {
+      int digit = Character.getNumericValue(serialno.charAt(i));
+      sum += (i % 2 == 0) ? digit : digit * 3;
+    }
+    int expectedCheckDigit = (10 - (sum % 10)) % 10;
+    return expectedCheckDigit == Character.getNumericValue(serialno.charAt(12));
   }
 }

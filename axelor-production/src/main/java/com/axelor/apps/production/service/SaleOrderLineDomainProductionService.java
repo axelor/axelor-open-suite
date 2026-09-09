@@ -24,5 +24,5 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 public interface SaleOrderLineDomainProductionService {
   String getBomDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
 
-  String getProdProcessDomain(SaleOrderLine saleOrderLine);
+  String getProdProcessDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
 }
