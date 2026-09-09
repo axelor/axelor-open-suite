@@ -1,3 +1,38 @@
 ---
-title: "App check: cached the app active flag in memory so the app checks guarding the service overrides no longer query the database."
+title: "App check: the app checks guarding the service overrides no longer query the database on each call."
 module: axelor-base
+developer: |
+  `AppBaseServiceImpl.isApp` now serves the app active flag from an in-memory cache
+  (`appActiveCache`, built with `CacheBuilder`, isolated per tenant when multi tenancy is
+  enabled) instead of loading the app record. The cache is cleared after commit by the new
+  `com.axelor.apps.base.db.repo.AppListener` entity listener, declared on `App` in
+  `axelor-base`.
+
+  Two consequences on the semantics of the check:
+
+  - The flag is read without flushing the persistence context, so an app installed or
+    uninstalled in the current transaction is only seen by `isApp` once that transaction is
+    committed. Code that installs an app and then relies on `isApp` in the same transaction
+    must commit first.
+  - Only the `AppBaseService` / `ScriptAppService` path is cached. `AppService.isApp`
+    (`axelor-studio`) still loads the app record, so a project overriding `AppService.isApp` no
+    longer changes the result of the AOS app checks. Override
+    `AppBaseServiceImpl.isApp` instead.
+
+  The app checks of the following classes now go through `AppBaseService` instead of
+  `AppService`. Their constructor signature changes, which breaks subclasses calling it:
+
+  - `com.axelor.apps.account.db.repo.PartnerAccountRepository`
+  - `com.axelor.apps.budget.service.move.MoveReverseServiceBudgetImpl`
+  - `com.axelor.apps.portal.service.ClientViewServiceImpl`
+  - `com.axelor.apps.hr.db.repo.PartnerHRRepository`
+  - `com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl`
+  - `com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainServiceImpl`
+
+  Among them, the following also rename their injected field from `appService` to
+  `appBaseService`, which breaks subclasses using it:
+
+  - `com.axelor.apps.account.db.repo.PartnerAccountRepository`
+  - `com.axelor.apps.portal.service.ClientViewServiceImpl`
+  - `com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl`
+  - `com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainServiceImpl`
