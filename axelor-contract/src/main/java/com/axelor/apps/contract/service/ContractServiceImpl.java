@@ -250,6 +250,14 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     }
     ContractVersion version = contract.getCurrentContractVersion();
 
+    if (version == null
+        || version.getStatusSelect() != ContractVersionRepository.ONGOING_VERSION
+        || version.getActivationDateTime() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ContractExceptionMessage.CONTRACT_TERMINATE_WRONG_STATUS));
+    }
+
     if (contract.getTerminatedDate().isBefore(version.getActivationDateTime().toLocalDate())) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
