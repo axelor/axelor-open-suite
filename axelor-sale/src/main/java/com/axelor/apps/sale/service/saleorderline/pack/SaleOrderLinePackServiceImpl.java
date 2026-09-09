@@ -191,7 +191,9 @@ public class SaleOrderLinePackServiceImpl implements SaleOrderLinePackService {
       saleOrderLineMap.putAll(
           saleOrderLineDiscountService.fillDiscount(saleOrderLine, saleOrder, inTaxPrice));
       inTaxPrice =
-          saleOrderLineDiscountService.getDiscountedPrice(saleOrderLine, saleOrder, inTaxPrice);
+          saleOrderLineDiscountService
+              .getDiscountedPrice(saleOrderLine, saleOrder, inTaxPrice)
+              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
       if (!saleOrderLine.getEnableFreezeFields()) {
         saleOrderLine.setPrice(
             taxService.convertUnitPrice(
@@ -208,7 +210,9 @@ public class SaleOrderLinePackServiceImpl implements SaleOrderLinePackService {
       saleOrderLineMap.putAll(
           saleOrderLineDiscountService.fillDiscount(saleOrderLine, saleOrder, exTaxPrice));
       exTaxPrice =
-          saleOrderLineDiscountService.getDiscountedPrice(saleOrderLine, saleOrder, exTaxPrice);
+          saleOrderLineDiscountService
+              .getDiscountedPrice(saleOrderLine, saleOrder, exTaxPrice)
+              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
       if (!saleOrderLine.getEnableFreezeFields()) {
         saleOrderLine.setPrice(exTaxPrice);
         saleOrderLine.setInTaxPrice(
