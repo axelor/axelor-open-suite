@@ -95,6 +95,9 @@ public interface PurchaseOrderLineService {
   PurchaseOrderLine fill(PurchaseOrderLine line, PurchaseOrder purchaseOrder)
       throws AxelorException;
 
+  PurchaseOrderLine fillPrice(PurchaseOrderLine line, PurchaseOrder purchaseOrder)
+      throws AxelorException;
+
   PurchaseOrderLine reset(PurchaseOrderLine line);
 
   public void checkDifferentSupplier(

@@ -62,9 +62,11 @@ public class PurchaseRequestToPoCreateServiceSupplychainImpl
   }
 
   @Override
-  protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest, Company company)
+  protected PurchaseOrder createPurchaseOrder(
+      PurchaseRequest purchaseRequest, Company company, Partner defaultSupplier)
       throws AxelorException {
-    PurchaseOrder purchaseOrder = super.createPurchaseOrder(purchaseRequest, company);
+    PurchaseOrder purchaseOrder =
+        super.createPurchaseOrder(purchaseRequest, company, defaultSupplier);
     if (appBaseService.isApp("supplychain")) {
       purchaseOrder.setStockLocation(purchaseRequest.getStockLocation());
     }
@@ -105,8 +107,8 @@ public class PurchaseRequestToPoCreateServiceSupplychainImpl
   }
 
   @Override
-  protected String getGroupBySupplierKey(PurchaseRequest purchaseRequest) {
-    String key = super.getGroupBySupplierKey(purchaseRequest);
+  protected String getGroupBySupplierKey(PurchaseRequest purchaseRequest, Partner supplier) {
+    String key = super.getGroupBySupplierKey(purchaseRequest, supplier);
 
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
       return key;
