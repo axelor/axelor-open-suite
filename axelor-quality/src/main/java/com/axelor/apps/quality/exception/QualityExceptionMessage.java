@@ -105,4 +105,7 @@ public final class QualityExceptionMessage {
 
   public static final String API_SELECTION_VALUE_NOT_ALLOWED = /*$$(*/
       "The value %s is not among the allowed values of the field %s." /*)*/;
+
+  public static final String CONTROL_ENTRY_OPEN_QUALITY_IMPROVEMENTS = /*$$(*/
+      "The quality improvement(s) %s are already open for this control entry. Create another one?" /*)*/;
 }
