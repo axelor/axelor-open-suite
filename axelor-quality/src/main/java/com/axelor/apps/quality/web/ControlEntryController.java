@@ -21,11 +21,14 @@ package com.axelor.apps.quality.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.quality.db.ControlEntry;
 import com.axelor.apps.quality.db.repo.ControlEntryRepository;
+import com.axelor.apps.quality.exception.QualityExceptionMessage;
 import com.axelor.apps.quality.service.ControlEntryService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import jakarta.inject.Singleton;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -53,5 +56,18 @@ public class ControlEntryController {
     Map<String, Object> values =
         Beans.get(ControlEntryService.class).onControlPlanChange(controlEntry);
     response.setValues(values);
+  }
+
+  public void checkOpenQualityImprovements(ActionRequest request, ActionResponse response) {
+    ControlEntry controlEntry = request.getContext().asType(ControlEntry.class);
+    List<String> openQualityImprovementSequences =
+        Beans.get(ControlEntryService.class).getOpenQualityImprovementSequences(controlEntry);
+    if (openQualityImprovementSequences.isEmpty()) {
+      return;
+    }
+    response.setAlert(
+        String.format(
+            I18n.get(QualityExceptionMessage.CONTROL_ENTRY_OPEN_QUALITY_IMPROVEMENTS),
+            String.join(", ", openQualityImprovementSequences)));
   }
 }

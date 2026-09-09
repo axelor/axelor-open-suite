@@ -21,8 +21,10 @@ package com.axelor.apps.quality.service;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.quality.db.ControlEntry;
 import com.axelor.apps.quality.db.ControlPlan;
+import com.axelor.apps.quality.db.QualityImprovement;
 import com.axelor.apps.quality.db.repo.ControlEntryRepository;
 import com.axelor.apps.quality.db.repo.ControlPlanRepository;
+import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.Context;
@@ -32,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ControlEntryServiceImpl implements ControlEntryService {
@@ -39,15 +42,18 @@ public class ControlEntryServiceImpl implements ControlEntryService {
   protected ControlEntrySampleService controlEntrySampleService;
   protected ControlPlanRepository controlPlanRepository;
   protected ControlEntryRepository controlEntryRepository;
+  protected QualityImprovementRepository qualityImprovementRepository;
 
   @Inject
   public ControlEntryServiceImpl(
       ControlEntrySampleService controlEntrySampleService,
       ControlPlanRepository controlPlanRepository,
-      ControlEntryRepository controlEntryRepository) {
+      ControlEntryRepository controlEntryRepository,
+      QualityImprovementRepository qualityImprovementRepository) {
     this.controlEntrySampleService = controlEntrySampleService;
     this.controlPlanRepository = controlPlanRepository;
     this.controlEntryRepository = controlEntryRepository;
+    this.qualityImprovementRepository = qualityImprovementRepository;
   }
 
   protected static final String DEFAULT_SAMPLE_NAME = "-";
@@ -197,5 +203,18 @@ public class ControlEntryServiceImpl implements ControlEntryService {
     values.put("name", templateControlEntry.getName());
     values.put("sampleCount", templateControlEntry.getSampleCount());
     values.put("inspector", templateControlEntry.getInspector());
+  }
+
+  @Override
+  public List<String> getOpenQualityImprovementSequences(ControlEntry controlEntry) {
+    if (controlEntry.getId() == null) {
+      return List.of();
+    }
+    return qualityImprovementRepository
+        .findOpenByControlEntryId(controlEntry.getId())
+        .fetch()
+        .stream()
+        .map(QualityImprovement::getSequence)
+        .collect(Collectors.toList());
   }
 }
