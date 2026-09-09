@@ -29,6 +29,8 @@
       colSpan="12" grid-view="control-entry-sample-grid" form-view="control-entry-sample-form"
       showIf="statusSelect == 2 || statusSelect == 3" canNew="false" canRemove="false"
       readonlyIf="statusSelect > 2" onChange="save"/>
+    <panel-dashlet name="qualityImprovementsPanel"
+      action="action-control-entry-view-quality-improvements" colSpan="12" showIf="id"/>
     <panel name="actionPanel" showTitle="false" sidebar="true">
       <button name="createSamplesBtn"
         onClick="save,action-method-quality-control-entry-create-samples"
@@ -86,6 +88,14 @@
   <action-method name="action-control-entry-method-add-control-entry">
     <call class="com.axelor.apps.quality.web.ControlEntryController" method="addControlEntry"/>
   </action-method>
+
+  <action-view name="action-control-entry-view-quality-improvements"
+    title="Quality improvements" model="com.axelor.apps.quality.db.QualityImprovement">
+    <view type="grid" name="quality-improvement-grid"/>
+    <view type="form" name="quality-improvement-form"/>
+    <domain>self.qiIdentification.controlEntry.id = :_controlEntryId</domain>
+    <context name="_controlEntryId" expr="eval: id"/>
+  </action-view>
 
   <action-view name="action-view-quality-control-create-qi" title="Control entry"
     model="com.axelor.utils.db.Wizard">
