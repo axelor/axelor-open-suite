@@ -50,6 +50,11 @@ public class SaleOrderDummySupplychainServiceImpl extends SaleOrderDummyServiceI
   @Override
   public Map<String, Object> getOnLoadSplitDummies(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> dummies = super.getOnLoadSplitDummies(saleOrder);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return dummies;
+    }
+
     dummies.putAll(fillIsUsedCreditExceeded(saleOrder));
     return dummies;
   }

@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
@@ -50,6 +51,7 @@ public class AnalyticMoveLineParentContractServiceImpl
       MoveLineMassEntryRepository moveLineMassEntryRepository,
       PurchaseOrderLineRepository purchaseOrderLineRepository,
       SaleOrderLineRepository saleOrderLineRepository,
+      AppBaseService appBaseService,
       ContractLineRepository contractLineRepository) {
     super(
         analyticLineService,
@@ -57,7 +59,8 @@ public class AnalyticMoveLineParentContractServiceImpl
         invoiceLineRepository,
         moveLineMassEntryRepository,
         purchaseOrderLineRepository,
-        saleOrderLineRepository);
+        saleOrderLineRepository,
+        appBaseService);
     this.contractLineRepository = contractLineRepository;
   }
 

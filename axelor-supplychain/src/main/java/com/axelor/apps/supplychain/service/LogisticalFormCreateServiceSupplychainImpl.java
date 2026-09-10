@@ -52,6 +52,11 @@ public class LogisticalFormCreateServiceSupplychainImpl extends LogisticalFormCr
       throws AxelorException {
     super.checkFields(
         carrierPartner, deliverToCustomerPartner, isMultiClientEnabled, company, stockLocation);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return;
+    }
+
     if (stockLocation != null && !stockLocation.getUsableOnSaleOrder()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,

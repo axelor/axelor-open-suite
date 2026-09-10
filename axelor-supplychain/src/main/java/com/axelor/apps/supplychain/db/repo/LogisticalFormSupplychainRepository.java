@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
@@ -34,19 +35,26 @@ public class LogisticalFormSupplychainRepository extends LogisticalFormStockRepo
 
   protected PackagingSequenceService packagingSequenceService;
   protected LogisticalFormComputeService logisticalFormComputeService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public LogisticalFormSupplychainRepository(
       LogisticalFormSequenceService logisticalFormSequenceService,
       PackagingSequenceService packagingSequenceService,
-      LogisticalFormComputeService logisticalFormComputeService) {
+      LogisticalFormComputeService logisticalFormComputeService,
+      AppBaseService appBaseService) {
     super(logisticalFormSequenceService);
     this.packagingSequenceService = packagingSequenceService;
     this.logisticalFormComputeService = logisticalFormComputeService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
   public LogisticalForm save(LogisticalForm logisticalForm) {
+    if (!appBaseService.isApp("supplychain")) {
+      return super.save(logisticalForm);
+    }
+
     try {
       packagingSequenceService.generatePackagingNumber(logisticalForm);
       logisticalFormComputeService.computeLogisticalForm(logisticalForm);
@@ -59,6 +67,11 @@ public class LogisticalFormSupplychainRepository extends LogisticalFormStockRepo
 
   @Override
   public void remove(LogisticalForm logisticalForm) {
+    if (!appBaseService.isApp("supplychain")) {
+      super.remove(logisticalForm);
+      return;
+    }
+
     List<StockMove> stockMoveList = logisticalForm.getStockMoveList();
     super.remove(logisticalForm);
     if (CollectionUtils.isNotEmpty(stockMoveList)) {

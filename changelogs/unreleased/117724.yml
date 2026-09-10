@@ -1,0 +1,45 @@
+---
+title: "App check: axelor-supplychain no longer changes the behaviour of the modules it extends when the Supply Chain app is not installed."
+module: axelor-supplychain
+developer: |
+  The 53 remaining cross-module overrides of `axelor-supplychain` now guard their
+  supplychain specific behaviour on `isApp("supplychain")` and delegate to `super` when the
+  app is off. The check is done with the app service already injected in the class when
+  there is one (`AppSupplychainService`, `AppBaseService`, `AppAccountService`,
+  `AppSaleService`, `AppPurchaseService`), otherwise `AppBaseService` is injected.
+
+  Five classes needed no guard and are now listed in
+  `config/app-override-guard-allowlist.txt` as justified exceptions: they are bound in place
+  of a class of a lower module but override none of its methods, they only add the methods of
+  their own supplychain interface (`AdvancePaymentServiceSupplychainImpl`,
+  `StockLocationUtilsServiceSupplychainImpl`, `AccountingCutOffSupplyChainServiceImpl`,
+  `PartnerSupplychainServiceImpl`, `PartnerLinkSupplychainServiceImpl`).
+
+  The following classes get a new constructor parameter, which breaks subclasses calling
+  their constructor:
+
+  - `com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl`
+  - `com.axelor.apps.supplychain.service.StockHistoryServiceSupplyChainImpl`
+  - `com.axelor.apps.supplychain.service.invoice.InvoiceMergingServiceSupplychainImpl`
+  - `com.axelor.apps.supplychain.service.batch.SaleBatchSupplyChainService`
+  - `com.axelor.apps.supplychain.service.cartline.CartLineProductSupplychainServiceImpl`
+  - `com.axelor.apps.supplychain.service.cart.CartResetSupplychainServiceImpl`
+  - `com.axelor.apps.supplychain.service.ConfiguratorCheckServiceSupplychainImpl`
+  - `com.axelor.apps.supplychain.service.TrackingNumberCompanySupplychainServiceImpl`
+  - `com.axelor.apps.supplychain.service.pricing.PricingGroupSupplyChainServiceImpl`
+  - `com.axelor.apps.supplychain.service.analytic.AnalyticMoveLineParentSupplychainServiceImpl`
+  - `com.axelor.apps.supplychain.service.PurchaseOrderLineTaxComputeSupplychainServiceImp`
+  - `com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository`
+  - `com.axelor.apps.supplychain.db.repo.LogisticalFormSupplychainRepository`
+
+  These ones had no constructor and now have one, which breaks subclasses too:
+
+  - `com.axelor.apps.supplychain.service.purchaseorderline.view.PurchaseOrderLineViewServiceSupplychainImpl`
+  - `com.axelor.apps.supplychain.rest.StockProductRestServiceSupplychainImpl`
+  - `com.axelor.apps.supplychain.service.StockMoveCurrencyServiceSupplychainImpl`
+
+  `SaleOrderSupplychainRepository` and `LogisticalFormSupplychainRepository` take the service
+  through their existing constructor, which breaks their subclasses too. The four
+  repositories that have no constructor read the check through
+  `Beans.get(AppBaseService.class)`, the way they already fetch their other collaborators, so
+  they gain neither a field nor a constructor.

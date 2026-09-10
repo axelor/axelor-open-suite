@@ -19,6 +19,7 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.AppBudgetService;
@@ -45,8 +46,9 @@ public class SaleOrderBudgetRepository extends SaleOrderSupplychainRepository {
   @Inject
   public SaleOrderBudgetRepository(
       SaleOrderCopyService saleOrderCopyService,
-      SaleOrderOrderingStatusService saleOrderOrderingStatusService) {
-    super(saleOrderCopyService, saleOrderOrderingStatusService);
+      SaleOrderOrderingStatusService saleOrderOrderingStatusService,
+      AppBaseService appBaseService) {
+    super(saleOrderCopyService, saleOrderOrderingStatusService, appBaseService);
   }
 
   @Override

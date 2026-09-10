@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
@@ -54,6 +55,7 @@ class TestPurchaseOrderLineTaxService {
   void setUp() {
     orderLineTaxService = mock(OrderLineTaxService.class);
     appBaseService = mock(AppBaseService.class);
+    when(appBaseService.isApp("supplychain")).thenReturn(true);
     purchaseOrderLineTaxService = createPurchaseOrderLineTaxService(mock(TaxService.class));
   }
 
@@ -240,7 +242,8 @@ class TestPurchaseOrderLineTaxService {
         orderLineTaxService,
         taxService,
         appBaseService,
-        new PurchaseOrderLineTaxComputeSupplychainServiceImp(new CurrencyScaleServiceImpl()));
+        new PurchaseOrderLineTaxComputeSupplychainServiceImp(
+            new CurrencyScaleServiceImpl(), appBaseService));
   }
 
   protected PurchaseOrder createPurchaseOrder(PurchaseOrderLine... purchaseOrderLines) {

@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceMergingServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
@@ -35,16 +36,19 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
 
   protected final PurchaseOrderInvoiceService purchaseOrderInvoiceService;
   protected final SaleOrderInvoiceService saleOrderInvoiceService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public InvoiceMergingServiceSupplychainImpl(
       InvoiceService invoiceService,
       InvoiceRepository invoiceRepository,
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
-      SaleOrderInvoiceService saleOrderInvoiceService) {
+      SaleOrderInvoiceService saleOrderInvoiceService,
+      AppBaseService appBaseService) {
     super(invoiceService, invoiceRepository);
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.saleOrderInvoiceService = saleOrderInvoiceService;
+    this.appBaseService = appBaseService;
   }
 
   protected static class CommonFieldsSupplychainImpl extends CommonFieldsImpl {
@@ -119,6 +123,11 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
   protected void extractFirstNonNullCommonFields(
       List<Invoice> invoicesToMerge, InvoiceMergingResult result) {
     super.extractFirstNonNullCommonFields(invoicesToMerge, result);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return;
+    }
+
     if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)) {
       invoicesToMerge.stream()
           .map(Invoice::getSaleOrder)
@@ -138,6 +147,11 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
   @Override
   protected void fillCommonFields(Invoice invoice, InvoiceMergingResult result) {
     super.fillCommonFields(invoice, result);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return;
+    }
+
     if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)) {
       if (getCommonFields(result).getCommonSaleOrder() != null
           && !getCommonFields(result).getCommonSaleOrder().equals(invoice.getSaleOrder())) {
@@ -157,6 +171,10 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
   @Override
   protected Invoice generateMergedInvoice(
       List<Invoice> invoicesToMerge, InvoiceMergingResult result) throws AxelorException {
+    if (!appBaseService.isApp("supplychain")) {
+      return super.generateMergedInvoice(invoicesToMerge, result);
+    }
+
     if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
         || result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)) {
       return purchaseOrderInvoiceService.mergeInvoice(

@@ -41,6 +41,10 @@ public class StockMoveLineStockLocationServiceSupplychainImpl
   @Override
   protected boolean isStockLocationMatchingParent(
       StockLocation detailStockLocation, StockLocation parentStockLocation) {
+    if (!appBaseService.isApp("supplychain")) {
+      return super.isStockLocationMatchingParent(detailStockLocation, parentStockLocation);
+    }
+
     return detailStockLocation.equals(parentStockLocation)
         || (parentStockLocation.equals(detailStockLocation.getParentStockLocation())
             && detailStockLocation.getUsableOnSaleOrder());

@@ -80,6 +80,11 @@ public class SaleOrderGeneratorSupplychainServiceImpl extends SaleOrderGenerator
     SaleOrder saleOrder =
         super.createSaleOrder(
             clientPartner, deliveredPartner, company, contactPartner, currency, inAti);
+
+    if (!appSaleService.isApp("supplychain")) {
+      return saleOrder;
+    }
+
     setDeliveredPartner(deliveredPartner, clientPartner, saleOrder);
     return saleOrder;
   }

@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
@@ -33,15 +34,24 @@ import jakarta.persistence.PersistenceException;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
 
+  protected final AppBaseService appBaseService;
+
   @Inject
   public SaleOrderSupplychainRepository(
       SaleOrderCopyService saleOrderCopyService,
-      SaleOrderOrderingStatusService saleOrderOrderingStatusService) {
+      SaleOrderOrderingStatusService saleOrderOrderingStatusService,
+      AppBaseService appBaseService) {
     super(saleOrderCopyService, saleOrderOrderingStatusService);
+    this.appBaseService = appBaseService;
   }
 
   @Override
   public void remove(SaleOrder order) {
+
+    if (!appBaseService.isApp("supplychain")) {
+      super.remove(order);
+      return;
+    }
 
     Partner partner = order.getClientPartner();
 
@@ -56,6 +66,10 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
 
   @Override
   public SaleOrder save(SaleOrder saleOrder) {
+    if (!appBaseService.isApp("supplychain")) {
+      return super.save(saleOrder);
+    }
+
     try {
       Beans.get(SaleOrderLineAnalyticService.class).checkAnalyticAxisByCompany(saleOrder);
     } catch (AxelorException e) {

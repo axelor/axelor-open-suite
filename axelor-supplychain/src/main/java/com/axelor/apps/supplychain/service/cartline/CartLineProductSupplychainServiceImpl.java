@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.service.cartline;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.service.cartline.CartLinePriceService;
@@ -30,20 +31,28 @@ import java.util.Map;
 public class CartLineProductSupplychainServiceImpl extends CartLineProductServiceImpl {
 
   protected CartLineAvailabilityService cartLineAvailabilityService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public CartLineProductSupplychainServiceImpl(
       SaleOrderLineProductService saleOrderLineProductService,
       CartLinePriceService cartLinePriceService,
-      CartLineAvailabilityService cartLineAvailabilityService) {
+      CartLineAvailabilityService cartLineAvailabilityService,
+      AppBaseService appBaseService) {
     super(saleOrderLineProductService, cartLinePriceService);
     this.cartLineAvailabilityService = cartLineAvailabilityService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
   public Map<String, Object> getProductInformation(Cart cart, CartLine cartLine)
       throws AxelorException {
     Map<String, Object> cartLineMap = super.getProductInformation(cart, cartLine);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return cartLineMap;
+    }
+
     cartLineMap.putAll(cartLineAvailabilityService.setAvailableStatus(cart, cartLine));
     return cartLineMap;
   }

@@ -85,6 +85,11 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
   @Override
   public Map<String, Object> getOnNewInitValues(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> initValues = super.getOnNewInitValues(saleOrder);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return initValues;
+    }
+
     initValues.putAll(getPaymentMode(saleOrder));
     initValues.putAll(getBankDetails(saleOrder));
     initValues.putAll(saleOrderStockLocationService.getStockLocation(saleOrder));
@@ -98,6 +103,10 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
   protected Map<String, Object> saleOrderDefaultValuesMap(SaleOrder saleOrder)
       throws AxelorException {
     Map<String, Object> saleOrderMap = super.saleOrderDefaultValuesMap(saleOrder);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return saleOrderMap;
+    }
 
     TradingName tradingName = saleOrder.getTradingName();
     saleOrderMap.put("amountInvoiced", BigDecimal.ZERO);

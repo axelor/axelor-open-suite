@@ -73,6 +73,11 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
 
   @Override
   protected void process() {
+    if (!appBaseService.isApp("supplychain")) {
+      super.process();
+      return;
+    }
+
     try {
       AccountingBatch accountingBatch = batch.getAccountingBatch();
 
@@ -226,6 +231,10 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
 
   @Override
   protected String getProcessedMessage() {
+    if (!appBaseService.isApp("supplychain")) {
+      return super.getProcessedMessage();
+    }
+
     return I18n.get(SupplychainExceptionMessage.ACCOUNTING_CUT_OFF_STOCK_MOVE_PROCESSED);
   }
 }
