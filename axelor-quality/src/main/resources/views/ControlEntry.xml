@@ -36,7 +36,7 @@
         onClick="save,action-method-quality-control-entry-create-samples"
         title="Create control entry samples" showIf="statusSelect == 1"
         readonlyIf="sampleCount &lt;= 0"/>
-      <button name="finishBtn" onClick="action-record-quality-control-finish,save"
+      <button name="finishBtn" onClick="save,action-control-entry-method-finish"
         title="Finish" showIf="statusSelect == 2"/>
       <button name="cancelBtn" onClick="action-record-quality-control-cancel,save"
         title="Cancel" showIf="statusSelect == 2"/>
@@ -67,11 +67,6 @@
     <field name="inspector" expr="eval: _inspector" if="_inspector"/>
   </action-record>
 
-  <action-record name="action-record-quality-control-finish"
-    model="com.axelor.apps.quality.db.ControlEntry">
-    <field name="statusSelect" expr="eval: 3"/>
-  </action-record>
-
   <action-record name="action-record-quality-control-cancel"
     model="com.axelor.apps.quality.db.ControlEntry">
     <field name="statusSelect" expr="eval: 4"/>
@@ -88,6 +83,10 @@
 
   <action-method name="action-control-entry-method-add-control-entry">
     <call class="com.axelor.apps.quality.web.ControlEntryController" method="addControlEntry"/>
+  </action-method>
+
+  <action-method name="action-control-entry-method-finish">
+    <call class="com.axelor.apps.quality.web.ControlEntryController" method="finish"/>
   </action-method>
 
   <action-method name="action-control-entry-method-check-open-qi">
