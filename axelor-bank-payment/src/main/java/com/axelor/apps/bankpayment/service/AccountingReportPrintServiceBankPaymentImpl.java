@@ -55,6 +55,10 @@ public class AccountingReportPrintServiceBankPaymentImpl extends AccountingRepor
   @Override
   public String getReportFileLink(AccountingReport accountingReport, String name)
       throws AxelorException, IOException {
+    if (!appBaseService.isApp("bank-payment")) {
+      return super.getReportFileLink(accountingReport, name);
+    }
+
     if (accountingReport.getReportType().getTypeSelect()
         == AccountingReportRepository.REPORT_BANK_RECONCILIATION_STATEMENT) {
 

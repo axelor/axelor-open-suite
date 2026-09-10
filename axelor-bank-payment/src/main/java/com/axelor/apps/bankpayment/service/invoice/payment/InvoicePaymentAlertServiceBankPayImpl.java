@@ -23,6 +23,8 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentAle
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.inject.Beans;
 import java.util.Optional;
 
 public class InvoicePaymentAlertServiceBankPayImpl extends InvoicePaymentAlertServiceImpl {
@@ -30,6 +32,10 @@ public class InvoicePaymentAlertServiceBankPayImpl extends InvoicePaymentAlertSe
   @Override
   public String validateBeforeReverse(InvoicePayment invoicePayment) {
     String alert = super.validateBeforeReverse(invoicePayment);
+
+    if (!Beans.get(AppBaseService.class).isApp("bank-payment")) {
+      return alert;
+    }
 
     if (BankOrderRepository.STATUS_CARRIED_OUT
         == Optional.ofNullable(invoicePayment)

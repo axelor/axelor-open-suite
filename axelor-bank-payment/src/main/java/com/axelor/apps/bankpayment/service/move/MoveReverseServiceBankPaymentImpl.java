@@ -46,6 +46,7 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliation
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -65,6 +66,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
   protected BankReconciliationLineUnreconciliationService
       bankReconciliationLineUnreconciliationService;
   protected CurrencyScaleService currencyScaleService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public MoveReverseServiceBankPaymentImpl(
@@ -84,7 +86,8 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       UnreconcileService unReconcileService,
       MoveInvoiceTermService moveInvoiceTermService,
       AnalyticLineService analyticLineService,
-      PaymentVoucherCancelService paymentVoucherCancelService) {
+      PaymentVoucherCancelService paymentVoucherCancelService,
+      AppBaseService appBaseService) {
     super(
         moveCreateService,
         reconcileService,
@@ -104,11 +107,16 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
     this.bankReconciliationLineUnreconciliationService =
         bankReconciliationLineUnreconciliationService;
     this.currencyScaleService = currencyScaleService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException {
+
+    if (!appBaseService.isApp("bank-payment")) {
+      return super.generateReverse(move, assistantMap);
+    }
 
     boolean isHiddenMoveLinesInBankReconciliation =
         (boolean) assistantMap.get("isHiddenMoveLinesInBankReconciliation");
@@ -154,6 +162,10 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
   @Transactional(rollbackOn = {Exception.class})
   public List<Move> massReverse(List<Move> moveList, Map<String, Object> assistantMap)
       throws AxelorException {
+    if (!appBaseService.isApp("bank-payment")) {
+      return super.massReverse(moveList, assistantMap);
+    }
+
     boolean isHiddenMoveLinesInBankReconciliation =
         (boolean) assistantMap.get("isHiddenMoveLinesInBankReconciliation");
     List<Move> movesReconciled = new ArrayList<>();
@@ -227,6 +239,11 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       throws AxelorException {
     MoveLine reverseMoveLine =
         super.generateReverseMoveLine(reverseMove, orgineMoveLine, dateOfReversion, isDebit);
+
+    if (!appBaseService.isApp("bank-payment")) {
+      return reverseMoveLine;
+    }
+
     if (hasCashAccountType(reverseMoveLine)) {
       BigDecimal amount =
           currencyScaleService.getScaledValue(

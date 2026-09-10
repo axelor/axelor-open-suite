@@ -69,6 +69,11 @@ public class MoveRecordSetBankPaymentServiceImpl extends MoveRecordSetServiceImp
   @Override
   public void setPartnerBankDetails(Move move) {
     super.setPartnerBankDetails(move);
+
+    if (!appBaseService.isApp("bank-payment")) {
+      return;
+    }
+
     PaymentMode paymentMode = move.getPaymentMode();
     Partner partner = move.getPartner();
     Company company = move.getCompany();

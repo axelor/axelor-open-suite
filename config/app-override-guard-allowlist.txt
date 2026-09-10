@@ -17,7 +17,7 @@
 #      job of the sweep tickets listed below, one module at a time. Do NOT add new entries
 #      to those sections.
 #
-# Sweep tickets: #117724 supplychain, #117725 production, #117726 bank-payment,
+# Sweep tickets: #117724 supplychain, #117725 production,
 # #117727 human-resource, #117728 maintenance, #117729 contract/intervention/cash-management,
 # #117730 sale/crm/account/stock/talent, #117731 budget.
 #
@@ -32,33 +32,10 @@ com.axelor.apps.account.service.FiscalPositionAccountServiceImpl  # overrides Fi
 com.axelor.apps.account.service.period.PeriodServiceAccountImpl  # overrides PeriodServiceImpl (axelor-base)
 
 # ---------------------------------------------------------------------------
-# KNOWN DEBT - axelor-bank-payment (25) - to be emptied by #117726
+# JUSTIFIED EXCEPTIONS - axelor-bank-payment (1)
 # ---------------------------------------------------------------------------
-com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl  # overrides InvoicePaymentValidateServiceImpl (axelor-account)
-com.axelor.apps.bankpayment.service.batch.BatchCreditTransferSupplierPaymentBankPayment  # overrides BatchCreditTransferSupplierPayment (axelor-account)
-com.axelor.apps.bankpayment.service.batch.BatchCreditTransferPartnerReimbursementBankPayment  # overrides BatchCreditTransferPartnerReimbursement (axelor-account)
-com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl  # overrides PaymentScheduleLineServiceImpl (axelor-account)
-com.axelor.apps.bankpayment.web.InvoicePaymentBankPayController  # overrides InvoicePaymentController (axelor-account)
-com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository  # overrides MoveManagementRepository (axelor-account)
-com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl  # overrides MoveReverseServiceImpl (axelor-account)
-com.axelor.apps.bankpayment.service.extract.ExtractContextMoveServiceBankPaymentImpl  # overrides ExtractContextMoveServiceImpl (axelor-account)
-com.axelor.apps.bankpayment.service.AccountingReportPrintServiceBankPaymentImpl  # overrides AccountingReportPrintServiceImpl (axelor-account)
-com.axelor.apps.bankpayment.service.PaymentSessionValidateBankPaymentServiceImpl  # overrides PaymentSessionValidateServiceImpl (axelor-account)
-com.axelor.apps.bankpayment.service.PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl  # overrides PaymentSessionBillOfExchangeValidateServiceImpl (axelor-account)
-com.axelor.apps.bankpayment.db.repo.PaymentSessionBankPaymentRepository  # overrides PaymentSessionAccountRepository (axelor-account)
-com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentServiceImpl  # overrides InvoiceTermFilterServiceImpl (axelor-account)
-com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl  # overrides MoveLineGroupServiceImpl (axelor-account)
-com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentMoveCreateServiceBankPayImpl  # overrides InvoicePaymentMoveCreateServiceImpl (axelor-account)
-com.axelor.apps.bankpayment.service.InvoiceTermServiceBankPaymentImpl  # overrides InvoiceTermServiceImpl (axelor-account)
-com.axelor.apps.bankpayment.service.move.MoveCreateBankPaymentServiceImpl  # overrides MoveCreateServiceImpl (axelor-account)
-com.axelor.apps.bankpayment.service.move.MoveRecordSetBankPaymentServiceImpl  # overrides MoveRecordSetServiceImpl (axelor-account)
-com.axelor.apps.bankpayment.service.moveline.MoveLineMassEntryRecordBankPaymentServiceImpl  # overrides MoveLineMassEntryRecordServiceImpl (axelor-account)
-com.axelor.apps.bankpayment.service.move.MoveAttrsBankPaymentServiceImpl  # overrides MoveAttrsServiceImpl (axelor-account)
-com.axelor.apps.bankpayment.service.bankdetails.BankDetailsServiceBankPaymentImpl  # overrides BankDetailsServiceAccountImpl (axelor-account)
-com.axelor.apps.bankpayment.service.move.MoveGroupOnChangeServiceBankPaymentImpl  # overrides MoveGroupOnChangeServiceImpl (axelor-account)
-com.axelor.apps.bankpayment.service.bankdetails.BankDetailsDomainServiceBankPaymentImpl  # overrides BankDetailsDomainServiceAccountImpl (axelor-account)
-com.axelor.apps.bankpayment.service.PaymentScheduleServiceBankPaymentImpl  # overrides PaymentScheduleServiceImpl (axelor-account)
-com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentAlertServiceBankPayImpl  # overrides InvoicePaymentAlertServiceImpl (axelor-account)
+# The overrides of the bank payment module were guarded by #117726.
+com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl  # bound on PaymentScheduleLineServiceImpl (axelor-account), overrides no method of it: only adds the rejection methods of PaymentScheduleLineBankPaymentService
 
 # ---------------------------------------------------------------------------
 # KNOWN DEBT - axelor-budget (4) - to be emptied by #117731

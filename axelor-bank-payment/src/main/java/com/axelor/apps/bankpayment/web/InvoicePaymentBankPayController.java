@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.web.InvoicePaymentController;
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -40,6 +41,11 @@ public class InvoicePaymentBankPayController extends InvoicePaymentController {
 
   @Override
   public void validateMassPayment(ActionRequest request, ActionResponse response) {
+    if (!Beans.get(AppBaseService.class).isApp("bank-payment")) {
+      super.validateMassPayment(request, response);
+      return;
+    }
+
     try {
 
       InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
