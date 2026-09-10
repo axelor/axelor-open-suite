@@ -99,4 +99,7 @@ public final class QualityExceptionMessage {
 
   public static final String QUALITY_CONFIG_RECEPTION_QI_DETECTION_MISSING = /*$$(*/
       "Please configure a detection for reception non-conformities in the quality configuration of the company %s." /*)*/;
+
+  public static final String STOCK_MOVE_LINE_OPEN_QUALITY_IMPROVEMENTS = /*$$(*/
+      "The quality improvement(s) %s are already open for this reception line. Create another one?" /*)*/;
 }

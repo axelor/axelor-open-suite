@@ -18,26 +18,10 @@
  */
 package com.axelor.apps.quality.service;
 
-import com.axelor.apps.quality.db.ControlEntry;
-import com.axelor.apps.quality.db.QIDetection;
-import com.axelor.apps.quality.db.QIIdentification;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.script.ScriptAllowed;
+import java.util.List;
 
-@ScriptAllowed
-public interface QualityImprovementPrefillService {
+public interface StockMoveLineQualityService {
 
-  int getDetectionOrigin(ControlEntry controlEntry);
-
-  QIDetection getDefaultDetection(ControlEntry controlEntry);
-
-  QIDetection getDefaultDetection(StockMoveLine stockMoveLine);
-
-  void fillDetectedBy(QIIdentification qiIdentification, ControlEntry controlEntry);
-
-  void fillFromControlEntry(
-      QIIdentification qiIdentification, ControlEntry controlEntry, QIDetection qiDetection);
-
-  void fillFromStockMoveLine(
-      QIIdentification qiIdentification, StockMoveLine stockMoveLine, QIDetection qiDetection);
+  List<String> getOpenQualityImprovementSequences(StockMoveLine stockMoveLine);
 }

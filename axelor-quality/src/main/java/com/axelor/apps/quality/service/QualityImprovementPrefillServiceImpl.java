@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.quality.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -26,6 +27,7 @@ import com.axelor.apps.quality.db.ControlEntry;
 import com.axelor.apps.quality.db.ControlEntrySample;
 import com.axelor.apps.quality.db.QIDetection;
 import com.axelor.apps.quality.db.QIIdentification;
+import com.axelor.apps.quality.db.QualityConfig;
 import com.axelor.apps.quality.db.repo.ControlEntrySampleRepository;
 import com.axelor.apps.quality.db.repo.QIDetectionRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -40,6 +42,7 @@ import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class QualityImprovementPrefillServiceImpl implements QualityImprovementPrefillService {
 
@@ -108,6 +111,23 @@ public class QualityImprovementPrefillServiceImpl implements QualityImprovementP
   @Override
   public QIDetection getDefaultDetection(ControlEntry controlEntry) {
     return findDetection(getDetectionOrigin(controlEntry));
+  }
+
+  @Override
+  public QIDetection getDefaultDetection(StockMoveLine stockMoveLine) {
+    int origin = getDetectionOrigin(stockMoveLine);
+    if (origin == QIDetectionRepository.ORIGIN_SUPPLIER) {
+      QIDetection receptionQiDetection =
+          Optional.ofNullable(stockMoveLine.getStockMove())
+              .map(StockMove::getCompany)
+              .map(Company::getQualityConfig)
+              .map(QualityConfig::getReceptionQiDetection)
+              .orElse(null);
+      if (receptionQiDetection != null) {
+        return receptionQiDetection;
+      }
+    }
+    return findDetection(origin);
   }
 
   protected QIDetection findDetection(int origin) {
