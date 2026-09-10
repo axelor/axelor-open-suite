@@ -31,17 +31,14 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import java.util.Map;
 
 public class StockMoveLineSupplychainRepository extends StockMoveLineStockRepository {
 
-  @Inject protected AppBaseService appBaseService;
-
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    if (!appBaseService.isApp("supplychain")) {
+    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
       return super.populate(json, context);
     }
 
@@ -82,7 +79,7 @@ public class StockMoveLineSupplychainRepository extends StockMoveLineStockReposi
 
   @Override
   public void remove(StockMoveLine stockMoveLine) {
-    if (!appBaseService.isApp("supplychain")) {
+    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
       super.remove(stockMoveLine);
       return;
     }

@@ -34,17 +34,14 @@ import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSup
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineSublineService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Map;
 
 public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleRepository {
 
-  @Inject protected AppBaseService appBaseService;
-
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    if (!appBaseService.isApp("supplychain")) {
+    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
       return super.populate(json, context);
     }
 
@@ -88,7 +85,7 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleReposit
   public SaleOrderLine copy(SaleOrderLine entity, boolean deep) {
     SaleOrderLine copy = super.copy(entity, deep);
 
-    if (!appBaseService.isApp("supplychain")) {
+    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
       return copy;
     }
 

@@ -39,5 +39,7 @@ developer: |
   - `com.axelor.apps.supplychain.service.StockMoveCurrencyServiceSupplychainImpl`
 
   `SaleOrderSupplychainRepository` and `LogisticalFormSupplychainRepository` take the service
-  through their existing constructor, which breaks their subclasses too. The repositories
-  that have no constructor read the check from a new injected `appBaseService` field.
+  through their existing constructor, which breaks their subclasses too. The four
+  repositories that have no constructor read the check through
+  `Beans.get(AppBaseService.class)`, the way they already fetch their other collaborators, so
+  they gain neither a field nor a constructor.
