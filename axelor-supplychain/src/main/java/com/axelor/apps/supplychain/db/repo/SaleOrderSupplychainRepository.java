@@ -34,13 +34,15 @@ import jakarta.persistence.PersistenceException;
 
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
 
-  @Inject protected AppBaseService appBaseService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public SaleOrderSupplychainRepository(
       SaleOrderCopyService saleOrderCopyService,
-      SaleOrderOrderingStatusService saleOrderOrderingStatusService) {
+      SaleOrderOrderingStatusService saleOrderOrderingStatusService,
+      AppBaseService appBaseService) {
     super(saleOrderCopyService, saleOrderOrderingStatusService);
+    this.appBaseService = appBaseService;
   }
 
   @Override

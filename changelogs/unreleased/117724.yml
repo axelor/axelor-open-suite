@@ -29,6 +29,8 @@ developer: |
   - `com.axelor.apps.supplychain.service.pricing.PricingGroupSupplyChainServiceImpl`
   - `com.axelor.apps.supplychain.service.analytic.AnalyticMoveLineParentSupplychainServiceImpl`
   - `com.axelor.apps.supplychain.service.PurchaseOrderLineTaxComputeSupplychainServiceImp`
+  - `com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository`
+  - `com.axelor.apps.supplychain.db.repo.LogisticalFormSupplychainRepository`
 
   These ones had no constructor and now have one, which breaks subclasses too:
 
@@ -36,5 +38,6 @@ developer: |
   - `com.axelor.apps.supplychain.rest.StockProductRestServiceSupplychainImpl`
   - `com.axelor.apps.supplychain.service.StockMoveCurrencyServiceSupplychainImpl`
 
-  The repositories of the module read the check from a new injected `appBaseService` field,
-  so their constructor is unchanged.
+  `SaleOrderSupplychainRepository` and `LogisticalFormSupplychainRepository` take the service
+  through their existing constructor, which breaks their subclasses too. The repositories
+  that have no constructor read the check from a new injected `appBaseService` field.

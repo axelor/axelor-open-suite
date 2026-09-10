@@ -35,17 +35,18 @@ public class LogisticalFormSupplychainRepository extends LogisticalFormStockRepo
 
   protected PackagingSequenceService packagingSequenceService;
   protected LogisticalFormComputeService logisticalFormComputeService;
-
-  @Inject protected AppBaseService appBaseService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public LogisticalFormSupplychainRepository(
       LogisticalFormSequenceService logisticalFormSequenceService,
       PackagingSequenceService packagingSequenceService,
-      LogisticalFormComputeService logisticalFormComputeService) {
+      LogisticalFormComputeService logisticalFormComputeService,
+      AppBaseService appBaseService) {
     super(logisticalFormSequenceService);
     this.packagingSequenceService = packagingSequenceService;
     this.logisticalFormComputeService = logisticalFormComputeService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
