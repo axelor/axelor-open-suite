@@ -28,9 +28,13 @@
       title="Analysis" orphanRemoval="true" unique="true"/>
     <many-to-one ref="com.axelor.apps.quality.db.QIAnalysisMethod" name="analysisMethod"
       title="Analysis Method"/>
+    <boolean name="isAutomaticallyCreated" title="Automatically created" readonly="true"/>
 
     <finder-method name="findOpenByControlEntryId" using="Long:controlEntryId"
       filter="self.qiIdentification.controlEntry.id = :controlEntryId AND self.qiStatus.isClosedStatus = false AND self.qiStatus.isCancelledStatus = false"
+      all="true"/>
+    <finder-method name="findOpenByStockMoveLineId" using="Long:stockMoveLineId"
+      filter="self.qiIdentification.stockMoveLine.id = :stockMoveLineId AND self.qiStatus.isClosedStatus = false AND self.qiStatus.isCancelledStatus = false"
       all="true"/>
 
     <extra-code><![CDATA[
@@ -53,6 +57,7 @@
       <field name="qiStatus"/>
       <field name="qiResolution"/>
       <field name="qiAnalysis"/>
+      <field name="isAutomaticallyCreated"/>
     </track>
   </entity>
 
