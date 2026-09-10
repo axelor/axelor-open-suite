@@ -19,6 +19,7 @@
 package com.axelor.apps.quality.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.quality.db.QualityImprovement;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import java.util.List;
@@ -34,4 +35,9 @@ public interface NonCompliantReceptionService {
   boolean isRedirectedToQuarantine(StockMoveLine stockMoveLine);
 
   List<StockMoveLine> redirectToQuarantine(StockMove stockMove) throws AxelorException;
+
+  void checkAutomaticQualityImprovementPrerequisites(StockMove stockMove) throws AxelorException;
+
+  List<QualityImprovement> createAutomaticQualityImprovements(StockMove stockMove)
+      throws AxelorException;
 }
