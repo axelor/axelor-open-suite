@@ -20,6 +20,8 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.ABCAnalysis;
+import com.axelor.apps.base.db.ABCAnalysisLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -31,6 +33,8 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.supplychain.db.ProductMergeLog;
+import com.axelor.apps.supplychain.db.UnitCostCalcLine;
+import com.axelor.apps.supplychain.db.UnitCostCalculation;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.db.repo.ProductMergeLogRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -626,6 +630,12 @@ public class ProductMergeServiceImpl implements ProductMergeService {
             ProductCompany.class.getName(),
             // the stock rules configured for the absorbed product
             StockRules.class.getName(),
+            // a dated analysis keeps the product it was run on
+            ABCAnalysis.class.getName(),
+            ABCAnalysisLine.class.getName(),
+            // a dated cost calculation keeps the product it was computed for
+            UnitCostCalculation.class.getName(),
+            UnitCostCalcLine.class.getName(),
             // the previous merges are a history and are not rewritten
             ProductMergeLog.class.getName()));
   }
