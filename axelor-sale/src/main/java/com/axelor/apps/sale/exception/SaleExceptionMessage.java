@@ -186,6 +186,9 @@ public final class SaleExceptionMessage {
   public static final String CONFIGURATOR_IS_NOT_ACTIVATED = /*$$(*/
       "Configurator is not activated." /*)*/;
 
+  public static final String CONFIGURATOR_EDITION_NOT_ALLOWED = /*$$(*/
+      "Editing configurator values from the sale order line is not allowed." /*)*/;
+
   public static final String SALE_ORDER_DO_YOU_WANT_TO_PROCEED = /*$$(*/
       "Do you want to proceed ?" /*)*/;
 
