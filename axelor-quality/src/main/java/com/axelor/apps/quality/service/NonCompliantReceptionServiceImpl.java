@@ -21,7 +21,11 @@ package com.axelor.apps.quality.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.quality.db.QIDetection;
+import com.axelor.apps.quality.db.QualityImprovement;
+import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
 import com.axelor.apps.quality.service.app.AppQualityService;
+import com.axelor.apps.quality.service.config.QualityConfigService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -30,6 +34,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.studio.db.AppQuality;
 import jakarta.inject.Inject;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,17 +46,26 @@ public class NonCompliantReceptionServiceImpl implements NonCompliantReceptionSe
   protected final QuarantineStockLocationService quarantineStockLocationService;
   protected final StockMoveLineService stockMoveLineService;
   protected final StockMoveLineRepository stockMoveLineRepository;
+  protected final QualityConfigService qualityConfigService;
+  protected final QualityImprovementCreateService qualityImprovementCreateService;
+  protected final StockMoveLineQualityService stockMoveLineQualityService;
 
   @Inject
   public NonCompliantReceptionServiceImpl(
       AppQualityService appQualityService,
       QuarantineStockLocationService quarantineStockLocationService,
       StockMoveLineService stockMoveLineService,
-      StockMoveLineRepository stockMoveLineRepository) {
+      StockMoveLineRepository stockMoveLineRepository,
+      QualityConfigService qualityConfigService,
+      QualityImprovementCreateService qualityImprovementCreateService,
+      StockMoveLineQualityService stockMoveLineQualityService) {
     this.appQualityService = appQualityService;
     this.quarantineStockLocationService = quarantineStockLocationService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveLineRepository = stockMoveLineRepository;
+    this.qualityConfigService = qualityConfigService;
+    this.qualityImprovementCreateService = qualityImprovementCreateService;
+    this.stockMoveLineQualityService = stockMoveLineQualityService;
   }
 
   @Override
@@ -113,8 +127,52 @@ public class NonCompliantReceptionServiceImpl implements NonCompliantReceptionSe
     return nonCompliantLines;
   }
 
+  @Override
+  public void checkAutomaticQualityImprovementPrerequisites(StockMove stockMove)
+      throws AxelorException {
+    if (!isAutomaticQualityImprovementEnabled() || getNonCompliantLines(stockMove).isEmpty()) {
+      return;
+    }
+    getReceptionQiDetection(stockMove);
+  }
+
+  @Override
+  public List<QualityImprovement> createAutomaticQualityImprovements(StockMove stockMove)
+      throws AxelorException {
+    if (!isAutomaticQualityImprovementEnabled()) {
+      return List.of();
+    }
+    List<StockMoveLine> nonCompliantLines = getNonCompliantLines(stockMove);
+    if (nonCompliantLines.isEmpty()) {
+      return List.of();
+    }
+    QIDetection qiDetection = getReceptionQiDetection(stockMove);
+    List<QualityImprovement> qualityImprovements = new ArrayList<>();
+    for (StockMoveLine stockMoveLine : nonCompliantLines) {
+      if (!stockMoveLineQualityService
+          .getOpenQualityImprovementSequences(stockMoveLine)
+          .isEmpty()) {
+        continue;
+      }
+      qualityImprovements.add(
+          qualityImprovementCreateService.createQualityImprovementFromStockMoveLine(
+              stockMoveLine, qiDetection, QualityImprovementRepository.TYPE_PRODUCT, true));
+    }
+    return qualityImprovements;
+  }
+
+  protected QIDetection getReceptionQiDetection(StockMove stockMove) throws AxelorException {
+    return qualityConfigService.getReceptionQiDetection(
+        qualityConfigService.getQualityConfig(stockMove.getCompany()));
+  }
+
   protected boolean isRedirectEnabled() {
     AppQuality appQuality = appQualityService.getAppQuality();
     return appQuality != null && appQuality.getRedirectNonCompliantReceptionToQuarantine();
+  }
+
+  protected boolean isAutomaticQualityImprovementEnabled() {
+    AppQuality appQuality = appQualityService.getAppQuality();
+    return appQuality != null && appQuality.getCreateQiOnNonCompliantReception();
   }
 }

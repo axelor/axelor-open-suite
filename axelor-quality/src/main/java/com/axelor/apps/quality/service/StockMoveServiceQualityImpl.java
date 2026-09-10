@@ -42,6 +42,7 @@ import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderReceiptStateService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
@@ -123,11 +124,15 @@ public class StockMoveServiceQualityImpl extends StockMoveServiceSupplychainImpl
     if (!appQualityService.isApp("quality")) {
       return super.realizeStockMove(stockMove, check);
     }
+    nonCompliantReceptionService.checkAutomaticQualityImprovementPrerequisites(stockMove);
     List<StockMoveLine> redirectedLines =
         nonCompliantReceptionService.redirectToQuarantine(stockMove);
     if (!redirectedLines.isEmpty()) {
       JPA.flush();
     }
-    return super.realizeStockMove(stockMove, check);
+    String newStockSeq = super.realizeStockMove(stockMove, check);
+    nonCompliantReceptionService.createAutomaticQualityImprovements(
+        JpaModelHelper.ensureManaged(stockMove));
+    return newStockSeq;
   }
 }

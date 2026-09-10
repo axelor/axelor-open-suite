@@ -24,6 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -34,7 +37,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.quality.db.QIDetection;
 import com.axelor.apps.quality.db.QualityConfig;
+import com.axelor.apps.quality.db.QualityImprovement;
+import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
 import com.axelor.apps.quality.service.app.AppQualityService;
 import com.axelor.apps.quality.service.config.QualityConfigService;
 import com.axelor.apps.stock.db.StockLocation;
@@ -54,7 +60,10 @@ class NonCompliantReceptionServiceImplTest {
   private AppQuality appQuality;
   private StockMoveLineService stockMoveLineService;
   private StockMoveLineRepository stockMoveLineRepository;
+  private QualityImprovementCreateService qualityImprovementCreateService;
+  private StockMoveLineQualityService stockMoveLineQualityService;
   private NonCompliantReceptionService service;
+  private QIDetection receptionQiDetection;
   private Company company;
   private StockLocation destination;
   private StockLocation companyQuarantine;
@@ -68,12 +77,20 @@ class NonCompliantReceptionServiceImplTest {
     when(appQualityService.getAppQuality()).thenReturn(appQuality);
     stockMoveLineService = mock(StockMoveLineService.class);
     stockMoveLineRepository = mock(StockMoveLineRepository.class);
+    qualityImprovementCreateService = mock(QualityImprovementCreateService.class);
+    stockMoveLineQualityService = mock(StockMoveLineQualityService.class);
+    when(stockMoveLineQualityService.getOpenQualityImprovementSequences(any()))
+        .thenReturn(List.of());
+    QualityConfigService qualityConfigService = new QualityConfigService();
     service =
         new NonCompliantReceptionServiceImpl(
             appQualityService,
-            new QuarantineStockLocationServiceImpl(new QualityConfigService()),
+            new QuarantineStockLocationServiceImpl(qualityConfigService),
             stockMoveLineService,
-            stockMoveLineRepository);
+            stockMoveLineRepository,
+            qualityConfigService,
+            qualityImprovementCreateService,
+            stockMoveLineQualityService);
 
     company = new Company();
     company.setName("Company");
@@ -84,6 +101,8 @@ class NonCompliantReceptionServiceImplTest {
     QualityConfig qualityConfig = new QualityConfig();
     qualityConfig.setCompany(company);
     qualityConfig.setQuarantineStockLocation(companyQuarantine);
+    receptionQiDetection = new QIDetection();
+    qualityConfig.setReceptionQiDetection(receptionQiDetection);
     company.setQualityConfig(qualityConfig);
 
     stockMove = new StockMove();
@@ -177,6 +196,67 @@ class NonCompliantReceptionServiceImplTest {
 
     assertTrue(service.isRedirectedToQuarantine(line));
     assertFalse(service.isRedirectedToQuarantine(compliant));
+  }
+
+  @Test
+  void automaticFileIsCreatedForEachNonCompliantLine() throws AxelorException {
+    appQuality.setCreateQiOnNonCompliantReception(true);
+    StockMoveLine first = line(StockMoveLineRepository.CONFORMITY_NON_COMPLIANT, "10", "10");
+    StockMoveLine second = line(StockMoveLineRepository.CONFORMITY_NON_COMPLIANT, "5", "5");
+    line(StockMoveLineRepository.CONFORMITY_COMPLIANT, "5", "5");
+    when(qualityImprovementCreateService.createQualityImprovementFromStockMoveLine(
+            any(), any(), anyInt(), anyBoolean()))
+        .thenReturn(new QualityImprovement());
+
+    service.checkAutomaticQualityImprovementPrerequisites(stockMove);
+    List<QualityImprovement> created = service.createAutomaticQualityImprovements(stockMove);
+
+    assertEquals(2, created.size());
+    verify(qualityImprovementCreateService)
+        .createQualityImprovementFromStockMoveLine(
+            first, receptionQiDetection, QualityImprovementRepository.TYPE_PRODUCT, true);
+    verify(qualityImprovementCreateService)
+        .createQualityImprovementFromStockMoveLine(
+            second, receptionQiDetection, QualityImprovementRepository.TYPE_PRODUCT, true);
+  }
+
+  @Test
+  void lineWithAnOpenFileNeverGetsASecondAutomaticOne() throws AxelorException {
+    appQuality.setCreateQiOnNonCompliantReception(true);
+    StockMoveLine line = line(StockMoveLineRepository.CONFORMITY_NON_COMPLIANT, "10", "10");
+    when(stockMoveLineQualityService.getOpenQualityImprovementSequences(line))
+        .thenReturn(List.of("QI26007"));
+
+    assertTrue(service.createAutomaticQualityImprovements(stockMove).isEmpty());
+    verify(qualityImprovementCreateService, never())
+        .createQualityImprovementFromStockMoveLine(any(), any(), anyInt(), anyBoolean());
+  }
+
+  @Test
+  void automaticFileOptionOffCreatesNothing() throws AxelorException {
+    line(StockMoveLineRepository.CONFORMITY_NON_COMPLIANT, "10", "10");
+    company.getQualityConfig().setReceptionQiDetection(null);
+
+    service.checkAutomaticQualityImprovementPrerequisites(stockMove);
+    assertTrue(service.createAutomaticQualityImprovements(stockMove).isEmpty());
+    verify(qualityImprovementCreateService, never())
+        .createQualityImprovementFromStockMoveLine(any(), any(), anyInt(), anyBoolean());
+  }
+
+  @Test
+  void missingReceptionDetectionBlocksOnlyWhenANonCompliantLineExists() throws AxelorException {
+    appQuality.setCreateQiOnNonCompliantReception(true);
+    company.getQualityConfig().setReceptionQiDetection(null);
+    line(StockMoveLineRepository.CONFORMITY_COMPLIANT, "10", "10");
+
+    service.checkAutomaticQualityImprovementPrerequisites(stockMove);
+
+    line(StockMoveLineRepository.CONFORMITY_NON_COMPLIANT, "10", "10");
+    assertThrows(
+        AxelorException.class,
+        () -> service.checkAutomaticQualityImprovementPrerequisites(stockMove));
+    verify(qualityImprovementCreateService, never())
+        .createQualityImprovementFromStockMoveLine(any(), eq(null), anyInt(), anyBoolean());
   }
 
   private StockMoveLine line(int conformitySelect, String qty, String realQty) {
