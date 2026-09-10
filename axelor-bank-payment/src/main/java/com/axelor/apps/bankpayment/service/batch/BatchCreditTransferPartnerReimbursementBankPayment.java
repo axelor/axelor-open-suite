@@ -79,6 +79,11 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
   @Override
   protected void process() {
     super.process();
+
+    if (!appBaseService.isApp("bank-payment")) {
+      return;
+    }
+
     AccountingBatch accountingBatch = batch.getAccountingBatch();
 
     if (!accountingBatch.getPaymentMode().getGenerateBankOrder()) {

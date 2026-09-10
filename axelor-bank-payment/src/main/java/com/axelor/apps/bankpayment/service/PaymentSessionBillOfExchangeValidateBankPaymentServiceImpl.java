@@ -41,6 +41,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderComputeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
@@ -56,6 +57,7 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
   protected BankOrderComputeService bankOrderComputeService;
   protected BankOrderValidationService bankOrderValidationService;
   protected BankOrderRepository bankOrderRepo;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl(
@@ -75,7 +77,8 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
       PaymentSessionBankOrderService paymentSessionBankOrderService,
       BankOrderComputeService bankOrderComputeService,
       BankOrderValidationService bankOrderValidationService,
-      BankOrderRepository bankOrderRepo) {
+      BankOrderRepository bankOrderRepo,
+      AppBaseService appBaseService) {
     super(
         paymentSessionValidateService,
         invoiceTermRepo,
@@ -94,6 +97,7 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
     this.bankOrderComputeService = bankOrderComputeService;
     this.bankOrderValidationService = bankOrderValidationService;
     this.bankOrderRepo = bankOrderRepo;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -102,6 +106,10 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
       PaymentSession paymentSession,
       List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList)
       throws AxelorException {
+    if (!appBaseService.isApp("bank-payment")) {
+      return super.processPaymentSession(paymentSession, invoiceTermLinkWithRefundList);
+    }
+
     if (paymentSession.getPaymentMode() != null
         && paymentSession.getPaymentMode().getGenerateBankOrder()
         && paymentSession.getBankOrder() == null) {
@@ -118,6 +126,11 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
       Map<Move, BigDecimal> paymentAmountMap,
       boolean out)
       throws AxelorException {
+    if (!appBaseService.isApp("bank-payment")) {
+      super.postProcessPaymentSession(paymentSession, moveDateMap, paymentAmountMap, out);
+      return;
+    }
+
     if (paymentSession.getBankOrder() != null) {
       BankOrder bankOrder = bankOrderRepo.find(paymentSession.getBankOrder().getId());
       bankOrderComputeService.updateTotalAmounts(bankOrder);
@@ -141,6 +154,12 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
       Map<Move, BigDecimal> paymentAmountMap,
       List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund)
       throws AxelorException {
+
+    if (!appBaseService.isApp("bank-payment")) {
+      super.processInvoiceTermBillOfExchange(
+          paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, invoiceTermLinkWithRefund);
+      return;
+    }
 
     paymentSessionBankOrderService.manageInvoicePayment(
         paymentSession, invoiceTerm, invoiceTerm.getAmountPaid());

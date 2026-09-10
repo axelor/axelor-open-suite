@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentVal
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.i18n.I18n;
 import com.google.inject.servlet.RequestScoped;
 import jakarta.inject.Inject;
@@ -38,19 +39,27 @@ import jakarta.inject.Inject;
 @RequestScoped
 public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentValidateServiceImpl {
   protected PaymentModeService paymentModeService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public InvoicePaymentValidateServiceBankPayImpl(
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentToolService invoicePaymentToolService,
       InvoicePaymentMoveCreateService invoicePaymentMoveCreateService,
-      PaymentModeService paymentModeService) {
+      PaymentModeService paymentModeService,
+      AppBaseService appBaseService) {
     super(invoicePaymentRepository, invoicePaymentToolService, invoicePaymentMoveCreateService);
     this.paymentModeService = paymentModeService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
   protected void setInvoicePaymentStatus(InvoicePayment invoicePayment) throws AxelorException {
+    if (!appBaseService.isApp("bank-payment")) {
+      super.setInvoicePaymentStatus(invoicePayment);
+      return;
+    }
+
     Invoice invoice = invoicePayment.getInvoice();
     PaymentMode paymentMode = invoicePayment.getPaymentMode();
     PaymentSession paymentSession = invoicePayment.getPaymentSession();

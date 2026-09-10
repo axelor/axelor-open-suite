@@ -77,6 +77,10 @@ public class PaymentScheduleServiceBankPaymentImpl extends PaymentScheduleServic
         super.createPaymentSchedule(
             partner, invoice, company, date, startDate, nbrTerm, bankDetails, paymentMode);
 
+    if (!appAccountService.isApp("bank-payment")) {
+      return paymentSchedule;
+    }
+
     bankDetailsBankPaymentService
         .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
         .stream()

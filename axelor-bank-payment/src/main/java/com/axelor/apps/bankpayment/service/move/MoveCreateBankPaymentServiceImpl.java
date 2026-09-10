@@ -100,6 +100,10 @@ public class MoveCreateBankPaymentServiceImpl extends MoveCreateServiceImpl {
             description,
             companyBankDetails);
 
+    if (!appAccountService.isApp("bank-payment")) {
+      return move;
+    }
+
     bankDetailsBankPaymentService
         .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
         .stream()

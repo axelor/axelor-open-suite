@@ -101,6 +101,11 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
 
   @Override
   public void createInvoicePaymentMove(InvoicePayment invoicePayment) throws AxelorException {
+    if (!appAccountService.isApp("bank-payment")) {
+      super.createInvoicePaymentMove(invoicePayment);
+      return;
+    }
+
     Invoice invoice = invoicePayment.getInvoice();
     Company company = invoice.getCompany();
     PaymentSession paymentSession = invoicePayment.getPaymentSession();
@@ -144,6 +149,10 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
 
   @Override
   public String getOriginFromInvoicePayment(InvoicePayment invoicePayment) {
+    if (!appAccountService.isApp("bank-payment")) {
+      return super.getOriginFromInvoicePayment(invoicePayment);
+    }
+
     return Optional.of(invoicePayment)
         .map(InvoicePayment::getBankOrder)
         .map(BankOrder::getBankOrderSeq)

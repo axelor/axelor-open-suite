@@ -20,6 +20,8 @@ package com.axelor.apps.bankpayment.service.extract;
 
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import java.util.Map;
 
@@ -29,6 +31,11 @@ public class ExtractContextMoveServiceBankPaymentImpl extends ExtractContextMove
   public Map<String, Object> getMapFromMoveWizardGenerateReverseForm(Context context)
       throws AxelorException {
     Map<String, Object> assistantMap = super.getMapFromMoveWizardGenerateReverseForm(context);
+
+    if (!Beans.get(AppBaseService.class).isApp("bank-payment")) {
+      return assistantMap;
+    }
+
     assistantMap.put(
         "isHiddenMoveLinesInBankReconciliation",
         (Boolean) context.getOrDefault("isHiddenMoveLinesInBankReconciliation", true));
@@ -38,6 +45,11 @@ public class ExtractContextMoveServiceBankPaymentImpl extends ExtractContextMove
   @Override
   public Map<String, Object> getMapFromMoveWizardMassReverseForm(Context context) {
     Map<String, Object> assistantMap = super.getMapFromMoveWizardMassReverseForm(context);
+
+    if (!Beans.get(AppBaseService.class).isApp("bank-payment")) {
+      return assistantMap;
+    }
+
     assistantMap.put(
         "isHiddenMoveLinesInBankReconciliation",
         (Boolean) context.getOrDefault("isHiddenMoveLinesInBankReconciliation", true));

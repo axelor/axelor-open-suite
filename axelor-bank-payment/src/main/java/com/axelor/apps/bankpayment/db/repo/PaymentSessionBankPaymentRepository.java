@@ -20,6 +20,8 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.repo.PaymentSessionAccountRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.inject.Beans;
 
 public class PaymentSessionBankPaymentRepository extends PaymentSessionAccountRepository {
 
@@ -27,6 +29,11 @@ public class PaymentSessionBankPaymentRepository extends PaymentSessionAccountRe
   public PaymentSession copy(PaymentSession entity, boolean deep) {
 
     PaymentSession copy = super.copy(entity, deep);
+
+    if (!Beans.get(AppBaseService.class).isApp("bank-payment")) {
+      return copy;
+    }
+
     copy.setBankOrder(null);
     return copy;
   }

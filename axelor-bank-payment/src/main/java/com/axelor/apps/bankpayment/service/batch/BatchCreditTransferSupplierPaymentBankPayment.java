@@ -59,6 +59,11 @@ public class BatchCreditTransferSupplierPaymentBankPayment
 
   @Override
   protected void process() {
+    if (!appBaseService.isApp("bank-payment")) {
+      super.process();
+      return;
+    }
+
     if (!stopping) {
       List<InvoicePayment> doneList =
           processInvoices(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE);
@@ -77,6 +82,10 @@ public class BatchCreditTransferSupplierPaymentBankPayment
   @Override
   protected void start() throws IllegalAccessException {
     super.start();
+
+    if (!appBaseService.isApp("bank-payment")) {
+      return;
+    }
 
     try {
       this.checkCreditTransferBatchField();
