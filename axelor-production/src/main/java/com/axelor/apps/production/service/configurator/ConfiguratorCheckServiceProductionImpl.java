@@ -21,6 +21,7 @@ package com.axelor.apps.production.service.configurator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
@@ -39,6 +40,7 @@ public class ConfiguratorCheckServiceProductionImpl
   protected final ManufOrderRepository manufOrderRepository;
   protected final BillOfMaterialRepository billOfMaterialRepository;
   protected final ProdProcessRepository prodProcessRepository;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public ConfiguratorCheckServiceProductionImpl(
@@ -46,8 +48,10 @@ public class ConfiguratorCheckServiceProductionImpl
       ProductionOrderRepository productionOrderRepository,
       ManufOrderRepository manufOrderRepository,
       BillOfMaterialRepository billOfMaterialRepository,
-      ProdProcessRepository prodProcessRepository) {
+      ProdProcessRepository prodProcessRepository,
+      AppBaseService appBaseService) {
     super(saleOrderLineRepository);
+    this.appBaseService = appBaseService;
     this.productionOrderRepository = productionOrderRepository;
     this.manufOrderRepository = manufOrderRepository;
     this.billOfMaterialRepository = billOfMaterialRepository;
@@ -57,6 +61,11 @@ public class ConfiguratorCheckServiceProductionImpl
   @Override
   public void checkLinkedSaleOrderLine(Configurator configurator) throws AxelorException {
     super.checkLinkedSaleOrderLine(configurator);
+
+    if (!appBaseService.isApp("production")) {
+      return;
+    }
+
     var saleOrderLines =
         saleOrderLineRepository
             .all()
@@ -80,6 +89,10 @@ public class ConfiguratorCheckServiceProductionImpl
   public void checkLinkedSaleOrderLine(Configurator configurator, Product product)
       throws AxelorException {
     super.checkLinkedSaleOrderLine(configurator, product);
+
+    if (!appBaseService.isApp("production")) {
+      return;
+    }
 
     var saleOrderLines =
         saleOrderLineRepository

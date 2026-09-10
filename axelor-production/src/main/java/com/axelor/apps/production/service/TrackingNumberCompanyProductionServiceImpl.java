@@ -20,6 +20,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -33,15 +34,22 @@ import java.util.Optional;
 public class TrackingNumberCompanyProductionServiceImpl
     extends TrackingNumberCompanySupplychainServiceImpl {
 
+  protected final AppBaseService appBaseService;
+
   @Inject
   public TrackingNumberCompanyProductionServiceImpl(
-      StockMoveLineRepository stockMoveLineRepository) {
+      StockMoveLineRepository stockMoveLineRepository, AppBaseService appBaseService) {
     super(stockMoveLineRepository);
+    this.appBaseService = appBaseService;
   }
 
   @Override
   protected Optional<Company> getDefaultCompany(TrackingNumber trackingNumber)
       throws AxelorException {
+
+    if (!appBaseService.isApp("production")) {
+      return super.getDefaultCompany(trackingNumber);
+    }
 
     if (trackingNumber.getOriginMoveTypeSelect()
         == TrackingNumberRepository.ORIGIN_MOVE_TYPE_MANUFACTURING) {

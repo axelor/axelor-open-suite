@@ -62,6 +62,10 @@ public class PurchaseOrderMergingServiceProductionImpl
   @Override
   protected PurchaseOrder updateDatabase(
       PurchaseOrder purchaseOrderMerged, List<PurchaseOrder> purchaseOrdersToMerge) {
+    if (!appPurchaseService.isApp("production")) {
+      return super.updateDatabase(purchaseOrderMerged, purchaseOrdersToMerge);
+    }
+
     List<ManufOrder> manufOrderList = this.getManufOrdersOfPurchaseOrders(purchaseOrdersToMerge);
     manufOrderList.forEach(ManufOrder::clearPurchaseOrderSet);
     purchaseOrderMerged = super.updateDatabase(purchaseOrderMerged, purchaseOrdersToMerge);

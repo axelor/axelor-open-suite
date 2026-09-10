@@ -17,7 +17,7 @@
 #      job of the sweep tickets listed below, one module at a time. Do NOT add new entries
 #      to those sections.
 #
-# Sweep tickets: #117724 supplychain, #117725 production, #117726 bank-payment,
+# Sweep tickets: #117724 supplychain, #117726 bank-payment,
 # #117727 human-resource, #117728 maintenance, #117729 contract/intervention/cash-management,
 # #117730 sale/crm/account/stock/talent, #117731 budget.
 #
@@ -130,37 +130,10 @@ com.axelor.apps.maintenance.service.OperationOrderStockMoveServiceMaintenanceImp
 com.axelor.apps.maintenance.service.MrpServiceMaintenanceImpl  # overrides MrpServiceProductionImpl (axelor-production)
 
 # ---------------------------------------------------------------------------
-# KNOWN DEBT - axelor-production (29) - to be emptied by #117725
+# JUSTIFIED EXCEPTIONS - axelor-production (1)
 # ---------------------------------------------------------------------------
-com.axelor.apps.production.service.StockRulesSupplychainServiceProductionImpl  # overrides StockRulesSupplychainServiceImpl (axelor-supplychain)
-com.axelor.apps.production.service.config.StockConfigProductionService  # overrides StockConfigService (axelor-stock)
-com.axelor.apps.production.service.app.ConfiguratorServiceProductionImpl  # overrides ConfiguratorServiceImpl (axelor-sale)
-com.axelor.apps.production.db.repo.StockMoveLineProductionRepository  # overrides StockMoveLineSupplychainRepository (axelor-supplychain)
-com.axelor.apps.production.db.repo.ProductProductionRepository  # overrides ProductStockRepository (axelor-stock)
-com.axelor.apps.production.service.ProductionProductStockLocationServiceImpl  # overrides ProductStockLocationServiceImpl (axelor-supplychain)
-com.axelor.apps.production.db.repo.StockMoveProductionRepository  # overrides StockMoveSupplychainRepository (axelor-supplychain)
-com.axelor.apps.production.service.StockMoveMergingServiceProductionImpl  # overrides StockMoveMergingServiceSupplychainImpl (axelor-supplychain)
-com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionImpl  # overrides PurchaseOrderMergingServiceSupplyChainImpl (axelor-supplychain)
-com.axelor.apps.production.service.SaleOrderLineViewProductionServiceSupplychainImpl  # overrides SaleOrderLineViewServiceSupplychainImpl (axelor-supplychain)
-com.axelor.apps.production.service.SaleOrderLineOnSaleSupplyChangeServiceProductionImpl  # overrides SaleOrderLineOnSaleSupplyChangeServiceImpl (axelor-supplychain)
-com.axelor.apps.production.service.SaleOrderComputeServiceProductionImpl  # overrides SaleOrderComputeServiceSupplychainImpl (axelor-supplychain)
-com.axelor.apps.production.service.SubSaleOrderLineComputeServiceProductionImpl  # overrides SubSaleOrderLineComputeServiceImpl (axelor-sale)
-com.axelor.apps.production.service.PurchaseOrderTypeSelectProductionServiceImpl  # overrides PurchaseOrderTypeSelectServiceImpl (axelor-purchase)
-com.axelor.apps.production.service.PurchaseOrderDomainServiceProductionImpl  # overrides PurchaseOrderDomainServiceImpl (axelor-purchase)
-com.axelor.apps.production.service.TrackingNumberCompanyProductionServiceImpl  # overrides TrackingNumberCompanySupplychainServiceImpl (axelor-supplychain)
-com.axelor.apps.production.service.SaleOrderLineCostPriceComputeProductionServiceImpl  # overrides SaleOrderLineCostPriceComputeServiceImpl (axelor-sale)
-com.axelor.apps.production.service.configurator.ConfiguratorCheckServiceProductionImpl  # overrides ConfiguratorCheckServiceSupplychainImpl (axelor-supplychain)
-com.axelor.apps.production.service.SaleOrderLineOnChangeProductionServiceImpl  # overrides SaleOrderLineOnChangeSupplychainServiceImpl (axelor-supplychain)
-com.axelor.apps.production.service.SaleOrderLineDummyProductionServiceImpl  # overrides SaleOrderLineDummySupplychainServiceImpl (axelor-supplychain)
-com.axelor.apps.production.db.repo.MrpLineProductionRepository  # overrides MrpLineManagementRepository (axelor-supplychain)
-com.axelor.apps.production.db.repo.ProductCompanyProductionRepository  # overrides ProductCompanyStockRepository (axelor-stock)
-com.axelor.apps.production.service.SaleOrderCheckBlockingServiceProductionServiceImpl  # overrides SaleOrderCheckBlockingSupplychainServiceImpl (axelor-supplychain)
-com.axelor.apps.production.service.SaleOrderLineComputeQtyProductionServiceImpl  # overrides SaleOrderLineComputeQtyServiceImpl (axelor-sale)
-com.axelor.apps.production.service.QualityImprovementCheckValuesProductionServiceImpl  # overrides QualityImprovementCheckValuesServiceImpl (axelor-quality)
-com.axelor.apps.production.service.QIIdentificationProductionServiceImpl  # overrides QIIdentificationServiceImpl (axelor-quality)
-com.axelor.apps.production.service.QualityImprovementUpdateProductionServiceImpl  # overrides QualityImprovementUpdateServiceImpl (axelor-quality)
-com.axelor.apps.production.rest.QualityImprovementParseProductionServiceImpl  # overrides QualityImprovementParseServiceImpl (axelor-quality)
-com.axelor.apps.production.service.ControlEntryProductionServiceImpl  # overrides ControlEntryServiceImpl (axelor-quality)
+# The overrides of the production module were guarded by #117725.
+com.axelor.apps.production.service.config.StockConfigProductionService  # bound on StockConfigService (axelor-stock), overrides no method of it: only adds the production stock location getters (production virtual, waste, finished products, residual products, component)
 
 # ---------------------------------------------------------------------------
 # KNOWN DEBT - axelor-sale (6) - to be emptied by #117730

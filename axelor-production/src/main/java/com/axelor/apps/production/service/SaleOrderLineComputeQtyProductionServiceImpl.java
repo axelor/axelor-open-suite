@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyServiceImpl;
 import jakarta.inject.Inject;
@@ -27,16 +28,24 @@ public class SaleOrderLineComputeQtyProductionServiceImpl
     extends SaleOrderLineComputeQtyServiceImpl {
 
   protected SaleOrderLineProductionService saleOrderLineProductionService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public SaleOrderLineComputeQtyProductionServiceImpl(
-      SaleOrderLineProductionService saleOrderLineProductionService) {
+      SaleOrderLineProductionService saleOrderLineProductionService,
+      AppBaseService appBaseService) {
     this.saleOrderLineProductionService = saleOrderLineProductionService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
   public Map<String, Object> initQty(SaleOrderLine saleOrderLine) {
     Map<String, Object> values = super.initQty(saleOrderLine);
+
+    if (!appBaseService.isApp("production")) {
+      return values;
+    }
+
     values.put(
         "qtyToProduce",
         saleOrderLineProductionService.computeQtyToProduce(

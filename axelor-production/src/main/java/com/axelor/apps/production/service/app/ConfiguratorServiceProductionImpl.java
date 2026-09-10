@@ -111,6 +111,12 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       JsonContext jsonIndicators,
       SaleOrderLine saleOrderLine)
       throws AxelorException {
+    if (!appBaseService.isApp("production")) {
+      super.regenerateSaleOrderLine(
+          configurator, saleOrder, jsonAttributes, jsonIndicators, saleOrderLine);
+      return;
+    }
+
     boolean linkedToManufOrder =
         isLinkedToManufOrder(configurator.getProduct().getDefaultBillOfMaterial());
     super.regenerateSaleOrderLine(
@@ -130,6 +136,11 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       JsonContext jsonIndicators,
       Long saleOrderId)
       throws AxelorException {
+    if (!appBaseService.isApp("production")) {
+      super.regenerateProduct(configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
+      return;
+    }
+
     BillOfMaterial oldBillOfMaterial = product.getDefaultBillOfMaterial();
     super.regenerateProduct(configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
     if (!isLinkedToManufOrder(oldBillOfMaterial)) {
@@ -153,6 +164,11 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       throws AxelorException {
     super.processGenerationProduct(
         configurator, product, jsonAttributes, jsonIndicators, saleOrderId);
+
+    if (!appBaseService.isApp("production")) {
+      return;
+    }
+
     ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
     if (configuratorBOM != null && !isLinkedToManufOrder(product.getDefaultBillOfMaterial())) {
       configuratorBomService
@@ -172,6 +188,11 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
     SaleOrderLine saleOrderLine =
         super.generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
+
+    if (!appBaseService.isApp("production")) {
+      return saleOrderLine;
+    }
+
     ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
     if (configuratorBOM != null) {
       Beans.get(ConfiguratorBomService.class)
@@ -185,6 +206,11 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
   @Override
   protected void fillSaleOrderWithProduct(SaleOrderLine saleOrderLine) throws AxelorException {
+    if (!appBaseService.isApp("production")) {
+      super.fillSaleOrderWithProduct(saleOrderLine);
+      return;
+    }
+
     if (saleOrderLine.getProduct() == null) {
       return;
     }
@@ -259,6 +285,11 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
     SaleOrderLine saleOrderLine =
         super.createSaleOrderLineFromGeneratedProduct(
             configurator, saleOrder, jsonAttributes, jsonIndicators);
+
+    if (!appBaseService.isApp("production")) {
+      return saleOrderLine;
+    }
+
     saleOrderLine.setQtyToProduce(
         saleOrderLineProductionService.computeQtyToProduce(saleOrderLine, null));
     return saleOrderLine;

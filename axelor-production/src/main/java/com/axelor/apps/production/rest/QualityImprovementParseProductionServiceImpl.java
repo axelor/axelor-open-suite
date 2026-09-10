@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.production.rest;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.quality.db.QIDetection;
@@ -31,9 +32,13 @@ import jakarta.inject.Inject;
 public class QualityImprovementParseProductionServiceImpl
     extends QualityImprovementParseServiceImpl {
 
+  protected final AppBaseService appBaseService;
+
   @Inject
-  public QualityImprovementParseProductionServiceImpl(MetaFileRepository metaFileRepository) {
+  public QualityImprovementParseProductionServiceImpl(
+      MetaFileRepository metaFileRepository, AppBaseService appBaseService) {
     super(metaFileRepository);
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -41,6 +46,11 @@ public class QualityImprovementParseProductionServiceImpl
       QIIdentificationRequest qiIdentificationRequest, QIDetection qiDetection) {
     QIIdentification qiIdentification =
         super.getQiIdentificationFromRequestBody(qiIdentificationRequest, qiDetection);
+
+    if (!appBaseService.isApp("production")) {
+      return qiIdentification;
+    }
+
     qiIdentification.setManufOrder(fetchManufOrder(qiIdentificationRequest));
     qiIdentification.setOperationOrder(fetchOperationOrder(qiIdentificationRequest));
     return qiIdentification;
