@@ -536,6 +536,18 @@ public final class SupplychainExceptionMessage {
   public static final String PRODUCT_MERGE_MRP_IN_PROGRESS = /*$$(*/
       "A MRP calculation is in progress. Products cannot be merged while it is running." /*)*/;
 
-  public static final String PRODUCT_MERGE_CHECK_SUCCESS = /*$$(*/
-      "No blocking condition found: these two products can be merged." /*)*/;
+  public static final String PRODUCT_MERGE_SUCCESS = /*$$(*/
+      "The product %s has been merged into the product %s." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_TRANSFERRED_REFERENCES = /*$$(*/
+      "%s: %s reference(s) transferred." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_SUPPLIER_CATALOG_KEPT = /*$$(*/
+      "Supplier catalog of the supplier %s (price: %s) kept on the absorbed product: the product to keep already has a catalog for this supplier." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_REFERENCE_NOT_TRANSFERRED = /*$$(*/
+      "%s: reference kept on the absorbed product, the product to keep already has one." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_CUSTOM_FIELD_NOT_TRANSFERRED = /*$$(*/
+      "Custom field %s of the object %s: multiple-value custom fields are not transferred, please update them manually." /*)*/;
 }

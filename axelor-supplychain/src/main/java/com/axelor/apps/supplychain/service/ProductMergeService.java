@@ -38,4 +38,13 @@ public interface ProductMergeService {
    * @throws AxelorException listing all the blocking conditions found
    */
   void checkMerge(Product absorbedProduct, Product keptProduct) throws AxelorException;
+
+  /**
+   * Merges the absorbed product into the kept product: every reference to the absorbed product is
+   * transferred to the kept product, except the ones that must stay on the absorbed product.
+   *
+   * @return what has been transferred and the warnings raised during the merge
+   * @throws AxelorException if the user is not authorized or if a condition blocks the merge
+   */
+  ProductMergeResult merge(Product absorbedProduct, Product keptProduct) throws AxelorException;
 }

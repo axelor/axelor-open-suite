@@ -17,9 +17,9 @@
         colSpan="12"/>
     </panel>
     <panel name="actionsPanel">
-      <button name="checkMergeBtn" title="Check merge" colSpan="4"
+      <button name="mergeBtn" title="Merge products" colSpan="4"
         showIf="$absorbedProduct &amp;&amp; $keptProduct"
-        onClick="action-supplychain-method-product-merge-check"/>
+        onClick="action-supplychain-product-merge-validate-merge,action-supplychain-method-product-merge"/>
     </panel>
   </form>
 
@@ -27,8 +27,13 @@
     <call class="com.axelor.apps.supplychain.web.ProductMergeController" method="openWizard"/>
   </action-method>
 
-  <action-method name="action-supplychain-method-product-merge-check">
-    <call class="com.axelor.apps.supplychain.web.ProductMergeController" method="checkMerge"/>
+  <action-validate name="action-supplychain-product-merge-validate-merge">
+    <alert
+      message="The product to absorb will be merged into the product to keep. This operation cannot be undone. Do you want to continue?"/>
+  </action-validate>
+
+  <action-method name="action-supplychain-method-product-merge">
+    <call class="com.axelor.apps.supplychain.web.ProductMergeController" method="merge"/>
   </action-method>
 
 </object-views>

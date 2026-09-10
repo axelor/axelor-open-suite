@@ -18,18 +18,42 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.purchase.db.SupplierCatalog;
+import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
+import com.axelor.apps.stock.db.StockHistoryLine;
+import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.StockRules;
+import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.supplychain.db.ProductMergeLog;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
+import com.axelor.db.internal.DBHelper;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
+import com.axelor.dms.db.DMSFile;
+import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.repo.MetaFieldRepository;
+import com.axelor.meta.db.repo.MetaJsonFieldRepository;
+import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -41,15 +65,27 @@ public class ProductMergeServiceImpl implements ProductMergeService {
   protected final AppSupplychainService appSupplychainService;
   protected final ProductRepository productRepository;
   protected final MrpRepository mrpRepository;
+  protected final MetaFieldRepository metaFieldRepository;
+  protected final MetaJsonFieldRepository metaJsonFieldRepository;
+  protected final DMSFileRepository dmsFileRepository;
+  protected final SupplierCatalogRepository supplierCatalogRepository;
 
   @Inject
   public ProductMergeServiceImpl(
       AppSupplychainService appSupplychainService,
       ProductRepository productRepository,
-      MrpRepository mrpRepository) {
+      MrpRepository mrpRepository,
+      MetaFieldRepository metaFieldRepository,
+      MetaJsonFieldRepository metaJsonFieldRepository,
+      DMSFileRepository dmsFileRepository,
+      SupplierCatalogRepository supplierCatalogRepository) {
     this.appSupplychainService = appSupplychainService;
     this.productRepository = productRepository;
     this.mrpRepository = mrpRepository;
+    this.metaFieldRepository = metaFieldRepository;
+    this.metaJsonFieldRepository = metaJsonFieldRepository;
+    this.dmsFileRepository = dmsFileRepository;
+    this.supplierCatalogRepository = supplierCatalogRepository;
   }
 
   @Override
@@ -82,6 +118,22 @@ public class ProductMergeServiceImpl implements ProductMergeService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY, String.join("\n", blockingChecks));
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public ProductMergeResult merge(Product absorbedProduct, Product keptProduct)
+      throws AxelorException {
+    checkAuthorization(AuthUtils.getUser());
+    checkMerge(absorbedProduct, keptProduct);
+
+    ProductMergeResult result = new ProductMergeResult();
+    transferSupplierCatalogs(absorbedProduct, keptProduct, result);
+    transferReferences(absorbedProduct, keptProduct, result);
+    transferDmsFiles(absorbedProduct, keptProduct, result);
+    transferCustomFields(absorbedProduct, keptProduct, result);
+    postReferenceTransfer(absorbedProduct, keptProduct, result);
+    return result;
   }
 
   /**
@@ -193,6 +245,400 @@ public class ProductMergeServiceImpl implements ProductMergeService {
       checks.add(I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_MRP_IN_PROGRESS));
     }
     return checks;
+  }
+
+  /**
+   * Transfers the supplier catalogs of the absorbed product to the kept product, except the ones of
+   * a supplier the kept product already has a catalog for: those stay on the absorbed product, so
+   * that the kept product keeps a single catalog per supplier.
+   */
+  protected void transferSupplierCatalogs(
+      Product absorbedProduct, Product keptProduct, ProductMergeResult result) {
+    List<SupplierCatalog> absorbedSupplierCatalogList =
+        supplierCatalogRepository
+            .all()
+            .filter("self.product = :product")
+            .bind("product", absorbedProduct)
+            .fetch();
+    if (absorbedSupplierCatalogList.isEmpty()) {
+      return;
+    }
+
+    List<Long> keptSupplierIdList =
+        supplierCatalogRepository
+            .all()
+            .filter("self.product = :product")
+            .bind("product", keptProduct)
+            .fetch()
+            .stream()
+            .map(supplierCatalog -> supplierCatalog.getSupplierPartner().getId())
+            .collect(Collectors.toList());
+
+    int count = 0;
+    for (SupplierCatalog supplierCatalog : absorbedSupplierCatalogList) {
+      if (keptSupplierIdList.contains(supplierCatalog.getSupplierPartner().getId())) {
+        result.addWarning(
+            String.format(
+                I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_LOG_SUPPLIER_CATALOG_KEPT),
+                supplierCatalog.getSupplierPartner().getFullName(),
+                Objects.toString(supplierCatalog.getPrice(), "")));
+        continue;
+      }
+      supplierCatalog.setProduct(keptProduct);
+      count++;
+    }
+    result.addTransferredReferences(SupplierCatalog.class.getSimpleName() + ".product", count);
+  }
+
+  /**
+   * Transfers every reference to the absorbed product to the kept product, except the references
+   * which must stay on the absorbed product and the ones transferred by a dedicated treatment.
+   */
+  protected void transferReferences(
+      Product absorbedProduct, Product keptProduct, ProductMergeResult result) {
+    Set<String> excludedModelSet = getExcludedModels();
+    Set<String> excludedFieldSet = getExcludedFields();
+    Set<String> specificallyHandledModelSet = getSpecificallyHandledModels();
+    Set<String> productAttributeModelNameSet = getProductAttributeModelNames();
+
+    for (MetaField metaField : getProductReferenceFields()) {
+      String modelName = metaField.getMetaModel().getFullName();
+      if (excludedModelSet.contains(modelName)
+          || specificallyHandledModelSet.contains(modelName)
+          || excludedFieldSet.contains(modelName + "." + metaField.getName())
+          || !isTransferableField(metaField)) {
+        continue;
+      }
+
+      switch (metaField.getRelationship()) {
+        case "ManyToOne":
+          transferManyToOneReferences(metaField, absorbedProduct, keptProduct, result);
+          break;
+        case "OneToOne":
+          transferOneToOneReference(metaField, absorbedProduct, keptProduct, result);
+          break;
+        case "ManyToMany":
+          // a many-to-many mirroring one of the product own attributes is not transferred: the kept
+          // product keeps its own values
+          if (!productAttributeModelNameSet.contains(metaField.getMetaModel().getName())) {
+            transferManyToManyReferences(metaField, absorbedProduct, keptProduct, result);
+          }
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  /**
+   * A field is transferred only when it exists on the object and holds a value of its own: a
+   * computed field is read from another field and has nothing to update, and the metadata can
+   * reference an object which is not deployed.
+   */
+  protected boolean isTransferableField(MetaField metaField) {
+    Class<?> modelClass;
+    try {
+      modelClass = Class.forName(metaField.getMetaModel().getFullName());
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+    Property property = Mapper.of(modelClass).getProperty(metaField.getName());
+    return property != null && !property.isTransient() && !property.isVirtual();
+  }
+
+  /**
+   * Returns every field referencing a product. Objects without a table of their own are left out:
+   * they are stored in the table of the object they extend, which is processed on its own.
+   */
+  protected List<MetaField> getProductReferenceFields() {
+    return metaFieldRepository
+        .all()
+        .filter(
+            "self.relationship IN ('ManyToOne', 'OneToOne', 'ManyToMany') "
+                + "AND self.typeName = :typeName "
+                + "AND self.metaModel.tableName IS NOT NULL")
+        .bind("typeName", Product.class.getSimpleName())
+        .order("metaModel.name")
+        .order("name")
+        .fetch();
+  }
+
+  /**
+   * Returns the name of the objects the product itself has a many-to-many with (hazard phrases,
+   * characteristics...). Those many-to-many describe the product: they are not transferred.
+   */
+  protected Set<String> getProductAttributeModelNames() {
+    return metaFieldRepository
+        .all()
+        .filter("self.relationship = 'ManyToMany' AND self.metaModel.name = :modelName")
+        .bind("modelName", Product.class.getSimpleName())
+        .fetch()
+        .stream()
+        .map(MetaField::getTypeName)
+        .collect(Collectors.toSet());
+  }
+
+  protected void transferManyToOneReferences(
+      MetaField metaField,
+      Product absorbedProduct,
+      Product keptProduct,
+      ProductMergeResult result) {
+    int count =
+        JPA.em()
+            .createQuery(
+                String.format(
+                    "UPDATE %s self SET self.%s = :keptProduct WHERE self.%s = :absorbedProduct",
+                    metaField.getMetaModel().getFullName(),
+                    metaField.getName(),
+                    metaField.getName()))
+            .setParameter("keptProduct", keptProduct)
+            .setParameter("absorbedProduct", absorbedProduct)
+            .executeUpdate();
+    result.addTransferredReferences(getReferenceName(metaField), count);
+  }
+
+  /**
+   * A one-to-one reference is unique: it is transferred only when the kept product does not have
+   * one already, otherwise it stays on the absorbed product and a warning is written in the log.
+   */
+  protected void transferOneToOneReference(
+      MetaField metaField,
+      Product absorbedProduct,
+      Product keptProduct,
+      ProductMergeResult result) {
+    if (countReferences(metaField, absorbedProduct) == 0) {
+      return;
+    }
+    if (countReferences(metaField, keptProduct) > 0) {
+      result.addWarning(
+          String.format(
+              I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_LOG_REFERENCE_NOT_TRANSFERRED),
+              getReferenceName(metaField)));
+      return;
+    }
+    transferManyToOneReferences(metaField, absorbedProduct, keptProduct, result);
+  }
+
+  protected long countReferences(MetaField metaField, Product product) {
+    return JPA.em()
+        .createQuery(
+            String.format(
+                "SELECT COUNT(self) FROM %s self WHERE self.%s = :product",
+                metaField.getMetaModel().getFullName(), metaField.getName()),
+            Long.class)
+        .setParameter("product", product)
+        .getSingleResult();
+  }
+
+  @SuppressWarnings("unchecked")
+  protected void transferManyToManyReferences(
+      MetaField metaField,
+      Product absorbedProduct,
+      Product keptProduct,
+      ProductMergeResult result) {
+    String fieldName = metaField.getName();
+    List<?> holderList =
+        JPA.em()
+            .createQuery(
+                String.format(
+                    "SELECT self FROM %s self LEFT JOIN self.%s AS product "
+                        + "WHERE product = :absorbedProduct",
+                    metaField.getMetaModel().getFullName(), fieldName))
+            .setParameter("absorbedProduct", absorbedProduct)
+            .getResultList();
+
+    for (Object holder : holderList) {
+      Set<Object> productSet = (Set<Object>) Mapper.of(holder.getClass()).get(holder, fieldName);
+      if (productSet == null) {
+        continue;
+      }
+      // the kept product may already be in the set: it is a set, it stays there only once
+      productSet.remove(absorbedProduct);
+      productSet.add(keptProduct);
+    }
+    result.addTransferredReferences(getReferenceName(metaField), holderList.size());
+  }
+
+  /**
+   * Moves the files of the absorbed product to the kept product. The messages and the followers are
+   * not moved: they are the history of the absorbed product.
+   */
+  protected void transferDmsFiles(
+      Product absorbedProduct, Product keptProduct, ProductMergeResult result) {
+    DMSFile absorbedProductHome = dmsFileRepository.findHomeByRelated(absorbedProduct);
+    DMSFile keptProductHome = dmsFileRepository.findHomeByRelated(keptProduct);
+    Long absorbedProductHomeId = -1L;
+
+    if (absorbedProductHome != null) {
+      if (keptProductHome == null) {
+        // the kept product has no folder yet: the folder of the absorbed product becomes its own
+        absorbedProductHome.setFileName(keptProduct.getFullName());
+      } else {
+        // both products have a folder: the content is moved, the emptied folder of the absorbed
+        // product is left on the absorbed product
+        dmsFileRepository
+            .all()
+            .filter("self.parent = :parent")
+            .bind("parent", absorbedProductHome)
+            .fetch()
+            .forEach(dmsFile -> dmsFile.setParent(keptProductHome));
+        absorbedProductHomeId = absorbedProductHome.getId();
+      }
+      JPA.em().flush();
+    }
+
+    int count =
+        JPA.em()
+            .createQuery(
+                "UPDATE com.axelor.dms.db.DMSFile self SET self.relatedId = :keptProductId "
+                    + "WHERE self.relatedModel = :relatedModel "
+                    + "AND self.relatedId = :absorbedProductId "
+                    + "AND self.id != :absorbedProductHomeId")
+            .setParameter("keptProductId", keptProduct.getId())
+            .setParameter("relatedModel", Product.class.getName())
+            .setParameter("absorbedProductId", absorbedProduct.getId())
+            .setParameter("absorbedProductHomeId", absorbedProductHomeId)
+            .executeUpdate();
+    result.addTransferredReferences(DMSFile.class.getSimpleName(), count);
+  }
+
+  /**
+   * Re-points the custom fields referencing the absorbed product to the kept product, by updating
+   * the JSON attributes of the objects holding them.
+   */
+  protected void transferCustomFields(
+      Product absorbedProduct, Product keptProduct, ProductMergeResult result) {
+    // the JSON functions used here are not available on this database
+    if (DBHelper.isHSQL()) {
+      return;
+    }
+
+    Property nameField = Mapper.of(Product.class).getNameField();
+    if (nameField == null) {
+      return;
+    }
+
+    for (MetaJsonField metaJsonField : getProductCustomFields()) {
+      if (metaJsonField.getModel() == null || metaJsonField.getModelField() == null) {
+        continue;
+      }
+      if (!"many-to-one".equals(metaJsonField.getType())) {
+        result.addWarning(
+            String.format(
+                I18n.get(
+                    SupplychainExceptionMessage.PRODUCT_MERGE_LOG_CUSTOM_FIELD_NOT_TRANSFERRED),
+                metaJsonField.getName(),
+                metaJsonField.getModel()));
+        continue;
+      }
+
+      // the displayed name is updated first: the identifier is the one selecting the records
+      updateCustomFieldReference(
+          metaJsonField,
+          metaJsonField.getName() + "." + nameField.getName(),
+          keptProduct.getFullName(),
+          absorbedProduct.getId());
+      int count =
+          updateCustomFieldReference(
+              metaJsonField,
+              metaJsonField.getName() + ".id",
+              keptProduct.getId(),
+              absorbedProduct.getId());
+      result.addTransferredReferences(
+          metaJsonField.getModel() + "." + metaJsonField.getName(), count);
+    }
+  }
+
+  protected List<MetaJsonField> getProductCustomFields() {
+    return metaJsonFieldRepository
+        .all()
+        .filter("self.targetModel = :targetModel")
+        .bind("targetModel", Product.class.getName())
+        .order("model")
+        .order("name")
+        .fetch();
+  }
+
+  protected int updateCustomFieldReference(
+      MetaJsonField metaJsonField, String path, Object value, Long absorbedProductId) {
+    boolean isCustomModel = metaJsonField.getJsonModel() != null;
+    Query query =
+        JPA.em()
+            .createQuery(
+                String.format(
+                    "UPDATE %s self SET self.%s = json_set(self.%s, '%s', :value) "
+                        + "WHERE json_extract(self.%s, '%s', 'id') = :absorbedProductId%s",
+                    metaJsonField.getModel(),
+                    metaJsonField.getModelField(),
+                    metaJsonField.getModelField(),
+                    path,
+                    metaJsonField.getModelField(),
+                    metaJsonField.getName(),
+                    isCustomModel ? " AND self.jsonModel = :jsonModel" : ""))
+            .setParameter("value", value)
+            .setParameter("absorbedProductId", absorbedProductId.toString());
+    if (isCustomModel) {
+      query.setParameter("jsonModel", metaJsonField.getJsonModel().getName());
+    }
+    return query.executeUpdate();
+  }
+
+  /**
+   * Returns the name of the objects whose references stay on the absorbed product, for a legal or a
+   * technical reason.
+   *
+   * <p>The names are returned as text so that a module can exclude an object which is not available
+   * on the supplychain classpath, as the timesheet lines below.
+   */
+  protected Set<String> getExcludedModels() {
+    return new HashSet<>(
+        Arrays.asList(
+            // an issued accounting document keeps the product it was issued with
+            InvoiceLine.class.getName(),
+            // a timesheet line keeps the product it was entered with, and has a unique constraint
+            // on it: the human resource module is not on the supplychain classpath, hence the text
+            "com.axelor.apps.hr.db.TimesheetLine",
+            // unique constraint on (product, company, label)
+            StockHistoryLine.class.getName(),
+            // the values of the absorbed product for a company, unique constraint on (product,
+            // company)
+            ProductCompany.class.getName(),
+            // the stock rules configured for the absorbed product
+            StockRules.class.getName(),
+            // the previous merges are a history and are not rewritten
+            ProductMergeLog.class.getName()));
+  }
+
+  /** Returns the "Object.field" references which stay on the absorbed product. */
+  protected Set<String> getExcludedFields() {
+    // a product merged into the absorbed product keeps pointing to it: the merge log and the
+    // archived products give the whole history
+    return new HashSet<>(Collections.singletonList(Product.class.getName() + ".mergedIntoProduct"));
+  }
+
+  /**
+   * Returns the name of the objects transferred by a dedicated treatment, because moving their
+   * references is not enough: quantities have to be added up, unique sequences have to be renamed.
+   */
+  protected Set<String> getSpecificallyHandledModels() {
+    return new HashSet<>(
+        Arrays.asList(
+            SupplierCatalog.class.getName(),
+            StockLocationLine.class.getName(),
+            TrackingNumber.class.getName()));
+  }
+
+  /**
+   * Called once every reference of the absorbed product has been transferred to the kept product.
+   *
+   * <p>Modules extending the product merge add their own treatments by overriding this method.
+   */
+  protected void postReferenceTransfer(
+      Product absorbedProduct, Product keptProduct, ProductMergeResult result)
+      throws AxelorException {}
+
+  protected String getReferenceName(MetaField metaField) {
+    return metaField.getMetaModel().getName() + "." + metaField.getName();
   }
 
   protected String getNames(Stream<String> nameStream) {
