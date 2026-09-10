@@ -188,6 +188,10 @@ import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerLinkSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.ProductMergeService;
+import com.axelor.apps.supplychain.service.ProductMergeServiceImpl;
+import com.axelor.apps.supplychain.service.ProductMergeStockService;
+import com.axelor.apps.supplychain.service.ProductMergeStockServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockAnalysisService;
 import com.axelor.apps.supplychain.service.ProductStockAnalysisServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
@@ -683,5 +687,7 @@ public class SupplychainModule extends AxelorModule {
     bind(ProductStockAnalysisService.class).to(ProductStockAnalysisServiceImpl.class);
     bind(DepRateAggregationService.class).to(DepRateAggregationServiceImpl.class);
     bind(ProductServicePurchaseImpl.class).to(ProductSupplychainServiceImpl.class);
+    bind(ProductMergeService.class).to(ProductMergeServiceImpl.class);
+    bind(ProductMergeStockService.class).to(ProductMergeStockServiceImpl.class);
   }
 }

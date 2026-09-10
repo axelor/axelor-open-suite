@@ -39,6 +39,10 @@
     <decimal name="revaluationRate" title="Revaluation rate" precision="20" scale="10"
       massUpdate="true"/>
 
+    <!-- Filled when this product has been absorbed by another product through a merge -->
+    <many-to-one name="mergedIntoProduct" ref="com.axelor.apps.base.db.Product"
+      title="Merged into product"/>
+
     <extra-code>
     	<![CDATA[
     		public static final int PACKAGING_GROUP_I = 1;

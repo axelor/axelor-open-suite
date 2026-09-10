@@ -314,6 +314,16 @@
     <view type="form" name="un-code-form"/>
   </action-view>
 
+  <menuitem name="supplychain-product-merge-log-all" parent="referential-root-product-root"
+    title="Product merge logs" action="supplychain.product.merge.log.all" order="400"
+    if="__config__.app.isApp('supplychain')"/>
+
+  <action-view name="supplychain.product.merge.log.all" title="Product merge logs"
+    model="com.axelor.apps.supplychain.db.ProductMergeLog">
+    <view type="grid" name="product-merge-log-grid"/>
+    <view type="form" name="product-merge-log-form"/>
+  </action-view>
+
   <!-- Stock cost review menus -->
   <menuitem name="stock-cost-review" parent="stock-root" title="Stock revaluation"
     order="1050"/>

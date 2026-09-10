@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <form name="product-merge-wizard-form" title="Product merge"
+    model="com.axelor.utils.db.Wizard" canNew="false" canSave="false" canCopy="false"
+    canDelete="false">
+    <panel name="mainPanel">
+      <field name="$absorbedProduct" title="Product to absorb" type="many-to-one"
+        target="com.axelor.apps.base.db.Product" form-view="product-form" grid-view="product-grid"
+        domain="self.mergedIntoProduct IS NULL" required="true" canNew="false" canEdit="false"
+        colSpan="12"/>
+      <field name="$keptProduct" title="Product to keep" type="many-to-one"
+        target="com.axelor.apps.base.db.Product" form-view="product-form" grid-view="product-grid"
+        domain="self.mergedIntoProduct IS NULL" required="true" canNew="false" canEdit="false"
+        colSpan="12"/>
+    </panel>
+    <panel name="actionsPanel">
+      <button name="mergeBtn" title="Merge products" colSpan="4"
+        showIf="$absorbedProduct &amp;&amp; $keptProduct"
+        onClick="action-supplychain-product-merge-validate-merge,action-supplychain-method-product-merge"/>
+    </panel>
+  </form>
+
+  <action-method name="action-supplychain-method-product-merge-open">
+    <call class="com.axelor.apps.supplychain.web.ProductMergeController" method="openWizard"/>
+  </action-method>
+
+  <action-validate name="action-supplychain-product-merge-validate-merge">
+    <alert
+      message="The product to absorb will be merged into the product to keep. This operation cannot be undone. Do you want to continue?"/>
+  </action-validate>
+
+  <action-method name="action-supplychain-method-product-merge">
+    <call class="com.axelor.apps.supplychain.web.ProductMergeController" method="merge"/>
+  </action-method>
+
+</object-views>

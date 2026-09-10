@@ -492,4 +492,95 @@ public final class SupplychainExceptionMessage {
 
   public static final String DEPRECIATION_IMPORT_FAIL_ERROR = /*$$(*/
       "Failed to load depreciation rate import configuration." /*)*/;
+
+  /** Product merge */
+  public static final String PRODUCT_MERGE_APP_NOT_INSTALLED = /*$$(*/
+      "The Supplychain app must be installed to merge products." /*)*/;
+
+  public static final String PRODUCT_MERGE_NO_AUTHORIZED_USER = /*$$(*/
+      "No user is authorized to merge products. Please fill in the authorized users in the Supplychain app configuration." /*)*/;
+
+  public static final String PRODUCT_MERGE_USER_NOT_AUTHORIZED = /*$$(*/
+      "You are not authorized to merge products. Please contact one of the following users: %s" /*)*/;
+
+  public static final String PRODUCT_MERGE_MISSING_PRODUCT = /*$$(*/
+      "Please select the product to absorb and the product to keep." /*)*/;
+
+  public static final String PRODUCT_MERGE_BLOCKED = /*$$(*/
+      "The product %s cannot be merged into the product %s:" /*)*/;
+
+  public static final String PRODUCT_MERGE_SAME_PRODUCT = /*$$(*/
+      "The product to absorb and the product to keep must be different." /*)*/;
+
+  public static final String PRODUCT_MERGE_ARCHIVED_PRODUCT = /*$$(*/
+      "The product %s is archived." /*)*/;
+
+  public static final String PRODUCT_MERGE_ALREADY_MERGED = /*$$(*/
+      "The product %s has already been merged into the product %s." /*)*/;
+
+  public static final String PRODUCT_MERGE_DIFFERENT_UNIT = /*$$(*/
+      "The two products must have the same unit." /*)*/;
+
+  public static final String PRODUCT_MERGE_DIFFERENT_SALES_UNIT = /*$$(*/
+      "The two products must have the same sales unit." /*)*/;
+
+  public static final String PRODUCT_MERGE_DIFFERENT_PURCHASES_UNIT = /*$$(*/
+      "The two products must have the same purchase unit." /*)*/;
+
+  public static final String PRODUCT_MERGE_DIFFERENT_TYPE = /*$$(*/
+      "The two products must have the same type." /*)*/;
+
+  public static final String PRODUCT_MERGE_DIFFERENT_SUB_TYPE = /*$$(*/
+      "The two products must have the same subtype." /*)*/;
+
+  public static final String PRODUCT_MERGE_PRODUCT_MODEL = /*$$(*/
+      "The product %s is a product model." /*)*/;
+
+  public static final String PRODUCT_MERGE_PRODUCT_VARIANT = /*$$(*/
+      "The product %s is a variant of the product model %s." /*)*/;
+
+  public static final String PRODUCT_MERGE_PRODUCT_VARIANT_NO_MODEL = /*$$(*/
+      "The product %s is a product variant." /*)*/;
+
+  public static final String PRODUCT_MERGE_PRODUCT_WITH_VARIANTS = /*$$(*/
+      "The product %s has product variants." /*)*/;
+
+  public static final String PRODUCT_MERGE_MRP_IN_PROGRESS = /*$$(*/
+      "A MRP calculation is in progress." /*)*/;
+
+  public static final String PRODUCT_MERGE_SUCCESS = /*$$(*/
+      "The product %s has been merged into the product %s. The details of the operation are available in the product merge log." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_TRANSFERRED_REFERENCES = /*$$(*/
+      "%s: %s reference(s) transferred." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_SUPPLIER_CATALOG_KEPT = /*$$(*/
+      "Supplier catalog kept on the absorbed product: %s (%s)." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_REFERENCE_NOT_TRANSFERRED = /*$$(*/
+      "%s: reference kept on the absorbed product." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_CUSTOM_FIELD_NOT_TRANSFERRED = /*$$(*/
+      "Custom field %s: multiple values not transferred, to update manually." /*)*/;
+
+  public static final String PRODUCT_MERGE_DIFFERENT_STOCK_LOCATION_LINE_UNIT = /*$$(*/
+      "The stock of the location %s cannot be merged: the two products do not have the same unit on this location." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_TRACKING_NUMBER_RENAMED = /*$$(*/
+      "Tracking number %s renamed to %s." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_STOCK_TRANSFERRED = /*$$(*/
+      "Stock location %s: quantity %s added (future %s), average price %s -> %s." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_RESERVED_QTY_RECOMPUTED = /*$$(*/
+      "Stock location %s: allocated quantity %s -> %s, requested quantity %s -> %s." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_AVG_PRICE_RECOMPUTED = /*$$(*/
+      "Average price of the product to keep recomputed: %s." /*)*/;
+
+  public static final String PRODUCT_MERGE_KEPT_PRODUCT_NOT_STOCK_MANAGED = /*$$(*/
+      "The product to keep is not managed in stock, the stock of the product to absorb cannot be transferred to it." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_DETAIL_LINE_NOT_TRANSFERRED = /*$$(*/
+      "%s stock detail line(s) without tracking number kept on the absorbed product." /*)*/;
 }

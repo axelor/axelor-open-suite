@@ -3,6 +3,39 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
+  <grid id="supplychain-product-grid" name="product-grid" title="Products"
+    model="com.axelor.apps.base.db.Product" extension="true">
+    <extend target="//button[@name='checkDuplicateBtn']">
+      <insert position="after">
+        <button name="productMergeBtn" title="Merge products"
+          onClick="action-supplychain-method-product-merge-open"
+          if="__config__.app.isApp('supplychain')"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <grid id="supplychain-product-purchase-grid" name="product-purchase-grid" title="Products"
+    model="com.axelor.apps.base.db.Product" extension="true">
+    <extend target="//button[@name='checkDuplicateBtn']">
+      <insert position="after">
+        <button name="productMergeBtn" title="Merge products"
+          onClick="action-supplychain-method-product-merge-open"
+          if="__config__.app.isApp('supplychain')"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <grid id="supplychain-product-production-stock-grid" name="product-production-stock-grid"
+    title="Products" model="com.axelor.apps.base.db.Product" extension="true">
+    <extend target="//button[@name='checkDuplicateBtn']">
+      <insert position="after">
+        <button name="productMergeBtn" title="Merge products"
+          onClick="action-supplychain-method-product-merge-open"
+          if="__config__.app.isApp('supplychain')"/>
+      </insert>
+    </extend>
+  </grid>
+
   <form name="supplychain-stock-details-by-product-form" title="Stock details by product"
     model="com.axelor.utils.db.Wizard" canSave="false" width="large" canNew="false" canCopy="false"
     onNew="action-group-stock-details-by-product-on-new">
@@ -110,6 +143,14 @@
             readonlyIf="autoAssignStockRotationCategory"/>
           <field name="autoAssignStockRotationCategory" colSpan="4" widget="boolean-switch"/>
           <field name="revaluationRate" colSpan="4" x-scale="2" readonly="true"/>
+        </panel>
+      </insert>
+    </extend>
+    <extend target="panel-tabs[@name='productSpecificAttributes']">
+      <insert position="inside">
+        <panel name="productMergePanel" title="Product merge" showIf="mergedIntoProduct">
+          <field name="mergedIntoProduct" colSpan="4" readonly="true" canNew="false"
+            canEdit="false" form-view="product-form" grid-view="product-grid"/>
         </panel>
       </insert>
     </extend>
