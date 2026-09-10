@@ -26,6 +26,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -35,6 +36,7 @@ import com.axelor.apps.quality.db.ControlEntry;
 import com.axelor.apps.quality.db.ControlEntrySample;
 import com.axelor.apps.quality.db.QIDetection;
 import com.axelor.apps.quality.db.QIIdentification;
+import com.axelor.apps.quality.db.QualityConfig;
 import com.axelor.apps.quality.db.repo.ControlEntrySampleRepository;
 import com.axelor.apps.quality.db.repo.QIDetectionRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -260,6 +262,40 @@ class TestQualityImprovementPrefillServiceImpl {
   }
 
   @Test
+  void receptionLineDefaultDetectionIsTheConfiguredReceptionDetection() {
+    StockMoveLine stockMoveLine =
+        stockMoveLine(StockMoveRepository.TYPE_INCOMING, partner("Supplier"), BigDecimal.ONE);
+    QIDetection receptionQiDetection = detection(QIDetectionRepository.ORIGIN_SUPPLIER);
+    stockMoveLine.getStockMove().setCompany(companyWithReceptionDetection(receptionQiDetection));
+    mockDetections(List.of(supplierDetection));
+
+    assertSame(receptionQiDetection, service.getDefaultDetection(stockMoveLine));
+  }
+
+  @Test
+  void receptionLineDefaultDetectionFallsBackToTheSingleSupplierCandidate() {
+    StockMoveLine stockMoveLine =
+        stockMoveLine(StockMoveRepository.TYPE_INCOMING, partner("Supplier"), BigDecimal.ONE);
+    stockMoveLine.getStockMove().setCompany(companyWithReceptionDetection(null));
+    mockDetections(List.of(supplierDetection));
+
+    assertSame(supplierDetection, service.getDefaultDetection(stockMoveLine));
+  }
+
+  @Test
+  void deliveryLineDefaultDetectionIgnoresTheReceptionDetection() {
+    StockMoveLine stockMoveLine =
+        stockMoveLine(StockMoveRepository.TYPE_OUTGOING, partner("Customer"), BigDecimal.ONE);
+    stockMoveLine
+        .getStockMove()
+        .setCompany(
+            companyWithReceptionDetection(detection(QIDetectionRepository.ORIGIN_SUPPLIER)));
+    mockDetections(List.of(customerDetection));
+
+    assertSame(customerDetection, service.getDefaultDetection(stockMoveLine));
+  }
+
+  @Test
   void customerDetectionOnReceptionLineLeavesSupplierChainEmpty() {
     PurchaseOrder purchaseOrder = new PurchaseOrder();
     purchaseOrder.setSupplierPartner(partner("Supplier"));
@@ -384,6 +420,14 @@ class TestQualityImprovementPrefillServiceImpl {
     ControlEntrySample controlEntrySample = new ControlEntrySample();
     controlEntrySample.setResultSelect(resultSelect);
     return controlEntrySample;
+  }
+
+  private Company companyWithReceptionDetection(QIDetection receptionQiDetection) {
+    Company company = new Company();
+    QualityConfig qualityConfig = new QualityConfig();
+    qualityConfig.setReceptionQiDetection(receptionQiDetection);
+    company.setQualityConfig(qualityConfig);
+    return company;
   }
 
   private QIDetection detection(int origin) {

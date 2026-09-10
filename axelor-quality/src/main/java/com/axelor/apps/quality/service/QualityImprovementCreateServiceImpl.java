@@ -19,6 +19,7 @@
 package com.axelor.apps.quality.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.quality.db.ControlEntry;
 import com.axelor.apps.quality.db.QIDetection;
 import com.axelor.apps.quality.db.QIIdentification;
@@ -26,6 +27,7 @@ import com.axelor.apps.quality.db.QIResolution;
 import com.axelor.apps.quality.db.QIResolutionDefault;
 import com.axelor.apps.quality.db.QualityImprovement;
 import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.auth.AuthUtils;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -84,6 +86,32 @@ public class QualityImprovementCreateServiceImpl implements QualityImprovementCr
 
   @Transactional(rollbackOn = Exception.class)
   @Override
+  public QualityImprovement createQualityImprovementFromStockMoveLine(
+      StockMoveLine stockMoveLine,
+      QIDetection qiDetection,
+      int type,
+      boolean isAutomaticallyCreated)
+      throws AxelorException {
+
+    QualityImprovement qi = new QualityImprovement();
+    setDefaultValues(qi, stockMoveLine.getStockMove().getCompany());
+    qi.setQiDetection(qiDetection);
+    qi.setType(type);
+    qi.setIsAutomaticallyCreated(isAutomaticallyCreated);
+    qi = qualityImprovementRepository.save(qi);
+
+    QIIdentification qiIdentification = qi.getQiIdentification();
+    qualityImprovementPrefillService.fillFromStockMoveLine(
+        qiIdentification, stockMoveLine, qiDetection);
+    if (type == QualityImprovementRepository.TYPE_PRODUCT) {
+      qiIdentification.setNonConformingQuantity(stockMoveLine.getRealQty());
+    }
+    qiIdentificationService.updateQIIdentification(qiIdentification);
+    return qi;
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  @Override
   public QualityImprovement createQualityImprovement(
       QualityImprovement qualityImprovement,
       QIIdentification qiIdentification,
@@ -111,7 +139,12 @@ public class QualityImprovementCreateServiceImpl implements QualityImprovementCr
   }
 
   protected void setDefaultValues(QualityImprovement qualityImprovement) throws AxelorException {
-    qualityImprovement.setCompany(AuthUtils.getUser().getActiveCompany());
+    setDefaultValues(qualityImprovement, AuthUtils.getUser().getActiveCompany());
+  }
+
+  protected void setDefaultValues(QualityImprovement qualityImprovement, Company company)
+      throws AxelorException {
+    qualityImprovement.setCompany(company);
     qualityImprovement.setQiStatus(qualityImprovementService.getDefaultQIStatus());
   }
 }
