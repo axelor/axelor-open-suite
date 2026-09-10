@@ -73,6 +73,8 @@ import com.axelor.apps.quality.service.QualityImprovementCheckValuesService;
 import com.axelor.apps.quality.service.QualityImprovementCheckValuesServiceImpl;
 import com.axelor.apps.quality.service.QualityImprovementCreateService;
 import com.axelor.apps.quality.service.QualityImprovementCreateServiceImpl;
+import com.axelor.apps.quality.service.QualityImprovementPrefillService;
+import com.axelor.apps.quality.service.QualityImprovementPrefillServiceImpl;
 import com.axelor.apps.quality.service.QualityImprovementService;
 import com.axelor.apps.quality.service.QualityImprovementServiceImpl;
 import com.axelor.apps.quality.service.QualityImprovementUpdateService;
@@ -126,6 +128,7 @@ public class QualityModule extends AxelorModule {
     bind(ControlPlanFrequencyComputeNameService.class)
         .to(ControlPlanFrequencyComputeNameServiceImpl.class);
     bind(QualityImprovementCreateService.class).to(QualityImprovementCreateServiceImpl.class);
+    bind(QualityImprovementPrefillService.class).to(QualityImprovementPrefillServiceImpl.class);
     bind(QualityImprovementUpdateService.class).to(QualityImprovementUpdateServiceImpl.class);
     bind(QualityImprovementCreateAPIService.class).to(QualityImprovementCreateAPIServiceImpl.class);
     bind(QualityImprovementParseService.class).to(QualityImprovementParseServiceImpl.class);
