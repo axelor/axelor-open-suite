@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.quality.db.QIIdentification;
 import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
 import com.axelor.apps.quality.service.QualityImprovementCheckValuesService;
@@ -28,18 +29,27 @@ import jakarta.inject.Inject;
 public class QualityImprovementUpdateProductionServiceImpl
     extends QualityImprovementUpdateServiceImpl {
 
+  protected final AppBaseService appBaseService;
+
   @Inject
   public QualityImprovementUpdateProductionServiceImpl(
       QualityImprovementRepository qualityImprovementRepository,
       QualityImprovementCheckValuesService qualityImprovementCheckValuesService,
-      MetaFiles metaFiles) {
+      MetaFiles metaFiles,
+      AppBaseService appBaseService) {
     super(qualityImprovementRepository, qualityImprovementCheckValuesService, metaFiles);
+    this.appBaseService = appBaseService;
   }
 
   @Override
   protected void updateQIIdentification(
       QIIdentification baseQiIdentification, QIIdentification newQiIdentification) {
     super.updateQIIdentification(baseQiIdentification, newQiIdentification);
+
+    if (!appBaseService.isApp("production")) {
+      return;
+    }
+
     baseQiIdentification.setManufOrder(newQiIdentification.getManufOrder());
     baseQiIdentification.setOperationOrder(newQiIdentification.getOperationOrder());
   }

@@ -67,6 +67,11 @@ public class SaleOrderLineDummyProductionServiceImpl
   public Map<String, Object> getOnLoadDummies(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     Map<String, Object> dummyFields = super.getOnLoadDummies(saleOrderLine, saleOrder);
+
+    if (!appBaseService.isApp("production")) {
+      return dummyFields;
+    }
+
     initProductionInformation(saleOrderLine)
         .ifPresent(s -> dummyFields.put(DUMMY_PRODUCTION_STATUS, s.getValue()));
     return dummyFields;

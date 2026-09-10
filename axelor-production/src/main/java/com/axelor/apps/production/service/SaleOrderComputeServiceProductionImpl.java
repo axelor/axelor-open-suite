@@ -58,6 +58,10 @@ public class SaleOrderComputeServiceProductionImpl extends SaleOrderComputeServi
   @Override
   public SaleOrder _computeSaleOrderLineList(SaleOrder saleOrder) throws AxelorException {
 
+    if (!appSaleService.isApp("production")) {
+      return super._computeSaleOrderLineList(saleOrder);
+    }
+
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
 
     if (CollectionUtils.isEmpty(saleOrderLineList)) {

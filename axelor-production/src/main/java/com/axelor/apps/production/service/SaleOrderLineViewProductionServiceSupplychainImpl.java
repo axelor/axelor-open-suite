@@ -60,6 +60,11 @@ public class SaleOrderLineViewProductionServiceSupplychainImpl
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Map<String, Object>> attrs =
         super.getProductOnChangeAttrs(saleOrderLine, saleOrder);
+
+    if (!appBaseService.isApp("production")) {
+      return attrs;
+    }
+
     attrs.putAll(saleOrderLineViewProductionService.hideBomAndProdProcess(saleOrderLine));
     return attrs;
   }
