@@ -92,7 +92,8 @@
 
       <panel-dashlet name="inventoryLineListPanelDashlet" title="Inventory lines"
         height="800" readonlyIf="statusSelect >= 5 || stockLocation == null"
-        action="action-inventory-line-view-dashlet" canNew="id" canDelete="true" showIf="id"/>
+        action="action-inventory-line-view-dashlet" canNew="id" canDelete="true" canSearch="true"
+        showIf="id"/>
 
       <panel name="filterPanel" title="Filters" hideIf="statusSelect &lt; 2" readonly="true">
         <field name="productFamily" grid-view="product-family-grid"
