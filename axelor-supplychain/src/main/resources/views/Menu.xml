@@ -314,8 +314,8 @@
     <view type="form" name="un-code-form"/>
   </action-view>
 
-  <menuitem name="supplychain-product-merge-log-all" parent="referential-conf"
-    title="Product merge logs" action="supplychain.product.merge.log.all" order="1750"
+  <menuitem name="supplychain-product-merge-log-all" parent="referential-root-product-root"
+    title="Product merge logs" action="supplychain.product.merge.log.all" order="400"
     if="__config__.app.isApp('supplychain')"/>
 
   <action-view name="supplychain.product.merge.log.all" title="Product merge logs"

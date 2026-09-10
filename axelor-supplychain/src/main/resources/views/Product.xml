@@ -146,6 +146,14 @@
         </panel>
       </insert>
     </extend>
+    <extend target="panel-tabs[@name='productSpecificAttributes']">
+      <insert position="inside">
+        <panel name="productMergePanel" title="Product merge" showIf="mergedIntoProduct">
+          <field name="mergedIntoProduct" colSpan="4" readonly="true" canNew="false"
+            canEdit="false" form-view="product-form" grid-view="product-grid"/>
+        </panel>
+      </insert>
+    </extend>
     <extend target="//panel-dashlet[@name='stockHistoryLinePanel']">
       <insert position="after">
         <panel-dashlet action="action-stock-view-stock-history-line"

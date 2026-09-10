@@ -65,8 +65,11 @@ public class ProductMergeController {
       response.setInfo(
           String.format(
               I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_SUCCESS),
-              absorbedProduct.getFullName(),
-              keptProduct.getFullName()));
+              absorbedProduct.getCode(),
+              keptProduct.getCode()));
+      // the wizard has done its job: closing it reloads the grid, where the absorbed product
+      // does not appear any more
+      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

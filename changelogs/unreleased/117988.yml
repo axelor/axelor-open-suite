@@ -6,4 +6,7 @@ developer: |
   configuration AppSupplychain.productMergeAuthorizedUserSet, which lists the users
   allowed to run a product merge.
 
-  New menu entry "Product merge logs" under Referential > Configuration.
+  New menu entry "Product merge logs" under Referential > Products.
+
+  The absorbed product shows a "Product merge" tab with the link to the product it
+  was merged into. The tab is hidden on products that were never merged.
