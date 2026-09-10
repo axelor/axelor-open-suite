@@ -33,6 +33,7 @@ import java.util.Map;
 public class ProductMergeResult {
 
   protected final Map<String, Long> transferredReferenceMap = new LinkedHashMap<>();
+  protected final List<String> informationList = new ArrayList<>();
   protected final List<String> warningList = new ArrayList<>();
 
   /**
@@ -47,7 +48,12 @@ public class ProductMergeResult {
     transferredReferenceMap.merge(reference, count, Long::sum);
   }
 
-  /** Records something the user has to know about, without blocking the merge. */
+  /** Records what the merge did, for the merge log. */
+  public void addInformation(String information) {
+    informationList.add(information);
+  }
+
+  /** Records something the user has to look at, without blocking the merge. */
   public void addWarning(String warning) {
     warningList.add(warning);
   }
@@ -56,11 +62,18 @@ public class ProductMergeResult {
     return Collections.unmodifiableMap(transferredReferenceMap);
   }
 
+  public List<String> getInformationList() {
+    return Collections.unmodifiableList(informationList);
+  }
+
   public List<String> getWarningList() {
     return Collections.unmodifiableList(warningList);
   }
 
-  /** Returns the content of the merge log: what has been transferred, then the warnings. */
+  /**
+   * Returns the content of the merge log: what has been transferred, what the merge did, then the
+   * warnings.
+   */
   public List<String> getLogLines() {
     List<String> logLines = new ArrayList<>();
     transferredReferenceMap.forEach(
@@ -70,6 +83,7 @@ public class ProductMergeResult {
                     I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_LOG_TRANSFERRED_REFERENCES),
                     reference,
                     count)));
+    logLines.addAll(informationList);
     logLines.addAll(warningList);
     return logLines;
   }

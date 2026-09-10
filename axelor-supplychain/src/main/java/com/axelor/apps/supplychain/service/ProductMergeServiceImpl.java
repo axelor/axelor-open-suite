@@ -69,6 +69,7 @@ public class ProductMergeServiceImpl implements ProductMergeService {
   protected final MetaJsonFieldRepository metaJsonFieldRepository;
   protected final DMSFileRepository dmsFileRepository;
   protected final SupplierCatalogRepository supplierCatalogRepository;
+  protected final ProductMergeStockService productMergeStockService;
 
   @Inject
   public ProductMergeServiceImpl(
@@ -78,7 +79,8 @@ public class ProductMergeServiceImpl implements ProductMergeService {
       MetaFieldRepository metaFieldRepository,
       MetaJsonFieldRepository metaJsonFieldRepository,
       DMSFileRepository dmsFileRepository,
-      SupplierCatalogRepository supplierCatalogRepository) {
+      SupplierCatalogRepository supplierCatalogRepository,
+      ProductMergeStockService productMergeStockService) {
     this.appSupplychainService = appSupplychainService;
     this.productRepository = productRepository;
     this.mrpRepository = mrpRepository;
@@ -86,6 +88,7 @@ public class ProductMergeServiceImpl implements ProductMergeService {
     this.metaJsonFieldRepository = metaJsonFieldRepository;
     this.dmsFileRepository = dmsFileRepository;
     this.supplierCatalogRepository = supplierCatalogRepository;
+    this.productMergeStockService = productMergeStockService;
   }
 
   @Override
@@ -133,6 +136,7 @@ public class ProductMergeServiceImpl implements ProductMergeService {
     transferDmsFiles(absorbedProduct, keptProduct, result);
     transferCustomFields(absorbedProduct, keptProduct, result);
     postReferenceTransfer(absorbedProduct, keptProduct, result);
+    productMergeStockService.transferStock(absorbedProduct, keptProduct, result);
     return result;
   }
 
@@ -155,6 +159,8 @@ public class ProductMergeServiceImpl implements ProductMergeService {
     blockingChecks.addAll(getTypeChecks(absorbedProduct, keptProduct));
     blockingChecks.addAll(getVariantChecks(absorbedProduct, keptProduct));
     blockingChecks.addAll(getMrpChecks());
+    blockingChecks.addAll(
+        productMergeStockService.getStockBlockingChecks(absorbedProduct, keptProduct));
 
     return blockingChecks;
   }

@@ -550,4 +550,19 @@ public final class SupplychainExceptionMessage {
 
   public static final String PRODUCT_MERGE_LOG_CUSTOM_FIELD_NOT_TRANSFERRED = /*$$(*/
       "Custom field %s of the object %s: multiple-value custom fields are not transferred, please update them manually." /*)*/;
+
+  public static final String PRODUCT_MERGE_DIFFERENT_STOCK_LOCATION_LINE_UNIT = /*$$(*/
+      "The stock of the location %s cannot be merged: the two products do not have the same unit on this location." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_TRACKING_NUMBER_RENAMED = /*$$(*/
+      "Tracking number %s renamed to %s: the product to keep already has this sequence." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_STOCK_TRANSFERRED = /*$$(*/
+      "Stock location %s: quantity %s added to the product to keep, average price updated from %s to %s." /*)*/;
+
+  public static final String PRODUCT_MERGE_KEPT_PRODUCT_NOT_STOCK_MANAGED = /*$$(*/
+      "The product to keep is not managed in stock, the stock of the product to absorb cannot be transferred to it." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_DETAIL_LINE_NOT_TRANSFERRED = /*$$(*/
+      "%s stock detail line(s) without a tracking number stay on the absorbed product, please check them manually." /*)*/;
 }

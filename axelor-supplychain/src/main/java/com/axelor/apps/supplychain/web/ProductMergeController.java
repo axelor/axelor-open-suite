@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.ProductMergeResult;
 import com.axelor.apps.supplychain.service.ProductMergeService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
@@ -60,17 +59,14 @@ public class ProductMergeController {
     try {
       Product absorbedProduct = getProduct(request, "absorbedProduct");
       Product keptProduct = getProduct(request, "keptProduct");
-      ProductMergeResult result =
-          Beans.get(ProductMergeService.class).merge(absorbedProduct, keptProduct);
+      Beans.get(ProductMergeService.class).merge(absorbedProduct, keptProduct);
 
-      StringBuilder message =
-          new StringBuilder(
-              String.format(
-                  I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_SUCCESS),
-                  absorbedProduct.getFullName(),
-                  keptProduct.getFullName()));
-      result.getLogLines().forEach(logLine -> message.append("\n").append(logLine));
-      response.setInfo(message.toString());
+      // what the merge did is written in the merge log, not in this message
+      response.setInfo(
+          String.format(
+              I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_SUCCESS),
+              absorbedProduct.getFullName(),
+              keptProduct.getFullName()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
