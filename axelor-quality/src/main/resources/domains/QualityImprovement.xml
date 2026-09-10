@@ -36,6 +36,9 @@
     <finder-method name="findOpenByStockMoveLineId" using="Long:stockMoveLineId"
       filter="self.qiIdentification.stockMoveLine.id = :stockMoveLineId AND self.qiStatus.isClosedStatus = false AND self.qiStatus.isCancelledStatus = false"
       all="true"/>
+    <finder-method name="findOpenAutomaticByStockMoveId" using="Long:stockMoveId"
+      filter="self.isAutomaticallyCreated = true AND self.qiIdentification.stockMoveLine.stockMove.id = :stockMoveId AND self.qiStatus.isClosedStatus = false AND self.qiStatus.isCancelledStatus = false"
+      all="true"/>
 
     <extra-code><![CDATA[
     		// TYPE SELECT

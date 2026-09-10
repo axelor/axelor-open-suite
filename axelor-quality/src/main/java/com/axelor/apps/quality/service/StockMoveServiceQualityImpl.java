@@ -58,6 +58,7 @@ public class StockMoveServiceQualityImpl extends StockMoveServiceSupplychainImpl
 
   protected final AppQualityService appQualityService;
   protected final NonCompliantReceptionService nonCompliantReceptionService;
+  protected final ReceptionQualityImprovementCancelService receptionQualityImprovementCancelService;
 
   @Inject
   public StockMoveServiceQualityImpl(
@@ -87,7 +88,8 @@ public class StockMoveServiceQualityImpl extends StockMoveServiceSupplychainImpl
       PurchaseOrderReceiptStateService purchaseOrderReceiptStateService,
       WeightedAveragePriceService weightedAveragePriceService,
       AppQualityService appQualityService,
-      NonCompliantReceptionService nonCompliantReceptionService) {
+      NonCompliantReceptionService nonCompliantReceptionService,
+      ReceptionQualityImprovementCancelService receptionQualityImprovementCancelService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -116,6 +118,7 @@ public class StockMoveServiceQualityImpl extends StockMoveServiceSupplychainImpl
         weightedAveragePriceService);
     this.appQualityService = appQualityService;
     this.nonCompliantReceptionService = nonCompliantReceptionService;
+    this.receptionQualityImprovementCancelService = receptionQualityImprovementCancelService;
   }
 
   @Override
@@ -134,5 +137,20 @@ public class StockMoveServiceQualityImpl extends StockMoveServiceSupplychainImpl
     nonCompliantReceptionService.createAutomaticQualityImprovements(
         JpaModelHelper.ensureManaged(stockMove));
     return newStockSeq;
+  }
+
+  @Override
+  public void cancel(StockMove stockMove) throws AxelorException {
+    if (!appQualityService.isApp("quality")) {
+      super.cancel(stockMove);
+      return;
+    }
+    boolean realizedSupplierReception =
+        stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED
+            && nonCompliantReceptionService.isSupplierReception(stockMove);
+    super.cancel(stockMove);
+    if (realizedSupplierReception) {
+      receptionQualityImprovementCancelService.cancelUntouchedQualityImprovements(stockMove);
+    }
   }
 }

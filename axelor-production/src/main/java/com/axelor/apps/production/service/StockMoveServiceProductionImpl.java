@@ -33,6 +33,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.quality.service.NonCompliantReceptionService;
+import com.axelor.apps.quality.service.ReceptionQualityImprovementCancelService;
 import com.axelor.apps.quality.service.StockMoveServiceQualityImpl;
 import com.axelor.apps.quality.service.app.AppQualityService;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -95,7 +96,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceQualityImpl
       SaleOrderLineRepository saleOrderLineRepository,
       WeightedAveragePriceService weightedAveragePriceService,
       AppQualityService appQualityService,
-      NonCompliantReceptionService nonCompliantReceptionService) {
+      NonCompliantReceptionService nonCompliantReceptionService,
+      ReceptionQualityImprovementCancelService receptionQualityImprovementCancelService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -123,7 +125,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceQualityImpl
         purchaseOrderReceiptStateService,
         weightedAveragePriceService,
         appQualityService,
-        nonCompliantReceptionService);
+        nonCompliantReceptionService,
+        receptionQualityImprovementCancelService);
     this.saleOrderLineRepository = saleOrderLineRepository;
   }
 
