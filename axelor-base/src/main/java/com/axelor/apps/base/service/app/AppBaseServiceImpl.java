@@ -29,7 +29,10 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.cache.AxelorCache;
+import com.axelor.cache.CacheBuilder;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
@@ -40,12 +43,14 @@ import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import jakarta.persistence.FlushModeType;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -57,6 +62,21 @@ public class AppBaseServiceImpl extends ScriptAppServiceImpl implements AppBaseS
 
   protected static String DEFAULT_LOCALE = "en_GB";
 
+  protected static final String APP_ACTIVE_QUERY =
+      "select self.active from App self where self.code = :code";
+
+  /**
+   * Active flag of the apps, keyed by app code and, when multi tenancy is enabled, isolated per
+   * tenant. Cleared by {@link com.axelor.apps.base.db.repo.AppListener} once an app is saved or
+   * removed, the expiration only bounding how long a value installed on another node of a cluster
+   * can stay stale.
+   */
+  protected static final AxelorCache<String, Boolean> appActiveCache =
+      CacheBuilder.newBuilder("appActiveCache")
+          .maximumSize(200)
+          .expireAfterWrite(Duration.ofMinutes(1))
+          .build();
+
   @Inject
   public AppBaseServiceImpl(AppService appService) {
     super(appService);
@@ -65,6 +85,49 @@ public class AppBaseServiceImpl extends ScriptAppServiceImpl implements AppBaseS
   @Override
   public AppBase getAppBase() {
     return Query.of(AppBase.class).cacheable().autoFlush(false).fetchOne();
+  }
+
+  /**
+   * Whether the app with the given code is installed and active.
+   *
+   * <p>This check runs on every cross-module service override, so the flag is served from {@link
+   * #appActiveCache} instead of loading the app record: the value is read once per app code, then
+   * kept in memory until the app is saved or removed.
+   *
+   * <p>As the flag is loaded without flushing the persistence context, an app installed in the
+   * current transaction is only seen once that transaction is committed.
+   *
+   * @param code the app code, as stored on the app record
+   * @return true when the app exists and is active, false otherwise
+   */
+  @Override
+  public boolean isApp(String code) {
+    if (code == null) {
+      return false;
+    }
+
+    return Boolean.TRUE.equals(appActiveCache.get(code, AppBaseServiceImpl::fetchAppActive));
+  }
+
+  /** Drops the cached flags of the current tenant, so the next check reloads them. */
+  public static void invalidateAppActiveCache() {
+    appActiveCache.invalidateAll();
+  }
+
+  /**
+   * Reads the active flag from the database, without hydrating the app entity and without flushing
+   * the persistence context.
+   */
+  protected static Boolean fetchAppActive(String code) {
+    List<Boolean> results =
+        JPA.em()
+            .createQuery(APP_ACTIVE_QUERY, Boolean.class)
+            .setParameter("code", code)
+            .setFlushMode(FlushModeType.COMMIT)
+            .setMaxResults(1)
+            .getResultList();
+
+    return !results.isEmpty() && Boolean.TRUE.equals(results.get(0));
   }
 
   @Override
