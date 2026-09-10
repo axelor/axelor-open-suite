@@ -891,6 +891,7 @@
 "On weekly plannings, the Activity percentage field indicates a coefficient taken into account in leave calculation based on the person activity. If the employee works part-time, the coefficient is set to 0.5 and the leave calculation is based on this value, earning fewer days than a full-time person whose coefficient is 1. Always: always uses the planning coefficient. Configurable: can be defined per leave type via the Use planning coefficient checkbox. No: the planning coefficient is not taken into account.","Sur les plannings hebdomadaires, le champ Pourcentage d'activité permet d'indiquer un coefficient qui sera pris en compte dans le calcul des congés selon l'activité de la personne. Si l'employé est a mi-temps, le coefficient sera defini a 0,5 et le calcul du nombre de congés se basera là-dessus. Toujours : permet de définir qu'on utilise toujours le coefficient du planning pour le calcul du nombre de jours de congés. Configurable : dans ce cas il sera possible de définir par type d'absence si le coefficient du planning est utilise. Non : le coefficient du planning n'est pas pris en compte.",,
 "One-way","Aller-simple",,
 "Only HR manager can choose this expense type.","Seuls les responsables RH peuvent choisir ce type de frais.",,
+"Only a refused or canceled leave request can be returned to draft.","Seule une demande de congé refusée ou annulée peut être remise en brouillon.",,
 "Only missing","Employés à relancer",,
 "Open Street Maps error: %s","Erreur Open Street Maps : %s",,
 "Organization","Organisation",,

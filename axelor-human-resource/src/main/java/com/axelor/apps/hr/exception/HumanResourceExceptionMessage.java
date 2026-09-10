@@ -108,6 +108,8 @@ public final class HumanResourceExceptionMessage {
       "You need lines to fill your export." /*)*/;
   public static final String INVALID_DATES = /*$$(*/ "Invalid dates" /*)*/;
   public static final String LEAVE_REQUEST_WRONG_DURATION = /*$$(*/ "Duration equals 0" /*)*/;
+  public static final String LEAVE_REQUEST_DRAFT_WRONG_STATUS = /*$$(*/
+      "Only a refused or canceled leave request can be returned to draft." /*)*/;
 
   public static final String EMPLOYEE_PLANNING = /*$$(*/
       "Please, add a planning for employee : %s" /*)*/;
