@@ -31,4 +31,6 @@ public interface ControlEntryService {
   Map<String, Object> onControlPlanChange(ControlEntry controlEntry);
 
   List<String> getOpenQualityImprovementSequences(ControlEntry controlEntry);
+
+  void finish(ControlEntry controlEntry);
 }
