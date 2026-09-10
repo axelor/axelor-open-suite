@@ -125,10 +125,23 @@ public class ProductMergeServiceImpl implements ProductMergeService {
   @Override
   public void checkMerge(Product absorbedProduct, Product keptProduct) throws AxelorException {
     List<String> blockingChecks = getMergeBlockingChecks(absorbedProduct, keptProduct);
-    if (!blockingChecks.isEmpty()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, String.join("\n", blockingChecks));
+    if (blockingChecks.isEmpty()) {
+      return;
     }
+
+    // the reasons are listed under a heading: run together in a single paragraph, several of
+    // them cannot be read
+    StringBuilder message =
+        new StringBuilder(
+            String.format(
+                I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_BLOCKED),
+                absorbedProduct.getCode(),
+                keptProduct.getCode()));
+    for (String blockingCheck : blockingChecks) {
+      message.append("<br/>\u2022 ").append(blockingCheck);
+    }
+
+    throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, message.toString());
   }
 
   @Override
@@ -179,17 +192,19 @@ public class ProductMergeServiceImpl implements ProductMergeService {
 
   protected List<String> getStatusChecks(Product absorbedProduct, Product keptProduct) {
     List<String> checks = new ArrayList<>();
-    if (Boolean.TRUE.equals(absorbedProduct.getArchived())
-        || Boolean.TRUE.equals(keptProduct.getArchived())) {
-      checks.add(I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_ARCHIVED_PRODUCT));
-    }
     for (Product product : Arrays.asList(absorbedProduct, keptProduct)) {
+      if (Boolean.TRUE.equals(product.getArchived())) {
+        checks.add(
+            String.format(
+                I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_ARCHIVED_PRODUCT),
+                product.getCode()));
+      }
       if (product.getMergedIntoProduct() != null) {
         checks.add(
             String.format(
                 I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_ALREADY_MERGED),
-                product.getFullName(),
-                product.getMergedIntoProduct().getFullName()));
+                product.getCode(),
+                product.getMergedIntoProduct().getCode()));
       }
     }
     return checks;
@@ -225,11 +240,9 @@ public class ProductMergeServiceImpl implements ProductMergeService {
   protected List<String> getVariantChecks(Product absorbedProduct, Product keptProduct) {
     List<String> checks = new ArrayList<>();
     for (Product product : Arrays.asList(absorbedProduct, keptProduct)) {
-      if (isVariantOrModel(product)) {
-        checks.add(
-            String.format(
-                I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_VARIANT_OR_MODEL),
-                product.getFullName()));
+      String variantCheck = getVariantCheck(product);
+      if (variantCheck != null) {
+        checks.add(variantCheck);
       }
     }
     return checks;
@@ -238,17 +251,36 @@ public class ProductMergeServiceImpl implements ProductMergeService {
   /**
    * A product variant and a product model are not merged: their stock, their variant values and the
    * link with their model would become inconsistent.
+   *
+   * @return the reason why the product cannot be merged, null when nothing prevents its merge
    */
-  protected boolean isVariantOrModel(Product product) {
-    return Boolean.TRUE.equals(product.getIsModel())
-        || product.getProductVariant() != null
-        || product.getParentProduct() != null
-        || productRepository
-                .all()
-                .filter("self.parentProduct = :product")
-                .bind("product", product)
-                .count()
-            > 0;
+  protected String getVariantCheck(Product product) {
+    if (Boolean.TRUE.equals(product.getIsModel())) {
+      return String.format(
+          I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_PRODUCT_MODEL), product.getCode());
+    }
+    if (product.getParentProduct() != null) {
+      return String.format(
+          I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_PRODUCT_VARIANT),
+          product.getCode(),
+          product.getParentProduct().getCode());
+    }
+    if (product.getProductVariant() != null) {
+      return String.format(
+          I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_PRODUCT_VARIANT_NO_MODEL),
+          product.getCode());
+    }
+    if (productRepository
+            .all()
+            .filter("self.parentProduct = :product")
+            .bind("product", product)
+            .count()
+        > 0) {
+      return String.format(
+          I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_PRODUCT_WITH_VARIANTS),
+          product.getCode());
+    }
+    return null;
   }
 
   /** A merge is not run while a MRP calculation is in progress. */

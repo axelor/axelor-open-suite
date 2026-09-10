@@ -506,11 +506,14 @@ public final class SupplychainExceptionMessage {
   public static final String PRODUCT_MERGE_MISSING_PRODUCT = /*$$(*/
       "Please select the product to absorb and the product to keep." /*)*/;
 
+  public static final String PRODUCT_MERGE_BLOCKED = /*$$(*/
+      "The product %s cannot be merged into the product %s:" /*)*/;
+
   public static final String PRODUCT_MERGE_SAME_PRODUCT = /*$$(*/
       "The product to absorb and the product to keep must be different." /*)*/;
 
   public static final String PRODUCT_MERGE_ARCHIVED_PRODUCT = /*$$(*/
-      "An archived product cannot be merged." /*)*/;
+      "The product %s is archived." /*)*/;
 
   public static final String PRODUCT_MERGE_ALREADY_MERGED = /*$$(*/
       "The product %s has already been merged into the product %s." /*)*/;
@@ -530,11 +533,20 @@ public final class SupplychainExceptionMessage {
   public static final String PRODUCT_MERGE_DIFFERENT_SUB_TYPE = /*$$(*/
       "The two products must have the same subtype." /*)*/;
 
-  public static final String PRODUCT_MERGE_VARIANT_OR_MODEL = /*$$(*/
-      "The product %s is a product model or a product variant and cannot be merged." /*)*/;
+  public static final String PRODUCT_MERGE_PRODUCT_MODEL = /*$$(*/
+      "The product %s is a product model." /*)*/;
+
+  public static final String PRODUCT_MERGE_PRODUCT_VARIANT = /*$$(*/
+      "The product %s is a variant of the product model %s." /*)*/;
+
+  public static final String PRODUCT_MERGE_PRODUCT_VARIANT_NO_MODEL = /*$$(*/
+      "The product %s is a product variant." /*)*/;
+
+  public static final String PRODUCT_MERGE_PRODUCT_WITH_VARIANTS = /*$$(*/
+      "The product %s has product variants." /*)*/;
 
   public static final String PRODUCT_MERGE_MRP_IN_PROGRESS = /*$$(*/
-      "A MRP calculation is in progress. Products cannot be merged while it is running." /*)*/;
+      "A MRP calculation is in progress." /*)*/;
 
   public static final String PRODUCT_MERGE_SUCCESS = /*$$(*/
       "The product %s has been merged into the product %s. The details of the operation are available in the product merge log." /*)*/;
