@@ -20,10 +20,12 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.quality.db.QIIdentification;
 import com.axelor.apps.quality.service.QualityImprovementCheckValuesServiceImpl;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 
 public class QualityImprovementCheckValuesProductionServiceImpl
     extends QualityImprovementCheckValuesServiceImpl {
@@ -31,6 +33,11 @@ public class QualityImprovementCheckValuesProductionServiceImpl
   @Override
   protected void checkFieldsByType(int type, QIIdentification qiIdentification)
       throws AxelorException {
+    if (!Beans.get(AppBaseService.class).isApp("production")) {
+      super.checkFieldsByType(type, qiIdentification);
+      return;
+    }
+
     if (type == 2
         && (qiIdentification.getProduct() != null || qiIdentification.getManufOrder() != null)) {
       throw new AxelorException(

@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainService;
@@ -29,13 +30,16 @@ public class SaleOrderLineOnSaleSupplyChangeServiceProductionImpl
     extends SaleOrderLineOnSaleSupplyChangeServiceImpl {
 
   protected SaleOrderLineViewProductionService saleOrderLineViewProductionService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public SaleOrderLineOnSaleSupplyChangeServiceProductionImpl(
       SaleOrderLineProductSupplychainService saleOrderLineProductSupplychainService,
-      SaleOrderLineViewProductionService saleOrderLineViewProductionService) {
+      SaleOrderLineViewProductionService saleOrderLineViewProductionService,
+      AppBaseService appBaseService) {
     super(saleOrderLineProductSupplychainService);
     this.saleOrderLineViewProductionService = saleOrderLineViewProductionService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -43,6 +47,11 @@ public class SaleOrderLineOnSaleSupplyChangeServiceProductionImpl
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Map<String, Map<String, Object>> attrs =
         super.onSaleSupplyChangeAttrs(saleOrderLine, saleOrder);
+
+    if (!appBaseService.isApp("production")) {
+      return attrs;
+    }
+
     attrs.putAll(saleOrderLineViewProductionService.hideBomAndProdProcess(saleOrderLine));
     return attrs;
   }

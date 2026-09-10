@@ -19,7 +19,9 @@
 package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.base.db.ProductCompany;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.repo.ProductCompanyStockRepository;
+import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 
 public class ProductCompanyProductionRepository extends ProductCompanyStockRepository {
@@ -27,6 +29,11 @@ public class ProductCompanyProductionRepository extends ProductCompanyStockRepos
   @Override
   public ProductCompany copy(ProductCompany productCompany, boolean deep) {
     ProductCompany copy = super.copy(productCompany, deep);
+
+    if (!Beans.get(AppBaseService.class).isApp("production")) {
+      return copy;
+    }
+
     copy.setDefaultBillOfMaterial(null);
     copy.setLastProductionPrice(BigDecimal.ZERO);
     return copy;

@@ -18,9 +18,11 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectServiceImpl;
+import com.axelor.inject.Beans;
 import java.util.Objects;
 
 public class PurchaseOrderTypeSelectProductionServiceImpl
@@ -28,6 +30,11 @@ public class PurchaseOrderTypeSelectProductionServiceImpl
 
   @Override
   public void setTypeSelect(PurchaseOrder purchaseOrder) {
+    if (!Beans.get(AppBaseService.class).isApp("production")) {
+      super.setTypeSelect(purchaseOrder);
+      return;
+    }
+
     Objects.requireNonNull(purchaseOrder);
 
     if ((purchaseOrder.getOutsourcingOrder()

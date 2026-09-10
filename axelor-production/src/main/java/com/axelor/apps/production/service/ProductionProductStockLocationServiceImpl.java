@@ -96,6 +96,11 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
   public Map<String, Object> computeIndicators(Long productId, Long companyId, Long stockLocationId)
       throws AxelorException {
     Map<String, Object> map = super.computeIndicators(productId, companyId, stockLocationId);
+
+    if (!appProductionService.isApp("production")) {
+      return map;
+    }
+
     Product product = productRepository.find(productId);
     Company company = companyRepository.find(companyId);
     StockLocation stockLocation = stockLocationRepository.find(stockLocationId);

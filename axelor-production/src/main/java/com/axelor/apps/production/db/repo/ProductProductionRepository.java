@@ -27,6 +27,11 @@ public class ProductProductionRepository extends ProductStockRepository {
   @Override
   public Product copy(Product product, boolean deep) {
     Product copy = super.copy(product, deep);
+
+    if (!appBaseService.isApp("production")) {
+      return copy;
+    }
+
     copy.setDefaultBillOfMaterial(null);
     copy.setLastProductionPrice(BigDecimal.ZERO);
     return copy;

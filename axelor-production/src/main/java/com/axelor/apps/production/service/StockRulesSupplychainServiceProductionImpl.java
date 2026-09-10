@@ -81,6 +81,10 @@ public class StockRulesSupplychainServiceProductionImpl extends StockRulesSupply
       StockRules stockRules, StockLocationLine stockLocationLine) throws AxelorException {
     super.processNonCompliantStockLocationLine(stockRules, stockLocationLine);
 
+    if (!appBaseService.isApp("production")) {
+      return;
+    }
+
     StockLocation stockLocation = stockLocationLine.getStockLocation();
     if (stockLocation == null
         || stockRules == null

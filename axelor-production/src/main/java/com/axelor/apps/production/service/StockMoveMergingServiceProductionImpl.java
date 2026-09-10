@@ -53,6 +53,11 @@ public class StockMoveMergingServiceProductionImpl extends StockMoveMergingServi
   @Override
   protected void checkErrors(List<StockMove> stockMoveList, List<String> errors) {
     super.checkErrors(stockMoveList, errors);
+
+    if (!appBaseService.isApp("production")) {
+      return;
+    }
+
     if (!checkAllSame(stockMoveList, StockMove::getManufOrder)) {
       errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_MANUF_ORDER));
     }
@@ -62,6 +67,11 @@ public class StockMoveMergingServiceProductionImpl extends StockMoveMergingServi
   protected void fillStockMoveFields(
       List<StockMove> stockMoveList, StockMove stockMove, StockMove mergedStockMove) {
     super.fillStockMoveFields(stockMoveList, stockMove, mergedStockMove);
+
+    if (!appBaseService.isApp("production")) {
+      return;
+    }
+
     mergedStockMove.setManufOrder(stockMove.getManufOrder());
   }
 }

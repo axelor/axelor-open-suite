@@ -80,6 +80,10 @@ public class SaleOrderLineOnChangeProductionServiceImpl
 
     Map<String, Object> saleOrderLineMap = super.qtyOnChange(saleOrderLine, saleOrder, parentSol);
 
+    if (!appSupplychainService.isApp("production")) {
+      return saleOrderLineMap;
+    }
+
     saleOrderLineMap.putAll(updateProduceQty(saleOrderLine, saleOrder, parentSol));
 
     return saleOrderLineMap;

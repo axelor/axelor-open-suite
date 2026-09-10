@@ -32,6 +32,10 @@ public class QIIdentificationProductionServiceImpl extends QIIdentificationServi
 
   @Override
   protected boolean requiresIdentificationUpdate(QIIdentification qiIdentification) {
+    if (!appBaseService.isApp("production")) {
+      return super.requiresIdentificationUpdate(qiIdentification);
+    }
+
     return super.requiresIdentificationUpdate(qiIdentification)
         || qiIdentification.getManufOrder() != null
         || qiIdentification.getOperationOrder() != null

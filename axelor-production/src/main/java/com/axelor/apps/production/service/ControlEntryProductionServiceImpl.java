@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.quality.db.ControlPlan;
@@ -30,16 +31,24 @@ import jakarta.inject.Inject;
 
 public class ControlEntryProductionServiceImpl extends ControlEntryServiceImpl {
 
+  protected final AppBaseService appBaseService;
+
   @Inject
   public ControlEntryProductionServiceImpl(
       ControlEntrySampleService controlEntrySampleService,
       ControlPlanRepository controlPlanRepository,
-      ControlEntryRepository controlEntryRepository) {
+      ControlEntryRepository controlEntryRepository,
+      AppBaseService appBaseService) {
     super(controlEntrySampleService, controlPlanRepository, controlEntryRepository);
+    this.appBaseService = appBaseService;
   }
 
   @Override
   protected String getControlPlanRelatedToSelect(Class<?> contextClass) {
+    if (!appBaseService.isApp("production")) {
+      return super.getControlPlanRelatedToSelect(contextClass);
+    }
+
     if (OperationOrder.class.equals(contextClass)) {
       return ProdProcessLine.class.getName();
     }
@@ -49,6 +58,10 @@ public class ControlEntryProductionServiceImpl extends ControlEntryServiceImpl {
   @Override
   protected Long getControlPlanRelatedToSelectId(
       Class<?> contextClass, Context context, Long relatedToSelectId) {
+    if (!appBaseService.isApp("production")) {
+      return super.getControlPlanRelatedToSelectId(contextClass, context, relatedToSelectId);
+    }
+
     if (OperationOrder.class.equals(contextClass)) {
       if (context.get("prodProcessLine") != null) {
         ProdProcessLine prodProcessLine = (ProdProcessLine) context.get("prodProcessLine");
@@ -60,6 +73,10 @@ public class ControlEntryProductionServiceImpl extends ControlEntryServiceImpl {
 
   @Override
   protected String getRelatedToSelectOnControlPlanChange(ControlPlan controlPlan) {
+    if (!appBaseService.isApp("production")) {
+      return super.getRelatedToSelectOnControlPlanChange(controlPlan);
+    }
+
     if (ProdProcessLine.class.getName().equals(controlPlan.getRelatedToSelect())) {
       return OperationOrder.class.getName();
     }
@@ -69,6 +86,10 @@ public class ControlEntryProductionServiceImpl extends ControlEntryServiceImpl {
   @Override
   protected Long getRelatedToSelectIdOnControlPlanChange(
       ControlPlan controlPlan, String relatedToSelect) {
+    if (!appBaseService.isApp("production")) {
+      return super.getRelatedToSelectIdOnControlPlanChange(controlPlan, relatedToSelect);
+    }
+
     if (ProdProcessLine.class.getName().equals(controlPlan.getRelatedToSelect())
         && !OperationOrder.class.getName().equals(relatedToSelect)) {
       return null;

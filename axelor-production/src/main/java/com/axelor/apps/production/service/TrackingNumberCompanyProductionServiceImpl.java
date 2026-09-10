@@ -44,6 +44,10 @@ public class TrackingNumberCompanyProductionServiceImpl
   protected Optional<Company> getDefaultCompany(TrackingNumber trackingNumber)
       throws AxelorException {
 
+    if (!appBaseService.isApp("production")) {
+      return super.getDefaultCompany(trackingNumber);
+    }
+
     if (trackingNumber.getOriginMoveTypeSelect()
         == TrackingNumberRepository.ORIGIN_MOVE_TYPE_MANUFACTURING) {
       return Optional.ofNullable(trackingNumber.getOriginStockMoveLine())

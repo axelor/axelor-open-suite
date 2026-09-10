@@ -51,6 +51,10 @@ public class SaleOrderLineCostPriceComputeProductionServiceImpl
   @Override
   public Map<String, Object> computeSubTotalCostPrice(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, Product product) throws AxelorException {
+    if (!appSaleService.isApp("production")) {
+      return super.computeSubTotalCostPrice(saleOrder, saleOrderLine, product);
+    }
+
     Map<String, Object> map = new HashMap<>();
     List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
     List<SaleOrderLineDetails> saleOrderLineDetailsList =
