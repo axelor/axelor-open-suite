@@ -8,6 +8,8 @@
     <panel name="mainPanel">
       <field name="qualityControlTemplate" requiredIf="automaticMail" canEdit="false"/>
       <field name="automaticMail" widget="boolean-switch"/>
+      <field name="redirectNonCompliantReceptionToQuarantine" widget="boolean-switch"/>
+      <field name="createQiOnNonCompliantReception" widget="boolean-switch"/>
     </panel>
 
     <panel name="actionPanel">
