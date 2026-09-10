@@ -32,6 +32,7 @@ import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.supplychain.db.ProductMergeLog;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
+import com.axelor.apps.supplychain.db.repo.ProductMergeLogRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
@@ -70,6 +71,7 @@ public class ProductMergeServiceImpl implements ProductMergeService {
   protected final DMSFileRepository dmsFileRepository;
   protected final SupplierCatalogRepository supplierCatalogRepository;
   protected final ProductMergeStockService productMergeStockService;
+  protected final ProductMergeLogRepository productMergeLogRepository;
 
   @Inject
   public ProductMergeServiceImpl(
@@ -80,7 +82,8 @@ public class ProductMergeServiceImpl implements ProductMergeService {
       MetaJsonFieldRepository metaJsonFieldRepository,
       DMSFileRepository dmsFileRepository,
       SupplierCatalogRepository supplierCatalogRepository,
-      ProductMergeStockService productMergeStockService) {
+      ProductMergeStockService productMergeStockService,
+      ProductMergeLogRepository productMergeLogRepository) {
     this.appSupplychainService = appSupplychainService;
     this.productRepository = productRepository;
     this.mrpRepository = mrpRepository;
@@ -89,6 +92,7 @@ public class ProductMergeServiceImpl implements ProductMergeService {
     this.dmsFileRepository = dmsFileRepository;
     this.supplierCatalogRepository = supplierCatalogRepository;
     this.productMergeStockService = productMergeStockService;
+    this.productMergeLogRepository = productMergeLogRepository;
   }
 
   @Override
@@ -127,7 +131,8 @@ public class ProductMergeServiceImpl implements ProductMergeService {
   @Transactional(rollbackOn = {Exception.class})
   public ProductMergeResult merge(Product absorbedProduct, Product keptProduct)
       throws AxelorException {
-    checkAuthorization(AuthUtils.getUser());
+    User user = AuthUtils.getUser();
+    checkAuthorization(user);
     checkMerge(absorbedProduct, keptProduct);
 
     ProductMergeResult result = new ProductMergeResult();
@@ -137,6 +142,9 @@ public class ProductMergeServiceImpl implements ProductMergeService {
     transferCustomFields(absorbedProduct, keptProduct, result);
     postReferenceTransfer(absorbedProduct, keptProduct, result);
     productMergeStockService.transferStock(absorbedProduct, keptProduct, result);
+    postMerge(absorbedProduct, keptProduct, result);
+    archiveAbsorbedProduct(absorbedProduct, keptProduct);
+    createProductMergeLog(absorbedProduct, keptProduct, user, result);
     return result;
   }
 
@@ -287,7 +295,7 @@ public class ProductMergeServiceImpl implements ProductMergeService {
             String.format(
                 I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_LOG_SUPPLIER_CATALOG_KEPT),
                 supplierCatalog.getSupplierPartner().getFullName(),
-                Objects.toString(supplierCatalog.getPrice(), "")));
+                ProductMergeResult.format(supplierCatalog.getPrice())));
         continue;
       }
       supplierCatalog.setProduct(keptProduct);
@@ -533,8 +541,7 @@ public class ProductMergeServiceImpl implements ProductMergeService {
             String.format(
                 I18n.get(
                     SupplychainExceptionMessage.PRODUCT_MERGE_LOG_CUSTOM_FIELD_NOT_TRANSFERRED),
-                metaJsonField.getName(),
-                metaJsonField.getModel()));
+                getCustomFieldName(metaJsonField)));
         continue;
       }
 
@@ -550,9 +557,17 @@ public class ProductMergeServiceImpl implements ProductMergeService {
               metaJsonField.getName() + ".id",
               keptProduct.getId(),
               absorbedProduct.getId());
-      result.addTransferredReferences(
-          metaJsonField.getModel() + "." + metaJsonField.getName(), count);
+      result.addTransferredReferences(getCustomFieldName(metaJsonField), count);
     }
+  }
+
+  /**
+   * A custom field is named as the other references, by the object holding it and the field name.
+   * The package is left out, an object name is unique.
+   */
+  protected String getCustomFieldName(MetaJsonField metaJsonField) {
+    String model = metaJsonField.getModel();
+    return model.substring(model.lastIndexOf('.') + 1) + "." + metaJsonField.getName();
   }
 
   protected List<MetaJsonField> getProductCustomFields() {
@@ -641,6 +656,36 @@ public class ProductMergeServiceImpl implements ProductMergeService {
    */
   protected void postReferenceTransfer(
       Product absorbedProduct, Product keptProduct, ProductMergeResult result)
+      throws AxelorException {}
+
+  /**
+   * The absorbed product is archived and keeps a link to the product it was merged into: its code
+   * stays consultable and it is not deleted.
+   */
+  protected void archiveAbsorbedProduct(Product absorbedProduct, Product keptProduct) {
+    absorbedProduct.setMergedIntoProduct(keptProduct);
+    absorbedProduct.setArchived(true);
+    productRepository.save(absorbedProduct);
+  }
+
+  /** Records the merge, so that it stays consultable from the product merge log menu. */
+  protected ProductMergeLog createProductMergeLog(
+      Product absorbedProduct, Product keptProduct, User user, ProductMergeResult result) {
+    ProductMergeLog productMergeLog = new ProductMergeLog();
+    productMergeLog.setAbsorbedProduct(absorbedProduct);
+    productMergeLog.setKeptProduct(keptProduct);
+    productMergeLog.setUser(user);
+    productMergeLog.setMergeDateTime(appSupplychainService.getTodayDateTime().toLocalDateTime());
+    productMergeLog.setLog(String.join("\n", result.getLogLines()));
+    return productMergeLogRepository.save(productMergeLog);
+  }
+
+  /**
+   * Called once the merge is done, before the absorbed product is archived.
+   *
+   * <p>Modules extending the product merge add their own treatments by overriding this method.
+   */
+  protected void postMerge(Product absorbedProduct, Product keptProduct, ProductMergeResult result)
       throws AxelorException {}
 
   protected String getReferenceName(MetaField metaField) {

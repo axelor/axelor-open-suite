@@ -537,32 +537,38 @@ public final class SupplychainExceptionMessage {
       "A MRP calculation is in progress. Products cannot be merged while it is running." /*)*/;
 
   public static final String PRODUCT_MERGE_SUCCESS = /*$$(*/
-      "The product %s has been merged into the product %s." /*)*/;
+      "The product %s has been merged into the product %s. The details of the operation are available in the product merge log." /*)*/;
 
   public static final String PRODUCT_MERGE_LOG_TRANSFERRED_REFERENCES = /*$$(*/
       "%s: %s reference(s) transferred." /*)*/;
 
   public static final String PRODUCT_MERGE_LOG_SUPPLIER_CATALOG_KEPT = /*$$(*/
-      "Supplier catalog of the supplier %s (price: %s) kept on the absorbed product: the product to keep already has a catalog for this supplier." /*)*/;
+      "Supplier catalog kept on the absorbed product: %s (%s)." /*)*/;
 
   public static final String PRODUCT_MERGE_LOG_REFERENCE_NOT_TRANSFERRED = /*$$(*/
-      "%s: reference kept on the absorbed product, the product to keep already has one." /*)*/;
+      "%s: reference kept on the absorbed product." /*)*/;
 
   public static final String PRODUCT_MERGE_LOG_CUSTOM_FIELD_NOT_TRANSFERRED = /*$$(*/
-      "Custom field %s of the object %s: multiple-value custom fields are not transferred, please update them manually." /*)*/;
+      "Custom field %s: multiple values not transferred, to update manually." /*)*/;
 
   public static final String PRODUCT_MERGE_DIFFERENT_STOCK_LOCATION_LINE_UNIT = /*$$(*/
       "The stock of the location %s cannot be merged: the two products do not have the same unit on this location." /*)*/;
 
   public static final String PRODUCT_MERGE_LOG_TRACKING_NUMBER_RENAMED = /*$$(*/
-      "Tracking number %s renamed to %s: the product to keep already has this sequence." /*)*/;
+      "Tracking number %s renamed to %s." /*)*/;
 
   public static final String PRODUCT_MERGE_LOG_STOCK_TRANSFERRED = /*$$(*/
-      "Stock location %s: quantity %s added to the product to keep, average price updated from %s to %s." /*)*/;
+      "Stock location %s: quantity %s added (future %s), average price %s -> %s." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_RESERVED_QTY_RECOMPUTED = /*$$(*/
+      "Stock location %s: allocated quantity %s -> %s, requested quantity %s -> %s." /*)*/;
+
+  public static final String PRODUCT_MERGE_LOG_AVG_PRICE_RECOMPUTED = /*$$(*/
+      "Average price of the product to keep recomputed: %s." /*)*/;
 
   public static final String PRODUCT_MERGE_KEPT_PRODUCT_NOT_STOCK_MANAGED = /*$$(*/
       "The product to keep is not managed in stock, the stock of the product to absorb cannot be transferred to it." /*)*/;
 
   public static final String PRODUCT_MERGE_LOG_DETAIL_LINE_NOT_TRANSFERRED = /*$$(*/
-      "%s stock detail line(s) without a tracking number stay on the absorbed product, please check them manually." /*)*/;
+      "%s stock detail line(s) without tracking number kept on the absorbed product." /*)*/;
 }

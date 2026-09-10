@@ -14,7 +14,7 @@
 
   <form name="product-merge-log-form" title="Product merge log"
     model="com.axelor.apps.supplychain.db.ProductMergeLog" canNew="false" canSave="false"
-    canCopy="false" canDelete="false">
+    canCopy="false" canDelete="false" width="large">
     <panel name="mainPanel">
       <field name="absorbedProduct" form-view="product-form" grid-view="product-grid"
         canNew="false" canEdit="false" readonly="true"/>

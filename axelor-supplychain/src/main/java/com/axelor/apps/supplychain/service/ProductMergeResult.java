@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -48,6 +49,14 @@ public class ProductMergeResult {
     transferredReferenceMap.merge(reference, count, Long::sum);
   }
 
+  /**
+   * Quantities and prices are stored with ten decimals: only the meaningful ones are readable in
+   * the log.
+   */
+  public static String format(BigDecimal value) {
+    return value == null ? "" : value.stripTrailingZeros().toPlainString();
+  }
+
   /** Records what the merge did, for the merge log. */
   public void addInformation(String information) {
     informationList.add(information);
@@ -71,8 +80,7 @@ public class ProductMergeResult {
   }
 
   /**
-   * Returns the content of the merge log: what has been transferred, what the merge did, then the
-   * warnings.
+   * Returns the content of the merge log: what was transferred, what changed, then the warnings.
    */
   public List<String> getLogLines() {
     List<String> logLines = new ArrayList<>();

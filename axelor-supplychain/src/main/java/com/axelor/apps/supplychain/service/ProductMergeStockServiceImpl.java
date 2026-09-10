@@ -96,8 +96,8 @@ public class ProductMergeStockServiceImpl implements ProductMergeStockService {
     // their tracking number
     transferTrackingNumbers(absorbedProduct, keptProduct, result);
     transferStockLocationLines(absorbedProduct, keptProduct, result);
-    recomputeReservedQuantities(absorbedProduct, keptProduct);
-    weightedAveragePriceService.computeAvgPriceForProduct(keptProduct);
+    recomputeReservedQuantities(absorbedProduct, keptProduct, result);
+    recomputeAvgPrice(keptProduct, result);
   }
 
   /**
@@ -259,13 +259,19 @@ public class ProductMergeStockServiceImpl implements ProductMergeStockService {
       keptLine.setRack(absorbedLine.getRack());
     }
 
-    result.addInformation(
-        String.format(
-            I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_LOG_STOCK_TRANSFERRED),
-            absorbedLine.getStockLocation().getName(),
-            format(getValue(absorbedLine.getCurrentQty())),
-            format(previousAvgPrice),
-            format(newAvgPrice)));
+    // a location where nothing moved would only make the log longer
+    if (getValue(absorbedLine.getCurrentQty()).signum() != 0
+        || getValue(absorbedLine.getFutureQty()).signum() != 0
+        || newAvgPrice.compareTo(previousAvgPrice) != 0) {
+      result.addInformation(
+          String.format(
+              I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_LOG_STOCK_TRANSFERRED),
+              absorbedLine.getStockLocation().getName(),
+              ProductMergeResult.format(absorbedLine.getCurrentQty()),
+              ProductMergeResult.format(absorbedLine.getFutureQty()),
+              ProductMergeResult.format(previousAvgPrice),
+              ProductMergeResult.format(newAvgPrice)));
+    }
 
     absorbedLine.setCurrentQty(BigDecimal.ZERO);
     absorbedLine.setFutureQty(BigDecimal.ZERO);
@@ -330,7 +336,8 @@ public class ProductMergeStockServiceImpl implements ProductMergeStockService {
    * are read from the planned stock moves, which are already on the kept product: adding the two
    * quantities would count the reservations of the absorbed product twice.
    */
-  protected void recomputeReservedQuantities(Product absorbedProduct, Product keptProduct)
+  protected void recomputeReservedQuantities(
+      Product absorbedProduct, Product keptProduct, ProductMergeResult result)
       throws AxelorException {
     for (Product product : Arrays.asList(absorbedProduct, keptProduct)) {
       List<StockLocationLine> stockLocationLineList =
@@ -340,15 +347,42 @@ public class ProductMergeStockServiceImpl implements ProductMergeStockService {
               .bind("product", product)
               .fetch();
       for (StockLocationLine stockLocationLine : stockLocationLineList) {
+        BigDecimal previousReservedQty = getValue(stockLocationLine.getReservedQty());
+        BigDecimal previousRequestedReservedQty =
+            getValue(stockLocationLine.getRequestedReservedQty());
+
         reservedQtyService.updateRequestedReservedQty(stockLocationLine);
         reservedQtyService.updateReservedQty(stockLocationLine);
+
+        if (getValue(stockLocationLine.getReservedQty()).compareTo(previousReservedQty) != 0
+            || getValue(stockLocationLine.getRequestedReservedQty())
+                    .compareTo(previousRequestedReservedQty)
+                != 0) {
+          result.addInformation(
+              String.format(
+                  I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_LOG_RESERVED_QTY_RECOMPUTED),
+                  stockLocationLine.getStockLocation().getName(),
+                  ProductMergeResult.format(previousReservedQty),
+                  ProductMergeResult.format(stockLocationLine.getReservedQty()),
+                  ProductMergeResult.format(previousRequestedReservedQty),
+                  ProductMergeResult.format(stockLocationLine.getRequestedReservedQty())));
+        }
       }
     }
   }
 
-  /** Quantities and prices are stored with ten decimals: only the meaningful ones are logged. */
-  protected String format(BigDecimal value) {
-    return getValue(value).stripTrailingZeros().toPlainString();
+  /**
+   * The average price of the kept product is computed again from its stock locations, and the
+   * result is written in the log: it is the value the stock of the kept product is now worth.
+   */
+  protected void recomputeAvgPrice(Product keptProduct, ProductMergeResult result)
+      throws AxelorException {
+    weightedAveragePriceService.computeAvgPriceForProduct(keptProduct);
+    result.addInformation(
+        String.format(
+            I18n.get(SupplychainExceptionMessage.PRODUCT_MERGE_LOG_AVG_PRICE_RECOMPUTED),
+            ProductMergeResult.format(
+                weightedAveragePriceService.computeAvgPriceForCompany(keptProduct, null))));
   }
 
   protected BigDecimal getValue(BigDecimal value) {
