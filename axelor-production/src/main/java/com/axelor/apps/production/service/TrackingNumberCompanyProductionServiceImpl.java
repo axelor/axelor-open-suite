@@ -20,6 +20,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -35,8 +36,8 @@ public class TrackingNumberCompanyProductionServiceImpl
 
   @Inject
   public TrackingNumberCompanyProductionServiceImpl(
-      StockMoveLineRepository stockMoveLineRepository) {
-    super(stockMoveLineRepository);
+      StockMoveLineRepository stockMoveLineRepository, AppBaseService appBaseService) {
+    super(stockMoveLineRepository, appBaseService);
   }
 
   @Override

@@ -20,11 +20,21 @@ package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
+import jakarta.inject.Inject;
 
 public class AnalyticMoveLineSupplychainRepository extends AnalyticMoveLineMngtRepository {
+
+  @Inject protected AppBaseService appBaseService;
+
   @Override
   public AnalyticMoveLine copy(AnalyticMoveLine entity, boolean deep) {
     AnalyticMoveLine copy = super.copy(entity, deep);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return copy;
+    }
+
     copy.setPurchaseOrderLine(null);
     copy.setSaleOrderLine(null);
     return copy;

@@ -19,10 +19,12 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveCurrencyServiceImpl;
+import jakarta.inject.Inject;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,8 +35,19 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class StockMoveCurrencyServiceSupplychainImpl extends StockMoveCurrencyServiceImpl {
 
+  protected final AppBaseService appBaseService;
+
+  @Inject
+  public StockMoveCurrencyServiceSupplychainImpl(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
+
   @Override
   public Currency getCurrency(StockMove stockMove) {
+    if (!appBaseService.isApp("supplychain")) {
+      return super.getCurrency(stockMove);
+    }
+
     if (isMultiCurrency(stockMove)) {
       return super.getCurrency(stockMove);
     }
@@ -65,6 +78,10 @@ public class StockMoveCurrencyServiceSupplychainImpl extends StockMoveCurrencySe
 
   @Override
   public boolean isMultiCurrency(StockMove stockMove) {
+    if (!appBaseService.isApp("supplychain")) {
+      return super.isMultiCurrency(stockMove);
+    }
+
     Set<Currency> currencySet =
         Stream.concat(
                 Optional.ofNullable(stockMove.getSaleOrderSet())

@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -35,15 +36,22 @@ import java.util.Optional;
 
 public class TrackingNumberCompanySupplychainServiceImpl extends TrackingNumberCompanyServiceImpl {
 
+  protected final AppBaseService appBaseService;
+
   @Inject
   public TrackingNumberCompanySupplychainServiceImpl(
-      StockMoveLineRepository stockMoveLineRepository) {
+      StockMoveLineRepository stockMoveLineRepository, AppBaseService appBaseService) {
     super(stockMoveLineRepository);
+    this.appBaseService = appBaseService;
   }
 
   @Override
   protected Optional<Company> getDefaultCompany(TrackingNumber trackingNumber)
       throws AxelorException {
+
+    if (!appBaseService.isApp("supplychain")) {
+      return super.getDefaultCompany(trackingNumber);
+    }
 
     switch (trackingNumber.getOriginMoveTypeSelect()) {
       case TrackingNumberRepository.ORIGIN_MOVE_TYPE_SALE:

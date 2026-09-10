@@ -135,6 +135,11 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
   public void afterVentilation(Invoice invoice) throws AxelorException {
     super.afterVentilation(invoice);
+
+    if (!appSupplychainService.isApp("supplychain")) {
+      return;
+    }
+
     if (InvoiceToolService.isPurchase(invoice)) {
 
       // Update amount invoiced on PurchaseOrder

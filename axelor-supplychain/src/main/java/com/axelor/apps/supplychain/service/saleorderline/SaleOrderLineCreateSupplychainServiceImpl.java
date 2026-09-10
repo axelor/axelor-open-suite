@@ -69,6 +69,10 @@ public class SaleOrderLineCreateSupplychainServiceImpl extends SaleOrderLineCrea
     SaleOrderLine soLine =
         super.createSaleOrderLine(packLine, saleOrder, packQty, conversionRate, sequence);
 
+    if (!appBaseService.isApp("supplychain")) {
+      return soLine;
+    }
+
     if (soLine != null && soLine.getProduct() != null) {
       soLine.setSaleSupplySelect(soLine.getProduct().getSaleSupplySelect());
 

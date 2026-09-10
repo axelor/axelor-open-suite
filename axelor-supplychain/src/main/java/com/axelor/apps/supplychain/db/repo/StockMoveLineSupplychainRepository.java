@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.db.repo;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -30,13 +31,20 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import java.util.Map;
 
 public class StockMoveLineSupplychainRepository extends StockMoveLineStockRepository {
 
+  @Inject protected AppBaseService appBaseService;
+
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    if (!appBaseService.isApp("supplychain")) {
+      return super.populate(json, context);
+    }
+
     try {
       Long stockMoveLineId = (Long) json.get("id");
       StockMoveLine stockMoveLine = find(stockMoveLineId);
@@ -74,6 +82,11 @@ public class StockMoveLineSupplychainRepository extends StockMoveLineStockReposi
 
   @Override
   public void remove(StockMoveLine stockMoveLine) {
+    if (!appBaseService.isApp("supplychain")) {
+      super.remove(stockMoveLine);
+      return;
+    }
+
     try {
       if (stockMoveLine.getPlannedStockMove() == null
           && Beans.get(StockMoveLineServiceSupplychain.class)

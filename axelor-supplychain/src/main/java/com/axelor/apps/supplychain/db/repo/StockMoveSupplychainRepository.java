@@ -18,18 +18,26 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class StockMoveSupplychainRepository extends StockMoveManagementRepository {
+
+  @Inject protected AppBaseService appBaseService;
 
   @Override
   public StockMove copy(StockMove entity, boolean deep) {
 
     StockMove copy = super.copy(entity, deep);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return copy;
+    }
 
     copy.setInvoiceSet(null);
     copy.setOrigin(null);

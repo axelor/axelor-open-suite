@@ -67,6 +67,10 @@ public class CallTenderPurchaseOrderSupplychainServiceImpl
   @Override
   protected PurchaseOrder createPurchaseOrder(
       CallTender callTender, Partner partner, Company company) throws AxelorException {
+    if (!appBaseService.isApp("supplychain")) {
+      return super.createPurchaseOrder(callTender, partner, company);
+    }
+
     PurchaseOrder purchaseOrder =
         purchaseOrderCreateSupplychainService.createPurchaseOrder(
             AuthUtils.getUser(),

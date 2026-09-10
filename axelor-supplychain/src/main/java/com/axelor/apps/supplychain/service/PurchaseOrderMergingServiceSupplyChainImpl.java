@@ -128,6 +128,10 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
 
   @Override
   protected boolean isConfirmationNeeded(PurchaseOrderMergingResult result) {
+    if (!appPurchaseService.isApp("supplychain")) {
+      return super.isConfirmationNeeded(result);
+    }
+
     return super.isConfirmationNeeded(result) || getChecks(result).isExistStockLocationDiff();
   }
 
@@ -135,6 +139,11 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
   protected void fillCommonFields(
       List<PurchaseOrder> purchaseOrdersToMerge, PurchaseOrderMergingResult result) {
     super.fillCommonFields(purchaseOrdersToMerge, result);
+
+    if (!appPurchaseService.isApp("supplychain")) {
+      return;
+    }
+
     purchaseOrdersToMerge.stream()
         .map(PurchaseOrder::getStockLocation)
         .filter(Objects::nonNull)
@@ -146,6 +155,11 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
   protected void updateDiffsCommonFields(
       PurchaseOrder purchaseOrder, PurchaseOrderMergingResult result) {
     super.updateDiffsCommonFields(purchaseOrder, result);
+
+    if (!appPurchaseService.isApp("supplychain")) {
+      return;
+    }
+
     CommonFieldsSupplyChainImpl commonFields = getCommonFields(result);
     ChecksSupplyChainImpl checks = getChecks(result);
     if (commonFields.getCommonStockLocation() != null
@@ -161,6 +175,10 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
   protected PurchaseOrder generatePurchaseOrder(
       List<PurchaseOrder> purchaseOrdersToMerge, PurchaseOrderMergingResult result)
       throws AxelorException {
+
+    if (!appPurchaseService.isApp("supplychain")) {
+      return super.generatePurchaseOrder(purchaseOrdersToMerge, result);
+    }
 
     String numSeq =
         computeConcatenatedString(purchaseOrdersToMerge, PurchaseOrder::getPurchaseOrderSeq, "-");
@@ -197,6 +215,11 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
   @Override
   protected void updateResultWithContext(PurchaseOrderMergingResult result, Context context) {
     super.updateResultWithContext(result, context);
+
+    if (!appPurchaseService.isApp("supplychain")) {
+      return;
+    }
+
     if (context.get("stockLocation") != null) {
       getCommonFields(result)
           .setCommonStockLocation(MapHelper.get(context, StockLocation.class, "stockLocation"));
@@ -224,6 +247,10 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
       PurchaseOrder firstPurchaseOrder) {
     super.checkDiffs(purchaseOrdersToMerge, result, firstPurchaseOrder);
 
+    if (!appPurchaseService.isApp("supplychain")) {
+      return;
+    }
+
     if (purchaseOrdersToMerge.stream()
         .anyMatch(order -> order.getInterco() != firstPurchaseOrder.getInterco())) {
       ChecksSupplyChainImpl checks = getChecks(result);
@@ -234,6 +261,10 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
   @Override
   protected void checkErrors(StringJoiner fieldErrors, PurchaseOrderMergingResult result) {
     super.checkErrors(fieldErrors, result);
+
+    if (!appPurchaseService.isApp("supplychain")) {
+      return;
+    }
 
     if (getChecks(result).isExistIntercoDiff()) {
       fieldErrors.add(

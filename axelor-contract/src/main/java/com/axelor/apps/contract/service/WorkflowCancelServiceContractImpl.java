@@ -21,6 +21,7 @@ package com.axelor.apps.contract.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -43,6 +44,7 @@ public class WorkflowCancelServiceContractImpl extends WorkflowCancelServiceSupp
       PurchaseOrderRepository purchaseOrderRepository,
       SaleInvoicingStateService saleInvoicingStateService,
       TimetableService timetableService,
+      AppBaseService appBaseService,
       ConsumptionLineRepository consumptionLineRepo) {
     super(
         saleOrderInvoiceService,
@@ -50,7 +52,8 @@ public class WorkflowCancelServiceContractImpl extends WorkflowCancelServiceSupp
         saleOrderRepository,
         purchaseOrderRepository,
         saleInvoicingStateService,
-        timetableService);
+        timetableService,
+        appBaseService);
     this.consumptionLineRepo = consumptionLineRepo;
   }
 

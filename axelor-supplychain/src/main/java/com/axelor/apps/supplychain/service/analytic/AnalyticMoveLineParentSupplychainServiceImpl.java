@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentServiceImpl;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
@@ -41,6 +42,7 @@ public class AnalyticMoveLineParentSupplychainServiceImpl
 
   protected PurchaseOrderLineRepository purchaseOrderLineRepository;
   protected SaleOrderLineRepository saleOrderLineRepository;
+  protected AppBaseService appBaseService;
 
   @Inject
   public AnalyticMoveLineParentSupplychainServiceImpl(
@@ -49,7 +51,8 @@ public class AnalyticMoveLineParentSupplychainServiceImpl
       InvoiceLineRepository invoiceLineRepository,
       MoveLineMassEntryRepository moveLineMassEntryRepository,
       PurchaseOrderLineRepository purchaseOrderLineRepository,
-      SaleOrderLineRepository saleOrderLineRepository) {
+      SaleOrderLineRepository saleOrderLineRepository,
+      AppBaseService appBaseService) {
     super(
         analyticLineService,
         moveLineRepository,
@@ -57,11 +60,17 @@ public class AnalyticMoveLineParentSupplychainServiceImpl
         moveLineMassEntryRepository);
     this.purchaseOrderLineRepository = purchaseOrderLineRepository;
     this.saleOrderLineRepository = saleOrderLineRepository;
+    this.appBaseService = appBaseService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void refreshAxisOnParent(AnalyticMoveLine analyticMoveLine) throws AxelorException {
+    if (!appBaseService.isApp("supplychain")) {
+      super.refreshAxisOnParent(analyticMoveLine);
+      return;
+    }
+
     PurchaseOrderLine purchaseOrderLine = analyticMoveLine.getPurchaseOrderLine();
     SaleOrderLine saleOrderLine = analyticMoveLine.getSaleOrderLine();
     AnalyticLineModel analyticLineModel = null;

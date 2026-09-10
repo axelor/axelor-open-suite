@@ -68,6 +68,11 @@ public class PartnerCreationServiceSupplychainImpl extends PartnerCreationServic
             isCustomer,
             isSupplier,
             isProspect);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return partner;
+    }
+
     baseConvertLeadWizardService.setPartnerFields(partner);
     partner.setAgency(partner.getUser().getActiveAgency());
     return partnerRepository.save(partner);

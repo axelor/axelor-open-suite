@@ -21,6 +21,7 @@ package com.axelor.apps.production.service.configurator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
@@ -46,8 +47,9 @@ public class ConfiguratorCheckServiceProductionImpl
       ProductionOrderRepository productionOrderRepository,
       ManufOrderRepository manufOrderRepository,
       BillOfMaterialRepository billOfMaterialRepository,
-      ProdProcessRepository prodProcessRepository) {
-    super(saleOrderLineRepository);
+      ProdProcessRepository prodProcessRepository,
+      AppBaseService appBaseService) {
+    super(saleOrderLineRepository, appBaseService);
     this.productionOrderRepository = productionOrderRepository;
     this.manufOrderRepository = manufOrderRepository;
     this.billOfMaterialRepository = billOfMaterialRepository;
