@@ -48,6 +48,10 @@ public class BankDetailsDomainServiceBankPaymentImpl extends BankDetailsDomainSe
       Partner partner, PaymentMode paymentMode, Company company) {
     String domain = super.createDomainForBankDetails(partner, paymentMode, company);
 
+    if (!appBankPaymentService.isApp("bank-payment")) {
+      return domain;
+    }
+
     if (partner == null
         || paymentMode == null
         || !appBankPaymentService.getAppBankPayment().getManageDirectDebitPayment()

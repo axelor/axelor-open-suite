@@ -21,6 +21,8 @@ package com.axelor.apps.bankpayment.db.repo;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -29,6 +31,10 @@ public class MoveBankPaymentRepository extends MoveManagementRepository {
   @Override
   public Move copy(Move entity, boolean deep) {
     Move copy = super.copy(entity, deep);
+
+    if (!Beans.get(AppBaseService.class).isApp("bank-payment")) {
+      return copy;
+    }
 
     List<MoveLine> moveLineList = copy.getMoveLineList();
 

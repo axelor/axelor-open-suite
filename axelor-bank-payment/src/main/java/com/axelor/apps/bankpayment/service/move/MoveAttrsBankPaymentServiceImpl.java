@@ -87,6 +87,11 @@ public class MoveAttrsBankPaymentServiceImpl extends MoveAttrsServiceImpl {
   @Override
   public void addPartnerBankDetailsDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
     super.addPartnerBankDetailsDomain(move, attrsMap);
+
+    if (!appBankPaymentService.isApp("bank-payment")) {
+      return;
+    }
+
     Partner partner = move.getPartner();
     PaymentMode paymentMode = move.getPaymentMode();
 
@@ -109,6 +114,10 @@ public class MoveAttrsBankPaymentServiceImpl extends MoveAttrsServiceImpl {
   @Override
   public void addMoveLineListViewerHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
     super.addMoveLineListViewerHidden(move, attrsMap);
+
+    if (!appBankPaymentService.isApp("bank-payment")) {
+      return;
+    }
 
     List<Long> moveLineIdList =
         Optional.ofNullable(move.getMoveLineList()).orElseGet(Collections::emptyList).stream()

@@ -26,25 +26,34 @@ import com.axelor.apps.account.service.move.record.MoveRecordSetService;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.service.app.AppBaseService;
 import jakarta.inject.Inject;
 import java.util.Map;
 
 public class MoveGroupOnChangeServiceBankPaymentImpl extends MoveGroupOnChangeServiceImpl {
 
   protected BankDetailsBankPaymentService bankDetailsBankPaymentService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public MoveGroupOnChangeServiceBankPaymentImpl(
       MoveRecordSetService moveRecordSetService,
       MoveAttrsService moveAttrsService,
-      BankDetailsBankPaymentService bankDetailsBankPaymentService) {
+      BankDetailsBankPaymentService bankDetailsBankPaymentService,
+      AppBaseService appBaseService) {
     super(moveRecordSetService, moveAttrsService);
     this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
   public Map<String, Object> getPaymentModeOnChangeValuesMap(Move move) throws AxelorException {
     Map<String, Object> valuesMap = super.getPaymentModeOnChangeValuesMap(move);
+
+    if (!appBaseService.isApp("bank-payment")) {
+      return valuesMap;
+    }
+
     BankDetails currentPartnerBankDetails = move.getPartnerBankDetails();
     PaymentMode paymentMode = move.getPaymentMode();
 

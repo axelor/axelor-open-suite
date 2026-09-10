@@ -45,6 +45,10 @@ public class BankDetailsServiceBankPaymentImpl extends BankDetailsServiceAccount
       Partner partner, Company company, PaymentMode paymentMode) {
     BankDetails defaultBankDetails = super.getDefaultBankDetails(partner, company, paymentMode);
 
+    if (!appBankPaymentService.isApp("bank-payment")) {
+      return defaultBankDetails;
+    }
+
     if (paymentMode != null
         && paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD
         && Boolean.TRUE.equals(

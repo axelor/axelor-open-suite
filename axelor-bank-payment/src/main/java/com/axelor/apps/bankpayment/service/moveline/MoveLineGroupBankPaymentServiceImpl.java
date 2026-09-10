@@ -38,6 +38,7 @@ import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import jakarta.inject.Inject;
@@ -48,6 +49,7 @@ public class MoveLineGroupBankPaymentServiceImpl extends MoveLineGroupServiceImp
     implements MoveLineGroupBankPaymentService {
   MoveLineCheckBankPaymentService moveLineCheckBankPaymentService;
   MoveLineRecordBankPaymentService moveLineRecordBankPaymentService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public MoveLineGroupBankPaymentServiceImpl(
@@ -70,7 +72,8 @@ public class MoveLineGroupBankPaymentServiceImpl extends MoveLineGroupServiceImp
       FiscalPositionService fiscalPositionService,
       TaxService taxService,
       AnalyticAxisService analyticAxisService,
-      AnalyticGroupService analyticGroupService) {
+      AnalyticGroupService analyticGroupService,
+      AppBaseService appBaseService) {
     super(
         moveLineService,
         moveLineDefaultService,
@@ -92,6 +95,7 @@ public class MoveLineGroupBankPaymentServiceImpl extends MoveLineGroupServiceImp
         analyticGroupService);
     this.moveLineCheckBankPaymentService = moveLineCheckBankPaymentService;
     this.moveLineRecordBankPaymentService = moveLineRecordBankPaymentService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -99,6 +103,10 @@ public class MoveLineGroupBankPaymentServiceImpl extends MoveLineGroupServiceImp
       throws AxelorException {
     Map<String, Object> valuesMap =
         new HashMap<>(super.getDebitCreditOnChangeValuesMap(moveLine, move));
+
+    if (!appBaseService.isApp("bank-payment")) {
+      return valuesMap;
+    }
 
     moveLineRecordBankPaymentService.revertDebitCreditAmountChange(moveLine);
     moveLineCheckBankPaymentService.checkBankReconciledAmount(moveLine);
