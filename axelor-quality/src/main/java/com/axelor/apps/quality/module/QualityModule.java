@@ -59,6 +59,8 @@ import com.axelor.apps.quality.service.ControlPlanFrequencyService;
 import com.axelor.apps.quality.service.ControlPlanFrequencyServiceImpl;
 import com.axelor.apps.quality.service.ControlTypeFieldValueService;
 import com.axelor.apps.quality.service.ControlTypeFieldValueServiceImpl;
+import com.axelor.apps.quality.service.NonCompliantReceptionService;
+import com.axelor.apps.quality.service.NonCompliantReceptionServiceImpl;
 import com.axelor.apps.quality.service.QIAnalysisService;
 import com.axelor.apps.quality.service.QIAnalysisServiceImpl;
 import com.axelor.apps.quality.service.QIIdentificationService;
@@ -91,6 +93,8 @@ import com.axelor.apps.quality.service.RequiredDocumentStatusService;
 import com.axelor.apps.quality.service.RequiredDocumentStatusServiceImpl;
 import com.axelor.apps.quality.service.RequiredDocumentVersionService;
 import com.axelor.apps.quality.service.RequiredDocumentVersionServiceImpl;
+import com.axelor.apps.quality.service.ReservedQtyServiceQualityImpl;
+import com.axelor.apps.quality.service.StockMoveServiceQualityImpl;
 import com.axelor.apps.quality.service.TrackingNumberCharacteristicService;
 import com.axelor.apps.quality.service.TrackingNumberCharacteristicServiceImpl;
 import com.axelor.apps.quality.service.TrackingNumberQualityService;
@@ -99,6 +103,8 @@ import com.axelor.apps.quality.service.app.AppQualityService;
 import com.axelor.apps.quality.service.app.AppQualityServiceImpl;
 import com.axelor.apps.quality.service.app.QIActionDistributionService;
 import com.axelor.apps.quality.service.app.QIActionDistributionServiceImpl;
+import com.axelor.apps.supplychain.service.ReservedQtyServiceImpl;
+import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 
 public class QualityModule extends AxelorModule {
 
@@ -149,5 +155,8 @@ public class QualityModule extends AxelorModule {
         .to(TrackingNumberCharacteristicServiceImpl.class);
     bind(TrackingNumberQualityService.class).to(TrackingNumberQualityServiceImpl.class);
     bind(QuarantineStockLocationService.class).to(QuarantineStockLocationServiceImpl.class);
+    bind(NonCompliantReceptionService.class).to(NonCompliantReceptionServiceImpl.class);
+    bind(StockMoveServiceSupplychainImpl.class).to(StockMoveServiceQualityImpl.class);
+    bind(ReservedQtyServiceImpl.class).to(ReservedQtyServiceQualityImpl.class);
   }
 }
