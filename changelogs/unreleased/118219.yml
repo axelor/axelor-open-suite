@@ -1,0 +1,3 @@
+---
+title: "Account: fixed 'Analytic distribution authorized' that could no longer be unchecked once an analytic distribution template had been set."
+module: axelor-account
