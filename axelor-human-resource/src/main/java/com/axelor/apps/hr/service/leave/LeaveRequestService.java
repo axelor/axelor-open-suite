@@ -41,4 +41,13 @@ public interface LeaveRequestService {
 
   BigDecimal getLeaveDaysToDate(LocalDateTime toDateT, Employee employee, LeaveReason leaveReason)
       throws AxelorException;
+
+  BigDecimal getLeaveDaysToDate(
+      LocalDateTime fromDateT, LocalDateTime toDateT, Employee employee, LeaveReason leaveReason)
+      throws AxelorException;
+
+  BigDecimal getAvailableQuantity(LeaveRequest leaveRequest);
+
+  BigDecimal getAvailableQuantity(
+      LocalDateTime fromDateT, LocalDateTime toDateT, Employee employee, LeaveReason leaveReason);
 }

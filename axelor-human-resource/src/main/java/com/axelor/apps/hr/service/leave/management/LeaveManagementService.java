@@ -27,8 +27,10 @@ import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class LeaveManagementService {
@@ -120,5 +122,75 @@ public class LeaveManagementService {
     leaveLine.addLeaveManagementListItem(leaveManagement);
     leaveLine.setQuantity(BigDecimal.ZERO);
     leaveLine.setTotalQuantity(BigDecimal.ZERO);
+  }
+
+  /**
+   * Compute the quantity available on the leave line at the given date. Leave managements whose
+   * validity period ("To (included)") has already ended at that date are considered expired and do
+   * not contribute. Validated days and negative leave managements are deducted from the oldest
+   * grants first.
+   *
+   * @param leaveLine
+   * @param date the date at which the balance is evaluated
+   * @return the quantity available at the given date
+   */
+  public BigDecimal computeQuantityAvailable(LeaveLine leaveLine, LocalDate date) {
+    List<LeaveManagement> leaveManagementList = leaveLine.getLeaveManagementList();
+    if (CollectionUtils.isEmpty(leaveManagementList)) {
+      return BigDecimal.ZERO;
+    }
+
+    BigDecimal quantityToDeduct =
+        leaveManagementList.stream()
+            .map(LeaveManagement::getValue)
+            .filter(value -> value.signum() < 0)
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .negate()
+            .add(leaveLine.getDaysValidated());
+
+    List<LeaveManagement> grantList =
+        leaveManagementList.stream()
+            .filter(leaveManagement -> leaveManagement.getValue().signum() > 0)
+            .sorted(
+                Comparator.comparing(
+                        LeaveManagement::getToDate, Comparator.nullsLast(Comparator.naturalOrder()))
+                    .thenComparing(
+                        LeaveManagement::getDate, Comparator.nullsFirst(Comparator.naturalOrder())))
+            .collect(Collectors.toList());
+
+    BigDecimal quantityAvailable = BigDecimal.ZERO;
+    for (LeaveManagement grant : grantList) {
+      BigDecimal remainingValue = grant.getValue();
+      if (quantityToDeduct.signum() > 0) {
+        BigDecimal deductedValue = remainingValue.min(quantityToDeduct);
+        remainingValue = remainingValue.subtract(deductedValue);
+        quantityToDeduct = quantityToDeduct.subtract(deductedValue);
+      }
+      if (isActive(grant, date)) {
+        quantityAvailable = quantityAvailable.add(remainingValue);
+      }
+    }
+    return quantityAvailable;
+  }
+
+  protected boolean isActive(LeaveManagement leaveManagement, LocalDate date) {
+    return leaveManagement.getToDate() == null
+        || date == null
+        || !leaveManagement.getToDate().isBefore(date);
+  }
+
+  /**
+   * Check whether the leave line holds at least one grant still active at the given date.
+   *
+   * @param leaveLine
+   * @param date the date at which the balance is evaluated
+   * @return true if at least one positive leave management is active at the given date
+   */
+  public boolean hasActiveLeaveManagement(LeaveLine leaveLine, LocalDate date) {
+    List<LeaveManagement> leaveManagementList = leaveLine.getLeaveManagementList();
+    return CollectionUtils.isNotEmpty(leaveManagementList)
+        && leaveManagementList.stream()
+            .filter(leaveManagement -> leaveManagement.getValue().signum() > 0)
+            .anyMatch(leaveManagement -> isActive(leaveManagement, date));
   }
 }

@@ -233,6 +233,7 @@
   <action-group name="action-leave-request-group-date-onchange">
     <action name="action-leave-request-validate-dates"/>
     <action name="action-leave-request-group-compute-duration"/>
+    <action name="action-leave-request-compute-leave-qty"/>
   </action-group>
 
   <action-group name="action-leave-request-group-compute-duration">

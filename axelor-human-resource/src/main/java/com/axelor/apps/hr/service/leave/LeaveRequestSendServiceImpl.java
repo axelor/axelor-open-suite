@@ -72,7 +72,11 @@ public class LeaveRequestSendServiceImpl implements LeaveRequestSendService {
     LeaveLine leaveLine = leaveLineService.getLeaveLine(leaveRequest);
     String message = "";
     if (leaveLine != null
-        && leaveLine.getQuantity().subtract(leaveRequest.getDuration()).signum() < 0) {
+        && leaveRequestService
+                .getAvailableQuantity(leaveRequest)
+                .subtract(leaveRequest.getDuration())
+                .signum()
+            < 0) {
       if (!leaveRequest.getLeaveReason().getAllowNegativeValue()
           && !leaveRequestService.willHaveEnoughDays(leaveRequest)) {
         String instruction = leaveRequest.getLeaveReason().getInstruction();

@@ -26,7 +26,6 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
-import com.axelor.apps.hr.service.EmployeeComputeAvailableLeaveService;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.leave.LeaveBusinessService;
@@ -341,9 +340,6 @@ public class LeaveController {
   public void computeLeaveQuantity(ActionRequest request, ActionResponse response) {
     LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
     response.setValue(
-        "$leavequantity",
-        Beans.get(EmployeeComputeAvailableLeaveService.class)
-            .computeAvailableLeaveQuantityForActiveUser(
-                leave.getEmployee(), leave.getLeaveReason()));
+        "$leavequantity", Beans.get(LeaveRequestService.class).getAvailableQuantity(leave));
   }
 }

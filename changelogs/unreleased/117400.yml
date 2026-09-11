@@ -1,0 +1,3 @@
+---
+title: "Leave request: leave grants whose validity period has already ended at the requested leave date are no longer counted in the available balance, and the leave in advance forecast is only added when an active grant exists."
+module: axelor-human-resource
