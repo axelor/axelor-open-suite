@@ -1,0 +1,3 @@
+---
+title: "Demo data: fixed inventory lines rejected on import, leaving products sold without initial stock."
+module: axelor-stock
