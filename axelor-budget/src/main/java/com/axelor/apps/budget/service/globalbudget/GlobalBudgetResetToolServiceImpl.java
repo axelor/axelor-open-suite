@@ -76,7 +76,7 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
     if (!ObjectUtils.isEmpty(budgetLevelList)) {
       globalBudget.clearBudgetList();
       budgetLevelList.forEach(budgetLevelResetToolService::resetBudgetLevel);
-    } else if (ObjectUtils.isEmpty(budgetList)) {
+    } else if (!ObjectUtils.isEmpty(budgetList)) {
       budgetList.forEach(budgetResetToolService::resetBudget);
     }
   }
