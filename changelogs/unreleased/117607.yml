@@ -1,0 +1,10 @@
+---
+title: "Invoice: added delivery date field on invoice and invoice line."
+module: axelor-account
+developer: |
+  -- Script
+  ALTER TABLE account_invoice
+    ADD COLUMN IF NOT EXISTS delivery_date DATE;
+
+  ALTER TABLE account_invoice_line
+    ADD COLUMN IF NOT EXISTS delivery_date DATE;
