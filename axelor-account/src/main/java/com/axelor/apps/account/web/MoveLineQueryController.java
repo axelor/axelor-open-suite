@@ -125,8 +125,12 @@ public class MoveLineQueryController {
         }
       }
       if (!moveLineList.isEmpty()) {
-        Beans.get(MoveLineService.class).reconcileMoveLinesWithCacheManagement(moveLineList);
+        List<String> errorMessages =
+            Beans.get(MoveLineService.class).reconcileMoveLinesWithCacheManagement(moveLineList);
         response.setReload(true);
+        if (!errorMessages.isEmpty()) {
+          response.setError(String.join("<br/>", errorMessages));
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
