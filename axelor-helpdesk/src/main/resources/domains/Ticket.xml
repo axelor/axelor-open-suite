@@ -8,7 +8,7 @@
   <entity name="Ticket">
 
     <string name="ticketSeq" title="Ticket Number" readonly="true"/>
-    <string name="subject" title="Subject" required="true"/>
+    <string name="subject" title="Subject" required="true" max="255"/>
     <string name="fullName" title="Full name" namecolumn="true" search="ticketSeq,subject">
     <![CDATA[
     	String fullName = "";
