@@ -63,10 +63,12 @@
               <field name="customerSaleOrderLine" showIf="$get('qi.qiDetection.origin') == 3"
                 onChange="action-quality-improvement-group-customer-sale-order-line-on-change"
                 domain="self.saleOrder = :customerSaleOrder"/>
-              <field name="stockMove" showIf="customerSaleOrder || supplierPurchaseOrder"
+              <field name="stockMove"
+                showIf="customerSaleOrder || supplierPurchaseOrder || stockMove"
                 onChange="action-quality-improvement-group-stock-move-on-change"
                 onSelect="action-quality-improvement-attrs-set-stock-move-domain"/>
-              <field name="stockMoveLine" showIf="customerSaleOrder || supplierPurchaseOrder"
+              <field name="stockMoveLine"
+                showIf="customerSaleOrder || supplierPurchaseOrder || stockMove"
                 onChange="action-quality-improvement-group-stock-move-line-on-change"
                 onSelect="action-quality-improvement-attrs-set-stock-move-line-domain"/>
               <field name="supplierPartner" showIf="$get('qi.qiDetection.origin') == 1"
@@ -260,10 +262,10 @@
 
   <form name="qi-create-wizard-form" title="Create quality improvement"
     model="com.axelor.utils.db.Wizard" canNew="false" canSave="false" canDelete="false"
-    canArchive="false">
+    canArchive="false" onNew="action-qi-create-wizard-record-defaults">
     <panel name="mainPanel" colSpan="12">
       <field name="type" type="integer" title="Type" selection="quality.qi.type.select"
-        required="true" x-dirty="false"/>
+        required="true" x-dirty="false" onChange="action-qi-create-wizard-record-clear-detection"/>
       <field name="qiDetection" title="Detection"
         target="com.axelor.apps.quality.db.QIDetection" type="many-to-one"
         form-view="qi-detection-form" grid-view="qi-detection-grid" showIf="type" required="true"/>
@@ -834,6 +836,17 @@
     <call class="com.axelor.apps.quality.web.QualityImprovementController"
       method="createQualityImprovement"/>
   </action-method>
+
+  <action-record name="action-qi-create-wizard-record-defaults"
+    model="com.axelor.utils.db.Wizard">
+    <field name="type" expr="eval: 1"/>
+    <field name="qiDetection" expr="eval: _qiDetection" if="_qiDetection"/>
+  </action-record>
+
+  <action-record name="action-qi-create-wizard-record-clear-detection"
+    model="com.axelor.utils.db.Wizard">
+    <field name="qiDetection" expr="eval: null"/>
+  </action-record>
 
   <action-validate
     name="action-quality-improvement-validate-lines-selected-for-send">

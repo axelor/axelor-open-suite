@@ -401,11 +401,16 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     Company company = stockLocationLine.getStockLocation().getCompany();
     SupplyChainConfig supplyChainConfig = supplychainConfigService.getSupplyChainConfig(company);
     if (toStatus == StockMoveRepository.STATUS_REALIZED
-        && supplyChainConfig.getAutoAllocateOnReceipt()) {
+        && isAutoAllocateOnReceipt(stockMoveLine, supplyChainConfig)) {
       reallocateQty(stockMoveLine, stockLocation, stockLocationLine, product, qty);
     }
     updateRequestedReservedQty(stockLocationLine);
     checkReservedQtyStocks(stockLocationLine, stockMoveLine, toStatus);
+  }
+
+  protected boolean isAutoAllocateOnReceipt(
+      StockMoveLine stockMoveLine, SupplyChainConfig supplyChainConfig) {
+    return supplyChainConfig.getAutoAllocateOnReceipt();
   }
 
   /**

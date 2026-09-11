@@ -45,4 +45,15 @@ public class QualityImprovementServiceImpl implements QualityImprovementService 
     }
     return qiStatus;
   }
+
+  @Override
+  public QIStatus getCancelledQIStatus() throws AxelorException {
+    QIStatus qiStatus = qiStatusRepository.findCancelledStatus();
+    if (qiStatus == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(QualityExceptionMessage.CANCELLED_QI_STATUS_NOT_FOUND));
+    }
+    return qiStatus;
+  }
 }

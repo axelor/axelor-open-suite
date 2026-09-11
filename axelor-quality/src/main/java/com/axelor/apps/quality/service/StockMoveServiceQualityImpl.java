@@ -16,28 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service;
+package com.axelor.apps.quality.service;
 
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.CancelReason;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.quality.service.NonCompliantReceptionService;
-import com.axelor.apps.quality.service.ReceptionQualityImprovementCancelService;
-import com.axelor.apps.quality.service.StockMoveServiceQualityImpl;
 import com.axelor.apps.quality.service.app.AppQualityService;
-import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.apps.stock.db.StockMove;
@@ -52,23 +42,26 @@ import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderReceiptStateService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
+import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.i18n.I18n;
+import com.axelor.db.JPA;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
-import java.math.BigDecimal;
 import java.util.List;
 
-public class StockMoveServiceProductionImpl extends StockMoveServiceQualityImpl
-    implements StockMoveProductionService {
-  protected SaleOrderLineRepository saleOrderLineRepository;
+public class StockMoveServiceQualityImpl extends StockMoveServiceSupplychainImpl {
+
+  protected final AppQualityService appQualityService;
+  protected final NonCompliantReceptionService nonCompliantReceptionService;
+  protected final ReceptionQualityImprovementCancelService receptionQualityImprovementCancelService;
 
   @Inject
-  public StockMoveServiceProductionImpl(
+  public StockMoveServiceQualityImpl(
       StockMoveLineService stockMoveLineService,
       StockMoveToolService stockMoveToolService,
       StockMoveLineRepository stockMoveLineRepository,
@@ -93,7 +86,6 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceQualityImpl
       SaleOrderConfirmService saleOrderConfirmService,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       PurchaseOrderReceiptStateService purchaseOrderReceiptStateService,
-      SaleOrderLineRepository saleOrderLineRepository,
       WeightedAveragePriceService weightedAveragePriceService,
       AppQualityService appQualityService,
       NonCompliantReceptionService nonCompliantReceptionService,
@@ -123,96 +115,42 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceQualityImpl
         saleOrderConfirmService,
         stockMoveLineServiceSupplychain,
         purchaseOrderReceiptStateService,
-        weightedAveragePriceService,
-        appQualityService,
-        nonCompliantReceptionService,
-        receptionQualityImprovementCancelService);
-    this.saleOrderLineRepository = saleOrderLineRepository;
+        weightedAveragePriceService);
+    this.appQualityService = appQualityService;
+    this.nonCompliantReceptionService = nonCompliantReceptionService;
+    this.receptionQualityImprovementCancelService = receptionQualityImprovementCancelService;
   }
 
   @Override
-  public void setOrigin(StockMove oldStockMove, StockMove newStockMove) {
-    if (oldStockMove.getManufOrder() != null) {
-      newStockMove.setManufOrder(oldStockMove.getManufOrder());
-    } else if (oldStockMove.getOperationOrder() != null) {
-      newStockMove.setOperationOrder(oldStockMove.getOperationOrder());
-    } else {
-      super.setOrigin(oldStockMove, newStockMove);
+  @Transactional(rollbackOn = {Exception.class})
+  public String realizeStockMove(StockMove stockMove, boolean check) throws AxelorException {
+    if (!appQualityService.isApp("quality")) {
+      return super.realizeStockMove(stockMove, check);
     }
+    nonCompliantReceptionService.checkAutomaticQualityImprovementPrerequisites(stockMove);
+    List<StockMoveLine> redirectedLines =
+        nonCompliantReceptionService.redirectToQuarantine(stockMove);
+    if (!redirectedLines.isEmpty()) {
+      JPA.flush();
+    }
+    String newStockSeq = super.realizeStockMove(stockMove, check);
+    nonCompliantReceptionService.createAutomaticQualityImprovements(
+        JpaModelHelper.ensureManaged(stockMove));
+    return newStockSeq;
   }
 
   @Override
   public void cancel(StockMove stockMove) throws AxelorException {
-    if (!appBaseService.isApp("production")) {
+    if (!appQualityService.isApp("quality")) {
       super.cancel(stockMove);
       return;
     }
-
-    if (stockMove.getManufOrder() != null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(ProductionExceptionMessage.CAN_NOT_CANCEL_STOCK_MOVE_LINKED_TO_MANUF_ORDER));
-    }
-    cancelStockMoveInProduction(stockMove);
-  }
-
-  @Override
-  public void cancelFromManufOrder(StockMove stockMove) throws AxelorException {
-    cancelStockMoveInProduction(stockMove);
-  }
-
-  @Override
-  public void cancelFromManufOrder(StockMove stockMove, CancelReason cancelReason)
-      throws AxelorException {
-    applyCancelReason(stockMove, cancelReason);
-    cancelStockMoveInProduction(stockMove);
-  }
-
-  // future code specific to stock move cancellation in production module goes here
-  protected void cancelStockMoveInProduction(StockMove stockMove) throws AxelorException {
+    boolean realizedSupplierReception =
+        stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED
+            && nonCompliantReceptionService.isSupplierReception(stockMove);
     super.cancel(stockMove);
-    updateSaleOrderLineOnCancelOnRealized(stockMove);
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  @Override
-  public String realizeStockMove(StockMove stockMove, boolean check) throws AxelorException {
-    String newStockSeq = super.realizeStockMove(stockMove, check);
-    updateSaleOrderLineOnCancelOnRealized(stockMove);
-    return newStockSeq;
-  }
-
-  protected void updateSaleOrderLineOnCancelOnRealized(StockMove stockMove) {
-
-    List<StockMoveLine> stockMoveLines =
-        stockMoveLineRepo
-            .all()
-            .filter(
-                "self.stockMove = :stockMove "
-                    + "AND self.producedManufOrder IS NOT NULL "
-                    + "AND self.producedManufOrder.saleOrderLine IS NOT NULL "
-                    + "AND self.producedManufOrder.saleOrderLine.product IS NOT NULL ")
-            .bind("stockMove", stockMove)
-            .fetch();
-    for (StockMoveLine stockMoveLine : stockMoveLines) {
-      ManufOrder manufOrder = stockMoveLine.getProducedManufOrder();
-      SaleOrderLine saleOrderLine = manufOrder.getSaleOrderLine();
-      Product product = saleOrderLine.getProduct();
-      BigDecimal qtyProduced = computeMOQtyProduced(manufOrder, product);
-      saleOrderLine.setQtyProduced(qtyProduced);
-      saleOrderLineRepository.save(saleOrderLine);
+    if (realizedSupplierReception) {
+      receptionQualityImprovementCancelService.cancelUntouchedQualityImprovements(stockMove);
     }
-  }
-
-  protected BigDecimal computeMOQtyProduced(ManufOrder manufOrder, Product product) {
-    List<StockMoveLine> stockMoveLineList = manufOrder.getProducedStockMoveLineList();
-    BigDecimal qtyProduced = BigDecimal.ZERO;
-    for (StockMoveLine stockMoveLine : stockMoveLineList) {
-      if (product != null
-          && product.equals(stockMoveLine.getProduct())
-          && stockMoveLine.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_REALIZED)
-        qtyProduced = qtyProduced.add(stockMoveLine.getQty());
-    }
-    return qtyProduced;
   }
 }

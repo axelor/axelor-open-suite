@@ -19,28 +19,18 @@
 package com.axelor.apps.quality.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.quality.db.ControlEntry;
-import com.axelor.apps.quality.db.QIDetection;
-import com.axelor.apps.quality.db.QIIdentification;
-import com.axelor.apps.quality.db.QIResolution;
+import com.axelor.apps.quality.db.QIStatus;
 import com.axelor.apps.quality.db.QualityImprovement;
-import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.StockMove;
+import java.util.List;
 
-public interface QualityImprovementCreateService {
+public interface ReceptionQualityImprovementCancelService {
 
-  QualityImprovement createQualityImprovementFromControlEntry(
-      ControlEntry controlEntry, QIDetection qiDetection, int type) throws AxelorException;
+  List<QualityImprovement> findOpenAutomaticQualityImprovements(StockMove stockMove);
 
-  QualityImprovement createQualityImprovementFromStockMoveLine(
-      StockMoveLine stockMoveLine,
-      QIDetection qiDetection,
-      int type,
-      boolean isAutomaticallyCreated)
-      throws AxelorException;
+  boolean isUntouched(QualityImprovement qualityImprovement, QIStatus defaultQiStatus);
 
-  QualityImprovement createQualityImprovement(
-      QualityImprovement qualityImprovement,
-      QIIdentification qiIdentification,
-      QIResolution qiResolution)
-      throws AxelorException;
+  String getCancellationWarning(StockMove stockMove) throws AxelorException;
+
+  void cancelUntouchedQualityImprovements(StockMove stockMove) throws AxelorException;
 }

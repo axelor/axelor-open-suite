@@ -90,4 +90,28 @@ public final class QualityExceptionMessage {
 
   public static final String CONTROL_PLAN_FREQUENCY_ALREADY_EXISTS = /*$$(*/
       "A control plan frequency with the same name %s already exists." /*)*/;
+
+  public static final String CONTROL_ENTRY_OPEN_QUALITY_IMPROVEMENTS = /*$$(*/
+      "The quality improvement(s) %s are already open for this control entry. Create another one?" /*)*/;
+
+  public static final String QUALITY_CONFIG_QUARANTINE_STOCK_LOCATION_MISSING = /*$$(*/
+      "Please configure a quarantine stock location in the quality configuration of the company %s." /*)*/;
+
+  public static final String QUALITY_CONFIG_RECEPTION_QI_DETECTION_MISSING = /*$$(*/
+      "Please configure a detection for reception non-conformities in the quality configuration of the company %s." /*)*/;
+
+  public static final String STOCK_MOVE_LINE_OPEN_QUALITY_IMPROVEMENTS = /*$$(*/
+      "The quality improvement(s) %s are already open for this reception line. Create another one?" /*)*/;
+
+  public static final String CANCELLED_QI_STATUS_NOT_FOUND = /*$$(*/
+      "No cancelled status is configured for quality improvements." /*)*/;
+
+  public static final String RECEIPT_CANCEL_QI_CANCELLED_AND_KEPT = /*$$(*/
+      "Cancelling this receipt will cancel the quality improvement(s) %s and leave %s open because they have been worked on. Continue?" /*)*/;
+
+  public static final String RECEIPT_CANCEL_QI_CANCELLED = /*$$(*/
+      "Cancelling this receipt will cancel the quality improvement(s) %s. Continue?" /*)*/;
+
+  public static final String RECEIPT_CANCEL_QI_KEPT = /*$$(*/
+      "The quality improvement(s) %s will stay open after the cancellation because they have been worked on. Continue?" /*)*/;
 }

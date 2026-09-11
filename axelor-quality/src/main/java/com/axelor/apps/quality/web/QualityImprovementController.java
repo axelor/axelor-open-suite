@@ -24,8 +24,11 @@ import com.axelor.apps.quality.db.QIDetection;
 import com.axelor.apps.quality.db.QualityImprovement;
 import com.axelor.apps.quality.db.repo.ControlEntryRepository;
 import com.axelor.apps.quality.db.repo.QIDetectionRepository;
+import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
 import com.axelor.apps.quality.service.QualityImprovementCreateService;
 import com.axelor.apps.quality.service.QualityImprovementService;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -55,6 +58,12 @@ public class QualityImprovementController {
             .map(Long::valueOf)
             .map(controlEntryRepository::find)
             .orElse(null);
+    StockMoveLine stockMoveLine =
+        Optional.ofNullable(context.get("_stockMoveLineId"))
+            .map(Object::toString)
+            .map(Long::valueOf)
+            .map(Beans.get(StockMoveLineRepository.class)::find)
+            .orElse(null);
     QIDetection qiDetection =
         Optional.ofNullable(context.get("qiDetection"))
             .map(Map.class::cast)
@@ -64,13 +73,24 @@ public class QualityImprovementController {
             .map(qIDetectionRepository::find)
             .orElse(null);
 
-    if (controlEntry == null || qiDetection == null) {
+    int type =
+        Optional.ofNullable(context.get("type"))
+            .map(Number.class::cast)
+            .map(Number::intValue)
+            .orElse(QualityImprovementRepository.TYPE_PRODUCT);
+
+    if ((controlEntry == null && stockMoveLine == null) || qiDetection == null) {
       return;
     }
 
+    QualityImprovementCreateService qualityImprovementCreateService =
+        Beans.get(QualityImprovementCreateService.class);
     QualityImprovement qiImprovement =
-        Beans.get(QualityImprovementCreateService.class)
-            .createQualityImprovementFromControlEntry(controlEntry, qiDetection);
+        stockMoveLine != null
+            ? qualityImprovementCreateService.createQualityImprovementFromStockMoveLine(
+                stockMoveLine, qiDetection, type, false)
+            : qualityImprovementCreateService.createQualityImprovementFromControlEntry(
+                controlEntry, qiDetection, type);
     response.setView(
         ActionView.define(I18n.get("Quality improvement"))
             .model(QualityImprovement.class.getName())

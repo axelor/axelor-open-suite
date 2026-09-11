@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <form id="quality-stock-move-line-form" name="stock-move-line-form" title="Stock move line"
+    model="com.axelor.apps.stock.db.StockMoveLine" extension="true">
+    <extend target="//panel[@name='qualityPanel']/button[@name='addControlEntryBtn']">
+      <insert position="after">
+        <field name="stockMove.isReversion" hidden="true"/>
+        <button name="addQualityImprovementBtn" title="Add a quality improvement"
+          showIf="id &amp;&amp; conformitySelect == 3 &amp;&amp; stockMove.typeSelect == 3 &amp;&amp; !stockMove.isReversion"
+          readonlyIf="false"
+          onClick="action-stock-move-line-method-check-open-qi,action-view-quality-stock-move-line-create-qi"/>
+      </insert>
+    </extend>
+  </form>
+
+  <form id="quality-stock-move-line-all-form" name="stock-move-line-all-form"
+    title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine" extension="true">
+    <extend target="//panel[@name='qualityPanel']/button[@name='addControlEntryBtn']">
+      <insert position="after">
+        <field name="stockMove.typeSelect" hidden="true"/>
+        <field name="stockMove.isReversion" hidden="true"/>
+        <field name="conformitySelect" hidden="true"/>
+        <button name="addQualityImprovementBtn" title="Add a quality improvement"
+          showIf="id &amp;&amp; conformitySelect == 3 &amp;&amp; stockMove.typeSelect == 3 &amp;&amp; !stockMove.isReversion"
+          readonlyIf="false"
+          onClick="action-stock-move-line-method-check-open-qi,action-view-quality-stock-move-line-create-qi"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-method name="action-stock-move-line-method-check-open-qi">
+    <call class="com.axelor.apps.quality.web.StockMoveLineQualityController"
+      method="checkOpenQualityImprovements"/>
+  </action-method>
+
+  <action-view name="action-view-quality-stock-move-line-create-qi"
+    title="Stock move line" model="com.axelor.utils.db.Wizard">
+    <view name="qi-create-wizard-form" type="form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_stockMoveLineId" expr="eval: id"/>
+    <context name="_qiDetection"
+      expr="eval: __bean__(com.axelor.apps.quality.service.QualityImprovementPrefillService.class).getDefaultDetection(__self__)"/>
+  </action-view>
+
+</object-views>

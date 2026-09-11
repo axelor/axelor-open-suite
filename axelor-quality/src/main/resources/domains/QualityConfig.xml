@@ -21,6 +21,12 @@
     <many-to-one ref="com.axelor.apps.base.db.Sequence"
       name="qiDecisionDistributionSequence" title="Decision distribution sequence"
       help="You can select and define here the sequence that will be used for decision distributions."/>
+    <many-to-one name="quarantineStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Quarantine stock location"
+      help="Stock location receiving the non-compliant supplier reception lines of the company, unless the destination stock location defines its own quarantine stock location."/>
+    <many-to-one name="receptionQiDetection"
+      ref="com.axelor.apps.quality.db.QIDetection" title="Detection for reception non-conformities"
+      help="Detection used for the quality improvements created automatically when a non-compliant supplier reception line is realized."/>
 
     <track>
       <field name="company" on="UPDATE"/>
@@ -28,6 +34,8 @@
       <field name="qiActionDistributionSequence" on="UPDATE"/>
       <field name="qiDecisionDistributionPrintTemplate" on="UPDATE"/>
       <field name="qiDecisionDistributionSequence" on="UPDATE"/>
+      <field name="quarantineStockLocation" on="UPDATE"/>
+      <field name="receptionQiDetection" on="UPDATE"/>
     </track>
 
   </entity>

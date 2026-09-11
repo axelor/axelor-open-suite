@@ -14,10 +14,18 @@
       help="You can select here the email template sent by default when a quality control is completed."/>
     <boolean name="automaticMail" title="Automatic mail by completing quality control"
       help="When this configuration is enabled, an email will be sent automatically each time a quality control is completed."/>
+    <boolean name="redirectNonCompliantReceptionToQuarantine"
+      title="Redirect non-compliant reception lines to quarantine"
+      help="Disabled by default. When enabled, the received quantity of a non-compliant supplier reception line is moved to the quarantine stock location at realization, instead of its destination. The quarantine stock location must then be configured on the destination stock location or in the quality configuration of the company, otherwise the realization is blocked."/>
+    <boolean name="createQiOnNonCompliantReception"
+      title="Create a quality improvement on non-compliant reception lines"
+      help="Disabled by default. When enabled, a quality improvement is created automatically for each non-compliant supplier reception line at realization, using the detection for reception non-conformities of the quality configuration of the company."/>
 
     <track>
       <field name="qualityControlTemplate" on="UPDATE"/>
       <field name="automaticMail" on="UPDATE"/>
+      <field name="redirectNonCompliantReceptionToQuarantine" on="UPDATE"/>
+      <field name="createQiOnNonCompliantReception" on="UPDATE"/>
     </track>
 
   </entity>
