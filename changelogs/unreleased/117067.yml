@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed line number display in sale order report based on sale config."
+module: axelor-sale
