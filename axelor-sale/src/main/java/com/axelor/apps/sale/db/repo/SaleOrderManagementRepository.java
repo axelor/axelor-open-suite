@@ -42,6 +42,7 @@ import com.google.common.base.Strings;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
 
@@ -90,6 +91,8 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       }
       Beans.get(SaleOrderLineComputeService.class)
           .computeLevels(saleOrder.getSaleOrderLineList(), null);
+      archiveSaleOrderLines(
+          saleOrder.getSaleOrderLineList(), Boolean.TRUE.equals(saleOrder.getArchived()));
       return super.save(saleOrder);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
@@ -166,5 +169,17 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       throw new PersistenceException(e.getMessage(), e);
     }
     super.remove(saleOrder);
+  }
+
+  protected void archiveSaleOrderLines(List<SaleOrderLine> saleOrderLineList, boolean archived) {
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return;
+    }
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      if (Boolean.TRUE.equals(saleOrderLine.getArchived()) != archived) {
+        saleOrderLine.setArchived(archived);
+      }
+      archiveSaleOrderLines(saleOrderLine.getSubSaleOrderLineList(), archived);
+    }
   }
 }
