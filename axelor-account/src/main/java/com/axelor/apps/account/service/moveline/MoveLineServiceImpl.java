@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.moveline;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
@@ -66,6 +67,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -168,7 +170,7 @@ public class MoveLineServiceImpl implements MoveLineService {
    * @param moveLineList
    */
   @Override
-  public int reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList)
+  public List<String> reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList)
       throws AxelorException {
 
     if (moveLineList.isEmpty()) {
@@ -179,26 +181,30 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     moveLineTaxService.checkEmptyTaxLines(moveLineList);
 
+    List<String> errorMessages = new ArrayList<>();
+
     if (paymentService.reconcileMoveLinesWithCompatibleAccounts(moveLineList)) {
-      return 0;
+      return errorMessages;
     }
 
     Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap =
         getPopulatedReconcilableMoveLineMap(moveLineList);
 
+    this.checkReconcilableMoveLineMap(moveLineList, moveLineMap);
+
     Comparator<MoveLine> byDate = Comparator.comparing(MoveLine::getDate);
 
     int i = 0;
-    int errorNumber = 0;
 
     for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
       try {
         moveLineLists = this.findMoveLineLists(moveLineLists);
-        errorNumber +=
-            this.useExcessPaymentOnMoveLinesDontThrow(byDate, paymentService, moveLineLists);
+        errorMessages.addAll(
+            this.useExcessPaymentOnMoveLinesDontThrow(byDate, paymentService, moveLineLists));
       } catch (Exception e) {
         TraceBackService.trace(e);
         log.debug(e.getMessage());
+        errorMessages.add(I18n.get(AccountExceptionMessage.RECONCILE_MASS_ERRORS));
       } finally {
         i++;
         if (i % jpaLimit == 0) {
@@ -207,7 +213,66 @@ public class MoveLineServiceImpl implements MoveLineService {
       }
     }
 
-    return errorNumber;
+    return errorMessages.stream().distinct().collect(Collectors.toList());
+  }
+
+  protected void checkReconcilableMoveLineMap(
+      List<MoveLine> moveLineList,
+      Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap)
+      throws AxelorException {
+    String messageKey = this.getNotReconcilableMessageKey(moveLineMap);
+
+    if (messageKey != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(messageKey),
+          this.getAccountCodes(this.getMapMoveLines(moveLineMap)));
+    }
+  }
+
+  protected String getNotReconcilableMessageKey(
+      Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap) {
+    if (moveLineMap.values().stream()
+        .anyMatch(pair -> !pair.getLeft().isEmpty() && !pair.getRight().isEmpty())) {
+      return null;
+    }
+
+    boolean hasCredit = moveLineMap.values().stream().anyMatch(pair -> !pair.getLeft().isEmpty());
+    boolean hasDebit = moveLineMap.values().stream().anyMatch(pair -> !pair.getRight().isEmpty());
+
+    if (!hasCredit || !hasDebit) {
+      return AccountExceptionMessage.RECONCILE_NO_DEBIT_AND_CREDIT;
+    }
+
+    List<MoveLine> moveLineList = this.getMapMoveLines(moveLineMap);
+
+    if (moveLineList.stream().map(moveLine -> moveLine.getMove().getCompany()).distinct().count()
+        > 1) {
+      return AccountExceptionMessage.RECONCILE_DIFFERENT_COMPANIES;
+    }
+
+    if (moveLineList.stream().map(MoveLine::getAccount).distinct().count() > 1) {
+      return AccountExceptionMessage.RECONCILE_DIFFERENT_ACCOUNTS;
+    }
+
+    return AccountExceptionMessage.RECONCILE_DIFFERENT_PARTNERS;
+  }
+
+  protected List<MoveLine> getMapMoveLines(
+      Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap) {
+    return moveLineMap.values().stream()
+        .flatMap(pair -> Stream.concat(pair.getLeft().stream(), pair.getRight().stream()))
+        .collect(Collectors.toList());
+  }
+
+  protected String getAccountCodes(List<MoveLine> moveLineList) {
+    return moveLineList.stream()
+        .map(MoveLine::getAccount)
+        .filter(Objects::nonNull)
+        .map(Account::getCode)
+        .distinct()
+        .sorted()
+        .collect(Collectors.joining(", "));
   }
 
   @Override
@@ -254,7 +319,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Transactional
-  protected int useExcessPaymentOnMoveLinesDontThrow(
+  protected List<String> useExcessPaymentOnMoveLinesDontThrow(
       Comparator<MoveLine> byDate,
       PaymentService paymentService,
       Pair<List<MoveLine>, List<MoveLine>> moveLineLists) {

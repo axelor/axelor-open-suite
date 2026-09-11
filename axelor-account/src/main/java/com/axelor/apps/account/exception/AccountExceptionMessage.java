@@ -421,6 +421,14 @@ public final class AccountExceptionMessage {
 
   public static final String RECONCILE_MASS_ERRORS = /*$$(*/
       "Errors happened during the reconcile process, please check the tracebacks." /*)*/;
+  public static final String RECONCILE_NO_DEBIT_AND_CREDIT = /*$$(*/
+      "The selected move lines must include at least one debit line and one credit line with a remaining amount to reconcile." /*)*/;
+  public static final String RECONCILE_DIFFERENT_COMPANIES = /*$$(*/
+      "The selected move lines must concern the same company." /*)*/;
+  public static final String RECONCILE_DIFFERENT_ACCOUNTS = /*$$(*/
+      "Debit and credit move lines must be on the same account, but the selected move lines are on accounts %s." /*)*/;
+  public static final String RECONCILE_DIFFERENT_PARTNERS = /*$$(*/
+      "Debit and credit move lines on account %s must have the same partner." /*)*/;
 
   public static final String ALREADY_HAVE_PROPOSAL_RECONCILE = /*$$(*/
       "Some selected MoveLines already have a proposal ReconcileGroup" /*)*/;

@@ -126,15 +126,15 @@ public class MoveLineController {
           Beans.get(MoveLineControlService.class)
               .getPendingPaymentMessages(moveLineService.getMoveLines(idList));
 
-      int errorNumber =
+      List<String> errorMessages =
           moveLineService.reconcileMoveLinesWithCacheManagement(
               moveLineService.getReconcilableMoveLines(idList));
 
       response.setReload(true);
       if (!pendingPaymentMessages.isEmpty()) {
         response.setError(String.join("<br/>", pendingPaymentMessages));
-      } else if (errorNumber > 0) {
-        response.setInfo(I18n.get(AccountExceptionMessage.RECONCILE_MASS_ERRORS));
+      } else if (!errorMessages.isEmpty()) {
+        response.setError(String.join("<br/>", errorMessages));
       }
 
     } catch (Exception e) {
