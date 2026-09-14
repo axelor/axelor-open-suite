@@ -27,6 +27,13 @@
         grid-view="sequence-grid" canNew="true" canEdit="true"
         domain="self.codeSelect = 'qiDecisionDistribution' AND self.company = :company"/>
     </panel>
+    <panel name="receptionQuarantinePanel" title="Non-compliant receptions">
+      <field name="quarantineStockLocation" canEdit="false"
+        domain="self.company = :company AND self.typeSelect = 1" form-view="stock-location-form"
+        grid-view="stock-location-grid"/>
+      <field name="receptionQiDetection" canEdit="false" domain="self.origin = 1"
+        form-view="qi-detection-form" grid-view="qi-detection-grid"/>
+    </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>

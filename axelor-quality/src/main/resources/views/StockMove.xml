@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <action-group id="quality-action-group-stock-stockmove-cancel-click"
+    name="action-group-stock-stockmove-cancel-click">
+    <action name="save"/>
+    <action name="action-validate-stock-move-validate-cancel"/>
+    <action name="action-supplychain-stock-move-method-check-invoice-status"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-quality-stock-move-method-check-automatic-qi"
+      if="__config__.app.isApp('quality')"/>
+    <action name="action.stock.move.view.cancel"/>
+  </action-group>
+
+  <action-method name="action-quality-stock-move-method-check-automatic-qi">
+    <call class="com.axelor.apps.quality.web.StockMoveQualityController"
+      method="checkAutomaticQualityImprovements"/>
+  </action-method>
+
+</object-views>
