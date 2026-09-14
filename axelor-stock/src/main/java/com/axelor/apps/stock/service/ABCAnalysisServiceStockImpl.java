@@ -108,11 +108,11 @@ public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
         productWorth = productWorth.add(stockLocationLine.getAvgPrice());
       }
 
-      super.incTotalQty(productQty);
-      super.incTotalWorth(productWorth);
-
       JPA.clear();
     }
+
+    super.incTotalQty(productQty);
+    super.incTotalWorth(productWorth);
 
     if (abcAnalysisLine != null) {
       setQtyWorth(
