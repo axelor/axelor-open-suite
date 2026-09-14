@@ -864,10 +864,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       partner = partnerRepo.find(partner.getId());
     }
 
-    MoveLine cashMoveLine =
-        this.generateMoveLine(
-            move, partner, cashAccount, paymentAmount, move.getOrigin(), description, !out);
-    cashMoveLine.setAmountPaid(out ? cashMoveLine.getCredit() : cashMoveLine.getDebit());
+    this.generateMoveLine(
+        move, partner, cashAccount, paymentAmount, move.getOrigin(), description, !out);
 
     return moveRepo.save(move);
   }
