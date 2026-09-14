@@ -1,0 +1,18 @@
+---
+title: "Stock: fixed archived planned stock move lines not being deleted when a planned stock move is cancelled."
+module: axelor-stock
+developer: |
+  Planned stock move lines orphaned by past cancellations are not removed by the fix.
+  Check the count before deleting, and do not drop the planned_stock_move rows of moves
+  that are still planned.
+
+  ```sql
+  SELECT count(*) FROM stock_stock_move_line sml
+    JOIN stock_stock_move sm ON sm.id = sml.planned_stock_move
+   WHERE sml.archived = true AND sml.stock_move IS NULL AND sm.status_select = 4;
+
+  DELETE FROM stock_stock_move_line sml
+   USING stock_stock_move sm
+   WHERE sm.id = sml.planned_stock_move
+     AND sml.archived = true AND sml.stock_move IS NULL AND sm.status_select = 4;
+  ```
