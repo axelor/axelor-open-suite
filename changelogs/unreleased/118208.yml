@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed overstated foreign exchange difference when a payment does not fully cover an invoice in currency."
+module: axelor-account
