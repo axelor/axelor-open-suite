@@ -67,7 +67,8 @@ public class AccountingBatchController {
                   .map(bd -> bd.getId())
                   .collect(Collectors.toList()));
         }
-        sb.append(" AND self.companyBankDetails IN (" + Joiner.on(",").join(bankDetailsIds) + ") ");
+        sb.append(
+            " AND self.companyBankDetails.id IN (" + Joiner.on(",").join(bankDetailsIds) + ") ");
       }
       actionViewBuilder.context("statusSelect", InvoiceRepository.STATUS_VENTILATED);
       actionViewBuilder.context(
