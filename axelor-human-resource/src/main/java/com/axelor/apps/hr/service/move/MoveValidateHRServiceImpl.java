@@ -110,6 +110,11 @@ public class MoveValidateHRServiceImpl extends MoveValidateServiceImpl
 
   @Override
   public void checkTaxAmount(Move move) throws AxelorException {
+    if (!appBaseService.isApp("expense")) {
+      super.checkTaxAmount(move);
+      return;
+    }
+
     if (expenseRepository.all().filter("self.expenseSeq = ?", move.getOrigin()).fetch().isEmpty()) {
       super.checkTaxAmount(move);
     }

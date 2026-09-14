@@ -1,0 +1,35 @@
+---
+title: "App check: axelor-human-resource no longer changes the behaviour of the modules it extends when its apps are not installed."
+module: axelor-human-resource
+developer: |
+  The 14 remaining cross-module overrides of `axelor-human-resource` now guard their HR specific
+  behaviour on `isApp(...)` and delegate to `super` when the app is off. The module declares
+  four apps (`employee`, `expense`, `timesheet`, `leave`) where `expense`, `timesheet` and
+  `leave` all depend on `employee`, so the guard uses the app that owns the added behaviour:
+
+  - `isApp("expense")` for the overrides of `axelor-account` and `axelor-bank-payment` that
+    branch on `Move.expense` / `Expense`: `BatchCreditTransferExpensePaymentHR`,
+    `BankOrderLineOriginServiceHRImpl`, `MoveValidateHRServiceImpl`, `MoveLineTaxHRServiceImpl`,
+    `ReconcileCheckServiceHRImpl`, `AnalyticMoveLineGenerateRealServiceHrImpl`.
+  - `isApp("employee")` for the overrides driven by the employee link: `UserHRRepository`,
+    `PartnerHRRepository`, `PartnerConvertHRServiceImpl`, and the three overrides of
+    `axelor-project` (`ProjectDashboardHRServiceImpl`, `ProjectActivityDashboardServiceHRImpl`,
+    `TaskTemplateHrServiceImpl`), consistent with `ProjectHRRepository` and
+    `ProjectTaskHRRepository` which already guard on that app.
+
+  The check is done with the app service already injected in the class when there is one
+  (`AppBaseService`, own or inherited), otherwise it comes in through the existing constructor.
+  The classes with no constructor read it with `Beans.get(AppBaseService.class)`.
+
+  `AccountConfigHRService` and `PublicHolidayHrServiceImpl` needed no guard and are listed in
+  `config/app-override-guard-allowlist.txt` as justified exceptions: both are bound in place of
+  a class of a lower module but override none of its methods. `AccountConfigHRService` only adds
+  the expense account getters, and `PublicHolidayHrServiceImpl.checkPublicHolidayDay(LocalDate,
+  Employee)` is an overload declared by `PublicHolidayHrService`, not an override of
+  `PublicHolidayServiceImpl.checkPublicHolidayDay(LocalDate, EventsPlanning)`.
+
+  The following classes get a new constructor parameter, which breaks subclasses calling it:
+
+  - `com.axelor.apps.hr.service.PartnerConvertHRServiceImpl`
+  - `com.axelor.apps.hr.service.bankorder.BankOrderLineOriginServiceHRImpl`
+  - `com.axelor.apps.hr.service.ReconcileCheckServiceHRImpl`

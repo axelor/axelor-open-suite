@@ -60,6 +60,11 @@ public class AnalyticMoveLineGenerateRealServiceHrImpl
       AnalyticMoveLine forecastAnalyticMoveLine, MoveLine moveLine) {
     AnalyticMoveLine analyticMoveLine =
         super.createFromForecast(forecastAnalyticMoveLine, moveLine);
+
+    if (!appBaseService.isApp("expense")) {
+      return analyticMoveLine;
+    }
+
     analyticMoveLine.setExpenseLine(null);
     return analyticMoveLine;
   }

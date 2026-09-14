@@ -25,9 +25,12 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.reconcile.ReconcileCheckServiceImpl;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import jakarta.inject.Inject;
 
 public class ReconcileCheckServiceHRImpl extends ReconcileCheckServiceImpl {
+
+  protected final AppBaseService appBaseService;
 
   @Inject
   public ReconcileCheckServiceHRImpl(
@@ -35,17 +38,23 @@ public class ReconcileCheckServiceHRImpl extends ReconcileCheckServiceImpl {
       InvoiceTermPfpService invoiceTermPfpService,
       InvoiceTermToolService invoiceTermToolService,
       MoveLineToolService moveLineToolService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      AppBaseService appBaseService) {
     super(
         currencyScaleService,
         invoiceTermPfpService,
         invoiceTermToolService,
         moveLineToolService,
         currencyService);
+    this.appBaseService = appBaseService;
   }
 
   @Override
   protected boolean isMissingTax(MoveLine it) {
+    if (!appBaseService.isApp("expense")) {
+      return super.isMissingTax(it);
+    }
+
     return it.getMove().getExpense() == null && super.isMissingTax(it);
   }
 }

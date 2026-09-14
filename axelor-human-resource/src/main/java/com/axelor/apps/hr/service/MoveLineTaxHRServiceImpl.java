@@ -59,6 +59,10 @@ public class MoveLineTaxHRServiceImpl extends MoveLineTaxServiceImpl {
   @Override
   public boolean isMoveLineTaxAccountRequired(MoveLine moveLine, int functionalOriginSelect) {
 
+    if (!appBaseService.isApp("expense")) {
+      return super.isMoveLineTaxAccountRequired(moveLine, functionalOriginSelect);
+    }
+
     if (moveLine.getMove() == null) {
       return super.isMoveLineTaxAccountRequired(moveLine, functionalOriginSelect);
     }

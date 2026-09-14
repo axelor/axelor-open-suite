@@ -18,10 +18,12 @@
  */
 package com.axelor.apps.hr.service.project;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectActivityDashboardServiceImpl;
+import com.axelor.inject.Beans;
 import com.axelor.mail.db.MailMessage;
 import jakarta.inject.Inject;
 import java.util.List;
@@ -34,6 +36,10 @@ public class ProjectActivityDashboardServiceHRImpl extends ProjectActivityDashbo
 
   @Override
   protected String getActionLink(String model) {
+    if (!Beans.get(AppBaseService.class).isApp("employee")) {
+      return super.getActionLink(model);
+    }
+
     if (TimesheetLine.class.getName().equals(model)) {
       return "#/ds/project.spent.time/edit/";
     }
@@ -43,6 +49,11 @@ public class ProjectActivityDashboardServiceHRImpl extends ProjectActivityDashbo
   @Override
   protected List<String> getRelatedModels() {
     List<String> relatedModelsList = super.getRelatedModels();
+
+    if (!Beans.get(AppBaseService.class).isApp("employee")) {
+      return relatedModelsList;
+    }
+
     relatedModelsList.add(TimesheetLine.class.getName());
     return relatedModelsList;
   }
@@ -50,6 +61,10 @@ public class ProjectActivityDashboardServiceHRImpl extends ProjectActivityDashbo
   @Override
   protected Project getActivityProject(
       Project project, MailMessage message, Set<Long> projectIdSet) {
+    if (!Beans.get(AppBaseService.class).isApp("employee")) {
+      return super.getActivityProject(project, message, projectIdSet);
+    }
+
     if (TimesheetLine.class.getName().equals(message.getRelatedModel())) {
       TimesheetLine timesheetLine = timesheetLineRepo.find(message.getRelatedId());
       if (timesheetLine != null) {
@@ -66,6 +81,11 @@ public class ProjectActivityDashboardServiceHRImpl extends ProjectActivityDashbo
   @Override
   protected Map<String, Object> getModelWithUtilityClass(MailMessage message) {
     Map<String, Object> dataMap = super.getModelWithUtilityClass(message);
+
+    if (!Beans.get(AppBaseService.class).isApp("employee")) {
+      return dataMap;
+    }
+
     if (TimesheetLine.class.getName().equals(message.getRelatedModel())) {
       dataMap.put("modelName", "Timesheet line");
       dataMap.put("utilityClass", "danger");

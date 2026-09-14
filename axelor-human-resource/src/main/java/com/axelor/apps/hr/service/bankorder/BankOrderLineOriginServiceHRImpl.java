@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceImpl;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.db.Model;
 import com.axelor.dms.db.repo.DMSFileRepository;
@@ -31,23 +32,31 @@ import java.time.LocalDate;
 
 public class BankOrderLineOriginServiceHRImpl extends BankOrderLineOriginServiceImpl {
 
+  protected final AppBaseService appBaseService;
+
   @Inject
   public BankOrderLineOriginServiceHRImpl(
       BankOrderLineOriginRepository bankOrderLineOriginRepository,
       InvoiceTermRepository invoiceTermRepository,
       InvoiceRepository invoiceRepository,
       DMSFileRepository dmsFileRepository,
-      MetaFiles metaFiles) {
+      MetaFiles metaFiles,
+      AppBaseService appBaseService) {
     super(
         bankOrderLineOriginRepository,
         invoiceTermRepository,
         invoiceRepository,
         dmsFileRepository,
         metaFiles);
+    this.appBaseService = appBaseService;
   }
 
   @Override
   protected String computeRelatedToSelectName(Model model) {
+
+    if (!appBaseService.isApp("expense")) {
+      return super.computeRelatedToSelectName(model);
+    }
 
     if (model instanceof Expense) {
 
@@ -62,6 +71,10 @@ public class BankOrderLineOriginServiceHRImpl extends BankOrderLineOriginService
   @Override
   protected LocalDate computeRelatedToSelectDate(Model model) {
 
+    if (!appBaseService.isApp("expense")) {
+      return super.computeRelatedToSelectDate(model);
+    }
+
     if (model instanceof Expense) {
 
       return ((Expense) model).getValidationDateTime().toLocalDate();
@@ -74,6 +87,10 @@ public class BankOrderLineOriginServiceHRImpl extends BankOrderLineOriginService
 
   @Override
   protected LocalDate computeRelatedToSelectDueDate(Model model) {
+
+    if (!appBaseService.isApp("expense")) {
+      return super.computeRelatedToSelectDueDate(model);
+    }
 
     if (model instanceof Expense) {
 

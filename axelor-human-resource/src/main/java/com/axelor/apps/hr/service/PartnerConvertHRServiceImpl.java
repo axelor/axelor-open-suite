@@ -21,6 +21,7 @@ package com.axelor.apps.hr.service;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerConvertServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.google.inject.persist.Transactional;
@@ -29,18 +30,27 @@ import jakarta.inject.Inject;
 public class PartnerConvertHRServiceImpl extends PartnerConvertServiceImpl {
 
   protected final EmployeeRepository employeeRepository;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public PartnerConvertHRServiceImpl(
-      PartnerService partnerService, EmployeeRepository employeeRepository) {
+      PartnerService partnerService,
+      EmployeeRepository employeeRepository,
+      AppBaseService appBaseService) {
     super(partnerService);
     this.employeeRepository = employeeRepository;
+    this.appBaseService = appBaseService;
   }
 
   @Transactional
   @Override
   public void convertToIndividualPartner(Partner partner) {
     super.convertToIndividualPartner(partner);
+
+    if (!appBaseService.isApp("employee")) {
+      return;
+    }
+
     Employee employee = partner.getEmployee();
     if (employee == null) {
       return;
