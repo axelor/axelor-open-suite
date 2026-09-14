@@ -214,6 +214,9 @@
     <attribute for="typeSelect" name="value"
       if="__parent__?._model == 'com.axelor.apps.contract.db.ContractLine'"
       expr="eval: AnalyticMoveLineRepository.STATUS_FORECAST_CONTRACT"/>
+    <attribute for="typeSelect" name="value"
+      if="__parent__?._model == 'com.axelor.apps.hr.db.ExpenseLine'"
+      expr="eval: AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE"/>
   </action-attrs>
 
   <action-attrs name="action-analytic-move-line-attrs-hide-fields">

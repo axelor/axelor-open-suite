@@ -36,4 +36,6 @@ public interface ExpenseAnalyticService {
       throws AxelorException;
 
   void applyAnalyticDistribution(ExpenseLine expenseLine) throws AxelorException;
+
+  ExpenseLine refreshAnalyticDistribution(ExpenseLine expenseLine) throws AxelorException;
 }

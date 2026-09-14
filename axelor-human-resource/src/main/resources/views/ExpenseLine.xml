@@ -30,7 +30,8 @@
     <field name="analyticDistributionTemplate" canView="false"
       if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
-      form-view="analytic-distribution-template-form" width="200"/>
+      form-view="analytic-distribution-template-form" width="200"
+      onChange="action-expense-line-method-create-distribution"/>
     <field name="totalAmount" validIf="$number(totalAmount) &gt;= $number(totalTax)"
       aggregate="sum" onChange="action-expense-line-group-total-grid-amount-on-change" width="170"/>
     <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
@@ -80,7 +81,8 @@
     <field name="analyticDistributionTemplate" canView="false"
       if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
-      form-view="analytic-distribution-template-form" width="200"/>
+      form-view="analytic-distribution-template-form" width="200"
+      onChange="action-expense-line-method-create-distribution"/>
     <field name="totalAmount" title="Total A.T.I" width="85" readonly="true"
       onChange="action-expense-line-method-compute-untaxed-and-company-amounts, action-expense-line-method-compute-analytic-distribution"/>
     <field name="comments" width="250"/>
@@ -187,7 +189,7 @@
 
       <panel name="analyticDistributionPanel" title="Analytic distribution"
         if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
-        showIf="expense.statusSelect >= 3" readonlyIf="expense.ventilated">
+        showIf="expense.statusSelect >= 3" readonlyIf="expense.ventilated" colSpan="12">
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form" canEdit="false"
@@ -464,6 +466,7 @@
 
   <action-group name="action-expense-line-group-total-grid-amount-on-change">
     <action name="action-expense-line-method-compute-untaxed-and-company-amounts"/>
+    <action name="action-expense-line-method-compute-analytic-distribution"/>
     <action name="action-expense-line-validate-totalAmount"/>
   </action-group>
 
