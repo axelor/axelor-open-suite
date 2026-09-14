@@ -31,6 +31,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -135,11 +136,13 @@ public class AnalyticAxisServiceImpl implements AnalyticAxisService {
   public void checkAnalyticDistributionLinesRequiredAxisByCompany(
       Company company, List<AnalyticDistributionLine> analyticDistributionLineList)
       throws AxelorException {
+    List<AnalyticDistributionLine> lines =
+        ObjectUtils.isEmpty(analyticDistributionLineList)
+            ? Collections.emptyList()
+            : analyticDistributionLineList;
     this.checkRequiredAxisByCompany(
         company,
-        analyticDistributionLineList.stream()
-            .map(AnalyticDistributionLine::getAnalyticAxis)
-            .collect(Collectors.toList()));
+        lines.stream().map(AnalyticDistributionLine::getAnalyticAxis).collect(Collectors.toList()));
   }
 
   @Override
