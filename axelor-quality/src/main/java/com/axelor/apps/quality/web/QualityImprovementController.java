@@ -24,6 +24,7 @@ import com.axelor.apps.quality.db.QIDetection;
 import com.axelor.apps.quality.db.QualityImprovement;
 import com.axelor.apps.quality.db.repo.ControlEntryRepository;
 import com.axelor.apps.quality.db.repo.QIDetectionRepository;
+import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
 import com.axelor.apps.quality.service.QualityImprovementCreateService;
 import com.axelor.apps.quality.service.QualityImprovementService;
 import com.axelor.auth.AuthUtils;
@@ -64,13 +65,19 @@ public class QualityImprovementController {
             .map(qIDetectionRepository::find)
             .orElse(null);
 
+    int type =
+        Optional.ofNullable(context.get("type"))
+            .map(Number.class::cast)
+            .map(Number::intValue)
+            .orElse(QualityImprovementRepository.TYPE_PRODUCT);
+
     if (controlEntry == null || qiDetection == null) {
       return;
     }
 
     QualityImprovement qiImprovement =
         Beans.get(QualityImprovementCreateService.class)
-            .createQualityImprovementFromControlEntry(controlEntry, qiDetection);
+            .createQualityImprovementFromControlEntry(controlEntry, qiDetection, type);
     response.setView(
         ActionView.define(I18n.get("Quality improvement"))
             .model(QualityImprovement.class.getName())

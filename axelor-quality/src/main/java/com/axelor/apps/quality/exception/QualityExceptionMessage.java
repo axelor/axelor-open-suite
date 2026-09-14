@@ -90,4 +90,7 @@ public final class QualityExceptionMessage {
 
   public static final String CONTROL_PLAN_FREQUENCY_ALREADY_EXISTS = /*$$(*/
       "A control plan frequency with the same name %s already exists." /*)*/;
+
+  public static final String CONTROL_ENTRY_OPEN_QUALITY_IMPROVEMENTS = /*$$(*/
+      "The quality improvement(s) %s are already open for this control entry. Create another one?" /*)*/;
 }

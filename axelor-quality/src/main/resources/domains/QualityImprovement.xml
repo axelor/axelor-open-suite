@@ -29,6 +29,10 @@
     <many-to-one ref="com.axelor.apps.quality.db.QIAnalysisMethod" name="analysisMethod"
       title="Analysis Method"/>
 
+    <finder-method name="findOpenByControlEntryId" using="Long:controlEntryId"
+      filter="self.qiIdentification.controlEntry.id = :controlEntryId AND self.qiStatus.isClosedStatus = false AND self.qiStatus.isCancelledStatus = false"
+      all="true"/>
+
     <extra-code><![CDATA[
     		// TYPE SELECT
 	    public static final int TYPE_PRODUCT = 1;
