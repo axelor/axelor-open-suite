@@ -33,7 +33,7 @@
 
   <action-attrs name="action-employment-attrs-qualification-level-set-domain">
     <attribute for="qualificationLevelSet" name="domain"
-      expr="eval: &quot;self.collectiveAgreement = :collectiveAgreement and self.qualification IN (${qualificationSet?.collect{it.id}?.join(',')})&quot;"/>
+      expr="eval: &quot;self.collectiveAgreement = :collectiveAgreement and self.qualification.id IN (${qualificationSet?.collect{it.id}?.join(',')})&quot;"/>
   </action-attrs>
 
 </object-views>

@@ -64,7 +64,7 @@ public class DataSharingProductWizardServiceImpl implements DataSharingProductWi
     }
     if (!CollectionUtils.isEmpty(productCategorySet)) {
       conditionList.add(
-          "self.productCategory IN (" + StringHelper.getIdListString(productCategorySet) + ")");
+          "self.productCategory.id IN (" + StringHelper.getIdListString(productCategorySet) + ")");
     }
     if (!CollectionUtils.isEmpty(conditionList)) {
       for (String condition : conditionList) {
