@@ -264,6 +264,11 @@
           <field name="paymentDate" showIf="paymentDate" colSpan="4" readonly="true"/>
           <field name="bankOrder" hidden="true" showIf="bankOrder" colSpan="4"/>
         </panel>
+        <panel name="analyticAccountingPanel" title="Analytic Accounting" colSpan="12"
+          hidden="true">
+          <panel-dashlet action="action-expense-view-show-analytic-lines" colSpan="12"
+            readonly="true"/>
+        </panel>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">
@@ -315,6 +320,7 @@
     <action name="action-expense-group-hide-button-readonly-field"/>
     <action name="action-expense-method-compute-dummy-amounts"/>
     <action name="action-expense-attrs-kilometric-panel-visibility"/>
+    <action name="action-expense-attrs-set-hidden-analytic-accounting-panel"/>
     <action name="action-validate-check-user-employee"/>
   </action-group>
 
@@ -323,6 +329,7 @@
     <action name="action-expense-attrs-expense-company-cb"/>
     <action name="action-expense-method-compute-dummy-amounts"/>
     <action name="action-expense-attrs-kilometric-panel-visibility"/>
+    <action name="action-expense-attrs-set-hidden-analytic-accounting-panel"/>
     <action name="action-expense-method-check-total-amount"/>
   </action-group>
 
@@ -368,6 +375,7 @@
   <action-group name="action-expense-group-company-onchange">
     <action name="action-expense-record-company-onchange"/>
     <action name="action-expense-attrs-kilometric-panel-visibility"/>
+    <action name="action-expense-attrs-set-hidden-analytic-accounting-panel"/>
     <action name="action-expense-group-recompute-company-amounts"/>
   </action-group>
 
@@ -604,9 +612,22 @@
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="checkAnalyticAxis"/>
   </action-method>
 
+  <action-attrs name="action-expense-attrs-set-hidden-analytic-accounting-panel">
+    <attribute name="hidden" for="analyticAccountingPanel"
+      expr="eval: !__config__.app.isApp('account') || !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !company?.accountConfig?.getManageAnalyticAccounting()"/>
+  </action-attrs>
+
   <action-method name="action-expense-method-show-related-moves">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="showRelatedMoves"/>
   </action-method>
+
+  <action-view name="action-expense-view-show-analytic-lines"
+    model="com.axelor.apps.account.db.AnalyticMoveLine" title="Related Analytic Movelines">
+    <view type="grid" name="analytic-move-line-invoice-grid"/>
+    <view type="form" name="analytic-move-line-move-line-form"/>
+    <domain>self.expenseLine.expense.id = :expenseId AND self.typeSelect = 2</domain>
+    <context name="expenseId" expr="eval: __self__?.id != null ? __self__.id : 0"/>
+  </action-view>
 
   <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense"
     title="Expense filters">
