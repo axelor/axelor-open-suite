@@ -484,11 +484,11 @@
 
   <action-attrs name="action-purchase-order-line-attrs-readonly-form">
     <attribute name="readonly" for="infoPanel"
-      expr="eval: __parent__?.statusSelect &gt; 2"/>
+      expr="eval: __parent__?.statusSelect &gt; 2 &amp;&amp; (!__parent__?.orderBeingEdited || receivedQty &gt; 0 || amountInvoiced &gt; 0)"/>
     <attribute name="readonly" for="qtyPricePanel"
       expr="eval: __parent__?.statusSelect &gt; 2 &amp;&amp; !__parent__?.orderBeingEdited"/>
     <attribute name="readonly" for="detailsPanel"
-      expr="eval: __parent__?.statusSelect &gt; 2"/>
+      expr="eval: __parent__?.statusSelect &gt; 2 &amp;&amp; (!__parent__?.orderBeingEdited || receivedQty &gt; 0 || amountInvoiced &gt; 0)"/>
     <attribute name="readonly" for="supplierRequestsPanel"
       expr="eval: __parent__?.statusSelect &gt; 2"/>
     <attribute name="readonly" for="deliveryInformationPanel"
