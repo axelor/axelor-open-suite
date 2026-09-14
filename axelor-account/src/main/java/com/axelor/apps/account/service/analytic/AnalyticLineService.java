@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.analytic;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -29,23 +30,24 @@ import java.util.List;
 
 public interface AnalyticLineService {
 
-  AnalyticJournal getAnalyticJournal(AnalyticLine line) throws AxelorException;
+  AnalyticJournal getAnalyticJournal(AnalyticLineModel analyticLineModel) throws AxelorException;
 
-  LocalDate getDate(AnalyticLine line);
+  LocalDate getDate(AnalyticLine line, Company company);
 
-  Currency getCompanyCurrency(AnalyticLine analyticLine);
+  Currency getCompanyCurrency(AnalyticLineModel analyticLineModel);
 
-  List<Long> getAxisDomains(AnalyticLine line, Company company, int position)
+  List<Long> getAxisDomains(AnalyticLineModel analyticLineModel, Company company, int position)
       throws AxelorException;
 
-  boolean isAxisRequired(AnalyticLine line, Company company, int position) throws AxelorException;
+  boolean isAxisRequired(AnalyticLineModel analyticLineModel, int position) throws AxelorException;
 
   AnalyticLine checkAnalyticLineForAxis(AnalyticLine line);
 
-  AnalyticLine setAnalyticAccount(AnalyticLine line, Company company) throws AxelorException;
+  void setAnalyticAccount(AnalyticLine line, Company company) throws AxelorException;
 
   boolean checkAnalyticLinesByAxis(AnalyticLine analyticLine, int position, Company company)
       throws AxelorException;
 
-  List<Long> getAnalyticAccountsByAxis(AnalyticLine line, AnalyticAxis analyticAxis);
+  List<Long> getAnalyticAccountsByAxis(
+      AnalyticLineModel analyticLineModel, AnalyticAxis analyticAxis);
 }

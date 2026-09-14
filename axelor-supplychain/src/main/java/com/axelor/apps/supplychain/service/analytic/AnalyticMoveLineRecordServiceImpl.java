@@ -20,11 +20,11 @@ package com.axelor.apps.supplychain.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.Optional;

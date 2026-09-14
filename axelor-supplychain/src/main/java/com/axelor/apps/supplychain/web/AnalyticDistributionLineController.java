@@ -21,10 +21,10 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.model.AnalyticLineModel;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
-import com.axelor.apps.supplychain.service.analytic.AnalyticLineModelFindService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticMoveLineRecordService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -67,7 +67,8 @@ public class AnalyticDistributionLineController {
     AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
 
     AnalyticLineModel parent =
-        AnalyticLineModelFindService.getAnalyticLineModel(request, analyticMoveLine);
+        Beans.get(AnalyticMoveLineParentService.class)
+            .getModelUsingAnalyticMoveLine(analyticMoveLine, request.getContext());
 
     if (parent != null) {
       Beans.get(AnalyticMoveLineRecordService.class).onNew(parent, analyticMoveLine);

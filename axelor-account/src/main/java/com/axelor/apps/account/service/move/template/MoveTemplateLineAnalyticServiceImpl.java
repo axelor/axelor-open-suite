@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelInitAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -72,7 +73,10 @@ public class MoveTemplateLineAnalyticServiceImpl implements MoveTemplateLineAnal
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     Company company = moveTemplate != null ? moveTemplate.getCompany() : null;
-    analyticAttrsService.addAnalyticAccountRequired(moveTemplateLine, company, attrsMap);
+    analyticAttrsService.addAnalyticAccountRequired(
+        AnalyticLineModelInitAccountService.castAsAnalyticLineModel(moveTemplateLine, moveTemplate),
+        company,
+        attrsMap);
 
     return attrsMap;
   }
@@ -87,7 +91,7 @@ public class MoveTemplateLineAnalyticServiceImpl implements MoveTemplateLineAnal
     }
 
     analyticAttrsService.addAnalyticDistributionTemplateDomain(
-        moveTemplateLine,
+        AnalyticLineModelInitAccountService.castAsAnalyticLineModel(moveTemplateLine, moveTemplate),
         moveTemplateLine.getPartner(),
         moveTemplateLine.getProduct(),
         moveTemplate.getCompany(),
@@ -118,7 +122,10 @@ public class MoveTemplateLineAnalyticServiceImpl implements MoveTemplateLineAnal
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     Company company = moveTemplate != null ? moveTemplate.getCompany() : null;
-    analyticAttrsService.addAnalyticAccountRequired(moveTemplateLine, company, attrsMap);
+    analyticAttrsService.addAnalyticAccountRequired(
+        AnalyticLineModelInitAccountService.castAsAnalyticLineModel(moveTemplateLine, moveTemplate),
+        company,
+        attrsMap);
 
     return attrsMap;
   }
@@ -137,7 +144,10 @@ public class MoveTemplateLineAnalyticServiceImpl implements MoveTemplateLineAnal
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     Company company = moveTemplate != null ? moveTemplate.getCompany() : null;
-    analyticAttrsService.addAnalyticAccountRequired(moveTemplateLine, company, attrsMap);
+    analyticAttrsService.addAnalyticAccountRequired(
+        AnalyticLineModelInitAccountService.castAsAnalyticLineModel(moveTemplateLine, moveTemplate),
+        company,
+        attrsMap);
 
     return attrsMap;
   }
@@ -162,7 +172,10 @@ public class MoveTemplateLineAnalyticServiceImpl implements MoveTemplateLineAnal
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     Company company = moveTemplate != null ? moveTemplate.getCompany() : null;
-    analyticAttrsService.addAnalyticAccountRequired(moveTemplateLine, company, attrsMap);
+    analyticAttrsService.addAnalyticAccountRequired(
+        AnalyticLineModelInitAccountService.castAsAnalyticLineModel(moveTemplateLine, moveTemplate),
+        company,
+        attrsMap);
 
     if (company != null) {
       analyticAttrsService.addAnalyticAxisAttrs(company, null, attrsMap);

@@ -21,6 +21,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelInitAccountService;
 import com.axelor.apps.account.service.move.template.MoveTemplateLineAnalyticService;
 import com.axelor.apps.account.service.move.template.MoveTemplateLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
@@ -114,7 +115,9 @@ public class MoveTemplateLineController {
 
       response.setAttrs(
           Beans.get(AnalyticGroupService.class)
-              .getAnalyticAxisDomainAttrsMap(moveTemplateLine, moveTemplate.getCompany()));
+              .getAnalyticAxisDomainAttrsMap(
+                  AnalyticLineModelInitAccountService.castAsAnalyticLineModel(
+                      moveTemplateLine, moveTemplate)));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

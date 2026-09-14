@@ -18,8 +18,12 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.base.AxelorException;
@@ -158,10 +162,12 @@ public class AnalyticLineComputeServiceImpl implements AnalyticLineComputeServic
       return;
     }
 
+    Account account = this.getAccount(analyticLine);
+
     for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-      if (analyticLine.getAccount() != null) {
-        analyticMoveLine.setAccount(analyticLine.getAccount());
-        analyticMoveLine.setAccountType(analyticLine.getAccount().getAccountType());
+      if (account != null) {
+        analyticMoveLine.setAccount(account);
+        analyticMoveLine.setAccountType(account.getAccountType());
       }
     }
   }
@@ -220,11 +226,30 @@ public class AnalyticLineComputeServiceImpl implements AnalyticLineComputeServic
     analyticMoveLineService.setAnalyticCurrency(company, analyticMoveLine);
 
     analyticMoveLine.setDate(date);
-    if (analyticLine.getAccount() != null) {
-      analyticMoveLine.setAccount(analyticLine.getAccount());
-      analyticMoveLine.setAccountType(analyticLine.getAccount().getAccountType());
+
+    Account account = this.getAccount(analyticLine);
+    if (account != null) {
+      analyticMoveLine.setAccount(account);
+      analyticMoveLine.setAccountType(account.getAccountType());
     }
     analyticMoveLine.setAmount(amount);
     return analyticMoveLine;
+  }
+
+  /**
+   * Returns the accounting account of an analytic line. Only accounting lines carry one: order and
+   * contract lines implement {@link AnalyticLine} without an account, hence the type check instead
+   * of a method on the interface.
+   */
+  protected Account getAccount(AnalyticLine analyticLine) {
+    if (analyticLine instanceof MoveLine) {
+      return ((MoveLine) analyticLine).getAccount();
+    } else if (analyticLine instanceof MoveTemplateLine) {
+      return ((MoveTemplateLine) analyticLine).getAccount();
+    } else if (analyticLine instanceof InvoiceLine) {
+      return ((InvoiceLine) analyticLine).getAccount();
+    }
+
+    return null;
   }
 }

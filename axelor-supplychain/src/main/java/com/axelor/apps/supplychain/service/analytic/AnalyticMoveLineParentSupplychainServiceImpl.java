@@ -19,9 +19,11 @@
 package com.axelor.apps.supplychain.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentServiceImpl;
 import com.axelor.apps.base.AxelorException;
@@ -31,7 +33,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import com.axelor.rpc.Context;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.util.Optional;
@@ -66,19 +68,16 @@ public class AnalyticMoveLineParentSupplychainServiceImpl
     SaleOrderLine saleOrderLine = analyticMoveLine.getSaleOrderLine();
     AnalyticLineModel analyticLineModel = null;
     if (purchaseOrderLine != null) {
-      analyticLineModel =
-          new AnalyticLineModel(purchaseOrderLine, purchaseOrderLine.getPurchaseOrder());
       analyticLineService.setAnalyticAccount(
-          analyticLineModel,
+          (AnalyticLine) purchaseOrderLine,
           Optional.of(purchaseOrderLine)
               .map(PurchaseOrderLine::getPurchaseOrder)
               .map(PurchaseOrder::getCompany)
               .orElse(null));
       purchaseOrderLineRepository.save(purchaseOrderLine);
     } else if (saleOrderLine != null) {
-      analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrderLine.getSaleOrder());
       analyticLineService.setAnalyticAccount(
-          analyticLineModel,
+          (AnalyticLine) saleOrderLine,
           Optional.of(saleOrderLine)
               .map(SaleOrderLine::getSaleOrder)
               .map(SaleOrder::getCompany)
@@ -87,5 +86,83 @@ public class AnalyticMoveLineParentSupplychainServiceImpl
     } else {
       super.refreshAxisOnParent(analyticMoveLine);
     }
+  }
+
+  protected AnalyticLineModel searchWithParentContext(Class<?> parentClass, Context parentContext)
+      throws AxelorException {
+    AnalyticLineModel analyticLineModel = super.searchWithParentContext(parentClass, parentContext);
+    if (analyticLineModel != null) {
+      return analyticLineModel;
+    }
+
+    if (PurchaseOrderLine.class.equals(parentClass)) {
+      PurchaseOrderLine purchaseOrderLine = parentContext.asType(PurchaseOrderLine.class);
+
+      return AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
+          purchaseOrderLine, getPurchaseOrderFromContext(purchaseOrderLine, parentContext));
+    } else if (SaleOrderLine.class.equals(parentClass)) {
+      SaleOrderLine saleOrderLine = parentContext.asType(SaleOrderLine.class);
+
+      return AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
+          saleOrderLine, getSaleOrderFromContext(saleOrderLine, parentContext));
+    }
+
+    return null;
+  }
+
+  /**
+   * Retrieves the sale order of a line that is not persisted yet, by looking it up in the grand
+   * parent context when the line does not carry it.
+   */
+  protected SaleOrder getSaleOrderFromContext(SaleOrderLine saleOrderLine, Context parentContext) {
+    if (saleOrderLine.getSaleOrder() != null) {
+      return saleOrderLine.getSaleOrder();
+    }
+
+    Context grandParentContext = parentContext.getParent();
+    if (grandParentContext != null
+        && SaleOrder.class.isAssignableFrom(grandParentContext.getContextClass())) {
+      return grandParentContext.asType(SaleOrder.class);
+    }
+
+    return null;
+  }
+
+  /**
+   * Retrieves the purchase order of a line that is not persisted yet, by looking it up in the grand
+   * parent context when the line does not carry it.
+   */
+  protected PurchaseOrder getPurchaseOrderFromContext(
+      PurchaseOrderLine purchaseOrderLine, Context parentContext) {
+    if (purchaseOrderLine.getPurchaseOrder() != null) {
+      return purchaseOrderLine.getPurchaseOrder();
+    }
+
+    Context grandParentContext = parentContext.getParent();
+    if (grandParentContext != null
+        && PurchaseOrder.class.isAssignableFrom(grandParentContext.getContextClass())) {
+      return grandParentContext.asType(PurchaseOrder.class);
+    }
+
+    return null;
+  }
+
+  protected AnalyticLineModel searchWithAnalyticMoveLine(
+      AnalyticMoveLine analyticMoveLine, Context context) throws AxelorException {
+    AnalyticLineModel analyticLineModel =
+        super.searchWithAnalyticMoveLine(analyticMoveLine, context);
+    if (analyticLineModel != null) {
+      return analyticLineModel;
+    }
+
+    if (analyticMoveLine.getPurchaseOrderLine() != null) {
+      return AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
+          analyticMoveLine.getPurchaseOrderLine(), null);
+    } else if (analyticMoveLine.getSaleOrderLine() != null) {
+      return AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
+          analyticMoveLine.getSaleOrderLine(), null);
+    }
+
+    return null;
   }
 }

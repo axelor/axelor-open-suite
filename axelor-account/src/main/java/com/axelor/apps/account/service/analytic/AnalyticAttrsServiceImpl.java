@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticDistributionTemplateRepository;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -153,14 +154,16 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
         : "moveLineList";
   }
 
+  @Override
   public void addAnalyticAxisDomains(
-      AnalyticLine analyticLine, Company company, Map<String, Map<String, Object>> attrsMap)
+      AnalyticLineModel analyticLineModel, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
     List<Long> analyticAccountList;
+    Company company = analyticLineModel.getCompany();
 
     for (int i = startAxisPosition; i <= endAxisPosition; i++) {
       if (analyticToolService.isPositionUnderAnalyticAxisSelect(company, i)) {
-        analyticAccountList = analyticLineService.getAxisDomains(analyticLine, company, i);
+        analyticAccountList = analyticLineService.getAxisDomains(analyticLineModel, company, i);
 
         if (ObjectUtils.isEmpty(analyticAccountList)) {
           this.addAttr(
@@ -284,7 +287,7 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
 
   @Override
   public void addAnalyticDistributionTemplateDomain(
-      AnalyticLine analyticLine,
+      AnalyticLineModel analyticLineModel,
       Partner partner,
       Product product,
       Company company,
@@ -292,7 +295,7 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
       Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
     String technicalTypeSelect =
-        Optional.ofNullable(analyticLine.getAccount())
+        Optional.ofNullable(analyticLineModel.getAccount())
             .map(Account::getAccountType)
             .map(AccountType::getTechnicalTypeSelect)
             .orElse(null);
@@ -301,20 +304,24 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
 
     String domain =
         getAnalyticDistributionTemplateDomain(
-            partner, product, company, tradingName, analyticLine.getAccount(), isPurchase);
+            partner, product, company, tradingName, analyticLineModel.getAccount(), isPurchase);
 
     this.addAttr("analyticDistributionTemplate", "domain", domain, attrsMap);
   }
 
   @Override
   public void addAnalyticAccountRequired(
-      AnalyticLine analyticLine, Company company, Map<String, Map<String, Object>> attrsMap)
+      AnalyticLineModel analyticLineModel,
+      Company company,
+      Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
+    AnalyticLine analyticLine = analyticLineModel.getAnalyticLine();
+
     for (int i = startAxisPosition; i <= endAxisPosition; i++) {
       this.addAttr(
           "axis" + i + "AnalyticAccount",
           "required",
-          analyticLineService.isAxisRequired(analyticLine, company, i)
+          analyticLineService.isAxisRequired(analyticLineModel, i)
               && !analyticLineService.checkAnalyticLinesByAxis(analyticLine, i, company),
           attrsMap);
     }

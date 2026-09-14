@@ -20,6 +20,8 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.model.AnalyticLineModel;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -42,7 +44,7 @@ import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import com.axelor.apps.supplychain.service.analytic.AnalyticLineModelInitSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundService;
 import com.axelor.common.ObjectUtils;
@@ -259,7 +261,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     }
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
+      AnalyticLineModel analyticLineModel =
+          AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
+              purchaseOrderLine, purchaseOrder);
       analyticLineModelService.checkRequiredAxisByCompany(analyticLineModel);
     }
   }
