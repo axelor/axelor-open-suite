@@ -1,0 +1,3 @@
+---
+title: "Purchase order: allowed modifying product, unit, tax and discount of a validated order line in edit mode, as for sale orders."
+module: axelor-purchase
