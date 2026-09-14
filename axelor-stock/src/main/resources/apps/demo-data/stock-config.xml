@@ -159,7 +159,9 @@
       check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Product', 'importId', product_importId)"
       check-message="Product doesn't exist"/>
     <bind to="stockLocation" column="stockLocation_importId"
-      search="self.importId = :stockLocation_importId"/>
+      search="self.importId = :stockLocation_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.stock.db.StockLocation', 'importId', stockLocation_importId)"
+      check-message="Stock location doesn't exist"/>
   </input>
 
   <input file="stock_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory"
