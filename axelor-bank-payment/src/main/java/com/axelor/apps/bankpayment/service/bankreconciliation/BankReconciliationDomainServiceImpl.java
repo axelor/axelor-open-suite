@@ -124,7 +124,7 @@ public class BankReconciliationDomainServiceImpl implements BankReconciliationDo
                     + bankReconciliation.getJournal().getValidAccountTypeSet().stream()
                         .map(AccountType::getId)
                         .map(id -> id.toString())
-                        .collect(Collectors.joining("','", "('", "')"))
+                        .collect(Collectors.joining(",", "(", ")"))
                         .toString());
       } else {
         domain = domain.concat(" AND (self.accountType.id = 0");
@@ -137,7 +137,7 @@ public class BankReconciliationDomainServiceImpl implements BankReconciliationDo
                     + bankReconciliation.getJournal().getValidAccountSet().stream()
                         .map(Account::getId)
                         .map(id -> id.toString())
-                        .collect(Collectors.joining("','", "('", "')"))
+                        .collect(Collectors.joining(",", "(", ")"))
                         .toString()
                     + ")");
       } else {
