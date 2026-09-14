@@ -1110,9 +1110,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMoveLineService.updateLocations(
           initialStatus,
           StockMoveRepository.STATUS_CANCELED,
-          stockMove.getPlannedStockMoveLineList().stream()
-              .map(StockMoveLine::getId)
-              .collect(Collectors.toSet()),
+          getPlannedStockMoveLineIds(stockMove, false),
           stockMove.getEstimatedDate(),
           false,
           false);
