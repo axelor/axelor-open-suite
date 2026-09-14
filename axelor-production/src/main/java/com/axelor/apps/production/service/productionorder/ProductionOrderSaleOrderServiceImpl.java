@@ -19,7 +19,10 @@
 package com.axelor.apps.production.service.productionorder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
@@ -29,14 +32,16 @@ import com.axelor.apps.production.service.manuforder.ManufOrderSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleOrderService {
@@ -46,6 +51,9 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
   protected AppProductionService appProductionService;
   protected ManufOrderSaleOrderService manufOrderSaleOrderService;
   protected final SaleOrderLineBlockingProductionService saleOrderLineBlockingProductionService;
+  protected final ProductionOrderSaleOrderMOGenerationService
+      productionOrderSaleOrderMOGenerationService;
+  protected final StockLocationLineFetchService stockLocationLineFetchService;
 
   @Inject
   public ProductionOrderSaleOrderServiceImpl(
@@ -53,13 +61,17 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       ProductionOrderRepository productionOrderRepo,
       AppProductionService appProductionService,
       ManufOrderSaleOrderService manufOrderSaleOrderService,
-      SaleOrderLineBlockingProductionService saleOrderLineBlockingProductionService) {
+      SaleOrderLineBlockingProductionService saleOrderLineBlockingProductionService,
+      ProductionOrderSaleOrderMOGenerationService productionOrderSaleOrderMOGenerationService,
+      StockLocationLineFetchService stockLocationLineFetchService) {
 
     this.productionOrderService = productionOrderService;
     this.productionOrderRepo = productionOrderRepo;
     this.appProductionService = appProductionService;
     this.manufOrderSaleOrderService = manufOrderSaleOrderService;
     this.saleOrderLineBlockingProductionService = saleOrderLineBlockingProductionService;
+    this.productionOrderSaleOrderMOGenerationService = productionOrderSaleOrderMOGenerationService;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
   }
 
   @Override
@@ -69,20 +81,28 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
     boolean oneProdOrderPerSO = appProductionService.getAppProduction().getOneProdOrderPerSO();
 
-    checkSelectedLines(selectedSaleOrderLine);
+    List<SaleOrderLine> candidateSaleOrderLineList =
+        CollectionUtils.isNotEmpty(selectedSaleOrderLine)
+            ? selectedSaleOrderLine
+            : saleOrder.getSaleOrderLineList();
 
-    List<SaleOrderLine> saleOrderLineList =
-        saleOrder.getSaleOrderLineList().stream()
-            .filter(this::isGenerationNeeded)
-            .filter(line -> !saleOrderLineBlockingProductionService.isProductionBlocked(line))
-            .collect(Collectors.toList());
+    List<SaleOrderLine> saleOrderLineList = new ArrayList<>();
+    List<String> noGenerationReasonList = new ArrayList<>();
+    for (SaleOrderLine saleOrderLine : candidateSaleOrderLineList) {
+      String noGenerationReason = getNoGenerationReason(saleOrderLine);
+      if (StringUtils.isEmpty(noGenerationReason)) {
+        saleOrderLineList.add(saleOrderLine);
+      } else {
+        noGenerationReasonList.add(noGenerationReason);
+      }
+    }
 
-    if (CollectionUtils.isNotEmpty(selectedSaleOrderLine)) {
-      saleOrderLineList =
-          selectedSaleOrderLine.stream()
-              .filter(this::isGenerationNeeded)
-              .filter(line -> !saleOrderLineBlockingProductionService.isProductionBlocked(line))
-              .collect(Collectors.toList());
+    checkSelectedLines(selectedSaleOrderLine, noGenerationReasonList);
+
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return StringHtmlListBuilder.formatMessage(
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_NO_GENERATION),
+          noGenerationReasonList);
     }
 
     if (oneProdOrderPerSO) {
@@ -90,13 +110,6 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
     } else {
       return getMessageForOneProdPerSol(saleOrder, selectedSaleOrderLine, saleOrderLineList);
     }
-  }
-
-  @Override
-  public boolean areAllBlocked(List<SaleOrderLine> saleOrderLineList) {
-    return saleOrderLineList.stream()
-        .filter(this::isGenerationNeeded)
-        .allMatch(saleOrderLineBlockingProductionService::isProductionBlocked);
   }
 
   protected String getMessageForOneProdPerSo(
@@ -205,14 +218,17 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
     return 0;
   }
 
-  protected void checkSelectedLines(List<SaleOrderLine> selectedSaleOrderLine)
+  protected void checkSelectedLines(
+      List<SaleOrderLine> selectedSaleOrderLine, List<String> noGenerationReasonList)
       throws AxelorException {
 
     if (CollectionUtils.isNotEmpty(selectedSaleOrderLine)
-        && selectedSaleOrderLine.stream().anyMatch(line -> !isGenerationNeeded(line))) {
+        && CollectionUtils.isNotEmpty(noGenerationReasonList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(ProductionExceptionMessage.SALE_ORDER_SELECT_WRONG_LINE));
+          StringHtmlListBuilder.formatMessage(
+              I18n.get(ProductionExceptionMessage.SALE_ORDER_SELECT_WRONG_LINE),
+              noGenerationReasonList));
     }
   }
 
@@ -237,5 +253,58 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
     LocalDate productionBlockingToDate = saleOrderLine.getProductionBlockingToDate();
     return isProductionBlocked
         && (productionBlockingToDate == null || todayDate.isBefore(productionBlockingToDate));
+  }
+
+  protected String getNoGenerationReason(SaleOrderLine saleOrderLine) {
+    Product product = saleOrderLine.getProduct();
+    if (product == null) {
+      return String.format(
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_LINE_NO_PRODUCT),
+          saleOrderLine.getFullName());
+    }
+    String productFullName = product.getFullName();
+    if (!isLineHasCorrectSaleSupply(saleOrderLine)) {
+      return String.format(
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_LINE_WRONG_SUPPLY_TYPE),
+          productFullName);
+    }
+    if (!ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())) {
+      return String.format(
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_LINE_NOT_STORABLE), productFullName);
+    }
+    if (saleOrderLineBlockingProductionService.isProductionBlocked(saleOrderLine)) {
+      return String.format(
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_LINE_BLOCKED), productFullName);
+    }
+    BigDecimal qtyToProduceLeft =
+        manufOrderSaleOrderService.computeQuantityToProduceLeft(saleOrderLine);
+    if (qtyToProduceLeft.compareTo(BigDecimal.ZERO) <= 0) {
+      return String.format(
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_LINE_QTY_ALREADY_PRODUCED),
+          productFullName);
+    }
+    if (saleOrderLine.getSaleSupplySelect()
+            == SaleOrderLineRepository.SALE_SUPPLY_FROM_STOCK_AND_PRODUCE
+        && stockLocationLineFetchService
+                .getAvailableQty(saleOrderLine.getSaleOrder().getStockLocation(), product)
+                .compareTo(qtyToProduceLeft)
+            >= 0) {
+      return String.format(
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_LINE_STOCK_COVERS_QTY),
+          productFullName);
+    }
+    BillOfMaterial billOfMaterial =
+        productionOrderSaleOrderMOGenerationService.findBillOfMaterial(saleOrderLine, product);
+    if (billOfMaterial == null) {
+      return String.format(
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_LINE_NO_BOM), productFullName);
+    }
+    if (billOfMaterial.getProdProcess() == null) {
+      return String.format(
+          I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_LINE_BOM_NO_PROD_PROCESS),
+          billOfMaterial.getName(),
+          productFullName);
+    }
+    return null;
   }
 }

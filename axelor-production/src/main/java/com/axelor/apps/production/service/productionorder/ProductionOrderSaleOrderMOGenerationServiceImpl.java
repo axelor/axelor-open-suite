@@ -101,16 +101,7 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
 
   protected BillOfMaterial getBillOfMaterial(SaleOrderLine saleOrderLine, Product product)
       throws AxelorException {
-    BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
-
-    if (billOfMaterial == null) {
-      // May call billOfMaterialService here
-      billOfMaterial = product.getDefaultBillOfMaterial();
-    }
-
-    if (billOfMaterial == null && product.getParentProduct() != null) {
-      billOfMaterial = product.getParentProduct().getDefaultBillOfMaterial();
-    }
+    BillOfMaterial billOfMaterial = findBillOfMaterial(saleOrderLine, product);
 
     if (billOfMaterial == null) {
       throw new AxelorException(
@@ -150,5 +141,20 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
             null);
 
     return productionOrderUpdateService.addManufOrder(productionOrder, manufOrder);
+  }
+
+  @Override
+  public BillOfMaterial findBillOfMaterial(SaleOrderLine saleOrderLine, Product product) {
+    BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
+
+    if (billOfMaterial == null) {
+      // May call billOfMaterialService here
+      billOfMaterial = product.getDefaultBillOfMaterial();
+    }
+
+    if (billOfMaterial == null && product.getParentProduct() != null) {
+      billOfMaterial = product.getParentProduct().getDefaultBillOfMaterial();
+    }
+    return billOfMaterial;
   }
 }
