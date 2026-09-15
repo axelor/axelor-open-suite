@@ -19,6 +19,7 @@
 package com.axelor.apps.quality.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -153,6 +154,44 @@ class ControlEntryServiceImplTest {
     assertEquals(ControlEntryRepository.FINISHED_STATUS, controlEntry.getStatusSelect());
     assertEquals(0, stockMoveLine.getConformitySelect());
     verify(stockMoveLineRepository, never()).find(any());
+  }
+
+  @Test
+  void samplesResultIsNullWithoutSamples() {
+    assertNull(service.getSamplesResult(controlEntryOnLine()));
+  }
+
+  @Test
+  void samplesResultIsNotCompliantWhenASampleFails() {
+    ControlEntry controlEntry =
+        controlEntryOnLine(
+            ControlEntrySampleRepository.RESULT_COMPLIANT,
+            ControlEntrySampleRepository.RESULT_NOT_COMPLIANT,
+            ControlEntrySampleRepository.RESULT_NOT_CONTROLLED);
+
+    assertEquals(
+        ControlEntrySampleRepository.RESULT_NOT_COMPLIANT, service.getSamplesResult(controlEntry));
+  }
+
+  @Test
+  void samplesResultIsCompliantWhenEverySamplePasses() {
+    ControlEntry controlEntry =
+        controlEntryOnLine(
+            ControlEntrySampleRepository.RESULT_COMPLIANT,
+            ControlEntrySampleRepository.RESULT_COMPLIANT);
+
+    assertEquals(
+        ControlEntrySampleRepository.RESULT_COMPLIANT, service.getSamplesResult(controlEntry));
+  }
+
+  @Test
+  void samplesResultIsNullWhenASampleIsNotControlled() {
+    ControlEntry controlEntry =
+        controlEntryOnLine(
+            ControlEntrySampleRepository.RESULT_COMPLIANT,
+            ControlEntrySampleRepository.RESULT_NOT_CONTROLLED);
+
+    assertNull(service.getSamplesResult(controlEntry));
   }
 
   private ControlEntry controlEntryOnLine(int... sampleResults) {

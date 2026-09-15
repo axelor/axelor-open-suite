@@ -262,6 +262,21 @@ public class ControlEntryServiceImpl implements ControlEntryService {
   }
 
   protected Integer getConformitySelect(ControlEntry controlEntry, StockMoveLine stockMoveLine) {
+    Integer samplesResult = getSamplesResult(controlEntry);
+    if (samplesResult == null) {
+      return null;
+    }
+    if (samplesResult == ControlEntrySampleRepository.RESULT_NOT_COMPLIANT) {
+      return StockMoveLineRepository.CONFORMITY_NON_COMPLIANT;
+    }
+    if (stockMoveLine.getConformitySelect() <= StockMoveLineRepository.CONFORMITY_NONE) {
+      return StockMoveLineRepository.CONFORMITY_COMPLIANT;
+    }
+    return null;
+  }
+
+  @Override
+  public Integer getSamplesResult(ControlEntry controlEntry) {
     List<ControlEntrySample> samples = controlEntry.getControlEntrySamplesList();
     if (samples == null || samples.isEmpty()) {
       return null;
@@ -270,16 +285,12 @@ public class ControlEntryServiceImpl implements ControlEntryService {
         .anyMatch(
             sample ->
                 sample.getResultSelect() == ControlEntrySampleRepository.RESULT_NOT_COMPLIANT)) {
-      return StockMoveLineRepository.CONFORMITY_NON_COMPLIANT;
+      return ControlEntrySampleRepository.RESULT_NOT_COMPLIANT;
     }
-    boolean allCompliant =
-        samples.stream()
-            .allMatch(
-                sample ->
-                    sample.getResultSelect() == ControlEntrySampleRepository.RESULT_COMPLIANT);
-    if (allCompliant
-        && stockMoveLine.getConformitySelect() <= StockMoveLineRepository.CONFORMITY_NONE) {
-      return StockMoveLineRepository.CONFORMITY_COMPLIANT;
+    if (samples.stream()
+        .allMatch(
+            sample -> sample.getResultSelect() == ControlEntrySampleRepository.RESULT_COMPLIANT)) {
+      return ControlEntrySampleRepository.RESULT_COMPLIANT;
     }
     return null;
   }
