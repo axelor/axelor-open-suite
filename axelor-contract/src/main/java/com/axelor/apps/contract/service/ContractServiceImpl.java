@@ -35,6 +35,7 @@ import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.exception.ContractExceptionMessage;
+import com.axelor.apps.contract.service.app.AppContractService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
 import com.axelor.auth.AuthUtils;
@@ -74,8 +75,16 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       ContractLineRepository contractLineRepo,
       ContractRepository contractRepository,
       PartnerLinkSupplychainService partnerLinkSupplychainService,
-      ContractInvoicingService contractInvoicingService) {
-    super(contractLineService, contractVersionService, sequenceService, contractVersionRepository);
+      ContractInvoicingService contractInvoicingService,
+      ContractLinePackService contractLinePackService,
+      AppContractService appContractService) {
+    super(
+        contractLineService,
+        contractVersionService,
+        sequenceService,
+        contractVersionRepository,
+        contractLinePackService,
+        appContractService);
     this.appBaseService = appBaseService;
     this.versionService = versionService;
     this.durationService = durationService;

@@ -110,7 +110,7 @@ public class ContractPurchaseOrderGenerationImpl implements ContractPurchaseOrde
 
     purchaseOrderLine.setTaxLineSet(Sets.newHashSet(contractLine.getTaxLineSet()));
     purchaseOrderLine.setIsTitleLine(
-        contractLine.getTypeSelect() == ContractLineRepository.TYPE_TITLE);
+        contractLine.getTypeSelect() != ContractLineRepository.TYPE_NORMAL);
     purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
 
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
