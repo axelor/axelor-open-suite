@@ -22,19 +22,28 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.common.ObjectUtils;
 import jakarta.inject.Inject;
 
 public class MoveLineConsolidateBudgetServiceImpl extends MoveLineConsolidateServiceImpl {
 
+  protected final AppBudgetService appBudgetService;
+
   @Inject
-  public MoveLineConsolidateBudgetServiceImpl(MoveLineToolService moveLineToolService) {
+  public MoveLineConsolidateBudgetServiceImpl(
+      MoveLineToolService moveLineToolService, AppBudgetService appBudgetService) {
     super(moveLineToolService);
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
   public MoveLine consolidateMoveLine(MoveLine moveLine, MoveLine consolidateMoveLine) {
     consolidateMoveLine = super.consolidateMoveLine(moveLine, consolidateMoveLine);
+
+    if (!appBudgetService.isApp("budget")) {
+      return consolidateMoveLine;
+    }
 
     if (!ObjectUtils.isEmpty(moveLine.getBudgetDistributionList())) {
       for (BudgetDistribution budgetDistribution : moveLine.getBudgetDistributionList()) {

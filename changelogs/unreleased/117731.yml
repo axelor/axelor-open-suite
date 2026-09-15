@@ -1,0 +1,29 @@
+---
+title: "App check: the last four axelor-budget overrides now check the Budget app before changing the behaviour of axelor-account and axelor-human-resource."
+module: axelor-budget
+developer: |
+  `axelor-budget` was already the best covered module of the suite, with 19 of its 23
+  cross-module overrides guarded on `isApp("budget")`. The four that were left now carry the
+  same guard and delegate to `super` when the app is off:
+
+  - `MoveValidateBudgetServiceImpl.accounting` was computing the budget distribution of every
+    move before accounting it;
+  - `MoveLineCreateBudgetServiceImpl.fillMoveLineWithInvoiceLine` was copying the budget fields
+    and distributions of the invoice line onto every move line;
+  - `MoveLineConsolidateBudgetServiceImpl.consolidateMoveLine` was merging the budget
+    distributions of consolidated move lines;
+  - `MoveGroupBudgetServiceImpl.checkBeforeSave` was validating the budget dates of every move
+    on save, and could block a save with a budget error on a base without the Budget app.
+
+  The check uses the `appBaseService` already inherited from the overridden service where there
+  is one, and the module's own `AppBudgetService` — the service the other 19 guards use — where
+  nothing was available.
+
+  The following classes get a new constructor parameter, which breaks subclasses calling it:
+
+  - `com.axelor.apps.budget.service.move.MoveLineConsolidateBudgetServiceImpl`
+  - `com.axelor.apps.budget.service.move.MoveGroupBudgetServiceImpl`
+
+  This is the last sweep of #117722: the `KNOWN DEBT - axelor-budget` section disappears from
+  `config/app-override-guard-allowlist.txt`, and once #117724 to #117730 are merged the file
+  carries nothing but the justified exceptions of those tickets.
