@@ -1,3 +1,0 @@
----
-title: "Forecast recap: fixed an issue where an invoice entry reconciled with its payment was still shown as an outstanding payable in the cash flow forecast"
-module: axelor-cash-management

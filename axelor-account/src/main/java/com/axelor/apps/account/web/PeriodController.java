@@ -54,8 +54,8 @@ public class PeriodController {
       controllerCallableTool.runInSeparateThread(closePeriodCallableService, response);
 
       PeriodServiceAccount periodServiceAccount = Beans.get(PeriodServiceAccount.class);
-      List<Move> moves = periodServiceAccount.getMoves();
-      int anomalyCount = periodServiceAccount.getAnomalyCount();
+      List<Move> moves = periodServiceAccount.getMoves(period);
+      int anomalyCount = periodServiceAccount.getAnomalyCount(period);
 
       if (!CollectionUtils.isEmpty(moves)) {
         response.setView(

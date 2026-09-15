@@ -5,7 +5,7 @@
 
   <module name="fleet" package="com.axelor.apps.fleet.db"/>
 
-  <entity name="VehicleRepair" cacheable="true">
+  <entity name="VehicleRepair">
     <date name="repairDate" title="Date of repair"/>
     <many-to-one name="repairCause" title="Cause of repair"
       ref="com.axelor.apps.fleet.db.RepairCause"/>

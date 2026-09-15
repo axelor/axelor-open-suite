@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.quality.web;
 
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.quality.db.ControlPlanFrequency;
 import com.axelor.apps.quality.service.ControlPlanFrequencyService;
 import com.axelor.inject.Beans;
@@ -31,5 +33,15 @@ public class ControlPlanFrequencyController {
         request.getContext().asType(ControlPlanFrequency.class);
     Beans.get(ControlPlanFrequencyService.class)
         .createOrUpdateValueTranslations(controlPlanFrequency);
+  }
+
+  public void checkUniqueName(ActionRequest request, ActionResponse response) {
+    try {
+      ControlPlanFrequency controlPlanFrequency =
+          request.getContext().asType(ControlPlanFrequency.class);
+      Beans.get(ControlPlanFrequencyService.class).checkUniqueName(controlPlanFrequency);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }

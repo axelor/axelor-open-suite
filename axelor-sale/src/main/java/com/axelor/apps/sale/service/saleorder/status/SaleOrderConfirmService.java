@@ -22,7 +22,17 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 
 public interface SaleOrderConfirmService {
-  String confirmSaleOrder(SaleOrder saleOrder);
+  String confirmSaleOrder(SaleOrder saleOrder) throws AxelorException;
 
   void confirmProcess(SaleOrder saleOrder) throws AxelorException;
+
+  void checkSaleOrderBlocking(SaleOrder saleOrder) throws AxelorException;
+
+  /**
+   * Same blocking check as {@link #checkSaleOrderBlocking}, but takes {@code manualUnblock}
+   * explicitly instead of reading {@code saleOrder.getManualUnblock()}. Used for pre-save checks
+   * where {@code saleOrder} may be a JPA-managed entity whose {@code manualUnblock} field must not
+   * be mutated (and thus implicitly flushed) just to perform the check.
+   */
+  void checkSaleOrderBlocking(SaleOrder saleOrder, boolean manualUnblock) throws AxelorException;
 }

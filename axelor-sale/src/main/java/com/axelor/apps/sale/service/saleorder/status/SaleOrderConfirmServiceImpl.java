@@ -19,15 +19,19 @@
 package com.axelor.apps.sale.service.saleorder.status;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.ObserverBaseException;
+import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.event.SaleOrderConfirm;
@@ -48,6 +52,7 @@ public class SaleOrderConfirmServiceImpl implements SaleOrderConfirmService {
   protected AppCrmService appCrmService;
   protected SaleOrderRepository saleOrderRepository;
   protected PartnerRepository partnerRepository;
+  protected BlockingService blockingService;
 
   @Inject
   public SaleOrderConfirmServiceImpl(
@@ -56,18 +61,24 @@ public class SaleOrderConfirmServiceImpl implements SaleOrderConfirmService {
       UserService userService,
       AppCrmService appCrmService,
       SaleOrderRepository saleOrderRepository,
-      PartnerRepository partnerRepository) {
+      PartnerRepository partnerRepository,
+      BlockingService blockingService) {
     this.saleOrderConfirmEvent = saleOrderConfirmEvent;
     this.appSaleService = appSaleService;
     this.userService = userService;
     this.appCrmService = appCrmService;
     this.saleOrderRepository = saleOrderRepository;
     this.partnerRepository = partnerRepository;
+    this.blockingService = blockingService;
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional(
+      rollbackOn = {Exception.class},
+      ignore = {BlockedSaleOrderException.class})
   @Override
-  public String confirmSaleOrder(SaleOrder saleOrder) {
+  public String confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
+    checkSaleOrderBlocking(saleOrder);
+
     SaleOrderConfirm saleOrderConfirm = new SaleOrderConfirm(saleOrder);
     try {
       saleOrderConfirmEvent.fire(saleOrderConfirm);
@@ -75,6 +86,35 @@ public class SaleOrderConfirmServiceImpl implements SaleOrderConfirmService {
       throw new ObserverBaseException(e.getCause(), e.getCause().getMessage());
     }
     return saleOrderConfirm.getNotifyMessage();
+  }
+
+  @Transactional(
+      rollbackOn = {Exception.class},
+      ignore = {BlockedSaleOrderException.class})
+  @Override
+  public void checkSaleOrderBlocking(SaleOrder saleOrder) throws AxelorException {
+    checkSaleOrderBlocking(saleOrder, saleOrder.getManualUnblock());
+  }
+
+  @Transactional(
+      rollbackOn = {Exception.class},
+      ignore = {BlockedSaleOrderException.class})
+  @Override
+  public void checkSaleOrderBlocking(SaleOrder saleOrder, boolean manualUnblock)
+      throws AxelorException {
+    Partner partner = saleOrder.getClientPartner();
+    Blocking blocking =
+        blockingService.getBlocking(
+            partner, saleOrder.getCompany(), BlockingRepository.SALE_BLOCKING);
+
+    if (blocking != null && !manualUnblock) {
+      saleOrder.setBlockedOnCustCreditExceed(true);
+      saleOrderRepository.save(saleOrder);
+      String reason =
+          blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";
+      throw new BlockedSaleOrderException(
+          partner, I18n.get("Client is sale blocked:") + " " + reason);
+    }
   }
 
   @Transactional(rollbackOn = {Exception.class})

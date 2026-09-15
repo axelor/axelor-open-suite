@@ -18,16 +18,56 @@
  */
 package com.axelor.apps.quality.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.quality.db.ControlEntryPlanLine;
+import com.axelor.apps.quality.service.ControlEntrySampleUpdateService;
+import com.axelor.apps.quality.service.ControlTypeFieldValueService;
+import com.axelor.inject.Beans;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 
 public class ControlEntryPlanLineManagementRepository extends ControlEntryPlanLineRepository {
 
+  protected ControlTypeFieldValueService controlTypeFieldValueService;
+
+  @Inject
+  public ControlEntryPlanLineManagementRepository(
+      ControlTypeFieldValueService controlTypeFieldValueService) {
+    this.controlTypeFieldValueService = controlTypeFieldValueService;
+  }
+
+  /** A line saved on its own keeps the result of its sample consistent. */
+  @Override
+  public ControlEntryPlanLine save(ControlEntryPlanLine entity) {
+    ControlEntryPlanLine saved = super.save(entity);
+    if (saved.getControlEntrySample() != null) {
+      try {
+        Beans.get(ControlEntrySampleUpdateService.class)
+            .updateResult(saved.getControlEntrySample());
+      } catch (AxelorException e) {
+        throw new PersistenceException(e);
+      }
+    }
+    return saved;
+  }
+
+  /**
+   * The measured values are never carried over. The reference values are duplicated on a deep copy
+   * only, so that duplicating a control plan keeps its configuration without making the creation of
+   * the control entry samples, which copies each line shallowly, build values it would throw away.
+   */
   @Override
   public ControlEntryPlanLine copy(ControlEntryPlanLine entity, boolean deep) {
     ControlEntryPlanLine copy = super.copy(entity, deep);
 
-    copy.setEntryAttrs(null);
-    copy.setPlanAttrs(null);
+    copy.clearEntryValueList();
+    copy.clearPlanValueList();
+
+    if (deep && entity.getPlanValueList() != null) {
+      entity.getPlanValueList().stream()
+          .map(controlTypeFieldValueService::copyValue)
+          .forEach(copy::addPlanValueListItem);
+    }
 
     return copy;
   }

@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="TimesheetReminderLine" cacheable="true">
+  <entity name="TimesheetReminderLine">
 
     <many-to-one name="timesheetReminder" ref="com.axelor.apps.hr.db.TimesheetReminder"
       title="Timesheet reminder"/>

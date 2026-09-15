@@ -38,13 +38,13 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliation
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpensePaymentService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.studio.app.service.AppService;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
 
@@ -72,7 +72,7 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
       MoveInvoiceTermService moveInvoiceTermService,
       AnalyticLineService analyticLineService,
       ExpensePaymentService expensePaymentService,
-      AppService appService,
+      AppBaseService appBaseService,
       BudgetDistributionService budgetDistributionService,
       AppBudgetService appBudgetService,
       PaymentVoucherCancelService paymentVoucherCancelService) {
@@ -94,7 +94,7 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
         moveInvoiceTermService,
         analyticLineService,
         expensePaymentService,
-        appService,
+        appBaseService,
         paymentVoucherCancelService);
     this.budgetDistributionService = budgetDistributionService;
     this.appBudgetService = appBudgetService;

@@ -109,4 +109,8 @@ public interface PurchaseOrderLineService {
   public void validateDeletion(PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
   void updatePurchaseOrderLineList(PurchaseOrder purchaseOrder) throws AxelorException;
+
+  Map<String, Object> updatePriceForQtyLimit(
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, boolean isQtyLimitBroken)
+      throws AxelorException;
 }

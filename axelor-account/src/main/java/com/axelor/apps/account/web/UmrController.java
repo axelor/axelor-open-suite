@@ -21,10 +21,12 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.InvoicingPaymentSituation;
 import com.axelor.apps.account.service.umr.UmrService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.helpers.ContextHelper;
 
 public class UmrController {
 
@@ -38,6 +40,12 @@ public class UmrController {
       if (invoicingPaymentSituation == null) {
         return;
       }
+
+      Partner partner = ContextHelper.getOriginParent(request.getContext(), Partner.class);
+      if (partner == null) {
+        partner = invoicingPaymentSituation.getPartner();
+      }
+      invoicingPaymentSituation.setPartner(partner);
 
       response.setValues(Beans.get(UmrService.class).getOnNewValuesMap(invoicingPaymentSituation));
     }

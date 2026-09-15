@@ -22,9 +22,9 @@ import com.axelor.apps.account.db.repo.PartnerAccountRepository;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationCheckService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationInitService;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.app.service.AppService;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 
@@ -32,10 +32,10 @@ public class PartnerHRRepository extends PartnerAccountRepository {
 
   @Inject
   public PartnerHRRepository(
-      AppService appService,
+      AppBaseService appBaseService,
       AccountingSituationInitService accountingSituationInitService,
       AccountingSituationCheckService accountingSituationCheckService) {
-    super(appService, accountingSituationInitService, accountingSituationCheckService);
+    super(appBaseService, accountingSituationInitService, accountingSituationCheckService);
   }
 
   @Override

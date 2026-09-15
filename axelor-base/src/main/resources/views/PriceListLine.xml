@@ -64,6 +64,9 @@
   <action-record name="action-price-list-line-record-default"
     model="com.axelor.apps.base.db.PriceListLine">
     <field name="typeSelect" expr="3"/>
+    <field name="$nbDecimalDigitForUnitPrice"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <field name="$nbDecimalDigitForQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-record>
 
   <action-record name="action-price-list-line-record-product"

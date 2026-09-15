@@ -783,6 +783,10 @@ public final class AccountExceptionMessage {
       "The partner is required and must be the same for all invoices" /*)*/;
   public static final String INVOICE_MERGE_ERROR_COMPANY = /*$$(*/
       "The company is required and must be the same for all invoices" /*)*/;
+  public static final String INVOICE_MERGE_ERROR_STATUS = /*$$(*/
+      "Only Draft or Validated invoices can be merged." /*)*/;
+  public static final String INVOICE_MERGE_ERROR_STATUS_INVOICE = /*$$(*/
+      "The following invoice(s) cannot be merged because their status is not Draft or Validated:<br/>%s" /*)*/;
   public static final String INVOICE_MASS_PAYMENT_ERROR_PFP_LITIGATION = /*$$(*/
       "Their is at least one invoice selected that it is not validated to pay" /*)*/;
 
@@ -1798,4 +1802,8 @@ public final class AccountExceptionMessage {
   public static final String LOAN_CONSISTENCY_GAP =
       /*$$(*/
       "Inconsistency detected: the theoretical outstanding capital does not match the balance of account %s." /*)*/;
+
+  public static final String EXCESS_PAYMENT_RECONCILE_NUMBER_LIMIT_REACHED =
+      /*$$(*/
+      "Only the first %s records could be reconciled (configuration limit reached). The remaining lines were not reconciled." /*)*/;
 }

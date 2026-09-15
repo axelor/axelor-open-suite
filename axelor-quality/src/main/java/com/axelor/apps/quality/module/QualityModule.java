@@ -57,6 +57,8 @@ import com.axelor.apps.quality.service.ControlPlanFrequencyComputeNameService;
 import com.axelor.apps.quality.service.ControlPlanFrequencyComputeNameServiceImpl;
 import com.axelor.apps.quality.service.ControlPlanFrequencyService;
 import com.axelor.apps.quality.service.ControlPlanFrequencyServiceImpl;
+import com.axelor.apps.quality.service.ControlTypeFieldValueService;
+import com.axelor.apps.quality.service.ControlTypeFieldValueServiceImpl;
 import com.axelor.apps.quality.service.QIAnalysisService;
 import com.axelor.apps.quality.service.QIAnalysisServiceImpl;
 import com.axelor.apps.quality.service.QIIdentificationService;
@@ -108,6 +110,7 @@ public class QualityModule extends AxelorModule {
     bind(QIAnalysisService.class).to(QIAnalysisServiceImpl.class);
     bind(QualityImprovementService.class).to(QualityImprovementServiceImpl.class);
     bind(ControlEntryPlanLineService.class).to(ControlEntryPlanLineServiceImpl.class);
+    bind(ControlTypeFieldValueService.class).to(ControlTypeFieldValueServiceImpl.class);
     bind(ControlEntryService.class).to(ControlEntryServiceImpl.class);
     bind(ControlEntrySampleService.class).to(ControlEntrySampleServiceImpl.class);
     bind(QIActionDistributionService.class).to(QIActionDistributionServiceImpl.class);

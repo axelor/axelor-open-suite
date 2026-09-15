@@ -19,11 +19,13 @@
 package com.axelor.apps.quality.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.quality.db.ControlEntryPlanLine;
 import com.axelor.apps.quality.db.ControlEntrySample;
 import com.axelor.apps.quality.db.repo.ControlEntryPlanLineRepository;
 import com.axelor.apps.quality.db.repo.ControlEntrySampleRepository;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import java.util.List;
 
 public class ControlEntrySampleUpdateServiceImpl implements ControlEntrySampleUpdateService {
 
@@ -39,18 +41,35 @@ public class ControlEntrySampleUpdateServiceImpl implements ControlEntrySampleUp
   @Transactional(rollbackOn = {Exception.class})
   public void updateResult(ControlEntrySample controlEntrySample) throws AxelorException {
 
-    if (controlEntrySample.getControlEntryPlanLinesList() != null) {
-      if (controlEntrySample.getControlEntryPlanLinesList().stream()
-          .allMatch(
-              controlEntryPlanLine ->
-                  ControlEntryPlanLineRepository.RESULT_COMPLIANT
-                      == controlEntryPlanLine.getResultSelect())) {
+    List<ControlEntryPlanLine> lines = controlEntrySample.getControlEntryPlanLinesList();
 
-        controlEntrySample.setResultSelect(ControlEntrySampleRepository.RESULT_COMPLIANT);
-
-      } else {
-        controlEntrySample.setResultSelect(ControlEntrySampleRepository.RESULT_NOT_COMPLIANT);
-      }
+    if (lines != null) {
+      controlEntrySample.setResultSelect(getResult(lines));
     }
+  }
+
+  /**
+   * A proven failure wins over an unfinished control: a single non compliant line makes the sample
+   * non compliant. Otherwise the sample stays not controlled as long as one of its lines has not
+   * been checked, and a sample carrying no line has nothing to derive a verdict from.
+   */
+  protected int getResult(List<ControlEntryPlanLine> lines) {
+
+    if (lines.stream()
+        .anyMatch(
+            line ->
+                ControlEntryPlanLineRepository.RESULT_NOT_COMPLIANT == line.getResultSelect())) {
+      return ControlEntrySampleRepository.RESULT_NOT_COMPLIANT;
+    }
+
+    if (lines.isEmpty()
+        || lines.stream()
+            .anyMatch(
+                line ->
+                    ControlEntryPlanLineRepository.RESULT_COMPLIANT != line.getResultSelect())) {
+      return ControlEntrySampleRepository.RESULT_NOT_CONTROLLED;
+    }
+
+    return ControlEntrySampleRepository.RESULT_COMPLIANT;
   }
 }

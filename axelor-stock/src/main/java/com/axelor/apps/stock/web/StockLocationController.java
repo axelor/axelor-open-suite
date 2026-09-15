@@ -19,6 +19,7 @@
 package com.axelor.apps.stock.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.PrintingTemplateRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -26,6 +27,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationAttrsService;
 import com.axelor.apps.stock.service.StockLocationDomainService;
+import com.axelor.apps.stock.service.StockLocationPrintCallableService;
 import com.axelor.apps.stock.service.StockLocationPrintService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
@@ -94,17 +96,21 @@ public class StockLocationController {
       Integer printType = Integer.parseInt(printTypeStr);
       String financialDataDateTimeString = (String) context.get("financialDataDateTime");
 
-      String fileLink =
-          Beans.get(StockLocationPrintService.class)
-              .print(
-                  printType,
-                  stockLocationPrintTemplate,
-                  financialDataDateTimeString,
-                  withoutDetailsByStockLocation,
-                  idsArray);
-      String title = Beans.get(StockLocationPrintService.class).getOutputFileName(idsArray);
+      StockLocationPrintCallableService callableService =
+          Beans.get(StockLocationPrintCallableService.class);
+      callableService.setPrintType(printType);
+      callableService.setStockLocationPrintTemplate(stockLocationPrintTemplate);
+      callableService.setFinancialDataDateTimeString(financialDataDateTimeString);
+      callableService.setWithoutDetailsByStockLocation(withoutDetailsByStockLocation);
+      callableService.setStockLocationIds(idsArray);
 
-      response.setView(ActionView.define(title).add("html", fileLink).map());
+      ControllerCallableTool<String> controllerCallableTool = new ControllerCallableTool<>();
+      String fileLink = controllerCallableTool.runInSeparateThread(callableService, response);
+
+      if (fileLink != null) {
+        String title = Beans.get(StockLocationPrintService.class).getOutputFileName(idsArray);
+        response.setView(ActionView.define(title).add("html", fileLink).map());
+      }
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

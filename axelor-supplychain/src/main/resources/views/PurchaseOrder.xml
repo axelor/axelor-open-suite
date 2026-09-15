@@ -96,6 +96,12 @@
     <alert message="Would you like to update all lines with this stock location?"/>
   </action-validate>
 
+  <action-validate
+    name="action-supplychain-purchase-order-validate-check-amount-timetable">
+    <alert message="The amount to be spread over the timetable is negative."
+      if="amountToBeSpreadOverTheTimetable &lt; 0"/>
+  </action-validate>
+
   <action-method
     name="action-purchase-order-method-update-purchase-order-lines-stock-location">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"

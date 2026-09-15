@@ -153,7 +153,8 @@
   <!-- Update default BOM -->
 
   <input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product"
-    search="self.importId = :importId" update="true">
+    search="self.importId = :importId" update="true"
+    call="com.axelor.csv.script.ImportProduct:importProduct">
     <bind column="code" to="code"
       check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Product', 'importId', importId, 'code', code)"
       check-message="Code must be unique"/>

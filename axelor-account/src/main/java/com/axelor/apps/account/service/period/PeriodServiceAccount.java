@@ -37,9 +37,9 @@ public interface PeriodServiceAccount {
   @CallMethod
   public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException;
 
-  List<Move> getMoves();
+  List<Move> getMoves(Period period);
 
-  int getAnomalyCount();
+  int getAnomalyCount(Period period);
 
   List<TraceBack> getAnomalies(String moveIds, int anomalyCount);
 }

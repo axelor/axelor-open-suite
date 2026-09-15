@@ -135,7 +135,7 @@
       <insert position="after">
         <panel name="trackingNumberPanel" title="Tracking number" showTitle="false"
           showIf="productTypeSelect == 'storable'"
-          if="__config__.app.isApp('stock') &amp;&amp; !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'trackingNumberConfiguration'})">
+          if="__config__.app.isApp('stock') &amp;&amp; (!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'trackingNumberConfiguration'}))">
           <panel colSpan="12" name="trackingConfigPanel">
             <field name="trackingNumberConfiguration" canNew="true"
               form-view="tracking-number-configuration-form"

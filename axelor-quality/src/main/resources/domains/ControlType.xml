@@ -9,6 +9,14 @@
     <string name="name" title="Name"/>
 
     <string name="conformityFormula" title="Formula" large="true"/>
+    <string name="formulaDescription" title="Formula description" large="true"/>
+
+    <one-to-many name="planFieldLineList"
+      ref="com.axelor.apps.quality.db.ControlTypeFieldLine" mappedBy="planControlType"
+      title="Control plan fields" orderBy="sequence"/>
+    <one-to-many name="entryFieldLineList"
+      ref="com.axelor.apps.quality.db.ControlTypeFieldLine" mappedBy="entryControlType"
+      title="Control entry fields" orderBy="sequence"/>
 
   </entity>
 

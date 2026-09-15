@@ -9,6 +9,8 @@
 
     <one-to-one ref="com.axelor.studio.db.AppBase" name="appBase" mappedBy="app"/>
 
+    <entity-listener class="com.axelor.apps.base.db.repo.AppListener"/>
+
   </entity>
 
 </domain-models>

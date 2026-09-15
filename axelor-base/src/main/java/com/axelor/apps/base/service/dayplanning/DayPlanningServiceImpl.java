@@ -176,12 +176,21 @@ public class DayPlanningServiceImpl implements DayPlanningService {
       DayPlanning dayPlanning, LocalTime startT, LocalTime endT) {
 
     if (dayPlanning == null) {
-      return 0;
+      // No day planning at all for this date (e.g. week-end not configured in the
+      // WeeklyPlanning): the whole span is void, consistently with a day planning that
+      // exists but has no period defined.
+      return DurationHelper.getSecondsDuration(Duration.between(startT, endT));
     }
     LocalTime morningFromTime = dayPlanning.getMorningFrom();
     LocalTime morningToTime = dayPlanning.getMorningTo();
     LocalTime afternoonFromTime = dayPlanning.getAfternoonFrom();
     LocalTime afternoonToTime = dayPlanning.getAfternoonTo();
+
+    if ((morningFromTime == null || morningToTime == null)
+        && (afternoonFromTime == null || afternoonToTime == null)) {
+      // Day fully closed (e.g. week-end/day off): the whole span is void.
+      return DurationHelper.getSecondsDuration(Duration.between(startT, endT));
+    }
 
     long duration = 0;
 
@@ -313,11 +322,16 @@ public class DayPlanningServiceImpl implements DayPlanningService {
       endDateT = initialEndDateT;
     }
 
-    dayPlanning =
+    // Keep the WeeklyPlanning anchor from the original (non-null) dayPlanning: the day-specific
+    // lookup below may return null if this date has no DayPlanning at all (e.g. a week-end not
+    // configured), and the recursive call for the next day still needs the WeeklyPlanning to keep
+    // going past it instead of the whole chain silently stopping there.
+    DayPlanning currentDayPlanning =
         weeklyPlanningService.findDayPlanning(
             dayPlanning.getWeeklyPlanning(), startDateT.toLocalDate());
     duration +=
-        computeVoidDurationBetween(dayPlanning, startDateT.toLocalTime(), endDateT.toLocalTime());
+        computeVoidDurationBetween(
+            currentDayPlanning, startDateT.toLocalTime(), endDateT.toLocalTime());
 
     LocalDateTime nextDay = startDateT.plusDays(1).with(LocalTime.MIN);
     return duration

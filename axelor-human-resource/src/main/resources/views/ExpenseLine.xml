@@ -11,11 +11,12 @@
       if="expenseProduct != null &amp;&amp; $get('expenseProduct.amountLimit') != 0 &amp;&amp; $get('expenseProduct.amountLimit') &lt; totalAmount"
       background="danger"/>
     <field name="project" requiredIf="toInvoice" canView="false"
-      onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" width="150"/>
+      onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" width="150"
+      onChange="action-expense-line-method-refresh-analytic-template"/>
     <field name="projectTask" canView="false"
       onSelect="action-expense-line-method-compute-project-task-domain"
-      onChange="action-expense-line-attrs-on-project-task-change" grid-view="project-task-grid"
-      form-view="project-task-form"/>
+      onChange="action-expense-line-attrs-on-project-task-change,action-expense-line-method-refresh-analytic-template"
+      grid-view="project-task-grid" form-view="project-task-form"/>
     <field name="site" form-view="site-form" grid-view="site-grid"
       onSelect="action-expense-line-attrs-set-site-domain"
       if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
@@ -26,6 +27,10 @@
     <field name="expenseDate" onChange="action-expense-line-validate-expenseDate" width="120"/>
     <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"
       onSelect="action-expense-line-attrs-company"/>
+    <field name="analyticDistributionTemplate" canView="false"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
+      grid-view="analytic-distribution-template-grid"
+      form-view="analytic-distribution-template-form" width="200"/>
     <field name="totalAmount" validIf="$number(totalAmount) &gt;= $number(totalTax)"
       aggregate="sum" onChange="action-expense-line-group-total-grid-amount-on-change" width="170"/>
     <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
@@ -45,14 +50,15 @@
 
   <grid name="expense-line-kilometric-grid" title="Kilometric Allowances"
     model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
-    onNew="action-expense-line-group-onnew, action-expense-line-method-fill-kilometric-expense-product">
+    onNew="action-expense-line-group-onnew, action-expense-line-method-fill-kilometric-expense-product, action-expense-line-method-refresh-analytic-template">
     <hilite if="untaxedAmount == 0" color="danger"/>
     <field name="project" requiredIf="toInvoice" canView="false"
       onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
-      grid-view="project-grid" width="120"/>
+      grid-view="project-grid" width="120"
+      onChange="action-expense-line-method-refresh-analytic-template"/>
     <field name="projectTask" canView="false"
       onSelect="action-expense-line-method-compute-project-task-domain"
-      onChange="action-expense-line-attrs-on-project-task-change,action-expense-line-attrs-fill-arrival-from-site"
+      onChange="action-expense-line-attrs-on-project-task-change,action-expense-line-attrs-fill-arrival-from-site,action-expense-line-method-refresh-analytic-template"
       grid-view="project-task-grid" form-view="project-task-form"/>
     <field name="site" form-view="site-form" grid-view="site-grid"
       onSelect="action-expense-line-attrs-set-site-domain"
@@ -71,6 +77,10 @@
       onChange="action-kilometric-allowance-method-compute-distance" width="150"/>
     <field name="toCity" required="true"
       onChange="action-kilometric-allowance-method-compute-distance" width="150"/>
+    <field name="analyticDistributionTemplate" canView="false"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
+      grid-view="analytic-distribution-template-grid"
+      form-view="analytic-distribution-template-form" width="200"/>
     <field name="totalAmount" title="Total A.T.I" width="85" readonly="true"
       onChange="action-expense-line-method-compute-untaxed-and-company-amounts, action-expense-line-method-compute-analytic-distribution"/>
     <field name="comments" width="250"/>
@@ -121,11 +131,12 @@
         readonlyIf="expense.statusSelect &gt; 2">
         <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
           onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
-          form-view="project-form" grid-view="project-grid"/>
+          form-view="project-form" grid-view="project-grid"
+          onChange="action-expense-line-method-refresh-analytic-template"/>
         <field name="projectTask" edit-icon="false" canEdit="false"
           onSelect="action-expense-line-method-compute-project-task-domain"
-          onChange="action-expense-line-attrs-on-project-task-change" form-view="project-task-form"
-          grid-view="project-task-grid"/>
+          onChange="action-expense-line-attrs-on-project-task-change,action-expense-line-method-refresh-analytic-template"
+          form-view="project-task-form" grid-view="project-task-grid"/>
         <field name="site" form-view="site-form" grid-view="site-grid"
           onSelect="action-expense-line-attrs-set-site-domain"
           if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
@@ -201,7 +212,7 @@
 
   <form name="expense-line-kilometric-form" title="Kilometric Allowance"
     model="com.axelor.apps.hr.db.ExpenseLine"
-    onNew="action-expense-line-group-onnew,action-expense-line-method-fill-kilometric-expense-product"
+    onNew="action-expense-line-group-onnew,action-expense-line-method-fill-kilometric-expense-product,action-expense-line-method-refresh-analytic-template"
     onSave="action-expense-line-validate-expenseDate" width="large"
     onLoad="action-expense-line-attrs-read-only-analytic-distribution">
 
@@ -210,10 +221,11 @@
         readonlyIf="expense.statusSelect &gt; 2">
         <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
           onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
-          form-view="project-form" grid-view="project-grid"/>
+          form-view="project-form" grid-view="project-grid"
+          onChange="action-expense-line-method-refresh-analytic-template"/>
         <field name="projectTask" edit-icon="false" canEdit="false"
           onSelect="action-expense-line-method-compute-project-task-domain"
-          onChange="action-expense-line-attrs-on-project-task-change,action-expense-line-attrs-fill-arrival-from-site"
+          onChange="action-expense-line-attrs-on-project-task-change,action-expense-line-attrs-fill-arrival-from-site,action-expense-line-method-refresh-analytic-template"
           form-view="project-task-form" grid-view="project-task-grid"/>
         <field name="site" form-view="site-form" grid-view="site-grid"
           onSelect="action-expense-line-attrs-set-site-domain"
@@ -458,6 +470,7 @@
   <action-group name="action-expense-line-group-expense-product-on-change">
     <action name="action-expense-line-record-expense-product-on-change"/>
     <action name="action-expense-line-validate-totalAmount"/>
+    <action name="action-expense-line-method-refresh-analytic-template"/>
   </action-group>
 
   <action-group name="action-expense-line-group-total-amount-on-change">
@@ -520,6 +533,11 @@
     name="action-expense-line-method-set-domain-analytic-distribution-template">
     <call class="com.axelor.apps.hr.web.expense.ExpenseLineController"
       method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
+
+  <action-method name="action-expense-line-method-refresh-analytic-template">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseLineController"
+      method="refreshAnalyticDistributionTemplate"/>
   </action-method>
 
 </object-views>

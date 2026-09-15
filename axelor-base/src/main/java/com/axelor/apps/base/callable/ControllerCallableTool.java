@@ -64,11 +64,10 @@ public class ControllerCallableTool<V> {
                 .build(
                     () -> {
                       try {
-                        callable.call();
+                        return callable.call();
                       } catch (Exception e) {
                         throw new RuntimeException(e);
                       }
-                      return null;
                     }));
 
     int processTimeout = Beans.get(AppBaseService.class).getProcessTimeout();

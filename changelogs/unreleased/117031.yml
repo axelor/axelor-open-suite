@@ -1,0 +1,6 @@
+---
+title: "Project: removed frequently updated records from the cache."
+module: axelor-project
+developer: |
+  Removed cacheable="true" from the following domains:
+  - ProjectBatch

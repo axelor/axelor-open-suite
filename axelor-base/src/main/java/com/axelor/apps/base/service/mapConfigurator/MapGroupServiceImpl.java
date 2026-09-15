@@ -63,9 +63,7 @@ public class MapGroupServiceImpl implements MapGroupService {
     }
     Query query = JPA.em().createQuery(queryStr);
 
-    QueryBinder.of(query)
-        .bind(new ScriptBindings(new Context(Class.forName(metaModel))))
-        .setCacheable();
+    QueryBinder.of(query).bind(new ScriptBindings(new Context(Class.forName(metaModel))));
     List<?> records = query.getResultList();
     List<Map<String, Object>> data = new ArrayList<>();
 

@@ -173,6 +173,7 @@
       <button name="confirmNewReservationBtn" title="OK"
         onClick="action-method-sale-order-line-change-reserved-qty,close"/>
       <field name="qtyToDeliver" hidden="true"/>
+      <field name="qty" hidden="true"/>
     </panel>
   </form>
 
@@ -336,8 +337,9 @@
   </action-attrs>
 
   <action-attrs name="action-supplychain-attrs-sale-order-line-max-reserved-qty">
-    <attribute for="reservedQty" name="value" expr="eval: qtyToDeliver"
-      if="reservedQty &gt; qtyToDeliver"/>
+    <attribute for="reservedQty" name="value"
+      expr="eval: (qtyToDeliver != null &amp;&amp; qtyToDeliver &gt; 0) ? qtyToDeliver : qty"
+      if="reservedQty != null &amp;&amp; ((qtyToDeliver != null &amp;&amp; qtyToDeliver &gt; 0) || qty != null) &amp;&amp; reservedQty &gt; ((qtyToDeliver != null &amp;&amp; qtyToDeliver &gt; 0) ? qtyToDeliver : qty)"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-set-saleOrderLineListToInvoice">

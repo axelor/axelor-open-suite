@@ -5,7 +5,7 @@
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="LunchVoucherAdvance" cacheable="true">
+  <entity name="LunchVoucherAdvance">
 
     <date name="distributionDate" title="Distribution date"/>
     <integer name="nbrLunchVouchers" title="Lunch vouchers distributed" min="1"/>

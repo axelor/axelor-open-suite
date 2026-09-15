@@ -105,15 +105,8 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
       return createAnalyticDistributionWithTemplate(invoiceLine);
     } else {
-      if (invoiceLine.getAnalyticMoveLineList() != null) {
-        for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-          analyticMoveLineService.updateAnalyticMoveLine(
-              analyticMoveLine,
-              currencyScaleService.getScaledValue(
-                  analyticMoveLine, invoiceLine.getCompanyExTaxTotal()),
-              date);
-        }
-      }
+      analyticMoveLineService.updateAnalyticMoveLineList(
+          analyticMoveLineList, invoiceLine.getCompanyExTaxTotal(), date);
       return analyticMoveLineList;
     }
   }

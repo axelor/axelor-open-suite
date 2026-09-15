@@ -200,13 +200,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     if (analyticMoveLineList != null) {
       LocalDate date = appAccountService.getTodayDate(this.getCompany(analyticLineModel));
 
-      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        analyticMoveLineService.updateAnalyticMoveLine(
-            analyticMoveLine,
-            currencyScaleService.getScaledValue(
-                analyticMoveLine, analyticLineModel.getCompanyExTaxTotal()),
-            date);
-      }
+      analyticMoveLineService.updateAnalyticMoveLineList(
+          analyticMoveLineList, analyticLineModel.getCompanyExTaxTotal(), date);
     }
 
     analyticLineModel.copyToModel();

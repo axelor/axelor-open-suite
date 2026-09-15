@@ -28,12 +28,14 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentMoveLineCreateService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.util.TaxConfiguration;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.AxelorMessageException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -43,6 +45,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -75,6 +78,7 @@ public class PaymentServiceImpl implements PaymentService {
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected AdvancePaymentMoveLineCreateService advancePaymentMoveLineCreateService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public PaymentServiceImpl(
@@ -85,7 +89,8 @@ public class PaymentServiceImpl implements PaymentService {
       CurrencyService currencyService,
       MoveInvoiceTermService moveInvoiceTermService,
       InvoicePaymentRepository invoicePaymentRepository,
-      AdvancePaymentMoveLineCreateService advancePaymentMoveLineCreateService) {
+      AdvancePaymentMoveLineCreateService advancePaymentMoveLineCreateService,
+      AccountConfigService accountConfigService) {
 
     this.reconcileService = reconcileService;
     this.moveLineCreateService = moveLineCreateService;
@@ -95,6 +100,7 @@ public class PaymentServiceImpl implements PaymentService {
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.advancePaymentMoveLineCreateService = advancePaymentMoveLineCreateService;
+    this.accountConfigService = accountConfigService;
   }
 
   /**
@@ -176,10 +182,18 @@ public class PaymentServiceImpl implements PaymentService {
       debitTotalRemaining = debitTotalRemaining.add(debitMoveLine.getAmountRemaining());
     }
 
+    int reconcileNumberLimit = getExcessPaymentReconcileNumberLimit(debitMoveLines);
+    int reconcileCount = 0;
+
     for (MoveLine creditMoveLine : creditMoveLines) {
       for (MoveLine debitMoveLine : debitMoveLines) {
         if (creditMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0
             && debitMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
+          if (reconcileNumberLimit > 0 && reconcileCount >= reconcileNumberLimit) {
+            traceExcessPaymentReconcileLimitReached(
+                debitMoveLine, creditMoveLine, reconcileNumberLimit);
+            return errorNumber;
+          }
           BigDecimal reconciledAmount = BigDecimal.ZERO;
           if (debitMoveLine.getMaxAmountToReconcile().compareTo(BigDecimal.ZERO) > 0) {
             reconciledAmount =
@@ -193,6 +207,8 @@ public class PaymentServiceImpl implements PaymentService {
           try {
             createReconcile(
                 debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
+            // only count successful reconciliations against the limit
+            reconcileCount++;
             debitTotalRemaining = debitTotalRemaining.subtract(reconciledAmount);
             creditTotalRemaining = creditTotalRemaining.subtract(reconciledAmount);
           } catch (Exception e) {
@@ -209,6 +225,82 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     return errorNumber;
+  }
+
+  /**
+   * Read the maximum number of reconciliations allowed on excess payment usage from the company's
+   * accounting configuration. Returns 0 when no company/config or no limit is set (unlimited).
+   */
+  protected int getExcessPaymentReconcileNumberLimit(List<MoveLine> debitMoveLines)
+      throws AxelorException {
+    if (ObjectUtils.isEmpty(debitMoveLines)) {
+      return 0;
+    }
+    Move move = debitMoveLines.get(0).getMove();
+    if (move == null || move.getCompany() == null) {
+      return 0;
+    }
+    Integer limit =
+        accountConfigService
+            .getAccountConfig(move.getCompany())
+            .getExcessPaymentReconcileNumberLimit();
+    return limit == null ? 0 : limit;
+  }
+
+  /**
+   * Record a non-blocking message traceback informing that only the first {@code limit}
+   * reconciliations were performed. It is linked to the invoice(s) of the debit and credit move
+   * lines so the invoice ventilation controller surfaces it whichever side carries the ventilated
+   * invoice; falls back to the move when no invoice is available.
+   */
+  protected void traceExcessPaymentReconcileLimitReached(
+      MoveLine debitMoveLine, MoveLine creditMoveLine, int limit) {
+    String message =
+        I18n.get(AccountExceptionMessage.EXCESS_PAYMENT_RECONCILE_NUMBER_LIMIT_REACHED);
+    List<Model> references =
+        getExcessPaymentReconcileLimitReferences(debitMoveLine, creditMoveLine);
+    if (references.isEmpty()) {
+      TraceBackService.trace(
+          new AxelorMessageException(TraceBackRepository.CATEGORY_INCONSISTENCY, message, limit));
+      return;
+    }
+    for (Model reference : references) {
+      TraceBackService.trace(
+          new AxelorMessageException(
+              reference, TraceBackRepository.CATEGORY_INCONSISTENCY, message, limit));
+    }
+  }
+
+  /**
+   * Objects the reconcile-limit message should be linked to: the invoice of the debit move line
+   * and, when different, the invoice of the credit move line. Falls back to the (debit, then
+   * credit) move when neither line carries an invoice. Returns an empty list only if neither line
+   * has a move.
+   */
+  protected List<Model> getExcessPaymentReconcileLimitReferences(
+      MoveLine debitMoveLine, MoveLine creditMoveLine) {
+    List<Model> references = new ArrayList<>();
+    Invoice debitInvoice = getMoveInvoice(debitMoveLine);
+    Invoice creditInvoice = getMoveInvoice(creditMoveLine);
+    if (debitInvoice != null) {
+      references.add(debitInvoice);
+    }
+    if (creditInvoice != null && creditInvoice != debitInvoice) {
+      references.add(creditInvoice);
+    }
+    if (references.isEmpty()) {
+      Move move =
+          debitMoveLine.getMove() != null ? debitMoveLine.getMove() : creditMoveLine.getMove();
+      if (move != null) {
+        references.add(move);
+      }
+    }
+    return references;
+  }
+
+  protected Invoice getMoveInvoice(MoveLine moveLine) {
+    Move move = moveLine.getMove();
+    return move != null ? move.getInvoice() : null;
   }
 
   /**

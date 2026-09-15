@@ -7,6 +7,7 @@ there are a few guidelines we’d like you to follow:
 * [Contributor License Agreement](#contributor-license-agreement)
 * [Reporting Issues](#reporting-issues)
 * [Submitting](#submitting)
+* [Overriding a class from another module](#overriding-a-class-from-another-module)
 * [Code of Conduct](#code-of-conduct)
 
 ## Contributor License Agreement
@@ -49,11 +50,78 @@ Please make sure you don’t post any sensitive information while reporting issu
 * You must create a changelog entry to describe the change.
 See [the README in changelogs folder](https://github.com/axelor/axelor-open-suite/blob/master/changelogs/README.md)
 and follow the instructions.
+* If your change overrides a service, a controller or a repository of another module,
+follow [Overriding a class from another module](#overriding-a-class-from-another-module).
 * Push your changes to the topic branch in your fork of the repository.
 
 * Initiate a [pull request](http://help.github.com/send-pull-requests/) on the development branch
 that has the issue. For example, if the issue appears in `master` branch then choose `dev` branch,
  if the issue appears in `5.3` branch choose `5.3-dev`, etc...
+
+## Overriding a class from another module
+
+A module overrides a service, a controller or a repository of another module through a Guice
+binding declared in its `*Module.java`:
+
+```java
+bind(SaleOrderComputeServiceImpl.class).to(SaleOrderComputeServiceSupplychainImpl.class);
+```
+
+Such a binding is active **as soon as the module is deployed**, whatever the apps the customer
+actually installed. A customer running Sales without the Supply Chain app would still go through
+the Supply Chain implementation.
+
+**Rule: an override must not change the behaviour of the overridden module when its own app is
+not installed.** Guard the overriding methods on the app and delegate to `super` otherwise:
+
+```java
+@Override
+public SaleOrder computeSaleOrder(SaleOrder saleOrder) throws AxelorException {
+  if (!appSupplychainService.isApp("supplychain")) {
+    return super.computeSaleOrder(saleOrder);
+  }
+  // Supply Chain specific behaviour
+  return saleOrder;
+}
+```
+
+The `isApp(String)` method is available on `AppService`, `AppBaseService` and on every
+`App<Module>Service`. The rule applies to repositories and web controllers too, not only to
+services.
+
+### Accepted exceptions
+
+Two cases do not need a guard:
+
+* the override is behaviour-neutral when the app is off, meaning the overriding implementation
+produces the same result as the overridden one for every input;
+* the overridden code path is unreachable unless the app of the *overriding* module is installed,
+so the guard could never evaluate to false.
+
+Note that the reverse is **not** an accepted exception: the fact that the overriding module depends
+on the overridden module and on its app is true of every cross-module override, and says nothing
+about what happens when the app of the overriding module is off. That is precisely the case the
+rule is about.
+
+In both accepted cases the class must be added to `config/app-override-guard-allowlist.txt` with a
+comment explaining why, and the justification must appear in the merge request.
+
+### Automated check
+
+The `checkAppOverrideGuard` gradle task reports every cross-module override whose implementation
+contains no `isApp(...)` call and is not allowlisted. It can be run locally:
+
+```
+./gradlew checkAppOverrideGuard
+```
+
+**What the check does not catch.** It only looks for a single `isApp(...)` occurrence anywhere in
+the overriding class. A class that already guards one method therefore passes, even if a new
+unguarded `@Override` is added to it later. A green check is not a proof that the rule is
+respected: reviewing an override is still a reviewer's job.
+
+The allowlist also carries the overrides that predate the check. They are grouped by module and
+are being removed one module at a time; do not add new entries to those sections.
 
 ## Code of Conduct
 

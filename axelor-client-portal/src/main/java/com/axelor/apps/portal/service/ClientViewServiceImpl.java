@@ -20,6 +20,7 @@ package com.axelor.apps.portal.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.TicketStatus;
@@ -40,7 +41,6 @@ import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.filter.Filter;
 import com.axelor.rpc.filter.JPQLFilter;
-import com.axelor.studio.app.service.AppService;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -57,7 +57,7 @@ public class ClientViewServiceImpl implements ClientViewService {
   protected InvoiceRepository invoiceRepo;
   protected ProjectTaskRepository projectTaskRepo;
   protected JpaSecurity security;
-  protected AppService appService;
+  protected AppBaseService appBaseService;
   protected TicketStatusService ticketStatusService;
 
   static final String CLIENT_PORTAL_NO_DATE = /*$$(*/ "None" /*)*/;
@@ -71,7 +71,7 @@ public class ClientViewServiceImpl implements ClientViewService {
       InvoiceRepository invoiceRepo,
       ProjectTaskRepository projectTaskRepo,
       JpaSecurity jpaSecurity,
-      AppService appService,
+      AppBaseService appBaseService,
       TicketStatusService ticketStatusService) {
     this.saleOrderRepo = saleOrderRepo;
     this.stockMoveRepo = stockMoveRepo;
@@ -80,7 +80,7 @@ public class ClientViewServiceImpl implements ClientViewService {
     this.invoiceRepo = invoiceRepo;
     this.projectTaskRepo = projectTaskRepo;
     this.security = jpaSecurity;
-    this.appService = appService;
+    this.appBaseService = appBaseService;
     this.ticketStatusService = ticketStatusService;
   }
 
@@ -603,7 +603,7 @@ public class ClientViewServiceImpl implements ClientViewService {
             "self.clientPartner.id = "
                 + user.getPartner().getId()
                 + " AND self.projectStatus.isCompleted = false");
-    if (user.getActiveCompany() != null && appService.isApp("project")) {
+    if (user.getActiveCompany() != null && appBaseService.isApp("project")) {
       filter =
           Filter.and(
               filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
@@ -626,7 +626,7 @@ public class ClientViewServiceImpl implements ClientViewService {
                 + ProjectTaskRepository.TYPE_TASK
                 + "' AND self.project.clientPartner.id = "
                 + user.getPartner().getId());
-    if (user.getActiveCompany() != null && appService.isApp("project")) {
+    if (user.getActiveCompany() != null && appBaseService.isApp("project")) {
       filter =
           Filter.and(
               filter,

@@ -18,3 +18,6 @@
 "GBR_COA15";"VAT statement on collection";15;1;1
 "GBR_COA16";"Acquisitions table";16;1;1
 "GBR_COA17";"Summary of gross values and depreciation";17;1;1
+"GBR_COA1000";"Export journal entry -> Administration";1000;2;2
+"GBR_COA1001";"Export journal entry -> Acc. Soft.";1001;2;2
+"GBR_COA1010";"Export general balance -> Acc. Soft.";1010;2;2

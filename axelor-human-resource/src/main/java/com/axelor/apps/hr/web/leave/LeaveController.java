@@ -32,6 +32,7 @@ import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.leave.LeaveBusinessService;
 import com.axelor.apps.hr.service.leave.LeaveExportService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCancelService;
+import com.axelor.apps.hr.service.leave.LeaveRequestDraftService;
 import com.axelor.apps.hr.service.leave.LeaveRequestMailService;
 import com.axelor.apps.hr.service.leave.LeaveRequestRefuseService;
 import com.axelor.apps.hr.service.leave.LeaveRequestSendService;
@@ -254,6 +255,18 @@ public class LeaveController {
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    } finally {
+      response.setReload(true);
+    }
+  }
+
+  public void draft(ActionRequest request, ActionResponse response) {
+    try {
+      LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
+      leave = Beans.get(LeaveRequestRepository.class).find(leave.getId());
+      Beans.get(LeaveRequestDraftService.class).draft(leave);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     } finally {

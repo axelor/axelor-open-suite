@@ -14,7 +14,8 @@
     </toolbar>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="projectTask" onChange="action-timesheet-line-method-set-product"
-      form-view="project-task-form" grid-view="project-task-grid" domain="self.imputable IS TRUE"/>
+      form-view="project-task-form" grid-view="project-task-grid"
+      domain="self.imputable IS TRUE AND self.project.id in (:_projectIds)"/>
     <field name="date"/>
     <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product"
@@ -233,7 +234,8 @@
       <field name="project" onChange="action-timesheet-line-record-set-project-task"
         onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form"
         grid-view="project-grid"/>
-      <field name="projectTask" domain="self.imputable IS TRUE"
+      <field name="projectTask"
+        domain="self.imputable IS TRUE AND self.project.id in (:_projectIds)"
         onChange="action-timesheet-line-method-set-product"/>
       <field name="date" onChange="action-timesheet-line-method-check-daily-limit"/>
       <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"

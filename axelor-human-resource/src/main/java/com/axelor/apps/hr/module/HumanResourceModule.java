@@ -214,6 +214,8 @@ import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCreateHelperServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestCreateService;
 import com.axelor.apps.hr.service.leave.LeaveRequestCreateServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveRequestDraftService;
+import com.axelor.apps.hr.service.leave.LeaveRequestDraftServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestEventService;
 import com.axelor.apps.hr.service.leave.LeaveRequestEventServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestInitValueService;
@@ -502,6 +504,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(LeaveRequestSendService.class).to(LeaveRequestSendServiceImpl.class);
     bind(LeaveRequestRefuseService.class).to(LeaveRequestRefuseServiceImpl.class);
     bind(LeaveRequestCancelService.class).to(LeaveRequestCancelServiceImpl.class);
+    bind(LeaveRequestDraftService.class).to(LeaveRequestDraftServiceImpl.class);
     bind(LeaveRequestCheckService.class).to(LeaveRequestCheckServiceImpl.class);
     bind(ExtraHoursDomainService.class).to(ExtraHoursDomainServiceImpl.class);
     bind(TaskTemplateServiceImpl.class).to(TaskTemplateHrServiceImpl.class);

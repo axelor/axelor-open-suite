@@ -173,7 +173,6 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
               JPA.all(klass)
                   .filter(String.format("self.%s = :email", modelEmailLink.getEmailField()))
                   .bind("email", fromEmailAddress.getAddress())
-                  .cacheable()
                   .fetch());
         }
 
@@ -183,7 +182,6 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
               JPA.all(klass)
                   .filter(String.format("self.%s IN :emails", modelEmailLink.getEmailField()))
                   .bind("emails", emailAddresses)
-                  .cacheable()
                   .fetch());
         }
 

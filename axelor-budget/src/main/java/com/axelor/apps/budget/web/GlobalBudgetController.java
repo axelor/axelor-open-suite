@@ -46,7 +46,10 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.rpc.Criteria;
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class GlobalBudgetController {
@@ -283,5 +286,31 @@ public class GlobalBudgetController {
         Beans.get(BudgetToolsService.class)
             .buildMapWithAmounts(globalBudget.getBudgetList(), globalBudget.getBudgetLevelList());
     response.setValues(amountByField);
+  }
+
+  public void fetchSummary(ActionRequest request, ActionResponse response) {
+    try {
+      Criteria criteria = Criteria.parse(request);
+      List<GlobalBudget> globalBudgets =
+          criteria != null
+              ? criteria.createQuery(GlobalBudget.class).fetch()
+              : Collections.emptyList();
+
+      BigDecimal totalAmountExpected = BigDecimal.ZERO;
+      BigDecimal totalAmountAvailable = BigDecimal.ZERO;
+      BigDecimal totalAmountCommitted = BigDecimal.ZERO;
+
+      for (GlobalBudget globalBudget : globalBudgets) {
+        totalAmountExpected = totalAmountExpected.add(globalBudget.getTotalAmountExpected());
+        totalAmountAvailable = totalAmountAvailable.add(globalBudget.getTotalAmountAvailable());
+        totalAmountCommitted = totalAmountCommitted.add(globalBudget.getTotalAmountCommitted());
+      }
+
+      response.setValue("$totalAmountExpected", totalAmountExpected);
+      response.setValue("$totalAmountAvailable", totalAmountAvailable);
+      response.setValue("$totalAmountCommitted", totalAmountCommitted);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

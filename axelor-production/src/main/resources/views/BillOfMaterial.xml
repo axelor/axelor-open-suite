@@ -357,7 +357,7 @@
   <action-attrs
     name="action-bill-of-material-attrs-component-panel-set-canselect-and-product">
     <attribute name="value" for="$canSelect"
-      expr="eval:!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
+      expr="eval:!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
     <attribute name="readonly" for="product" expr="eval: __parent__.product != null"
       if="__parent__?._model == 'com.axelor.apps.production.db.BillOfMaterialLine'"/>
   </action-attrs>

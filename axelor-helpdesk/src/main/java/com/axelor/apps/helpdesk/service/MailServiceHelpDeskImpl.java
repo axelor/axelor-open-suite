@@ -20,11 +20,9 @@ package com.axelor.apps.helpdesk.service;
 
 import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.inject.Beans;
 import com.axelor.mail.db.MailMessage;
 import com.axelor.message.service.MailAccountService;
 import com.axelor.message.service.MailMessageActionService;
-import com.axelor.studio.app.service.AppService;
 import jakarta.inject.Inject;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -46,7 +44,7 @@ public class MailServiceHelpDeskImpl extends MailServiceBaseImpl {
   protected MailMessage messageReceived(MimeMessage email) throws MessagingException, IOException {
     MailMessage message = super.messageReceived(email);
 
-    if (!Beans.get(AppService.class).isApp("helpdesk")) {
+    if (!appBaseService.isApp("helpdesk")) {
       return message;
     }
     Document doc = Jsoup.parse(message.getBody());

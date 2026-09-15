@@ -1,0 +1,6 @@
+---
+title: "Stock: removed frequently updated records from the cache."
+module: axelor-stock
+developer: |
+  Removed cacheable="true" from the following domains:
+  - PartnerProductQualityRating

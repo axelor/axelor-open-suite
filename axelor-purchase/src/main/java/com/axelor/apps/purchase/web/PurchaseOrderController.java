@@ -55,12 +55,14 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.rpc.Criteria;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import jakarta.annotation.Nullable;
 import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -483,5 +485,25 @@ public class PurchaseOrderController {
             .map(m -> (Long) m.get("id"))
             .collect(Collectors.toList());
     return allIds.isEmpty() ? Collections.singletonList(0L) : allIds;
+  }
+
+  public void fetchSummary(ActionRequest request, ActionResponse response) {
+    try {
+      Criteria criteria = Criteria.parse(request);
+      List<PurchaseOrder> purchaseOrders =
+          criteria != null
+              ? criteria.createQuery(PurchaseOrder.class).fetch()
+              : Collections.emptyList();
+
+      BigDecimal totalInTaxTotal = BigDecimal.ZERO;
+
+      for (PurchaseOrder purchaseOrder : purchaseOrders) {
+        totalInTaxTotal = totalInTaxTotal.add(purchaseOrder.getInTaxTotal());
+      }
+
+      response.setValue("$totalInTaxTotal", totalInTaxTotal);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

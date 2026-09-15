@@ -34,22 +34,22 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
+import com.axelor.cache.AxelorCache;
+import com.axelor.cache.CacheBuilder;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptBindings;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,8 +67,11 @@ public class BankReconciliationReconciliationServiceImpl
   protected DateService dateService;
   protected CurrencyScaleService currencyScaleService;
 
-  private final Cache<String, BigDecimal> exchangeRateCache =
-      CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).maximumSize(100).build();
+  private final AxelorCache<String, BigDecimal> exchangeRateCache =
+      CacheBuilder.newBuilder("exchangeRateCache")
+          .expireAfterWrite(Duration.ofMinutes(10))
+          .maximumSize(100)
+          .build();
 
   @Inject
   public BankReconciliationReconciliationServiceImpl(
@@ -361,7 +364,7 @@ public class BankReconciliationReconciliationServiceImpl
       return BigDecimal.ONE;
     }
     String key = startCurrency.getId() + "_" + endCurrency.getId();
-    BigDecimal rate = exchangeRateCache.getIfPresent(key);
+    BigDecimal rate = exchangeRateCache.get(key);
     if (rate != null) {
       return rate;
     }

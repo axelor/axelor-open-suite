@@ -23,8 +23,8 @@ import com.axelor.apps.account.service.accountingsituation.AccountingSituationCh
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationInitService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.studio.app.service.AppService;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import jakarta.persistence.PersistenceException;
@@ -33,7 +33,7 @@ import org.apache.commons.collections.CollectionUtils;
 @Singleton
 public class PartnerAccountRepository extends PartnerBaseRepository {
 
-  protected AppService appService;
+  protected AppBaseService appBaseService;
 
   protected AccountingSituationInitService accountingSituationInitService;
 
@@ -41,10 +41,10 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
 
   @Inject
   public PartnerAccountRepository(
-      AppService appService,
+      AppBaseService appBaseService,
       AccountingSituationInitService accountingSituationInitService,
       AccountingSituationCheckService accountingSituationCheckService) {
-    this.appService = appService;
+    this.appBaseService = appBaseService;
     this.accountingSituationInitService = accountingSituationInitService;
     this.accountingSituationCheckService = accountingSituationCheckService;
   }
@@ -57,7 +57,7 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
         partner = super.save(partner);
       }
 
-      if (appService.isApp("account")) {
+      if (appBaseService.isApp("account")) {
         if (!partner.getIsContact() || partner.getIsEmployee()) {
           // Create & fill
           accountingSituationInitService.createAccountingSituation(this.find(partner.getId()));

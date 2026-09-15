@@ -33,6 +33,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveLi
 import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -323,6 +324,8 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
       newStockMove.getStockMoveLineList().forEach(operationOrder::addConsumedStockMoveLineListItem);
       operationOrder.clearDiffConsumeProdProductList();
     }
+
+    Beans.get(ManufOrderWorkflowService.class).completeIfFullyProduced(manufOrder);
   }
 
   /**

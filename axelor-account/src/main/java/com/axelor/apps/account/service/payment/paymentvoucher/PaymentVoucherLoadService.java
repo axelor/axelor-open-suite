@@ -137,6 +137,7 @@ public class PaymentVoucherLoadService {
             .bind("pfpStatusAwaiting", InvoiceRepository.PFP_STATUS_AWAITING)
             .bind("pfpStatusLitigation", InvoiceRepository.PFP_STATUS_LITIGATION)
             .bind("currency", paymentVoucher.getCurrency())
+            .order("dueDate")
             .fetch());
   }
 

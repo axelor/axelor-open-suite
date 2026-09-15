@@ -55,6 +55,8 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
+import com.axelor.cache.AxelorCache;
+import com.axelor.cache.CacheBuilder;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -67,10 +69,10 @@ import jakarta.persistence.TypedQuery;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -97,7 +99,10 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   protected InvoiceTermRepository invoiceTermRepo;
   protected JournalService journalService;
 
-  protected Map<Integer, List<Integer>> invoiceStatusMap;
+  protected final AxelorCache<Integer, List<Integer>> invoiceStatusMap =
+      CacheBuilder.newBuilder("invoiceStatusMap")
+          .expireAfterWrite(Duration.ofMinutes(5))
+          .build(this::fetchAvailableStatusList);
 
   @Inject
   public ForecastRecapServiceImpl(
@@ -123,15 +128,13 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     forecastRecap.clearForecastRecapLineList();
     forecastRecap.setCurrentBalance(forecastRecap.getStartingBalance());
 
-    invoiceStatusMap = fetchAvailableStatusMap();
     forecastRecapRepo.save(forecastRecap);
   }
 
   protected List<Integer> getDeductionStatusList(int operationTypeSelect) {
     List<Integer> statusList =
         new ArrayList<>(
-            Optional.ofNullable(invoiceStatusMap)
-                .map(m -> m.get(operationTypeSelect))
+            Optional.ofNullable(invoiceStatusMap.get(operationTypeSelect))
                 .orElse(Collections.emptyList()));
     if (!statusList.contains(InvoiceRepository.STATUS_VENTILATED)) {
       statusList.add(InvoiceRepository.STATUS_VENTILATED);
@@ -139,32 +142,21 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     return statusList;
   }
 
-  protected Map<Integer, List<Integer>> fetchAvailableStatusMap() {
-    List<Integer> supportedOperationTypeSelect =
-        Arrays.asList(
-            InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
-            InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND,
-            InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
-            InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
-    Map<Integer, List<Integer>> invStatusMap = new HashMap<>();
-
-    for (int operationTypeSelect : supportedOperationTypeSelect) {
-      List<Integer> statusSelectList =
-          forecastRecapLineTypeRepo
-              .all()
-              .filter("self.operationTypeSelect = :operationTypeSelect")
-              .bind("operationTypeSelect", operationTypeSelect)
-              .fetchStream()
-              .map(ForecastRecapLineType::getStatusSelect)
-              .map(StringHelper::getIntegerList)
-              .flatMap(Collection::stream)
-              .collect(Collectors.toList());
-      if (statusSelectList.isEmpty()) {
-        statusSelectList.add(0);
-      }
-      invStatusMap.put(operationTypeSelect, statusSelectList);
+  protected List<Integer> fetchAvailableStatusList(Integer operationTypeSelect) {
+    List<Integer> statusSelectList =
+        forecastRecapLineTypeRepo
+            .all()
+            .filter("self.operationTypeSelect = :operationTypeSelect")
+            .bind("operationTypeSelect", operationTypeSelect)
+            .fetchStream()
+            .map(ForecastRecapLineType::getStatusSelect)
+            .map(StringHelper::getIntegerList)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toList());
+    if (statusSelectList.isEmpty()) {
+      statusSelectList.add(0);
     }
-    return invStatusMap;
+    return statusSelectList;
   }
 
   @Override

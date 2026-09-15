@@ -102,6 +102,10 @@
           action="save,action-supplychain-stock-move-method-fill-real-quantities"/>
       </insert>
     </extend>
+    <extend target="//button[@name='realizeBtn']">
+      <attribute name="onClick"
+        value="action-supplychain-stock-move-method-check-qty-greater-than-remaining-qty-to-receive,action-group-stock-stockmove-realize-click"/>
+    </extend>
   </form>
 
   <action-attrs name="action-stock-move-attrs-fill-ctx">
@@ -282,6 +286,12 @@
   <action-method name="action-supplychain-stock-move-method-fill-real-quantities">
     <call class="com.axelor.apps.supplychain.web.StockMoveController"
       method="fillRealQuantities"/>
+  </action-method>
+
+  <action-method
+    name="action-supplychain-stock-move-method-check-qty-greater-than-remaining-qty-to-receive">
+    <call class="com.axelor.apps.supplychain.web.StockMoveController"
+      method="checkQtyGreaterThanRemainingQtyToReceive"/>
   </action-method>
 
   <action-method

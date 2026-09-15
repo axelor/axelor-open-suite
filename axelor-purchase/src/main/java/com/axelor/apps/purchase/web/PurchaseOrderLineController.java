@@ -335,21 +335,28 @@ public class PurchaseOrderLineController {
       Company company = purchaseOrder.getCompany();
       Partner supplierPartner = purchaseOrder.getSupplierPartner();
 
-      if (!supplierCatalogService.checkMinQty(
-          purchaseOrderLine.getProduct(),
-          supplierPartner,
-          company,
-          purchaseOrderLine.getQty(),
-          request,
-          response)) {
-        supplierCatalogService.checkMaxQty(
-            purchaseOrderLine.getProduct(),
-            supplierPartner,
-            company,
-            purchaseOrderLine.getQty(),
-            request,
-            response);
-      }
+      boolean isBreakMinQtyLimit =
+          supplierCatalogService.checkMinQty(
+              purchaseOrderLine.getProduct(),
+              supplierPartner,
+              company,
+              purchaseOrderLine.getQty(),
+              request,
+              response);
+      boolean isBreakMaxQtyLimit =
+          !isBreakMinQtyLimit
+              && supplierCatalogService.checkMaxQty(
+                  purchaseOrderLine.getProduct(),
+                  supplierPartner,
+                  company,
+                  purchaseOrderLine.getQty(),
+                  request,
+                  response);
+
+      response.setValues(
+          Beans.get(PurchaseOrderLineService.class)
+              .updatePriceForQtyLimit(
+                  purchaseOrderLine, purchaseOrder, isBreakMinQtyLimit || isBreakMaxQtyLimit));
 
       Beans.get(PurchaseOrderLineService.class)
           .checkMultipleQty(company, supplierPartner, purchaseOrderLine, response);

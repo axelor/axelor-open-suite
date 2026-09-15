@@ -34,9 +34,12 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.rpc.Criteria;
 import jakarta.inject.Singleton;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,9 +103,19 @@ public class OpportunityController {
       Opportunity opportunity = request.getContext().asType(Opportunity.class);
       opportunity = Beans.get(OpportunityRepository.class).find(opportunity.getId());
 
-      Beans.get(OpportunityService.class).setOpportunityStatusStagedClosedLost(opportunity);
+      Beans.get(OpportunityService.class).checkPartner(opportunity);
 
-      response.setReload(true);
+      response.setView(
+          ActionView.define(I18n.get("Lost reason"))
+              .model(Opportunity.class.getName())
+              .add("form", "opportunity-form-lost-popup")
+              .param("popup", "reload")
+              .param("show-toolbar", "false")
+              .param("show-confirm", "false")
+              .param("popup-save", "true")
+              .param("forceEdit", "true")
+              .context("_showRecord", opportunity.getId())
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -201,6 +214,26 @@ public class OpportunityController {
       Beans.get(OpportunityService.class).kanbanOpportunityOnMove(opportunity);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void fetchSummary(ActionRequest request, ActionResponse response) {
+    try {
+      Criteria criteria = Criteria.parse(request);
+      List<Opportunity> opportunities =
+          criteria != null
+              ? criteria.createQuery(Opportunity.class).fetch()
+              : Collections.emptyList();
+
+      BigDecimal totalAmount = BigDecimal.ZERO;
+
+      for (Opportunity opportunity : opportunities) {
+        totalAmount = totalAmount.add(opportunity.getAmount());
+      }
+
+      response.setValue("$totalAmount", totalAmount);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

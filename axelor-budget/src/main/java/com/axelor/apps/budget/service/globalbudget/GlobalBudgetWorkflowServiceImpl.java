@@ -94,6 +94,7 @@ public class GlobalBudgetWorkflowServiceImpl implements GlobalBudgetWorkflowServ
     }
 
     globalBudget.setStatusSelect(GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_ARCHIVED);
+    globalBudget.setArchived(true);
   }
 
   @Override

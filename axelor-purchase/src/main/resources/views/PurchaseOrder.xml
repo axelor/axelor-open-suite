@@ -33,6 +33,12 @@
       onClick="action-purchase-order-method-show-purchase-order"/>
     <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
+    <summary-bar>
+      <field name="inTaxTotal" title="Selected A.T.I." aggregate="sum" on="selection"/>
+      <call action="com.axelor.apps.purchase.web.PurchaseOrderController:fetchSummary">
+        <field name="$totalInTaxTotal" title="Total A.T.I." type="decimal" align="end"/>
+      </call>
+    </summary-bar>
   </grid>
 
   <grid name="purchase-order-grid" title="Purchase orders"
@@ -63,6 +69,12 @@
       onClick="action-purchase-order-method-show-purchase-order"/>
     <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
+    <summary-bar>
+      <field name="inTaxTotal" title="Selected A.T.I." aggregate="sum" on="selection"/>
+      <call action="com.axelor.apps.purchase.web.PurchaseOrderController:fetchSummary">
+        <field name="$totalInTaxTotal" title="Total A.T.I." type="decimal" align="end"/>
+      </call>
+    </summary-bar>
   </grid>
 
   <grid orderBy="-orderDate,-purchaseOrderSeq" edit-icon="true" name="my-purchase-order-grid"
@@ -286,7 +298,7 @@
           x-scale="currency.numberOfDecimals"/>
         <panel-related name="timetableListPanel" field="timetableList" colSpan="12"
           grid-view="timetable-grid-purchase" form-view="timetable-form-purchase"
-          onChange="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable"
+          onChange="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable,action-supplychain-purchase-order-validate-check-amount-timetable"
           if-module="axelor-supplychain"/>
       </panel>
       <panel name="printingPanel" title="Printing">

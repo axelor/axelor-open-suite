@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
@@ -30,4 +31,9 @@ public interface ExpenseAnalyticService {
   public ExpenseLine computeAnalyticDistribution(ExpenseLine expenseLine) throws AxelorException;
 
   void checkAnalyticAxisByCompany(Expense expense) throws AxelorException;
+
+  AnalyticDistributionTemplate computeAnalyticDistributionTemplate(ExpenseLine expenseLine)
+      throws AxelorException;
+
+  void applyAnalyticDistribution(ExpenseLine expenseLine) throws AxelorException;
 }

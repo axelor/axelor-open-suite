@@ -34,7 +34,7 @@ import com.axelor.apps.supplychain.db.TimetableTemplateLine;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
-import com.axelor.db.JPA;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
@@ -45,19 +45,28 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class TimetableServiceImpl implements TimetableService {
 
   SaleOrderInvoiceService saleOrderInvoiceService;
+  PurchaseOrderInvoiceService purchaseOrderInvoiceService;
   TimetableRepository timetableRepository;
 
   public static final int FETCH_LIMIT = 10;
 
+  private static final Comparator<Timetable> BY_ESTIMATED_DATE =
+      Comparator.comparing(
+          Timetable::getEstimatedDate, Comparator.nullsLast(Comparator.naturalOrder()));
+
   @Inject
   public TimetableServiceImpl(
-      SaleOrderInvoiceService saleOrderInvoiceService, TimetableRepository timetableRepository) {
+      SaleOrderInvoiceService saleOrderInvoiceService,
+      PurchaseOrderInvoiceService purchaseOrderInvoiceService,
+      TimetableRepository timetableRepository) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
+    this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.timetableRepository = timetableRepository;
   }
 
@@ -139,12 +148,88 @@ public class TimetableServiceImpl implements TimetableService {
   }
 
   @Override
-  public void deleteInvoiceTimeTable(Invoice invoice) {
-    JPA.em()
-        .createQuery(
-            "UPDATE Timetable self SET self.invoice = NULL WHERE self.invoice.id = :invoiceId")
-        .setParameter("invoiceId", invoice.getId())
-        .executeUpdate();
+  public void cancelTimetable(Invoice invoice) {
+    List<Timetable> timetableList = timetableRepository.findByInvoice(invoice).fetch();
+    for (Timetable timetable : timetableList) {
+      if (timetable.getInvoiced()) {
+        timetable.setInvoiced(false);
+        timetable.setInvoicedAmount(BigDecimal.ZERO);
+      }
+      timetable.setInvoice(null);
+      timetableRepository.save(timetable);
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateTimetables(Invoice invoice) {
+    SaleOrder saleOrder = invoice.getSaleOrder();
+    if (saleOrder != null) {
+      linkPendingTimetables(saleOrder.getTimetableList(), invoice);
+    }
+    PurchaseOrder purchaseOrder = invoice.getPurchaseOrder();
+    if (purchaseOrder != null) {
+      linkPendingTimetables(purchaseOrder.getTimetableList(), invoice);
+    }
+    markTimetablesInvoiced(invoice);
+  }
+
+  protected void linkPendingTimetables(List<Timetable> timetableList, Invoice invoice) {
+    if (ObjectUtils.isEmpty(timetableList)) {
+      return;
+    }
+    BigDecimal alreadyLinkedAmount =
+        timetableList.stream()
+            .filter(t -> invoice.equals(t.getInvoice()))
+            .map(t -> t.getAmount().subtract(t.getInvoicedAmount()))
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal remainingAmount = invoice.getExTaxTotal().subtract(alreadyLinkedAmount);
+    if (remainingAmount.compareTo(BigDecimal.ZERO) <= 0) {
+      return;
+    }
+    List<Timetable> pendingTimetableList =
+        timetableList.stream()
+            .filter(t -> isLinkable(t, invoice))
+            .sorted(BY_ESTIMATED_DATE)
+            .collect(Collectors.toList());
+    for (Timetable timetable : pendingTimetableList) {
+      if (remainingAmount.compareTo(BigDecimal.ZERO) <= 0) {
+        break;
+      }
+      BigDecimal effectiveAmount = timetable.getAmount().subtract(timetable.getInvoicedAmount());
+      if (effectiveAmount.compareTo(BigDecimal.ZERO) <= 0) {
+        continue;
+      }
+      timetable.setInvoice(invoice);
+      timetableRepository.save(timetable);
+      remainingAmount = remainingAmount.subtract(effectiveAmount);
+    }
+  }
+
+  protected void markTimetablesInvoiced(Invoice invoice) {
+    List<Timetable> timetableList = timetableRepository.findByInvoice(invoice).fetch();
+    if (timetableList.isEmpty()) {
+      return;
+    }
+    timetableList.sort(BY_ESTIMATED_DATE);
+    BigDecimal remainingAmount = invoice.getExTaxTotal();
+    for (Timetable timetable : timetableList) {
+      BigDecimal contribution =
+          remainingAmount.min(timetable.getAmount().subtract(timetable.getInvoicedAmount()));
+      timetable.setInvoicedAmount(timetable.getInvoicedAmount().add(contribution));
+      remainingAmount = remainingAmount.subtract(contribution);
+      if (timetable.getInvoicedAmount().compareTo(timetable.getAmount()) >= 0) {
+        timetable.setInvoiced(true);
+      }
+      timetableRepository.save(timetable);
+    }
+  }
+
+  private boolean isLinkable(Timetable timetable, Invoice invoice) {
+    return !timetable.getInvoiced()
+        && !invoice.equals(timetable.getInvoice())
+        && (timetable.getInvoice() == null
+            || timetable.getInvoice().getStatusSelect() >= InvoiceRepository.STATUS_VENTILATED);
   }
 
   @Override

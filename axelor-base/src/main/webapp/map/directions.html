@@ -71,7 +71,17 @@
 		}
 
 		function translateResult(element, status) {
-			element.innerHTML = status;
+			var url = getAppHome() + "/ws/map/translation/" + "MapRest." + status;
+			$.get(url)
+				.done(function(data) {
+					element.innerHTML = data.translation;
+				})
+				.fail(function (jqXHR, textStatus, errorThrown) {
+					console.log(jqXHR);
+					console.log(textStatus);
+					console.log(errorThrown );
+					element.innerHTML = status;
+				});
 		}
 
 		function initialize() {

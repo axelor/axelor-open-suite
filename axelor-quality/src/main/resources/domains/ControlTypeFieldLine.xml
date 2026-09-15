@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <!-- Association between a control type and one of its fields, carrying the order the field is displayed
+    and entered in. The order belongs to the couple, so the same field can be used by several control types
+    with a different rank in each. -->
+  <entity name="ControlTypeFieldLine">
+
+    <many-to-one name="controlTypeField"
+      ref="com.axelor.apps.quality.db.ControlTypeField" title="Field" required="true"/>
+    <integer name="sequence" title="Sequence"/>
+
+    <many-to-one name="planControlType" ref="com.axelor.apps.quality.db.ControlType"
+      title="Control type"/>
+    <many-to-one name="entryControlType" ref="com.axelor.apps.quality.db.ControlType"
+      title="Control type"/>
+
+  </entity>
+
+</domain-models>

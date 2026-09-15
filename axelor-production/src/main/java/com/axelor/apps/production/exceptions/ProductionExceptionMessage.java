@@ -119,6 +119,9 @@ public final class ProductionExceptionMessage {
   public static final String PROD_PROCESS_LINE_MISSING_WORK_CENTER = /*$$(*/
       "Work center is missing from prod process line %s-%s." /*)*/;
 
+  public static final String PROD_PROCESS_LINE_MISSING_FOR_CYCLE_COMPUTATION = /*$$(*/
+      "Cannot compute the number of cycles because the production process line is missing. Please check the manufacturing order routing configuration." /*)*/;
+
   public static final String PROD_PROCESS_NULL_STATUS = /*$$(*/
       "Prod process currently has no status" /*)*/;
 
@@ -227,6 +230,9 @@ public final class ProductionExceptionMessage {
 
   public static final String DUPLICATE_PRODUCT_SELECTED = /*$$(*/
       "Multiple same product selected in the list." /*)*/;
+
+  public static final String CHILD_MO_SELECTED_WITHOUT_PARENT = /*$$(*/
+      "The manufacturing order for product '%s' cannot be planned without its parent order." /*)*/;
 
   // CostSheetLine service
   public static final String MISSING_PRODUCT_PURCHASE_CURRENCY = /*$$(*/

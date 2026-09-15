@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -337,7 +338,7 @@ public class InvoiceMergingServiceImpl implements InvoiceMergingService {
     }
 
     StringJoiner fieldErrors = new StringJoiner("<BR/>");
-    checkErrors(fieldErrors, result);
+    checkErrors(fieldErrors, invoicesToMerge, result);
     if (fieldErrors.length() > 0) {
       throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, fieldErrors.toString());
     }
@@ -370,7 +371,7 @@ public class InvoiceMergingServiceImpl implements InvoiceMergingService {
     }
 
     StringJoiner fieldErrors = new StringJoiner("<BR/>");
-    checkErrors(fieldErrors, result);
+    checkErrors(fieldErrors, invoicesToMerge, result);
     if (fieldErrors.length() > 0) {
       throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, fieldErrors.toString());
     }
@@ -419,7 +420,7 @@ public class InvoiceMergingServiceImpl implements InvoiceMergingService {
     }
 
     StringJoiner fieldErrors = new StringJoiner("<BR/>");
-    checkErrors(fieldErrors, result);
+    checkErrors(fieldErrors, invoicesToMerge, result);
     if (fieldErrors.length() > 0) {
       throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, fieldErrors.toString());
     }
@@ -586,25 +587,22 @@ public class InvoiceMergingServiceImpl implements InvoiceMergingService {
     }
   }
 
-  protected void checkErrors(StringJoiner fieldErrors, InvoiceMergingResult result)
+  protected void checkErrors(
+      StringJoiner fieldErrors, List<Invoice> invoicesToMerge, InvoiceMergingResult result)
       throws AxelorException {
     if (getCommonFields(result).getCommonCurrency() == null) {
-      fieldErrors.add(
-          I18n.get(
-              com.axelor.apps.account.exception.AccountExceptionMessage
-                  .INVOICE_MERGE_ERROR_CURRENCY));
+      fieldErrors.add(I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_CURRENCY));
     }
     if (getCommonFields(result).getCommonCompany() == null) {
-      fieldErrors.add(
-          I18n.get(
-              com.axelor.apps.account.exception.AccountExceptionMessage
-                  .INVOICE_MERGE_ERROR_COMPANY));
+      fieldErrors.add(I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_COMPANY));
     }
     if (getCommonFields(result).getCommonPartner() == null) {
-      fieldErrors.add(
-          I18n.get(
-              com.axelor.apps.account.exception.AccountExceptionMessage
-                  .INVOICE_MERGE_ERROR_PARTNER));
+      fieldErrors.add(I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_PARTNER));
+    }
+    if (invoicesToMerge != null
+        && invoicesToMerge.stream()
+            .anyMatch(invoice -> !InvoiceToolService.isInvoiceStatusMergeable(invoice))) {
+      fieldErrors.add(I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_STATUS));
     }
   }
 

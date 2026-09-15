@@ -42,6 +42,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -77,7 +78,8 @@ public class SaleOrderInvoiceContractServiceImpl extends SaleOrderInvoiceService
       InvoiceTaxService invoiceTaxService,
       SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
       PartnerAccountService partnerAccountService,
-      InvoiceGlobalDiscountService invoiceGlobalDiscountService) {
+      InvoiceGlobalDiscountService invoiceGlobalDiscountService,
+      TimetableRepository timetableRepo) {
     super(
         appBaseService,
         appStockService,
@@ -97,7 +99,8 @@ public class SaleOrderInvoiceContractServiceImpl extends SaleOrderInvoiceService
         invoiceTaxService,
         saleOrderDeliveryAddressService,
         partnerAccountService,
-        invoiceGlobalDiscountService);
+        invoiceGlobalDiscountService,
+        timetableRepo);
   }
 
   @Transactional(rollbackOn = {Exception.class})

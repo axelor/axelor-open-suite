@@ -669,8 +669,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       PaymentSession paymentSession, InvoiceTerm invoiceTerm, MoveLine moveLine)
       throws AxelorException {
     MoveLine debitMoveLine, creditMoveLine;
-    BigDecimal amountPaid =
-        moveLine.getAmountRemaining().signum() == 0 ? moveLine.getAmountPaid() : BigDecimal.ZERO;
+    BigDecimal compensatedAmount = moveLine.getAmountPaid();
 
     if (paymentSession.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT) {
       debitMoveLine = moveLine;
@@ -689,14 +688,32 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       }
     }
 
-    if (paymentSession.getPaymentMode().getInOutSelect() == PaymentModeRepository.OUT) {
-      debitMoveLine.setAmountPaid(debitMoveLine.getAmountPaid().subtract(amountPaid));
-    } else {
-      creditMoveLine.setAmountPaid(creditMoveLine.getAmountPaid().subtract(amountPaid));
+    Reconcile reconcile = null;
+
+    if (moveLine.getAmountRemaining().signum() != 0) {
+      reconcile =
+          reconcileService.reconcile(debitMoveLine, creditMoveLine, invoicePayment, false, true);
     }
 
-    return reconcileService.reconcile(
-        debitMoveLine, creditMoveLine, invoicePayment, false, amountPaid.signum() == 0);
+    if (compensatedAmount.signum() != 0) {
+      // The compensated amount was written on the move line without any reconcile record, so it
+      // must be released then reconciled with the invoice move line to be imputed on it.
+      moveLine.setAmountPaid(moveLine.getAmountPaid().subtract(compensatedAmount));
+
+      Reconcile compensationReconcile =
+          reconcileService.reconcile(
+              debitMoveLine,
+              creditMoveLine,
+              reconcile == null ? invoicePayment : null,
+              false,
+              false);
+
+      if (reconcile == null) {
+        reconcile = compensationReconcile;
+      }
+    }
+
+    return reconcile;
   }
 
   protected InvoicePayment findInvoicePayment(

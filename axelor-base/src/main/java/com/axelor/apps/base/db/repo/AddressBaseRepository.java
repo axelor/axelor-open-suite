@@ -22,13 +22,9 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.address.AddressTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
-import java.util.Objects;
-import java.util.Optional;
 
 public class AddressBaseRepository extends AddressRepository {
 
@@ -38,13 +34,6 @@ public class AddressBaseRepository extends AddressRepository {
   public Address save(Address entity) {
 
     try {
-      EntityManager em = JPA.em().getEntityManagerFactory().createEntityManager();
-      Address oldAddressObject =
-          Optional.ofNullable(entity.getId()).map(id -> em.find(Address.class, id)).orElse(null);
-      if (oldAddressObject == null
-          || !Objects.equals(oldAddressObject.getFullName(), entity.getFullName())) {
-        addressService.updateLatLong(entity);
-      }
       AddressTemplateService addressTemplateService = Beans.get(AddressTemplateService.class);
       addressTemplateService.setFormattedFullName(entity);
       entity.setFullName(addressService.computeFullName(entity).toUpperCase());
