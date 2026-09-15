@@ -71,7 +71,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       } else {
         domainList.add(
             String.format(
-                "self.statusSelect in (%d, %d)",
+                "self.typeSelect in (%d, %d)",
                 StockMoveRepository.TYPE_OUTGOING, StockMoveRepository.TYPE_INTERNAL));
       }
     } else {
