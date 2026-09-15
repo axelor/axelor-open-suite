@@ -33,6 +33,7 @@ import com.axelor.apps.maintenance.service.MaintenanceRequestInitValueService;
 import com.axelor.apps.maintenance.service.MaintenanceRequestInitValueServiceImpl;
 import com.axelor.apps.maintenance.service.MaintenanceRequestService;
 import com.axelor.apps.maintenance.service.MaintenanceRequestServiceImpl;
+import com.axelor.apps.maintenance.service.ManufOrderFinalControlMaintenanceServiceImpl;
 import com.axelor.apps.maintenance.service.ManufOrderPlanServiceMaintenanceImpl;
 import com.axelor.apps.maintenance.service.ManufOrderPrintService;
 import com.axelor.apps.maintenance.service.ManufOrderPrintServiceImpl;
@@ -52,6 +53,7 @@ import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.MrpServiceProductionImpl;
 import com.axelor.apps.production.service.batch.ProductionBatchService;
 import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderFinalControlServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
@@ -68,6 +70,8 @@ public class MaintenanceModule extends AxelorModule {
     bind(BillOfMaterialMaintenanceService.class).to(BillOfMaterialServiceMaintenanceImpl.class);
     bind(BillOfMaterialServiceImpl.class).to(BillOfMaterialServiceMaintenanceImpl.class);
     bind(ManufOrderWorkflowServiceImpl.class).to(ManufOrderWorkflowMaintenanceServiceImpl.class);
+    bind(ManufOrderFinalControlServiceImpl.class)
+        .to(ManufOrderFinalControlMaintenanceServiceImpl.class);
     bind(ManufOrderPrintService.class).to(ManufOrderPrintServiceImpl.class);
     bind(BillOfMaterialComputeNameServiceImpl.class)
         .to(BillOfMaterialComputeNameServiceMaintenanceImpl.class);
