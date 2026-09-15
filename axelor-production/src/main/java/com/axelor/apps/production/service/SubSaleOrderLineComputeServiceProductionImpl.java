@@ -55,6 +55,11 @@ public class SubSaleOrderLineComputeServiceProductionImpl
   @Override
   public void computeSumSubLineList(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
+    if (!appSaleService.isApp("production")) {
+      super.computeSumSubLineList(saleOrderLine, saleOrder);
+      return;
+    }
+
     AppSale appSale = appSaleService.getAppSale();
     if (appSale.getListDisplayTypeSelect() != AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
       super.computeSumSubLineList(saleOrderLine, saleOrder);
@@ -78,6 +83,11 @@ public class SubSaleOrderLineComputeServiceProductionImpl
 
   @Override
   protected void computePrices(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    if (!appSaleService.isApp("production")) {
+      super.computePrices(saleOrderLine, saleOrder);
+      return;
+    }
+
     List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
     List<SaleOrderLineDetails> saleOrderLineDetailsList =
         saleOrderLine.getSaleOrderLineDetailsList();

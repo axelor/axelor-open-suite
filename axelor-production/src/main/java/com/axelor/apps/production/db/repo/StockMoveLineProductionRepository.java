@@ -18,14 +18,21 @@
  */
 package com.axelor.apps.production.db.repo;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
+import com.axelor.inject.Beans;
 
 public class StockMoveLineProductionRepository extends StockMoveLineSupplychainRepository {
 
   @Override
   public StockMoveLine copy(StockMoveLine entity, boolean deep) {
     StockMoveLine copy = super.copy(entity, deep);
+
+    if (!Beans.get(AppBaseService.class).isApp("production")) {
+      return copy;
+    }
+
     if (!deep) {
       copy.setProducedManufOrder(null);
       copy.setConsumedManufOrder(null);

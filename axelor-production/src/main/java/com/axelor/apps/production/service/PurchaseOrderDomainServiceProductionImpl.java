@@ -19,13 +19,19 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.service.PurchaseOrderDomainServiceImpl;
+import com.axelor.inject.Beans;
 
 public class PurchaseOrderDomainServiceProductionImpl extends PurchaseOrderDomainServiceImpl {
 
   @Override
   public String getPartnerBaseDomain(Company company, PurchaseOrder purchaseOrder) {
+    if (!Beans.get(AppBaseService.class).isApp("production")) {
+      return super.getPartnerBaseDomain(company, purchaseOrder);
+    }
+
     if (Boolean.TRUE.equals(purchaseOrder.getOutsourcingOrder())) {
       long companyId = company.getPartner() == null ? 0L : company.getPartner().getId();
       return String.format(

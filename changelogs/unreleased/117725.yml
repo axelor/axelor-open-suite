@@ -1,0 +1,30 @@
+---
+title: "App check: axelor-production no longer changes the behaviour of the modules it extends when the Production app is not installed."
+module: axelor-production
+developer: |
+  The 29 remaining cross-module overrides of `axelor-production` now guard their production
+  specific behaviour on `isApp("production")` and delegate to `super` when the app is off.
+  Among them the five overrides of `axelor-quality` services, which were applying production
+  behaviour (manufacturing order, operation order, production process line) to the quality
+  module on a base where Production is not installed.
+
+  The check is done with the app service already injected in the class when there is one
+  (`AppProductionService`, `AppBaseService`, `AppSaleService`, `AppPurchaseService`,
+  `AppSupplychainService`), otherwise `AppBaseService` comes in through the existing
+  constructor. The five repositories, which have no constructor, read it with
+  `Beans.get(AppBaseService.class)` the way they already fetch their other collaborators.
+
+  `StockConfigProductionService` needed no guard and is now listed in
+  `config/app-override-guard-allowlist.txt` as a justified exception: it is bound on
+  `StockConfigService` (axelor-stock) but overrides none of its methods, it only adds the
+  production stock location getters.
+
+  The following classes get a new constructor parameter, which breaks subclasses calling it:
+
+  - `com.axelor.apps.production.service.SaleOrderLineOnSaleSupplyChangeServiceProductionImpl`
+  - `com.axelor.apps.production.service.TrackingNumberCompanyProductionServiceImpl`
+  - `com.axelor.apps.production.service.configurator.ConfiguratorCheckServiceProductionImpl`
+  - `com.axelor.apps.production.service.SaleOrderLineComputeQtyProductionServiceImpl`
+  - `com.axelor.apps.production.service.QualityImprovementUpdateProductionServiceImpl`
+  - `com.axelor.apps.production.rest.QualityImprovementParseProductionServiceImpl`
+  - `com.axelor.apps.production.service.ControlEntryProductionServiceImpl`

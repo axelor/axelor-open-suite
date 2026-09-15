@@ -48,6 +48,10 @@ public class SaleOrderCheckBlockingServiceProductionServiceImpl
   public List<String> checkBlocking(SaleOrder saleOrder) {
     var alertList = super.checkBlocking(saleOrder);
 
+    if (!appProductionService.isApp("production")) {
+      return alertList;
+    }
+
     if (saleOrderBlockingProductionService.hasOnGoingBlocking(saleOrder)
         && appProductionService.getAppProduction().getProductionOrderGenerationAuto()) {
       alertList.add(ProductionExceptionMessage.SALE_ORDER_LINES_CANNOT_PRODUCT);

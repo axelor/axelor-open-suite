@@ -59,6 +59,11 @@ public class ConfiguratorCheckServiceProductionImpl
   @Override
   public void checkLinkedSaleOrderLine(Configurator configurator) throws AxelorException {
     super.checkLinkedSaleOrderLine(configurator);
+
+    if (!appBaseService.isApp("production")) {
+      return;
+    }
+
     var saleOrderLines =
         saleOrderLineRepository
             .all()
@@ -82,6 +87,10 @@ public class ConfiguratorCheckServiceProductionImpl
   public void checkLinkedSaleOrderLine(Configurator configurator, Product product)
       throws AxelorException {
     super.checkLinkedSaleOrderLine(configurator, product);
+
+    if (!appBaseService.isApp("production")) {
+      return;
+    }
 
     var saleOrderLines =
         saleOrderLineRepository

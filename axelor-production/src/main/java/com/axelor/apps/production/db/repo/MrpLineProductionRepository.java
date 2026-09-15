@@ -18,15 +18,21 @@
  */
 package com.axelor.apps.production.db.repo;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.repo.MrpLineManagementRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
+import com.axelor.inject.Beans;
 import java.util.Map;
 
 public class MrpLineProductionRepository extends MrpLineManagementRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    if (!Beans.get(AppBaseService.class).isApp("production")) {
+      return super.populate(json, context);
+    }
+
     Long mrpLineId = (Long) json.get("id");
     MrpLine mrpLine = find(mrpLineId);
 
