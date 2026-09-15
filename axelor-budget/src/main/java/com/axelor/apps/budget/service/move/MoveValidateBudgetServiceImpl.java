@@ -109,6 +109,11 @@ public class MoveValidateBudgetServiceImpl extends MoveValidateHRServiceImpl {
   @Override
   public void accounting(Move move) throws AxelorException {
 
+    if (!appBaseService.isApp("budget")) {
+      super.accounting(move);
+      return;
+    }
+
     if (!moveBudgetService.isBudgetInLines(move)) {
       moveBudgetService.autoComputeBudgetDistribution(move);
     }

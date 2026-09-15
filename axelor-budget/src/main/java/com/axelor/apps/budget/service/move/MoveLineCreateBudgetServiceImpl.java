@@ -104,6 +104,10 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
       MoveLine moveLine, InvoiceLine invoiceLine, Company company) throws AxelorException {
     moveLine = super.fillMoveLineWithInvoiceLine(moveLine, invoiceLine, company);
 
+    if (!appBaseService.isApp("budget")) {
+      return moveLine;
+    }
+
     moveLine.setBudget(invoiceLine.getBudget());
     moveLine.setBudgetFromDate(invoiceLine.getBudgetFromDate());
     moveLine.setBudgetToDate(invoiceLine.getBudgetToDate());

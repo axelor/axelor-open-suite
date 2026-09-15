@@ -43,6 +43,7 @@ import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.date.BudgetDateService;
 import jakarta.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
@@ -50,6 +51,7 @@ import org.apache.commons.lang3.StringUtils;
 public class MoveGroupBudgetServiceImpl extends MoveGroupServiceImpl {
 
   protected BudgetDateService budgetDateService;
+  protected final AppBudgetService appBudgetService;
 
   @Inject
   public MoveGroupBudgetServiceImpl(
@@ -74,7 +76,8 @@ public class MoveGroupBudgetServiceImpl extends MoveGroupServiceImpl {
       MoveLineRecordService moveLineRecordService,
       MoveLineService moveLineService,
       MovePfpToolService movePfpToolService,
-      BudgetDateService budgetDateService) {
+      BudgetDateService budgetDateService,
+      AppBudgetService appBudgetService) {
     super(
         moveDefaultService,
         moveAttrsService,
@@ -98,11 +101,16 @@ public class MoveGroupBudgetServiceImpl extends MoveGroupServiceImpl {
         moveLineService,
         movePfpToolService);
     this.budgetDateService = budgetDateService;
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
   public void checkBeforeSave(Move move) throws AxelorException {
     super.checkBeforeSave(move);
+
+    if (!appBudgetService.isApp("budget")) {
+      return;
+    }
 
     checkBudgetDates(move);
   }

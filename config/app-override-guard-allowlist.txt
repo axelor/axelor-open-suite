@@ -4,7 +4,7 @@
 # A class listed here is not reported by the task even though it overrides a class of
 # a lower module without calling isApp(...).
 #
-# Two kinds of entries are expected here:
+# Two kinds of entries were expected here:
 #
 #   1. Justified exceptions: either the override is behaviour-neutral when the app is off, or
 #      the overridden code path is unreachable unless the app of the OVERRIDING module is
@@ -12,12 +12,9 @@
 #      "The overridden module and its app are a prerequisite of this module" is NOT a valid
 #      justification: it is true of every cross-module override. See CONTRIBUTING.md.
 #
-#   2. Known debt: overrides that were already there when the check was introduced. They are
-#      listed so that the check can be blocking for new code right away. Removing them is the
-#      job of the sweep tickets listed below, one module at a time. Do NOT add new entries
-#      to those sections.
-#
-# Sweep tickets: #117731 budget.
+#   2. Known debt: overrides that were already there when the check was introduced. All of them
+#      were removed by the #117722 sweeps, so this section is now empty; new entries must be
+#      justified exceptions.
 #
 # Adding a NEW class here instead of guarding it requires a justification in the merge request.
 
@@ -33,14 +30,6 @@ com.axelor.apps.account.service.FiscalPositionAccountServiceImpl  # bound on Fis
 # ---------------------------------------------------------------------------
 # The overrides of the bank payment module were guarded by #117726.
 com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentServiceImpl  # bound on PaymentScheduleLineServiceImpl (axelor-account), overrides no method of it: only adds the rejection methods of PaymentScheduleLineBankPaymentService
-
-# ---------------------------------------------------------------------------
-# KNOWN DEBT - axelor-budget (4) - to be emptied by #117731
-# ---------------------------------------------------------------------------
-com.axelor.apps.budget.service.move.MoveValidateBudgetServiceImpl  # overrides MoveValidateHRServiceImpl (axelor-human-resource)
-com.axelor.apps.budget.service.move.MoveLineCreateBudgetServiceImpl  # overrides MoveLineCreateServiceImpl (axelor-account)
-com.axelor.apps.budget.service.move.MoveLineConsolidateBudgetServiceImpl  # overrides MoveLineConsolidateServiceImpl (axelor-account)
-com.axelor.apps.budget.service.move.MoveGroupBudgetServiceImpl  # overrides MoveGroupServiceImpl (axelor-account)
 
 # ---------------------------------------------------------------------------
 # JUSTIFIED EXCEPTIONS - axelor-crm (1)
