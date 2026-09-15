@@ -21,6 +21,7 @@ package com.axelor.apps.stock.service.inventory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
@@ -29,14 +30,14 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
-import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.cache.AxelorCache;
 import com.axelor.cache.CacheBuilder;
-import com.axelor.inject.Beans;
+import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
@@ -125,7 +126,8 @@ public class InventoryLineServiceImpl implements InventoryLineService {
   }
 
   @Override
-  public InventoryLine updateInventoryLine(InventoryLine inventoryLine, Inventory inventory) {
+  public InventoryLine updateInventoryLine(InventoryLine inventoryLine, Inventory inventory)
+      throws AxelorException {
 
     StockLocation stockLocation =
         Optional.ofNullable(inventoryLine.getStockLocation()).orElse(inventory.getStockLocation());
@@ -140,20 +142,13 @@ public class InventoryLineServiceImpl implements InventoryLineService {
         stockLocationLineService.getOrCreateStockLocationLine(stockLocation, product);
 
     if (stockLocationLine != null) {
-      inventoryLine.setCurrentQty(stockLocationLine.getCurrentQty());
+      inventoryLine.setCurrentQty(getCurrentQtyInProductUnit(stockLocationLine));
       inventoryLine.setRack(stockLocationLine.getRack());
       if (inventoryLine.getTrackingNumber() != null) {
-        inventoryLine.setCurrentQty(
-            Beans.get(StockLocationLineRepository.class)
-                .all()
-                .filter(
-                    "self.product = :product and self.detailsStockLocation = :stockLocation and self.trackingNumber = :trackingNumber")
-                .bind("product", inventoryLine.getProduct())
-                .bind("stockLocation", stockLocation)
-                .bind("trackingNumber", inventoryLine.getTrackingNumber())
-                .fetchStream()
-                .map(it -> it.getCurrentQty())
-                .reduce(BigDecimal.ZERO, (a, b) -> a.add(b)));
+        StockLocationLine detailLocationLine =
+            stockLocationLineFetchService.getDetailLocationLine(
+                stockLocation, product, inventoryLine.getTrackingNumber());
+        inventoryLine.setCurrentQty(getCurrentQtyInProductUnit(detailLocationLine));
       }
     } else {
       inventoryLine.setCurrentQty(null);
@@ -167,15 +162,17 @@ public class InventoryLineServiceImpl implements InventoryLineService {
   public InventoryLine compute(InventoryLine inventoryLine, Inventory inventory)
       throws AxelorException {
 
-    StockLocation stockLocation = inventory.getStockLocation();
     Product product = inventoryLine.getProduct();
-    StockLocationLine stockLocationLine =
-        stockLocationLineFetchService.getStockLocationLine(stockLocation, product);
-    Company company = stockLocation.getCompany();
 
     if (product == null) {
       return inventoryLine;
     }
+
+    StockLocation stockLocation =
+        Optional.ofNullable(inventoryLine.getStockLocation()).orElse(inventory.getStockLocation());
+    StockLocationLine stockLocationLine =
+        stockLocationLineFetchService.getStockLocationLine(stockLocation, product);
+    Company company = stockLocation.getCompany();
 
     inventoryLine.setUnit(product.getUnit());
 
@@ -209,7 +206,7 @@ public class InventoryLineServiceImpl implements InventoryLineService {
         break;
       case StockConfigRepository.VALUATION_TYPE_WAP_STOCK_LOCATION_VALUE:
         if (stockLocationLine != null) {
-          price = stockLocationLine.getAvgPrice();
+          price = convertAvgPriceToProductUnit(stockLocationLine);
         } else {
           price = productAvgPrice;
         }
@@ -229,17 +226,67 @@ public class InventoryLineServiceImpl implements InventoryLineService {
   }
 
   @Override
-  public BigDecimal getCurrentQty(StockLocation stockLocation, Product product) {
+  public BigDecimal getCurrentQty(StockLocation stockLocation, Product product)
+      throws AxelorException {
     BigDecimal currentQty = BigDecimal.ZERO;
 
     if (stockLocation != null && product != null) {
       StockLocationLine stockLocationLine =
           stockLocationLineFetchService.getStockLocationLine(stockLocation, product);
-      if (stockLocationLine != null) {
-        currentQty = stockLocationLine.getCurrentQty();
-      }
+      currentQty = getCurrentQtyInProductUnit(stockLocationLine);
     }
     return currentQty;
+  }
+
+  @Override
+  public BigDecimal getCurrentQtyInProductUnit(StockLocationLine stockLocationLine)
+      throws AxelorException {
+    if (stockLocationLine == null) {
+      return BigDecimal.ZERO;
+    }
+
+    if (stockLocationLine.getUnit() == null) {
+      throw missingUnitException(stockLocationLine, stockLocationLine.getProduct());
+    }
+
+    BigDecimal currentQty =
+        stockLocationLineService.convertToProductUnit(
+            stockLocationLine, stockLocationLine.getCurrentQty());
+    return currentQty == null ? BigDecimal.ZERO : currentQty;
+  }
+
+  /**
+   * The average price of a stock location line is expressed per stock location line unit, while the
+   * inventory line quantities are expressed in the product unit. A price converts in the opposite
+   * direction to a quantity, hence the product unit to stock location line unit conversion.
+   */
+  protected BigDecimal convertAvgPriceToProductUnit(StockLocationLine stockLocationLine)
+      throws AxelorException {
+    BigDecimal avgPrice =
+        stockLocationLineService.convertFromProductUnit(
+            stockLocationLine, stockLocationLine.getAvgPrice());
+    return avgPrice == null ? BigDecimal.ZERO : avgPrice;
+  }
+
+  protected AxelorException missingUnitException(
+      StockLocationLine stockLocationLine, Product product) {
+    if (stockLocationLine.getTrackingNumber() != null) {
+      return new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(StockExceptionMessage.DETAIL_LOCATION_LINE_MISSING_UNIT),
+          stockLocationLine.getTrackingNumber().getTrackingNumberSeq(),
+          stockLocationLine.getDetailsStockLocation() != null
+              ? stockLocationLine.getDetailsStockLocation().getName()
+              : "",
+          product == null ? "" : product.getFullName());
+    }
+    return new AxelorException(
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(StockExceptionMessage.LOCATION_LINE_MISSING_UNIT),
+        stockLocationLine.getStockLocation() != null
+            ? stockLocationLine.getStockLocation().getName()
+            : "",
+        product == null ? "" : product.getFullName());
   }
 
   @Override
