@@ -33,4 +33,10 @@ public interface ControlEntryService {
   List<String> getOpenQualityImprovementSequences(ControlEntry controlEntry);
 
   void finish(ControlEntry controlEntry);
+
+  /**
+   * @return RESULT_NOT_COMPLIANT if a sample is not compliant, RESULT_COMPLIANT if every sample is
+   *     compliant, null when there is no sample or a sample is not controlled yet.
+   */
+  Integer getSamplesResult(ControlEntry controlEntry);
 }
