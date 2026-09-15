@@ -29,3 +29,6 @@
 482;66;"logoId";"${__user__?.activeCompany?.logo?.id}";"decimal"
 483;66;"startMonthDate";"${mpsCharge.startMonthDate?.format(java.time.format.DateTimeFormatter.ofPattern(""dd/MM/YYYY""))}";"string"
 484;66;"endMonthDate";"${mpsCharge.endMonthDate?.format(java.time.format.DateTimeFormatter.ofPattern(""dd/MM/YYYY""))}";"string"
+737;202;"Timezone";"${manufOrder.company?.timezone}";"string"
+738;202;"__locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale()}";"string"
+739;202;"ManufOrderId";"${manufOrder.id.toString()}";"string"

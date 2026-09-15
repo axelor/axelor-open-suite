@@ -472,4 +472,13 @@ public final class ProductionExceptionMessage {
 
   public static final String MANUF_ORDER_FINAL_CONTROL_FINISHED_WITHOUT_CONTROL = /*$$(*/
       "Manufacturing order finished without a compliant final control" /*)*/;
+
+  public static final String MANUF_ORDER_CONFORMITY_DECLARATION_NOT_FINISHED = /*$$(*/
+      "The conformity declaration can only be printed for a finished manufacturing order." /*)*/;
+
+  public static final String MANUF_ORDER_CONFORMITY_DECLARATION_REFUSED = /*$$(*/
+      "The conformity declaration cannot be printed. %s" /*)*/;
+
+  public static final String MANUF_ORDER_CONFORMITY_DECLARATION_NOT_REQUIRED = /*$$(*/
+      "No applicable control plan is attached to the product of the manufacturing order %s." /*)*/;
 }

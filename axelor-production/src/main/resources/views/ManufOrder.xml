@@ -85,6 +85,9 @@
       <menu name="manufOrderReportsMenu" title="Reports" icon="files" showTitle="true">
         <item name="printProductionProcessItem" title="Print Production Process"
           action="save,action-production-process-method-print"/>
+        <item name="printConformityDeclarationItem" title="Print conformity declaration"
+          action="action-manuf-order-method-print-conformity-declaration" showIf="statusSelect == 6"
+          if="__config__.app.isApp('quality')"/>
       </menu>
     </menubar>
     <panel name="mainPanel">
@@ -774,6 +777,11 @@
 
   <action-method name="action-production-process-method-print">
     <call class="com.axelor.apps.production.web.ManufOrderController" method="printProdProcess"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-print-conformity-declaration">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="printConformityDeclaration"/>
   </action-method>
 
   <action-method name="action-manuf-order-method-start">

@@ -137,6 +137,16 @@
       check-message="Invalid inventoryValuationTypeSelect"/>
   </input>
 
+  <input file="quality_qualityConfig.csv" separator=";"
+    type="com.axelor.apps.quality.db.QualityConfig" search="self.importId = :importId">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.quality.db.QualityConfig', 'importId', importId, 'company.importId', company_importId)"
+      check-message="Company must be unique"/>
+  </input>
+
   <input file="production_costSheetGroup.csv" separator=";"
     type="com.axelor.apps.production.db.CostSheetGroup" search="self.importId = :importId">
     <bind column="name" to="name"
