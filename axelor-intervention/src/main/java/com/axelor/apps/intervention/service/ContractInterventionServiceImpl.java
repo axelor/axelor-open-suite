@@ -78,6 +78,10 @@ public class ContractInterventionServiceImpl extends ContractServiceImpl {
   public Invoice ongoingCurrentVersion(Contract contract, LocalDate date) throws AxelorException {
     Invoice invoice = super.ongoingCurrentVersion(contract, date);
 
+    if (!appBaseService.isApp("intervention")) {
+      return invoice;
+    }
+
     List<Equipment> equipmentList =
         equipmentRepository
             .all()
@@ -94,6 +98,11 @@ public class ContractInterventionServiceImpl extends ContractServiceImpl {
   public Contract copyFromTemplate(Contract contract, ContractTemplate template)
       throws AxelorException {
     contract = super.copyFromTemplate(contract, template);
+
+    if (!appBaseService.isApp("intervention")) {
+      return contract;
+    }
+
     contract.setGuaranteedInterventionTime(template.getGuaranteedInterventionTime());
     contract.setGuaranteedRecoveryTime(template.getGuaranteedRecoveryTime());
     contract.setOnCallManagement(template.getOnCallManagement());

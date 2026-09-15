@@ -64,6 +64,10 @@ public class InvoiceLineAnalyticContractServiceImpl
     List<AnalyticMoveLine> analyticMoveLineList =
         super.createAnalyticDistributionWithTemplate(invoiceLine);
 
+    if (!appAccountService.isApp("contract")) {
+      return analyticMoveLineList;
+    }
+
     for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
       analyticMoveLine.setContractLine(invoiceLine.getContractLine());
     }

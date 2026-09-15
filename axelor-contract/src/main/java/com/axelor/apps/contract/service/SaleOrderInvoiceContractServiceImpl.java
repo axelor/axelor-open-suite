@@ -136,6 +136,10 @@ public class SaleOrderInvoiceContractServiceImpl extends SaleOrderInvoiceService
             fiscalPosition,
             saleOrder);
 
+    if (!appBaseService.isApp("contract")) {
+      return invoiceMerged;
+    }
+
     invoiceMerged.setContractSet(contracts);
     return invoiceMerged;
   }

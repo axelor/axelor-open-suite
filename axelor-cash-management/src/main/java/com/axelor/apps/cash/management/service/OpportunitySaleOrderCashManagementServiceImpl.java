@@ -53,6 +53,10 @@ public class OpportunitySaleOrderCashManagementServiceImpl
   public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException {
     SaleOrder saleOrder = super.createSaleOrderFromOpportunity(opportunity);
 
+    if (!appBaseService.isApp("cash-management")) {
+      return saleOrder;
+    }
+
     if (appBaseService.getAppBase().getManageMultiBanks() && opportunity.getBankDetails() != null) {
       saleOrder.setCompanyBankDetails(opportunity.getBankDetails());
       saleOrderRepo.save(saleOrder);

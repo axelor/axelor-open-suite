@@ -17,8 +17,7 @@
 #      job of the sweep tickets listed below, one module at a time. Do NOT add new entries
 #      to those sections.
 #
-# Sweep tickets: #117729 contract/intervention/cash-management,
-# #117730 sale/crm/account/stock/talent, #117731 budget.
+# Sweep tickets: #117730 sale/crm/account/stock/talent, #117731 budget.
 #
 # Adding a NEW class here instead of guarding it requires a justification in the merge request.
 
@@ -45,23 +44,6 @@ com.axelor.apps.budget.service.move.MoveLineConsolidateBudgetServiceImpl  # over
 com.axelor.apps.budget.service.move.MoveGroupBudgetServiceImpl  # overrides MoveGroupServiceImpl (axelor-account)
 
 # ---------------------------------------------------------------------------
-# KNOWN DEBT - axelor-cash-management (1) - to be emptied by #117729
-# ---------------------------------------------------------------------------
-com.axelor.apps.cash.management.service.OpportunitySaleOrderCashManagementServiceImpl  # overrides OpportunitySaleOrderSupplychainServiceImpl (axelor-supplychain)
-
-# ---------------------------------------------------------------------------
-# KNOWN DEBT - axelor-contract (8) - to be emptied by #117729
-# ---------------------------------------------------------------------------
-com.axelor.apps.contract.service.AnalyticMoveLineContractServiceImpl  # overrides AnalyticMoveLineSupplychainServiceImpl (axelor-supplychain)
-com.axelor.apps.contract.service.InvoiceLineAnalyticContractServiceImpl  # overrides InvoiceLineAnalyticSupplychainServiceImpl (axelor-supplychain)
-com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl  # overrides WorkflowCancelServiceSupplychainImpl (axelor-supplychain)
-com.axelor.apps.contract.service.pricing.PricingGroupContractServiceImpl  # overrides PricingGroupSupplyChainServiceImpl (axelor-supplychain)
-com.axelor.apps.contract.service.AccountManagementContractServiceImpl  # overrides AccountManagementServiceAccountImpl (axelor-account)
-com.axelor.apps.contract.service.SaleOrderInvoiceContractServiceImpl  # overrides SaleOrderInvoiceServiceImpl (axelor-supplychain)
-com.axelor.apps.contract.service.PurchaseOrderInvoiceContractServiceImpl  # overrides PurchaseOrderInvoiceServiceImpl (axelor-supplychain)
-com.axelor.apps.contract.service.AnalyticMoveLineParentContractServiceImpl  # overrides AnalyticMoveLineParentSupplychainServiceImpl (axelor-supplychain)
-
-# ---------------------------------------------------------------------------
 # KNOWN DEBT - axelor-crm (4) - to be emptied by #117730
 # ---------------------------------------------------------------------------
 com.axelor.apps.crm.service.CalendarService  # overrides ICalendarService (axelor-base)
@@ -75,11 +57,6 @@ com.axelor.apps.crm.service.DuplicateObjectsCrmService  # overrides DuplicateObj
 # The overrides of the human resource module were guarded by #117727.
 com.axelor.apps.hr.service.config.AccountConfigHRService  # bound on AccountConfigService (axelor-account), overrides no method of it: only adds the expense journal and account getters
 com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrServiceImpl  # bound on PublicHolidayService (axelor-base), overrides no method of PublicHolidayServiceImpl: checkPublicHolidayDay(LocalDate, Employee) is an overload declared by PublicHolidayHrService, not the parent's checkPublicHolidayDay(LocalDate, EventsPlanning)
-
-# ---------------------------------------------------------------------------
-# KNOWN DEBT - axelor-intervention (1) - to be emptied by #117729
-# ---------------------------------------------------------------------------
-com.axelor.apps.intervention.service.ContractInterventionServiceImpl  # overrides ContractServiceImpl (axelor-contract)
 
 # ---------------------------------------------------------------------------
 # JUSTIFIED EXCEPTIONS - axelor-maintenance (1)

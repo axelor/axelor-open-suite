@@ -67,6 +67,11 @@ public class AnalyticMoveLineParentContractServiceImpl
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void refreshAxisOnParent(AnalyticMoveLine analyticMoveLine) throws AxelorException {
+    if (!appBaseService.isApp("contract")) {
+      super.refreshAxisOnParent(analyticMoveLine);
+      return;
+    }
+
     ContractLine contractLine = analyticMoveLine.getContractLine();
     if (contractLine != null) {
       Contract contract =

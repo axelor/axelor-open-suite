@@ -68,6 +68,11 @@ public class AnalyticMoveLineContractServiceImpl extends AnalyticMoveLineSupplyc
 
     AnalyticMoveLine analyticMoveLine =
         super.computeAnalyticMoveLine(invoiceLine, invoice, company, analyticAccount);
+
+    if (!appBaseService.isApp("contract")) {
+      return analyticMoveLine;
+    }
+
     analyticMoveLine.setContractLine(invoiceLine.getContractLine());
     return analyticMoveLine;
   }

@@ -38,6 +38,10 @@ public class PricingGroupContractServiceImpl extends PricingGroupSupplyChainServ
   public String getConcernedModelDomain(Pricing pricing) {
     String domain = super.getConcernedModelDomain(pricing);
 
+    if (!appBaseService.isApp("contract")) {
+      return domain;
+    }
+
     if (PricingRepository.PRICING_TYPE_SELECT_CONTRACT_YEB_YER.equals(pricing.getTypeSelect())) {
       domain = String.format("self.name = '%s'", InvoiceLine.class.getSimpleName());
     }
