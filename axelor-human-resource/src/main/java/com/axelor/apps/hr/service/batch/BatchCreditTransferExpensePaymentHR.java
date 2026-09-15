@@ -69,6 +69,11 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 
   @Override
   protected void process() {
+    if (!appBaseService.isApp("expense")) {
+      super.process();
+      return;
+    }
+
     List<Expense> doneList = processExpenses();
 
     try {
@@ -82,6 +87,11 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
 
   @Override
   protected void stop() {
+    if (!appBaseService.isApp("expense")) {
+      super.stop();
+      return;
+    }
+
     StringBuilder sb = new StringBuilder();
     sb.append(I18n.get(AccountExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE)).append(" ");
     sb.append(

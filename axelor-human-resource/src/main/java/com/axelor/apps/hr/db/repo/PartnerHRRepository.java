@@ -40,6 +40,11 @@ public class PartnerHRRepository extends PartnerAccountRepository {
 
   @Override
   public void remove(Partner partner) {
+    if (!appBaseService.isApp("employee")) {
+      super.remove(partner);
+      return;
+    }
+
     if (partner.getEmployee() != null) {
       throw new PersistenceException(
           String.format(

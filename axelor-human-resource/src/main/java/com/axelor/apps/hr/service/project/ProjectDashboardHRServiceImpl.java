@@ -19,12 +19,14 @@
 package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectDashboardServiceImpl;
 import com.axelor.apps.project.service.ProjectToolService;
+import com.axelor.inject.Beans;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -39,6 +41,11 @@ public class ProjectDashboardHRServiceImpl extends ProjectDashboardServiceImpl {
   @Override
   public Map<String, Object> getData(Project project) {
     Map<String, Object> dataMap = super.getData(project);
+
+    if (!Beans.get(AppBaseService.class).isApp("employee")) {
+      return dataMap;
+    }
+
     dataMap.put("$spentTime", getSpentTime(project));
     return dataMap;
   }

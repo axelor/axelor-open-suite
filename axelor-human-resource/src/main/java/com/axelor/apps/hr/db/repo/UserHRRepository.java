@@ -19,6 +19,7 @@
 package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.base.db.repo.UserBaseRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
@@ -27,6 +28,11 @@ public class UserHRRepository extends UserBaseRepository {
 
   @Override
   public void remove(User user) {
+    if (!Beans.get(AppBaseService.class).isApp("employee")) {
+      super.remove(user);
+      return;
+    }
+
     if (user.getEmployee() != null) {
       EmployeeHRRepository employeeRepo = Beans.get(EmployeeHRRepository.class);
       Employee employee = employeeRepo.find(user.getEmployee().getId());

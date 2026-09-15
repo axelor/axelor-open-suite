@@ -17,7 +17,7 @@
 #      job of the sweep tickets listed below, one module at a time. Do NOT add new entries
 #      to those sections.
 #
-# Sweep tickets: #117727 human-resource, #117728 maintenance, #117729 contract/intervention/cash-management,
+# Sweep tickets: #117728 maintenance, #117729 contract/intervention/cash-management,
 # #117730 sale/crm/account/stock/talent, #117731 budget.
 #
 # Adding a NEW class here instead of guarding it requires a justification in the merge request.
@@ -70,22 +70,11 @@ com.axelor.apps.crm.service.partner.api.CrmPartnerGenerateServiceImpl  # overrid
 com.axelor.apps.crm.service.DuplicateObjectsCrmService  # overrides DuplicateObjectsService (axelor-base)
 
 # ---------------------------------------------------------------------------
-# KNOWN DEBT - axelor-human-resource (14) - to be emptied by #117727
+# JUSTIFIED EXCEPTIONS - axelor-human-resource (2)
 # ---------------------------------------------------------------------------
-com.axelor.apps.hr.service.config.AccountConfigHRService  # overrides AccountConfigService (axelor-account)
-com.axelor.apps.hr.service.batch.BatchCreditTransferExpensePaymentHR  # overrides BatchCreditTransferExpensePayment (axelor-account)
-com.axelor.apps.hr.service.bankorder.BankOrderLineOriginServiceHRImpl  # overrides BankOrderLineOriginServiceImpl (axelor-bank-payment)
-com.axelor.apps.hr.db.repo.UserHRRepository  # overrides UserBaseRepository (axelor-base)
-com.axelor.apps.hr.db.repo.PartnerHRRepository  # overrides PartnerAccountRepository (axelor-account)
-com.axelor.apps.hr.service.project.ProjectDashboardHRServiceImpl  # overrides ProjectDashboardServiceImpl (axelor-project)
-com.axelor.apps.hr.service.project.ProjectActivityDashboardServiceHRImpl  # overrides ProjectActivityDashboardServiceImpl (axelor-project)
-com.axelor.apps.hr.service.analytic.AnalyticMoveLineGenerateRealServiceHrImpl  # overrides AnalyticMoveLineGenerateRealServiceImpl (axelor-account)
-com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl  # overrides MoveValidateServiceImpl (axelor-account)
-com.axelor.apps.hr.service.MoveLineTaxHRServiceImpl  # overrides MoveLineTaxServiceImpl (axelor-account)
-com.axelor.apps.hr.service.ReconcileCheckServiceHRImpl  # overrides ReconcileCheckServiceImpl (axelor-account)
-com.axelor.apps.hr.service.project.TaskTemplateHrServiceImpl  # overrides TaskTemplateServiceImpl (axelor-project)
-com.axelor.apps.hr.service.PartnerConvertHRServiceImpl  # overrides PartnerConvertServiceImpl (axelor-base)
-com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrServiceImpl  # overrides PublicHolidayServiceImpl (axelor-base)
+# The overrides of the human resource module were guarded by #117727.
+com.axelor.apps.hr.service.config.AccountConfigHRService  # bound on AccountConfigService (axelor-account), overrides no method of it: only adds the expense journal and account getters
+com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrServiceImpl  # bound on PublicHolidayService (axelor-base), overrides no method of PublicHolidayServiceImpl: checkPublicHolidayDay(LocalDate, Employee) is an overload declared by PublicHolidayHrService, not the parent's checkPublicHolidayDay(LocalDate, EventsPlanning)
 
 # ---------------------------------------------------------------------------
 # KNOWN DEBT - axelor-intervention (1) - to be emptied by #117729
