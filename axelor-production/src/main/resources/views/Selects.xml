@@ -193,4 +193,10 @@
     <option value="2" color="yellow">Subcontracting</option>
   </selection>
 
+  <selection name="production.quality.config.manuf.order.final.control.check.select">
+    <option value="1">No check</option>
+    <option value="2" color="orange">Warning</option>
+    <option value="3" color="red">Blocking</option>
+  </selection>
+
 </object-views>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <form id="production-quality-config-form" name="quality-config-form"
+    title="Quality configuration" model="com.axelor.apps.quality.db.QualityConfig" extension="true">
+    <extend target="//panel[@name='receptionQuarantinePanel']">
+      <insert position="after">
+        <panel name="manufOrderFinalControlPanel"
+          title="Final control of manufacturing orders" if="__config__.app.isApp('production')">
+          <field name="manufOrderFinalControlCheckSelect" colSpan="6"/>
+          <field name="manufOrderConformityDeclarationPrintTemplate" colSpan="6"
+            domain="self.metaModel.name = 'ManufOrder'" grid-view="printing-template-grid"
+            form-view="printing-template-form"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>
