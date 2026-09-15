@@ -20,6 +20,8 @@ package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.db.repo.ProductCompanyBaseRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 
 public class ProductCompanyStockRepository extends ProductCompanyBaseRepository {
@@ -27,6 +29,11 @@ public class ProductCompanyStockRepository extends ProductCompanyBaseRepository 
   @Override
   public ProductCompany copy(ProductCompany productCompany, boolean deep) {
     ProductCompany copy = super.copy(productCompany, deep);
+
+    if (!Beans.get(AppBaseService.class).isApp("stock")) {
+      return copy;
+    }
+
     copy.setAvgPrice(BigDecimal.ZERO);
     return copy;
   }

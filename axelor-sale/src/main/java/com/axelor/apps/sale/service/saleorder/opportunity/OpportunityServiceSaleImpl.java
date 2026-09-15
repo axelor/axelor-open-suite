@@ -47,6 +47,11 @@ public class OpportunityServiceSaleImpl extends OpportunityServiceImpl {
   protected void lostProcess(Opportunity opportunity, LostReason lostReason, String lostReasonStr)
       throws AxelorException {
     super.lostProcess(opportunity, lostReason, lostReasonStr);
+
+    if (!appCrmService.isApp("sale")) {
+      return;
+    }
+
     opportunitySaleOrderService.cancelSaleOrders(opportunity);
   }
 }

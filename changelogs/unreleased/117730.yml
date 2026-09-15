@@ -1,0 +1,38 @@
+---
+title: "App check: axelor-sale, axelor-crm, axelor-account, axelor-stock and axelor-talent no longer change the behaviour of the modules they extend when their app is not installed."
+module: axelor-base
+developer: |
+  The 16 remaining cross-module overrides of these five low level modules now guard their
+  behaviour on their own app and delegate to `super` when it is off. The impact is wide because
+  the overridden classes are axelor-base services used by every module downstream
+  (`PricingGenericServiceImpl`, `PricingMetaServiceImpl`, `ProductBaseRepository`,
+  `ICalendarService`, `PartnerGenerateServiceImpl`, `DuplicateObjectsService`,
+  `AccountManagementServiceImpl`, `PeriodServiceImpl`, `MailAccountServiceBaseImpl`) plus two
+  axelor-crm classes overridden by axelor-sale.
+
+  Guards: `isApp("sale")` on the five sale overrides, `isApp("crm")` on the three crm ones,
+  `isApp("account")` on `AccountManagementServiceAccountImpl` and `PeriodServiceAccountImpl`,
+  `isApp("stock")` on the two stock repositories, and `isApp("recruitment")` on
+  `MailAccountServiceTalentImpl` (axelor-talent declares `training`, `appraisal` and
+  `recruitment`, and that override creates job applications from incoming mails). The existing
+  `appRecruitment.getApp().getActive()` condition inside that method is left untouched.
+
+  Three classes needed no guard and are now listed in
+  `config/app-override-guard-allowlist.txt` as justified exceptions, each bound in place of a
+  base class but overriding none of its methods: `ProductCategoryServiceSaleImpl`,
+  `MessageServiceCrmImpl` (its `createMessage(Event)` is a crm overload, the parent's
+  `createMessage` has another signature) and `FiscalPositionAccountServiceImpl`.
+
+  The check is done with the app service already injected in the class when there is one
+  (`AppBaseService`, `AppCrmService`), otherwise it comes in through the existing constructor,
+  or with `Beans.get(AppBaseService.class)` in the three classes that have no constructor.
+
+  The following classes get a new constructor parameter, which breaks subclasses calling it:
+
+  - `com.axelor.apps.sale.service.PricingGroupSaleServiceImpl`
+  - `com.axelor.apps.account.service.AccountManagementServiceAccountImpl`
+  - `com.axelor.apps.account.service.period.PeriodServiceAccountImpl`
+
+  Their subclasses in axelor-supplychain and axelor-contract are updated accordingly
+  (`PricingGroupSupplyChainServiceImpl`, `PricingGroupContractServiceImpl`,
+  `AccountManagementContractServiceImpl`).

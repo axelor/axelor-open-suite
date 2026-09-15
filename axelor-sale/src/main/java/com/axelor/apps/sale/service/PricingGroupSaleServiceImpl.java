@@ -20,20 +20,29 @@ package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.repo.PricingRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.pricing.PricingGenericService;
 import com.axelor.apps.base.service.pricing.PricingGroupServiceImpl;
 import jakarta.inject.Inject;
 
 public class PricingGroupSaleServiceImpl extends PricingGroupServiceImpl {
 
+  protected final AppBaseService appBaseService;
+
   @Inject
-  public PricingGroupSaleServiceImpl(PricingGenericService pricingGenericService) {
+  public PricingGroupSaleServiceImpl(
+      PricingGenericService pricingGenericService, AppBaseService appBaseService) {
     super(pricingGenericService);
+    this.appBaseService = appBaseService;
   }
 
   @Override
   public String getConcernedModelDomain(Pricing pricing) {
     String domain = super.getConcernedModelDomain(pricing);
+
+    if (!appBaseService.isApp("sale")) {
+      return domain;
+    }
 
     if (PricingRepository.PRICING_TYPE_SELECT_SALE_PRICING.equals(pricing.getTypeSelect())) {
       domain =

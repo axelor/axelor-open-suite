@@ -34,6 +34,11 @@ public class OpportunitySaleRepository extends OpportunityManagementRepository {
 
   public Opportunity copy(Opportunity entity, boolean deep) {
     Opportunity copy = super.copy(entity, deep);
+
+    if (!appCrmService.isApp("sale")) {
+      return copy;
+    }
+
     copy.clearSaleOrderList();
     return copy;
   }

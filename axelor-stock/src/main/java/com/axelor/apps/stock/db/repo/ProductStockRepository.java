@@ -30,6 +30,10 @@ public class ProductStockRepository extends ProductBaseRepository {
 
   @Override
   public Product save(Product product) {
+    if (!appBaseService.isApp("stock")) {
+      return super.save(product);
+    }
+
     productStockRepositorySave.addProductCompanies(product);
     return super.save(product);
   }
@@ -37,6 +41,11 @@ public class ProductStockRepository extends ProductBaseRepository {
   @Override
   public Product copy(Product product, boolean deep) {
     Product copy = super.copy(product, deep);
+
+    if (!appBaseService.isApp("stock")) {
+      return copy;
+    }
+
     copy.setAvgPrice(BigDecimal.ZERO);
     return copy;
   }

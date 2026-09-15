@@ -72,6 +72,11 @@ public class CrmPartnerGenerateServiceImpl extends PartnerGenerateServiceImpl {
       Partner partner, PartnerDataResponse partnerData, Map<String, Boolean> partnerTypeData)
       throws AxelorException {
     super.setPartnerBasicDetails(partner, partnerData, partnerTypeData);
+
+    if (!appBaseService.isApp("crm")) {
+      return;
+    }
+
     Integer sizeSelect = null;
 
     String trancheEffectif = partnerData.getTrancheEffectifsEtablissement();

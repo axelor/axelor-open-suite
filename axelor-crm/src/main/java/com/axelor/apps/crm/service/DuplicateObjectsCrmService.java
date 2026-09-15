@@ -20,8 +20,10 @@ package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.DuplicateObjectsService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Singleton;
 import java.util.List;
@@ -33,6 +35,11 @@ public class DuplicateObjectsCrmService extends DuplicateObjectsService {
 
   @Transactional
   public void removeDuplicate(List<Long> selectedIds, String modelName) {
+    if (!Beans.get(AppBaseService.class).isApp("crm")) {
+      super.removeDuplicate(selectedIds, modelName);
+      return;
+    }
+
     List<Object> duplicateObjects = getDuplicateObject(selectedIds, modelName);
     Object originalObjct = getOriginalObject(selectedIds, modelName);
     managePartnerEvents(duplicateObjects, originalObjct);

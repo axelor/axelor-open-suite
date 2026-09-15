@@ -69,6 +69,10 @@ public class MailAccountServiceTalentImpl extends MailAccountServiceBaseImpl {
 
     Message message = super.createMessage(mailAccount, parser, date);
 
+    if (!appBaseService.isApp("recruitment")) {
+      return message;
+    }
+
     AppRecruitment appRecruitment = appRecruitmentRepo.all().fetchOne();
 
     if (appRecruitment != null
