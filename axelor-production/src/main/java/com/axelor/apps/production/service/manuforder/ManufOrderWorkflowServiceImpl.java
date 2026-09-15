@@ -93,6 +93,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected ProductService productService;
   protected ManufOrderTrackingNumberService manufOrderTrackingNumberService;
   protected UnitConversionService unitConversionService;
+  protected ManufOrderFinalControlCheckService manufOrderFinalControlCheckService;
 
   @Inject
   public ManufOrderWorkflowServiceImpl(
@@ -112,7 +113,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       OperationOrderOutsourceService operationOrderOutsourceService,
       ProductService productService,
       ManufOrderTrackingNumberService manufOrderTrackingNumberService,
-      UnitConversionService unitConversionService) {
+      UnitConversionService unitConversionService,
+      ManufOrderFinalControlCheckService manufOrderFinalControlCheckService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.manufOrderRepo = manufOrderRepo;
@@ -130,6 +132,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.productService = productService;
     this.manufOrderTrackingNumberService = manufOrderTrackingNumberService;
     this.unitConversionService = unitConversionService;
+    this.manufOrderFinalControlCheckService = manufOrderFinalControlCheckService;
   }
 
   @Override
@@ -208,6 +211,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   /** CAUTION : Must be called in a different transaction from sending mail method. */
   @Transactional(rollbackOn = {Exception.class})
   public void finishManufOrder(ManufOrder manufOrder) throws AxelorException {
+    manufOrderFinalControlCheckService.checkBeforeFinish(manufOrder);
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {

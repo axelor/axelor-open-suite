@@ -746,6 +746,7 @@
   </action-attrs>
 
   <action-group name="action-manuf-order-group-finish">
+    <action name="action-manuf-order-method-check-final-control"/>
     <action name="action-manuf-order-method-finish"/>
   </action-group>
 
@@ -800,6 +801,11 @@
 
   <action-method name="action-manuf-order-method-resume">
     <call class="com.axelor.apps.production.web.ManufOrderController" method="resume"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-check-final-control">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="checkFinalControlBeforeFinish"/>
   </action-method>
 
   <action-method name="action-manuf-order-method-finish">
