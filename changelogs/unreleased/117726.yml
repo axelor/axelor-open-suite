@@ -1,0 +1,35 @@
+---
+title: "App check: axelor-bank-payment no longer changes the behaviour of axelor-account when the Bank Payment app is not installed."
+module: axelor-bank-payment
+developer: |
+  The 25 remaining overrides of `axelor-account` classes now guard their bank payment specific
+  behaviour on `isApp("bank-payment")` and delegate to `super` when the app is off. This was
+  the worst ratio of the suite and it reached the accounting core: `MoveCreateServiceImpl`,
+  `MoveReverseServiceImpl`, `InvoiceTermServiceImpl`, `PaymentSessionValidateServiceImpl`,
+  `PaymentSessionBillOfExchangeValidateServiceImpl`, the credit transfer batches and the
+  `InvoicePaymentController`, so a company doing accounting without the Bank Payment app was
+  still running bank payment code.
+
+  The check is done with the app service already injected in the class when there is one
+  (`AppBankPaymentService`, `AppAccountService`, `AppBaseService`), otherwise `AppBaseService`
+  comes in through the existing constructor. The classes with no constructor read it with
+  `Beans.get(AppBaseService.class)`.
+
+  `PaymentScheduleLineBankPaymentServiceImpl` needed no guard and is now listed in
+  `config/app-override-guard-allowlist.txt` as a justified exception: it is bound on
+  `PaymentScheduleLineServiceImpl` (axelor-account) but overrides none of its methods, it only
+  adds the rejection methods of `PaymentScheduleLineBankPaymentService`.
+
+  The following classes get a new constructor parameter, which breaks subclasses calling it:
+
+  - `com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl`
+  - `com.axelor.apps.bankpayment.service.InvoiceTermFilterBankPaymentServiceImpl`
+  - `com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl`
+  - `com.axelor.apps.bankpayment.service.move.MoveGroupOnChangeServiceBankPaymentImpl`
+  - `com.axelor.apps.bankpayment.service.moveline.MoveLineMassEntryRecordBankPaymentServiceImpl`
+  - `com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImpl`
+  - `com.axelor.apps.bankpayment.service.PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl`
+
+  `MoveReverseServiceBankPaymentImpl` now holds the `appBaseService` field, so
+  `com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl` no longer declares its own
+  and passes the service to `super` instead.

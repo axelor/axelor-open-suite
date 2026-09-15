@@ -47,7 +47,6 @@ import java.time.LocalDate;
 public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPaymentImpl {
 
   protected ExpensePaymentService expensePaymentService;
-  protected AppBaseService appBaseService;
 
   @Inject
   public ExpenseMoveReverseServiceImpl(
@@ -87,9 +86,9 @@ public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPayment
         unReconcileService,
         moveInvoiceTermService,
         analyticLineService,
-        paymentVoucherCancelService);
+        paymentVoucherCancelService,
+        appBaseService);
     this.expensePaymentService = expensePaymentService;
-    this.appBaseService = appBaseService;
   }
 
   @Transactional(rollbackOn = {Exception.class})

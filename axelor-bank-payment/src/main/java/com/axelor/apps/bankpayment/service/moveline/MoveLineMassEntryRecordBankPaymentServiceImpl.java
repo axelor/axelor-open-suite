@@ -34,11 +34,13 @@ import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import jakarta.inject.Inject;
 
 public class MoveLineMassEntryRecordBankPaymentServiceImpl
     extends MoveLineMassEntryRecordServiceImpl {
   protected final BankDetailsBankPaymentService bankDetailsBankPaymentService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public MoveLineMassEntryRecordBankPaymentServiceImpl(
@@ -50,7 +52,8 @@ public class MoveLineMassEntryRecordBankPaymentServiceImpl
       MoveLineTaxService moveLineTaxService,
       AnalyticMoveLineRepository analyticMoveLineRepository,
       MoveLineToolService moveLineToolService,
-      BankDetailsBankPaymentService bankDetailsBankPaymentService) {
+      BankDetailsBankPaymentService bankDetailsBankPaymentService,
+      AppBaseService appBaseService) {
     super(
         moveLineMassEntryService,
         moveLineRecordService,
@@ -61,11 +64,17 @@ public class MoveLineMassEntryRecordBankPaymentServiceImpl
         analyticMoveLineRepository,
         moveLineToolService);
     this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
   public void setMovePartnerBankDetails(MoveLineMassEntry moveLine, Move move) {
     super.setMovePartnerBankDetails(moveLine, move);
+
+    if (!appBaseService.isApp("bank-payment")) {
+      return;
+    }
+
     PaymentMode paymentMode = moveLine.getMovePaymentMode();
     Partner partner = moveLine.getPartner();
     Company company = move.getCompany();

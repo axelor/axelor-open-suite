@@ -124,6 +124,10 @@ public class InvoiceTermServiceBankPaymentImpl extends InvoiceTermServiceImpl {
             sequence,
             isHoldBack);
 
+    if (!appBaseService.isApp("bank-payment")) {
+      return newInvoiceTerm;
+    }
+
     bankDetailsBankPaymentService
         .getBankDetailsLinkedToActiveUmr(
             paymentMode, newInvoiceTerm.getPartner(), newInvoiceTerm.getCompany())

@@ -142,6 +142,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       PaymentSession paymentSession,
       List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefundList)
       throws AxelorException {
+    if (!appService.isApp("bank-payment")) {
+      return super.processPaymentSession(paymentSession, invoiceTermLinkWithRefundList);
+    }
+
     if (paymentSession.getPaymentMode() != null
         && paymentSession.getPaymentMode().getGenerateBankOrder()
         && paymentSession.getBankOrder() == null) {
@@ -159,6 +163,11 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       boolean out,
       boolean isGlobal)
       throws AxelorException {
+    if (!appService.isApp("bank-payment")) {
+      super.postProcessPaymentSession(paymentSession, moveDateMap, paymentAmountMap, out, isGlobal);
+      return;
+    }
+
     if (paymentSession.getBankOrder() != null) {
       BankOrder bankOrder = bankOrderRepo.find(paymentSession.getBankOrder().getId());
       bankOrderComputeService.updateTotalAmounts(bankOrder);
@@ -197,6 +206,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             out,
             isGlobal);
 
+    if (!appService.isApp("bank-payment")) {
+      return paymentSession;
+    }
+
     if (paymentSession.getBankOrder() != null
         && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       BigDecimal postProcessAmountPaid = invoiceTerm.getAmountPaid();
@@ -214,6 +227,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
 
   @Override
   public boolean generatePaymentsFirst(PaymentSession paymentSession) {
+    if (!appService.isApp("bank-payment")) {
+      return super.generatePaymentsFirst(paymentSession);
+    }
+
     return super.generatePaymentsFirst(paymentSession)
         || (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_ONGOING
             && paymentSession.getPaymentMode().getGenerateBankOrder()
@@ -227,6 +244,11 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       PaymentSession paymentSession, InvoiceTerm invoiceTerm) throws AxelorException {
     InvoicePayment invoicePayment =
         super.generatePendingPaymentFromInvoiceTerm(paymentSession, invoiceTerm);
+
+    if (!appService.isApp("bank-payment")) {
+      return invoicePayment;
+    }
+
     if (invoicePayment == null) {
       return null;
     }
@@ -237,6 +259,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
 
   public StringBuilder generateFlashMessage(PaymentSession paymentSession, int moveCount) {
     StringBuilder flashMessage = super.generateFlashMessage(paymentSession, moveCount);
+
+    if (!appService.isApp("bank-payment")) {
+      return flashMessage;
+    }
 
     if (paymentSession.getBankOrder() != null) {
       flashMessage.append(
@@ -251,6 +277,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
   @Override
   public List<Partner> getPartnersWithNegativeAmount(PaymentSession paymentSession)
       throws AxelorException {
+    if (!appService.isApp("bank-payment")) {
+      return super.getPartnersWithNegativeAmount(paymentSession);
+    }
+
     TypedQuery<Partner> partnerQuery =
         JPA.em()
             .createQuery(
@@ -282,6 +312,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     super.createAndReconcileMoveLineFromPair(
         paymentSession, move, invoiceTerm, pair, accountConfig, out, paymentAmountMap);
 
+    if (!appService.isApp("bank-payment")) {
+      return;
+    }
+
     paymentSessionBankOrderService.manageInvoicePayment(
         paymentSession, invoiceTerm, pair.getRight());
   }
@@ -294,6 +328,11 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       LocalDate accountingDate,
       BankDetails partnerBankDetails)
       throws AxelorException {
+    if (!appService.isApp("bank-payment")) {
+      return super.createMove(
+          paymentSession, partner, thirdPartyPayerPartner, accountingDate, partnerBankDetails);
+    }
+
     Move move =
         moveCreateService.createMove(
             paymentSession.getJournal(),
@@ -320,6 +359,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
 
   @Override
   public String getMoveOrigin(PaymentSession paymentSession) {
+    if (!appService.isApp("bank-payment")) {
+      return super.getMoveOrigin(paymentSession);
+    }
+
     if (paymentSession.getBankOrder() != null
         && paymentSession.getBankOrder().getAccountingTriggerSelect()
             != PaymentSessionRepository.ACCOUNTING_TRIGGER_IMMEDIATE) {

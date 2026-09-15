@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermFilterServiceImpl;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import jakarta.inject.Inject;
 import java.util.Collection;
 import org.apache.commons.collections.CollectionUtils;
@@ -37,18 +38,25 @@ public class InvoiceTermFilterBankPaymentServiceImpl extends InvoiceTermFilterSe
     implements InvoiceTermFilterBankPaymentService {
 
   protected BankOrderLineOriginRepository bankOrderLineOriginRepository;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public InvoiceTermFilterBankPaymentServiceImpl(
       InvoiceTermRepository invoiceTermRepository,
       BankOrderLineOriginRepository bankOrderLineOriginRepository,
-      PfpService pfpService) {
+      PfpService pfpService,
+      AppBaseService appBaseService) {
     super(invoiceTermRepository, pfpService);
     this.bankOrderLineOriginRepository = bankOrderLineOriginRepository;
+    this.appBaseService = appBaseService;
   }
 
   @Override
   public boolean isNotAwaitingPayment(InvoiceTerm invoiceTerm) {
+    if (!appBaseService.isApp("bank-payment")) {
+      return super.isNotAwaitingPayment(invoiceTerm);
+    }
+
     if (invoiceTerm != null && invoiceTerm.getInvoice() == null) {
       if (getAwaitingBankOrderLineOrigin(invoiceTerm) != null) {
         return false;
