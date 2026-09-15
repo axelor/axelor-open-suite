@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.maintenance.exception.MaintenanceExceptionMessage;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
@@ -53,6 +54,7 @@ public class OperationOrderStockMoveServiceMaintenanceImpl
     extends OperationOrderStockMoveServiceImpl {
 
   protected StockConfigProductionService stockConfigProductionService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public OperationOrderStockMoveServiceMaintenanceImpl(
@@ -67,7 +69,8 @@ public class OperationOrderStockMoveServiceMaintenanceImpl
       StockMoveProductionService stockMoveProductionService,
       OperationOrderService operationOrderService,
       ProductionTrackingPreservationService productionTrackingPreservationService,
-      StockConfigProductionService stockConfigProductionService) {
+      StockConfigProductionService stockConfigProductionService,
+      AppBaseService appBaseService) {
     super(
         stockMoveService,
         stockMoveLineService,
@@ -81,10 +84,16 @@ public class OperationOrderStockMoveServiceMaintenanceImpl
         operationOrderService,
         productionTrackingPreservationService);
     this.stockConfigProductionService = stockConfigProductionService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
   public void createToConsumeStockMove(OperationOrder operationOrder) throws AxelorException {
+    if (!appBaseService.isApp("maintenance")) {
+      super.createToConsumeStockMove(operationOrder);
+      return;
+    }
+
     ManufOrder manufOrder = operationOrder.getManufOrder();
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
       super.createToConsumeStockMove(operationOrder);
@@ -132,6 +141,10 @@ public class OperationOrderStockMoveServiceMaintenanceImpl
   @Override
   public StockMove _createToConsumeStockMove(OperationOrder operationOrder, Company company)
       throws AxelorException {
+    if (!appBaseService.isApp("maintenance")) {
+      return super._createToConsumeStockMove(operationOrder, company);
+    }
+
     ManufOrder manufOrder = operationOrder.getManufOrder();
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
       return super._createToConsumeStockMove(operationOrder, company);

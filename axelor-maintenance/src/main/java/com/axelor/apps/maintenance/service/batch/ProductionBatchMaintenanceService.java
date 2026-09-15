@@ -20,6 +20,7 @@ package com.axelor.apps.maintenance.service.batch;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ProductionBatch;
 import com.axelor.apps.production.db.repo.ProductionBatchRepository;
 import com.axelor.apps.production.service.batch.ProductionBatchService;
@@ -30,6 +31,10 @@ public class ProductionBatchMaintenanceService extends ProductionBatchService {
 
   @Override
   public Batch run(Model model) throws AxelorException {
+    if (!Beans.get(AppBaseService.class).isApp("maintenance")) {
+      return super.run(model);
+    }
+
     ProductionBatch productionBatch = (ProductionBatch) model;
 
     if (productionBatch.getActionSelect()

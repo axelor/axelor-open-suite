@@ -1,0 +1,29 @@
+---
+title: "App check: axelor-maintenance no longer changes the behaviour of axelor-production when the Maintenance app is not installed."
+module: axelor-maintenance
+developer: |
+  The 9 overrides of `axelor-production` now guard their maintenance specific behaviour on
+  `isApp("maintenance")` and delegate to `super` when the app is off. Until now none of them
+  carried a guard, so maintenance behaviour was injected into every manufacturing order, bill of
+  material, cost sheet and MRP process as soon as the module was deployed.
+
+  Most of these overrides already branched on `ManufOrder.typeSelect == TYPE_MAINTENANCE` before
+  falling back to `super`; the guard now short circuits them one level earlier, so a manufacturing
+  order of that type left over from a deactivated app no longer takes the maintenance path.
+
+  `CostSheetServiceMaintenanceImpl` carries the check in its two `isMaintenance(...)` helpers,
+  which every one of its eight overrides already goes through.
+
+  The check is done with the `appBaseService` already inherited from the overridden production
+  service when there is one, otherwise it comes in through the existing constructor
+  (`OperationOrderStockMoveServiceMaintenanceImpl`) or is read with
+  `Beans.get(AppBaseService.class)` in the two classes that have no constructor
+  (`BillOfMaterialComputeNameServiceMaintenanceImpl`, `ProductionBatchMaintenanceService`).
+
+  `BillOfMaterialServiceMaintenanceImpl` needed no guard and is now listed in
+  `config/app-override-guard-allowlist.txt` as a justified exception: it is bound on
+  `BillOfMaterialService` (axelor-production) but overrides none of its methods, `getFileName` and
+  `getReportLink` being declared by `BillOfMaterialMaintenanceService` only.
+
+  `com.axelor.apps.maintenance.service.OperationOrderStockMoveServiceMaintenanceImpl` gets a new
+  constructor parameter, which breaks subclasses calling it.

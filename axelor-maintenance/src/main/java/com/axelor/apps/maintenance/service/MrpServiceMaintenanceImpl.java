@@ -145,12 +145,22 @@ public class MrpServiceMaintenanceImpl extends MrpServiceProductionImpl {
   @Override
   protected void completeMrp(Mrp mrp) throws AxelorException {
     super.completeMrp(mrp);
+
+    if (!appBaseService.isApp("maintenance")) {
+      return;
+    }
+
     this.createMaintenanceOrderMrpLines();
   }
 
   @Override
   protected void fillMrpLinesForProductMap(Map<Long, Integer> productMap) throws AxelorException {
     super.fillMrpLinesForProductMap(productMap);
+
+    if (!appBaseService.isApp("maintenance")) {
+      return;
+    }
+
     this.createMaintenanceOrderMrpLines();
   }
 

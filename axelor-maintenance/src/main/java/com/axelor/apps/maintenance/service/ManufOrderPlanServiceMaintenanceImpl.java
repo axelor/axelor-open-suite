@@ -92,6 +92,10 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
+    if (!appBaseService.isApp("maintenance")) {
+      return super.plan(manufOrder);
+    }
+
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
       return super.plan(manufOrder);
     }
