@@ -1,0 +1,3 @@
+---
+title: "Payment session: globalization account move lines are now reconciled during validation when the account is reconcilable."
+module: axelor-account
