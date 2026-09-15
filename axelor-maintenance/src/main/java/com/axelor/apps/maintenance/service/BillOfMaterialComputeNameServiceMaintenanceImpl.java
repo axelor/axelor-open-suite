@@ -18,15 +18,21 @@
  */
 package com.axelor.apps.maintenance.service;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameServiceImpl;
 import com.axelor.common.StringUtils;
+import com.axelor.inject.Beans;
 
 public class BillOfMaterialComputeNameServiceMaintenanceImpl
     extends BillOfMaterialComputeNameServiceImpl {
 
   @Override
   public String computeFullName(BillOfMaterial bom) {
+    if (!Beans.get(AppBaseService.class).isApp("maintenance")) {
+      return super.computeFullName(bom);
+    }
+
     StringBuilder fullName = new StringBuilder();
     if (bom.getProduct() != null) {
       fullName.append(super.computeFullName(bom));

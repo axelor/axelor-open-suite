@@ -92,6 +92,10 @@ public class ManufOrderStockMoveServiceMaintenanceImpl extends ManufOrderStockMo
   @Override
   protected StockLocation _getDefaultInStockLocation(ManufOrder manufOrder, Company company)
       throws AxelorException {
+    if (!appBaseService.isApp("maintenance")) {
+      return super._getDefaultInStockLocation(manufOrder, company);
+    }
+
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
       return super._getDefaultInStockLocation(manufOrder, company);
     }
@@ -120,6 +124,10 @@ public class ManufOrderStockMoveServiceMaintenanceImpl extends ManufOrderStockMo
   @Override
   public StockLocation _getVirtualProductionStockLocation(ManufOrder manufOrder, Company company)
       throws AxelorException {
+    if (!appBaseService.isApp("maintenance")) {
+      return super._getVirtualProductionStockLocation(manufOrder, company);
+    }
+
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
       return super._getVirtualProductionStockLocation(manufOrder, company);
     }
@@ -138,6 +146,10 @@ public class ManufOrderStockMoveServiceMaintenanceImpl extends ManufOrderStockMo
   /** For maintenance orders, only realize IN stock moves (no OUT stock moves). */
   @Override
   public ManufOrder finish(ManufOrder manufOrder) throws AxelorException {
+    if (!appBaseService.isApp("maintenance")) {
+      return super.finish(manufOrder);
+    }
+
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
       return super.finish(manufOrder);
     }

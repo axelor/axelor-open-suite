@@ -146,12 +146,14 @@ public class CostSheetServiceMaintenanceImpl extends CostSheetServiceImpl {
   }
 
   protected boolean isMaintenance(BillOfMaterial billOfMaterial) {
-    return billOfMaterial.getTypeSelect() != null
+    return appBaseService.isApp("maintenance")
+        && billOfMaterial.getTypeSelect() != null
         && billOfMaterial.getTypeSelect() == ManufOrderRepository.TYPE_MAINTENANCE;
   }
 
   protected boolean isMaintenance(ManufOrder manufOrder) {
-    return manufOrder.getTypeSelect() != null
+    return appBaseService.isApp("maintenance")
+        && manufOrder.getTypeSelect() != null
         && manufOrder.getTypeSelect() == ManufOrderRepository.TYPE_MAINTENANCE;
   }
 

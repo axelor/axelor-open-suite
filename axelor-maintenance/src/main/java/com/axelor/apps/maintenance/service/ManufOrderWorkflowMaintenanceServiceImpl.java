@@ -95,6 +95,11 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void start(ManufOrder manufOrder) throws AxelorException {
+    if (!appBaseService.isApp("maintenance")) {
+      super.start(manufOrder);
+      return;
+    }
+
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
       super.start(manufOrder);
       return;
@@ -115,6 +120,10 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
 
   @Override
   public boolean finish(ManufOrder manufOrder) throws AxelorException {
+    if (!appBaseService.isApp("maintenance")) {
+      return super.finish(manufOrder);
+    }
+
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
       return super.finish(manufOrder);
     } else {
@@ -168,6 +177,10 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
   @Override
   @Transactional(rollbackOn = Exception.class)
   public boolean partialFinish(ManufOrder manufOrder) throws AxelorException {
+    if (!appBaseService.isApp("maintenance")) {
+      return super.partialFinish(manufOrder);
+    }
+
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
       return super.partialFinish(manufOrder);
     } else {

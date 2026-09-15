@@ -17,7 +17,7 @@
 #      job of the sweep tickets listed below, one module at a time. Do NOT add new entries
 #      to those sections.
 #
-# Sweep tickets: #117728 maintenance, #117729 contract/intervention/cash-management,
+# Sweep tickets: #117729 contract/intervention/cash-management,
 # #117730 sale/crm/account/stock/talent, #117731 budget.
 #
 # Adding a NEW class here instead of guarding it requires a justification in the merge request.
@@ -82,17 +82,10 @@ com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrServiceImpl  # bound on 
 com.axelor.apps.intervention.service.ContractInterventionServiceImpl  # overrides ContractServiceImpl (axelor-contract)
 
 # ---------------------------------------------------------------------------
-# KNOWN DEBT - axelor-maintenance (9) - to be emptied by #117728
+# JUSTIFIED EXCEPTIONS - axelor-maintenance (1)
 # ---------------------------------------------------------------------------
-com.axelor.apps.maintenance.service.BillOfMaterialServiceMaintenanceImpl  # overrides BillOfMaterialServiceImpl (axelor-production)
-com.axelor.apps.maintenance.service.ManufOrderWorkflowMaintenanceServiceImpl  # overrides ManufOrderWorkflowServiceImpl (axelor-production)
-com.axelor.apps.maintenance.service.BillOfMaterialComputeNameServiceMaintenanceImpl  # overrides BillOfMaterialComputeNameServiceImpl (axelor-production)
-com.axelor.apps.maintenance.service.ManufOrderPlanServiceMaintenanceImpl  # overrides ManufOrderPlanServiceImpl (axelor-production)
-com.axelor.apps.maintenance.service.batch.ProductionBatchMaintenanceService  # overrides ProductionBatchService (axelor-production)
-com.axelor.apps.maintenance.service.CostSheetServiceMaintenanceImpl  # overrides CostSheetServiceImpl (axelor-production)
-com.axelor.apps.maintenance.service.ManufOrderStockMoveServiceMaintenanceImpl  # overrides ManufOrderStockMoveServiceImpl (axelor-production)
-com.axelor.apps.maintenance.service.OperationOrderStockMoveServiceMaintenanceImpl  # overrides OperationOrderStockMoveServiceImpl (axelor-production)
-com.axelor.apps.maintenance.service.MrpServiceMaintenanceImpl  # overrides MrpServiceProductionImpl (axelor-production)
+# The overrides of the maintenance module were guarded by #117728.
+com.axelor.apps.maintenance.service.BillOfMaterialServiceMaintenanceImpl  # bound on BillOfMaterialService (axelor-production), overrides no method of BillOfMaterialServiceImpl: getFileName and getReportLink are declared by BillOfMaterialMaintenanceService only
 
 # ---------------------------------------------------------------------------
 # JUSTIFIED EXCEPTIONS - axelor-production (1)
