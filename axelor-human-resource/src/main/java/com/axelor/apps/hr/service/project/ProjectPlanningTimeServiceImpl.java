@@ -49,6 +49,7 @@ import com.axelor.script.GroovyScriptHelper;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import jakarta.persistence.Tuple;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -56,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -493,5 +495,28 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     }
 
     return unit;
+  }
+
+  @Override
+  public Map<ProjectTask, BigDecimal> getPlannedHrsByTask(Project project) {
+    if (project == null) {
+      return Map.of();
+    }
+    String query =
+        "SELECT self.projectTask, SUM(self.plannedTime) FROM ProjectPlanningTime self "
+            + "WHERE self.projectTask IN ("
+            + "SELECT ppt.projectTask FROM ProjectPlanningTime ppt "
+            + "WHERE ppt.projectTask IS NOT NULL "
+            + "AND (ppt.project = :project OR ppt.project.parentProject = :project)) "
+            + "GROUP BY self.projectTask";
+    return JPA.em()
+        .createQuery(query, Tuple.class)
+        .setParameter("project", project)
+        .getResultStream()
+        .collect(
+            Collectors.toMap(
+                tuple -> tuple.get(0, ProjectTask.class),
+                tuple ->
+                    Optional.ofNullable(tuple.get(1, BigDecimal.class)).orElse(BigDecimal.ZERO)));
   }
 }

@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface ProjectPlanningTimeService {
 
@@ -78,4 +79,6 @@ public interface ProjectPlanningTimeService {
   BigDecimal getOldBudgetedTime(ProjectTask projectTask);
 
   Unit getTimeUnit(ProjectTask projectTask);
+
+  Map<ProjectTask, BigDecimal> getPlannedHrsByTask(Project project);
 }
