@@ -18,14 +18,20 @@
  */
 package com.axelor.apps.sale.service.saleorder.pricing;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.pricing.PricingMetaServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.inject.Beans;
 
 public class SalePricingMetaServiceImpl extends PricingMetaServiceImpl {
 
   @Override
   public String setButtonCondition(String model) {
     String condition = super.setButtonCondition(model);
+
+    if (!Beans.get(AppBaseService.class).isApp("sale")) {
+      return condition;
+    }
 
     if (model != null && SaleOrder.class.getName().equals(model)) {
       condition =

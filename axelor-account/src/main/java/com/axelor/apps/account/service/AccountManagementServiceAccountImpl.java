@@ -38,6 +38,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -62,6 +63,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
   protected AccountConfigService accountConfigService;
   protected AccountRepository accountRepository;
   protected FiscalPositionAccountService fiscalPositionAccountService;
+  protected final AppBaseService appBaseService;
 
   @Inject
   public AccountManagementServiceAccountImpl(
@@ -69,11 +71,13 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
       TaxService taxService,
       AccountConfigService accountConfigService,
       AccountRepository accountRepository,
-      FiscalPositionAccountService fiscalPositionAccountService) {
+      FiscalPositionAccountService fiscalPositionAccountService,
+      AppBaseService appBaseService) {
     super(fiscalPositionService, taxService);
     this.accountConfigService = accountConfigService;
     this.accountRepository = accountRepository;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
+    this.appBaseService = appBaseService;
   }
 
   /**
@@ -427,6 +431,10 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
   protected Set<Tax> getProductTax(
       Product product, Company company, FiscalPosition fiscalPosition, boolean isPurchase)
       throws AxelorException {
+    if (!appBaseService.isApp("account")) {
+      return super.getProductTax(product, company, fiscalPosition, isPurchase);
+    }
+
     Set<Tax> generalTaxSet = this.getProductTax(product, company, isPurchase);
     Set<Tax> taxSet = fiscalPositionService.getTaxSet(fiscalPosition, generalTaxSet);
 
@@ -448,6 +456,10 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
   @Override
   protected Set<Tax> getProductTax(Product product, Company company, boolean isPurchase)
       throws AxelorException {
+    if (!appBaseService.isApp("account")) {
+      return super.getProductTax(product, company, isPurchase);
+    }
+
     Set<Tax> taxSet = this.getProductTax(product, company, isPurchase, CONFIG_OBJECT_PRODUCT);
 
     if (CollectionUtils.isNotEmpty(taxSet)) {
@@ -473,6 +485,10 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
       FiscalPosition fiscalPosition,
       boolean isPurchase)
       throws AxelorException {
+    if (!appBaseService.isApp("account")) {
+      return super.getTaxLineSet(date, product, company, fiscalPosition, isPurchase);
+    }
+
     Set<Tax> taxSet = this.getProductTax(product, company, fiscalPosition, isPurchase);
 
     if (CollectionUtils.isEmpty(taxSet)) {

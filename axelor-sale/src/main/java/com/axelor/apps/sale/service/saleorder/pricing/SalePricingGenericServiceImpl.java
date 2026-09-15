@@ -47,6 +47,10 @@ public class SalePricingGenericServiceImpl extends PricingGenericServiceImpl {
       throws AxelorException {
     super.computePricingsOnChildren(company, model, typeSelect);
 
+    if (!appBaseService.isApp("sale")) {
+      return;
+    }
+
     if (SaleOrder.class.equals(EntityHelper.getEntityClass(model))) {
       SaleOrder saleOrder = (SaleOrder) model;
       if (!ObjectUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
@@ -60,6 +64,10 @@ public class SalePricingGenericServiceImpl extends PricingGenericServiceImpl {
   @Override
   public String updatePricingScaleLogs(List<StringBuilder> logsList, Model model) {
     String logs = super.updatePricingScaleLogs(logsList, model);
+
+    if (!appBaseService.isApp("sale")) {
+      return logs;
+    }
 
     if (SaleOrderLine.class.equals(EntityHelper.getEntityClass(model))) {
       SaleOrderLine saleOrderLine = (SaleOrderLine) model;

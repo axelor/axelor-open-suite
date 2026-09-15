@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -58,6 +59,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   protected MoveRemoveService moveRemoveService;
   protected PeriodCheckService periodCheckService;
   protected TraceBackRepository traceBackRepository;
+  protected final AppBaseService appBaseService;
 
   // Per-request closing result must not be held in scalar instance fields on this @Singleton
   // service: a concurrent close() from another tenant/user would overwrite it. It is stored in a
@@ -77,7 +79,8 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
       AccountConfigService accountConfigService,
       MoveRemoveService moveRemoveService,
       PeriodCheckService periodCheckService,
-      TraceBackRepository traceBackRepository) {
+      TraceBackRepository traceBackRepository,
+      AppBaseService appBaseService) {
     super(periodRepo, adjustHistoryService);
     this.moveValidateService = moveValidateService;
     this.moveRepository = moveRepository;
@@ -85,10 +88,16 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     this.moveRemoveService = moveRemoveService;
     this.periodCheckService = periodCheckService;
     this.traceBackRepository = traceBackRepository;
+    this.appBaseService = appBaseService;
   }
 
   @Override
   public void close(Period period) throws AxelorException {
+    if (!appBaseService.isApp("account")) {
+      super.close(period);
+      return;
+    }
+
     Long periodId = period.getId();
     List<Move> moves = new ArrayList<>();
     int anomalyCount = 0;
@@ -156,6 +165,10 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
 
   @Override
   public boolean isClosedPeriod(Period period) throws AxelorException {
+    if (!appBaseService.isApp("account")) {
+      return super.isClosedPeriod(period);
+    }
+
     User user = AuthUtils.getUser();
 
     return super.isClosedPeriod(period)
@@ -164,6 +177,11 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
 
   @Override
   public void closePeriod(Period period) {
+    if (!appBaseService.isApp("account")) {
+      super.closePeriod(period);
+      return;
+    }
+
     int oldPeriodStatusSelect = period.getStatusSelect();
     super.closePeriod(period);
     Pair<List<Move>, Integer> result = periodClosingResultCache.get(period.getId());

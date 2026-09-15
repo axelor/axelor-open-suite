@@ -17,17 +17,16 @@
 #      job of the sweep tickets listed below, one module at a time. Do NOT add new entries
 #      to those sections.
 #
-# Sweep tickets: #117730 sale/crm/account/stock/talent, #117731 budget.
+# Sweep tickets: #117731 budget.
 #
 # Adding a NEW class here instead of guarding it requires a justification in the merge request.
 
 
 # ---------------------------------------------------------------------------
-# KNOWN DEBT - axelor-account (3) - to be emptied by #117730
+# JUSTIFIED EXCEPTIONS - axelor-account (1)
 # ---------------------------------------------------------------------------
-com.axelor.apps.account.service.AccountManagementServiceAccountImpl  # overrides AccountManagementServiceImpl (axelor-base)
-com.axelor.apps.account.service.FiscalPositionAccountServiceImpl  # overrides FiscalPositionServiceImpl (axelor-base)
-com.axelor.apps.account.service.period.PeriodServiceAccountImpl  # overrides PeriodServiceImpl (axelor-base)
+# The overrides of the account module were guarded by #117730.
+com.axelor.apps.account.service.FiscalPositionAccountServiceImpl  # bound on FiscalPositionService (axelor-base), overrides no method of FiscalPositionServiceImpl: only adds getAccount of FiscalPositionAccountService
 
 # ---------------------------------------------------------------------------
 # JUSTIFIED EXCEPTIONS - axelor-bank-payment (1)
@@ -44,12 +43,10 @@ com.axelor.apps.budget.service.move.MoveLineConsolidateBudgetServiceImpl  # over
 com.axelor.apps.budget.service.move.MoveGroupBudgetServiceImpl  # overrides MoveGroupServiceImpl (axelor-account)
 
 # ---------------------------------------------------------------------------
-# KNOWN DEBT - axelor-crm (4) - to be emptied by #117730
+# JUSTIFIED EXCEPTIONS - axelor-crm (1)
 # ---------------------------------------------------------------------------
-com.axelor.apps.crm.service.CalendarService  # overrides ICalendarService (axelor-base)
-com.axelor.apps.crm.message.MessageServiceCrmImpl  # overrides MessageServiceBaseImpl (axelor-base)
-com.axelor.apps.crm.service.partner.api.CrmPartnerGenerateServiceImpl  # overrides PartnerGenerateServiceImpl (axelor-base)
-com.axelor.apps.crm.service.DuplicateObjectsCrmService  # overrides DuplicateObjectsService (axelor-base)
+# The overrides of the crm module were guarded by #117730.
+com.axelor.apps.crm.message.MessageServiceCrmImpl  # bound on MessageService (axelor-base), overrides no method of MessageServiceBaseImpl: createMessage(Event) is a crm overload, the parent's createMessage has a different signature
 
 # ---------------------------------------------------------------------------
 # JUSTIFIED EXCEPTIONS - axelor-human-resource (2)
@@ -71,20 +68,10 @@ com.axelor.apps.maintenance.service.BillOfMaterialServiceMaintenanceImpl  # boun
 com.axelor.apps.production.service.config.StockConfigProductionService  # bound on StockConfigService (axelor-stock), overrides no method of it: only adds the production stock location getters (production virtual, waste, finished products, residual products, component)
 
 # ---------------------------------------------------------------------------
-# KNOWN DEBT - axelor-sale (6) - to be emptied by #117730
+# JUSTIFIED EXCEPTIONS - axelor-sale (1)
 # ---------------------------------------------------------------------------
-com.axelor.apps.sale.service.saleorder.opportunity.OpportunityServiceSaleImpl  # overrides OpportunityServiceImpl (axelor-crm)
-com.axelor.apps.sale.db.repo.OpportunitySaleRepository  # overrides OpportunityManagementRepository (axelor-crm)
-com.axelor.apps.sale.service.ProductCategoryServiceSaleImpl  # overrides ProductCategoryServiceImpl (axelor-base)
-com.axelor.apps.sale.service.saleorder.pricing.SalePricingGenericServiceImpl  # overrides PricingGenericServiceImpl (axelor-base)
-com.axelor.apps.sale.service.saleorder.pricing.SalePricingMetaServiceImpl  # overrides PricingMetaServiceImpl (axelor-base)
-com.axelor.apps.sale.service.PricingGroupSaleServiceImpl  # overrides PricingGroupServiceImpl (axelor-base)
-
-# ---------------------------------------------------------------------------
-# KNOWN DEBT - axelor-stock (2) - to be emptied by #117730
-# ---------------------------------------------------------------------------
-com.axelor.apps.stock.db.repo.ProductStockRepository  # overrides ProductBaseRepository (axelor-base)
-com.axelor.apps.stock.db.repo.ProductCompanyStockRepository  # overrides ProductCompanyBaseRepository (axelor-base)
+# The overrides of the sale module were guarded by #117730.
+com.axelor.apps.sale.service.ProductCategoryServiceSaleImpl  # bound on ProductCategoryService (axelor-base), overrides no method of ProductCategoryServiceImpl: only adds the max discount methods of ProductCategorySaleService
 
 # ---------------------------------------------------------------------------
 # JUSTIFIED EXCEPTIONS - axelor-supplychain (5)
@@ -98,8 +85,3 @@ com.axelor.apps.supplychain.utils.StockLocationUtilsServiceSupplychainImpl  # bo
 com.axelor.apps.supplychain.service.AccountingCutOffSupplyChainServiceImpl  # bound on AccountingCutOffService (axelor-account), overrides no method of AccountingCutOffServiceImpl: only adds the stock move cut off methods of AccountingCutOffSupplyChainService
 com.axelor.apps.supplychain.service.PartnerSupplychainServiceImpl  # bound on PartnerSaleService (axelor-sale), overrides no method of PartnerSaleServiceImpl: only adds updateBlockedAccount and isBlockedPartnerOrParent of PartnerSupplychainService
 com.axelor.apps.supplychain.service.PartnerLinkSupplychainServiceImpl  # bound on PartnerLinkService (axelor-base), overrides no method of PartnerLinkServiceImpl: only adds getDefaultInvoicedPartner and getDefaultDeliveredPartner of PartnerLinkSupplychainService
-
-# ---------------------------------------------------------------------------
-# KNOWN DEBT - axelor-talent (1) - to be emptied by #117730
-# ---------------------------------------------------------------------------
-com.axelor.apps.talent.service.MailAccountServiceTalentImpl  # overrides MailAccountServiceBaseImpl (axelor-base)

@@ -30,13 +30,10 @@ import java.util.stream.Collectors;
 
 public class PricingGroupSupplyChainServiceImpl extends PricingGroupSaleServiceImpl {
 
-  protected final AppBaseService appBaseService;
-
   @Inject
   public PricingGroupSupplyChainServiceImpl(
       PricingGenericService pricingGenericService, AppBaseService appBaseService) {
-    super(pricingGenericService);
-    this.appBaseService = appBaseService;
+    super(pricingGenericService, appBaseService);
   }
 
   @Override

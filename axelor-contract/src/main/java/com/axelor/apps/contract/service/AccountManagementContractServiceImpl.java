@@ -37,8 +37,6 @@ import java.util.Objects;
 public class AccountManagementContractServiceImpl extends AccountManagementServiceAccountImpl
     implements AccountManagementContractService {
 
-  protected final AppBaseService appBaseService;
-
   @Inject
   public AccountManagementContractServiceImpl(
       FiscalPositionService fiscalPositionService,
@@ -52,8 +50,8 @@ public class AccountManagementContractServiceImpl extends AccountManagementServi
         taxService,
         accountConfigService,
         accountRepository,
-        fiscalPositionAccountService);
-    this.appBaseService = appBaseService;
+        fiscalPositionAccountService,
+        appBaseService);
   }
 
   @Override
