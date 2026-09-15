@@ -219,4 +219,51 @@ public interface ITranslation {
   public static final String MPS_CHARGE_CODE = /*$$(*/ "MpsCharge.code"; /*)*/
   public static final String MPS_CHARGE_START_MONTH = /*$$(*/ "MpsCharge.startMonth"; /*)*/
   public static final String MPS_CHARGE_END_MONTH = /*$$(*/ "MpsCharge.endMonth"; /*)*/
+
+  public static final String CONFORMITY_DECLARATION_TITLE = /*$$(*/
+      "ManufOrderConformityDeclaration.title"; /*)*/
+  public static final String CONFORMITY_DECLARATION_MANUF_ORDER = /*$$(*/
+      "ManufOrderConformityDeclaration.manufOrder"; /*)*/
+  public static final String CONFORMITY_DECLARATION_START_DATE = /*$$(*/
+      "ManufOrderConformityDeclaration.startDate"; /*)*/
+  public static final String CONFORMITY_DECLARATION_END_DATE = /*$$(*/
+      "ManufOrderConformityDeclaration.endDate"; /*)*/
+  public static final String CONFORMITY_DECLARATION_PRODUCT = /*$$(*/
+      "ManufOrderConformityDeclaration.product"; /*)*/
+  public static final String CONFORMITY_DECLARATION_PRODUCED_QTY = /*$$(*/
+      "ManufOrderConformityDeclaration.producedQty"; /*)*/
+  public static final String CONFORMITY_DECLARATION_SALE_ORDERS = /*$$(*/
+      "ManufOrderConformityDeclaration.saleOrders"; /*)*/
+  public static final String CONFORMITY_DECLARATION_STATEMENT = /*$$(*/
+      "ManufOrderConformityDeclaration.statement"; /*)*/
+  public static final String CONFORMITY_DECLARATION_CONTROLS = /*$$(*/
+      "ManufOrderConformityDeclaration.controls"; /*)*/
+  public static final String CONFORMITY_DECLARATION_CONTROL_ENTRY = /*$$(*/
+      "ManufOrderConformityDeclaration.controlEntry"; /*)*/
+  public static final String CONFORMITY_DECLARATION_CONTROL_DATE = /*$$(*/
+      "ManufOrderConformityDeclaration.controlDate"; /*)*/
+  public static final String CONFORMITY_DECLARATION_INSPECTOR = /*$$(*/
+      "ManufOrderConformityDeclaration.inspector"; /*)*/
+  public static final String CONFORMITY_DECLARATION_CONTROL_PLAN = /*$$(*/
+      "ManufOrderConformityDeclaration.controlPlan"; /*)*/
+  public static final String CONFORMITY_DECLARATION_TRACKING_NUMBERS = /*$$(*/
+      "ManufOrderConformityDeclaration.trackingNumbers"; /*)*/
+  public static final String CONFORMITY_DECLARATION_CHARACTERISTIC = /*$$(*/
+      "ManufOrderConformityDeclaration.characteristic"; /*)*/
+  public static final String CONFORMITY_DECLARATION_SAMPLE = /*$$(*/
+      "ManufOrderConformityDeclaration.sample"; /*)*/
+  public static final String CONFORMITY_DECLARATION_REFERENCE_VALUES = /*$$(*/
+      "ManufOrderConformityDeclaration.referenceValues"; /*)*/
+  public static final String CONFORMITY_DECLARATION_MEASURED_VALUES = /*$$(*/
+      "ManufOrderConformityDeclaration.measuredValues"; /*)*/
+  public static final String CONFORMITY_DECLARATION_RESULT = /*$$(*/
+      "ManufOrderConformityDeclaration.result"; /*)*/
+  public static final String CONFORMITY_DECLARATION_COMPLIANT = /*$$(*/
+      "ManufOrderConformityDeclaration.compliant"; /*)*/
+  public static final String CONFORMITY_DECLARATION_SIGNATURE = /*$$(*/
+      "ManufOrderConformityDeclaration.signature"; /*)*/
+  public static final String CONFORMITY_DECLARATION_SIGNATORY_NAME = /*$$(*/
+      "ManufOrderConformityDeclaration.signatoryName"; /*)*/
+  public static final String CONFORMITY_DECLARATION_SIGNATURE_DATE = /*$$(*/
+      "ManufOrderConformityDeclaration.signatureDate"; /*)*/
 }

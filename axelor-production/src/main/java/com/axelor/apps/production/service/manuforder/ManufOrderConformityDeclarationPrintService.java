@@ -20,28 +20,16 @@ package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
+import java.io.File;
+import java.io.IOException;
 
-public interface ManufOrderFinalControlCheckService {
-
-  int getCheckSelect(ManufOrder manufOrder);
-
-  /**
-   * @return the reason preventing a clean finish, null when the manufacturing order can finish.
-   */
-  String getFinishIssueMessage(ManufOrder manufOrder);
-
-  /** Only for the last operation to finish, null for the other operations. */
-  String getFinishIssueMessage(OperationOrder operationOrder);
+public interface ManufOrderConformityDeclarationPrintService {
 
   /**
-   * @return the reason text for a missing or non-compliant result, null otherwise.
+   * Prints the conformity declaration of a finished manufacturing order whose final control is
+   * compliant, and attaches it to the manufacturing order when the template asks for it.
    */
-  String getIssueMessage(ManufOrder manufOrder, ManufOrderFinalControlResult result);
+  File print(ManufOrder manufOrder) throws AxelorException;
 
-  /**
-   * Blocking mode: throws when the final control is missing or non-compliant. Warning mode: traces
-   * the issue on the manufacturing order and notifies the current user.
-   */
-  void checkBeforeFinish(ManufOrder manufOrder) throws AxelorException;
+  String getPrintLink(ManufOrder manufOrder) throws AxelorException, IOException;
 }

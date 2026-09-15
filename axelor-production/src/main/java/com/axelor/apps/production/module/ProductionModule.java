@@ -225,6 +225,8 @@ import com.axelor.apps.production.service.machine.MachineService;
 import com.axelor.apps.production.service.machine.MachineServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderConformityDeclarationPrintService;
+import com.axelor.apps.production.service.manuforder.ManufOrderConformityDeclarationPrintServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateBarcodeService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateBarcodeServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderService;
@@ -562,6 +564,8 @@ public class ProductionModule extends AxelorModule {
     bind(ManufOrderQueryService.class).to(ManufOrderQueryServiceImpl.class);
     bind(ManufOrderFinalControlService.class).to(ManufOrderFinalControlServiceImpl.class);
     bind(ManufOrderFinalControlCheckService.class).to(ManufOrderFinalControlCheckServiceImpl.class);
+    bind(ManufOrderConformityDeclarationPrintService.class)
+        .to(ManufOrderConformityDeclarationPrintServiceImpl.class);
     bind(ControlEntryServiceImpl.class).to(ControlEntryProductionServiceImpl.class);
 
     bind(DepRateCalculationService.class).to(DepRateCalculationServiceImpl.class);

@@ -47,6 +47,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
+import com.axelor.apps.production.service.manuforder.ManufOrderConformityDeclarationPrintService;
 import com.axelor.apps.production.service.manuforder.ManufOrderFinalControlCheckService;
 import com.axelor.apps.production.service.manuforder.ManufOrderMultiLevelPlanningService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
@@ -360,6 +361,19 @@ public class ManufOrderController {
       Beans.get(ManufOrderService.class).updateRealQty(manufOrder, qtyToUpdate);
       response.setReload(true);
       response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void printConformityDeclaration(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      String fileLink =
+          Beans.get(ManufOrderConformityDeclarationPrintService.class).getPrintLink(manufOrder);
+      response.setView(
+          ActionView.define(I18n.get("Conformity declaration")).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -97,15 +97,8 @@ public class ManufOrderFinalControlCheckServiceImpl implements ManufOrderFinalCo
     traceAndNotify(manufOrder, issue);
   }
 
-  protected boolean isLastOperationToFinish(OperationOrder operationOrder, ManufOrder manufOrder) {
-    List<OperationOrder> operationOrders = manufOrder.getOperationOrderList();
-    return operationOrders != null
-        && operationOrders.stream()
-            .filter(other -> !other.equals(operationOrder))
-            .allMatch(other -> other.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED);
-  }
-
-  protected String getIssueMessage(ManufOrder manufOrder, ManufOrderFinalControlResult result) {
+  @Override
+  public String getIssueMessage(ManufOrder manufOrder, ManufOrderFinalControlResult result) {
     switch (result.getStatus()) {
       case NON_COMPLIANT:
         return String.format(
@@ -134,6 +127,14 @@ public class ManufOrderFinalControlCheckServiceImpl implements ManufOrderFinalCo
       default:
         return null;
     }
+  }
+
+  protected boolean isLastOperationToFinish(OperationOrder operationOrder, ManufOrder manufOrder) {
+    List<OperationOrder> operationOrders = manufOrder.getOperationOrderList();
+    return operationOrders != null
+        && operationOrders.stream()
+            .filter(other -> !other.equals(operationOrder))
+            .allMatch(other -> other.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED);
   }
 
   protected void traceAndNotify(ManufOrder manufOrder, String issue) {
