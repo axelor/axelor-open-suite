@@ -82,13 +82,13 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
       TraceBackRepository traceBackRepository,
       AppBaseService appBaseService) {
     super(periodRepo, adjustHistoryService);
-    this.appBaseService = appBaseService;
     this.moveValidateService = moveValidateService;
     this.moveRepository = moveRepository;
     this.accountConfigService = accountConfigService;
     this.moveRemoveService = moveRemoveService;
     this.periodCheckService = periodCheckService;
     this.traceBackRepository = traceBackRepository;
+    this.appBaseService = appBaseService;
   }
 
   @Override

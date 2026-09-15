@@ -74,10 +74,10 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
       FiscalPositionAccountService fiscalPositionAccountService,
       AppBaseService appBaseService) {
     super(fiscalPositionService, taxService);
-    this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
     this.accountRepository = accountRepository;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
+    this.appBaseService = appBaseService;
   }
 
   /**
