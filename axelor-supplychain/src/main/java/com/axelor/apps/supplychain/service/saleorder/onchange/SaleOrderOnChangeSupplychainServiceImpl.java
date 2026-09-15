@@ -115,6 +115,11 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
   @Override
   public Map<String, Object> partnerOnChange(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> values = super.partnerOnChange(saleOrder);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return values;
+    }
+
     values.putAll(getPaymentCondition(saleOrder));
     values.putAll(getPaymentMode(saleOrder));
     values.putAll(getIncoterm(saleOrder));
@@ -134,6 +139,11 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
   @Override
   public Map<String, Object> companyOnChange(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> values = super.companyOnChange(saleOrder);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return values;
+    }
+
     values.putAll(saleOrderStockLocationService.getStockLocation(saleOrder));
     values.putAll(saleOrderStockLocationService.getToStockLocation(saleOrder));
     values.putAll(getIncoterm(saleOrder));
@@ -164,6 +174,11 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
   @Override
   protected Map<String, Object> getClientPartnerValues(SaleOrder saleOrder) {
     Map<String, Object> values = super.getClientPartnerValues(saleOrder);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return values;
+    }
+
     Partner clientPartner = saleOrder.getClientPartner();
     if (clientPartner != null) {
       saleOrder.setIsNeedingConformityCertificate(
@@ -220,6 +235,10 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
 
   @Override
   protected Map<String, Object> getFiscalPosition(SaleOrder saleOrder) {
+    if (!appBaseService.isApp("supplychain")) {
+      return super.getFiscalPosition(saleOrder);
+    }
+
     Map<String, Object> values = new HashMap<>();
     AppBase appBase = appBaseService.getAppBase();
     if (!appBase.getActivatePartnerRelations()) {
@@ -305,6 +324,11 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
   @Override
   protected Map<String, Object> getComputeSaleOrderMap(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> values = super.getComputeSaleOrderMap(saleOrder);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return values;
+    }
+
     values.put("standardDelay", saleOrder.getStandardDelay());
     values.put("amountToBeSpreadOverTheTimetable", saleOrder.getAmountToBeSpreadOverTheTimetable());
 

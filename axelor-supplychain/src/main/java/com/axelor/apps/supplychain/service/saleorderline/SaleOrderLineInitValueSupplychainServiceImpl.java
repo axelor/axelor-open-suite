@@ -54,6 +54,11 @@ public class SaleOrderLineInitValueSupplychainServiceImpl
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSol)
       throws AxelorException {
     Map<String, Object> values = super.onNewInitValues(saleOrder, saleOrderLine, parentSol);
+
+    if (!appSupplychainService.isApp("supplychain")) {
+      return values;
+    }
+
     AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
     if (appSupplychain.getManageStockReservation()) {
       values.putAll(saleOrderLineServiceSupplyChain.updateRequestedReservedQty(saleOrderLine));
@@ -67,6 +72,11 @@ public class SaleOrderLineInitValueSupplychainServiceImpl
   public Map<String, Object> onLoadInitValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException {
     Map<String, Object> values = super.onLoadInitValues(saleOrder, saleOrderLine);
+
+    if (!appSupplychainService.isApp("supplychain")) {
+      return values;
+    }
+
     values.putAll(saleOrderLineAnalyticService.printAnalyticAccounts(saleOrder, saleOrderLine));
     return values;
   }
@@ -75,6 +85,11 @@ public class SaleOrderLineInitValueSupplychainServiceImpl
   public Map<String, Object> onNewEditableInitValues(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSol) {
     Map<String, Object> values = super.onNewEditableInitValues(saleOrder, saleOrderLine, parentSol);
+
+    if (!appSupplychainService.isApp("supplychain")) {
+      return values;
+    }
+
     values.putAll(fillRequestQty(saleOrder, saleOrderLine));
     return values;
   }

@@ -40,6 +40,11 @@ public class SaleOrderMarginSupplychainServiceImpl extends SaleOrderMarginServic
   @Override
   public void computeMarginSaleOrder(SaleOrder saleOrder) {
     super.computeMarginSaleOrder(saleOrder);
+
+    if (!appSaleService.isApp("supplychain")) {
+      return;
+    }
+
     saleOrder.setTotalCostPrice(saleOrder.getTotalCostPrice().add(saleOrder.getShippingCost()));
   }
 }

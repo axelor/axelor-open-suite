@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleBatch;
 import com.axelor.apps.sale.db.repo.SaleBatchRepository;
 import com.axelor.apps.sale.service.batch.SaleBatchService;
@@ -29,13 +30,21 @@ import jakarta.inject.Inject;
 
 public class SaleBatchSupplyChainService extends SaleBatchService {
 
+  protected final AppBaseService appBaseService;
+
   @Inject
-  public SaleBatchSupplyChainService(SaleBatchRepository saleBatchRepo) {
+  public SaleBatchSupplyChainService(
+      SaleBatchRepository saleBatchRepo, AppBaseService appBaseService) {
     super(saleBatchRepo);
+    this.appBaseService = appBaseService;
   }
 
   @Override
   public Batch run(Model batchModel) throws AxelorException {
+    if (!appBaseService.isApp("supplychain")) {
+      return super.run(batchModel);
+    }
+
     SaleBatch saleBatch = (SaleBatch) batchModel;
     switch (saleBatch.getActionSelect()) {
       case SaleBatchRepository.ACTION_INVOICING:

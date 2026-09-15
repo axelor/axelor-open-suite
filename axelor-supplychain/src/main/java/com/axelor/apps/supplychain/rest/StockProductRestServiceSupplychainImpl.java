@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.rest;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
 import com.axelor.apps.stock.translation.ITranslation;
@@ -29,10 +30,18 @@ import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.ResponseConstructor;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import java.util.Map;
 
 public class StockProductRestServiceSupplychainImpl extends StockProductRestServiceImpl {
+
+  protected final AppBaseService appBaseService;
+
+  @Inject
+  public StockProductRestServiceSupplychainImpl(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
 
   /*
    * OVERRIDING
@@ -42,6 +51,10 @@ public class StockProductRestServiceSupplychainImpl extends StockProductRestServ
   @Override
   public Response getProductIndicators(
       Product product, Company company, StockLocation stockLocation) throws AxelorException {
+    if (!appBaseService.isApp("supplychain")) {
+      return super.getProductIndicators(product, company, stockLocation);
+    }
+
     Map<String, Object> stockIndicators;
     if (company == null) {
       stockIndicators =

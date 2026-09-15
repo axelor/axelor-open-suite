@@ -57,6 +57,11 @@ public class ProductSupplychainServiceImpl extends ProductServicePurchaseImpl {
   @Override
   public void copyProduct(Product product, Product copy) {
     super.copyProduct(product, copy);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return;
+    }
+
     copy.setStockRotationCategory(null);
     copy.setAutoAssignStockRotationCategory(Boolean.TRUE);
     copy.setRevaluationRate(BigDecimal.ZERO);

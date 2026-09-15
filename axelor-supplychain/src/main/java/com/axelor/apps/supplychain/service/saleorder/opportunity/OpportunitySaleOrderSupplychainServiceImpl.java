@@ -51,6 +51,10 @@ public class OpportunitySaleOrderSupplychainServiceImpl extends OpportunitySaleO
   public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException {
     SaleOrder saleOrder = super.createSaleOrderFromOpportunity(opportunity);
 
+    if (!appBaseService.isApp("supplychain")) {
+      return saleOrder;
+    }
+
     // Adding supplychain behaviour
     // Set default invoiced and delivered partners and address in case of partner delegations
     if (appBaseService.getAppBase().getActivatePartnerRelations()) {

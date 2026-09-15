@@ -21,6 +21,7 @@ package com.axelor.apps.contract.service.pricing;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.repo.PricingRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.pricing.PricingGenericService;
 import com.axelor.apps.supplychain.service.pricing.PricingGroupSupplyChainServiceImpl;
 import jakarta.inject.Inject;
@@ -28,8 +29,9 @@ import jakarta.inject.Inject;
 public class PricingGroupContractServiceImpl extends PricingGroupSupplyChainServiceImpl {
 
   @Inject
-  public PricingGroupContractServiceImpl(PricingGenericService pricingGenericService) {
-    super(pricingGenericService);
+  public PricingGroupContractServiceImpl(
+      PricingGenericService pricingGenericService, AppBaseService appBaseService) {
+    super(pricingGenericService, appBaseService);
   }
 
   @Override

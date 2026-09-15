@@ -64,6 +64,11 @@ public class StockCorrectionServiceSupplychainImpl extends StockCorrectionServic
   public void getDefaultQtys(
       StockLocationLine stockLocationLine, Map<String, Object> stockCorrectionQtys) {
     super.getDefaultQtys(stockLocationLine, stockCorrectionQtys);
+
+    if (!baseService.isApp("supplychain")) {
+      return;
+    }
+
     stockCorrectionQtys.put("reservedQty", stockLocationLine.getReservedQty());
   }
 }

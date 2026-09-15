@@ -90,6 +90,11 @@ public class PurchaseOrderCreateServiceSupplychainImpl extends PurchaseOrderCrea
             priceList,
             supplierPartner,
             tradingName);
+
+    if (!appSupplychainService.isApp("supplychain")) {
+      return purchaseOrder;
+    }
+
     setIntercoOnPurchaseOrder(purchaseOrder, supplierPartner);
     return purchaseOrder;
   }

@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -59,6 +60,8 @@ public class WorkflowCancelServiceSupplychainImpl extends WorkflowCancelServiceI
 
   protected TimetableService timetableService;
 
+  protected AppBaseService appBaseService;
+
   @Inject
   public WorkflowCancelServiceSupplychainImpl(
       SaleOrderInvoiceService saleOrderInvoiceService,
@@ -66,7 +69,8 @@ public class WorkflowCancelServiceSupplychainImpl extends WorkflowCancelServiceI
       SaleOrderRepository saleOrderRepository,
       PurchaseOrderRepository purchaseOrderRepository,
       SaleInvoicingStateService saleInvoicingStateService,
-      TimetableService timetableService) {
+      TimetableService timetableService,
+      AppBaseService appBaseService) {
 
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
@@ -74,6 +78,7 @@ public class WorkflowCancelServiceSupplychainImpl extends WorkflowCancelServiceI
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.saleInvoicingStateService = saleInvoicingStateService;
     this.timetableService = timetableService;
+    this.appBaseService = appBaseService;
   }
 
   private PurchaseOrderRepository purchaseOrderRepository;
@@ -85,6 +90,11 @@ public class WorkflowCancelServiceSupplychainImpl extends WorkflowCancelServiceI
 
   @Override
   public void afterCancel(Invoice invoice) throws AxelorException {
+    if (!appBaseService.isApp("supplychain")) {
+      super.afterCancel(invoice);
+      return;
+    }
+
     timetableService.cancelTimetable(invoice);
     if (oldInvoiceStatusSelect == InvoiceRepository.STATUS_VENTILATED) {
 

@@ -50,6 +50,11 @@ public class SaleOrderVersionSupplyChainServiceImpl extends SaleOrderVersionServ
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void createNewVersion(SaleOrder saleOrder) {
+    if (!appBaseService.isApp("supplychain")) {
+      super.createNewVersion(saleOrder);
+      return;
+    }
+
     saleOrder.setDeliveryState(SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED);
     saleOrder.setInvoicingState(SaleOrderRepository.INVOICING_STATE_NOT_INVOICED);
     super.createNewVersion(saleOrder);

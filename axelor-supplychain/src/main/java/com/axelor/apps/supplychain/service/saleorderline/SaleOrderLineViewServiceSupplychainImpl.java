@@ -65,6 +65,11 @@ public class SaleOrderLineViewServiceSupplychainImpl extends SaleOrderLineViewSe
       SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
     Map<String, Map<String, Object>> attrs =
         super.getProductOnChangeAttrs(saleOrderLine, saleOrder);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return attrs;
+    }
+
     MapTools.addMap(attrs, hideDeliveryPanel(saleOrderLine));
     analyticAttrsService.addAnalyticAxisAttrs(saleOrder.getCompany(), null, attrs);
     MapTools.addMap(

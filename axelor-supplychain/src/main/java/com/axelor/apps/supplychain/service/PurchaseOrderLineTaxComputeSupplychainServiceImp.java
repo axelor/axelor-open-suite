@@ -37,10 +37,13 @@ import java.util.stream.Collectors;
 public class PurchaseOrderLineTaxComputeSupplychainServiceImp
     extends PurchaseOrderLineTaxComputeServiceImpl {
 
+  protected final AppBaseService appBaseService;
+
   @Inject
   public PurchaseOrderLineTaxComputeSupplychainServiceImp(
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService, AppBaseService appBaseService) {
     super(currencyScaleService);
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -50,6 +53,16 @@ public class PurchaseOrderLineTaxComputeSupplychainServiceImp
       List<PurchaseOrderLineTax> purchaseOrderLineTaxList,
       Currency currency,
       List<PurchaseOrderLineTax> currentPurchaseOrderLineTaxList) {
+    if (!appBaseService.isApp("supplychain")) {
+      super.computeAndAddTaxToList(
+          map,
+          purchaseOrderLineSetByTax,
+          purchaseOrderLineTaxList,
+          currency,
+          currentPurchaseOrderLineTaxList);
+      return;
+    }
+
     List<PurchaseOrderLineTax> deductibleTaxList =
         map.values().stream()
             .filter(it -> !this.isNonDeductibleTax(it))

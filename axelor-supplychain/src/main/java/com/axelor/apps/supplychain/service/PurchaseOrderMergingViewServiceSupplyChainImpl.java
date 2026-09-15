@@ -48,6 +48,11 @@ public class PurchaseOrderMergingViewServiceSupplyChainImpl
       PurchaseOrderMergingResult result, List<PurchaseOrder> purchaseOrdersToMerge) {
 
     ActionViewBuilder confirmView = super.buildConfirmView(result, purchaseOrdersToMerge);
+
+    if (!appPurchaseService.isApp("supplychain")) {
+      return confirmView;
+    }
+
     if (purchaseOrderMergingSupplyChainService.getChecks(result).isExistStockLocationDiff()) {
       confirmView.context("contextLocationToCheck", Boolean.TRUE.toString());
     }

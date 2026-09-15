@@ -68,6 +68,11 @@ public class AnalyticMoveLineSupplychainServiceImpl extends AnalyticMoveLineServ
 
     AnalyticMoveLine analyticMoveLine =
         super.computeAnalyticMoveLine(invoiceLine, invoice, company, analyticAccount);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return analyticMoveLine;
+    }
+
     analyticMoveLine.setSaleOrderLine(invoiceLine.getSaleOrderLine());
     analyticMoveLine.setPurchaseOrderLine(invoiceLine.getPurchaseOrderLine());
     return analyticMoveLine;

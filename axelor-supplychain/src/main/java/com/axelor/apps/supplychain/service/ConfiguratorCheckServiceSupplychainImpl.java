@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCheckServiceImpl;
@@ -31,17 +32,24 @@ import jakarta.inject.Inject;
 public class ConfiguratorCheckServiceSupplychainImpl extends ConfiguratorCheckServiceImpl {
 
   protected final SaleOrderLineRepository saleOrderLineRepository;
+  protected final AppBaseService appBaseService;
 
   @Inject
-  public ConfiguratorCheckServiceSupplychainImpl(SaleOrderLineRepository saleOrderLineRepository) {
+  public ConfiguratorCheckServiceSupplychainImpl(
+      SaleOrderLineRepository saleOrderLineRepository, AppBaseService appBaseService) {
     super();
     this.saleOrderLineRepository = saleOrderLineRepository;
+    this.appBaseService = appBaseService;
   }
 
   @Override
   public void checkLinkedSaleOrderLine(Configurator configurator, Product product)
       throws AxelorException {
     super.checkLinkedSaleOrderLine(configurator, product);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return;
+    }
 
     var terminatedSOL =
         saleOrderLineRepository
@@ -69,6 +77,10 @@ public class ConfiguratorCheckServiceSupplychainImpl extends ConfiguratorCheckSe
   @Override
   public void checkLinkedSaleOrderLine(Configurator configurator) throws AxelorException {
     super.checkLinkedSaleOrderLine(configurator);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return;
+    }
 
     var terminatedSOL =
         saleOrderLineRepository

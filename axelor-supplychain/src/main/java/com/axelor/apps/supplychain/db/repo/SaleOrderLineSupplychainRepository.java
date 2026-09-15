@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -40,6 +41,10 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleReposit
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
+      return super.populate(json, context);
+    }
+
     Long saleOrderLineId = (Long) json.get("id");
     SaleOrderLine saleOrderLine = find(saleOrderLineId);
 
@@ -79,6 +84,11 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleReposit
   @Override
   public SaleOrderLine copy(SaleOrderLine entity, boolean deep) {
     SaleOrderLine copy = super.copy(entity, deep);
+
+    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
+      return copy;
+    }
+
     copy.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
     copy.setInvoicingState(SaleOrderLineRepository.INVOICING_STATE_NOT_INVOICED);
     copy.setDeliveredQty(null);

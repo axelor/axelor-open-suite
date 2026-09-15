@@ -81,6 +81,10 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
 
   @Override
   public String onLineChange(SaleOrder saleOrder) throws AxelorException {
+    if (!appSaleService.isApp("supplychain")) {
+      return super.onLineChange(saleOrder);
+    }
+
     super.onLineChange(saleOrder);
     List<String> messages = new ArrayList<>();
     saleOrderSupplychainService.setAdvancePayment(saleOrder);

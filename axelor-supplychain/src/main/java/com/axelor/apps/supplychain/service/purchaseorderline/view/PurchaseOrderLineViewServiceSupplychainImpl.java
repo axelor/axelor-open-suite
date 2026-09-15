@@ -21,10 +21,12 @@ package com.axelor.apps.supplychain.service.purchaseorderline.view;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.purchaseorderline.view.PurchaseOrderLineViewServiceImpl;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.auth.AuthUtils;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -33,8 +35,19 @@ public class PurchaseOrderLineViewServiceSupplychainImpl extends PurchaseOrderLi
 
   private static final String HIDDEN_ATTR = "hidden";
 
+  protected final AppBaseService appBaseService;
+
+  @Inject
+  public PurchaseOrderLineViewServiceSupplychainImpl(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
+
   @Override
   public Map<String, Map<String, Object>> hideDeliveryPanel(PurchaseOrderLine purchaseOrderLine) {
+    if (!appBaseService.isApp("supplychain")) {
+      return super.hideDeliveryPanel(purchaseOrderLine);
+    }
+
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     String productTypeSelect =
         Optional.ofNullable(purchaseOrderLine.getProduct())

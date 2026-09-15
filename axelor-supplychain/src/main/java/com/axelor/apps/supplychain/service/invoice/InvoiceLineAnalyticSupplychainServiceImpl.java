@@ -69,6 +69,11 @@ public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyt
   public List<AnalyticMoveLine> createAnalyticDistributionWithTemplate(InvoiceLine invoiceLine) {
     List<AnalyticMoveLine> analyticMoveLineList =
         super.createAnalyticDistributionWithTemplate(invoiceLine);
+
+    if (!appAccountService.isApp("supplychain")) {
+      return analyticMoveLineList;
+    }
+
     for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
       analyticMoveLine.setSaleOrderLine(invoiceLine.getSaleOrderLine());
       analyticMoveLine.setPurchaseOrderLine(invoiceLine.getPurchaseOrderLine());

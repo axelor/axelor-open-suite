@@ -40,6 +40,10 @@ public class CartLineSupplychainRepository extends CartLineManagementRepository 
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    if (!appBaseService.isApp("supplychain")) {
+      return super.populate(json, context);
+    }
+
     try {
       if (json != null && json.get("id") != null) {
         CartLine cartLine = find((Long) json.get("id"));

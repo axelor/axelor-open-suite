@@ -57,6 +57,11 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
   @Override
   protected void checkErrors(List<StockMove> stockMoveList, List<String> errors) {
     super.checkErrors(stockMoveList, errors);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return;
+    }
+
     if (!checkAllSame(
         stockMoveList,
         stockMove ->
@@ -78,6 +83,11 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
   @Override
   protected List<Function<StockMove, Object>> getShipmentFieldsToCheck() {
     List<Function<StockMove, Object>> shipmentFieldsToCheck = super.getShipmentFieldsToCheck();
+
+    if (!appBaseService.isApp("supplychain")) {
+      return shipmentFieldsToCheck;
+    }
+
     shipmentFieldsToCheck.add(StockMove::getDeliveryCondition);
     return shipmentFieldsToCheck;
   }
@@ -86,6 +96,11 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
   protected void fillStockMoveFields(
       List<StockMove> stockMoveList, StockMove stockMove, StockMove mergedStockMove) {
     super.fillStockMoveFields(stockMoveList, stockMove, mergedStockMove);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return;
+    }
+
     mergedStockMove.setDeliveryCondition(stockMove.getDeliveryCondition());
     mergedStockMove.setSaleOrderSet(
         stockMoveList.stream()

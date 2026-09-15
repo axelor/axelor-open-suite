@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service.cart;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.repo.CartRepository;
 import com.axelor.apps.sale.service.cart.CartResetServiceImpl;
@@ -26,14 +27,23 @@ import jakarta.inject.Inject;
 
 public class CartResetSupplychainServiceImpl extends CartResetServiceImpl {
 
+  protected final AppBaseService appBaseService;
+
   @Inject
-  public CartResetSupplychainServiceImpl(CartRepository cartRepository) {
+  public CartResetSupplychainServiceImpl(
+      CartRepository cartRepository, AppBaseService appBaseService) {
     super(cartRepository);
+    this.appBaseService = appBaseService;
   }
 
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void emptyCart(Cart cart) {
+    if (!appBaseService.isApp("supplychain")) {
+      super.emptyCart(cart);
+      return;
+    }
+
     cart = cartRepository.find(cart.getId());
     cart.setStockLocation(null);
     super.emptyCart(cart);

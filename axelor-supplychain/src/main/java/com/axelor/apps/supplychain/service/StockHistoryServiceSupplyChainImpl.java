@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockHistoryLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockHistoryLineManagementRepository;
@@ -32,17 +33,21 @@ import java.util.List;
 
 public class StockHistoryServiceSupplyChainImpl extends StockHistoryServiceImpl {
 
+  protected final AppBaseService appBaseService;
+
   @Inject
   public StockHistoryServiceSupplyChainImpl(
       StockMoveLineRepository stockMoveLineRepository,
       UnitConversionService unitConversionService,
       StockLocationRepository stockLocationRepository,
-      StockHistoryLineManagementRepository stockHistoryLineRepository) {
+      StockHistoryLineManagementRepository stockHistoryLineRepository,
+      AppBaseService appBaseService) {
     super(
         stockMoveLineRepository,
         unitConversionService,
         stockLocationRepository,
         stockHistoryLineRepository);
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -51,6 +56,10 @@ public class StockHistoryServiceSupplyChainImpl extends StockHistoryServiceImpl 
       throws AxelorException {
 
     super.fillOutgoingStockHistoryLineFields(stockHistoryLine, stockMoveLineList);
+
+    if (!appBaseService.isApp("supplychain")) {
+      return;
+    }
 
     BigDecimal sumOutQtyPeriod = BigDecimal.ZERO;
     BigDecimal sumOneoffSaleOutQtyPeriod = BigDecimal.ZERO;
