@@ -233,6 +233,8 @@ import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveLi
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveLineServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderFinalControlService;
+import com.axelor.apps.production.service.manuforder.ManufOrderFinalControlServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderMultiLevelPlanningService;
@@ -556,6 +558,7 @@ public class ProductionModule extends AxelorModule {
     bind(OperationOrderHazardPhraseService.class).to(OperationOrderHazardPhraseServiceImpl.class);
     bind(ManufOrderMessageService.class).to(ManufOrderMessageServiceImpl.class);
     bind(ManufOrderQueryService.class).to(ManufOrderQueryServiceImpl.class);
+    bind(ManufOrderFinalControlService.class).to(ManufOrderFinalControlServiceImpl.class);
     bind(ControlEntryServiceImpl.class).to(ControlEntryProductionServiceImpl.class);
 
     bind(DepRateCalculationService.class).to(DepRateCalculationServiceImpl.class);
