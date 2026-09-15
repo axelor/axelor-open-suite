@@ -25,11 +25,14 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.OperationOrderHazardPhraseService;
+import com.axelor.apps.production.service.manuforder.ManufOrderFinalControlCheckService;
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.apps.quality.db.repo.QualityConfigRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -148,6 +151,33 @@ public class OperationOrderController {
       Beans.get(OperationOrderWorkflowService.class).resume(operationOrder);
 
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkFinalControlBeforeFinish(ActionRequest request, ActionResponse response) {
+    try {
+      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+      operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
+      ManufOrderFinalControlCheckService finalControlCheckService =
+          Beans.get(ManufOrderFinalControlCheckService.class);
+
+      String issue = finalControlCheckService.getFinishIssueMessage(operationOrder);
+      if (issue == null) {
+        return;
+      }
+      if (finalControlCheckService.getCheckSelect(operationOrder.getManufOrder())
+          == QualityConfigRepository.MANUF_ORDER_FINAL_CONTROL_CHECK_BLOCKING) {
+        response.setError(
+            String.format(
+                I18n.get(ProductionExceptionMessage.MANUF_ORDER_FINAL_CONTROL_BLOCKING), issue));
+      } else {
+        response.setAlert(
+            issue
+                + " "
+                + I18n.get(ProductionExceptionMessage.OPERATION_ORDER_FINAL_CONTROL_FINISH_ANYWAY));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
