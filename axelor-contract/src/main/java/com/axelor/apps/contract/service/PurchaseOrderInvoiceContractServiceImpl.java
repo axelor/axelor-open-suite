@@ -124,6 +124,10 @@ public class PurchaseOrderInvoiceContractServiceImpl extends PurchaseOrderInvoic
             originDate,
             purchaseOrder);
 
+    if (!appSupplychainService.isApp("contract")) {
+      return invoiceMerged;
+    }
+
     invoiceMerged.setContractSet(contracts);
     return invoiceMerged;
   }

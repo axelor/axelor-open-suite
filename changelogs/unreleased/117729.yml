@@ -1,0 +1,34 @@
+---
+title: "App check: axelor-contract, axelor-intervention and axelor-cash-management no longer change the behaviour of the modules they extend when their app is not installed."
+module: axelor-contract
+developer: |
+  The 10 remaining cross-module overrides of these three modules now guard their behaviour on
+  their own app and delegate to `super` when it is off:
+
+  - `isApp("contract")` on the eight overrides of `axelor-supplychain` and `axelor-account`
+    (`AnalyticMoveLineContractServiceImpl`, `InvoiceLineAnalyticContractServiceImpl`,
+    `WorkflowCancelServiceContractImpl`, `PricingGroupContractServiceImpl`,
+    `AccountManagementContractServiceImpl`, `SaleOrderInvoiceContractServiceImpl`,
+    `PurchaseOrderInvoiceContractServiceImpl`, `AnalyticMoveLineParentContractServiceImpl`);
+  - `isApp("intervention")` on `ContractInterventionServiceImpl`, which overrides
+    `ContractServiceImpl` of axelor-contract;
+  - `isApp("cash-management")` on `OpportunitySaleOrderCashManagementServiceImpl`.
+
+  Two of them were changing accounting behaviour outside their own perimeter:
+  `AccountManagementContractServiceImpl.getProductAccount` returned no account at all for the
+  year end bonus product, and the two `mergeInvoice` overrides were writing the contract set on
+  every merged invoice.
+
+  The check is done with the app service already injected in the class when there is one
+  (`AppBaseService`, `AppAccountService`, `AppSupplychainService`), otherwise `AppBaseService`
+  comes in through the existing constructor.
+
+  Nothing is allowlisted for these three modules: their `KNOWN DEBT` sections disappear from
+  `config/app-override-guard-allowlist.txt`.
+
+  The following classes get a new constructor parameter, which breaks subclasses calling it:
+
+  - `com.axelor.apps.contract.service.AccountManagementContractServiceImpl`
+  - `com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl`
+  - `com.axelor.apps.contract.service.pricing.PricingGroupContractServiceImpl`
+  - `com.axelor.apps.contract.service.AnalyticMoveLineParentContractServiceImpl`

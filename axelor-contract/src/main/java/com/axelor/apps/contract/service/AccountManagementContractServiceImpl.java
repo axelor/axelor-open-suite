@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import jakarta.inject.Inject;
@@ -35,19 +36,24 @@ import java.util.Objects;
 
 public class AccountManagementContractServiceImpl extends AccountManagementServiceAccountImpl
     implements AccountManagementContractService {
+
+  protected final AppBaseService appBaseService;
+
   @Inject
   public AccountManagementContractServiceImpl(
       FiscalPositionService fiscalPositionService,
       TaxService taxService,
       AccountConfigService accountConfigService,
       AccountRepository accountRepository,
-      FiscalPositionAccountService fiscalPositionAccountService) {
+      FiscalPositionAccountService fiscalPositionAccountService,
+      AppBaseService appBaseService) {
     super(
         fiscalPositionService,
         taxService,
         accountConfigService,
         accountRepository,
         fiscalPositionAccountService);
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -86,6 +92,10 @@ public class AccountManagementContractServiceImpl extends AccountManagementServi
       boolean isPurchase,
       boolean fixedAsset)
       throws AxelorException {
+
+    if (!appBaseService.isApp("contract")) {
+      return super.getProductAccount(product, company, fiscalPosition, isPurchase, fixedAsset);
+    }
 
     if (Objects.equals(
         product, accountConfigService.getAccountConfig(company).getYearEndBonusProduct())) {
