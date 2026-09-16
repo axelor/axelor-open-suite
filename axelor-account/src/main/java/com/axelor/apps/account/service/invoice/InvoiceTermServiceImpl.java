@@ -1367,14 +1367,20 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
       BigDecimal invoicePaymentAmount =
           invoicePayment != null ? invoicePayment.getAmount() : amount;
-      BigDecimal currencyAmount =
-          invoicePayment != null
-              ? currencyService.getAmountCurrencyConvertedAtDate(
-                  invoicePayment.getCurrency(),
-                  invoicePayment.getCompanyCurrency(),
-                  invoicePayment.getAmount(),
-                  invoicePayment.getPaymentDate())
-              : amount;
+      BigDecimal currencyAmount;
+      if (invoicePayment == null) {
+        currencyAmount = amount;
+      } else if (reconcile.getForeignExchangeMove() != null
+          && !reconcile.getForeignExchangeMove().equals(invoicePayment.getMove())) {
+        currencyAmount = reconcile.getAmount();
+      } else {
+        currencyAmount =
+            currencyService.getAmountCurrencyConvertedAtDate(
+                invoicePayment.getCurrency(),
+                invoicePayment.getCompanyCurrency(),
+                invoicePayment.getAmount(),
+                invoicePayment.getPaymentDate());
+      }
       invoiceTermPaymentList =
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
               invoicePayment,

@@ -121,27 +121,23 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     BigDecimal currencyAmount = BigDecimal.ZERO;
     BigDecimal moveLineRate = BigDecimal.ONE;
 
-    if (creditMoveLine.getAmountRemaining().abs().compareTo(amountReconciled) == 0) {
-      currencyAmount =
-          creditMoveLine
-              .getAmountRemaining()
-              .divide(
-                  creditMoveLine.getCurrencyRate(),
-                  creditMoveLine.getCurrencyDecimals(),
-                  RoundingMode.HALF_UP);
-      moveLineRate = debitMoveLine.getCurrencyRate();
-    } else if (debitMoveLine.getAmountRemaining().abs().compareTo(amountReconciled) == 0) {
-      currencyAmount =
-          debitMoveLine
-              .getAmountRemaining()
-              .divide(
-                  debitMoveLine.getCurrencyRate(),
-                  debitMoveLine.getCurrencyDecimals(),
-                  RoundingMode.HALF_UP);
-      moveLineRate = creditMoveLine.getCurrencyRate();
+    if (creditMoveLine.getAmountRemaining().abs().compareTo(amountReconciled) == 0
+        || debitMoveLine.getAmountRemaining().abs().compareTo(amountReconciled) == 0) {
+      BigDecimal creditCurrencyAmountRemaining = this.getCurrencyAmountRemaining(creditMoveLine);
+      BigDecimal debitCurrencyAmountRemaining = this.getCurrencyAmountRemaining(debitMoveLine);
+
+      if (creditCurrencyAmountRemaining.compareTo(debitCurrencyAmountRemaining) <= 0) {
+        amountReconciled = creditMoveLine.getAmountRemaining().abs();
+        currencyAmount = creditCurrencyAmountRemaining;
+        moveLineRate = debitMoveLine.getCurrencyRate();
+      } else {
+        amountReconciled = debitMoveLine.getAmountRemaining().abs();
+        currencyAmount = debitCurrencyAmountRemaining;
+        moveLineRate = creditMoveLine.getCurrencyRate();
+      }
     }
 
-    return amountReconciled.subtract(currencyAmount.abs().multiply(moveLineRate)).abs();
+    return amountReconciled.subtract(currencyAmount.multiply(moveLineRate)).abs();
   }
 
   protected Move createForeignExchangeGapMove(Reconcile reconcile, BigDecimal foreignExchangeAmount)
@@ -234,5 +230,12 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
           true,
           appBaseService.getTodayDate(reconcile.getCompany()));
     }
+  }
+
+  protected BigDecimal getCurrencyAmountRemaining(MoveLine moveLine) {
+    return moveLine
+        .getAmountRemaining()
+        .abs()
+        .divide(moveLine.getCurrencyRate(), moveLine.getCurrencyDecimals(), RoundingMode.HALF_UP);
   }
 }
