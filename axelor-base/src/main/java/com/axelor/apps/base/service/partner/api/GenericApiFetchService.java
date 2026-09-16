@@ -43,13 +43,14 @@ public abstract class GenericApiFetchService {
     this.appBaseService = appBaseService;
   }
 
-  protected abstract String fetch(String identifier) throws AxelorException;
+  protected abstract String fetch(String identifier, boolean isSirenSearch) throws AxelorException;
 
-  protected String getUrl(String identifier) throws AxelorException {
+  protected String getUrl(String identifier, boolean isSirenSearch) throws AxelorException {
     return appBaseService.getSireneUrl() + "/" + identifier;
   }
 
-  protected abstract String treatResponse(HttpResponse<String> response, String identifier)
+  protected abstract String treatResponse(
+      HttpResponse<String> response, String identifier, boolean isSirenSearch)
       throws JsonProcessingException;
 
   protected Map<String, String> getHeaders() throws AxelorException {
@@ -58,10 +59,10 @@ public abstract class GenericApiFetchService {
     return headers;
   }
 
-  public String getData(String identifier) throws AxelorException {
+  public String getData(String identifier, boolean isSirenSearch) throws AxelorException {
     try {
-      HttpResponse<String> response = getApiSireneData(identifier);
-      return treatResponse(response, identifier);
+      HttpResponse<String> response = getApiSireneData(identifier, isSirenSearch);
+      return treatResponse(response, identifier, isSirenSearch);
     } catch (URISyntaxException | IOException e) {
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     } catch (InterruptedException e) {
@@ -70,12 +71,12 @@ public abstract class GenericApiFetchService {
     }
   }
 
-  protected HttpResponse<String> getApiSireneData(String identifier)
+  protected HttpResponse<String> getApiSireneData(String identifier, boolean isSirenSearch)
       throws URISyntaxException, AxelorException, IOException, InterruptedException {
     HttpClient client = HttpClient.newBuilder().build();
 
     HttpRequest.Builder requestBuilder =
-        HttpRequest.newBuilder().uri(new URI(getUrl(identifier))).GET();
+        HttpRequest.newBuilder().uri(new URI(getUrl(identifier, isSirenSearch))).GET();
 
     getHeaders().forEach(requestBuilder::header);
 

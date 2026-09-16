@@ -23,6 +23,10 @@ import com.axelor.apps.base.db.Partner;
 import java.util.Map;
 
 public interface PartnerGenerateService {
-  void configurePartner(Partner partner, String siret, Map<String, Boolean> partnerTypeData)
+  void configurePartner(
+      Partner partner,
+      String identifier,
+      boolean isSirenSearch,
+      Map<String, Boolean> partnerTypeData)
       throws AxelorException;
 }

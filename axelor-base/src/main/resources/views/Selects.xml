@@ -877,4 +877,9 @@
     <option value="|">Pipe (|)</option>
   </selection>
 
+  <selection name="partner.sirene.api.search.type.select">
+    <option value="1">SIRET</option>
+    <option value="2">SIREN</option>
+  </selection>
+
 </object-views>

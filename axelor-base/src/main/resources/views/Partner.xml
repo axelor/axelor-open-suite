@@ -1079,12 +1079,17 @@
   <form name="partner-api-sirene-configuration-wizard-form" title="Sirene API call"
     model="com.axelor.utils.db.Wizard" onNew="action-api-sirene-configuration-group-on-new">
     <panel name="mainPanel">
-      <field name="siretNumber" title="Siret number" type="string" required="true" colSpan="5"
-        readonlyIf="$parentSiret"/>
+      <field name="searchTypeSelect" title="Search by" type="integer" required="true"
+        selection="partner.sirene.api.search.type.select" widget="radio-select" colSpan="12"
+        onChange="action-api-sirene-configuration-record-set-siret-number,action-api-sirene-configuration-attrs-set-siret-number-title"/>
+      <field name="siretNumber" title="Siret/Siren number" type="string" required="true"
+        colSpan="5"
+        readonlyIf="(searchTypeSelect == 1 &amp;&amp; $parentSiret) || (searchTypeSelect == 2 &amp;&amp; $parentSiren)"/>
       <button name="executeApiBtn" title="Fetch data"
         onClick="action-api-sirene-configuration-method-fetch-data" colSpan="2"
         readonlyIf="siretNumber == null"/>
       <field name="$parentSiret" type="string" hidden="true"/>
+      <field name="$parentSiren" type="string" hidden="true"/>
     </panel>
   </form>
 
@@ -1093,18 +1098,22 @@
   </action-method>
 
   <action-group name="action-api-sirene-configuration-group-on-new">
-    <action name="action-api-sirene-configuration-record-set-parent-siret"/>
-    <action name="action-api-sirene-configuration-record-set-siret-number" if="parentSiret"/>
+    <action name="action-api-sirene-configuration-record-set-parent-siret-siren-numbers"/>
+    <action name="action-api-sirene-configuration-record-set-search-type"/>
+    <action name="action-api-sirene-configuration-record-set-siret-number"/>
+    <action name="action-api-sirene-configuration-attrs-set-siret-number-title"/>
   </action-group>
 
-  <action-record name="action-api-sirene-configuration-record-set-parent-siret"
+  <action-record
+    name="action-api-sirene-configuration-record-set-parent-siret-siren-numbers"
     model="com.axelor.utils.db.Wizard">
     <field name="$parentSiret" expr="eval: _parentSiret"/>
+    <field name="$parentSiren" expr="eval: _parentSiren"/>
   </action-record>
 
   <action-record name="action-api-sirene-configuration-record-set-siret-number"
     model="com.axelor.utils.db.Wizard">
-    <field name="siretNumber" expr="eval: parentSiret"/>
+    <field name="siretNumber" expr="eval: searchTypeSelect == 2 ? parentSiren : parentSiret"/>
   </action-record>
 
   <action-group name="action-group-partner-onload">
@@ -1853,6 +1862,7 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="popup-save" value="false"/>
     <context name="_parentSiret" expr="eval: __this__.registrationCode"/>
+    <context name="_parentSiren" expr="eval: __this__.siren"/>
     <context name="_isCustomer" expr="eval: _isCustomer"/>
     <context name="_isSupplier" expr="eval: _isSupplier"/>
     <context name="_isProspect" expr="eval: _isProspect"/>
@@ -1924,5 +1934,15 @@
     <action name="save" if="id != null"/>
     <action name="action-partner-view-wizard-api-sirene-configuration"/>
   </action-group>
+
+  <action-record name="action-api-sirene-configuration-record-set-search-type"
+    model="com.axelor.utils.db.Wizard">
+    <field name="searchTypeSelect" expr="eval: !parentSiret &amp;&amp; parentSiren ? 2 : 1"/>
+  </action-record>
+
+  <action-attrs name="action-api-sirene-configuration-attrs-set-siret-number-title">
+    <attribute name="title" for="siretNumber"
+      expr="eval: searchTypeSelect == 2 ? 'Siren number' : 'Siret number'"/>
+  </action-attrs>
 
 </object-views>
