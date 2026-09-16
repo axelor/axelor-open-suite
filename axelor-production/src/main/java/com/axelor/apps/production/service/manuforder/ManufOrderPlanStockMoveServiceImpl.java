@@ -83,6 +83,28 @@ public class ManufOrderPlanStockMoveServiceImpl implements ManufOrderPlanStockMo
   }
 
   @Override
+  public Optional<StockMove> createAndPlanToProduceStockMove(ManufOrder manufOrder)
+      throws AxelorException {
+
+    Company company = manufOrder.getCompany();
+    StockLocation virtualStockLocation =
+        manufOrderStockMoveService.getVirtualStockLocationForProducedStockMove(manufOrder, company);
+    StockLocation producedProductStockLocation =
+        manufOrderStockMoveService.getProducedProductStockLocation(manufOrder, company);
+
+    if (manufOrder.getToProduceProdProductList() != null && company != null) {
+
+      StockMove stockMove =
+          manufOrderCreateStockMoveService._createToProduceStockMove(
+              manufOrder, company, virtualStockLocation, producedProductStockLocation);
+
+      planProducedStockMove(stockMove);
+      return Optional.of(stockMove);
+    }
+    return Optional.empty();
+  }
+
+  @Override
   public Optional<StockMove> createAndPlanResidualStockMoveWithLines(ManufOrder manufOrder)
       throws AxelorException {
 

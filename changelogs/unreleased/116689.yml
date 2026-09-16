@@ -1,0 +1,6 @@
+---
+title: "Production: fixed empty stock moves being generated after reducing a manufacturing order quantity."
+module: axelor-production
+developer: |
+  Added ManufOrderPlanStockMoveService#createAndPlanToProduceStockMove, creating the produced stock move without lines,
+  as the existing createAndPlanToConsumeStockMove does for the consumed one.
