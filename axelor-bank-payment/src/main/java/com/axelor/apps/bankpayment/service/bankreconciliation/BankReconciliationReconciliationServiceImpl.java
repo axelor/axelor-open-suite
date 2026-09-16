@@ -388,6 +388,8 @@ public class BankReconciliationReconciliationServiceImpl
       MoveLine moveLine,
       BankStatementQuery bankStatementQuery) {
     bankReconciliationLine.setMoveLine(moveLine);
+    bankReconciliationLineService.fillPartnerAndAccountFromMoveLine(
+        bankReconciliationLine, moveLine);
     bankReconciliationLine.setBankStatementQuery(bankStatementQuery);
     bankReconciliationLine.setConfidenceIndex(bankStatementQuery.getConfidenceIndex());
     bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());

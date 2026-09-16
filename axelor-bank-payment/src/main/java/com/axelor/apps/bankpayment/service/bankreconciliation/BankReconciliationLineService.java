@@ -48,4 +48,7 @@ public interface BankReconciliationLineService {
   void checkIncompleteLine(BankReconciliationLine bankReconciliationLine) throws AxelorException;
 
   void toggleSelected(BankReconciliationLine bankReconciliationLine);
+
+  void fillPartnerAndAccountFromMoveLine(
+      BankReconciliationLine bankReconciliationLine, MoveLine moveLine);
 }
