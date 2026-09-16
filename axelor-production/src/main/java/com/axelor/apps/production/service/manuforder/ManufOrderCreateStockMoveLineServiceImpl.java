@@ -111,25 +111,21 @@ public class ManufOrderCreateStockMoveLineServiceImpl
       StockLocation virtualStockLocation,
       StockLocation residualProductStockLocation)
       throws AxelorException {
-    for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
-
-      // Only manages residual products.
-      if (manufOrderResidualProductService.isResidualProduct(prodProduct, manufOrder)) {
-        BigDecimal productCostPrice =
-            prodProduct.getProduct() != null
-                ? (BigDecimal)
-                    productCompanyService.get(
-                        prodProduct.getProduct(), "costPrice", manufOrder.getCompany())
-                : BigDecimal.ZERO;
-        this._createStockMoveLine(
-            prodProduct,
-            stockMove,
-            StockMoveLineService.TYPE_OUT_PRODUCTIONS,
-            prodProduct.getQty(),
-            productCostPrice,
-            virtualStockLocation,
-            residualProductStockLocation);
-      }
+    for (ProdProduct prodProduct : getOutProdProductList(manufOrder, true)) {
+      BigDecimal productCostPrice =
+          prodProduct.getProduct() != null
+              ? (BigDecimal)
+                  productCompanyService.get(
+                      prodProduct.getProduct(), "costPrice", manufOrder.getCompany())
+              : BigDecimal.ZERO;
+      this._createStockMoveLine(
+          prodProduct,
+          stockMove,
+          StockMoveLineService.TYPE_OUT_PRODUCTIONS,
+          prodProduct.getQty(),
+          productCostPrice,
+          virtualStockLocation,
+          residualProductStockLocation);
     }
   }
 
@@ -235,24 +231,50 @@ public class ManufOrderCreateStockMoveLineServiceImpl
   @Override
   public void createNewProducedStockMoveLineList(ManufOrder manufOrder, BigDecimal qtyToUpdate)
       throws AxelorException {
+    createNewOutStockMoveLineList(manufOrder, qtyToUpdate, false);
+  }
+
+  @Override
+  public void createNewResidualStockMoveLineList(ManufOrder manufOrder, BigDecimal qtyToUpdate)
+      throws AxelorException {
+    createNewOutStockMoveLineList(manufOrder, qtyToUpdate, true);
+  }
+
+  /**
+   * Clear the produced or the residual list and create a new one with the right quantity. Residual
+   * products have their own outgoing stock move, going to their own stock location, so the two are
+   * always rebuilt separately.
+   *
+   * @param manufOrder
+   * @param qtyToUpdate
+   * @param residual whether residual products or finished products are rebuilt
+   */
+  protected void createNewOutStockMoveLineList(
+      ManufOrder manufOrder, BigDecimal qtyToUpdate, boolean residual) throws AxelorException {
     manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     Optional<StockMove> stockMoveOpt =
         manufOrderGetStockMoveService.getPlannedStockMove(
-            manufOrderGetStockMoveService.getFinishedProductOutStockMoveList(manufOrder));
+            residual
+                ? manufOrderGetStockMoveService.getResidualOutStockMoveLineList(manufOrder)
+                : manufOrderGetStockMoveService.getFinishedProductOutStockMoveList(manufOrder));
     if (!stockMoveOpt.isPresent()) {
-      List<ProdProduct> toProduceProdProductList = manufOrder.getToProduceProdProductList();
-      List<StockMoveLine> producedStockMoveLineList = manufOrder.getProducedStockMoveLineList();
       if (!manufOrderStockMoveService.hasRemainingQty(
-          manufOrder, toProduceProdProductList, qtyToUpdate, producedStockMoveLineList)) {
+          manufOrder,
+          getOutProdProductList(manufOrder, residual),
+          qtyToUpdate,
+          getOutStockMoveLineList(manufOrder, residual))) {
         return;
       }
 
-      // After a partial finish, the produced stock move is REALIZED.
+      // After a partial finish, the outgoing stock move is REALIZED.
       // Create a new stock move for the remaining quantity. It is created without lines: they are
       // built below with the remaining quantity, as for an already existing stock move.
+      ManufOrderPlanStockMoveService manufOrderPlanStockMoveService =
+          Beans.get(ManufOrderPlanStockMoveService.class);
       Optional<StockMove> newStockMoveOpt =
-          Beans.get(ManufOrderPlanStockMoveService.class)
-              .createAndPlanToProduceStockMove(manufOrder);
+          residual
+              ? manufOrderPlanStockMoveService.createAndPlanResidualStockMove(manufOrder)
+              : manufOrderPlanStockMoveService.createAndPlanToProduceStockMove(manufOrder);
       if (newStockMoveOpt.isEmpty()) {
         return;
       }
@@ -278,28 +300,29 @@ public class ManufOrderCreateStockMoveLineServiceImpl
     preservedTrackingNumbersByProduct =
         productionTrackingPreservationService.reclaimOrphanedTrackingNumbers(
             preservedTrackingNumbersByProduct,
-            manufOrder.getToProduceProdProductList(),
+            getOutProdProductList(manufOrder, residual),
             manufOrder);
 
     manufOrder = JpaModelHelper.ensureManaged(manufOrder);
 
     // clear all lists
-    manufOrder
-        .getProducedStockMoveLineList()
-        .removeIf(
-            stockMoveLine ->
-                stockMoveLine.getStockMove().getStatusSelect()
-                    == StockMoveRepository.STATUS_CANCELED);
+    List<StockMoveLine> outStockMoveLineList = getOutStockMoveLineList(manufOrder, residual);
+    if (outStockMoveLineList != null) {
+      outStockMoveLineList.removeIf(
+          stockMoveLine ->
+              stockMoveLine.getStockMove().getStatusSelect()
+                  == StockMoveRepository.STATUS_CANCELED);
+    }
 
     stockMove = JpaModelHelper.ensureManaged(stockMove);
     clearTrackingNumberOriginStockMoveLine(stockMove);
     stockMove.clearStockMoveLineList();
 
     // create a new list, reusing preserved tracking numbers
-    for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
+    for (ProdProduct prodProduct : getOutProdProductList(manufOrder, residual)) {
       BigDecimal qty =
           manufOrderStockMoveService.getRemainingQty(
-              manufOrder, prodProduct, qtyToUpdate, manufOrder.getProducedStockMoveLineList());
+              manufOrder, prodProduct, qtyToUpdate, getOutStockMoveLineList(manufOrder, residual));
       productionTrackingPreservationService.createStockMoveLinesWithPreservedTracking(
           prodProduct,
           stockMove,
@@ -315,7 +338,7 @@ public class ManufOrderCreateStockMoveLineServiceImpl
 
     // Create reserve lines for remaining preserved tracking (carries forward unused tracking)
     productionTrackingPreservationService.drainRemainingPreservedTracking(
-        manufOrder.getToProduceProdProductList(),
+        getOutProdProductList(manufOrder, residual),
         stockMove,
         StockMoveLineService.TYPE_OUT_PRODUCTIONS,
         stockMove.getFromStockLocation(),
@@ -332,12 +355,45 @@ public class ManufOrderCreateStockMoveLineServiceImpl
     stockMove = JpaModelHelper.ensureManaged(stockMove);
     manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-      // Only add production lines to producedStockMoveLineList, NOT reserve lines
+      // Only add production lines to the outgoing list, NOT reserve lines
+      List<StockMoveLine> currentList = getOutStockMoveLineList(manufOrder, residual);
       if (productionLines.contains(stockMoveLine)
-          && !manufOrder.getProducedStockMoveLineList().contains(stockMoveLine)) {
-        manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
+          && (currentList == null || !currentList.contains(stockMoveLine))) {
+        if (residual) {
+          manufOrder.addResidualStockMoveLineListItem(stockMoveLine);
+        } else {
+          manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
+        }
       }
     }
+  }
+
+  /**
+   * Get the products to produce of the given kind. Residual products are derived from the bill of
+   * material. The stored list holds finished products only, but is still filtered against the bill
+   * of material so that residual entries stored by a previous version are ignored.
+   */
+  protected List<ProdProduct> getOutProdProductList(ManufOrder manufOrder, boolean residual) {
+    if (residual) {
+      return manufOrderResidualProductService.getResidualProdProductList(manufOrder);
+    }
+    List<ProdProduct> toProduceProdProductList = manufOrder.getToProduceProdProductList();
+    if (toProduceProdProductList == null) {
+      return new ArrayList<>();
+    }
+    List<ProdProduct> prodProductList = new ArrayList<>();
+    for (ProdProduct prodProduct : toProduceProdProductList) {
+      if (!manufOrderResidualProductService.isResidualProduct(prodProduct, manufOrder)) {
+        prodProductList.add(prodProduct);
+      }
+    }
+    return prodProductList;
+  }
+
+  protected List<StockMoveLine> getOutStockMoveLineList(ManufOrder manufOrder, boolean residual) {
+    return residual
+        ? manufOrder.getResidualStockMoveLineList()
+        : manufOrder.getProducedStockMoveLineList();
   }
 
   protected void clearTrackingNumberOriginStockMoveLine(StockMove stockMove) {
@@ -378,11 +434,13 @@ public class ManufOrderCreateStockMoveLineServiceImpl
     } else {
       stockMoveLineType = StockMoveLineService.TYPE_OUT_PRODUCTIONS;
 
-      // must compute remaining quantities in produced product
-      List<ProdProduct> outProdProductList = manufOrder.getToProduceProdProductList();
-      List<StockMoveLine> stockMoveLineList = manufOrder.getProducedStockMoveLineList();
+      // must compute remaining quantities in produced product, keeping residual products apart:
+      // they go to their own stock move, with their own destination stock location
+      boolean residual = inOrOut == ManufOrderStockMoveServiceImpl.PART_FINISH_RESIDUAL;
+      List<ProdProduct> outProdProductList = getOutProdProductList(manufOrder, residual);
+      List<StockMoveLine> stockMoveLineList = getOutStockMoveLineList(manufOrder, residual);
 
-      if (outProdProductList == null || stockMoveLineList == null) {
+      if (stockMoveLineList == null) {
         return;
       }
       diffProdProductList =
