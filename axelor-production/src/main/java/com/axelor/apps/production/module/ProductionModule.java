@@ -116,6 +116,7 @@ import com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionI
 import com.axelor.apps.production.service.PurchaseOrderTypeSelectProductionServiceImpl;
 import com.axelor.apps.production.service.QIIdentificationProductionServiceImpl;
 import com.axelor.apps.production.service.QualityImprovementCheckValuesProductionServiceImpl;
+import com.axelor.apps.production.service.QualityImprovementPrefillProductionServiceImpl;
 import com.axelor.apps.production.service.QualityImprovementUpdateProductionServiceImpl;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
 import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
@@ -224,6 +225,8 @@ import com.axelor.apps.production.service.machine.MachineService;
 import com.axelor.apps.production.service.machine.MachineServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderConformityDeclarationPrintService;
+import com.axelor.apps.production.service.manuforder.ManufOrderConformityDeclarationPrintServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateBarcodeService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateBarcodeServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderService;
@@ -232,6 +235,10 @@ import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveLi
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveLineServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateStockMoveServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderFinalControlCheckService;
+import com.axelor.apps.production.service.manuforder.ManufOrderFinalControlCheckServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderFinalControlService;
+import com.axelor.apps.production.service.manuforder.ManufOrderFinalControlServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderMultiLevelPlanningService;
@@ -307,7 +314,9 @@ import com.axelor.apps.quality.rest.service.QualityImprovementParseServiceImpl;
 import com.axelor.apps.quality.service.ControlEntryServiceImpl;
 import com.axelor.apps.quality.service.QIIdentificationServiceImpl;
 import com.axelor.apps.quality.service.QualityImprovementCheckValuesServiceImpl;
+import com.axelor.apps.quality.service.QualityImprovementPrefillServiceImpl;
 import com.axelor.apps.quality.service.QualityImprovementUpdateServiceImpl;
+import com.axelor.apps.quality.service.StockMoveServiceQualityImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyServiceImpl;
@@ -332,7 +341,6 @@ import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveMergingServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.TrackingNumberCompanySupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckBlockingSupplychainServiceImpl;
@@ -399,7 +407,7 @@ public class ProductionModule extends AxelorModule {
     bind(ManufOrderRestService.class).to(ManufOrderRestServiceImpl.class);
     bind(OperationOrderRestService.class).to(OperationOrderRestServiceImpl.class);
     bind(ManufOrderWorkflowService.class).to(ManufOrderWorkflowServiceImpl.class);
-    bind(StockMoveServiceSupplychainImpl.class).to(StockMoveServiceProductionImpl.class);
+    bind(StockMoveServiceQualityImpl.class).to(StockMoveServiceProductionImpl.class);
     bind(StockMoveProductionService.class).to(StockMoveServiceProductionImpl.class);
     bind(MachineService.class).to(MachineServiceImpl.class);
     bind(OperationOrderWorkflowService.class).to(OperationOrderWorkflowServiceImpl.class);
@@ -545,6 +553,8 @@ public class ProductionModule extends AxelorModule {
         .to(QualityImprovementUpdateProductionServiceImpl.class);
     bind(QualityImprovementParseServiceImpl.class)
         .to(QualityImprovementParseProductionServiceImpl.class);
+    bind(QualityImprovementPrefillServiceImpl.class)
+        .to(QualityImprovementPrefillProductionServiceImpl.class);
     bind(ProdProcessHazardPhraseService.class).to(ProdProcessHazardPhraseServiceImpl.class);
     bind(BillOfMaterialHazardPhraseService.class).to(BillOfMaterialHazardPhraseServiceImpl.class);
     bind(BillOfMaterialHazardPhraseRefreshService.class)
@@ -552,6 +562,10 @@ public class ProductionModule extends AxelorModule {
     bind(OperationOrderHazardPhraseService.class).to(OperationOrderHazardPhraseServiceImpl.class);
     bind(ManufOrderMessageService.class).to(ManufOrderMessageServiceImpl.class);
     bind(ManufOrderQueryService.class).to(ManufOrderQueryServiceImpl.class);
+    bind(ManufOrderFinalControlService.class).to(ManufOrderFinalControlServiceImpl.class);
+    bind(ManufOrderFinalControlCheckService.class).to(ManufOrderFinalControlCheckServiceImpl.class);
+    bind(ManufOrderConformityDeclarationPrintService.class)
+        .to(ManufOrderConformityDeclarationPrintServiceImpl.class);
     bind(ControlEntryServiceImpl.class).to(ControlEntryProductionServiceImpl.class);
 
     bind(DepRateCalculationService.class).to(DepRateCalculationServiceImpl.class);

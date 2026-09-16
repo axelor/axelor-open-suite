@@ -47,6 +47,8 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
+import com.axelor.apps.production.service.manuforder.ManufOrderConformityDeclarationPrintService;
+import com.axelor.apps.production.service.manuforder.ManufOrderFinalControlCheckService;
 import com.axelor.apps.production.service.manuforder.ManufOrderMultiLevelPlanningService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
@@ -57,6 +59,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.translation.ITranslation;
+import com.axelor.apps.quality.db.repo.QualityConfigRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
@@ -130,6 +133,33 @@ public class ManufOrderController {
       Beans.get(ManufOrderWorkflowService.class).resume(manufOrder);
 
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkFinalControlBeforeFinish(ActionRequest request, ActionResponse response) {
+    try {
+      Long manufOrderId = (Long) request.getContext().get("id");
+      ManufOrder manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrderId);
+      ManufOrderFinalControlCheckService finalControlCheckService =
+          Beans.get(ManufOrderFinalControlCheckService.class);
+
+      String issue = finalControlCheckService.getFinishIssueMessage(manufOrder);
+      if (issue == null) {
+        return;
+      }
+      if (finalControlCheckService.getCheckSelect(manufOrder)
+          == QualityConfigRepository.MANUF_ORDER_FINAL_CONTROL_CHECK_BLOCKING) {
+        response.setError(
+            String.format(
+                I18n.get(ProductionExceptionMessage.MANUF_ORDER_FINAL_CONTROL_BLOCKING), issue));
+      } else {
+        response.setAlert(
+            issue
+                + " "
+                + I18n.get(ProductionExceptionMessage.MANUF_ORDER_FINAL_CONTROL_FINISH_ANYWAY));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -331,6 +361,19 @@ public class ManufOrderController {
       Beans.get(ManufOrderService.class).updateRealQty(manufOrder, qtyToUpdate);
       response.setReload(true);
       response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void printConformityDeclaration(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      String fileLink =
+          Beans.get(ManufOrderConformityDeclarationPrintService.class).getPrintLink(manufOrder);
+      response.setView(
+          ActionView.define(I18n.get("Conformity declaration")).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

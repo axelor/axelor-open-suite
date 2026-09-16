@@ -17,4 +17,6 @@ axelor {
 dependencies {
 	api project(":modules:axelor-quality")
 	implementation libs.swagger_jaxrs
+
+	testImplementation libs.mockito
 }

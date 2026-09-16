@@ -33,6 +33,7 @@ import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
+import com.axelor.apps.production.service.manuforder.ManufOrderFinalControlCheckService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
@@ -70,6 +71,7 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
       ProductService productService,
       ManufOrderTrackingNumberService manufOrderTrackingNumberService,
       UnitConversionService unitConversionService,
+      ManufOrderFinalControlCheckService manufOrderFinalControlCheckService,
       CostSheetService costSheetService) {
     super(
         operationOrderWorkflowService,
@@ -88,7 +90,8 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
         operationOrderOutsourceService,
         productService,
         manufOrderTrackingNumberService,
-        unitConversionService);
+        unitConversionService,
+        manufOrderFinalControlCheckService);
     this.costSheetService = costSheetService;
   }
 

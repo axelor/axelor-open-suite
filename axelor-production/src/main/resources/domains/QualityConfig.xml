@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="QualityConfig" cacheable="true">
+    <integer name="manufOrderFinalControlCheckSelect"
+      title="Final control check at manufacturing order completion"
+      selection="production.quality.config.manuf.order.final.control.check.select" default="1"
+      help="Behaviour when a manufacturing order is finished without a compliant final control entry: no check, a warning the user can bypass, or a blocking error."/>
+    <many-to-one name="manufOrderConformityDeclarationPrintTemplate"
+      title="Conformity declaration template" ref="com.axelor.apps.base.db.PrintingTemplate"
+      help="Print template used for the conformity declaration of a finished manufacturing order."/>
+
+    <extra-code><![CDATA[
+      public static final int MANUF_ORDER_FINAL_CONTROL_CHECK_NONE = 1;
+      public static final int MANUF_ORDER_FINAL_CONTROL_CHECK_WARNING = 2;
+      public static final int MANUF_ORDER_FINAL_CONTROL_CHECK_BLOCKING = 3;
+    ]]></extra-code>
+
+    <track>
+      <field name="manufOrderFinalControlCheckSelect" on="UPDATE"/>
+      <field name="manufOrderConformityDeclarationPrintTemplate" on="UPDATE"/>
+    </track>
+
+  </entity>
+
+</domain-models>

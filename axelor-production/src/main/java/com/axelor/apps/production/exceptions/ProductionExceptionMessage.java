@@ -448,4 +448,37 @@ public final class ProductionExceptionMessage {
 
   public static final String MANUF_ORDER_CONCURRENT_MODIFICATION = /*$$(*/
       "The manufacturing order is being modified by another session. Please refresh the page and try again." /*)*/;
+
+  public static final String MANUF_ORDER_FINAL_CONTROL_MISSING = /*$$(*/
+      "No compliant final control entry exists for the manufacturing order %s." /*)*/;
+
+  public static final String MANUF_ORDER_FINAL_CONTROL_UNCOVERED_LOTS = /*$$(*/
+      "Produced tracking numbers without a compliant final control: %s." /*)*/;
+
+  public static final String MANUF_ORDER_FINAL_CONTROL_NON_COMPLIANT = /*$$(*/
+      "Non-compliant final control entries for the manufacturing order %s: %s." /*)*/;
+
+  public static final String MANUF_ORDER_FINAL_CONTROL_NOT_CONTROLLED = /*$$(*/
+      "Final control entries with samples not controlled yet for the manufacturing order %s: %s." /*)*/;
+
+  public static final String MANUF_ORDER_FINAL_CONTROL_BLOCKING = /*$$(*/
+      "The manufacturing order cannot be finished. %s" /*)*/;
+
+  public static final String MANUF_ORDER_FINAL_CONTROL_FINISH_ANYWAY = /*$$(*/
+      "Do you want to finish the manufacturing order anyway?" /*)*/;
+
+  public static final String OPERATION_ORDER_FINAL_CONTROL_FINISH_ANYWAY = /*$$(*/
+      "Finishing this last operation will finish the manufacturing order. Do you want to finish it anyway?" /*)*/;
+
+  public static final String MANUF_ORDER_FINAL_CONTROL_FINISHED_WITHOUT_CONTROL = /*$$(*/
+      "Manufacturing order finished without a compliant final control" /*)*/;
+
+  public static final String MANUF_ORDER_CONFORMITY_DECLARATION_NOT_FINISHED = /*$$(*/
+      "The conformity declaration can only be printed for a finished manufacturing order." /*)*/;
+
+  public static final String MANUF_ORDER_CONFORMITY_DECLARATION_REFUSED = /*$$(*/
+      "The conformity declaration cannot be printed. %s" /*)*/;
+
+  public static final String MANUF_ORDER_CONFORMITY_DECLARATION_NOT_REQUIRED = /*$$(*/
+      "No applicable control plan is attached to the product of the manufacturing order %s." /*)*/;
 }

@@ -7,3 +7,4 @@
 64;"Cost sheet";"CostSheet.rptdesign";"com.axelor.apps.production.db.CostSheet";2;"pdf";false
 65;"Work in progress valuation";"WorkInProgressValuation.rptdesign";"com.axelor.apps.production.db.ProductionBatch";2;"pdf";false
 66;"Mps Charge";"MpsCharge.rptdesign";"com.axelor.apps.production.db.MpsCharge";2;"pdf";false
+202;"Conformity declaration";"ManufOrderConformityDeclaration.rptdesign";"com.axelor.apps.production.db.ManufOrder";2;"pdf";false

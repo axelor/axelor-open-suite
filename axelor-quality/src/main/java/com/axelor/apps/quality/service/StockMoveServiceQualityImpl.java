@@ -1,0 +1,156 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.axelor.apps.quality.service;
+
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.service.PfpService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.quality.service.app.AppQualityService;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
+import com.axelor.apps.stock.service.PartnerStockSettingsService;
+import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.service.WeightedAveragePriceService;
+import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
+import com.axelor.apps.supplychain.service.PartnerSupplychainService;
+import com.axelor.apps.supplychain.service.PurchaseOrderReceiptStateService;
+import com.axelor.apps.supplychain.service.ReservedQtyService;
+import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
+import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.db.JPA;
+import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import java.util.List;
+
+public class StockMoveServiceQualityImpl extends StockMoveServiceSupplychainImpl {
+
+  protected final AppQualityService appQualityService;
+  protected final NonCompliantReceptionService nonCompliantReceptionService;
+  protected final ReceptionQualityImprovementCancelService receptionQualityImprovementCancelService;
+
+  @Inject
+  public StockMoveServiceQualityImpl(
+      StockMoveLineService stockMoveLineService,
+      StockMoveToolService stockMoveToolService,
+      StockMoveLineRepository stockMoveLineRepository,
+      AppBaseService appBaseService,
+      StockMoveRepository stockMoveRepository,
+      PartnerProductQualityRatingService partnerProductQualityRatingService,
+      ProductRepository productRepository,
+      PartnerStockSettingsService partnerStockSettingsService,
+      StockConfigService stockConfigService,
+      AppStockService appStockService,
+      ProductCompanyService productCompanyService,
+      StockLocationService stockLocationService,
+      AppSupplychainService appSupplyChainService,
+      AppAccountService appAccountService,
+      PurchaseOrderRepository purchaseOrderRepo,
+      SaleOrderRepository saleOrderRepo,
+      UnitConversionService unitConversionService,
+      ReservedQtyService reservedQtyService,
+      PartnerSupplychainService partnerSupplychainService,
+      FixedAssetRepository fixedAssetRepository,
+      PfpService pfpService,
+      SaleOrderConfirmService saleOrderConfirmService,
+      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
+      PurchaseOrderReceiptStateService purchaseOrderReceiptStateService,
+      WeightedAveragePriceService weightedAveragePriceService,
+      AppQualityService appQualityService,
+      NonCompliantReceptionService nonCompliantReceptionService,
+      ReceptionQualityImprovementCancelService receptionQualityImprovementCancelService) {
+    super(
+        stockMoveLineService,
+        stockMoveToolService,
+        stockMoveLineRepository,
+        appBaseService,
+        stockMoveRepository,
+        partnerProductQualityRatingService,
+        productRepository,
+        partnerStockSettingsService,
+        stockConfigService,
+        appStockService,
+        productCompanyService,
+        stockLocationService,
+        appSupplyChainService,
+        appAccountService,
+        purchaseOrderRepo,
+        saleOrderRepo,
+        unitConversionService,
+        reservedQtyService,
+        partnerSupplychainService,
+        fixedAssetRepository,
+        pfpService,
+        saleOrderConfirmService,
+        stockMoveLineServiceSupplychain,
+        purchaseOrderReceiptStateService,
+        weightedAveragePriceService);
+    this.appQualityService = appQualityService;
+    this.nonCompliantReceptionService = nonCompliantReceptionService;
+    this.receptionQualityImprovementCancelService = receptionQualityImprovementCancelService;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public String realizeStockMove(StockMove stockMove, boolean check) throws AxelorException {
+    if (!appQualityService.isApp("quality")) {
+      return super.realizeStockMove(stockMove, check);
+    }
+    nonCompliantReceptionService.checkAutomaticQualityImprovementPrerequisites(stockMove);
+    List<StockMoveLine> redirectedLines =
+        nonCompliantReceptionService.redirectToQuarantine(stockMove);
+    if (!redirectedLines.isEmpty()) {
+      JPA.flush();
+    }
+    String newStockSeq = super.realizeStockMove(stockMove, check);
+    nonCompliantReceptionService.createAutomaticQualityImprovements(
+        JpaModelHelper.ensureManaged(stockMove));
+    return newStockSeq;
+  }
+
+  @Override
+  public void cancel(StockMove stockMove) throws AxelorException {
+    if (!appQualityService.isApp("quality")) {
+      super.cancel(stockMove);
+      return;
+    }
+    boolean realizedSupplierReception =
+        stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED
+            && nonCompliantReceptionService.isSupplierReception(stockMove);
+    super.cancel(stockMove);
+    if (realizedSupplierReception) {
+      receptionQualityImprovementCancelService.cancelUntouchedQualityImprovements(stockMove);
+    }
+  }
+}

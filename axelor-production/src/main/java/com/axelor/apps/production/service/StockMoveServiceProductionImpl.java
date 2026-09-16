@@ -32,6 +32,10 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.quality.service.NonCompliantReceptionService;
+import com.axelor.apps.quality.service.ReceptionQualityImprovementCancelService;
+import com.axelor.apps.quality.service.StockMoveServiceQualityImpl;
+import com.axelor.apps.quality.service.app.AppQualityService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -52,7 +56,6 @@ import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderReceiptStateService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
-import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
@@ -60,7 +63,7 @@ import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainImpl
+public class StockMoveServiceProductionImpl extends StockMoveServiceQualityImpl
     implements StockMoveProductionService {
   protected SaleOrderLineRepository saleOrderLineRepository;
 
@@ -91,7 +94,10 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       PurchaseOrderReceiptStateService purchaseOrderReceiptStateService,
       SaleOrderLineRepository saleOrderLineRepository,
-      WeightedAveragePriceService weightedAveragePriceService) {
+      WeightedAveragePriceService weightedAveragePriceService,
+      AppQualityService appQualityService,
+      NonCompliantReceptionService nonCompliantReceptionService,
+      ReceptionQualityImprovementCancelService receptionQualityImprovementCancelService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -117,7 +123,10 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         saleOrderConfirmService,
         stockMoveLineServiceSupplychain,
         purchaseOrderReceiptStateService,
-        weightedAveragePriceService);
+        weightedAveragePriceService,
+        appQualityService,
+        nonCompliantReceptionService,
+        receptionQualityImprovementCancelService);
     this.saleOrderLineRepository = saleOrderLineRepository;
   }
 

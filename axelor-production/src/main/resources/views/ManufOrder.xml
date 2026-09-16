@@ -85,6 +85,9 @@
       <menu name="manufOrderReportsMenu" title="Reports" icon="files" showTitle="true">
         <item name="printProductionProcessItem" title="Print Production Process"
           action="save,action-production-process-method-print"/>
+        <item name="printConformityDeclarationItem" title="Print conformity declaration"
+          action="action-manuf-order-method-print-conformity-declaration" showIf="statusSelect == 6"
+          if="__config__.app.isApp('quality')"/>
       </menu>
     </menubar>
     <panel name="mainPanel">
@@ -746,6 +749,7 @@
   </action-attrs>
 
   <action-group name="action-manuf-order-group-finish">
+    <action name="action-manuf-order-method-check-final-control"/>
     <action name="action-manuf-order-method-finish"/>
   </action-group>
 
@@ -775,6 +779,11 @@
     <call class="com.axelor.apps.production.web.ManufOrderController" method="printProdProcess"/>
   </action-method>
 
+  <action-method name="action-manuf-order-method-print-conformity-declaration">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="printConformityDeclaration"/>
+  </action-method>
+
   <action-method name="action-manuf-order-method-start">
     <call class="com.axelor.apps.production.web.ManufOrderController" method="start"/>
   </action-method>
@@ -800,6 +809,11 @@
 
   <action-method name="action-manuf-order-method-resume">
     <call class="com.axelor.apps.production.web.ManufOrderController" method="resume"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-check-final-control">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="checkFinalControlBeforeFinish"/>
   </action-method>
 
   <action-method name="action-manuf-order-method-finish">
