@@ -290,6 +290,8 @@ public class BankReconciliationValidateService {
               moveLinePostedNbrService.setMoveLinePostedNbr(
                   moveLine, bankReconciliationLine.getPostedNbr());
           bankReconciliationLine.setMoveLine(moveLine);
+          bankReconciliationLineService.fillPartnerAndAccountFromMoveLine(
+              bankReconciliationLine, moveLine);
           firstLine = false;
         } else {
           bankReconciliationLine =
