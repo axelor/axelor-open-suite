@@ -76,7 +76,8 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   }
 
   @Override
-  public Map<String, Object> fillDefaultValues(StockLocationLine stockLocationLine) {
+  public Map<String, Object> fillDefaultValues(StockLocationLine stockLocationLine)
+      throws AxelorException {
 
     Map<String, Object> stockCorrectionInformation = new HashMap<>();
 
@@ -93,7 +94,8 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   }
 
   @Override
-  public Map<String, Object> fillDeafultQtys(StockCorrection stockCorrection) {
+  public Map<String, Object> fillDeafultQtys(StockCorrection stockCorrection)
+      throws AxelorException {
 
     Map<String, Object> stockCorrectionQtys = new HashMap<>();
 
@@ -162,8 +164,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
         getStockLocationLine(stockCorrection, toStockLocation, product);
 
     BigDecimal realQty = stockCorrection.getRealQty();
-    BigDecimal currentQty =
-        stockLocationLine != null ? stockLocationLine.getCurrentQty() : BigDecimal.ZERO;
+    BigDecimal currentQty = getCurrentQtyInProductUnit(stockLocationLine);
     BigDecimal diff = realQty.subtract(currentQty);
 
     BigDecimal productCostPrice =
@@ -294,9 +295,11 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
 
   @Override
   public void getDefaultQtys(
-      StockLocationLine stockLocationLine, Map<String, Object> stockCorrectionQtys) {
-    stockCorrectionQtys.put("baseQty", stockLocationLine.getCurrentQty());
-    stockCorrectionQtys.put("realQty", stockLocationLine.getCurrentQty());
+      StockLocationLine stockLocationLine, Map<String, Object> stockCorrectionQtys)
+      throws AxelorException {
+    BigDecimal currentQty = getCurrentQtyInProductUnit(stockLocationLine);
+    stockCorrectionQtys.put("baseQty", currentQty);
+    stockCorrectionQtys.put("realQty", currentQty);
   }
 
   @Override
@@ -344,9 +347,9 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     stockCorrection.setComments(comments);
   }
 
-  protected BigDecimal getProductBaseQty(StockCorrection stockCorrection) {
+  protected BigDecimal getProductBaseQty(StockCorrection stockCorrection) throws AxelorException {
     StockLocationLine stockLocationLine = getProductStockLocationLine(stockCorrection);
-    return stockLocationLine != null ? stockLocationLine.getCurrentQty() : BigDecimal.ZERO;
+    return getCurrentQtyInProductUnit(stockLocationLine);
   }
 
   @Override
@@ -383,11 +386,41 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       StockLocationLine stockLocationLine)
       throws AxelorException {
     BigDecimal avgPrice =
-        stockLocationLine != null ? stockLocationLine.getAvgPrice() : BigDecimal.ZERO;
+        stockLocationLine != null
+            ? convertAvgPriceToProductUnit(stockLocationLine)
+            : BigDecimal.ZERO;
     if (!presentInStockLocation && avgPrice.compareTo(BigDecimal.ZERO) == 0) {
       avgPrice = (BigDecimal) productCompanyService.get(product, "avgPrice", company);
     }
     return avgPrice;
+  }
+
+  /**
+   * A stock location line stores its quantity in its own unit, which is only set from the product
+   * unit when the line is created. Stock correction quantities are expressed in the product unit.
+   */
+  protected BigDecimal getCurrentQtyInProductUnit(StockLocationLine stockLocationLine)
+      throws AxelorException {
+    if (stockLocationLine == null) {
+      return BigDecimal.ZERO;
+    }
+
+    BigDecimal currentQty =
+        stockLocationLineService.convertToProductUnit(
+            stockLocationLine, stockLocationLine.getCurrentQty());
+    return currentQty == null ? BigDecimal.ZERO : currentQty;
+  }
+
+  /**
+   * The average price is expressed per stock location line unit while the quantities are expressed
+   * in the product unit. A price converts in the opposite direction to a quantity.
+   */
+  protected BigDecimal convertAvgPriceToProductUnit(StockLocationLine stockLocationLine)
+      throws AxelorException {
+    BigDecimal avgPrice =
+        stockLocationLineService.convertFromProductUnit(
+            stockLocationLine, stockLocationLine.getAvgPrice());
+    return avgPrice == null ? BigDecimal.ZERO : avgPrice;
   }
 
   protected boolean isPresentInStockLocation(StockCorrection stockCorrection, Product product) {

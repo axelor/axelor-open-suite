@@ -1,0 +1,32 @@
+---
+title: "Inventory: fixed wrong stock update when the product unit differs from the stock location line unit."
+module: axelor-stock
+developer: |
+  Service constructor and method signature changes to apply in custom modules:
+
+  - Constructor parameter added, as the last parameter: InventoryValidateServiceImpl and
+    InventoryStockLocationUpdateServiceImpl now take a StockLocationLineService.
+
+  - Methods added to StockLocationLineService:
+    BigDecimal convertToProductUnit(StockLocationLine, BigDecimal) and
+    BigDecimal convertFromProductUnit(StockLocationLine, BigDecimal), converting a value between
+    the unit of a stock location line and the unit of its product.
+
+  - Method added to InventoryLineService:
+    BigDecimal getCurrentQtyInProductUnit(StockLocationLine).
+
+  - Interface methods now declaring throws AxelorException:
+    InventoryLineService.updateInventoryLine(InventoryLine, Inventory),
+    InventoryLineService.getCurrentQty(StockLocation, Product),
+    InventoryStockLocationUpdateService.storeLastInventoryData(Inventory),
+    StockCorrectionService.fillDefaultValues(StockLocationLine),
+    StockCorrectionService.fillDeafultQtys(StockCorrection),
+    StockCorrectionService.getDefaultQtys(StockLocationLine, Map).
+
+  - Protected methods now declaring throws AxelorException, to update in overriding classes:
+    InventoryService.updateCurrentQty(InventoryLine),
+    InventoryValidateServiceImpl.getAvgPrice(StockLocationLine),
+    InventoryStockLocationUpdateServiceImpl.processPage(Inventory, List, List, List),
+    InventoryStockLocationUpdateServiceImpl.updateTrackedLines(Inventory, List, Map, Long),
+    InventoryStockLocationUpdateServiceImpl.updateLine(Inventory, List, StockLocationLine, BigDecimal),
+    StockCorrectionServiceImpl.getProductBaseQty(StockCorrection).
