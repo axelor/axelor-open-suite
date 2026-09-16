@@ -1,0 +1,3 @@
+---
+title: "Bank reconciliation: fixed bank statements reconciled through the include other bank statements option staying in the bank statement selection list, and unreconciled bank statements not coming back into it."
+module: axelor-bank-payment
