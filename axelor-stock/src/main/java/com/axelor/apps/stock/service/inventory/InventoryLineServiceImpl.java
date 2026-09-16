@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockLocation;
@@ -59,6 +60,7 @@ public class InventoryLineServiceImpl implements InventoryLineService {
   protected ProductCompanyService productCompanyService;
   protected StockLocationRepository stockLocationRepository;
   protected StockLocationLineFetchService stockLocationLineFetchService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public InventoryLineServiceImpl(
@@ -67,13 +69,15 @@ public class InventoryLineServiceImpl implements InventoryLineService {
       StockLocationLineService stockLocationLineService,
       ProductCompanyService productCompanyService,
       StockLocationRepository stockLocationRepository,
-      StockLocationLineFetchService stockLocationLineFetchService) {
+      StockLocationLineFetchService stockLocationLineFetchService,
+      AppBaseService appBaseService) {
     this.stockConfigService = stockConfigService;
     this.inventoryLineRepository = inventoryLineRepository;
     this.stockLocationLineService = stockLocationLineService;
     this.productCompanyService = productCompanyService;
     this.stockLocationRepository = stockLocationRepository;
     this.stockLocationLineFetchService = stockLocationLineFetchService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -172,6 +176,13 @@ public class InventoryLineServiceImpl implements InventoryLineService {
     }
 
     inventoryLine.setUnit(product.getUnit());
+
+    if (inventoryLine.getRealQty() != null) {
+      inventoryLine.setRealQty(
+          inventoryLine
+              .getRealQty()
+              .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
+    }
 
     BigDecimal gap =
         inventoryLine.getRealQty() != null
