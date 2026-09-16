@@ -335,28 +335,21 @@ public class PurchaseOrderLineController {
       Company company = purchaseOrder.getCompany();
       Partner supplierPartner = purchaseOrder.getSupplierPartner();
 
-      boolean isBreakMinQtyLimit =
-          supplierCatalogService.checkMinQty(
-              purchaseOrderLine.getProduct(),
-              supplierPartner,
-              company,
-              purchaseOrderLine.getQty(),
-              request,
-              response);
-      boolean isBreakMaxQtyLimit =
-          !isBreakMinQtyLimit
-              && supplierCatalogService.checkMaxQty(
-                  purchaseOrderLine.getProduct(),
-                  supplierPartner,
-                  company,
-                  purchaseOrderLine.getQty(),
-                  request,
-                  response);
-
-      response.setValues(
-          Beans.get(PurchaseOrderLineService.class)
-              .updatePriceForQtyLimit(
-                  purchaseOrderLine, purchaseOrder, isBreakMinQtyLimit || isBreakMaxQtyLimit));
+      if (!supplierCatalogService.checkMinQty(
+          purchaseOrderLine.getProduct(),
+          supplierPartner,
+          company,
+          purchaseOrderLine.getQty(),
+          request,
+          response)) {
+        supplierCatalogService.checkMaxQty(
+            purchaseOrderLine.getProduct(),
+            supplierPartner,
+            company,
+            purchaseOrderLine.getQty(),
+            request,
+            response);
+      }
 
       Beans.get(PurchaseOrderLineService.class)
           .checkMultipleQty(company, supplierPartner, purchaseOrderLine, response);
@@ -480,6 +473,45 @@ public class PurchaseOrderLineController {
           Beans.get(PurchaseOrderLineViewService.class).hideDeliveryPanel(purchaseOrderLine);
 
       response.setAttrs(attrs);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkQtyAndUpdatePrice(ActionRequest request, ActionResponse response) {
+    try {
+      SupplierCatalogService supplierCatalogService = Beans.get(SupplierCatalogService.class);
+      Context context = request.getContext();
+      PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+      PurchaseOrder purchaseOrder = getPurchaseOrder(context);
+      Company company = purchaseOrder.getCompany();
+      Partner supplierPartner = purchaseOrder.getSupplierPartner();
+
+      boolean isBreakMinQtyLimit =
+          supplierCatalogService.checkMinQty(
+              purchaseOrderLine.getProduct(),
+              supplierPartner,
+              company,
+              purchaseOrderLine.getQty(),
+              request,
+              response);
+      boolean isBreakMaxQtyLimit =
+          !isBreakMinQtyLimit
+              && supplierCatalogService.checkMaxQty(
+                  purchaseOrderLine.getProduct(),
+                  supplierPartner,
+                  company,
+                  purchaseOrderLine.getQty(),
+                  request,
+                  response);
+
+      response.setValues(
+          Beans.get(PurchaseOrderLineService.class)
+              .updatePriceForQtyLimit(
+                  purchaseOrderLine, purchaseOrder, isBreakMinQtyLimit || isBreakMaxQtyLimit));
+
+      Beans.get(PurchaseOrderLineService.class)
+          .checkMultipleQty(company, supplierPartner, purchaseOrderLine, response);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
