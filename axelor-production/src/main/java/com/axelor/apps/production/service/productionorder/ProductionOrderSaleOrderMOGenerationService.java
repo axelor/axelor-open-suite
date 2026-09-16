@@ -35,8 +35,7 @@ public interface ProductionOrderSaleOrderMOGenerationService {
       ProductionOrder productionOrder,
       SaleOrderLine saleOrderLine,
       Product product,
-      BigDecimal qtyToProduce,
-      BigDecimal grossQtyRequested)
+      BigDecimal qtyToProduce)
       throws AxelorException;
 
   ManufOrder generateManufOrder(

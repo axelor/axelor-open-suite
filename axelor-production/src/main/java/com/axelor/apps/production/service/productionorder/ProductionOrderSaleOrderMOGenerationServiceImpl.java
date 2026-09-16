@@ -82,8 +82,7 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
       ProductionOrder productionOrder,
       SaleOrderLine saleOrderLine,
       Product product,
-      BigDecimal qtyToProduce,
-      BigDecimal grossQtyRequested)
+      BigDecimal qtyToProduce)
       throws AxelorException {
     BillOfMaterial billOfMaterial = getBillOfMaterial(saleOrderLine, product);
     if (billOfMaterial.getProdProcess() == null) {
@@ -91,13 +90,11 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
     }
 
     BigDecimal qty = convertToProductUnit(product, saleOrderLine.getUnit(), qtyToProduce);
-    BigDecimal grossQty = convertToProductUnit(product, saleOrderLine.getUnit(), grossQtyRequested);
 
     return generateManufOrders(
         productionOrder,
         billOfMaterial,
         qty,
-        grossQty,
         appBaseService.getTodayDateTime().toLocalDateTime(),
         saleOrderLine.getSaleOrder(),
         saleOrderLine);
@@ -144,8 +141,6 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
    * @param productionOrder Initialized production order with no manufacturing order.
    * @param billOfMaterial the bill of material of the parent manufacturing order
    * @param qtyRequested the net quantity to produce of the parent manufacturing order.
-   * @param grossQtyRequested the gross quantity requested, propagated through the BOM tree to
-   *     compute the gross demand of each sub-component.
    * @param startDate startDate of creation
    * @param saleOrder a sale order
    * @return the updated production order with all generated manufacturing orders.
@@ -155,20 +150,18 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
       ProductionOrder productionOrder,
       BillOfMaterial billOfMaterial,
       BigDecimal qtyRequested,
-      BigDecimal grossQtyRequested,
       LocalDateTime startDate,
       SaleOrder saleOrder,
       SaleOrderLine saleOrderLine)
       throws AxelorException {
 
-    Map<BillOfMaterial, BigDecimal> subBomGrossDemandMap = new HashMap<>();
-    // Gross demand of the parent BOM (line qty multiplied by the gross requested qty)
-    subBomGrossDemandMap.put(billOfMaterial, grossQtyRequested.multiply(billOfMaterial.getQty()));
+    Map<BillOfMaterial, BigDecimal> subBomDemandMap = new HashMap<>();
+    subBomDemandMap.put(billOfMaterial, qtyRequested.multiply(billOfMaterial.getQty()));
 
     Map<BillOfMaterial, ManufOrder> subBomManufOrderParentMap = new HashMap<>();
     // prevent infinite loop
     int depth = 0;
-    while (!subBomGrossDemandMap.isEmpty()) {
+    while (!subBomDemandMap.isEmpty()) {
       if (depth >= 100) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -192,17 +185,17 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
         startDate = null;
       }
 
-      Map<BillOfMaterial, BigDecimal> tempBomGrossDemandMap = new HashMap<>();
+      Map<BillOfMaterial, BigDecimal> tempBomDemandMap = new HashMap<>();
 
       // Map for future manufOrder and its manufOrder Parent
 
-      for (BillOfMaterial childBom : subBomGrossDemandMap.keySet()) {
+      for (BillOfMaterial childBom : subBomDemandMap.keySet()) {
 
         if (childBom.getProdProcess() == null) {
           continue;
         }
 
-        BigDecimal grossDemand = subBomGrossDemandMap.get(childBom);
+        BigDecimal demand = subBomDemandMap.get(childBom);
         BigDecimal qtyToProduce;
 
         if (childBom.equals(billOfMaterial)) {
@@ -216,7 +209,7 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
                   ? stockLocationLineFetchService.getAvailableQty(
                       saleOrderLine.getSaleOrder().getStockLocation(), childBom.getProduct())
                   : BigDecimal.ZERO;
-          qtyToProduce = grossDemand.subtract(availableQty);
+          qtyToProduce = demand.subtract(availableQty);
         }
 
         // Skip sub-MO creation when the stock already covers the requirement
@@ -244,13 +237,13 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
         mapBomWithQty.forEach(
             (bom, lineQty) -> {
               subBomManufOrderParentMap.putIfAbsent(bom, manufOrder);
-              tempBomGrossDemandMap.put(bom, grossDemand.multiply(lineQty));
+              tempBomDemandMap.put(bom, qtyToProduce.multiply(lineQty));
             });
       }
 
-      subBomGrossDemandMap.clear();
-      subBomGrossDemandMap.putAll(tempBomGrossDemandMap);
-      tempBomGrossDemandMap.clear();
+      subBomDemandMap.clear();
+      subBomDemandMap.putAll(tempBomDemandMap);
+      tempBomDemandMap.clear();
       depth++;
     }
     return productionOrder;
