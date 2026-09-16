@@ -18,17 +18,66 @@
  */
 package com.axelor.apps.production.service.manuforder;
 
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.ProductVariantService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.ProdResidualProduct;
+import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.inject.Beans;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ManufOrderResidualProductServiceImpl implements ManufOrderResidualProductService {
 
   @Override
   public boolean hasResidualProduct(ManufOrder manufOrder) {
 
-    return manufOrder.getToProduceProdProductList().stream()
-        .anyMatch(prodProduct -> isResidualProduct(prodProduct, manufOrder));
+    return !getResidualProdProductList(manufOrder).isEmpty();
+  }
+
+  @Override
+  public List<ProdProduct> getResidualProdProductList(ManufOrder manufOrder) {
+
+    List<ProdProduct> residualProdProductList = new ArrayList<>();
+
+    BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
+
+    if (billOfMaterial == null
+        || billOfMaterial.getProdResidualProductList() == null
+        || !Beans.get(AppProductionService.class)
+            .getAppProduction()
+            .getManageResidualProductOnBom()) {
+      return residualProdProductList;
+    }
+
+    BigDecimal manufOrderQty = manufOrder.getQty();
+    BigDecimal bomQty = billOfMaterial.getQty();
+    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForQty();
+    ProductVariantService productVariantService = Beans.get(ProductVariantService.class);
+
+    for (ProdResidualProduct prodResidualProduct : billOfMaterial.getProdResidualProductList()) {
+
+      Product product =
+          productVariantService.getProductVariant(
+              manufOrder.getProduct(), prodResidualProduct.getProduct());
+
+      BigDecimal qty =
+          bomQty != null && bomQty.signum() != 0
+              ? prodResidualProduct
+                  .getQty()
+                  .multiply(manufOrderQty)
+                  .divide(bomQty, scale, RoundingMode.HALF_UP)
+              : BigDecimal.ZERO;
+
+      residualProdProductList.add(new ProdProduct(product, qty, prodResidualProduct.getUnit()));
+    }
+
+    return residualProdProductList;
   }
 
   @Override
