@@ -1,0 +1,3 @@
+---
+title: "Project: fixed the French error message shown when the company has no project sequence."
+module: axelor-project
