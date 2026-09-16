@@ -1,0 +1,6 @@
+---
+title: "PFP: fixed the invoice PFP status not being refreshed and the balance invoice term not being created after a partial invoice term validation."
+module: axelor-account
+developer: |
+  -- migration script
+  DELETE FROM meta_action WHERE name = 'action-invoice-term-attrs-set-initial-pfp-amount-and-from-invoice-term';

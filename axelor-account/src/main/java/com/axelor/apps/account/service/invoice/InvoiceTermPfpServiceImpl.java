@@ -138,6 +138,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
         originalInvoiceTerm, newInvoiceTerm, grantedAmount, partialReason, amount, invoice);
 
     invoiceTermService.initInvoiceTermsSequence(invoice);
+    refreshInvoicePfpStatus(invoice);
   }
 
   @Override
