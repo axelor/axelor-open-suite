@@ -60,10 +60,10 @@ public class TrackingNumberServiceImpl implements TrackingNumberService {
     }
     switch (autoTrackingNbrOrderSelect) {
       case TrackingNumberConfigurationRepository.TRACKING_NUMBER_ORDER_FIFO:
-        return " ORDER BY self.trackingNumber ASC";
+        return " ORDER BY self.trackingNumber.trackingNumberSeq ASC";
 
       case TrackingNumberConfigurationRepository.TRACKING_NUMBER_ORDER_LIFO:
-        return " ORDER BY self.trackingNumber DESC";
+        return " ORDER BY self.trackingNumber.trackingNumberSeq DESC";
 
       default:
         return "";
