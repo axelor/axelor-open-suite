@@ -19,28 +19,25 @@
 package com.axelor.apps.quality.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.quality.db.ControlEntry;
-import com.axelor.apps.quality.db.QIDetection;
-import com.axelor.apps.quality.db.QIIdentification;
-import com.axelor.apps.quality.db.QIResolution;
 import com.axelor.apps.quality.db.QualityImprovement;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import java.util.List;
 
-public interface QualityImprovementCreateService {
+public interface NonCompliantReceptionService {
 
-  QualityImprovement createQualityImprovementFromControlEntry(
-      ControlEntry controlEntry, QIDetection qiDetection, int type) throws AxelorException;
+  boolean isSupplierReception(StockMove stockMove);
 
-  QualityImprovement createQualityImprovementFromStockMoveLine(
-      StockMoveLine stockMoveLine,
-      QIDetection qiDetection,
-      int type,
-      boolean isAutomaticallyCreated)
-      throws AxelorException;
+  boolean isNonCompliantLine(StockMoveLine stockMoveLine);
 
-  QualityImprovement createQualityImprovement(
-      QualityImprovement qualityImprovement,
-      QIIdentification qiIdentification,
-      QIResolution qiResolution)
+  List<StockMoveLine> getNonCompliantLines(StockMove stockMove);
+
+  boolean isRedirectedToQuarantine(StockMoveLine stockMoveLine);
+
+  List<StockMoveLine> redirectToQuarantine(StockMove stockMove) throws AxelorException;
+
+  void checkAutomaticQualityImprovementPrerequisites(StockMove stockMove) throws AxelorException;
+
+  List<QualityImprovement> createAutomaticQualityImprovements(StockMove stockMove)
       throws AxelorException;
 }

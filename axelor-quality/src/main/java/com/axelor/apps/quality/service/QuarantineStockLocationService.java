@@ -19,28 +19,20 @@
 package com.axelor.apps.quality.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.quality.db.ControlEntry;
-import com.axelor.apps.quality.db.QIDetection;
-import com.axelor.apps.quality.db.QIIdentification;
-import com.axelor.apps.quality.db.QIResolution;
-import com.axelor.apps.quality.db.QualityImprovement;
-import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.stock.db.StockLocation;
 
-public interface QualityImprovementCreateService {
+public interface QuarantineStockLocationService {
 
-  QualityImprovement createQualityImprovementFromControlEntry(
-      ControlEntry controlEntry, QIDetection qiDetection, int type) throws AxelorException;
-
-  QualityImprovement createQualityImprovementFromStockMoveLine(
-      StockMoveLine stockMoveLine,
-      QIDetection qiDetection,
-      int type,
-      boolean isAutomaticallyCreated)
-      throws AxelorException;
-
-  QualityImprovement createQualityImprovement(
-      QualityImprovement qualityImprovement,
-      QIIdentification qiIdentification,
-      QIResolution qiResolution)
+  /**
+   * Resolves the quarantine stock location receiving a non-compliant reception line.
+   *
+   * @param destinationStockLocation the normal destination of the line, may be null
+   * @param company the company of the reception
+   * @return the quarantine stock location of the destination when set, else the one of the company
+   *     quality configuration
+   * @throws AxelorException when no quarantine stock location is configured
+   */
+  StockLocation getQuarantineStockLocation(StockLocation destinationStockLocation, Company company)
       throws AxelorException;
 }

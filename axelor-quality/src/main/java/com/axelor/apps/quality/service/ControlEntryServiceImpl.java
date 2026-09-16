@@ -20,9 +20,17 @@ package com.axelor.apps.quality.service;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.quality.db.ControlEntry;
+import com.axelor.apps.quality.db.ControlEntrySample;
 import com.axelor.apps.quality.db.ControlPlan;
+import com.axelor.apps.quality.db.QualityImprovement;
 import com.axelor.apps.quality.db.repo.ControlEntryRepository;
+import com.axelor.apps.quality.db.repo.ControlEntrySampleRepository;
 import com.axelor.apps.quality.db.repo.ControlPlanRepository;
+import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.Context;
@@ -32,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class ControlEntryServiceImpl implements ControlEntryService {
@@ -39,15 +48,21 @@ public class ControlEntryServiceImpl implements ControlEntryService {
   protected ControlEntrySampleService controlEntrySampleService;
   protected ControlPlanRepository controlPlanRepository;
   protected ControlEntryRepository controlEntryRepository;
+  protected QualityImprovementRepository qualityImprovementRepository;
+  protected StockMoveLineRepository stockMoveLineRepository;
 
   @Inject
   public ControlEntryServiceImpl(
       ControlEntrySampleService controlEntrySampleService,
       ControlPlanRepository controlPlanRepository,
-      ControlEntryRepository controlEntryRepository) {
+      ControlEntryRepository controlEntryRepository,
+      QualityImprovementRepository qualityImprovementRepository,
+      StockMoveLineRepository stockMoveLineRepository) {
     this.controlEntrySampleService = controlEntrySampleService;
     this.controlPlanRepository = controlPlanRepository;
     this.controlEntryRepository = controlEntryRepository;
+    this.qualityImprovementRepository = qualityImprovementRepository;
+    this.stockMoveLineRepository = stockMoveLineRepository;
   }
 
   protected static final String DEFAULT_SAMPLE_NAME = "-";
@@ -197,5 +212,75 @@ public class ControlEntryServiceImpl implements ControlEntryService {
     values.put("name", templateControlEntry.getName());
     values.put("sampleCount", templateControlEntry.getSampleCount());
     values.put("inspector", templateControlEntry.getInspector());
+  }
+
+  @Override
+  public List<String> getOpenQualityImprovementSequences(ControlEntry controlEntry) {
+    if (controlEntry.getId() == null) {
+      return List.of();
+    }
+    return qualityImprovementRepository
+        .findOpenByControlEntryId(controlEntry.getId())
+        .fetch()
+        .stream()
+        .map(QualityImprovement::getSequence)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void finish(ControlEntry controlEntry) {
+    Objects.requireNonNull(controlEntry);
+
+    controlEntry.setStatusSelect(ControlEntryRepository.FINISHED_STATUS);
+    updateRelatedStockMoveLineConformity(controlEntry);
+  }
+
+  protected void updateRelatedStockMoveLineConformity(ControlEntry controlEntry) {
+    StockMoveLine stockMoveLine = findRelatedStockMoveLine(controlEntry);
+    if (stockMoveLine == null || isCanceled(stockMoveLine.getStockMove())) {
+      return;
+    }
+    Integer conformitySelect = getConformitySelect(controlEntry, stockMoveLine);
+    if (conformitySelect == null) {
+      return;
+    }
+    stockMoveLine.setConformitySelect(conformitySelect);
+    stockMoveLineRepository.save(stockMoveLine);
+  }
+
+  protected StockMoveLine findRelatedStockMoveLine(ControlEntry controlEntry) {
+    if (!StockMoveLine.class.getName().equals(controlEntry.getRelatedToSelect())
+        || controlEntry.getRelatedToSelectId() == null) {
+      return null;
+    }
+    return stockMoveLineRepository.find(controlEntry.getRelatedToSelectId());
+  }
+
+  protected boolean isCanceled(StockMove stockMove) {
+    return stockMove != null && stockMove.getStatusSelect() == StockMoveRepository.STATUS_CANCELED;
+  }
+
+  protected Integer getConformitySelect(ControlEntry controlEntry, StockMoveLine stockMoveLine) {
+    List<ControlEntrySample> samples = controlEntry.getControlEntrySamplesList();
+    if (samples == null || samples.isEmpty()) {
+      return null;
+    }
+    if (samples.stream()
+        .anyMatch(
+            sample ->
+                sample.getResultSelect() == ControlEntrySampleRepository.RESULT_NOT_COMPLIANT)) {
+      return StockMoveLineRepository.CONFORMITY_NON_COMPLIANT;
+    }
+    boolean allCompliant =
+        samples.stream()
+            .allMatch(
+                sample ->
+                    sample.getResultSelect() == ControlEntrySampleRepository.RESULT_COMPLIANT);
+    if (allCompliant
+        && stockMoveLine.getConformitySelect() <= StockMoveLineRepository.CONFORMITY_NONE) {
+      return StockMoveLineRepository.CONFORMITY_COMPLIANT;
+    }
+    return null;
   }
 }

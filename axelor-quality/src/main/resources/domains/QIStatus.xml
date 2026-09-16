@@ -14,6 +14,8 @@
 
     <finder-method name="findDefaultStatus" using=""
       filter="self.isClosedStatus = false AND self.isCancelledStatus = false" orderBy="sequence"/>
+    <finder-method name="findCancelledStatus" using=""
+      filter="self.isCancelledStatus = true"/>
 
     <track>
       <field name="name"/>

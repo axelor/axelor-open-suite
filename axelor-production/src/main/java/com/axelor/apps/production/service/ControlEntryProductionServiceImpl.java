@@ -24,8 +24,10 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.quality.db.ControlPlan;
 import com.axelor.apps.quality.db.repo.ControlEntryRepository;
 import com.axelor.apps.quality.db.repo.ControlPlanRepository;
+import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
 import com.axelor.apps.quality.service.ControlEntrySampleService;
 import com.axelor.apps.quality.service.ControlEntryServiceImpl;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.rpc.Context;
 import jakarta.inject.Inject;
 
@@ -38,8 +40,15 @@ public class ControlEntryProductionServiceImpl extends ControlEntryServiceImpl {
       ControlEntrySampleService controlEntrySampleService,
       ControlPlanRepository controlPlanRepository,
       ControlEntryRepository controlEntryRepository,
+      QualityImprovementRepository qualityImprovementRepository,
+      StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService) {
-    super(controlEntrySampleService, controlPlanRepository, controlEntryRepository);
+    super(
+        controlEntrySampleService,
+        controlPlanRepository,
+        controlEntryRepository,
+        qualityImprovementRepository,
+        stockMoveLineRepository);
     this.appBaseService = appBaseService;
   }
 

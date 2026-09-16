@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  <entity name="StockLocation">
+
+    <many-to-one name="quarantineStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Quarantine stock location"
+      help="Stock location receiving the non-compliant supplier reception lines whose destination is this stock location. When empty, the quarantine stock location of the company quality configuration is used."/>
+
+  </entity>
+
+</domain-models>
