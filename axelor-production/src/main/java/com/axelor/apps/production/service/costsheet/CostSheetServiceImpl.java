@@ -266,7 +266,7 @@ public class CostSheetServiceImpl implements CostSheetService {
     this.computeRealCostPrice(
         manufOrder, 0, producedCostSheetLine, previousCostSheetDate, safeExcludedConsumed);
 
-    this.computeRealResidualProduct(manufOrder);
+    this.computeRealResidualProduct(manufOrder, safeExcludedProduced);
 
     BigDecimal costPrice = this.computeCostPrice(costSheet);
     costSheet.setCostPrice(costPrice);
@@ -623,11 +623,18 @@ public class CostSheetServiceImpl implements CostSheetService {
     }
   }
 
-  protected void computeRealResidualProduct(ManufOrder manufOrder) throws AxelorException {
-    for (StockMoveLine stockMoveLine : manufOrder.getProducedStockMoveLineList()) {
-      if (stockMoveLine.getProduct() != null
-          && manufOrder.getProduct() != null
-          && (!stockMoveLine.getProduct().equals(manufOrder.getProduct()))) {
+  protected void computeRealResidualProduct(ManufOrder manufOrder, Set<Long> excludedLineIds)
+      throws AxelorException {
+    if (manufOrder.getResidualStockMoveLineList() == null) {
+      return;
+    }
+    for (StockMoveLine stockMoveLine : manufOrder.getResidualStockMoveLineList()) {
+      // Lines already accounted for in a previous cost sheet batch are skipped: each cost sheet
+      // covers a single batch.
+      if (excludedLineIds != null && excludedLineIds.contains(stockMoveLine.getId())) {
+        continue;
+      }
+      if (stockMoveLine.getProduct() != null) {
         CostSheetLine costSheetLine =
             costSheetLineService.createResidualProductCostSheetLine(
                 stockMoveLine.getProduct(),

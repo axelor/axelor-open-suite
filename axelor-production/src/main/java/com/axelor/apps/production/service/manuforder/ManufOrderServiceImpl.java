@@ -39,7 +39,6 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
-import com.axelor.apps.production.db.ProdResidualProduct;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
@@ -320,34 +319,9 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
 
-    BigDecimal bomQty = billOfMaterial.getQty();
-
     // add the produced product
     manufOrder.addToProduceProdProductListItem(
         new ProdProduct(manufOrder.getProduct(), manufOrderQty, billOfMaterial.getUnit()));
-
-    // Add the residual products
-    if (appProductionService.getAppProduction().getManageResidualProductOnBom()
-        && billOfMaterial.getProdResidualProductList() != null) {
-
-      for (ProdResidualProduct prodResidualProduct : billOfMaterial.getProdResidualProductList()) {
-
-        Product product =
-            productVariantService.getProductVariant(
-                manufOrder.getProduct(), prodResidualProduct.getProduct());
-
-        BigDecimal qty =
-            bomQty.signum() != 0
-                ? prodResidualProduct
-                    .getQty()
-                    .multiply(manufOrderQty)
-                    .divide(bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
-                : BigDecimal.ZERO;
-
-        manufOrder.addToProduceProdProductListItem(
-            new ProdProduct(product, qty, prodResidualProduct.getUnit()));
-      }
-    }
   }
 
   @Override
@@ -622,6 +596,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     manufOrderCreateStockMoveLineService.createNewProducedStockMoveLineList(
         manufOrder, qtyToUpdate);
+
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+    if (Beans.get(ManufOrderResidualProductService.class).hasResidualProduct(manufOrder)) {
+      manufOrderCreateStockMoveLineService.createNewResidualStockMoveLineList(
+          manufOrder, qtyToUpdate);
+    }
   }
 
   @Override
