@@ -370,6 +370,9 @@ public class AccountController {
           response.setAttr("analyticDistributionTemplate", "required", true);
         }
       }
+    } else {
+      response.setAttr("analyticDistributionTemplateLabel", "hidden", true);
+      response.setAttr("analyticDistributionTemplate", "required", false);
     }
   }
 
