@@ -18,7 +18,11 @@
  */
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
@@ -26,6 +30,7 @@ import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.moveline.MoveLinePostedNbrService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -36,6 +41,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Optional;
 
 public class BankReconciliationLineServiceImpl implements BankReconciliationLineService {
 
@@ -87,8 +93,7 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
     }
     if (ObjectUtils.notEmpty(moveLine)) {
       bankReconciliationLine.setMoveLine(moveLine);
-      bankReconciliationLine.setPartner(moveLine.getPartner());
-      bankReconciliationLine.setAccount(moveLine.getAccount());
+      fillPartnerAndAccountFromMoveLine(bankReconciliationLine, moveLine);
     }
     return bankReconciliationLine;
   }
@@ -189,6 +194,7 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
     moveLine.setIsSelectedBankReconciliation(false);
     bankReconciliationLine.setIsSelectedBankReconciliation(false);
     bankReconciliationLine.setMoveLine(moveLine);
+    fillPartnerAndAccountFromMoveLine(bankReconciliationLine, moveLine);
     BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
     if (!Objects.isNull(bankStatementLine)) {
       bankStatementLine.setMoveLine(bankReconciliationLine.getMoveLine());
@@ -244,5 +250,38 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
     bankReconciliationLine.setIsSelectedBankReconciliation(
         !bankReconciliationLine.getIsSelectedBankReconciliation());
     bankReconciliationLineRepository.save(bankReconciliationLine);
+  }
+
+  @Override
+  public void fillPartnerAndAccountFromMoveLine(
+      BankReconciliationLine bankReconciliationLine, MoveLine moveLine) {
+    Move move = Optional.ofNullable(moveLine).map(MoveLine::getMove).orElse(null);
+    if (move == null) {
+      return;
+    }
+    MoveLine counterpartMoveLine =
+        move.getMoveLineList().stream()
+            .filter(line -> !Objects.equals(line.getAccount(), moveLine.getAccount()))
+            .filter(line -> !isTaxAccount(line.getAccount()))
+            .findFirst()
+            .orElse(null);
+    Partner partner =
+        Optional.ofNullable(move.getPartner())
+            .orElse(
+                Optional.ofNullable(counterpartMoveLine).map(MoveLine::getPartner).orElse(null));
+    if (partner != null) {
+      bankReconciliationLine.setPartner(partner);
+    }
+    if (counterpartMoveLine != null) {
+      bankReconciliationLine.setAccount(counterpartMoveLine.getAccount());
+    }
+  }
+
+  protected boolean isTaxAccount(Account account) {
+    return Optional.ofNullable(account)
+        .map(Account::getAccountType)
+        .map(AccountType::getTechnicalTypeSelect)
+        .map(AccountTypeRepository.TYPE_TAX::equals)
+        .orElse(false);
   }
 }

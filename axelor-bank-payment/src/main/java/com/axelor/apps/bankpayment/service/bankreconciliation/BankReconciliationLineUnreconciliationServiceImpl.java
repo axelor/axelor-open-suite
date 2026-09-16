@@ -89,6 +89,8 @@ public class BankReconciliationLineUnreconciliationServiceImpl
       bankReconciliationLine.setIsPosted(false);
     }
     bankReconciliationLine.setMoveLine(null);
+    bankReconciliationLine.setPartner(null);
+    bankReconciliationLine.setAccount(null);
     bankReconciliationLine.setConfidenceIndex(0);
     bankReconciliationLine.setPostedNbr(null);
   }
