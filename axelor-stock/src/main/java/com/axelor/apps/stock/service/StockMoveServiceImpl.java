@@ -1844,7 +1844,8 @@ public class StockMoveServiceImpl implements StockMoveService {
     Query<StockMoveLine> query = getStockMoveLineQuery(stockMoveId);
 
     BatchProcessorHelper.of()
-        .<StockMoveLine>forEachByQuery(query, stockMoveLineService::fillRealizeWapPrice);
+        .<StockMoveLine, AxelorException>forEachByQuery(
+            query, stockMoveLineService::fillRealizeWapPrice);
   }
 
   protected void storeCustomsCodesForStockMove(StockMove stockMove) throws AxelorException {

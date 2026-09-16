@@ -1,0 +1,7 @@
+---
+title: "Stock: fixed the average price of the destination location being divided by the unit conversion coefficient when a stock move line is entered in a unit other than the product stock unit."
+module: axelor-stock
+developer: |
+  StockMoveLineService#fillRealizeWapPrice now throws AxelorException. Custom overrides and callers
+  must be updated, and BatchProcessorHelper call sites need the two-argument type witness
+  (.<StockMoveLine, AxelorException>forEachByQuery).

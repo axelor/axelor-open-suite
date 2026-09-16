@@ -273,7 +273,7 @@ public interface StockMoveLineService {
    *
    * @param stockMoveLine a stock move line being realized.
    */
-  public void fillRealizeWapPrice(StockMoveLine stockMoveLine);
+  public void fillRealizeWapPrice(StockMoveLine stockMoveLine) throws AxelorException;
 
   /** Add a new line in a stock move (API AOS) */
   StockMoveLine createStockMoveLine(
