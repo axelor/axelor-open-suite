@@ -147,10 +147,11 @@ public class ExpenseLineController {
 
       if (Beans.get(AppAccountService.class).isApp("account")
           && Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
+        expenseLine =
+            Beans.get(ExpenseAnalyticService.class).refreshAnalyticDistribution(expenseLine);
         response.setValue(
-            "analyticDistributionTemplate",
-            Beans.get(ExpenseAnalyticService.class)
-                .computeAnalyticDistributionTemplate(expenseLine));
+            "analyticDistributionTemplate", expenseLine.getAnalyticDistributionTemplate());
+        response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

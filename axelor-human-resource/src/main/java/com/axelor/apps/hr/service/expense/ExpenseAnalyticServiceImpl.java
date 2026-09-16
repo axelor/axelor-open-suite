@@ -99,6 +99,7 @@ public class ExpenseAnalyticServiceImpl implements ExpenseAnalyticService {
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
             date);
 
+    expenseLine.clearAnalyticMoveLineList();
     analyticMoveLineList.forEach(expenseLine::addAnalyticMoveLineListItem);
     return expenseLine;
   }
@@ -145,6 +146,12 @@ public class ExpenseAnalyticServiceImpl implements ExpenseAnalyticService {
       expenseLine.setAnalyticDistributionTemplate(computeAnalyticDistributionTemplate(expenseLine));
       createAnalyticDistributionWithTemplate(expenseLine);
     }
+  }
+
+  @Override
+  public ExpenseLine refreshAnalyticDistribution(ExpenseLine expenseLine) throws AxelorException {
+    expenseLine.setAnalyticDistributionTemplate(computeAnalyticDistributionTemplate(expenseLine));
+    return createAnalyticDistributionWithTemplate(expenseLine);
   }
 
   protected Company getCompany(ExpenseLine expenseLine) {
