@@ -38,9 +38,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderCreateStockMoveLineServiceImpl
     implements ManufOrderCreateStockMoveLineService {
@@ -240,8 +240,27 @@ public class ManufOrderCreateStockMoveLineServiceImpl
         manufOrderGetStockMoveService.getPlannedStockMove(
             manufOrderGetStockMoveService.getFinishedProductOutStockMoveList(manufOrder));
     if (!stockMoveOpt.isPresent()) {
-      return;
+      List<ProdProduct> toProduceProdProductList = manufOrder.getToProduceProdProductList();
+      List<StockMoveLine> producedStockMoveLineList = manufOrder.getProducedStockMoveLineList();
+      if (!manufOrderStockMoveService.hasRemainingQty(
+          manufOrder, toProduceProdProductList, qtyToUpdate, producedStockMoveLineList)) {
+        return;
+      }
+
+      // After a partial finish, the produced stock move is REALIZED.
+      // Create a new stock move for the remaining quantity. It is created without lines: they are
+      // built below with the remaining quantity, as for an already existing stock move.
+      Optional<StockMove> newStockMoveOpt =
+          Beans.get(ManufOrderPlanStockMoveService.class)
+              .createAndPlanToProduceStockMove(manufOrder);
+      if (newStockMoveOpt.isEmpty()) {
+        return;
+      }
+      manufOrder.addOutStockMoveListItem(newStockMoveOpt.get());
+      manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+      stockMoveOpt = newStockMoveOpt;
     }
+
     StockMove stockMove = stockMoveOpt.get();
 
     // Snapshot tracking numbers before cancellation mutates the lines
@@ -279,20 +298,8 @@ public class ManufOrderCreateStockMoveLineServiceImpl
     // create a new list, reusing preserved tracking numbers
     for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
       BigDecimal qty =
-          manufOrderStockMoveService.getFractionQty(manufOrder, prodProduct, qtyToUpdate);
-      BigDecimal realizedQty =
-          manufOrder.getProducedStockMoveLineList().stream()
-              .filter(
-                  sml ->
-                      sml.getProduct() != null
-                          && sml.getProduct().equals(prodProduct.getProduct())
-                          && sml.getStockMove() != null
-                          && sml.getStockMove().getStatusSelect()
-                              == StockMoveRepository.STATUS_REALIZED)
-              .map(StockMoveLine::getRealQty)
-              .filter(Objects::nonNull)
-              .reduce(BigDecimal.ZERO, BigDecimal::add);
-      qty = qty.subtract(realizedQty).max(BigDecimal.ZERO);
+          manufOrderStockMoveService.getRemainingQty(
+              manufOrder, prodProduct, qtyToUpdate, manufOrder.getProducedStockMoveLineList());
       productionTrackingPreservationService.createStockMoveLinesWithPreservedTracking(
           prodProduct,
           stockMove,
@@ -315,6 +322,10 @@ public class ManufOrderCreateStockMoveLineServiceImpl
         stockMove.getToStockLocation(),
         preservedTrackingNumbersByProduct);
 
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (CollectionUtils.isEmpty(stockMoveLineList)) {
+      return;
+    }
     stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);
 
@@ -447,6 +458,13 @@ public class ManufOrderCreateStockMoveLineServiceImpl
         manufOrderGetStockMoveService.getPlannedStockMove(manufOrder.getInStockMoveList());
 
     if (!stockMoveOpt.isPresent()) {
+      List<ProdProduct> toConsumeProdProductList = manufOrder.getToConsumeProdProductList();
+      List<StockMoveLine> consumedStockMoveLineList = manufOrder.getConsumedStockMoveLineList();
+      if (!manufOrderStockMoveService.hasRemainingQty(
+          manufOrder, toConsumeProdProductList, qtyToUpdate, consumedStockMoveLineList)) {
+        return;
+      }
+
       // After a partial finish, the consumed stock move is REALIZED.
       // Create a new planned stock move for the remaining quantity.
       StockMove newStockMove =
@@ -472,34 +490,21 @@ public class ManufOrderCreateStockMoveLineServiceImpl
         productionTrackingPreservationService.getPreservedTrackingNumbersByProduct(originalLines);
 
     manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+    List<StockMoveLine> consumedStockMoveLineList = manufOrder.getConsumedStockMoveLineList();
     // clear all lists from planned lines
-    manufOrder
-        .getConsumedStockMoveLineList()
-        .removeIf(
-            stockMoveLine ->
-                stockMoveLine.getStockMove().getStatusSelect()
-                    == StockMoveRepository.STATUS_CANCELED);
+    consumedStockMoveLineList.removeIf(
+        stockMoveLine ->
+            stockMoveLine.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_CANCELED);
 
     stockMove = JpaModelHelper.ensureManaged(stockMove);
     stockMove.clearStockMoveLineList();
 
     // create a new list, reusing preserved tracking numbers
-    for (ProdProduct prodProduct : manufOrder.getToConsumeProdProductList()) {
+    List<ProdProduct> toConsumeProdProductList = manufOrder.getToConsumeProdProductList();
+    for (ProdProduct prodProduct : toConsumeProdProductList) {
       BigDecimal qty =
-          manufOrderStockMoveService.getFractionQty(manufOrder, prodProduct, qtyToUpdate);
-      BigDecimal realizedQty =
-          manufOrder.getConsumedStockMoveLineList().stream()
-              .filter(
-                  sml ->
-                      sml.getProduct() != null
-                          && sml.getProduct().equals(prodProduct.getProduct())
-                          && sml.getStockMove() != null
-                          && sml.getStockMove().getStatusSelect()
-                              == StockMoveRepository.STATUS_REALIZED)
-              .map(StockMoveLine::getRealQty)
-              .filter(Objects::nonNull)
-              .reduce(BigDecimal.ZERO, BigDecimal::add);
-      qty = qty.subtract(realizedQty).max(BigDecimal.ZERO);
+          manufOrderStockMoveService.getRemainingQty(
+              manufOrder, prodProduct, qtyToUpdate, consumedStockMoveLineList);
       productionTrackingPreservationService.createStockMoveLinesWithPreservedTracking(
           prodProduct,
           stockMove,
@@ -512,10 +517,14 @@ public class ManufOrderCreateStockMoveLineServiceImpl
       // Update consumed StockMoveLineList with created stock move lines
       List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
-        if (!manufOrder.getConsumedStockMoveLineList().contains(stockMoveLine)) {
+        if (!consumedStockMoveLineList.contains(stockMoveLine)) {
           manufOrder.addConsumedStockMoveLineListItem(stockMoveLine);
         }
       }
+    }
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (CollectionUtils.isEmpty(stockMoveLineList)) {
+      return;
     }
     stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);
