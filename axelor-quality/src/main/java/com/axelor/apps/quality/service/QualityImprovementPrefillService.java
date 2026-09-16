@@ -18,21 +18,24 @@
  */
 package com.axelor.apps.quality.service;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.quality.db.ControlEntry;
 import com.axelor.apps.quality.db.QIDetection;
 import com.axelor.apps.quality.db.QIIdentification;
-import com.axelor.apps.quality.db.QIResolution;
-import com.axelor.apps.quality.db.QualityImprovement;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.script.ScriptAllowed;
 
-public interface QualityImprovementCreateService {
+@ScriptAllowed
+public interface QualityImprovementPrefillService {
 
-  QualityImprovement createQualityImprovementFromControlEntry(
-      ControlEntry controlEntry, QIDetection qiDetection, int type) throws AxelorException;
+  int getDetectionOrigin(ControlEntry controlEntry);
 
-  QualityImprovement createQualityImprovement(
-      QualityImprovement qualityImprovement,
-      QIIdentification qiIdentification,
-      QIResolution qiResolution)
-      throws AxelorException;
+  QIDetection getDefaultDetection(ControlEntry controlEntry);
+
+  void fillDetectedBy(QIIdentification qiIdentification, ControlEntry controlEntry);
+
+  void fillFromControlEntry(
+      QIIdentification qiIdentification, ControlEntry controlEntry, QIDetection qiDetection);
+
+  void fillFromStockMoveLine(
+      QIIdentification qiIdentification, StockMoveLine stockMoveLine, QIDetection qiDetection);
 }

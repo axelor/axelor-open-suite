@@ -29,6 +29,8 @@
       colSpan="12" grid-view="control-entry-sample-grid" form-view="control-entry-sample-form"
       showIf="statusSelect == 2 || statusSelect == 3" canNew="false" canRemove="false"
       readonlyIf="statusSelect > 2" onChange="save"/>
+    <panel-dashlet name="qualityImprovementsPanel"
+      action="action-control-entry-view-quality-improvements" colSpan="12" showIf="id"/>
     <panel name="actionPanel" showTitle="false" sidebar="true">
       <button name="createSamplesBtn"
         onClick="save,action-method-quality-control-entry-create-samples"
@@ -38,7 +40,8 @@
         title="Finish" showIf="statusSelect == 2"/>
       <button name="cancelBtn" onClick="action-record-quality-control-cancel,save"
         title="Cancel" showIf="statusSelect == 2"/>
-      <button onClick="save,action-view-quality-control-create-qi"
+      <button
+        onClick="save,action-control-entry-method-check-open-qi,action-view-quality-control-create-qi"
         name="addQualityImprovement" title="Add a quality improvement"/>
     </panel>
     <panel name="relatedPanel" sidebar="true">
@@ -87,6 +90,19 @@
     <call class="com.axelor.apps.quality.web.ControlEntryController" method="addControlEntry"/>
   </action-method>
 
+  <action-method name="action-control-entry-method-check-open-qi">
+    <call class="com.axelor.apps.quality.web.ControlEntryController"
+      method="checkOpenQualityImprovements"/>
+  </action-method>
+
+  <action-view name="action-control-entry-view-quality-improvements"
+    title="Quality improvements" model="com.axelor.apps.quality.db.QualityImprovement">
+    <view type="grid" name="quality-improvement-grid"/>
+    <view type="form" name="quality-improvement-form"/>
+    <domain>self.qiIdentification.controlEntry.id = :_controlEntryId</domain>
+    <context name="_controlEntryId" expr="eval: id"/>
+  </action-view>
+
   <action-view name="action-view-quality-control-create-qi" title="Control entry"
     model="com.axelor.utils.db.Wizard">
     <view name="qi-create-wizard-form" type="form"/>
@@ -94,6 +110,8 @@
     <view-param name="popup-save" value="false"/>
     <view-param name="show-toolbar" value="false"/>
     <context name="_controlEntryId" expr="eval: id"/>
+    <context name="_qiDetection"
+      expr="eval: __bean__(com.axelor.apps.quality.service.QualityImprovementPrefillService.class).getDefaultDetection(__self__)"/>
   </action-view>
 
 </object-views>
