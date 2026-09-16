@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed adding a pack when a price list line replaces the unit price with a fixed amount."
+module: axelor-sale
