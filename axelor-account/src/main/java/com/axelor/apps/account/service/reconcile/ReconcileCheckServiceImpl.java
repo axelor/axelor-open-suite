@@ -188,7 +188,7 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
         && move.getMoveLineList().stream().anyMatch(this::isMissingTax)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          AccountExceptionMessage.RECONCILE_MISSING_TAX,
+          I18n.get(AccountExceptionMessage.RECONCILE_MISSING_TAX),
           move.getReference());
     }
   }

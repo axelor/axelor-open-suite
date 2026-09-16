@@ -126,17 +126,22 @@ public class PaymentServiceImpl implements PaymentService {
    * @param creditMoveLines
    */
   @Override
-  public int useExcessPaymentOnMoveLinesDontThrow(
+  public List<String> useExcessPaymentOnMoveLinesDontThrow(
       List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) {
-    int errorNumber = 0;
     try {
-      errorNumber = useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, true);
+      return useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, true);
     } catch (Exception e) {
       TraceBackService.trace(e);
       log.debug(e.getMessage());
+      return List.of(getReconcileErrorMessage(e));
     }
+  }
 
-    return errorNumber;
+  protected String getReconcileErrorMessage(Exception e) {
+    if (e instanceof AxelorException && e.getMessage() != null) {
+      return e.getMessage();
+    }
+    return I18n.get(AccountExceptionMessage.RECONCILE_MASS_ERRORS);
   }
 
   /**
@@ -148,13 +153,13 @@ public class PaymentServiceImpl implements PaymentService {
    * @param dontThrow
    * @throws AxelorException
    */
-  protected int useExcessPaymentOnMoveLines(
+  protected List<String> useExcessPaymentOnMoveLines(
       List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines, boolean dontThrow)
       throws AxelorException {
-    int errorNumber = 0;
+    List<String> errorMessages = new ArrayList<>();
 
     if (ObjectUtils.isEmpty(debitMoveLines) || ObjectUtils.isEmpty(creditMoveLines)) {
-      return errorNumber;
+      return errorMessages;
     }
 
     log.debug(
@@ -192,7 +197,7 @@ public class PaymentServiceImpl implements PaymentService {
           if (reconcileNumberLimit > 0 && reconcileCount >= reconcileNumberLimit) {
             traceExcessPaymentReconcileLimitReached(
                 debitMoveLine, creditMoveLine, reconcileNumberLimit);
-            return errorNumber;
+            return errorMessages;
           }
           BigDecimal reconciledAmount = BigDecimal.ZERO;
           if (debitMoveLine.getMaxAmountToReconcile().compareTo(BigDecimal.ZERO) > 0) {
@@ -215,7 +220,7 @@ public class PaymentServiceImpl implements PaymentService {
             if (dontThrow) {
               TraceBackService.trace(e);
               log.debug(e.getMessage());
-              errorNumber++;
+              errorMessages.add(getReconcileErrorMessage(e));
             } else {
               throw e;
             }
@@ -224,7 +229,7 @@ public class PaymentServiceImpl implements PaymentService {
       }
     }
 
-    return errorNumber;
+    return errorMessages;
   }
 
   /**
