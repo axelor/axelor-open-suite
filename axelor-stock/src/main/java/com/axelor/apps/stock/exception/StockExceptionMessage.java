@@ -73,6 +73,12 @@ public final class StockExceptionMessage {
   public static final String LOCATION_LINE_3 = /*$$(*/
       "Product's stocks %s (%s) exceeds maximum stock rules." /*)*/;
 
+  public static final String LOCATION_LINE_NEGATIVE_QTY = /*$$(*/
+      "Product's stocks %s (%s) would become negative (%s) in stock location %s. Please check the quantities and the units." /*)*/;
+
+  public static final String DETAIL_LOCATION_LINE_NEGATIVE_QTY = /*$$(*/
+      "Product's stocks %s (%s), tracking number %s would become negative (%s) in stock location %s. Please check the quantities and the units." /*)*/;
+
   public static final String LOCATION_LINE_MISSING_UNIT = /*$$(*/
       "Please fill unit for the stock location line in %s for the product %s." /*)*/;
 

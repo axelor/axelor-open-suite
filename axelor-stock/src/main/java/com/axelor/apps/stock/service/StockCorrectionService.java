@@ -30,12 +30,15 @@ import java.util.Map;
 
 public interface StockCorrectionService {
 
-  public Map<String, Object> fillDefaultValues(StockLocationLine stockLocationLine);
+  public Map<String, Object> fillDefaultValues(StockLocationLine stockLocationLine)
+      throws AxelorException;
 
-  public Map<String, Object> fillDeafultQtys(StockCorrection stockCorrection);
+  public Map<String, Object> fillDeafultQtys(StockCorrection stockCorrection)
+      throws AxelorException;
 
   public void getDefaultQtys(
-      StockLocationLine stockLocationLine, Map<String, Object> stockCorrectionQtys);
+      StockLocationLine stockLocationLine, Map<String, Object> stockCorrectionQtys)
+      throws AxelorException;
 
   public boolean validate(StockCorrection stockCorrection) throws AxelorException;
 
