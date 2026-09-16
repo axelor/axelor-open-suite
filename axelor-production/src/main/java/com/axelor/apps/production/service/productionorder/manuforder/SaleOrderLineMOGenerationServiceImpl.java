@@ -66,8 +66,7 @@ public class SaleOrderLineMOGenerationServiceImpl implements SaleOrderLineMOGene
       SaleOrderLine saleOrderLine,
       SaleOrder saleOrder,
       ProductionOrder productionOrder,
-      BigDecimal qtyRequested,
-      BigDecimal grossQtyRequested)
+      BigDecimal qtyRequested)
       throws AxelorException {
 
     Objects.requireNonNull(saleOrderLine);
@@ -86,8 +85,7 @@ public class SaleOrderLineMOGenerationServiceImpl implements SaleOrderLineMOGene
             qtyRequested,
             startDateTime,
             saleOrder,
-            saleOrderLine,
-            grossQtyRequested);
+            saleOrderLine);
         break;
       case AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI:
         // Generation through SaleOrderLines
