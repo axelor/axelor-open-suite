@@ -15,11 +15,8 @@
         <bind node="code" to="code"/>
         <bind node="name" to="name"/>
       </bind>
-      <bind node="language" to="language" search="self.code = :code" if="code">
+      <bind node="localization" to="localization" search="self.code = :code" if="code">
         <bind node="code" to="code"/>
-        <bind node="name" to="name"/>
-      </bind>
-      <bind node="printSettings" to="printSettings" search="self.name = :name" if="name">
         <bind node="name" to="name"/>
       </bind>
       <bind node="formatSelect" to="formatSelect"/>
@@ -32,8 +29,6 @@
       <bind node="hidePrintSettings" to="hidePrintSettings"/>
       <bind node="printingTemplateSet/printingTemplate" to="printingTemplateSet">
         <bind node="name" to="name"/>
-        <bind node="format" to="format"/>
-        <bind node="templateLink" to="templateLink"/>
       </bind>
       <bind node="printTemplateLineList/printTemplateLine" to="printTemplateLineList">
         <bind node="sequence" to="sequence"/>
@@ -70,11 +65,8 @@
           <bind node="code" to="code"/>
           <bind node="name" to="name"/>
         </bind>
-        <bind node="language" to="language" search="self.code = :code" if="code">
+        <bind node="localization" to="localization" search="self.code = :code" if="code">
           <bind node="code" to="code"/>
-          <bind node="name" to="name"/>
-        </bind>
-        <bind node="printSettings" to="printSettings" search="self.name = :name" if="name">
           <bind node="name" to="name"/>
         </bind>
         <bind node="formatSelect" to="formatSelect"/>
