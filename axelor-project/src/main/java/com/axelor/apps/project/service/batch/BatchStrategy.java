@@ -16,21 +16,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service;
+package com.axelor.apps.project.service.batch;
 
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.TaskStatus;
+import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.project.db.ProjectBatch;
 import java.util.Optional;
-import java.util.Set;
 
-public interface ProjectTaskToolService {
-  Optional<TaskStatus> getCompletedTaskStatus(
-      TaskStatus defaultTaskStatus, Set<TaskStatus> taskStatusSet);
+public abstract class BatchStrategy extends AbstractBatch {
 
-  /**
-   * Resolves whether the given task is completed, through {@code Project.completedTaskStatus},
-   * falling back to {@code AppProject.completedTaskStatus}, falling back to {@code
-   * TaskStatus.isCompleted}.
-   */
-  boolean isCompleted(ProjectTask projectTask);
+  @Override
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_PROJECT_BATCH);
+  }
+
+  @Override
+  protected Integer getFetchLimit() {
+    return Optional.ofNullable(batch)
+        .map(Batch::getProjectBatch)
+        .map(ProjectBatch::getFetchLimit)
+        .filter(fetchLimit -> fetchLimit > 0)
+        .orElseGet(super::getFetchLimit);
+  }
 }

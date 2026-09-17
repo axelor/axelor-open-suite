@@ -13,6 +13,7 @@
       selection="project.batch.action.select" default="1"/>
 
     <!-- OTHERS INFORMATIONS -->
+    <integer name="fetchLimit" title="Fetch limit" min="0"/>
     <string name="description" title="Description" large="true"/>
     <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch"
       mappedBy="projectBatch" title="Batches"/>
@@ -26,10 +27,21 @@
     <many-to-many name="taskStatusSet" ref="com.axelor.apps.project.db.TaskStatus"
       title="Task statuses"/>
 
+    <!-- NOTIFY TASKS BATCH -->
+    <integer name="toDoAnticipationDays" title="To-do anticipation (days)" min="1"
+      default="7"
+      help="Tasks whose due date falls within this number of days from today are notified as to do to their assignee."/>
+    <integer name="overdueLookbackDays" title="Overdue lookback (days)" min="1" default="30"
+      help="Only tasks whose due date has passed within this number of days are notified as overdue. Older overdue tasks are ignored."/>
+    <integer name="overdueReminderFrequencyDays" title="Overdue reminder frequency (days)"
+      min="0" default="0"
+      help="Once notified as overdue, the assignee is reminded every N days while the task remains overdue. 0 disables reminders."/>
+
     <extra-code><![CDATA[
 
 	   	// ACTION TYPE
 		public static final int ACTION_REMOVE_TASK_STATUS = 1;
+		public static final int ACTION_NOTIFY_TASKS = 2;
 
 	]]></extra-code>
 

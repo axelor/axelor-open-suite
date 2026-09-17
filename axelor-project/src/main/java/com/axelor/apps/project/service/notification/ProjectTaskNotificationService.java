@@ -16,21 +16,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service;
+package com.axelor.apps.project.service.notification;
 
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.TaskStatus;
-import java.util.Optional;
-import java.util.Set;
+import java.time.LocalDateTime;
 
-public interface ProjectTaskToolService {
-  Optional<TaskStatus> getCompletedTaskStatus(
-      TaskStatus defaultTaskStatus, Set<TaskStatus> taskStatusSet);
+public interface ProjectTaskNotificationService {
 
   /**
-   * Resolves whether the given task is completed, through {@code Project.completedTaskStatus},
-   * falling back to {@code AppProject.completedTaskStatus}, falling back to {@code
-   * TaskStatus.isCompleted}.
+   * Notifies the task's assignee, in the notification bell, that the task belongs to the given
+   * category. Does nothing if the task has no assignee or no due date, is completed, or was already
+   * notified in this category for the same assignee and due date. When {@code
+   * reminderFrequencyDays} is positive, notifies again once the last such notification is older
+   * than that many days.
+   *
+   * @return {@code true} if a notification was created.
    */
-  boolean isCompleted(ProjectTask projectTask);
+  boolean notify(
+      ProjectTask projectTask,
+      ProjectTaskNotificationCategory category,
+      int reminderFrequencyDays,
+      LocalDateTime now);
 }
