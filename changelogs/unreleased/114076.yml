@@ -1,0 +1,5 @@
+---
+title: "Stock move: fixed incorrect unit price on delivery lines when the sale order is in ATI."
+module: axelor-supplychain
+developer: |
+  Added TaxService parameter to StockMoveLineServiceSupplychainImpl constructor
