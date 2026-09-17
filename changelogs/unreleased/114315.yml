@@ -1,3 +1,0 @@
----
-title: "Stock move: fixed automatic tracking number selection (FIFO/LIFO) assigning the same tracking number to multiple delivery order lines, blocking the delivery."
-module: axelor-stock
