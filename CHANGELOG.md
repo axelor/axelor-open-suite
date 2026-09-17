@@ -1,3 +1,17 @@
+## [8.3.43] (2026-09-17)
+
+### Fixes
+#### Production
+
+* Production: sub manufacturing orders are now sized from the parent manufacturing order quantity to produce.
+
+
+### Developer
+
+#### Production
+
+ProductionOrderSaleOrderMOGenerationService: `generateManufOrders()` signature updated — removed the `BigDecimal grossQtyRequested` parameter.
+
 ## [8.3.42] (2026-09-03)
 
 ### Fixes
@@ -3536,6 +3550,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.43]: https://github.com/axelor/axelor-open-suite/compare/v8.3.42...v8.3.43
 [8.3.42]: https://github.com/axelor/axelor-open-suite/compare/v8.3.41...v8.3.42
 [8.3.41]: https://github.com/axelor/axelor-open-suite/compare/v8.3.40...v8.3.41
 [8.3.40]: https://github.com/axelor/axelor-open-suite/compare/v8.3.39...v8.3.40
