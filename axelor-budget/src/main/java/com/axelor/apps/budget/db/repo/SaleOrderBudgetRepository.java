@@ -26,12 +26,12 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetServiceImpl;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
 import com.axelor.apps.budget.service.saleorderline.SaleOrderLineBudgetService;
+import com.axelor.apps.contract.db.repo.SaleOrderContractRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCopyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusService;
-import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
-public class SaleOrderBudgetRepository extends SaleOrderSupplychainRepository {
+public class SaleOrderBudgetRepository extends SaleOrderContractRepository {
 
   @Inject
   public SaleOrderBudgetRepository(
