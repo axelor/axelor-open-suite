@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <form id="bank-payment-voucher-form" name="payment-voucher-form" title="Payment voucher"
+    model="com.axelor.apps.account.db.PaymentVoucher" extension="true">
+    <extend target="//panel[@name='movePanel']">
+      <insert position="after">
+        <panel name="bankOrderPanel" itemSpan="12"
+          showIf="paymentMode &amp;&amp; paymentMode.generateBankOrder">
+          <field name="bankOrder" grid-view="bank-order-grid" form-view="bank-order-form"
+            readonly="true"/>
+          <field name="paymentMode.generateBankOrder" hidden="true"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>

@@ -22,9 +22,11 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
+import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
@@ -119,6 +121,12 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
       for (InvoicePayment invoicePayment : invoicePaymentList) {
 
         invoicePayment.setBankOrder(bankOrder);
+      }
+
+      PaymentVoucher paymentVoucher =
+          Beans.get(PaymentVoucherRepository.class).findByBankOrder(bankOrderToRemove);
+      if (paymentVoucher != null) {
+        paymentVoucher.setBankOrder(bankOrder);
       }
 
       bankOrderRepo.remove(bankOrderToRemove);
