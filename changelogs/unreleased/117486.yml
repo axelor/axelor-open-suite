@@ -1,3 +1,0 @@
----
-title: "Purchase order line: fixed unit price being recomputed and overwritten when the line form is loaded."
-module: axelor-purchase

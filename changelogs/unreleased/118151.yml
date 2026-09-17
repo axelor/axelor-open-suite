@@ -1,3 +1,0 @@
----
-title: "Stock move: fixed incorrect stock being created at the source location when planning a move with a tracking number that has no stock there."
-module: axelor-stock
