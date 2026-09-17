@@ -19,4 +19,6 @@ dependencies {
   
   implementation libs.jsoup
   implementation libs.swagger_jaxrs
+
+  testImplementation libs.mockito
 }
