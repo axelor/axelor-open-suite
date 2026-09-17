@@ -32,6 +32,7 @@
       ref="com.axelor.apps.account.db.VatExemptionReason" title="VAT exemption reason"/>
     <date name="cutOffStartDate" title="From date"/>
     <date name="cutOffEndDate" title="To date"/>
+    <date name="deliveryDate" title="Delivery date"/>
 
     <decimal name="discountAmount" title="Discount amount" precision="30" scale="20"/>
     <integer name="discountTypeSelect" title="Discount type"
