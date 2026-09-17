@@ -85,6 +85,10 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
               .collect(Collectors.toList());
     }
 
+    if (saleOrderLineList.isEmpty() && getLinkedProductionOrders(saleOrder).isEmpty()) {
+      return I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_NO_GENERATION);
+    }
+
     if (oneProdOrderPerSO) {
       return getMessageForOneProdPerSo(saleOrder, selectedSaleOrderLine, saleOrderLineList);
     } else {
@@ -152,6 +156,9 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
   protected void generateOnePoPerSaleOrder(
       SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList) throws AxelorException {
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return;
+    }
     ProductionOrder productionOrder = this.fetchOrCreateProductionOrder(saleOrder);
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       manufOrderSaleOrderService.generateManufOrders(productionOrder, saleOrderLine);
