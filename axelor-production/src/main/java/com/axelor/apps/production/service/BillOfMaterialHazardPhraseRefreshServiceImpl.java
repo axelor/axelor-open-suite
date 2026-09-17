@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.ListUtils;
 
 public class BillOfMaterialHazardPhraseRefreshServiceImpl
     implements BillOfMaterialHazardPhraseRefreshService {
@@ -120,7 +121,7 @@ public class BillOfMaterialHazardPhraseRefreshServiceImpl
             .bind("prodProcess", prodProcess)
             .fetch()
             .stream()
-            .flatMap(b -> b.getBillOfMaterialLineList().stream())
+            .flatMap(b -> ListUtils.emptyIfNull(b.getBillOfMaterialLineList()).stream())
             .map(BillOfMaterialLine::getProduct)
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
