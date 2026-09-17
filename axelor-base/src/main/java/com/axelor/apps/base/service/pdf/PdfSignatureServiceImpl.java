@@ -85,9 +85,9 @@ public class PdfSignatureServiceImpl implements PdfSignatureService {
         digitallySignPdf(new File(MetaFiles.getPath(metaFile).toString()), pfxCertificate, reason);
     try {
       String baseName = FileUtils.stripExtension(FileUtils.safeFileName(metaFile.getFileName()));
-      MetaFile resultFile = metaFiles.upload(signedPdfFile);
+      MetaFile resultFile = new MetaFile();
       resultFile.setFileName(baseName + ".pdf");
-      return resultFile;
+      return metaFiles.upload(signedPdfFile, resultFile);
     } catch (IOException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
