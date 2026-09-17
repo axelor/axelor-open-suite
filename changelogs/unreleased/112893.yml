@@ -1,0 +1,16 @@
+---
+title: "Project: copying a project now also copies its tasks, keeping the parent task hierarchy."
+module: axelor-project
+developer: |
+  Copying a project no longer returns the tasks in the copy: `ProjectManagementRepository.copy`
+  only sets the new transient field `Project.copiedFromProject`, and the tasks are copied on the
+  first save of the copy by the new `ProjectTaskCopyService`, bound in `ProjectModule`.
+
+  Consequences for custom modules:
+
+  - a Project form view used to duplicate a project must keep the `copiedFromProject` field
+    (added hidden in `project-form`), and a client building its own save payload has to send it
+    back, otherwise the copy is saved without any task;
+  - the copied tasks are unlinked from the source project: parent task, recurrence chain and
+    dependency sets are remapped on the copies, ticket number and active sprint are reset;
+  - the `Tasks` panel of `project-form` is now hidden until the project is saved.
