@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <print-templates>
-<% __ids__.each({ u = com.axelor.inject.Beans.get('com.axelor.apps.base.db.repo.PrintTemplateRepository' as Class).find(it)
+<% __ids__.each({ u = __repo__(PrintTemplate).find(it)
 		
 	printTemplateLineListService = ""
 	u.printTemplateLineList.each( {pt->
@@ -46,8 +46,6 @@
 	u.printingTemplateSet.each( {pt->
 	    printingTemplateSetService += "<printingTemplate>"
 	    printingTemplateSetService += "  <name>${pt.name}</name>"
-	    printingTemplateSetService += "  <format>${pt.format}</format>"
-	    printingTemplateSetService += "  <templateLink>${pt.templateLink}</templateLink>"
 		printingTemplateSetService += "</printingTemplate>"
 	})
 	
@@ -64,18 +62,18 @@
 	    printTemplateSetService += "  <code>${pt?.company?.code}</code>"
 	    printTemplateSetService += "  <name>${pt?.company?.name}</name>"
 	    printTemplateSetService += "  </company>"
-	    printTemplateSetService += "  <language>"
-	    printTemplateSetService += "  <code>${pt?.language?.code}</code>"
-	    printTemplateSetService += "  <name>${pt?.language?.name}</name>"
-	    printTemplateSetService += "  </language>"
-	    printTemplateSetService += "  <formatSelect>${u.formatSelect}</formatSelect>"
-	    printTemplateSetService += "  <displayTypeSelect>${u.displayTypeSelect}</displayTypeSelect>"
-	    printTemplateSetService += "  <documentName>${u.documentName}</documentName>"
-	    printTemplateSetService += "  <metaFileField>${u.metaFileField}</metaFileField>"
-	    printTemplateSetService += "  <metaModelDefaultPath>${u.metaModelDefaultPath}</metaModelDefaultPath>"
-	    printTemplateSetService += "  <attach>${u.attach}</attach>"
-	    printTemplateSetService += "  <isEditable>${u.isEditable}</isEditable>"
-	    printTemplateSetService += "  <hidePrintSettings>${u.hidePrintSettings}</hidePrintSettings>"
+	    printTemplateSetService += "  <localization>"
+	    printTemplateSetService += "  <code>${pt?.localization?.code}</code>"
+	    printTemplateSetService += "  <name>${pt?.localization?.name}</name>"
+	    printTemplateSetService += "  </localization>"
+	    printTemplateSetService += "  <formatSelect>${pt.formatSelect}</formatSelect>"
+	    printTemplateSetService += "  <displayTypeSelect>${pt.displayTypeSelect}</displayTypeSelect>"
+	    printTemplateSetService += "  <documentName>${pt.documentName}</documentName>"
+	    printTemplateSetService += "  <metaFileField>${pt.metaFileField}</metaFileField>"
+	    printTemplateSetService += "  <metaModelDefaultPath>${pt.metaModelDefaultPath}</metaModelDefaultPath>"
+	    printTemplateSetService += "  <attach>${pt.attach}</attach>"
+	    printTemplateSetService += "  <isEditable>${pt.isEditable}</isEditable>"
+	    printTemplateSetService += "  <hidePrintSettings>${pt.hidePrintSettings}</hidePrintSettings>"
 		printTemplateSetService += "</printTemplate>"
 	})
 	out <<
@@ -91,10 +89,10 @@
 			<code>${u?.company?.code}</code>
 			<name>${u?.company?.name}</name>
 		</company>
-		<language>
-			<code>${u?.language?.code}</code>
-			<name>${u?.language?.name}</name>
-		</language>
+		<localization>
+			<code>${u?.localization?.code}</code>
+			<name>${u?.localization?.name}</name>
+		</localization>
 		<formatSelect>${u.formatSelect}</formatSelect>
 		<displayTypeSelect>${u.displayTypeSelect}</displayTypeSelect>
 		<documentName>${u.documentName}</documentName>
