@@ -111,6 +111,10 @@ public final class ProjectExceptionMessage {
 
   public static final String PROJECT_TASK_NOTIFICATION_TODO = /*$$(*/ "Task to do: %s" /*)*/;
 
+  public static final String PROJECT_TASK_NOTIFICATION_TAG_OVERDUE = /*$$(*/ "Overdue" /*)*/;
+
+  public static final String PROJECT_TASK_NOTIFICATION_TAG_TODO = /*$$(*/ "To do" /*)*/;
+
   public static final String BATCH_TASK_NOTIFICATION_1 = /*$$(*/
       "Task notifications completed:" /*)*/;
 

@@ -19,89 +19,100 @@
 package com.axelor.apps.project.service.batch;
 
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.base.service.batch.BatchStrategy;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.project.db.ProjectBatch;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
-import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.apps.project.service.notification.ProjectTaskNotificationCategory;
 import com.axelor.apps.project.service.notification.ProjectTaskNotificationService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppProject;
 import jakarta.inject.Inject;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class BatchProjectTaskNotification extends BatchStrategy {
 
-  protected static final int DEFAULT_ANTICIPATION_DAYS = 7;
+  protected static final int DEFAULT_TO_DO_ANTICIPATION_DAYS = 7;
+  protected static final int DEFAULT_OVERDUE_LOOKBACK_DAYS = 30;
 
-  protected ProjectTaskRepository projectTaskRepo;
-  protected ProjectTaskNotificationService projectTaskNotificationService;
-  protected AppProjectService appProjectService;
+  protected final ProjectTaskRepository projectTaskRepo;
+  protected final ProjectTaskNotificationService projectTaskNotificationService;
+
+  protected LocalDate today;
+  protected LocalDateTime now;
 
   @Inject
   public BatchProjectTaskNotification(
       ProjectTaskRepository projectTaskRepo,
-      ProjectTaskNotificationService projectTaskNotificationService,
-      AppProjectService appProjectService) {
+      ProjectTaskNotificationService projectTaskNotificationService) {
     this.projectTaskRepo = projectTaskRepo;
     this.projectTaskNotificationService = projectTaskNotificationService;
-    this.appProjectService = appProjectService;
   }
 
   @Override
   protected void process() {
-    findBatch();
-    notify(getOverdueTasks(), true);
-    notify(getToDoTasks(), false);
+    ProjectBatch projectBatch = batch.getProjectBatch();
+    today = appBaseService.getTodayDate(null);
+    now = appBaseService.getTodayDateTime(null).toLocalDateTime();
+
+    notify(
+        getOverdueTaskQuery(
+            positiveOrDefault(
+                projectBatch.getOverdueLookbackDays(), DEFAULT_OVERDUE_LOOKBACK_DAYS)),
+        ProjectTaskNotificationCategory.OVERDUE,
+        positiveOrDefault(projectBatch.getOverdueReminderFrequencyDays(), 0));
+    notify(
+        getToDoTaskQuery(
+            positiveOrDefault(
+                projectBatch.getToDoAnticipationDays(), DEFAULT_TO_DO_ANTICIPATION_DAYS)),
+        ProjectTaskNotificationCategory.TODO,
+        0);
   }
 
-  protected Query<ProjectTask> getOverdueTasks() {
+  protected Query<ProjectTask> getOverdueTaskQuery(int lookbackDays) {
     return projectTaskRepo
         .all()
         .filter(
-            "self.assignedTo IS NOT NULL AND self.taskEndDate IS NOT NULL "
-                + "AND self.taskEndDate < CURRENT_DATE")
+            "self.assignedTo IS NOT NULL AND self.taskEndDate >= :fromDate "
+                + "AND self.taskEndDate < :today")
+        .bind("fromDate", today.minusDays(lookbackDays))
+        .bind("today", today)
         .order("id");
   }
 
-  protected Query<ProjectTask> getToDoTasks() {
+  protected Query<ProjectTask> getToDoTaskQuery(int anticipationDays) {
     return projectTaskRepo
         .all()
         .filter(
-            "self.assignedTo IS NOT NULL AND self.taskEndDate IS NOT NULL "
-                + "AND self.taskEndDate >= CURRENT_DATE AND self.taskEndDate <= :windowEnd")
-        .bind("windowEnd", appBaseService.getTodayDate(null).plusDays(getAnticipationDays()))
+            "self.assignedTo IS NOT NULL AND self.taskEndDate >= :today "
+                + "AND self.taskEndDate <= :toDate")
+        .bind("today", today)
+        .bind("toDate", today.plusDays(anticipationDays))
         .order("id");
   }
 
-  protected int getAnticipationDays() {
-    AppProject appProject = appProjectService.getAppProject();
-    Integer anticipationDays =
-        appProject != null ? appProject.getTaskNotificationAnticipationDays() : null;
-    return anticipationDays != null && anticipationDays >= 0
-        ? anticipationDays
-        : DEFAULT_ANTICIPATION_DAYS;
+  protected int positiveOrDefault(Integer value, int defaultValue) {
+    return value != null && value > 0 ? value : defaultValue;
   }
 
-  protected void notify(Query<ProjectTask> projectTaskQuery, boolean overdue) {
+  protected void notify(
+      Query<ProjectTask> projectTaskQuery,
+      ProjectTaskNotificationCategory category,
+      int reminderFrequencyDays) {
     int offset = 0;
     List<ProjectTask> projectTaskList;
 
-    while (!(projectTaskList = projectTaskQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
-        .isEmpty()) {
+    while (!(projectTaskList = projectTaskQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
       for (ProjectTask projectTask : projectTaskList) {
         offset++;
 
         try {
-          boolean notified =
-              overdue
-                  ? projectTaskNotificationService.notifyOverdueTask(projectTask)
-                  : projectTaskNotificationService.notifyToDoTask(projectTask);
-          if (notified) {
+          if (projectTaskNotificationService.notify(
+              projectTask, category, reminderFrequencyDays, now)) {
             incrementDone();
           }
         } catch (Exception e) {

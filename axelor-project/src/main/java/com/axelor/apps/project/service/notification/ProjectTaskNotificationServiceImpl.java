@@ -19,116 +19,99 @@
 package com.axelor.apps.project.service.notification;
 
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectTaskToolService;
-import com.axelor.apps.project.service.app.AppProjectService;
-import com.axelor.auth.db.User;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.mail.MailConstants;
 import com.axelor.mail.db.MailMessage;
 import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.mail.db.repo.MailMessageRepository;
-import com.axelor.studio.db.AppProject;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import java.io.UncheckedIOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ProjectTaskNotificationServiceImpl implements ProjectTaskNotificationService {
 
-  protected static final String OVERDUE_NOTIFICATION_CATEGORY = "OVERDUE";
-  protected static final String TODO_NOTIFICATION_CATEGORY = "TODO";
+  protected static final String DUE_DATE_TRACK_NAME = "taskEndDate";
+  protected static final String DUE_DATE_TRACK_TITLE = "Due Date";
+  protected static final String ASSIGNED_TO_ID_KEY = "assignedToId";
 
   protected final MailMessageRepository mailMessageRepo;
   protected final MailFollowerRepository mailFollowerRepo;
   protected final ProjectTaskToolService projectTaskToolService;
-  protected final AppProjectService appProjectService;
+  protected final ObjectMapper objectMapper;
 
   @Inject
   public ProjectTaskNotificationServiceImpl(
       MailMessageRepository mailMessageRepo,
       MailFollowerRepository mailFollowerRepo,
       ProjectTaskToolService projectTaskToolService,
-      AppProjectService appProjectService) {
+      ObjectMapper objectMapper) {
     this.mailMessageRepo = mailMessageRepo;
     this.mailFollowerRepo = mailFollowerRepo;
     this.projectTaskToolService = projectTaskToolService;
-    this.appProjectService = appProjectService;
+    this.objectMapper = objectMapper;
   }
 
   @Override
-  public boolean notifyOverdueTask(ProjectTask projectTask) {
-    if (projectTask.getAssignedTo() == null || projectTaskToolService.isCompleted(projectTask)) {
+  public boolean notify(
+      ProjectTask projectTask,
+      ProjectTaskNotificationCategory category,
+      int reminderFrequencyDays,
+      LocalDateTime now) {
+    if (projectTask.getAssignedTo() == null
+        || projectTask.getTaskEndDate() == null
+        || projectTaskToolService.isCompleted(projectTask)
+        || !needsNotification(projectTask, category, reminderFrequencyDays, now)) {
       return false;
     }
 
-    String subject =
-        String.format(
-            I18n.get(ProjectExceptionMessage.PROJECT_TASK_NOTIFICATION_OVERDUE),
-            projectTask.getFullName());
-
-    if (!needsOverdueNotification(projectTask)) {
-      return false;
-    }
-
-    notify(projectTask, subject, OVERDUE_NOTIFICATION_CATEGORY);
+    mailFollowerRepo.follow(projectTask, projectTask.getAssignedTo());
+    saveMessage(buildMessage(projectTask, category));
     return true;
   }
 
-  @Override
-  public boolean notifyToDoTask(ProjectTask projectTask) {
-    if (projectTask.getAssignedTo() == null || projectTaskToolService.isCompleted(projectTask)) {
-      return false;
-    }
-
-    String subject =
-        String.format(
-            I18n.get(ProjectExceptionMessage.PROJECT_TASK_NOTIFICATION_TODO),
-            projectTask.getFullName());
-
-    if (findLastNotification(projectTask, TODO_NOTIFICATION_CATEGORY) != null) {
-      return false;
-    }
-
-    notify(projectTask, subject, TODO_NOTIFICATION_CATEGORY);
-    return true;
-  }
-
-  /**
-   * Notify once when a task first becomes overdue; if {@code
-   * AppProject.taskOverdueReminderFrequencyDays} is set, notify again once the last overdue
-   * notification is older than that many days.
-   */
-  protected boolean needsOverdueNotification(ProjectTask projectTask) {
-    MailMessage lastNotification = findLastNotification(projectTask, OVERDUE_NOTIFICATION_CATEGORY);
+  protected boolean needsNotification(
+      ProjectTask projectTask,
+      ProjectTaskNotificationCategory category,
+      int reminderFrequencyDays,
+      LocalDateTime now) {
+    MailMessage lastNotification = findLastNotification(projectTask, category);
     if (lastNotification == null) {
       return true;
     }
-
-    Integer reminderFrequencyDays = getOverdueReminderFrequencyDays();
-    if (reminderFrequencyDays == null || reminderFrequencyDays <= 0) {
+    if (reminderFrequencyDays <= 0) {
       return false;
     }
 
     LocalDateTime lastNotifiedOn = lastNotification.getCreatedOn();
-    return lastNotifiedOn != null
-        && lastNotifiedOn.isBefore(LocalDateTime.now().minusDays(reminderFrequencyDays));
+    return lastNotifiedOn != null && lastNotifiedOn.isBefore(now.minusDays(reminderFrequencyDays));
   }
 
-  protected Integer getOverdueReminderFrequencyDays() {
-    AppProject appProject = appProjectService.getAppProject();
-    return appProject != null ? appProject.getTaskOverdueReminderFrequencyDays() : null;
-  }
-
-  protected void notify(ProjectTask projectTask, String subject, String category) {
-    User assignedTo = projectTask.getAssignedTo();
-    mailFollowerRepo.follow(projectTask, assignedTo);
-    saveMessage(buildMessage(projectTask, subject, category));
+  protected MailMessage findLastNotification(
+      ProjectTask projectTask, ProjectTaskNotificationCategory category) {
+    return mailMessageRepo
+        .all()
+        .filter(
+            "self.relatedModel = :model AND self.relatedId = :id AND self.type = :type "
+                + "AND self.body LIKE :categoryMarker AND self.body LIKE :dueDateMarker "
+                + "AND self.body LIKE :assigneeMarker")
+        .bind("model", EntityHelper.getEntityClass(projectTask).getName())
+        .bind("id", projectTask.getId())
+        .bind("type", MailConstants.MESSAGE_TYPE_NOTIFICATION)
+        .bind("categoryMarker", contains(toJson(buildTag(category))))
+        .bind("dueDateMarker", contains(toJson(buildDueDateTrack(projectTask))))
+        .bind(
+            "assigneeMarker",
+            contains("\"" + ASSIGNED_TO_ID_KEY + "\":\"" + getAssignedToId(projectTask) + "\""))
+        .order("-createdOn")
+        .fetchOne();
   }
 
   @Transactional
@@ -136,24 +119,13 @@ public class ProjectTaskNotificationServiceImpl implements ProjectTaskNotificati
     mailMessageRepo.save(message);
   }
 
-  protected MailMessage findLastNotification(ProjectTask projectTask, String category) {
-    return mailMessageRepo
-        .all()
-        .filter(
-            "self.relatedModel = :model AND self.relatedId = :id "
-                + "AND self.type = :type AND self.body LIKE :categoryMarker")
-        .bind("model", EntityHelper.getEntityClass(projectTask).getName())
-        .bind("id", projectTask.getId())
-        .bind("type", MailConstants.MESSAGE_TYPE_NOTIFICATION)
-        .bind("categoryMarker", "%\"category\":\"" + category + "\"%")
-        .order("-createdOn")
-        .fetchOne();
-  }
+  protected MailMessage buildMessage(
+      ProjectTask projectTask, ProjectTaskNotificationCategory category) {
+    String title = String.format(I18n.get(category.getSubjectKey()), projectTask.getFullName());
 
-  protected MailMessage buildMessage(ProjectTask projectTask, String subject, String category) {
     MailMessage message = new MailMessage();
-    message.setSubject(subject);
-    message.setBody(toJSON(subject, category));
+    message.setSubject(title);
+    message.setBody(toJson(buildBody(title, projectTask, category)));
     message.setRelatedId(projectTask.getId());
     message.setRelatedModel(EntityHelper.getEntityClass(projectTask).getName());
     message.setRelatedName(projectTask.getFullName());
@@ -161,16 +133,44 @@ public class ProjectTaskNotificationServiceImpl implements ProjectTaskNotificati
     return message;
   }
 
-  protected String toJSON(String title, String category) {
-    Map<String, Object> json = new LinkedHashMap<>();
-    json.put("title", title);
-    json.put("category", category);
-    json.put("tags", new ArrayList<>());
-    json.put("tracks", new ArrayList<>());
+  protected Map<String, Object> buildBody(
+      String title, ProjectTask projectTask, ProjectTaskNotificationCategory category) {
+    Map<String, Object> body = new LinkedHashMap<>();
+    body.put("title", title);
+    body.put("tags", List.of(buildTag(category)));
+    body.put("tracks", List.of(buildDueDateTrack(projectTask)));
+    body.put(ASSIGNED_TO_ID_KEY, getAssignedToId(projectTask));
+    return body;
+  }
+
+  protected Map<String, String> buildTag(ProjectTaskNotificationCategory category) {
+    Map<String, String> tag = new LinkedHashMap<>();
+    tag.put("title", category.getTagTitleKey());
+    tag.put("style", category.getTagStyle());
+    return tag;
+  }
+
+  protected Map<String, String> buildDueDateTrack(ProjectTask projectTask) {
+    Map<String, String> track = new LinkedHashMap<>();
+    track.put("name", DUE_DATE_TRACK_NAME);
+    track.put("title", DUE_DATE_TRACK_TITLE);
+    track.put("value", projectTask.getTaskEndDate().toString());
+    return track;
+  }
+
+  protected String getAssignedToId(ProjectTask projectTask) {
+    return String.valueOf(projectTask.getAssignedTo().getId());
+  }
+
+  protected String contains(String fragment) {
+    return "%" + fragment + "%";
+  }
+
+  protected String toJson(Object value) {
     try {
-      return Beans.get(ObjectMapper.class).writeValueAsString(json);
-    } catch (Exception e) {
-      return title;
+      return objectMapper.writeValueAsString(value);
+    } catch (JsonProcessingException e) {
+      throw new UncheckedIOException(e);
     }
   }
 }

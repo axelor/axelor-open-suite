@@ -20,8 +20,6 @@ package com.axelor.apps.project.service.batch;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.base.service.batch.BatchStrategy;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectBatch;
@@ -103,8 +101,7 @@ public class BatchRemoveTaskStatusService extends BatchStrategy {
     int offset = 0;
     List<ProjectTask> projectTaskList;
 
-    while (!(projectTaskList = projectTaskQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
-        .isEmpty()) {
+    while (!(projectTaskList = projectTaskQuery.fetch(getFetchLimit(), offset)).isEmpty()) {
       for (ProjectTask projectTask : projectTaskList) {
         offset++;
 
