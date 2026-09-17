@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed discount amount increasing on every qty change when the sale order is in A.T.I. but not the product."
+module: axelor-sale
