@@ -71,6 +71,7 @@
     <bind column="batchServiceSelect" to="batchServiceSelect"
       check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaSchedule', 'batchServiceSelect', batchServiceSelect)"
       check-message="Invalid batchServiceSelect"/>
+    <bind column="batchCode" to="batchCode"/>
   </input>
 
 </csv-inputs>

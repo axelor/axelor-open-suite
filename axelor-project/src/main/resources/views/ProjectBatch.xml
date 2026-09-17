@@ -17,6 +17,7 @@
       <field name="actionSelect"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
+      <field name="fetchLimit"/>
     </panel>
 
     <panel name="removeTaskStatusPanel" title="Remove task status" showIf="actionSelect == 1">
@@ -31,6 +32,12 @@
         if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
         domain="self.projectTaskStatusSet IS NOT EMPTY"/>
       <field name="taskStatusSet" widget="Tags" canNew="false" canEdit="false"/>
+    </panel>
+
+    <panel name="notifyTasksPanel" title="Task notifications" showIf="actionSelect == 2">
+      <field name="toDoAnticipationDays"/>
+      <field name="overdueLookbackDays"/>
+      <field name="overdueReminderFrequencyDays"/>
     </panel>
     <panel name="informationPanel" title="Information">
       <field name="createdOn" title="Created on"/>

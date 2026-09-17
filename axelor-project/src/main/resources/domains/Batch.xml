@@ -10,6 +10,10 @@
     <!-- NOT DISPLAY -->
     <many-to-one name="projectBatch" ref="com.axelor.apps.project.db.ProjectBatch"/>
 
+    <extra-code><![CDATA[
+      // Batch type select
+      public static final int BATCH_TYPE_PROJECT_BATCH = 1300;
+    ]]></extra-code>
   </entity>
 
 </domain-models>
