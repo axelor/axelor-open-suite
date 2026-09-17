@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
 import com.axelor.common.StringUtils;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -526,7 +527,7 @@ public class ImportCityServiceImpl implements ImportCityService {
     List<ImportHistory> importHistoryList = new ArrayList<>();
     Map<String, Object> importCityMap = new HashMap<>();
     try {
-      File tempDir = Files.createTempDir();
+      File tempDir = TempFiles.createTempDir().toFile();
       errorFile = new File(tempDir.getAbsolutePath(), "Error-File.txt");
       printWriter = new PrintWriter(errorFile);
 
@@ -559,7 +560,7 @@ public class ImportCityServiceImpl implements ImportCityService {
     List<ImportHistory> importHistoryList = new ArrayList<>();
     Map<String, Object> importCityMap = new HashMap<>();
     try {
-      File tempDir = Files.createTempDir();
+      File tempDir = TempFiles.createTempDir().toFile();
       errorFile = new File(tempDir.getAbsolutePath(), "Error-File.txt");
       printWriter = new PrintWriter(errorFile);
       if (map != null) {

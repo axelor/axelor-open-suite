@@ -59,7 +59,6 @@ import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.common.io.Files;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.validation.ValidationException;
@@ -70,6 +69,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -183,12 +184,11 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   @Override
   public void importUnitCostCalc(MetaFile dataFile, UnitCostCalculation unitCostCalculation)
       throws IOException {
-    File tempDir = Files.createTempDir();
-    File csvFile = new File(tempDir, "unitcostcalc.csv");
-    Files.copy(MetaFiles.getPath(dataFile).toFile(), csvFile);
+    Path tempDir = TempFiles.createTempDir();
+    Files.copy(MetaFiles.getPath(dataFile), tempDir.resolve("unitcostcalc.csv"));
     File configXmlFile = this.getConfigXmlFile();
     CSVImporter csvImporter =
-        new CSVImporter(configXmlFile.getAbsolutePath(), tempDir.getAbsolutePath());
+        new CSVImporter(configXmlFile.getAbsolutePath(), tempDir.toAbsolutePath().toString());
     Map<String, Object> context = new HashMap<>();
     context.put("_unitCostCalculation", unitCostCalculation.getId());
     csvImporter.setContext(context);

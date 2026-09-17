@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.print.PrintTemplateService;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -37,11 +38,11 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
-import com.google.common.io.Files;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
@@ -139,12 +140,11 @@ public class PrintTemplateController {
 
       Path path =
           MetaFiles.getPath((String) ((Map) request.getContext().get("dataFile")).get("filePath"));
-      File tempDir = Files.createTempDir();
-      File importFile = new File(tempDir, "print-template.xml");
-      Files.copy(path.toFile(), importFile);
+      Path tempDir = TempFiles.createTempDir();
+      Files.copy(path, tempDir.resolve("print-template.xml"));
 
       XMLImporter importer =
-          new XMLImporter(configFile.getAbsolutePath(), tempDir.getAbsolutePath());
+          new XMLImporter(configFile.getAbsolutePath(), tempDir.toAbsolutePath().toString());
 
       ImporterListener listner = new ImporterListener("PrintTemplate");
 
@@ -154,7 +154,7 @@ public class PrintTemplateController {
 
       FileUtils.forceDelete(configFile);
 
-      FileUtils.forceDelete(tempDir);
+      FileUtils.forceDelete(tempDir.toFile());
       response.setValue("importLog", listner.getImportLog());
 
     } catch (Exception e) {

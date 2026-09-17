@@ -27,9 +27,9 @@ import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaJsonField;
-import com.google.common.io.Files;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.io.File;
@@ -101,7 +101,7 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
     FileOutputStream fout = new FileOutputStream(configFile);
     IOUtil.copyCompletely(inputStream, fout);
 
-    File tempDir = Files.createTempDir();
+    File tempDir = TempFiles.createTempDir().toFile();
     File importFile = new File(tempDir, "configurator-creator.xml");
     FileUtils.copyInputStreamToFile(xmlInputStream, importFile);
 

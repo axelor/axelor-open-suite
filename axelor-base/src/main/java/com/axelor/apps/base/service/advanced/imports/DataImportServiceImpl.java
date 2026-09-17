@@ -41,6 +41,7 @@ import com.axelor.data.csv.CSVInput;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
@@ -134,7 +135,7 @@ public class DataImportServiceImpl implements DataImportService {
     adapterMap = new HashMap<String, DataAdapter>();
     importContext = new HashMap<String, Object>();
     language = advancedImport.getLanguageSelect();
-    dataDir = Files.createTempDir();
+    dataDir = TempFiles.createTempDir().toFile();
 
     String extension = Files.getFileExtension(advancedImport.getImportFile().getFileName());
 

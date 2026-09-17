@@ -1,0 +1,3 @@
+---
+title: "Advanced import, city import, print template, accounting configuration template, unit cost calculation and configurator import: the temporary directories used to stage the files are now created with owner-only permissions instead of being readable by every local user."
+module: axelor-base

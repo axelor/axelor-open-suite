@@ -20,9 +20,9 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.account.db.AccountingConfigTemplate;
 import com.axelor.common.FileUtils;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.google.common.io.Files;
 import jakarta.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,7 +45,7 @@ public class ImportAccountingConfigTemplate {
 
   protected File getDataFile(AccountingConfigTemplate accountingConfigTemplate) throws IOException {
 
-    File tempDir = new File(Files.createTempDir(), accountingConfigTemplate.getCode());
+    File tempDir = new File(TempFiles.createTempDir().toFile(), accountingConfigTemplate.getCode());
     if (!tempDir.exists()) tempDir.mkdir();
 
     String chartPath =
