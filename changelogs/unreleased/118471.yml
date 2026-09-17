@@ -1,3 +1,0 @@
----
-title: "Production: fixed error on first save of a bill of materials with a production process and no component line."
-module: axelor-production

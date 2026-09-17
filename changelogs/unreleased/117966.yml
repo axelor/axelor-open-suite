@@ -1,3 +1,0 @@
----
-title: "Partner: fixed VAT number computed from Sirene API losing leading zeros of the key and the SIREN."
-module: axelor-base
