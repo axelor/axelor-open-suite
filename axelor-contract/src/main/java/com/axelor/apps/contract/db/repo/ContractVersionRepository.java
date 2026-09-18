@@ -21,10 +21,14 @@ package com.axelor.apps.contract.db.repo;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.service.ContractLinePackService;
+import com.axelor.apps.contract.service.app.AppContractService;
+import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.ModelHelper;
 import jakarta.inject.Inject;
 import java.util.Comparator;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ContractVersionRepository extends AbstractContractVersionRepository {
 
@@ -33,6 +37,20 @@ public class ContractVersionRepository extends AbstractContractVersionRepository
   @Inject
   public ContractVersionRepository(ContractLineRepository contractLineRepository) {
     this.contractLineRepository = contractLineRepository;
+  }
+
+  @Override
+  public ContractVersion save(ContractVersion contractVersion) {
+    List<ContractLine> contractLineList = contractVersion.getContractLineList();
+    if (CollectionUtils.isNotEmpty(contractLineList)) {
+      ContractLinePackService contractLinePackService = Beans.get(ContractLinePackService.class);
+      if (Beans.get(AppContractService.class).getAppContract().getIsPackManagement()) {
+        contractLinePackService.computePackTotal(contractLineList);
+      } else {
+        contractLinePackService.resetPackTotal(contractLineList);
+      }
+    }
+    return super.save(contractVersion);
   }
 
   public ContractVersion copy(Contract contract) {

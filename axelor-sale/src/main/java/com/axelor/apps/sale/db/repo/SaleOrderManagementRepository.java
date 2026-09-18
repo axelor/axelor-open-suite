@@ -70,7 +70,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       AppSale appSale = Beans.get(AppSaleService.class).getAppSale();
       SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
 
-      if (appSale.getEnablePackManagement()) {
+      if (isPackManagementEnabled(saleOrder)) {
         saleOrderComputeService.computePackTotal(saleOrder);
       } else {
         saleOrderComputeService.resetPackTotal(saleOrder);
@@ -96,6 +96,11 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  protected boolean isPackManagementEnabled(SaleOrder saleOrder) {
+    return Boolean.TRUE.equals(
+        Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement());
   }
 
   public void computeSeq(SaleOrder saleOrder) {

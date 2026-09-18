@@ -27,6 +27,8 @@
           hidden="true" showIf="isInvoicingManagement"/>
         <field name="isAdditionalBenefitManagement" colSpan="4" widget="boolean-switch"
           hidden="true" showIf="isInvoicingManagement"/>
+        <field name="isPackManagement" colSpan="4" widget="boolean-switch" hidden="true"
+          showIf="isInvoicingManagement"/>
       </panel>
     </panel>
 

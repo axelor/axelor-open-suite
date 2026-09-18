@@ -57,8 +57,7 @@ public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
       InvoiceServiceSupplychain invoiceServiceSupplychain =
           Beans.get(InvoiceServiceSupplychain.class);
 
-      if (Boolean.TRUE.equals(
-          Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement())) {
+      if (isPackManagementEnabled(invoice)) {
         invoiceServiceSupplychain.computePackTotal(invoice);
       } else {
         invoiceServiceSupplychain.resetPackTotal(invoice);
@@ -69,6 +68,11 @@ public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  protected boolean isPackManagementEnabled(Invoice invoice) {
+    return Boolean.TRUE.equals(
+        Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement());
   }
 
   @Override

@@ -4672,7 +4672,13 @@ RETURNS table(
     "legalInformation" varchar
 ) AS
 $func$
+DECLARE
+contractPackManagement boolean := false;
 BEGIN
+IF (SELECT COUNT(to_regclass('account_invoice_contract_set')) != 0) AND (SELECT COUNT(to_regclass('studio_app_contract')) != 0) THEN
+	EXECUTE 'SELECT EXISTS (SELECT 1 FROM account_invoice_contract_set as InvoiceContract WHERE InvoiceContract.account_invoice = $1) AND COALESCE((SELECT is_pack_management FROM studio_app_contract LIMIT 1), false)'
+	INTO contractPackManagement USING InvoiceId;
+END IF;
 IF (SELECT COUNT(to_regclass('studio_app_business_project')) = 0) THEN
 return query
 select distinct
@@ -4733,7 +4739,7 @@ select distinct
 	Invoice.origin_date as "originDate",
 	Invoice.supplier_invoice_nb as "supplierInvoiceNb",
 	AccountConfig.display_head_office_addr_on_invoice_printing as "displayHeadOfficeAddress",
-    AppSale.enable_pack_management as "enablePackMangement",
+    (AppSale.enable_pack_management OR contractPackManagement) as "enablePackMangement",
     AppAccount.manage_financial_discount as "ManageFinancialDiscount",
     ContactPartner.title_select as "contactPartnerTitleSelect",
     Invoice.original_invoice as "originalInvoice",
@@ -4836,7 +4842,7 @@ select distinct
 	Invoice.origin_date as "originDate",
 	Invoice.supplier_invoice_nb as "supplierInvoiceNb",
 	AccountConfig.display_head_office_addr_on_invoice_printing as "displayHeadOfficeAddress",
-    AppSale.enable_pack_management as "enablePackMangement",
+    (AppSale.enable_pack_management OR contractPackManagement) as "enablePackMangement",
     AppAccount.manage_financial_discount as "ManageFinancialDiscount",
     ContactPartner.title_select as "contactPartnerTitleSelect",
     Invoice.original_invoice as "originalInvoice",
