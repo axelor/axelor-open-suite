@@ -532,6 +532,7 @@
             readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
           <field name="supplierShipmentDate" showIf="!isReversion"/>
           <field name="supplierShipmentRef" showIf="!isReversion"/>
+          <field name="supplierDeliveryDate" showIf="!isReversion"/>
           <panel stacked="true" itemSpan="12">
             <field name="fromAddressStr" height="3" hideIf="statusSelect &gt; 2">
               <viewer><![CDATA[<>{fromAddressStr}</>]]></viewer>
