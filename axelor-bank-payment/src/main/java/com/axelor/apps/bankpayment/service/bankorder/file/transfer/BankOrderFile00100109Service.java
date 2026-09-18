@@ -22,26 +22,27 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
 import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderAddressService;
-import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderFile00100103AddressAdapter;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.AccountIdentification4Choice;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.ActiveOrHistoricCurrencyAndAmount;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.AmountType3Choice;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.BranchAndFinancialInstitutionIdentification4;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.CashAccount16;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.CreditTransferTransactionInformation10;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.CustomerCreditTransferInitiationV03;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.Document;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.FinancialInstitutionIdentification7;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.GenericFinancialIdentification1;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.GroupHeader32;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.ObjectFactory;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.PartyIdentification32;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.PaymentIdentification1;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.PaymentInstructionInformation3;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.PaymentMethod3Code;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.PaymentTypeInformation19;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.RemittanceInformation5;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.ServiceLevel8Choice;
+import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderFile00100109AddressAdapter;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.AccountIdentification4Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.ActiveOrHistoricCurrencyAndAmount;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.AmountType4Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.BranchAndFinancialInstitutionIdentification6;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.CashAccount38;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.CreditTransferTransaction34;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.CustomerCreditTransferInitiationV09;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.DateAndDateTime2Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.Document;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.FinancialInstitutionIdentification18;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.GenericFinancialIdentification1;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.GroupHeader85;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.ObjectFactory;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.PartyIdentification135;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.PaymentIdentification6;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.PaymentInstruction30;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.PaymentMethod3Code;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.PaymentTypeInformation26;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.RemittanceInformation16;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.ServiceLevel8Choice;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
@@ -52,24 +53,24 @@ import java.io.File;
 import java.time.format.DateTimeFormatter;
 import javax.xml.datatype.DatatypeFactory;
 
-public class BankOrderFile00100103Service extends BankOrderFileService {
+public class BankOrderFile00100109Service extends BankOrderFileService {
 
   protected static final String BIC_NOT_PROVIDED = "NOTPROVIDED";
 
   protected BankOrderAddressService bankOrderAddressService;
 
   @Inject
-  public BankOrderFile00100103Service(BankOrder bankOrder) {
+  public BankOrderFile00100109Service(BankOrder bankOrder) {
 
     super(bankOrder);
 
-    context = "com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03";
+    context = "com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09";
     fileExtension = FILE_EXTENSION_XML;
     bankOrderAddressService = Beans.get(BankOrderAddressService.class);
   }
 
   /**
-   * Method to create an XML file for SEPA transfer pain.001.001.03
+   * Method to create an XML file for SEPA transfer pain.001.001.09
    *
    * @throws AxelorException
    */
@@ -82,34 +83,34 @@ public class BankOrderFile00100103Service extends BankOrderFileService {
     ServiceLevel8Choice svcLvl = factory.createServiceLevel8Choice();
     svcLvl.setCd("SEPA");
 
-    PaymentTypeInformation19 pmtTpInf = factory.createPaymentTypeInformation19();
-    pmtTpInf.setSvcLvl(svcLvl);
+    PaymentTypeInformation26 pmtTpInf = factory.createPaymentTypeInformation26();
+    pmtTpInf.getSvcLvl().add(svcLvl);
 
     // Payer
-    PartyIdentification32 dbtr = factory.createPartyIdentification32();
+    PartyIdentification135 dbtr = factory.createPartyIdentification135();
     dbtr.setNm(senderBankDetails.getOwnerName());
     dbtr.setPstlAdr(
-        BankOrderFile00100103AddressAdapter.createPostalAddress(
+        BankOrderFile00100109AddressAdapter.createPostalAddress(
             bankOrderAddressService.createSenderPostalAddress(senderCompany, bankOrderFileFormat)));
 
     // IBAN
     AccountIdentification4Choice iban = factory.createAccountIdentification4Choice();
     iban.setIBAN(senderBankDetails.getIban());
 
-    CashAccount16 dbtrAcct = factory.createCashAccount16();
+    CashAccount38 dbtrAcct = factory.createCashAccount38();
     dbtrAcct.setId(iban);
 
     // BIC
-    FinancialInstitutionIdentification7 finInstnId =
-        factory.createFinancialInstitutionIdentification7();
+    FinancialInstitutionIdentification18 finInstnId =
+        factory.createFinancialInstitutionIdentification18();
 
     fillBic(finInstnId, senderBankDetails.getBank());
 
-    BranchAndFinancialInstitutionIdentification4 dbtrAgt =
-        factory.createBranchAndFinancialInstitutionIdentification4();
+    BranchAndFinancialInstitutionIdentification6 dbtrAgt =
+        factory.createBranchAndFinancialInstitutionIdentification6();
     dbtrAgt.setFinInstnId(finInstnId);
 
-    PaymentInstructionInformation3 pmtInf = factory.createPaymentInstructionInformation3();
+    PaymentInstruction30 pmtInf = factory.createPaymentInstruction30();
     pmtInf.setPmtInfId(bankOrderSeq);
     pmtInf.setPmtMtd(PaymentMethod3Code.TRF);
     pmtInf.setPmtTpInf(pmtTpInf);
@@ -120,28 +121,30 @@ public class BankOrderFile00100103Service extends BankOrderFileService {
      * debited. XML Tag : <ReqdExctnDt> Occurrences : [1..1] Format : YYYY-MM-DD Rules : date is
      * limited to maximum one year in the future.
      */
-    pmtInf.setReqdExctnDt(
+    DateAndDateTime2Choice requestedExecutionDate = factory.createDateAndDateTime2Choice();
+    requestedExecutionDate.setDt(
         datatypeFactory.newXMLGregorianCalendar(
             bankOrderDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
+    pmtInf.setReqdExctnDt(requestedExecutionDate);
     pmtInf.setDbtr(dbtr);
     pmtInf.setDbtrAcct(dbtrAcct);
     pmtInf.setDbtrAgt(dbtrAgt);
 
-    CreditTransferTransactionInformation10 cdtTrfTxInf = null;
-    PaymentIdentification1 pmtId = null;
-    AmountType3Choice amt = null;
+    CreditTransferTransaction34 cdtTrfTxInf = null;
+    PaymentIdentification6 pmtId = null;
+    AmountType4Choice amt = null;
     ActiveOrHistoricCurrencyAndAmount instdAmt = null;
-    PartyIdentification32 cbtr = null;
-    CashAccount16 cbtrAcct = null;
-    BranchAndFinancialInstitutionIdentification4 cbtrAgt = null;
-    RemittanceInformation5 rmtInf = null;
+    PartyIdentification135 cbtr = null;
+    CashAccount38 cbtrAcct = null;
+    BranchAndFinancialInstitutionIdentification6 cbtrAgt = null;
+    RemittanceInformation16 rmtInf = null;
 
     for (BankOrderLine bankOrderLine : bankOrderLineList) {
 
       BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
 
       // Reference
-      pmtId = factory.createPaymentIdentification1();
+      pmtId = factory.createPaymentIdentification6();
       //			pmtId.setInstrId(bankOrderLine.getSequence());
       pmtId.setEndToEndId(bankOrderLine.getSequence());
 
@@ -150,14 +153,14 @@ public class BankOrderFile00100103Service extends BankOrderFileService {
       instdAmt.setCcy(companyCurrency.getCodeISO());
       instdAmt.setValue(bankOrderLine.getCompanyCurrencyAmount());
 
-      amt = factory.createAmountType3Choice();
+      amt = factory.createAmountType4Choice();
       amt.setInstdAmt(instdAmt);
 
       // Receiver
-      cbtr = factory.createPartyIdentification32();
+      cbtr = factory.createPartyIdentification135();
       cbtr.setNm(receiverBankDetails.getOwnerName());
       cbtr.setPstlAdr(
-          BankOrderFile00100103AddressAdapter.createPostalAddress(
+          BankOrderFile00100109AddressAdapter.createPostalAddress(
               bankOrderAddressService.createReceiverPostalAddress(
                   bankOrderLine, bankOrderFileFormat)));
 
@@ -165,18 +168,18 @@ public class BankOrderFile00100103Service extends BankOrderFileService {
       iban = factory.createAccountIdentification4Choice();
       iban.setIBAN(receiverBankDetails.getIban());
 
-      cbtrAcct = factory.createCashAccount16();
+      cbtrAcct = factory.createCashAccount38();
       cbtrAcct.setId(iban);
 
       // BIC
-      finInstnId = factory.createFinancialInstitutionIdentification7();
+      finInstnId = factory.createFinancialInstitutionIdentification18();
 
       fillBic(finInstnId, receiverBankDetails.getBank());
 
-      cbtrAgt = factory.createBranchAndFinancialInstitutionIdentification4();
+      cbtrAgt = factory.createBranchAndFinancialInstitutionIdentification6();
       cbtrAgt.setFinInstnId(finInstnId);
 
-      rmtInf = factory.createRemittanceInformation5();
+      rmtInf = factory.createRemittanceInformation16();
 
       String ustrd = "";
       if (!Strings.isNullOrEmpty(bankOrderLine.getReceiverReference())) {
@@ -203,7 +206,7 @@ public class BankOrderFile00100103Service extends BankOrderFileService {
       //			rmtInf.getStrd().add(strd);
 
       // Transaction
-      cdtTrfTxInf = factory.createCreditTransferTransactionInformation10();
+      cdtTrfTxInf = factory.createCreditTransferTransaction34();
       cdtTrfTxInf.setPmtId(pmtId);
       cdtTrfTxInf.setAmt(amt);
       cdtTrfTxInf.setCdtr(cbtr);
@@ -215,7 +218,7 @@ public class BankOrderFile00100103Service extends BankOrderFileService {
     }
 
     // Header
-    GroupHeader32 grpHdr = factory.createGroupHeader32();
+    GroupHeader85 grpHdr = factory.createGroupHeader85();
 
     /** Référence du message qui n'est pas utilisée comme référence fonctionnelle. */
     grpHdr.setMsgId(bankOrderSeq);
@@ -233,14 +236,14 @@ public class BankOrderFile00100103Service extends BankOrderFileService {
     grpHdr.setInitgPty(dbtr);
 
     // Parent
-    CustomerCreditTransferInitiationV03 customerCreditTransferInitiationV03 =
-        factory.createCustomerCreditTransferInitiationV03();
-    customerCreditTransferInitiationV03.setGrpHdr(grpHdr);
-    customerCreditTransferInitiationV03.getPmtInf().add(pmtInf);
+    CustomerCreditTransferInitiationV09 customerCreditTransferInitiationV09 =
+        factory.createCustomerCreditTransferInitiationV09();
+    customerCreditTransferInitiationV09.setGrpHdr(grpHdr);
+    customerCreditTransferInitiationV09.getPmtInf().add(pmtInf);
 
     // Document
     Document xml = factory.createDocument();
-    xml.setCstmrCdtTrfInitn(customerCreditTransferInitiationV03);
+    xml.setCstmrCdtTrfInitn(customerCreditTransferInitiationV09);
 
     fileToCreate = factory.createDocument(xml);
 
@@ -254,7 +257,7 @@ public class BankOrderFile00100103Service extends BankOrderFileService {
    * @param finInstnId The financial instituation identification tag of the generated file.
    * @param bank The bank from which the BIC is get.
    */
-  protected void fillBic(FinancialInstitutionIdentification7 finInstnId, Bank bank) {
+  protected void fillBic(FinancialInstitutionIdentification18 finInstnId, Bank bank) {
 
     if (bankOrderFileFormat.getIbanOnly()
         || bank == null
@@ -263,7 +266,7 @@ public class BankOrderFile00100103Service extends BankOrderFileService {
       genFinId.setId(BIC_NOT_PROVIDED);
       finInstnId.setOthr(genFinId);
     } else {
-      finInstnId.setBIC(bank.getCode());
+      finInstnId.setBICFI(bank.getCode());
     }
   }
 }
