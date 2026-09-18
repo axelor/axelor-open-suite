@@ -33,9 +33,11 @@ import com.axelor.studio.db.AppProject;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TaskStatusToolServiceImpl implements TaskStatusToolService {
 
@@ -85,6 +87,25 @@ public class TaskStatusToolServiceImpl implements TaskStatusToolService {
     }
 
     return Optional.empty();
+  }
+
+  @Override
+  public Set<Long> getCompletedTaskStatusIds() {
+    Set<Long> completedTaskStatusIdSet =
+        taskStatusRepository.all().filter("self.isCompleted = true").fetch().stream()
+            .map(TaskStatus::getId)
+            .collect(Collectors.toCollection(HashSet::new));
+
+    Optional.ofNullable(appProjectService.getAppProject())
+        .map(AppProject::getCompletedTaskStatus)
+        .map(TaskStatus::getId)
+        .ifPresent(completedTaskStatusIdSet::add);
+
+    if (completedTaskStatusIdSet.isEmpty()) {
+      completedTaskStatusIdSet.add(0L);
+    }
+
+    return completedTaskStatusIdSet;
   }
 
   @Override
