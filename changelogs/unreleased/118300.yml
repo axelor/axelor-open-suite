@@ -1,0 +1,3 @@
+---
+title: "Invoice payment: fixed unbalanced payment move when paying an invoice with a financial discount after changing the payment date, the amount or the discount option."
+module: axelor-account
