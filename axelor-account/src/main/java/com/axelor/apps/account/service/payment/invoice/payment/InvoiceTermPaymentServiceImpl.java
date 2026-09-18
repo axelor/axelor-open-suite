@@ -300,11 +300,20 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     invoiceTermPayment.setInvoiceTerm(invoiceTermToPay);
     invoiceTermPayment.setPaidAmount(paidAmount);
 
+    boolean isAmountAfterFinDiscount =
+        companyPaidAmount.compareTo(invoiceTermToPay.getRemainingAmountAfterFinDiscount()) == 0;
+
     if (companyPaidAmount.compareTo(invoiceTermToPay.getAmount()) == 0
-        || companyPaidAmount.compareTo(invoiceTermToPay.getRemainingAmountAfterFinDiscount())
-            == 0) {
+        || isAmountAfterFinDiscount) {
       manageInvoiceTermFinancialDiscount(
           invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
+
+      if (isAmountAfterFinDiscount) {
+        companyPaidAmount =
+            currencyScaleService.getCompanyScaledValue(
+                invoiceTermToPay,
+                companyPaidAmount.add(invoiceTermPayment.getFinancialDiscountAmount()));
+      }
     }
 
     invoiceTermPayment.setCompanyPaidAmount(companyPaidAmount);
