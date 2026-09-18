@@ -26,6 +26,7 @@ import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.ListUtils;
 
 public class BillOfMaterialHazardPhraseServiceImpl implements BillOfMaterialHazardPhraseService {
 
@@ -47,7 +48,7 @@ public class BillOfMaterialHazardPhraseServiceImpl implements BillOfMaterialHaza
         .bind("prodProcess", prodProcess)
         .fetch()
         .stream()
-        .flatMap(b -> b.getBillOfMaterialLineList().stream())
+        .flatMap(b -> ListUtils.emptyIfNull(b.getBillOfMaterialLineList()).stream())
         .map(BillOfMaterialLine::getProduct)
         .filter(Objects::nonNull)
         .collect(Collectors.toList());

@@ -545,7 +545,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   @Override
   public void assignTrackingNumber(StockMoveLine stockMoveLine, Product product)
       throws AxelorException {
-    assignTrackingNumber(stockMoveLine, product, new HashSet<>());
+    assignTrackingNumber(
+        stockMoveLine, product, getSiblingAssignedTrackingNumberIds(stockMoveLine, product));
   }
 
   @Override
@@ -1486,22 +1487,31 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
    */
   protected BigDecimal computeFromStockLocation(
       StockMoveLine stockMoveLine, StockLocation stockLocation) throws AxelorException {
-    Optional<StockLocationLine> stockLocationLine =
-        Optional.ofNullable(
-            stockLocationLineFetchService.getStockLocationLine(
-                stockLocation, stockMoveLine.getProduct()));
-    BigDecimal priceFromLocation = BigDecimal.ZERO;
-    if (stockLocationLine.isPresent()) {
-      priceFromLocation = stockLocationLine.get().getAvgPrice();
-      priceFromLocation =
-          unitConversionService.convert(
-              stockMoveLine.getUnit(),
-              getStockUnit(stockMoveLine),
-              priceFromLocation,
-              priceFromLocation.scale(),
-              null);
+    StockLocationLine stockLocationLine =
+        stockLocationLineFetchService.getStockLocationLine(
+            stockLocation, stockMoveLine.getProduct());
+    if (stockLocationLine == null) {
+      return BigDecimal.ZERO;
     }
-    return priceFromLocation;
+    return convertAvgPriceToStockMoveLineUnit(stockMoveLine, stockLocationLine);
+  }
+
+  protected BigDecimal convertAvgPriceToStockMoveLineUnit(
+      StockMoveLine stockMoveLine, StockLocationLine stockLocationLine) throws AxelorException {
+    BigDecimal avgPrice = stockLocationLine.getAvgPrice();
+    Unit stockLocationLineUnit = stockLocationLine.getUnit();
+    Unit stockMoveLineUnit = stockMoveLine.getUnit();
+    if (stockLocationLineUnit == null
+        || stockMoveLineUnit == null
+        || stockLocationLineUnit.equals(stockMoveLineUnit)) {
+      return avgPrice;
+    }
+    return unitConversionService.convertWithAutoFlushFalse(
+        stockMoveLineUnit,
+        stockLocationLineUnit,
+        avgPrice,
+        avgPrice.scale(),
+        stockMoveLine.getProduct());
   }
 
   @Override
@@ -1905,16 +1915,18 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         .fetch();
   }
 
-  public void fillRealizeWapPrice(StockMoveLine stockMoveLine) {
+  @Override
+  public void fillRealizeWapPrice(StockMoveLine stockMoveLine) throws AxelorException {
     StockLocation stockLocation = stockMoveLine.getFromStockLocation();
     if (stockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-      Optional<StockLocationLine> stockLocationLineOpt =
-          Optional.ofNullable(
-              stockLocationLineFetchService.getStockLocationLine(
-                  stockLocation, stockMoveLine.getProduct()));
+      StockLocationLine stockLocationLine =
+          stockLocationLineFetchService.getStockLocationLine(
+              stockLocation, stockMoveLine.getProduct());
 
-      stockLocationLineOpt.ifPresent(
-          stockLocationLine -> stockMoveLine.setWapPrice(stockLocationLine.getAvgPrice()));
+      if (stockLocationLine != null) {
+        stockMoveLine.setWapPrice(
+            convertAvgPriceToStockMoveLineUnit(stockMoveLine, stockLocationLine));
+      }
     }
   }
 
@@ -2188,5 +2200,21 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
     stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
     return stockMoveLine;
+  }
+
+  protected Set<Long> getSiblingAssignedTrackingNumberIds(
+      StockMoveLine stockMoveLine, Product product) {
+    StockMove stockMove = stockMoveLine.getStockMove();
+    if (stockMove == null || CollectionUtils.isEmpty(stockMove.getStockMoveLineList())) {
+      return new HashSet<>();
+    }
+    return stockMove.getStockMoveLineList().stream()
+        .filter(line -> line != stockMoveLine)
+        .filter(line -> product.equals(line.getProduct()))
+        .map(StockMoveLine::getTrackingNumber)
+        .filter(Objects::nonNull)
+        .map(TrackingNumber::getId)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toSet());
   }
 }

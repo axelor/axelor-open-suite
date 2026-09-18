@@ -34,4 +34,6 @@ public interface ConfiguratorCheckService {
   boolean isConfiguratorVersionDifferent(Configurator configurator);
 
   void checkConfiguratorActivated(Configurator configurator) throws AxelorException;
+
+  void checkConfiguratorEditionEnabled() throws AxelorException;
 }

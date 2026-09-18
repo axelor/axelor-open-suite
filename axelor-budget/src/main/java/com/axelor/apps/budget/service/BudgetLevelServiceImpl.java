@@ -261,10 +261,10 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       toDate = budgetLevel.getGlobalBudget().getToDate();
     }
 
-    if ((budgetLevel.getFromDate() == null
-            || (budgetLevel.getFromDate() != null && budgetLevel.getFromDate().isBefore(fromDate)))
-        || (budgetLevel.getToDate() == null
-            || (budgetLevel.getToDate() != null && budgetLevel.getToDate().isAfter(toDate)))) {
+    if (budgetLevel.getFromDate() == null
+        || budgetLevel.getToDate() == null
+        || (fromDate != null && budgetLevel.getFromDate().isBefore(fromDate))
+        || (toDate != null && budgetLevel.getToDate().isAfter(toDate))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(

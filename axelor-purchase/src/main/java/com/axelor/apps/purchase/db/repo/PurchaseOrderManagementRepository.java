@@ -29,6 +29,8 @@ import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
 import com.axelor.i18n.I18n;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
 
@@ -67,6 +69,7 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
   public PurchaseOrder save(PurchaseOrder purchaseOrder) {
 
     try {
+      archivePurchaseOrderLines(purchaseOrder);
       purchaseOrder = super.save(purchaseOrder);
       purchaseOrderSequenceService.setDraftSequence(purchaseOrder);
       return purchaseOrder;
@@ -88,5 +91,18 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
       throw new PersistenceException(e.getMessage(), e);
     }
     super.remove(purchaseOrder);
+  }
+
+  protected void archivePurchaseOrderLines(PurchaseOrder purchaseOrder) {
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    if (CollectionUtils.isEmpty(purchaseOrderLineList)) {
+      return;
+    }
+    boolean archived = Boolean.TRUE.equals(purchaseOrder.getArchived());
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+      if (Boolean.TRUE.equals(purchaseOrderLine.getArchived()) != archived) {
+        purchaseOrderLine.setArchived(archived);
+      }
+    }
   }
 }

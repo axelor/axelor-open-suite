@@ -29,6 +29,7 @@ import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.ConfiguratorCheckServiceSupplychainImpl;
 import com.axelor.i18n.I18n;
 import jakarta.inject.Inject;
@@ -44,12 +45,13 @@ public class ConfiguratorCheckServiceProductionImpl
   @Inject
   public ConfiguratorCheckServiceProductionImpl(
       SaleOrderLineRepository saleOrderLineRepository,
+      AppSaleService appSaleService,
       ProductionOrderRepository productionOrderRepository,
       ManufOrderRepository manufOrderRepository,
       BillOfMaterialRepository billOfMaterialRepository,
       ProdProcessRepository prodProcessRepository,
       AppBaseService appBaseService) {
-    super(saleOrderLineRepository, appBaseService);
+    super(saleOrderLineRepository, appBaseService, appSaleService);
     this.productionOrderRepository = productionOrderRepository;
     this.manufOrderRepository = manufOrderRepository;
     this.billOfMaterialRepository = billOfMaterialRepository;

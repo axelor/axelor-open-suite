@@ -44,6 +44,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
@@ -174,7 +175,6 @@ public class BankReconciliationValidateService {
 
     Partner partner = bankReconciliationLine.getPartner();
 
-    String reference = bankReconciliationLine.getReference();
     String description = bankReconciliationLine.getName();
     if (description != null && description.length() > 255) {
       description = description.substring(0, 255);
@@ -183,7 +183,7 @@ public class BankReconciliationValidateService {
     BigDecimal amount =
         currencyScaleService.getScaledValue(bankReconciliationLine, debit.add(credit));
 
-    String origin = bankReconciliation.getName() + reference != null ? " - " + reference : "";
+    String origin = computeOrigin(bankReconciliationLine);
 
     boolean isDebit = debit.compareTo(BigDecimal.ZERO) > 0;
 
@@ -242,6 +242,20 @@ public class BankReconciliationValidateService {
     bankReconciliationLine.setIsPosted(true);
 
     bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
+  }
+
+  protected String computeOrigin(BankReconciliationLine bankReconciliationLine) {
+    BankReconciliation bankReconciliation = bankReconciliationLine.getBankReconciliation();
+    BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
+    String origin = Strings.nullToEmpty(bankReconciliation.getName());
+    String reference = bankReconciliationLine.getReference();
+    if (Strings.isNullOrEmpty(reference) && bankStatementLine != null) {
+      reference = bankStatementLine.getOrigin();
+    }
+    if (!Strings.isNullOrEmpty(reference)) {
+      origin = origin + " - " + reference;
+    }
+    return origin;
   }
 
   @Transactional
@@ -307,6 +321,8 @@ public class BankReconciliationValidateService {
               moveLinePostedNbrService.setMoveLinePostedNbr(
                   moveLine, bankReconciliationLine.getPostedNbr());
           bankReconciliationLine.setMoveLine(moveLine);
+          bankReconciliationLineService.fillPartnerAndAccountFromMoveLine(
+              bankReconciliationLine, moveLine);
           firstLine = false;
         } else {
           bankReconciliationLine =

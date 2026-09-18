@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCheckServiceImpl;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
@@ -36,8 +37,10 @@ public class ConfiguratorCheckServiceSupplychainImpl extends ConfiguratorCheckSe
 
   @Inject
   public ConfiguratorCheckServiceSupplychainImpl(
-      SaleOrderLineRepository saleOrderLineRepository, AppBaseService appBaseService) {
-    super();
+      SaleOrderLineRepository saleOrderLineRepository,
+      AppBaseService appBaseService,
+      AppSaleService appSaleService) {
+    super(appSaleService);
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.appBaseService = appBaseService;
   }

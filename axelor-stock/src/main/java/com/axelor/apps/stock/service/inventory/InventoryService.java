@@ -193,10 +193,11 @@ public class InventoryService {
             .bind("inventoryId", inventory.getId())
             .order("id");
 
-    BatchProcessorHelper.of().<InventoryLine>forEachByQuery(query, this::updateCurrentQty);
+    BatchProcessorHelper.of()
+        .<InventoryLine, AxelorException>forEachByQuery(query, this::updateCurrentQty);
   }
 
-  protected void updateCurrentQty(InventoryLine inventoryLine) {
+  protected void updateCurrentQty(InventoryLine inventoryLine) throws AxelorException {
     StockLocation stockLocation = inventoryLine.getStockLocation();
     Product product = inventoryLine.getProduct();
     TrackingNumber trackingNumber = inventoryLine.getTrackingNumber();
@@ -217,12 +218,11 @@ public class InventoryService {
       query += " AND self.trackingNumber IS NULL";
     }
 
-    BigDecimal currentQty =
-        stockLocationLineQuery
-            .filter(query)
-            .fetchStream()
-            .map(StockLocationLine::getCurrentQty)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal currentQty = BigDecimal.ZERO;
+    for (StockLocationLine stockLocationLine : stockLocationLineQuery.filter(query).fetch()) {
+      currentQty =
+          currentQty.add(inventoryLineService.getCurrentQtyInProductUnit(stockLocationLine));
+    }
 
     inventoryLine.setCurrentQty(currentQty);
   }
@@ -419,7 +419,7 @@ public class InventoryService {
         inventoryLineService.createInventoryLine(
             inventory,
             stockLocationLine.getProduct(),
-            stockLocationLine.getCurrentQty(),
+            inventoryLineService.getCurrentQtyInProductUnit(stockLocationLine),
             stockLocationLine.getRack(),
             stockLocationLine.getTrackingNumber(),
             null,

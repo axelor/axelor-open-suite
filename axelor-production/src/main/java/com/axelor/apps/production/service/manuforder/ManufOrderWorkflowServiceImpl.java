@@ -68,6 +68,7 @@ import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -487,12 +488,20 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     if (!Beans.get(CostSheetService.class).hasPreviousCostSheet(manufOrder)) {
       return new HashSet<>();
     }
-    List<StockMoveLine> source =
-        consumed
-            ? manufOrder.getConsumedStockMoveLineList()
-            : manufOrder.getProducedStockMoveLineList();
-    if (source == null) {
-      return new HashSet<>();
+    List<StockMoveLine> source = new ArrayList<>();
+    if (consumed) {
+      if (manufOrder.getConsumedStockMoveLineList() != null) {
+        source.addAll(manufOrder.getConsumedStockMoveLineList());
+      }
+    } else {
+      // Residual products have their own stock move line list, but are accounted for on the
+      // produced side of the cost sheet, so both lists have to be taken into account.
+      if (manufOrder.getProducedStockMoveLineList() != null) {
+        source.addAll(manufOrder.getProducedStockMoveLineList());
+      }
+      if (manufOrder.getResidualStockMoveLineList() != null) {
+        source.addAll(manufOrder.getResidualStockMoveLineList());
+      }
     }
     return source.stream()
         .filter(line -> line.getStockMove() != null)

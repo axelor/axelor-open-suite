@@ -1108,9 +1108,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMoveLineService.updateLocations(
           initialStatus,
           StockMoveRepository.STATUS_CANCELED,
-          stockMove.getPlannedStockMoveLineList().stream()
-              .map(StockMoveLine::getId)
-              .collect(Collectors.toSet()),
+          getPlannedStockMoveLineIds(stockMove, false),
           stockMove.getEstimatedDate(),
           false,
           false);
@@ -1846,7 +1844,8 @@ public class StockMoveServiceImpl implements StockMoveService {
     Query<StockMoveLine> query = getStockMoveLineQuery(stockMoveId);
 
     BatchProcessorHelper.of()
-        .<StockMoveLine>forEachByQuery(query, stockMoveLineService::fillRealizeWapPrice);
+        .<StockMoveLine, AxelorException>forEachByQuery(
+            query, stockMoveLineService::fillRealizeWapPrice);
   }
 
   protected void storeCustomsCodesForStockMove(StockMove stockMove) throws AxelorException {

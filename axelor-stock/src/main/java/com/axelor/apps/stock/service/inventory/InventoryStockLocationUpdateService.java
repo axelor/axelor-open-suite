@@ -18,8 +18,9 @@
  */
 package com.axelor.apps.stock.service.inventory;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.Inventory;
 
 public interface InventoryStockLocationUpdateService {
-  void storeLastInventoryData(Inventory inventory);
+  void storeLastInventoryData(Inventory inventory) throws AxelorException;
 }

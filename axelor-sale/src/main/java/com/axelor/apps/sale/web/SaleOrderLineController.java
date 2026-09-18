@@ -444,12 +444,12 @@ public class SaleOrderLineController {
   public void checkEditConfiguratorSaleOrderLine(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    ConfiguratorCheckService configuratorCheckService = Beans.get(ConfiguratorCheckService.class);
 
-    Beans.get(ConfiguratorCheckService.class)
-        .checkConfiguratorActivated(saleOrderLine.getConfigurator());
+    configuratorCheckService.checkConfiguratorActivated(saleOrderLine.getConfigurator());
+    configuratorCheckService.checkConfiguratorEditionEnabled();
 
-    if (Beans.get(ConfiguratorCheckService.class)
-        .isConfiguratorVersionDifferent(saleOrderLine.getConfigurator())) {
+    if (configuratorCheckService.isConfiguratorVersionDifferent(saleOrderLine.getConfigurator())) {
       response.setError(I18n.get(SaleExceptionMessage.CONFIGURATOR_VERSION_IS_DIFFERENT));
     }
   }

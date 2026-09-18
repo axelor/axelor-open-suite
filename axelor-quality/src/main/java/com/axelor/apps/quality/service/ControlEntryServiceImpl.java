@@ -110,6 +110,10 @@ public class ControlEntryServiceImpl implements ControlEntryService {
     if (controlPlan == null) {
       return values;
     }
+    if (controlEntry.getRelatedToSelectId() != null) {
+      getTemplateValues(values, controlPlan, controlEntry.getRelatedToSelect());
+      return values;
+    }
     String relatedToSelect = getRelatedToSelectOnControlPlanChange(controlPlan);
     Long relatedToSelectId =
         getRelatedToSelectIdOnControlPlanChange(controlPlan, controlEntry.getRelatedToSelect());

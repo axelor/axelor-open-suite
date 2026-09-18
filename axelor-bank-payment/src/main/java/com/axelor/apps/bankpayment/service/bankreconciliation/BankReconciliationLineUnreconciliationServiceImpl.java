@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementValidateService;
 import com.axelor.apps.bankpayment.service.moveline.MoveLinePostedNbrService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.common.StringUtils;
@@ -37,15 +38,18 @@ public class BankReconciliationLineUnreconciliationServiceImpl
   protected MoveLineRepository moveLineRepository;
   protected CurrencyScaleService currencyScaleService;
   protected MoveLinePostedNbrService moveLinePostedNbrService;
+  protected BankStatementValidateService bankStatementValidateService;
 
   @Inject
   public BankReconciliationLineUnreconciliationServiceImpl(
       MoveLineRepository moveLineRepository,
       CurrencyScaleService currencyScaleService,
-      MoveLinePostedNbrService moveLinePostedNbrService) {
+      MoveLinePostedNbrService moveLinePostedNbrService,
+      BankStatementValidateService bankStatementValidateService) {
     this.moveLineRepository = moveLineRepository;
     this.currencyScaleService = currencyScaleService;
     this.moveLinePostedNbrService = moveLinePostedNbrService;
+    this.bankStatementValidateService = bankStatementValidateService;
   }
 
   @Override
@@ -84,6 +88,7 @@ public class BankReconciliationLineUnreconciliationServiceImpl
         bankStatementLine.setAmountRemainToReconcile(
             currencyScaleService.getScaledValue(
                 bankStatementLine, bankStatementLine.getAmountRemainToReconcile().add(ownAmount)));
+        bankStatementValidateService.setIsFullyReconciled(bankStatementLine.getBankStatement());
       }
       moveLine.setBankReconciledAmount(
           currencyScaleService.getScaledValue(
@@ -92,6 +97,8 @@ public class BankReconciliationLineUnreconciliationServiceImpl
       bankReconciliationLine.setIsPosted(false);
     }
     bankReconciliationLine.setMoveLine(null);
+    bankReconciliationLine.setPartner(null);
+    bankReconciliationLine.setAccount(null);
     bankReconciliationLine.setConfidenceIndex(0);
     bankReconciliationLine.setPostedNbr(null);
     bankReconciliationLine.setReconcileNumber(null);

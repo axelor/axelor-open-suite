@@ -123,10 +123,7 @@ public abstract class RegistrationNumberValidator {
   protected abstract String getTaxNbrFromRegistrationCode(Partner partner);
 
   protected String getTaxKeyFromSIREN(String sirenStr) {
-    int siren = Integer.parseInt(sirenStr);
-    int taxKey = Math.floorMod(siren, 97);
-    taxKey = Math.floorMod(12 + 3 * taxKey, 97);
-    return String.format("%02d", taxKey);
+    return TaxNumberHelper.getTaxKeyFromSiren(sirenStr);
   }
 
   protected String getNicFromRegistrationCode(Partner partner) {

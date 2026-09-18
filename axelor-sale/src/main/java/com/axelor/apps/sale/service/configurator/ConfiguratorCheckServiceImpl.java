@@ -24,10 +24,19 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.i18n.I18n;
+import jakarta.inject.Inject;
 import java.util.Objects;
 
 public class ConfiguratorCheckServiceImpl implements ConfiguratorCheckService {
+
+  protected final AppSaleService appSaleService;
+
+  @Inject
+  public ConfiguratorCheckServiceImpl(AppSaleService appSaleService) {
+    this.appSaleService = appSaleService;
+  }
 
   @Override
   public void checkLinkedSaleOrderLine(Configurator configurator, Product product)
@@ -80,6 +89,15 @@ public class ConfiguratorCheckServiceImpl implements ConfiguratorCheckService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.CONFIGURATOR_IS_NOT_ACTIVATED));
+    }
+  }
+
+  @Override
+  public void checkConfiguratorEditionEnabled() throws AxelorException {
+    if (!appSaleService.getAppSale().getEnableConfiguratorEdition()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.CONFIGURATOR_EDITION_NOT_ALLOWED));
     }
   }
 }

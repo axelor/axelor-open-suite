@@ -22,7 +22,6 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
-import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import org.apache.commons.collections.CollectionUtils;
@@ -30,21 +29,17 @@ import org.apache.commons.collections.CollectionUtils;
 public class BudgetResetToolServiceImpl implements BudgetResetToolService {
 
   protected BudgetLineResetToolService budgetLineResetToolService;
-  protected BudgetRepository budgetRepository;
   protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public BudgetResetToolServiceImpl(
       BudgetLineResetToolService budgetLineResetToolService,
-      BudgetRepository budgetRepository,
       CurrencyScaleService currencyScaleService) {
     this.budgetLineResetToolService = budgetLineResetToolService;
-    this.budgetRepository = budgetRepository;
     this.currencyScaleService = currencyScaleService;
   }
 
   @Override
-  @Transactional
   public Budget resetBudget(Budget entity) {
 
     entity.setStatusSelect(BudgetRepository.STATUS_DRAFT);
@@ -67,6 +62,6 @@ public class BudgetResetToolServiceImpl implements BudgetResetToolService {
         child = budgetLineResetToolService.resetBudgetLine(child);
       }
     }
-    return budgetRepository.save(entity);
+    return entity;
   }
 }

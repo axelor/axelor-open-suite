@@ -56,4 +56,7 @@ public interface BankReconciliationLineService {
       BankReconciliationLine bankReconciliationLine, MoveLine moveLine, String reconcileNumber);
 
   void toggleSelected(BankReconciliationLine bankReconciliationLine);
+
+  void fillPartnerAndAccountFromMoveLine(
+      BankReconciliationLine bankReconciliationLine, MoveLine moveLine);
 }

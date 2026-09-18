@@ -40,7 +40,7 @@ public class TradingNameAnalyticServiceImpl implements TradingNameAnalyticServic
     Company company = tradingName.getCompany();
     String domain =
         !ObjectUtils.isEmpty(company)
-            ? "self.company = " + company.getId() + " AND self.isSpecific = false"
+            ? "self.company.id = " + company.getId() + " AND self.isSpecific = false"
             : "self.id = 0";
     return domain;
   }
