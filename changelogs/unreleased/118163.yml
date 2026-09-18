@@ -1,0 +1,8 @@
+---
+title: "Supplier arrival: added a supplier delivery date on the reception, distinct from the move date, to record the actual date the goods were delivered."
+module: axelor-stock
+developer: |
+  Added the `supplierDeliveryDate` date field to `StockMove`.
+
+  -- Script
+  ALTER TABLE stock_stock_move ADD COLUMN supplier_delivery_date date;
