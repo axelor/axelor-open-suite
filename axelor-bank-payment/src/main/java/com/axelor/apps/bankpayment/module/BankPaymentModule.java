@@ -103,6 +103,8 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderComputeServiceImpl;
+import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderAddressService;
+import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderAddressServiceImpl;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationAccountService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationAccountServiceImpl;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationBalanceComputationService;
@@ -213,6 +215,8 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankOrderLineRepository.class).to(BankOrderLineManagementRepository.class);
 
     bind(BankOrderService.class).to(BankOrderServiceImpl.class);
+
+    bind(BankOrderAddressService.class).to(BankOrderAddressServiceImpl.class);
 
     bind(BankOrderMergeService.class).to(BankOrderMergeServiceImpl.class);
 

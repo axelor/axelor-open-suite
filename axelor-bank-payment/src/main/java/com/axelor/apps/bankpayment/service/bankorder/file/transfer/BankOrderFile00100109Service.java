@@ -21,6 +21,8 @@ package com.axelor.apps.bankpayment.service.bankorder.file.transfer;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
+import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderAddressService;
+import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderFile00100109AddressAdapter;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.AccountIdentification4Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.ActiveOrHistoricCurrencyAndAmount;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.AmountType4Choice;
@@ -44,6 +46,7 @@ import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.ServiceLevel8Choice;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import jakarta.inject.Inject;
 import java.io.File;
@@ -54,6 +57,8 @@ public class BankOrderFile00100109Service extends BankOrderFileService {
 
   protected static final String BIC_NOT_PROVIDED = "NOTPROVIDED";
 
+  protected BankOrderAddressService bankOrderAddressService;
+
   @Inject
   public BankOrderFile00100109Service(BankOrder bankOrder) {
 
@@ -61,6 +66,7 @@ public class BankOrderFile00100109Service extends BankOrderFileService {
 
     context = "com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09";
     fileExtension = FILE_EXTENSION_XML;
+    bankOrderAddressService = Beans.get(BankOrderAddressService.class);
   }
 
   /**
@@ -83,6 +89,9 @@ public class BankOrderFile00100109Service extends BankOrderFileService {
     // Payer
     PartyIdentification135 dbtr = factory.createPartyIdentification135();
     dbtr.setNm(senderBankDetails.getOwnerName());
+    dbtr.setPstlAdr(
+        BankOrderFile00100109AddressAdapter.createPostalAddress(
+            bankOrderAddressService.createSenderPostalAddress(senderCompany, bankOrderFileFormat)));
 
     // IBAN
     AccountIdentification4Choice iban = factory.createAccountIdentification4Choice();
@@ -150,6 +159,10 @@ public class BankOrderFile00100109Service extends BankOrderFileService {
       // Receiver
       cbtr = factory.createPartyIdentification135();
       cbtr.setNm(receiverBankDetails.getOwnerName());
+      cbtr.setPstlAdr(
+          BankOrderFile00100109AddressAdapter.createPostalAddress(
+              bankOrderAddressService.createReceiverPostalAddress(
+                  bankOrderLine, bankOrderFileFormat)));
 
       // IBAN
       iban = factory.createAccountIdentification4Choice();

@@ -187,6 +187,22 @@ public final class BankPaymentExceptionMessage {
   public static final String BANK_ORDER_FILE_ENCRYPTION_INCORRECT_PASSWORD = /*$$(*/
       "The password is incorrect." /*)*/;
 
+  /** BankOrder postal address */
+  public static final String BANK_ORDER_ADDRESS_NOT_COMPLIANT = /*$$(*/
+      "The following postal addresses do not meet the SEPA structured address requirements:" /*)*/;
+
+  public static final String BANK_ORDER_ADDRESS_MISSING_TOWN_NAME = /*$$(*/
+      "%s: the town name is missing on the postal address." /*)*/;
+
+  public static final String BANK_ORDER_ADDRESS_MISSING_COUNTRY = /*$$(*/
+      "%s: the country ISO alpha-2 code is missing on the postal address." /*)*/;
+
+  public static final String BANK_ORDER_ADDRESS_NO_RECEIVER_ADDRESS = /*$$(*/
+      "%s: no postal address has been found on the partner." /*)*/;
+
+  public static final String BANK_ORDER_FILE_FORMAT_ADDRESS_FORMAT_NOT_SUPPORTED = /*$$(*/
+      "The postal address format %s is not supported by the file format %s." /*)*/;
+
   /** Batch bank statement */
 
   /** BankStatement import */

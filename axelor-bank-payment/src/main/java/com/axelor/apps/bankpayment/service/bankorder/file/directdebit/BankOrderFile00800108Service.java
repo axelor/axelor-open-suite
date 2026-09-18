@@ -23,6 +23,8 @@ import com.axelor.apps.account.service.umr.UmrService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderAddressService;
+import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderFile00800108AddressAdapter;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.AccountIdentification4Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.ActiveOrHistoricCurrencyAndAmount;
@@ -69,6 +71,7 @@ public class BankOrderFile00800108Service extends BankOrderFile008Service {
 
   protected ObjectFactory factory;
   protected String sepaType;
+  protected BankOrderAddressService bankOrderAddressService;
 
   @Inject
   public BankOrderFile00800108Service(BankOrder bankOrder, String sepaType) {
@@ -78,6 +81,7 @@ public class BankOrderFile00800108Service extends BankOrderFile008Service {
 
     factory = new ObjectFactory();
     this.sepaType = sepaType;
+    bankOrderAddressService = Beans.get(BankOrderAddressService.class);
   }
 
   /**
@@ -91,6 +95,9 @@ public class BankOrderFile00800108Service extends BankOrderFile008Service {
     // Creditor
     PartyIdentification135 creditor = factory.createPartyIdentification135();
     creditor.setNm(senderBankDetails.getOwnerName());
+    creditor.setPstlAdr(
+        BankOrderFile00800108AddressAdapter.createPostalAddress(
+            bankOrderAddressService.createSenderPostalAddress(senderCompany, bankOrderFileFormat)));
 
     /*
      * Hierarchy of a XML file
@@ -620,6 +627,10 @@ public class BankOrderFile00800108Service extends BankOrderFile008Service {
        */
       PartyIdentification135 debtor = factory.createPartyIdentification135();
       debtor.setNm(receiverBankDetails.getOwnerName());
+      debtor.setPstlAdr(
+          BankOrderFile00800108AddressAdapter.createPostalAddress(
+              bankOrderAddressService.createReceiverPostalAddress(
+                  bankOrderLine, bankOrderFileFormat)));
       directDebitTransactionInformation9.setDbtr(debtor);
 
       /*
