@@ -50,6 +50,7 @@ public class StockMoveManagementRepository extends StockMoveRepository {
     copy.setAvailabilityRequest(false);
     copy.setSupplierShipmentDate(null);
     copy.setSupplierShipmentRef(null);
+    copy.setSupplierDeliveryDate(null);
     copy.setAvailabilityRequest(false);
     copy.setFullySpreadOverLogisticalFormsFlag(false);
 
@@ -59,6 +60,7 @@ public class StockMoveManagementRepository extends StockMoveRepository {
   @Override
   public StockMove save(StockMove entity) {
     try {
+      Beans.get(StockMoveService.class).checkSupplierDeliveryDateLocked(entity);
       StockMove stockMove = super.save(entity);
       SequenceService sequenceService = Beans.get(SequenceService.class);
 

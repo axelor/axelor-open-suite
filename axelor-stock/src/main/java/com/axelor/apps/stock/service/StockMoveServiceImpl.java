@@ -70,6 +70,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -81,6 +82,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -563,6 +565,8 @@ public class StockMoveServiceImpl implements StockMoveService {
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(StockExceptionMessage.STOCK_MOVE_MISSING_SUPPLIER_SHIPMENT_DETAILS));
     }
+
+    checkSupplierDeliveryDate(stockMove);
 
     if (checkOngoingInventoryFlag) {
       checkOngoingInventory(stockMove);
@@ -1896,5 +1900,71 @@ public class StockMoveServiceImpl implements StockMoveService {
         .filter("self.stockMove.id = :stockMoveId AND self.id > :lastSeenId")
         .bind("stockMoveId", stockMoveId)
         .order("id");
+  }
+
+  protected void checkSupplierDeliveryDate(StockMove stockMove) throws AxelorException {
+    LocalDate supplierDeliveryDate = stockMove.getSupplierDeliveryDate();
+    if (stockMove.getTypeSelect() != StockMoveRepository.TYPE_INCOMING
+        || stockMove.getIsReversion()
+        || supplierDeliveryDate == null) {
+      return;
+    }
+    LocalDate realizationDate =
+        stockMove.getRealDate() != null
+            ? stockMove.getRealDate()
+            : appBaseService.getTodayDate(stockMove.getCompany());
+    if (supplierDeliveryDate.isAfter(realizationDate)) {
+      throw new AxelorException(
+          stockMove,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(StockExceptionMessage.STOCK_MOVE_SUPPLIER_DELIVERY_DATE_AFTER_REALIZATION));
+    }
+    if (stockMove.getSupplierShipmentDate() != null
+        && supplierDeliveryDate.isBefore(stockMove.getSupplierShipmentDate())) {
+      throw new AxelorException(
+          stockMove,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(StockExceptionMessage.STOCK_MOVE_SUPPLIER_DELIVERY_DATE_BEFORE_SHIPMENT));
+    }
+  }
+
+  @Override
+  public void checkSupplierDeliveryDateLocked(StockMove stockMove) throws AxelorException {
+    if (stockMove.getId() == null
+        || (stockMove.getStatusSelect() != StockMoveRepository.STATUS_REALIZED
+            && stockMove.getStatusSelect() != StockMoveRepository.STATUS_CANCELED)) {
+      return;
+    }
+    Object[] statusAndDeliveryDate = findSavedStatusAndSupplierDeliveryDate(stockMove);
+    if (statusAndDeliveryDate == null) {
+      return;
+    }
+    Integer statusSelect = (Integer) statusAndDeliveryDate[0];
+    LocalDate supplierDeliveryDate = (LocalDate) statusAndDeliveryDate[1];
+    if (statusSelect != null
+        && (statusSelect == StockMoveRepository.STATUS_REALIZED
+            || statusSelect == StockMoveRepository.STATUS_CANCELED)
+        && !Objects.equals(supplierDeliveryDate, stockMove.getSupplierDeliveryDate())) {
+      throw new AxelorException(
+          stockMove,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(StockExceptionMessage.STOCK_MOVE_SUPPLIER_DELIVERY_DATE_LOCKED));
+    }
+  }
+
+  protected Object[] findSavedStatusAndSupplierDeliveryDate(StockMove stockMove) {
+    try (EntityManager readEm = JPA.em().getEntityManagerFactory().createEntityManager()) {
+      List<Object[]> statusAndDeliveryDateList =
+          readEm
+              .createQuery(
+                  "SELECT sm.statusSelect, sm.supplierDeliveryDate FROM StockMove sm "
+                      + "WHERE sm.id = :id",
+                  Object[].class)
+              .setParameter("id", stockMove.getId())
+              .getResultList();
+      return CollectionUtils.isEmpty(statusAndDeliveryDateList)
+          ? null
+          : statusAndDeliveryDateList.get(0);
+    }
   }
 }

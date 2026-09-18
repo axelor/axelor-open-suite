@@ -640,7 +640,7 @@
 "Payment period (N days / Month)","Période de paiement (N jours / mois)",,
 "Percentage","Pourcentage",,
 "Percentage of assessed receptions without any non-compliant line, over the rolling period. Receptions whose lines were not assessed are ignored.","Pourcentage de réceptions évaluées sans aucune ligne non conforme, sur la période glissante. Les réceptions dont les lignes n'ont pas été évaluées sont ignorées.",,
-"Percentage of purchase order lines fully received on or before their estimated receipt date, over the rolling period. Lines without an estimated receipt date are not rated.","Pourcentage de lignes de commande fournisseur entièrement réceptionnées au plus tard à leur date de réception estimée, sur la période glissante. Les lignes sans date de réception estimée ne sont pas évaluées.",,
+"Percentage of purchase order lines fully received on or before their estimated receipt date, over the rolling period. The receipt date is the supplier delivery date entered on the reception, or the date the reception was realized when it is not filled. Lines without an estimated receipt date are not rated.","Pourcentage de lignes de commande fournisseur entièrement réceptionnées au plus tard à leur date de réception estimée, sur la période glissante. La date de réception retenue est la date de livraison fournisseur saisie sur la réception, ou à défaut la date de réalisation de la réception. Les lignes sans date de réception estimée ne sont pas évaluées.",,
 "Period","Période",,
 "Period type","Type de période",,
 "Picking Order Info","Info bon de préparation",,

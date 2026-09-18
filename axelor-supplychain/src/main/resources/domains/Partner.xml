@@ -18,7 +18,7 @@
       help="Weighted average of the supplier indicators computed over the rolling period configured in the Supply Chain app."
       nullable="true"/>
     <decimal name="supplierOtdRate" title="On-time delivery rate (%)" min="0" max="100"
-      help="Percentage of purchase order lines fully received on or before their estimated receipt date, over the rolling period. Lines without an estimated receipt date are not rated."
+      help="Percentage of purchase order lines fully received on or before their estimated receipt date, over the rolling period. The receipt date is the supplier delivery date entered on the reception, or the date the reception was realized when it is not filled. Lines without an estimated receipt date are not rated."
       nullable="true"/>
     <decimal name="supplierConformityRate" title="Reception conformity rate (%)" min="0"
       max="100"

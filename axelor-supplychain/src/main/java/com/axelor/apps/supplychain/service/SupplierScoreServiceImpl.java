@@ -208,7 +208,7 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
             .createQuery(
                 "SELECT pol.id, "
                     + "pol.estimatedReceiptDate, "
-                    + "MAX(sm.realDate) "
+                    + "MAX(COALESCE(sm.supplierDeliveryDate, sm.realDate)) "
                     + "FROM StockMoveLine sml "
                     + "JOIN sml.purchaseOrderLine pol "
                     + "JOIN pol.purchaseOrder po "

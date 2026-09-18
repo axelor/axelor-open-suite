@@ -254,4 +254,6 @@ public interface StockMoveService {
 
   public void addStockMovesToLogisticalForm(
       LogisticalForm logisticalForm, List<StockMove> stockMoveList) throws AxelorException;
+
+  void checkSupplierDeliveryDateLocked(StockMove stockMove) throws AxelorException;
 }

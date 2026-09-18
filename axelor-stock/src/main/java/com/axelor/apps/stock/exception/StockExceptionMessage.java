@@ -326,6 +326,12 @@ public final class StockExceptionMessage {
 
   public static final String STOCK_MOVE_MISSING_SUPPLIER_SHIPMENT_DETAILS = /*$$(*/
       "Please filled supplier shipment date and supplier shipment reference." /*)*/;
+  public static final String STOCK_MOVE_SUPPLIER_DELIVERY_DATE_AFTER_REALIZATION = /*$$(*/
+      "The supplier delivery date cannot be later than the date the receipt is realized." /*)*/;
+  public static final String STOCK_MOVE_SUPPLIER_DELIVERY_DATE_BEFORE_SHIPMENT = /*$$(*/
+      "The supplier delivery date cannot be earlier than the supplier shipment date." /*)*/;
+  public static final String STOCK_MOVE_SUPPLIER_DELIVERY_DATE_LOCKED = /*$$(*/
+      "The supplier delivery date can no longer be changed once the receipt is realized or canceled." /*)*/;
 
   public static final String STOCK_CORRECTION_VALIDATE_ERROR = /*$$(*/
       "You can not validate this stock correction, there is an ongoing inventory for the same stock location." /*)*/;

@@ -640,7 +640,7 @@
 "Payment period (N days / Month)",,,
 "Percentage",,,
 "Percentage of assessed receptions without any non-compliant line, over the rolling period. Receptions whose lines were not assessed are ignored.",,,
-"Percentage of purchase order lines fully received on or before their estimated receipt date, over the rolling period. Lines without an estimated receipt date are not rated.",,,
+"Percentage of purchase order lines fully received on or before their estimated receipt date, over the rolling period. The receipt date is the supplier delivery date entered on the reception, or the date the reception was realized when it is not filled. Lines without an estimated receipt date are not rated.",,,
 "Period",,,
 "Period type",,,
 "Picking Order Info",,,
