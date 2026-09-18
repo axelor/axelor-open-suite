@@ -26,6 +26,9 @@
     <bind column="orderFileFormatSelect" to="orderFileFormatSelect"
       check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.bankpayment.db.BankOrderFileFormat', 'orderFileFormatSelect', orderFileFormatSelect)"
       check-message="Invalid orderFileFormatSelect"/>
+    <bind column="addressFormatSelect" to="addressFormatSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.bankpayment.db.BankOrderFileFormat', 'addressFormatSelect', addressFormatSelect)"
+      check-message="Invalid addressFormatSelect"/>
     <bind column="bankDetailsTypeSelect" to="bankDetailsTypeSelect"
       check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.bankpayment.db.BankOrderFileFormat', 'bankDetailsTypeSelect', bankDetailsTypeSelect)"
       check-message="Invalid bankDetailsTypeSelect"/>

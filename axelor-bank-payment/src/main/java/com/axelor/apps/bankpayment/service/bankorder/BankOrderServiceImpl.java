@@ -26,6 +26,7 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
+import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderAddressService;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800108Service;
@@ -63,18 +64,21 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected BankDetailsService bankDetailsService;
   protected AppBankPaymentService appBankPaymentService;
   protected BankOrderEncryptionService bankOrderEncryptionService;
+  protected BankOrderAddressService bankOrderAddressService;
 
   @Inject
   public BankOrderServiceImpl(
       BankOrderRepository bankOrderRepository,
       BankDetailsService bankDetailsService,
       AppBankPaymentService appBankPaymentService,
-      BankOrderEncryptionService bankOrderEncryptionService) {
+      BankOrderEncryptionService bankOrderEncryptionService,
+      BankOrderAddressService bankOrderAddressService) {
 
     this.bankOrderRepository = bankOrderRepository;
     this.bankDetailsService = bankDetailsService;
     this.appBankPaymentService = appBankPaymentService;
     this.bankOrderEncryptionService = bankOrderEncryptionService;
+    this.bankOrderAddressService = bankOrderAddressService;
   }
 
   public void processBankOrderStatus(BankOrder bankOrder, PaymentMode paymentMode)
@@ -142,6 +146,8 @@ public class BankOrderServiceImpl implements BankOrderService {
     bankOrder.setFileGenerationDateTime(LocalDateTime.now());
 
     BankOrderFileFormat bankOrderFileFormat = bankOrder.getBankOrderFileFormat();
+
+    bankOrderAddressService.checkAddresses(bankOrder);
 
     File file = null;
 

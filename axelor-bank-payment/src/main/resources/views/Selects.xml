@@ -111,6 +111,12 @@
     <option value="pain.xxx.vcom400.vct">pain.xxx.vcom400.vct</option>
   </selection>
 
+  <selection name="bankpayment.bank.order.ff.address.format.select">
+    <option value="none">None</option>
+    <option value="structured">Structured</option>
+    <option value="hybrid">Hybrid</option>
+  </selection>
+
   <selection name="bankpayment.bank.statement.file.format.statement.file.format.select">
     <option value="camt.054.001.02.act">camt.054.001.02.act</option>
     <option value="camt.054.001.02.add">camt.054.001.02.add</option>
