@@ -1,0 +1,3 @@
+---
+title: "Analytic review: fixed the analytic move lines dashlet not being refreshed after a reverse, which allowed the same lines to be reversed several times."
+module: axelor-account
