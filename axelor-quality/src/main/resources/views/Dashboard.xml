@@ -11,6 +11,17 @@
     <dashlet action="chart:chart.quality.alerts.total.numbers" height="350" canSearch="true"/>
     <dashlet action="chart:chart.quality.alerts.solved.total.numbers" height="350"
       canSearch="true"/>
+    <dashlet action="action-dashboard-view-quality-nc-open-by-gravity" height="350"
+      canSearch="true"/>
+    <dashlet action="action-dashboard-view-quality-receptions-conformity" height="350"
+      canSearch="true"/>
+    <dashlet action="action-dashboard-view-quality-top5-suppliers-nc" height="350"
+      canSearch="true"/>
+    <dashlet action="action-dashboard-view-quality-top5-products-nc" height="350"
+      canSearch="true"/>
+    <dashlet action="action-dashboard-view-quality-nc-monthly-trend" height="350"
+      canSearch="true"/>
+    <dashlet action="chart:chart.quality.control.entries.open" height="350" canSearch="true"/>
   </dashboard>
 
   <action-view name="action-dashboard-view-quality-control-points"
@@ -18,6 +29,41 @@
     <view type="chart" name="chart.quality.control.points"/>
     <context name="_language"
       expr="eval: __user__.getLanguage()?.tokenize('-')?.first()?.toLowerCase()"/>
+  </action-view>
+
+  <action-view name="action-dashboard-view-quality-nc-open-by-gravity"
+    title="Number of open non-conformities by gravity">
+    <view type="chart" name="chart.quality.nc.open.by.gravity"/>
+    <context name="_company"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+  </action-view>
+
+  <action-view name="action-dashboard-view-quality-receptions-conformity"
+    title="Reception conformity rate">
+    <view type="chart" name="chart.quality.receptions.conformity"/>
+    <context name="_company"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+  </action-view>
+
+  <action-view name="action-dashboard-view-quality-top5-suppliers-nc"
+    title="Top 5 suppliers with most non-conformities">
+    <view type="chart" name="chart.quality.top5.suppliers.nc"/>
+    <context name="_company"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+  </action-view>
+
+  <action-view name="action-dashboard-view-quality-top5-products-nc"
+    title="Top 5 products with most non-conformities">
+    <view type="chart" name="chart.quality.top5.products.nc"/>
+    <context name="_company"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+  </action-view>
+
+  <action-view name="action-dashboard-view-quality-nc-monthly-trend"
+    title="Number of non-conformities by month">
+    <view type="chart" name="chart.quality.nc.monthly.trend"/>
+    <context name="_company"
+      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
   </action-view>
 
 </object-views>
