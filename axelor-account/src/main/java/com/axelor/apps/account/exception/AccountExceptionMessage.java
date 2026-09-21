@@ -983,6 +983,8 @@ public final class AccountExceptionMessage {
       "You can only cancel a drafted or validated invoice." /*)*/;
   public static final String INVOICE_DRAFT_WRONG_STATUS = /*$$(*/
       "You can only return to the draft status from a cancelled invoice." /*)*/;
+  public static final String INVOICE_CREATE_REFUND_WRONG_STATUS = /*$$(*/
+      "You can only generate a credit note from a ventilated invoice." /*)*/;
 
   public static final String NO_CUT_OFF_TO_APPLY = /*$$(*/
       "No cut off period could be applied. Please check that you have entered lines and that the Cut off period is enabled on the account associated to each line." /*)*/;
