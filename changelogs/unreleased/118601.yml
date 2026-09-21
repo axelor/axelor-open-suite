@@ -1,0 +1,3 @@
+---
+title: "Production order: fixed an empty production order being created from a sale order when no line has a producible supply method."
+module: axelor-production
