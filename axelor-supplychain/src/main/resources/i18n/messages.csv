@@ -482,6 +482,8 @@
 "Managed in stock move",,,
 "Managed in stock move by default",,,
 "Managed lines only",,,
+"Manufacturing operation status",,,
+"Manufacturing order status",,,
 "Mass Cust. Stock Move Invoicing",,,
 "Mass Sale Order Line Invoicing",,,
 "Mass Suppl. Stock Move Invoicing",,,
