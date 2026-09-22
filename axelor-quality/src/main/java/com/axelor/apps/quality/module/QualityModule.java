@@ -35,6 +35,8 @@ import com.axelor.apps.quality.db.repo.QualityImprovementManagementRepository;
 import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
 import com.axelor.apps.quality.db.repo.RequiredDocumentManagementRepository;
 import com.axelor.apps.quality.db.repo.RequiredDocumentRepository;
+import com.axelor.apps.quality.rest.service.ControlEntrySampleLineUpdateAPIService;
+import com.axelor.apps.quality.rest.service.ControlEntrySampleLineUpdateAPIServiceImpl;
 import com.axelor.apps.quality.rest.service.QualityImprovementCreateAPIService;
 import com.axelor.apps.quality.rest.service.QualityImprovementCreateAPIServiceImpl;
 import com.axelor.apps.quality.rest.service.QualityImprovementParseService;
@@ -143,5 +145,7 @@ public class QualityModule extends AxelorModule {
     bind(TrackingNumberCharacteristicService.class)
         .to(TrackingNumberCharacteristicServiceImpl.class);
     bind(TrackingNumberQualityService.class).to(TrackingNumberQualityServiceImpl.class);
+    bind(ControlEntrySampleLineUpdateAPIService.class)
+        .to(ControlEntrySampleLineUpdateAPIServiceImpl.class);
   }
 }

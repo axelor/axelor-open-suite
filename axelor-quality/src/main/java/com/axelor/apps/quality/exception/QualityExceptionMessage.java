@@ -90,4 +90,19 @@ public final class QualityExceptionMessage {
 
   public static final String CONTROL_PLAN_FREQUENCY_ALREADY_EXISTS = /*$$(*/
       "A control plan frequency with the same name %s already exists." /*)*/;
+
+  public static final String API_CONTROL_ENTRY_SAMPLE_LINE_UPDATED = /*$$(*/
+      "Control entry sample line successfully updated." /*)*/;
+
+  public static final String API_NOT_A_CONTROL_ENTRY_SAMPLE_LINE = /*$$(*/
+      "The control entry plan line with id %s is not a control entry sample line." /*)*/;
+
+  public static final String API_ENTRY_VALUE_NOT_IN_SAMPLE_LINE = /*$$(*/
+      "The entry value with id %s does not belong to the control entry sample line with id %s." /*)*/;
+
+  public static final String API_ENTRY_VALUE_TYPE_MISMATCH = /*$$(*/
+      "The value of the field %s can not be sent in %s: its type expects %s." /*)*/;
+
+  public static final String API_SELECTION_VALUE_NOT_ALLOWED = /*$$(*/
+      "The value %s is not among the allowed values of the field %s." /*)*/;
 }
