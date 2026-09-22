@@ -37,8 +37,16 @@ public class StockConfigProductionService extends StockConfigService {
     this.appProductionService = appProductionService;
   }
 
+  /**
+   * Returns the virtual stock location to use for production stock moves. When {@code isOutsource}
+   * is true, the outsourcing virtual stock location is returned instead of the production one.
+   */
   public StockLocation getProductionVirtualStockLocation(
       StockConfig stockConfig, boolean isOutsource) throws AxelorException {
+
+    if (isOutsource) {
+      return getVirtualOutsourcingStockLocation(stockConfig);
+    }
 
     if (stockConfig.getProductionVirtualStockLocation() == null) {
       throw new AxelorException(
@@ -46,14 +54,6 @@ public class StockConfigProductionService extends StockConfigService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(ProductionExceptionMessage.PRODUCTION_CONFIG_2),
           stockConfig.getCompany().getName());
-    }
-
-    if (isOutsource
-        && !stockConfig.getProductionVirtualStockLocation().getIsOutsourcingLocation()) {
-      throw new AxelorException(
-          stockConfig,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(ProductionExceptionMessage.PRODUCTION_CONFIG_STOCK_LOCATION_NOT_OUTSOURCING));
     }
 
     return stockConfig.getProductionVirtualStockLocation();
