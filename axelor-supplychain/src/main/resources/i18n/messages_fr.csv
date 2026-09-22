@@ -395,6 +395,8 @@
 "MRP to compute","CBN à lancer",,
 "Manage advance payments from payment conditions","Gérer les acomptes depuis les conditions de paiement",,
 "Manage stock reservation","Gérer la réservation des stocks",,
+"Manufacturing operation status","État de l'opération de fabrication",,
+"Manufacturing order status","État de l'ordre de fabrication",,
 "Mass Cust. Stock Move Invoicing","Facturation en masse de BL",,
 "Mass Suppl. Stock Move Invoicing","Facturation en masse de BR",,
 "Mass sale order line invoicing","Facturation des lignes de commande en masse",,
