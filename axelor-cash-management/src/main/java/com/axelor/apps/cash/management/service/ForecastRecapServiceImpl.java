@@ -287,12 +287,13 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   protected void createForecastRecapLines(
       ForecastRecap forecastRecap, Model model, ForecastRecapLineType forecastRecapLineType)
       throws AxelorException {
-    BigDecimal companyAmount = getCompanyAmount(forecastRecap, forecastRecapLineType, model);
     if (forecastRecapLineType.getElementSelect()
         == ForecastRecapLineTypeRepository.ELEMENT_SALARY) {
       createForecastRecapLinesFromEmployee(forecastRecap, (Employee) model, forecastRecapLineType);
-    } else if (forecastRecapLineType.getElementSelect()
-            == ForecastRecapLineTypeRepository.ELEMENT_INVOICE
+      return;
+    }
+    BigDecimal companyAmount = getCompanyAmount(forecastRecap, forecastRecapLineType, model);
+    if (forecastRecapLineType.getElementSelect() == ForecastRecapLineTypeRepository.ELEMENT_INVOICE
         && companyAmount.signum() != 0) {
       Invoice invoice = (Invoice) model;
       if (!ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
@@ -542,8 +543,6 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       case ForecastRecapLineTypeRepository.ELEMENT_OPPORTUNITY:
         Opportunity opportunity = (Opportunity) forecastModel;
         return getCompanyAmountForOpportunity(forecastRecap, forecastRecapLineType, opportunity);
-      case ForecastRecapLineTypeRepository.ELEMENT_SALARY:
-      // this element is not supported by this method.
       case ForecastRecapLineTypeRepository.ELEMENT_MOVE:
         Move move = (Move) forecastModel;
         return journalService.computeBalance(move.getJournal()).get("debit");
@@ -638,8 +637,6 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       case ForecastRecapLineTypeRepository.ELEMENT_OPPORTUNITY:
         Opportunity opportunity = (Opportunity) forecastModel;
         return opportunity.getExpectedCloseDate();
-      case ForecastRecapLineTypeRepository.ELEMENT_SALARY:
-      // this element is not supported by this method.
       case ForecastRecapLineTypeRepository.ELEMENT_MOVE:
         Move move = (Move) forecastModel;
         return move.getDate();
