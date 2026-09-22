@@ -25,6 +25,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderBlockingSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckBlockingSupplychainServiceImpl;
 import com.google.inject.Inject;
+import java.util.Collections;
 import java.util.List;
 
 public class SaleOrderCheckBlockingServiceProductionServiceImpl
@@ -48,7 +49,7 @@ public class SaleOrderCheckBlockingServiceProductionServiceImpl
   public List<String> checkBlocking(SaleOrder saleOrder) {
     var alertList = super.checkBlocking(saleOrder);
 
-    if (saleOrderBlockingProductionService.hasOnGoingBlocking(saleOrder)
+    if (saleOrderBlockingProductionService.hasOnGoingBlocking(saleOrder, Collections.emptyList())
         && appProductionService.getAppProduction().getProductionOrderGenerationAuto()) {
       alertList.add(ProductionExceptionMessage.SALE_ORDER_LINES_CANNOT_PRODUCT);
     }

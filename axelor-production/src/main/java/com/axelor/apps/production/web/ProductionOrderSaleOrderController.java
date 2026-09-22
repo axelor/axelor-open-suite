@@ -36,6 +36,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,7 +46,15 @@ public class ProductionOrderSaleOrderController {
   public void checkBlocking(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
-    if (Beans.get(SaleOrderBlockingProductionService.class).hasOnGoingBlocking(saleOrder)) {
+    List<SaleOrderLine> selectedSaleOrderLines =
+        saleOrder.getSaleOrderLineList() == null
+            ? Collections.emptyList()
+            : saleOrder.getSaleOrderLineList().stream()
+                .filter(Model::isSelected)
+                .collect(Collectors.toList());
+
+    if (Beans.get(SaleOrderBlockingProductionService.class)
+        .hasOnGoingBlocking(saleOrder, selectedSaleOrderLines)) {
       response.setAlert(I18n.get(ProductionExceptionMessage.SALE_ORDER_LINES_CANNOT_PRODUCT));
     }
   }
