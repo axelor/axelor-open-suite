@@ -10,6 +10,10 @@
       max="100"
       help="100 when the supplier has no open quality improvement, whatever its creation date, decreasing to 0 when there is at least one open quality improvement per reception of the rolling period."
       nullable="true"/>
+    <decimal name="supplierNonConformityRate" title="Non-conformity rate (%)" min="0"
+      max="100"
+      help="100 when the supplier caused no non-conformity over the rolling period, decreasing to 0 when the gravity-weighted count of its quality improvements reaches the number of receptions. Every non-cancelled quality improvement carrying the supplier counts, dated by its reception when it has one and by its creation date otherwise; a quality improvement without gravity counts as major."
+      nullable="true"/>
   </entity>
 
 </domain-models>
