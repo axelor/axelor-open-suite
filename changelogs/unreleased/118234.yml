@@ -1,0 +1,14 @@
+---
+title: "Partner: fixed 'Error while committing the transaction' error when deleting a partner holding a SEPA mandate (UMR), and added a confirmation before such a deletion."
+module: axelor-account
+developer: |
+  Added InvoicingPaymentSituationService#clearActiveUmr, called by
+  PartnerAccountRepository#remove before the partner is deleted, and
+  InvoicingPaymentSituationService#getPartnerWithActiveUmrList, used by
+  PartnerController#checkActiveUmrBeforeDelete.
+
+  The partner, customer and supplier forms and grids now declare the onDelete
+  action `action-partner-method-check-active-umr-before-delete`.
+
+  PartnerAccountRepository constructor now takes an additional
+  InvoicingPaymentSituationService parameter.
