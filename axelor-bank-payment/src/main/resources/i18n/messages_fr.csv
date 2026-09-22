@@ -883,7 +883,7 @@
 "pain.xxx.vcom400.vct",,,
 "value:Bank payment","Paiement bancaire",,
 "A maximum of two moveLines can be selected.","Il est possible de sélectionner au maximum deux lignes d'écriture.",,
-"This move line already has a reconciled amount and cannot be reconciled again.","Cette ligne d'écriture a déjà un montant rapproché et ne peut pas être rapprochée à nouveau.",,
+"The move line %s already has a reconciled amount and cannot be reconciled again.","La ligne d'écriture %s a déjà un montant rapproché et ne peut pas être rapprochée à nouveau.",,
 "Move lines to reconcile must be one debit and one credit.","Les lignes d'écriture à rapprocher doivent être un débit et un crédit.",,
 "■",,,
 "▲",,,

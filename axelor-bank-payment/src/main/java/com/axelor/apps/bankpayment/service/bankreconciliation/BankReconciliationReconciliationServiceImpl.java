@@ -242,7 +242,7 @@ public class BankReconciliationReconciliationServiceImpl
       if (moveLines.size() > 2) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get("Il est possible de sélectionner au maximum deux lignes d'écriture."));
+            I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_MAX_TWO_MOVE_LINES));
       }
       if (moveLines.size() == 2) {
         reconcileTwoMoveLines(moveLines.get(0), moveLines.get(1));
@@ -276,7 +276,7 @@ public class BankReconciliationReconciliationServiceImpl
       throw new AxelorException(
           moveLine1,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get("La ligne d'écriture %s est déjà rapprochée."),
+          I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_MOVE_LINE_ALREADY_RECONCILED),
           moveLine1.getName());
     }
     if (moveLine2.getBankReconciledAmount() != null
@@ -284,7 +284,7 @@ public class BankReconciliationReconciliationServiceImpl
       throw new AxelorException(
           moveLine2,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get("La ligne d'écriture %s est déjà rapprochée."),
+          I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_MOVE_LINE_ALREADY_RECONCILED),
           moveLine2.getName());
     }
 
@@ -298,7 +298,7 @@ public class BankReconciliationReconciliationServiceImpl
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(
-              "Le rapprochement doit se faire entre une ligne au débit et une ligne au crédit."));
+              BankPaymentExceptionMessage.BANK_RECONCILIATION_MOVE_LINES_MUST_BE_DEBIT_VS_CREDIT));
     }
 
     // Get the debit and credit amounts for both moveLines
@@ -330,30 +330,6 @@ public class BankReconciliationReconciliationServiceImpl
     // Save changes
     moveLineRepository.save(moveLine1);
     moveLineRepository.save(moveLine2);
-  }
-
-  protected BigDecimal getUnreconciledAmount(MoveLine moveLine) {
-    BigDecimal totalAmount;
-
-    // Use currencyAmount if the move has a different currency than company currency
-    if (moveLine.getMove().getCurrency() != null
-        && moveLine.getMove().getCompany() != null
-        && moveLine.getMove().getCompany().getCurrency() != null
-        && !moveLine.getMove().getCurrency().equals(moveLine.getMove().getCompany().getCurrency())) {
-      totalAmount =
-          moveLine.getCurrencyAmount() != null
-              ? moveLine.getCurrencyAmount().abs()
-              : BigDecimal.ZERO;
-    } else {
-      totalAmount = moveLine.getDebit().add(moveLine.getCredit());
-    }
-
-    BigDecimal alreadyReconciled =
-        moveLine.getBankReconciledAmount() != null
-            ? moveLine.getBankReconciledAmount()
-            : BigDecimal.ZERO;
-
-    return totalAmount.subtract(alreadyReconciled);
   }
 
   protected BigDecimal getAmountMarginLow(BankReconciliation bankReconciliation) {

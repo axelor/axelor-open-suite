@@ -277,6 +277,13 @@ public final class BankPaymentExceptionMessage {
   public static final String BANK_RECONCILIATION_NO_DISTRIBUTION_GENERATED_MOVE_LINE = /*$$(*/
       "The analytic distribution is required in the move lines for account %s but no template has been set in the account configuration" /*)*/;
 
+  public static final String BANK_RECONCILIATION_MAX_TWO_MOVE_LINES = /*$$(*/
+      "A maximum of two moveLines can be selected." /*)*/;
+  public static final String BANK_RECONCILIATION_MOVE_LINE_ALREADY_RECONCILED = /*$$(*/
+      "The move line %s already has a reconciled amount and cannot be reconciled again." /*)*/;
+  public static final String BANK_RECONCILIATION_MOVE_LINES_MUST_BE_DEBIT_VS_CREDIT = /*$$(*/
+      "Move lines to reconcile must be one debit and one credit." /*)*/;
+
   /** Bank Statement Query */
   public static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/
       "Sequence is already used" /*)*/;

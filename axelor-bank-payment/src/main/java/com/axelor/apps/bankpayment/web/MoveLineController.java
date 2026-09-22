@@ -21,7 +21,7 @@ package com.axelor.apps.bankpayment.web;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.moveline.MoveLineService;
-import com.axelor.apps.bankpayment.report.ITranslation;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -62,20 +62,17 @@ public class MoveLineController {
 
       // Block selection if trying to select a 3rd line (when 2 are already selected)
       if (!isCurrentlySelected && selectedCount >= 2) {
-        response.setError(I18n.get(ITranslation.BANK_RECONCILIATION_MAX_TWO_MOVE_LINES));
+        response.setError(
+            I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_MAX_TWO_MOVE_LINES));
         return;
       }
 
-      // If selecting (not unselecting), perform additional validations
+      // If selecting (not unselecting), perform additional validations.
+      // Note: we do not block the selection of an already reconciled moveLine here, because the
+      // selection is also used to reconcile a moveLine with a bankReconciliationLine (case 2).
+      // The "already reconciled" guard only applies to the moveLine-to-moveLine reconciliation
+      // and is enforced in BankReconciliationReconciliationServiceImpl.reconcileTwoMoveLines().
       if (!isCurrentlySelected) {
-        // Check if moveLine already has a bankReconciledAmount
-        if (moveLine.getBankReconciledAmount() != null
-            && moveLine.getBankReconciledAmount().compareTo(java.math.BigDecimal.ZERO) > 0) {
-          response.setError(
-              I18n.get(ITranslation.BANK_RECONCILIATION_MOVE_LINE_ALREADY_RECONCILED));
-          return;
-        }
-
         // If there's already one selected moveLine, check debit vs credit
         if (selectedCount == 1) {
           MoveLine otherMoveLine =
@@ -101,7 +98,9 @@ public class MoveLineController {
             // Both are debit or both are credit - not allowed
             if ((currentIsDebit && otherIsDebit) || (currentIsCredit && otherIsCredit)) {
               response.setError(
-                  I18n.get(ITranslation.BANK_RECONCILIATION_MOVE_LINES_MUST_BE_DEBIT_VS_CREDIT));
+                  I18n.get(
+                      BankPaymentExceptionMessage
+                          .BANK_RECONCILIATION_MOVE_LINES_MUST_BE_DEBIT_VS_CREDIT));
               return;
             }
           }
