@@ -19,8 +19,11 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import jakarta.inject.Inject;
+import java.util.List;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderBlockingProductionServiceImpl implements SaleOrderBlockingProductionService {
 
@@ -33,10 +36,15 @@ public class SaleOrderBlockingProductionServiceImpl implements SaleOrderBlocking
   }
 
   @Override
-  public boolean hasOnGoingBlocking(SaleOrder saleOrder) {
+  public boolean hasOnGoingBlocking(SaleOrder saleOrder, List<SaleOrderLine> selectedLines) {
     Objects.requireNonNull(saleOrder);
-    if (saleOrder.getSaleOrderLineList() != null) {
-      return saleOrder.getSaleOrderLineList().stream()
+    List<SaleOrderLine> saleOrderLineList =
+        CollectionUtils.isNotEmpty(selectedLines)
+            ? selectedLines
+            : saleOrder.getSaleOrderLineList();
+
+    if (saleOrderLineList != null) {
+      return saleOrderLineList.stream()
           .anyMatch(saleOrderLineBlockingProductionService::isProductionBlocked);
     }
     return false;
