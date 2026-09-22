@@ -108,6 +108,75 @@ class TestSupplierScoreQualityTool {
   }
 
   @Test
+  void testComputeQualityScoreBothRates() {
+    Assertions.assertEquals(
+        new BigDecimal("68.33"),
+        SupplierScoreQualityTool.computeQualityScore(
+            new BigDecimal("90"), BigDecimal.ONE, new BigDecimal("25"), new BigDecimal("0.5")));
+  }
+
+  @Test
+  void testComputeQualityScoreOneRateMissing() {
+    Assertions.assertEquals(
+        new BigDecimal("25.00"),
+        SupplierScoreQualityTool.computeQualityScore(
+            null, BigDecimal.ONE, new BigDecimal("25"), new BigDecimal("0.5")));
+  }
+
+  @Test
+  void testComputeQualityScoreNothingAvailable() {
+    Assertions.assertNull(
+        SupplierScoreQualityTool.computeQualityScore(
+            null, BigDecimal.ONE, new BigDecimal("25"), BigDecimal.ZERO));
+  }
+
+  @Test
+  void testComputeTrendMissingScore() {
+    Assertions.assertNull(
+        SupplierScoreQualityTool.computeTrend(null, new BigDecimal("70"), new BigDecimal("5")));
+    Assertions.assertNull(
+        SupplierScoreQualityTool.computeTrend(new BigDecimal("70"), null, new BigDecimal("5")));
+  }
+
+  @Test
+  void testComputeTrendStableWithinTolerance() {
+    Assertions.assertEquals(
+        SupplierScoreQualityTool.TREND_STABLE,
+        SupplierScoreQualityTool.computeTrend(
+            new BigDecimal("75"), new BigDecimal("70"), new BigDecimal("5")));
+    Assertions.assertEquals(
+        SupplierScoreQualityTool.TREND_STABLE,
+        SupplierScoreQualityTool.computeTrend(
+            new BigDecimal("65"), new BigDecimal("70"), new BigDecimal("5")));
+  }
+
+  @Test
+  void testComputeTrendImproving() {
+    Assertions.assertEquals(
+        SupplierScoreQualityTool.TREND_IMPROVING,
+        SupplierScoreQualityTool.computeTrend(
+            new BigDecimal("75.01"), new BigDecimal("70"), new BigDecimal("5")));
+  }
+
+  @Test
+  void testComputeTrendDegrading() {
+    Assertions.assertEquals(
+        SupplierScoreQualityTool.TREND_DEGRADING,
+        SupplierScoreQualityTool.computeTrend(
+            new BigDecimal("68.33"), new BigDecimal("75"), new BigDecimal("5")));
+  }
+
+  @Test
+  void testComputeTrendNullToleranceMeansExact() {
+    Assertions.assertEquals(
+        SupplierScoreQualityTool.TREND_STABLE,
+        SupplierScoreQualityTool.computeTrend(new BigDecimal("70"), new BigDecimal("70"), null));
+    Assertions.assertEquals(
+        SupplierScoreQualityTool.TREND_DEGRADING,
+        SupplierScoreQualityTool.computeTrend(new BigDecimal("69.99"), new BigDecimal("70"), null));
+  }
+
+  @Test
   void testComputeWeightedNonConformityCountDecimalWeights() {
     Map<Integer, Long> countByGravity = new HashMap<>();
     countByGravity.put(2, 3L);

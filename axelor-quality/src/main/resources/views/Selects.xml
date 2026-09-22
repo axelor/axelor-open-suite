@@ -188,4 +188,10 @@
     <option value="3">Not assessed</option>
   </selection>
 
+  <selection name="quality.supplier.quality.trend.select">
+    <option value="1">Improving</option>
+    <option value="2">Stable</option>
+    <option value="3">Degrading</option>
+  </selection>
+
 </object-views>

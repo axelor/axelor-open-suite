@@ -23,6 +23,11 @@
           <field name="supplierScoreGravityMajorWeight" colSpan="4"/>
           <field name="supplierScoreGravityMinorWeight" colSpan="4"/>
         </panel>
+        <panel name="supplierQualityTrendPanel" title="Quality trend" colSpan="12"
+          showIf="manageSupplierScore" if="__config__.app.isApp('quality')">
+          <field name="supplierQualityTrendMonths" colSpan="4"/>
+          <field name="supplierQualityTrendTolerance" colSpan="4"/>
+        </panel>
       </insert>
     </extend>
 

@@ -14,6 +14,12 @@
       max="100"
       help="100 when the supplier caused no non-conformity over the rolling period, decreasing to 0 when the gravity-weighted count of its quality improvements reaches the number of receptions. Every non-cancelled quality improvement carrying the supplier counts, dated by its reception when it has one and by its creation date otherwise; a quality improvement without gravity counts as major."
       nullable="true"/>
+    <decimal name="supplierQualityScore" title="Quality score" min="0" max="100"
+      help="Weighted average of the open quality improvement rate and the non-conformity rate, using their supplier score weights. Compared with the monthly history to determine the quality trend."
+      nullable="true"/>
+    <integer name="supplierQualityTrendSelect" title="Quality trend"
+      selection="quality.supplier.quality.trend.select"
+      help="Variation of the quality score against the monthly snapshot taken the configured number of months ago. Empty while the history is too short."/>
   </entity>
 
 </domain-models>

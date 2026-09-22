@@ -67,6 +67,13 @@ public class SupplierScoreQualityServiceImpl extends SupplierScoreServiceImpl {
       partner.setSupplierNonConformityRate(
           computeNonConformityRate(partner, fromDate, toDate, appSupplychain));
     }
+    partner.setSupplierQualityScore(
+        SupplierScoreQualityTool.computeQualityScore(
+            partner.getSupplierOpenQiRate(),
+            appSupplychain.getSupplierScoreQiWeight(),
+            partner.getSupplierNonConformityRate(),
+            appSupplychain.getSupplierScoreNonConformityWeight()));
+    partner.setSupplierQualityTrendSelect(computeQualityTrend(partner, toDate, appSupplychain));
   }
 
   @Override
@@ -94,6 +101,7 @@ public class SupplierScoreQualityServiceImpl extends SupplierScoreServiceImpl {
     }
     supplierScoreHistory.setSupplierOpenQiRate(partner.getSupplierOpenQiRate());
     supplierScoreHistory.setSupplierNonConformityRate(partner.getSupplierNonConformityRate());
+    supplierScoreHistory.setSupplierQualityScore(partner.getSupplierQualityScore());
   }
 
   protected BigDecimal computeOpenQiRate(Partner partner, LocalDate fromDate, LocalDate toDate) {
@@ -102,6 +110,41 @@ public class SupplierScoreQualityServiceImpl extends SupplierScoreServiceImpl {
       return null;
     }
     return SupplierScoreTool.computeQiRate(countOpenQualityImprovements(partner), receptionCount);
+  }
+
+  /**
+   * The trend is always derived from the monthly history, whatever the computation mode of the
+   * rates, so that hand-entered rates follow the same rule as computed ones.
+   */
+  protected Integer computeQualityTrend(
+      Partner partner, LocalDate toDate, AppSupplychain appSupplychain) {
+    SupplierScoreHistory referenceSnapshot =
+        findReferenceSnapshot(partner, toDate, appSupplychain.getSupplierQualityTrendMonths());
+    if (referenceSnapshot == null) {
+      return null;
+    }
+    return SupplierScoreQualityTool.computeTrend(
+        partner.getSupplierQualityScore(),
+        referenceSnapshot.getSupplierQualityScore(),
+        appSupplychain.getSupplierQualityTrendTolerance());
+  }
+
+  /**
+   * @return the most recent snapshot taken at least the given number of months before the date,
+   *     matched on its month so that the day the batch runs on does not matter.
+   */
+  protected SupplierScoreHistory findReferenceSnapshot(
+      Partner partner, LocalDate toDate, Integer months) {
+    if (months == null || months <= 0) {
+      return null;
+    }
+    return supplierScoreHistoryRepository
+        .all()
+        .filter("self.partner.id = :partnerId AND self.periodLabel <= :periodLabel")
+        .bind("partnerId", partner.getId())
+        .bind("periodLabel", SupplierScoreTool.computePeriodLabel(toDate.minusMonths(months)))
+        .order("-periodLabel")
+        .fetchOne();
   }
 
   protected BigDecimal computeNonConformityRate(

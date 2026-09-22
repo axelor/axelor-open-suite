@@ -25,6 +25,12 @@
       help="Number of non-conformities a major quality improvement counts for in the gravity-weighted non-conformity rate. A quality improvement without gravity counts as major."/>
     <decimal name="supplierScoreGravityMinorWeight" title="Minor" default="1" min="0"
       help="Number of non-conformities a minor quality improvement counts for in the gravity-weighted non-conformity rate."/>
+    <integer name="supplierQualityTrendMonths" title="Quality trend period (months)"
+      default="3" min="1"
+      help="Number of months between the current quality score and the monthly snapshot it is compared with to determine the quality trend of a supplier."/>
+    <decimal name="supplierQualityTrendTolerance" title="Quality trend tolerance (points)"
+      default="5" min="0"
+      help="Variation of the quality score, in points on the 0-100 scale, under which the quality trend of a supplier is considered stable."/>
 
     <track>
       <field name="supplierScoreQiWeight" on="UPDATE"/>
@@ -34,6 +40,8 @@
       <field name="supplierScoreGravityCriticalWeight" on="UPDATE"/>
       <field name="supplierScoreGravityMajorWeight" on="UPDATE"/>
       <field name="supplierScoreGravityMinorWeight" on="UPDATE"/>
+      <field name="supplierQualityTrendMonths" on="UPDATE"/>
+      <field name="supplierQualityTrendTolerance" on="UPDATE"/>
     </track>
   </entity>
 

@@ -19,14 +19,56 @@
 package com.axelor.apps.quality.service;
 
 import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
+import com.axelor.apps.supplychain.service.SupplierScoreTool;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 
 /** Utility class for the quality indicators of the supplier score. */
 public class SupplierScoreQualityTool {
 
+  public static final int TREND_IMPROVING = 1;
+  public static final int TREND_STABLE = 2;
+  public static final int TREND_DEGRADING = 3;
+
   private SupplierScoreQualityTool() {
     throw new IllegalStateException("Utility class");
+  }
+
+  /**
+   * The quality score is the part of the supplier score fed by the Quality app: the open quality
+   * improvement rate and the non-conformity rate, weighted as in the global score.
+   *
+   * @return the score between 0 and 100, or null when neither rate is available.
+   */
+  public static BigDecimal computeQualityScore(
+      BigDecimal openQiRate,
+      BigDecimal qiWeight,
+      BigDecimal nonConformityRate,
+      BigDecimal ncWeight) {
+    return SupplierScoreTool.computeWeightedAverage(
+        List.of(Pair.of(openQiRate, qiWeight), Pair.of(nonConformityRate, ncWeight)));
+  }
+
+  /**
+   * Compare the current quality score with a past one.
+   *
+   * @return {@link #TREND_STABLE} when the variation stays within the tolerance, {@link
+   *     #TREND_IMPROVING} or {@link #TREND_DEGRADING} otherwise, null when one of the scores is
+   *     missing.
+   */
+  public static Integer computeTrend(
+      BigDecimal currentScore, BigDecimal referenceScore, BigDecimal tolerance) {
+    if (currentScore == null || referenceScore == null) {
+      return null;
+    }
+    BigDecimal delta = currentScore.subtract(referenceScore);
+    BigDecimal bound = tolerance == null ? BigDecimal.ZERO : tolerance.abs();
+    if (delta.abs().compareTo(bound) <= 0) {
+      return TREND_STABLE;
+    }
+    return delta.signum() > 0 ? TREND_IMPROVING : TREND_DEGRADING;
   }
 
   /**
