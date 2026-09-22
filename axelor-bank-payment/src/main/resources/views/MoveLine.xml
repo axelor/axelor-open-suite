@@ -9,7 +9,7 @@
       title="Select / Unselect" icon="check-circle-fill" showIf="!isSelectedBankReconciliation"/>
     <button onClick="action-move-line-method-set-selected" name="unselect"
       title="Select / Unselect" icon="dash-circle-fill" showIf="isSelectedBankReconciliation"/>
-    <field name="postedNbr"/>
+    <field name="moveLineReconciledNbr"/>
     <field name="name"/>
     <field name="date"/>
     <field name="move.period" canView="false"/>
@@ -36,7 +36,7 @@
       title="Select / Unselect" icon="check-circle-fill" showIf="!isSelectedBankReconciliation"/>
     <button onClick="action-move-line-method-set-selected" name="unselect"
       title="Select / Unselect" icon="dash-circle-fill" showIf="isSelectedBankReconciliation"/>
-    <field name="postedNbr"/>
+    <field name="moveLineReconciledNbr"/>
     <field name="name"/>
     <field name="date"/>
     <field name="move.period" canView="false"/>
