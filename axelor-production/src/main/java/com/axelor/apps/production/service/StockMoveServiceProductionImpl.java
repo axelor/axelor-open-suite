@@ -53,6 +53,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderReceiptStateService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.SupplierScoreService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
@@ -91,7 +92,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
       PurchaseOrderReceiptStateService purchaseOrderReceiptStateService,
       SaleOrderLineRepository saleOrderLineRepository,
-      WeightedAveragePriceService weightedAveragePriceService) {
+      WeightedAveragePriceService weightedAveragePriceService,
+      SupplierScoreService supplierScoreService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -117,7 +119,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         saleOrderConfirmService,
         stockMoveLineServiceSupplychain,
         purchaseOrderReceiptStateService,
-        weightedAveragePriceService);
+        weightedAveragePriceService,
+        supplierScoreService);
     this.saleOrderLineRepository = saleOrderLineRepository;
   }
 
