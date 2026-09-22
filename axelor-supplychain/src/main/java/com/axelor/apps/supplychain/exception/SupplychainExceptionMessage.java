@@ -142,6 +142,13 @@ public final class SupplychainExceptionMessage {
 
   public static final String BATCH_UPDATE_STOCK_HISTORY_2 = /*$$(*/ "Stock history updated" /*)*/;
 
+  public static final String BATCH_SUPPLIER_SCORE_SNAPSHOT_1 = /*$$(*/
+      "Supplier score snapshot report:" /*)*/;
+  public static final String BATCH_SUPPLIER_SCORE_SNAPSHOT_2 = /*$$(*/
+      "supplier score snapshot(s) created" /*)*/;
+  public static final String BATCH_SUPPLIER_SCORE_SNAPSHOT_DISABLED = /*$$(*/
+      "Supplier score management is not enabled in the Supply Chain app configuration." /*)*/;
+
   /** Mrp Line Service */
   public static final String MRP_LINE_1 = /*$$(*/
       "No default supplier is defined for the product %s" /*)*/;

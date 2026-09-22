@@ -20,6 +20,7 @@ package com.axelor.apps.quality.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -28,24 +29,33 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.quality.db.QIAnalysis;
 import com.axelor.apps.quality.db.QIIdentification;
 import com.axelor.apps.quality.db.QIResolution;
+import com.axelor.apps.quality.db.QIStatus;
 import com.axelor.apps.quality.db.QualityImprovement;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
+import com.axelor.apps.supplychain.service.SupplierScoreService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
+import java.util.List;
 
 public class QualityImprovementManagementRepository extends QualityImprovementRepository {
 
   protected SequenceService sequenceService;
   protected AppBaseService appBaseService;
+  protected SupplierScoreService supplierScoreService;
 
   @Inject
   public QualityImprovementManagementRepository(
-      SequenceService sequenceService, AppBaseService appBaseService) {
+      SequenceService sequenceService,
+      AppBaseService appBaseService,
+      SupplierScoreService supplierScoreService) {
     this.sequenceService = sequenceService;
     this.appBaseService = appBaseService;
+    this.supplierScoreService = supplierScoreService;
   }
 
   @Override
@@ -75,11 +85,88 @@ public class QualityImprovementManagementRepository extends QualityImprovementRe
       getOrCreateQIResolution(qualityImprovement);
       getOrCreateQIAnalysis(qualityImprovement);
 
-      return super.save(qualityImprovement);
+      PersistedState persistedState = findPersistedState(qualityImprovement);
+      checkGravityOnClosure(qualityImprovement, persistedState);
+      qualityImprovement = super.save(qualityImprovement);
+      updateSupplierScore(qualityImprovement, persistedState.supplierPartnerId());
+      return qualityImprovement;
 
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Open quality improvements feed the supplier score, so every save recomputes it, for the
+   * previous supplier too when the quality improvement changed hands.
+   */
+  protected void updateSupplierScore(
+      QualityImprovement qualityImprovement, Long previousSupplierPartnerId) {
+    QIIdentification qiIdentification = qualityImprovement.getQiIdentification();
+    Partner supplierPartner =
+        qiIdentification != null ? qiIdentification.getSupplierPartner() : null;
+    if (supplierPartner != null) {
+      supplierScoreService.computeAndSave(supplierPartner);
+    }
+    if (previousSupplierPartnerId != null
+        && (supplierPartner == null
+            || !previousSupplierPartnerId.equals(supplierPartner.getId()))) {
+      supplierScoreService.computeAndSave(JPA.find(Partner.class, previousSupplierPartnerId));
+    }
+  }
+
+  /**
+   * Closing a quality improvement linked to a supplier requires its gravity, so that an ungraded
+   * file never weighs less than a graded one in the supplier score. Files already closed are left
+   * as they are.
+   */
+  protected void checkGravityOnClosure(
+      QualityImprovement qualityImprovement, PersistedState persistedState) throws AxelorException {
+    QIStatus qiStatus = qualityImprovement.getQiStatus();
+    QIIdentification qiIdentification = qualityImprovement.getQiIdentification();
+    if (qiStatus == null
+        || !Boolean.TRUE.equals(qiStatus.getIsClosedStatus())
+        || persistedState.closed()
+        || qiIdentification == null
+        || qiIdentification.getSupplierPartner() == null
+        || qualityImprovement.getGravityTypeSelect() != 0) {
+      return;
+    }
+    throw new AxelorException(
+        qualityImprovement,
+        TraceBackRepository.CATEGORY_MISSING_FIELD,
+        I18n.get(QualityExceptionMessage.QI_GRAVITY_REQUIRED_TO_CLOSE));
+  }
+
+  /** Supplier and closure state of the quality improvement as last committed. */
+  protected record PersistedState(Long supplierPartnerId, boolean closed) {}
+
+  /**
+   * The edited quality improvement is already flushed on the current entity manager, which would
+   * return the new values; a separate entity manager reads the committed state instead.
+   */
+  protected PersistedState findPersistedState(QualityImprovement qualityImprovement) {
+    if (qualityImprovement.getId() == null) {
+      return new PersistedState(null, false);
+    }
+    try (EntityManager readEm = JPA.em().getEntityManagerFactory().createEntityManager()) {
+      List<Object[]> rows =
+          readEm
+              .createQuery(
+                  "SELECT supplierPartner.id, st.isClosedStatus FROM QualityImprovement qi "
+                      + "JOIN qi.qiStatus st "
+                      + "LEFT JOIN qi.qiIdentification qid "
+                      + "LEFT JOIN qid.supplierPartner supplierPartner "
+                      + "WHERE qi.id = :id",
+                  Object[].class)
+              .setParameter("id", qualityImprovement.getId())
+              .getResultList();
+      if (rows.isEmpty()) {
+        return new PersistedState(null, false);
+      }
+      Object[] row = rows.get(0);
+      return new PersistedState((Long) row[0], Boolean.TRUE.equals(row[1]));
     }
   }
 

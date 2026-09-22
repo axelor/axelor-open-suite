@@ -135,6 +135,24 @@
     <boolean name="isTitleLineManaged" title="Include title lines on stock move"
       default="false"/>
 
+    <boolean name="manageSupplierScore" title="Manage supplier score" default="false"
+      help="When this configuration is enabled, a supplier score is computed on partners from their on-time delivery rate and reception conformity rate over a rolling period, and displayed on the partner form, next to the supplier quality rating."/>
+    <integer name="supplierScoreRollingMonths"
+      title="Supplier score rolling period (months)" default="12" min="1"
+      help="Number of months preceding the current date over which the supplier score indicators are computed."/>
+    <decimal name="supplierScoreOtdWeight" title="On-time delivery weight" default="1"
+      min="0"
+      help="Weight of the on-time delivery rate in the supplier score. A weight of 0 excludes the indicator from the score."/>
+    <decimal name="supplierScoreConformityWeight" title="Reception conformity weight"
+      default="1" min="0"
+      help="Weight of the reception conformity rate in the supplier score. A weight of 0 excludes the indicator from the score."/>
+    <boolean name="autoComputeSupplierOtdRate"
+      title="Compute on-time delivery rate automatically" default="true"
+      help="When disabled, the on-time delivery rate is entered manually on the partner form and is never overwritten by the automatic computation."/>
+    <boolean name="autoComputeSupplierConformityRate"
+      title="Compute reception conformity rate automatically" default="true"
+      help="When disabled, the reception conformity rate is entered manually on the partner form and is never overwritten by the automatic computation."/>
+
     <track>
       <field name="custStockMoveMgtOnSO" on="UPDATE"/>
       <field name="customerStockMoveGenerationAuto" on="UPDATE"/>
@@ -182,6 +200,12 @@
       <field name="stockLocationToCartLimit" on="UPDATE"/>
       <field name="cancelReasonOnChangingPurchaseOrder" on="UPDATE"/>
       <field name="isTitleLineManaged" on="UPDATE"/>
+      <field name="manageSupplierScore" on="UPDATE"/>
+      <field name="supplierScoreRollingMonths" on="UPDATE"/>
+      <field name="supplierScoreOtdWeight" on="UPDATE"/>
+      <field name="supplierScoreConformityWeight" on="UPDATE"/>
+      <field name="autoComputeSupplierOtdRate" on="UPDATE"/>
+      <field name="autoComputeSupplierConformityRate" on="UPDATE"/>
     </track>
   </entity>
 

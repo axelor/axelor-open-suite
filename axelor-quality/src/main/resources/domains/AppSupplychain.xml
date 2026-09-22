@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="studio" package="com.axelor.studio.db"/>
+
+  <entity name="AppSupplychain" cacheable="true">
+
+    <decimal name="supplierScoreQiWeight" title="Open quality improvement weight"
+      default="1" min="0"
+      help="Weight of the open quality improvement rate in the supplier score. A weight of 0 excludes the indicator from the score. The indicator is ignored when the Quality app is not installed."/>
+    <boolean name="autoComputeSupplierOpenQiRate"
+      title="Compute open quality improvement rate automatically" default="true"
+      help="When disabled, the open quality improvement rate is entered manually on the partner form and is never overwritten by the automatic computation."/>
+    <decimal name="supplierScoreNonConformityWeight" title="Non-conformity weight"
+      default="0.5" min="0"
+      help="Weight of the gravity-weighted non-conformity rate in the supplier score. A weight of 0 excludes the indicator from the score. The indicator is ignored when the Quality app is not installed."/>
+    <boolean name="autoComputeSupplierNonConformityRate"
+      title="Compute non-conformity rate automatically" default="true"
+      help="When disabled, the gravity-weighted non-conformity rate is entered manually on the partner form and is never overwritten by the automatic computation."/>
+    <decimal name="supplierScoreGravityCriticalWeight" title="Critical" default="10" min="0"
+      help="Number of non-conformities a critical quality improvement counts for in the gravity-weighted non-conformity rate."/>
+    <decimal name="supplierScoreGravityMajorWeight" title="Major" default="3" min="0"
+      help="Number of non-conformities a major quality improvement counts for in the gravity-weighted non-conformity rate. A quality improvement without gravity counts as major."/>
+    <decimal name="supplierScoreGravityMinorWeight" title="Minor" default="1" min="0"
+      help="Number of non-conformities a minor quality improvement counts for in the gravity-weighted non-conformity rate."/>
+    <integer name="supplierQualityTrendMonths" title="Quality trend period (months)"
+      default="3" min="1"
+      help="Number of months between the current quality score and the monthly snapshot it is compared with to determine the quality trend of a supplier."/>
+    <decimal name="supplierQualityTrendTolerance" title="Quality trend tolerance (points)"
+      default="5" min="0"
+      help="Variation of the quality score, in points on the 0-100 scale, under which the quality trend of a supplier is considered stable."/>
+
+    <track>
+      <field name="supplierScoreQiWeight" on="UPDATE"/>
+      <field name="autoComputeSupplierOpenQiRate" on="UPDATE"/>
+      <field name="supplierScoreNonConformityWeight" on="UPDATE"/>
+      <field name="autoComputeSupplierNonConformityRate" on="UPDATE"/>
+      <field name="supplierScoreGravityCriticalWeight" on="UPDATE"/>
+      <field name="supplierScoreGravityMajorWeight" on="UPDATE"/>
+      <field name="supplierScoreGravityMinorWeight" on="UPDATE"/>
+      <field name="supplierQualityTrendMonths" on="UPDATE"/>
+      <field name="supplierQualityTrendTolerance" on="UPDATE"/>
+    </track>
+  </entity>
+
+</domain-models>

@@ -57,6 +57,20 @@
         domain="self.applicationType = 'com.axelor.apps.stock.db.StockMove'"
         if="__config__.app.getApp('purchase')?.allowValidatedOrderModification" colSpan="4"/>
     </panel>
+    <panel name="supplierScorePanel" title="Supplier score">
+      <field name="manageSupplierScore" widget="boolean-switch" colSpan="4"/>
+      <field name="supplierScoreRollingMonths" showIf="manageSupplierScore" colSpan="4"/>
+      <panel name="supplierScoreWeightsPanel" title="Weights" colSpan="12"
+        showIf="manageSupplierScore">
+        <field name="supplierScoreOtdWeight" colSpan="4"/>
+        <field name="supplierScoreConformityWeight" colSpan="4"/>
+      </panel>
+      <panel name="supplierScoreComputationModePanel" title="Automatic computation"
+        colSpan="12" showIf="manageSupplierScore">
+        <field name="autoComputeSupplierOtdRate" widget="boolean-switch" colSpan="4"/>
+        <field name="autoComputeSupplierConformityRate" widget="boolean-switch" colSpan="4"/>
+      </panel>
+    </panel>
     <panel name="StockDetailsPanel" title="Stock details">
       <field name="sOFilterOnStockDetailStatusSelect" widget="MultiSelect" colSpan="4"
         selection="sale.order.status.select"/>
