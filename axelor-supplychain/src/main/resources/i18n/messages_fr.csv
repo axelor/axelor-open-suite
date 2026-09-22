@@ -482,6 +482,8 @@
 "Managed in stock move","Géré en mouvement de stock",,
 "Managed in stock move by default","Géré en mouvement de stock par défaut",,
 "Managed lines only","Lignes gérées uniquement",,
+"Manufacturing operation status","État de l'opération de fabrication",,
+"Manufacturing order status","État de l'ordre de fabrication",,
 "Mass Cust. Stock Move Invoicing","Facturation en masse de BL",,
 "Mass Sale Order Line Invoicing","Facturation des lignes de commande en masse",,
 "Mass Suppl. Stock Move Invoicing","Facturation en masse de BR",,
