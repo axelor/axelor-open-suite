@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="studio" package="com.axelor.studio.db"/>
+
+  <entity name="AppSupplychain" cacheable="true">
+
+    <decimal name="supplierScoreQiWeight" title="Open quality improvement weight"
+      default="1" min="0"
+      help="Weight of the open quality improvement rate in the supplier score. A weight of 0 excludes the indicator from the score. The indicator is ignored when the Quality app is not installed."/>
+    <boolean name="autoComputeSupplierOpenQiRate"
+      title="Compute open quality improvement rate automatically" default="true"
+      help="When disabled, the open quality improvement rate is entered manually on the partner form and is never overwritten by the automatic computation."/>
+
+    <track>
+      <field name="supplierScoreQiWeight" on="UPDATE"/>
+      <field name="autoComputeSupplierOpenQiRate" on="UPDATE"/>
+    </track>
+  </entity>
+
+</domain-models>

@@ -11,6 +11,7 @@
     <option value="3">Invoice orders</option>
     <option value="4">Update stock history</option>
     <option value="5">Check stock compliance with stock rules</option>
+    <option value="6">Supplier score snapshot</option>
   </selection>
 
   <selection name="supplychain.mrp.status.select">

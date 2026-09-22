@@ -20,6 +20,7 @@ package com.axelor.apps.quality.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -30,22 +31,30 @@ import com.axelor.apps.quality.db.QIIdentification;
 import com.axelor.apps.quality.db.QIResolution;
 import com.axelor.apps.quality.db.QualityImprovement;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
+import com.axelor.apps.supplychain.service.SupplierScoreService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
+import java.util.List;
 
 public class QualityImprovementManagementRepository extends QualityImprovementRepository {
 
   protected SequenceService sequenceService;
   protected AppBaseService appBaseService;
+  protected SupplierScoreService supplierScoreService;
 
   @Inject
   public QualityImprovementManagementRepository(
-      SequenceService sequenceService, AppBaseService appBaseService) {
+      SequenceService sequenceService,
+      AppBaseService appBaseService,
+      SupplierScoreService supplierScoreService) {
     this.sequenceService = sequenceService;
     this.appBaseService = appBaseService;
+    this.supplierScoreService = supplierScoreService;
   }
 
   @Override
@@ -75,11 +84,54 @@ public class QualityImprovementManagementRepository extends QualityImprovementRe
       getOrCreateQIResolution(qualityImprovement);
       getOrCreateQIAnalysis(qualityImprovement);
 
-      return super.save(qualityImprovement);
+      Long previousSupplierPartnerId = findPersistedSupplierPartnerId(qualityImprovement);
+      qualityImprovement = super.save(qualityImprovement);
+      updateSupplierScore(qualityImprovement, previousSupplierPartnerId);
+      return qualityImprovement;
 
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * Open quality improvements feed the supplier score, so every save recomputes it, for the
+   * previous supplier too when the quality improvement changed hands.
+   */
+  protected void updateSupplierScore(
+      QualityImprovement qualityImprovement, Long previousSupplierPartnerId) {
+    QIIdentification qiIdentification = qualityImprovement.getQiIdentification();
+    Partner supplierPartner =
+        qiIdentification != null ? qiIdentification.getSupplierPartner() : null;
+    if (supplierPartner != null) {
+      supplierScoreService.computeAndSave(supplierPartner);
+    }
+    if (previousSupplierPartnerId != null
+        && (supplierPartner == null
+            || !previousSupplierPartnerId.equals(supplierPartner.getId()))) {
+      supplierScoreService.computeAndSave(JPA.find(Partner.class, previousSupplierPartnerId));
+    }
+  }
+
+  /**
+   * The edited quality improvement is already flushed on the current entity manager, which would
+   * return the new supplier; a separate entity manager reads the committed state instead.
+   */
+  protected Long findPersistedSupplierPartnerId(QualityImprovement qualityImprovement) {
+    if (qualityImprovement.getId() == null) {
+      return null;
+    }
+    try (EntityManager readEm = JPA.em().getEntityManagerFactory().createEntityManager()) {
+      List<Long> supplierPartnerIds =
+          readEm
+              .createQuery(
+                  "SELECT qid.supplierPartner.id FROM QualityImprovement qi "
+                      + "JOIN qi.qiIdentification qid WHERE qi.id = :id",
+                  Long.class)
+              .setParameter("id", qualityImprovement.getId())
+              .getResultList();
+      return supplierPartnerIds.isEmpty() ? null : supplierPartnerIds.get(0);
     }
   }
 
