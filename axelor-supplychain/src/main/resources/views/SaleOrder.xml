@@ -3,6 +3,22 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
+  <grid name="sale-order-invoice-dashlet-grid" title="Sale orders"
+    model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate" canNew="false"
+    canDelete="false">
+    <field name="saleOrderSeq" width="120"/>
+    <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="orderDate"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
+    <field name="deliveryState"/>
+    <field name="statusSelect" widget="single-select"/>
+    <button name="openSaleOrderBtn" title="Open sale order" icon="box-arrow-up-right"
+      onClick="action-sale-order-view-open-sale-order-from-invoice"/>
+  </grid>
+
   <form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     id="supplychain-sale-order-form" extension="true">
     <extend target="/">
@@ -508,5 +524,13 @@
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="estimatePackaging"/>
   </action-method>
+
+  <action-view name="action-sale-order-view-open-sale-order-from-invoice"
+    title="Sale order" model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="form" name="sale-order-form"/>
+    <view type="grid" name="sale-order-grid"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
 
 </object-views>
