@@ -19,8 +19,17 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import java.util.List;
 
 public interface SaleOrderBlockingProductionService {
 
-  boolean hasOnGoingBlocking(SaleOrder saleOrder);
+  /**
+   * Checks whether any line is blocked for production.
+   *
+   * @param saleOrder the sale order
+   * @param selectedLines the lines to check; null or empty checks all order lines
+   * @return {@code true} if at least one checked line is blocked for production
+   */
+  boolean hasOnGoingBlocking(SaleOrder saleOrder, List<SaleOrderLine> selectedLines);
 }
