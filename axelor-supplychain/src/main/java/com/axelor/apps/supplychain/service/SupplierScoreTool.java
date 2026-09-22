@@ -67,15 +67,27 @@ public class SupplierScoreTool {
    * @return the rate rounded to {@link #RATE_SCALE}, or null when there is no reception.
    */
   public static BigDecimal computeQiRate(long openQiCount, long receptionCount) {
-    if (receptionCount <= 0) {
+    return computeQiRate(BigDecimal.valueOf(openQiCount), receptionCount);
+  }
+
+  /**
+   * Same as {@link #computeQiRate(long, long)} for a quality improvement count that is already
+   * weighted, for instance by gravity.
+   *
+   * @return the rate rounded to {@link #RATE_SCALE}, or null when there is no reception or no
+   *     count.
+   */
+  public static BigDecimal computeQiRate(BigDecimal weightedQiCount, long receptionCount) {
+    if (weightedQiCount == null || receptionCount <= 0) {
       return null;
     }
-    BigDecimal openQiPerReception =
-        BigDecimal.valueOf(openQiCount)
+    BigDecimal qiPerReception =
+        weightedQiCount
+            .max(BigDecimal.ZERO)
             .divide(BigDecimal.valueOf(receptionCount), 10, RoundingMode.HALF_UP)
             .min(BigDecimal.ONE);
     return BigDecimal.ONE
-        .subtract(openQiPerReception)
+        .subtract(qiPerReception)
         .multiply(HUNDRED)
         .setScale(RATE_SCALE, RoundingMode.HALF_UP);
   }

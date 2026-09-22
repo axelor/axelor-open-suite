@@ -97,6 +97,34 @@ class TestSupplierScoreTool {
   }
 
   @Test
+  void testComputeQiRateWeightedNoCount() {
+    Assertions.assertNull(SupplierScoreTool.computeQiRate((BigDecimal) null, 8));
+  }
+
+  @Test
+  void testComputeQiRateWeightedNoReception() {
+    Assertions.assertNull(SupplierScoreTool.computeQiRate(new BigDecimal("3"), 0));
+  }
+
+  @Test
+  void testComputeQiRateWeightedPartial() {
+    Assertions.assertEquals(
+        new BigDecimal("25.00"), SupplierScoreTool.computeQiRate(new BigDecimal("15"), 20));
+  }
+
+  @Test
+  void testComputeQiRateWeightedFraction() {
+    Assertions.assertEquals(
+        new BigDecimal("87.50"), SupplierScoreTool.computeQiRate(new BigDecimal("0.5"), 4));
+  }
+
+  @Test
+  void testComputeQiRateWeightedCapped() {
+    Assertions.assertEquals(
+        new BigDecimal("0.00"), SupplierScoreTool.computeQiRate(new BigDecimal("25"), 20));
+  }
+
+  @Test
   void testComputePeriodLabel() {
     Assertions.assertEquals(
         "2026-09", SupplierScoreTool.computePeriodLabel(LocalDate.of(2026, 9, 2)));
