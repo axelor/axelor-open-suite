@@ -261,6 +261,21 @@
         </panel>
 
       </panel>
+      <panel name="realCostPanel" title="Real cost" itemSpan="3" showIf="statusSelect &gt;= 3">
+        <button name="refreshRealCostsBtn" title="Refresh costs"
+          onClick="action-manuf-order-method-compute-real-costs" colSpan="12"/>
+        <field name="$materialCost" title="Material cost" type="decimal" readonly="true"/>
+        <field name="$laborCost" title="Labor cost" type="decimal" readonly="true"/>
+        <field name="$machineCost" title="Machine cost" type="decimal" readonly="true"/>
+        <field name="$subcontractingCost" title="Subcontracting cost" type="decimal"
+          readonly="true"/>
+        <field name="$realCost" title="Total real cost" type="decimal" readonly="true"/>
+        <field name="$theoreticalCost" title="Theoretical cost" type="decimal" readonly="true"/>
+        <field name="$varianceAmount" title="Variance amount" type="decimal" readonly="true"
+          showIf="statusSelect == 6"/>
+        <field name="$variancePercent" title="Variance (%)" type="decimal" readonly="true"
+          showIf="statusSelect == 6"/>
+      </panel>
       <panel name="consumedProductsPanel" title="Consumed products"
         hideIf="isConsProOnOperation || statusSelect &lt; 3">
         <button name="updatePlannedQtyBtn"
@@ -595,6 +610,10 @@
     <call class="com.axelor.apps.production.web.ManufOrderController" method="computeCostPrice"/>
   </action-method>
 
+  <action-method name="action-manuf-order-method-compute-real-costs">
+    <call class="com.axelor.apps.production.web.ManufOrderController" method="computeRealCosts"/>
+  </action-method>
+
 
   <action-group name="action-manuf-order-group-on-change-produced-stock-move-line">
     <action name="action-manuf-order-method-check-produced-stock-move"/>
@@ -732,6 +751,7 @@
     <action name="action-manuf-order-method-compute-missing-components-label"
       if="statusSelect == 1"/>
     <action name="action-manuf-order-method-update-lines-outsourced"/>
+    <action name="action-manuf-order-method-compute-real-costs" if="statusSelect &gt;= 3"/>
   </action-group>
 
   <action-attrs name="action-production-attrs-hide-purchaseOrder">
@@ -960,6 +980,10 @@
   <action-attrs name="action-manuf-order-attrs-price-digits">
     <attribute name="scale" for="costPrice"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale"
+      for="$materialCost,$laborCost,$machineCost,$subcontractingCost,$realCost,$theoreticalCost,$varianceAmount"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="$variancePercent" expr="eval: 2"/>
     <attribute name="value" for="$totalPlannedDuration"
       expr="eval: operationOrderList.collect{it->it.plannedDuration}.sum()"
       if="operationOrderList != null &amp;&amp; !operationOrderList.isEmpty()"/>
