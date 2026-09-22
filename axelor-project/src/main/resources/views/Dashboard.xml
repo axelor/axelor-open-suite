@@ -209,9 +209,14 @@
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
     <domain><![CDATA[
-      (self.assignedTo = :__user__ AND self.status.isCompleted = false) AND
-      (self.taskDeadline <= current_date OR self.taskDate <= current_date)
+      self.assignedTo = :__user__
+      AND self.taskEndDate IS NOT NULL
+      AND self.taskEndDate >= :todayDate
+      AND (self.status IS NULL OR self.status.id NOT IN (:_completedTaskStatusIds))
     ]]></domain>
+    <context name="todayDate" expr="eval: __config__.date"/>
+    <context name="_completedTaskStatusIds"
+      expr="call:com.axelor.apps.project.service.TaskStatusToolService:getCompletedTaskStatusIds()"/>
   </action-view>
 
   <action-view name="action-project-db-my-tasks-due" title="My tasks due"
@@ -219,9 +224,14 @@
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
     <domain><![CDATA[
-      (self.assignedTo = :__user__  AND self.status.isCompleted = false) AND
-      (self.taskDeadline <= current_date)
+      self.assignedTo = :__user__
+      AND self.taskEndDate IS NOT NULL
+      AND self.taskEndDate < :todayDate
+      AND (self.status IS NULL OR self.status.id NOT IN (:_completedTaskStatusIds))
     ]]></domain>
+    <context name="todayDate" expr="eval: __config__.date"/>
+    <context name="_completedTaskStatusIds"
+      expr="call:com.axelor.apps.project.service.TaskStatusToolService:getCompletedTaskStatusIds()"/>
   </action-view>
 
   <action-view name="action-project-db-my-today-planning" title="My today planning"
