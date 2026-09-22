@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceSupplierDocumentService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
@@ -74,6 +75,8 @@ public class InvoiceManagementRepository extends InvoiceRepository {
 
       InvoiceService invoiceService = Beans.get(InvoiceService.class);
       invoiceService.setDraftSequence(invoice);
+
+      Beans.get(InvoiceSupplierDocumentService.class).convertAndSignPrintedPdf(invoice);
 
       return invoice;
     } catch (Exception e) {
