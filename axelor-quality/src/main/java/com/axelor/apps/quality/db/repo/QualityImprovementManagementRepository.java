@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.quality.db.QIAnalysis;
 import com.axelor.apps.quality.db.QIIdentification;
 import com.axelor.apps.quality.db.QIResolution;
+import com.axelor.apps.quality.db.QIStatus;
 import com.axelor.apps.quality.db.QualityImprovement;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
 import com.axelor.apps.supplychain.service.SupplierScoreService;
@@ -84,9 +85,10 @@ public class QualityImprovementManagementRepository extends QualityImprovementRe
       getOrCreateQIResolution(qualityImprovement);
       getOrCreateQIAnalysis(qualityImprovement);
 
-      Long previousSupplierPartnerId = findPersistedSupplierPartnerId(qualityImprovement);
+      PersistedState persistedState = findPersistedState(qualityImprovement);
+      checkGravityOnClosure(qualityImprovement, persistedState);
       qualityImprovement = super.save(qualityImprovement);
-      updateSupplierScore(qualityImprovement, previousSupplierPartnerId);
+      updateSupplierScore(qualityImprovement, persistedState.supplierPartnerId());
       return qualityImprovement;
 
     } catch (AxelorException e) {
@@ -115,23 +117,56 @@ public class QualityImprovementManagementRepository extends QualityImprovementRe
   }
 
   /**
-   * The edited quality improvement is already flushed on the current entity manager, which would
-   * return the new supplier; a separate entity manager reads the committed state instead.
+   * Closing a quality improvement linked to a supplier requires its gravity, so that an ungraded
+   * file never weighs less than a graded one in the supplier score. Files already closed are left
+   * as they are.
    */
-  protected Long findPersistedSupplierPartnerId(QualityImprovement qualityImprovement) {
+  protected void checkGravityOnClosure(
+      QualityImprovement qualityImprovement, PersistedState persistedState) throws AxelorException {
+    QIStatus qiStatus = qualityImprovement.getQiStatus();
+    QIIdentification qiIdentification = qualityImprovement.getQiIdentification();
+    if (qiStatus == null
+        || !Boolean.TRUE.equals(qiStatus.getIsClosedStatus())
+        || persistedState.closed()
+        || qiIdentification == null
+        || qiIdentification.getSupplierPartner() == null
+        || qualityImprovement.getGravityTypeSelect() != 0) {
+      return;
+    }
+    throw new AxelorException(
+        qualityImprovement,
+        TraceBackRepository.CATEGORY_MISSING_FIELD,
+        I18n.get(QualityExceptionMessage.QI_GRAVITY_REQUIRED_TO_CLOSE));
+  }
+
+  /** Supplier and closure state of the quality improvement as last committed. */
+  protected record PersistedState(Long supplierPartnerId, boolean closed) {}
+
+  /**
+   * The edited quality improvement is already flushed on the current entity manager, which would
+   * return the new values; a separate entity manager reads the committed state instead.
+   */
+  protected PersistedState findPersistedState(QualityImprovement qualityImprovement) {
     if (qualityImprovement.getId() == null) {
-      return null;
+      return new PersistedState(null, false);
     }
     try (EntityManager readEm = JPA.em().getEntityManagerFactory().createEntityManager()) {
-      List<Long> supplierPartnerIds =
+      List<Object[]> rows =
           readEm
               .createQuery(
-                  "SELECT qid.supplierPartner.id FROM QualityImprovement qi "
-                      + "JOIN qi.qiIdentification qid WHERE qi.id = :id",
-                  Long.class)
+                  "SELECT supplierPartner.id, st.isClosedStatus FROM QualityImprovement qi "
+                      + "JOIN qi.qiStatus st "
+                      + "LEFT JOIN qi.qiIdentification qid "
+                      + "LEFT JOIN qid.supplierPartner supplierPartner "
+                      + "WHERE qi.id = :id",
+                  Object[].class)
               .setParameter("id", qualityImprovement.getId())
               .getResultList();
-      return supplierPartnerIds.isEmpty() ? null : supplierPartnerIds.get(0);
+      if (rows.isEmpty()) {
+        return new PersistedState(null, false);
+      }
+      Object[] row = rows.get(0);
+      return new PersistedState((Long) row[0], Boolean.TRUE.equals(row[1]));
     }
   }
 

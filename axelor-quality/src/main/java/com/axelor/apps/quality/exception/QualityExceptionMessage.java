@@ -108,4 +108,7 @@ public final class QualityExceptionMessage {
 
   public static final String CONTROL_ENTRY_OPEN_QUALITY_IMPROVEMENTS = /*$$(*/
       "The quality improvement(s) %s are already open for this control entry. Create another one?" /*)*/;
+
+  public static final String QI_GRAVITY_REQUIRED_TO_CLOSE = /*$$(*/
+      "The gravity must be set to close a quality improvement linked to a supplier." /*)*/;
 }
