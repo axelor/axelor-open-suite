@@ -61,6 +61,9 @@
       readonlyIf="statusSelect == 2 || statusSelect == 6"/>
     <button name="printBtn" title="Print" icon="printer"
       onClick="action-method-print-template"/>
+    <button name="addControlEntryBtn" title="Add a control entry" icon="check2-circle"
+      onClick="save,action-control-entry-method-add-control-entry"
+      if="__config__.app.isApp('quality')"/>
   </grid>
 
 
@@ -99,6 +102,9 @@
       readonlyIf="statusSelect == 2 || statusSelect == 6"/>
     <button name="printBtn" title="Print" icon="printer"
       onClick="save,action-method-print-template"/>
+    <button name="addControlEntryBtn" title="Add a control entry" icon="check2-circle"
+      onClick="save,action-control-entry-method-add-control-entry"
+      if="__config__.app.isApp('quality')"/>
   </grid>
 
 

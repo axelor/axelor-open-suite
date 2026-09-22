@@ -100,6 +100,9 @@
     <field name="oldQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
     <field name="shippedQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
     <field name="companyPurchasePrice" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <button name="addControlEntryBtn" title="Add a control entry" icon="check2-circle"
+      onClick="save,action-control-entry-method-add-control-entry"
+      if="__config__.app.isApp('quality')"/>
   </grid>
 
   <form name="stock-move-line-form" title="Stock move line"
