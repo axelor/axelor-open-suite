@@ -55,6 +55,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
+import com.axelor.apps.supplychain.service.PurchaseOrderAcknowledgmentService;
 import com.axelor.cache.AxelorCache;
 import com.axelor.cache.CacheBuilder;
 import com.axelor.common.ObjectUtils;
@@ -98,6 +99,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
   protected TimetableRepository timetableRepo;
   protected InvoiceTermRepository invoiceTermRepo;
   protected JournalService journalService;
+  protected PurchaseOrderAcknowledgmentService purchaseOrderAcknowledgmentService;
 
   protected final AxelorCache<Integer, List<Integer>> invoiceStatusMap =
       CacheBuilder.newBuilder("invoiceStatusMap")
@@ -112,7 +114,8 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       ForecastRecapRepository forecastRecapRepo,
       TimetableRepository timetableRepo,
       InvoiceTermRepository invoiceTermRepo,
-      JournalService journalService) {
+      JournalService journalService,
+      PurchaseOrderAcknowledgmentService purchaseOrderAcknowledgmentService) {
     this.appBaseService = appBaseService;
     this.currencyService = currencyService;
     this.forecastRecapLineTypeRepo = forecastRecapLineTypeRepo;
@@ -120,6 +123,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     this.timetableRepo = timetableRepo;
     this.invoiceTermRepo = invoiceTermRepo;
     this.journalService = journalService;
+    this.purchaseOrderAcknowledgmentService = purchaseOrderAcknowledgmentService;
   }
 
   @Override
@@ -1066,28 +1070,43 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     PaymentCondition paymentCondition = getPaymentCondition(purchaseOrder);
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
-      LocalDate lineDate = getPurchaseOrderLineBaseDate(purchaseOrder, purchaseOrderLine);
       BigDecimal lineAmount = getPurchaseOrderLineAmount(purchaseOrderLine);
       if (lineAmount.signum() == 0) {
         continue;
       }
-      BigDecimal companyAmount =
-          currencyService
-              .getAmountCurrencyConvertedAtDate(
-                  purchaseOrder.getCurrency(),
-                  purchaseOrder.getCompany().getCurrency(),
-                  lineAmount,
-                  appBaseService.getTodayDate(forecastRecap.getCompany()))
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-      getDueDateAmountMap(
-              companyAmount,
-              lineDate,
-              paymentCondition,
-              getEstimatedDuration(forecastRecapLineType),
-              fromDate,
-              toDate)
-          .forEach((date, amount) -> map.merge(date, amount, BigDecimal::add));
+      for (Map.Entry<LocalDate, BigDecimal> baseDateAmount :
+          getPurchaseOrderLineBaseDateAmountMap(purchaseOrder, purchaseOrderLine, lineAmount)
+              .entrySet()) {
+        BigDecimal companyAmount =
+            currencyService
+                .getAmountCurrencyConvertedAtDate(
+                    purchaseOrder.getCurrency(),
+                    purchaseOrder.getCompany().getCurrency(),
+                    baseDateAmount.getValue(),
+                    appBaseService.getTodayDate(forecastRecap.getCompany()))
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        getDueDateAmountMap(
+                companyAmount,
+                baseDateAmount.getKey(),
+                paymentCondition,
+                getEstimatedDuration(forecastRecapLineType),
+                fromDate,
+                toDate)
+            .forEach((date, amount) -> map.merge(date, amount, BigDecimal::add));
+      }
     }
+    return map;
+  }
+
+  protected Map<LocalDate, BigDecimal> getPurchaseOrderLineBaseDateAmountMap(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, BigDecimal lineAmount) {
+    Map<LocalDate, BigDecimal> acknowledgmentAmountMap =
+        purchaseOrderAcknowledgmentService.splitAmountByDeliveryDate(purchaseOrderLine, lineAmount);
+    if (!acknowledgmentAmountMap.isEmpty()) {
+      return acknowledgmentAmountMap;
+    }
+    Map<LocalDate, BigDecimal> map = new HashMap<>();
+    map.put(getPurchaseOrderLineBaseDate(purchaseOrder, purchaseOrderLine), lineAmount);
     return map;
   }
 
