@@ -446,6 +446,12 @@ public final class SupplychainExceptionMessage {
   public static final String SUPPLYCHAIN_SUPPLIER_DISPUTE_MISSING_RESOLUTION_OUTCOME = /*$$(*/
       "Please fill the resolution outcome before resolving the supplier dispute" /*)*/;
 
+  public static final String SUPPLYCHAIN_SUPPLIER_DISPUTE_NO_MESSAGE_TEMPLATE = /*$$(*/
+      "No message template is configured in the purchase configuration for the status of the supplier dispute %s" /*)*/;
+
+  public static final String SUPPLYCHAIN_SUPPLIER_DISPUTE_WRONG_TEMPLATE_MODEL = /*$$(*/
+      "The message template %s must target the Supplier dispute model" /*)*/;
+
   public static final String MRP_GENERATE_PROPOSAL_NO_CALL_TENDER_NEEDED = /*$$(*/
       "No call for tender can be generated from these lines." /*)*/;
 

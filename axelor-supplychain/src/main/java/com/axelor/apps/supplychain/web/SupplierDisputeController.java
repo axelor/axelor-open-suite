@@ -21,8 +21,12 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.supplychain.db.SupplierDispute;
 import com.axelor.apps.supplychain.db.repo.SupplierDisputeRepository;
+import com.axelor.apps.supplychain.service.supplierdispute.SupplierDisputeMessageService;
 import com.axelor.apps.supplychain.service.supplierdispute.SupplierDisputeWorkflowService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
@@ -69,6 +73,23 @@ public class SupplierDisputeController {
     try {
       Beans.get(SupplierDisputeWorkflowService.class).cancel(findSupplierDispute(request));
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void sendToSupplier(ActionRequest request, ActionResponse response) {
+    try {
+      Message message =
+          Beans.get(SupplierDisputeMessageService.class)
+              .generateMessage(findSupplierDispute(request));
+      response.setView(
+          ActionView.define(I18n.get("Email"))
+              .model(Message.class.getName())
+              .add("form", "message-form")
+              .param("forceEdit", "true")
+              .context("_showRecord", String.valueOf(message.getId()))
+              .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

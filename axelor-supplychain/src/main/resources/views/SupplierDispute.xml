@@ -83,6 +83,9 @@
       </panel>
     </panel-tabs>
     <panel sidebar="true" name="actionsPanel" title="Actions" hideIf="statusSelect >= 5">
+      <button name="sendToSupplierBtn" title="Send to supplier"
+        showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 3)"
+        onClick="save,action-supplier-dispute-method-send-to-supplier"/>
       <button name="investigateBtn" title="Start investigation"
         showIf="statusSelect == 1 || statusSelect == 3"
         onClick="save,action-supplier-dispute-method-investigate"/>
@@ -204,6 +207,11 @@
 
   <action-method name="action-supplier-dispute-method-cancel">
     <call class="com.axelor.apps.supplychain.web.SupplierDisputeController" method="cancel"/>
+  </action-method>
+
+  <action-method name="action-supplier-dispute-method-send-to-supplier">
+    <call class="com.axelor.apps.supplychain.web.SupplierDisputeController"
+      method="sendToSupplier"/>
   </action-method>
 
   <search-filters name="supplier-dispute-filters"
