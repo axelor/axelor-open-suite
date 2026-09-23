@@ -19,6 +19,7 @@
 package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.account.db.repo.PartnerAccountRepository;
+import com.axelor.apps.account.service.InvoicingPaymentSituationService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationCheckService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationInitService;
 import com.axelor.apps.base.db.Partner;
@@ -34,8 +35,13 @@ public class PartnerHRRepository extends PartnerAccountRepository {
   public PartnerHRRepository(
       AppService appService,
       AccountingSituationInitService accountingSituationInitService,
-      AccountingSituationCheckService accountingSituationCheckService) {
-    super(appService, accountingSituationInitService, accountingSituationCheckService);
+      AccountingSituationCheckService accountingSituationCheckService,
+      InvoicingPaymentSituationService invoicingPaymentSituationService) {
+    super(
+        appService,
+        accountingSituationInitService,
+        accountingSituationCheckService,
+        invoicingPaymentSituationService);
   }
 
   @Override

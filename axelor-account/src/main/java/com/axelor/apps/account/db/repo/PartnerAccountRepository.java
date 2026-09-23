@@ -19,6 +19,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.service.InvoicingPaymentSituationService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationCheckService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationInitService;
 import com.axelor.apps.base.db.Partner;
@@ -39,14 +40,18 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
 
   protected AccountingSituationCheckService accountingSituationCheckService;
 
+  protected InvoicingPaymentSituationService invoicingPaymentSituationService;
+
   @Inject
   public PartnerAccountRepository(
       AppService appService,
       AccountingSituationInitService accountingSituationInitService,
-      AccountingSituationCheckService accountingSituationCheckService) {
+      AccountingSituationCheckService accountingSituationCheckService,
+      InvoicingPaymentSituationService invoicingPaymentSituationService) {
     this.appService = appService;
     this.accountingSituationInitService = accountingSituationInitService;
     this.accountingSituationCheckService = accountingSituationCheckService;
+    this.invoicingPaymentSituationService = invoicingPaymentSituationService;
   }
 
   @Override
@@ -78,5 +83,12 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  @Override
+  public void remove(Partner partner) {
+    invoicingPaymentSituationService.clearActiveUmr(partner);
+
+    super.remove(partner);
   }
 }

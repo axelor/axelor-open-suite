@@ -137,6 +137,11 @@
 
   <form name="partner-form" id="account-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="/">
+      <attribute name="onDelete"
+        value="action-partner-method-check-active-umr-before-delete"/>
+    </extend>
+
     <extend target="//panel[@name='rightPanel']">
       <insert position="inside">
         <field name="isThirdPartyPayer" widget="InlineCheckbox"
@@ -181,6 +186,46 @@
   </form>
 
 
+  <form name="partner-customer-form" id="account-partner-customer-form" title="Customer"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="/">
+      <attribute name="onDelete"
+        value="action-partner-method-check-active-umr-before-delete"/>
+    </extend>
+  </form>
+
+  <form name="partner-supplier-form" id="account-partner-supplier-form" title="Supplier"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="/">
+      <attribute name="onDelete"
+        value="action-partner-method-check-active-umr-before-delete"/>
+    </extend>
+  </form>
+
+  <grid name="partner-grid" id="account-partner-grid" title="Partners"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="/">
+      <attribute name="onDelete"
+        value="action-partner-method-check-active-umr-before-delete"/>
+    </extend>
+  </grid>
+
+  <grid name="partner-customer-grid" id="account-partner-customer-grid" title="Customers"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="/">
+      <attribute name="onDelete"
+        value="action-partner-method-check-active-umr-before-delete"/>
+    </extend>
+  </grid>
+
+  <grid name="partner-supplier-grid" id="account-partner-supplier-grid" title="Suppliers"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="/">
+      <attribute name="onDelete"
+        value="action-partner-method-check-active-umr-before-delete"/>
+    </extend>
+  </grid>
+
   <!-- TODO: find the domain of below form and grid and add it in reportedBalanceList in above form -->
 
   <!-- <grid title="Reported balances" > -->
@@ -218,6 +263,11 @@
 
   <action-method name="action-partner-method-show-client-situation">
     <call class="com.axelor.apps.base.web.PartnerController" method="printClientSituation"/>
+  </action-method>
+
+  <action-method name="action-partner-method-check-active-umr-before-delete">
+    <call class="com.axelor.apps.account.web.PartnerController"
+      method="checkActiveUmrBeforeDelete"/>
   </action-method>
 
   <action-method name="action-partner-method-get-default-specific-tax-note">

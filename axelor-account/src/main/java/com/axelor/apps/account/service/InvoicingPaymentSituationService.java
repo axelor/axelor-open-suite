@@ -34,4 +34,21 @@ public interface InvoicingPaymentSituationService {
 
   InvoicingPaymentSituation initInvoicingPaymentSituation(
       InvoicingPaymentSituation invoicingPaymentSituation, Partner partner);
+
+  /**
+   * Clears the active UMR of every invoicing/payment situation of the given partner, so the partner
+   * can be deleted without leaving a reference to an UMR removed by the same transaction.
+   *
+   * @param partner the partner about to be deleted
+   */
+  void clearActiveUmr(Partner partner);
+
+  /**
+   * Fetches, among the given partners, the ones holding an invoicing/payment situation with an
+   * active UMR.
+   *
+   * @param partnerIdList the partners to check
+   * @return the partners having an active UMR, ordered by name
+   */
+  List<Partner> getPartnerWithActiveUmrList(List<Long> partnerIdList);
 }
