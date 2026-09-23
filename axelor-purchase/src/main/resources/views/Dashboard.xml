@@ -231,6 +231,8 @@
     <dashlet action="dashlet.purchase.order.amount.by.family" canSearch="true" height="350"/>
     <dashlet action="dashlet.purchase.order.amount.distribution.by.family" canSearch="true"
       height="350"/>
+    <dashlet action="dashlet.supplier.dispute.count.per.supplier" canSearch="true"
+      height="350" if-module="axelor-supplychain"/>
   </dashboard>
 
 </object-views>
