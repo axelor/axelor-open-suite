@@ -63,7 +63,7 @@
       </panel>
       <panel name="resolutionPanel" title="Resolution">
         <panel name="resolutionDetailsPanel" colSpan="12" readonlyIf="statusSelect >= 5">
-          <field name="resolutionOutcomeSelect"/>
+          <field name="resolutionOutcomeSelect" requiredIf="statusSelect == 4"/>
           <field name="resolutionDescription" colSpan="12" height="6" widget="html"/>
         </panel>
         <panel name="stampsPanel" title="History" colSpan="12">
@@ -82,6 +82,22 @@
         </panel>
       </panel>
     </panel-tabs>
+    <panel sidebar="true" name="actionsPanel" title="Actions" hideIf="statusSelect >= 5">
+      <button name="investigateBtn" title="Start investigation"
+        showIf="statusSelect == 1 || statusSelect == 3"
+        onClick="save,action-supplier-dispute-method-investigate"/>
+      <button name="awaitSupplierResponseBtn" title="Await supplier response"
+        showIf="statusSelect == 1 || statusSelect == 2"
+        onClick="save,action-supplier-dispute-method-await-supplier-response"/>
+      <button name="resolveBtn" title="Resolve"
+        showIf="statusSelect == 2 || statusSelect == 3"
+        onClick="save,action-supplier-dispute-method-resolve"/>
+      <button name="closeBtn" title="Close" showIf="statusSelect == 4"
+        onClick="save,action-supplier-dispute-method-close"/>
+      <button name="cancelBtn" title="Cancel" showIf="statusSelect &lt;= 3"
+        prompt="Are you sure you want to cancel this supplier dispute?"
+        onClick="save,action-supplier-dispute-method-cancel"/>
+    </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>
@@ -97,6 +113,28 @@
     <field name="company" expr="eval: __user__.activeCompany"/>
     <field name="assignedToUser" expr="eval: __user__"/>
   </action-record>
+
+  <action-method name="action-supplier-dispute-method-investigate">
+    <call class="com.axelor.apps.supplychain.web.SupplierDisputeController"
+      method="investigate"/>
+  </action-method>
+
+  <action-method name="action-supplier-dispute-method-await-supplier-response">
+    <call class="com.axelor.apps.supplychain.web.SupplierDisputeController"
+      method="awaitSupplierResponse"/>
+  </action-method>
+
+  <action-method name="action-supplier-dispute-method-resolve">
+    <call class="com.axelor.apps.supplychain.web.SupplierDisputeController" method="resolve"/>
+  </action-method>
+
+  <action-method name="action-supplier-dispute-method-close">
+    <call class="com.axelor.apps.supplychain.web.SupplierDisputeController" method="close"/>
+  </action-method>
+
+  <action-method name="action-supplier-dispute-method-cancel">
+    <call class="com.axelor.apps.supplychain.web.SupplierDisputeController" method="cancel"/>
+  </action-method>
 
   <search-filters name="supplier-dispute-filters"
     model="com.axelor.apps.supplychain.db.SupplierDispute" title="Supplier dispute filters">

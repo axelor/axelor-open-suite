@@ -440,6 +440,12 @@ public final class SupplychainExceptionMessage {
   public static final String SUPPLYCHAIN_SUPPLIER_DISPUTE_SEQUENCE_ERROR = /*$$(*/
       "The company %s doesn't have any configured sequence for supplier disputes" /*)*/;
 
+  public static final String SUPPLYCHAIN_SUPPLIER_DISPUTE_WRONG_STATUS = /*$$(*/
+      "This status change is not allowed for the supplier dispute %s" /*)*/;
+
+  public static final String SUPPLYCHAIN_SUPPLIER_DISPUTE_MISSING_RESOLUTION_OUTCOME = /*$$(*/
+      "Please fill the resolution outcome before resolving the supplier dispute" /*)*/;
+
   public static final String MRP_GENERATE_PROPOSAL_NO_CALL_TENDER_NEEDED = /*$$(*/
       "No call for tender can be generated from these lines." /*)*/;
 

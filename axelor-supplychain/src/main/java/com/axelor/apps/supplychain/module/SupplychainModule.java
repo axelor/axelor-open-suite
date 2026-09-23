@@ -418,6 +418,8 @@ import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSuppl
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnNewServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineViewSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineViewSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.supplierdispute.SupplierDisputeWorkflowService;
+import com.axelor.apps.supplychain.service.supplierdispute.SupplierDisputeWorkflowServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 import com.axelor.apps.supplychain.utils.StockLocationUtilsServiceSupplychain;
@@ -689,5 +691,6 @@ public class SupplychainModule extends AxelorModule {
     bind(ProductServicePurchaseImpl.class).to(ProductSupplychainServiceImpl.class);
     bind(SupplierScoreService.class).to(SupplierScoreServiceImpl.class);
     bind(SupplierDisputeRepository.class).to(SupplierDisputeManagementRepository.class);
+    bind(SupplierDisputeWorkflowService.class).to(SupplierDisputeWorkflowServiceImpl.class);
   }
 }
