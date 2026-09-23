@@ -106,6 +106,11 @@
 
   <action-group name="action-supplier-dispute-group-on-new">
     <action name="action-supplier-dispute-record-default"/>
+    <action name="action-supplier-dispute-record-prefill"/>
+    <action name="action-quality-supplier-dispute-record-prefill"
+      if="__config__.app.isApp('quality')"/>
+    <action name="action-contract-supplier-dispute-record-prefill"
+      if="__config__.app.isApp('contract')"/>
   </action-group>
 
   <action-record name="action-supplier-dispute-record-default"
@@ -113,6 +118,71 @@
     <field name="company" expr="eval: __user__.activeCompany"/>
     <field name="assignedToUser" expr="eval: __user__"/>
   </action-record>
+
+  <action-record name="action-supplier-dispute-record-prefill"
+    model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <field name="supplierPartner" expr="eval: __repo__(Partner).find(_supplierPartnerId)"
+      if="_supplierPartnerId != null"/>
+    <field name="contactPartner" expr="eval: __repo__(Partner).find(_contactPartnerId)"
+      if="_contactPartnerId != null"/>
+    <field name="purchaseOrder" expr="eval: __repo__(PurchaseOrder).find(_purchaseOrderId)"
+      if="_purchaseOrderId != null"/>
+    <field name="stockMove" expr="eval: __repo__(StockMove).find(_stockMoveId)"
+      if="_stockMoveId != null"/>
+    <field name="invoice" expr="eval: __repo__(Invoice).find(_invoiceId)"
+      if="_invoiceId != null"/>
+    <field name="product" expr="eval: __repo__(Product).find(_productId)"
+      if="_productId != null"/>
+    <field name="disputedQty" expr="eval: _disputedQty" if="_disputedQty != null"/>
+    <field name="typeSelect" expr="eval: _typeSelect" if="_typeSelect != null"/>
+  </action-record>
+
+  <action-view name="action-stock-move-view-supplier-disputes" title="Supplier disputes"
+    model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <view type="grid" name="supplier-dispute-grid"/>
+    <view type="form" name="supplier-dispute-form"/>
+    <domain>self.stockMove.id = :_stockMoveId</domain>
+    <context name="_stockMoveId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-stock-move-view-create-supplier-dispute"
+    title="Supplier dispute" model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <view type="form" name="supplier-dispute-form"/>
+    <context name="_supplierPartnerId" expr="eval: partner?.id"/>
+    <context name="_stockMoveId" expr="eval: id"/>
+    <context name="_purchaseOrderId"
+      expr="eval: purchaseOrderSet?.size() == 1 ? purchaseOrderSet[0].id : null"/>
+  </action-view>
+
+  <action-view name="action-invoice-view-supplier-disputes" title="Supplier disputes"
+    model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <view type="grid" name="supplier-dispute-grid"/>
+    <view type="form" name="supplier-dispute-form"/>
+    <domain>self.invoice.id = :_invoiceId</domain>
+    <context name="_invoiceId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-invoice-view-create-supplier-dispute"
+    title="Supplier dispute" model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <view type="form" name="supplier-dispute-form"/>
+    <context name="_supplierPartnerId" expr="eval: partner?.id"/>
+    <context name="_invoiceId" expr="eval: id"/>
+    <context name="_purchaseOrderId" expr="eval: purchaseOrder?.id"/>
+  </action-view>
+
+  <action-view name="action-partner-view-supplier-disputes" title="Supplier disputes"
+    model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <view type="grid" name="supplier-dispute-partner-grid"/>
+    <view type="form" name="supplier-dispute-form"/>
+    <domain>self.supplierPartner.id = :_partnerId</domain>
+    <context name="_partnerId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-partner-view-create-supplier-dispute"
+    title="Supplier dispute" model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <view type="form" name="supplier-dispute-form"/>
+    <context name="_supplierPartnerId" expr="eval: id"/>
+  </action-view>
 
   <action-method name="action-supplier-dispute-method-investigate">
     <call class="com.axelor.apps.supplychain.web.SupplierDisputeController"

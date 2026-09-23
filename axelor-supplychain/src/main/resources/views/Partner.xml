@@ -74,6 +74,18 @@
         </panel>
       </insert>
     </extend>
+
+    <extend target="//panel[@name='purchaseOrderPanel']">
+      <insert position="after">
+        <panel name="supplierDisputesPanel" title="Supplier disputes" colSpan="12"
+          if="__config__.app.isApp('supplychain')" showIf="id &amp;&amp; isSupplier">
+          <button name="createSupplierDisputeBtn" title="Create supplier dispute" colSpan="4"
+            onClick="save,action-partner-view-create-supplier-dispute"/>
+          <panel-dashlet name="supplierDisputesDashletPanel"
+            action="action-partner-view-supplier-disputes" colSpan="12"/>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <form name="incl-purchases-partner-form" title="Partner"
