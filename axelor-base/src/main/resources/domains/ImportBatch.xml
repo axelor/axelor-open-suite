@@ -10,8 +10,6 @@
     <string name="code" title="Code" namecolumn="true" unique="true"/>
     <integer name="actionSelect" title="Action" required="true"
       selection="import.batch.action.select"/>
-    <one-to-many name="batchList" title="Batchs" ref="com.axelor.apps.base.db.Batch"
-      mappedBy="importBatch"/>
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
     <string name="description" title="Description" large="true"/>
 
