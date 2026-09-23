@@ -29,6 +29,12 @@
     model="com.axelor.apps.quality.db.QualityImprovement" width="large"
     onLoad="action-quality-improvement-group-on-load"
     onNew="action-quality-improvement-method-set-default-values-on-new">
+    <toolbar>
+      <button name="createSupplierDisputeBtn" title="Create supplier dispute"
+        if="__config__.app.isApp('supplychain')"
+        showIf="id &amp;&amp; $get('qiIdentification.supplierPartner')"
+        onClick="save,action-quality-improvement-view-create-supplier-dispute"/>
+    </toolbar>
     <panel name="mainPanel">
       <field name="qiStatus" colSpan="12" showTitle="false" readonlyIf="!id"
         widget="NavSelect" x-order="sequence"/>
@@ -235,6 +241,9 @@
         <panel-dashlet name="costsDistributionPanel" colSpan="6" height="350"
           action="chart:chart.quality.improvements.costs.distributions.per.decision"/>
       </panel>
+      <panel-dashlet name="supplierDisputesPanel" title="Supplier disputes"
+        action="action-quality-improvement-view-supplier-disputes"
+        if="__config__.app.isApp('supplychain')" showIf="$get('qiIdentification.supplierPartner')"/>
     </panel-tabs>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
