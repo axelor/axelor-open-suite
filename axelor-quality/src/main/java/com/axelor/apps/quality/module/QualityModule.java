@@ -27,6 +27,8 @@ import com.axelor.apps.quality.db.repo.ControlPlanFrequencyManagementRepository;
 import com.axelor.apps.quality.db.repo.ControlPlanFrequencyRepository;
 import com.axelor.apps.quality.db.repo.ControlPlanManagementRepository;
 import com.axelor.apps.quality.db.repo.ControlPlanRepository;
+import com.axelor.apps.quality.db.repo.ControlTypeFieldManagementRepository;
+import com.axelor.apps.quality.db.repo.ControlTypeFieldRepository;
 import com.axelor.apps.quality.db.repo.QualityAlertManagementRepository;
 import com.axelor.apps.quality.db.repo.QualityAlertRepository;
 import com.axelor.apps.quality.db.repo.QualityControlManagementRepository;
@@ -59,6 +61,8 @@ import com.axelor.apps.quality.service.ControlPlanFrequencyComputeNameService;
 import com.axelor.apps.quality.service.ControlPlanFrequencyComputeNameServiceImpl;
 import com.axelor.apps.quality.service.ControlPlanFrequencyService;
 import com.axelor.apps.quality.service.ControlPlanFrequencyServiceImpl;
+import com.axelor.apps.quality.service.ControlTypeFieldService;
+import com.axelor.apps.quality.service.ControlTypeFieldServiceImpl;
 import com.axelor.apps.quality.service.ControlTypeFieldValueService;
 import com.axelor.apps.quality.service.ControlTypeFieldValueServiceImpl;
 import com.axelor.apps.quality.service.NonCompliantReceptionService;
@@ -172,5 +176,7 @@ public class QualityModule extends AxelorModule {
         .to(ReceptionQualityImprovementCancelServiceImpl.class);
     bind(StockMoveServiceSupplychainImpl.class).to(StockMoveServiceQualityImpl.class);
     bind(ReservedQtyServiceImpl.class).to(ReservedQtyServiceQualityImpl.class);
+    bind(ControlTypeFieldRepository.class).to(ControlTypeFieldManagementRepository.class);
+    bind(ControlTypeFieldService.class).to(ControlTypeFieldServiceImpl.class);
   }
 }

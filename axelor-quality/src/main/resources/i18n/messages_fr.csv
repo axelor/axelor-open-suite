@@ -457,6 +457,7 @@
 "The control entry plan line with id %s is not a control entry sample line.","La ligne avec l'id %s n'est pas une ligne de prélèvement.",,
 "The end date cannot be later than the deadline.","La date de fin ne peut pas être après la date limite.",,
 "The entry value with id %s does not belong to the control entry sample line with id %s.","La valeur mesurée avec l'id %s n'appartient pas à la ligne de prélèvement avec l'id %s.",,
+"The field %s is used by the control type(s) %s and can not be deleted.","Le champ %s est utilisé par le(s) type(s) de contrôle %s et ne peut pas être supprimé.",,
 "The fields","Les champs",,
 "The following fields will be reset: customer order, stock move and stock move line , continue ?","Les champs suivants seront réinitialisés: commande client, BL client et ligne de BL client, continuer ?",,
 "The following fields will be reset: customer stock move and customer stock move line , continue ?","Les champs suivants seront réinitialisés: BL client et ligne de BL client, continuer ?",,

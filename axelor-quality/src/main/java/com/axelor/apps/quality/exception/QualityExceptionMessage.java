@@ -129,4 +129,7 @@ public final class QualityExceptionMessage {
 
   public static final String RECEIPT_CANCEL_QI_KEPT = /*$$(*/
       "The quality improvement(s) %s will stay open after the cancellation because they have been worked on. Continue?" /*)*/;
+
+  public static final String CONTROL_TYPE_FIELD_USED_BY_CONTROL_TYPE = /*$$(*/
+      "The field %s is used by the control type(s) %s and can not be deleted." /*)*/;
 }

@@ -457,6 +457,7 @@
 "The control entry plan line with id %s is not a control entry sample line.",,,
 "The end date cannot be later than the deadline.",,,
 "The entry value with id %s does not belong to the control entry sample line with id %s.",,,
+"The field %s is used by the control type(s) %s and can not be deleted.",,,
 "The fields",,,
 "The following fields will be reset: customer order, stock move and stock move line , continue ?",,,
 "The following fields will be reset: customer stock move and customer stock move line , continue ?",,,
