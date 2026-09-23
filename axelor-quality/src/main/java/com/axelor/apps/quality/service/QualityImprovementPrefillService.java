@@ -31,6 +31,8 @@ public interface QualityImprovementPrefillService {
 
   QIDetection getDefaultDetection(ControlEntry controlEntry);
 
+  QIDetection getDefaultDetection(StockMoveLine stockMoveLine);
+
   void fillDetectedBy(QIIdentification qiIdentification, ControlEntry controlEntry);
 
   void fillFromControlEntry(

@@ -24,11 +24,19 @@ import com.axelor.apps.quality.db.QIDetection;
 import com.axelor.apps.quality.db.QIIdentification;
 import com.axelor.apps.quality.db.QIResolution;
 import com.axelor.apps.quality.db.QualityImprovement;
+import com.axelor.apps.stock.db.StockMoveLine;
 
 public interface QualityImprovementCreateService {
 
   QualityImprovement createQualityImprovementFromControlEntry(
       ControlEntry controlEntry, QIDetection qiDetection, int type) throws AxelorException;
+
+  QualityImprovement createQualityImprovementFromStockMoveLine(
+      StockMoveLine stockMoveLine,
+      QIDetection qiDetection,
+      int type,
+      boolean isAutomaticallyCreated)
+      throws AxelorException;
 
   QualityImprovement createQualityImprovement(
       QualityImprovement qualityImprovement,

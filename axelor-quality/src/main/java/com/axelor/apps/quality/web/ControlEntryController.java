@@ -70,4 +70,11 @@ public class ControlEntryController {
             I18n.get(QualityExceptionMessage.CONTROL_ENTRY_OPEN_QUALITY_IMPROVEMENTS),
             String.join(", ", openQualityImprovementSequences)));
   }
+
+  public void finish(ActionRequest request, ActionResponse response) {
+    ControlEntry controlEntry = request.getContext().asType(ControlEntry.class);
+    Beans.get(ControlEntryService.class)
+        .finish(Beans.get(ControlEntryRepository.class).find(controlEntry.getId()));
+    response.setReload(true);
+  }
 }

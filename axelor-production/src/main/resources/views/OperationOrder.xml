@@ -269,6 +269,7 @@
   </action-group>
 
   <action-group name="action-operation-order-group-finish">
+    <action name="action-operation-order-method-check-final-control"/>
     <action name="action-operation-order-method-finish"/>
   </action-group>
 
@@ -282,6 +283,11 @@
 
   <action-method name="action-operation-order-method-resume">
     <call class="com.axelor.apps.production.web.OperationOrderController" method="resume"/>
+  </action-method>
+
+  <action-method name="action-operation-order-method-check-final-control">
+    <call class="com.axelor.apps.production.web.OperationOrderController"
+      method="checkFinalControlBeforeFinish"/>
   </action-method>
 
   <action-method name="action-operation-order-method-finish">

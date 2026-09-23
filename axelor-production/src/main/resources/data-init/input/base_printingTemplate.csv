@@ -7,3 +7,4 @@
 "64";"Cost sheet";"com.axelor.apps.production.db.CostSheet";"2";false;"${__i18n__.get('Cost sheet') + ' ' + costSheet.id + '-' + date}"
 "65";"Work in progress valuation";"com.axelor.apps.production.db.ProductionBatch";"2";false;"${__i18n__.get('Work in progress valuation') + ' ' + productionBatch.id + '-' + date}"
 "66";"Mps Charge";"com.axelor.apps.production.db.MpsCharge";"2";false;"${__i18n__.get('Mps Charge') + ' ' + mpsCharge.id + '-' + date}"
+"202";"Conformity declaration";"com.axelor.apps.production.db.ManufOrder";"1";true;"${__i18n__.get('Conformity declaration') + ' ' + manufOrder.manufOrderSeq + '-' + date}"
