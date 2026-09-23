@@ -32,4 +32,6 @@ public interface BankReconciliationReconciliationService {
 
   BankReconciliation reconcileSelected(BankReconciliation bankReconciliation)
       throws AxelorException;
+
+  void unreconcileMoveLines(List<MoveLine> moveLines);
 }

@@ -326,8 +326,11 @@
     <view type="grid" name="move-line-bank-reconciliation-grid"/>
     <view type="form" name="move-line-form"/>
     <domain>self.move.id in (select ML.move.id from BankReconciliationLine as BRL left join
-      BRL.moveLine as ML where BRL.bankReconciliation.id = :bankReconciliationId)</domain>
+      BRL.moveLine as ML where BRL.bankReconciliation.id = :bankReconciliationId) OR
+      (self.moveLineReconciledNbr IS NOT NULL AND self.moveLineReconciledNbr != '' AND
+      self.move.company.id = :companyId)</domain>
     <context name="bankReconciliationId" expr="eval: id"/>
+    <context name="companyId" expr="eval: company?.id"/>
   </action-view>
 
   <action-view name="action-bank-reconciliation-view-multiple-reconcile-wizard"

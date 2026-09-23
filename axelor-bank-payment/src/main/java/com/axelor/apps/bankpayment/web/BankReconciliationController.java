@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
@@ -83,12 +84,31 @@ public class BankReconciliationController {
           br.getBankReconciliationLineList().stream()
               .filter(line -> line.getIsSelectedBankReconciliation())
               .collect(Collectors.toList());
-      if (bankReconciliationLines.isEmpty()) {
+
+      // Move lines reconciled together (moveLine-to-moveLine reconciliation)
+      List<MoveLine> selectedMoveLines =
+          Beans.get(MoveLineRepository.class)
+              .all()
+              .filter(
+                  "self.isSelectedBankReconciliation = true"
+                      + " AND self.moveLineReconciledNbr IS NOT NULL"
+                      + " AND self.moveLineReconciledNbr != ''"
+                      + " AND self.move.company = :company")
+              .bind("company", br.getCompany())
+              .fetch();
+
+      if (bankReconciliationLines.isEmpty() && selectedMoveLines.isEmpty()) {
         response.setInfo(I18n.get(ITranslation.BANK_RECONCILIATION_SELECT_A_LINE));
       } else {
-        Beans.get(BankReconciliationLineUnreconciliationService.class)
-            .unreconcileLines(bankReconciliationLines);
-        Beans.get(BankReconciliationService.class).mergeSplitedReconciliationLines(br);
+        if (!bankReconciliationLines.isEmpty()) {
+          Beans.get(BankReconciliationLineUnreconciliationService.class)
+              .unreconcileLines(bankReconciliationLines);
+          Beans.get(BankReconciliationService.class).mergeSplitedReconciliationLines(br);
+        }
+        if (!selectedMoveLines.isEmpty()) {
+          Beans.get(BankReconciliationReconciliationService.class)
+              .unreconcileMoveLines(selectedMoveLines);
+        }
         Beans.get(BankReconciliationBalanceComputationService.class).computeBalances(br);
         response.setReload(true);
       }
