@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <grid name="supplier-dispute-grid" title="Supplier disputes"
+    model="com.axelor.apps.supplychain.db.SupplierDispute" orderBy="-openingDateTime">
+    <field name="disputeSeq" width="120"/>
+    <field name="supplierPartner"/>
+    <field name="typeSelect"/>
+    <field name="prioritySelect" widget="single-select"/>
+    <field name="statusSelect" widget="single-select"/>
+    <field name="assignedToUser"/>
+    <field name="supplierResponseDueDate"/>
+    <field name="openingDateTime"/>
+  </grid>
+
+  <grid name="supplier-dispute-partner-grid" title="Supplier disputes"
+    model="com.axelor.apps.supplychain.db.SupplierDispute" orderBy="-openingDateTime">
+    <field name="disputeSeq" width="120"/>
+    <field name="typeSelect"/>
+    <field name="prioritySelect" widget="single-select"/>
+    <field name="statusSelect" widget="single-select"/>
+    <field name="assignedToUser"/>
+    <field name="supplierResponseDueDate"/>
+    <field name="openingDateTime"/>
+  </grid>
+
+  <form name="supplier-dispute-form" title="Supplier dispute"
+    model="com.axelor.apps.supplychain.db.SupplierDispute"
+    onNew="action-supplier-dispute-group-on-new">
+    <panel name="statusSelectPanel" title="Status">
+      <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
+    </panel>
+    <panel name="mainPanel" readonlyIf="statusSelect >= 5">
+      <field name="disputeSeq" showIf="disputeSeq"/>
+      <field name="company" canEdit="false"/>
+      <field name="supplierPartner" canEdit="false"
+        domain="self.isContact = false AND self.isSupplier = true AND :company MEMBER OF self.companySet"
+        form-view="partner-form" grid-view="partner-grid"/>
+      <field name="contactPartner" canEdit="false"
+        domain="self.isContact = true AND EXISTS (SELECT 1 FROM Partner part WHERE part = :supplierPartner AND self MEMBER OF part.contactPartnerSet)"
+        form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+      <field name="typeSelect"/>
+      <field name="prioritySelect" widget="single-select"/>
+      <field name="assignedToUser" canEdit="false"/>
+      <field name="supplierResponseDueDate"/>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel name="detailsPanel" title="Details" readonlyIf="statusSelect >= 5">
+        <field name="description" showTitle="false" colSpan="12" height="6" widget="html"/>
+      </panel>
+      <panel name="linksPanel" title="Links" readonlyIf="statusSelect >= 5">
+        <field name="purchaseOrder" canEdit="false"
+          domain="self.supplierPartner = :supplierPartner AND self.company = :company"/>
+        <field name="stockMove" canEdit="false"
+          domain="self.partner = :supplierPartner AND self.company = :company AND self.typeSelect = 3"/>
+        <field name="invoice" canEdit="false"
+          domain="self.partner = :supplierPartner AND self.company = :company AND self.operationTypeSelect IN (1, 2)"/>
+        <field name="product" canEdit="false" domain="self.dtype = 'Product'"/>
+        <field name="disputedQty"/>
+        <field name="disputedAmount"/>
+      </panel>
+      <panel name="resolutionPanel" title="Resolution">
+        <panel name="resolutionDetailsPanel" colSpan="12" readonlyIf="statusSelect >= 5">
+          <field name="resolutionOutcomeSelect"/>
+          <field name="resolutionDescription" colSpan="12" height="6" widget="html"/>
+        </panel>
+        <panel name="stampsPanel" title="History" colSpan="12">
+          <field name="openingByUser"/>
+          <field name="openingDateTime"/>
+          <field name="investigationByUser"/>
+          <field name="investigationDateTime"/>
+          <field name="awaitingResponseByUser"/>
+          <field name="awaitingResponseDateTime"/>
+          <field name="resolutionByUser"/>
+          <field name="resolutionDateTime"/>
+          <field name="closingByUser"/>
+          <field name="closingDateTime"/>
+          <field name="cancellationByUser"/>
+          <field name="cancellationDateTime"/>
+        </panel>
+      </panel>
+    </panel-tabs>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-group name="action-supplier-dispute-group-on-new">
+    <action name="action-supplier-dispute-record-default"/>
+  </action-group>
+
+  <action-record name="action-supplier-dispute-record-default"
+    model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <field name="company" expr="eval: __user__.activeCompany"/>
+    <field name="assignedToUser" expr="eval: __user__"/>
+  </action-record>
+
+  <search-filters name="supplier-dispute-filters"
+    model="com.axelor.apps.supplychain.db.SupplierDispute" title="Supplier dispute filters">
+    <filter name="supplier-dispute-filters-open-disputes" title="Open disputes">
+      <domain>self.statusSelect IN (1, 2, 3)</domain>
+    </filter>
+    <filter name="supplier-dispute-filters-my-disputes" title="My disputes">
+      <domain>self.assignedToUser.id = :_userId</domain>
+    </filter>
+    <filter name="supplier-dispute-filters-awaiting-response-past-due"
+      title="Awaiting response past due">
+      <domain>self.statusSelect = 3 AND self.supplierResponseDueDate &lt; :__date__</domain>
+    </filter>
+  </search-filters>
+
+</object-views>

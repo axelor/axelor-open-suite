@@ -130,6 +130,8 @@ import com.axelor.apps.supplychain.db.repo.SaleOrderLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
+import com.axelor.apps.supplychain.db.repo.SupplierDisputeManagementRepository;
+import com.axelor.apps.supplychain.db.repo.SupplierDisputeRepository;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.UnitCostCalculationManagementRepository;
@@ -686,5 +688,6 @@ public class SupplychainModule extends AxelorModule {
     bind(DepRateAggregationService.class).to(DepRateAggregationServiceImpl.class);
     bind(ProductServicePurchaseImpl.class).to(ProductSupplychainServiceImpl.class);
     bind(SupplierScoreService.class).to(SupplierScoreServiceImpl.class);
+    bind(SupplierDisputeRepository.class).to(SupplierDisputeManagementRepository.class);
   }
 }

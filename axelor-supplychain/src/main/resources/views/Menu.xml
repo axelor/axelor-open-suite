@@ -173,6 +173,18 @@
     <view type="form" name="timetable-template-form"/>
   </action-view>
 
+  <menuitem name="purchase-supplier-disputes" parent="sc-root-purchase" order="750"
+    title="Supplier disputes" action="purchase.supplier.disputes"
+    if="__config__.app.isApp('supplychain')"/>
+
+  <action-view name="purchase.supplier.disputes" title="Supplier disputes"
+    model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <view type="grid" name="supplier-dispute-grid"/>
+    <view type="form" name="supplier-dispute-form"/>
+    <view-param name="search-filters" value="supplier-dispute-filters"/>
+    <context name="_userId" expr="eval:__user__.id"/>
+  </action-view>
+
   <menuitem name="stock-multi-purchase-invoicing" parent="sc-root-purchase" order="800"
     title="Mass Suppl. Stock Move Invoicing" action="stock.root.multi.purchase.invoicing"/>
 
