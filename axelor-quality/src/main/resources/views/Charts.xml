@@ -128,6 +128,58 @@
     <series key="_alerts" type="bar"/>
   </chart>
 
+  <!-- Non-compliance PPM (parts per million) of control entry samples per month. Filters (from parent
+    wizard form context): :fromDate, :toDate date range on ControlEntry.entryDateTime :relatedToSelect optional,
+    ControlPlan.relatedToSelect filter (Product or ProdProcessLine) :relatedToSelectId optional, paired with
+    :relatedToSelect Restrictions: - ControlEntry.statusSelect = 3 (FINISHED) - ControlEntry.relatedToSelectId
+    IS NOT NULL - Sample.resultSelect IN (2, 3) Formula: PPM = (non_compliant * 1000000) / (compliant + non_compliant),
+    0 when the denominator is 0. Integer division is intentional, PPM is expressed as an integer. Implementation
+    notes: - CAST(...) wrappers are required so PostgreSQL can infer parameter types when the optional filters
+    arrive as NULL. - Months with no compliant nor non-compliant sample are excluded from the result by the
+    WHERE clause, so no row with a forced zero is emitted. -->
+  <chart name="chart.quality.ppm.by.month" title="Non-compliance PPM by month">
+    <dataset type="sql">
+      <![CDATA[
+        WITH counts AS (
+          SELECT
+            TO_CHAR(controlEntry.entry_date_time, 'YYYY-MM') AS _month,
+            SUM(CASE WHEN s.result_select = 2 THEN 1 ELSE 0 END) AS _compliant,
+            SUM(CASE WHEN s.result_select = 3 THEN 1 ELSE 0 END) AS _non_compliant
+          FROM quality_control_entry_sample AS s
+          JOIN quality_control_entry AS controlEntry
+            ON s.control_entry = controlEntry.id
+          JOIN quality_control_plan AS controlPlan
+            ON controlEntry.control_plan = controlPlan.id
+          WHERE controlEntry.status_select = 3
+            AND controlEntry.related_to_select_id IS NOT NULL
+            AND s.result_select IN (2, 3)
+            AND DATE(controlEntry.entry_date_time) BETWEEN DATE(:fromDate) AND DATE(:toDate)
+            AND (
+              CAST(:relatedToSelect AS varchar) IS NULL
+              OR (
+                controlPlan.related_to_select = CAST(:relatedToSelect AS varchar)
+                AND (
+                  CAST(:relatedToSelectId AS bigint) IS NULL
+                  OR controlPlan.related_to_select_id = CAST(:relatedToSelectId AS bigint)
+                )
+              )
+            )
+          GROUP BY _month
+        )
+        SELECT
+          _month AS _month,
+          CASE
+            WHEN (_compliant + _non_compliant) = 0 THEN 0
+            ELSE (_non_compliant * 1000000) / (_compliant + _non_compliant)
+          END AS _ppm
+        FROM counts
+        ORDER BY _month
+      ]]>
+    </dataset>
+    <category key="_month" type="text" title="Month"/>
+    <series key="_ppm" type="bar" title="PPM"/>
+  </chart>
+
   <action-record model="com.axelor.apps.quality.db.ControlPoint"
     name="action.quality.chart.set.date">
     <field name="toDateT" expr="eval: __config__.date"/>
