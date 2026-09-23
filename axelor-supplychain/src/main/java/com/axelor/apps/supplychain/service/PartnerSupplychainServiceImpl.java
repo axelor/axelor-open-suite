@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.partner.PartnerContactLinkService;
 import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
@@ -45,8 +46,9 @@ public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
       AppBaseService appBaseService,
       PartnerService partnerService,
       InvoiceRepository invoiceRepository,
-      AccountConfigService accountConfigService) {
-    super(partnerRepo, appBaseService);
+      AccountConfigService accountConfigService,
+      PartnerContactLinkService partnerContactLinkService) {
+    super(partnerRepo, appBaseService, partnerContactLinkService);
     this.partnerService = partnerService;
     this.invoiceRepository = invoiceRepository;
     this.accountConfigService = accountConfigService;
