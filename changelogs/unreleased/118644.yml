@@ -1,0 +1,3 @@
+---
+title: "Move: fixed a crash on validation when a move line account has no account type."
+module: axelor-account
