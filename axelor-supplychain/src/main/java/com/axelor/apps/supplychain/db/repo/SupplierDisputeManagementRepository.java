@@ -27,6 +27,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.supplychain.db.SupplierDispute;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.SupplierScoreService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
@@ -37,12 +38,16 @@ public class SupplierDisputeManagementRepository extends SupplierDisputeReposito
 
   protected SequenceService sequenceService;
   protected AppBaseService appBaseService;
+  protected SupplierScoreService supplierScoreService;
 
   @Inject
   public SupplierDisputeManagementRepository(
-      SequenceService sequenceService, AppBaseService appBaseService) {
+      SequenceService sequenceService,
+      AppBaseService appBaseService,
+      SupplierScoreService supplierScoreService) {
     this.sequenceService = sequenceService;
     this.appBaseService = appBaseService;
+    this.supplierScoreService = supplierScoreService;
   }
 
   @Override
@@ -79,6 +84,8 @@ public class SupplierDisputeManagementRepository extends SupplierDisputeReposito
           appBaseService.getTodayDateTime(supplierDispute.getCompany()).toLocalDateTime());
     }
 
-    return super.save(supplierDispute);
+    supplierDispute = super.save(supplierDispute);
+    supplierScoreService.computeAndSave(supplierDispute.getSupplierPartner());
+    return supplierDispute;
   }
 }

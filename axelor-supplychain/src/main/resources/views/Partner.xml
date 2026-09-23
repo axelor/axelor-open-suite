@@ -75,6 +75,18 @@
       </insert>
     </extend>
 
+    <extend target="//field[@name='supplierScoreHistoryList']">
+      <insert position="before">
+        <panel name="supplierDisputeIndicatorPanel" title="Supplier disputes" colSpan="12">
+          <field name="supplierDisputeAvgResolutionDays" colSpan="3" x-scale="2"
+            readonly="true"/>
+          <field name="supplierClosedDisputeCount" colSpan="3" readonly="true"/>
+          <field name="supplierDisputeFavourableRate" colSpan="3" x-scale="2" readonly="true"/>
+          <field name="supplierClosedDisputeCount" colSpan="3" readonly="true"/>
+        </panel>
+      </insert>
+    </extend>
+
     <extend target="//panel[@name='purchaseOrderPanel']">
       <insert position="after">
         <panel name="supplierDisputesPanel" title="Supplier disputes" colSpan="12"
