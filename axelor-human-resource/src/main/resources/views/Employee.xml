@@ -164,7 +164,48 @@
       showIf="stepByStepSelect == 2">
       <field name="mainEmploymentContract" colSpan="12" domain="self.employee.id = :id"
         showTitle="false">
-        <editor x-viewer="true">
+        <viewer><![CDATA[
+          <>
+            {(() => {
+              const item = (icon, color, label, value) => (
+                <Box d="flex" alignItems="center" gap={3} p={2}
+                  style={{ minWidth: 0, borderRadius: 8, backgroundColor: "var(--bs-tertiary-bg, #f7f7f8)" }}>
+                  <Box d="flex" alignItems="center" justifyContent="center"
+                    style={{ width: 36, height: 36, borderRadius: 9, flex: "0 0 auto", backgroundColor: color + "22" }}>
+                    <Icon icon={icon} color={color} fontSize="18px"/>
+                  </Box>
+                  <Box d="flex" flexDirection="column" style={{ minWidth: 0, marginInlineStart: "0.35rem" }}>
+                    <Box as="span" style={{ fontSize: "11px", color: "#8a8a8a", textTransform: "uppercase", letterSpacing: "0.03em" }}>{label}</Box>
+                    <Box as="span" style={{ fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{value || <Box as="span" style={{ color: "#c7c7c7" }}>-</Box>}</Box>
+                  </Box>
+                </Box>
+              );
+              if (!id) {
+                return (
+                  <Box d="flex" alignItems="center" gap={3} p={2}
+                    style={{ borderRadius: 8, backgroundColor: "var(--bs-tertiary-bg, #f7f7f8)" }}>
+                    <Box d="flex" alignItems="center" justifyContent="center"
+                      style={{ width: 36, height: 36, borderRadius: 9, flex: "0 0 auto", backgroundColor: "#8a8a8a22" }}>
+                      <Icon icon="info-circle" color="#8a8a8a" fontSize="18px"/>
+                    </Box>
+                    <Box as="span" style={{ color: "#8a8a8a", marginInlineStart: "0.35rem" }}>{_t('No main employment contract selected')}</Box>
+                  </Box>
+                );
+              }
+              const exec = executiveStatusSelect == 1 ? _t('Executive')
+                : executiveStatusSelect == 2 ? _t('Non-Executive') : null;
+              return (
+                <Box style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "10px" }}>
+                  {item("house-fill", "#2b9cff", _t('Pay Company'), payCompany && payCompany.name)}
+                  {item("person-badge", "#10b981", _t('Executive Status'), exec)}
+                  {item("briefcase-fill", "#f5a623", _t('Employment'), employment)}
+                  {item("diagram-3-fill", "#8b5cf6", _t('Company department'), companyDepartment && companyDepartment.name)}
+                </Box>
+              );
+            })()}
+          </>
+        ]]></viewer>
+        <editor>
           <field name="payCompany" colSpan="3"/>
           <field name="executiveStatusSelect" colSpan="3"/>
           <field name="employment" colSpan="3"/>
@@ -377,7 +418,48 @@
             icon="file-earmark-check" colSpan="12" canCollapse="true" collapseIf="true">
             <field name="mainEmploymentContract" colSpan="12" domain="self.employee.id = :id"
               showTitle="false">
-              <editor x-viewer="true">
+              <viewer><![CDATA[
+                <>
+                  {(() => {
+                    const item = (icon, color, label, value) => (
+                      <Box d="flex" alignItems="center" gap={3} p={2}
+                        style={{ minWidth: 0, borderRadius: 8, backgroundColor: "var(--bs-tertiary-bg, #f7f7f8)" }}>
+                        <Box d="flex" alignItems="center" justifyContent="center"
+                          style={{ width: 36, height: 36, borderRadius: 9, flex: "0 0 auto", backgroundColor: color + "22" }}>
+                          <Icon icon={icon} color={color} fontSize="18px"/>
+                        </Box>
+                        <Box d="flex" flexDirection="column" style={{ minWidth: 0, marginInlineStart: "0.35rem" }}>
+                          <Box as="span" style={{ fontSize: "11px", color: "#8a8a8a", textTransform: "uppercase", letterSpacing: "0.03em" }}>{label}</Box>
+                          <Box as="span" style={{ fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{value || <Box as="span" style={{ color: "#c7c7c7" }}>-</Box>}</Box>
+                        </Box>
+                      </Box>
+                    );
+                    if (!id) {
+                      return (
+                        <Box d="flex" alignItems="center" gap={3} p={2}
+                          style={{ borderRadius: 8, backgroundColor: "var(--bs-tertiary-bg, #f7f7f8)" }}>
+                          <Box d="flex" alignItems="center" justifyContent="center"
+                            style={{ width: 36, height: 36, borderRadius: 9, flex: "0 0 auto", backgroundColor: "#8a8a8a22" }}>
+                            <Icon icon="info-circle" color="#8a8a8a" fontSize="18px"/>
+                          </Box>
+                          <Box as="span" style={{ color: "#8a8a8a", marginInlineStart: "0.35rem" }}>{_t('No main employment contract selected')}</Box>
+                        </Box>
+                      );
+                    }
+                    const exec = executiveStatusSelect == 1 ? _t('Executive')
+                      : executiveStatusSelect == 2 ? _t('Non-Executive') : null;
+                    return (
+                      <Box style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "10px" }}>
+                        {item("house-fill", "#2b9cff", _t('Pay Company'), payCompany && payCompany.name)}
+                        {item("person-badge", "#10b981", _t('Executive Status'), exec)}
+                        {item("briefcase-fill", "#f5a623", _t('Employment'), employment)}
+                        {item("diagram-3-fill", "#8b5cf6", _t('Company department'), companyDepartment && companyDepartment.name)}
+                      </Box>
+                    );
+                  })()}
+                </>
+              ]]></viewer>
+              <editor>
                 <field name="payCompany" colSpan="3"/>
                 <field name="executiveStatusSelect" colSpan="3"/>
                 <field name="employment" colSpan="3"/>
