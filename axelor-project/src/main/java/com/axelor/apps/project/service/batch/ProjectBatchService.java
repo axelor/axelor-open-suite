@@ -20,9 +20,13 @@ package com.axelor.apps.project.service.batch;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.project.db.ProjectBatch;
+import com.axelor.apps.project.db.repo.ProjectBatchRepository;
 import com.axelor.db.Model;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 
 public class ProjectBatchService extends AbstractBatchService {
@@ -34,16 +38,27 @@ public class ProjectBatchService extends AbstractBatchService {
 
   @Override
   public Batch run(Model model) throws AxelorException {
-
-    Batch batch;
     ProjectBatch projectBatch = (ProjectBatch) model;
 
-    batch = removeTaskStatus(projectBatch);
-
-    return batch;
+    switch (projectBatch.getActionSelect()) {
+      case ProjectBatchRepository.ACTION_REMOVE_TASK_STATUS:
+        return removeTaskStatus(projectBatch);
+      case ProjectBatchRepository.ACTION_NOTIFY_TASKS:
+        return notifyTasks(projectBatch);
+      default:
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(BaseExceptionMessage.BASE_BATCH_1),
+            projectBatch.getActionSelect(),
+            projectBatch.getCode());
+    }
   }
 
   public Batch removeTaskStatus(ProjectBatch projectBatch) {
     return Beans.get(BatchRemoveTaskStatusService.class).run(projectBatch);
+  }
+
+  public Batch notifyTasks(ProjectBatch projectBatch) {
+    return Beans.get(BatchProjectTaskNotification.class).run(projectBatch);
   }
 }
