@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <form name="supplier-dispute-form" id="quality-supplier-dispute-form"
+    title="Supplier dispute" model="com.axelor.apps.supplychain.db.SupplierDispute" extension="true">
+    <extend target="//field[@name='stockMove']">
+      <insert position="after">
+        <field name="qualityImprovement" canEdit="false" if="__config__.app.isApp('quality')"
+          domain="self.qiIdentification.supplierPartner = :supplierPartner AND self.company = :company"
+          form-view="quality-improvement-form" grid-view="quality-improvement-grid"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-record name="action-quality-supplier-dispute-record-prefill"
+    model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <field name="qualityImprovement"
+      expr="eval: __repo__(QualityImprovement).find(_qualityImprovementId)"
+      if="_qualityImprovementId != null"/>
+  </action-record>
+
+  <action-view name="action-quality-improvement-view-supplier-disputes"
+    title="Supplier disputes" model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <view type="grid" name="supplier-dispute-grid"/>
+    <view type="form" name="supplier-dispute-form"/>
+    <domain>self.qualityImprovement.id = :_qiId</domain>
+    <context name="_qiId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-quality-improvement-view-create-supplier-dispute"
+    title="Supplier dispute" model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <view type="form" name="supplier-dispute-form"/>
+    <context name="_qualityImprovementId" expr="eval: id"/>
+    <context name="_supplierPartnerId" expr="eval: qiIdentification?.supplierPartner?.id"/>
+    <context name="_contactPartnerId" expr="eval: qiIdentification?.contact?.id"/>
+    <context name="_purchaseOrderId"
+      expr="eval: qiIdentification?.supplierPurchaseOrder?.id"/>
+    <context name="_stockMoveId" expr="eval: qiIdentification?.stockMove?.id"/>
+    <context name="_productId" expr="eval: qiIdentification?.product?.id"/>
+    <context name="_disputedQty" expr="eval: qiIdentification?.nonConformingQuantity"/>
+    <context name="_typeSelect" expr="eval: 1"/>
+  </action-view>
+
+</object-views>

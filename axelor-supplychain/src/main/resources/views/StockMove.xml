@@ -106,6 +106,21 @@
       <attribute name="onClick"
         value="action-supplychain-stock-move-method-check-qty-greater-than-remaining-qty-to-receive,action-group-stock-stockmove-realize-click"/>
     </extend>
+    <extend target="//button[@name='generateReversionBtn']">
+      <insert position="after">
+        <button name="createSupplierDisputeBtn" title="Create supplier dispute"
+          if="__config__.app.isApp('supplychain')"
+          showIf="id &amp;&amp; typeSelect == 3 &amp;&amp; !isReversion &amp;&amp; statusSelect == 3"
+          onClick="save,action-stock-move-view-create-supplier-dispute"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='linksPanel']">
+      <insert position="inside">
+        <panel-dashlet name="supplierDisputesPanel"
+          action="action-stock-move-view-supplier-disputes" title="Supplier disputes" colSpan="12"
+          showIf="typeSelect == 3"/>
+      </insert>
+    </extend>
   </form>
 
   <action-attrs name="action-stock-move-attrs-fill-ctx">

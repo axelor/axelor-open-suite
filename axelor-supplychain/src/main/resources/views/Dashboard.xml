@@ -42,5 +42,9 @@
     <view type="chart" name="chart.nbr.product.per.category"/>
   </action-view>
 
+  <action-view name="dashlet.supplier.dispute.count.per.supplier"
+    title="Supplier disputes per supplier" model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <view type="chart" name="chart.supplier.dispute.count.per.supplier"/>
+  </action-view>
 
 </object-views>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <form name="purchase-config-form" title="Purchase configuration"
+    model="com.axelor.apps.purchase.db.PurchaseConfig" id="supplychain-purchase-config-form"
+    extension="true">
+
+    <extend target="//panel[@name='printingsPanel']">
+      <insert position="after">
+        <panel name="supplierDisputesPanel" title="Supplier disputes" colSpan="12"
+          if="__config__.app.isApp('supplychain')">
+          <field name="supplierDisputeOpeningMessageTemplate"
+            domain="self.metaModel.name = 'SupplierDispute'" form-view="template-form"
+            grid-view="template-grid"/>
+          <field name="supplierDisputeAwaitingResponseMessageTemplate"
+            domain="self.metaModel.name = 'SupplierDispute'" form-view="template-form"
+            grid-view="template-grid"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>

@@ -27,6 +27,7 @@ import com.axelor.apps.supplychain.db.repo.SupplierScoreHistoryRepository;
 import com.axelor.apps.supplychain.service.SupplierScoreServiceImpl;
 import com.axelor.apps.supplychain.service.SupplierScoreTool;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.supplierdispute.SupplierDisputeIndicatorService;
 import com.axelor.db.JPA;
 import com.axelor.studio.db.AppSupplychain;
 import jakarta.inject.Inject;
@@ -46,8 +47,14 @@ public class SupplierScoreQualityServiceImpl extends SupplierScoreServiceImpl {
       SupplierScoreHistoryRepository supplierScoreHistoryRepository,
       AppSupplychainService appSupplychainService,
       AppBaseService appBaseService,
+      SupplierDisputeIndicatorService supplierDisputeIndicatorService,
       AppQualityService appQualityService) {
-    super(partnerRepository, supplierScoreHistoryRepository, appSupplychainService, appBaseService);
+    super(
+        partnerRepository,
+        supplierScoreHistoryRepository,
+        appSupplychainService,
+        appBaseService,
+        supplierDisputeIndicatorService);
     this.appQualityService = appQualityService;
   }
 

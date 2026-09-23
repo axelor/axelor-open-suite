@@ -562,6 +562,14 @@
         action="action-contract-view-generated-purchase-orders" hidden="true"
         showIf="id &amp;&amp; targetTypeSelect == 2 &amp;&amp; contractTypeSelect == 2"/>
 
+      <panel name="supplierDisputesPanel" title="Supplier disputes"
+        if="__config__.app.isApp('supplychain')" showIf="id &amp;&amp; targetTypeSelect == 2">
+        <button name="createSupplierDisputeBtn" title="Create supplier dispute" colSpan="4"
+          onClick="save,action-contract-view-create-supplier-dispute"/>
+        <panel-dashlet name="supplierDisputesDashletPanel"
+          action="action-contract-view-supplier-disputes" colSpan="12"/>
+      </panel>
+
       <panel name="contractFileListPanel" title="Files" colSpan="12">
         <field name="currentContractVersion" showTitle="false" colSpan="12"
           x-show-icons="false">
