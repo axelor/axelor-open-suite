@@ -18,19 +18,10 @@
  */
 package com.axelor.apps.quality.service;
 
-import com.axelor.apps.quality.db.ControlEntry;
-import com.axelor.rpc.Context;
+import com.axelor.apps.stock.db.StockMoveLine;
 import java.util.List;
-import java.util.Map;
 
-public interface ControlEntryService {
-  void createSamples(ControlEntry controlEntry);
+public interface StockMoveLineQualityService {
 
-  Map<String, Object> addControlEntry(Context context);
-
-  Map<String, Object> onControlPlanChange(ControlEntry controlEntry);
-
-  List<String> getOpenQualityImprovementSequences(ControlEntry controlEntry);
-
-  void finish(ControlEntry controlEntry);
+  List<String> getOpenQualityImprovementSequences(StockMoveLine stockMoveLine);
 }

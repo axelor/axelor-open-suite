@@ -61,6 +61,8 @@ import com.axelor.apps.quality.service.ControlPlanFrequencyService;
 import com.axelor.apps.quality.service.ControlPlanFrequencyServiceImpl;
 import com.axelor.apps.quality.service.ControlTypeFieldValueService;
 import com.axelor.apps.quality.service.ControlTypeFieldValueServiceImpl;
+import com.axelor.apps.quality.service.NonCompliantReceptionService;
+import com.axelor.apps.quality.service.NonCompliantReceptionServiceImpl;
 import com.axelor.apps.quality.service.QIAnalysisService;
 import com.axelor.apps.quality.service.QIAnalysisServiceImpl;
 import com.axelor.apps.quality.service.QIIdentificationService;
@@ -81,6 +83,10 @@ import com.axelor.apps.quality.service.QualityImprovementService;
 import com.axelor.apps.quality.service.QualityImprovementServiceImpl;
 import com.axelor.apps.quality.service.QualityImprovementUpdateService;
 import com.axelor.apps.quality.service.QualityImprovementUpdateServiceImpl;
+import com.axelor.apps.quality.service.QuarantineStockLocationService;
+import com.axelor.apps.quality.service.QuarantineStockLocationServiceImpl;
+import com.axelor.apps.quality.service.ReceptionQualityImprovementCancelService;
+import com.axelor.apps.quality.service.ReceptionQualityImprovementCancelServiceImpl;
 import com.axelor.apps.quality.service.RequiredDocumentDMSService;
 import com.axelor.apps.quality.service.RequiredDocumentDMSServiceImpl;
 import com.axelor.apps.quality.service.RequiredDocumentExportService;
@@ -91,6 +97,10 @@ import com.axelor.apps.quality.service.RequiredDocumentStatusService;
 import com.axelor.apps.quality.service.RequiredDocumentStatusServiceImpl;
 import com.axelor.apps.quality.service.RequiredDocumentVersionService;
 import com.axelor.apps.quality.service.RequiredDocumentVersionServiceImpl;
+import com.axelor.apps.quality.service.ReservedQtyServiceQualityImpl;
+import com.axelor.apps.quality.service.StockMoveLineQualityService;
+import com.axelor.apps.quality.service.StockMoveLineQualityServiceImpl;
+import com.axelor.apps.quality.service.StockMoveServiceQualityImpl;
 import com.axelor.apps.quality.service.SupplierScoreQualityServiceImpl;
 import com.axelor.apps.quality.service.TrackingNumberCharacteristicService;
 import com.axelor.apps.quality.service.TrackingNumberCharacteristicServiceImpl;
@@ -100,6 +110,8 @@ import com.axelor.apps.quality.service.app.AppQualityService;
 import com.axelor.apps.quality.service.app.AppQualityServiceImpl;
 import com.axelor.apps.quality.service.app.QIActionDistributionService;
 import com.axelor.apps.quality.service.app.QIActionDistributionServiceImpl;
+import com.axelor.apps.supplychain.service.ReservedQtyServiceImpl;
+import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SupplierScoreServiceImpl;
 
 public class QualityModule extends AxelorModule {
@@ -153,5 +165,12 @@ public class QualityModule extends AxelorModule {
     bind(ControlEntrySampleLineUpdateAPIService.class)
         .to(ControlEntrySampleLineUpdateAPIServiceImpl.class);
     bind(SupplierScoreServiceImpl.class).to(SupplierScoreQualityServiceImpl.class);
+    bind(QuarantineStockLocationService.class).to(QuarantineStockLocationServiceImpl.class);
+    bind(NonCompliantReceptionService.class).to(NonCompliantReceptionServiceImpl.class);
+    bind(StockMoveLineQualityService.class).to(StockMoveLineQualityServiceImpl.class);
+    bind(ReceptionQualityImprovementCancelService.class)
+        .to(ReceptionQualityImprovementCancelServiceImpl.class);
+    bind(StockMoveServiceSupplychainImpl.class).to(StockMoveServiceQualityImpl.class);
+    bind(ReservedQtyServiceImpl.class).to(ReservedQtyServiceQualityImpl.class);
   }
 }

@@ -24,4 +24,6 @@ import com.axelor.apps.quality.db.QIStatus;
 public interface QualityImprovementService {
 
   QIStatus getDefaultQIStatus() throws AxelorException;
+
+  QIStatus getCancelledQIStatus() throws AxelorException;
 }
