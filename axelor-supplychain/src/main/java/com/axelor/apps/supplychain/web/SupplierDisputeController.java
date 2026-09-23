@@ -22,6 +22,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.supplychain.db.SupplierDispute;
 import com.axelor.apps.supplychain.db.repo.SupplierDisputeRepository;
 import com.axelor.apps.supplychain.service.supplierdispute.SupplierDisputeMessageService;
+import com.axelor.apps.supplychain.service.supplierdispute.SupplierDisputePfpService;
 import com.axelor.apps.supplychain.service.supplierdispute.SupplierDisputeWorkflowService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -90,6 +91,19 @@ public class SupplierDisputeController {
               .param("forceEdit", "true")
               .context("_showRecord", String.valueOf(message.getId()))
               .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setPfpLitigationVisibility(ActionRequest request, ActionResponse response) {
+    try {
+      SupplierDispute supplierDispute = request.getContext().asType(SupplierDispute.class);
+      boolean visible =
+          supplierDispute.getId() != null
+              && Beans.get(SupplierDisputePfpService.class)
+                  .canSwitchInvoiceToLitigation(findSupplierDispute(request), request.getUser());
+      response.setAttr("pfpLitigationBtn", "hidden", !visible);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
