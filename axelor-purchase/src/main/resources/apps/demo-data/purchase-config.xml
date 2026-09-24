@@ -6,6 +6,25 @@
   <input file="studio_appPurchase.csv" separator=";" type="com.axelor.studio.db.AppPurchase"
     search="self.app.code = :code"/>
 
+  <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
+    search="self.name = :name">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="mediaTypeSelect" to="mediaTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.message.db.Template', 'mediaTypeSelect', mediaTypeSelect)"
+      check-message="Invalid mediaTypeSelect"/>
+    <bind column="templateEngineSelect" to="templateEngineSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.message.db.Template', 'templateEngineSelect', templateEngineSelect)"
+      check-message="Invalid templateEngineSelect"/>
+    <bind column="language" to="language"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.message.db.Template', 'language', language)"
+      check-message="Invalid language"/>
+    <bind column="printTemplateSet_importId" to="printTemplateSet"
+      search="self.importId in :printTemplateSet_importId"
+      eval="printTemplateSet_importId.split('\\|') as List" update="true"/>
+  </input>
+
   <input file="purchase_purchaseConfig.csv" separator=";"
     type="com.axelor.apps.purchase.db.PurchaseConfig" search="self.importId = :importId">
     <bind column="company_importId" to="company" search="self.importId = :company_importId"
@@ -142,23 +161,14 @@
       column="orderDate"/>
   </input>
 
-  <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
-    search="self.name = :name">
-    <bind column="name" to="name"
-      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
-      check-message="Name must not be null"/>
-    <bind column="mediaTypeSelect" to="mediaTypeSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.message.db.Template', 'mediaTypeSelect', mediaTypeSelect)"
-      check-message="Invalid mediaTypeSelect"/>
-    <bind column="templateEngineSelect" to="templateEngineSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.message.db.Template', 'templateEngineSelect', templateEngineSelect)"
-      check-message="Invalid templateEngineSelect"/>
-    <bind column="language" to="language"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.message.db.Template', 'language', language)"
-      check-message="Invalid language"/>
-    <bind column="printTemplateSet_importId" to="printTemplateSet"
-      search="self.importId in :printTemplateSet_importId"
-      eval="printTemplateSet_importId.split('\\|') as List" update="true"/>
+  <input file="purchase_purchaseBatch.csv" separator=";"
+    type="com.axelor.apps.purchase.db.PurchaseBatch" search="self.code = :code">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+    <bind column="actionSelect" to="actionSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.purchase.db.PurchaseBatch', 'actionSelect', actionSelect)"
+      check-message="Invalid actionSelect"/>
   </input>
 
 </csv-inputs>

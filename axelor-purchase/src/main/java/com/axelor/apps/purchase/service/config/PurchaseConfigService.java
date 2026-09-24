@@ -26,6 +26,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.purchase.db.PurchaseConfig;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.i18n.I18n;
+import com.axelor.message.db.Template;
 
 public class PurchaseConfigService {
 
@@ -52,5 +53,16 @@ public class PurchaseConfigService {
           I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
     return purchaseOrderPrintTemplate;
+  }
+
+  public Template getSupplierReminderTemplate(Company company) throws AxelorException {
+    Template template = getPurchaseConfig(company).getSupplierReminderTemplate();
+    if (template == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(PurchaseExceptionMessage.PURCHASE_SUPPLIER_REMINDER_MISSING_TEMPLATE),
+          company.getName());
+    }
+    return template;
   }
 }

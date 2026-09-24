@@ -46,6 +46,7 @@
 		public static final int BATCH_TYPE_SUPPLYCHAIN_BATCH = 900;
 		public static final int BATCH_TYPE_BUSINESS_PROJECT_BATCH = 1000;
 		public static final int BATCH_TYPE_STOCK_BATCH = 1100;
+		public static final int BATCH_TYPE_PURCHASE_BATCH = 1200;
 
 
 		// Action launch origin

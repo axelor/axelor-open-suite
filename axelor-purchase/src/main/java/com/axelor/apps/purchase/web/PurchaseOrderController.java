@@ -44,6 +44,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderViewService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
+import com.axelor.apps.purchase.service.SupplierReminderService;
 import com.axelor.apps.purchase.service.attributes.PurchaseOrderAttrsService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.apps.purchase.service.split.PurchaseOrderSplitService;
@@ -71,6 +72,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -502,6 +504,29 @@ public class PurchaseOrderController {
       }
 
       response.setValue("$totalInTaxTotal", totalInTaxTotal);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void sendSupplierReminder(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+
+      SupplierReminderService supplierReminderService = Beans.get(SupplierReminderService.class);
+      List<PurchaseOrderLine> purchaseOrderLineList =
+          supplierReminderService.getOverdueLines(purchaseOrder.getPurchaseOrderLineList());
+
+      if (CollectionUtils.isEmpty(purchaseOrderLineList)) {
+        response.setInfo(
+            I18n.get(PurchaseExceptionMessage.PURCHASE_SUPPLIER_REMINDER_NO_OVERDUE_LINES));
+        return;
+      }
+
+      supplierReminderService.sendReminders(purchaseOrderLineList);
+      response.setInfo(I18n.get("Supplier reminder email sent successfully."));
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

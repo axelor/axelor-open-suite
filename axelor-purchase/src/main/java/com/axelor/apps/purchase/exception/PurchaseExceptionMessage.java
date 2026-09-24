@@ -159,4 +159,19 @@ public final class PurchaseExceptionMessage {
 
   public static final String TENDER_REPORT_CONFIG_NO_FIELD_SELECTED = /*$$(*/
       "Please select at least one field." /*)*/;
+
+  public static final String PURCHASE_SUPPLIER_REMINDER_MISSING_TEMPLATE = /*$$(*/
+      "No supplier reminder email template is configured for company %s. Please configure it in Purchase configuration." /*)*/;
+
+  public static final String PURCHASE_SUPPLIER_REMINDER_MISSING_EMAIL = /*$$(*/
+      "Supplier %s has no email address configured. Cannot send reminder for purchase order %s." /*)*/;
+
+  public static final String PURCHASE_SUPPLIER_REMINDER_NO_OVERDUE_LINES = /*$$(*/
+      "No overdue purchase order lines found to send a reminder for." /*)*/;
+
+  public static final String PURCHASE_SUPPLIER_REMINDER_NO_LINES_SELECTED = /*$$(*/
+      "Please select at least one purchase order line." /*)*/;
+
+  public static final String PURCHASE_SUPPLIER_REMINDER_BATCH_REPORT = /*$$(*/
+      "%s reminder email(s) sent, %s anomaly(ies)." /*)*/;
 }
