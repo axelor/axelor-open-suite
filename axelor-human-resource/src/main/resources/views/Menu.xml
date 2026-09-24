@@ -465,6 +465,13 @@
     <call class="com.axelor.apps.hr.web.leave.LeaveController" method="historicLeave"/>
   </action-method>
 
+  <menuitem name="leave-request-all" parent="leave-request-root" title="All leave requests"
+    action="leave.request.all" order="450"/>
+
+  <action-method name="leave.request.all">
+    <call class="com.axelor.apps.hr.web.leave.LeaveController" method="allLeave"/>
+  </action-method>
+
   <menuitem name="leave-request-root-leave-calendar" parent="leave-request-root"
     title="Leaves calendar" action="action.leave.request.method.leave.calendar" order="500"/>
 
