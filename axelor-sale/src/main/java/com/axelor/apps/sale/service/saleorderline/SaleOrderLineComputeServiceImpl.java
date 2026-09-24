@@ -141,6 +141,7 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
         saleOrderLineCostPriceComputeService.computeSubTotalCostPrice(
             saleOrder, saleOrderLine, product));
     map.putAll(setProductIconType(saleOrderLine, product));
+    saleOrderLineCostPriceComputeService.computeTotalCost(saleOrder, saleOrderLine);
 
     saleOrderLine.setInTaxTotal(inTaxTotal);
     saleOrderLine.setExTaxTotal(exTaxTotal);
