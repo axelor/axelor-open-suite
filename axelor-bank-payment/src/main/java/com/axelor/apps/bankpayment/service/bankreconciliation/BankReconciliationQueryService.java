@@ -25,6 +25,16 @@ import java.util.Map;
 public interface BankReconciliationQueryService {
   String getRequestMoveLines();
 
+  /**
+   * Builds the move line filter for the reconciliation dashlet.
+   *
+   * @param onlyReconciledOnPeriod when true, returns only the move lines already reconciled (at
+   *     least partially) within the reconciliation period, always restricted to the period even if
+   *     "include other bank statements" is enabled. When false, returns the move lines still to
+   *     reconcile (default behaviour).
+   */
+  String getRequestMoveLines(boolean onlyReconciledOnPeriod);
+
   Map<String, Object> getBindRequestMoveLine(BankReconciliation bankReconciliation)
       throws AxelorException;
 }

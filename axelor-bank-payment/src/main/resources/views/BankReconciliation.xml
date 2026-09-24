@@ -76,9 +76,6 @@
         <button name="autoAccounting" title="Auto accounting" readonlyIf="statusSelect == 2"
           showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0" colSpan="3"
           onClick="action-bank-reconciliation-method-auto-accounting"/>
-        <button name="showReconciledMoveLineBtn" title="Show reconciled move lines"
-          showIf="bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length &gt; 0"
-          colSpan="3" onClick="action-bank-reconciliation-view-show-reconciled-move-lines"/>
       </panel>
     </panel>
     <panel name="bankReconciliationPanel" title="Bank reconciliation" colSpan="12"
@@ -118,6 +115,9 @@
         title="Selection total for unreconciliated move lines" css="label-bold" colSpan="2"/>
       <field name="$selectionUnreconciledMoveLines" readonly="true" showTitle="false"
         colSpan="2" css="bold"/>
+      <field name="$showAlreadyBankReconciledOnPeriodMoveLines" type="boolean"
+        title="Display accounting entries already reconciled on the period" colSpan="4"
+        onChange="action-bank-reconciliation-attrs-refresh-unreconciled-move-lines"/>
 
       <panel-dashlet name="showUnreconciledMoveLinesPanel"
         title="Accounting Move Line(s) to reconcile" colSpan="12" canSearch="true" height="380"
@@ -321,17 +321,10 @@
       method="showUnreconciledMoveLines"/>
   </action-method>
 
-  <action-view name="action-bank-reconciliation-view-show-reconciled-move-lines"
-    title="Reconciled move lines" model="com.axelor.apps.account.db.MoveLine">
-    <view type="grid" name="move-line-bank-reconciliation-grid"/>
-    <view type="form" name="move-line-form"/>
-    <domain>self.move.id in (select ML.move.id from BankReconciliationLine as BRL left join
-      BRL.moveLine as ML where BRL.bankReconciliation.id = :bankReconciliationId) OR
-      (self.moveLineReconciledNbr IS NOT NULL AND self.moveLineReconciledNbr != '' AND
-      self.move.company.id = :companyId)</domain>
-    <context name="bankReconciliationId" expr="eval: id"/>
-    <context name="companyId" expr="eval: company?.id"/>
-  </action-view>
+  <action-attrs name="action-bank-reconciliation-attrs-refresh-unreconciled-move-lines"
+    model="com.axelor.apps.bankpayment.db.BankReconciliation">
+    <attribute for="showUnreconciledMoveLinesPanel" name="refresh" expr="eval: true"/>
+  </action-attrs>
 
   <action-view name="action-bank-reconciliation-view-multiple-reconcile-wizard"
     title="Multiple reconciles" model="com.axelor.apps.bankpayment.db.BankReconciliation">
