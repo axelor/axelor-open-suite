@@ -29,7 +29,6 @@ import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
-import com.google.inject.servlet.RequestScoped;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -41,7 +40,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-@RequestScoped
 public class ManufOrderComputeServiceImpl implements ManufOrderComputeService {
 
   protected ProductStockLocationService productStockLocationService;

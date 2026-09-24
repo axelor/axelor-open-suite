@@ -95,7 +95,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   protected ManufOrderRepository manufOrderRepo;
   protected ProdProductRepository prodProductRepo;
   protected ProductCompanyService productCompanyService;
-  protected ManufOrderStockLocationQueryService manufOrderStockLocationQueryService;
   protected UnitConversionService unitConversionService;
   protected BillOfMaterialService billOfMaterialService;
   protected StockMoveService stockMoveService;
@@ -116,7 +115,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       ManufOrderRepository manufOrderRepo,
       ProdProductRepository prodProductRepo,
       ProductCompanyService productCompanyService,
-      ManufOrderStockLocationQueryService manufOrderStockLocationQueryService,
       UnitConversionService unitConversionService,
       BillOfMaterialService billOfMaterialService,
       StockMoveService stockMoveService,
@@ -134,7 +132,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.manufOrderRepo = manufOrderRepo;
     this.prodProductRepo = prodProductRepo;
     this.productCompanyService = productCompanyService;
-    this.manufOrderStockLocationQueryService = manufOrderStockLocationQueryService;
     this.unitConversionService = unitConversionService;
     this.billOfMaterialService = billOfMaterialService;
     this.stockMoveService = stockMoveService;

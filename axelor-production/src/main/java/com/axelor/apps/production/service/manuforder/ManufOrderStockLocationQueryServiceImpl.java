@@ -123,7 +123,7 @@ public class ManufOrderStockLocationQueryServiceImpl
     return query;
   }
 
-  private List<Integer> getMOFiltersOnProductionConfig() {
+  protected List<Integer> getMOFiltersOnProductionConfig() {
     List<Integer> statusList = new ArrayList<>();
     statusList.add(ManufOrderRepository.STATUS_IN_PROGRESS);
     statusList.add(ManufOrderRepository.STATUS_STANDBY);
