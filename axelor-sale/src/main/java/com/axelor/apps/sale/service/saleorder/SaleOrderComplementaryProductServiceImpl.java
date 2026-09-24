@@ -152,7 +152,8 @@ public class SaleOrderComplementaryProductServiceImpl
               .multiply(compProductSelected.getQty())
               .setScale(appSaleService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
 
-      saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, newSoLine);
+      saleOrderLineOnProductChangeService.computeLineFromProduct(
+          saleOrder, newSoLine, parentSaleOrderLine);
       return;
     }
     if (compProductSelected.getIsSelected()) {
@@ -170,7 +171,8 @@ public class SaleOrderComplementaryProductServiceImpl
               .getQty()
               .multiply(compProductSelected.getQty())
               .setScale(appSaleService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
-      saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, newSoLine);
+      saleOrderLineOnProductChangeService.computeLineFromProduct(
+          saleOrder, newSoLine, parentSaleOrderLine);
 
       newSoLine.setParentId(originSoLine.getManualId());
 

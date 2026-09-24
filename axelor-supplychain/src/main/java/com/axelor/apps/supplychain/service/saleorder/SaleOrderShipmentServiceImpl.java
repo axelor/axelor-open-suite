@@ -141,7 +141,7 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
     shippingCostLine.setSaleOrder(saleOrder);
     shippingCostLine.setMainSaleOrder(saleOrder);
     shippingCostLine.setProduct(shippingCostProduct);
-    saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, shippingCostLine);
+    saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, shippingCostLine, null);
     return shippingCostLine;
   }
 

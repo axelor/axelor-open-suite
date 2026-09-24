@@ -73,7 +73,7 @@ public class SaleOrderLineCommercialBomServiceImpl implements SaleOrderLineComme
 
       // Fires the SaleOrderLineProductOnChange CDI event, triggering all observers including
       // supplychain (managedInStockMove, saleSupplySelect, analyticMap, etc.)
-      saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, subLine);
+      saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, subLine, parentLine);
 
       subLine.setQty(bom.getQty());
       subLine.setUnit(bom.getUnit() != null ? bom.getUnit() : bom.getProduct().getUnit());

@@ -105,7 +105,7 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine, null);
     checkProduct(saleOrder, saleOrderLine, product);
     saleOrderLine.setProduct(product);
-    saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
+    saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine, null);
 
     saleOrderLineRepository.save(saleOrderLine);
 
