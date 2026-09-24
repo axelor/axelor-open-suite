@@ -77,8 +77,8 @@
           showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0" colSpan="3"
           onClick="action-bank-reconciliation-method-auto-accounting"/>
         <button name="showReconciledMoveLineBtn" title="Show reconciled move lines"
-          showIf="statusSelect == 2" colSpan="3"
-          onClick="action-bank-reconciliation-view-show-reconciled-move-lines"/>
+          showIf="bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length &gt; 0"
+          colSpan="3" onClick="action-bank-reconciliation-view-show-reconciled-move-lines"/>
       </panel>
     </panel>
     <panel name="bankReconciliationPanel" title="Bank reconciliation" colSpan="12"
