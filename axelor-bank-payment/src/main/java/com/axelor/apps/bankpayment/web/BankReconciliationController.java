@@ -457,14 +457,22 @@ public class BankReconciliationController {
       }
 
       actionViewBuilder.add("form", "move-line-form");
-      BigDecimal selectedLinesBalance =
-          Beans.get(BankReconciliationSelectedLineComputationService.class)
-              .computeBankReconciliationLinesSelection(bankReconciliation);
-      BigDecimal credit =
-          selectedLinesBalance.signum() > 0 ? selectedLinesBalance : BigDecimal.ZERO;
-      BigDecimal debit =
-          selectedLinesBalance.signum() < 0 ? selectedLinesBalance.abs() : BigDecimal.ZERO;
-      actionViewBuilder.domain(bankReconciliationQueryService.getRequestMoveLines(credit, debit));
+      boolean showAlreadyReconciledOnPeriod =
+          Boolean.TRUE.equals(
+              request.getContext().get("showAlreadyBankReconciledOnPeriodMoveLines"));
+      if (showAlreadyReconciledOnPeriod) {
+        actionViewBuilder.domain(bankReconciliationQueryService.getRequestMoveLines(true));
+      } else {
+        BigDecimal selectedLinesBalance =
+            Beans.get(BankReconciliationSelectedLineComputationService.class)
+                .computeBankReconciliationLinesSelection(bankReconciliation);
+        BigDecimal credit =
+            selectedLinesBalance.signum() > 0 ? selectedLinesBalance : BigDecimal.ZERO;
+        BigDecimal debit =
+            selectedLinesBalance.signum() < 0 ? selectedLinesBalance.abs() : BigDecimal.ZERO;
+        actionViewBuilder.domain(
+            bankReconciliationQueryService.getRequestMoveLines(credit, debit));
+      }
       if (bankReconciliation.getCompany() == null) {
         return;
       }
