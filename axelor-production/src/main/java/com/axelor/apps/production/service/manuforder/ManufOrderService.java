@@ -30,22 +30,12 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 public interface ManufOrderService {
 
   public static int DEFAULT_PRIORITY = 2;
   public static int DEFAULT_PRIORITY_INTERVAL = 10;
   public static boolean IS_TO_INVOICE = false;
-
-  /**
-   * This method check if operation orders regardless of manufOrder. If manufOrder is outsourced,
-   * the method will return false as they are outsourced because of manufOrder.
-   *
-   * @param manufOrder
-   * @return true if lines are outsourced regardless of manufOrder, else false.
-   */
-  boolean areLinesOutsourced(ManufOrder manufOrder);
 
   void setOperationOrdersOutsourcing(ManufOrder manufOrder);
 
@@ -168,25 +158,6 @@ public interface ManufOrderService {
       throws AxelorException;
 
   /**
-   * Create a query to find product's consume and missing qty of a specific/all company and a
-   * specific/all stock location in a Manuf Order
-   *
-   * @param productId, companyId and stockLocationId
-   * @return the query.
-   */
-  public String getConsumeAndMissingQtyForAProduct(
-      Long productId, Long companyId, Long stockLocationId);
-
-  /**
-   * Create a query to find product's building qty of a specific/all company and a specific/all
-   * stock location in a Manuf Order
-   *
-   * @param productId, companyId and stockLocationId
-   * @return the query.
-   */
-  public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId);
-
-  /**
    * Merge different manufacturing orders into a single one.
    *
    * @param ids List of ids of manufacturing orders to merge
@@ -201,8 +172,6 @@ public interface ManufOrderService {
    */
   public boolean canMerge(List<Long> ids);
 
-  public BigDecimal computeProducibleQty(ManufOrder manufOrder) throws AxelorException;
-
   /**
    * Method that will update planned dates of manuf order. Unlike the other methods, this will not
    * reset planned dates of the operation orders of the manuf order. This method must be called when
@@ -213,7 +182,4 @@ public interface ManufOrderService {
   public void updatePlannedDates(ManufOrder manufOrder);
 
   void checkApplicableManufOrder(ManufOrder manufOrder) throws AxelorException;
-
-  public Map<Product, BigDecimal> getMissingComponents(ManufOrder manufOrder)
-      throws AxelorException;
 }

@@ -223,6 +223,8 @@ import com.axelor.apps.production.service.machine.MachineService;
 import com.axelor.apps.production.service.machine.MachineServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCheckStockMoveLineServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderComputeService;
+import com.axelor.apps.production.service.manuforder.ManufOrderComputeServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderConformityDeclarationPrintService;
 import com.axelor.apps.production.service.manuforder.ManufOrderConformityDeclarationPrintServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateBarcodeService;
@@ -261,6 +263,8 @@ import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderSetStockMoveLineService;
 import com.axelor.apps.production.service.manuforder.ManufOrderSetStockMoveLineServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderStockLocationQueryService;
+import com.axelor.apps.production.service.manuforder.ManufOrderStockLocationQueryServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderTrackingNumberService;
@@ -568,5 +572,8 @@ public class ProductionModule extends AxelorModule {
     bind(DepRateCalculationService.class).to(DepRateCalculationServiceImpl.class);
     bind(DepRateCalculationProductService.class).to(DepRateCalculationProductServiceImpl.class);
     bind(DepRateCalculationCsvService.class).to(DepRateCalculationCsvServiceImpl.class);
+    bind(ManufOrderComputeService.class).to(ManufOrderComputeServiceImpl.class);
+    bind(ManufOrderStockLocationQueryService.class)
+        .to(ManufOrderStockLocationQueryServiceImpl.class);
   }
 }

@@ -55,17 +55,12 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.utils.JpaModelHelper;
-import com.axelor.apps.supplychain.service.ProductStockLocationService;
-import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
@@ -79,15 +74,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,7 +95,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   protected ManufOrderRepository manufOrderRepo;
   protected ProdProductRepository prodProductRepo;
   protected ProductCompanyService productCompanyService;
-  protected ProductStockLocationService productStockLocationService;
   protected UnitConversionService unitConversionService;
   protected BillOfMaterialService billOfMaterialService;
   protected StockMoveService stockMoveService;
@@ -126,7 +115,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       ManufOrderRepository manufOrderRepo,
       ProdProductRepository prodProductRepo,
       ProductCompanyService productCompanyService,
-      ProductStockLocationService productStockLocationService,
       UnitConversionService unitConversionService,
       BillOfMaterialService billOfMaterialService,
       StockMoveService stockMoveService,
@@ -144,7 +132,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.manufOrderRepo = manufOrderRepo;
     this.prodProductRepo = prodProductRepo;
     this.productCompanyService = productCompanyService;
-    this.productStockLocationService = productStockLocationService;
     this.unitConversionService = unitConversionService;
     this.billOfMaterialService = billOfMaterialService;
     this.stockMoveService = stockMoveService;
@@ -152,16 +139,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
-  }
-
-  @Override
-  public boolean areLinesOutsourced(ManufOrder manufOrder) {
-
-    List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
-    if (manufOrder.getOutsourcing() || CollectionUtils.isEmpty(operationOrderList)) {
-      return false;
-    }
-    return operationOrderList.stream().anyMatch(OperationOrder::getOutsourcing);
   }
 
   @Override
@@ -708,99 +685,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     return consumedQty.subtract(prodProduct.getQty());
   }
 
-  @Override
-  public String getConsumeAndMissingQtyForAProduct(
-      Long productId, Long companyId, Long stockLocationId) {
-    List<Integer> statusList = getMOFiltersOnProductionConfig();
-    String statusListQuery =
-        statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
-    String query =
-        "(self.product.id = "
-            + productId
-            + " OR self.product.parentProduct.id = "
-            + productId
-            + ") AND self.stockMove.statusSelect = "
-            + StockMoveRepository.STATUS_PLANNED
-            + " AND self.fromStockLocation.typeSelect != "
-            + StockLocationRepository.TYPE_VIRTUAL
-            + " AND ( (self.consumedManufOrder IS NOT NULL AND self.consumedManufOrder.statusSelect IN ("
-            + statusListQuery
-            + "))"
-            + " OR (self.consumedOperationOrder IS NOT NULL AND self.consumedOperationOrder.statusSelect IN ( "
-            + statusListQuery
-            + ") ) ) ";
-    if (companyId != 0L) {
-      query += " AND self.stockMove.company.id = " + companyId;
-      if (stockLocationId != 0L) {
-        if (stockLocationId != 0L) {
-          StockLocation stockLocation =
-              Beans.get(StockLocationRepository.class).find(stockLocationId);
-          List<StockLocation> stockLocationList =
-              Beans.get(StockLocationService.class)
-                  .getAllLocationAndSubLocation(stockLocation, false);
-          if (!stockLocationList.isEmpty()
-              && stockLocation.getCompany().getId().equals(companyId)) {
-            query +=
-                " AND self.fromStockLocation.id IN ("
-                    + StringHelper.getIdListString(stockLocationList)
-                    + ") ";
-          }
-        }
-      }
-    }
-
-    return query;
-  }
-
-  @Override
-  public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId) {
-    List<Integer> statusList = getMOFiltersOnProductionConfig();
-    String statusListQuery =
-        statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
-    String query =
-        "(self.product.id = "
-            + productId
-            + " OR self.product.parentProduct.id = "
-            + productId
-            + ") AND self.stockMove.statusSelect = "
-            + StockMoveRepository.STATUS_PLANNED
-            + " AND self.stockMove.toStockLocation.typeSelect != "
-            + StockLocationRepository.TYPE_VIRTUAL
-            + " AND self.producedManufOrder IS NOT NULL "
-            + " AND self.producedManufOrder.statusSelect IN ( "
-            + statusListQuery
-            + " )";
-    if (companyId != 0L) {
-      query += "AND self.stockMove.company.id = " + companyId;
-      if (stockLocationId != 0L) {
-        StockLocation stockLocation =
-            Beans.get(StockLocationRepository.class).find(stockLocationId);
-        List<StockLocation> stockLocationList =
-            Beans.get(StockLocationService.class)
-                .getAllLocationAndSubLocation(stockLocation, false);
-        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
-          query +=
-              " AND self.stockMove.toStockLocation.id IN ("
-                  + StringHelper.getIdListString(stockLocationList)
-                  + ") ";
-        }
-      }
-    }
-
-    return query;
-  }
-
-  private List<Integer> getMOFiltersOnProductionConfig() {
-    List<Integer> statusList = new ArrayList<>();
-    statusList.add(ManufOrderRepository.STATUS_IN_PROGRESS);
-    statusList.add(ManufOrderRepository.STATUS_STANDBY);
-    String status = appProductionService.getAppProduction().getmOFilterOnStockDetailStatusSelect();
-    if (!StringUtils.isBlank(status)) {
-      statusList = StringHelper.getIntegerList(status);
-    }
-    return statusList;
-  }
-
   @Transactional(rollbackOn = {Exception.class})
   public void merge(List<Long> ids) throws AxelorException {
     if (!canMerge(ids)) {
@@ -1010,55 +894,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     return true;
   }
 
-  @Override
-  public BigDecimal computeProducibleQty(ManufOrder manufOrder) throws AxelorException {
-    Company company = manufOrder.getCompany();
-    BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
-
-    if (company == null
-        || billOfMaterial == null
-        || billOfMaterial.getQty().compareTo(BigDecimal.ZERO) <= 0
-        || CollectionUtils.isEmpty(billOfMaterial.getBillOfMaterialLineList())) {
-      return BigDecimal.ZERO;
-    }
-
-    BigDecimal producibleQty = null;
-    BigDecimal bomQty = billOfMaterial.getQty();
-
-    for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
-      if (billOfMaterialLine.getHasNoManageStock()) {
-        continue;
-      }
-      Product product = billOfMaterialLine.getProduct();
-      BigDecimal availableQty = productStockLocationService.getAvailableQty(product, company, null);
-      BigDecimal qtyNeeded = billOfMaterialLine.getQty();
-      Unit bomLineUnit = billOfMaterialLine.getUnit();
-      Unit productUnit = product.getUnit();
-      if (productUnit != null && bomLineUnit != null && !bomLineUnit.equals(productUnit)) {
-        availableQty =
-            unitConversionService.convert(
-                productUnit,
-                bomLineUnit,
-                availableQty,
-                appBaseService.getNbDecimalDigitForQty(),
-                product);
-      }
-      if (availableQty.compareTo(BigDecimal.ZERO) >= 0
-          && qtyNeeded.compareTo(BigDecimal.ZERO) > 0) {
-        BigDecimal qtyToUse = availableQty.divideToIntegralValue(qtyNeeded);
-        producibleQty = producibleQty == null ? qtyToUse : producibleQty.min(qtyToUse);
-      }
-    }
-
-    producibleQty =
-        producibleQty == null
-            ? BigDecimal.ZERO
-            : producibleQty
-                .multiply(bomQty)
-                .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
-    return producibleQty;
-  }
-
   /**
    * Method that will update planned dates of manuf order. Unlike the other methods, this will not
    * reset planned dates of the operation orders of the manuf order. This method must be called when
@@ -1085,56 +920,5 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(ProductionExceptionMessage.CHECK_BOM_AND_PROD_PROCESS));
     }
-  }
-
-  @Override
-  public Map<Product, BigDecimal> getMissingComponents(ManufOrder manufOrder)
-      throws AxelorException {
-    Map<Product, BigDecimal> missingProductsMap = new HashMap<>();
-    Company company = manufOrder.getCompany();
-    BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
-
-    if (company == null
-        || billOfMaterial == null
-        || billOfMaterial.getQty().compareTo(BigDecimal.ZERO) <= 0
-        || CollectionUtils.isEmpty(billOfMaterial.getBillOfMaterialLineList())) {
-      return missingProductsMap;
-    }
-
-    BigDecimal bomQty = billOfMaterial.getQty();
-    BigDecimal qty = manufOrder.getQty();
-
-    Map<Product, Pair<BigDecimal, Unit>> bomLineMap =
-        billOfMaterial.getBillOfMaterialLineList().stream()
-            .filter(bomLine -> !bomLine.getHasNoManageStock())
-            .collect(
-                Collectors.toMap(
-                    BillOfMaterialLine::getProduct,
-                    line -> Pair.of(line.getQty(), line.getUnit()),
-                    (x, y) -> Pair.of(x.getLeft().add(y.getLeft()), x.getRight())));
-
-    for (Entry<Product, Pair<BigDecimal, Unit>> billOfMaterialLine : bomLineMap.entrySet()) {
-      Product product = billOfMaterialLine.getKey();
-      BigDecimal bomLineQty = billOfMaterialLine.getValue().getLeft();
-      Unit bomLineUnit = billOfMaterialLine.getValue().getRight();
-      BigDecimal availableQty = productStockLocationService.getAvailableQty(product, company, null);
-      availableQty =
-          unitConversionService.convert(
-              product.getUnit(), bomLineUnit, availableQty, availableQty.scale(), product);
-      BigDecimal qtyNeeded =
-          qty.multiply(bomLineQty)
-              .divide(bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
-
-      if (availableQty.compareTo(BigDecimal.ZERO) >= 0
-          && qtyNeeded.compareTo(BigDecimal.ZERO) > 0
-          && qtyNeeded.compareTo(availableQty) > 0) {
-        BigDecimal missingQty =
-            qtyNeeded
-                .subtract(availableQty)
-                .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
-        missingProductsMap.put(product, missingQty);
-      }
-    }
-    return missingProductsMap;
   }
 }
