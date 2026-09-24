@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentScheduleLine;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
@@ -111,6 +112,10 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
     } else if (model instanceof Reimbursement) {
 
       return ((Reimbursement) model).getRef();
+
+    } else if (model instanceof PaymentVoucher) {
+
+      return ((PaymentVoucher) model).getRef();
     }
     return null;
   }
@@ -140,6 +145,10 @@ public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginServic
     } else if (model instanceof Reimbursement) {
 
       return null;
+
+    } else if (model instanceof PaymentVoucher) {
+
+      return ((PaymentVoucher) model).getPaymentDate();
     }
     return null;
   }

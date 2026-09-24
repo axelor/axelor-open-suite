@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCustAccountService;
@@ -57,6 +58,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Singleton
@@ -67,10 +69,11 @@ public class InvoicePaymentController {
 
     invoicePayment = Beans.get(InvoicePaymentRepository.class).find(invoicePayment.getId());
     try {
-      Move move = invoicePayment.getMove();
+      Long moveId = Optional.ofNullable(invoicePayment.getMove()).map(Move::getId).orElse(null);
       Beans.get(InvoicePaymentCancelService.class).cancel(invoicePayment);
-      if (ObjectUtils.notEmpty(move)) {
-        Beans.get(MoveCustAccountService.class).updateCustomerAccount(move);
+      if (moveId != null) {
+        Beans.get(MoveCustAccountService.class)
+            .updateCustomerAccount(Beans.get(MoveRepository.class).find(moveId));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

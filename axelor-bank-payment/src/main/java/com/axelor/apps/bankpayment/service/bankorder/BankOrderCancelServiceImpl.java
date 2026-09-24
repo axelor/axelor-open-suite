@@ -67,6 +67,7 @@ public class BankOrderCancelServiceImpl implements BankOrderCancelService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelBankOrder(BankOrder bankOrder) throws AxelorException {
     bankOrder = this.cancelPayment(bankOrder);
 

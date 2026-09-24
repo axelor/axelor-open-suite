@@ -21,7 +21,9 @@ package com.axelor.apps.bankpayment.service.bankorder;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.bankpayment.db.BankOrder;
@@ -197,5 +199,63 @@ public class BankOrderCreateService {
     }
 
     return invoice.getCompany().getDefaultBankDetails();
+  }
+
+  /**
+   * Method to create a bank order for a payment voucher
+   *
+   * @param paymentVoucher A payment voucher
+   * @throws AxelorException
+   */
+  public BankOrder createBankOrder(PaymentVoucher paymentVoucher) throws AxelorException {
+    Company company = paymentVoucher.getCompany();
+    PaymentMode paymentMode = paymentVoucher.getPaymentMode();
+    Partner partner = paymentVoucher.getPartner();
+    BigDecimal amount = paymentVoucher.getPaidAmount();
+    Currency currency = paymentVoucher.getCurrency();
+    LocalDate paymentDate = paymentVoucher.getPaymentDate();
+
+    BankDetails companyBankDetails =
+        paymentVoucher.getCompanyBankDetails() != null
+            ? paymentVoucher.getCompanyBankDetails()
+            : company.getDefaultBankDetails();
+
+    BankOrder bankOrder =
+        this.createBankOrder(
+            paymentMode,
+            getPaymentVoucherPartnerType(paymentVoucher),
+            paymentDate,
+            company,
+            companyBankDetails,
+            currency,
+            paymentVoucher.getRef(),
+            null,
+            BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            BankOrderRepository.FUNCTIONAL_ORIGIN_PAYMENT_VOUCHER,
+            paymentMode.getAccountingTriggerSelect());
+
+    BankOrderLine bankOrderLine =
+        bankOrderLineService.createBankOrderLine(
+            paymentMode.getBankOrderFileFormat(),
+            partner,
+            amount,
+            currency,
+            paymentDate,
+            paymentVoucher.getRef(),
+            null,
+            paymentVoucher);
+    bankOrder.addBankOrderLineListItem(bankOrderLine);
+    paymentVoucher.setBankOrder(bankOrder);
+
+    return bankOrderRepository.save(bankOrder);
+  }
+
+  protected int getPaymentVoucherPartnerType(PaymentVoucher paymentVoucher) {
+    int operationType = paymentVoucher.getOperationTypeSelect();
+    if (operationType == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || operationType == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+      return BankOrderRepository.PARTNER_TYPE_SUPPLIER;
+    }
+    return BankOrderRepository.PARTNER_TYPE_CUSTOMER;
   }
 }

@@ -19,8 +19,9 @@
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.base.AxelorException;
 
 public interface PaymentVoucherCancelService {
 
-  public PaymentVoucher cancelPaymentVoucher(PaymentVoucher paymentVoucher);
+  public PaymentVoucher cancelPaymentVoucher(PaymentVoucher paymentVoucher) throws AxelorException;
 }
