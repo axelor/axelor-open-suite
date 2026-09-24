@@ -920,4 +920,10 @@
     <option value="services">Services invoice</option>
     <option value="mixed">Mixed invoice</option>
   </selection>
+
+  <selection name="account.deposit.slip.status.select">
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="yellow">Edited</option>
+    <option value="3" color="green">Validated</option>
+  </selection>
 </object-views>
