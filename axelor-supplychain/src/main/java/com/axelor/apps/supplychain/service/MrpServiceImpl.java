@@ -1584,6 +1584,8 @@ public class MrpServiceImpl implements MrpService {
   protected Mrp completeProjectedStock(
       Mrp mrp, Product product, Company company, StockLocation stockLocation)
       throws AxelorException {
+    reset(mrpRepository.find(mrp.getId()));
+    this.startMrp(mrpRepository.find(mrp.getId()));
     this.mrp = mrp;
     mrp.addProductSetItem(product);
     if (stockLocation != null) {
@@ -1605,8 +1607,6 @@ public class MrpServiceImpl implements MrpService {
               .filter("self.typeSelect != ?1", StockLocationRepository.TYPE_VIRTUAL)
               .fetch();
     }
-    reset(mrpRepository.find(mrp.getId()));
-    this.startMrp(mrpRepository.find(mrp.getId()));
     this.assignProductAndLevel(this.getProductList());
 
     // Get the stock for each product on each stock location
