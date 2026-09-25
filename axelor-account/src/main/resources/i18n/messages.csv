@@ -3696,6 +3696,7 @@
 "You can define the codification method for customer/supplier/employee accounts. If you choose No automatic creation, codification will be done manually for each account. If you choose Use a prefix, you can define a prefix that will be used automatically to codify accounts. If you choose Use a sequence, you can select a sequence that will be used for automatic codification of these accounts.",,,
 "You can indicate here the authorized amount for reconciliation gap tolerance.",,,
 "You can only cancel a drafted or validated invoice.",,,
+"You can only generate a credit note from a ventilated invoice.",,,
 "You can only return to the draft status from a cancelled invoice.",,,
 "You can only validate a drafted invoice.",,,
 "You can only ventilate a validated invoice",,,
