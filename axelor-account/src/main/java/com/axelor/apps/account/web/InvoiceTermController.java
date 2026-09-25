@@ -308,15 +308,11 @@ public class InvoiceTermController {
       Beans.get(InvoiceTermPfpValidateService.class)
           .initPftPartialValidation(originalInvoiceTerm, grantedAmount, partialReason);
 
-      Boolean fromInvoiceTerm =
-          request.getContext().get("fromInvoiceTerm") != null
-              && (Boolean) request.getContext().get("fromInvoiceTerm");
-      if (fromInvoiceTerm) {
-        Beans.get(InvoiceTermPfpService.class)
-            .generateInvoiceTermsAfterPfpPartial(List.of(originalInvoiceTerm));
-      }
+      Beans.get(InvoiceTermPfpService.class)
+          .generateInvoiceTermsAfterPfpPartial(List.of(originalInvoiceTerm));
 
       response.setCanClose(true);
+      response.setSignal("refresh-tab", null);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
