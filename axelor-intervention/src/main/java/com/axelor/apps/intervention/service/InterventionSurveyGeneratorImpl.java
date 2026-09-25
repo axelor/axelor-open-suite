@@ -69,7 +69,6 @@ import jakarta.persistence.criteria.Root;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -373,6 +372,8 @@ public class InterventionSurveyGeneratorImpl implements InterventionSurveyGenera
             .all()
             .filter("self.rangeVal.id = :rangeId")
             .bind("rangeId", rangeId)
+            .order("orderSeq")
+            .order("id")
             .fetchStream()
             .map(RangeQuestion::getId)
             .collect(Collectors.toList());
@@ -444,12 +445,11 @@ public class InterventionSurveyGeneratorImpl implements InterventionSurveyGenera
             .all()
             .filter("self.id in :ids")
             .bind("ids", rangeQuestionIds)
+            .order("orderSeq")
+            .order("id")
             .fetch();
     if (CollectionUtils.isNotEmpty(rangeQuestions)) {
-      for (RangeQuestion rangeQuestion :
-          rangeQuestions.stream()
-              .sorted(Comparator.comparing(RangeQuestion::getOrderSeq))
-              .collect(Collectors.toList())) {
+      for (RangeQuestion rangeQuestion : rangeQuestions) {
         generateOrUpdateInterventionQuestion(equipment, intervention, rangeQuestion);
       }
     }
