@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -47,6 +49,8 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
 
   protected static class CommonFieldsSupplyChainImpl extends CommonFieldsImpl {
     private StockLocation commonStockLocation = null;
+    private PaymentMode commonPaymentMode = null;
+    private PaymentCondition commonPaymentCondition = null;
 
     public StockLocation getCommonStockLocation() {
       return commonStockLocation;
@@ -55,11 +59,29 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
     public void setCommonStockLocation(StockLocation commonStockLocation) {
       this.commonStockLocation = commonStockLocation;
     }
+
+    public PaymentMode getCommonPaymentMode() {
+      return commonPaymentMode;
+    }
+
+    public void setCommonPaymentMode(PaymentMode commonPaymentMode) {
+      this.commonPaymentMode = commonPaymentMode;
+    }
+
+    public PaymentCondition getCommonPaymentCondition() {
+      return commonPaymentCondition;
+    }
+
+    public void setCommonPaymentCondition(PaymentCondition commonPaymentCondition) {
+      this.commonPaymentCondition = commonPaymentCondition;
+    }
   }
 
   protected static class ChecksSupplyChainImpl extends ChecksImpl {
     private boolean existStockLocationDiff = false;
     private boolean existIntercoDiff = false;
+    private boolean existPaymentModeDiff = false;
+    private boolean existPaymentConditionDiff = false;
 
     public boolean isExistStockLocationDiff() {
       return existStockLocationDiff;
@@ -75,6 +97,22 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
 
     public void setExistIntercoDiff(boolean existIntercoDiff) {
       this.existIntercoDiff = existIntercoDiff;
+    }
+
+    public boolean isExistPaymentModeDiff() {
+      return existPaymentModeDiff;
+    }
+
+    public void setExistPaymentModeDiff(boolean existPaymentModeDiff) {
+      this.existPaymentModeDiff = existPaymentModeDiff;
+    }
+
+    public boolean isExistPaymentConditionDiff() {
+      return existPaymentConditionDiff;
+    }
+
+    public void setExistPaymentConditionDiff(boolean existPaymentConditionDiff) {
+      this.existPaymentConditionDiff = existPaymentConditionDiff;
     }
   }
 
@@ -140,6 +178,16 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
         .filter(Objects::nonNull)
         .findFirst()
         .ifPresent(getCommonFields(result)::setCommonStockLocation);
+    purchaseOrdersToMerge.stream()
+        .map(PurchaseOrder::getPaymentMode)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .ifPresent(getCommonFields(result)::setCommonPaymentMode);
+    purchaseOrdersToMerge.stream()
+        .map(PurchaseOrder::getPaymentCondition)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .ifPresent(getCommonFields(result)::setCommonPaymentCondition);
   }
 
   @Override
@@ -154,6 +202,16 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
             .equals(purchaseOrder.getStockLocation())) {
       commonFields.setCommonStockLocation(null);
       checks.setExistStockLocationDiff(true);
+    }
+    if (commonFields.getCommonPaymentMode() != null
+        && !commonFields.getCommonPaymentMode().equals(purchaseOrder.getPaymentMode())) {
+      commonFields.setCommonPaymentMode(null);
+      checks.setExistPaymentModeDiff(true);
+    }
+    if (commonFields.getCommonPaymentCondition() != null
+        && !commonFields.getCommonPaymentCondition().equals(purchaseOrder.getPaymentCondition())) {
+      commonFields.setCommonPaymentCondition(null);
+      checks.setExistPaymentConditionDiff(true);
     }
   }
 
@@ -188,6 +246,12 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
     purchaseOrderMerged.setInterco(
         purchaseOrdersToMerge.stream().anyMatch(PurchaseOrder::getInterco));
     purchaseOrderMerged.setTaxNumber(getCommonFields(result).getCommonCompanyTaxNumber());
+    if (getCommonFields(result).getCommonPaymentMode() != null) {
+      purchaseOrderMerged.setPaymentMode(getCommonFields(result).getCommonPaymentMode());
+    }
+    if (getCommonFields(result).getCommonPaymentCondition() != null) {
+      purchaseOrderMerged.setPaymentCondition(getCommonFields(result).getCommonPaymentCondition());
+    }
 
     this.attachToNewPurchaseOrder(purchaseOrdersToMerge, purchaseOrderMerged);
     purchaseOrderService.computePurchaseOrder(purchaseOrderMerged);
@@ -238,6 +302,14 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
     if (getChecks(result).isExistIntercoDiff()) {
       fieldErrors.add(
           I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_INTERCO_CONFIG));
+    }
+    if (getChecks(result).isExistPaymentModeDiff()) {
+      fieldErrors.add(
+          I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_PAYMENT_MODE));
+    }
+    if (getChecks(result).isExistPaymentConditionDiff()) {
+      fieldErrors.add(
+          I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_PAYMENT_CONDITION));
     }
   }
 }
