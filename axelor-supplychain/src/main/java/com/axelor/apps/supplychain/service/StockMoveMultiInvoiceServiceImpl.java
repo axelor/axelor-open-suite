@@ -80,6 +80,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected final AppStockService appStockService;
   protected final SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain;
   protected final PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService;
+  protected final PurchaseOrderInvoiceService purchaseOrderInvoiceService;
   protected final SupplyChainConfigService supplyChainConfigService;
   protected final StockMoveRepository stockMoveRepository;
 
@@ -92,6 +93,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       AppStockService appStockService,
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
       PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
+      PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SupplyChainConfigService supplyChainConfigService,
       StockMoveRepository stockMoveRepository) {
     this.invoiceRepository = invoiceRepository;
@@ -101,6 +103,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     this.appStockService = appStockService;
     this.saleOrderMergingServiceSupplyChain = saleOrderMergingServiceSupplyChain;
     this.purchaseOrderMergingSupplychainService = purchaseOrderMergingSupplychainService;
+    this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.supplyChainConfigService = supplyChainConfigService;
     this.stockMoveRepository = stockMoveRepository;
   }
@@ -581,6 +584,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     invoiceGenerator.populate(invoice, invoiceLineList);
 
+    purchaseOrderInvoiceService.checkInvoiceLineQuantities(invoice);
     invoiceRepository.save(invoice);
     invoice = toPositivePriceInvoice(invoice);
     if (invoice.getExTaxTotal().signum() == 0

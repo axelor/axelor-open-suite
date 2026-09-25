@@ -1,0 +1,18 @@
+---
+title: "Purchase: Prevent duplicate supplier invoicing between purchase orders and receipts."
+module: axelor-supplychain
+developer: |
+  The following service interfaces have new methods:
+
+  - `PurchaseOrderInvoiceService#checkInvoiceLineQuantities(Invoice)`.
+  - `StockMoveInvoiceService#updatePurchaseOrderStockMoveInvoicing(PurchaseOrder)`.
+
+  The following service constructors have new injected parameters:
+
+  - `PurchaseOrderInvoiceServiceImpl`, `PurchaseOrderInvoiceContractServiceImpl`, and `PurchaseOrderInvoiceBudgetServiceImpl`: `UnitConversionService` and `AppBaseService`.
+  - `StockMoveInvoiceServiceImpl` and `StockMoveInvoiceBudgetServiceImpl`: `StockMoveRepository`.
+  - `StockMoveMultiInvoiceServiceImpl`: `PurchaseOrderInvoiceService`.
+  - `PurchaseOrderStockServiceImpl`: `StockMoveInvoiceService`.
+
+  Custom implementations must implement the new interface methods. Implementations extending the
+  listed classes must also accept and forward the new constructor parameters.

@@ -56,6 +56,7 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
@@ -66,6 +67,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -81,6 +83,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   protected SaleOrderRepository saleOrderRepo;
   protected PurchaseOrderRepository purchaseOrderRepo;
   protected StockMoveLineRepository stockMoveLineRepository;
+  protected StockMoveRepository stockMoveRepository;
   protected InvoiceLineRepository invoiceLineRepository;
   protected SupplyChainConfigService supplyChainConfigService;
   protected AppBaseService appBaseService;
@@ -101,6 +104,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       SaleOrderRepository saleOrderRepo,
       PurchaseOrderRepository purchaseOrderRepo,
       StockMoveLineRepository stockMoveLineRepository,
+      StockMoveRepository stockMoveRepository,
       InvoiceLineRepository invoiceLineRepository,
       SupplyChainConfigService supplyChainConfigService,
       AppBaseService appBaseService,
@@ -118,6 +122,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     this.saleOrderRepo = saleOrderRepo;
     this.purchaseOrderRepo = purchaseOrderRepo;
     this.stockMoveLineRepository = stockMoveLineRepository;
+    this.stockMoveRepository = stockMoveRepository;
     this.invoiceLineRepository = invoiceLineRepository;
     this.supplyChainConfigService = supplyChainConfigService;
     this.appBaseService = appBaseService;
@@ -348,6 +353,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             invoiceService.getDefaultAdvancePaymentInvoice(invoice));
       }
 
+      purchaseOrderInvoiceService.checkInvoiceLineQuantities(invoice);
       invoiceRepository.save(invoice);
     }
     return invoice;
@@ -726,16 +732,42 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     if (stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_NORMAL) {
       return BigDecimal.ZERO;
     }
-    List<InvoiceLine> nonCanceledInvoiceLineList =
+    if (isIncomingPurchaseOrderStockMoveLine(stockMoveLine)) {
+      BigDecimal qtyInvoiced =
+          stockMoveLine.getQtyInvoiced() == null ? BigDecimal.ZERO : stockMoveLine.getQtyInvoiced();
+      return qtyInvoiced.add(computeDirectNonCanceledInvoiceQty(stockMoveLine, false));
+    }
+    return computeDirectNonCanceledInvoiceQty(stockMoveLine, true);
+  }
+
+  protected boolean isIncomingPurchaseOrderStockMoveLine(StockMoveLine stockMoveLine) {
+    StockMove stockMove = stockMoveLine.getStockMove();
+    return stockMoveLine.getPurchaseOrderLine() != null
+        && stockMove != null
+        && stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+        && !stockMove.getIsReversion();
+  }
+
+  protected BigDecimal computeDirectNonCanceledInvoiceQty(
+      StockMoveLine stockMoveLine, boolean includeVentilated) throws AxelorException {
+    String filter =
+        "self.invoice.statusSelect != :invoiceCanceled "
+            + "AND self.stockMoveLine.id = :stockMoveLineId "
+            + "AND self.stockMoveLine.lineTypeSelect = :lineTypeSelect";
+    if (!includeVentilated) {
+      filter += " AND self.invoice.statusSelect != :invoiceVentilated";
+    }
+    Query<InvoiceLine> query =
         invoiceLineRepository
             .all()
-            .filter(
-                "self.invoice.statusSelect != :invoiceCanceled "
-                    + "AND self.stockMoveLine.id = :stockMoveLineId AND self.stockMoveLine.lineTypeSelect = :lineTypeSelect")
+            .filter(filter)
             .bind("invoiceCanceled", InvoiceRepository.STATUS_CANCELED)
             .bind("stockMoveLineId", stockMoveLine.getId())
-            .bind("lineTypeSelect", StockMoveLineRepository.TYPE_NORMAL)
-            .fetch();
+            .bind("lineTypeSelect", StockMoveLineRepository.TYPE_NORMAL);
+    if (!includeVentilated) {
+      query.bind("invoiceVentilated", InvoiceRepository.STATUS_VENTILATED);
+    }
+    List<InvoiceLine> nonCanceledInvoiceLineList = query.fetch();
     BigDecimal nonCanceledInvoiceQty = BigDecimal.ZERO;
     for (InvoiceLine invoiceLine : nonCanceledInvoiceLineList) {
       BigDecimal qty = getQtyToInvoice(stockMoveLine, invoiceLine);
@@ -767,12 +799,19 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     return qty;
   }
 
+  protected BigDecimal convertQty(BigDecimal qty, Unit fromUnit, Unit toUnit, Product product)
+      throws AxelorException {
+    if (fromUnit != null && toUnit != null && !Objects.equals(fromUnit, toUnit)) {
+      return unitConversionService.convert(
+          fromUnit, toUnit, qty, appBaseService.getNbDecimalDigitForQty(), product);
+    }
+    return qty;
+  }
+
   @Override
   public void computeStockMoveInvoicingStatus(StockMove stockMove) {
     int invoicingStatus = StockMoveRepository.STATUS_NOT_INVOICED;
-    if (stockMove.getStockMoveLineList() != null
-        && stockMove.getInvoiceSet() != null
-        && !stockMove.getInvoiceSet().isEmpty()) {
+    if (stockMove.getStockMoveLineList() != null) {
       BigDecimal totalInvoicedQty =
           stockMove.getStockMoveLineList().stream()
               .map(StockMoveLine::getQtyInvoiced)
@@ -786,16 +825,162 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
       // the status will stay at not invoiced if totalInvoicedQty is at 0 (or negative) while
       // realQty is > 0.
-      if (totalInvoicedQty.signum() == 0 && totalRealQty.signum() == 0) {
+      if (totalInvoicedQty.signum() == 0
+          && totalRealQty.signum() == 0
+          && ObjectUtils.notEmpty(stockMove.getInvoiceSet())) {
         // special case where we invoice a stock move line with no quantities.
         invoicingStatus = StockMoveRepository.STATUS_INVOICED;
       } else if (totalInvoicedQty.signum() > 0 && totalRealQty.compareTo(totalInvoicedQty) > 0) {
         invoicingStatus = StockMoveRepository.STATUS_PARTIALLY_INVOICED;
-      } else if (totalRealQty.compareTo(totalInvoicedQty) == 0) {
+      } else if (totalRealQty.signum() > 0 && totalRealQty.compareTo(totalInvoicedQty) == 0) {
         invoicingStatus = StockMoveRepository.STATUS_INVOICED;
       }
     }
     stockMove.setInvoicingStatusSelect(invoicingStatus);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updatePurchaseOrderStockMoveInvoicing(PurchaseOrder purchaseOrder)
+      throws AxelorException {
+    List<StockMoveLine> stockMoveLineList =
+        stockMoveLineRepository
+            .all()
+            .filter(
+                "self.purchaseOrderLine.purchaseOrder = :purchaseOrder"
+                    + " AND self.lineTypeSelect = :lineTypeSelect"
+                    + " AND self.stockMove.typeSelect = :typeSelect"
+                    + " AND self.stockMove.isReversion = false"
+                    + " AND self.stockMove.statusSelect != :statusCanceled")
+            .bind("purchaseOrder", purchaseOrder)
+            .bind("lineTypeSelect", StockMoveLineRepository.TYPE_NORMAL)
+            .bind("typeSelect", StockMoveRepository.TYPE_INCOMING)
+            .bind("statusCanceled", StockMoveRepository.STATUS_CANCELED)
+            .order("stockMove.id")
+            .order("id")
+            .fetch();
+    List<InvoiceLine> invoiceLineList =
+        invoiceLineRepository
+            .all()
+            .filter(
+                "self.purchaseOrderLine.purchaseOrder = :purchaseOrder"
+                    + " AND self.typeSelect = :lineTypeSelect"
+                    + " AND self.invoice.statusSelect = :statusVentilated"
+                    + " AND self.invoice.operationSubTypeSelect != :advanceOperationSubTypeSelect"
+                    + " AND self.invoice.operationTypeSelect IN (:operationTypeSelectList)")
+            .bind("purchaseOrder", purchaseOrder)
+            .bind("lineTypeSelect", InvoiceLineRepository.TYPE_NORMAL)
+            .bind("statusVentilated", InvoiceRepository.STATUS_VENTILATED)
+            .bind("advanceOperationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+            .bind(
+                "operationTypeSelectList",
+                List.of(
+                    InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
+                    InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND))
+            .order("invoice.id")
+            .order("id")
+            .fetch();
+
+    updateStockMoveLinesQtyInvoiced(stockMoveLineList, invoiceLineList);
+
+    Set<StockMove> stockMoveSet = new LinkedHashSet<>();
+    stockMoveLineList.stream().map(StockMoveLine::getStockMove).forEach(stockMoveSet::add);
+    for (StockMove stockMove : stockMoveSet) {
+      computeStockMoveInvoicingStatus(stockMove);
+      stockMoveRepository.save(stockMove);
+    }
+  }
+
+  protected void updateStockMoveLinesQtyInvoiced(
+      List<StockMoveLine> stockMoveLineList, List<InvoiceLine> invoiceLineList)
+      throws AxelorException {
+    Map<PurchaseOrderLine, List<StockMoveLine>> stockMoveLineMap = new LinkedHashMap<>();
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      stockMoveLine.setQtyInvoiced(BigDecimal.ZERO);
+      stockMoveLineMap
+          .computeIfAbsent(stockMoveLine.getPurchaseOrderLine(), key -> new ArrayList<>())
+          .add(stockMoveLine);
+    }
+
+    allocateInvoiceLines(invoiceLineList, stockMoveLineMap, false);
+    allocateInvoiceLines(invoiceLineList, stockMoveLineMap, true);
+  }
+
+  protected void allocateInvoiceLines(
+      List<InvoiceLine> invoiceLineList,
+      Map<PurchaseOrderLine, List<StockMoveLine>> stockMoveLineMap,
+      boolean allocateRefunds)
+      throws AxelorException {
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      boolean isRefund =
+          invoiceLine.getInvoice().getOperationTypeSelect()
+              == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
+      if (isRefund != allocateRefunds) {
+        continue;
+      }
+      allocateInvoiceLineQty(
+          invoiceLine, getInvoiceLineTargetList(invoiceLine, stockMoveLineMap), isRefund);
+    }
+  }
+
+  protected List<StockMoveLine> getInvoiceLineTargetList(
+      InvoiceLine invoiceLine, Map<PurchaseOrderLine, List<StockMoveLine>> stockMoveLineMap) {
+    List<StockMoveLine> stockMoveLineList =
+        stockMoveLineMap.get(invoiceLine.getPurchaseOrderLine());
+    if (ObjectUtils.isEmpty(stockMoveLineList)) {
+      return List.of();
+    }
+
+    StockMoveLine linkedStockMoveLine = invoiceLine.getStockMoveLine();
+    if (linkedStockMoveLine == null || !stockMoveLineList.contains(linkedStockMoveLine)) {
+      return stockMoveLineList;
+    }
+
+    List<StockMoveLine> targetStockMoveLineList = new ArrayList<>();
+    targetStockMoveLineList.add(linkedStockMoveLine);
+    stockMoveLineList.stream()
+        .filter(stockMoveLine -> !stockMoveLine.equals(linkedStockMoveLine))
+        .forEach(targetStockMoveLineList::add);
+    return targetStockMoveLineList;
+  }
+
+  protected void allocateInvoiceLineQty(
+      InvoiceLine invoiceLine, List<StockMoveLine> stockMoveLineList, boolean isRefund)
+      throws AxelorException {
+    BigDecimal remainingQty = invoiceLine.getQty().abs();
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      if (remainingQty.signum() <= 0) {
+        break;
+      }
+
+      BigDecimal qtyInvoiced = stockMoveLine.getQtyInvoiced();
+      BigDecimal availableQty =
+          isRefund
+              ? qtyInvoiced
+              : stockMoveLine.getRealQty().max(BigDecimal.ZERO).subtract(qtyInvoiced);
+      if (availableQty.signum() <= 0) {
+        continue;
+      }
+
+      BigDecimal remainingQtyInStockMoveLineUnit =
+          convertQty(
+              remainingQty,
+              invoiceLine.getUnit(),
+              stockMoveLine.getUnit(),
+              stockMoveLine.getProduct());
+      BigDecimal allocatedQty = remainingQtyInStockMoveLineUnit.min(availableQty);
+      stockMoveLine.setQtyInvoiced(
+          isRefund ? qtyInvoiced.subtract(allocatedQty) : qtyInvoiced.add(allocatedQty));
+      remainingQty =
+          remainingQty
+              .subtract(
+                  convertQty(
+                      allocatedQty,
+                      stockMoveLine.getUnit(),
+                      invoiceLine.getUnit(),
+                      stockMoveLine.getProduct()))
+              .max(BigDecimal.ZERO);
+    }
   }
 
   @Override

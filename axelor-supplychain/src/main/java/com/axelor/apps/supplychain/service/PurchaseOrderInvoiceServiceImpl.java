@@ -40,10 +40,13 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.address.AddressService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -74,6 +77,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -97,6 +101,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   protected OrderInvoiceService orderInvoiceService;
   protected InvoiceTaxService invoiceTaxService;
   protected InvoiceLineRepository invoiceLineRepository;
+  protected UnitConversionService unitConversionService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public PurchaseOrderInvoiceServiceImpl(
@@ -113,7 +119,9 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       CurrencyScaleService currencyScaleService,
       OrderInvoiceService orderInvoiceService,
       InvoiceTaxService invoiceTaxService,
-      InvoiceLineRepository invoiceLineRepository) {
+      InvoiceLineRepository invoiceLineRepository,
+      UnitConversionService unitConversionService,
+      AppBaseService appBaseService) {
     this.invoiceServiceSupplychain = invoiceServiceSupplychain;
     this.invoiceService = invoiceService;
     this.invoiceRepo = invoiceRepo;
@@ -128,6 +136,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     this.orderInvoiceService = orderInvoiceService;
     this.invoiceTaxService = invoiceTaxService;
     this.invoiceLineRepository = invoiceLineRepository;
+    this.unitConversionService = unitConversionService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -135,6 +145,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException {
     Invoice invoice = this.createInvoice(purchaseOrder);
     invoiceTaxService.manageTaxByAmount(purchaseOrder, invoice);
+    checkInvoiceLineQuantities(invoice);
     invoice = invoiceRepo.save(invoice);
     invoiceService.setDraftSequence(invoice);
     invoice.setAddressStr(Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
@@ -209,18 +220,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       throws AxelorException {
 
     Product product = purchaseOrderLine.getProduct();
-    BigDecimal qtyAlreadyInvoiced =
-        invoiceLineRepository
-            .all()
-            .filter(
-                "self.purchaseOrderLine = :purchaseOrderLine"
-                    + " AND self.invoice.statusSelect != :statusCanceled")
-            .bind("purchaseOrderLine", purchaseOrderLine)
-            .bind("statusCanceled", InvoiceRepository.STATUS_CANCELED)
-            .fetch()
-            .stream()
-            .map(InvoiceLine::getQty)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    BigDecimal nonCanceledInvoiceQty =
+        computeNonCanceledInvoiceQty(purchaseOrderLine, invoice.getId());
 
     InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
         new InvoiceLineGeneratorSupplyChain(
@@ -228,7 +229,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             product,
             purchaseOrderLine.getProductName(),
             purchaseOrderLine.getDescription(),
-            purchaseOrderLine.getQty().subtract(qtyAlreadyInvoiced),
+            purchaseOrderLine.getQty().subtract(nonCanceledInvoiceQty),
             purchaseOrderLine.getUnit(),
             purchaseOrderLine.getSequence(),
             false,
@@ -248,6 +249,127 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
         };
 
     return invoiceLineGenerator.creates();
+  }
+
+  @Override
+  public void checkInvoiceLineQuantities(Invoice invoice) throws AxelorException {
+    if (invoice == null
+        || invoice.getOperationTypeSelect() != InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+        || ObjectUtils.isEmpty(invoice.getInvoiceLineList())) {
+      return;
+    }
+
+    Map<PurchaseOrderLine, BigDecimal> qtyToInvoiceByPurchaseOrderLine = new LinkedHashMap<>();
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
+      if (purchaseOrderLine == null
+          || purchaseOrderLine.getIsTitleLine()
+          || invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL
+          || (invoiceLine.getStockMoveLine() != null
+              && invoiceLine.getStockMoveLine().getStockMove().getIsReversion())) {
+        continue;
+      }
+      qtyToInvoiceByPurchaseOrderLine.merge(
+          purchaseOrderLine,
+          convertQtyToPurchaseOrderLineUnit(invoiceLine, purchaseOrderLine),
+          BigDecimal::add);
+    }
+
+    boolean hasQtyToInvoice = false;
+    for (Map.Entry<PurchaseOrderLine, BigDecimal> entry :
+        qtyToInvoiceByPurchaseOrderLine.entrySet()) {
+      BigDecimal qtyToInvoice = entry.getValue();
+      if (qtyToInvoice.signum() <= 0) {
+        continue;
+      }
+      hasQtyToInvoice = true;
+      PurchaseOrderLine purchaseOrderLine = entry.getKey();
+      PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+      BigDecimal nonCanceledInvoiceQty =
+          computeNonCanceledInvoiceQty(purchaseOrderLine, invoice.getId());
+
+      if (nonCanceledInvoiceQty.compareTo(purchaseOrderLine.getQty()) >= 0) {
+        throw new AxelorException(
+            purchaseOrder,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SupplychainExceptionMessage.PO_INVOICE_GENERATE_ALL_INVOICES));
+      }
+      if (nonCanceledInvoiceQty.add(qtyToInvoice).compareTo(purchaseOrderLine.getQty()) > 0) {
+        throw new AxelorException(
+            purchaseOrder,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SupplychainExceptionMessage.PO_INVOICE_TOO_MUCH_INVOICED),
+            purchaseOrder.getPurchaseOrderSeq());
+      }
+    }
+    if (!qtyToInvoiceByPurchaseOrderLine.isEmpty() && !hasQtyToInvoice) {
+      throw new AxelorException(
+          qtyToInvoiceByPurchaseOrderLine.keySet().iterator().next().getPurchaseOrder(),
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.PO_INVOICE_GENERATE_ALL_INVOICES));
+    }
+  }
+
+  protected BigDecimal computeNonCanceledInvoiceQty(
+      PurchaseOrderLine purchaseOrderLine, Long currentInvoiceId) throws AxelorException {
+    String filter =
+        "self.purchaseOrderLine = :purchaseOrderLine"
+            + " AND self.typeSelect = :typeSelect"
+            + " AND self.invoice.statusSelect != :statusCanceled"
+            + " AND self.invoice.operationSubTypeSelect != :advanceOperationSubTypeSelect"
+            + " AND self.invoice.operationTypeSelect IN (:operationTypeSelectList)";
+    if (currentInvoiceId != null) {
+      filter += " AND self.invoice.id != :currentInvoiceId";
+    }
+
+    com.axelor.db.Query<InvoiceLine> query =
+        invoiceLineRepository
+            .all()
+            .filter(filter)
+            .bind("purchaseOrderLine", purchaseOrderLine)
+            .bind("typeSelect", InvoiceLineRepository.TYPE_NORMAL)
+            .bind("statusCanceled", InvoiceRepository.STATUS_CANCELED)
+            .bind("advanceOperationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+            .bind(
+                "operationTypeSelectList",
+                List.of(
+                    InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
+                    InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND));
+    if (currentInvoiceId != null) {
+      query.bind("currentInvoiceId", currentInvoiceId);
+    }
+
+    BigDecimal invoicedQty = BigDecimal.ZERO;
+    for (InvoiceLine invoiceLine : query.fetch()) {
+      BigDecimal qty = convertQtyToPurchaseOrderLineUnit(invoiceLine, purchaseOrderLine);
+      if (invoiceLine.getInvoice().getOperationTypeSelect()
+          == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+        invoicedQty = invoicedQty.subtract(qty.abs());
+      } else {
+        invoicedQty = invoicedQty.add(qty);
+      }
+    }
+    return invoicedQty;
+  }
+
+  protected BigDecimal convertQtyToPurchaseOrderLineUnit(
+      InvoiceLine invoiceLine, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
+    BigDecimal qty = invoiceLine.getQty();
+    Unit invoiceLineUnit = invoiceLine.getUnit();
+    Unit purchaseOrderLineUnit = purchaseOrderLine.getUnit();
+    if (invoiceLineUnit != null
+        && purchaseOrderLineUnit != null
+        && !Objects.equals(invoiceLineUnit, purchaseOrderLineUnit)) {
+      qty =
+          unitConversionService.convert(
+              invoiceLineUnit,
+              purchaseOrderLineUnit,
+              qty,
+              appBaseService.getNbDecimalDigitForQty(),
+              purchaseOrderLine.getProduct());
+    }
+    return qty;
   }
 
   @Override
@@ -427,6 +549,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
     Invoice invoice =
         this.createInvoice(purchaseOrder, purchaseOrderLinesSelected, qtyToInvoiceMap);
+    checkInvoiceLineQuantities(invoice);
     invoiceRepo.save(invoice);
 
     Beans.get(PurchaseOrderRepository.class).save(fillPurchaseOrder(purchaseOrder, invoice));
