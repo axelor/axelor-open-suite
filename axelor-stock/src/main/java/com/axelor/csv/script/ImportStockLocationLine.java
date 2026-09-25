@@ -52,6 +52,11 @@ public class ImportStockLocationLine {
     assert bean instanceof StockLocationLine;
 
     StockLocationLine stockLocationLine = (StockLocationLine) bean;
+
+    if (stockLocationLine.getProduct() == null || stockLocationLine.getProduct().getId() == null) {
+      return null;
+    }
+
     if (!StringUtils.isEmpty((String) values.get(STOCK_LOCATION_HEADER))) {
       createStockLocationLineHistory(stockLocationLine);
     }
