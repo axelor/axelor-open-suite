@@ -76,8 +76,8 @@ public class SubSaleOrderLineComputeServiceImpl implements SubSaleOrderLineCompu
       } else {
         saleOrderLineProductService.fillPrice(saleOrderLine, saleOrder);
       }
+      saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
     }
-    saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
   }
 
   protected void computePrices(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
