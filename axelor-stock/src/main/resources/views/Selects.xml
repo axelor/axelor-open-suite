@@ -87,13 +87,13 @@
   </selection>
 
   <selection name="sequence.generic.code.select" id="stock.sequence.generic.code.select">
-    <option value="intStockMove">Internal stock move</option>
-    <option value="outStockMove">Delivery stock move</option>
-    <option value="inStockMove">Receipt stock move</option>
-    <option value="inventory">Inventory</option>
-    <option value="productTrackingNumber">Product tracking number</option>
-    <option value="logisticalForm">Logistical form</option>
-    <option value="massStockMove">Mass stock move</option>
+    <option order="19" value="intStockMove">Internal stock move</option>
+    <option order="33" value="outStockMove">Delivery stock move</option>
+    <option order="17" value="inStockMove">Receipt stock move</option>
+    <option order="20" value="inventory">Inventory</option>
+    <option order="43" value="productTrackingNumber">Product tracking number</option>
+    <option order="24" value="logisticalForm">Logistical form</option>
+    <option order="27" value="massStockMove">Mass stock move</option>
   </selection>
 
   <selection name="tracking.number.configuration.tracking.number.order.select">

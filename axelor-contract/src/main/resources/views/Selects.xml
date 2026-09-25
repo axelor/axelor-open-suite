@@ -42,8 +42,8 @@
 
   <selection name="sequence.generic.code.select"
     id="contract.sequence.generic.code.select">
-    <option value="customerContract">Customer contracts</option>
-    <option value="supplierContract">Supplier contracts</option>
+    <option order="8" value="customerContract">Customer contracts</option>
+    <option order="62" value="supplierContract">Supplier contracts</option>
   </selection>
 
   <selection name='iinvoice.operation.sub.type.select'

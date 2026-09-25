@@ -1,0 +1,7 @@
+---
+title: "Sequence: fixed alphabetical ordering of sequences by codeSelect."
+module: axelor-base
+developer: |
+  -- Script
+  UPDATE base_sequence SET code_select = 'purchaseRequest' WHERE code_select = 'PurchaseRequest';
+  UPDATE base_sequence SET code_select = 'callTender' WHERE code_select = 'CallTender';

@@ -3,7 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
-  <grid name="sequence-grid" title="Sequences" model="com.axelor.apps.base.db.Sequence">
+  <grid name="sequence-grid" title="Sequences" model="com.axelor.apps.base.db.Sequence"
+    orderBy="codeSelect">
     <field name="name"/>
     <field name="codeSelect"/>
     <field name="company" form-view="company-form" grid-view="company-grid"

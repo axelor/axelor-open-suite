@@ -66,12 +66,12 @@
   </selection>
 
   <selection name="sequence.generic.code.select" id="quality.sequence.generic.code.select">
-    <option value="qualityAlert">Quality alert</option>
-    <option value="qualityControl">Quality control</option>
-    <option value="qualityImprovement">Quality improvement</option>
-    <option value="qiActionDistribution">QI Action distribution</option>
-    <option value="qiDecisionDistribution">QI Decision distribution</option>
-    <option value="requiredDocument">Required document</option>
+    <option order="50" value="qualityAlert">Quality alert</option>
+    <option order="51" value="qualityControl">Quality control</option>
+    <option order="52" value="qualityImprovement">Quality improvement</option>
+    <option order="48" value="qiActionDistribution">QI Action distribution</option>
+    <option order="49" value="qiDecisionDistribution">QI Decision distribution</option>
+    <option order="58" value="requiredDocument">Required document</option>
   </selection>
 
   <selection name="team.type.select" id="quality.team.type.select">

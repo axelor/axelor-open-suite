@@ -22,7 +22,7 @@
 
   <selection id="maintenance.sequence.generic.code.select"
     name="sequence.generic.code.select">
-    <option value="maintenance">Maintenance</option>
+    <option order="25" value="maintenance">Maintenance</option>
   </selection>
 
   <selection id="maintenance.manuf.order.type.select" name="manuf.order.type.select">
