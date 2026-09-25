@@ -351,7 +351,8 @@
     title="Analytic move lines" model="com.axelor.apps.account.db.AnalyticMoveLine">
     <view type="grid" name="analytic-move-line-to-process-grid"/>
     <view type="form" name="analytic-move-line-form"/>
-    <domain>self.id in (:analyticMoveLineList)</domain>
+    <domain>self.id in (:analyticMoveLineList) AND NOT EXISTS (SELECT 1 FROM AnalyticMoveLine
+      reverseAnalyticMoveLine WHERE reverseAnalyticMoveLine.originAnalyticMoveLine.id = self.id)</domain>
     <context name="analyticMoveLineList"
       expr="eval: __analyticMoveLineList ? __analyticMoveLineList : [0]"/>
   </action-view>
