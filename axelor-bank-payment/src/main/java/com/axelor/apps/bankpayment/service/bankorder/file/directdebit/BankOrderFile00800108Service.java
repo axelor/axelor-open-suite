@@ -24,35 +24,35 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderAddressService;
-import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderFile00800102AddressAdapter;
+import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderFile00800108AddressAdapter;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.AccountIdentification4Choice;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.ActiveOrHistoricCurrencyAndAmount;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.BranchAndFinancialInstitutionIdentification4;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.CashAccount16;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.ChargeBearerType1Code;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.CustomerDirectDebitInitiationV02;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.DirectDebitTransaction6;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.DirectDebitTransactionInformation9;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.Document;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.FinancialInstitutionIdentification7;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.GenericFinancialIdentification1;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.GenericPersonIdentification1;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.GroupHeader39;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.LocalInstrument2Choice;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.MandateRelatedInformation6;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.ObjectFactory;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.Party6Choice;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.PartyIdentification32;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.PaymentIdentification1;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.PaymentInstructionInformation4;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.PaymentMethod2Code;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.PaymentTypeInformation20;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.PersonIdentification5;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.PersonIdentificationSchemeName1Choice;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.RemittanceInformation5;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.SequenceType1Code;
-import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.ServiceLevel8Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.AccountIdentification4Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.ActiveOrHistoricCurrencyAndAmount;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.BranchAndFinancialInstitutionIdentification6;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.CashAccount38;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.ChargeBearerType1Code;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.CustomerDirectDebitInitiationV08;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.DirectDebitTransaction10;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.DirectDebitTransactionInformation23;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.Document;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.FinancialInstitutionIdentification18;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.GenericFinancialIdentification1;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.GenericPersonIdentification1;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.GroupHeader83;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.LocalInstrument2Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.MandateRelatedInformation14;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.ObjectFactory;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.Party38Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.PartyIdentification135;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.PaymentIdentification6;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.PaymentInstruction29;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.PaymentMethod2Code;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.PaymentTypeInformation29;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.PersonIdentification13;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.PersonIdentificationSchemeName1Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.RemittanceInformation16;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.SequenceType3Code;
+import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08.ServiceLevel8Choice;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
@@ -67,17 +67,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.xml.datatype.DatatypeFactory;
 
-public class BankOrderFile00800102Service extends BankOrderFile008Service {
+public class BankOrderFile00800108Service extends BankOrderFile008Service {
 
   protected ObjectFactory factory;
   protected String sepaType;
   protected BankOrderAddressService bankOrderAddressService;
 
   @Inject
-  public BankOrderFile00800102Service(BankOrder bankOrder, String sepaType) {
+  public BankOrderFile00800108Service(BankOrder bankOrder, String sepaType) {
     super(bankOrder);
 
-    context = "com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02";
+    context = "com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_08";
 
     factory = new ObjectFactory();
     this.sepaType = sepaType;
@@ -85,18 +85,18 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
   }
 
   /**
-   * Generates the XML SEPA Direct Debit file (pain.008.001.02)
+   * Generates the XML SEPA Direct Debit file (pain.008.001.08)
    *
-   * @return the SEPA Direct Debit file (pain.008.001.02)
+   * @return the SEPA Direct Debit file (pain.008.001.08)
    * @throws AxelorException
    */
   @Override
   public File generateFile() throws AxelorException {
     // Creditor
-    PartyIdentification32 creditor = factory.createPartyIdentification32();
+    PartyIdentification135 creditor = factory.createPartyIdentification135();
     creditor.setNm(senderBankDetails.getOwnerName());
     creditor.setPstlAdr(
-        BankOrderFile00800102AddressAdapter.createPostalAddress(
+        BankOrderFile00800108AddressAdapter.createPostalAddress(
             bankOrderAddressService.createSenderPostalAddress(senderCompany, bankOrderFileFormat)));
 
     /*
@@ -115,7 +115,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
      *                                        Debtor and Remittance Information Rules.
      *
      * <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-     * <Document xmlns="urn:iso:std:iso:20022:tech:xsd:pain.008.001.02">
+     * <Document xmlns="urn:iso:std:iso:20022:tech:xsd:pain.008.001.08">
      *     <CstmrDrctDbtInitn>
      *         <GrpHdr>                 <-- occ : 1..1
      *         </GrpHdr>
@@ -135,23 +135,23 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
     /*
      * Customer Direct Debit Initiation, <CstmrDrctDbtInitn> tag
      */
-    CustomerDirectDebitInitiationV02 customerDirectDebitInitiationV02 =
-        factory.createCustomerDirectDebitInitiationV02();
-    document.setCstmrDrctDbtInitn(customerDirectDebitInitiationV02);
+    CustomerDirectDebitInitiationV08 customerDirectDebitInitiationV08 =
+        factory.createCustomerDirectDebitInitiationV08();
+    document.setCstmrDrctDbtInitn(customerDirectDebitInitiationV08);
 
     /*
      * Group Header, <GrpHdr> tag
      * Set of characteristics shared by all individual transactions included in the message.
      */
-    GroupHeader39 groupHeader = factory.createGroupHeader39();
+    GroupHeader83 groupHeader = factory.createGroupHeader83();
     createGrpHdr(groupHeader, creditor);
-    customerDirectDebitInitiationV02.setGrpHdr(groupHeader);
+    customerDirectDebitInitiationV08.setGrpHdr(groupHeader);
 
     /*
      * Payment Information, <PmtInf> tag
-     * Does not need to set the List<PaymentInstructionInformation4> to the customerDirectDebitInitiationV02 object (see doc).
+     * Does not need to set the List<PaymentInstruction29> to the customerDirectDebitInitiationV08 object (see doc).
      */
-    createPmtInf(customerDirectDebitInitiationV02.getPmtInf(), creditor);
+    createPmtInf(customerDirectDebitInitiationV08.getPmtInf(), creditor);
 
     fileToCreate = factory.createDocument(document);
     return super.generateFile();
@@ -159,13 +159,13 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
 
   /**
    * Builds the GroupHeader part ({@code <GrpHdr>} tag) of the file, into the provided {@link
-   * GroupHeader39} object
+   * GroupHeader83} object
    *
-   * @param groupHeader the {@link GroupHeader39} to build
+   * @param groupHeader the {@link GroupHeader83} to build
    * @param creditor the creditor of the SEPA Direct Debit file
    * @throws AxelorException
    */
-  protected void createGrpHdr(GroupHeader39 groupHeader, PartyIdentification32 creditor)
+  protected void createGrpHdr(GroupHeader83 groupHeader, PartyIdentification135 creditor)
       throws AxelorException {
     DatatypeFactory datatypeFactory = DatatypeFactory.newDefaultInstance();
 
@@ -215,16 +215,15 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
 
   /**
    * Builds the PaymentInformation part ({@code <PmtInf>} tag) of the file, and adds it into the
-   * provided {@link PaymentInstructionInformation4} list
+   * provided {@link PaymentInstruction29} list
    *
-   * @param paymentInstructionInformationList the list to add the {@link
-   *     PaymentInstructionInformation4} objects into
+   * @param paymentInstructionInformationList the list to add the {@link PaymentInstruction29}
+   *     objects into
    * @param creditor the creditor of the SEPA Direct Debit file
    * @throws AxelorException
    */
   protected void createPmtInf(
-      List<PaymentInstructionInformation4> paymentInstructionInformationList,
-      PartyIdentification32 creditor)
+      List<PaymentInstruction29> paymentInstructionInformationList, PartyIdentification135 creditor)
       throws AxelorException {
     DatatypeFactory datatypeFactory = DatatypeFactory.newDefaultInstance();
 
@@ -232,8 +231,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
      * Payment Information (mandatory)
      * Set of characteristics that apply to the credit side of the payment transactions included in the direct debit transaction initiation.
      */
-    PaymentInstructionInformation4 paymentInstructionInformation4 =
-        factory.createPaymentInstructionInformation4();
+    PaymentInstruction29 paymentInstructionInformation4 = factory.createPaymentInstruction29();
     paymentInstructionInformationList.add(paymentInstructionInformation4);
 
     /*
@@ -281,7 +279,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
      * Payment Type Information (mandatory)
      * Set of elements that further specifies the type of transaction.
      */
-    PaymentTypeInformation20 paymentTypeInformation20 = factory.createPaymentTypeInformation20();
+    PaymentTypeInformation29 paymentTypeInformation20 = factory.createPaymentTypeInformation29();
     paymentInstructionInformation4.setPmtTpInf(paymentTypeInformation20);
 
     /*
@@ -289,7 +287,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
      * Agreement under which or rules under which the transaction should be processed.
      */
     ServiceLevel8Choice serviceLevel8Choice = factory.createServiceLevel8Choice();
-    paymentTypeInformation20.setSvcLvl(serviceLevel8Choice);
+    paymentTypeInformation20.getSvcLvl().add(serviceLevel8Choice);
     /*
      * Code (mandatory, always 'SEPA')
      * Identification of a pre-agreed level of service between the parties in a coded form.
@@ -336,7 +334,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
      * OOFF  One Off    Direct debit instruction where the debtor's authorisation is used to
      *                  initiate one single direct debit transaction.
      */
-    paymentTypeInformation20.setSeqTp(SequenceType1Code.FRST);
+    paymentTypeInformation20.setSeqTp(SequenceType3Code.FRST);
 
     /*
      * Category Purpose (optional)
@@ -375,7 +373,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
      * Creditor Account (mandatory)
      * Unambiguous identification of the account of the creditor to which a credit entry will be posted as a result of the payment transaction.
      */
-    CashAccount16 cashAccount16 = factory.createCashAccount16();
+    CashAccount38 cashAccount16 = factory.createCashAccount38();
     /*
      * IBAN (mandatory)
      */
@@ -400,13 +398,13 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
      * Note : The Bank Identifier Code (BIC) is composed of 8 or 11 characters, of which only the
      *        first 8 characters are significant.
      */
-    FinancialInstitutionIdentification7 financialInstitutionIdentification7 =
-        factory.createFinancialInstitutionIdentification7();
+    FinancialInstitutionIdentification18 financialInstitutionIdentification7 =
+        factory.createFinancialInstitutionIdentification18();
 
     fillBic(financialInstitutionIdentification7, senderBankDetails.getBank()); // BIC
 
-    BranchAndFinancialInstitutionIdentification4 branchAndFinancialInstitutionIdentification4 =
-        factory.createBranchAndFinancialInstitutionIdentification4();
+    BranchAndFinancialInstitutionIdentification6 branchAndFinancialInstitutionIdentification4 =
+        factory.createBranchAndFinancialInstitutionIdentification6();
     branchAndFinancialInstitutionIdentification4.setFinInstnId(financialInstitutionIdentification7);
     paymentInstructionInformation4.setCdtrAgt(branchAndFinancialInstitutionIdentification4);
 
@@ -447,16 +445,16 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
 
   /**
    * Builds the DirectDebitTransactionInformation part ({@code <DrctDbtTxInf>} tag) of the file, and
-   * adds it into the provided {@link DirectDebitTransactionInformation9} list
+   * adds it into the provided {@link DirectDebitTransactionInformation23} list
    *
    * @param directDebitTransactionInformation9List the list to add the {@link
-   *     DirectDebitTransactionInformation9} objects into
+   *     DirectDebitTransactionInformation23} objects into
    * @param creditor the creditor of the SEPA Direct Debit file
    * @throws AxelorException
    */
   protected void createDrctDbtTxInf(
-      List<DirectDebitTransactionInformation9> directDebitTransactionInformation9List,
-      PartyIdentification32 creditor)
+      List<DirectDebitTransactionInformation23> directDebitTransactionInformation9List,
+      PartyIdentification135 creditor)
       throws AxelorException {
     DatatypeFactory datatypeFactory = DatatypeFactory.newDefaultInstance();
 
@@ -482,15 +480,15 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
        * Direct Debit Transaction Information (mandatory)
        * Set of elements providing information specific to the individual transaction(s) included in the message.
        */
-      DirectDebitTransactionInformation9 directDebitTransactionInformation9 =
-          factory.createDirectDebitTransactionInformation9();
+      DirectDebitTransactionInformation23 directDebitTransactionInformation9 =
+          factory.createDirectDebitTransactionInformation23();
       directDebitTransactionInformation9List.add(directDebitTransactionInformation9);
 
       /*
        * Payment Identification (mandatory)
        * Set of elements to reference a payment instruction.
        */
-      PaymentIdentification1 paymentIdentification1 = factory.createPaymentIdentification1();
+      PaymentIdentification6 paymentIdentification1 = factory.createPaymentIdentification6();
       directDebitTransactionInformation9.setPmtId(paymentIdentification1);
       /*
        * Instruction Identification (optional)
@@ -524,14 +522,14 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
        * Direct Debit Transaction (mandatory)
        * Set of elements providing information specific to the direct debit mandate.
        */
-      DirectDebitTransaction6 directDebitTransaction6 = factory.createDirectDebitTransaction6();
+      DirectDebitTransaction10 directDebitTransaction6 = factory.createDirectDebitTransaction10();
       directDebitTransactionInformation9.setDrctDbtTx(directDebitTransaction6);
       /*
        * Mandate Related Information (mandatory)
        * Set of elements used to provide further details related to a direct debit mandate signed between the creditor and the debtor.
        */
-      MandateRelatedInformation6 mandateRelatedInformation6 =
-          factory.createMandateRelatedInformation6();
+      MandateRelatedInformation14 mandateRelatedInformation6 =
+          factory.createMandateRelatedInformation14();
       directDebitTransaction6.setMndtRltdInf(mandateRelatedInformation6);
       /*
        * Mandate Identification (mandatory)
@@ -585,11 +583,11 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
        * Creditor Scheme Identification
        * Creditor identification as given by his bank.
        */
-      PartyIdentification32 creditorSchemeId = factory.createPartyIdentification32();
+      PartyIdentification135 creditorSchemeId = factory.createPartyIdentification135();
       directDebitTransaction6.setCdtrSchmeId(creditorSchemeId);
-      Party6Choice party6Choice = factory.createParty6Choice();
+      Party38Choice party6Choice = factory.createParty38Choice();
       creditorSchemeId.setId(party6Choice);
-      PersonIdentification5 personIdentification5 = factory.createPersonIdentification5();
+      PersonIdentification13 personIdentification5 = factory.createPersonIdentification13();
       party6Choice.setPrvtId(personIdentification5);
       GenericPersonIdentification1 genericPersonIdentification1 =
           factory.createGenericPersonIdentification1();
@@ -612,10 +610,10 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
        * Debtor Agent (mandatory)
        * Financial institution servicing an account for the debtor.
        */
-      BranchAndFinancialInstitutionIdentification4 branchAndFinancialInstitutionIdentification4 =
-          factory.createBranchAndFinancialInstitutionIdentification4();
-      FinancialInstitutionIdentification7 financialInstitutionIdentification7 =
-          factory.createFinancialInstitutionIdentification7();
+      BranchAndFinancialInstitutionIdentification6 branchAndFinancialInstitutionIdentification4 =
+          factory.createBranchAndFinancialInstitutionIdentification6();
+      FinancialInstitutionIdentification18 financialInstitutionIdentification7 =
+          factory.createFinancialInstitutionIdentification18();
 
       fillBic(financialInstitutionIdentification7, receiverBankDetails.getBank()); // BIC
 
@@ -627,10 +625,10 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
        * Debtor (mandatory)
        * Party that owes an amount of money to the (ultimate) creditor.
        */
-      PartyIdentification32 debtor = factory.createPartyIdentification32();
+      PartyIdentification135 debtor = factory.createPartyIdentification135();
       debtor.setNm(receiverBankDetails.getOwnerName());
       debtor.setPstlAdr(
-          BankOrderFile00800102AddressAdapter.createPostalAddress(
+          BankOrderFile00800108AddressAdapter.createPostalAddress(
               bankOrderAddressService.createReceiverPostalAddress(
                   bankOrderLine, bankOrderFileFormat)));
       directDebitTransactionInformation9.setDbtr(debtor);
@@ -642,7 +640,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
       AccountIdentification4Choice accountIdentification4Choice =
           factory.createAccountIdentification4Choice();
       accountIdentification4Choice.setIBAN(receiverBankDetails.getIban());
-      CashAccount16 cashAccount16 = factory.createCashAccount16();
+      CashAccount38 cashAccount16 = factory.createCashAccount38();
       cashAccount16.setId(accountIdentification4Choice);
       directDebitTransactionInformation9.setDbtrAcct(cashAccount16);
 
@@ -673,7 +671,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
        *
        * Usage : Either Structured or Unstructured, but not both.
        */
-      RemittanceInformation5 remittanceInformation5 = factory.createRemittanceInformation5();
+      RemittanceInformation16 remittanceInformation5 = factory.createRemittanceInformation16();
       directDebitTransactionInformation9.setRmtInf(remittanceInformation5);
       /*
        * Unstructured (choice 1 of 2)
@@ -700,7 +698,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
    * @param finInstnId The financial instituation identification tag of the generated file.
    * @param bank The bank from which the BIC is get.
    */
-  protected void fillBic(FinancialInstitutionIdentification7 finInstnId, Bank bank) {
+  protected void fillBic(FinancialInstitutionIdentification18 finInstnId, Bank bank) {
 
     if (bankOrderFileFormat.getIbanOnly()
         || bank == null
@@ -709,7 +707,7 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
       genFinId.setId(BIC_NOT_PROVIDED);
       finInstnId.setOthr(genFinId);
     } else {
-      finInstnId.setBIC(bank.getCode());
+      finInstnId.setBICFI(bank.getCode());
     }
   }
 }

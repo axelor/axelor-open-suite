@@ -79,10 +79,13 @@
     <option value="pain.001.001.02.xct">pain.001.001.02.xct</option>
     <option value="pain.001.001.03.sct">pain.001.001.03.sct</option>
     <option value="pain.001.001.03.xct">pain.001.001.03.xct</option>
+    <option value="pain.001.001.09.sct">pain.001.001.09.sct</option>
     <option value="pain.008.001.01.sbb">pain.008.001.01.sbb</option>
     <option value="pain.008.001.01.sdd">pain.008.001.01.sdd</option>
     <option value="pain.008.001.02.sbb">pain.008.001.02.sbb</option>
     <option value="pain.008.001.02.sdd">pain.008.001.02.sdd</option>
+    <option value="pain.008.001.08.sbb">pain.008.001.08.sbb</option>
+    <option value="pain.008.001.08.sdd">pain.008.001.08.sdd</option>
     <option value="pain.fin.mt101.dct">pain.fin.mt101.dct</option>
     <option value="pain.fin.mt101.mct">pain.fin.mt101.mct</option>
     <option value="pain.fin.mt101.xct">pain.fin.mt101.xct</option>
@@ -106,6 +109,12 @@
     <option value="pain.xxx.payord912.ict">pain.xxx.payord912.ict</option>
     <option value="pain.xxx.payord912.xct">pain.xxx.payord912.xct</option>
     <option value="pain.xxx.vcom400.vct">pain.xxx.vcom400.vct</option>
+  </selection>
+
+  <selection name="bankpayment.bank.order.ff.address.format.select">
+    <option value="none">None</option>
+    <option value="structured">Structured</option>
+    <option value="hybrid">Hybrid</option>
   </selection>
 
   <selection name="bankpayment.bank.statement.file.format.statement.file.format.select">

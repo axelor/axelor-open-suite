@@ -33,6 +33,8 @@
         showIf="bankDetailsTypeSelect == '1' &amp;&amp; (orderTypeSelect == '1' || orderTypeSelect == '2')"/>
       <field name="allowOrderCurrDiffFromBankDetails"
         showIf="orderTypeSelect != 1 &amp;&amp; orderTypeSelect != 2" colSpan="12"/>
+      <field name="addressFormatSelect" colSpan="12"
+        showIf="['pain.001.001.03.sct', 'pain.008.001.02.sbb', 'pain.008.001.02.sdd', 'pain.001.001.09.sct', 'pain.008.001.08.sbb', 'pain.008.001.08.sdd'].includes(orderFileFormatSelect)"/>
       <panel name="exchangePanel" hidden="true" showIf="orderTypeSelect == 8" colSpan="12">
         <field name="entryCodeSelect" requiredIf="orderTypeSelect == 8"/>
         <field name="dailyCodeSelect" requiredIf="orderTypeSelect == 8"/>
