@@ -121,7 +121,7 @@ public class StockRulesServiceImpl implements StockRulesService {
 
   @Override
   public StockRules getStockRules(
-      Product product, StockLocation stockLocation, int type, int useCase) {
+      Product product, StockLocation stockLocation, Integer type, int useCase) {
     Set<Long> stockLocationIds =
         stockLocationService.getLocationAndAllParentLocationsIdsOrderedFromTheClosestToTheFurthest(
             stockLocation);
