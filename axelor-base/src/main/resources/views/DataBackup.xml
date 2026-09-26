@@ -38,6 +38,8 @@
         <field name="isTemplateWithDescription" widget="boolean-switch"/>
         <field name="maxLinesPerFile"/>
         <field name="fieldSeparatorSelect"/>
+        <field name="isIncludeTechnicalFields" widget="boolean-switch"/>
+        <field name="isIncludeJsonFields" widget="boolean-switch"/>
       </panel>
     </panel-tabs>
 
