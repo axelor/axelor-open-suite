@@ -2672,6 +2672,10 @@
     <call class="com.axelor.apps.account.web.InvoiceController" method="applyGlobalDiscount"/>
   </action-method>
 
+  <action-method name="action-invoice-method-reset-global-discount">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="resetGlobalDiscount"/>
+  </action-method>
+
   <action-method name="action-invoice-method-set-discount-dummies">
     <call class="com.axelor.apps.account.web.InvoiceController" method="setDiscountDummies"/>
   </action-method>
@@ -3141,6 +3145,8 @@
 
   <action-group name="action-invoice-group-discount-type-onchange">
     <action name="action-invoice-record-clear-discount-amount"/>
+    <action name="action-invoice-method-reset-global-discount"
+      if="__config__.app.getApp('base')?.getIsGlobalDiscountEnabled()"/>
     <action name="action-invoice-group-invoice-line-list-on-change"/>
   </action-group>
 
