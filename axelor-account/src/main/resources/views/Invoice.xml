@@ -730,7 +730,7 @@
         <panel name="refundPanel" title="Credit note"
           showIf="statusSelect != 1 || originalInvoice" colSpan="12" showTitle="false">
           <button name="createRefundBtn" title="Generate credit note" colSpan="3"
-            showIf="statusSelect != 1 &amp;&amp; ($contains([1, 3], operationTypeSelect) || operationSubTypeSelect != 2)"
+            showIf="statusSelect == 3 &amp;&amp; ($contains([1, 3], operationTypeSelect) || operationSubTypeSelect != 2)"
             onClick="save,action-invoice-method-create-refund"/>
           <field name="originalInvoice" readonly="true" showIf="originalInvoice"
             form-view="invoice-form" grid-view="invoice-grid"/>

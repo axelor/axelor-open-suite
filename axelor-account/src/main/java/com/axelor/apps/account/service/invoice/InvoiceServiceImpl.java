@@ -545,6 +545,14 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional(rollbackOn = {Exception.class})
   public Invoice createRefund(Invoice invoice) throws AxelorException {
 
+    if (invoice.getStatusSelect() == null
+        || invoice.getStatusSelect() != InvoiceRepository.STATUS_VENTILATED) {
+      throw new AxelorException(
+          invoice,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.INVOICE_CREATE_REFUND_WRONG_STATUS));
+    }
+
     Invoice refund = new RefundInvoice(invoice).generate();
     invoice.addRefundInvoiceListItem(refund);
     invoiceRepo.save(invoice);
