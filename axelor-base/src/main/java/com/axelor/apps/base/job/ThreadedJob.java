@@ -21,12 +21,15 @@ package com.axelor.apps.base.job;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.concurrent.ContextAware;
 import com.axelor.db.JPA;
-import com.axelor.db.tenants.TenantResolver;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -46,29 +49,30 @@ public abstract class ThreadedJob implements Job {
     }
 
     String name = context.getJobDetail().getKey().getName();
-    String currentTenantId = TenantResolver.currentTenantIdentifier();
-    Thread thread =
-        new Thread(
-            ContextAware.of()
-                .withTransaction(false)
-                .withTenantId(currentTenantId)
-                .build(() -> executeInThreadedRequestScope(context)));
-    thread.setUncaughtExceptionHandler(
-        (t, e) -> {
-          final Throwable cause =
-              e instanceof UncheckedJobExecutionException && e.getCause() != null
-                  ? e.getCause()
-                  : e;
-          logger.error(cause.getMessage(), cause);
-          TraceBackService.trace(cause);
-        });
+    Callable<Void> task =
+        ContextAware.of()
+            .withTransaction(false)
+            .build(
+                () -> {
+                  executeInThreadedRequestScope(context);
+                  return null;
+                });
     long startTime = System.currentTimeMillis();
 
-    try {
-      thread.start();
-      thread.join();
+    try (ExecutorService executor =
+        Executors.newThreadPerTaskExecutor(Thread.ofPlatform().name("job-" + name).factory())) {
+      executor.submit(task).get();
+    } catch (ExecutionException e) {
+      Throwable cause = e.getCause();
+      if (cause instanceof UncheckedJobExecutionException && cause.getCause() != null) {
+        cause = cause.getCause();
+      }
+      logger.error(cause.getMessage(), cause);
+      TraceBackService.trace(cause);
+      JPA.flush();
     } catch (InterruptedException e) {
       TraceBackService.trace(e);
+      JPA.flush();
       Thread.currentThread().interrupt();
     } finally {
       float duration = (System.currentTimeMillis() - startTime) / 1000f;
