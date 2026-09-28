@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed the quantity left to produce, which counted produced stock move lines whatever the stock move status."
+module: axelor-production
