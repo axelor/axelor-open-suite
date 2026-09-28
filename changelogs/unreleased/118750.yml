@@ -31,17 +31,17 @@ developer: |
     HAVING COUNT(*) = 1 AND MIN(aml.percentage) = 100
   )
   UPDATE sale_sale_order_line sol
-  SET axis1_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 1),
-      axis2_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 2),
-      axis3_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 3),
-      axis4_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 4),
-      axis5_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 5)
+  SET axis1analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 1),
+      axis2analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 2),
+      axis3analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 3),
+      axis4analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 4),
+      axis5analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 5)
   WHERE sol.id IN (SELECT line_id FROM axis_account)
-    AND sol.axis1_analytic_account IS NULL
-    AND sol.axis2_analytic_account IS NULL
-    AND sol.axis3_analytic_account IS NULL
-    AND sol.axis4_analytic_account IS NULL
-    AND sol.axis5_analytic_account IS NULL;
+    AND sol.axis1analytic_account IS NULL
+    AND sol.axis2analytic_account IS NULL
+    AND sol.axis3analytic_account IS NULL
+    AND sol.axis4analytic_account IS NULL
+    AND sol.axis5analytic_account IS NULL;
 
   WITH axis_account AS (
     SELECT aml.purchase_order_line AS line_id, abc.sequence, MIN(aml.analytic_account) AS analytic_account
@@ -55,15 +55,15 @@ developer: |
     HAVING COUNT(*) = 1 AND MIN(aml.percentage) = 100
   )
   UPDATE purchase_purchase_order_line pol
-  SET axis1_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 1),
-      axis2_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 2),
-      axis3_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 3),
-      axis4_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 4),
-      axis5_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 5)
+  SET axis1analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 1),
+      axis2analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 2),
+      axis3analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 3),
+      axis4analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 4),
+      axis5analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 5)
   WHERE pol.id IN (SELECT line_id FROM axis_account)
-    AND pol.axis1_analytic_account IS NULL
-    AND pol.axis2_analytic_account IS NULL
-    AND pol.axis3_analytic_account IS NULL
-    AND pol.axis4_analytic_account IS NULL
-    AND pol.axis5_analytic_account IS NULL;
+    AND pol.axis1analytic_account IS NULL
+    AND pol.axis2analytic_account IS NULL
+    AND pol.axis3analytic_account IS NULL
+    AND pol.axis4analytic_account IS NULL
+    AND pol.axis5analytic_account IS NULL;
   ```
