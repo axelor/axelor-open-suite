@@ -1,3 +1,69 @@
 ---
 title: "Sale order line: fixed the form being marked as modified as soon as it is opened."
 module: axelor-supplychain
+developer: |
+  The analytic axis accounts of sale and purchase order lines are now filled when the analytic
+  distribution is computed instead of on form load. Existing lines with analytic move lines but empty
+  axis accounts keep them empty, and so do the invoice lines generated from them. The following script
+  fills the axis accounts of these lines, using the same rule as the application (an axis gets its
+  analytic account only when it has a single analytic move line at 100%). Please check data before
+  applying.
+
+  ```sql
+  WITH RECURSIVE sol_company AS (
+    SELECT sol.id, so.company
+    FROM sale_sale_order_line sol
+    JOIN sale_sale_order so ON so.id = sol.sale_order
+    UNION ALL
+    SELECT child.id, parent.company
+    FROM sale_sale_order_line child
+    JOIN sol_company parent ON parent.id = child.parent_sale_order_line
+    WHERE child.sale_order IS NULL
+  ),
+  axis_account AS (
+    SELECT aml.sale_order_line AS line_id, abc.sequence, MIN(aml.analytic_account) AS analytic_account
+    FROM account_analytic_move_line aml
+    JOIN sol_company sc ON sc.id = aml.sale_order_line
+    JOIN account_account_config ac ON ac.company = sc.company
+    JOIN account_analytic_axis_by_company abc
+      ON abc.account_config = ac.id AND abc.analytic_axis = aml.analytic_axis
+    GROUP BY aml.sale_order_line, abc.sequence
+    HAVING COUNT(*) = 1 AND MIN(aml.percentage) = 100
+  )
+  UPDATE sale_sale_order_line sol
+  SET axis1_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 1),
+      axis2_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 2),
+      axis3_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 3),
+      axis4_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 4),
+      axis5_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 5)
+  WHERE sol.id IN (SELECT line_id FROM axis_account)
+    AND sol.axis1_analytic_account IS NULL
+    AND sol.axis2_analytic_account IS NULL
+    AND sol.axis3_analytic_account IS NULL
+    AND sol.axis4_analytic_account IS NULL
+    AND sol.axis5_analytic_account IS NULL;
+
+  WITH axis_account AS (
+    SELECT aml.purchase_order_line AS line_id, abc.sequence, MIN(aml.analytic_account) AS analytic_account
+    FROM account_analytic_move_line aml
+    JOIN purchase_purchase_order_line pol ON pol.id = aml.purchase_order_line
+    JOIN purchase_purchase_order po ON po.id = pol.purchase_order
+    JOIN account_account_config ac ON ac.company = po.company
+    JOIN account_analytic_axis_by_company abc
+      ON abc.account_config = ac.id AND abc.analytic_axis = aml.analytic_axis
+    GROUP BY aml.purchase_order_line, abc.sequence
+    HAVING COUNT(*) = 1 AND MIN(aml.percentage) = 100
+  )
+  UPDATE purchase_purchase_order_line pol
+  SET axis1_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 1),
+      axis2_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 2),
+      axis3_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 3),
+      axis4_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 4),
+      axis5_analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 5)
+  WHERE pol.id IN (SELECT line_id FROM axis_account)
+    AND pol.axis1_analytic_account IS NULL
+    AND pol.axis2_analytic_account IS NULL
+    AND pol.axis3_analytic_account IS NULL
+    AND pol.axis4_analytic_account IS NULL
+    AND pol.axis5_analytic_account IS NULL;
+  ```
