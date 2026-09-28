@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <form name="control-entry-report-form" title="Control entry report"
     model="com.axelor.utils.db.Wizard" onNew="action-control-entry-report-record-set-date"
@@ -11,17 +11,23 @@
         onChange="action-control-entry-report-attrs-refresh-dashlet"/>
       <field name="$toDate" title="To Date" type="date" colSpan="3" required="true"
         onChange="action-control-entry-report-attrs-refresh-dashlet"/>
-      <field name="$relatedToSelect" title="Related to" type="string" colSpan="3"
-        selection="quality.control.plan.related.to.select" widget="RefSelect"
-        x-related="$relatedToSelectId" onChange="action-control-entry-report-attrs-refresh-dashlet"/>
-      <field name="$relatedToSelectId" type="long" hidden="true"/>
+      <field name="$product" title="Product" type="many-to-one"
+        target="com.axelor.apps.base.db.Product" colSpan="3"
+        onChange="action-control-entry-report-attrs-refresh-dashlet"/>
+      <field name="$prodProcessLine" title="Phase" type="many-to-one"
+        target="com.axelor.apps.production.db.ProdProcessLine" colSpan="3"
+        onChange="action-control-entry-report-attrs-refresh-dashlet"/>
+    </panel>
+    <panel name="missingDatesPanel" showFrame="false" showIf="!$fromDate || !$toDate">
+      <label name="missingDatesLabel" colSpan="12" css="label-warning"
+        title="Please fill in both dates to display the report."/>
     </panel>
     <panel name="chartHelpPanel" showFrame="false">
       <label name="chartHelpLabel" colSpan="12" css="label-italic"
         title="Displays the non-compliance PPM by month: (non-compliant samples / total controlled samples) × 1,000,000, on finished control entries matching the filters above."/>
     </panel>
-    <panel-dashlet name="control-entry-report-dashlet" colSpan="12" height="400"
-      action="action-control-entry-report-view-chart"/>
+    <panel-dashlet name="controlEntryReportDashlet" colSpan="12" height="400"
+      action="action-control-entry-report-view-chart" showIf="$fromDate &amp;&amp; $toDate"/>
   </form>
 
   <action-view name="action-control-entry-report-view-chart"
@@ -36,7 +42,8 @@
   </action-record>
 
   <action-attrs name="action-control-entry-report-attrs-refresh-dashlet">
-    <attribute name="refresh" expr="eval: true" for="control-entry-report-dashlet"/>
+    <attribute name="refresh" expr="eval: true" for="controlEntryReportDashlet"
+      if="fromDate &amp;&amp; toDate"/>
   </action-attrs>
 
 </object-views>

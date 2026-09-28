@@ -128,19 +128,24 @@
     <series key="_alerts" type="bar"/>
   </chart>
 
-  <!-- Non-compliance PPM (parts per million) of control entry samples per month. Filters (from parent
-    wizard form context): :fromDate, :toDate date range on ControlEntry.entryDateTime :relatedToSelect optional,
-    ControlPlan.relatedToSelect filter (Product or ProdProcessLine) :relatedToSelectId optional, paired with
-    :relatedToSelect Restrictions: - ControlEntry.statusSelect = 3 (FINISHED) - ControlEntry.relatedToSelectId
-    IS NOT NULL - Sample.resultSelect IN (2, 3) Formula: PPM = (non_compliant * 1000000) / (compliant + non_compliant),
-    0 when the denominator is 0. Integer division is intentional, PPM is expressed as an integer. Implementation
-    notes: - CAST(...) wrappers are required so PostgreSQL can infer parameter types when the optional filters
-    arrive as NULL. - Months with no compliant nor non-compliant sample are excluded from the result by the
-    WHERE clause, so no row with a forced zero is emitted. -->
+  <!-- Non-compliance PPM (parts per million) of control entry samples per month, on finished control
+    entries. Every month of the date range is listed, the number of controlled samples is shown next to the
+    month. PPM = non-compliant * 1000000 / (compliant + non-compliant), 0 without any sample. The Product
+    filter matches entries recorded on that product, the Phase filter matches entries recorded on an operation
+    order of that routing line. CAST(...) wrappers let PostgreSQL type the optional filters when they are
+    NULL. -->
   <chart name="chart.quality.ppm.by.month" title="Non-compliance PPM by month">
     <dataset type="sql">
       <![CDATA[
-        WITH counts AS (
+        WITH months AS (
+          SELECT TO_CHAR(_month_start, 'YYYY-MM') AS _month
+          FROM GENERATE_SERIES(
+            DATE_TRUNC('month', CAST(:fromDate AS date)),
+            DATE_TRUNC('month', CAST(:toDate AS date)),
+            INTERVAL '1 month'
+          ) AS _month_start
+        ),
+        counts AS (
           SELECT
             TO_CHAR(controlEntry.entry_date_time, 'YYYY-MM') AS _month,
             SUM(CASE WHEN s.result_select = 2 THEN 1 ELSE 0 END) AS _compliant,
@@ -148,36 +153,40 @@
           FROM quality_control_entry_sample AS s
           JOIN quality_control_entry AS controlEntry
             ON s.control_entry = controlEntry.id
-          JOIN quality_control_plan AS controlPlan
-            ON controlEntry.control_plan = controlPlan.id
+          LEFT JOIN production_operation_order AS operationOrder
+            ON controlEntry.related_to_select = 'com.axelor.apps.production.db.OperationOrder'
+            AND operationOrder.id = controlEntry.related_to_select_id
           WHERE controlEntry.status_select = 3
             AND controlEntry.related_to_select_id IS NOT NULL
             AND s.result_select IN (2, 3)
-            AND DATE(controlEntry.entry_date_time) BETWEEN DATE(:fromDate) AND DATE(:toDate)
+            AND DATE(controlEntry.entry_date_time) BETWEEN CAST(:fromDate AS date) AND CAST(:toDate AS date)
             AND (
-              CAST(:relatedToSelect AS varchar) IS NULL
+              CAST(:product$id AS bigint) IS NULL
               OR (
-                controlPlan.related_to_select = CAST(:relatedToSelect AS varchar)
-                AND (
-                  CAST(:relatedToSelectId AS bigint) IS NULL
-                  OR controlPlan.related_to_select_id = CAST(:relatedToSelectId AS bigint)
-                )
+                controlEntry.related_to_select = 'com.axelor.apps.base.db.Product'
+                AND controlEntry.related_to_select_id = CAST(:product$id AS bigint)
               )
             )
-          GROUP BY _month
+            AND (
+              CAST(:prodProcessLine$id AS bigint) IS NULL
+              OR operationOrder.prod_process_line = CAST(:prodProcessLine$id AS bigint)
+            )
+          GROUP BY 1
         )
         SELECT
-          _month AS _month,
+          months._month || ' (' || COALESCE(counts._compliant + counts._non_compliant, 0) || ')' AS _month,
           CASE
-            WHEN (_compliant + _non_compliant) = 0 THEN 0
-            ELSE (_non_compliant * 1000000) / (_compliant + _non_compliant)
-          END AS _ppm
-        FROM counts
-        ORDER BY _month
+            WHEN COALESCE(counts._compliant + counts._non_compliant, 0) = 0 THEN 0
+            ELSE (counts._non_compliant * 1000000) / (counts._compliant + counts._non_compliant)
+          END AS _ppm,
+          'PPM' AS _serie
+        FROM months
+        LEFT JOIN counts ON counts._month = months._month
+        ORDER BY months._month
       ]]>
     </dataset>
-    <category key="_month" type="text" title="Month"/>
-    <series key="_ppm" type="bar" title="PPM"/>
+    <category key="_month" type="text" title="Month (controlled samples)"/>
+    <series key="_ppm" type="bar" groupBy="_serie" title="PPM"/>
   </chart>
 
   <action-record model="com.axelor.apps.quality.db.ControlPoint"
