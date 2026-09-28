@@ -109,11 +109,12 @@ public class ManufOrderSaleOrderServiceImpl implements ManufOrderSaleOrderServic
 
     BigDecimal plannedOrProducedQty =
         producedStockMoveLineList.stream()
+            .filter(line -> line.getStockMove() != null)
             .filter(
                 line ->
-                    line.getStockMove().getStatusSelect() != StockMoveRepository.STATUS_PLANNED
+                    line.getStockMove().getStatusSelect() == StockMoveRepository.STATUS_PLANNED
                         || line.getStockMove().getStatusSelect()
-                            != StockMoveRepository.STATUS_REALIZED)
+                            == StockMoveRepository.STATUS_REALIZED)
             .map(StockMoveLine::getQty)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     plannedOrProducedQty =
