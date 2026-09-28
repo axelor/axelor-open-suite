@@ -19,7 +19,9 @@
 package com.axelor.apps.base.job;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.concurrent.ContextAware;
 import com.axelor.db.JPA;
+import com.axelor.db.tenants.TenantResolver;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;
@@ -44,7 +46,13 @@ public abstract class ThreadedJob implements Job {
     }
 
     String name = context.getJobDetail().getKey().getName();
-    Thread thread = new Thread(() -> executeInThreadedRequestScope(context));
+    String currentTenantId = TenantResolver.currentTenantIdentifier();
+    Thread thread =
+        new Thread(
+            ContextAware.of()
+                .withTransaction(false)
+                .withTenantId(currentTenantId)
+                .build(() -> executeInThreadedRequestScope(context)));
     thread.setUncaughtExceptionHandler(
         (t, e) -> {
           final Throwable cause =
