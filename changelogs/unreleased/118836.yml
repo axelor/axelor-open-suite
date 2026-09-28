@@ -1,0 +1,3 @@
+---
+title: "Debt recovery: fixed credit notes not yet due reducing the recoverable balance, and debt recovery reset not emptying the invoice terms."
+module: axelor-account

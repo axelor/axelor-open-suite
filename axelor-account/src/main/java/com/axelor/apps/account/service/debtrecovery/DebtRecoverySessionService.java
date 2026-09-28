@@ -216,6 +216,7 @@ public class DebtRecoverySessionService {
       debtRecovery.setBalanceDue(BigDecimal.ZERO);
       debtRecovery.setBalanceDueDebtRecovery(BigDecimal.ZERO);
       debtRecovery.setInvoiceDebtRecoverySet(new HashSet<>());
+      debtRecovery.setInvoiceTermDebtRecoverySet(new HashSet<>());
       debtRecovery.setPaymentScheduleLineDebtRecoverySet(new HashSet<>());
 
       log.debug("End debtRecoveryInitialization service");

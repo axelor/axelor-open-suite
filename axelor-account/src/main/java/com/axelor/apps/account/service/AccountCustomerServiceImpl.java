@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
@@ -193,14 +192,6 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
         company.getName(),
         tradingName != null ? tradingName.getName() : null);
 
-    int mailTransitTime = 0;
-
-    AccountConfig accountConfig = company.getAccountConfig();
-
-    if (accountConfig != null) {
-      mailTransitTime = accountConfig.getMailTransitTime();
-    }
-
     // TODO: Replace native query to standard JPQL query
     Query query =
         JPA.em()
@@ -228,9 +219,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "LEFT OUTER JOIN ( "
                     + "SELECT term.amount_remaining as term_amountRemaining, term.move_line as term_ml "
                     + "FROM account_invoice_term AS term "
-                    + "JOIN account_move_line AS TermMoveLine ON (TermMoveLine.id = term.move_line) "
-                    + "JOIN account_move AS TermMove ON (TermMove.id = TermMoveLine.move) "
-                    + "WHERE (TermMove.date_val IS NOT NULL AND (TermMove.date_val + :mailTransitTime ) <= :todayDate ) "
+                    + "WHERE (term.due_date IS NOT NULL AND term.due_date <= :todayDate)"
                     + "GROUP BY term.move_line, term.amount_remaining "
                     + ") AS t2 ON (t2.term_ml = m2.moveline_id) "
                     + "LEFT OUTER JOIN account_account AS account ON (ml.account = account.id) "
@@ -241,7 +230,6 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "AND move.ignore_in_accounting_ok IN (false, null) AND account.use_for_partner_balance = true "
                     + "AND (move.status_select = :statusValidated OR move.status_select = :statusDaybook) AND ABS(ml.amount_remaining) > 0 "
                     + "AND (invoice IS NULL OR invoice.debt_recovery_blocking_ok IN (false, null)) ")
-            .setParameter("mailTransitTime", mailTransitTime)
             .setParameter(
                 "todayDate",
                 Date.from(
