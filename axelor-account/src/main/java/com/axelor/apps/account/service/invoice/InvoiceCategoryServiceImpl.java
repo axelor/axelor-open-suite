@@ -56,14 +56,7 @@ public class InvoiceCategoryServiceImpl implements InvoiceCategoryService {
 
   @Override
   public String computeInvoiceCategorySelect(Invoice invoice) throws AxelorException {
-    int operationType = invoice.getOperationTypeSelect();
-    int operationSubType = invoice.getOperationSubTypeSelect();
-
-    if ((operationType != InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
-            && operationType != InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
-            && operationType != InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
-        || (operationSubType != InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT
-            && operationSubType != InvoiceRepository.OPERATION_SUB_TYPE_BALANCE)) {
+    if (!isInvoiceCategoryApplicable(invoice)) {
       return null;
     }
 
@@ -98,6 +91,23 @@ public class InvoiceCategoryServiceImpl implements InvoiceCategoryService {
     }
 
     return getDefaultInvoiceCategorySelect(invoice);
+  }
+
+  protected boolean isInvoiceCategoryApplicable(Invoice invoice) {
+    boolean isEligibleOperationType =
+        List.of(
+                InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
+                InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+                InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
+            .contains(invoice.getOperationTypeSelect());
+    boolean isEligibleOperationSubType =
+        List.of(
+                InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT,
+                InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
+                InvoiceRepository.OPERATION_SUB_TYPE_BALANCE)
+            .contains(invoice.getOperationSubTypeSelect());
+
+    return isEligibleOperationType && isEligibleOperationSubType;
   }
 
   protected String getDefaultInvoiceCategorySelect(Invoice invoice) throws AxelorException {
