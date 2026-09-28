@@ -148,23 +148,13 @@ public class AnalyticMoveLineQueryController {
         analyticMoveLineQueryService.createAnalyticMoveLines(
             analyticMoveLineQuery, analyticMoveLines);
 
-    List<AnalyticMoveLine> filteredAnalyticMoveLineList =
-        Beans.get(AnalyticMoveLineRepository.class)
-            .all()
-            .filter(analyticMoveLineQueryService.getAnalyticMoveLineQuery(analyticMoveLineQuery))
-            .fetch();
-
     response.setInfo(
         String.format(
             I18n.get(
                 "The analytic revision process has ended and generated %s reverse and %s revision analytic move lines."),
             reverseAnalyticMoveLines.size(),
             newAnalyticMoveLines.size()));
-
-    response.setValue(
-        "__analyticMoveLineList",
-        filteredAnalyticMoveLineList.stream().map(l -> l.getId()).collect(Collectors.toList()));
-    response.setAttr("filteredAnalyticmoveLinesDashlet", "refresh", true);
+    response.setReload(true);
   }
 
   public void searchQueryAxisDomain(ActionRequest request, ActionResponse response) {
