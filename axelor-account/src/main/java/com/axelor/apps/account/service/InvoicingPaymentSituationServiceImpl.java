@@ -25,9 +25,12 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -161,5 +164,55 @@ public class InvoicingPaymentSituationServiceImpl implements InvoicingPaymentSit
     }
 
     return invoicingPaymentSituation;
+  }
+
+  @Override
+  public void clearActiveUmr(Partner partner) {
+    if (partner == null || ObjectUtils.isEmpty(partner.getInvoicingPaymentSituationList())) {
+      return;
+    }
+
+    List<InvoicingPaymentSituation> situationWithActiveUmrList =
+        partner.getInvoicingPaymentSituationList().stream()
+            .filter(situation -> situation.getActiveUmr() != null)
+            .collect(Collectors.toList());
+    if (situationWithActiveUmrList.isEmpty()) {
+      return;
+    }
+
+    // Deleting the partner cascades to its situations and to their UMR list. Hibernate then clears
+    // the active UMR itself while building the deleted state, which makes the situation dirty on a
+    // tracked field: the change tracker then fails at commit time trying to render an UMR already
+    // removed. A mass update clears the reference without going through the change tracking nor the
+    // entity listeners, as the situation is deleted right after.
+    Query.of(InvoicingPaymentSituation.class)
+        .filter("self.partner = :partner")
+        .bind("partner", partner)
+        .update("activeUmr", null);
+
+    // The mass update bypasses the session, refreshing the situations prevents Hibernate from
+    // seeing a change on the active UMR again while deleting them.
+    situationWithActiveUmrList.forEach(situation -> JPA.em().refresh(situation));
+  }
+
+  @Override
+  public List<Partner> getPartnerWithActiveUmrList(List<Long> partnerIdList) {
+    if (ObjectUtils.isEmpty(partnerIdList)) {
+      return new ArrayList<>();
+    }
+
+    List<InvoicingPaymentSituation> situationList =
+        Query.of(InvoicingPaymentSituation.class)
+            .filter("self.partner.id IN :partnerIdList AND self.activeUmr IS NOT NULL")
+            .bind("partnerIdList", partnerIdList)
+            .fetch();
+
+    return situationList.stream()
+        .map(InvoicingPaymentSituation::getPartner)
+        .distinct()
+        .sorted(
+            Comparator.comparing(
+                Partner::getSimpleFullName, Comparator.nullsLast(String::compareTo)))
+        .collect(Collectors.toList());
   }
 }

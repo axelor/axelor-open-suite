@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.NotificationRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.InvoicingPaymentSituationService;
 import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationCheckService;
 import com.axelor.apps.base.db.Company;
@@ -34,8 +35,11 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -195,5 +199,47 @@ public class PartnerController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  /**
+   * Warns the user that deleting the partners also deletes their SEPA mandates. Called on the
+   * delete event of the partner views, from a form (single record) as well as from a grid (_ids).
+   * Only the partners actually holding an active mandate are named, the other ones are deleted
+   * silently.
+   */
+  public void checkActiveUmrBeforeDelete(ActionRequest request, ActionResponse response) {
+    try {
+      List<Partner> partnerWithActiveUmrList =
+          Beans.get(InvoicingPaymentSituationService.class)
+              .getPartnerWithActiveUmrList(getDeletedPartnerIdList(request.getContext()));
+      if (partnerWithActiveUmrList.isEmpty()) {
+        return;
+      }
+
+      response.setAlert(
+          String.format(
+              I18n.get(AccountExceptionMessage.PARTNER_DELETE_ACTIVE_UMR),
+              partnerWithActiveUmrList.stream()
+                  .map(Partner::getSimpleFullName)
+                  .collect(Collectors.joining(", "))));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  protected List<Long> getDeletedPartnerIdList(Context context) {
+    Object ids = context.get("_ids");
+    if (ids instanceof List) {
+      return ((List<?>) ids)
+          .stream()
+              .filter(Objects::nonNull)
+              .map(id -> Long.valueOf(id.toString()))
+              .collect(Collectors.toList());
+    }
+
+    Object id = context.get("id");
+    return id == null
+        ? Collections.emptyList()
+        : Collections.singletonList(Long.valueOf(id.toString()));
   }
 }
