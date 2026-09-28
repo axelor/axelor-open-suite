@@ -19,17 +19,14 @@
 package com.axelor.apps.base.job;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.concurrent.ContextAware;
 import com.axelor.db.JPA;
+import com.axelor.db.tenants.TenantAware;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -49,27 +46,32 @@ public abstract class ThreadedJob implements Job {
     }
 
     String name = context.getJobDetail().getKey().getName();
-    Callable<Void> task =
-        ContextAware.of()
-            .withTransaction(false)
-            .build(
+    AtomicReference<Throwable> failure = new AtomicReference<>();
+    Thread thread =
+        new TenantAware(
                 () -> {
-                  executeInThreadedRequestScope(context);
-                  return null;
-                });
+                  try {
+                    executeInThreadedRequestScope(context);
+                  } catch (Throwable e) {
+                    failure.set(e);
+                  }
+                })
+            .withTransaction(false);
+    thread.setName("job-" + name);
     long startTime = System.currentTimeMillis();
 
-    try (ExecutorService executor =
-        Executors.newThreadPerTaskExecutor(Thread.ofPlatform().name("job-" + name).factory())) {
-      executor.submit(task).get();
-    } catch (ExecutionException e) {
-      Throwable cause = e.getCause();
-      if (cause instanceof UncheckedJobExecutionException && cause.getCause() != null) {
-        cause = cause.getCause();
+    try {
+      thread.start();
+      thread.join();
+      Throwable cause = failure.get();
+      if (cause != null) {
+        if (cause instanceof UncheckedJobExecutionException && cause.getCause() != null) {
+          cause = cause.getCause();
+        }
+        logger.error(cause.getMessage(), cause);
+        TraceBackService.trace(cause);
+        JPA.flush();
       }
-      logger.error(cause.getMessage(), cause);
-      TraceBackService.trace(cause);
-      JPA.flush();
     } catch (InterruptedException e) {
       TraceBackService.trace(e);
       JPA.flush();
