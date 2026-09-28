@@ -1,0 +1,6 @@
+---
+title: "Sale order: fixed slow confirmation when automatic production order generation is disabled."
+module: axelor-production
+developer: |
+  SaleOrderConfirmProductionServiceImpl: the ProductionOrderSaleOrderService constructor parameter is now a Provider<ProductionOrderSaleOrderService>.
+  ProductionOrderSaleOrderMOGenerationServiceImpl: removed the unused ManufOrderService constructor parameter.
