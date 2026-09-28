@@ -20,11 +20,13 @@ package com.axelor.apps.base.job;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
+import com.axelor.db.tenants.TenantAware;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
+import java.util.concurrent.atomic.AtomicReference;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -44,23 +46,35 @@ public abstract class ThreadedJob implements Job {
     }
 
     String name = context.getJobDetail().getKey().getName();
-    Thread thread = new Thread(() -> executeInThreadedRequestScope(context));
-    thread.setUncaughtExceptionHandler(
-        (t, e) -> {
-          final Throwable cause =
-              e instanceof UncheckedJobExecutionException && e.getCause() != null
-                  ? e.getCause()
-                  : e;
-          logger.error(cause.getMessage(), cause);
-          TraceBackService.trace(cause);
-        });
+    AtomicReference<Throwable> failure = new AtomicReference<>();
+    Thread thread =
+        new TenantAware(
+                () -> {
+                  try {
+                    executeInThreadedRequestScope(context);
+                  } catch (Throwable e) {
+                    failure.set(e);
+                  }
+                })
+            .withTransaction(false);
+    thread.setName("job-" + name);
     long startTime = System.currentTimeMillis();
 
     try {
       thread.start();
       thread.join();
+      Throwable cause = failure.get();
+      if (cause != null) {
+        if (cause instanceof UncheckedJobExecutionException && cause.getCause() != null) {
+          cause = cause.getCause();
+        }
+        logger.error(cause.getMessage(), cause);
+        TraceBackService.trace(cause);
+        JPA.flush();
+      }
     } catch (InterruptedException e) {
       TraceBackService.trace(e);
+      JPA.flush();
       Thread.currentThread().interrupt();
     } finally {
       float duration = (System.currentTimeMillis() - startTime) / 1000f;
