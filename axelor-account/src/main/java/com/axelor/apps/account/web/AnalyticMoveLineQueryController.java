@@ -121,12 +121,7 @@ public class AnalyticMoveLineQueryController {
       AnalyticMoveLineQueryService.AnalyticMoveLineReverseResult result =
           analyticMoveLineQueryService.reverseAll(analyticMoveLineQuery);
 
-      setReverseResponse(
-          response,
-          analyticMoveLineQueryService,
-          analyticMoveLineQuery,
-          result.reverseCount(),
-          result.newCount());
+      setReverseResponse(response, result.reverseCount(), result.newCount());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -154,35 +149,17 @@ public class AnalyticMoveLineQueryController {
             .createAnalyticMoveLines(analyticMoveLineQuery, analyticMoveLines)
             .size();
 
-    setReverseResponse(
-        response, analyticMoveLineQueryService, analyticMoveLineQuery, reverseCount, newCount);
+    setReverseResponse(response, reverseCount, newCount);
   }
 
-  protected void setReverseResponse(
-      ActionResponse response,
-      AnalyticMoveLineQueryService analyticMoveLineQueryService,
-      AnalyticMoveLineQuery analyticMoveLineQuery,
-      int reverseCount,
-      int newCount) {
-    List<Long> filteredAnalyticMoveLineIds =
-        Beans.get(AnalyticMoveLineRepository.class)
-            .all()
-            .filter(analyticMoveLineQueryService.getAnalyticMoveLineQuery(analyticMoveLineQuery))
-            .select("id")
-            .fetch(0, 0)
-            .stream()
-            .map(m -> (Long) m.get("id"))
-            .collect(Collectors.toList());
-
+  protected void setReverseResponse(ActionResponse response, int reverseCount, int newCount) {
     response.setInfo(
         String.format(
             I18n.get(
                 "The analytic revision process has ended and generated %s reverse and %s revision analytic move lines."),
             reverseCount,
             newCount));
-
-    response.setValue("__analyticMoveLineList", filteredAnalyticMoveLineIds);
-    response.setAttr("filteredAnalyticmoveLinesDashlet", "refresh", true);
+    response.setReload(true);
   }
 
   public void searchQueryAxisDomain(ActionRequest request, ActionResponse response) {

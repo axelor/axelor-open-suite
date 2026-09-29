@@ -1,0 +1,3 @@
+---
+title: "Product stock details: fixed the status column on manufacturing order lists, which always showed the stock move status."
+module: axelor-supplychain

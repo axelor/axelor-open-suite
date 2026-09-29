@@ -1,0 +1,3 @@
+---
+title: "Ticket: added a maximum length on the subject to display a clear error message instead of a database error."
+module: axelor-helpdesk

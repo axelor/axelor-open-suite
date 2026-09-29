@@ -1,0 +1,5 @@
+---
+title: "Sale order: display the reason why no production order could be generated for each sale order line."
+module: axelor-production
+developer: |
+ Added ProductionOrderSaleOrderMOGenerationService and StockLocationLineFetchService as parameter in ProductionOrderSaleOrderServiceImpl's constructor

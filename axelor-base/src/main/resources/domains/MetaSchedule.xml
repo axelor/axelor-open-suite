@@ -6,6 +6,7 @@
   <module name="meta" package="com.axelor.meta.db"/>
 
   <entity name="MetaSchedule" table="META_SCHEDULE">
+    <string name="cron" required="true" help="This field uses Quartz cron syntax (6 fields)"/>
     <string name="batchServiceSelect" selection="meta.schedule.batch.service.select"
       title="MetaSchedule.service"/>
     <string name="batchCode"/>

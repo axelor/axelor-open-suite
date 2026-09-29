@@ -22,12 +22,16 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskStatusProgressByCategory;
+import com.axelor.meta.CallMethod;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 public interface TaskStatusToolService {
   Optional<TaskStatus> getCompletedTaskStatus(Project project, ProjectTask projectTask);
+
+  @CallMethod
+  Set<Long> getCompletedTaskStatusIds();
 
   Set<TaskStatus> getTaskStatusSet(Project project, ProjectTask projectTask);
 

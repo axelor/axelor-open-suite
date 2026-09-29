@@ -37,6 +37,8 @@ public interface ProductionOrderSaleOrderMOGenerationService {
       BigDecimal qtyToProduce)
       throws AxelorException;
 
+  BillOfMaterial findBillOfMaterial(SaleOrderLine saleOrderLine, Product product);
+
   /**
    * @param productionOrder
    * @param product

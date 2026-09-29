@@ -25,6 +25,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderBlockingSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckBlockingSupplychainServiceImpl;
 import jakarta.inject.Inject;
+import java.util.Collections;
 import java.util.List;
 
 public class SaleOrderCheckBlockingServiceProductionServiceImpl
@@ -52,7 +53,7 @@ public class SaleOrderCheckBlockingServiceProductionServiceImpl
       return alertList;
     }
 
-    if (saleOrderBlockingProductionService.hasOnGoingBlocking(saleOrder)
+    if (saleOrderBlockingProductionService.hasOnGoingBlocking(saleOrder, Collections.emptyList())
         && appProductionService.getAppProduction().getProductionOrderGenerationAuto()) {
       alertList.add(ProductionExceptionMessage.SALE_ORDER_LINES_CANNOT_PRODUCT);
     }

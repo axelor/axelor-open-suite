@@ -1,0 +1,8 @@
+---
+title: "Sale order: fixed production blocking warnings being displayed when only unblocked lines are selected."
+module: axelor-production
+developer: |
+  Changed `SaleOrderBlockingProductionService#hasOnGoingBlocking(SaleOrder)` to
+  `hasOnGoingBlocking(SaleOrder, List<SaleOrderLine>)`.
+  Custom callers and overrides must update their signatures. Pass an empty list
+  to check the whole order; a nonempty list restricts the check to those lines.
