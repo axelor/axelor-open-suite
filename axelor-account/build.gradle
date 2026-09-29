@@ -25,7 +25,6 @@ dependencies {
 	implementation libs.bcpkix_jdk18on
 
 	implementation libs.ical4j
-	implementation libs.iban4j
 	testImplementation libs.mockito
 
 	implementation libs.jaxb_bind_api
