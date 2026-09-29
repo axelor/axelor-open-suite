@@ -459,7 +459,7 @@ public class BankReconciliationController {
       actionViewBuilder.add("form", "move-line-form");
       boolean showAlreadyReconciledOnPeriod =
           Boolean.TRUE.equals(
-              request.getContext().get("showAlreadyBankReconciledOnPeriodMoveLines"));
+              request.getContext().get("$showAlreadyBankReconciledOnPeriodMoveLines"));
       if (showAlreadyReconciledOnPeriod) {
         actionViewBuilder.domain(bankReconciliationQueryService.getRequestMoveLines(true));
       } else {
