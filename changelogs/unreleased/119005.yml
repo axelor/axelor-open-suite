@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed 'Edit order' button not switching the form into edit mode when the order is opened in read mode."
+module: axelor-sale
