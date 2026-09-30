@@ -125,6 +125,8 @@ import com.axelor.apps.supplychain.db.repo.PackagingLineRepository;
 import com.axelor.apps.supplychain.db.repo.PackagingLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.PackagingRepository;
 import com.axelor.apps.supplychain.db.repo.PackagingSupplychainRepository;
+import com.axelor.apps.supplychain.db.repo.PurchaseOrderAcknowledgmentManagementRepository;
+import com.axelor.apps.supplychain.db.repo.PurchaseOrderAcknowledgmentRepository;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
@@ -193,6 +195,8 @@ import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.ProductSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.apps.supplychain.service.ProjectedStockServiceImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderAcknowledgmentService;
+import com.axelor.apps.supplychain.service.PurchaseOrderAcknowledgmentServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderChangeValidationSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderChangeValidationSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderCreateServiceSupplychainImpl;
@@ -452,6 +456,8 @@ public class SupplychainModule extends AxelorModule {
     bind(InvoiceLineServiceImpl.class).to(InvoiceLineSupplychainService.class);
     bind(SaleOrderStockService.class).to(SaleOrderStockServiceImpl.class);
     bind(PurchaseOrderManagementRepository.class).to(PurchaseOrderSupplychainRepository.class);
+    bind(PurchaseOrderAcknowledgmentRepository.class)
+        .to(PurchaseOrderAcknowledgmentManagementRepository.class);
     bind(AppSupplychainService.class).to(AppSupplychainServiceImpl.class);
     bind(SupplychainSaleConfigService.class).to(SupplychainSaleConfigServiceImpl.class);
     bind(AccountCustomerServiceImpl.class).to(AccountCustomerServiceSupplyChainImpl.class);
@@ -478,6 +484,7 @@ public class SupplychainModule extends AxelorModule {
     bind(StockLocationUtilsServiceSupplychain.class)
         .to(StockLocationUtilsServiceSupplychainImpl.class);
     bind(ReservedQtyService.class).to(ReservedQtyServiceImpl.class);
+    bind(PurchaseOrderAcknowledgmentService.class).to(PurchaseOrderAcknowledgmentServiceImpl.class);
     bind(PurchaseOrderLineServiceImpl.class).to(PurchaseOrderLineServiceSupplyChainImpl.class);
     bind(PurchaseOrderStockService.class).to(PurchaseOrderStockServiceImpl.class);
     bind(AccountingCutOffServiceImpl.class).to(AccountingCutOffSupplyChainServiceImpl.class);

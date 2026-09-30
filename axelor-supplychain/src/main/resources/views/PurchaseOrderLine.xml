@@ -75,6 +75,19 @@
         </panel>
       </insert>
     </extend>
+
+    <extend target="//panel[@name='deliveryPanel']/panel[@name='deliveryInformationPanel']">
+      <insert position="after">
+        <panel name="acknowledgmentPanel" title="ARC"
+          showIf="purchaseOrder.statusSelect &gt;= 3" readonlyIf="purchaseOrder.statusSelect &gt; 3"
+          colSpan="12">
+          <panel-related name="purchaseOrderAcknowledgmentListPanel"
+            field="purchaseOrderAcknowledgmentList" grid-view="purchase-order-acknowledgment-grid"
+            form-view="purchase-order-acknowledgment-form" colSpan="12"
+            onChange="action-purchase-order-line-method-on-acknowledgment-list-change"/>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <!-- ACTION GROUP -->
@@ -174,6 +187,12 @@
   <action-method name="action-purchase-order-line-method-check-tax-line-set">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
       method="checkTaxLineSet"/>
+  </action-method>
+
+  <action-method
+    name="action-purchase-order-line-method-on-acknowledgment-list-change">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
+      method="onAcknowledgmentListChange"/>
   </action-method>
 
   <action-method name="action-purchase-order-line-method-validate-realized-qty">

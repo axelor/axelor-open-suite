@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <grid name="purchase-order-acknowledgment-grid" title="Acknowledgments"
+    model="com.axelor.apps.supplychain.db.PurchaseOrderAcknowledgment"
+    onNew="action-purchase-order-acknowledgment-record-init-dummy-fields">
+    <field name="reference"/>
+    <field name="receptionDate"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="deliveryDate"/>
+    <field name="note"/>
+    <field name="$nbDecimalDigitForQty" hidden="true" x-dirty="false"/>
+  </grid>
+
+  <form name="purchase-order-acknowledgment-form" title="Acknowledgment"
+    model="com.axelor.apps.supplychain.db.PurchaseOrderAcknowledgment"
+    onNew="action-purchase-order-acknowledgment-record-init-dummy-fields">
+    <panel name="identificationPanel" title="Identification" colSpan="12">
+      <field name="reference"/>
+      <field name="receptionDate"/>
+    </panel>
+    <panel name="deliveryPanel" title="Delivery" colSpan="12">
+      <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+      <field name="deliveryDate"/>
+      <field name="note" colSpan="12"/>
+      <field name="$nbDecimalDigitForQty" hidden="true" x-dirty="false"/>
+    </panel>
+  </form>
+
+  <action-record name="action-purchase-order-acknowledgment-record-init-dummy-fields"
+    model="com.axelor.apps.supplychain.db.PurchaseOrderAcknowledgment">
+    <field name="$nbDecimalDigitForQty"
+      expr="eval: __config__.app.getApp('base')?.getNbDecimalDigitForQty()"/>
+  </action-record>
+
+</object-views>
