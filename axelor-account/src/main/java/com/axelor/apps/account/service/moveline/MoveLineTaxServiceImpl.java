@@ -447,8 +447,8 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       throws AxelorException {
     for (TaxLine taxLine : taxLineList) {
       if (taxLine != null && taxLine.getValue().signum() != 0) {
-        String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
         if (this.isGenerateMoveLineForAutoTax(moveLine)) {
+          String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
           moveLineCheckService.nonDeductibleTaxAuthorized(move, moveLine);
           moveLineCreateService.createMoveLineForAutoTax(
               move,
@@ -471,7 +471,12 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
   @Override
   public boolean isGenerateMoveLineForAutoTax(MoveLine moveLine) {
-    String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
+    String accountType =
+        Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse("");
     boolean accountTypeCondition =
         accountType.equals(AccountTypeRepository.TYPE_DEBT)
             || accountType.equals(AccountTypeRepository.TYPE_CHARGE)
