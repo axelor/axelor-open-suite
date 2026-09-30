@@ -1,0 +1,98 @@
+# GitLab CI for axelor-open-suite, 8.3-dev variant (AOP 7.3 / Java 11, no
+# checkJavaInjectAnnotationImport: that task only exists from 9.x).
+#.
+#
+# Port of .github/workflows/gradle.yml, seen from the AOS side, exactly as
+# GitHub ran it: the webapp is cloned on the branch under test, the AOS sources
+# of THIS pipeline are moved into open-suite-webapp/modules/axelor-open-suite,
+# then the same Gradle checks, build and tests run.
+#
+# The nightly snapshot publish (publish-snapshot.yml) deliberately stays on
+# GitHub Actions, fed by the mirror: no Nexus secrets and no schedules here.
+#
+# Structure, image, tags, timeouts and cache follow open-suite-webapp's
+# .gitlab-ci.yml, which is green on the same runners.
+
+stages:
+  - check
+  - build
+  - test
+
+image: axelor/app-builder:7.3
+
+variables:
+  GIT_DEPTH: 20
+  WEBAPP: open-suite-webapp
+  # Webapp cloned from GitLab (source of truth) with the job token: the webapp
+  # project must list axelor-open-suite in Settings > CI/CD > Job token permissions.
+  WEBAPP_URL: "https://gitlab-ci-token:${CI_JOB_TOKEN}@git.axelor.com/axelor-hub/axelor-community/open-suite-webapp.git"
+  # Gradle home at the project root, OUTSIDE the webapp clone: the runner
+  # restores the cache before the script, and a pre-existing open-suite-webapp/
+  # directory would make git clone refuse (seen on 9.0-dev, job 952635).
+  GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.console=plain"
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    # Avoid a duplicate branch pipeline when an MR is already open for the branch
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH == "dev" || $CI_COMMIT_BRANCH == "wip"
+    - if: $CI_COMMIT_BRANCH =~ /^\d+\.\d+-dev$/
+
+default:
+  interruptible: true
+  before_script:
+    # Same layout as the GitHub workflow: webapp on the branch under test
+    # (target branch of the MR, or the pushed branch), AOS = this checkout.
+    - export WEBAPP_BRANCH="${CI_MERGE_REQUEST_TARGET_BRANCH_NAME:-$CI_COMMIT_BRANCH}"
+    - rm -rf "$WEBAPP"
+    - git clone --depth 1 -b "$WEBAPP_BRANCH" "$WEBAPP_URL" "$WEBAPP"
+    - mkdir -p "$WEBAPP/modules/axelor-open-suite"
+    - find . -mindepth 1 -maxdepth 1 ! -name "$WEBAPP" ! -name .git ! -name .gradle -exec mv {} "$WEBAPP/modules/axelor-open-suite/" \;
+    - chmod +x "$WEBAPP/gradlew"
+    - cd "$WEBAPP"
+  cache:
+    key: gradle-$CI_COMMIT_REF_SLUG
+    fallback_keys:
+      - gradle-dev
+    paths:
+      - .gradle/wrapper
+      - .gradle/caches
+
+# Same static checks as the GitHub "Java CI" workflow. --continue reports every
+# failing check, not only the first one. generateChangelog runs alone (Gradle 8
+# validation, see the webapp's pipeline).
+checks:
+  stage: check
+  needs: []
+  script:
+    - ./gradlew --continue
+        spotlessCheck
+        checkCsvEOL
+        checkBirtCredentials
+        checkXml
+    - ./gradlew generateChangelog
+
+build:
+  stage: build
+  needs: []
+  tags: [heavy]
+  timeout: 2h
+  script:
+    - ./gradlew -xtest clean build
+
+test:
+  stage: test
+  needs: []
+  tags: [heavy]
+  timeout: 3h
+  script:
+    - ./gradlew test
+  artifacts:
+    when: always
+    expire_in: 1 week
+    reports:
+      junit:
+        - "**/build/test-results/test/TEST-*.xml"
