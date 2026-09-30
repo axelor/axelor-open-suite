@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -70,6 +71,9 @@ public class AddressCreationServiceImpl implements AddressCreationService {
     address.setStreetName(streetName);
     address.setPostBox(postBox);
     address.setCity(city);
+    if (city != null) {
+      address.setTownName(city.getName());
+    }
     address.setZip(zip);
     address.setCountry(country);
     autocompleteAddress(address);
@@ -114,6 +118,9 @@ public class AddressCreationServiceImpl implements AddressCreationService {
       List<City> cities = cityRepository.findByZipAndCountry(zip, country).fetch();
       city = cities.size() == 1 ? cities.get(0) : null;
       address.setCity(city);
+    }
+    if (city != null && StringUtils.isBlank(address.getTownName())) {
+      address.setTownName(city.getName());
     }
     address.setAddressL6(city != null ? zip + " " + city.getName() : null);
 

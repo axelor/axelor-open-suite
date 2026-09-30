@@ -242,6 +242,7 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
       } else {
         createCity(address, cityName, currentCountry);
       }
+      safeSetString(address::setTownName, address::getTownName, cityName);
     }
 
     String numeroVoieEtablissement = adresseEtablissement.getNumeroVoieEtablissement();
