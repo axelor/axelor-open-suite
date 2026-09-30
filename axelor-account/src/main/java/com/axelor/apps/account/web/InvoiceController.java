@@ -70,6 +70,7 @@ import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.LocalizationRepository;
 import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PrintingTemplateRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -1547,6 +1548,20 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
     Beans.get(InvoiceGlobalDiscountService.class).applyGlobalDiscountOnLines(invoice);
     response.setValues(invoice);
+  }
+
+  public void resetGlobalDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      if (invoice.getDiscountTypeSelect() != PriceListLineRepository.AMOUNT_TYPE_NONE
+          || invoice.getStatusSelect() > InvoiceRepository.STATUS_VALIDATED) {
+        return;
+      }
+      Beans.get(InvoiceGlobalDiscountService.class).resetGlobalDiscount(invoice);
+      response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setDiscountDummies(ActionRequest request, ActionResponse response) {
