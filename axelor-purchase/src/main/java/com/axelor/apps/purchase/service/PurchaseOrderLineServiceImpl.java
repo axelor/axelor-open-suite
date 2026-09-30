@@ -235,7 +235,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     Product product = line.getProduct();
     Partner supplierPartner = purchaseOrder.getSupplierPartner();
     Company company = purchaseOrder.getCompany();
-    BigDecimal oldPrice = line.getPrice();
 
     Map<String, String> productSupplierInfos =
         supplierCatalogService.getProductSupplierInfos(supplierPartner, company, product);
@@ -258,6 +257,15 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     if (appPurchaseService.getAppPurchase().getIsEnabledProductDescriptionCopy()) {
       line.setDescription(product.getDescription());
     }
+
+    return fillPrice(line, purchaseOrder);
+  }
+
+  @Override
+  public PurchaseOrderLine fillPrice(PurchaseOrderLine line, PurchaseOrder purchaseOrder)
+      throws AxelorException {
+    Product product = line.getProduct();
+    BigDecimal oldPrice = line.getPrice();
 
     Set<TaxLine> taxLineSet = getTaxLineSet(purchaseOrder, line);
     line.setTaxLineSet(taxLineSet);

@@ -9,6 +9,7 @@
     <field name="newProduct"/>
     <field name="unit"/>
     <field name="quantity" x-scale="2"/>
+    <field name="purchaseOrder"/>
   </grid>
 
   <form model="com.axelor.apps.purchase.db.PurchaseRequestLine" title="Purchase Request Line"

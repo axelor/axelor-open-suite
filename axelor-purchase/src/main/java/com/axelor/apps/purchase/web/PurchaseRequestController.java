@@ -20,13 +20,13 @@ package com.axelor.apps.purchase.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
-import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseRequestService;
 import com.axelor.apps.purchase.service.PurchaseRequestWorkflowService;
 import com.axelor.apps.purchase.service.purchase.request.PurchaseRequestToPoGenerationResult;
@@ -41,7 +41,6 @@ import jakarta.inject.Singleton;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Singleton
 public class PurchaseRequestController {
@@ -67,16 +66,13 @@ public class PurchaseRequestController {
                 .all()
                 .filter("self.id in (?1)", requestIds)
                 .fetch();
-        List<String> purchaseRequestSeqs =
-            purchaseRequests.stream()
-                .filter(pr -> pr.getSupplierPartner() == null)
-                .map(PurchaseRequest::getPurchaseRequestSeq)
-                .collect(Collectors.toList());
-        if (purchaseRequestSeqs != null && !purchaseRequestSeqs.isEmpty()) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_MISSING_SUPPLIER_USER),
-              purchaseRequestSeqs.toString());
+        Partner wizardSupplier = null;
+        LinkedHashMap<String, Object> supplierMap =
+            (LinkedHashMap<String, Object>) request.getContext().get("supplierPartner");
+        if (supplierMap != null) {
+          wizardSupplier =
+              Beans.get(PartnerRepository.class)
+                  .find(((Integer) supplierMap.get("id")).longValue());
         }
         response.setCanClose(true);
 
@@ -84,7 +80,7 @@ public class PurchaseRequestController {
 
         PurchaseRequestToPoGenerationResult generationResult =
             purchaseRequestService.generatePo(
-                purchaseRequests, groupBySupplier, groupByProduct, company);
+                purchaseRequests, groupBySupplier, groupByProduct, company, wizardSupplier);
         if (!generationResult.hasPurchaseOrders()) {
           if (generationResult.hasWarnings()) {
             response.setInfo(generationResult.getWarningMessage());
@@ -139,7 +135,8 @@ public class PurchaseRequestController {
     try {
       PurchaseRequest purchaseRequest = request.getContext().asType(PurchaseRequest.class);
       purchaseRequest = Beans.get(PurchaseRequestRepository.class).find(purchaseRequest.getId());
-      Beans.get(PurchaseRequestWorkflowService.class).purchasePurchaseRequest(purchaseRequest);
+      Beans.get(PurchaseRequestWorkflowService.class)
+          .generatePurchaseOrderFromRequest(purchaseRequest);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

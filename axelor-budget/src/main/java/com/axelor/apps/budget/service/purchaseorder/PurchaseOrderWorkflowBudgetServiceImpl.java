@@ -25,6 +25,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
+import com.axelor.apps.purchase.service.PurchaseRequestWorkflowService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
@@ -50,7 +51,8 @@ public class PurchaseOrderWorkflowBudgetServiceImpl
       PurchaseOrderSupplychainService purchaseOrderSupplychainService,
       PurchaseOrderTypeSelectService purchaseOrderTypeSelectService,
       AppBudgetService appBudgetService,
-      PurchaseOrderBudgetService purchaseOrderBudgetService) {
+      PurchaseOrderBudgetService purchaseOrderBudgetService,
+      PurchaseRequestWorkflowService purchaseRequestWorkflowService) {
     super(
         purchaseOrderService,
         purchaseOrderRepo,
@@ -59,7 +61,8 @@ public class PurchaseOrderWorkflowBudgetServiceImpl
         purchaseOrderStockService,
         appAccountService,
         purchaseOrderSupplychainService,
-        purchaseOrderTypeSelectService);
+        purchaseOrderTypeSelectService,
+        purchaseRequestWorkflowService);
     this.appBudgetService = appBudgetService;
     this.purchaseOrderBudgetService = purchaseOrderBudgetService;
   }

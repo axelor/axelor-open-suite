@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
+import com.axelor.apps.purchase.db.PurchaseRequestLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
@@ -62,11 +63,11 @@ public class PurchaseRequestToPoCreateServiceSupplychainImpl
   }
 
   @Override
-  protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest, Company company)
-      throws AxelorException {
-    PurchaseOrder purchaseOrder = super.createPurchaseOrder(purchaseRequest, company);
+  protected PurchaseOrder createPurchaseOrder(
+      PurchaseRequest sourceRequest, Partner supplier, Company company) throws AxelorException {
+    PurchaseOrder purchaseOrder = super.createPurchaseOrder(sourceRequest, supplier, company);
     if (appBaseService.isApp("supplychain")) {
-      purchaseOrder.setStockLocation(purchaseRequest.getStockLocation());
+      purchaseOrder.setStockLocation(sourceRequest.getStockLocation());
     }
     return purchaseOrder;
   }
@@ -105,13 +106,29 @@ public class PurchaseRequestToPoCreateServiceSupplychainImpl
   }
 
   @Override
-  protected String getGroupBySupplierKey(PurchaseRequest purchaseRequest) {
-    String key = super.getGroupBySupplierKey(purchaseRequest);
+  protected String getGroupBySupplierKey(PurchaseRequest purchaseRequest, Partner supplier) {
+    String key = super.getGroupBySupplierKey(purchaseRequest, supplier);
 
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
       return key;
     }
 
+    return appendStockLocation(key, purchaseRequest);
+  }
+
+  @Override
+  protected String getGroupByProductKey(
+      PurchaseRequest purchaseRequest, PurchaseRequestLine line, Company company) {
+    String key = super.getGroupByProductKey(purchaseRequest, line, company);
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return key;
+    }
+
+    return appendStockLocation(key, purchaseRequest);
+  }
+
+  protected String appendStockLocation(String key, PurchaseRequest purchaseRequest) {
     StockLocation stockLocation = purchaseRequest.getStockLocation();
     if (stockLocation != null) {
       key = key + "_" + stockLocation.getId().toString();

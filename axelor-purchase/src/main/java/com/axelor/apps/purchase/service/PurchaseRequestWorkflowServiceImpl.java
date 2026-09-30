@@ -20,7 +20,10 @@ package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
+import com.axelor.apps.purchase.db.PurchaseRequestLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.purchase.request.PurchaseRequestToPoCreateService;
@@ -28,15 +31,110 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 public class PurchaseRequestWorkflowServiceImpl implements PurchaseRequestWorkflowService {
 
   protected final PurchaseRequestToPoCreateService purchaseRequestToPoCreateService;
+  protected final PurchaseRequestRepository purchaseRequestRepository;
 
   @Inject
   public PurchaseRequestWorkflowServiceImpl(
-      PurchaseRequestToPoCreateService purchaseRequestToPoCreateService) {
+      PurchaseRequestToPoCreateService purchaseRequestToPoCreateService,
+      PurchaseRequestRepository purchaseRequestRepository) {
     this.purchaseRequestToPoCreateService = purchaseRequestToPoCreateService;
+    this.purchaseRequestRepository = purchaseRequestRepository;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void purchasePurchaseRequestsByPo(PurchaseOrder purchaseOrder) throws AxelorException {
+    for (PurchaseRequest pr : findLinkedPurchaseRequests(purchaseOrder)) {
+      if (pr.getStatusSelect() != null
+          && pr.getStatusSelect() == PurchaseRequestRepository.STATUS_ACCEPTED
+          && isFullyPurchased(pr, purchaseOrder)) {
+        purchasePurchaseRequest(pr);
+      }
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void unlinkPurchaseRequestsFromPo(PurchaseOrder purchaseOrder) throws AxelorException {
+    for (PurchaseRequest pr : findLinkedPurchaseRequests(purchaseOrder)) {
+      for (PurchaseRequestLine line : getLines(pr)) {
+        if (isSame(line.getPurchaseOrder(), purchaseOrder)) {
+          line.setPurchaseOrder(null);
+        }
+      }
+      if (isSame(pr.getPurchaseOrder(), purchaseOrder)) {
+        pr.setPurchaseOrder(
+            getLines(pr).stream()
+                .map(PurchaseRequestLine::getPurchaseOrder)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null));
+      }
+      if (pr.getStatusSelect() != null
+          && pr.getStatusSelect() == PurchaseRequestRepository.STATUS_PURCHASED) {
+        pr.setStatusSelect(PurchaseRequestRepository.STATUS_ACCEPTED);
+      }
+      purchaseRequestRepository.save(pr);
+    }
+  }
+
+  /** Requests linked to the order, either directly or through one of their lines. */
+  protected List<PurchaseRequest> findLinkedPurchaseRequests(PurchaseOrder purchaseOrder) {
+    if (purchaseOrder.getId() == null) {
+      return List.of();
+    }
+    return purchaseRequestRepository
+        .all()
+        .filter(
+            "self.purchaseOrder.id = :poId OR self.id IN "
+                + "(SELECT line.purchaseRequest.id FROM PurchaseRequestLine line "
+                + "WHERE line.purchaseOrder.id = :poId)")
+        .bind("poId", purchaseOrder.getId())
+        .fetch();
+  }
+
+  /**
+   * A request is purchased when every purchase order it is linked to (directly or through its
+   * lines) is validated. The order being validated is considered validated.
+   */
+  protected boolean isFullyPurchased(PurchaseRequest pr, PurchaseOrder validatedPurchaseOrder) {
+    Set<PurchaseOrder> linkedOrders = new LinkedHashSet<>();
+    if (pr.getPurchaseOrder() != null) {
+      linkedOrders.add(pr.getPurchaseOrder());
+    }
+    getLines(pr).stream()
+        .map(PurchaseRequestLine::getPurchaseOrder)
+        .filter(Objects::nonNull)
+        .forEach(linkedOrders::add);
+    return !linkedOrders.isEmpty()
+        && linkedOrders.stream()
+            .allMatch(po -> isSame(po, validatedPurchaseOrder) || isValidated(po));
+  }
+
+  protected List<PurchaseRequestLine> getLines(PurchaseRequest pr) {
+    return pr.getPurchaseRequestLineList() != null ? pr.getPurchaseRequestLineList() : List.of();
+  }
+
+  protected boolean isValidated(PurchaseOrder purchaseOrder) {
+    Integer status = purchaseOrder.getStatusSelect();
+    return status != null
+        && (status == PurchaseOrderRepository.STATUS_VALIDATED
+            || status == PurchaseOrderRepository.STATUS_FINISHED);
+  }
+
+  protected boolean isSame(PurchaseOrder first, PurchaseOrder second) {
+    return first != null
+        && second != null
+        && first.getId() != null
+        && first.getId().equals(second.getId());
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -116,5 +214,25 @@ public class PurchaseRequestWorkflowServiceImpl implements PurchaseRequestWorkfl
           I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_DRAFT_WRONG_STATUS));
     }
     purchaseRequest.setStatusSelect(PurchaseRequestRepository.STATUS_DRAFT);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void generatePurchaseOrderFromRequest(PurchaseRequest purchaseRequest)
+      throws AxelorException {
+    if (purchaseRequest.getStatusSelect() == null
+        || purchaseRequest.getStatusSelect() != PurchaseRequestRepository.STATUS_ACCEPTED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_PURCHASE_WRONG_STATUS));
+    }
+    if (purchaseRequest.getPurchaseOrder() != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_PO_ALREADY_EXISTS));
+    }
+    purchaseRequestToPoCreateService.createFromRequest(purchaseRequest);
+    // Status stays at STATUS_ACCEPTED — only PO validation triggers the switch
+    // via purchasePurchaseRequestsByPo()
   }
 }

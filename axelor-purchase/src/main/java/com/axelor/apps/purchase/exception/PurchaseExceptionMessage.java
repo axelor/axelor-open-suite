@@ -96,6 +96,10 @@ public final class PurchaseExceptionMessage {
       "The purchase request %s is already linked to a purchaseOrder" /*)*/;
   public static final String PURCHASE_REQUEST_NOT_ACCEPTED_FOR_PO = /*$$(*/
       "The purchase request %s must be accepted before proceeding with the purchase." /*)*/;
+  public static final String PURCHASE_REQUEST_PO_ALREADY_EXISTS = /*$$(*/
+      "A purchase order is already linked to this purchase request." /*)*/;
+  public static final String PURCHASE_REQUEST_SUPPLIER_CONFLICT_FOR_PRODUCT = /*$$(*/
+      "Please select a supplier for product %s in the wizard." /*)*/;
 
   public static final String DIFFERENT_SUPPLIER = /*$$(*/
       "The supplier of the purchase order is different from the default supplier of the product." /*)*/;

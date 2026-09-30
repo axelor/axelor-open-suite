@@ -19,9 +19,29 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 
 public interface PurchaseRequestWorkflowService {
+
+  /**
+   * Set the status of the purchase requests linked to the given purchase order to purchased, once
+   * every purchase order generated from the request is validated.
+   *
+   * @param purchaseOrder the purchase order being validated
+   * @throws AxelorException
+   */
+  void purchasePurchaseRequestsByPo(PurchaseOrder purchaseOrder) throws AxelorException;
+
+  /**
+   * Unlink the purchase requests (and their lines) from the given canceled purchase order, so that
+   * a new purchase order can be generated from them. Purchased requests go back to accepted.
+   *
+   * @param purchaseOrder the purchase order being canceled
+   * @throws AxelorException
+   */
+  void unlinkPurchaseRequestsFromPo(PurchaseOrder purchaseOrder) throws AxelorException;
+
   /**
    * Set the purchase request status to requested.
    *
@@ -69,4 +89,13 @@ public interface PurchaseRequestWorkflowService {
    * @throws AxelorException
    */
   void draftPurchaseRequest(PurchaseRequest purchaseRequest) throws AxelorException;
+
+  /**
+   * Create a Draft purchase order for an accepted request without changing its status. The request
+   * transitions to STATUS_PURCHASED only when the generated purchase order is validated.
+   *
+   * @param purchaseRequest
+   * @throws AxelorException
+   */
+  void generatePurchaseOrderFromRequest(PurchaseRequest purchaseRequest) throws AxelorException;
 }

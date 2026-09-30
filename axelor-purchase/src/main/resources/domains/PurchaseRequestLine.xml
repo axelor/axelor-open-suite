@@ -13,6 +13,8 @@
     <string name="productTitle" title="Product"/>
     <many-to-one name="purchaseRequest"
       ref="com.axelor.apps.purchase.db.PurchaseRequest" title="Purchase request"/>
+    <many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder"
+      title="Purchase order" copy="false" readonly="true"/>
   </entity>
 
 </domain-models>
