@@ -1,3 +1,0 @@
----
-title: "Forecast recap: fixed the salary flow type failing with a ClassCastException."
-module: axelor-cash-management
