@@ -9,19 +9,34 @@
       <attribute name="onNew" value="cash-management-action-opportunity-group-new"/>
     </extend>
     <extend target="//field[@name='company']">
-      <attribute name="onChange" value="action-opportunity-record-set-bank-details"/>
+      <attribute name="onChange" value="action-opportunity-method-fill-bank-details"/>
+    </extend>
+    <extend target="//field[@name='partner']">
+      <attribute name="onChange" value="action-opportunity-group-partner-onchange"/>
+    </extend>
+    <extend target="//field[@name='contact']">
+      <attribute name="onChange" value="action-opportunity-group-contact-onchange"/>
     </extend>
   </form>
 
   <action-group name="cash-management-action-opportunity-group-new">
     <action name="action-opportunity-group-new"/>
-    <action name="action-opportunity-record-set-bank-details"/>
+    <action name="action-opportunity-method-fill-bank-details"/>
   </action-group>
 
-  <action-record name="action-opportunity-record-set-bank-details"
-    model="com.axelor.apps.crm.db.Opportunity">
-    <field name="bankDetails" expr="eval: company?.defaultBankDetails"
-      if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
-  </action-record>
+  <action-group name="action-opportunity-group-partner-onchange">
+    <action name="action-opportunity-record-set-contact"/>
+    <action name="action-opportunity-method-fill-bank-details"/>
+  </action-group>
+
+  <action-group name="action-opportunity-group-contact-onchange">
+    <action name="action-opportunity-record-set-partner"/>
+    <action name="action-opportunity-method-fill-bank-details"/>
+  </action-group>
+
+  <action-method name="action-opportunity-method-fill-bank-details">
+    <call class="com.axelor.apps.cash.management.web.OpportunityController"
+      method="fillBankDetails"/>
+  </action-method>
 
 </object-views>
