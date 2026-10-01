@@ -801,7 +801,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       needConvert = false;
     }
 
-    if (needConvert) {
+    if (needConvert && invoicePayment != null) {
+      paidAmount =
+          invoiceTermPayment
+              .getCompanyPaidAmount()
+              .divide(
+                  currencyService.getCurrencyConversionRate(
+                      invoiceTerm.getCurrency(), currency, invoicePayment.getPaymentDate()),
+                  currencyScaleService.getScale(invoiceTerm),
+                  RoundingMode.HALF_UP);
+    } else if (needConvert) {
       paidAmount =
           currencyService.getAmountCurrencyConvertedAtDate(
               currency,

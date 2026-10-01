@@ -199,6 +199,17 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
                           RoundingMode.HALF_UP);
             }
             amountPaid = amountPaid.add(computedPaidAmount);
+          } else if (Objects.equals(
+              invoicePayment.getCurrency(), invoice.getCompany().getCurrency())) {
+            amountPaid =
+                amountPaid.add(
+                    paymentAmount.divide(
+                        currencyService.getCurrencyConversionRate(
+                            invoiceCurrency,
+                            invoicePayment.getCurrency(),
+                            invoicePayment.getPaymentDate()),
+                        currencyScaleService.getScale(invoice),
+                        RoundingMode.HALF_UP));
           } else {
             amountPaid =
                 amountPaid.add(

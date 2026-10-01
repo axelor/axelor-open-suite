@@ -26,17 +26,23 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.CurrencyService;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ForeignExchangeGapToolServiceImpl implements ForeignExchangeGapToolService {
 
   protected AccountConfigService accountConfigService;
+  protected CurrencyService currencyService;
 
   @Inject
-  public ForeignExchangeGapToolServiceImpl(AccountConfigService accountConfigService) {
+  public ForeignExchangeGapToolServiceImpl(
+      AccountConfigService accountConfigService, CurrencyService currencyService) {
     this.accountConfigService = accountConfigService;
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -48,14 +54,18 @@ public class ForeignExchangeGapToolServiceImpl implements ForeignExchangeGapTool
   }
 
   @Override
-  public boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine) {
+  public boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine) throws AxelorException {
     return this.isGain(creditMoveLine, debitMoveLine, this.isDebit(creditMoveLine, debitMoveLine));
   }
 
-  protected boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine, boolean isDebit) {
+  protected boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine, boolean isDebit)
+      throws AxelorException {
+    BigDecimal creditCurrencyRate = this.getCurrencyRate(creditMoveLine, debitMoveLine);
+    BigDecimal debitCurrencyRate = this.getCurrencyRate(debitMoveLine, creditMoveLine);
+
     return isDebit
-        ? creditMoveLine.getCurrencyRate().compareTo(debitMoveLine.getCurrencyRate()) > 0
-        : debitMoveLine.getCurrencyRate().compareTo(creditMoveLine.getCurrencyRate()) < 0;
+        ? creditCurrencyRate.compareTo(debitCurrencyRate) > 0
+        : debitCurrencyRate.compareTo(creditCurrencyRate) < 0;
   }
 
   @Override
@@ -64,7 +74,7 @@ public class ForeignExchangeGapToolServiceImpl implements ForeignExchangeGapTool
   }
 
   @Override
-  public int getInvoicePaymentType(Reconcile reconcile) {
+  public int getInvoicePaymentType(Reconcile reconcile) throws AxelorException {
     return this.isGain(reconcile.getCreditMoveLine(), reconcile.getDebitMoveLine())
         ? InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN
         : InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS;
@@ -74,9 +84,38 @@ public class ForeignExchangeGapToolServiceImpl implements ForeignExchangeGapTool
   public boolean checkCurrencies(MoveLine creditMoveLine, MoveLine debitMoveLine) {
     return debitMoveLine != null
         && creditMoveLine != null
-        && !creditMoveLine.getCurrency().equals(creditMoveLine.getCompanyCurrency())
-        && !debitMoveLine.getCurrency().equals(debitMoveLine.getCompanyCurrency())
+        && (this.isSameForeignCurrency(creditMoveLine, debitMoveLine)
+            || this.isSettledInCompanyCurrency(creditMoveLine, debitMoveLine));
+  }
+
+  protected boolean isSameForeignCurrency(MoveLine creditMoveLine, MoveLine debitMoveLine) {
+    return this.isMultiCurrency(creditMoveLine)
+        && this.isMultiCurrency(debitMoveLine)
         && creditMoveLine.getCurrency().equals(debitMoveLine.getCurrency());
+  }
+
+  protected boolean isSettledInCompanyCurrency(MoveLine creditMoveLine, MoveLine debitMoveLine) {
+    boolean isDebit = this.isDebit(creditMoveLine, debitMoveLine);
+    MoveLine paymentMoveLine = isDebit ? debitMoveLine : creditMoveLine;
+    MoveLine invoiceMoveLine = isDebit ? creditMoveLine : debitMoveLine;
+
+    return !this.isMultiCurrency(paymentMoveLine) && this.isMultiCurrency(invoiceMoveLine);
+  }
+
+  @Override
+  public boolean isMultiCurrency(MoveLine moveLine) {
+    return !Objects.equals(moveLine.getCurrency(), moveLine.getCompanyCurrency());
+  }
+
+  @Override
+  public BigDecimal getCurrencyRate(MoveLine moveLine, MoveLine otherMoveLine)
+      throws AxelorException {
+    if (this.isMultiCurrency(moveLine)) {
+      return moveLine.getCurrencyRate();
+    }
+
+    return currencyService.getCurrencyConversionRate(
+        otherMoveLine.getCurrency(), moveLine.getCompanyCurrency(), moveLine.getDate());
   }
 
   @Override
