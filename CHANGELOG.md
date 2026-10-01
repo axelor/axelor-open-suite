@@ -1,3 +1,10 @@
+## [8.2.50] (2026-10-01)
+
+### Fixes
+#### Contract
+
+* Contract: excluded consumption lines when duplicating a contract.
+
 ## [8.2.49] (2026-08-13)
 
 ### Fixes
@@ -2966,6 +2973,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.50]: https://github.com/axelor/axelor-open-suite/compare/v8.2.49...v8.2.50
 [8.2.49]: https://github.com/axelor/axelor-open-suite/compare/v8.2.48...v8.2.49
 [8.2.48]: https://github.com/axelor/axelor-open-suite/compare/v8.2.47...v8.2.48
 [8.2.47]: https://github.com/axelor/axelor-open-suite/compare/v8.2.46...v8.2.47
