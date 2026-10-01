@@ -29,6 +29,7 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -79,6 +80,7 @@ public class LogisticalFormSupplychainServiceImpl implements LogisticalFormSuppl
           I18n.get(SupplychainExceptionMessage.STOCK_MOVE_NOT_FULLY_PACKAGED));
     }
     stockMoveList.forEach(stockMoveServiceSupplychain::updateFullySpreadOverLogisticalFormsFlag);
+    JPA.flush();
 
     StockConfig stockConfig = stockConfigService.getStockConfig(logisticalForm.getCompany());
     if (stockConfig.getRealizeStockMovesUponParcelPalletCollection()) {
