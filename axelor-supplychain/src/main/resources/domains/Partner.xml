@@ -26,6 +26,16 @@
       nullable="true"/>
     <integer name="supplierAssessedReceptionCount" title="Assessed receptions"
       help="Number of receptions of the rolling period with at least one line assessed as compliant or non-compliant. Only these receptions feed the reception conformity rate."/>
+    <decimal name="supplierDisputeAvgResolutionDays"
+      title="Average dispute resolution time (days)"
+      help="Average number of days between the opening and the closing of the supplier disputes closed over the rolling period."
+      nullable="true"/>
+    <decimal name="supplierDisputeFavourableRate" title="Disputes settled in our favour (%)"
+      min="0" max="100"
+      help="Percentage of the supplier disputes closed over the rolling period whose outcome is a credit note or a replacement."
+      nullable="true"/>
+    <integer name="supplierClosedDisputeCount" title="Closed disputes"
+      help="Number of supplier disputes closed over the rolling period. Only these disputes feed the two dispute measures."/>
     <date name="supplierScoreComputedOn" title="Supplier score computed on"/>
     <one-to-many name="supplierScoreHistoryList"
       ref="com.axelor.apps.supplychain.db.SupplierScoreHistory" title="Supplier score history"

@@ -122,4 +122,39 @@
     <series key="cumulativeQty" type="line" title="Cumulative qty"/>
   </chart>
 
+  <action-record model="com.axelor.studio.db.AppSupplychain"
+    name="action-supplier-dispute-chart-record-set-rolling-period">
+    <field name="toDate" expr="eval: __config__.date"/>
+    <field name="fromDate"
+      expr="eval: __config__.date.minusMonths(__config__.app.getApp('supplychain')?.getSupplierScoreRollingMonths() ?: 12)"/>
+  </action-record>
+
+  <chart onInit="action-supplier-dispute-chart-record-set-rolling-period"
+    name="chart.supplier.dispute.count.per.supplier" title="Supplier disputes per supplier">
+    <search-fields>
+      <field type="date" name="fromDate" title="From Date" x-required="true"/>
+      <field type="date" name="toDate" title="To Date" x-required="true"/>
+    </search-fields>
+    <dataset type="jpql">
+      SELECT
+      COUNT(self.id) AS _count,
+      self.supplierPartner.simpleFullName AS
+      _supplier
+      FROM
+      SupplierDispute self
+      WHERE
+      DATE(self.openingDateTime) &gt;= DATE(:fromDate)
+      AND
+      DATE(self.openingDateTime) &lt;= DATE(:toDate)
+      AND
+      self.statusSelect != 6
+      GROUP BY
+      self.supplierPartner.simpleFullName
+      ORDER BY
+      self.supplierPartner.simpleFullName
+    </dataset>
+    <category key="_supplier" type="text" title="Supplier"/>
+    <series key="_count" type="bar" title="Disputes"/>
+  </chart>
+
 </object-views>

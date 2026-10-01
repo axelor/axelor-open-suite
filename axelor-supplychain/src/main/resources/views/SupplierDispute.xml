@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <grid name="supplier-dispute-grid" title="Supplier disputes"
+    model="com.axelor.apps.supplychain.db.SupplierDispute" orderBy="-openingDateTime">
+    <field name="disputeSeq" width="120"/>
+    <field name="supplierPartner"/>
+    <field name="typeSelect"/>
+    <field name="prioritySelect" widget="single-select"/>
+    <field name="statusSelect" widget="single-select"/>
+    <field name="assignedToUser"/>
+    <field name="supplierResponseDueDate"/>
+    <field name="openingDateTime"/>
+  </grid>
+
+  <grid name="supplier-dispute-partner-grid" title="Supplier disputes"
+    model="com.axelor.apps.supplychain.db.SupplierDispute" orderBy="-openingDateTime">
+    <field name="disputeSeq" width="120"/>
+    <field name="typeSelect"/>
+    <field name="prioritySelect" widget="single-select"/>
+    <field name="statusSelect" widget="single-select"/>
+    <field name="assignedToUser"/>
+    <field name="supplierResponseDueDate"/>
+    <field name="openingDateTime"/>
+  </grid>
+
+  <form name="supplier-dispute-form" title="Supplier dispute"
+    model="com.axelor.apps.supplychain.db.SupplierDispute"
+    onNew="action-supplier-dispute-group-on-new"
+    onLoad="action-supplier-dispute-method-set-pfp-litigation-visibility">
+    <panel name="statusSelectPanel" title="Status">
+      <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
+    </panel>
+    <panel name="mainPanel" readonlyIf="statusSelect >= 5">
+      <field name="disputeSeq" showIf="disputeSeq"/>
+      <field name="company" canEdit="false"/>
+      <field name="supplierPartner" canEdit="false"
+        domain="self.isContact = false AND self.isSupplier = true AND :company MEMBER OF self.companySet"
+        form-view="partner-form" grid-view="partner-grid"/>
+      <field name="contactPartner" canEdit="false"
+        domain="self.isContact = true AND EXISTS (SELECT 1 FROM Partner part WHERE part = :supplierPartner AND self MEMBER OF part.contactPartnerSet)"
+        form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+      <field name="typeSelect"/>
+      <field name="prioritySelect" widget="single-select"/>
+      <field name="assignedToUser" canEdit="false"/>
+      <field name="supplierResponseDueDate"/>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel name="detailsPanel" title="Details" readonlyIf="statusSelect >= 5">
+        <field name="description" showTitle="false" colSpan="12" height="6" widget="html"/>
+      </panel>
+      <panel name="linksPanel" title="Links" readonlyIf="statusSelect >= 5">
+        <field name="purchaseOrder" canEdit="false"
+          domain="self.supplierPartner = :supplierPartner AND self.company = :company"/>
+        <field name="stockMove" canEdit="false"
+          domain="self.partner = :supplierPartner AND self.company = :company AND self.typeSelect = 3"/>
+        <field name="invoice" canEdit="false"
+          domain="self.partner = :supplierPartner AND self.company = :company AND self.operationTypeSelect IN (1, 2)"/>
+        <field name="invoice.pfpValidateStatusSelect" title="PFP Status" readonly="true"
+          showIf="invoice" if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+        <field name="product" canEdit="false" domain="self.dtype = 'Product'"/>
+        <field name="disputedQty"/>
+        <field name="disputedAmount"/>
+      </panel>
+      <panel name="resolutionPanel" title="Resolution">
+        <panel name="resolutionDetailsPanel" colSpan="12" readonlyIf="statusSelect >= 5">
+          <field name="resolutionOutcomeSelect" requiredIf="statusSelect == 4"/>
+          <field name="resolutionDescription" colSpan="12" height="6" widget="html"/>
+        </panel>
+        <panel name="stampsPanel" title="History" colSpan="12">
+          <field name="openingByUser"/>
+          <field name="openingDateTime"/>
+          <field name="investigationByUser"/>
+          <field name="investigationDateTime"/>
+          <field name="awaitingResponseByUser"/>
+          <field name="awaitingResponseDateTime"/>
+          <field name="resolutionByUser"/>
+          <field name="resolutionDateTime"/>
+          <field name="closingByUser"/>
+          <field name="closingDateTime"/>
+          <field name="cancellationByUser"/>
+          <field name="cancellationDateTime"/>
+        </panel>
+      </panel>
+    </panel-tabs>
+    <panel sidebar="true" name="actionsPanel" title="Actions" hideIf="statusSelect >= 5">
+      <button name="sendToSupplierBtn" title="Send to supplier"
+        showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 3)"
+        onClick="save,action-supplier-dispute-method-send-to-supplier"/>
+      <button name="investigateBtn" title="Start investigation"
+        showIf="statusSelect == 1 || statusSelect == 3"
+        onClick="save,action-supplier-dispute-method-investigate"/>
+      <button name="awaitSupplierResponseBtn" title="Await supplier response"
+        showIf="statusSelect == 1 || statusSelect == 2"
+        onClick="save,action-supplier-dispute-method-await-supplier-response"/>
+      <button name="resolveBtn" title="Resolve"
+        showIf="statusSelect == 2 || statusSelect == 3"
+        onClick="save,action-supplier-dispute-method-resolve"/>
+      <button name="closeBtn" title="Close" showIf="statusSelect == 4"
+        onClick="save,action-supplier-dispute-method-close"/>
+      <button name="cancelBtn" title="Cancel" showIf="statusSelect &lt;= 3"
+        prompt="Are you sure you want to cancel this supplier dispute?"
+        onClick="save,action-supplier-dispute-method-cancel"/>
+      <button name="pfpLitigationBtn" title="Put invoice in PFP litigation" hidden="true"
+        prompt="Are you sure you want to put the linked invoice in PFP litigation?"
+        onClick="save,action-supplier-dispute-view-invoice-refusal-to-pay"
+        if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-group name="action-supplier-dispute-group-on-new">
+    <action name="action-supplier-dispute-record-default"/>
+    <action name="action-supplier-dispute-record-prefill"/>
+    <action name="action-quality-supplier-dispute-record-prefill"
+      if="__config__.app.isApp('quality')"/>
+    <action name="action-contract-supplier-dispute-record-prefill"
+      if="__config__.app.isApp('contract')"/>
+  </action-group>
+
+  <action-record name="action-supplier-dispute-record-default"
+    model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <field name="company" expr="eval: __user__.activeCompany"/>
+    <field name="assignedToUser" expr="eval: __user__"/>
+  </action-record>
+
+  <action-record name="action-supplier-dispute-record-prefill"
+    model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <field name="supplierPartner" expr="eval: __repo__(Partner).find(_supplierPartnerId)"
+      if="_supplierPartnerId != null"/>
+    <field name="contactPartner" expr="eval: __repo__(Partner).find(_contactPartnerId)"
+      if="_contactPartnerId != null"/>
+    <field name="purchaseOrder" expr="eval: __repo__(PurchaseOrder).find(_purchaseOrderId)"
+      if="_purchaseOrderId != null"/>
+    <field name="stockMove" expr="eval: __repo__(StockMove).find(_stockMoveId)"
+      if="_stockMoveId != null"/>
+    <field name="invoice" expr="eval: __repo__(Invoice).find(_invoiceId)"
+      if="_invoiceId != null"/>
+    <field name="product" expr="eval: __repo__(Product).find(_productId)"
+      if="_productId != null"/>
+    <field name="disputedQty" expr="eval: _disputedQty" if="_disputedQty != null"/>
+    <field name="typeSelect" expr="eval: _typeSelect" if="_typeSelect != null"/>
+  </action-record>
+
+  <action-view name="action-stock-move-view-supplier-disputes" title="Supplier disputes"
+    model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <view type="grid" name="supplier-dispute-grid"/>
+    <view type="form" name="supplier-dispute-form"/>
+    <domain>self.stockMove.id = :_stockMoveId</domain>
+    <context name="_stockMoveId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-stock-move-view-create-supplier-dispute"
+    title="Supplier dispute" model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <view type="form" name="supplier-dispute-form"/>
+    <context name="_supplierPartnerId" expr="eval: partner?.id"/>
+    <context name="_stockMoveId" expr="eval: id"/>
+    <context name="_purchaseOrderId"
+      expr="eval: purchaseOrderSet?.size() == 1 ? purchaseOrderSet[0].id : null"/>
+  </action-view>
+
+  <action-view name="action-invoice-view-supplier-disputes" title="Supplier disputes"
+    model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <view type="grid" name="supplier-dispute-grid"/>
+    <view type="form" name="supplier-dispute-form"/>
+    <domain>self.invoice.id = :_invoiceId</domain>
+    <context name="_invoiceId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-invoice-view-create-supplier-dispute"
+    title="Supplier dispute" model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <view type="form" name="supplier-dispute-form"/>
+    <context name="_supplierPartnerId" expr="eval: partner?.id"/>
+    <context name="_invoiceId" expr="eval: id"/>
+    <context name="_purchaseOrderId" expr="eval: purchaseOrder?.id"/>
+  </action-view>
+
+  <action-view name="action-partner-view-supplier-disputes" title="Supplier disputes"
+    model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <view type="grid" name="supplier-dispute-partner-grid"/>
+    <view type="form" name="supplier-dispute-form"/>
+    <domain>self.supplierPartner.id = :_partnerId</domain>
+    <context name="_partnerId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-partner-view-create-supplier-dispute"
+    title="Supplier dispute" model="com.axelor.apps.supplychain.db.SupplierDispute">
+    <view type="form" name="supplier-dispute-form"/>
+    <context name="_supplierPartnerId" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-supplier-dispute-method-investigate">
+    <call class="com.axelor.apps.supplychain.web.SupplierDisputeController"
+      method="investigate"/>
+  </action-method>
+
+  <action-method name="action-supplier-dispute-method-await-supplier-response">
+    <call class="com.axelor.apps.supplychain.web.SupplierDisputeController"
+      method="awaitSupplierResponse"/>
+  </action-method>
+
+  <action-method name="action-supplier-dispute-method-resolve">
+    <call class="com.axelor.apps.supplychain.web.SupplierDisputeController" method="resolve"/>
+  </action-method>
+
+  <action-method name="action-supplier-dispute-method-close">
+    <call class="com.axelor.apps.supplychain.web.SupplierDisputeController" method="close"/>
+  </action-method>
+
+  <action-method name="action-supplier-dispute-method-cancel">
+    <call class="com.axelor.apps.supplychain.web.SupplierDisputeController" method="cancel"/>
+  </action-method>
+
+  <action-method name="action-supplier-dispute-method-send-to-supplier">
+    <call class="com.axelor.apps.supplychain.web.SupplierDisputeController"
+      method="sendToSupplier"/>
+  </action-method>
+
+  <action-method name="action-supplier-dispute-method-set-pfp-litigation-visibility">
+    <call class="com.axelor.apps.supplychain.web.SupplierDisputeController"
+      method="setPfpLitigationVisibility"/>
+  </action-method>
+
+  <action-view name="action-supplier-dispute-view-invoice-refusal-to-pay"
+    title="Cancellation" model="com.axelor.apps.account.db.Invoice">
+    <view type="form" name="invoice-refusal-to-pay-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: invoice.id"/>
+    <context name="_xApplicationType" expr="com.axelor.apps.account.db.Invoice"/>
+  </action-view>
+
+  <search-filters name="supplier-dispute-filters"
+    model="com.axelor.apps.supplychain.db.SupplierDispute" title="Supplier dispute filters">
+    <filter name="supplier-dispute-filters-open-disputes" title="Open disputes">
+      <domain>self.statusSelect IN (1, 2, 3)</domain>
+    </filter>
+    <filter name="supplier-dispute-filters-my-disputes" title="My disputes">
+      <domain>self.assignedToUser.id = :_userId</domain>
+    </filter>
+    <filter name="supplier-dispute-filters-awaiting-response-past-due"
+      title="Awaiting response past due">
+      <domain>self.statusSelect = 3 AND self.supplierResponseDueDate &lt; :__date__</domain>
+    </filter>
+  </search-filters>
+
+</object-views>

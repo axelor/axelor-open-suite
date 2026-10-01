@@ -29,6 +29,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplierScoreHistory;
 import com.axelor.apps.supplychain.db.repo.SupplierScoreHistoryRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.supplierdispute.SupplierDisputeIndicatorService;
 import com.axelor.db.JPA;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.persist.Transactional;
@@ -68,17 +69,20 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
   protected final SupplierScoreHistoryRepository supplierScoreHistoryRepository;
   protected final AppSupplychainService appSupplychainService;
   protected final AppBaseService appBaseService;
+  protected final SupplierDisputeIndicatorService supplierDisputeIndicatorService;
 
   @Inject
   public SupplierScoreServiceImpl(
       PartnerRepository partnerRepository,
       SupplierScoreHistoryRepository supplierScoreHistoryRepository,
       AppSupplychainService appSupplychainService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      SupplierDisputeIndicatorService supplierDisputeIndicatorService) {
     this.partnerRepository = partnerRepository;
     this.supplierScoreHistoryRepository = supplierScoreHistoryRepository;
     this.appSupplychainService = appSupplychainService;
     this.appBaseService = appBaseService;
+    this.supplierDisputeIndicatorService = supplierDisputeIndicatorService;
   }
 
   @Override
@@ -98,6 +102,7 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
             appSupplychainService.getAppSupplychain().getSupplierScoreRollingMonths());
 
     computeRates(partner, fromDate, toDate);
+    supplierDisputeIndicatorService.computeIndicators(partner, fromDate, toDate);
     partner.setSupplierScore(computeGlobalScore(partner));
     partner.setSupplierScoreComputedOn(toDate);
     partnerRepository.save(partner);
@@ -132,6 +137,11 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
     supplierScoreHistory.setSupplierConformityRate(partner.getSupplierConformityRate());
     supplierScoreHistory.setSupplierAssessedReceptionCount(
         partner.getSupplierAssessedReceptionCount());
+    supplierScoreHistory.setSupplierDisputeAvgResolutionDays(
+        partner.getSupplierDisputeAvgResolutionDays());
+    supplierScoreHistory.setSupplierDisputeFavourableRate(
+        partner.getSupplierDisputeFavourableRate());
+    supplierScoreHistory.setSupplierClosedDisputeCount(partner.getSupplierClosedDisputeCount());
   }
 
   protected boolean isSupplierScoreEnabled() {

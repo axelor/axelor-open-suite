@@ -108,6 +108,7 @@
     id="supplychain.sequence.generic.code.select">
     <option value="mrp">MRP</option>
     <option value="packaging">Packaging</option>
+    <option value="supplierDispute">Supplier dispute</option>
   </selection>
 
   <selection name="supplychain.estimated.date.select">
@@ -254,6 +255,38 @@
     <option value="1" color="blue">Draft</option>
     <option value="2" color="green">Stock revaluation computed</option>
     <option value="3" color="brown">Stock revaluation updated</option>
+  </selection>
+
+  <selection name="supplychain.supplier.dispute.type.select">
+    <option value="1">Quality</option>
+    <option value="2">Quantity</option>
+    <option value="3">Delay</option>
+    <option value="4">Price</option>
+    <option value="5">Other</option>
+  </selection>
+
+  <selection name="supplychain.supplier.dispute.priority.select">
+    <option value="1" color="green">Low</option>
+    <option value="2" color="blue">Normal</option>
+    <option value="3" color="orange">High</option>
+    <option value="4" color="red">Urgent</option>
+  </selection>
+
+  <selection name="supplychain.supplier.dispute.status.select">
+    <option value="1" color="blue">Open</option>
+    <option value="2" color="purple">Under investigation</option>
+    <option value="3" color="orange">Awaiting supplier response</option>
+    <option value="4" color="green">Resolved</option>
+    <option value="5" color="grey">Closed</option>
+    <option value="6" color="red">Cancelled</option>
+  </selection>
+
+  <selection name="supplychain.supplier.dispute.resolution.outcome.select">
+    <option value="1">Accepted</option>
+    <option value="2">Refused</option>
+    <option value="3">Partially accepted</option>
+    <option value="4">Credit note</option>
+    <option value="5">Replacement</option>
   </selection>
 
 </object-views>

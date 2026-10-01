@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+
+  <entity name="PurchaseConfig" cacheable="true">
+    <many-to-one name="supplierDisputeOpeningMessageTemplate"
+      title="Supplier dispute opening message template" ref="com.axelor.message.db.Template"
+      help="This configuration defines the email template proposed by the Send to supplier button while the supplier dispute is Open."/>
+    <many-to-one name="supplierDisputeAwaitingResponseMessageTemplate"
+      title="Supplier dispute awaiting response message template"
+      ref="com.axelor.message.db.Template"
+      help="This configuration defines the email template proposed by the Send to supplier button while the supplier dispute is Awaiting supplier response."/>
+
+    <track>
+      <field name="supplierDisputeOpeningMessageTemplate" on="UPDATE"/>
+      <field name="supplierDisputeAwaitingResponseMessageTemplate" on="UPDATE"/>
+    </track>
+  </entity>
+
+</domain-models>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
+
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+
+  <entity name="SupplierDispute">
+    <string name="disputeSeq" title="Reference" namecolumn="true" readonly="true"
+      copy="false"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true"/>
+    <many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Supplier" required="true"/>
+    <many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Contact"/>
+    <many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder"
+      title="Purchase order"/>
+    <many-to-one name="stockMove" ref="com.axelor.apps.stock.db.StockMove"
+      title="Reception"/>
+    <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <decimal name="disputedQty" title="Disputed quantity" precision="20" scale="10"/>
+    <decimal name="disputedAmount" title="Disputed amount" precision="20" scale="3"/>
+    <integer name="typeSelect" title="Type"
+      selection="supplychain.supplier.dispute.type.select"/>
+    <integer name="prioritySelect" title="Priority"
+      selection="supplychain.supplier.dispute.priority.select" default="2"/>
+    <integer name="statusSelect" title="Status"
+      selection="supplychain.supplier.dispute.status.select" readonly="true" default="1"
+      copy="false"/>
+    <string name="description" title="Description" large="true"/>
+    <many-to-one name="assignedToUser" ref="com.axelor.auth.db.User" title="Assigned to"/>
+    <date name="supplierResponseDueDate" title="Supplier response due date"/>
+    <string name="resolutionDescription" title="Resolution" large="true" copy="false"/>
+    <integer name="resolutionOutcomeSelect" title="Resolution outcome"
+      selection="supplychain.supplier.dispute.resolution.outcome.select" copy="false"/>
+
+    <many-to-one name="openingByUser" ref="com.axelor.auth.db.User" title="Opened by"
+      readonly="true" copy="false"/>
+    <datetime name="openingDateTime" title="Opening date" readonly="true" copy="false"/>
+    <many-to-one name="investigationByUser" ref="com.axelor.auth.db.User"
+      title="Investigation started by" readonly="true" copy="false"/>
+    <datetime name="investigationDateTime" title="Investigation date" readonly="true"
+      copy="false"/>
+    <many-to-one name="awaitingResponseByUser" ref="com.axelor.auth.db.User"
+      title="Sent for supplier response by" readonly="true" copy="false"/>
+    <datetime name="awaitingResponseDateTime" title="Awaiting supplier response date"
+      readonly="true" copy="false"/>
+    <many-to-one name="resolutionByUser" ref="com.axelor.auth.db.User"
+      title="Resolved by" readonly="true" copy="false"/>
+    <datetime name="resolutionDateTime" title="Resolution date" readonly="true"
+      copy="false"/>
+    <many-to-one name="closingByUser" ref="com.axelor.auth.db.User" title="Closed by"
+      readonly="true" copy="false"/>
+    <datetime name="closingDateTime" title="Closing date" readonly="true" copy="false"/>
+    <many-to-one name="cancellationByUser" ref="com.axelor.auth.db.User"
+      title="Cancelled by" readonly="true" copy="false"/>
+    <datetime name="cancellationDateTime" title="Cancellation date" readonly="true"
+      copy="false"/>
+
+    <extra-code>
+   		<![CDATA[
+		  public static final int TYPE_QUALITY = 1;
+		  public static final int TYPE_QUANTITY = 2;
+		  public static final int TYPE_DELAY = 3;
+		  public static final int TYPE_PRICE = 4;
+		  public static final int TYPE_OTHER = 5;
+
+		  public static final int PRIORITY_LOW = 1;
+		  public static final int PRIORITY_NORMAL = 2;
+		  public static final int PRIORITY_HIGH = 3;
+		  public static final int PRIORITY_URGENT = 4;
+
+		  public static final int STATUS_OPEN = 1;
+		  public static final int STATUS_UNDER_INVESTIGATION = 2;
+		  public static final int STATUS_AWAITING_SUPPLIER_RESPONSE = 3;
+		  public static final int STATUS_RESOLVED = 4;
+		  public static final int STATUS_CLOSED = 5;
+		  public static final int STATUS_CANCELLED = 6;
+
+		  public static final int OUTCOME_ACCEPTED = 1;
+		  public static final int OUTCOME_REFUSED = 2;
+		  public static final int OUTCOME_PARTIALLY_ACCEPTED = 3;
+		  public static final int OUTCOME_CREDIT_NOTE = 4;
+		  public static final int OUTCOME_REPLACEMENT = 5;
+   		]]>
+    </extra-code>
+
+    <track>
+      <field name="disputeSeq"/>
+      <field name="supplierPartner"/>
+      <field name="typeSelect"/>
+      <field name="prioritySelect"/>
+      <field name="statusSelect" on="UPDATE"/>
+      <field name="resolutionOutcomeSelect"/>
+      <message if="true" on="CREATE">Supplier dispute created</message>
+      <message if="statusSelect == 1" tag="important">Open</message>
+      <message if="statusSelect == 2" tag="info">Under investigation</message>
+      <message if="statusSelect == 3" tag="warning">Awaiting supplier response</message>
+      <message if="statusSelect == 4" tag="success">Resolved</message>
+      <message if="statusSelect == 5" tag="success">Closed</message>
+      <message if="statusSelect == 6" tag="warning">Cancelled</message>
+    </track>
+  </entity>
+
+</domain-models>
