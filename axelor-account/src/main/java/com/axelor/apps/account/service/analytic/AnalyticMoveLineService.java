@@ -104,6 +104,8 @@ public interface AnalyticMoveLineService {
   AnalyticMoveLine generateAnalyticMoveLine(
       AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount, BigDecimal percentage);
 
+  List<AnalyticMoveLine> getEffectiveAnalyticMoveLines(List<AnalyticMoveLine> analyticMoveLineList);
+
   String getAnalyticAxisDomain(Company company) throws AxelorException;
 
   String getAnalyticJournalDomain(Company company) throws AxelorException;

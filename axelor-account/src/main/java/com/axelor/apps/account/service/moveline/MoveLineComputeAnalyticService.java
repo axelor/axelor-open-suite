@@ -51,4 +51,10 @@ public interface MoveLineComputeAnalyticService {
 
   void copyAnalyticsDataFromMoveLine(
       MoveLine oldMoveLine, MoveLine newMoveLine, BigDecimal newAmount);
+
+  void copyAnalyticsDataFromMoveLine(
+      MoveLine oldMoveLine,
+      List<AnalyticMoveLine> analyticMoveLineList,
+      MoveLine newMoveLine,
+      BigDecimal newAmount);
 }

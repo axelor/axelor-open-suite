@@ -61,6 +61,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -468,6 +469,31 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     }
 
     return analyticMoveLineRepository.save(newAnalyticmoveLine);
+  }
+
+  @Override
+  public List<AnalyticMoveLine> getEffectiveAnalyticMoveLines(
+      List<AnalyticMoveLine> analyticMoveLineList) {
+    if (CollectionUtils.isEmpty(analyticMoveLineList)) {
+      return new ArrayList<>();
+    }
+
+    Set<AnalyticMoveLine> reversedAnalyticMoveLineSet =
+        analyticMoveLineList.stream()
+            .filter(
+                analyticMoveLine ->
+                    analyticMoveLine.getSubTypeSelect()
+                        == AnalyticMoveLineRepository.SUB_TYPE_REVERSE)
+            .map(AnalyticMoveLine::getOriginAnalyticMoveLine)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+
+    return analyticMoveLineList.stream()
+        .filter(
+            analyticMoveLine ->
+                analyticMoveLine.getSubTypeSelect() != AnalyticMoveLineRepository.SUB_TYPE_REVERSE
+                    && !reversedAnalyticMoveLineSet.contains(analyticMoveLine))
+        .collect(Collectors.toList());
   }
 
   @Override
