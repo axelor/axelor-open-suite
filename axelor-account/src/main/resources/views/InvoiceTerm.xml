@@ -756,7 +756,7 @@
 
   <form name="invoice-term-pfp-partial-reason-wizard" title="PFP Partial Acceptance"
     model="com.axelor.apps.account.db.InvoiceTerm"
-    onLoad="action-invoice-term-attrs-set-initial-pfp-amount-and-from-invoice-term">
+    onLoad="action-invoice-term-attrs-set-initial-pfp-amount">
     <panel name="mainPanel">
       <field name="$grantedAmount" title="Granted amount" type="decimal" required="true"
         validIf="$grantedAmount > 0 &amp;&amp; $number($grantedAmount) &lt; $number(amount)"/>
@@ -764,7 +764,6 @@
       <button name="pfpPartialReasonConfirmBtn" title="Confirm Partial PFP" colSpan="12"
         onClick="action-invoice-term-method-pfp-partial-reason-confirm-btn"/>
       <field name="amount" hidden="true"/>
-      <field name="$fromInvoiceTerm" hidden="true"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
@@ -979,7 +978,7 @@
   <action-validate name="action-invoice-term-validate-pfp-stock-move">
     <alert
       message="At least one stock move is in litigation, do you really want to validate passed for payment ?"
-      if="invoice &amp;&amp; __repo__(StockMove).all().filter(' ? MEMBER OF self.invoiceSet and self.pfpValidateStatusSelect = 3',invoice).fetch()?.size &gt;= 1"/>
+      if="invoice &amp;&amp; __repo__(StockMove).all().filter(' ? MEMBER OF self.invoiceSet and self.pfpValidateStatusSelect = 3',invoice).count() &gt; 0"/>
   </action-validate>
 
   <action-validate name="action-invoice-term-move-validate-before-pfp">
@@ -1086,7 +1085,6 @@
     <view-param name="popup-save" value="false"/>
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval: __this__.id"/>
-    <context name="_fromParent" expr="eval: __parent__ != null"/>
   </action-view>
 
   <action-view name="action-invoice-term-view-payment-session-dashlet"
@@ -1123,10 +1121,8 @@
       method="setBankDetailsDomain"/>
   </action-method>
 
-  <action-attrs
-    name="action-invoice-term-attrs-set-initial-pfp-amount-and-from-invoice-term"
+  <action-attrs name="action-invoice-term-attrs-set-initial-pfp-amount"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <attribute name="value" for="$grantedAmount" expr="eval: amountRemaining"/>
-    <attribute name="value" for="$fromInvoiceTerm" expr="eval: !_fromParent"/>
   </action-attrs>
 </object-views>

@@ -73,4 +73,10 @@ public class InvoiceGlobalDiscountServiceImpl extends GlobalDiscountAbstractServ
   public void computePriceBeforeGlobalDiscount(GlobalDiscounter globalDiscounter) {
     super.computePriceBeforeGlobalDiscount(globalDiscounter);
   }
+
+  @Override
+  public void resetGlobalDiscount(Invoice invoice) throws AxelorException {
+    resetGlobalDiscountOnLines(invoice);
+    compute(invoice);
+  }
 }

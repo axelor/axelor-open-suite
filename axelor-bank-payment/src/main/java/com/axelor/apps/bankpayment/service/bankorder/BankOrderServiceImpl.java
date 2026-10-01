@@ -26,11 +26,14 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
+import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderAddressService;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;
+import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800108Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile008Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100103Service;
+import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100109Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160DCOService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB320XCTService;
@@ -61,18 +64,21 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected BankDetailsService bankDetailsService;
   protected AppBankPaymentService appBankPaymentService;
   protected BankOrderEncryptionService bankOrderEncryptionService;
+  protected BankOrderAddressService bankOrderAddressService;
 
   @Inject
   public BankOrderServiceImpl(
       BankOrderRepository bankOrderRepository,
       BankDetailsService bankDetailsService,
       AppBankPaymentService appBankPaymentService,
-      BankOrderEncryptionService bankOrderEncryptionService) {
+      BankOrderEncryptionService bankOrderEncryptionService,
+      BankOrderAddressService bankOrderAddressService) {
 
     this.bankOrderRepository = bankOrderRepository;
     this.bankDetailsService = bankDetailsService;
     this.appBankPaymentService = appBankPaymentService;
     this.bankOrderEncryptionService = bankOrderEncryptionService;
+    this.bankOrderAddressService = bankOrderAddressService;
   }
 
   public void processBankOrderStatus(BankOrder bankOrder, PaymentMode paymentMode)
@@ -141,6 +147,8 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     BankOrderFileFormat bankOrderFileFormat = bankOrder.getBankOrderFileFormat();
 
+    bankOrderAddressService.checkAddresses(bankOrder);
+
     File file = null;
 
     switch (bankOrderFileFormat.getOrderFileFormatSelect()) {
@@ -150,6 +158,10 @@ public class BankOrderServiceImpl implements BankOrderService {
 
       case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_03_SCT:
         file = new BankOrderFile00100103Service(bankOrder).generateFile();
+        break;
+
+      case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_09_SCT:
+        file = new BankOrderFile00100109Service(bankOrder).generateFile();
         break;
 
       case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB320_XCT:
@@ -185,6 +197,18 @@ public class BankOrderServiceImpl implements BankOrderService {
       case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SBB:
         file =
             new BankOrderFile00800102Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_SBB)
+                .generateFile();
+        break;
+
+      case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_08_SDD:
+        file =
+            new BankOrderFile00800108Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_CORE)
+                .generateFile();
+        break;
+
+      case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_08_SBB:
+        file =
+            new BankOrderFile00800108Service(bankOrder, BankOrderFile008Service.SEPA_TYPE_SBB)
                 .generateFile();
         break;
 

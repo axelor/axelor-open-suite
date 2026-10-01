@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed foreign exchange difference understated by 0.01 leaving a reconcile difference on a fully paid invoice in currency."
+module: axelor-account

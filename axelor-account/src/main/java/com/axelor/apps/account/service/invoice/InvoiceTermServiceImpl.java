@@ -801,7 +801,16 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       needConvert = false;
     }
 
-    if (needConvert) {
+    if (needConvert && invoicePayment != null) {
+      paidAmount =
+          invoiceTermPayment
+              .getCompanyPaidAmount()
+              .divide(
+                  currencyService.getCurrencyConversionRate(
+                      invoiceTerm.getCurrency(), currency, invoicePayment.getPaymentDate()),
+                  currencyScaleService.getScale(invoiceTerm),
+                  RoundingMode.HALF_UP);
+    } else if (needConvert) {
       paidAmount =
           currencyService.getAmountCurrencyConvertedAtDate(
               currency,
@@ -841,6 +850,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
               .add(invoiceTermPayment.getFinancialDiscountAmount());
 
       if (paidAmount.signum() != 0 && companyPaidAmount.signum() != 0) {
+        InvoicePayment invoicePayment = invoiceTermPayment.getInvoicePayment();
+        if (invoicePayment != null
+            && !invoicePayment.getCurrency().equals(invoiceTerm.getCurrency())) {
+          paidAmount = this.manageForeignExchange(invoiceTermPayment, invoicePayment, paidAmount);
+        }
+
         invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().add(paidAmount));
         invoiceTerm.setCompanyAmountRemaining(
             invoiceTerm.getCompanyAmountRemaining().add(companyPaidAmount));

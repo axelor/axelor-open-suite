@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.ChequeRejectionManagementRepository;
 import com.axelor.apps.account.db.repo.ChequeRejectionRepository;
+import com.axelor.apps.account.db.repo.CompanyAccountRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryAccountRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.db.repo.DepositSlipAccountRepository;
@@ -514,6 +515,7 @@ import com.axelor.apps.account.service.umr.UmrService;
 import com.axelor.apps.account.service.umr.UmrServiceImpl;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.account.util.TaxAccountToolServiceImpl;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
@@ -1103,5 +1105,6 @@ public class AccountModule extends AxelorModule {
     bind(MoveTemplateLineAnalyticService.class).to(MoveTemplateLineAnalyticServiceImpl.class);
     bind(MoveTemplateLineComputeAnalyticService.class)
         .to(MoveTemplateLineComputeAnalyticServiceImpl.class);
+    bind(CompanyRepository.class).to(CompanyAccountRepository.class);
   }
 }

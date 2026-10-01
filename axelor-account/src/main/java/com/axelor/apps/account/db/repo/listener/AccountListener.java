@@ -24,13 +24,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.inject.Beans;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import org.apache.commons.collections.CollectionUtils;
 
 public class AccountListener {
 
   @PrePersist
   @PreUpdate
   protected void checkTaxes(Account account) throws AxelorException {
-    if (account != null && account.getDefaultTaxSet() != null) {
+    if (account != null && CollectionUtils.isNotEmpty(account.getDefaultTaxSet())) {
       TaxAccountService taxAccountService = Beans.get(TaxAccountService.class);
       taxAccountService.checkTaxesNotOnlyNonDeductibleTaxes(account.getDefaultTaxSet());
       taxAccountService.checkSumOfNonDeductibleTaxes(account.getDefaultTaxSet());

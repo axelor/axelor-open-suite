@@ -169,10 +169,19 @@ public class AnalyticLineComputeServiceImpl implements AnalyticLineComputeServic
   @Override
   public void copyAnalyticMoveLines(
       AnalyticLine oldLine, AnalyticLine newLine, BigDecimal newLineAmount) {
+    copyAnalyticMoveLines(oldLine, oldLine.getAnalyticMoveLineList(), newLine, newLineAmount);
+  }
+
+  @Override
+  public void copyAnalyticMoveLines(
+      AnalyticLine oldLine,
+      List<AnalyticMoveLine> analyticMoveLineList,
+      AnalyticLine newLine,
+      BigDecimal newLineAmount) {
     initializeAnalyticFields(oldLine, newLine);
 
-    if (oldLine.getAnalyticMoveLineList() != null) {
-      for (AnalyticMoveLine oldAnalyticMoveLine : oldLine.getAnalyticMoveLineList()) {
+    if (analyticMoveLineList != null) {
+      for (AnalyticMoveLine oldAnalyticMoveLine : analyticMoveLineList) {
         AnalyticMoveLine analyticMoveLine =
             analyticMoveLineRepository.copy(oldAnalyticMoveLine, false);
 

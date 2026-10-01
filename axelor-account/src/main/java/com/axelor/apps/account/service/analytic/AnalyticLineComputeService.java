@@ -46,4 +46,10 @@ public interface AnalyticLineComputeService {
       AnalyticLine analyticLine, List<AnalyticMoveLine> analyticMoveLineList);
 
   void copyAnalyticMoveLines(AnalyticLine oldLine, AnalyticLine newLine, BigDecimal newLineAmount);
+
+  void copyAnalyticMoveLines(
+      AnalyticLine oldLine,
+      List<AnalyticMoveLine> analyticMoveLineList,
+      AnalyticLine newLine,
+      BigDecimal newLineAmount);
 }

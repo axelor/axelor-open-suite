@@ -1,0 +1,8 @@
+---
+title: "Base: fixed the user preferences screen hiding the change password, two-factor authentication, API keys and device blocks."
+module: axelor-base
+developer: |
+  user-preferences-form is now an extension of the platform view instead of a full
+  redefinition. Platform fields (image, email, language, theme, singleTab, noHelp) are
+  reused, so userPreferencesPanel holds only AOS-specific fields. Extensions anchoring on
+  userPreferencesPanel/field[@name='image'] must be re-anchored.

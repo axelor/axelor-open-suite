@@ -22,19 +22,24 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ForeignExchangeGapToolService {
 
   List<Integer> getForeignExchangeTypes();
 
-  boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine);
+  boolean isGain(MoveLine creditMoveLine, MoveLine debitMoveLine) throws AxelorException;
 
   boolean isDebit(MoveLine creditMoveLine, MoveLine debitMoveLine);
 
-  int getInvoicePaymentType(Reconcile reconcile);
+  int getInvoicePaymentType(Reconcile reconcile) throws AxelorException;
 
   boolean checkCurrencies(MoveLine creditMoveLine, MoveLine debitMoveLine);
+
+  boolean isMultiCurrency(MoveLine moveLine);
+
+  BigDecimal getCurrencyRate(MoveLine moveLine, MoveLine otherMoveLine) throws AxelorException;
 
   boolean checkForeignExchangeAccounts(Company company) throws AxelorException;
 }

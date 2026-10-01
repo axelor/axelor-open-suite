@@ -77,10 +77,15 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();
 
-    // We only run the process if currency rate between the two moveLines are different and currency
-    // are equals
-    if (foreignExchangeGapToolService.checkCurrencies(creditMoveLine, debitMoveLine)
-        && !debitMoveLine.getCurrencyRate().equals(creditMoveLine.getCurrencyRate())
+    // We only run the process if currency rate between the two moveLines are different and
+    // currencies are compatible
+    if (reconcile.getForeignExchangeMove() == null
+        && foreignExchangeGapToolService.checkCurrencies(creditMoveLine, debitMoveLine)
+        && foreignExchangeGapToolService
+                .getCurrencyRate(debitMoveLine, creditMoveLine)
+                .compareTo(
+                    foreignExchangeGapToolService.getCurrencyRate(creditMoveLine, debitMoveLine))
+            != 0
         && foreignExchangeGapToolService.checkForeignExchangeAccounts(reconcile.getCompany())) {
       BigDecimal foreignExchangeGapAmount =
           this.getForeignExchangeGapAmount(reconcile.getAmount(), creditMoveLine, debitMoveLine);
@@ -117,23 +122,34 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
   }
 
   protected BigDecimal getForeignExchangeGapAmount(
-      BigDecimal amountReconciled, MoveLine creditMoveLine, MoveLine debitMoveLine) {
+      BigDecimal amountReconciled, MoveLine creditMoveLine, MoveLine debitMoveLine)
+      throws AxelorException {
     BigDecimal currencyAmount = BigDecimal.ZERO;
     BigDecimal moveLineRate = BigDecimal.ONE;
 
     if (creditMoveLine.getAmountRemaining().abs().compareTo(amountReconciled) == 0
         || debitMoveLine.getAmountRemaining().abs().compareTo(amountReconciled) == 0) {
-      BigDecimal creditCurrencyAmountRemaining = this.getCurrencyAmountRemaining(creditMoveLine);
-      BigDecimal debitCurrencyAmountRemaining = this.getCurrencyAmountRemaining(debitMoveLine);
+      BigDecimal creditCurrencyAmountRemaining =
+          this.getCurrencyAmountRemaining(creditMoveLine, debitMoveLine);
+      BigDecimal debitCurrencyAmountRemaining =
+          this.getCurrencyAmountRemaining(debitMoveLine, creditMoveLine);
+      int currencyAmountComparison =
+          creditCurrencyAmountRemaining.compareTo(debitCurrencyAmountRemaining);
 
-      if (creditCurrencyAmountRemaining.compareTo(debitCurrencyAmountRemaining) <= 0) {
+      if (currencyAmountComparison == 0) {
+        return creditMoveLine
+            .getAmountRemaining()
+            .abs()
+            .subtract(debitMoveLine.getAmountRemaining().abs())
+            .abs();
+      } else if (currencyAmountComparison < 0) {
         amountReconciled = creditMoveLine.getAmountRemaining().abs();
         currencyAmount = creditCurrencyAmountRemaining;
-        moveLineRate = debitMoveLine.getCurrencyRate();
+        moveLineRate = foreignExchangeGapToolService.getCurrencyRate(debitMoveLine, creditMoveLine);
       } else {
         amountReconciled = debitMoveLine.getAmountRemaining().abs();
         currencyAmount = debitCurrencyAmountRemaining;
-        moveLineRate = creditMoveLine.getCurrencyRate();
+        moveLineRate = foreignExchangeGapToolService.getCurrencyRate(creditMoveLine, debitMoveLine);
       }
     }
 
@@ -232,10 +248,27 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     }
   }
 
-  protected BigDecimal getCurrencyAmountRemaining(MoveLine moveLine) {
-    return moveLine
-        .getAmountRemaining()
-        .abs()
-        .divide(moveLine.getCurrencyRate(), moveLine.getCurrencyDecimals(), RoundingMode.HALF_UP);
+  protected BigDecimal getCurrencyAmountRemaining(MoveLine moveLine, MoveLine otherMoveLine)
+      throws AxelorException {
+    BigDecimal amountRemaining = moveLine.getAmountRemaining().abs();
+
+    if (!foreignExchangeGapToolService.isMultiCurrency(moveLine)) {
+      return amountRemaining.divide(
+          foreignExchangeGapToolService.getCurrencyRate(moveLine, otherMoveLine),
+          otherMoveLine.getCurrencyDecimals(),
+          RoundingMode.HALF_UP);
+    }
+
+    BigDecimal lineAmount = moveLine.getDebit().add(moveLine.getCredit());
+    BigDecimal currencyAmount = moveLine.getCurrencyAmount().abs();
+
+    if (lineAmount.signum() == 0 || currencyAmount.signum() == 0) {
+      return amountRemaining.divide(
+          moveLine.getCurrencyRate(), moveLine.getCurrencyDecimals(), RoundingMode.HALF_UP);
+    }
+
+    return currencyAmount
+        .multiply(amountRemaining)
+        .divide(lineAmount, moveLine.getCurrencyDecimals(), RoundingMode.HALF_UP);
   }
 }

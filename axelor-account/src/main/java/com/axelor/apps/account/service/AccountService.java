@@ -321,4 +321,16 @@ public class AccountService {
           company.getName());
     }
   }
+
+  @Transactional(rollbackOn = Exception.class)
+  public void updateAccountLabels(Company company) {
+    JPA.em()
+        .createQuery(
+            "UPDATE Account self "
+                + "SET self.label = CONCAT(self.code, '_', :companyCode, ' - ', self.name) "
+                + "WHERE self.company.id = :companyId")
+        .setParameter("companyCode", company.getCode())
+        .setParameter("companyId", company.getId())
+        .executeUpdate();
+  }
 }
