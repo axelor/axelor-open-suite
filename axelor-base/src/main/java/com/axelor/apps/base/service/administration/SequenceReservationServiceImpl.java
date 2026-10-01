@@ -117,7 +117,15 @@ public class SequenceReservationServiceImpl implements SequenceReservationServic
     ReservedSequence released = findReleasedSequence(sequence, refDate);
     if (released != null) {
       log.trace("Reusing released reservation {}", released.getId());
-      return reuseReleasedSequence(released, objectClass, fieldName);
+      String reused = reuseReleasedSequence(released, objectClass, fieldName);
+      if (reused != null) {
+        return reused;
+      }
+      // Released sequence was already in use by another entity; fall through to counter-based
+      // allocation to obtain the next free number.
+      log.debug(
+          "Released reservation {} skipped (sequence already in use); falling back to counter",
+          released.getId());
     }
 
     // Step 2: Increment the sequence in an isolated transaction
@@ -217,20 +225,32 @@ public class SequenceReservationServiceImpl implements SequenceReservationServic
   /**
    * Reuses a released sequence reservation.
    *
+   * <p>Returns {@code null} when the released sequence is already assigned to another entity (e.g.,
+   * it was claimed via the counter path after the reservation was released). The caller must then
+   * fall back to counter-based allocation.
+   *
    * @param released the released reservation
    * @param objectClass the caller class
    * @param fieldName the caller field
-   * @return the sequence number
-   * @throws AxelorException if duplicate check fails
+   * @return the sequence number, or {@code null} if the sequence is already in use
    */
   protected String reuseReleasedSequence(
-      ReservedSequence released, Class<?> objectClass, String fieldName) throws AxelorException {
+      ReservedSequence released, Class<?> objectClass, String fieldName) {
 
     String sequenceNumber = released.getGeneratedSequence();
 
-    // Check for duplicates if configured
-    if (shouldCheckDuplicates(objectClass, fieldName)) {
-      checkSequenceNotExists(objectClass, fieldName, sequenceNumber, released.getSequence());
+    // A released reservation's sequence may have been assigned to a different entity via the
+    // counter path between the release and this reuse attempt.  Always verify the sequence is
+    // still free.  If it is already in use, consume the stale reservation (mark CONFIRMED) so it
+    // is never offered again, and return null so the caller falls back to the counter.
+    if (isSequenceAlreadyInUse(objectClass, fieldName, sequenceNumber, released.getSequence())) {
+      log.debug(
+          "Released reservation {} holds sequence '{}' which is already in use; consuming reservation",
+          released.getId(),
+          sequenceNumber);
+      released.setStatus(ReservedSequenceRepository.STATUS_CONFIRMED);
+      reservedSequenceRepository.save(released);
+      return null;
     }
 
     // Update the reservation to PENDING with new caller info
@@ -421,21 +441,7 @@ public class SequenceReservationServiceImpl implements SequenceReservationServic
   public void checkSequenceNotExists(
       Class objectClass, String fieldName, String sequenceNumber, Sequence sequence)
       throws AxelorException {
-
-    String table = objectClass.getSimpleName();
-    String baseQuery = "SELECT self FROM " + table + " self WHERE " + fieldName + " = :nextSeq";
-    String companyQuery = computeCompanyQuery(objectClass);
-
-    TypedQuery<?> query =
-        JPA.em()
-            .createQuery(baseQuery + companyQuery, objectClass)
-            .setParameter("nextSeq", sequenceNumber);
-
-    if (!StringUtils.isEmpty(companyQuery)) {
-      query.setParameter("company", sequence.getCompany());
-    }
-
-    if (CollectionUtils.isNotEmpty(query.getResultList())) {
+    if (isSequencePresent(objectClass, fieldName, sequenceNumber, sequence, null)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.SEQUENCE_ALREADY_EXISTS),
@@ -473,5 +479,58 @@ public class SequenceReservationServiceImpl implements SequenceReservationServic
       default:
         return " AND self." + name + " = :company";
     }
+  }
+
+  /**
+   * Returns {@code true} if the given sequence number is already assigned to an entity of {@code
+   * objectClass} in the database.
+   *
+   * <p>Uses {@link FlushModeType#COMMIT} to check only committed rows and avoid accidental
+   * side-effects from auto-flushing dirty entities.
+   */
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  protected boolean isSequenceAlreadyInUse(
+      Class objectClass, String fieldName, String sequenceNumber, Sequence sequence) {
+    if (objectClass == null
+        || Strings.isNullOrEmpty(fieldName)
+        || Strings.isNullOrEmpty(sequenceNumber)) {
+      return false;
+    }
+    try {
+      return isSequencePresent(
+          objectClass, fieldName, sequenceNumber, sequence, FlushModeType.COMMIT);
+    } catch (Exception e) {
+      log.debug("Could not check whether sequence '{}' is already in use", sequenceNumber, e);
+      return false;
+    }
+  }
+
+  /**
+   * Executes a JPQL existence check for {@code sequenceNumber} on {@code objectClass.fieldName},
+   * optionally scoped to {@code sequence.company}.
+   *
+   * @param flushMode flush mode to apply; {@code null} keeps the JPA default (AUTO)
+   */
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  protected boolean isSequencePresent(
+      Class objectClass,
+      String fieldName,
+      String sequenceNumber,
+      Sequence sequence,
+      FlushModeType flushMode) {
+    String table = objectClass.getSimpleName();
+    String baseQuery = "SELECT self FROM " + table + " self WHERE " + fieldName + " = :nextSeq";
+    String companyQuery = computeCompanyQuery(objectClass);
+    TypedQuery<?> query =
+        JPA.em()
+            .createQuery(baseQuery + companyQuery, objectClass)
+            .setParameter("nextSeq", sequenceNumber);
+    if (flushMode != null) {
+      query.setFlushMode(flushMode);
+    }
+    if (!StringUtils.isEmpty(companyQuery) && sequence != null) {
+      query.setParameter("company", sequence.getCompany());
+    }
+    return CollectionUtils.isNotEmpty(query.getResultList());
   }
 }
