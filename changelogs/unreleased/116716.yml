@@ -1,0 +1,41 @@
+---
+title: "Bank order: mapped the SEPA structured postal address in the bank order file exports."
+module: axelor-bank-payment
+developer: |
+  New field BankOrderFileFormat.addressFormatSelect (none, structured or hybrid), set to
+  structured on the pain.001.001.09 and pain.008.001.08 formats in the init data.
+
+  Existing installations must run the following migration script, which adds the column, sets it
+  to none on existing file formats and to structured on the pain.001.001.09 and pain.008.001.08
+  formats, which are created when missing:
+
+  ```sql
+  ALTER TABLE bankpayment_bank_order_file_format
+      ADD COLUMN IF NOT EXISTS address_format_select varchar(255);
+
+  UPDATE bankpayment_bank_order_file_format
+      SET address_format_select = 'none'
+      WHERE address_format_select IS NULL;
+
+  INSERT INTO bankpayment_bank_order_file_format
+      (id, version, created_on, import_id, order_file_format_select, order_type_select, currency,
+       name, description, file_generation_supported, bank_details_type_select, address_format_select)
+  SELECT nextval('bankpayment_bank_order_file_format_seq'), 0, now(), v.import_id, v.format,
+         v.order_type, (SELECT id FROM base_currency WHERE code = 'EUR'), v.name, v.description,
+         true, v.bank_details_type, 'structured'
+  FROM (VALUES
+          ('36', 'pain.001.001.09.sct', 1, 'pain.001.001.09.sct - Virement SEPA',
+           'Remise de virement SEPA - Version 9', '1'),
+          ('37', 'pain.008.001.08.sbb', 2, 'pain.008.001.08.sbb - SDD BtoB',
+           'Remise de SDD BtoB', NULL),
+          ('38', 'pain.008.001.08.sdd', 2, 'pain.008.001.08.sdd - SDD CORE',
+           'Remise de SDD CORE', NULL)
+       ) AS v(import_id, format, order_type, name, description, bank_details_type)
+  WHERE NOT EXISTS (SELECT 1 FROM bankpayment_bank_order_file_format f
+                    WHERE f.order_file_format_select = v.format);
+
+  UPDATE bankpayment_bank_order_file_format
+      SET address_format_select = 'structured'
+      WHERE order_file_format_select IN
+          ('pain.001.001.09.sct', 'pain.008.001.08.sbb', 'pain.008.001.08.sdd');
+  ```
