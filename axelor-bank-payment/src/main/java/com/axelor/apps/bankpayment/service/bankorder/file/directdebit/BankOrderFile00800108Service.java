@@ -59,10 +59,13 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import jakarta.inject.Inject;
+import com.google.inject.Inject;
+import jakarta.xml.bind.JAXBException;
 import java.io.File;
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 public class BankOrderFile00800108Service extends BankOrderFile008Service {
@@ -87,7 +90,8 @@ public class BankOrderFile00800108Service extends BankOrderFile008Service {
    * @throws AxelorException
    */
   @Override
-  public File generateFile() throws AxelorException {
+  public File generateFile()
+      throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
     // Creditor
     PartyIdentification135 creditor = factory.createPartyIdentification135();
     creditor.setNm(senderBankDetails.getOwnerName());
