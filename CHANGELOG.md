@@ -1,3 +1,158 @@
+## [8.5.29] (2026-10-01)
+
+### Fixes
+#### Base
+
+* Job: fixed scheduled jobs running on the default tenant instead of their own tenant in multi-tenant mode.
+* Schedules: add help explaining the Quartz cron syntax.
+* File: added the missing French translation of the record date field.
+* Sequence: fixed duplicate key error when planning a manufacturing order and a released sequence reservation held a number already committed to another entity.
+
+#### Account
+
+* Invoice: fixed removing the global discount not resetting the discounts on invoice lines.
+* Invoice: fixed missing foreign exchange gap and wrong amount due when an invoice in currency is settled by a move in company currency.
+* Invoice: fixed foreign exchange difference understated by 0.01 leaving a reconcile difference on a fully paid invoice in currency.
+* Analytic review: fixed the analytic move lines dashlet not being refreshed after a reverse, which allowed the same lines to be reversed several times.
+* Accounting batch: fixed the cut-off batch failing on a move carrying an analytic revision, the generated cut-off move now keeps the revised analytic distribution.
+* Partner: fixed tracking of the out payment condition field, which was not historized on update.
+* Invoice term: fixed an error preventing PFP validation when invoice generation from stock moves is enabled.
+* PFP: fixed the invoice PFP status not being refreshed and the balance invoice term not being created after a partial invoice term validation.
+* Move: fixed a crash on validation when a move line account has no account type.
+* Invoice payment: fixed unbalanced payment move when paying an invoice with a financial discount after changing the payment date, the amount or the discount option.
+* Invoicing: fixed the ambiguous French translation of the invoice terms and payment schedules menus.
+* Partner: fixed 'Error while committing the transaction' error when deleting a partner holding a SEPA mandate (UMR), and added a confirmation before such a deletion.
+* Invoice: the generate credit note button is now displayed only on ventilated invoices.
+* Invoice: fixed wrong invoice term amount remaining after cancelling a payment on an invoice in currency.
+
+#### Bank Payment
+
+* Bank order: mapped the SEPA structured postal address in the bank order file exports.
+* Bank order: added the pain.001.001.09 SEPA credit transfer export.
+* Bank order: added the pain.008.001.08 direct debit export (SDD CORE and SDD BtoB).
+
+#### Cash Management
+
+* Forecast recap: fixed the salary flow type failing with a ClassCastException.
+* Opportunity: fixed the bank details always taken from the company default, ignoring the partner accounting configuration.
+
+#### Helpdesk
+
+* Ticket: added a maximum length on the subject to display a clear error message instead of a database error.
+
+#### Production
+
+* Sale order: display the reason why no production order could be generated for each sale order line.
+* Sale order: fixed the quantity left to produce, which counted produced stock move lines whatever the stock move status.
+* Manufacturing order: fixed manuf-order-invoicing-project-grid view still referencing the removed productionOrder field.
+* Sale order: fixed production blocking warnings being displayed when only unblocked lines are selected.
+* Production: fixed virtual stock location used on partial finish of an outsourced manufacturing order.
+
+#### Project
+
+* Project: aligned the My tasks to do and My tasks due dashlets on the task due date.
+
+#### Sale
+
+* Sale order: fixed 'Edit order' button not switching the form into edit mode when the order is opened in read mode.
+
+#### Supply Chain
+
+* Product stock details: fixed the status column on manufacturing order lists, which always showed the stock move status.
+* Stock details by product: fixed error when clicking on 'See projected stock' button.
+* Logistical form: fixed stock moves not all realized when the form is collected.
+
+
+### Developer
+
+#### Account
+
+ForeignExchangeGapToolService: added isMultiCurrency(MoveLine) and getCurrencyRate(MoveLine, MoveLine); isGain and getInvoicePaymentType now throw AxelorException.
+ForeignExchangeGapServiceImpl: getCurrencyAmountRemaining now takes the other move line and throws AxelorException.
+
+---
+
+Added `getEffectiveAnalyticMoveLines(List<AnalyticMoveLine>)` to `AnalyticMoveLineService` and an overload
+`copyAnalyticMoveLines(AnalyticLine, List<AnalyticMoveLine>, AnalyticLine, BigDecimal)` to
+`AnalyticLineComputeService`; the existing three-parameter method delegates to it and is unchanged.
+
+---
+
+-- migration script
+```sql
+DELETE FROM meta_action WHERE name = 'action-invoice-term-attrs-set-initial-pfp-amount-and-from-invoice-term';
+```
+---
+
+Added InvoicingPaymentSituationService#clearActiveUmr, called by
+PartnerAccountRepository#remove before the partner is deleted, and
+InvoicingPaymentSituationService#getPartnerWithActiveUmrList, used by
+PartnerController#checkActiveUmrBeforeDelete.
+
+The partner, customer and supplier forms and grids now declare the onDelete
+action `action-partner-method-check-active-umr-before-delete`.
+
+PartnerAccountRepository constructor now takes an additional
+InvoicingPaymentSituationService parameter.
+
+#### Bank Payment
+
+New field BankOrderFileFormat.addressFormatSelect (none, structured or hybrid), set to
+structured on the pain.001.001.09 and pain.008.001.08 formats in the init data.
+
+Existing installations must run the following migration script, which adds the column, sets it
+to none on existing file formats and to structured on the pain.001.001.09 and pain.008.001.08
+formats, which are created when missing:
+
+```sql
+ALTER TABLE bankpayment_bank_order_file_format
+    ADD COLUMN IF NOT EXISTS address_format_select varchar(255);
+
+UPDATE bankpayment_bank_order_file_format
+    SET address_format_select = 'none'
+    WHERE address_format_select IS NULL;
+
+INSERT INTO bankpayment_bank_order_file_format
+    (id, version, created_on, import_id, order_file_format_select, order_type_select, currency,
+     name, description, file_generation_supported, bank_details_type_select, address_format_select)
+SELECT nextval('bankpayment_bank_order_file_format_seq'), 0, now(), v.import_id, v.format,
+       v.order_type, (SELECT id FROM base_currency WHERE code = 'EUR'), v.name, v.description,
+       true, v.bank_details_type, 'structured'
+FROM (VALUES
+        ('36', 'pain.001.001.09.sct', 1, 'pain.001.001.09.sct - Virement SEPA',
+         'Remise de virement SEPA - Version 9', '1'),
+        ('37', 'pain.008.001.08.sbb', 2, 'pain.008.001.08.sbb - SDD BtoB',
+         'Remise de SDD BtoB', NULL),
+        ('38', 'pain.008.001.08.sdd', 2, 'pain.008.001.08.sdd - SDD CORE',
+         'Remise de SDD CORE', NULL)
+     ) AS v(import_id, format, order_type, name, description, bank_details_type)
+WHERE NOT EXISTS (SELECT 1 FROM bankpayment_bank_order_file_format f
+                  WHERE f.order_file_format_select = v.format);
+
+UPDATE bankpayment_bank_order_file_format
+    SET address_format_select = 'structured'
+    WHERE order_file_format_select IN
+        ('pain.001.001.09.sct', 'pain.008.001.08.sbb', 'pain.008.001.08.sdd');
+```
+
+#### Cash Management
+
+-- migration script
+```sql
+DELETE FROM meta_action WHERE name = 'action-opportunity-record-set-bank-details';
+```
+
+#### Production
+
+Added ProductionOrderSaleOrderMOGenerationService and StockLocationLineFetchService as parameter in ProductionOrderSaleOrderServiceImpl's constructor
+
+---
+
+Changed `SaleOrderBlockingProductionService#hasOnGoingBlocking(SaleOrder)` to
+`hasOnGoingBlocking(SaleOrder, List<SaleOrderLine>)`.
+Custom callers and overrides must update their signatures. Pass an empty list
+to check the whole order; a nonempty list restricts the check to those lines.
+
 ## [8.5.28] (2026-09-17)
 
 ### Fixes
@@ -3946,6 +4101,7 @@ Removed CommonInvoiceService.createInvoiceLinesFromOrder Changed the parameter o
 * Bill of material: added default value for calculation quantity.
 * Manuf order: fixed relation with production order.
 
+[8.5.29]: https://github.com/axelor/axelor-open-suite/compare/v8.5.28...v8.5.29
 [8.5.28]: https://github.com/axelor/axelor-open-suite/compare/v8.5.27...v8.5.28
 [8.5.27]: https://github.com/axelor/axelor-open-suite/compare/v8.5.26...v8.5.27
 [8.5.26]: https://github.com/axelor/axelor-open-suite/compare/v8.5.25...v8.5.26
