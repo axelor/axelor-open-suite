@@ -27,6 +27,9 @@
       title="Allow orders with a transfer currency different from bank details currency"
       default="false"/>
 
+    <string name="addressFormatSelect" title="Postal address format" default="none"
+      selection="bankpayment.bank.order.ff.address.format.select"/>
+
     <!-- AFB320 -->
     <string name="qualifyingOfDate" title="Qualifying of date"/>
     <string name="qualifyingOfAmountSelect" title="Qualifying of amount"
@@ -116,6 +119,11 @@
         // QUALIFYING AMOUNT SELECT
         public static final String QUALIFYING_AMOUNT_TRANSFER_CURRENCY = "T";
         public static final String QUALIFYING_AMOUNT_SENDER_BANK_DETAILS_CURRENCY = "D";
+
+        // ADDRESS FORMAT SELECT
+        public static final String ADDRESS_FORMAT_NONE = "none";
+        public static final String ADDRESS_FORMAT_STRUCTURED = "structured";
+        public static final String ADDRESS_FORMAT_HYBRID = "hybrid";
 	]]></extra-code>
 
     <track>
@@ -123,6 +131,9 @@
       <field name="dailyCodeSelect" on="UPDATE"/>
       <field name="acceptPerLineCodeSelect" on="UPDATE"/>
     </track>
+
+    <entity-listener
+      class="com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatListener"/>
   </entity>
 
 </domain-models>
