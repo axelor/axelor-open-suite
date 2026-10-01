@@ -133,8 +133,16 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
           this.getCurrencyAmountRemaining(creditMoveLine, debitMoveLine);
       BigDecimal debitCurrencyAmountRemaining =
           this.getCurrencyAmountRemaining(debitMoveLine, creditMoveLine);
+      int currencyAmountComparison =
+          creditCurrencyAmountRemaining.compareTo(debitCurrencyAmountRemaining);
 
-      if (creditCurrencyAmountRemaining.compareTo(debitCurrencyAmountRemaining) <= 0) {
+      if (currencyAmountComparison == 0) {
+        return creditMoveLine
+            .getAmountRemaining()
+            .abs()
+            .subtract(debitMoveLine.getAmountRemaining().abs())
+            .abs();
+      } else if (currencyAmountComparison < 0) {
         amountReconciled = creditMoveLine.getAmountRemaining().abs();
         currencyAmount = creditCurrencyAmountRemaining;
         moveLineRate = foreignExchangeGapToolService.getCurrencyRate(debitMoveLine, creditMoveLine);
@@ -242,19 +250,25 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
 
   protected BigDecimal getCurrencyAmountRemaining(MoveLine moveLine, MoveLine otherMoveLine)
       throws AxelorException {
+    BigDecimal amountRemaining = moveLine.getAmountRemaining().abs();
+
     if (!foreignExchangeGapToolService.isMultiCurrency(moveLine)) {
-      return moveLine
-          .getAmountRemaining()
-          .abs()
-          .divide(
-              foreignExchangeGapToolService.getCurrencyRate(moveLine, otherMoveLine),
-              otherMoveLine.getCurrencyDecimals(),
-              RoundingMode.HALF_UP);
+      return amountRemaining.divide(
+          foreignExchangeGapToolService.getCurrencyRate(moveLine, otherMoveLine),
+          otherMoveLine.getCurrencyDecimals(),
+          RoundingMode.HALF_UP);
     }
 
-    return moveLine
-        .getAmountRemaining()
-        .abs()
-        .divide(moveLine.getCurrencyRate(), moveLine.getCurrencyDecimals(), RoundingMode.HALF_UP);
+    BigDecimal lineAmount = moveLine.getDebit().add(moveLine.getCredit());
+    BigDecimal currencyAmount = moveLine.getCurrencyAmount().abs();
+
+    if (lineAmount.signum() == 0 || currencyAmount.signum() == 0) {
+      return amountRemaining.divide(
+          moveLine.getCurrencyRate(), moveLine.getCurrencyDecimals(), RoundingMode.HALF_UP);
+    }
+
+    return currencyAmount
+        .multiply(amountRemaining)
+        .divide(lineAmount, moveLine.getCurrencyDecimals(), RoundingMode.HALF_UP);
   }
 }
