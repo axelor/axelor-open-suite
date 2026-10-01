@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed removing the global discount not resetting the discounts on invoice lines."
-module: axelor-account
