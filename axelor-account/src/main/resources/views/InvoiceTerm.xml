@@ -975,7 +975,7 @@
   <action-validate name="action-invoice-term-validate-pfp-stock-move">
     <alert
       message="At least one stock move is in litigation, do you really want to validate passed for payment ?"
-      if="invoice &amp;&amp; __repo__(StockMove).all().filter(' ? MEMBER OF self.invoiceSet and self.pfpValidateStatusSelect = 3',invoice).fetch()?.size &gt;= 1"/>
+      if="invoice &amp;&amp; __repo__(StockMove).all().filter(' ? MEMBER OF self.invoiceSet and self.pfpValidateStatusSelect = 3',invoice).count() &gt; 0"/>
   </action-validate>
 
   <action-validate name="action-invoice-term-move-validate-before-pfp">
