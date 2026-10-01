@@ -532,6 +532,9 @@
             readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
           <field name="supplierShipmentDate" showIf="!isReversion"/>
           <field name="supplierShipmentRef" showIf="!isReversion"/>
+          <field name="supplierDeliveryDate" showIf="!isReversion"
+            readonlyIf="statusSelect == 3 || statusSelect == 4"
+            validIf="!supplierDeliveryDate || ((!supplierShipmentDate || supplierDeliveryDate &gt;= supplierShipmentDate) &amp;&amp; !$moment(supplierDeliveryDate).isAfter($moment(), 'day'))"/>
           <panel stacked="true" itemSpan="12">
             <field name="fromAddressStr" height="3" hideIf="statusSelect &gt; 2">
               <viewer><![CDATA[<>{fromAddressStr}</>]]></viewer>
