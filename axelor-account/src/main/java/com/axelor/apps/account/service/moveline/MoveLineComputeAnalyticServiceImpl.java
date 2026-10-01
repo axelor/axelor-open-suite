@@ -280,10 +280,24 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   @Override
   public void copyAnalyticsDataFromMoveLine(
       MoveLine oldMoveLine, MoveLine newMoveLine, BigDecimal newAmount) {
+    copyAnalyticsDataFromMoveLine(
+        oldMoveLine, oldMoveLine.getAnalyticMoveLineList(), newMoveLine, newAmount);
+  }
+
+  @Override
+  public void copyAnalyticsDataFromMoveLine(
+      MoveLine oldMoveLine,
+      List<AnalyticMoveLine> analyticMoveLineList,
+      MoveLine newMoveLine,
+      BigDecimal newAmount) {
     clearAnalyticAccounting(newMoveLine);
     initializeAnalyticFields(oldMoveLine, newMoveLine);
 
-    for (AnalyticMoveLine originalAnalyticMoveLine : oldMoveLine.getAnalyticMoveLineList()) {
+    if (CollectionUtils.isEmpty(analyticMoveLineList)) {
+      return;
+    }
+
+    for (AnalyticMoveLine originalAnalyticMoveLine : analyticMoveLineList) {
       AnalyticMoveLine analyticMoveLine =
           analyticMoveLineRepository.copy(originalAnalyticMoveLine, false);
 

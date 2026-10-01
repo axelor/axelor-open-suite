@@ -489,9 +489,20 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
           moveLineComputeAnalyticService.clearAnalyticAccounting(cutOffMoveLine);
         }
         moveLineComputeAnalyticService.copyAnalyticsDataFromMoveLine(
-            moveLine, cutOffMoveLine, amountInCurrency.abs());
+            moveLine,
+            analyticMoveLineService.getEffectiveAnalyticMoveLines(
+                moveLine.getAnalyticMoveLineList()),
+            cutOffMoveLine,
+            amountInCurrency.abs());
         if (CollectionUtils.isNotEmpty(cutOffMoveLine.getAnalyticMoveLineList())) {
-          cutOffMoveLine.getAnalyticMoveLineList().forEach(line -> line.setDate(moveDate));
+          cutOffMoveLine
+              .getAnalyticMoveLineList()
+              .forEach(
+                  line -> {
+                    line.setDate(moveDate);
+                    line.setSubTypeSelect(AnalyticMoveLineRepository.SUB_TYPE_ORIGINAL);
+                    line.setOriginAnalyticMoveLine(null);
+                  });
         }
       }
     }
@@ -710,11 +721,13 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   }
 
   protected List<String> getAnalyticDistributionKey(MoveLine moveLine) {
-    if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+    List<AnalyticMoveLine> analyticMoveLineList =
+        analyticMoveLineService.getEffectiveAnalyticMoveLines(moveLine.getAnalyticMoveLineList());
+    if (CollectionUtils.isEmpty(analyticMoveLineList)) {
       return new ArrayList<>();
     }
 
-    return moveLine.getAnalyticMoveLineList().stream()
+    return analyticMoveLineList.stream()
         .map(
             analyticMoveLine ->
                 String.format(
