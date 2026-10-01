@@ -1,0 +1,7 @@
+---
+title: "Accounting batch: fixed the cut-off batch failing on a move carrying an analytic revision, the generated cut-off move now keeps the revised analytic distribution."
+module: axelor-account
+developer: |
+  Added `getEffectiveAnalyticMoveLines(List<AnalyticMoveLine>)` to `AnalyticMoveLineService` and an overload
+  `copyAnalyticMoveLines(AnalyticLine, List<AnalyticMoveLine>, AnalyticLine, BigDecimal)` to
+  `AnalyticLineComputeService`; the existing three-parameter method delegates to it and is unchanged.
