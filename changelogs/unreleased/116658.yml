@@ -1,5 +1,0 @@
----
-title: "Bank reconciliation: fixed the move line selector and the reconcile dashlet offering move lines of both directions instead of only the opposite direction of the statement line."
-module: axelor-bank-payment
-developer: |
- Changed the BankReconciliationDomainService.createDomainForMoveLine to use a BankReconciliationLine instead of a BankReconciliation

@@ -1,3 +1,21 @@
+## [8.4.36] (2026-10-01)
+
+### Fixes
+#### Bank Payment
+
+* Bank reconciliation: fixed the move line selector and the reconcile dashlet offering move lines of both directions instead of only the opposite direction of the statement line.
+
+#### Stock
+
+* Stock move: fixed real quantity, net mass and quantity remaining to package not correctly filled on backorder lines generated from a partially realized stock move.
+
+
+### Developer
+
+#### Bank Payment
+
+Changed the BankReconciliationDomainService.createDomainForMoveLine to use a BankReconciliationLine instead of a BankReconciliation
+
 ## [8.4.35] (2026-09-17)
 
 ### Fixes
@@ -3589,6 +3607,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.36]: https://github.com/axelor/axelor-open-suite/compare/v8.4.35...v8.4.36
 [8.4.35]: https://github.com/axelor/axelor-open-suite/compare/v8.4.34...v8.4.35
 [8.4.34]: https://github.com/axelor/axelor-open-suite/compare/v8.4.33...v8.4.34
 [8.4.33]: https://github.com/axelor/axelor-open-suite/compare/v8.4.32...v8.4.33
