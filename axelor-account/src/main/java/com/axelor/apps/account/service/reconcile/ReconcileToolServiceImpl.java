@@ -162,7 +162,7 @@ public class ReconcileToolServiceImpl implements ReconcileToolService {
     BigDecimal moveLineAmountRemaining = moveLine.getAmountRemaining().abs();
     BigDecimal invoiceTermAmountRemaining =
         invoiceTermList.stream()
-            .map(InvoiceTerm::getAmountRemaining)
+            .map(InvoiceTerm::getCompanyAmountRemaining)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
 
