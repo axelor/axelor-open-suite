@@ -1,0 +1,3 @@
+---
+title: "Invoice : fixed ventilation failing on the invoice printing because of a wrong type on the legal information column."
+module: axelor-account

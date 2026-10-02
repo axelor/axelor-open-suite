@@ -4669,7 +4669,7 @@ RETURNS table(
     "displayExpenseOnPrinting" boolean,
     "PenaltyRateNote" text,
     "legalFormAndCapital" varchar,
-    "legalInformation" varchar
+    "legalInformation" text
 ) AS
 $func$
 DECLARE
