@@ -184,6 +184,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       return super.realizeStockMove(stockMove, check);
     }
 
+    stockMove = JpaModelHelper.ensureManaged(stockMove);
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
         && !stockMove.getIsReversion()
         && CollectionUtils.isNotEmpty(stockMove.getPurchaseOrderSet())) {
