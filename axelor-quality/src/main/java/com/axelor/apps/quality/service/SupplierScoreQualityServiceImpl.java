@@ -34,7 +34,9 @@ import jakarta.inject.Inject;
 import jakarta.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class SupplierScoreQualityServiceImpl extends SupplierScoreServiceImpl {
@@ -64,10 +66,21 @@ public class SupplierScoreQualityServiceImpl extends SupplierScoreServiceImpl {
     if (!appQualityService.isApp("quality")) {
       return;
     }
-    if (Boolean.TRUE.equals(
-        appSupplychainService.getAppSupplychain().getAutoComputeSupplierOpenQiRate())) {
+    AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
+    if (Boolean.TRUE.equals(appSupplychain.getAutoComputeSupplierOpenQiRate())) {
       partner.setSupplierOpenQiRate(computeOpenQiRate(partner, fromDate, toDate));
     }
+    if (Boolean.TRUE.equals(appSupplychain.getAutoComputeSupplierNonConformityRate())) {
+      partner.setSupplierNonConformityRate(
+          computeNonConformityRate(partner, fromDate, toDate, appSupplychain));
+    }
+    partner.setSupplierQualityScore(
+        SupplierScoreQualityTool.computeQualityScore(
+            partner.getSupplierOpenQiRate(),
+            appSupplychain.getSupplierScoreQiWeight(),
+            partner.getSupplierNonConformityRate(),
+            appSupplychain.getSupplierScoreNonConformityWeight()));
+    partner.setSupplierQualityTrendSelect(computeQualityTrend(partner, toDate, appSupplychain));
   }
 
   @Override
@@ -80,6 +93,10 @@ public class SupplierScoreQualityServiceImpl extends SupplierScoreServiceImpl {
     }
     weightedRates.add(
         Pair.of(partner.getSupplierOpenQiRate(), appSupplychain.getSupplierScoreQiWeight()));
+    weightedRates.add(
+        Pair.of(
+            partner.getSupplierNonConformityRate(),
+            appSupplychain.getSupplierScoreNonConformityWeight()));
     return weightedRates;
   }
 
@@ -90,6 +107,8 @@ public class SupplierScoreQualityServiceImpl extends SupplierScoreServiceImpl {
       return;
     }
     supplierScoreHistory.setSupplierOpenQiRate(partner.getSupplierOpenQiRate());
+    supplierScoreHistory.setSupplierNonConformityRate(partner.getSupplierNonConformityRate());
+    supplierScoreHistory.setSupplierQualityScore(partner.getSupplierQualityScore());
   }
 
   protected BigDecimal computeOpenQiRate(Partner partner, LocalDate fromDate, LocalDate toDate) {
@@ -98,6 +117,90 @@ public class SupplierScoreQualityServiceImpl extends SupplierScoreServiceImpl {
       return null;
     }
     return SupplierScoreTool.computeQiRate(countOpenQualityImprovements(partner), receptionCount);
+  }
+
+  /**
+   * The trend is always derived from the monthly history, whatever the computation mode of the
+   * rates, so that hand-entered rates follow the same rule as computed ones.
+   */
+  protected Integer computeQualityTrend(
+      Partner partner, LocalDate toDate, AppSupplychain appSupplychain) {
+    SupplierScoreHistory referenceSnapshot =
+        findReferenceSnapshot(partner, toDate, appSupplychain.getSupplierQualityTrendMonths());
+    if (referenceSnapshot == null) {
+      return null;
+    }
+    return SupplierScoreQualityTool.computeTrend(
+        partner.getSupplierQualityScore(),
+        referenceSnapshot.getSupplierQualityScore(),
+        appSupplychain.getSupplierQualityTrendTolerance());
+  }
+
+  /**
+   * @return the most recent snapshot taken at least the given number of months before the date,
+   *     matched on its month so that the day the batch runs on does not matter.
+   */
+  protected SupplierScoreHistory findReferenceSnapshot(
+      Partner partner, LocalDate toDate, Integer months) {
+    if (months == null || months <= 0) {
+      return null;
+    }
+    return supplierScoreHistoryRepository
+        .all()
+        .filter("self.partner.id = :partnerId AND self.periodLabel <= :periodLabel")
+        .bind("partnerId", partner.getId())
+        .bind("periodLabel", SupplierScoreTool.computePeriodLabel(toDate.minusMonths(months)))
+        .order("-periodLabel")
+        .fetchOne();
+  }
+
+  protected BigDecimal computeNonConformityRate(
+      Partner partner, LocalDate fromDate, LocalDate toDate, AppSupplychain appSupplychain) {
+    long receptionCount = countReceptions(partner, fromDate, toDate);
+    if (receptionCount == 0) {
+      return null;
+    }
+    BigDecimal weightedNonConformityCount =
+        SupplierScoreQualityTool.computeWeightedNonConformityCount(
+            countNonConformitiesByGravity(partner, fromDate, toDate),
+            appSupplychain.getSupplierScoreGravityCriticalWeight(),
+            appSupplychain.getSupplierScoreGravityMajorWeight(),
+            appSupplychain.getSupplierScoreGravityMinorWeight());
+    return SupplierScoreTool.computeQiRate(weightedNonConformityCount, receptionCount);
+  }
+
+  /**
+   * Non-conformities of the period: every quality improvement carrying the supplier that is not
+   * cancelled, dated by its reception when it has one and by its creation date otherwise.
+   *
+   * @return the number of quality improvements per gravity, the null key holding the ungraded ones.
+   */
+  protected Map<Integer, Long> countNonConformitiesByGravity(
+      Partner partner, LocalDate fromDate, LocalDate toDate) {
+    TypedQuery<Object[]> query =
+        JPA.em()
+            .createQuery(
+                "SELECT qi.gravityTypeSelect, COUNT(qi.id) FROM QualityImprovement qi "
+                    + "JOIN qi.qiIdentification qid "
+                    + "JOIN qi.qiStatus st "
+                    + "LEFT JOIN qid.stockMove sm "
+                    + "WHERE qid.supplierPartner.id = :partnerId "
+                    + "AND st.isCancelledStatus = false "
+                    + "AND ((sm.realDate IS NOT NULL AND sm.realDate BETWEEN :fromDate AND :toDate) "
+                    + "OR (sm.realDate IS NULL "
+                    + "AND qi.createdOn >= :fromDateTime AND qi.createdOn < :toDateTimeExclusive)) "
+                    + "GROUP BY qi.gravityTypeSelect",
+                Object[].class);
+    query.setParameter("partnerId", partner.getId());
+    query.setParameter("fromDate", fromDate);
+    query.setParameter("toDate", toDate);
+    query.setParameter("fromDateTime", fromDate.atStartOfDay());
+    query.setParameter("toDateTimeExclusive", toDate.plusDays(1).atStartOfDay());
+    Map<Integer, Long> countByGravity = new HashMap<>();
+    for (Object[] row : query.getResultList()) {
+      countByGravity.put((Integer) row[0], (Long) row[1]);
+    }
+    return countByGravity;
   }
 
   protected long countOpenQualityImprovements(Partner partner) {

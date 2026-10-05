@@ -132,4 +132,7 @@ public final class QualityExceptionMessage {
 
   public static final String CONTROL_TYPE_FIELD_USED_BY_CONTROL_TYPE = /*$$(*/
       "The field %s is used by the control type(s) %s and can not be deleted." /*)*/;
+
+  public static final String QI_GRAVITY_REQUIRED_TO_CLOSE = /*$$(*/
+      "The gravity must be set to close a quality improvement linked to a supplier." /*)*/;
 }

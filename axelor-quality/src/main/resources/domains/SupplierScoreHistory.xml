@@ -8,6 +8,9 @@
   <entity name="SupplierScoreHistory">
     <decimal name="supplierOpenQiRate" title="Open quality improvement rate (%)"
       nullable="true"/>
+    <decimal name="supplierNonConformityRate" title="Non-conformity rate (%)"
+      nullable="true"/>
+    <decimal name="supplierQualityScore" title="Quality score" nullable="true"/>
   </entity>
 
 </domain-models>
