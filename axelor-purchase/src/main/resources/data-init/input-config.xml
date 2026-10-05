@@ -102,5 +102,18 @@
       check-message="Invalid typeSelect"/>
   </input>
 
+  <input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="job" to="job"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(job)"
+      check-message="Job must not be null"/>
+    <bind column="cron" to="cron"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(cron)"
+      check-message="Cron must not be null"/>
+    <bind column="active" to="active"/>
+  </input>
+
 </csv-inputs>
 

@@ -20,12 +20,19 @@ package com.axelor.apps.purchase.service.config;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Localization;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.purchase.db.PurchaseConfig;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.i18n.I18n;
+import com.axelor.message.db.Template;
+import java.util.Comparator;
+import java.util.Optional;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PurchaseConfigService {
 
@@ -52,5 +59,34 @@ public class PurchaseConfigService {
           I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
     return purchaseOrderPrintTemplate;
+  }
+
+  public Template getSupplierReminderTemplate(Company company, Partner supplier)
+      throws AxelorException {
+    Set<Template> templateSet = getPurchaseConfig(company).getSupplierReminderTemplateSet();
+    Optional<Template> template = getLocalizedTemplate(templateSet, supplier.getLocalization());
+    if (template.isEmpty()) {
+      template = getLocalizedTemplate(templateSet, company.getLocalization());
+    }
+    if (template.isEmpty() && CollectionUtils.size(templateSet) == 1) {
+      template = templateSet.stream().findFirst();
+    }
+    return template.orElseThrow(
+        () ->
+            new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(PurchaseExceptionMessage.PURCHASE_SUPPLIER_REMINDER_MISSING_TEMPLATE),
+                company.getName()));
+  }
+
+  protected Optional<Template> getLocalizedTemplate(
+      Set<Template> templateSet, Localization localization) {
+    if (localization == null || CollectionUtils.isEmpty(templateSet)) {
+      return Optional.empty();
+    }
+    return templateSet.stream()
+        .filter(template -> CollectionUtils.isNotEmpty(template.getLocalizationSet()))
+        .filter(template -> template.getLocalizationSet().contains(localization))
+        .min(Comparator.comparing(Template::getId));
   }
 }

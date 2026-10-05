@@ -1,0 +1,2 @@
+"active";"name";"job";"cron"
+"false";"Supplier reminder for overdue purchase order lines";"com.axelor.apps.purchase.job.SupplierReminderJob";"0 0 8 * * ?"
