@@ -12,7 +12,7 @@
 
   <input file="cash-management_permission.csv" separator=";"
     type="com.axelor.auth.db.Permission" search="self.name = :name"
-    call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
+    call="com.axelor.apps.base.service.imports.ImportPermission:importPermissionToRole">
     <bind column="name" to="name"
       check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>

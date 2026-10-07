@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.crm.service;
 
+import com.axelor.apps.app.db.AppCrm;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -31,7 +32,6 @@ import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.studio.db.AppCrm;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import jakarta.inject.Inject;

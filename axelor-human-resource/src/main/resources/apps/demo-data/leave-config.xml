@@ -3,10 +3,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import https://axelor.com/xml/ns/data-import/data-import_8.2.xsd">
 
-  <input file="studio_appLeave.csv" separator=";" type="com.axelor.studio.db.AppLeave"
+  <input file="app_appLeave.csv" separator=";" type="com.axelor.apps.app.db.AppLeave"
     search="self.app.code = :code" update="true">
     <bind column="useWeeklyPlanningCoefficientSelect" to="useWeeklyPlanningCoefficientSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppLeave', 'useWeeklyPlanningCoefficientSelect', useWeeklyPlanningCoefficientSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppLeave', 'useWeeklyPlanningCoefficientSelect', useWeeklyPlanningCoefficientSelect)"
       check-message="Invalid useWeeklyPlanningCoefficientSelect"/>
   </input>
 

@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.app.db.AppProject;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskStatus;
@@ -29,7 +30,6 @@ import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppProject;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;

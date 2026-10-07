@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.budget.service.purchaseorder;
 
+import com.axelor.apps.app.db.AppBudget;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -34,7 +35,6 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.meta.CallMethod;
-import com.axelor.studio.db.AppBudget;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;

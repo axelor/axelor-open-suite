@@ -19,6 +19,7 @@
 package com.axelor.apps.sale.service.saleorder.onchange;
 
 import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.app.db.AppBase;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -39,7 +40,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineFiscalPositionService;
-import com.axelor.studio.db.AppBase;
 import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;

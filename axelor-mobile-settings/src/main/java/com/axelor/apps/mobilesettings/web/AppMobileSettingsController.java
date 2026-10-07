@@ -19,6 +19,7 @@
 package com.axelor.apps.mobilesettings.web;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.app.db.AppMobileSettings;
 import com.axelor.apps.base.db.repo.BarcodeTypeConfigRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -27,7 +28,6 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.db.AppMobileSettings;
 
 public class AppMobileSettingsController {
 

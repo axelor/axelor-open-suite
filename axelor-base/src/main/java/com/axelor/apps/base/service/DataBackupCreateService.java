@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.app.db.App;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AnonymizerLine;
 import com.axelor.apps.base.db.DataBackup;
@@ -48,7 +49,6 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
-import com.axelor.studio.db.App;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -112,7 +112,7 @@ public class DataBackupCreateService {
 
   protected static Map<Object, Object> AutoImportModelMap =
       ImmutableMap.builder()
-          .put("com.axelor.studio.db.App", "self.code = :code")
+          .put("com.axelor.apps.app.db.App", "self.code = :code")
           .put("com.axelor.auth.db.Role", "self.name = :name")
           .put("com.axelor.auth.db.User", "self.code = :code")
           .put("com.axelor.auth.db.Permission", "self.name = :name")
@@ -311,11 +311,10 @@ public class DataBackupCreateService {
     StringBuilder filter =
         new StringBuilder(
             "self.packageName NOT LIKE '%meta%' AND self.name != 'DataBackup' AND self.tableName IS NOT NULL");
-    filter.append(" AND (self.packageName != 'com.axelor.studio.db'");
-    if (isExportApp) {
-      filter.append(" OR self.name LIKE 'App%'");
+    filter.append(" AND self.packageName != 'com.axelor.studio.db'");
+    if (!isExportApp) {
+      filter.append(" AND self.packageName != 'com.axelor.apps.app.db'");
     }
-    filter.append(")");
     if (anonymizeData) {
       filter.append(" AND self.name != 'MailMessage'");
     }

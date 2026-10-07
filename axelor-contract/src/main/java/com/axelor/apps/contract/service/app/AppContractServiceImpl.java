@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.contract.service.app;
 
-import com.axelor.studio.db.AppContract;
-import com.axelor.studio.db.repo.AppContractRepository;
+import com.axelor.apps.app.db.AppContract;
+import com.axelor.apps.app.db.repo.AppContractRepository;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 

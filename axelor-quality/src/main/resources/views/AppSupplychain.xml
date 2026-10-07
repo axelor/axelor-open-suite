@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <form name="app-supplychain-config-form" title="App Supplychain"
-    model="com.axelor.studio.db.AppSupplychain" canDelete="false" canNew="false" width="large"
+    model="com.axelor.apps.app.db.AppSupplychain" canDelete="false" canNew="false" width="large"
     id="quality-app-supplychain-config-form" extension="true">
 
     <extend target="//field[@name='supplierScoreConformityWeight']">

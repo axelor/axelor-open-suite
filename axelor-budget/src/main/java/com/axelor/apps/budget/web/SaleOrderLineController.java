@@ -20,6 +20,7 @@ package com.axelor.apps.budget.web;
 
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.app.db.repo.AppBudgetRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.ErrorException;
@@ -31,7 +32,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.db.repo.AppBudgetRepository;
 
 public class SaleOrderLineController {
 

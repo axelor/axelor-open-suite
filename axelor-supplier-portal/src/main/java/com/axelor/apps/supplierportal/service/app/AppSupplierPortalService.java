@@ -18,7 +18,7 @@
  */
 package com.axelor.apps.supplierportal.service.app;
 
-import com.axelor.studio.db.AppSupplierPortal;
+import com.axelor.apps.app.db.AppSupplierPortal;
 
 public interface AppSupplierPortalService {
   AppSupplierPortal getAppSupplierPortal();

@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.app.db.AppStock;
 import com.axelor.apps.base.AxelorAlertException;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
@@ -55,7 +56,6 @@ import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.studio.db.AppStock;
 import com.axelor.utils.ThrowConsumer;
 import com.google.common.base.Preconditions;
 import com.google.inject.persist.Transactional;

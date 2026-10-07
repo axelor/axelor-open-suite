@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.app.db.AppBase;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PfxCertificate;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -26,7 +27,6 @@ import com.axelor.apps.base.service.pdf.PdfSignatureService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.studio.db.AppBase;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.util.List;

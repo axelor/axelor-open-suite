@@ -30,10 +30,10 @@
       eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
 
-  <input file="studio_appAccount.csv" separator=";" type="com.axelor.studio.db.AppAccount"
+  <input file="app_appAccount.csv" separator=";" type="com.axelor.apps.app.db.AppAccount"
     search="self.app.code = :code">
     <bind column="partnerBalConfigSelect" to="partnerBalConfigSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppAccount', 'partnerBalConfigSelect', partnerBalConfigSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppAccount', 'partnerBalConfigSelect', partnerBalConfigSelect)"
       check-message="Invalid partnerBalConfigSelect"/>
     <bind to="app" column="code" search="self.code = :code"/>
   </input>

@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.hr.service.user;
 
+import com.axelor.apps.app.db.AppBase;
+import com.axelor.apps.app.db.AppLeave;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.Product;
@@ -32,8 +34,6 @@ import com.axelor.auth.AuthService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.inject.Beans;
-import com.axelor.studio.db.AppBase;
-import com.axelor.studio.db.AppLeave;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.util.List;

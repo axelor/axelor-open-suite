@@ -3,10 +3,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
-  <module name="studio" package="com.axelor.studio.db"/>
+  <module name="app" package="com.axelor.apps.app.db"/>
 
   <entity name="App" cacheable="true">
-    <one-to-one name="appGdpr" ref="com.axelor.studio.db.AppGdpr" mappedBy="app"/>
+    <one-to-one name="appGdpr" ref="com.axelor.apps.app.db.AppGdpr" mappedBy="app"/>
   </entity>
 
 </domain-models>

@@ -3,13 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import https://axelor.com/xml/ns/data-import/data-import_8.2.xsd">
 
-  <input file="studio_appBudget.csv" separator=";" search="self.app.code = :code"
-    update="true" type="com.axelor.studio.db.AppBudget">
+  <input file="app_appBudget.csv" separator=";" search="self.app.code = :code" update="true"
+    type="com.axelor.apps.app.db.AppBudget">
     <bind column="missingBudgetCheckSelect" to="missingBudgetCheckSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBudget', 'missingBudgetCheckSelect', missingBudgetCheckSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppBudget', 'missingBudgetCheckSelect', missingBudgetCheckSelect)"
       check-message="Invalid missingBudgetCheckSelect"/>
     <bind column="orderBudgetExceedSelect" to="orderBudgetExceedSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBudget', 'orderBudgetExceedSelect', orderBudgetExceedSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppBudget', 'orderBudgetExceedSelect', orderBudgetExceedSelect)"
       check-message="Invalid orderBudgetExceedSelect"/>
   </input>
 

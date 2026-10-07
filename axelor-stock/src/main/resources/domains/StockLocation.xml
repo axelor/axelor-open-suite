@@ -25,7 +25,7 @@
             CASE
                 WHEN cfg.stock_valuation_type_select = 1 THEN
                     CASE WHEN EXISTS(
-                        SELECT 1 FROM studio_app_base_company_specific_product_fields_set cpf
+                        SELECT 1 FROM app_app_base_company_specific_product_fields_set cpf
                         LEFT JOIN meta_field mf ON mf.id = cpf.company_specific_product_fields_set
                         WHERE mf.name = 'avgPrice'
                     ) THEN COALESCE(
@@ -36,7 +36,7 @@
                 WHEN cfg.stock_valuation_type_select = 3 THEN history.sale_price
                 WHEN cfg.stock_valuation_type_select = 4 THEN
                     CASE WHEN EXISTS(
-                        SELECT 1 FROM studio_app_base_company_specific_product_fields_set cpf
+                        SELECT 1 FROM app_app_base_company_specific_product_fields_set cpf
                         LEFT JOIN meta_field mf ON mf.id = cpf.company_specific_product_fields_set
                         WHERE mf.name = 'lastPurchasePrice'
                     ) THEN COALESCE(

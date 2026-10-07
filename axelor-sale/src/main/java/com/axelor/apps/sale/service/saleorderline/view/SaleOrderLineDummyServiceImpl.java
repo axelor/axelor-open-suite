@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.sale.service.saleorderline.view;
 
+import com.axelor.apps.app.db.AppBase;
+import com.axelor.apps.app.db.AppSale;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -36,8 +38,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
-import com.axelor.studio.db.AppBase;
-import com.axelor.studio.db.AppSale;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;

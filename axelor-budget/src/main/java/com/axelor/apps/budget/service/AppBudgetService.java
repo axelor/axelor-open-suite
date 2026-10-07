@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.budget.service;
 
+import com.axelor.apps.app.db.AppBudget;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.studio.db.AppBudget;
 
 public interface AppBudgetService extends AppBaseService {
 

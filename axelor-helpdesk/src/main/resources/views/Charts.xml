@@ -58,7 +58,7 @@
       AND DATE(:toDate)
       AND _ticket.assigned_to_user = :_user_id
       AND _ticket_status.id = (SELECT
-      resolved_ticket_status FROM studio_app_helpdesk)
+      resolved_ticket_status FROM app_app_helpdesk)
       GROUP BY
       translation.message_value
     </dataset>
@@ -138,7 +138,7 @@
       DATE(:toDate)
       AND _team.id = :_myActiveTeam
       AND _ticket_status.id = (SELECT
-      resolved_ticket_status FROM studio_app_helpdesk)
+      resolved_ticket_status FROM app_app_helpdesk)
       GROUP BY
       translation.message_value
     </dataset>
@@ -199,7 +199,7 @@
       DATE(_ticket.created_on) BETWEEN DATE(:fromDate)
       AND DATE(:toDate)
       AND _ticket_status.id = (SELECT resolved_ticket_status FROM
-      studio_app_helpdesk)
+      app_app_helpdesk)
       GROUP BY
       translation.message_value
     </dataset>

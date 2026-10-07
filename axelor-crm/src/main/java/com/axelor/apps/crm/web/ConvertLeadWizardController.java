@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.crm.web;
 
+import com.axelor.apps.app.db.AppBase;
+import com.axelor.apps.app.db.AppCrm;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
@@ -45,8 +47,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.studio.db.AppBase;
-import com.axelor.studio.db.AppCrm;
 import com.axelor.utils.service.BinaryConversionService;
 import jakarta.inject.Singleton;
 import java.io.IOException;

@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service.saleorder.status;
 
+import com.axelor.apps.app.db.AppSupplychain;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -38,7 +39,6 @@ import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineQtyToDeliv
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.time.LocalDate;

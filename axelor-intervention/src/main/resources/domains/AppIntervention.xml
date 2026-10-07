@@ -3,10 +3,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
-  <module name="studio" package="com.axelor.studio.db"/>
+  <module name="app" package="com.axelor.apps.app.db"/>
 
   <entity name="AppIntervention" cacheable="true">
-    <one-to-one name="app" ref="com.axelor.studio.db.App" unique="true"/>
+    <one-to-one name="app" ref="com.axelor.apps.app.db.App" unique="true"/>
 
     <many-to-one name="defaultRequestSource"
       ref="com.axelor.apps.intervention.db.RequestSource" title="Default request source"

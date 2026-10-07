@@ -18,12 +18,12 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import com.axelor.apps.app.db.AppTimesheet;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.auth.db.User;
-import com.axelor.studio.db.AppTimesheet;
 import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;

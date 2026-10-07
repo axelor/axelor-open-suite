@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.hr.service;
 
+import com.axelor.apps.app.db.AppBase;
+import com.axelor.apps.app.db.repo.AppBaseRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -28,8 +30,6 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.KilometricComputationResult;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppBase;
-import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.Strings;
 import jakarta.inject.Inject;
 import java.io.IOException;

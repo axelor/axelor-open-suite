@@ -882,4 +882,38 @@
     <option value="2">SIREN</option>
   </selection>
 
+  <selection name="base.app.type.select">
+    <option value="standard">Standard</option>
+    <option value="addons">Addons</option>
+    <option value="enterprise">Enterprise</option>
+    <option value="pro">Pro</option>
+    <option value="custom">Custom</option>
+    <option value="others">Others</option>
+    <option value="customer">Customer</option>
+  </selection>
+
+  <selection name="base.filter.operator">
+    <option value="=">equal</option>
+    <option value="!=">not equal</option>
+    <option value="&gt;=">greater or equal</option>
+    <option value="&lt;=">less or equal</option>
+    <option value="&gt;">greater than</option>
+    <option value="&lt;">less than</option>
+    <option value="in">in</option>
+    <option value="notIn">not in</option>
+    <option value="like">contains</option>
+    <option value="notLike">doesn't contain</option>
+    <option value="isNull">is null</option>
+    <option value="notNull">is not null</option>
+    <option value="isTrue">is true</option>
+    <option value="isFalse">is false</option>
+    <option value="include">include</option>
+    <option value="notInclude">not include</option>
+  </selection>
+
+  <selection name="base.filter.logic.operator">
+    <option value="0">AND</option>
+    <option value="1">OR</option>
+  </selection>
+
 </object-views>

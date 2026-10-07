@@ -3,6 +3,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import https://axelor.com/xml/ns/data-import/data-import_8.2.xsd">
 
-  <input file="studio_appProject.csv" separator=";" type="com.axelor.studio.db.AppProject"
+  <input file="app_appProject.csv" separator=";" type="com.axelor.apps.app.db.AppProject"
     search="self.app.code = :code"/>
 </csv-inputs>

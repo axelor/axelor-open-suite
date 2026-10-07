@@ -207,13 +207,13 @@
       column="startDate"/>
   </input>
 
-  <input file="studio_appProduction.csv" separator=";"
-    type="com.axelor.studio.db.AppProduction" search="self.app.code = :code" update="true">
+  <input file="app_appProduction.csv" separator=";"
+    type="com.axelor.apps.app.db.AppProduction" search="self.app.code = :code" update="true">
     <bind column="mOFilterOnStockDetailStatusSelect" to="mOFilterOnStockDetailStatusSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppProduction', 'mOFilterOnStockDetailStatusSelect', mOFilterOnStockDetailStatusSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppProduction', 'mOFilterOnStockDetailStatusSelect', mOFilterOnStockDetailStatusSelect)"
       check-message="Invalid mOFilterOnStockDetailStatusSelect"/>
     <bind column="operationContinuitySelect" to="operationContinuitySelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppProduction', 'operationContinuitySelect', operationContinuitySelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppProduction', 'operationContinuitySelect', operationContinuitySelect)"
       check-message="Invalid operationContinuitySelect"/>
   </input>
 

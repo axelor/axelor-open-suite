@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.talent.service;
 
+import com.axelor.apps.app.db.AppRecruitment;
+import com.axelor.apps.app.db.repo.AppRecruitmentRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
@@ -29,8 +31,6 @@ import com.axelor.message.db.repo.EmailAccountRepository;
 import com.axelor.message.db.repo.EmailAddressRepository;
 import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.meta.MetaFiles;
-import com.axelor.studio.db.AppRecruitment;
-import com.axelor.studio.db.repo.AppRecruitmentRepository;
 import com.axelor.utils.service.CipherService;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;

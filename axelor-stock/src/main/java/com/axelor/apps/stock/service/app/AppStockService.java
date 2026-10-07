@@ -18,7 +18,7 @@
  */
 package com.axelor.apps.stock.service.app;
 
-import com.axelor.studio.db.AppStock;
+import com.axelor.apps.app.db.AppStock;
 
 public interface AppStockService {
 

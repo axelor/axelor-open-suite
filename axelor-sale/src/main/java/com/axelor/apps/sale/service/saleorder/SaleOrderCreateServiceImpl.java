@@ -20,6 +20,8 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxNumber;
+import com.axelor.apps.app.db.AppSale;
+import com.axelor.apps.app.db.repo.AppSaleRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -41,8 +43,6 @@ import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComput
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
-import com.axelor.studio.db.AppSale;
-import com.axelor.studio.db.repo.AppSaleRepository;
 import com.axelor.team.db.Team;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;

@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.apps.app.db.repo.AppSaleRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -40,7 +41,6 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Singleton;
 import java.util.List;
 

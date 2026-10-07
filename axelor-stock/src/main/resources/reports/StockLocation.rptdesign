@@ -921,12 +921,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
         CASE WHEN Location.type_select = 3 THEN StockLocationLine.current_qty ELSE StockLocationLineHistoryQty.qty END AS qty,
         Unit.label_to_printing as unit_code,
         StockLocationLineHistoryPrice.sale_price,
-		(CASE WHEN EXISTS(SELECT 1 FROM studio_app_base_company_specific_product_fields_set ProductCompany LEFT JOIN meta_field field ON field.id = ProductCompany.company_specific_product_fields_set where field.name = 'lastPurchasePrice' LIMIT 1) THEN (ProductCompany.last_purchase_price) ELSE (Product.last_purchase_price) END ) AS purchase_price,        
+		(CASE WHEN EXISTS(SELECT 1 FROM app_app_base_company_specific_product_fields_set ProductCompany LEFT JOIN meta_field field ON field.id = ProductCompany.company_specific_product_fields_set where field.name = 'lastPurchasePrice' LIMIT 1) THEN (ProductCompany.last_purchase_price) ELSE (Product.last_purchase_price) END ) AS purchase_price,        
 		Currency.code AS currency_code,
         ProductFamily.name as product_family,
         StockLocationLineHistoryPrice.cost_price as "cost_price",
         (CASE WHEN StockConfig.stock_valuation_type_select = 1 
-        THEN (CASE WHEN EXISTS(SELECT 1 FROM studio_app_base_company_specific_product_fields_set ProductCompany LEFT JOIN meta_field field ON field.id = ProductCompany.company_specific_product_fields_set where field.name = 'avgPrice' LIMIT 1) THEN (ProductCompany.avg_price) ELSE (Product.avg_price) END )       
+        THEN (CASE WHEN EXISTS(SELECT 1 FROM app_app_base_company_specific_product_fields_set ProductCompany LEFT JOIN meta_field field ON field.id = ProductCompany.company_specific_product_fields_set where field.name = 'avgPrice' LIMIT 1) THEN (ProductCompany.avg_price) ELSE (Product.avg_price) END )       
         ELSE StockLocationLineHistoryPrice.wap END ) as "wap",
         Product.cost_type_select,
         StockConfig.is_display_sale_value_in_printing,

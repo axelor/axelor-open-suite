@@ -4,7 +4,8 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import https://axelor.com/xml/ns/data-import/data-import_8.2.xsd">
 
   <input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission"
-    search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
+    search="self.name = :name"
+    call="com.axelor.apps.base.service.imports.ImportPermission:importPermissionToRole">
     <bind to="canRead" eval="can_read == 'x' ? 'true' : 'false'"/>
     <bind to="canWrite" eval="can_write == 'x' ? 'true' : 'false'"/>
     <bind to="canCreate" eval="can_create == 'x' ? 'true' : 'false'"/>

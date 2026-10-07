@@ -3,13 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import https://axelor.com/xml/ns/data-import/data-import_8.2.xsd">
 
-  <input file="studio_appSale.csv" separator=";" type="com.axelor.studio.db.AppSale"
+  <input file="app_appSale.csv" separator=";" type="com.axelor.apps.app.db.AppSale"
     search="self.app.code = :code" update="true">
     <bind column="salespersonSelect" to="salespersonSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppSale', 'salespersonSelect', salespersonSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppSale', 'salespersonSelect', salespersonSelect)"
       check-message="Invalid salespersonSelect"/>
     <bind column="listDisplayTypeSelect" to="listDisplayTypeSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppSale', 'listDisplayTypeSelect', listDisplayTypeSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppSale', 'listDisplayTypeSelect', listDisplayTypeSelect)"
       check-message="Invalid listDisplayTypeSelect"/>
   </input>
 
@@ -196,34 +196,34 @@
       check-message="Email template doesn't exist"/>
   </input>
 
-  <input file="studio_appBase.csv" separator=";" type="com.axelor.studio.db.AppBase"
+  <input file="app_appBase.csv" separator=";" type="com.axelor.apps.app.db.AppBase"
     search="self.app.code = :code">
     <bind column="mapApiSelect" to="mapApiSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'mapApiSelect', mapApiSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppBase', 'mapApiSelect', mapApiSelect)"
       check-message="Invalid mapApiSelect"/>
     <bind column="currencyWsURL" to="currencyWsURL"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'currencyWsURL', currencyWsURL)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppBase', 'currencyWsURL', currencyWsURL)"
       check-message="Invalid currencyWsURL"/>
     <bind column="productInAtiSelect" to="productInAtiSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'productInAtiSelect', productInAtiSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppBase', 'productInAtiSelect', productInAtiSelect)"
       check-message="Invalid productInAtiSelect"/>
     <bind column="regroupProductsTypeSelect" to="regroupProductsTypeSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'regroupProductsTypeSelect', regroupProductsTypeSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppBase', 'regroupProductsTypeSelect', regroupProductsTypeSelect)"
       check-message="Invalid regroupProductsTypeSelect"/>
     <bind column="regroupProductsLevelSelect" to="regroupProductsLevelSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'regroupProductsLevelSelect', regroupProductsLevelSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppBase', 'regroupProductsLevelSelect', regroupProductsLevelSelect)"
       check-message="Invalid regroupProductsLevelSelect"/>
     <bind column="computeMethodDiscountSelect" to="computeMethodDiscountSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'computeMethodDiscountSelect', computeMethodDiscountSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppBase', 'computeMethodDiscountSelect', computeMethodDiscountSelect)"
       check-message="Invalid computeMethodDiscountSelect"/>
     <bind column="timeLoggingPreferenceSelect" to="timeLoggingPreferenceSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'timeLoggingPreferenceSelect', timeLoggingPreferenceSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppBase', 'timeLoggingPreferenceSelect', timeLoggingPreferenceSelect)"
       check-message="Invalid timeLoggingPreferenceSelect"/>
     <bind column="productSequenceTypeSelect" to="productSequenceTypeSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'productSequenceTypeSelect', productSequenceTypeSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppBase', 'productSequenceTypeSelect', productSequenceTypeSelect)"
       check-message="Invalid productSequenceTypeSelect"/>
     <bind column="shortcutMultiSelect" to="shortcutMultiSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'shortcutMultiSelect', shortcutMultiSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppBase', 'shortcutMultiSelect', shortcutMultiSelect)"
       check-message="Invalid shortcutMultiSelect"/>
     <bind to="mailTemplateAssociationList" column="model" search="self.model.name = :model"
       if="model != null &amp;&amp; !model.empty"/>

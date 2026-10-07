@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.allocation;
 
+import com.axelor.apps.app.db.AppProject;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Unit;
@@ -40,7 +41,6 @@ import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.studio.db.AppProject;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

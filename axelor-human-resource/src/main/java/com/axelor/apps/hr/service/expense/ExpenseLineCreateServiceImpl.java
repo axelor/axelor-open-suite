@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.app.db.AppBase;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -40,7 +41,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.studio.db.AppBase;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;

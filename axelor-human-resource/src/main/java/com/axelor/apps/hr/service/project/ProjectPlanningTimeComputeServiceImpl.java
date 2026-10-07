@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.project;
 
+import com.axelor.apps.app.db.AppBase;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Unit;
@@ -32,7 +33,6 @@ import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.axelor.apps.project.service.config.ProjectConfigService;
-import com.axelor.studio.db.AppBase;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.DateTimeException;

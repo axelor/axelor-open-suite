@@ -192,11 +192,10 @@ public class DataBackupServiceImpl implements DataBackupService {
     StringBuilder filter =
         new StringBuilder(
             "self.packageName NOT LIKE '%meta%' AND self.name != 'DataBackup' AND self.tableName IS NOT NULL");
-    filter.append(" AND (self.packageName != 'com.axelor.studio.db'");
-    if (isExportApp) {
-      filter.append(" OR self.name LIKE 'App%'");
+    filter.append(" AND self.packageName != 'com.axelor.studio.db'");
+    if (!isExportApp) {
+      filter.append(" AND self.packageName != 'com.axelor.apps.app.db'");
     }
-    filter.append(")");
 
     List<MetaModel> metaModelList = metaModelRepo.all().filter(filter.toString()).fetch();
     metaModelList.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));

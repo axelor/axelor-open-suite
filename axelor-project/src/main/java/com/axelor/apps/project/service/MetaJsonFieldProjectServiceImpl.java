@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.app.db.AppProject;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
@@ -31,7 +32,6 @@ import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.rpc.Context;
-import com.axelor.studio.db.AppProject;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.util.ArrayList;

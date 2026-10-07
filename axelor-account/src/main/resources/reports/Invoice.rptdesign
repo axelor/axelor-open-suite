@@ -2818,7 +2818,7 @@ group by AdvanceInvoice.id, Currency.number_of_decimals]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select nb_decimal_digit_for_unit_price,
 nb_decimal_digit_for_qty
-from studio_app_base]]></xml-property>
+from app_app_base]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -2889,7 +2889,7 @@ IF (SELECT COUNT(to_regclass('sale_customer_catalog')) != 0) THEN
 	CustomerProductName := 'CustomerCatalog.product_customer_name as "CustomerProductName",';
 END IF;
 
-IF (SELECT COUNT(to_regclass('studio_app_business_project')) != 0) THEN
+IF (SELECT COUNT(to_regclass('app_app_business_project')) != 0) THEN
 	ExpenseDate := 'ExpenseLine.expense_date as "ExpenseDate",';
 	groupingPeriodSelect := 'Invoice.grouping_period_select as "groupingPeriodSelect",';
 	previousProgress := 'InvoiceLine.previous_progress as "previousProgress",'; 
@@ -2954,7 +2954,7 @@ left outer join sale_sale_order_line as SaleOrderLine on InvoiceLine.sale_order_
 IF (SELECT COUNT(to_regclass('sale_customer_catalog')) != 0) THEN  
 	sql_query := sql_query || ' left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = Invoice.partner)';  
 END IF;  
-IF (SELECT COUNT(to_regclass('studio_app_business_project')) != 0) THEN  
+IF (SELECT COUNT(to_regclass('app_app_business_project')) != 0) THEN  
 	sql_query := sql_query || ' left outer join hr_expense_line as ExpenseLine on (InvoiceLine.expense_line = ExpenseLine.id)';  
 END IF;  
 sql_query := sql_query || ' WHERE Invoice.id = ' || invoiceId;
@@ -3682,7 +3682,7 @@ select
     INV."previous_project_invoice_date",
     INV."eco_tax_mention"
     from INV
-    LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
+    LEFT JOIN app_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM app_app_base))
     LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
     LEFT JOIN base_currency Currency ON (Currency.id = Invoice.currency)
     WHERE  AppBase.is_regroup_products_on_printings IS NULL OR AppBase.is_regroup_products_on_printings IS FALSE
@@ -3734,7 +3734,7 @@ select
     NULL as eco_tax_mention
     from INV
     LEFT JOIN base_product_category as ProductCategory on (INV."productCategory" = ProductCategory.id)
-    LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
+    LEFT JOIN app_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM app_app_base))
     LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
     LEFT JOIN base_currency Currency ON (Currency.id = Invoice.currency)
     WHERE AppBase.is_regroup_products_on_printings IS TRUE AND Invoice.group_products_on_printings IS TRUE
@@ -3788,7 +3788,7 @@ select
     MAX(INV."previous_project_invoice_date") as "previous_project_invoice_date",
     NULL as eco_tax_mention
 from INV
-LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
+LEFT JOIN app_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM app_app_base))
 LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
 LEFT JOIN base_currency Currency ON (Currency.id = Invoice.currency)
 WHERE AppBase.is_regroup_products_on_printings IS TRUE AND Invoice.group_products_on_printings IS TRUE
@@ -4105,7 +4105,7 @@ AppAccount.allow_multi_invoice_terms as "AllowMultiInvoiceTerms",
 Currency.number_of_decimals
 from account_invoice_term as InvoiceTerm
 left outer join account_payment_mode as PaymentMode on (InvoiceTerm.payment_mode = PaymentMode.id)
-left outer join studio_app_account as AppAccount on true
+left outer join app_app_account as AppAccount on true
 inner join account_invoice as Invoice on (InvoiceTerm.invoice = Invoice.id)
 left outer join base_currency as Currency on (Invoice.currency = Currency.id)
 left outer join account_financial_discount as FinancialDiscount on (InvoiceTerm.financial_discount = FinancialDiscount.id)
@@ -4675,11 +4675,11 @@ $func$
 DECLARE
 contractPackManagement boolean := false;
 BEGIN
-IF (SELECT COUNT(to_regclass('account_invoice_contract_set')) != 0) AND (SELECT COUNT(to_regclass('studio_app_contract')) != 0) THEN
-	EXECUTE 'SELECT EXISTS (SELECT 1 FROM account_invoice_contract_set as InvoiceContract WHERE InvoiceContract.account_invoice = $1) AND COALESCE((SELECT is_pack_management FROM studio_app_contract LIMIT 1), false)'
+IF (SELECT COUNT(to_regclass('account_invoice_contract_set')) != 0) AND (SELECT COUNT(to_regclass('app_app_contract')) != 0) THEN
+	EXECUTE 'SELECT EXISTS (SELECT 1 FROM account_invoice_contract_set as InvoiceContract WHERE InvoiceContract.account_invoice = $1) AND COALESCE((SELECT is_pack_management FROM app_app_contract LIMIT 1), false)'
 	INTO contractPackManagement USING InvoiceId;
 END IF;
-IF (SELECT COUNT(to_regclass('studio_app_business_project')) = 0) THEN
+IF (SELECT COUNT(to_regclass('app_app_business_project')) = 0) THEN
 return query
 select distinct
 	Invoice.id as inv_id,
@@ -4763,9 +4763,9 @@ select distinct
 	Company.legal_information as "legalInformation"
 from account_invoice as Invoice
 left outer join base_company as Company on (Invoice.company = Company.id)
-left outer join studio_app_sale as AppSale on true
-left outer join studio_app_account as AppAccount on true
-left outer join studio_app as AppSupplychain on AppSupplychain.code = 'supplychain'
+left outer join app_app_sale as AppSale on true
+left outer join app_app_account as AppAccount on true
+left outer join app_app as AppSupplychain on AppSupplychain.code = 'supplychain'
 left outer join base_partner as Partner on (Invoice.partner = Partner.id)
 left outer join base_partner as ContactPartner on (Invoice.contact_partner = ContactPartner.id)
 left outer join base_partner as CompanyPartner on (Company.partner = CompanyPartner.id)
@@ -4866,9 +4866,9 @@ select distinct
 	Company.legal_information as "legalInformation"
 from account_invoice as Invoice
 left outer join base_company as Company on (Invoice.company = Company.id)
-left outer join studio_app_sale as AppSale on true
-left outer join studio_app_account as AppAccount on true
-left outer join studio_app as AppSupplychain on AppSupplychain.code = 'supplychain'
+left outer join app_app_sale as AppSale on true
+left outer join app_app_account as AppAccount on true
+left outer join app_app as AppSupplychain on AppSupplychain.code = 'supplychain'
 left outer join base_partner as Partner on (Invoice.partner = Partner.id)
 left outer join base_partner as ContactPartner on (Invoice.contact_partner = ContactPartner.id)
 left outer join base_partner as CompanyPartner on (Company.partner = CompanyPartner.id)
@@ -4931,7 +4931,7 @@ JOIN hr_employee timesheet_emp ON timesheet_emp.id = line.employee
 JOIN base_product product ON product.id = line.product
 JOIN meta_select mselect ON (mselect.name = 'hr.time.logging.preference.select')
 LEFT JOIN meta_select_item select_item ON select_item.select_id = mselect.id AND select_item.value = project.unit_on_printing
-JOIN studio_app_base as AppBase on true
+JOIN app_app_base as AppBase on true
 JOIN base_unit product_unit ON product_unit.id = product.unit;
 ELSE
 return query
@@ -4955,7 +4955,7 @@ JOIN hr_employee timesheet_emp ON timesheet_emp.id = line.employee
 JOIN base_product product ON product.id = line.product
 JOIN meta_select mselect ON (mselect.name = 'hr.time.logging.preference.select')
 LEFT JOIN meta_select_item select_item ON select_item.select_id = mselect.id AND select_item.value = project.unit_on_printing
-JOIN studio_app_base as AppBase on true
+JOIN app_app_base as AppBase on true
 JOIN base_unit product_unit ON product_unit.id = product.unit;
 END IF;
 END IF;

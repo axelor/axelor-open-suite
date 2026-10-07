@@ -19,6 +19,7 @@
 package com.axelor.apps.base.service.user;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.app.db.AppBase;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
@@ -43,7 +44,6 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaPermission;
 import com.axelor.meta.db.MetaPermissionRule;
-import com.axelor.studio.db.AppBase;
 import com.axelor.team.db.Team;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;

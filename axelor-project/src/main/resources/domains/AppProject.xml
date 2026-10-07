@@ -3,11 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
-  <module name="studio" package="com.axelor.studio.db"/>
+  <module name="app" package="com.axelor.apps.app.db"/>
 
   <entity name="AppProject" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
+    <one-to-one ref="com.axelor.apps.app.db.App" name="app" unique="true"/>
 
     <string name="projectLabel" title="Project Label"
       help="This configuration allows changing the name of the Project tab in sale order lines by replacing it with the label defined here."/>

@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.production.service.productionorder.manuforder;
 
+import com.axelor.apps.app.db.repo.AppSaleRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -31,7 +32,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

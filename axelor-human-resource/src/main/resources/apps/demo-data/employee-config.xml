@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import https://axelor.com/xml/ns/data-import/data-import_8.2.xsd">
 
-  <input file="studio_appEmployee.csv" separator=";" type="com.axelor.studio.db.AppEmployee"
+  <input file="app_appEmployee.csv" separator=";" type="com.axelor.apps.app.db.AppEmployee"
     search="self.app.code = :code" update="true"/>
 
   <input file="hr_leaveReason.csv" type="com.axelor.apps.hr.db.LeaveReason" separator=";"

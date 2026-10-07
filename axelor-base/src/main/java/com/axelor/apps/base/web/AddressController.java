@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.app.db.AppBase;
+import com.axelor.apps.app.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -45,8 +47,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.studio.db.AppBase;
-import com.axelor.studio.db.repo.AppBaseRepository;
 import com.qas.web_2005_02.AddressLineType;
 import com.qas.web_2005_02.PicklistEntryType;
 import com.qas.web_2005_02.QAAddressType;

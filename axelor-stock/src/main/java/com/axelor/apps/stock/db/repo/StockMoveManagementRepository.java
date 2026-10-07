@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.stock.db.repo;
 
+import com.axelor.apps.app.db.AppStock;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -29,7 +30,6 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.studio.db.AppStock;
 import com.google.common.base.Strings;
 import jakarta.persistence.PersistenceException;
 import java.util.Map;

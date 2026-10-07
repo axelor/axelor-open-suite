@@ -18,9 +18,9 @@
  */
 package com.axelor.apps.account.service.app;
 
+import com.axelor.apps.app.db.AppAccount;
+import com.axelor.apps.app.db.AppInvoice;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.studio.db.AppAccount;
-import com.axelor.studio.db.AppInvoice;
 
 public interface AppAccountService extends AppBaseService {
 

@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.hr.service.leave;
 
+import com.axelor.apps.app.db.AppLeave;
+import com.axelor.apps.app.db.repo.AppLeaveRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.WeeklyPlanning;
@@ -36,8 +38,6 @@ import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppLeave;
-import com.axelor.studio.db.repo.AppLeaveRepository;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <action-method name="action-filter-method-update-target-field">
+    <call class="com.axelor.apps.base.web.FilterController" method="updateTargetField"/>
+  </action-method>
+
+  <action-method name="action-filter-method-update-target-type">
+    <call class="com.axelor.apps.base.web.FilterController" method="updateTargetType"/>
+  </action-method>
+
+  <action-method name="action-filter-method-update-target-meta-field">
+    <call class="com.axelor.apps.base.web.FilterController" method="updateTargetMetaField"/>
+  </action-method>
+
+  <action-method name="action-filter-method-clear-selection">
+    <call class="com.axelor.apps.base.web.FilterController" method="clearSelection"/>
+  </action-method>
+
+</object-views>

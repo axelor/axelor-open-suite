@@ -18,6 +18,9 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.app.db.AppProduction;
+import com.axelor.apps.app.db.AppSale;
+import com.axelor.apps.app.db.repo.AppSaleRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.BlockingService;
@@ -47,9 +50,6 @@ import com.axelor.apps.supplychain.service.pricing.FreightCarrierApplyPricingSer
 import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
-import com.axelor.studio.db.AppProduction;
-import com.axelor.studio.db.AppSale;
-import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;

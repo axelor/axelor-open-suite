@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import https://axelor.com/xml/ns/data-import/data-import_8.2.xsd">
 
-  <input file="studio_appPurchase.csv" separator=";" type="com.axelor.studio.db.AppPurchase"
+  <input file="app_appPurchase.csv" separator=";" type="com.axelor.apps.app.db.AppPurchase"
     search="self.app.code = :code"/>
 
   <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"

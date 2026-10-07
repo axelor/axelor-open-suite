@@ -18,13 +18,13 @@
  */
 package com.axelor.apps.sale.service.saleorderline;
 
+import com.axelor.apps.app.db.AppSale;
+import com.axelor.apps.app.db.repo.AppSaleRepository;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.studio.db.AppSale;
-import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;

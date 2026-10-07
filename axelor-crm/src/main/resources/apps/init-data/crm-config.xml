@@ -38,10 +38,10 @@
   <input file="crm_partnerStatus.csv" separator=";"
     type="com.axelor.apps.crm.db.PartnerStatus" search="self.importId = :importId"/>
 
-  <input file="studio_appCrm.csv" separator=";" type="com.axelor.studio.db.AppCrm"
+  <input file="app_appCrm.csv" separator=";" type="com.axelor.apps.app.db.AppCrm"
     search="self.app.code = :code">
     <bind column="assignableUsers" to="assignableUsers"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppCrm', 'assignableUsers', assignableUsers)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppCrm', 'assignableUsers', assignableUsers)"
       check-message="Invalid assignableUsers"/>
     <bind to="app" column="code" search="self.code = :code"/>
     <bind to="closedWinOpportunityStatus" column="closedWinOpportunityStatus_importId"

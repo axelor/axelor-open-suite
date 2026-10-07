@@ -1,0 +1,46 @@
+---
+title: "App: moved the app management (apps loading, installation, data import and app management screen) from Axelor Studio to Base, AOS no longer depends on Axelor Studio."
+module: axelor-base
+developer: |
+  The `axelor-studio` dependency has been removed from `axelor-base`.
+
+  The app entities (`App` and every `App*` configuration entity) have moved from the
+  `com.axelor.studio.db` package to `com.axelor.apps.app.db` (`app` module of `axelor-base`), and
+  their tables from `studio_app*` to `app_app*`. Their repositories have moved from
+  `com.axelor.studio.db.repo` to `com.axelor.apps.app.db.repo`. The `studio.app.type.select` selection is renamed
+  `base.app.type.select`, and the `studio_app*.csv` data files are renamed `app_app*.csv`.
+
+  The following classes have moved:
+  - `com.axelor.studio.app.service.AppService` -> `com.axelor.apps.base.service.app.AppService`
+  - `com.axelor.studio.app.service.ScriptAppService` -> `com.axelor.apps.base.service.app.ScriptAppService`
+  - `com.axelor.studio.app.service.ScriptAppServiceImpl` -> `com.axelor.apps.base.service.app.ScriptAppServiceImpl`
+  - `com.axelor.studio.app.service.AccessTemplateService` -> `com.axelor.apps.base.service.app.AccessTemplateService`
+  - `com.axelor.meta.loader.AppVersionService` -> `com.axelor.apps.base.service.app.AppVersionService`
+  - `com.axelor.studio.app.listener.AppServerStartListener` -> `com.axelor.apps.base.listener.AppServerStartListener`
+  - `com.axelor.studio.app.web.AppController` -> `com.axelor.apps.base.web.AppController`
+  - `com.axelor.studio.helper.TransactionHelper` -> `com.axelor.apps.base.utils.TransactionHelper` (only `runAfterCommit` is kept)
+  - `com.axelor.studio.service.filter.FilterJpqlService` -> `com.axelor.apps.base.service.filter.FilterJpqlService` (only `getJpqlFilters` is kept)
+  - `com.axelor.studio.web.FilterController` -> `com.axelor.apps.base.web.FilterController`, used by the `action-filter-method-*` actions of the target list filters
+  - `com.axelor.csv.script.ImportPermission` -> `com.axelor.apps.base.service.imports.ImportPermission`
+
+  The `Filter` entity (marketing target lists) is now defined in `axelor-base`: it has moved from
+  `com.axelor.studio.db` to `com.axelor.apps.base.db`, and its table from `studio_filter` to
+  `base_filter`. Its `studio.filter.operator` and `studio.filter.logic.operator` selections are
+  renamed `base.filter.operator` and `base.filter.logic.operator`. The `importId` / `importOrigin` fields
+  of every model are now defined in `axelor-base`. The `processInstanceId` field of every model is no
+  longer defined, it remains provided by Axelor Studio when the studio is added to the application.
+
+  In `axelor-config.properties`, replace:
+  `context.app = com.axelor.studio.app.service.ScriptAppService`
+  with:
+  `context.app = com.axelor.apps.base.service.app.ScriptAppService`
+
+  The `studio.apps.install` property (and its former name `aos.apps.install-apps`) is still used to
+  install the apps at startup.
+
+  The database migration (renaming of the studio_app* tables to app_app* and of studio_filter to
+  base_filter, of the class names stored
+  in the database, and removal of the app management metadata of the axelor-studio module) is done
+  by the migration script #119966, which must run before the first start of this version. BIRT
+  reports, Groovy scripts and templates customized on a project and referring to the studio_app* /
+  studio_filter tables or to the com.axelor.studio.db.App* / Filter classes must be updated by hand.

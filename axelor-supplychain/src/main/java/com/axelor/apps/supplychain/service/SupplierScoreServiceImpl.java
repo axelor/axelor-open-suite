@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.app.db.AppSupplychain;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -31,7 +32,6 @@ import com.axelor.apps.supplychain.db.repo.SupplierScoreHistoryRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.supplierdispute.SupplierDisputeIndicatorService;
 import com.axelor.db.JPA;
-import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.persistence.TypedQuery;

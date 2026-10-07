@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import https://axelor.com/xml/ns/data-import/data-import_8.2.xsd">
 
-  <input file="studio_appContract.csv" separator=";" type="com.axelor.studio.db.AppContract"
+  <input file="app_appContract.csv" separator=";" type="com.axelor.apps.app.db.AppContract"
     search="self.app.code = :code" update="true"/>
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"

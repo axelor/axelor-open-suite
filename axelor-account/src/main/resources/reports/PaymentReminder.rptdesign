@@ -1011,7 +1011,7 @@ CASE when InvoiceTerm.invoice IS NOT NULL THEN (SELECT invoice_id from account_i
 when InvoiceTerm.invoice IS NULL THEN Move.origin
 end as IDCode,
 InvoiceTerm.due_date as DueDate,
-DATE_PART('day',  coalesce ((select today_datet from studio_app_base), NOW())-InvoiceTerm.due_date) as LatePaymentDays,
+DATE_PART('day',  coalesce ((select today_datet from app_app_base), NOW())-InvoiceTerm.due_date) as LatePaymentDays,
 case when Invoice.operation_type_select in (2, 4) then -InvoiceTerm.amount else InvoiceTerm.amount end as Amount,
 case when Invoice.operation_type_select in (2, 4) then -(InvoiceTerm.amount - InvoiceTerm.amount_remaining) else (InvoiceTerm.amount - InvoiceTerm.amount_remaining) end as AmountPaid,
 case when Invoice.operation_type_select in (2, 4) then -InvoiceTerm.amount_remaining else InvoiceTerm.amount_remaining end as ToPay,
@@ -1029,7 +1029,7 @@ left join account_account_config AccConf on AccConf.company = Move.company
 where DebtRecoveryHistory.id = ?
 and Currency.code is not null
 and InvoiceTerm.amount_remaining > 0
-and InvoiceTerm.due_date + INTERVAL '1 day' * coalesce(AccConf.mail_transit_time,1) < coalesce ((select today_datet from studio_app_base), NOW()) )
+and InvoiceTerm.due_date + INTERVAL '1 day' * coalesce(AccConf.mail_transit_time,1) < coalesce ((select today_datet from app_app_base), NOW()) )
 order by InvoiceTerm.sequence]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">

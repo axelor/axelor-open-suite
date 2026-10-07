@@ -52,8 +52,8 @@
       check-message="Name must not be null"/>
   </input>
 
-  <input file="studio_appRecruitment.csv" separator=";"
-    type="com.axelor.studio.db.AppRecruitment" search="self.app.code = :code">
+  <input file="app_appRecruitment.csv" separator=";"
+    type="com.axelor.apps.app.db.AppRecruitment" search="self.app.code = :code">
     <bind to="app" column="code" search="self.code = :code"/>
     <bind to="hiringStatus" column="hiringStatus_name" search="self.name = :hiringStatus_name"/>
   </input>

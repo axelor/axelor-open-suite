@@ -18,12 +18,12 @@
  */
 package com.axelor.apps.hr.service.app;
 
+import com.axelor.apps.app.db.AppExpense;
+import com.axelor.apps.app.db.AppLeave;
+import com.axelor.apps.app.db.AppTimesheet;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.db.AppExpense;
-import com.axelor.studio.db.AppLeave;
-import com.axelor.studio.db.AppTimesheet;
 
 public interface AppHumanResourceService extends AppBaseService {
 

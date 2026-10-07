@@ -18,14 +18,14 @@
  */
 package com.axelor.apps.quality.service.app;
 
+import com.axelor.apps.app.db.AppQuality;
+import com.axelor.apps.app.db.repo.AppQualityRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.quality.db.QualityConfig;
 import com.axelor.apps.quality.db.repo.QualityConfigRepository;
-import com.axelor.studio.app.service.AppService;
-import com.axelor.studio.db.AppQuality;
-import com.axelor.studio.db.repo.AppQualityRepository;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

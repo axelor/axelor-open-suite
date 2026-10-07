@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.supplychain.service.app;
 
+import com.axelor.apps.app.db.AppSupplychain;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.studio.db.AppSupplychain;
 
 public interface AppSupplychainService extends AppBaseService {
 

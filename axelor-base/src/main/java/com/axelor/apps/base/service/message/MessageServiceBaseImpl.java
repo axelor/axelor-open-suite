@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.service.message;
 
+import com.axelor.apps.app.db.AppBase;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ModelEmailLink;
@@ -43,7 +44,6 @@ import com.axelor.message.service.MessageServiceImpl;
 import com.axelor.message.service.SendMailQueueService;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
-import com.axelor.studio.db.AppBase;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;

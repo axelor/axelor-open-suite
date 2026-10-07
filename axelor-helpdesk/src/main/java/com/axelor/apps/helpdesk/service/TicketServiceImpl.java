@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.helpdesk.service;
 
+import com.axelor.apps.app.db.AppHelpdesk;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
@@ -29,7 +30,6 @@ import com.axelor.apps.helpdesk.db.repo.SlaRepository;
 import com.axelor.apps.helpdesk.service.app.AppHelpdeskService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.studio.db.AppHelpdesk;
 import com.axelor.utils.helpers.date.DurationHelper;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import jakarta.inject.Inject;

@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.service.imports;
 
+import com.axelor.apps.app.db.AppBase;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
@@ -30,7 +31,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.studio.db.AppBase;
 import com.axelor.utils.helpers.net.UrlHelper;
 import com.google.common.io.Files;
 import jakarta.inject.Inject;

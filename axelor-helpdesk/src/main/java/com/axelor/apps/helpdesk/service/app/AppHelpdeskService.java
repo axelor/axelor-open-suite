@@ -18,7 +18,7 @@
  */
 package com.axelor.apps.helpdesk.service.app;
 
-import com.axelor.studio.db.AppHelpdesk;
+import com.axelor.apps.app.db.AppHelpdesk;
 
 public interface AppHelpdeskService {
 

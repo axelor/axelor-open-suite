@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.project.web;
 
+import com.axelor.apps.app.db.AppProject;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.project.db.Project;
@@ -42,7 +43,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.db.AppProject;
 import jakarta.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Arrays;

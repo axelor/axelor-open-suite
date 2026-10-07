@@ -50,6 +50,7 @@ import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.period.PeriodCheckService;
+import com.axelor.apps.app.db.AppAccount;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -70,7 +71,6 @@ import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.views.Selection.Option;
-import com.axelor.studio.db.AppAccount;
 import com.google.common.base.Splitter;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;

@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.production.service.batch;
 
+import com.axelor.apps.app.db.AppProduction;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ProductionOrder;
@@ -31,7 +32,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppProduction;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;

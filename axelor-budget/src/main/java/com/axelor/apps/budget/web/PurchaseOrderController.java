@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.budget.web;
 
+import com.axelor.apps.app.db.AppBudget;
+import com.axelor.apps.app.db.repo.AppBudgetRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.ErrorException;
@@ -36,8 +38,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.db.AppBudget;
-import com.axelor.studio.db.repo.AppBudgetRepository;
 import com.google.common.base.Strings;
 import org.apache.commons.collections.CollectionUtils;
 

@@ -22,6 +22,7 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.app.ScriptAppService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateComputeNameServiceImpl;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.VersionUtils;
@@ -38,6 +39,7 @@ public class BaseCustomPolicy implements ScriptPolicyConfigurator {
       List<String> denyPackages,
       List<Class<?>> denyClasses) {
     allowClasses.add(AppBaseService.class);
+    allowClasses.add(ScriptAppService.class);
     allowClasses.add(DurationHelper.class);
     allowClasses.add(AppSettings.class);
     allowClasses.add(MetaFiles.class);

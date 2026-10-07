@@ -19,6 +19,7 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.app.db.AppBase;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AddressTemplate;
 import com.axelor.apps.base.db.Company;
@@ -36,9 +37,6 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
-import com.axelor.studio.app.service.AppService;
-import com.axelor.studio.app.service.ScriptAppServiceImpl;
-import com.axelor.studio.db.AppBase;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;

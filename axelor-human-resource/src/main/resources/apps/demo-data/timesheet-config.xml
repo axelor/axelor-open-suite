@@ -3,13 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import https://axelor.com/xml/ns/data-import/data-import_8.2.xsd">
 
-  <input file="studio_appTimesheet.csv" separator=";" type="com.axelor.studio.db.AppTimesheet"
+  <input file="app_appTimesheet.csv" separator=";" type="com.axelor.apps.app.db.AppTimesheet"
     search="self.app.code = :code">
     <bind column="invoicingTypeLogTimesSelect" to="invoicingTypeLogTimesSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppTimesheet', 'invoicingTypeLogTimesSelect', invoicingTypeLogTimesSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppTimesheet', 'invoicingTypeLogTimesSelect', invoicingTypeLogTimesSelect)"
       check-message="Invalid invoicingTypeLogTimesSelect"/>
     <bind column="defaultEndFormat" to="defaultEndFormat"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppTimesheet', 'defaultEndFormat', defaultEndFormat)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppTimesheet', 'defaultEndFormat', defaultEndFormat)"
       check-message="Invalid defaultEndFormat"/>
   </input>
 

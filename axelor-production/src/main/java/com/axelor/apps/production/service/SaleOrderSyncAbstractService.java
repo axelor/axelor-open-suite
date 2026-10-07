@@ -18,12 +18,12 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.app.db.AppProduction;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.studio.db.AppProduction;
 import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Objects;

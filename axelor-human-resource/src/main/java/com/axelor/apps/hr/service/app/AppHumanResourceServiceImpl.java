@@ -18,20 +18,20 @@
  */
 package com.axelor.apps.hr.service.app;
 
+import com.axelor.apps.app.db.AppExpense;
+import com.axelor.apps.app.db.AppLeave;
+import com.axelor.apps.app.db.AppTimesheet;
+import com.axelor.apps.app.db.repo.AppExpenseRepository;
+import com.axelor.apps.app.db.repo.AppLeaveRepository;
+import com.axelor.apps.app.db.repo.AppTimesheetRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.HRConfigRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.app.service.AppService;
-import com.axelor.studio.db.AppExpense;
-import com.axelor.studio.db.AppLeave;
-import com.axelor.studio.db.AppTimesheet;
-import com.axelor.studio.db.repo.AppExpenseRepository;
-import com.axelor.studio.db.repo.AppLeaveRepository;
-import com.axelor.studio.db.repo.AppTimesheetRepository;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

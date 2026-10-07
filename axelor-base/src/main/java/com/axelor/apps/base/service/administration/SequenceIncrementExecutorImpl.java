@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.service.administration;
 
+import com.axelor.apps.app.db.AppBase;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.SequenceVersion;
@@ -27,7 +28,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.db.tenants.TenantAware;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppBase;
 import jakarta.annotation.PreDestroy;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

@@ -18,13 +18,13 @@
  */
 package com.axelor.apps.supplychain.service.saleorder;
 
+import com.axelor.apps.app.db.AppSupplychain;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.studio.db.AppSupplychain;
 import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;

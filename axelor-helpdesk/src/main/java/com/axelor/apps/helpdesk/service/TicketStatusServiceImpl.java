@@ -18,10 +18,10 @@
  */
 package com.axelor.apps.helpdesk.service;
 
+import com.axelor.apps.app.db.AppHelpdesk;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.TicketStatus;
 import com.axelor.apps.helpdesk.service.app.AppHelpdeskService;
-import com.axelor.studio.db.AppHelpdesk;
 import jakarta.inject.Inject;
 
 public class TicketStatusServiceImpl implements TicketStatusService {

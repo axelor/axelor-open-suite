@@ -2122,8 +2122,8 @@ LEFT JOIN base_partner AS ContactPartner ON (ContactPartner.id = SaleOrder.conta
 LEFT JOIN base_company as Company on (SaleOrder.company = Company.id)
 LEFT JOIN base_currency as Currency on (Company.currency = Currency.id)
 LEFT JOIN base_trading_name as TradingName on (SaleOrder.trading_name = TradingName.id)
-LEFT JOIN studio_app_base AS AppBase on true
-LEFT JOIN studio_app_sale AS AppSale on true
+LEFT JOIN app_app_base AS AppBase on true
+LEFT JOIN app_app_sale AS AppSale on true
 WHERE Partner.id = partnerId
 and (companyId IS NULL OR Company.id = companyId) 
 and (tradingNameId IS NULL OR TradingName.id = tradingNameId)
@@ -2193,7 +2193,7 @@ left join base_company as Company on (Invoice.company = Company.id)
 left join base_currency as Currency on (Company.currency = Currency.id)
 left join base_currency as TermCurrency on (Invoice.currency = TermCurrency.id)
 left join base_trading_name as TradingName on (Invoice.trading_name = TradingName.id)
-left join studio_app_base AS AppBase on true
+left join app_app_base AS AppBase on true
 where Partner.id = partnerId
 and (companyId IS NULL OR Company.id = companyId) 
 and (tradingNameId IS NULL OR TradingName.id = tradingNameId)
@@ -2550,7 +2550,7 @@ FROM base_partner AS Partner
 INNER JOIN stock_stock_move AS StockMove ON (StockMove.partner = Partner.id)
 LEFT JOIN base_company as Company on (StockMove.company = Company.id)
 LEFT JOIN base_trading_name as TradingName on (StockMove.trading_name = TradingName.id)
-LEFT JOIN studio_app_base AS AppBase on true
+LEFT JOIN app_app_base AS AppBase on true
 
 WHERE StockMove.type_select= 2 and StockMove.is_reversion = false
 and Partner.id = partnerId

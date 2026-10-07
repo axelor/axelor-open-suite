@@ -18,14 +18,14 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.app.db.AppSale;
+import com.axelor.apps.app.db.repo.AppSaleRepository;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.studio.db.AppSale;
-import com.axelor.studio.db.repo.AppSaleRepository;
 import com.axelor.team.db.Team;
 import jakarta.inject.Inject;
 

@@ -18,15 +18,15 @@
  */
 package com.axelor.apps.production.service.app;
 
+import com.axelor.apps.app.db.AppProduction;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
-import com.axelor.studio.app.service.AppService;
-import com.axelor.studio.db.AppProduction;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

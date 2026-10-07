@@ -19,6 +19,7 @@
 package com.axelor.apps.base.service.administration;
 
 import com.axelor.app.AppSettings;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.repo.GroupRepository;
@@ -33,7 +34,6 @@ import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.meta.loader.ModuleManager;
-import com.axelor.studio.app.service.AppService;
 import com.axelor.utils.helpers.file.CsvHelper;
 import com.axelor.utils.xml.XPathParser;
 import com.google.inject.persist.Transactional;

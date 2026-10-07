@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.app.db.AppProject;
 import com.axelor.apps.base.db.Frequency;
 import com.axelor.apps.base.db.repo.FrequencyRepository;
 import com.axelor.apps.base.service.FrequencyService;
@@ -35,7 +36,6 @@ import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
-import com.axelor.studio.db.AppProject;
 import com.axelor.utils.api.SecurityCheck;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;

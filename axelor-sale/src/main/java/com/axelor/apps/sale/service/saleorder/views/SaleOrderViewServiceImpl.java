@@ -18,6 +18,9 @@
  */
 package com.axelor.apps.sale.service.saleorder.views;
 
+import com.axelor.apps.app.db.AppBase;
+import com.axelor.apps.app.db.AppSale;
+import com.axelor.apps.app.db.repo.AppSaleRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -35,9 +38,6 @@ import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.studio.db.AppBase;
-import com.axelor.studio.db.AppSale;
-import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Inject;
 import java.util.Arrays;
 import java.util.HashMap;

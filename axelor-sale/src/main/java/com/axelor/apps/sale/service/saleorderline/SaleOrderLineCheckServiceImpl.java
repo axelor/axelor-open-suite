@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.sale.service.saleorderline;
 
+import com.axelor.apps.app.db.AppSale;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -26,7 +27,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppSale;
 import jakarta.inject.Inject;
 
 public class SaleOrderLineCheckServiceImpl implements SaleOrderLineCheckService {

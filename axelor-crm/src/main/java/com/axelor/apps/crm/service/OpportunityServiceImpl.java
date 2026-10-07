@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.crm.service;
 
+import com.axelor.apps.app.db.AppCrm;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -32,7 +33,6 @@ import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.studio.db.AppCrm;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.util.ArrayList;

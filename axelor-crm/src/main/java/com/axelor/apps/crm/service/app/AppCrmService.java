@@ -18,12 +18,12 @@
  */
 package com.axelor.apps.crm.service.app;
 
+import com.axelor.apps.app.db.AppCrm;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.LeadStatus;
 import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.db.PartnerStatus;
-import com.axelor.studio.db.AppCrm;
 
 public interface AppCrmService extends AppBaseService {
 

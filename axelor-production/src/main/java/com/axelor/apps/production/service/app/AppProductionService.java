@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.production.service.app;
 
+import com.axelor.apps.app.db.AppProduction;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.studio.db.AppProduction;
 
 public interface AppProductionService extends AppBaseService {
 

@@ -18,12 +18,12 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.app.db.AppBase;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.studio.db.AppBase;
 import jakarta.inject.Inject;
 import java.util.List;
 

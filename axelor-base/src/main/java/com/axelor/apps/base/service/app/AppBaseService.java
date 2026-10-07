@@ -18,13 +18,12 @@
  */
 package com.axelor.apps.base.service.app;
 
+import com.axelor.apps.app.db.AppBase;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AddressTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.studio.app.service.ScriptAppService;
-import com.axelor.studio.db.AppBase;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;

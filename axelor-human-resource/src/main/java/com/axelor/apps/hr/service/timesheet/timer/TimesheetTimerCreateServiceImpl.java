@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.timesheet.timer;
 
+import com.axelor.apps.app.db.AppTimesheet;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -32,7 +33,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppTimesheet;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.time.LocalDateTime;

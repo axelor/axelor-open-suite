@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service;
 
+import com.axelor.apps.app.db.AppLeave;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
@@ -26,7 +27,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaSchedule;
 import com.axelor.meta.db.repo.MetaScheduleRepository;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.studio.db.AppLeave;
 import com.axelor.utils.db.Wizard;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;

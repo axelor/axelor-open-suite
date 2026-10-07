@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service.saleorder.views;
 
+import com.axelor.apps.app.db.AppSale;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -34,7 +35,6 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
-import com.axelor.studio.db.AppSale;
 import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;

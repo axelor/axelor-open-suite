@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.app.db.AppSale;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -27,7 +28,6 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppSale;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;

@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service.saleorderline;
 
+import com.axelor.apps.app.db.AppSupplychain;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -25,7 +26,6 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyService
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineInitValueServiceImpl;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.studio.db.AppSupplychain;
 import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;

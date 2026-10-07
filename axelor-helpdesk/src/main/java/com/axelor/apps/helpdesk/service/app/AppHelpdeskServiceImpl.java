@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.helpdesk.service.app;
 
-import com.axelor.studio.db.AppHelpdesk;
-import com.axelor.studio.db.repo.AppHelpdeskRepository;
+import com.axelor.apps.app.db.AppHelpdesk;
+import com.axelor.apps.app.db.repo.AppHelpdeskRepository;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 

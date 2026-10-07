@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.app.db.repo.AppBaseRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.AxelorMessageException;
 import com.axelor.apps.base.db.Address;
@@ -65,7 +66,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.TemplateMessageService;
-import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;

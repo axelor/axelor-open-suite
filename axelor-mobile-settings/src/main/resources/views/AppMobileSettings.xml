@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <form name="app-mobile-settings-config-form" title="App mobile"
-    model="com.axelor.studio.db.AppMobileSettings" width="large"
+    model="com.axelor.apps.app.db.AppMobileSettings" width="large"
     onLoad="action-app-mobile-settings-config-group-on-load" canNew="false" canDelete="false">
     <panel name="mainPanel">
       <panel name="applicationsPanel" title="Mobile apps" colSpan="10" itemSpan="3">

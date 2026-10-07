@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <form name="app-intervention-config-form" title="App Intervention"
-    model="com.axelor.studio.db.AppIntervention" width="large">
+    model="com.axelor.apps.app.db.AppIntervention" width="large">
     <panel name="mainPanel">
       <panel name="interventionsPanel" title="Interventions" colSpan="12">
         <field name="defaultRequestSource"/>

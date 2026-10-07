@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.project;
 
+import com.axelor.apps.app.db.AppBase;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -27,7 +28,6 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.common.StringUtils;
-import com.axelor.studio.db.AppBase;
 import jakarta.inject.Inject;
 import java.util.Optional;
 

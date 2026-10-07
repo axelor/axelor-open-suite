@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.app.db.AppProject;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTemplate;
@@ -27,7 +28,6 @@ import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.studio.db.AppProject;
 import com.axelor.utils.db.Wizard;
 import jakarta.inject.Inject;
 import java.util.HashMap;

@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.quality.service;
 
+import com.axelor.apps.app.db.AppSupplychain;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -29,7 +30,6 @@ import com.axelor.apps.supplychain.service.SupplierScoreTool;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.supplierdispute.SupplierDisputeIndicatorService;
 import com.axelor.db.JPA;
-import com.axelor.studio.db.AppSupplychain;
 import jakarta.inject.Inject;
 import jakarta.persistence.TypedQuery;
 import java.math.BigDecimal;

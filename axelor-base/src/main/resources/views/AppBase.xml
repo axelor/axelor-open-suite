@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
-  <form name="app-base-config-form" title="App base" model="com.axelor.studio.db.AppBase"
+  <form name="app-base-config-form" title="App base" model="com.axelor.apps.app.db.AppBase"
     width="large" canDelete="false" canNew="false" canCopy="false"
     onSave="action-base-method-model-email-link-onsave">
     <toolbar>
@@ -15,7 +15,7 @@
         onClick="action-method-general-remind-timesheet"/>
     </toolbar>
     <panel name="testingPanel" title="Testing"
-      if="__config__.get('application.mode') != 'prod'">
+      if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'">
       <field name="todayDateT"/>
     </panel>
     <panel name="shortcutPanel">
@@ -268,7 +268,7 @@
 
   <!-- ACTION RECORD -->
   <action-record name="action-base-record-set-enable-multi-company"
-    model="com.axelor.studio.db.AppBase">
+    model="com.axelor.apps.app.db.AppBase">
     <field if="!enableMultiCompany &amp;&amp; __repo__(Company).all().count() &gt; 1"
       name="enableMultiCompany" expr="eval: true"/>
   </action-record>
@@ -280,7 +280,7 @@
   </action-attrs>
 
   <action-record name="action-app-base-record-set-company-specific-product-field-set"
-    model="com.axelor.studio.db.AppBase">
+    model="com.axelor.apps.app.db.AppBase">
     <field name="companySpecificProductFieldsSet" expr="eval: null" if="!showProductCompanies"/>
   </action-record>
 

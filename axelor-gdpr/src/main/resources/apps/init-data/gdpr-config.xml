@@ -82,7 +82,7 @@
       check-message="GDPR search configuration and key must be unique"/>
   </input>
 
-  <input file="app_gdpr.csv" separator=";" type="com.axelor.studio.db.AppGdpr"
+  <input file="app_gdpr.csv" separator=";" type="com.axelor.apps.app.db.AppGdpr"
     search="self.app.code = :appGdpr">
     <bind column="accessResponseTemplate" to="accessResponseTemplate"
       search="self.name = :accessResponseTemplate"/>

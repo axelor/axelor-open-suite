@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.service.message;
 
+import com.axelor.apps.app.db.AppBase;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
@@ -30,7 +31,6 @@ import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.exception.MessageExceptionMessage;
 import com.axelor.message.service.MailAccountServiceImpl;
 import com.axelor.meta.MetaFiles;
-import com.axelor.studio.db.AppBase;
 import com.axelor.utils.service.CipherService;
 import jakarta.inject.Inject;
 

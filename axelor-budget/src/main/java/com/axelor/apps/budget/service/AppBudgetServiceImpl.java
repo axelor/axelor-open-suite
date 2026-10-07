@@ -18,10 +18,10 @@
  */
 package com.axelor.apps.budget.service;
 
+import com.axelor.apps.app.db.AppBudget;
+import com.axelor.apps.app.db.repo.AppBudgetRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
-import com.axelor.studio.app.service.AppService;
-import com.axelor.studio.db.AppBudget;
-import com.axelor.studio.db.repo.AppBudgetRepository;
+import com.axelor.apps.base.service.app.AppService;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.util.Optional;

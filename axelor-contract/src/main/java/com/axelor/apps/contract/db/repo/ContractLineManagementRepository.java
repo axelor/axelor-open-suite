@@ -21,6 +21,7 @@ package com.axelor.apps.contract.db.repo;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.app.db.AppBase;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -29,7 +30,6 @@ import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaStore;
-import com.axelor.studio.db.AppBase;
 import jakarta.inject.Inject;
 import java.util.Map;
 

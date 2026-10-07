@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.mobilesettings.rest;
 
+import com.axelor.apps.app.db.AppMobileSettings;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.mobilesettings.db.MobileMenu;
 import com.axelor.apps.mobilesettings.db.MobileScreen;
@@ -28,7 +29,6 @@ import com.axelor.apps.mobilesettings.service.MobileSettingsResponseComputeServi
 import com.axelor.apps.mobilesettings.translation.MobileSettingsTranslation;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.studio.db.AppMobileSettings;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;

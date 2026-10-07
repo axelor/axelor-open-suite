@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
+
+  <grid name="app-grid" title="Apps" model="com.axelor.apps.app.db.App" canDelete="false"
+    canNew="false">
+    <field name="name"/>
+    <field name="active"/>
+    <field name="demoDataLoaded"/>
+    <field name="typeSelect"/>
+    <field name="appVersion"/>
+  </grid>
+
+  <form name="app-form" title="App" model="com.axelor.apps.app.db.App" canDelete="false"
+    canNew="false" width="large">
+    <panel name="mainPanel">
+      <panel name="imagePanel" colSpan="2">
+        <field name="image" widget="Image" colSpan="12"/>
+      </panel>
+      <panel colSpan="6" name="infoPanel">
+        <spacer colSpan="12"/>
+        <field name="name" readonly="true" colSpan="12"/>
+        <field name="languageSelect" selection-in="['en','fr']" colSpan="5"/>
+        <field name="demoDataLoaded" readonly="true"
+          if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'" colSpan="4"/>
+      </panel>
+      <panel name="tagsPanel" colSpan="4">
+        <field name="$tagFields" showTitle="false" readonly="true" colSpan="12">
+          <viewer depends="typeSelect,appVersion,isExperimental">
+            <![CDATA[
+              <>
+                <Box as="h5" d="flex" justifyContent="flex-end">
+                   {isExperimental && <Box as="span" style={{backgroundColor: "#ffb000", marginLeft: "5px", lineHeight: "initial", borderRadius: "3px"}}><Icon icon="flask"/><Badge><span>{_t('Experimental')}</span></Badge></Box>}
+
+                   {typeSelect == 'standard' && <Box as="span" style={{backgroundColor: "#2AA0D5", marginLeft: "5px", display: "inline-table", lineHeight: "initial", borderRadius: "3px"}}><Badge ><span>{_t('Standard')}</span></Badge></Box>}
+                   {typeSelect == 'addons' && <Box as="span" style={{backgroundColor: "#F69609", marginLeft: "5px", display: "inline-table", lineHeight: "initial", borderRadius: "3px"}}><Badge><span>{_t('Addons')}</span></Badge></Box>}
+                   {typeSelect == 'custom' && <Box as="span" style={{backgroundColor: "#7539C6", marginLeft: "5px", display: "inline-table", lineHeight: "initial", borderRadius: "3px"}}><Badge><span>{_t('Custom')}</span></Badge></Box>}
+                   {typeSelect == 'enterprise' && <Box as="span" style={{backgroundColor: "#94846B", marginLeft: "5px", display: "inline-table", lineHeight: "initial", borderRadius: "3px"}}><Badge><span>{_t('Enterprise')}</span></Badge></Box>}
+                   {typeSelect == 'others' && <Box as="span" style={{backgroundColor: "#6F908C", marginLeft: "5px", display: "inline-table", lineHeight: "initial", borderRadius: "3px"}}><Badge><span>{_t('Others')}</span></Badge></Box>}
+                   {typeSelect == 'pro' && <Box as="span" style={{backgroundColor: "#ff3400", marginLeft: "5px", display: "inline-table", lineHeight: "initial", borderRadius: "3px"}}><Badge><span>{_t('Pro')}</span></Badge></Box>}
+                   {typeSelect == 'customer' && <Box as="span" style={{backgroundColor: "#009688", marginLeft: "5px", display: "inline-table", lineHeight: "initial", borderRadius: "3px"}}><Badge><span>{_t('Customer')}</span></Badge></Box>}
+
+                   {appVersion && <Box as="span" style={{backgroundColor: "slategrey", marginLeft: "5px", display: "inline-table", lineHeight: "initial", borderRadius: "3px"}}><Badge><span>{appVersion}</span></Badge></Box>}
+                </Box>
+              </>
+
+            ]]>
+          </viewer>
+        </field>
+      </panel>
+      <field name="description" colSpan="12" readonly="true"/>
+      <field name="initDataLoaded" hidden="true"/>
+      <field name="code" hidden="true"/>
+      <field name="active" hidden="true"/>
+      <field name="isRolesImported" hidden="true"/>
+      <field name="isExperimental" hidden="true"/>
+    </panel>
+    <panel itemSpan="12" sidebar="true" name="actionPanel">
+      <button name="installBtn" title="Install"
+        onClick="action-app-alert-install,save,action-app-method-install-app" showIf="!active"/>
+      <button name="uninstallBtn" title="Uninstall"
+        onClick="action-app-alert-un-install,action-app-method-uninstall-app" showIf="active"/>
+      <button name="configureBtn" title="Configure" showIf="active"
+        onClick="com.axelor.apps.base.web.AppController:configure"/>
+      <button name="importDataDemoBtn"
+        if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'"
+        showIf="active &amp;&amp; !demoDataLoaded"
+        onClick="action-app-alert-demo-import,save,action-method-app-import-data-demo"
+        title="Import demo data"/>
+      <button name="importRolesBtn" showIf="active &amp;&amp; !isRolesImported"
+        onClick="save,action-app-method-import-roles" title="Import roles"/>
+    </panel>
+    <panel-related name="dependsOnSetPanel" field="dependsOnSet" readonly="true"
+      canSelect="false" canView="false">
+      <field name="name"/>
+      <field name="active"/>
+      <field name="typeSelect"/>
+      <field name="appVersion"/>
+    </panel-related>
+  </form>
+
+  <form model="com.axelor.apps.app.db.App" title="Bulk install" name="bulk-install-app-form">
+    <panel name="mainPanel">
+      <button name="selectAllBtn" title="Select all" colSpan="4"
+        onClick="action-app-attrs-bulk-install-select-all,action-app-bulk-install-apps-set-change"/>
+      <field type="many-to-many" name="appsSet" target="com.axelor.apps.app.db.App"
+        colSpan="12" title="Apps" canNew="false"
+        domain="(self.isCustom = null OR self.isCustom = false) AND (self.active = false or self.demoDataLoaded = false)"
+        height="200" onChange="action-app-bulk-install-apps-set-change"/>
+      <field name="languageSelect" type="string" selection="select.language" title="Language"
+        colSpan="4" selection-in="['en','fr']"/>
+      <field type="boolean" name="importDemoData" title="Import demo data" colSpan="3"
+        if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'"/>
+      <button name="installBtn" title="Install" colSpan="4"
+        onClick="action-app-method-bulk-install" hidden="true"/>
+    </panel>
+  </form>
+
+  <cards name="app-cards" model="com.axelor.apps.app.db.App" title="Apps" css="rect-image"
+    canDelete="false" canNew="false" orderBy="sequence" width="25%:200">
+    <toolbar>
+      <button name="bulkInstallBtn" title="Bulk install"
+        onClick="action-app-open-bulk-install-selector"/>
+      <button name="importRolesBtn" title="Import roles"
+        onClick="action-app-method-import-all-roles"/>
+    </toolbar>
+    <field name="name"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="image"/>
+    <field name="description"/>
+    <field name="active"/>
+    <field name="sequence"/>
+    <field name="typeSelect"/>
+    <field name="isExperimental"/>
+    <field name="appVersion"/>
+    <template>
+      <![CDATA[
+        <>
+          <Box>
+            <Image src={$image('image', 'content')}></Image>
+          </Box>
+
+          <Box d="flex" justifyContent="space-between" style={{overflow: "hidden"}}>
+            <Box d="flex" flexWrap="nowrap">
+              <Box style={{fontWeight: "600", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex:"1"}}>
+                {$fmt('name')}
+              </Box>
+            </Box>
+
+            {appVersion && <Box as="span" style={{backgroundColor: "slategrey", borderRadius: "3px", fontSize: "16px"}}><Badge><span>{appVersion}</span></Badge></Box>}
+          </Box>
+
+          <Box>
+            {typeSelect == 'standard' && <Box as="span" style={{color: "#2AA0D5", fontSize: "13px", fontWeight: "bolder"}}><span>{_t('Standard')}</span></Box>}
+            {typeSelect == 'addons' && <Box as="span" style={{color: "#F69609", fontSize: "13px", fontWeight: "bolder"}}><span>{_t('Addons')}</span></Box>}
+            {typeSelect == 'custom' && <Box as="span" style={{color: "#7539C6", fontSize: "13px", fontWeight: "bolder"}}><span>{_t('Custom')}</span></Box>}
+            {typeSelect == 'enterprise' && <Box as="span" style={{color: "#94846B", fontSize: "13px", fontWeight: "bolder"}}><span>{_t('Enterprise')}</span></Box>}
+            {typeSelect == 'others' && <Box as="span" style={{color: "#6F908C", fontSize: "13px", fontWeight: "bolder"}}><span>{_t('Others')}</span></Box>}
+            {typeSelect == 'pro' && <Box as="span" style={{color: "#ff3400", fontSize: "13px", fontWeight: "bolder"}}><span>{_t('Pro')}</span></Box>}
+            {typeSelect == 'customer' && <Box as="span" style={{color: "#009688", fontSize: "13px", fontWeight: "bolder"}}><span>{_t('Customer')}</span></Box>}
+            <br />
+            {isExperimental && <Box as="span" style={{color: "#ffb000"}}><Icon fontSize="0.8rem" icon="flask-fill"/><span>{_t('Experimental')}</span></Box>}
+          </Box>
+
+          <Box d="flex" justifyContent="flex-end">
+            {!active && <Button style={{marginLeft: "2px", color: "white"}} size="sm" variant="info" onClick={$action('action-app-alert-install,action-app-method-install-app')}>{_t('Install')}</Button> }
+            {active && <Button style={{marginLeft: "2px", color: "white"}} size="sm" variant="success" onClick={$action('com.axelor.apps.base.web.AppController:configure')}>{_t('Configure')}</Button> }
+            {active && <Button style={{marginLeft: "2px", color: "white"}} size="sm" variant="danger" onClick={$action('action-app-alert-un-install,action-app-method-uninstall-app')}>{_t('Uninstall')}</Button> }
+          </Box>
+        </>
+      ]]>
+    </template>
+  </cards>
+
+  <action-attrs name="action-app-attrs-bulk-install-select-all"
+    model="com.axelor.apps.app.db.App">
+    <attribute name="value" for="appsSet"
+      expr="eval: (__repo__(App).all().filter('(self.isCustom = null OR self.isCustom = false) AND (self.active = false or self.demoDataLoaded = false)').fetch()).toSet()"/>
+  </action-attrs>
+
+  <action-method name="action-method-app-import-data-demo">
+    <call class="com.axelor.apps.base.web.AppController" method="importDataDemo"/>
+  </action-method>
+
+  <action-method name="action-app-method-install-app">
+    <call class="com.axelor.apps.base.web.AppController" method="installApp"/>
+  </action-method>
+
+  <action-method name="action-app-method-uninstall-app">
+    <call class="com.axelor.apps.base.web.AppController" method="uninstallApp"/>
+  </action-method>
+
+  <action-method name="action-app-method-bulk-install">
+    <call class="com.axelor.apps.base.web.AppController" method="bulkInstall"/>
+  </action-method>
+
+  <action-method name="action-app-method-import-roles">
+    <call class="com.axelor.apps.base.web.AppController" method="importRoles"/>
+  </action-method>
+
+  <action-method name="action-app-method-import-all-roles">
+    <call class="com.axelor.apps.base.web.AppController" method="importAllRoles"/>
+  </action-method>
+
+  <action-method name="action-app-method-generate-access-template">
+    <call class="com.axelor.apps.base.web.AppController" method="generateAccessTemplate"/>
+  </action-method>
+
+  <action-view name="action-app-open-bulk-install-selector" title="Bulk install"
+    model="com.axelor.apps.app.db.App">
+    <view type="form" name="bulk-install-app-form"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="height" value="400"/>
+  </action-view>
+
+  <action-attrs name="action-app-on-load-attrs">
+    <attribute name="hidden" for="configureBtn" expr="eval:!__self__.active"/>
+    <attribute name="hidden" for="demoDataLoaded" expr="eval:!__self__.active"/>
+    <attribute name="hidden" for="importDataDemoBtn"
+      expr="eval:!__self__.active || demoDataLoaded"/>
+  </action-attrs>
+
+  <action-attrs name="action-app-bulk-install-apps-set-change">
+    <attribute name="hidden" for="installBtn" expr="eval:appsSet == null || appsSet.empty"/>
+  </action-attrs>
+
+  <action-validate name="action-app-alert-install">
+    <alert message="Are you sure to install '${name}'?"/>
+  </action-validate>
+
+  <action-validate name="action-app-alert-un-install">
+    <alert message="Are you sure to uninstall '${name}'?"/>
+  </action-validate>
+
+  <action-validate name="action-app-alert-demo-import">
+    <alert message="Are you sure to import demo data for '${name}'?"/>
+  </action-validate>
+
+</object-views>

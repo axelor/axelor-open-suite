@@ -20,6 +20,7 @@ package com.axelor.apps.budget.web;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.app.db.repo.AppBudgetRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
@@ -35,7 +36,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.studio.db.repo.AppBudgetRepository;
 import com.axelor.utils.helpers.StringHelper;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;

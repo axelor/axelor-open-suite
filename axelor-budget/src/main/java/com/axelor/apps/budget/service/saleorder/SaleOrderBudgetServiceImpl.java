@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.app.db.AppBudget;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -55,7 +56,6 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderSer
 import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.common.StringUtils;
 import com.axelor.meta.CallMethod;
-import com.axelor.studio.db.AppBudget;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;

@@ -1986,7 +1986,7 @@ left outer join stock_stock_location_line as ToStockLocationLine on (ToLocation.
 left join supplychain_un_code as UNCode on (Product.un_code = UNCode.id)
 left join meta_select as MetaSelect on MetaSelect.name = 'base.product.packaging.group.select'
 left join meta_select_item as MetaSelectItem on (MetaSelectItem.value = cast(Product.packaging_group_select as text) and MetaSelectItem.select_id = MetaSelect.id)
-left join studio_app_supplychain as AppSupplyChain on true
+left join app_app_supplychain as AppSupplyChain on true
 where StockMove.id = ? and (StockMoveLine.real_qty > 0 or AppSupplyChain.is_title_line_managed = true)
 order by StockMoveLine.sequence)
 

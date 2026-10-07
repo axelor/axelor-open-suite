@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.supplierportal.service.app;
 
-import com.axelor.studio.db.AppSupplierPortal;
-import com.axelor.studio.db.repo.AppSupplierPortalRepository;
+import com.axelor.apps.app.db.AppSupplierPortal;
+import com.axelor.apps.app.db.repo.AppSupplierPortalRepository;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 

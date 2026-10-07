@@ -35,7 +35,7 @@
       check-message="Priority must not be null"/>
   </input>
 
-  <input file="studio_appHelpdesk.csv" separator=";" type="com.axelor.studio.db.AppHelpdesk"
+  <input file="app_appHelpdesk.csv" separator=";" type="com.axelor.apps.app.db.AppHelpdesk"
     search="self.app.code = :code">
     <bind to="app" column="code" search="self.code = :code"/>
   </input>

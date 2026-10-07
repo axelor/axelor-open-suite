@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.mobilesettings.service;
 
+import com.axelor.apps.app.db.AppMobileSettings;
+import com.axelor.apps.app.db.repo.AppMobileSettingsRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.apps.mobilesettings.db.MobileConfig;
@@ -32,8 +34,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
-import com.axelor.studio.db.AppMobileSettings;
-import com.axelor.studio.db.repo.AppMobileSettingsRepository;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;

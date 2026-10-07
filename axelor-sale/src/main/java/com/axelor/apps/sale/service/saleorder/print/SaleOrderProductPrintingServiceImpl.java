@@ -18,9 +18,9 @@
  */
 package com.axelor.apps.sale.service.saleorder.print;
 
+import com.axelor.apps.app.db.AppBase;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.studio.db.AppBase;
 import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;

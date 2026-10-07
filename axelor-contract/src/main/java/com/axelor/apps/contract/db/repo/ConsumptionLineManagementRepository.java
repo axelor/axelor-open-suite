@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.contract.db.repo;
 
+import com.axelor.apps.app.db.AppBase;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.studio.db.AppBase;
 import jakarta.inject.Inject;
 import java.util.Map;
 

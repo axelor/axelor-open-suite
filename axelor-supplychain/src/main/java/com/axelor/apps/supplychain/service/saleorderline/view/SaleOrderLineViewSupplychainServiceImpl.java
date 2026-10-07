@@ -23,6 +23,8 @@ import static com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewS
 
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.app.db.AppAccount;
+import com.axelor.apps.app.db.AppSupplychain;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -32,8 +34,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.studio.db.AppAccount;
-import com.axelor.studio.db.AppSupplychain;
 import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;

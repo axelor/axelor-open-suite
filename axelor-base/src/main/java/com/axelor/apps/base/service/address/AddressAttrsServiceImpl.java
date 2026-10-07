@@ -18,13 +18,13 @@
  */
 package com.axelor.apps.base.service.address;
 
+import com.axelor.apps.app.db.AppBase;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AddressTemplateLine;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
-import com.axelor.studio.db.AppBase;
 import com.axelor.utils.service.translation.TranslationBaseService;
 import jakarta.inject.Inject;
 import java.util.HashMap;

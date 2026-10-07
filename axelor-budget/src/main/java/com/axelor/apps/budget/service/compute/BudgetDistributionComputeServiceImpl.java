@@ -18,10 +18,10 @@
  */
 package com.axelor.apps.budget.service.compute;
 
+import com.axelor.apps.app.db.AppBudget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.studio.db.AppBudget;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;

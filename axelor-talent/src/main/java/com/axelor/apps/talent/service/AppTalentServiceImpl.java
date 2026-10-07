@@ -18,10 +18,10 @@
  */
 package com.axelor.apps.talent.service;
 
+import com.axelor.apps.app.db.AppRecruitment;
+import com.axelor.apps.app.db.repo.AppRecruitmentRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
-import com.axelor.studio.app.service.AppService;
-import com.axelor.studio.db.AppRecruitment;
-import com.axelor.studio.db.repo.AppRecruitmentRepository;
+import com.axelor.apps.base.service.app.AppService;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 

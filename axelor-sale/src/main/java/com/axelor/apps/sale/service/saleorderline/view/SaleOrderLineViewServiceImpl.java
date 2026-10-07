@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.sale.service.saleorderline.view;
 
+import com.axelor.apps.app.db.AppBase;
+import com.axelor.apps.app.db.AppSale;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.Localization;
@@ -36,8 +38,6 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Group;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppBase;
-import com.axelor.studio.db.AppSale;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;

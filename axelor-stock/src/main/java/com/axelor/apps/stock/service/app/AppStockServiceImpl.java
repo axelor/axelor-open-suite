@@ -18,12 +18,12 @@
  */
 package com.axelor.apps.stock.service.app;
 
+import com.axelor.apps.app.db.AppStock;
+import com.axelor.apps.app.db.repo.AppStockRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
-import com.axelor.studio.db.AppStock;
-import com.axelor.studio.db.repo.AppStockRepository;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

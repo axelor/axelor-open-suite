@@ -24,10 +24,10 @@ import com.axelor.apps.account.service.accountingsituation.AccountingSituationGr
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationRecordService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.app.db.AppAccount;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.studio.db.AppAccount;
 import jakarta.inject.Inject;
 import java.util.Map;
 

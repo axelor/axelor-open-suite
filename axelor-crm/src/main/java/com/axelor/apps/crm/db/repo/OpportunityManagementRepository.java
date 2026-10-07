@@ -18,12 +18,12 @@
  */
 package com.axelor.apps.crm.db.repo;
 
+import com.axelor.apps.app.db.AppCrm;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.service.OpportunitySequenceService;
 import com.axelor.apps.crm.service.app.AppCrmService;
-import com.axelor.studio.db.AppCrm;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import java.util.Map;

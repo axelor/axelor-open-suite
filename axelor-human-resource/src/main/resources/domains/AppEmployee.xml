@@ -3,11 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
-  <module name="studio" package="com.axelor.studio.db"/>
+  <module name="app" package="com.axelor.apps.app.db"/>
 
   <entity name="AppEmployee" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
+    <one-to-one ref="com.axelor.apps.app.db.App" name="app" unique="true"/>
 
     <boolean name="advanceManagement" default="true"
       help="By enabling this configuration, you will be able to manage expense advances."/>

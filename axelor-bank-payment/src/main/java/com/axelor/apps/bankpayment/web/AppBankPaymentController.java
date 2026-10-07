@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.bankpayment.web;
 
+import com.axelor.apps.app.db.AppBankPayment;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderEncryptionService;
 import com.axelor.apps.base.AxelorException;
@@ -25,7 +26,6 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.db.AppBankPayment;
 import jakarta.inject.Singleton;
 
 @Singleton

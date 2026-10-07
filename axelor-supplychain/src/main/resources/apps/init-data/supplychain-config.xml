@@ -51,19 +51,19 @@
     type="com.axelor.apps.supplychain.db.StockMoveInvoicingBlockingReason"
     search="self.name = :name"/>
 
-  <input file="studio_appSupplychain.csv" separator=";"
-    type="com.axelor.studio.db.AppSupplychain" search="self.app.code = :code">
+  <input file="app_appSupplychain.csv" separator=";"
+    type="com.axelor.apps.app.db.AppSupplychain" search="self.app.code = :code">
     <bind column="intercoPurchaseCreatingStatusSelect" to="intercoPurchaseCreatingStatusSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppSupplychain', 'intercoPurchaseCreatingStatusSelect', intercoPurchaseCreatingStatusSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppSupplychain', 'intercoPurchaseCreatingStatusSelect', intercoPurchaseCreatingStatusSelect)"
       check-message="Invalid intercoPurchaseCreatingStatusSelect"/>
     <bind column="intercoSaleCreatingStatusSelect" to="intercoSaleCreatingStatusSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppSupplychain', 'intercoSaleCreatingStatusSelect', intercoSaleCreatingStatusSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppSupplychain', 'intercoSaleCreatingStatusSelect', intercoSaleCreatingStatusSelect)"
       check-message="Invalid intercoSaleCreatingStatusSelect"/>
     <bind column="sOFilterOnStockDetailStatusSelect" to="sOFilterOnStockDetailStatusSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppSupplychain', 'sOFilterOnStockDetailStatusSelect', sOFilterOnStockDetailStatusSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppSupplychain', 'sOFilterOnStockDetailStatusSelect', sOFilterOnStockDetailStatusSelect)"
       check-message="Invalid sOFilterOnStockDetailStatusSelect"/>
     <bind column="pOFilterOnStockDetailStatusSelect" to="pOFilterOnStockDetailStatusSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppSupplychain', 'pOFilterOnStockDetailStatusSelect', pOFilterOnStockDetailStatusSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppSupplychain', 'pOFilterOnStockDetailStatusSelect', pOFilterOnStockDetailStatusSelect)"
       check-message="Invalid pOFilterOnStockDetailStatusSelect"/>
     <bind to="app" column="code" search="self.code = :code"/>
   </input>

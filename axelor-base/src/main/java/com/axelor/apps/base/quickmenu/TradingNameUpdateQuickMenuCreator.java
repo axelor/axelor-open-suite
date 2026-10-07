@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.base.quickmenu;
 
+import com.axelor.apps.app.db.AppBase;
+import com.axelor.apps.app.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -28,8 +30,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
-import com.axelor.studio.db.AppBase;
-import com.axelor.studio.db.repo.AppBaseRepository;
 import com.axelor.ui.QuickMenu;
 import com.axelor.ui.QuickMenuCreator;
 import com.axelor.ui.QuickMenuItem;

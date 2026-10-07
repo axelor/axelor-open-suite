@@ -3,11 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
-  <module name="studio" package="com.axelor.studio.db"/>
+  <module name="app" package="com.axelor.apps.app.db"/>
 
   <entity name="AppHelpdesk" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
+    <one-to-one ref="com.axelor.apps.app.db.App" name="app" unique="true"/>
 
     <boolean name="isSla" title="SLA" default="false"
       help="This option enables the Service Level Agreement, which defines service quality by setting indicators on the maximum resolution time for a ticket, or the transition to a certain stage within a given time. If enabled, your teams will be alerted of the indicators to meet, and you will have access to detailed reports showing SLA performance and service level."/>

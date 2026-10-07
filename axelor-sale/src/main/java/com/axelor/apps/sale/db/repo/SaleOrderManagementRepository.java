@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.sale.db.repo;
 
+import com.axelor.apps.app.db.AppSale;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.address.AddressService;
@@ -37,7 +38,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.studio.db.AppSale;
 import com.google.common.base.Strings;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;

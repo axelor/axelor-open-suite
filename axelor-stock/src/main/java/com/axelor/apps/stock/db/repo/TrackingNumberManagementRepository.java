@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.stock.db.repo;
 
+import com.axelor.apps.app.db.AppStock;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.db.Company;
@@ -32,7 +33,6 @@ import com.axelor.apps.stock.service.TrackingNumberCompanyService;
 import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.studio.db.AppStock;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import java.math.BigDecimal;

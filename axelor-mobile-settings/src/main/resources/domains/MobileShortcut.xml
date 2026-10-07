@@ -14,7 +14,7 @@
     <many-to-many name="authorizedRoleSet" title="Authorized roles"
       ref="com.axelor.auth.db.Role"/>
     <many-to-one name="appMobileSettings" title="App mobile settings"
-      ref="com.axelor.studio.db.AppMobileSettings"/>
+      ref="com.axelor.apps.app.db.AppMobileSettings"/>
   </entity>
 
 </domain-models>

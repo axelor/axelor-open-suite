@@ -19,6 +19,8 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.app.db.AppBudget;
+import com.axelor.apps.app.db.repo.AppBudgetRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
@@ -35,8 +37,6 @@ import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.loader.LoaderHelper;
-import com.axelor.studio.db.AppBudget;
-import com.axelor.studio.db.repo.AppBudgetRepository;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;

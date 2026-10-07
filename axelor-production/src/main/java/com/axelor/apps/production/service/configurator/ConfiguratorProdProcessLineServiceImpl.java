@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.production.service.configurator;
 
+import com.axelor.apps.app.db.AppProduction;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
@@ -32,7 +33,6 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.JsonContext;
-import com.axelor.studio.db.AppProduction;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

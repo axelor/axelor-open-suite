@@ -3,11 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
-  <module name="studio" package="com.axelor.studio.db"/>
+  <module name="app" package="com.axelor.apps.app.db"/>
 
   <entity name="AppInvoice" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
+    <one-to-one ref="com.axelor.apps.app.db.App" name="app" unique="true"/>
 
     <boolean name="isVentilationSkipped" title="Skip ventilation"
       help="In standard, the invoicing workflow has a validation step and a ventilation step. At the ventilation step, accounting entries are generated and the invoice can no longer be modified. This configuration removes the ventilation step from the workflow, and in this case it is at validation that accounting entries are generated and the invoice becomes non-editable."/>

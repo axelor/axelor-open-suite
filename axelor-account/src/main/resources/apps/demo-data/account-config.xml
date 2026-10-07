@@ -727,10 +727,10 @@
       check-message="Invalid timezone"/>
   </input>
 
-  <input file="studio_appAccount.csv" separator=";" search="self.app.code = :code"
-    update="true" type="com.axelor.studio.db.AppAccount">
+  <input file="app_appAccount.csv" separator=";" search="self.app.code = :code" update="true"
+    type="com.axelor.apps.app.db.AppAccount">
     <bind column="partnerBalConfigSelect" to="partnerBalConfigSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppAccount', 'partnerBalConfigSelect', partnerBalConfigSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.app.db.AppAccount', 'partnerBalConfigSelect', partnerBalConfigSelect)"
       check-message="Invalid partnerBalConfigSelect"/>
   </input>
 

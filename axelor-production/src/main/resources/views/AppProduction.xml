@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <form name="app-production-config-form" title="App manufacturing"
-    model="com.axelor.studio.db.AppProduction" canDelete="false" canNew="false" width="large"
+    model="com.axelor.apps.app.db.AppProduction" canDelete="false" canNew="false" width="large"
     onSave="action-app-production-method-check-outsourcing-disabled-onsave"
     onLoad="action-app-production-attrs-so-bom-line-generation-readonly">
     <panel-tabs name="mainPanelTab">
@@ -97,13 +97,13 @@
   </action-view>
 
   <action-method name="action-app-production-method-check-outsourcing-disabled-onsave"
-    model="com.axelor.studio.db.AppProduction">
+    model="com.axelor.apps.app.db.AppProduction">
     <call class="com.axelor.apps.production.web.AppProductionController"
       method="checkIfOutsourcingDisabled"/>
   </action-method>
 
   <action-validate name="action-app-production-validate-manage-outsourcing-onchange"
-    model="com.axelor.studio.db.AppProduction">
+    model="com.axelor.apps.app.db.AppProduction">
     <alert
       if="__config__.app.getApp('production')?.getManageOutsourcing() &amp;&amp; !this.manageOutsourcing"
       message="It will remove subcontractor tag from all partners. This change is irreversible"/>

@@ -21,6 +21,8 @@ package com.axelor.apps.sale.test;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.axelor.apps.app.db.AppBase;
+import com.axelor.apps.app.db.AppSale;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -50,8 +52,6 @@ import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductSe
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
-import com.axelor.studio.db.AppBase;
-import com.axelor.studio.db.AppSale;
 import com.axelor.utils.junit.BaseTest;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;

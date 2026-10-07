@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.production.service.costsheet;
 
+import com.axelor.apps.app.db.AppProduction;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -52,7 +53,6 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.UnitCostCalculation;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppProduction;
 import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;

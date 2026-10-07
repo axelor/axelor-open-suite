@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service.saleorder;
 
+import com.axelor.apps.app.db.AppSupplychain;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Partner;
@@ -63,7 +64,6 @@ import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticSe
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineQtyToDeliverService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.studio.db.AppSupplychain;
 import com.google.common.base.MoreObjects;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;

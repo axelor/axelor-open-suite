@@ -752,4 +752,21 @@ public final class BaseExceptionMessage {
 
   public static final String SEQUENCE_MONTH_VALIDITY_ERROR = /*$$(*/
       "Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true" /*)*/;
+
+  public static final String FILE_UPLOAD_DIR_ERROR = /*$$(*/
+      "File upload path not configured" /*)*/;
+
+  public static final String APP_NO_LANGUAGE_SELECTED = /*$$(*/
+      "No application language set. Please set 'application.locale' property." /*)*/;
+
+  public static final String APP_IN_USE = /*$$(*/
+      "This app is used by %s. Please deactivate them before continue." /*)*/;
+
+  public static final String APP_DEMO_DATA_SUCCESS = /*$$(*/ "Demo data loaded successfully" /*)*/;
+
+  public static final String APP_NO_CONFIG_REQUIRED = /*$$(*/ "No configuration required" /*)*/;
+
+  public static final String APP_BULK_INSTALL_SUCCESS = /*$$(*/ "Apps installed successfully" /*)*/;
+
+  public static final String APP_ROLE_IMPORT_SUCCESS = /*$$(*/ "Roles imported successfully" /*)*/;
 }

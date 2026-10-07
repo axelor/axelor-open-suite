@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.bankpayment.service.app;
 
+import com.axelor.apps.app.db.AppBankPayment;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.studio.db.AppBankPayment;
 
 public interface AppBankPaymentService extends AppBaseService {
 

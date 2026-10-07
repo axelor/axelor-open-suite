@@ -18,9 +18,9 @@
  */
 package com.axelor.apps.base.db.repo;
 
+import com.axelor.apps.app.db.App;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
-import com.axelor.studio.db.App;
-import com.axelor.studio.helper.TransactionHelper;
+import com.axelor.apps.base.utils.TransactionHelper;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
 import jakarta.persistence.PostUpdate;

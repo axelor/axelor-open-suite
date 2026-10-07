@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <form name="app-base-config-form" id="stock-app-base-config-form" title="App base"
-    model="com.axelor.studio.db.AppBase" extension="true">
+    model="com.axelor.apps.app.db.AppBase" extension="true">
     <extend target="//panel[@name='siteManagementPanel']">
       <insert position="inside">
         <field name="enableSiteManagementForStock" widget="boolean-switch"

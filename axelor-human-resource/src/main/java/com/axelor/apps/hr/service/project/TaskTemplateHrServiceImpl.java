@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.project;
 
+import com.axelor.apps.app.db.AppProject;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -28,7 +29,6 @@ import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.service.TaskTemplateServiceImpl;
 import com.axelor.apps.project.service.app.AppProjectService;
-import com.axelor.studio.db.AppProject;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;

@@ -282,7 +282,7 @@
       eval="printTemplateSet_importId.split('\\|') as List" update="true"/>
   </input>
 
-  <input file="studio_appStock.csv" separator=";" type="com.axelor.studio.db.AppStock"
+  <input file="app_appStock.csv" separator=";" type="com.axelor.apps.app.db.AppStock"
     search="self.app.code = :code"/>
 
   <input file="stock_stockMove.csv" separator=";" type="com.axelor.apps.stock.db.StockMove"

@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.app.db.AppSale;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -26,7 +27,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderSplitService;
 import com.axelor.apps.supplychain.db.MrpLineType;
-import com.axelor.studio.db.AppSale;
 import com.axelor.utils.helpers.StringHelper;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;

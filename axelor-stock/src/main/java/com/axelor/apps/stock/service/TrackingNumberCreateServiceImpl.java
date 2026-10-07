@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.app.db.AppStock;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -32,7 +33,6 @@ import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppStock;
 import com.google.common.base.Preconditions;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;

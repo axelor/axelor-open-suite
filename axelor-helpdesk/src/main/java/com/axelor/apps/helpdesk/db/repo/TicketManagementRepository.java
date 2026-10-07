@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.helpdesk.db.repo;
 
+import com.axelor.apps.app.db.AppHelpdesk;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -27,7 +28,6 @@ import com.axelor.apps.helpdesk.service.TicketSequenceService;
 import com.axelor.apps.helpdesk.service.TicketService;
 import com.axelor.apps.helpdesk.service.TicketStatusService;
 import com.axelor.apps.helpdesk.service.app.AppHelpdeskService;
-import com.axelor.studio.db.AppHelpdesk;
 import jakarta.inject.Inject;
 import java.util.Map;
 import java.util.Optional;

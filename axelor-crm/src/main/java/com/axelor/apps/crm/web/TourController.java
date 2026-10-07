@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.crm.web;
 
+import com.axelor.apps.app.db.repo.AppBaseRepository;
 import com.axelor.apps.base.service.MapGoogleService;
 import com.axelor.apps.base.service.MapOsmService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -30,7 +31,6 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.db.repo.AppBaseRepository;
 
 public class TourController {
 

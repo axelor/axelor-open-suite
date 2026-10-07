@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
   <form name="app-contract-config-form" title="App contract"
-    model="com.axelor.studio.db.AppContract" width="large" canNew="false" canDelete="false"
+    model="com.axelor.apps.app.db.AppContract" width="large" canNew="false" canDelete="false"
     canCopy="false">
     <toolbar>
       <button name="back" title="Back" hidden="true" onClick=""/>

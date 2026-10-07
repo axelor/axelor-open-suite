@@ -18,19 +18,19 @@
  */
 package com.axelor.apps.project.service.app;
 
+import com.axelor.apps.app.db.AppProject;
+import com.axelor.apps.app.db.repo.AppProjectRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.project.db.ProjectConfig;
 import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.repo.ProjectConfigRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.app.service.AppService;
-import com.axelor.studio.db.AppProject;
-import com.axelor.studio.db.repo.AppProjectRepository;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;

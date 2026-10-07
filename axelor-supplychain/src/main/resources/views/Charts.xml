@@ -122,7 +122,7 @@
     <series key="cumulativeQty" type="line" title="Cumulative qty"/>
   </chart>
 
-  <action-record model="com.axelor.studio.db.AppSupplychain"
+  <action-record model="com.axelor.apps.app.db.AppSupplychain"
     name="action-supplier-dispute-chart-record-set-rolling-period">
     <field name="toDate" expr="eval: __config__.date"/>
     <field name="fromDate"

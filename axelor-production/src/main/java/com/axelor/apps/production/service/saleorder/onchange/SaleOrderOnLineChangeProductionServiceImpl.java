@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.production.service.saleorder.onchange;
 
+import com.axelor.apps.app.db.repo.AppSaleRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.service.SaleOrderProductionSyncService;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -37,7 +38,6 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineQtyToDeliverService;
-import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Inject;
 
 public class SaleOrderOnLineChangeProductionServiceImpl

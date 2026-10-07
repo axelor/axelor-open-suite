@@ -3,11 +3,45 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.2.xsd">
 
-  <module name="studio" package="com.axelor.studio.db"/>
+  <module name="app" package="com.axelor.apps.app.db"/>
 
   <entity name="App" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.AppBase" name="appBase" mappedBy="app"/>
+    <string name="name" title="Name" required="true" translatable="true"/>
+    <string name="code" title="Code" required="true" unique="true"/>
+    <string name="description" title="Description" large="true" translatable="true"/>
+    <string name="modules" title="Modules contains in the app"/>
+    <many-to-many name="dependsOnSet" title="Depends on" ref="App"/>
+    <many-to-one name="image" ref="com.axelor.meta.db.MetaFile" title="Image"/>
+    <boolean name="initDataLoaded" title="Init data loaded"/>
+    <boolean name="demoDataLoaded" title="Demo data loaded"/>
+    <boolean name="isRolesImported" title="Roles imported"/>
+    <boolean name="active" title="Installed"/>
+    <integer name="sequence" title="Sequence"/>
+    <integer name="installOrder" title="Install order"/>
+    <string name="languageSelect" title="Language" selection="select.language"/>
+    <string name="typeSelect" title="Type" selection="base.app.type.select" default="others"/>
+    <string name="appVersion" title="Version"/>
+    <boolean name="isCustom" title="Custom"/>
+    <boolean name="isExperimental" title="Experimental"/>
+    <boolean name="isInAppView" title="Add the application to the App Management"/>
+
+    <one-to-one ref="com.axelor.apps.app.db.AppBase" name="appBase" mappedBy="app"/>
+
+    <finder-method name="findByCode" using="code" cacheable="true"/>
+    <finder-method name="findByName" using="name" cacheable="true"/>
+
+    <extra-code><![CDATA[
+
+    // TYPE SELECT
+    public static final String TYPE_STANDARD = "standard";
+    public static final String TYPE_ADDONS = "addons";
+    public static final String TYPE_ENTERPRISE = "enterprise";
+    public static final String TYPE_CUSTOM = "custom";
+    public static final String TYPE_OTHERS = "others";
+    public static final String TYPE_CUSTOMER = "customer";
+
+  ]]></extra-code>
 
     <entity-listener class="com.axelor.apps.base.db.repo.AppListener"/>
 

@@ -18,10 +18,10 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.app.db.repo.AppBaseRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.studio.db.repo.AppBaseRepository;
 import groovy.xml.XmlSlurper;
 import groovy.xml.slurpersupport.GPathResult;
 import groovy.xml.slurpersupport.Node;
