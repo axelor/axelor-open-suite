@@ -782,7 +782,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     MoveLine newCreditMoveLine =
         moveLineCreateService.createMoveLine(
             move,
-            originMove.getPartner(),
+            debitMoveLine.getPartner(),
             debitAccount,
             reconciledAmount,
             false,
@@ -795,7 +795,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     MoveLine newDebitMoveLine =
         moveLineCreateService.createMoveLine(
             move,
-            originMove.getPartner(),
+            creditMoveLine.getPartner(),
             creditAccount,
             reconciledAmount,
             true,
