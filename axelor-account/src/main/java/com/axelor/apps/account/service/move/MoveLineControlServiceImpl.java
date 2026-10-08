@@ -356,4 +356,22 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
           moveLine.getName());
     }
   }
+
+  @Override
+  public boolean isReconcilingDifferentPartners(List<MoveLine> moveLineList) {
+    if (CollectionUtils.isEmpty(moveLineList) || moveLineList.size() != 2) {
+      return false;
+    }
+    MoveLine firstMoveLine = moveLineList.get(0);
+    MoveLine secondMoveLine = moveLineList.get(1);
+
+    boolean isDebitCreditPair =
+        (firstMoveLine.getDebit().signum() > 0 && secondMoveLine.getCredit().signum() > 0)
+            || (firstMoveLine.getCredit().signum() > 0 && secondMoveLine.getDebit().signum() > 0);
+
+    return isDebitCreditPair
+        && firstMoveLine.getPartner() != null
+        && secondMoveLine.getPartner() != null
+        && !firstMoveLine.getPartner().equals(secondMoveLine.getPartner());
+  }
 }

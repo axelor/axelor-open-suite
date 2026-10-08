@@ -7,7 +7,7 @@
     model="com.axelor.apps.account.db.MoveLine" canArchive="false" canDelete="false" canNew="false">
     <toolbar>
       <button name="accountingReconcileBtn" title="Accounting Reconcile"
-        onClick="action-method-accounting-reconcile"/>
+        onClick="action-move-line-method-check-reconcile-different-partners,action-method-accounting-reconcile"/>
     </toolbar>
     <hilite color="info" if="$get('move.statusSelect') == 1"/>
     <hilite color="danger" if="$get('move.statusSelect') == 4"/>
@@ -86,7 +86,7 @@
     model="com.axelor.apps.account.db.MoveLine">
     <toolbar>
       <button name="accountingReconcileBtn" title="Accounting Reconcile"
-        onClick="action-method-accounting-reconcile"/>
+        onClick="action-move-line-method-check-reconcile-different-partners,action-method-accounting-reconcile"/>
     </toolbar>
     <field name="name"/>
     <field name="date"/>
@@ -1031,4 +1031,10 @@
         (self.move.statusSelect = 2 OR self.move.statusSelect = 3)</domain>
     </filter>
   </search-filters>
+
+  <action-method name="action-move-line-method-check-reconcile-different-partners">
+    <call class="com.axelor.apps.account.web.MoveLineController"
+      method="checkReconcileDifferentPartners"/>
+  </action-method>
+
 </object-views>
