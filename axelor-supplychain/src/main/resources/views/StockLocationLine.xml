@@ -33,6 +33,18 @@
     </extend>
   </grid>
 
+  <grid id="stock-location-line-grouped-by-location-supplychain-grid"
+    name="stock-location-line-grouped-by-location-grid" title="Stock Locations content"
+    model="com.axelor.apps.stock.db.StockLocationLine" extension="true">
+    <extend target="//field[@name='product']">
+      <insert position="before">
+        <button name="addToCartBtn" title="Add to cart"
+          onClick="action-stock-location-line-method-add-to-cart" icon="cart-plus-fill"
+          if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"/>
+      </insert>
+    </extend>
+  </grid>
+
   <action-view name="action-stock-location-line-view-by-product"
     title="Stock location lines by product" model="com.axelor.apps.stock.db.StockLocationLine">
     <view type="grid" name="supplychain-stock-location-line-grid"/>

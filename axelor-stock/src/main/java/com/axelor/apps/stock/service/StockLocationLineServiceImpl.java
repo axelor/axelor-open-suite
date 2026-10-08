@@ -771,4 +771,60 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
     return Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
   }
+
+  @Override
+  public BigDecimal getStockLocationLineValue(Long stockLocationLineId) {
+    Object stockLocationLineValue =
+        JPA.em()
+            .createNativeQuery(
+                "SELECT ROUND(COALESCE(SUM(history.qty * CASE"
+                    + " WHEN stockConfig.stock_valuation_type_select = 1 THEN"
+                    + "   CASE WHEN EXISTS("
+                    + "     SELECT 1 FROM studio_app_base_company_specific_product_fields_set companySpecificField"
+                    + "     LEFT JOIN meta_field metaField"
+                    + "       ON metaField.id = companySpecificField.company_specific_product_fields_set"
+                    + "     WHERE metaField.name = 'avgPrice'"
+                    + "   ) THEN COALESCE("
+                    + "     (SELECT productCompany.avg_price FROM base_product productCompany"
+                    + "       WHERE productCompany.company = stockLocation.company"
+                    + "       AND productCompany.product = stockLocationLine.product),"
+                    + "     product.avg_price"
+                    + "   ) ELSE product.avg_price END"
+                    + " WHEN stockConfig.stock_valuation_type_select = 2 THEN history.cost_price"
+                    + " WHEN stockConfig.stock_valuation_type_select = 3 THEN history.sale_price"
+                    + " WHEN stockConfig.stock_valuation_type_select = 4 THEN"
+                    + "   CASE WHEN EXISTS("
+                    + "     SELECT 1 FROM studio_app_base_company_specific_product_fields_set companySpecificField"
+                    + "     LEFT JOIN meta_field metaField"
+                    + "       ON metaField.id = companySpecificField.company_specific_product_fields_set"
+                    + "     WHERE metaField.name = 'lastPurchasePrice'"
+                    + "   ) THEN COALESCE("
+                    + "     (SELECT productCompany.last_purchase_price FROM base_product productCompany"
+                    + "       WHERE productCompany.company = stockLocation.company"
+                    + "       AND productCompany.product = stockLocationLine.product),"
+                    + "     product.last_purchase_price"
+                    + "   ) ELSE product.last_purchase_price END"
+                    + " WHEN stockConfig.stock_valuation_type_select = 5 THEN history.wap"
+                    + " ELSE stockLocationLine.avg_price"
+                    + " END), 0), 2)"
+                    + " FROM stock_stock_location_line stockLocationLine"
+                    + " INNER JOIN stock_stock_location_line_history history"
+                    + "   ON history.stock_location_line = stockLocationLine.id"
+                    + "   AND history.datet = ("
+                    + "     SELECT MAX(lastHistory.datet) FROM stock_stock_location_line_history lastHistory"
+                    + "     WHERE lastHistory.stock_location_line = stockLocationLine.id"
+                    + "   )"
+                    + "   AND history.qty != 0"
+                    + " LEFT JOIN stock_stock_location stockLocation"
+                    + "   ON stockLocation.id = stockLocationLine.stock_location"
+                    + " LEFT JOIN base_product product ON product.id = stockLocationLine.product"
+                    + " LEFT JOIN stock_stock_config stockConfig"
+                    + "   ON stockConfig.company = stockLocation.company"
+                    + " WHERE stockLocationLine.id = :stockLocationLineId")
+            .setParameter("stockLocationLineId", stockLocationLineId)
+            .getSingleResult();
+    return stockLocationLineValue == null
+        ? BigDecimal.ZERO
+        : new BigDecimal(stockLocationLineValue.toString());
+  }
 }

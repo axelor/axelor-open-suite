@@ -63,7 +63,8 @@
 
   <form name="stock-location-form" title="Stock location"
     model="com.axelor.apps.stock.db.StockLocation"
-    onNew="action-stock-location-record-new,action-stock-location-attrs-set-is-valued" width="large">
+    onNew="action-stock-location-record-new,action-stock-location-attrs-set-is-valued"
+    onLoad="action-stock-location-attrs-set-has-sub-location" width="large">
     <toolbar>
       <button name="createInventoryBtn" title="Create inventory"
         onClick="action-location-view-create-inventory"/>
@@ -122,7 +123,13 @@
         <field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
         <panel-dashlet name="stockLocationLinesPanel" title="Location Lines"
           field="stockLocationLineList" canNew="false" colSpan="12"
-          action="action-location-view-location-content" canSearch="true" height="600"/>
+          action="action-location-view-location-content" canSearch="true" height="600"
+          hideIf="$hasSubLocation"/>
+        <panel-dashlet name="groupedStockLocationLinesPanel" title="Location Lines"
+          canNew="false" colSpan="12"
+          action="action-location-view-location-content-grouped-by-location" canSearch="true"
+          height="600" showIf="$hasSubLocation"/>
+        <field name="$hasSubLocation" type="boolean" hidden="true"/>
       </panel>
       <panel name="detailsLocationContentPanel" title="Stock location details">
         <field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
@@ -243,6 +250,19 @@
       expr="call:com.axelor.apps.stock.service.StockLocationService:getContentStockLocationIds(__self__)"/>
   </action-view>
 
+  <action-view name="action-location-view-location-content-grouped-by-location"
+    title="Location content" model="com.axelor.apps.stock.db.StockLocationLine">
+    <view type="grid" name="stock-location-line-grouped-by-location-grid"/>
+    <view type="form" name="stock-location-line-form"/>
+    <domain>self.stockLocation.id IN :contentLocationIds AND ((:includeOutOfStock = false AND
+      (self.currentQty != 0 OR self.futureQty != 0)) OR (:includeOutOfStock = true)) AND
+      ((:typeSelect = 3) OR (:typeSelect != 3 AND ((:includeVirtualSubLocation = true) OR
+      (:includeVirtualSubLocation = false AND self.stockLocation.typeSelect != 3))))</domain>
+    <context name="contentLocationIds"
+      expr="call:com.axelor.apps.stock.service.StockLocationService:getContentStockLocationIds(__self__)"/>
+    <context name="_isStockLocationLineValueDisplayed" expr="eval: true"/>
+  </action-view>
+
   <action-view name="action-location-details-view-location-content"
     title="Location content details" model="com.axelor.apps.stock.db.StockLocationLine">
     <view type="grid" name="stock-location-line-details-grid"/>
@@ -275,6 +295,11 @@
 
   <action-attrs name="action-stock-location-attrs-set-default-serial-number-with-name">
     <attribute name="value" for="serialNumber" expr="eval: name" if="eval: id == null"/>
+  </action-attrs>
+
+  <action-attrs name="action-stock-location-attrs-set-has-sub-location">
+    <attribute name="value" for="$hasSubLocation"
+      expr="eval: id != null &amp;&amp; __repo__(StockLocation).all().filter('self.parentStockLocation.id = ?1', id).count() > 0"/>
   </action-attrs>
 
   <action-view name="action-stock-location-view-tree" title="Stock Location Tree"
