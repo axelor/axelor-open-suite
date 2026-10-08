@@ -90,6 +90,7 @@
     <field name="consumedOperationOrder"/>
     <field name="consumedOperationOrder.statusSelect" title="Manufacturing operation status"/>
     <field name="stockMove.stockMoveSeq"/>
+    <field name="stockMove.estimatedDate"/>
     <field name="stockMove.realDate"/>
     <field name="realQty" aggregate="sum"
       onChange="action-stock-move-line-group-real-qty-onchange" x-scale="$nbDecimalDigitForQty"/>
