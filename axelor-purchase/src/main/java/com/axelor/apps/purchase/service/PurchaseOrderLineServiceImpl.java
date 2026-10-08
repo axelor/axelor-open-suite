@@ -722,6 +722,9 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     if (purchaseOrderLine.getEnableFreezeFields()) {
       return map;
     }
+    if (getSupplierCatalog(purchaseOrder, purchaseOrderLine) == null) {
+      return map;
+    }
 
     Product product = purchaseOrderLine.getProduct();
     Set<TaxLine> taxLineSet = purchaseOrderLine.getTaxLineSet();
