@@ -211,4 +211,13 @@ public interface StockLocationLineService {
    */
   BigDecimal convertFromProductUnit(StockLocationLine stockLocationLine, BigDecimal value)
       throws AxelorException;
+
+  /**
+   * Compute the value of a stock location line with the valuation method of its company, the same
+   * way as the stock location value.
+   *
+   * @param stockLocationLineId the id of the stock location line.
+   * @return the value of the stock location line, rounded to 2 decimals.
+   */
+  BigDecimal getStockLocationLineValue(Long stockLocationLineId);
 }
