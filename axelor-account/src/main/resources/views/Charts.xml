@@ -978,7 +978,12 @@ from InvoiceTerm as self
       FROM
       base_currency AS _currency
       CROSS JOIN (SELECT
-      _invoice.ex_tax_total As _ex_tax_total,
+      CASE
+      WHEN
+      _invoice.operation_type_select = 4 THEN -_invoice.ex_tax_total
+      ELSE _invoice.ex_tax_total
+      END AS
+      _ex_tax_total,
       _invoice.currency AS _currency
       FROM account_invoice
       _invoice
@@ -989,12 +994,15 @@ from InvoiceTerm as self
       base_company AS _company
       ON
       _company.id = _user.active_company
-      AND _company.id = _invoice.company
+      AND
+      _company.id = _invoice.company
       WHERE
-      _invoice.operation_type_select = 3 AND _invoice.status_select = 3
+      _invoice.operation_type_select IN (3,4) AND
+      _invoice.status_select = 3
       AND _invoice.invoice_date
       BETWEEN DATE(:fromDate) AND DATE(:toDate)
-      ) AS _account_invoice
+      )
+      AS _account_invoice
       WHERE
       _currency.id=_account_invoice._currency
       GROUP BY _currency.name
@@ -1051,7 +1059,13 @@ from InvoiceTerm as self
     <dataset type="sql">
 
       SELECT
-      coalesce(SUM(self.company_ex_tax_total),0.00) AS ex_tax_total,
+      coalesce(SUM(
+      CASE
+      WHEN self.operation_type_select = 2 THEN
+      -self.company_ex_tax_total
+      ELSE self.company_ex_tax_total
+      END
+      ),0.00) AS ex_tax_total,
       to_char(self.invoice_date,'yyyy-MM') AS _month
       FROM
       account_invoice self
@@ -1064,7 +1078,8 @@ from InvoiceTerm as self
       AND
       _company.id = self.company
       WHERE
-      self.status_select = 3 AND self.operation_type_select=1 AND
+      self.status_select = 3 AND self.operation_type_select IN (1,2)
+      AND
       self.invoice_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
       GROUP BY _month
       ORDER BY
@@ -1092,7 +1107,12 @@ from InvoiceTerm as self
       base_currency AS _currency
       CROSS JOIN
       (SELECT
-      _invoice.ex_tax_total As _ex_tax_total,
+      CASE
+      WHEN
+      _invoice.operation_type_select = 2 THEN -_invoice.ex_tax_total
+      ELSE _invoice.ex_tax_total
+      END AS
+      _ex_tax_total,
       _invoice.currency AS _currency
       FROM account_invoice
       _invoice
@@ -1103,15 +1123,19 @@ from InvoiceTerm as self
       base_company AS _company
       ON
       _company.id = _user.active_company
-      AND _company.id = _invoice.company
+      AND
+      _company.id = _invoice.company
       WHERE
-      _invoice.status_select = 3 AND _invoice.operation_type_select=1 AND
+      _invoice.status_select = 3 AND
+      _invoice.operation_type_select IN (1,2) AND
       _invoice.invoice_date
-      BETWEEN DATE(:fromDate) AND DATE(:toDate)
+      BETWEEN DATE(:fromDate) AND
+      DATE(:toDate)
       ) AS _account_invoice
       WHERE
       _currency.id=_account_invoice._currency
-      GROUP BY _currency.name
+      GROUP BY
+      _currency.name
     </dataset>
     <category key="_currency" type="text" title="Currency"/>
     <series key="ex_tax_total" type="bar" title="Amount"/>
