@@ -118,6 +118,7 @@ public class ImportInventoryLine {
                 null);
 
         inventoryLineNew.setUnit(inventoryLine.getProduct().getUnit());
+        inventoryLineNew.setPrice(inventoryLine.getPrice());
 
         if (realQtyRemaning.compareTo(qtyByTracking) < 0) {
           inventoryLineNew.setRealQty(realQtyRemaning);
