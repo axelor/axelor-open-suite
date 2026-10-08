@@ -67,6 +67,7 @@ public class MaintenanceRequestCreateServiceImpl implements MaintenanceRequestCr
     maintenanceRequest.setExpectedDate(expectedDate);
     maintenanceRequest.setActionSelect(actionSelect);
     maintenanceRequest.setMachine(equipementMaintenance.getMachine());
+    maintenanceRequest.setMtnTask(equipementMaintenance.getMtnProcedure());
     return maintenanceRequestRepository.save(maintenanceRequest);
   }
 }
