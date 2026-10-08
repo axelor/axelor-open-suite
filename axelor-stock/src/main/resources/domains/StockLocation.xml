@@ -58,7 +58,18 @@
         LEFT JOIN stock_stock_location loc ON loc.id = sll.stock_location
         LEFT JOIN base_product p ON p.id = sll.product
         LEFT JOIN stock_stock_config cfg ON cfg.company = loc.company
-        WHERE sll.stock_location = id
+        WHERE sll.stock_location IN (
+            WITH RECURSIVE result AS (
+                SELECT parent.id, parent.include_virtual_sub_location
+                FROM stock_stock_location parent WHERE parent.id = id
+                UNION ALL
+                SELECT child.id, result.include_virtual_sub_location
+                FROM stock_stock_location child
+                INNER JOIN result ON child.parent_stock_location = result.id
+                WHERE result.include_virtual_sub_location IS TRUE OR child.type_select != 3
+            )
+            SELECT result.id FROM result
+        )
       ]]>
     </decimal>
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
