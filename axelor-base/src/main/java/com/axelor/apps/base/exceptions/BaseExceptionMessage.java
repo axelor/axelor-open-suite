@@ -333,6 +333,8 @@ public final class BaseExceptionMessage {
   public static final String WEEKLY_PLANNING_3 = /*$$(*/ "Invalid times %s afternoon" /*)*/;
   public static final String WEEKLY_PLANNING_4 = /*$$(*/
       "Some times are null and should not on %s" /*)*/;
+  public static final String WEEKLY_PLANNING_5 = /*$$(*/
+      "The day %s is already present in the planning." /*)*/;
 
   /*
    * User service
