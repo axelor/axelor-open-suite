@@ -1766,4 +1766,7 @@ public final class AccountExceptionMessage {
       "Bank detail %s doesn't have a note type defined for note %s." /*)*/;
   public static final String ADVANCE_INVOICE_CAN_NOT_DELETE = /*$$(*/
       "Validated advance invoices can not be deleted. %s can not be deleted." /*)*/;
+
+  public static final String INVOICE_PAYMENT_FOREIGN_EXCHANGE_CANNOT_BE_CANCELED = /*$$(*/
+      "This exchange difference entry cannot be reversed on its own. It is the counterparty to the payment that generated it: reversing it would leave the difference amount open in the third party's account, on an invoice presented as settled, without the possibility of reconciling it. To reverse this exchange difference, cancel the corresponding payment. Its exchange difference entry will be automatically reversed, and you can then re-enter the payment." /*)*/;
 }

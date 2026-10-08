@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.apps.account.service.move.MoveReverseService;
@@ -29,7 +30,9 @@ import com.axelor.apps.account.service.reconcile.ReconcileToolService;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -83,6 +86,7 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(InvoicePayment invoicePayment) throws AxelorException {
+    checkIsNotForeignExchangePayment(invoicePayment);
     Move paymentMove = invoicePayment.getMove();
 
     if (paymentMove != null) {
@@ -95,6 +99,7 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
 
   @Override
   public void reversePaymentMove(InvoicePayment invoicePayment) throws AxelorException {
+    checkIsNotForeignExchangePayment(invoicePayment);
     Move paymentMove = invoicePayment.getMove();
     if (paymentMove == null) {
       return;
@@ -181,5 +186,19 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
     invoicePayment.setCancelReason(cancelReason);
 
     return invoicePayment;
+  }
+
+  protected void checkIsNotForeignExchangePayment(InvoicePayment invoicePayment)
+      throws AxelorException {
+    if (invoicePayment == null) {
+      return;
+    }
+    if (invoicePayment.getTypeSelect() == InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_GAIN
+        || invoicePayment.getTypeSelect() == InvoicePaymentRepository.TYPE_FOREIGN_EXCHANGE_LOSS) {
+      throw new AxelorException(
+          invoicePayment,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_FOREIGN_EXCHANGE_CANNOT_BE_CANCELED));
+    }
   }
 }
