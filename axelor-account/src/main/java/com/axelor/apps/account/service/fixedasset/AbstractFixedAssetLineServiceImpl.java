@@ -242,8 +242,8 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
     Objects.requireNonNull(linesToRemove);
     linesToRemove.forEach(
         line -> {
-          fixedAssetLineList.remove(line);
           remove(line);
+          fixedAssetLineList.remove(line);
         });
     linesToRemove.clear();
   }
