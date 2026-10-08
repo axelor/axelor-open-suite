@@ -160,7 +160,9 @@ public class BankReconciliationReconciliationServiceImpl
         BigDecimal baseAmount = debit.compareTo(BigDecimal.ZERO) == 0 ? credit : debit;
 
         for (MoveLine moveLine : moveLines) {
-          if (matchedMoveLineIds.contains(moveLine.getId())) {
+          if (matchedMoveLineIds.contains(moveLine.getId())
+              || !bankReconciliationLineService.isDebitCreditDirectionValid(
+                  bankReconciliationLine, moveLine)) {
             continue;
           }
 
@@ -308,6 +310,8 @@ public class BankReconciliationReconciliationServiceImpl
             .filter(line -> line.getIsSelectedBankReconciliation())
             .collect(Collectors.toList())
             .get(0);
+    bankReconciliationLineService.checkDebitCreditDirection(
+        bankReconciliationLine, moveLines.get(0));
     bankReconciliationLine.setMoveLine(moveLines.get(0));
     bankReconciliationLine =
         bankReconciliationLineService.reconcileBRLAndMoveLine(
