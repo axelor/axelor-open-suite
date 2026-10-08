@@ -124,6 +124,8 @@ public final class StockExceptionMessage {
       "Cannot realize a stock move that is not planned." /*)*/;
   public static final String STOCK_MOVE_CANCEL_WRONG_STATUS = /*$$(*/
       "Can only cancel a planned or realized stock move." /*)*/;
+  public static final String STOCK_MOVE_CANCEL_WRONG_REVERSION_STATUS = /*$$(*/
+      "Stock move %s cannot be canceled because the following reversions are still planned or realized: %s. Please cancel them first." /*)*/;
   public static final String STOCK_MOVE_PLANNED_NOT_DELETED = /*$$(*/
       "Can't delete a planned stock move" /*)*/;
   public static final String STOCK_MOVE_REALIZED_NOT_DELETED = /*$$(*/
