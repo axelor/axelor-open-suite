@@ -347,4 +347,7 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BANK_ORDER_MISSING_RECEIVER_BANK_DETAILS = /*$$(*/
       "The recipient partner attached to the employee does not have an associated bank account, please create one." /*)*/;
+
+  public static final String BANK_RECONCILIATION_LINE_DEBIT_CREDIT_DIRECTION_MISMATCH = /*$$(*/
+      "The bank reconciliation line %s and the move line %s are on the same side. A credit on the bank statement must be reconciled with a debit move line and vice versa." /*)*/;
 }
