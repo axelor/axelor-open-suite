@@ -364,6 +364,10 @@ public final class SupplychainExceptionMessage {
       "The interco configuration must be the same for all sale orders." /*)*/;
   public static final String PURCHASE_ORDER_MERGE_ERROR_INTERCO_CONFIG = /*$$(*/
       "The interco configuration must be the same for all purchase orders" /*)*/;
+  public static final String PURCHASE_ORDER_MERGE_ERROR_PAYMENT_MODE = /*$$(*/
+      "The payment mode must be the same for all purchase orders" /*)*/;
+  public static final String PURCHASE_ORDER_MERGE_ERROR_PAYMENT_CONDITION = /*$$(*/
+      "The payment condition must be the same for all purchase orders" /*)*/;
 
   public static final String MISSING_FORECASTED_INV_CUST_ACCOUNT = /*$$(*/
       "Please select a forecasted invoice customer account in the accounting batch" /*)*/;
