@@ -586,7 +586,7 @@
       <field name="bankDetails" canEdit="false" widget="SuggestBox" colSpan="12"
         onSelect="action-invoice-method-bank-details-from-partner-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"
-        requiredIf="([1,2].includes(operationTypeSelect) &amp;&amp; paymentMode.typeSelect == 9)
+        requiredIf="([1,2].includes(operationTypeSelect) &amp;&amp; paymentMode.typeSelect == 9 &amp;&amp; paymentMode.inOutSelect == 2)
              || ([3,4].includes(operationTypeSelect) &amp;&amp; [2,10].includes(paymentMode.typeSelect))"
         onChange="action-invoice-method-update-invoice-term-bank-details"/>
       <panel name="addressPanel" stacked="true">
@@ -599,6 +599,7 @@
 
         </field>
         <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="paymentMode.inOutSelect" hidden="true"/>
       </panel>
 
       <panel name="supplierInvoiceNbPanel" colSpan="6">
@@ -1298,7 +1299,7 @@
       <field name="bankDetails" canEdit="false" widget="SuggestBox"
         onSelect="action-invoice-method-bank-details-from-partner-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"
-        requiredIf="([1,2].includes(operationTypeSelect) &amp;&amp; paymentMode.typeSelect == 9)
+        requiredIf="([1,2].includes(operationTypeSelect) &amp;&amp; paymentMode.typeSelect == 9 &amp;&amp; paymentMode.inOutSelect == 2)
              || ([3,4].includes(operationTypeSelect) &amp;&amp; [2,10].includes(paymentMode.typeSelect))"/>
       <field name="partnerTaxNbr" readonlyIf="statusSelect != 1"
         hideIf="operationTypeSelect != 3 &amp;&amp; operationTypeSelect != 4"
@@ -1306,6 +1307,7 @@
       <field name="supplierInvoiceNb"
         showIf="operationTypeSelect == 1 || operationTypeSelect == 2"/>
       <field name="paymentMode.typeSelect" hidden="true"/>
+      <field name="paymentMode.inOutSelect" hidden="true"/>
       <field name="partner.partnerTypeSelect" hidden="true"/>
     </panel>
 
