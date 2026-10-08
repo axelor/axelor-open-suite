@@ -3525,6 +3525,7 @@
 "This configuration enables the payment assistant when entering a customer payment on a customer invoice/credit note. Otherwise, the standard payment registration form on the invoice will open.",,,
 "This configuration enables the payment assistant when entering a supplier payment on a supplier invoice/credit note. Otherwise, the standard payment registration form on the invoice will open.",,,
 "This configuration will allow you to set up the statement to be displayed according to the product category present in the invoice.",,,
+"This exchange difference entry cannot be reversed on its own. It is the counterparty to the payment that generated it: reversing it would leave the difference amount open in the third party's account, on an invoice presented as settled, without the possibility of reconciling it. To reverse this exchange difference, cancel the corresponding payment. Its exchange difference entry will be automatically reversed, and you can then re-enter the payment.",,,
 "This field allows to modify directly the move line due date which is by default calculated based on the payment condition.",,,
 "This field allows you to select a grouping value among the grouping values ​​1 defined on the axis to which this account is attached.",,,
 "This field allows you to select a parent analytical account. Only analytical accounts with an analytical level higher than one unit and belonging to the same axis will be selectable.",,,

@@ -1895,4 +1895,7 @@ public final class AccountExceptionMessage {
 
   public static final String PARTNER_DELETE_ACTIVE_UMR = /*$$(*/
       "The following partner(s) have an invoicing/payment situation with an active SEPA mandate : %s. Deleting them will also delete their mandates and their history. Do you still want to continue?" /*)*/;
+
+  public static final String INVOICE_PAYMENT_FOREIGN_EXCHANGE_CANNOT_BE_CANCELED = /*$$(*/
+      "This exchange difference entry cannot be reversed on its own. It is the counterparty to the payment that generated it: reversing it would leave the difference amount open in the third party's account, on an invoice presented as settled, without the possibility of reconciling it. To reverse this exchange difference, cancel the corresponding payment. Its exchange difference entry will be automatically reversed, and you can then re-enter the payment." /*)*/;
 }
