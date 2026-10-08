@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed supplier invoices that could be ventilated without a supplier invoice number when ventilation is skipped."
+module: axelor-account
