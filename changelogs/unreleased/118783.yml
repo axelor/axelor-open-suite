@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed refunds not being deducted in the invoice dashboard charts and in the Purchase Invoices Details report, whose chart now sums the amounts and applies the turnover type filter."
+module: axelor-account
