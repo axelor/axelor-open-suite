@@ -88,6 +88,10 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
           }
         }
       }
+      BigDecimal globalAvgPrice = this.computeAvgPriceForCompany(product, null);
+      if (globalAvgPrice.compareTo(BigDecimal.ZERO) != 0) {
+        product.setAvgPrice(globalAvgPrice);
+      }
     } else {
       BigDecimal productAvgPrice = this.computeAvgPriceForCompany(product, null);
       if (productAvgPrice.compareTo(BigDecimal.ZERO) == 0) {
@@ -176,6 +180,9 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
             == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
           productCompanyService.set(product, "costPrice", BigDecimal.ZERO, company);
         }
+      }
+      if (computeAvgPriceForCompany(product, null).compareTo(BigDecimal.ZERO) == 0) {
+        product.setAvgPrice(BigDecimal.ZERO);
       }
     } else {
       if (computeAvgPriceForCompany(product, null).compareTo(BigDecimal.ZERO) != 0) {
