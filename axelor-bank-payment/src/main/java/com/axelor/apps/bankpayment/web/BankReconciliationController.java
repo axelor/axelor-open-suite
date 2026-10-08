@@ -412,8 +412,7 @@ public class BankReconciliationController {
       BankReconciliation bankReconciliation =
           Beans.get(BankReconciliationRepository.class)
               .find(request.getContext().asType(BankReconciliation.class).getId());
-      Beans.get(BankStatementValidateService.class)
-          .setIsFullyReconciled(bankReconciliation.getBankStatement());
+      Beans.get(BankStatementValidateService.class).setIsFullyReconciled(bankReconciliation);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
