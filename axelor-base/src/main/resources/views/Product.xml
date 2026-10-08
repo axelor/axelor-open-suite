@@ -1057,7 +1057,7 @@
 
   <action-attrs name="action-product-attrs-set-required-procurement-method-select">
     <attribute name="required" for="procurementMethodSelect"
-      expr="eval: productTypeSelect == 'storable' &amp;&amp; (!__config__.app.getApp('base')?.getCompanySpecificProductFieldsSet() || __config__.app.getApp('base')?.getCompanySpecificProductFieldsSet()?.isEmpty())"/>
+      expr="eval: productTypeSelect == 'storable' &amp;&amp; (!__config__.app.getApp('base')?.showProductCompanies || !__config__.app.getApp('base')?.getCompanySpecificProductFieldsSet() || __config__.app.getApp('base')?.getCompanySpecificProductFieldsSet()?.isEmpty())"/>
   </action-attrs>
 
   <action-view name="action-product-view-quality-improvements"

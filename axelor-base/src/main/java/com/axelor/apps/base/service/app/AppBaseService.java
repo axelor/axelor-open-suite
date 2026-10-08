@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.AddressTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.meta.db.MetaField;
 import com.axelor.studio.app.service.ScriptAppService;
 import com.axelor.studio.db.AppBase;
 import java.io.IOException;
@@ -30,6 +31,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Set;
 
 public interface AppBaseService extends ScriptAppService {
 
@@ -125,4 +127,11 @@ public interface AppBaseService extends ScriptAppService {
   String getSireneUrl() throws AxelorException;
 
   String getImportErrorPath() throws IOException;
+
+  /**
+   * Get the company-specific product fields, only when product companies are shown.
+   *
+   * @return the selected fields, or an empty set if product companies are not shown
+   */
+  Set<MetaField> getEnabledCompanySpecificProductFields();
 }

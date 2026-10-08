@@ -690,8 +690,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   @Override
   public Boolean hasDefaultBOMSelected() {
     Boolean containsDefaultBOMField = false;
-    Set<MetaField> companySpecificFields =
-        appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
+    Set<MetaField> companySpecificFields = appBaseService.getEnabledCompanySpecificProductFields();
     for (MetaField field : companySpecificFields) {
       if (field.getName().equals("defaultBillOfMaterial")) {
         containsDefaultBOMField = true;

@@ -33,6 +33,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaField;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.ScriptAppServiceImpl;
 import com.axelor.studio.db.AppBase;
@@ -50,7 +51,9 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Singleton
 public class AppBaseServiceImpl extends ScriptAppServiceImpl implements AppBaseService {
@@ -336,6 +339,16 @@ public class AppBaseServiceImpl extends ScriptAppServiceImpl implements AppBaseS
       return appBase.getImportErrorPath() + File.separator + dir;
     }
     return createTempDir(dir).toFile().getPath();
+  }
+
+  @Override
+  public Set<MetaField> getEnabledCompanySpecificProductFields() {
+    AppBase appBase = getAppBase();
+    if (!appBase.getShowProductCompanies()
+        || appBase.getCompanySpecificProductFieldsSet() == null) {
+      return Collections.emptySet();
+    }
+    return appBase.getCompanySpecificProductFieldsSet();
   }
 
   protected Path createTempDir(String dir) throws IOException {

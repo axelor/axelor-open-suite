@@ -46,8 +46,7 @@ public class ProductSaleDomainServiceImpl implements ProductSaleDomainService {
             + " and (self.endDate IS null or self.endDate > :__date__)"
             + " and self.dtype = 'Product'";
 
-    if (appBaseService.getAppBase().getCompanySpecificProductFieldsSet() != null
-        && appBaseService.getAppBase().getCompanySpecificProductFieldsSet().stream()
+    if (appBaseService.getEnabledCompanySpecificProductFields().stream()
             .anyMatch(it -> "sellable".equals(it.getName()))
         && company != null) {
       domain +=

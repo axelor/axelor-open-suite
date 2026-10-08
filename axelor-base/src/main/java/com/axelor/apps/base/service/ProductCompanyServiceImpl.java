@@ -151,8 +151,7 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
 
   @Override
   public boolean isCompanySpecificProductFields(String fieldName) {
-    Set<MetaField> companySpecificFields =
-        appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
+    Set<MetaField> companySpecificFields = appBaseService.getEnabledCompanySpecificProductFields();
 
     return companySpecificFields.stream()
         .anyMatch(metaField -> metaField.getName().equals(fieldName));

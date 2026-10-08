@@ -61,8 +61,7 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
   public void computeAvgPriceForProduct(Product product) throws AxelorException {
 
     Boolean avgPriceHandledByCompany = false;
-    Set<MetaField> companySpecificFields =
-        appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
+    Set<MetaField> companySpecificFields = appBaseService.getEnabledCompanySpecificProductFields();
     for (MetaField field : companySpecificFields) {
       if (field.getName().equals("avgPrice")) {
         avgPriceHandledByCompany = true;
@@ -155,8 +154,7 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
 
   protected void doResetAvgPriceForProduct(Product product) throws AxelorException {
     Boolean avgPriceHandledByCompany = false;
-    Set<MetaField> companySpecificFields =
-        appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
+    Set<MetaField> companySpecificFields = appBaseService.getEnabledCompanySpecificProductFields();
     for (MetaField field : companySpecificFields) {
       if (field.getName().equals("avgPrice")) {
         avgPriceHandledByCompany = true;

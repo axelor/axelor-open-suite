@@ -249,12 +249,22 @@ public class ProductServiceImpl implements ProductService {
   protected void setPriceOfVariantProductCompany(
       Product productVariant, ProductCompany productCompany, Company company)
       throws AxelorException {
-    productCompanyService.set(productVariant, "costPrice", productCompany.getCostPrice(), company);
-    productCompanyService.set(
-        productVariant, "purchasePrice", productCompany.getPurchasePrice(), company);
-    productCompanyService.set(productVariant, "salePrice", productCompany.getSalePrice(), company);
-    productCompanyService.set(
-        productVariant, "managPriceCoef", productCompany.getManagPriceCoef(), company);
+    if (productCompanyService.isCompanySpecificProductFields("costPrice")) {
+      productCompanyService.set(
+          productVariant, "costPrice", productCompany.getCostPrice(), company);
+    }
+    if (productCompanyService.isCompanySpecificProductFields("purchasePrice")) {
+      productCompanyService.set(
+          productVariant, "purchasePrice", productCompany.getPurchasePrice(), company);
+    }
+    if (productCompanyService.isCompanySpecificProductFields("salePrice")) {
+      productCompanyService.set(
+          productVariant, "salePrice", productCompany.getSalePrice(), company);
+    }
+    if (productCompanyService.isCompanySpecificProductFields("managPriceCoef")) {
+      productCompanyService.set(
+          productVariant, "managPriceCoef", productCompany.getManagPriceCoef(), company);
+    }
   }
 
   protected void setPriceOfVariantProductCompanyWithExtra(Product productVariant, Company company)
