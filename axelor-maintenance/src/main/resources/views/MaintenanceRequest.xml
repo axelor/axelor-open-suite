@@ -148,10 +148,14 @@
       if="_parent?._model == 'com.axelor.apps.maintenance.db.EquipementMaintenance'"/>
     <field name="equipementMaintenance" expr="eval: _parent"
       if="_parent?._model == 'com.axelor.apps.maintenance.db.EquipementMaintenance'"/>
+    <field name="mtnTask" expr="eval: _parent?.mtnProcedure"
+      if="_parent?._model == 'com.axelor.apps.maintenance.db.EquipementMaintenance'"/>
   </action-record>
 
   <action-attrs name="action-maintenance-request-attrs-equi-maintenance-onchange">
     <attribute name="value" for="machine" expr="eval: equipementMaintenance?.machine"/>
+    <attribute name="value" for="mtnTask" expr="eval: equipementMaintenance?.mtnProcedure"
+      if="!mtnTask"/>
   </action-attrs>
 
   <action-method name="action-maintenance-request-method-start">
