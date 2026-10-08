@@ -745,6 +745,7 @@
 "The bank order %s has been generated successfully.",,,
 "The bank order is not properly signed. Please correct it and sign it again.",,,
 "The bank reconciliation currency is different from the bank details currency so the reconciliation cannot be initiated. Please select a currency which is equal to the bank statement currency.",,,
+"The bank reconciliation line %s and the move line %s are on the same side. A credit on the bank statement must be reconciled with a debit move line and vice versa.",,,
 "The company %s does not have bank order sequence",,,
 "The field encryption.bankorder.password in config file must be filled.",,,
 "The move %s can't be reversed because it is linked to a bank reconciliation with status validated",,,

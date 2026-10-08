@@ -51,4 +51,10 @@ public interface BankReconciliationLineService {
       BankReconciliationLine bankReconciliationLine, MoveLine moveLine);
 
   void toggleSelected(BankReconciliationLine bankReconciliationLine);
+
+  boolean isDebitCreditDirectionValid(
+      BankReconciliationLine bankReconciliationLine, MoveLine moveLine);
+
+  void checkDebitCreditDirection(BankReconciliationLine bankReconciliationLine, MoveLine moveLine)
+      throws AxelorException;
 }

@@ -121,6 +121,7 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
   @Override
   public void checkAmount(BankReconciliationLine bankReconciliationLine) throws AxelorException {
     MoveLine moveLine = bankReconciliationLine.getMoveLine();
+    checkDebitCreditDirection(bankReconciliationLine, moveLine);
 
     BigDecimal bankDebit =
         currencyScaleService.getScaledValue(
@@ -283,5 +284,36 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
     bankReconciliationLine.setIsSelectedBankReconciliation(
         !bankReconciliationLine.getIsSelectedBankReconciliation());
     bankReconciliationLineRepository.save(bankReconciliationLine);
+  }
+
+  @Override
+  public boolean isDebitCreditDirectionValid(
+      BankReconciliationLine bankReconciliationLine, MoveLine moveLine) {
+    if (moveLine == null) {
+      return true;
+    }
+    if (bankReconciliationLine.getDebit().signum() > 0) {
+      return moveLine.getCredit().signum() > 0;
+    }
+    if (bankReconciliationLine.getCredit().signum() > 0) {
+      return moveLine.getDebit().signum() > 0;
+    }
+    return true;
+  }
+
+  @Override
+  public void checkDebitCreditDirection(
+      BankReconciliationLine bankReconciliationLine, MoveLine moveLine) throws AxelorException {
+    if (!isDebitCreditDirectionValid(bankReconciliationLine, moveLine)) {
+      throw new AxelorException(
+          bankReconciliationLine,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              BankPaymentExceptionMessage.BANK_RECONCILIATION_LINE_DEBIT_CREDIT_DIRECTION_MISMATCH),
+          bankReconciliationLine.getReference() != null
+              ? bankReconciliationLine.getReference()
+              : "",
+          moveLine.getName());
+    }
   }
 }
