@@ -832,6 +832,7 @@
 "Stock managed",,,
 "Stock management",,,
 "Stock move",,,
+"Stock move %s cannot be canceled because the following reversions are still planned or realized: %s. Please cancel them first.",,,
 "Stock move content",,,
 "Stock move information",,,
 "Stock move line",,,

@@ -1259,6 +1259,10 @@
     <call class="com.axelor.apps.stock.web.StockMoveController" method="generateReversion"/>
   </action-method>
 
+  <action-method name="action-stock-move-method-check-reversion-status">
+    <call class="com.axelor.apps.stock.web.StockMoveController" method="checkReversionStatus"/>
+  </action-method>
+
   <action-method name="action-stock-move-method-generate-new-stock-move">
     <call class="com.axelor.apps.stock.web.StockMoveController" method="generateNewStockMove"/>
   </action-method>
@@ -1516,6 +1520,7 @@
   <action-group name="action-group-stock-stockmove-cancel-click">
     <action name="save"/>
     <action name="action-validate-stock-move-validate-cancel"/>
+    <action name="action-stock-move-method-check-reversion-status"/>
     <action name="action-supplychain-stock-move-method-check-invoice-status"
       if="__config__.app.isApp('supplychain')"/>
     <action name="action.stock.move.view.cancel"/>
