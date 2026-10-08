@@ -3279,6 +3279,7 @@
 "Supplier credit notes sequence",,,
 "Supplier invoice",,,
 "Supplier invoice number",,,
+"Supplier invoice number is missing on the invoice",,,
 "Supplier invoice terms by reason of refusal to pay",,,
 "Supplier invoices by reason of refusal to pay",,,
 "Supplier invoices filters",,,

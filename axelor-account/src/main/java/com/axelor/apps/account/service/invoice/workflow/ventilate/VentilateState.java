@@ -44,6 +44,7 @@ import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -200,6 +201,11 @@ public class VentilateState extends WorkflowInvoice {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.VENTILATE_STATE_MISSING_ORIGIN_DATE));
+    }
+    if (isPurchase && StringUtils.isEmpty(invoice.getSupplierInvoiceNb())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.VENTILATE_STATE_MISSING_SUPPLIER_INVOICE_NB));
     }
     if (isPurchase && invoice.getOriginDate().isAfter(todayDate)) {
       throw new AxelorException(
