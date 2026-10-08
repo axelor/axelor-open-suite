@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.MoveLineQueryLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.MoveLineQueryService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
@@ -37,6 +38,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineQueryController {
 
@@ -162,6 +164,28 @@ public class MoveLineQueryController {
       if (!reconcileList.isEmpty()) {
         Beans.get(MoveLineQueryService.class).ureconcileMoveLinesWithCacheManagement(reconcileList);
         response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkReconcileDifferentPartners(ActionRequest request, ActionResponse response) {
+    try {
+      MoveLineQuery moveLineQuery = request.getContext().asType(MoveLineQuery.class);
+      if (CollectionUtils.isEmpty(moveLineQuery.getMoveLineQueryLineList())) {
+        return;
+      }
+      MoveLineControlService moveLineControlService = Beans.get(MoveLineControlService.class);
+      List<MoveLine> moveLineList =
+          moveLineQuery.getMoveLineQueryLineList().stream()
+              .filter(MoveLineQueryLine::getIsSelected)
+              .map(MoveLineQueryLine::getMoveLine)
+              .filter(moveLineControlService::canReconcile)
+              .collect(Collectors.toList());
+
+      if (moveLineControlService.isReconcilingDifferentPartners(moveLineList)) {
+        response.setAlert(I18n.get(AccountExceptionMessage.RECONCILE_DIFFERENT_PARTNERS));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

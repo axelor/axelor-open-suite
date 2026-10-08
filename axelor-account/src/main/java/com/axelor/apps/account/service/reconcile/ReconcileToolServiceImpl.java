@@ -93,6 +93,9 @@ public class ReconcileToolServiceImpl implements ReconcileToolService {
     Partner creditPartner = reconcile.getCreditMoveLine().getPartner();
     if (debitPartner != null && creditPartner != null && debitPartner.equals(creditPartner)) {
       partnerList.add(debitPartner);
+    } else if (debitPartner != null && creditPartner != null) {
+      partnerList.add(debitPartner);
+      partnerList.add(creditPartner);
     } else if (debitPartner != null) {
       partnerList.add(debitPartner);
     } else if (creditPartner != null) {

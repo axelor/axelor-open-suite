@@ -694,4 +694,19 @@ public class MoveLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  @SuppressWarnings("unchecked")
+  public void checkReconcileDifferentPartners(ActionRequest request, ActionResponse response) {
+    try {
+      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+      List<MoveLine> moveLineList =
+          Beans.get(MoveLineService.class).getReconcilableMoveLines(idList);
+
+      if (Beans.get(MoveLineControlService.class).isReconcilingDifferentPartners(moveLineList)) {
+        response.setAlert(I18n.get(AccountExceptionMessage.RECONCILE_DIFFERENT_PARTNERS));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

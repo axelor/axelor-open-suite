@@ -1895,4 +1895,7 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_PAYMENT_FOREIGN_EXCHANGE_CANNOT_BE_CANCELED = /*$$(*/
       "This exchange difference entry cannot be reversed on its own. It is the counterparty to the payment that generated it: reversing it would leave the difference amount open in the third party's account, on an invoice presented as settled, without the possibility of reconciling it. To reverse this exchange difference, cancel the corresponding payment. Its exchange difference entry will be automatically reversed, and you can then re-enter the payment." /*)*/;
+
+  public static final String RECONCILE_DIFFERENT_PARTNERS = /*$$(*/
+      "The selected move lines belong to two different partners. Reconciling them will settle one partner's invoice with another partner's payment. A compensation between two partners should be recorded through a transfer entry, followed by one reconciliation per partner. Do you want to proceed?" /*)*/;
 }
