@@ -321,7 +321,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
           fillInternalReferenceInvoiceFromInStockMove(stockMove, purchaseOrderSet));
 
       if (purchaseOrderSet.size() == 1) {
-        invoice.setPurchaseOrder(purchaseOrder);
+        invoice.setPurchaseOrder(purchaseOrderSet.iterator().next());
       }
 
       invoice.setAddressStr(
