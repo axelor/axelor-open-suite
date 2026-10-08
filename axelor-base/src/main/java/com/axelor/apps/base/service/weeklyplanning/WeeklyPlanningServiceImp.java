@@ -36,9 +36,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
 
@@ -109,7 +111,14 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
   public WeeklyPlanning checkPlanning(WeeklyPlanning planning) throws AxelorException {
 
     List<DayPlanning> listDay = planning.getWeekDays();
+    Set<String> dayNameSet = new HashSet<>();
     for (DayPlanning dayPlanning : listDay) {
+
+      if (!dayNameSet.add(dayPlanning.getNameSelect())) {
+        String message =
+            messageInCheckPlanning(BaseExceptionMessage.WEEKLY_PLANNING_5, dayPlanning);
+        throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, message);
+      }
 
       if (dayPlanning.getMorningFrom() != null
           && dayPlanning.getMorningTo() != null
