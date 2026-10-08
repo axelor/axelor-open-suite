@@ -1,0 +1,6 @@
+---
+title: "Stock move: fixed cancellation being allowed while a linked reversion is still planned or realized."
+module: axelor-stock
+developer: |
+  Added checkReversionStatus(StockMove) to StockMoveService, called from StockMoveServiceImpl.cancel(StockMove).
+  action-group-stock-stockmove-cancel-click now calls action-stock-move-method-check-reversion-status before the cancel wizard.

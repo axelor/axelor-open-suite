@@ -827,6 +827,7 @@
 "Stock managed","Géré en stock",,
 "Stock management","Stocks",,
 "Stock move","Mouvement de stock",,
+"Stock move %s cannot be canceled because the following reversions are still planned or realized: %s. Please cancel them first.","Le mouvement de stock %s ne peut pas être annulé car les bons de retour suivants sont toujours planifiés ou réalisés : %s. Veuillez d'abord les annuler.",,
 "Stock move barcode type","Code barre des mouvements de stock",,
 "Stock move content","Contenu du mouvement",,
 "Stock move information","Informations sur Stocks Internes",,

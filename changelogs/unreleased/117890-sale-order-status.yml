@@ -1,0 +1,3 @@
+---
+title: "Sale order: when 'Terminate sale order on delivery' is enabled, a completed order now goes back to Confirmed once it is no longer fully delivered (delivery note cancelled or return realized)."
+module: axelor-supplychain

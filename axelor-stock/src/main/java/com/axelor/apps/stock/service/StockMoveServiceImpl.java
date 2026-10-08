@@ -1101,6 +1101,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(StockMove stockMove) throws AxelorException {
     LOG.debug("Stock move cancel : {} ", stockMove.getStockMoveSeq());
+    checkReversionStatus(stockMove);
     int initialStatus = stockMove.getStatusSelect();
     setCancelStatus(stockMove);
 
@@ -1137,6 +1138,36 @@ public class StockMoveServiceImpl implements StockMoveService {
         && initialStatus == StockMoveRepository.STATUS_REALIZED) {
       partnerProductQualityRatingService.undoCalculation(stockMove);
     }
+  }
+
+  @Override
+  public void checkReversionStatus(StockMove stockMove) throws AxelorException {
+    if (stockMove == null || stockMove.getId() == null) {
+      return;
+    }
+    List<StockMove> reversionStockMoveList =
+        stockMoveRepo
+            .all()
+            .filter(
+                "self.reversionOriginStockMove.id = :stockMoveId"
+                    + " AND self.statusSelect IN (:planned, :realized)")
+            .bind("stockMoveId", stockMove.getId())
+            .bind("planned", StockMoveRepository.STATUS_PLANNED)
+            .bind("realized", StockMoveRepository.STATUS_REALIZED)
+            .order("stockMoveSeq")
+            .fetch();
+    if (reversionStockMoveList.isEmpty()) {
+      return;
+    }
+    throw new AxelorException(
+        stockMove,
+        TraceBackRepository.CATEGORY_INCONSISTENCY,
+        String.format(
+            I18n.get(StockExceptionMessage.STOCK_MOVE_CANCEL_WRONG_REVERSION_STATUS),
+            stockMove.getStockMoveSeq(),
+            reversionStockMoveList.stream()
+                .map(StockMove::getStockMoveSeq)
+                .collect(Collectors.joining(", "))));
   }
 
   /**
