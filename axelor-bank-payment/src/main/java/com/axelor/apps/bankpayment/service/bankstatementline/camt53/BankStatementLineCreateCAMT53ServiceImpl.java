@@ -40,9 +40,17 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 public class BankStatementLineCreateCAMT53ServiceImpl
     implements BankStatementLineCreateCAMT53Service {
@@ -71,12 +79,7 @@ public class BankStatementLineCreateCAMT53ServiceImpl
   public BankStatement processCAMT53(BankStatement bankStatement) throws AxelorException {
     this.bankStatement = bankStatement;
     try {
-      JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
-      Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-      Document document =
-          (Document)
-              jaxbUnmarshaller.unmarshal(
-                  MetaFiles.getPath(bankStatement.getBankStatementFile()).toFile());
+      Document document = readDocument(MetaFiles.getPath(bankStatement.getBankStatementFile()));
       if (document == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
@@ -110,12 +113,31 @@ public class BankStatementLineCreateCAMT53ServiceImpl
 
         fillBankStatement(curBankStatement, bankStatement);
       }
-    } catch (jakarta.xml.bind.JAXBException e) {
+    } catch (JAXBException | XMLStreamException | IOException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_XML_FILE_UNMARSHAL_ERROR));
     }
     return this.bankStatement;
+  }
+
+  /**
+   * Unmarshals a CAMT.053 file through a StAX reader that rejects DTDs and external entities (XXE
+   * protection).
+   */
+  protected Document readDocument(Path path) throws JAXBException, XMLStreamException, IOException {
+    XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
+    xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+    xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+    Unmarshaller jaxbUnmarshaller = JAXBContext.newInstance(Document.class).createUnmarshaller();
+    try (InputStream inputStream = Files.newInputStream(path)) {
+      XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(inputStream);
+      try {
+        return (Document) jaxbUnmarshaller.unmarshal(xmlStreamReader);
+      } finally {
+        xmlStreamReader.close();
+      }
+    }
   }
 
   /**
