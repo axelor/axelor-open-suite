@@ -311,20 +311,23 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     if (manufOrder.getIsConsProOnOperation()) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+        LocalDate operationMaturityDate = maturityDate;
+        if (operationOrder.getPlannedStartDateT() != null) {
+          operationMaturityDate = operationOrder.getPlannedStartDateT().toLocalDate();
+        } else if (operationOrder.getPlannedEndDateT() != null) {
+          operationMaturityDate = operationOrder.getPlannedEndDateT().toLocalDate();
+        }
+        operationMaturityDate =
+            this.computeMaturityDate(operationMaturityDate, manufOrderNeedMrpLineType);
+
         for (ProdProduct prodProduct : operationOrder.getToConsumeProdProductList()) {
 
           Product product = prodProduct.getProduct();
 
-          if (this.isMrpProduct(product)
+          if ((this.isBeforeEndDate(operationMaturityDate)
+                  || manufOrderNeedMrpLineType.getIgnoreEndDate())
+              && this.isMrpProduct(product)
               && (producedProductInScope || this.productMap.containsKey(product.getId()))) {
-
-            if (operationOrder.getPlannedStartDateT() != null) {
-              maturityDate = operationOrder.getPlannedStartDateT().toLocalDate();
-            } else if (operationOrder.getPlannedEndDateT() != null) {
-              maturityDate = operationOrder.getPlannedEndDateT().toLocalDate();
-            }
-
-            maturityDate = this.computeMaturityDate(maturityDate, manufOrderNeedMrpLineType);
 
             Unit unit = product.getUnit();
             BigDecimal qty = computeQtyLeftToConsume(operationOrder, prodProduct);
@@ -340,7 +343,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                     prodProduct.getProduct(),
                     manufOrderNeedMrpLineType,
                     qty,
-                    maturityDate,
+                    operationMaturityDate,
                     BigDecimal.ZERO,
                     stockLocation,
                     operationOrder);
@@ -355,7 +358,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
         Product product = prodProduct.getProduct();
 
-        if (this.isMrpProduct(product)
+        if ((this.isBeforeEndDate(maturityDate) || manufOrderNeedMrpLineType.getIgnoreEndDate())
+            && this.isMrpProduct(product)
             && (producedProductInScope || this.productMap.containsKey(product.getId()))) {
 
           // A component of a manuf order that is not loaded on MRP because there is no default
