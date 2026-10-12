@@ -1,0 +1,3 @@
+---
+title: "Invoice: added the delivery date to the invoice printing, at header level and as a line column."
+module: axelor-account
