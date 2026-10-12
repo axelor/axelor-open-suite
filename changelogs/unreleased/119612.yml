@@ -1,0 +1,3 @@
+---
+title: "Demo data: fixed an error preventing the receipt of finished purchase orders during the demo data import."
+module: axelor-supplychain

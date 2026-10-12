@@ -58,8 +58,7 @@ public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaServic
           formula,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(SaleExceptionMessage.CONFIGURATOR_CREATOR_SCRIPT_ERROR));
-    } else if (!Beans.get(ConfiguratorService.class)
-            .areCompatible(wantedTypeName, getCalculatedClassName(result))
+    } else if (!Beans.get(ConfiguratorService.class).areCompatible(wantedTypeName, result)
         && !wantedTypeName.equals(ONE_TO_MANY)
         && !wantedTypeName.equals(MANY_TO_MANY)) {
       throw new AxelorException(

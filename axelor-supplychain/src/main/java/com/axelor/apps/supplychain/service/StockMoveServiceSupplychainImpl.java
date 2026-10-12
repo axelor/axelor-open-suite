@@ -68,6 +68,7 @@ import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -187,6 +188,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       return super.realizeStockMove(stockMove, check);
     }
 
+    stockMove = JpaModelHelper.ensureManaged(stockMove);
     if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
         && !stockMove.getIsReversion()
         && CollectionUtils.isNotEmpty(stockMove.getPurchaseOrderSet())) {
@@ -400,6 +402,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       saleOrderWorkflowService.completeSaleOrder(saleOrder);
     } else if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
       saleOrderConfirmService.confirmSaleOrder(saleOrder);
+    } else if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_COMPLETED
+        && saleOrder.getDeliveryState() != SaleOrderRepository.DELIVERY_STATE_DELIVERED) {
+      Beans.get(SaleOrderSupplychainService.class).updateToConfirmedStatus(saleOrder);
     }
   }
 

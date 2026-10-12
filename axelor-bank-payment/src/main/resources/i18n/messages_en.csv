@@ -774,6 +774,7 @@
 "The bank details type is not compatible with the accepted types in file format.",,,
 "The bank order %s has been generated successfully.",,,
 "The bank reconciliation currency is different from the bank details currency so the reconciliation cannot be initiated. Please select a currency which is equal to the bank statement currency.",,,
+"The bank reconciliation line %s and the move line %s are on the same side. A credit on the bank statement must be reconciled with a debit move line and vice versa.",,,
 "The bank reconciliation line %s does not belong to this bank reconciliation.",,,
 "The bank reconciliation line %s does not have its %s greater than 0, so it is not on the same side as the other selected lines.",,,
 "The bank reconciliation line %s has no bank statement line.",,,

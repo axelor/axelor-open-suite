@@ -1,0 +1,3 @@
+---
+title: "Purchase order line: fixed manually entered unit price being overwritten on quantity change when no supplier catalog exists."
+module: axelor-purchase

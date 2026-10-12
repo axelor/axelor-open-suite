@@ -1,0 +1,3 @@
+---
+title: "Purchase order: fixed unwanted draft purchase order created when generating an invoice from an incoming stock move."
+module: axelor-supplychain

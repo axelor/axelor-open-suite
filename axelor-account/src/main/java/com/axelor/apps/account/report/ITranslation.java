@@ -131,6 +131,7 @@ public interface ITranslation {
       "Invoice.noDiscountEarlyPayment"; /*)*/
   public static final String INVOICE_COEFIICIENT = /*$$(*/ "Invoice.coefficient"; /*)*/
   public static final String INVOICE_EXEMPTION_REASON = /*$$(*/ "Invoice.exemptionReason"; /*)*/
+  public static final String INVOICE_DELIVERY_DATE = /*$$(*/ "Invoice.deliveryDate"; /*)*/
 
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/

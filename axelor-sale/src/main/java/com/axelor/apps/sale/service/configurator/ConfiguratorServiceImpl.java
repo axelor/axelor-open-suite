@@ -213,7 +213,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         && wantedClassName.equals("LocalDateTime")) {
       return;
     }
-    if (!areCompatible(wantedClassName, calculatedValueClassName)) {
+    if (!areCompatible(wantedClassName, calculatedValue)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(SaleExceptionMessage.CONFIGURATOR_ON_GENERATING_TYPE_ERROR),
@@ -435,7 +435,11 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       // Editing the product will automatically regenerate lines and remove old line
       regenerateProduct(configurator, product, jsonAttributes, jsonIndicators, saleOrder.getId());
       configuratorSaleOrderLineService.regenerateSaleOrderLine(
-          configurator, product, saleOrderLine, saleOrder);
+          configurator,
+          product,
+          saleOrderLine,
+          saleOrder,
+          getFormulaQty(configurator, jsonAttributes));
       saleOrderComputeService.computeSaleOrder(saleOrder);
 
     } else {
@@ -557,10 +561,14 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     return scriptHelper.eval(groovyFormula);
   }
 
-  public boolean areCompatible(String targetClassName, String fromClassName) {
+  @Override
+  public boolean areCompatible(String targetClassName, Object calculatedValue) {
+    String fromClassName = configuratorFormulaService.getCalculatedClassName(calculatedValue);
     return targetClassName.equals(fromClassName)
         || (targetClassName.equals("BigDecimal") && fromClassName.equals("Integer"))
-        || (targetClassName.equals("BigDecimal") && fromClassName.equals("String"))
+        || (targetClassName.equals("BigDecimal")
+            && fromClassName.equals("String")
+            && isConvertibleToBigDecimal((String) calculatedValue))
         || (targetClassName.equals("String") && fromClassName.equals("GStringImpl"))
         || "ArrayList".equals(fromClassName);
   }
@@ -793,6 +801,15 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       JsonContext jsonAttributes, Long saleOrderId) {
     if (saleOrderId != null) {
       jsonAttributes.put(ConfiguratorFormulaService.PARENT_SALE_ORDER_ID_FIELD_NAME, saleOrderId);
+    }
+  }
+
+  protected boolean isConvertibleToBigDecimal(String value) {
+    try {
+      new BigDecimal(value.trim());
+      return true;
+    } catch (NumberFormatException e) {
+      return false;
     }
   }
 }

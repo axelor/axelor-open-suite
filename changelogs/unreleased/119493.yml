@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed wrong invoice term amount remaining after cancelling a payment on an invoice in currency."
-module: axelor-account

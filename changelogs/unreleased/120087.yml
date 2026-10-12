@@ -1,0 +1,4 @@
+---
+title: "Bank statement: hardened the CAMT.053 file import against XML external entities (XXE)."
+module: axelor-bank-payment
+description: "Reported by security researcher kta1kri"

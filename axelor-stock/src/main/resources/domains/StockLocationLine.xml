@@ -16,6 +16,8 @@
     <decimal name="currentQty" title="Current Qty" precision="20" scale="10" readonly="true"/>
     <decimal name="futureQty" title="Future Qty" precision="20" scale="10" readonly="true"/>
     <decimal name="avgPrice" precision="20" scale="10" readonly="true" title="Average Price"/>
+    <decimal name="stockLocationLineValue" title="Value" transient="true" precision="27"
+      scale="2"/>
     <boolean name="isAvgPriceChanged" transient="true"/>
     <date name="lastFutureStockMoveDate" title="Last Future Stock Move" readonly="true"/>
 

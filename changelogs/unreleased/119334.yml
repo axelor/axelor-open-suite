@@ -1,6 +1,0 @@
----
-title: "Invoice: fixed missing foreign exchange gap and wrong amount due when an invoice in currency is settled by a move in company currency."
-module: axelor-account
-developer: |
-  ForeignExchangeGapToolService: added isMultiCurrency(MoveLine) and getCurrencyRate(MoveLine, MoveLine); isGain and getInvoicePaymentType now throw AxelorException.
-  ForeignExchangeGapServiceImpl: getCurrencyAmountRemaining now takes the other move line and throws AxelorException.

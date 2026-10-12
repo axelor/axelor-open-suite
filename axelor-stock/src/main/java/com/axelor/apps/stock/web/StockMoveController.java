@@ -197,6 +197,16 @@ public class StockMoveController {
     }
   }
 
+  public void checkReversionStatus(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      Beans.get(StockMoveService.class)
+          .checkReversionStatus(Beans.get(StockMoveRepository.class).find(stockMove.getId()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
   public void sendSupplierArrivalCancellationMessage(
       ActionRequest request, ActionResponse response) {
     try {

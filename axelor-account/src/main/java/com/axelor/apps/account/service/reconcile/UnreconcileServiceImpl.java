@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.SubrogationReleaseWorkflowService;
 import com.axelor.apps.account.service.move.PaymentMoveLineDistributionService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -34,7 +35,9 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignExchangeGapService;
 import com.axelor.apps.account.service.reconcile.reconcilegroup.UnreconcileGroupService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -96,6 +99,14 @@ public class UnreconcileServiceImpl implements UnreconcileService {
   public void unreconcile(Reconcile reconcile) throws AxelorException {
 
     log.debug("unreconcile : reconcile : {}", reconcile);
+
+    if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CANCELED) {
+      throw new AxelorException(
+          reconcile,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.RECONCILE_ALREADY_CANCELED),
+          reconcile.getReconcileSeq());
+    }
 
     MoveLine debitMoveLine = reconcile.getDebitMoveLine();
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();

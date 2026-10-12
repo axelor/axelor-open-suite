@@ -255,7 +255,7 @@ public class MoveLineServiceImpl implements MoveLineService {
       return AccountExceptionMessage.RECONCILE_DIFFERENT_ACCOUNTS;
     }
 
-    return AccountExceptionMessage.RECONCILE_DIFFERENT_PARTNERS;
+    return AccountExceptionMessage.RECONCILE_DIFFERENT_PARTNERS_ON_ACCOUNT;
   }
 
   protected List<MoveLine> getMapMoveLines(

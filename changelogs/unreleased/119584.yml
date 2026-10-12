@@ -1,0 +1,3 @@
+---
+title: "Invoice payment: prevented cancelling a foreign exchange gain or loss payment on its own."
+module: axelor-account

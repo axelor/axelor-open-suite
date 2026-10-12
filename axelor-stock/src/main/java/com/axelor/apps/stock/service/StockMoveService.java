@@ -151,6 +151,8 @@ public interface StockMoveService {
 
   void cancel(StockMove stockMove, CancelReason cancelReason) throws AxelorException;
 
+  void checkReversionStatus(StockMove stockMove) throws AxelorException;
+
   void sendSupplierCancellationMail(StockMove stockMove, Template template) throws AxelorException;
 
   void splitStockMoveLines(

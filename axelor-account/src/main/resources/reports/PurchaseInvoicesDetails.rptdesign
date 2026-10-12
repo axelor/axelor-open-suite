@@ -456,7 +456,7 @@
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT  Invoice.invoice_date as date, 
-		SUM(InvoiceLine.ex_tax_total) as sum, 
+		SUM(CASE WHEN Invoice.operation_type_select = 2 THEN -InvoiceLine.ex_tax_total ELSE InvoiceLine.ex_tax_total END) as sum, 
 		'Invoiced' as type, 
 		LangTranslate.message_value as "translation",
 		Product.name as product,
@@ -476,8 +476,9 @@ LEFT OUTER JOIN account_assistant_report_invoice_product_category_set as Assista
 LEFT OUTER JOIN meta_translation as LangTranslate on (LangTranslate.message_key = 'PurchaseInvoicesDetails.invoiced')
 WHERE (Invoice.status_select = 2 OR Invoice.status_select = 3) AND Company.id = ? 
 		AND (LangTranslate.language = substring(?, '^[a-zA-Z]+') OR LangTranslate.language is null )
-        AND Invoice.operation_type_select = 1
+        AND Invoice.operation_type_select IN (1, 2)
         AND Invoice.invoice_date BETWEEN Assistant.from_date AND Assistant.to_date
+        AND (Assistant.turnover_type_select = 2 OR Assistant.turnover_type_select = 3)
         AND (AssistantPartners.partner_set is null or Partner.id IN (AssistantPartners.partner_set)) 
         AND (AssistantProducts.product_set is null or Product.id IN (AssistantProducts.product_set))
         AND (AssistantProductCategories.product_category_set is null or ProductCategory.id IN (AssistantProductCategories.product_category_set))
@@ -507,6 +508,7 @@ LEFT OUTER JOIN meta_translation as LangTranslate1 on (LangTranslate1.message_ke
 WHERE Company.id = ?
 		AND (LangTranslate1.language = substring(?, '^[a-zA-Z]+') OR LangTranslate1.language is null )
         AND PurchaseOrder.order_date BETWEEN Assistant.from_date AND Assistant.to_date
+        AND (Assistant.turnover_type_select = 1 OR Assistant.turnover_type_select = 3)
         AND (AssistantPartners.partner_set is null or Partner.id IN (AssistantPartners.partner_set)) 
         AND (AssistantProducts.product_set is null or Product.id IN (AssistantProducts.product_set))
         AND (AssistantProductCategories.product_category_set is null or ProductCategory.id IN (AssistantProductCategories.product_category_set))
@@ -1507,7 +1509,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
             <Grouping>
               <Enabled>true</Enabled>
               <GroupType>Text</GroupType>
-              <AggregateExpression>Min</AggregateExpression>
+              <AggregateExpression>Sum</AggregateExpression>
             </Grouping>
           </DataDefinition>
           <SeriesIdentifier>Invoiced=Invoiced</SeriesIdentifier>
@@ -1917,7 +1919,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
             <Grouping>
               <Enabled>true</Enabled>
               <GroupType>Text</GroupType>
-              <AggregateExpression>Min</AggregateExpression>
+              <AggregateExpression>Sum</AggregateExpression>
             </Grouping>
           </DataDefinition>
           <SeriesIdentifier>Ordered=Ordered</SeriesIdentifier>

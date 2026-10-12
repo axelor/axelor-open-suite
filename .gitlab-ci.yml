@@ -5,8 +5,10 @@
 # of THIS pipeline are moved into open-suite-webapp/modules/axelor-open-suite,
 # then the same Gradle checks, build and tests run.
 #
-# The nightly snapshot publish (publish-snapshot.yml) deliberately stays on
-# GitHub Actions, fed by the mirror: no Nexus secrets and no schedules here.
+# The SNAPSHOT publish (formerly publish-snapshot.yml) runs here too, on the
+# same layout, so it publishes the tip of the AOS branch. It runs only from
+# pipeline schedules on dev and wip (nightly, or on demand with the schedule's
+# "Play" button), and those pipelines skip the checks, build and tests.
 #
 # Structure, image, tags, timeouts and cache follow open-suite-webapp's
 # .gitlab-ci.yml, which is green on the same runners.
@@ -15,6 +17,7 @@ stages:
   - check
   - build
   - test
+  - publish
 
 image: axelor/app-builder:8.2
 
@@ -29,10 +32,12 @@ variables:
   # directory would make git clone refuse (seen on 9.0-dev, job 952635).
   GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
   GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.console=plain"
+  SNAPSHOT_REPOSITORY: "https://repository.axelor.com/nexus/repository/maven-snapshots/"
 
 workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "schedule"
     # Avoid a duplicate branch pipeline when an MR is already open for the branch
     - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
       when: never
@@ -59,10 +64,17 @@ default:
       - .gradle/wrapper
       - .gradle/caches
 
+.ci-job:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
+    - when: on_success
+
 # Same static checks as the GitHub "Java CI" workflow. --continue reports every
 # failing check, not only the first one. generateChangelog runs alone (Gradle 8
 # validation, see the webapp's pipeline).
 checks:
+  extends: .ci-job
   stage: check
   needs: []
   script:
@@ -75,6 +87,7 @@ checks:
     - ./gradlew generateChangelog
 
 build:
+  extends: .ci-job
   stage: build
   needs: []
   tags: [heavy]
@@ -83,6 +96,7 @@ build:
     - ./gradlew -xtest clean build
 
 test:
+  extends: .ci-job
   stage: test
   needs: []
   tags: [heavy]
@@ -95,3 +109,18 @@ test:
     reports:
       junit:
         - "**/build/test-results/test/TEST-*.xml"
+
+# Requires the CI/CD variables NEXUS_DEPLOYMENT_USERNAME and
+# NEXUS_DEPLOYMENT_PASSWORD (masked, protected: dev and wip must be protected).
+publish-snapshot:
+  stage: publish
+  interruptible: false
+  tags: [heavy]
+  timeout: 2h
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+  script:
+    - ./gradlew publish
+        -PmavenRepository=$SNAPSHOT_REPOSITORY
+        -PmavenUsername=$NEXUS_DEPLOYMENT_USERNAME
+        -PmavenPassword=$NEXUS_DEPLOYMENT_PASSWORD

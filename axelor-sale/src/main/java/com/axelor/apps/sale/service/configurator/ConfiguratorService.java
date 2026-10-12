@@ -130,11 +130,10 @@ public interface ConfiguratorService {
   void checkType(Object calculatedValue, MetaJsonField indicator) throws AxelorException;
 
   /**
-   * Return true if {@code fromClassName} is a class that can be converted to {@code
-   * targetClassName}. <br>
+   * Return true if {@code calculatedValue} can be converted to {@code targetClassName}. <br>
    * Else return false.
    */
-  boolean areCompatible(String targetClassName, String fromClassName);
+  boolean areCompatible(String targetClassName, Object calculatedValue);
 
   /**
    * Fix relational fields of a product or a sale order line generated from a configurator. This

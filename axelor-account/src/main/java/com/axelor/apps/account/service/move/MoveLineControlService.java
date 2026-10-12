@@ -61,4 +61,6 @@ public interface MoveLineControlService {
   void checkPartner(MoveLine moveLine) throws AxelorException;
 
   void checkAccountAnalytic(Move move, MoveLine moveLine, Account account) throws AxelorException;
+
+  boolean isReconcilingDifferentPartners(List<MoveLine> moveLineList);
 }

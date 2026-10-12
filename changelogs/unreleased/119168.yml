@@ -1,3 +1,0 @@
----
-title: "Account: fixed account full name not refreshed on company code change and saving an account outside an HTTP request."
-module: axelor-account

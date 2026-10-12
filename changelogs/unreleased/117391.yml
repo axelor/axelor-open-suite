@@ -1,3 +1,0 @@
----
-title: "Partner: fixed tracking of the out payment condition field, which was not historized on update."
-module: axelor-account

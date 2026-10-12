@@ -61,8 +61,7 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
   public void computeAvgPriceForProduct(Product product) throws AxelorException {
 
     Boolean avgPriceHandledByCompany = false;
-    Set<MetaField> companySpecificFields =
-        appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
+    Set<MetaField> companySpecificFields = appBaseService.getEnabledCompanySpecificProductFields();
     for (MetaField field : companySpecificFields) {
       if (field.getName().equals("avgPrice")) {
         avgPriceHandledByCompany = true;
@@ -87,6 +86,10 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
             productService.updateSalePrice(product, company);
           }
         }
+      }
+      BigDecimal globalAvgPrice = this.computeAvgPriceForCompany(product, null);
+      if (globalAvgPrice.compareTo(BigDecimal.ZERO) != 0) {
+        product.setAvgPrice(globalAvgPrice);
       }
     } else {
       BigDecimal productAvgPrice = this.computeAvgPriceForCompany(product, null);
@@ -155,8 +158,7 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
 
   protected void doResetAvgPriceForProduct(Product product) throws AxelorException {
     Boolean avgPriceHandledByCompany = false;
-    Set<MetaField> companySpecificFields =
-        appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
+    Set<MetaField> companySpecificFields = appBaseService.getEnabledCompanySpecificProductFields();
     for (MetaField field : companySpecificFields) {
       if (field.getName().equals("avgPrice")) {
         avgPriceHandledByCompany = true;
@@ -176,6 +178,9 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
             == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
           productCompanyService.set(product, "costPrice", BigDecimal.ZERO, company);
         }
+      }
+      if (computeAvgPriceForCompany(product, null).compareTo(BigDecimal.ZERO) == 0) {
+        product.setAvgPrice(BigDecimal.ZERO);
       }
     } else {
       if (computeAvgPriceForCompany(product, null).compareTo(BigDecimal.ZERO) != 0) {

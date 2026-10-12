@@ -413,6 +413,9 @@ public final class AccountExceptionMessage {
   public static final String RECONCILE_CAN_NOT_BE_REMOVE = /*$$(*/
       "The reconcile %s cannot be removed, please select draft reconcile(s)" /*)*/;
 
+  public static final String RECONCILE_ALREADY_CANCELED = /*$$(*/
+      "The reconcile %s is already canceled." /*)*/;
+
   public static final String RECONCILE_WRONG_CURRENCY = /*$$(*/
       "Reconcile involves two different currencies and neither of them is the company currency" /*)*/;
 
@@ -427,7 +430,7 @@ public final class AccountExceptionMessage {
       "The selected move lines must concern the same company." /*)*/;
   public static final String RECONCILE_DIFFERENT_ACCOUNTS = /*$$(*/
       "Debit and credit move lines must be on the same account, but the selected move lines are on accounts %s." /*)*/;
-  public static final String RECONCILE_DIFFERENT_PARTNERS = /*$$(*/
+  public static final String RECONCILE_DIFFERENT_PARTNERS_ON_ACCOUNT = /*$$(*/
       "Debit and credit move lines on account %s must have the same partner." /*)*/;
 
   public static final String ALREADY_HAVE_PROPOSAL_RECONCILE = /*$$(*/
@@ -896,6 +899,9 @@ public final class AccountExceptionMessage {
 
   public static final String VENTILATE_STATE_MISSING_ORIGIN_DATE = /*$$(*/
       "Origin date is missing on the invoice" /*)*/;
+
+  public static final String VENTILATE_STATE_MISSING_SUPPLIER_INVOICE_NB = /*$$(*/
+      "Supplier invoice number is missing on the invoice" /*)*/;
 
   /** Workflow ventilation */
   public static final String AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH = /*$$(*/
@@ -1816,4 +1822,13 @@ public final class AccountExceptionMessage {
   public static final String EXCESS_PAYMENT_RECONCILE_NUMBER_LIMIT_REACHED =
       /*$$(*/
       "Only the first %s records could be reconciled (configuration limit reached). The remaining lines were not reconciled." /*)*/;
+
+  public static final String INVOICE_PAYMENT_FOREIGN_EXCHANGE_CANNOT_BE_CANCELED = /*$$(*/
+      "This exchange difference entry cannot be reversed on its own. It is the counterparty to the payment that generated it: reversing it would leave the difference amount open in the third party's account, on an invoice presented as settled, without the possibility of reconciling it. To reverse this exchange difference, cancel the corresponding payment. Its exchange difference entry will be automatically reversed, and you can then re-enter the payment." /*)*/;
+
+  public static final String RECONCILE_DIFFERENT_PARTNERS = /*$$(*/
+      "The selected move lines belong to two different partners. Reconciling them will settle one partner's invoice with another partner's payment. A compensation between two partners should be recorded through a transfer entry, followed by one reconciliation per partner. Do you want to proceed?" /*)*/;
+
+  public static final String ACCOUNT_MANAGEMENT_TAX_NOT_AUTHORIZED_ON_ACCOUNT = /*$$(*/
+      "The tax %s cannot be applied on the line because the accounting account %s does not allow tax on move lines. Please enable this option on the account or remove the tax from the product accounting configuration." /*)*/;
 }

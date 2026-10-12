@@ -1,0 +1,3 @@
+---
+title: "Weekly planning: fixed the impossibility to recreate a deleted day and prevented saving a planning with the same day twice."
+module: axelor-base

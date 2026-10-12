@@ -1,0 +1,3 @@
+---
+title: "Stock location: fixed the stock location value ignoring the sub-locations, and grouped the location content by stock location with a value column and subtotals."
+module: axelor-stock

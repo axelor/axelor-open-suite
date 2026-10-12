@@ -394,4 +394,7 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BANK_RECONCILIATION_COMPANY_NO_SEQUENCE = /*$$(*/
       "The company %s does not have bank reconciliation sequence" /*)*/;
+
+  public static final String BANK_RECONCILIATION_LINE_DEBIT_CREDIT_DIRECTION_MISMATCH = /*$$(*/
+      "The bank reconciliation line %s and the move line %s are on the same side. A credit on the bank statement must be reconciled with a debit move line and vice versa." /*)*/;
 }

@@ -75,6 +75,7 @@
 
   <action-group name="action-move-line-query-group-reconcile">
     <action name="save"/>
+    <action name="action-move-line-query-method-check-reconcile-different-partners"/>
     <action name="action-method-accounting-move-line-query-reconcile"/>
     <action name="action-move-line-query-group-filter-move-lines"/>
   </action-group>
@@ -124,6 +125,12 @@
 
   <action-method name="action-method-accounting-move-line-query-unreconcile">
     <call class="com.axelor.apps.account.web.MoveLineQueryController" method="massUnreconcile"/>
+  </action-method>
+
+  <action-method
+    name="action-move-line-query-method-check-reconcile-different-partners">
+    <call class="com.axelor.apps.account.web.MoveLineQueryController"
+      method="checkReconcileDifferentPartners"/>
   </action-method>
 
 </object-views>

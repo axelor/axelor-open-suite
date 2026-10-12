@@ -80,6 +80,9 @@ public class MoveCancelBankPaymentServiceImpl implements MoveCancelBankPaymentSe
   protected void cancelMoveLine(MoveLine moveLine, MoveLine reverseMoveLine)
       throws AxelorException {
     for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
+      if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CANCELED) {
+        continue;
+      }
       unReconcileService.unreconcile(reconcile);
       MoveLine creditLine = reconcile.getCreditMoveLine();
       if (creditLine != null) {
@@ -88,6 +91,9 @@ public class MoveCancelBankPaymentServiceImpl implements MoveCancelBankPaymentSe
     }
 
     for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
+      if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CANCELED) {
+        continue;
+      }
       unReconcileService.unreconcile(reconcile);
       MoveLine debitLine = reconcile.getDebitMoveLine();
       if (debitLine != null) {

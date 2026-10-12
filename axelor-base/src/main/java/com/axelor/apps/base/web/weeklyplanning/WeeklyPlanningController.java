@@ -19,6 +19,7 @@
 package com.axelor.apps.base.web.weeklyplanning;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
@@ -45,7 +46,7 @@ public class WeeklyPlanningController {
     try {
       planning = Beans.get(WeeklyPlanningService.class).checkPlanning(planning);
     } catch (AxelorException e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

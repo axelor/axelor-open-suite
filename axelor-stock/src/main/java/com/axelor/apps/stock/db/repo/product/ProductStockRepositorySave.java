@@ -46,7 +46,7 @@ public class ProductStockRepositorySave {
 
   public void addProductCompanies(Product product) {
     Set<MetaField> specificProductFieldSet =
-        appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
+        appBaseService.getEnabledCompanySpecificProductFields();
     if (ObjectUtils.isEmpty(specificProductFieldSet)
         || !appBaseService.getAppBase().getEnableMultiCompany()) {
       return;

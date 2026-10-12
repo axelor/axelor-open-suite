@@ -774,6 +774,7 @@
 "The bank details type is not compatible with the accepted types in file format.","Le type de compte bancaire n'est pas autorisé par le format de fichier.",,
 "The bank order %s has been generated successfully.","L'ordre bancaire %s a été généré avec succès.",,
 "The bank reconciliation currency is different from the bank details currency so the reconciliation cannot be initiated. Please select a currency which is equal to the bank statement currency.","La devise sélectionnée pour la réconciliation est différente de la devise du compte bancaire. Ainsi la session de réconciliation ne peut être démarrée. Veuillez sélectionner une devise qui est identique à celle du compte bancaire.",,
+"The bank reconciliation line %s and the move line %s are on the same side. A credit on the bank statement must be reconciled with a debit move line and vice versa.","La ligne de rapprochement bancaire %s et la ligne d'écriture %s sont du même sens. Un crédit sur le relevé bancaire doit être rapproché avec une ligne d'écriture au débit et inversement.",,
 "The bank reconciliation line %s does not belong to this bank reconciliation.",,,
 "The bank reconciliation line %s does not have its %s greater than 0, so it is not on the same side as the other selected lines.",,,
 "The bank reconciliation line %s has no bank statement line.",,,

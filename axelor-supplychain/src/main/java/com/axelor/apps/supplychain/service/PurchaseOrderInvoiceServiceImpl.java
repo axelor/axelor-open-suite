@@ -136,6 +136,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   public Invoice generateInvoice(PurchaseOrder purchaseOrder) throws AxelorException {
     Invoice invoice = this.createInvoice(purchaseOrder);
     invoiceTaxService.manageTaxByAmount(purchaseOrder, invoice);
+    invoice.setDeliveryDate(purchaseOrder.getEstimatedReceiptDate());
     invoice = invoiceRepo.save(invoice);
     invoiceService.setDraftSequence(invoice);
     invoice.setAddressStr(Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
@@ -447,6 +448,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
     Invoice invoice =
         this.createInvoice(purchaseOrder, purchaseOrderLinesSelected, qtyToInvoiceMap);
+    invoice.setDeliveryDate(purchaseOrder.getEstimatedReceiptDate());
     invoiceRepo.save(invoice);
 
     Beans.get(PurchaseOrderRepository.class).save(fillPurchaseOrder(purchaseOrder, invoice));
@@ -664,9 +666,11 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
           .forEach(
               invoiceLine -> {
                 invoiceLine.setPurchaseOrderLine(null);
+                invoiceLine.setDeliveryDate(null);
               });
     }
 
+    invoice.setDeliveryDate(purchaseOrder.getEstimatedReceiptDate());
     invoice.setAddressStr(addressService.computeAddressStr(invoice.getAddress()));
     invoiceService.setDraftSequence(invoice);
     invoice.setPartnerTaxNbr(purchaseOrder.getSupplierPartner().getTaxNbr());

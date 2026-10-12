@@ -366,7 +366,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         computePlannedQtyByProduct(stockMoveLineList).entrySet()) {
       Product product = entry.getKey();
       BigDecimal qty = entry.getValue();
-      if (this.isMrpProduct(product)) {
+      if ((this.isBeforeEndDate(maturityDate) || manufOrderNeedMrpLineType.getIgnoreEndDate())
+          && this.isMrpProduct(product)) {
         // A component not in MRP scope (no default BOM or off-BOM substitution) is added
         // at the level of the manuf order product + 1 so MRP recursively explodes the BOM.
         if (autoInjectLevelReference != null && !this.productMap.containsKey(product.getId())) {

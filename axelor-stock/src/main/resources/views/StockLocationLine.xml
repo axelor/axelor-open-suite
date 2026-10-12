@@ -25,6 +25,29 @@
       onClick="action-stock-location-line-view-open-stock-correction-form"/>
   </grid>
 
+  <grid name="stock-location-line-grouped-by-location-grid" title="Stock Locations content"
+    model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product" groupBy="stockLocation">
+    <field name="product" form-view="product-form" grid-view="product-grid"/>
+    <field name="stockLocation" form-view="stock-location-form"
+      grid-view="stock-location-grid"/>
+    <field name="currentQty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
+    <field name="futureQty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
+    <field name="requestedReservedQty" if-module="axelor-supplychain"
+      if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"
+      x-scale="$nbDecimalDigitForQty"/>
+    <field name="reservedQty" if-module="axelor-supplychain"
+      if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"
+      x-scale="$nbDecimalDigitForQty"/>
+    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+    <field name="avgPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="stockLocationLineValue" aggregate="sum"/>
+    <field name="rack"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <button name="stockCorrectionBtn" icon="pencil-square"
+      onClick="action-stock-location-line-view-open-stock-correction-form"/>
+  </grid>
+
   <grid name="stock-location-line-mass-stock-move-cart-grid" title="Stock Locations content"
     model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product, trackingNumber"
     x-selector="none">

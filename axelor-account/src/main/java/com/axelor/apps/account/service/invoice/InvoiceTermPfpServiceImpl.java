@@ -41,7 +41,6 @@ import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -300,31 +299,29 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
 
   protected void validateInvoiceTermAmount(MoveLine moveLine, BigDecimal amount)
       throws AxelorException {
-    if (!ObjectUtils.isEmpty(moveLine.getInvoiceTermList())
-        && moveLine.getMove() != null
-        && MoveRepository.PFP_STATUS_AWAITING == moveLine.getMove().getPfpValidateStatusSelect()) {
-      BigDecimal debitAmount =
-          moveLine.getInvoiceTermList().stream()
-              .filter(
-                  it ->
-                      Arrays.asList(
-                              InvoiceTermRepository.PFP_STATUS_NO_PFP,
-                              InvoiceTermRepository.PFP_STATUS_AWAITING,
-                              InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED,
-                              InvoiceTermRepository.PFP_STATUS_VALIDATED)
-                          .contains(it.getPfpValidateStatusSelect()))
-              .map(InvoiceTerm::getCompanyAmountRemaining)
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO);
-      if (amount.compareTo(debitAmount) > 0) {
-        throw new AxelorException(
-            moveLine.getMove(),
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.RECONCILE_PFP_AMOUNT_MISSING),
-            moveLine.getMove().getReference(),
-            moveLine.getAccount().getCode());
-      }
+    if (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
+        || moveLine.getMove() == null
+        || moveLine.getMove().getPfpValidateStatusSelect() != MoveRepository.PFP_STATUS_AWAITING) {
+      return;
     }
+
+    BigDecimal validatedAmount = getPfpValidatedAmount(moveLine.getInvoiceTermList());
+    if (amount.compareTo(validatedAmount) > 0) {
+      throw new AxelorException(
+          moveLine.getMove(),
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.RECONCILE_PFP_AMOUNT_MISSING),
+          moveLine.getMove().getReference(),
+          moveLine.getAccount().getCode());
+    }
+  }
+
+  protected BigDecimal getPfpValidatedAmount(List<InvoiceTerm> invoiceTerms) {
+    List<Integer> validatedStatuses = invoiceTermPfpToolService.getAlreadyValidatedStatusList();
+    return invoiceTerms.stream()
+        .filter(it -> validatedStatuses.contains(it.getPfpValidateStatusSelect()))
+        .map(InvoiceTerm::getCompanyAmountRemaining)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
   protected boolean isSupplierRefundRelated(MoveLine debitMoveLine, MoveLine creditMoveLine) {

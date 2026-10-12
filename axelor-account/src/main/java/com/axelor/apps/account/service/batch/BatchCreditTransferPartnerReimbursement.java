@@ -76,7 +76,8 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
     for (Partner partner : partnerList) {
       try {
         partner = partnerRepo.find(partner.getId());
-        Reimbursement reimbursement = createReimbursement(partner, accountingBatch.getCompany());
+        Reimbursement reimbursement =
+            createReimbursement(partner, batch.getAccountingBatch().getCompany());
         if (reimbursement != null) {
           incrementDone();
         }
@@ -90,6 +91,7 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
                 partner.getName()));
       }
       JPA.clear();
+      findBatch();
     }
   }
 

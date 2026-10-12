@@ -42,6 +42,10 @@ public class ProductUpdateServiceImpl implements ProductUpdateService {
   @Override
   public void updateCostPriceFromView(Product product) throws AxelorException {
 
+    if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_STANDARD) {
+      return;
+    }
+
     BigDecimal costPrice = BigDecimal.ZERO;
 
     switch (product.getCostTypeSelect()) {

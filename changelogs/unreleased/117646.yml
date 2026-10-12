@@ -1,0 +1,5 @@
+---
+title: "Configurator: fixed quantity not recalculated when regenerating a sale order line."
+module: axelor-sale
+developer: |
+  ConfiguratorSaleOrderLineService.regenerateSaleOrderLine and generateSaleOrderLine now take a BigDecimal qty parameter instead of reusing the quantity of the replaced sale order line.
