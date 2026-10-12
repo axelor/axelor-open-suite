@@ -35,7 +35,9 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.AxelorException;
@@ -49,6 +51,7 @@ import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -71,6 +74,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
   protected InvoiceRepository invoiceRepository;
   protected InvoiceTermPfpService invoiceTermPfpService;
   protected PfpService pfpService;
+  protected InvoiceTermPfpToolService invoiceTermPfpToolService;
 
   @Inject
   public ReconcileInvoiceTermComputationServiceImpl(
@@ -85,7 +89,8 @@ public class ReconcileInvoiceTermComputationServiceImpl
       InvoiceTermPaymentRepository invoiceTermPaymentRepository,
       InvoiceRepository invoiceRepository,
       InvoiceTermPfpService invoiceTermPfpService,
-      PfpService pfpService) {
+      PfpService pfpService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService) {
     this.reconcileCheckService = reconcileCheckService;
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermFilterService = invoiceTermFilterService;
@@ -98,6 +103,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
     this.invoiceRepository = invoiceRepository;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.pfpService = pfpService;
+    this.invoiceTermPfpToolService = invoiceTermPfpToolService;
   }
 
   @Override
@@ -457,44 +463,73 @@ public class ReconcileInvoiceTermComputationServiceImpl
 
   protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine)
       throws AxelorException {
-    if (move != null
-        && move.getPaymentVoucher() != null
-        && CollectionUtils.isNotEmpty(move.getPaymentVoucher().getPayVoucherElementToPayList())) {
-      List<InvoiceTerm> invoiceTermsToPay =
-          move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
-              .filter(it -> it.getMoveLine().equals(moveLine) && !it.getInvoiceTerm().getIsPaid())
-              .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
-              .map(PayVoucherElementToPay::getInvoiceTerm)
-              .collect(Collectors.toList());
-      if (CollectionUtils.isNotEmpty(invoiceTermsToPay)) {
-        return invoiceTermsToPay;
-      }
+    List<InvoiceTerm> voucherTerms = getInvoiceTermsFromPaymentVoucher(move, moveLine);
+    if (CollectionUtils.isNotEmpty(voucherTerms)) {
+      return filterInvoiceTermsByPfp(invoice, move, voucherTerms);
     }
 
-    List<InvoiceTerm> invoiceTermsToPay;
+    List<InvoiceTerm> invoiceTermsToPay = getUnpaidInvoiceTerms(invoice, moveLine);
+    invoiceTermsToPay = filterInvoiceTermsByPaymentSession(move, invoiceTermsToPay);
+    return filterInvoiceTermsByPfp(invoice, move, invoiceTermsToPay);
+  }
+
+  protected List<InvoiceTerm> getInvoiceTermsFromPaymentVoucher(Move move, MoveLine moveLine) {
+    if (move == null
+        || move.getPaymentVoucher() == null
+        || CollectionUtils.isEmpty(move.getPaymentVoucher().getPayVoucherElementToPayList())) {
+      return Collections.emptyList();
+    }
+
+    return move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
+        .filter(it -> it.getMoveLine().equals(moveLine) && !it.getInvoiceTerm().getIsPaid())
+        .sorted(Comparator.comparing(PayVoucherElementToPay::getSequence))
+        .map(PayVoucherElementToPay::getInvoiceTerm)
+        .collect(Collectors.toList());
+  }
+
+  protected List<InvoiceTerm> getUnpaidInvoiceTerms(Invoice invoice, MoveLine moveLine)
+      throws AxelorException {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-      invoiceTermsToPay =
-          invoiceTermService.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
-
-    } else if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
-      invoiceTermsToPay =
-          invoiceTermFilterService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
-
-    } else {
-      return null;
+      return invoiceTermService.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
     }
-    if (CollectionUtils.isNotEmpty(invoiceTermsToPay)
-        && move != null
-        && move.getPaymentSession() != null
-        && invoiceTermsToPay.stream().anyMatch(it -> it.getPaymentSession() != null)) {
-      return invoiceTermsToPay.stream()
-          .filter(
-              it ->
-                  it.getPaymentSession() != null
-                      && it.getPaymentSession().equals(move.getPaymentSession()))
-          .collect(Collectors.toList());
-    } else {
-      return invoiceTermsToPay;
+    if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+      return invoiceTermFilterService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
     }
+    return null;
+  }
+
+  protected List<InvoiceTerm> filterInvoiceTermsByPfp(
+      Invoice invoice, Move move, List<InvoiceTerm> invoiceTerms) throws AxelorException {
+    if (CollectionUtils.isEmpty(invoiceTerms) || !isPfpCheckApplicable(invoice, move)) {
+      return invoiceTerms;
+    }
+
+    List<Integer> validatedStatuses = invoiceTermPfpToolService.getAlreadyValidatedStatusList();
+    return invoiceTerms.stream()
+        .filter(it -> validatedStatuses.contains(it.getPfpValidateStatusSelect()))
+        .collect(Collectors.toList());
+  }
+
+  protected List<InvoiceTerm> filterInvoiceTermsByPaymentSession(
+      Move move, List<InvoiceTerm> invoiceTerms) {
+    if (CollectionUtils.isEmpty(invoiceTerms)
+        || move == null
+        || move.getPaymentSession() == null
+        || invoiceTerms.stream().noneMatch(it -> it.getPaymentSession() != null)) {
+      return invoiceTerms;
+    }
+
+    return invoiceTerms.stream()
+        .filter(it -> move.getPaymentSession().equals(it.getPaymentSession()))
+        .collect(Collectors.toList());
+  }
+
+  protected boolean isPfpCheckApplicable(Invoice invoice, Move move) throws AxelorException {
+    return invoice != null
+        && invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        && pfpService.getPfpCondition(invoice)
+        && (move == null
+            || move.getInvoice() == null
+            || !InvoiceToolService.isRefund(move.getInvoice()));
   }
 }
