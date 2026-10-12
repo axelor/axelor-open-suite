@@ -359,7 +359,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     // no need for link to sale order lines for an advance payment
     if (invoice.getInvoiceLineList() != null) {
-      invoice.getInvoiceLineList().forEach(invoiceLine -> invoiceLine.setSaleOrderLine(null));
+      invoice
+          .getInvoiceLineList()
+          .forEach(
+              invoiceLine -> {
+                invoiceLine.setSaleOrderLine(null);
+                invoiceLine.setDeliveryDate(null);
+              });
     }
 
     return invoiceRepo.save(invoice);
@@ -384,6 +390,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
     invoice.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
+    invoice.setDeliveryDate(saleOrder.getEstimatedDeliveryDate());
 
     invoice.setOperationSubTypeSelect(operationSubTypeSelect);
 
@@ -501,6 +508,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoiceTaxService.manageTaxByAmount(saleOrder, invoice);
     invoice.setDeliveryAddress(saleOrder.getDeliveryAddress());
     invoice.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
+    invoice.setDeliveryDate(saleOrder.getEstimatedDeliveryDate());
 
     invoiceRepo.save(invoice);
 
@@ -515,6 +523,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       throws AxelorException {
 
     Invoice invoice = this.createInvoice(saleOrder, saleOrderLinesSelected);
+    invoice.setDeliveryDate(saleOrder.getEstimatedDeliveryDate());
 
     invoiceRepo.save(invoice);
 
@@ -534,6 +543,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     Invoice invoice = this.createInvoice(saleOrder, saleOrderLinesSelected, qtyToInvoiceMap);
     invoice.setDeliveryAddress(saleOrder.getDeliveryAddress());
     invoice.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
+    invoice.setDeliveryDate(saleOrder.getEstimatedDeliveryDate());
 
     FiscalPosition fiscalPosition = saleOrder.getFiscalPosition();
     invoice.setFiscalPosition(fiscalPosition);
