@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed misleading error message when generating an invoice for a tax whose line accounting account does not allow tax on move lines."
+module: axelor-account
