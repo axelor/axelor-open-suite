@@ -387,6 +387,15 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
             I18n.get(AccountExceptionMessage.JOURNAL_TYPE_MISSING_TECHNICAL_TYPE),
             journal.getJournalType().getName().toUpperCase());
       }
+      if (account == null
+          && originalAccount != null
+          && !originalAccount.getIsTaxAuthorizedOnMoveLine()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.ACCOUNT_MANAGEMENT_TAX_NOT_AUTHORIZED_ON_ACCOUNT),
+            tax.getCode(),
+            originalAccount.getCode());
+      }
       if (account == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

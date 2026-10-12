@@ -1901,4 +1901,7 @@ public final class AccountExceptionMessage {
 
   public static final String RECONCILE_DIFFERENT_PARTNERS = /*$$(*/
       "The selected move lines belong to two different partners. Reconciling them will settle one partner's invoice with another partner's payment. A compensation between two partners should be recorded through a transfer entry, followed by one reconciliation per partner. Do you want to proceed?" /*)*/;
+
+  public static final String ACCOUNT_MANAGEMENT_TAX_NOT_AUTHORIZED_ON_ACCOUNT = /*$$(*/
+      "The tax %s cannot be applied on the line because the accounting account %s does not allow tax on move lines. Please enable this option on the account or remove the tax from the product accounting configuration." /*)*/;
 }

@@ -3477,6 +3477,7 @@
 "The sum of non-deductible taxes should not exceed 100%.",,,
 "The sum of the currency amounts is not 0",,,
 "The sum of the percentage(s) displayed in the table below are not equal to 100% due to the existence of another move line which also contains invoice terms from the same invoice.",,,
+"The tax %s cannot be applied on the line because the accounting account %s does not allow tax on move lines. Please enable this option on the account or remove the tax from the product accounting configuration.",,,
 "The tax move lines will be recalculated and validity checks will be done taking into consideration other lines taxes",,,
 "The total percentage is not 100%% for the axis %s",,,
 "Their is at least one invoice selected that it is not validated to pay",,,
