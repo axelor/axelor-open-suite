@@ -1977,6 +1977,7 @@
 "Invoice.customerTaxNumber",,,
 "Invoice.date",,,
 "Invoice.deliveryAddress",,,
+"Invoice.deliveryDate",,,
 "Invoice.description",,,
 "Invoice.discountAmount",,,
 "Invoice.documentRef",,,
