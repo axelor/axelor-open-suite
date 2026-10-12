@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
@@ -38,10 +39,12 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
@@ -161,6 +164,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
       boolean updateInvoiceTerms)
       throws AxelorException {
     InvoicePayment invoicePayment = null;
+    boolean refreshInvoiceAmounts = false;
     if (invoice != null
         && otherMove.getFunctionalOriginSelect()
             != MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER) {
@@ -176,7 +180,9 @@ public class ReconcileInvoiceTermComputationServiceImpl
           && otherMoveLine.getAccount().getUseForPartnerBalance()) {
 
         BigDecimal invoicePaymentAmount = amount;
-        if (!reconcileCheckService.isCompanyCurrency(reconcile, null, otherMove)) {
+        boolean isCompanyCurrency =
+            reconcileCheckService.isCompanyCurrency(reconcile, null, otherMove);
+        if (!isCompanyCurrency) {
           invoicePaymentAmount = this.getTotal(moveLine, otherMoveLine, amount, true);
         }
 
@@ -190,10 +196,17 @@ public class ReconcileInvoiceTermComputationServiceImpl
                   invoice, invoicePaymentAmount, reconcile.getForeignExchangeMove());
           invoicePayment.setReconcile(reconcile);
         } else if (invoicePayment == null) {
-          invoicePayment =
-              invoicePaymentCreateService.createInvoicePayment(
-                  invoice, invoicePaymentAmount, otherMove);
-          invoicePayment.setReconcile(reconcile);
+          // A residual left in company currency only (e.g. balanced by an adjustment move) must
+          // not be counted as a payment of an invoice already fully paid in its own currency
+          if (isCompanyCurrency
+              || !this.isMoveLineFullyPaidInCurrency(reconcile, moveLine, move, otherMove)) {
+            invoicePayment =
+                invoicePaymentCreateService.createInvoicePayment(
+                    invoice, invoicePaymentAmount, otherMove);
+            invoicePayment.setReconcile(reconcile);
+          } else {
+            refreshInvoiceAmounts = true;
+          }
         }
       }
 
@@ -241,9 +254,92 @@ public class ReconcileInvoiceTermComputationServiceImpl
     if (invoicePayment != null) {
       invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
       invoicePaymentRepository.save(invoicePayment);
-    } else if (!ObjectUtils.isEmpty(invoiceTermPaymentList)) {
-      invoiceTermPaymentList.forEach(it -> invoiceTermPaymentRepository.save(it));
+    } else {
+      if (!ObjectUtils.isEmpty(invoiceTermPaymentList)) {
+        invoiceTermPaymentList.forEach(it -> invoiceTermPaymentRepository.save(it));
+      }
+      if (refreshInvoiceAmounts) {
+        invoicePaymentToolService.updateAmountPaid(invoice);
+      }
     }
+  }
+
+  /**
+   * Check whether the move line is already fully settled in its own currency by its other confirmed
+   * reconciles. Invoice terms cannot be used here, as a reconcile balancing a company currency
+   * residual is confirmed before the invoice terms of the reconcile that left it are updated.
+   */
+  protected boolean isMoveLineFullyPaidInCurrency(
+      Reconcile reconcile, MoveLine moveLine, Move move, Move otherMove) {
+    BigDecimal currencyAmount = moveLine.getCurrencyAmount().abs();
+    Currency currency = move.getCurrency();
+    if (currencyAmount.signum() == 0
+        || currency == null
+        || !currency.equals(otherMove.getCurrency())) {
+      return false;
+    }
+
+    BigDecimal currencyAmountPaid = BigDecimal.ZERO;
+    for (Reconcile otherReconcile : this.getConfirmedReconcileList(moveLine)) {
+      if (otherReconcile.equals(reconcile)) {
+        continue;
+      }
+      MoveLine reconciledMoveLine = this.getOtherMoveLine(otherReconcile, moveLine);
+
+      // Foreign exchange gap moves are in company currency and do not settle the move currency
+      if (!currency.equals(reconciledMoveLine.getMove().getCurrency())) {
+        continue;
+      }
+
+      currencyAmountPaid =
+          currencyAmountPaid.add(
+              this.getReconciledCurrencyAmount(otherReconcile, reconciledMoveLine, currency));
+    }
+
+    return currencyAmountPaid.compareTo(currencyAmount) >= 0;
+  }
+
+  /**
+   * Share of the reconciled move line currency amount settled by the reconcile. The part of the
+   * line reconciled with foreign exchange gap moves is left out, as it has no currency amount.
+   */
+  protected BigDecimal getReconciledCurrencyAmount(
+      Reconcile reconcile, MoveLine reconciledMoveLine, Currency currency) {
+    BigDecimal lineAmount = reconciledMoveLine.getDebit().add(reconciledMoveLine.getCredit());
+    for (Reconcile lineReconcile : this.getConfirmedReconcileList(reconciledMoveLine)) {
+      if (!currency.equals(
+          this.getOtherMoveLine(lineReconcile, reconciledMoveLine).getMove().getCurrency())) {
+        lineAmount = lineAmount.subtract(lineReconcile.getAmount());
+      }
+    }
+
+    if (lineAmount.signum() <= 0) {
+      return BigDecimal.ZERO;
+    }
+
+    return reconciledMoveLine
+        .getCurrencyAmount()
+        .abs()
+        .multiply(reconcile.getAmount())
+        .divide(
+            lineAmount, currencyScaleService.getScale(reconciledMoveLine), RoundingMode.HALF_UP);
+  }
+
+  protected List<Reconcile> getConfirmedReconcileList(MoveLine moveLine) {
+    return Beans.get(ReconcileRepository.class)
+        .all()
+        .filter(
+            "(self.debitMoveLine = :moveLine OR self.creditMoveLine = :moveLine)"
+                + " AND self.statusSelect = :statusConfirmed")
+        .bind("moveLine", moveLine)
+        .bind("statusConfirmed", ReconcileRepository.STATUS_CONFIRMED)
+        .fetch();
+  }
+
+  protected MoveLine getOtherMoveLine(Reconcile reconcile, MoveLine moveLine) {
+    return moveLine.equals(reconcile.getDebitMoveLine())
+        ? reconcile.getCreditMoveLine()
+        : reconcile.getDebitMoveLine();
   }
 
   protected InvoicePayment getExistingInvoicePayment(Invoice invoice, Move move) {
