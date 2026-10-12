@@ -242,6 +242,8 @@
         <field name="purchaseOrderLine" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')" form-view="purchase-order-line-form"
           grid-view="purchase-order-line-grid"/>
+        <field name="deliveryDate" if-module="axelor-supplychain"
+          if="__config__.app.isApp('supplychain')"/>
 
       </panel>
     </panel-tabs>

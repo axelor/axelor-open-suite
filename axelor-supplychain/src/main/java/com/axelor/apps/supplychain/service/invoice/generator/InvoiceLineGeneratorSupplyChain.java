@@ -207,6 +207,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         Beans.get(InvoiceLineAnalyticSupplychainServiceImpl.class);
 
     this.assignOriginElements(invoiceLine);
+    this.assignDeliveryDate(invoiceLine);
 
     List<AnalyticMoveLine> analyticMoveLineList;
 
@@ -351,5 +352,19 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     return analyticLineModel != null
         && Beans.get(AnalyticLineModelService.class)
             .productAccountManageAnalytic(analyticLineModel);
+  }
+
+  public void assignDeliveryDate(InvoiceLine invoiceLine) {
+    if (saleOrderLine != null && saleOrderLine.getEstimatedDeliveryDate() != null) {
+      invoiceLine.setDeliveryDate(saleOrderLine.getEstimatedDeliveryDate());
+    }
+    if (purchaseOrderLine != null && purchaseOrderLine.getEstimatedReceiptDate() != null) {
+      invoiceLine.setDeliveryDate(purchaseOrderLine.getEstimatedReceiptDate());
+    }
+    if (stockMoveLine != null
+        && stockMoveLine.getStockMove() != null
+        && stockMoveLine.getStockMove().getRealDate() != null) {
+      invoiceLine.setDeliveryDate(stockMoveLine.getStockMove().getRealDate());
+    }
   }
 }
