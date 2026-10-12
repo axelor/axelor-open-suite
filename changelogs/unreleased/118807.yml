@@ -1,0 +1,11 @@
+---
+title: "Invoice payment: fixed payments allocated to terms awaiting PFP validation and reconciliations exceeding the approved balance."
+module: axelor-account
+developer: |
+  Added InvoiceTermPfpToolService as the last constructor parameter of
+  ReconcileInvoiceTermComputationServiceImpl and
+  ReconcileInvoiceTermComputationBudgetServiceImpl.
+  Custom subclasses must inject and forward this dependency.
+
+  Renamed the protected isPfpOrderApplicable(Invoice, Move) method to
+  isPfpCheckApplicable(Invoice, Move). Custom overrides must update accordingly.

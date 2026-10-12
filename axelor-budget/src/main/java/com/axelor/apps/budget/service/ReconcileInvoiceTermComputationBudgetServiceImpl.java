@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
@@ -63,7 +64,8 @@ public class ReconcileInvoiceTermComputationBudgetServiceImpl
       BudgetDistributionService budgetDistributionService,
       AppBudgetService appBudgetService,
       ReconcileToolBudgetService reconcileToolBudgetService,
-      PfpService pfpService) {
+      PfpService pfpService,
+      InvoiceTermPfpToolService invoiceTermPfpToolService) {
     super(
         reconcileCheckService,
         currencyScaleService,
@@ -76,7 +78,8 @@ public class ReconcileInvoiceTermComputationBudgetServiceImpl
         invoiceTermPaymentRepository,
         invoiceRepository,
         invoiceTermPfpService,
-        pfpService);
+        pfpService,
+        invoiceTermPfpToolService);
     this.budgetDistributionService = budgetDistributionService;
     this.appBudgetService = appBudgetService;
     this.reconcileToolBudgetService = reconcileToolBudgetService;
