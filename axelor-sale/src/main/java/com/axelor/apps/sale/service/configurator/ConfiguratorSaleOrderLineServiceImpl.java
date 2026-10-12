@@ -29,6 +29,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineGeneratorService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class ConfiguratorSaleOrderLineServiceImpl implements ConfiguratorSaleOrderLineService {
@@ -56,10 +57,14 @@ public class ConfiguratorSaleOrderLineServiceImpl implements ConfiguratorSaleOrd
   @Transactional(rollbackOn = Exception.class)
   @Override
   public void regenerateSaleOrderLine(
-      Configurator configurator, Product product, SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      Configurator configurator,
+      Product product,
+      SaleOrderLine saleOrderLine,
+      SaleOrder saleOrder,
+      BigDecimal qty)
       throws AxelorException {
 
-    generateSaleOrderLine(configurator, product, saleOrderLine);
+    generateSaleOrderLine(configurator, product, saleOrderLine, qty);
 
     // Bye bye old sale order line
     saleOrder.removeSaleOrderLineListItem(saleOrderLine);
@@ -69,14 +74,14 @@ public class ConfiguratorSaleOrderLineServiceImpl implements ConfiguratorSaleOrd
   @Transactional(rollbackOn = Exception.class)
   @Override
   public SaleOrderLine generateSaleOrderLine(
-      Configurator configurator, Product product, SaleOrderLine saleOrderLine)
+      Configurator configurator, Product product, SaleOrderLine saleOrderLine, BigDecimal qty)
       throws AxelorException {
     Objects.requireNonNull(configurator);
     Objects.requireNonNull(product);
     Objects.requireNonNull(saleOrderLine);
     var newSaleOrderLine =
         saleOrderLineGeneratorService.createSaleOrderLine(
-            saleOrderLine.getSaleOrder(), product, saleOrderLine.getQty());
+            saleOrderLine.getSaleOrder(), product, qty);
     newSaleOrderLine.setConfigurator(configurator);
     return saleOrderLineRepository.save(newSaleOrderLine);
   }

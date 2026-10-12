@@ -148,7 +148,10 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
           duplicatedConfigurator, jsonAttributes, jsonIndicators, saleOrder.getId());
       duplicatedSaleOrderLine =
           configuratorSaleOrderLineService.generateSaleOrderLine(
-              duplicatedConfigurator, duplicatedConfigurator.getProduct(), saleOrderLine);
+              duplicatedConfigurator,
+              duplicatedConfigurator.getProduct(),
+              saleOrderLine,
+              saleOrderLine.getQty());
 
     } else {
 

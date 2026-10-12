@@ -435,7 +435,11 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       // Editing the product will automatically regenerate lines and remove old line
       regenerateProduct(configurator, product, jsonAttributes, jsonIndicators, saleOrder.getId());
       configuratorSaleOrderLineService.regenerateSaleOrderLine(
-          configurator, product, saleOrderLine, saleOrder);
+          configurator,
+          product,
+          saleOrderLine,
+          saleOrder,
+          getFormulaQty(configurator, jsonAttributes));
       saleOrderComputeService.computeSaleOrder(saleOrder);
 
     } else {
