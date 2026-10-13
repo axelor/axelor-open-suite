@@ -33,6 +33,7 @@ import com.axelor.report.ReportGenerator;
 import com.google.common.base.Preconditions;
 import com.ibm.icu.util.TimeZone;
 import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -66,6 +67,8 @@ import org.eclipse.birt.report.engine.api.IRunAndRenderTask;
 import org.eclipse.birt.report.engine.api.RenderOption;
 import org.eclipse.birt.report.engine.emitter.pdf.PDFPageDevice;
 import org.eclipse.birt.report.model.api.IResourceLocator;
+import org.hibernate.engine.jdbc.connections.spi.JdbcConnectionAccess;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 
 /** The report generator service. */
 public class BaseReportGenerator extends ReportGenerator {
@@ -168,21 +171,47 @@ public class BaseReportGenerator extends ReportGenerator {
           .put(EngineConstants.APPCONTEXT_CLASSLOADER_KEY, getClass().getClassLoader());
       task.getAppContext().put(IConnectionFactory.CLOSE_PASS_IN_CONNECTION, Boolean.FALSE);
 
-      JPA.jdbcWork(
-          new JPA.JDBCWork() {
+      if (JPA.em().getTransaction().isActive()) {
+        // The session holds its connection until the transaction ends, and BIRT sees the
+        // transaction's uncommitted changes.
+        JPA.jdbcWork(connection -> run(task, connection));
+      } else {
+        // Outside a transaction, the session releases its connection after each operation, so an
+        // entity query made while rendering (scripts, ImageTool...) would close it under BIRT.
+        runOnDedicatedConnection(task);
+      }
+    }
+  }
 
-            @Override
-            public void execute(Connection connection) throws SQLException {
-              task.getAppContext().put(IConnectionFactory.PASS_IN_CONNECTION, connection);
-              try {
-                task.run();
-              } catch (EngineException e) {
-                throw new RuntimeException(e);
-              } finally {
-                task.close();
-              }
-            }
-          });
+  protected void runOnDedicatedConnection(IRunAndRenderTask task) {
+    final JdbcConnectionAccess access =
+        JPA.em().unwrap(SharedSessionContractImplementor.class).getJdbcConnectionAccess();
+    final Connection connection;
+    try {
+      connection = access.obtainConnection();
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
+    }
+    try {
+      run(task, connection);
+    } finally {
+      try {
+        access.releaseConnection(connection);
+      } catch (SQLException e) {
+        throw new PersistenceException(e);
+      }
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  protected void run(IRunAndRenderTask task, Connection connection) {
+    task.getAppContext().put(IConnectionFactory.PASS_IN_CONNECTION, connection);
+    try {
+      task.run();
+    } catch (EngineException e) {
+      throw new RuntimeException(e);
+    } finally {
+      task.close();
     }
   }
 
