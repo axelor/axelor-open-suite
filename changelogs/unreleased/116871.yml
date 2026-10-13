@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed the slow order confirmation pop-up with split quotations and large price lists."
+module: axelor-sale
