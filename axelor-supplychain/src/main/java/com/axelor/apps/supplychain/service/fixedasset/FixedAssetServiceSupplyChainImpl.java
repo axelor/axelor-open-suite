@@ -93,7 +93,11 @@ public class FixedAssetServiceSupplyChainImpl extends FixedAssetGenerationServic
 
       fixedAsset.setStockLocation(stockLocation);
 
-      if (fixedAsset.getInvoiceLine().getIncomingStockMove() != null
+      StockMoveLine invoicedStockMoveLine = fixedAsset.getInvoiceLine().getStockMoveLine();
+      if (invoicedStockMoveLine != null) {
+        fixedAsset.setTrackingNumber(invoicedStockMoveLine.getTrackingNumber());
+        fixedAsset.setStockLocation(invoicedStockMoveLine.getToStockLocation());
+      } else if (fixedAsset.getInvoiceLine().getIncomingStockMove() != null
           && CollectionUtils.isNotEmpty(
               fixedAsset.getInvoiceLine().getIncomingStockMove().getStockMoveLineList())) {
 
