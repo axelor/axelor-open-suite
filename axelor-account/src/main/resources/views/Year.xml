@@ -56,6 +56,22 @@
     </panel>
   </form>
 
+  <form name="year-move-anomaly-wizard-form" title="Moves with anomalies"
+    model="com.axelor.utils.db.Wizard" onNew="action-period-anomaly-wizard-record-default">
+    <panel>
+      <label name="errorLabel"
+        title="Fiscal year closure failed. Some move(s) could not be validated."
+        css="label-danger bold" colSpan="12"/>
+      <field name="$moveCount" type="integer" title="Moves" readonly="true" colSpan="2"/>
+      <button name="showMovesBtn" title="Moves"
+        onClick="action-period-method-show-moves,close" colSpan="3"/>
+      <spacer colSpan="2"/>
+      <field name="$anomalyCount" type="integer" title="Anomalies" readonly="true" colSpan="2"/>
+      <button name="showAnomaliesBtn" title="Anomalies"
+        onClick="action-period-method-show-anomalies,close" colSpan="3"/>
+    </panel>
+  </form>
+
   <action-attrs name="action-attrs-year-hide-linked-adjusting-moves-dashlet">
     <attribute for="linkedAdjustingMovesPanel" name="hidden"
       expr="eval: __repo__(AdjustHistory).all().filter('self.fiscalYear.id = ?', id).fetch().size() == 0"/>

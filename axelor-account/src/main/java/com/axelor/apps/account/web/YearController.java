@@ -24,10 +24,17 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.db.Wizard;
 import jakarta.inject.Singleton;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Singleton
 public class YearController {
@@ -36,7 +43,25 @@ public class YearController {
     Year year = request.getContext().asType(Year.class);
 
     try {
-      Beans.get(YearServiceAccountImpl.class).closeYearProcess(year);
+      YearServiceAccountImpl yearServiceAccount = Beans.get(YearServiceAccountImpl.class);
+      yearServiceAccount.closeYearProcess(year);
+
+      Pair<Set<Long>, Integer> anomalies = yearServiceAccount.getClosureAnomalies(year);
+      Set<Long> moveIdSet = anomalies.getLeft();
+      if (CollectionUtils.isNotEmpty(moveIdSet)) {
+        response.setView(
+            ActionView.define(I18n.get("Moves with anomalies"))
+                .model(Wizard.class.getName())
+                .add("form", "year-move-anomaly-wizard-form")
+                .param("popup", "true")
+                .param("popup-save", "false")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "false")
+                .context("_moveIds", StringUtils.join(moveIdSet, ","))
+                .context("_moveCount", moveIdSet.size())
+                .context("_anomalyCount", anomalies.getRight())
+                .map());
+      }
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
