@@ -31,6 +31,8 @@
       selection="product.procurement.method.select" initParam="true"/>
     <boolean name="isPrototype" title="Prototype"/>
     <boolean name="isUnrenewed" title="Unrenewed"/>
+    <decimal name="defaultEcoTaxAmount" title="Default eco-tax amount" min="0"/>
+    <string name="defaultEcoTaxMention" title="Default eco-tax mention"/>
     <integer name="productSubTypeSelect" title="Product Subtype"
       selection="product.sub.type.product.select"/>
     <integer name="inventoryTypeSelect" title="Inventory type"

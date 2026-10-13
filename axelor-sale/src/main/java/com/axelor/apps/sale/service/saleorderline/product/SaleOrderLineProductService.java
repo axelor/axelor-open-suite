@@ -55,6 +55,8 @@ public interface SaleOrderLineProductService {
   Map<String, Object> fillTaxInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 
+  Map<String, Object> fillEcoTaxInformation(SaleOrderLine saleOrderLine);
+
   Unit getSaleUnit(Product product);
 
   Map<String, Object> fillCostPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder)

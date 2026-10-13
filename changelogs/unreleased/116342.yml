@@ -1,0 +1,18 @@
+---
+title: "Sale order: added eco-tax management on sale order lines, filled from the product and copied to the invoice lines generated from the sale order or its delivery."
+module: axelor-sale
+developer: |
+  Added a new boolean `enableEcoTax` in AppBase (Apps > Base > Configuration). Eco-tax fields on product, sale order line and
+  invoice line are now only displayed when it is enabled, and the default eco-tax is only filled on invoice line product change when it is enabled.
+  Moved `defaultEcoTaxAmount` and `defaultEcoTaxMention` from the axelor-account Product extension to axelor-base Product (same columns, no data migration).
+  The `account-product-form` view extension has been removed, the fields are now in `product-form` of axelor-base.
+  Added `ecoTaxAmount` and `ecoTaxMention` on SaleOrderLine.
+  Added `fillEcoTaxInformation(SaleOrderLine)` to SaleOrderLineProductService.
+  Added `copyEcoTaxInformation(InvoiceLine, SaleOrderLine)` in StockMoveInvoiceServiceImpl and SaleOrderInvoiceServiceImpl.
+  SaleOrder report now prints the eco-tax mention under the line description.
+
+  If you were already using eco-tax on invoices, enable the new configuration:
+
+  ```sql
+  UPDATE studio_app_base SET enable_eco_tax = true;
+  ```
