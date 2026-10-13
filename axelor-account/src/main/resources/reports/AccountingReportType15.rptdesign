@@ -477,7 +477,8 @@ Case  when TaxPaymentMoveLine.functional_origin_select = 3 then 0 else
 		end
 	end
 end as taxDebit,
-Currency.number_of_decimals
+Currency.number_of_decimals,
+TaxPaymentMoveLine.id as taxPaymentMoveLineId
 FROM account_accounting_report as AccountingReport 
 CROSS JOIN account_move_line as MoveLine
 LEFT JOIN account_account as Account on (MoveLine.account = Account.id)
