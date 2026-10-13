@@ -1725,6 +1725,7 @@
 "Fiscal year",,,
 "Fiscal year and periods have been generated successfully.",,,
 "Fiscal year closure",,,
+"Fiscal year closure failed. Some move(s) could not be validated.",,,
 "Fiscal year code",,,
 "Fiscal year start date",,,
 "Fiscal years",,,
