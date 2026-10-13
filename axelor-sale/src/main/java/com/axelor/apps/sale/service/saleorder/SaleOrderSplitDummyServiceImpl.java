@@ -32,16 +32,12 @@ import java.util.stream.Collectors;
 public class SaleOrderSplitDummyServiceImpl implements SaleOrderSplitDummyService {
 
   protected final AppBaseService appBaseService;
-  protected final SaleOrderLineRepository saleOrderLineRepository;
   protected final SaleOrderSplitService saleOrderSplitService;
 
   @Inject
   public SaleOrderSplitDummyServiceImpl(
-      AppBaseService appBaseService,
-      SaleOrderLineRepository saleOrderLineRepository,
-      SaleOrderSplitService saleOrderSplitService) {
+      AppBaseService appBaseService, SaleOrderSplitService saleOrderSplitService) {
     this.appBaseService = appBaseService;
-    this.saleOrderLineRepository = saleOrderLineRepository;
     this.saleOrderSplitService = saleOrderSplitService;
   }
 
@@ -58,8 +54,7 @@ public class SaleOrderSplitDummyServiceImpl implements SaleOrderSplitDummyServic
                         || line.getOrderedQty().compareTo(line.getQty()) != 0)
             .collect(Collectors.toList());
     for (SaleOrderLine saleOrderLine : filteredSaleOrderLineList) {
-      Map<String, Object> saleOrderLineMap =
-          Mapper.toMap(saleOrderLineRepository.copy(saleOrderLine, true));
+      Map<String, Object> saleOrderLineMap = Mapper.toMap(saleOrderLine);
       saleOrderLineMap.put("$solId", saleOrderLine.getId());
       saleOrderLineMap.put(
           "$qtyToOrderLeft", saleOrderSplitService.getQtyToOrderLeft(saleOrderLine));
