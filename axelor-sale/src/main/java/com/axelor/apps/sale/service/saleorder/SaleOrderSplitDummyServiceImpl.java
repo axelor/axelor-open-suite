@@ -22,7 +22,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.db.mapper.Mapper;
+import com.axelor.rpc.Resource;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +54,19 @@ public class SaleOrderSplitDummyServiceImpl implements SaleOrderSplitDummyServic
                         || line.getOrderedQty().compareTo(line.getQty()) != 0)
             .collect(Collectors.toList());
     for (SaleOrderLine saleOrderLine : filteredSaleOrderLineList) {
-      Map<String, Object> saleOrderLineMap = Mapper.toMap(saleOrderLine);
+      Map<String, Object> saleOrderLineMap =
+          Resource.toMap(
+              saleOrderLine,
+              "product.code",
+              "productName",
+              "sequence",
+              "typeSelect",
+              "qty",
+              "unit.name",
+              "price",
+              "inTaxPrice",
+              "exTaxTotal",
+              "orderedQty");
       saleOrderLineMap.put("$solId", saleOrderLine.getId());
       saleOrderLineMap.put(
           "$qtyToOrderLeft", saleOrderSplitService.getQtyToOrderLeft(saleOrderLine));
