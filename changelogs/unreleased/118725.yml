@@ -1,0 +1,3 @@
+---
+title: "Print template: the XML export works again. It no longer uses a class forbidden by the script policy, and the export and its import binding no longer reference the fields removed from the model (language, print settings, printing template format and link). The sub-templates are also exported with their own values instead of those of the parent template."
+module: axelor-base
