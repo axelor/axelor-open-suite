@@ -545,8 +545,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional(rollbackOn = {Exception.class})
   public Invoice createRefund(Invoice invoice) throws AxelorException {
 
-    if (invoice.getStatusSelect() == null
-        || invoice.getStatusSelect() != InvoiceRepository.STATUS_VENTILATED) {
+    boolean isValidatedAdvancePayment =
+        invoice.getStatusSelect() == InvoiceRepository.STATUS_VALIDATED
+            && invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE;
+    if (invoice.getStatusSelect() != InvoiceRepository.STATUS_VENTILATED
+        && !isValidatedAdvancePayment) {
       throw new AxelorException(
           invoice,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
