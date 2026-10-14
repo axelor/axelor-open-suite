@@ -19,8 +19,10 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.period.PeriodServiceAccount;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdjustHistory;
 import com.axelor.apps.base.db.Company;
@@ -28,6 +30,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -44,7 +47,11 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,17 +62,23 @@ public class YearServiceAccountImpl extends YearServiceImpl {
   protected AdjustHistoryService adjustHistoryService;
   protected PartnerRepository partnerRepository;
   protected PeriodService periodService;
+  protected PeriodServiceAccount periodServiceAccount;
+  protected PeriodRepository periodRepository;
 
   @Inject
   public YearServiceAccountImpl(
       PartnerRepository partnerRepository,
       YearRepository yearRepository,
       AdjustHistoryService adjustHistoryService,
-      PeriodService periodService) {
+      PeriodService periodService,
+      PeriodServiceAccount periodServiceAccount,
+      PeriodRepository periodRepository) {
     super(yearRepository);
     this.partnerRepository = partnerRepository;
     this.adjustHistoryService = adjustHistoryService;
     this.periodService = periodService;
+    this.periodServiceAccount = periodServiceAccount;
+    this.periodRepository = periodRepository;
   }
 
   /**
@@ -79,9 +92,12 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 
     year = yearRepository.find(year.getId());
 
-    for (Period period : year.getPeriodList()) {
-      periodService.closePeriod(period);
+    List<Long> periodIdList =
+        year.getPeriodList().stream().map(Period::getId).collect(Collectors.toList());
+    for (Long periodId : periodIdList) {
+      periodService.closePeriod(periodRepository.find(periodId));
     }
+    year = yearRepository.find(year.getId());
     Company company = year.getCompany();
     if (company == null) {
       throw new AxelorException(
@@ -148,7 +164,8 @@ public class YearServiceAccountImpl extends YearServiceImpl {
     }
     year = yearRepository.find(year.getId());
 
-    if (this.allPeriodClosed(year)) {
+    if (ObjectUtils.isEmpty(this.getClosureAnomalies(year).getLeft())
+        && this.allPeriodClosed(year)) {
       closeYear(year);
     }
   }
@@ -232,5 +249,20 @@ public class YearServiceAccountImpl extends YearServiceImpl {
     }
 
     return true;
+  }
+
+  public Pair<Set<Long>, Integer> getClosureAnomalies(Year year) {
+    Set<Long> moveIdSet = new HashSet<>();
+    int anomalyCount = 0;
+    year = yearRepository.find(year.getId());
+    if (year != null && ObjectUtils.notEmpty(year.getPeriodList())) {
+      for (Period period : year.getPeriodList()) {
+        for (Move move : periodServiceAccount.getMoves(period)) {
+          moveIdSet.add(move.getId());
+        }
+        anomalyCount += periodServiceAccount.getAnomalyCount(period);
+      }
+    }
+    return Pair.of(moveIdSet, anomalyCount);
   }
 }

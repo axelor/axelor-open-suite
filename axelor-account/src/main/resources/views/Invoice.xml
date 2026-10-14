@@ -625,7 +625,7 @@
       <field name="bankDetails" canEdit="false" widget="SuggestBox" colSpan="12"
         onSelect="action-invoice-method-bank-details-from-partner-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"
-        requiredIf="([1,2].includes(operationTypeSelect) &amp;&amp; paymentMode.typeSelect == 9 &amp;&amp; paymentMode.inOutSelect == 2)
+        requiredIf="(paymentMode.typeSelect == 9 &amp;&amp; paymentMode.inOutSelect == 2)
              || ([3,4].includes(operationTypeSelect) &amp;&amp; [2,10].includes(paymentMode.typeSelect))"
         onChange="action-invoice-method-update-invoice-term-bank-details"/>
       <panel name="addressPanel" stacked="true">
@@ -819,7 +819,7 @@
           readonly="true"/>
       </panel>
       <panel name="advancePaymentPanel" title="Advance payments"
-        showIf="((operationSubTypeSelect != 2 &amp;&amp; $contains([1, 3], operationTypeSelect)) || (operationSubTypeSelect != 1 &amp;&amp; $contains([2, 4], operationTypeSelect)))
+        showIf="((operationSubTypeSelect != 2 &amp;&amp; $contains([1, 3], operationTypeSelect)) || (operationSubTypeSelect == 2 &amp;&amp; $contains([2, 4], operationTypeSelect)))
         &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp; InvoiceSet.length > 0))"
         if="__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()">
         <field name="advancePaymentInvoiceSet" widget="Tags" canNew="false" canEdit="false"
@@ -1348,7 +1348,7 @@
       <field name="bankDetails" canEdit="false" widget="SuggestBox"
         onSelect="action-invoice-method-bank-details-from-partner-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"
-        requiredIf="([1,2].includes(operationTypeSelect) &amp;&amp; paymentMode.typeSelect == 9 &amp;&amp; paymentMode.inOutSelect == 2)
+        requiredIf="(paymentMode.typeSelect == 9 &amp;&amp; paymentMode.inOutSelect == 2)
              || ([3,4].includes(operationTypeSelect) &amp;&amp; [2,10].includes(paymentMode.typeSelect))"/>
       <field name="partnerTaxNbr" readonlyIf="statusSelect != 1"
         hideIf="operationTypeSelect != 3 &amp;&amp; operationTypeSelect != 4"

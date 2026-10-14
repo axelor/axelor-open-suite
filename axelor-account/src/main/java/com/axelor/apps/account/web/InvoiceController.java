@@ -1432,7 +1432,7 @@ public class InvoiceController {
 
     try {
       if (InvoiceToolService.isRefund(invoice)) {
-        if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT) {
+        if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
           createRefundBtn = AccountExceptionMessage.CREATE_REFUND_BTN_INVOICE;
           refundInvoiceList = AccountExceptionMessage.REFUND_INVOICE_LIST_INVOICE;
           originalInvoice = AccountExceptionMessage.ORIGINAL_INVOICE_INVOICE;
