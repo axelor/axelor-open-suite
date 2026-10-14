@@ -1,0 +1,19 @@
+---
+title: "Invoice ventilation: other modules can now add their own processing after an invoice is ventilated."
+module: axelor-account
+developer: |
+  The supplychain and contract overrides of `afterVentilation` have been replaced by an event.
+
+  `WorkflowVentilationServiceImpl#afterVentilation` now fires the `com.axelor.apps.account.service.event.InvoiceAfterVentilation` event
+  at the end of its processing. Observers run synchronously, in the same transaction; an `AxelorException` thrown by an observer
+  is propagated as is and rolls back the ventilation.
+  The constructor of `WorkflowVentilationServiceImpl` takes a new `Event<InvoiceAfterVentilation>` parameter.
+
+  - `WorkflowVentilationServiceSupplychainImpl` has been removed. Its processing has been moved to the new
+    `InvoiceVentilationSupplychainService` / `InvoiceVentilationSupplychainServiceImpl`, called by
+    `InvoiceVentilationSupplychainObserver` (priority 10). The helper methods (`saleOrderProcess`, `purchaseOrderProcess`,
+    `stockMoveProcess`...) are kept with the same signatures in `InvoiceVentilationSupplychainServiceImpl`.
+  - `WorkflowVentilationContractServiceImpl` has been removed and is replaced by `InvoiceVentilationContractObserver` (priority 20).
+
+  Modules that extended `WorkflowVentilationServiceSupplychainImpl` or `WorkflowVentilationContractServiceImpl` to override
+  `afterVentilation` must now observe `InvoiceAfterVentilation` instead.

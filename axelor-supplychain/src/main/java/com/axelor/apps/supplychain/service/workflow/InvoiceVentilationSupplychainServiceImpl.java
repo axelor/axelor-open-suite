@@ -20,16 +20,8 @@ package com.axelor.apps.supplychain.service.workflow;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.app.AppAccountService;
-import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
-import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -65,7 +57,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilationServiceImpl {
+public class InvoiceVentilationSupplychainServiceImpl
+    implements InvoiceVentilationSupplychainService {
 
   protected final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -92,11 +85,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
   protected StockMoveLineRepository stockMoveLineRepository;
 
   @Inject
-  public WorkflowVentilationServiceSupplychainImpl(
-      AccountConfigService accountConfigService,
-      InvoicePaymentRepository invoicePaymentRepo,
-      InvoicePaymentCreateService invoicePaymentCreateService,
-      InvoiceService invoiceService,
+  public InvoiceVentilationSupplychainServiceImpl(
       SaleOrderInvoiceService saleOrderInvoiceService,
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SaleOrderRepository saleOrderRepository,
@@ -107,19 +96,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       UnitConversionService unitConversionService,
       AppBaseService appBaseService,
       SupplyChainConfigService supplyChainConfigService,
-      StockMoveLineRepository stockMoveLineRepository,
-      AppAccountService appAccountService,
-      InvoiceFinancialDiscountService invoiceFinancialDiscountService,
-      InvoiceTermService invoiceTermService) {
-
-    super(
-        accountConfigService,
-        invoicePaymentRepo,
-        invoicePaymentCreateService,
-        invoiceService,
-        appAccountService,
-        invoiceFinancialDiscountService,
-        invoiceTermService);
+      StockMoveLineRepository stockMoveLineRepository) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.saleOrderRepository = saleOrderRepository;
@@ -133,9 +110,8 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     this.stockMoveLineRepository = stockMoveLineRepository;
   }
 
+  @Override
   public void afterVentilation(Invoice invoice) throws AxelorException {
-    super.afterVentilation(invoice);
-
     if (!appSupplychainService.isApp("supplychain")) {
       return;
     }

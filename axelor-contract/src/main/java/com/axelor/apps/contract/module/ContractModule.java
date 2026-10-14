@@ -71,11 +71,11 @@ import com.axelor.apps.contract.service.InvoicePaymentToolServiceContractImpl;
 import com.axelor.apps.contract.service.PurchaseOrderInvoiceContractServiceImpl;
 import com.axelor.apps.contract.service.SaleOrderInvoiceContractServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
-import com.axelor.apps.contract.service.WorkflowVentilationContractServiceImpl;
 import com.axelor.apps.contract.service.app.AppContractService;
 import com.axelor.apps.contract.service.app.AppContractServiceImpl;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsServiceImpl;
+import com.axelor.apps.contract.service.observer.InvoiceVentilationContractObserver;
 import com.axelor.apps.contract.service.pricing.ContractPricingService;
 import com.axelor.apps.contract.service.pricing.ContractPricingServiceImpl;
 import com.axelor.apps.contract.service.pricing.PricingGroupContractServiceImpl;
@@ -91,7 +91,6 @@ import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychai
 import com.axelor.apps.supplychain.service.pricing.PricingGroupSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 
 public class ContractModule extends AxelorModule {
 
@@ -132,13 +131,12 @@ public class ContractModule extends AxelorModule {
     bind(AccountManagementContractService.class).to(AccountManagementContractServiceImpl.class);
     bind(ContractLineContextToolService.class).to(ContractLineContextToolServiceImpl.class);
     bind(ContractInvoicingService.class).to(ContractInvoicingServiceImpl.class);
-    bind(WorkflowVentilationServiceSupplychainImpl.class)
-        .to(WorkflowVentilationContractServiceImpl.class);
     bind(InvoicePaymentToolServiceSupplychainImpl.class)
         .to(InvoicePaymentToolServiceContractImpl.class);
     bind(SaleOrderInvoiceServiceImpl.class).to(SaleOrderInvoiceContractServiceImpl.class);
     bind(PurchaseOrderInvoiceServiceImpl.class).to(PurchaseOrderInvoiceContractServiceImpl.class);
     bind(AnalyticMoveLineParentSupplychainServiceImpl.class)
         .to(AnalyticMoveLineParentContractServiceImpl.class);
+    bind(InvoiceVentilationContractObserver.class);
   }
 }

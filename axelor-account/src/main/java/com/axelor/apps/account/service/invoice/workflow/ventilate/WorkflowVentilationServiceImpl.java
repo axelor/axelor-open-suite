@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.event.InvoiceAfterVentilation;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -31,6 +32,9 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCre
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.ObserverBaseException;
+import com.axelor.event.Event;
+import com.axelor.event.ObserverException;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -47,6 +51,7 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
   protected AppAccountService appAccountService;
   protected InvoiceFinancialDiscountService invoiceFinancialDiscountService;
   protected InvoiceTermService invoiceTermService;
+  protected Event<InvoiceAfterVentilation> invoiceAfterVentilationEvent;
 
   @Inject
   public WorkflowVentilationServiceImpl(
@@ -56,7 +61,8 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
       InvoiceService invoiceService,
       AppAccountService appAccountService,
       InvoiceFinancialDiscountService invoiceFinancialDiscountService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      Event<InvoiceAfterVentilation> invoiceAfterVentilationEvent) {
     this.accountConfigService = accountConfigService;
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
@@ -64,6 +70,7 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
     this.appAccountService = appAccountService;
     this.invoiceFinancialDiscountService = invoiceFinancialDiscountService;
     this.invoiceTermService = invoiceTermService;
+    this.invoiceAfterVentilationEvent = invoiceAfterVentilationEvent;
   }
 
   @Override
@@ -82,6 +89,15 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
       if (!invoiceTermService.checkIfCustomizedInvoiceTerms(invoice.getInvoiceTermList())) {
         invoiceFinancialDiscountService.updateFinancialDiscount(invoice);
       }
+    }
+
+    try {
+      invoiceAfterVentilationEvent.fire(new InvoiceAfterVentilation(invoice));
+    } catch (ObserverException e) {
+      if (e.getCause() instanceof AxelorException axelorException) {
+        throw axelorException;
+      }
+      throw new ObserverBaseException(e.getCause(), e.getCause().getMessage());
     }
   }
 

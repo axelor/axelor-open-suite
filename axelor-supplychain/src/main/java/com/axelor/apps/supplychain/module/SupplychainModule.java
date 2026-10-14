@@ -35,7 +35,6 @@ import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceMergingServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.cancel.WorkflowCancelServiceImpl;
-import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.base.service.PartnerLinkServiceImpl;
 import com.axelor.apps.base.service.partner.PartnerCreationServiceImpl;
@@ -303,6 +302,7 @@ import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderServiceImpl;
+import com.axelor.apps.supplychain.service.observer.InvoiceVentilationSupplychainObserver;
 import com.axelor.apps.supplychain.service.observer.SaleOrderLineSupplychainObserver;
 import com.axelor.apps.supplychain.service.observer.SaleOrderSupplychainObserver;
 import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
@@ -428,8 +428,9 @@ import com.axelor.apps.supplychain.service.supplierdispute.SupplierDisputePfpSer
 import com.axelor.apps.supplychain.service.supplierdispute.SupplierDisputePfpServiceImpl;
 import com.axelor.apps.supplychain.service.supplierdispute.SupplierDisputeWorkflowService;
 import com.axelor.apps.supplychain.service.supplierdispute.SupplierDisputeWorkflowServiceImpl;
+import com.axelor.apps.supplychain.service.workflow.InvoiceVentilationSupplychainService;
+import com.axelor.apps.supplychain.service.workflow.InvoiceVentilationSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 import com.axelor.apps.supplychain.utils.StockLocationUtilsServiceSupplychain;
 import com.axelor.apps.supplychain.utils.StockLocationUtilsServiceSupplychainImpl;
 
@@ -479,7 +480,8 @@ public class SupplychainModule extends AxelorModule {
     bind(StockLocationLineServiceImpl.class).to(StockLocationLineServiceSupplychainImpl.class);
     bind(InvoiceServiceImpl.class).to(InvoiceServiceSupplychainImpl.class);
     bind(InvoicePaymentToolServiceImpl.class).to(InvoicePaymentToolServiceSupplychainImpl.class);
-    bind(WorkflowVentilationServiceImpl.class).to(WorkflowVentilationServiceSupplychainImpl.class);
+    bind(InvoiceVentilationSupplychainService.class)
+        .to(InvoiceVentilationSupplychainServiceImpl.class);
     bind(WorkflowCancelServiceImpl.class).to(WorkflowCancelServiceSupplychainImpl.class);
     bind(IntercoService.class).to(IntercoServiceImpl.class);
     bind(StockLocationLineServiceImpl.class).to(StockLocationLineServiceSupplychainImpl.class);
@@ -614,6 +616,7 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderLineInitValueSupplychainServiceImpl.class);
     bind(SaleOrderLineAnalyticService.class).to(SaleOrderLineAnalyticServiceImpl.class);
     bind(SaleOrderSupplychainObserver.class);
+    bind(InvoiceVentilationSupplychainObserver.class);
     bind(SaleOrderConfirmSupplychainService.class).to(SaleOrderConfirmSupplychainServiceImpl.class);
     bind(SaleOrderLineCheckSupplychainService.class)
         .to(SaleOrderLineCheckSupplychainServiceImpl.class);
