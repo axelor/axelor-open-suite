@@ -269,8 +269,8 @@ public class BatchReimbursementExport extends BatchStrategy {
             .all()
             .filter(
                 "self.company = ?1 and self.statusSelect = ?2 and self.amountToReimburse = 0",
-                ReimbursementRepository.STATUS_VALIDATED,
-                company)
+                company,
+                ReimbursementRepository.STATUS_VALIDATED)
             .fetch();
 
     // On annule les remboursements
@@ -283,7 +283,7 @@ public class BatchReimbursementExport extends BatchStrategy {
         reimbursementRepo
             .all()
             .filter(
-                "self.company = ?1 and self.statusSelect = ?2 and self.amountToReimburse > 0 AND self.partner",
+                "self.company = ?1 and self.statusSelect = ?2 and self.amountToReimburse > 0",
                 company,
                 ReimbursementRepository.STATUS_VALIDATED)
             .fetch();
