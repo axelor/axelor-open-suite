@@ -189,7 +189,12 @@ public class ReconcileInvoiceTermComputationServiceImpl
         boolean isCompanyCurrency =
             reconcileCheckService.isCompanyCurrency(reconcile, null, otherMove);
         if (!isCompanyCurrency) {
-          invoicePaymentAmount = this.getTotal(moveLine, otherMoveLine, amount, true);
+          // When the foreign exchange gap is absorbed by the move line, the reconciled amount is
+          // valued at the rate of the other move line
+          invoicePaymentAmount =
+              this.isForeignExchangeGapReconciled(reconcile, moveLine)
+                  ? this.getTotal(otherMoveLine, moveLine, amount, true)
+                  : this.getTotal(moveLine, otherMoveLine, amount, true);
         }
 
         InvoicePayment foreignExchangePayment =
@@ -329,6 +334,23 @@ public class ReconcileInvoiceTermComputationServiceImpl
         .multiply(reconcile.getAmount())
         .divide(
             lineAmount, currencyScaleService.getScale(reconciledMoveLine), RoundingMode.HALF_UP);
+  }
+
+  /**
+   * Check whether the move line is reconciled with the foreign exchange gap move of the reconcile,
+   * meaning the gap between the two currency rates has been posted on this move line.
+   */
+  protected boolean isForeignExchangeGapReconciled(Reconcile reconcile, MoveLine moveLine) {
+    Move foreignExchangeMove = reconcile.getForeignExchangeMove();
+    if (foreignExchangeMove == null) {
+      return false;
+    }
+
+    return this.getConfirmedReconcileList(moveLine).stream()
+        .anyMatch(
+            it ->
+                !it.equals(reconcile)
+                    && foreignExchangeMove.equals(this.getOtherMoveLine(it, moveLine).getMove()));
   }
 
   protected List<Reconcile> getConfirmedReconcileList(MoveLine moveLine) {
