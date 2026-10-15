@@ -285,7 +285,8 @@
       <field name="reportType"
         onChange="action-group-account-accounting-report-reporttype-onchange"
         domain="self.reportExportTypeSelect = 2 AND self.company = :company AND self.typeSelect != 1011"
-        required="true"/>
+        form-view="accounting-report-export-type-form"
+        grid-view="accounting-report-export-type-grid" required="true"/>
       <panel name="filterPanel" title="Filter" colSpan="12" hideIf="reportType == null">
         <field name="year" onChange="action-accounting-report-record-period-dates"
           onSelect="action-accounting-report-attrs-year-domain" grid-view="year-account-grid"

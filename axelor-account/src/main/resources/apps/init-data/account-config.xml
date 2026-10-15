@@ -47,7 +47,7 @@
       check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingReportType', 'reportExportTypeSelect', docType)"
       check-message="Invalid reportExportTypeSelect"/>
     <bind to="typeSelect" column="type"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingReportType', 'typeSelect', type)"
+      check="com.axelor.csv.script.ImportAccountingReportType.checkTypeSelect(docType, type)"
       check-message="Invalid typeSelect"/>
     <bind to="company" column="company" search="self.importId = :company" update="true"/>
     <bind to="comparison" column="comparison"

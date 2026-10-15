@@ -339,7 +339,7 @@
       check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="typeSelect" to="typeSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingReportType', 'typeSelect', typeSelect)"
+      check="com.axelor.csv.script.ImportAccountingReportType.checkTypeSelect(reportExportTypeSelect, typeSelect)"
       check-message="Invalid typeSelect"/>
     <bind to="reportExportTypeSelect" column="reportExportTypeSelect"
       check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingReportType', 'reportExportTypeSelect', reportExportTypeSelect)"

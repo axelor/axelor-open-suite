@@ -113,7 +113,7 @@
       </panel>
       <panel name="moveLineExportPagePanel" title="Move Lines Export Config"
         hideIf="actionSelect != 18">
-        <field name="moveLineExportTypeSelect"/>
+        <field name="moveLineExportTypeSelect" selection-in="[1000,1001,1010]"/>
         <field name="startDate"/>
         <field name="endDate"/>
       </panel>
