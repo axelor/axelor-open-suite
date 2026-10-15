@@ -238,9 +238,14 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
 
   @Override
   public void unreconcileForeignExchangeMove(Reconcile reconcile) throws AxelorException {
-    if (reconcile.getForeignExchangeMove() != null) {
+    Move foreignExchangeMove = reconcile.getForeignExchangeMove();
+    // The foreign exchange move is only reversed from the original reconcile, not from the one
+    // reconciling the foreign exchange move itself, otherwise it would be reversed twice
+    if (foreignExchangeMove != null
+        && !foreignExchangeMove.equals(reconcile.getDebitMoveLine().getMove())
+        && !foreignExchangeMove.equals(reconcile.getCreditMoveLine().getMove())) {
       moveReverseService.generateReverse(
-          reconcile.getForeignExchangeMove(),
+          foreignExchangeMove,
           true,
           true,
           true,

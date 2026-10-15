@@ -1,0 +1,3 @@
+---
+title: "Reconcile: fixed the foreign exchange gap move being reversed twice when unreconciling a foreign currency payment."
+module: axelor-account
