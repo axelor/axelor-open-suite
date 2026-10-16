@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed the generate credit note button missing on a validated advance payment invoice."
-module: axelor-account
