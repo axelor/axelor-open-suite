@@ -1,3 +1,145 @@
+## [9.0.21] (2026-10-16)
+
+### Fixes
+#### Base
+
+* Upgrade to AOP 8.2.5
+* Weekly planning: fixed the impossibility to recreate a deleted day and prevented saving a planning with the same day twice.
+* Report: fixed BIRT prints failing with "Connection is closed" when the report loads an image such as the company logo.
+* Print template: the XML export works again. It no longer uses a class forbidden by the script policy, and the export and its import binding no longer reference the fields removed from the model (language, print settings, printing template format and link). The sub-templates are also exported with their own values instead of those of the parent template.
+* Product: fixed the manual cost price being reset to 0 when changing the shipping coefficient or the units.
+
+#### Account
+
+* Fiscal year: fixed the closure giving no feedback when some daybook moves could not be validated; the moves with anomalies are now displayed and the fiscal year is not closed.
+* Reconcile: fixed amounts paid on move lines being reduced twice when unreconciling an already canceled reconcile.
+* Invoice: fixed the generate credit note button missing on a validated advance payment invoice.
+* Invoice: added delivery date field on invoice and invoice line.
+* Invoice: fixed refunds not being deducted in the invoice dashboard charts and in the Purchase Invoices Details report, whose chart now sums the amounts and applies the turnover type filter.
+* Invoice: added the delivery date to the invoice printing, at header level and as a line column.
+* Invoice term: fixed bank details wrongly required on an incoming Transfer payment mode.
+* Accounting report: fixed the detail block of the VAT statement on amount received merging tax lines with the same amount.
+* Invoice: fixed partner bank details wrongly required on a supplier refund paid by incoming transfer.
+* Invoice: fixed supplier invoices that could be ventilated without a supplier invoice number when ventilation is skipped.
+* Invoice: fixed misleading error message when generating an invoice for a tax whose line accounting account does not allow tax on move lines.
+* Accounting batch: fixed credit transfer reimbursement batch failing from the second partner.
+* Move line: added a warning when reconciling two move lines of different partners and fixed the accounting situation of the partner on the credit line not being updated.
+* Invoice: fixed a reconcile residual counted as a payment, making a foreign currency invoice appear overpaid in its own currency.
+* Reimbursement: fixed the negative amount to reimburse preventing the reimbursement export batch from processing reimbursements.
+* Fixed asset: fixed the depreciation settings update failing with 'Row was updated or deleted by another transaction' on a depreciation line.
+* Invoice: fixed a foreign currency credit note imputed on an invoice at another rate remaining partially due in its currency although fully reconciled.
+* Invoice payment: prevented cancelling a foreign exchange gain or loss payment on its own.
+* Invoice: fixed advance payment labels, button and tab displayed on a standard credit note.
+* Invoice payment: fixed payments allocated to terms awaiting PFP validation and reconciliations exceeding the approved balance.
+* Reconcile: fixed the missing partner on the misc. operation lines generated when reconciling move lines on compatible accounts.
+* Reconcile: fixed the foreign exchange gap move being reversed twice when unreconciling a foreign currency payment.
+
+#### Bank Payment
+
+* Bank statement: hardened the CAMT.053 file import against XML external entities (XXE).
+* Bank reconciliation: fixed matching not verifying the debit/credit direction between the statement line and the move line (manual and automatic).
+
+#### Budget
+
+* Invoice: fixed budget checks not being performed on validation when ventilation is skipped.
+
+#### Maintenance
+
+* Maintenance request: fill the maintenance task with the procedure of the equipment maintenance.
+
+#### Production
+
+* MRP: fixed needs and proposals generated after the end date from manufacturing orders planned beyond it.
+
+#### Purchase
+
+* Purchase order line: fixed manually entered unit price being overwritten on quantity change when no supplier catalog exists.
+
+#### Sale
+
+* Sale: fixed a quotation line disappearing and a valid quantity being flagged invalid in the confirm/split-order popup.
+* Configurator: fixed the script check accepting a non-numeric text for a decimal field.
+* Sale order: fixed the slow order confirmation pop-up with split quotations and large price lists.
+* Configurator: fixed quantity not recalculated when regenerating a sale order line.
+
+#### Stock
+
+* Stock move: fixed cancellation being allowed while a linked reversion is still planned or realized.
+* Stock location: fixed the stock location value ignoring the sub-locations, and grouped the location content by stock location with a value column and subtotals.
+* Stock: fixed zero weighted average price on stocked products in demo data and kept the product's global average price up to date when average price is a company-specific field.
+* Stock move: fixed the destination stock location remaining editable on internal moves with lines when stock locations are managed on lines.
+
+#### Supply Chain
+
+* Purchase order: fixed payment mode and payment condition not carried over to the invoice when invoicing receptions, and lost when merging purchase orders.
+* Purchase order: fixed unwanted draft purchase order created when generating an invoice from an incoming stock move.
+* Stock details: displayed the estimated date in the consumed and missing manufacturing order quantity lists.
+* Sale order: fixed the error on save when the shipment mode is set before the first save, and the shipping cost line is now removed when the shipment mode is emptied.
+* Demo data: fixed an error preventing the receipt of finished purchase orders during the demo data import.
+* Sale order: when 'Terminate sale order on delivery' is enabled, a completed order now goes back to Confirmed once it is no longer fully delivered (delivery note cancelled or return realized).
+* Fixed asset: fixed fixed assets generated from a supplier invoice created from a reception all getting the same tracking number.
+
+
+### Developer
+
+#### Account
+
+YearServiceAccountImpl constructor takes new PeriodServiceAccount and PeriodRepository
+parameters and exposes getClosureAnomalies(Year), returning the ids of the moves that could
+not be validated and the anomaly count. closeYear is skipped when at least one move could not
+be validated.
+
+---
+
+-- Script
+```sql
+ALTER TABLE account_invoice
+  ADD COLUMN IF NOT EXISTS delivery_date DATE;
+
+ALTER TABLE account_invoice_line
+  ADD COLUMN IF NOT EXISTS delivery_date DATE;
+```
+
+---
+
+The computed field Reimbursement.amountToReimburse is now the sum of the absolute remaining
+amounts of the overpayment lines. Existing installations should run the following migration
+script to recompute the reimbursements which are not reimbursed yet:
+
+```sql
+UPDATE account_reimbursement reimbursement
+    SET amount_to_reimburse = COALESCE(
+        (SELECT SUM(ABS(move_line.amount_remaining))
+         FROM account_reimbursement_move_line_set reimbursement_move_line
+         JOIN account_move_line move_line ON move_line.id = reimbursement_move_line.move_line_set
+         WHERE reimbursement_move_line.account_reimbursement = reimbursement.id), 0)
+    WHERE reimbursement.status_select IN (1, 2, 3);
+```
+
+---
+
+Added InvoiceTermPfpToolService as the last constructor parameter of
+ReconcileInvoiceTermComputationServiceImpl and
+ReconcileInvoiceTermComputationBudgetServiceImpl.
+Custom subclasses must inject and forward this dependency.
+
+Renamed the protected isPfpOrderApplicable(Invoice, Move) method to
+isPfpCheckApplicable(Invoice, Move). Custom overrides must update accordingly.
+
+#### Sale
+
+SaleOrderSplitDummyServiceImpl's constructor no longer takes a SaleOrderLineRepository
+parameter.
+
+---
+
+ConfiguratorSaleOrderLineService.regenerateSaleOrderLine and generateSaleOrderLine now take a BigDecimal qty parameter instead of reusing the quantity of the replaced sale order line.
+
+#### Stock
+
+Added checkReversionStatus(StockMove) to StockMoveService, called from StockMoveServiceImpl.cancel(StockMove).
+action-group-stock-stockmove-cancel-click now calls action-stock-move-method-check-reversion-status before the cancel wizard.
+
 ## [9.0.20] (2026-10-01)
 
 ### Fixes
@@ -3309,6 +3451,7 @@ Replaced the attrs action `action-purchase-order-line-attrs-delivery-panel` with
 
 * Project: improve task tree management.
 
+[9.0.21]: https://github.com/axelor/axelor-open-suite/compare/v9.0.20...v9.0.21
 [9.0.20]: https://github.com/axelor/axelor-open-suite/compare/v9.0.19...v9.0.20
 [9.0.19]: https://github.com/axelor/axelor-open-suite/compare/v9.0.18...v9.0.19
 [9.0.18]: https://github.com/axelor/axelor-open-suite/compare/v9.0.17...v9.0.18

@@ -1,8 +1,0 @@
----
-title: "Fiscal year: fixed the closure giving no feedback when some daybook moves could not be validated; the moves with anomalies are now displayed and the fiscal year is not closed."
-module: axelor-account
-developer: |
-  YearServiceAccountImpl constructor takes new PeriodServiceAccount and PeriodRepository
-  parameters and exposes getClosureAnomalies(Year), returning the ids of the moves that could
-  not be validated and the anomaly count. closeYear is skipped when at least one move could not
-  be validated.

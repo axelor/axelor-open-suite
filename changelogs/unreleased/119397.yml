@@ -1,3 +1,0 @@
----
-title: "Stock move: fixed the destination stock location remaining editable on internal moves with lines when stock locations are managed on lines."
-module: axelor-stock

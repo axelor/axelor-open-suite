@@ -1,3 +1,0 @@
----
-title: "Fixed asset: fixed the depreciation settings update failing with 'Row was updated or deleted by another transaction' on a depreciation line."
-module: axelor-account
