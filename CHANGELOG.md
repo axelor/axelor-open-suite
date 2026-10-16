@@ -1,3 +1,20 @@
+## [8.3.44] (2026-10-16)
+
+### Fixes
+#### Cash Management
+
+* Opportunity: fixed the bank details always taken from the company default, ignoring the partner accounting configuration.
+
+
+### Developer
+
+#### Cash Management
+
+-- migration script
+```sql
+DELETE FROM meta_action WHERE name = 'action-opportunity-record-set-bank-details';
+```
+
 ## [8.3.43] (2026-09-17)
 
 ### Fixes
@@ -3550,6 +3567,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.44]: https://github.com/axelor/axelor-open-suite/compare/v8.3.43...v8.3.44
 [8.3.43]: https://github.com/axelor/axelor-open-suite/compare/v8.3.42...v8.3.43
 [8.3.42]: https://github.com/axelor/axelor-open-suite/compare/v8.3.41...v8.3.42
 [8.3.41]: https://github.com/axelor/axelor-open-suite/compare/v8.3.40...v8.3.41

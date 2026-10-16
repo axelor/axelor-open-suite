@@ -1,6 +1,0 @@
----
-title: "Opportunity: fixed the bank details always taken from the company default, ignoring the partner accounting configuration."
-module: axelor-cash-management
-developer: |
-  -- migration script
-  DELETE FROM meta_action WHERE name = 'action-opportunity-record-set-bank-details';
