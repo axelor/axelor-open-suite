@@ -44,6 +44,7 @@
 "Automatically plan the manuf. orders generated from sale order","Planifier automatiquement les ordres de fabrication générés depuis les commandes clients",,
 "Available stock","Stock disponible",,
 "Average Price","PMP",,
+"Average price at consumption date","PMP à la date de consommation",,
 "BOM","Nomenclature",,
 "BOM currently has no status","La nomenclature n'a pas de statut",,
 "BOM is already on draft status","La nomenclature est déjà au statut brouillon",,

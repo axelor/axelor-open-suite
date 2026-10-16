@@ -1,0 +1,12 @@
+---
+title: "Manufacturing order: added a components valuation method to value consumed components at their average price on the consumption date in real cost sheets."
+module: axelor-production
+developer: |
+  A new `ConsumedStockMoveLineValuationService` values consumed stock move lines at the WAP
+  price recorded when they were realized, or at their company unit price if none was recorded.
+  It is used by both the real cost sheet and the manufacturing order material cost.
+
+  The constructors of the following classes have a new `ConsumedStockMoveLineValuationService`
+  parameter:
+  - `CostSheetServiceImpl`
+  - `ManufOrderCostServiceImpl`

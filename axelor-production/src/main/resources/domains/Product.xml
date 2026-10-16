@@ -36,6 +36,7 @@
 				// COMPONENTS VALUATION METHOD SELECt
 				public static final int COMPONENTS_VALUATION_METHOD_AVERAGE = 1;
 				public static final int COMPONENTS_VALUATION_METHOD_COST = 2;
+				public static final int COMPONENTS_VALUATION_METHOD_AVERAGE_AT_CONSUMPTION_DATE = 3;
 	   		]]>
     </extra-code>
 

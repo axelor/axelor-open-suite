@@ -29,6 +29,7 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.ProdProcessLineComputationService;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.costsheet.ConsumedStockMoveLineValuationService;
 import com.axelor.apps.production.service.costsheet.CostSheetLineService;
 import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -55,7 +56,8 @@ public class CostSheetServiceMaintenanceImpl extends CostSheetServiceImpl {
       CostSheetLineService costSheetLineService,
       UnitConversionService unitConversionService,
       StockMoveLineRepository stockMoveLineRepository,
-      ManufOrderRepository manufOrderRepo) {
+      ManufOrderRepository manufOrderRepo,
+      ConsumedStockMoveLineValuationService consumedStockMoveLineValuationService) {
     super(
         prodProcessLineComputationService,
         appProductionService,
@@ -64,7 +66,8 @@ public class CostSheetServiceMaintenanceImpl extends CostSheetServiceImpl {
         costSheetLineService,
         unitConversionService,
         stockMoveLineRepository,
-        manufOrderRepo);
+        manufOrderRepo,
+        consumedStockMoveLineValuationService);
   }
 
   @Override

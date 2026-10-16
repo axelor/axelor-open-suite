@@ -211,6 +211,8 @@ import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessSe
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessServiceImpl;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProductService;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProductServiceImpl;
+import com.axelor.apps.production.service.costsheet.ConsumedStockMoveLineValuationService;
+import com.axelor.apps.production.service.costsheet.ConsumedStockMoveLineValuationServiceImpl;
 import com.axelor.apps.production.service.costsheet.CostSheetLineService;
 import com.axelor.apps.production.service.costsheet.CostSheetLineServiceImpl;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
@@ -375,6 +377,8 @@ public class ProductionModule extends AxelorModule {
     bind(MrpServiceImpl.class).to(MrpServiceProductionImpl.class);
     bind(CostSheetService.class).to(CostSheetServiceImpl.class);
     bind(CostSheetLineService.class).to(CostSheetLineServiceImpl.class);
+    bind(ConsumedStockMoveLineValuationService.class)
+        .to(ConsumedStockMoveLineValuationServiceImpl.class);
     bind(StockRulesSupplychainServiceImpl.class)
         .to(StockRulesSupplychainServiceProductionImpl.class);
     bind(BillOfMaterialRepository.class).to(BillOfMaterialManagementRepository.class);

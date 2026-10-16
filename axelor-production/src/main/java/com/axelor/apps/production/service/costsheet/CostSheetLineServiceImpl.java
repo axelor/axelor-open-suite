@@ -294,6 +294,22 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
             appProductionService.getNbDecimalDigitForUnitPrice(),
             product);
 
+    return addConsumedProductCostSheetLine(
+        product, unit, bomLevel, parentCostSheetLine, consumptionQty, costPrice);
+  }
+
+  public CostSheetLine addConsumedProductCostSheetLine(
+      Product product,
+      Unit unit,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal consumptionQty,
+      BigDecimal costPrice)
+      throws AxelorException {
+
+    consumptionQty =
+        consumptionQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
+
     List<CostSheetLine> costSheetLineList =
         parentCostSheetLine.getCostSheetLineList() != null
             ? parentCostSheetLine.getCostSheetLineList()
@@ -340,7 +356,10 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
           TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(BaseExceptionMessage.COMPANY_MISSING));
     }
 
-    if (componentsValuationMethod == ProductRepository.COMPONENTS_VALUATION_METHOD_AVERAGE) {
+    // Without consumed quantities (planned cost sheets), the current WAP is used
+    if (componentsValuationMethod == ProductRepository.COMPONENTS_VALUATION_METHOD_AVERAGE
+        || componentsValuationMethod
+            == ProductRepository.COMPONENTS_VALUATION_METHOD_AVERAGE_AT_CONSUMPTION_DATE) {
       price = weightedAveragePriceService.computeAvgPriceForCompany(product, company);
 
       if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {

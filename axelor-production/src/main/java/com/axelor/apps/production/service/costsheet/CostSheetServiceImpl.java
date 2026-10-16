@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -86,6 +87,7 @@ public class CostSheetServiceImpl implements CostSheetService {
   protected ProdProcessLineComputationService prodProcessLineComputationService;
   protected StockMoveLineRepository stockMoveLineRepository;
   protected ManufOrderRepository manufOrderRepo;
+  protected ConsumedStockMoveLineValuationService consumedStockMoveLineValuationService;
   protected Unit hourUnit;
   protected Unit cycleUnit;
   protected boolean manageResidualProductOnBom;
@@ -100,7 +102,8 @@ public class CostSheetServiceImpl implements CostSheetService {
       CostSheetLineService costSheetLineService,
       UnitConversionService unitConversionService,
       StockMoveLineRepository stockMoveLineRepository,
-      ManufOrderRepository manufOrderRepo) {
+      ManufOrderRepository manufOrderRepo,
+      ConsumedStockMoveLineValuationService consumedStockMoveLineValuationService) {
     this.prodProcessLineComputationService = prodProcessLineComputationService;
     this.appProductionService = appProductionService;
     this.appBaseService = appBaseService;
@@ -109,6 +112,7 @@ public class CostSheetServiceImpl implements CostSheetService {
     this.unitConversionService = unitConversionService;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.manufOrderRepo = manufOrderRepo;
+    this.consumedStockMoveLineValuationService = consumedStockMoveLineValuationService;
   }
 
   protected void init() {
@@ -934,6 +938,20 @@ public class CostSheetServiceImpl implements CostSheetService {
     int calculationTypeSelect = parentCostSheet.getCalculationTypeSelect();
     LocalDate calculationDate = parentCostSheet.getCalculationDate();
 
+    if (valuationMethod
+        == ProductRepository.COMPONENTS_VALUATION_METHOD_AVERAGE_AT_CONSUMPTION_DATE) {
+      this.computeConsumedProductAtConsumptionDate(
+          bomLevel,
+          parentCostSheetLine,
+          getStockMoveLinesPerProductAndUnit(
+              consumedStockMoveLineList,
+              calculationDate,
+              previousCostSheetDate,
+              calculationTypeSelect,
+              excludedConsumedLineIds));
+      return;
+    }
+
     Map<List<Object>, BigDecimal> consumedStockMoveLinePerProductAndUnit =
         getTotalQtyPerProductAndUnit(
             consumedStockMoveLineList,
@@ -963,6 +981,50 @@ public class CostSheetServiceImpl implements CostSheetService {
           CostSheetService.ORIGIN_MANUF_ORDER,
           null,
           valuationMethod);
+    }
+  }
+
+  /**
+   * Values each consumed line at the WAP price recorded on it when it was realized, or at its
+   * company unit price if no WAP price was recorded.
+   */
+  protected void computeConsumedProductAtConsumptionDate(
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      Map<List<Object>, List<StockMoveLine>> consumedStockMoveLinePerProductAndUnit)
+      throws AxelorException {
+
+    int scale = appProductionService.getNbDecimalDigitForUnitPrice();
+
+    for (Entry<List<Object>, List<StockMoveLine>> entry :
+        consumedStockMoveLinePerProductAndUnit.entrySet()) {
+
+      Product product = (Product) entry.getKey().get(0);
+      Unit unit = (Unit) entry.getKey().get(1);
+
+      if (product == null) {
+        continue;
+      }
+
+      BigDecimal qty = BigDecimal.ZERO;
+      BigDecimal costPrice = BigDecimal.ZERO;
+
+      for (StockMoveLine stockMoveLine : entry.getValue()) {
+        qty = qty.add(stockMoveLine.getRealQty());
+        costPrice =
+            costPrice.add(
+                consumedStockMoveLineValuationService.computeConsumedValue(stockMoveLine));
+      }
+
+      if (qty.signum() != 0) {
+        costSheetLineService.addConsumedProductCostSheetLine(
+            product,
+            unit,
+            bomLevel,
+            parentCostSheetLine,
+            qty,
+            costPrice.setScale(scale, RoundingMode.HALF_UP));
+      }
     }
   }
 
@@ -1057,6 +1119,32 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     Map<List<Object>, BigDecimal> stockMoveLinePerProductAndUnitMap = new HashMap<>();
 
+    getStockMoveLinesPerProductAndUnit(
+            stockMoveLineList,
+            calculationDate,
+            previousCostSheetDate,
+            calculationType,
+            excludedLineIds)
+        .forEach(
+            (keys, stockMoveLines) ->
+                stockMoveLinePerProductAndUnitMap.put(
+                    keys,
+                    stockMoveLines.stream()
+                        .map(StockMoveLine::getRealQty)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add)));
+
+    return stockMoveLinePerProductAndUnitMap;
+  }
+
+  protected Map<List<Object>, List<StockMoveLine>> getStockMoveLinesPerProductAndUnit(
+      List<StockMoveLine> stockMoveLineList,
+      LocalDate calculationDate,
+      LocalDate previousCostSheetDate,
+      int calculationType,
+      Set<Long> excludedLineIds) {
+
+    Map<List<Object>, List<StockMoveLine>> stockMoveLinePerProductAndUnitMap = new HashMap<>();
+
     if (stockMoveLineList == null) {
       return stockMoveLinePerProductAndUnitMap;
     }
@@ -1097,13 +1185,9 @@ public class CostSheetServiceImpl implements CostSheetService {
       keys.add(productKey);
       keys.add(unitKey);
 
-      BigDecimal qty = stockMoveLinePerProductAndUnitMap.get(keys);
-
-      if (qty == null) {
-        qty = BigDecimal.ZERO;
-      }
-
-      stockMoveLinePerProductAndUnitMap.put(keys, qty.add(stockMoveLine.getRealQty()));
+      stockMoveLinePerProductAndUnitMap
+          .computeIfAbsent(keys, key -> new ArrayList<>())
+          .add(stockMoveLine);
     }
 
     return stockMoveLinePerProductAndUnitMap;

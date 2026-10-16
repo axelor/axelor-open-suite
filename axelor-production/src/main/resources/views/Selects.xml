@@ -118,6 +118,7 @@
   <selection name="production.product.components.valuation.select">
     <option value="1">Average Price</option>
     <option value="2">Cost Price</option>
+    <option value="3">Average price at consumption date</option>
   </selection>
 
   <selection name="sequence.generic.code.select"

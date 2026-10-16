@@ -44,6 +44,7 @@
 "Automatically plan the manuf. orders generated from sale order",,,
 "Available stock",,,
 "Average Price",,,
+"Average price at consumption date",,,
 "BOM",,,
 "BOM currently has no status",,,
 "BOM is already on draft status",,,

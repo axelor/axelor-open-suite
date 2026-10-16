@@ -33,6 +33,7 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.WorkCenterRepository;
 import com.axelor.apps.production.service.ProdProcessLineComputationService;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.costsheet.ConsumedStockMoveLineValuationService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -63,15 +64,18 @@ public class ManufOrderCostServiceImpl implements ManufOrderCostService {
   protected AppBaseService appBaseService;
   protected AppProductionService appProductionService;
   protected ProdProcessLineComputationService prodProcessLineComputationService;
+  protected ConsumedStockMoveLineValuationService consumedStockMoveLineValuationService;
 
   @Inject
   public ManufOrderCostServiceImpl(
       AppBaseService appBaseService,
       AppProductionService appProductionService,
-      ProdProcessLineComputationService prodProcessLineComputationService) {
+      ProdProcessLineComputationService prodProcessLineComputationService,
+      ConsumedStockMoveLineValuationService consumedStockMoveLineValuationService) {
     this.appBaseService = appBaseService;
     this.appProductionService = appProductionService;
     this.prodProcessLineComputationService = prodProcessLineComputationService;
+    this.consumedStockMoveLineValuationService = consumedStockMoveLineValuationService;
   }
 
   @Override
@@ -231,11 +235,7 @@ public class ManufOrderCostServiceImpl implements ManufOrderCostService {
       if (!isRealized(stockMoveLine)) {
         continue;
       }
-      BigDecimal unitPrice = stockMoveLine.getWapPrice();
-      if (unitPrice.signum() == 0) {
-        unitPrice = stockMoveLine.getCompanyUnitPriceUntaxed();
-      }
-      total = total.add(stockMoveLine.getRealQty().multiply(unitPrice));
+      total = total.add(consumedStockMoveLineValuationService.computeConsumedValue(stockMoveLine));
     }
     return total;
   }

@@ -75,6 +75,19 @@ public interface CostSheetLineService {
       int valuationMethod)
       throws AxelorException;
 
+  /**
+   * Adds an already valued consumed quantity to the parent cost sheet line, merging it with an
+   * existing line of the same product and unit.
+   */
+  public CostSheetLine addConsumedProductCostSheetLine(
+      Product product,
+      Unit unit,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      BigDecimal consumptionQty,
+      BigDecimal costPrice)
+      throws AxelorException;
+
   public CostSheetLine createConsumedProductWasteCostSheetLine(
       Company company,
       Product product,

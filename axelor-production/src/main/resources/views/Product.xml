@@ -21,7 +21,7 @@
         onChange="action-product-group-cost-type-select-onchange"/>
       <field name="manufOrderCompValuMethodSelect"
         showIf="productSubTypeSelect == 1 || productSubTypeSelect == 2"/>
-      <field name="bomCompValuMethodSelect"
+      <field name="bomCompValuMethodSelect" selection-in="[1,2]"
         showIf="productSubTypeSelect == 1 || productSubTypeSelect == 2"/>
       <panel name="actionPanel" colSpan="12">
         <button name="createProductionOrderBtn" title="Create production order" colSpan="4"
