@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed a foreign currency credit note imputed on an invoice at another rate remaining partially due in its currency although fully reconciled."
-module: axelor-account

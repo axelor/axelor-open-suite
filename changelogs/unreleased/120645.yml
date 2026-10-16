@@ -1,3 +1,0 @@
----
-title: "Sale order: fixed the error on save when the shipment mode is set before the first save, and the shipping cost line is now removed when the shipment mode is emptied."
-module: axelor-supplychain

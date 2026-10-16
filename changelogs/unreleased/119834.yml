@@ -1,3 +1,0 @@
----
-title: "Reconcile: fixed the missing partner on the misc. operation lines generated when reconciling move lines on compatible accounts."
-module: axelor-account
