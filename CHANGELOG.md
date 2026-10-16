@@ -1,3 +1,18 @@
+## [8.4.37] (2026-10-16)
+
+### Fixes
+#### Bank Payment
+
+* Bank reconciliation: fixed bank statements reconciled through the include other bank statements option staying in the bank statement selection list, and unreconciled bank statements not coming back into it.
+* Bank reconciliation: fixed matching not verifying the debit/credit direction between the statement line and the move line (manual and automatic).
+
+
+### Developer
+
+#### Bank Payment
+
+Added the BankStatementValidateService as parameter in the BankReconciliationLineUnreconciliationServiceImpl's constructor
+
 ## [8.4.36] (2026-10-01)
 
 ### Fixes
@@ -3607,6 +3622,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.37]: https://github.com/axelor/axelor-open-suite/compare/v8.4.36...v8.4.37
 [8.4.36]: https://github.com/axelor/axelor-open-suite/compare/v8.4.35...v8.4.36
 [8.4.35]: https://github.com/axelor/axelor-open-suite/compare/v8.4.34...v8.4.35
 [8.4.34]: https://github.com/axelor/axelor-open-suite/compare/v8.4.33...v8.4.34
