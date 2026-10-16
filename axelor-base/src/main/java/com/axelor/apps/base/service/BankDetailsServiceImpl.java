@@ -25,17 +25,16 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.exceptions.InvalidIbanException;
 import com.axelor.utils.helpers.StringHelper;
+import de.speedbanking.iban.Iban;
+import de.speedbanking.iban.IbanRegistry;
+import de.speedbanking.util.Country;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import org.iban4j.CountryCode;
-import org.iban4j.IbanFormatException;
-import org.iban4j.IbanUtil;
-import org.iban4j.InvalidCheckDigitException;
-import org.iban4j.UnsupportedCountryException;
 
 public class BankDetailsServiceImpl implements BankDetailsService {
 
@@ -176,14 +175,20 @@ public class BankDetailsServiceImpl implements BankDetailsService {
     return domain;
   }
 
-  public void validateIban(String iban)
-      throws IbanFormatException, InvalidCheckDigitException, UnsupportedCountryException {
-    CountryCode countryCode = CountryCode.getByCode(IbanUtil.getCountryCode(iban));
-    if (countryCode == null) {
-      throw new UnsupportedCountryException("Country code is not supported.");
+  @Override
+  public void validateIban(String iban) throws InvalidIbanException {
+    String countryCode = iban == null || iban.length() < 2 ? null : iban.substring(0, 2);
+    if (!Country.isAssigned(countryCode)) {
+      throw new InvalidIbanException(
+          String.format("Country code is not supported: %s", countryCode));
     }
-    if (IbanUtil.isSupportedCountry(countryCode)) {
-      IbanUtil.validate(iban);
+    if (IbanRegistry.getByCode(countryCode) == null) {
+      return;
+    }
+    try {
+      Iban.validate(iban);
+    } catch (de.speedbanking.iban.InvalidIbanException e) {
+      throw new InvalidIbanException(e.getMessage(), e);
     }
   }
 }
