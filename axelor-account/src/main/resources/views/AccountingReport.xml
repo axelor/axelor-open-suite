@@ -303,6 +303,7 @@
           readonlyIf="$contains([1000], reportType.typeSelect)  || year || period"/>
       </panel>
       <field name="journal" form-view="journal-form" grid-view="journal-grid"
+        onSelect="action-accounting-report-attrs-journal-domain"
         showIf="$contains([1001], reportType.typeSelect)"/>
       <field name="minAmountExcl" showIf="reportType.typeSelect == 1011"/>
       <field name="reportType.typeSelect" hidden="true"/>
