@@ -185,14 +185,15 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
         appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_CLASSIC;
     boolean discountOnEditableGridEnabled = appSale.getIsDiscountEnabledOnEditableGrid();
 
-    attrs.put(
-        "saleOrderLineList.discountTypeSelect",
-        Map.of(HIDDEN_ATTRS, !discountOnEditableGridEnabled));
-    attrs.put(
-        "saleOrderLineList.discountAmount", Map.of(HIDDEN_ATTRS, !discountOnEditableGridEnabled));
-    attrs.put(
-        "saleOrderLineList.priceDiscounted",
-        Map.of(HIDDEN_ATTRS, !isClassicList && !discountOnEditableGridEnabled));
+    if (discountOnEditableGridEnabled) {
+      return attrs;
+    }
+
+    attrs.put("saleOrderLineList.discountTypeSelect", Map.of(HIDDEN_ATTRS, true));
+    attrs.put("saleOrderLineList.discountAmount", Map.of(HIDDEN_ATTRS, true));
+    if (!isClassicList) {
+      attrs.put("saleOrderLineList.priceDiscounted", Map.of(HIDDEN_ATTRS, true));
+    }
     return attrs;
   }
 
