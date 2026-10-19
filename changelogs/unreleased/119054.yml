@@ -1,0 +1,3 @@
+---
+title: "Accounting batch: fixed customer and supplier returns being selected by the forecasted supplier/customer invoices cut-off batches."
+module: axelor-supplychain
