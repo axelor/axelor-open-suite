@@ -31,8 +31,7 @@ import java.util.Optional;
 public class TimesheetEmployeeServiceImpl implements TimesheetEmployeeService {
   @Override
   public Employee getEmployee(Project project) throws AxelorException {
-    User user =
-        Optional.ofNullable(project).map(Project::getAssignedTo).orElse(AuthUtils.getUser());
+    User user = AuthUtils.getUser();
     Employee employee = Optional.ofNullable(user).map(User::getEmployee).orElse(null);
 
     if (user == null) {
