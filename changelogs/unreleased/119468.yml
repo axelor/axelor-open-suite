@@ -1,0 +1,3 @@
+---
+title: "Stock move: fixed negative stock error on non stock managed products with a tracking number."
+module: axelor-stock
