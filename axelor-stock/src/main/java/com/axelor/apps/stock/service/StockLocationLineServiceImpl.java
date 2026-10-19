@@ -446,6 +446,10 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   public StockLocationLine getOrCreateDetailLocationLine(
       StockLocation detailLocation, Product product, TrackingNumber trackingNumber) {
 
+    if (!product.getStockManaged()) {
+      return null;
+    }
+
     StockLocationLine detailLocationLine =
         stockLocationLineFetchService.getDetailLocationLine(
             detailLocation, product, trackingNumber);
