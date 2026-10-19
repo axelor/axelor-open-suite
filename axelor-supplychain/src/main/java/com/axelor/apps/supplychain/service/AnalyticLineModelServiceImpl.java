@@ -41,6 +41,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import jakarta.inject.Inject;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -207,6 +208,31 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     analyticLineModel.copyToModel();
 
     return analyticLineModel;
+  }
+
+  @Override
+  public boolean updateAnalyticMoveLineAmounts(AnalyticLineModel analyticLineModel)
+      throws AxelorException {
+    List<AnalyticMoveLine> analyticMoveLineList = analyticLineModel.getAnalyticMoveLineList();
+    if (!appAccountService.getAppAccount().getManageAnalyticAccounting()
+        || CollectionUtils.isEmpty(analyticMoveLineList)) {
+      return false;
+    }
+
+    BigDecimal companyExTaxTotal =
+        currencyScaleService.getCompanyScaledValue(
+            analyticLineModel.getCompany(), analyticLineModel.getCompanyExTaxTotal());
+    if (analyticMoveLineList.stream()
+        .allMatch(
+            analyticMoveLine ->
+                analyticMoveLine.getOriginalPieceAmount() != null
+                    && analyticMoveLine.getOriginalPieceAmount().compareTo(companyExTaxTotal)
+                        == 0)) {
+      return false;
+    }
+
+    this.computeAnalyticDistribution(analyticLineModel);
+    return true;
   }
 
   @Override
