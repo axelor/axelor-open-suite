@@ -45,7 +45,6 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
 
   protected UnitConversionService unitConversionService;
   protected ProductionConfigService productionConfigService;
-  protected ManufOrderService manufOrderService;
   protected ProductionOrderUpdateService productionOrderUpdateService;
   protected AppBaseService appBaseService;
   protected final SaleOrderLineMOGenerationService saleOrderLineMOGenerationService;
@@ -55,14 +54,12 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
   public ProductionOrderSaleOrderMOGenerationServiceImpl(
       UnitConversionService unitConversionService,
       ProductionConfigService productionConfigService,
-      ManufOrderService manufOrderService,
       ProductionOrderUpdateService productionOrderUpdateService,
       AppBaseService appBaseService,
       SaleOrderLineMOGenerationService saleOrderLineMOGenerationService,
       ManufOrderGenerationService manufOrderGenerationService) {
     this.unitConversionService = unitConversionService;
     this.productionConfigService = productionConfigService;
-    this.manufOrderService = manufOrderService;
     this.productionOrderUpdateService = productionOrderUpdateService;
     this.appBaseService = appBaseService;
     this.saleOrderLineMOGenerationService = saleOrderLineMOGenerationService;

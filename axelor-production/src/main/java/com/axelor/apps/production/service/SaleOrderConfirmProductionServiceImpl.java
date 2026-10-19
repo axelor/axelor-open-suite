@@ -23,19 +23,20 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 
 public class SaleOrderConfirmProductionServiceImpl implements SaleOrderConfirmProductionService {
 
-  protected ProductionOrderSaleOrderService productionOrderSaleOrderService;
+  protected Provider<ProductionOrderSaleOrderService> productionOrderSaleOrderServiceProvider;
   protected AppProductionService appProductionService;
 
   @Inject
   public SaleOrderConfirmProductionServiceImpl(
-      ProductionOrderSaleOrderService productionOrderSaleOrderService,
+      Provider<ProductionOrderSaleOrderService> productionOrderSaleOrderServiceProvider,
       AppProductionService appProductionService) {
-    this.productionOrderSaleOrderService = productionOrderSaleOrderService;
+    this.productionOrderSaleOrderServiceProvider = productionOrderSaleOrderServiceProvider;
     this.appProductionService = appProductionService;
   }
 
@@ -45,7 +46,7 @@ public class SaleOrderConfirmProductionServiceImpl implements SaleOrderConfirmPr
 
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getProductionOrderGenerationAuto()) {
-      productionOrderSaleOrderService.generateProductionOrder(saleOrder, List.of());
+      productionOrderSaleOrderServiceProvider.get().generateProductionOrder(saleOrder, List.of());
     }
   }
 }
