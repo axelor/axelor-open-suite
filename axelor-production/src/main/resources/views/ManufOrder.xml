@@ -78,7 +78,7 @@
     model="com.axelor.apps.production.db.ManufOrder"
     onNew="action-attrs-production-manuf-order-set-default-plan-if-missing-on-new,action-manuf-order-group-onnew"
     onLoad="action-manuf-order-group-onload" width="large"
-    onSave="action-manuf-order-record-client-partner">
+    onSave="action-manuf-order-validate-planned-dates,action-manuf-order-record-client-partner">
     <!-- TODO avec propagation -->
     <menubar>
       <menu name="manufOrderReportsMenu" title="Reports" icon="files" showTitle="true">
@@ -218,9 +218,9 @@
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 6">
         <panel name="plannedDatesPanel" title="Planned dates">
           <field name="plannedStartDateT" title="Start date"
-            onChange="action-manuf-order-method-update-planned-dates,action-manuf-order-method-update-stock-moves-estimated-date"/>
+            onChange="action-manuf-order-validate-planned-start-date,action-manuf-order-method-update-planned-dates,action-manuf-order-method-update-stock-moves-estimated-date"/>
           <field name="plannedEndDateT" title="End date"
-            onChange="action-manuf-order-validate-planned-end-date,action-manuf-order-method-update-stock-moves-estimated-date"
+            onChange="action-manuf-order-validate-planned-dates,action-manuf-order-validate-planned-end-date,action-manuf-order-method-update-stock-moves-estimated-date"
             requiredIf="statusSelect > 1"/>
           <field name="$totalPlannedDuration" title="Total Planned Duration" type="long"
             readonly="true" widget="duration" x-seconds="true" x-big="true"/>
@@ -987,6 +987,19 @@
       expr="eval: operationOrderList.collect{it->it.realDuration}.sum()"
       if="operationOrderList != null &amp;&amp; !operationOrderList.isEmpty()"/>
   </action-attrs>
+
+  <action-validate name="action-manuf-order-validate-planned-dates"
+    model="com.axelor.apps.production.db.ManufOrder">
+    <error message="The planned end date is before the planned start date."
+      if="plannedStartDateT &amp;&amp; plannedEndDateT?.isBefore(plannedStartDateT)"/>
+  </action-validate>
+
+  <!-- In planned status, the planned dates are recomputed from the new start date -->
+  <action-validate name="action-manuf-order-validate-planned-start-date"
+    model="com.axelor.apps.production.db.ManufOrder">
+    <error message="The planned end date is before the planned start date."
+      if="statusSelect != 3 &amp;&amp; plannedStartDateT &amp;&amp; plannedEndDateT?.isBefore(plannedStartDateT)"/>
+  </action-validate>
 
   <action-validate name="action-manuf-order-validate-planned-end-date"
     model="com.axelor.apps.production.db.ManufOrder">
