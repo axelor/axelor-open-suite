@@ -85,6 +85,21 @@ public class SaleOrderLineComputeSupplychainServiceImpl extends SaleOrderLineCom
   }
 
   @Override
+  public Map<String, Object> computeValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+    Map<String, Object> saleOrderLineMap = super.computeValues(saleOrder, saleOrderLine);
+    if (saleOrderLineMap.isEmpty() || !appSupplychainService.isApp("supplychain")) {
+      return saleOrderLineMap;
+    }
+
+    AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
+    if (analyticLineModelService.updateAnalyticMoveLineAmounts(analyticLineModel)) {
+      saleOrderLineMap.put("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
+    }
+    return saleOrderLineMap;
+  }
+
+  @Override
   public Map<String, Object> updateProductQty(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder, BigDecimal oldQty, BigDecimal newQty)
       throws AxelorException {

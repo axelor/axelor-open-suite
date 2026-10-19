@@ -38,6 +38,15 @@ public interface AnalyticLineModelService {
   AnalyticLineModel computeAnalyticDistribution(AnalyticLineModel analyticLineModel)
       throws AxelorException;
 
+  /**
+   * Rescales the existing analytic move lines of the model on its companyExTaxTotal when their
+   * originalPieceAmount is outdated. Does nothing when analytic accounting is disabled, when there
+   * is no analytic move line, or when the lines already match the total.
+   *
+   * @return true if the analytic move lines were updated
+   */
+  boolean updateAnalyticMoveLineAmounts(AnalyticLineModel analyticLineModel) throws AxelorException;
+
   AnalyticLineModel createAnalyticDistributionWithTemplate(AnalyticLineModel analyticLineModel)
       throws AxelorException;
 

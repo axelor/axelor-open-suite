@@ -48,6 +48,7 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,6 +133,21 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
     }
 
     return purchaseOrderLine;
+  }
+
+  @Override
+  public Map<String, Object> compute(
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException {
+    Map<String, Object> purchaseOrderLineMap = super.compute(purchaseOrderLine, purchaseOrder);
+    if (purchaseOrderLineMap.isEmpty() || !appSupplychainService.isApp("supplychain")) {
+      return purchaseOrderLineMap;
+    }
+
+    AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
+    if (analyticLineModelService.updateAnalyticMoveLineAmounts(analyticLineModel)) {
+      purchaseOrderLineMap.put("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
+    }
+    return purchaseOrderLineMap;
   }
 
   protected Integer getSupplierDeliveryTime(
