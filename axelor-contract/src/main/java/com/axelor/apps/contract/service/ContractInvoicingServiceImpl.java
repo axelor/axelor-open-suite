@@ -217,8 +217,17 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
             .filter(contractLine -> !contractLine.getIsInvoiced())
             .peek(contractLine -> contractLine.setIsInvoiced(true))
             .collect(Collectors.toList());
+    boolean isPeriodicInvoicing = contract.getCurrentContractVersion().getIsPeriodicInvoicing();
+    AppAccount appAccount = appAccountService.getAppAccount();
     for (ContractLine line : additionalLines) {
       InvoiceLine invLine = generate(invoice, line);
+      fillCutOffDate(
+          contract,
+          appAccount,
+          contract.getInvoicePeriodStartDate(),
+          invLine,
+          contract.getInvoicePeriodEndDate(),
+          isPeriodicInvoicing);
       invLine.setContractLine(line);
       contractLineRepo.save(line);
     }
@@ -315,10 +324,19 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
   protected void computeConsumptionLines(Contract contract, Invoice invoice)
       throws AxelorException {
     Multimap<ContractLine, ConsumptionLine> consLines = mergeConsumptionLines(contract);
+    boolean isPeriodicInvoicing = contract.getCurrentContractVersion().getIsPeriodicInvoicing();
+    AppAccount appAccount = appAccountService.getAppAccount();
     for (Map.Entry<ContractLine, Collection<ConsumptionLine>> entries :
         consLines.asMap().entrySet()) {
       ContractLine line = entries.getKey();
       InvoiceLine invoiceLine = generate(invoice, line);
+      fillCutOffDate(
+          contract,
+          appAccount,
+          contract.getInvoicePeriodStartDate(),
+          invoiceLine,
+          contract.getInvoicePeriodEndDate(),
+          isPeriodicInvoicing);
       invoiceLine.setContractLine(line);
       entries.getValue().stream()
           .peek(cons -> cons.setInvoiceLine(invoiceLine))
