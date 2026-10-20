@@ -77,13 +77,13 @@ public class BankReconciliationLineUnreconciliationServiceImpl
     boolean isUnderCorrection =
         bankReconciliationLine.getBankReconciliation().getStatusSelect()
             == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
+    BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
     if (isUnderCorrection) {
       MoveLine moveLine = bankReconciliationLine.getMoveLine();
       BigDecimal ownAmount =
           currencyScaleService.getScaledValue(
               bankReconciliationLine,
               bankReconciliationLine.getDebit().add(bankReconciliationLine.getCredit()));
-      BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
       if (bankStatementLine != null) {
         bankStatementLine.setAmountRemainToReconcile(
             currencyScaleService.getScaledValue(
@@ -95,6 +95,11 @@ public class BankReconciliationLineUnreconciliationServiceImpl
               bankReconciliationLine, moveLine.getBankReconciledAmount().subtract(ownAmount)));
       moveLineRepository.save(moveLine);
       bankReconciliationLine.setIsPosted(false);
+    }
+    if (bankStatementLine != null
+        && bankStatementLine.getMoveLine() != null
+        && bankStatementLine.getMoveLine().equals(bankReconciliationLine.getMoveLine())) {
+      bankStatementLine.setMoveLine(null);
     }
     bankReconciliationLine.setMoveLine(null);
     bankReconciliationLine.setPartner(null);

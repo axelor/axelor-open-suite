@@ -562,12 +562,18 @@ public class BankReconciliationValidateService {
           bankReconciliation.getCompany().getName());
     }
 
+    boolean isUnderCorrection =
+        bankReconciliation.getStatusSelect()
+            == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
+
     for (BankReconciliationLine bankReconciliationLine : consumedLineList) {
       bankReconciliationLineService.reconcileBRLToMoveLine(
           bankReconciliationLine, moveLine, reconcileNumber);
-      bankReconciliationLine.setIsPosted(true);
-      bankReconciliationLineService.checkAmount(bankReconciliationLine);
-      bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
+      if (isUnderCorrection) {
+        bankReconciliationLine.setIsPosted(true);
+        bankReconciliationLineService.checkAmount(bankReconciliationLine);
+        bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
+      }
     }
 
     bankReconciliationRepository.save(bankReconciliation);

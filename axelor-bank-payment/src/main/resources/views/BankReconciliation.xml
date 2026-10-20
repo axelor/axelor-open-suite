@@ -103,7 +103,8 @@
           onClick="action-bank-reconciliation-method-automatic-reconciliation,action-bank-reconciliation-method-check-multiple-move-line"/>
         <button name="multipleReconcileBtn" title="Multiple reconciles" colSpan="3"
           onClick="save,action-bank-reconciliation-validate-lines-selected,action-bank-reconciliation-view-multiple-reconcile-wizard"/>
-        <button name="reconcileToMoveLineBtn" title="Reconcile to move line" colSpan="3"
+        <button name="reconcileToMoveLineBtn"
+          title="Reconcile N bank statement lines to an entry" colSpan="3"
           onClick="save,action-bank-reconciliation-validate-reconcile-to-move-line-lines-selected,action-bank-reconciliation-view-reconcile-to-move-line-wizard"/>
         <button name="unreconcileBtn" title="Unreconcile selected" colSpan="3"
           onClick="save,action-bank-reconciliation-method-unreconcile"/>
@@ -219,7 +220,8 @@
   </form>
 
   <form name="bank-reconciliation-reconcile-to-move-line-wizard-form"
-    title="Reconcile to move line" model="com.axelor.apps.bankpayment.db.BankReconciliation"
+    title="Reconcile N bank statement lines to an entry"
+    model="com.axelor.apps.bankpayment.db.BankReconciliation"
     onNew="action-bank-reconciliation-group-reconcile-to-move-line-wizard-new">
     <panel name="mainPanel" colSpan="12">
       <panel-related name="$selectedBankReconciliationLinesPanel"
@@ -228,7 +230,7 @@
         readonly="true" grid-view="bank-reconciliation-line-reconcile-to-move-line-grid"
         form-view="bank-reconciliation-line-form"/>
 
-      <panel name="moveLinePanel" title="Move line details" colSpan="12">
+      <panel name="moveLinePanel" title="Select entry to reconcile with" colSpan="12">
         <field name="$moveLineToReconcile" title="Move line" type="many-to-one"
           target="com.axelor.apps.account.db.MoveLine" canNew="false" canEdit="false"
           form-view="move-line-form" grid-view="move-line-grid"
@@ -246,10 +248,10 @@
       </panel>
 
       <panel name="overviewPanel" title="Overview" colSpan="12">
-        <field name="$bankMovementsTotal" title="Bank movements total" type="decimal"
+        <field name="$bankMovementsTotal" title="Bank statement lines balance" type="decimal"
           readonly="true" x-scale="$currencyNumberOfDecimals"/>
-        <field name="$moveLineRemainingAmount" title="Move line remaining" type="decimal"
-          readonly="true" x-scale="$currencyNumberOfDecimals"/>
+        <field name="$moveLineRemainingAmount" title="Entry remaining to reconcile"
+          type="decimal" readonly="true" x-scale="$currencyNumberOfDecimals"/>
         <field name="$reconcileDifference" title="Difference" type="decimal" readonly="true"
           x-scale="$currencyNumberOfDecimals"/>
         <label name="reconcileBalancedLabel" title="Amounts are balanced"
@@ -536,7 +538,8 @@
   </action-method>
 
   <action-view name="action-bank-reconciliation-view-reconcile-to-move-line-wizard"
-    title="Reconcile to move line" model="com.axelor.apps.bankpayment.db.BankReconciliation">
+    title="Reconcile N bank statement lines to an entry"
+    model="com.axelor.apps.bankpayment.db.BankReconciliation">
     <view type="form" name="bank-reconciliation-reconcile-to-move-line-wizard-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
