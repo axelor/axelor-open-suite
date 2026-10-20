@@ -16,35 +16,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.crm.service;
+package com.axelor.apps.crm.service.observer;
 
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.DuplicateObjectsService;
-import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.event.DuplicateObjectsBeforeRemove;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.inject.Beans;
-import com.google.inject.persist.Transactional;
-import jakarta.inject.Singleton;
+import com.axelor.event.Observes;
+import jakarta.annotation.Priority;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
-@Singleton
-public class DuplicateObjectsCrmService extends DuplicateObjectsService {
+public class DuplicateObjectsCrmObserver {
 
-  @Transactional
-  public void removeDuplicate(List<Long> selectedIds, String modelName) {
-    if (!Beans.get(AppBaseService.class).isApp("crm")) {
-      super.removeDuplicate(selectedIds, modelName);
-      return;
-    }
-
-    List<Object> duplicateObjects = getDuplicateObject(selectedIds, modelName);
-    Object originalObjct = getOriginalObject(selectedIds, modelName);
-    managePartnerEvents(duplicateObjects, originalObjct);
-
-    super.removeDuplicate(selectedIds, modelName);
+  void onDuplicateObjectsBeforeRemove(
+      @Observes @Priority(value = 10) DuplicateObjectsBeforeRemove event) {
+    managePartnerEvents(event.getDuplicateObjects(), event.getOriginalObject());
   }
 
   protected void managePartnerEvents(List<Object> duplicateObjects, Object originalObject) {

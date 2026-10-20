@@ -22,12 +22,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.event.DuplicateObjectsBeforeRemove;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
+import com.axelor.event.Event;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -50,12 +52,16 @@ public class DuplicateObjectsService {
 
   private final Logger log = LoggerFactory.getLogger(DuplicateObjectsService.class);
   @Inject private MetaFieldRepository metaFieldRepo;
+  @Inject protected Event<DuplicateObjectsBeforeRemove> duplicateObjectsBeforeRemoveEvent;
 
   @Transactional
   public void removeDuplicate(List<Long> selectedIds, String modelName) {
 
     List<Object> duplicateObjects = getDuplicateObject(selectedIds, modelName);
     Object originalObjct = getOriginalObject(selectedIds, modelName);
+
+    duplicateObjectsBeforeRemoveEvent.fire(
+        new DuplicateObjectsBeforeRemove(originalObjct, duplicateObjects, modelName));
 
     managePartnerAccountingSituations(duplicateObjects, originalObjct);
     managePartnerAddresses(duplicateObjects, originalObjct);

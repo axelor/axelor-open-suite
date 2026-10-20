@@ -1,0 +1,12 @@
+---
+title: "Duplicate objects: other modules can now add their own processing when merging duplicate records."
+module: axelor-base
+developer: |
+  The CRM override of the duplicate merge has been replaced by an event.
+
+  `DuplicateObjectsService#removeDuplicate` now fires the `com.axelor.apps.base.service.event.DuplicateObjectsBeforeRemove` event
+  (original object, duplicate objects, model name) before relations are reassigned and duplicates are removed.
+  Observers run synchronously, in the same transaction.
+
+  `DuplicateObjectsCrmService` has been removed and is replaced by `com.axelor.apps.crm.service.observer.DuplicateObjectsCrmObserver` (priority 10).
+  Modules that extended `DuplicateObjectsCrmService` must now observe `DuplicateObjectsBeforeRemove` instead of overriding the service.
