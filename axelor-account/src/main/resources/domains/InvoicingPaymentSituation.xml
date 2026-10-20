@@ -19,7 +19,7 @@
     <finder-method name="findByCompanyAndBankDetails" using="company,bankDetails"/>
 
     <track>
-      <field name="activeUmr" on="UPDATE"/>
+      <field name="activeUmr" on="UPDATE" if="activeUmr != null"/>
     </track>
   </entity>
 
