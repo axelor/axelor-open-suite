@@ -24,16 +24,28 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.move.MoveReverseService;
+import com.axelor.apps.base.AxelorException;
+import jakarta.inject.Inject;
 import java.util.Optional;
 
 public class InvoicePaymentAlertServiceImpl implements InvoicePaymentAlertService {
 
+  protected MoveReverseService moveReverseService;
+
+  @Inject
+  public InvoicePaymentAlertServiceImpl(MoveReverseService moveReverseService) {
+    this.moveReverseService = moveReverseService;
+  }
+
   @Override
-  public String validateBeforeReverse(InvoicePayment invoicePayment) {
+  public String validateBeforeReverse(InvoicePayment invoicePayment) throws AxelorException {
     if (invoicePayment == null
         || invoicePayment.getStatusSelect() == InvoicePaymentRepository.STATUS_CANCELED) {
       return "";
     }
+
+    moveReverseService.checkBeforeReverse(invoicePayment.getMove());
 
     String alert = AccountExceptionMessage.INVOICE_PAYMENT_ALERT_DEFAULT_REVERSE;
 

@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -374,7 +375,9 @@ public class InvoicePaymentController {
     response.setReload(true);
   }
 
-  public void validateBeforeReversePaymentMove(ActionRequest request, ActionResponse response) {
+  @ErrorException
+  public void validateBeforeReversePaymentMove(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
 
     String alert =

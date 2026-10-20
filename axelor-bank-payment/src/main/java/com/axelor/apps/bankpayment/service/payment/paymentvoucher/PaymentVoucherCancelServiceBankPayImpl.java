@@ -19,6 +19,7 @@
 package com.axelor.apps.bankpayment.service.payment.paymentvoucher;
 
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.service.DepositSlipService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelServiceImpl;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
@@ -32,7 +33,9 @@ public class PaymentVoucherCancelServiceBankPayImpl extends PaymentVoucherCancel
   protected BankOrderCancelService bankOrderCancelService;
 
   @Inject
-  public PaymentVoucherCancelServiceBankPayImpl(BankOrderCancelService bankOrderCancelService) {
+  public PaymentVoucherCancelServiceBankPayImpl(
+      BankOrderCancelService bankOrderCancelService, DepositSlipService depositSlipService) {
+    super(depositSlipService);
     this.bankOrderCancelService = bankOrderCancelService;
   }
 

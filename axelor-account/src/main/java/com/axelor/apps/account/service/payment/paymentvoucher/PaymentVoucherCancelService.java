@@ -24,4 +24,16 @@ import com.axelor.apps.base.AxelorException;
 public interface PaymentVoucherCancelService {
 
   public PaymentVoucher cancelPaymentVoucher(PaymentVoucher paymentVoucher) throws AxelorException;
+
+  /**
+   * Checks that the payment voucher can be cancelled by a user-driven move reversal.
+   *
+   * <p>A voucher included in a validated deposit slip (bank deposit move generated) cannot be
+   * cancelled this way: the cheque has already been deposited. Cheque rejection does not use this
+   * check, since it cancels a deposited cheque on purpose.
+   *
+   * @param paymentVoucher the payment voucher about to be cancelled
+   * @throws AxelorException if the voucher is included in a validated deposit slip
+   */
+  void checkDepositSlip(PaymentVoucher paymentVoucher) throws AxelorException;
 }

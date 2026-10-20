@@ -19,18 +19,26 @@
 package com.axelor.apps.bankpayment.service.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentAlertServiceImpl;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
+import jakarta.inject.Inject;
 import java.util.Optional;
 
 public class InvoicePaymentAlertServiceBankPayImpl extends InvoicePaymentAlertServiceImpl {
 
+  @Inject
+  public InvoicePaymentAlertServiceBankPayImpl(MoveReverseService moveReverseService) {
+    super(moveReverseService);
+  }
+
   @Override
-  public String validateBeforeReverse(InvoicePayment invoicePayment) {
+  public String validateBeforeReverse(InvoicePayment invoicePayment) throws AxelorException {
     String alert = super.validateBeforeReverse(invoicePayment);
 
     if (!Beans.get(AppBaseService.class).isApp("bank-payment")) {

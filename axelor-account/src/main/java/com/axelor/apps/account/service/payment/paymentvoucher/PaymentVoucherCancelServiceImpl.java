@@ -18,18 +18,47 @@
  */
 package com.axelor.apps.account.service.payment.paymentvoucher;
 
+import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.DepositSlipService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class PaymentVoucherCancelServiceImpl implements PaymentVoucherCancelService {
+
+  protected DepositSlipService depositSlipService;
+
+  @Inject
+  public PaymentVoucherCancelServiceImpl(DepositSlipService depositSlipService) {
+    this.depositSlipService = depositSlipService;
+  }
 
   @Override
   @Transactional
   public PaymentVoucher cancelPaymentVoucher(PaymentVoucher paymentVoucher) throws AxelorException {
-
+    DepositSlip depositSlip = paymentVoucher.getDepositSlip();
+    if (depositSlip != null && !depositSlip.getIsBankDepositMoveGenerated()) {
+      depositSlipService.removePaymentVoucher(depositSlip, paymentVoucher);
+      depositSlipService.computeTotals(depositSlip);
+    }
     paymentVoucher.setStatusSelect(PaymentVoucherRepository.STATUS_CANCELED);
     return paymentVoucher;
+  }
+
+  @Override
+  public void checkDepositSlip(PaymentVoucher paymentVoucher) throws AxelorException {
+    DepositSlip depositSlip = paymentVoucher.getDepositSlip();
+    if (depositSlip != null && depositSlip.getIsBankDepositMoveGenerated()) {
+      throw new AxelorException(
+          paymentVoucher,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_CANCEL_DEPOSIT_SLIP_VALIDATED),
+          depositSlip.getDepositNumber());
+    }
   }
 }

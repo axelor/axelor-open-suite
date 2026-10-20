@@ -19,7 +19,16 @@
 package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.base.AxelorException;
 
 public interface InvoicePaymentAlertService {
-  String validateBeforeReverse(InvoicePayment invoicePayment);
+
+  /**
+   * Validates the reversal of the payment move before it is launched from the invoice payment.
+   *
+   * @param invoicePayment the invoice payment whose move is about to be reversed
+   * @return the key of the confirmation message to display, empty when no confirmation is needed
+   * @throws AxelorException if the move cannot be reversed
+   */
+  String validateBeforeReverse(InvoicePayment invoicePayment) throws AxelorException;
 }

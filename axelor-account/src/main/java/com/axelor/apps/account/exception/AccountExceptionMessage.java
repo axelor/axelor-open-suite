@@ -957,6 +957,9 @@ public final class AccountExceptionMessage {
   public static final String PAYMENT_VOUCHER_PFP_NOT_VALIDATED = /*$$(*/
       "Some imported invoice terms are not PFP validated." /*)*/;
 
+  public static final String PAYMENT_VOUCHER_CANCEL_DEPOSIT_SLIP_VALIDATED = /*$$(*/
+      "This bank check has already been included in deposit slip %s." /*)*/;
+
   /** Payment schedule line service */
 
   /** Account chart controller */

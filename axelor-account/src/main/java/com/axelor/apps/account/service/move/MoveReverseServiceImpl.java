@@ -246,7 +246,18 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   }
 
   @Override
+  public void checkBeforeReverse(Move move) throws AxelorException {
+    if (move == null || move.getPaymentVoucher() == null) {
+      return;
+    }
+
+    paymentVoucherCancelService.checkDepositSlip(move.getPaymentVoucher());
+  }
+
+  @Override
   public Move generateReverse(Move move, Map<String, Object> assistantMap) throws AxelorException {
+    checkBeforeReverse(move);
+
     move =
         generateReverse(
             move,
@@ -303,6 +314,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     List<String> errorList = new ArrayList<>();
     for (Move move : moveList) {
       try {
+        checkBeforeReverse(move);
+
         if (!isChooseDate) {
           dateOfReversion =
               extractContextMoveService.getDateOfReversion(null, move, dateOfReversionSelect);

@@ -38,4 +38,13 @@ public interface MoveReverseService {
 
   List<Move> massReverse(List<Move> moveList, Map<String, Object> assistantMap)
       throws AxelorException;
+
+  /**
+   * Checks the preconditions of a user-driven reversal (reverse wizard, mass reversal, invoice
+   * payment cancellation).
+   *
+   * @param move the move about to be reversed
+   * @throws AxelorException if the move cannot be reversed
+   */
+  void checkBeforeReverse(Move move) throws AxelorException;
 }
