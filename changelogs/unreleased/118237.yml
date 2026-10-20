@@ -1,0 +1,6 @@
+---
+title: "Sale order / Purchase order: fixed analytic distribution amounts staying at zero when selecting a product with a default analytic distribution template."
+module: axelor-supplychain
+developer: |
+  Added updateAnalyticMoveLineAmounts(AnalyticLineModel) to AnalyticLineModelService.
+  PurchaseOrderLineServiceSupplyChainImpl.compute(PurchaseOrderLine, PurchaseOrder) and SaleOrderLineComputeSupplychainServiceImpl.computeValues(SaleOrder, SaleOrderLine) now call it after computing the totals.

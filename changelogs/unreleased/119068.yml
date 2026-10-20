@@ -1,3 +1,0 @@
----
-title: "Purchase order: fixed payment mode and payment condition not carried over to the invoice when invoicing receptions, and lost when merging purchase orders."
-module: axelor-supplychain

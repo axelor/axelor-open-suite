@@ -30,6 +30,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -55,6 +56,7 @@ public class ManufOrderSaleOrderServiceImpl implements ManufOrderSaleOrderServic
   public ProductionOrder generateManufOrders(
       ProductionOrder productionOrder, SaleOrderLine saleOrderLine) throws AxelorException {
 
+    saleOrderLine = JpaModelHelper.ensureManaged(saleOrderLine);
     Product product = saleOrderLine.getProduct();
 
     // Produce everything

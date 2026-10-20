@@ -1,3 +1,0 @@
----
-title: "Configurator: fixed the script check accepting a non-numeric text for a decimal field."
-module: axelor-sale

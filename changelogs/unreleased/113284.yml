@@ -1,3 +1,0 @@
----
-title: "Sale: fixed performance regression where computeValues was called for every SaleOrderLine outside the multi-line display guard."
-module: axelor-sale

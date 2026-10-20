@@ -1,3 +1,0 @@
----
-title: "Bank reconciliation: fixed matching not verifying the debit/credit direction between the statement line and the move line (manual and automatic)."
-module: axelor-bank-payment

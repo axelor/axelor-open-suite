@@ -45,6 +45,9 @@ public abstract class ShippingAbstractService {
   public String createShipmentCostLine(ShippableOrder shippableOrder, ShipmentMode shipmentMode)
       throws AxelorException {
     if (shipmentMode == null) {
+      if (hasShippingCostLine(shippableOrder)) {
+        removeLineAndComputeOrder(shippableOrder);
+      }
       return null;
     }
 
@@ -103,6 +106,21 @@ public abstract class ShippingAbstractService {
 
     return shippableOrderLineList.stream()
         .anyMatch(line -> shippingCostProduct.equals(line.getProduct()));
+  }
+
+  protected boolean hasShippingCostLine(ShippableOrder shippableOrder) {
+    if (shippableOrder == null) {
+      return false;
+    }
+    List<? extends ShippableOrderLine> shippableOrderLineList =
+        getShippableOrderLineList(shippableOrder);
+    if (CollectionUtils.isEmpty(shippableOrderLineList)) {
+      return false;
+    }
+
+    return shippableOrderLineList.stream()
+        .anyMatch(
+            line -> line.getProduct() != null && line.getProduct().getIsShippingCostsProduct());
   }
 
   protected boolean isThresholdUsedAndExceeded(

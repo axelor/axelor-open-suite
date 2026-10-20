@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed budget checks not being performed on validation when ventilation is skipped."
-module: axelor-budget

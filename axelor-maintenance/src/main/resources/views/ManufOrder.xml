@@ -47,7 +47,8 @@
   <form name="maintenance-manuf-order-form" title="Maintenance order"
     model="com.axelor.apps.production.db.ManufOrder" width="large"
     onLoad="action-maintenance-manuf-order-group-onload"
-    onNew="action-maintenance-manuf-order-group-onnew">
+    onNew="action-maintenance-manuf-order-group-onnew"
+    onSave="action-manuf-order-validate-planned-dates">
     <toolbar>
       <button name="printBtn" hideIf="true" onClick=""/>
     </toolbar>
@@ -164,9 +165,9 @@
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 6">
         <panel name="plannedDatesPanel" title="Planned dates">
           <field name="plannedStartDateT" title="Start date"
-            onChange="action-manuf-order-method-update-planned-dates"/>
+            onChange="action-manuf-order-validate-planned-start-date,action-manuf-order-method-update-planned-dates"/>
           <field name="plannedEndDateT" title="End date"
-            onChange="action-manuf-order-validate-planned-end-date"/>
+            onChange="action-manuf-order-validate-planned-dates,action-manuf-order-validate-planned-end-date"/>
           <field name="$totalPlannedDuration" title="Total Planned Duration" readonly="true"
             type="long" widget="duration" x-big="true" x-seconds="true"/>
           <field name="$totalLeadTimeDuration" title="Total Lead Duration" readonly="true"

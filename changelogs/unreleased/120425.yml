@@ -1,3 +1,0 @@
----
-title: "Report: fixed BIRT prints failing with \"Connection is closed\" when the report loads an image such as the company logo."
-module: axelor-base

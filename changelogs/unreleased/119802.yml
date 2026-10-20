@@ -1,5 +1,0 @@
----
-title: "Product: fixed prices entered on the product form being ignored when product companies are not shown."
-module: axelor-base
-developer: |
-  Use AppBaseService.getEnabledCompanySpecificProductFields() instead of getAppBase().getCompanySpecificProductFieldsSet().

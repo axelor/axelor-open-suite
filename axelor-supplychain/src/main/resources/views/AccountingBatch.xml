@@ -82,6 +82,8 @@
       (:_accountingCutOffTypeSelect = 2 AND
       self.stockMove.typeSelect = 2))
       AND
+      self.stockMove.isReversion = false
+      AND
       self.stockMove.realDate &lt;= :_moveDate
       AND
       self.stockMove.company.id =
