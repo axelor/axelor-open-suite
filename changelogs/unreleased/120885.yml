@@ -1,0 +1,12 @@
+---
+title: "Stock location: fixed an SQL error preventing stock locations from being displayed or created and blocking sale quotations, invoices and contracts using them. The stock location value no longer includes the sub-locations, as before 8.5.30."
+module: axelor-stock
+developer: |
+  The changes of 8.5.30 for the valuation of stock locations with their sub-locations have been reverted: the formula of `StockLocation.stockLocationValue` used a recursive query not supported by Hibernate 5.
+
+  The following elements have been removed:
+  - the method `StockLocationLineService.getStockLocationLineValue(Long)`;
+  - the transient field `stockLocationLineValue` of `StockLocationLine`;
+  - the grid `stock-location-line-grouped-by-location-grid` and its extension `stock-location-line-grouped-by-location-supplychain-grid`;
+  - the actions `action-location-view-location-content-grouped-by-location` and `action-stock-location-attrs-set-has-sub-location`;
+  - in `stock-location-form`, the `onLoad` action, the panel-dashlet `groupedStockLocationLinesPanel` and the field `$hasSubLocation`.

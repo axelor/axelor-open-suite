@@ -22,7 +22,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -58,15 +57,6 @@ public class StockLocationLineStockRepository extends StockLocationLineRepositor
     json.put(
         "$nbDecimalDigitForUnitPrice",
         Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
-
-    if (context != null
-        && Boolean.TRUE.equals(context.get("_isStockLocationLineValueDisplayed"))
-        && json.get("id") != null) {
-      json.put(
-          "stockLocationLineValue",
-          Beans.get(StockLocationLineService.class)
-              .getStockLocationLineValue((Long) json.get("id")));
-    }
 
     return super.populate(json, context);
   }
