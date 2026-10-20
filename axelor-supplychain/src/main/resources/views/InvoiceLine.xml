@@ -3,8 +3,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_8.2.xsd">
 
-  <form name="invoice-line-form" model="com.axelor.apps.account.db.InvoiceLine"
-    title="Invoice line">
+  <form name="invoice-line-form" id="supplychain-invoice-line-form"
+    model="com.axelor.apps.account.db.InvoiceLine" title="Invoice line" extension="true">
     <extend target="//panel-tabs[@name='mainPanelTab']">
       <insert position="after">
         <panel-related name="subInvoiceLinesPanel" field="subLineList"
