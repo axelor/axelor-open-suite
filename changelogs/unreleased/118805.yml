@@ -1,3 +1,0 @@
----
-title: "Partner: fixed an error when deleting an invoicing/payment situation holding an active SEPA mandate (UMR)."
-module: axelor-account

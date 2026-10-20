@@ -1,3 +1,137 @@
+## [8.5.31] (2026-10-20)
+
+### Fixes
+#### Account
+
+* Partner: fixed an error when deleting an invoicing/payment situation holding an active SEPA mandate (UMR).
+* Accounting export: fixed journal selection not being restricted to active journals of the export company.
+
+#### Contract
+
+* Contract: fixed missing cut-off dates on invoice lines generated from consumption and additional benefit lines.
+
+#### Human Resource
+
+* Timesheet line: fixed time logged from a project or a task being proposed on the timesheet of the project's assigned user instead of the connected user.
+
+#### Production
+
+* Sale order: fixed slow confirmation when automatic production order generation is disabled.
+* Sale order: fixed an error when confirming an order with several lines to produce while automatic planning of generated manufacturing orders is enabled.
+
+#### Sale
+
+* Sale order: improved performance when computing quotations with the standard line display, while keeping the global discount correctly applied to the lines.
+* Sale order: the discount columns of the line grid can now be hidden by a view extension or a grid customization.
+
+#### Stock
+
+* Stock move: fixed negative stock error on non stock managed products with a tracking number.
+* Stock location: fixed an SQL error preventing stock locations from being displayed or created and blocking sale quotations, invoices and contracts using them. The stock location value no longer includes the sub-locations, as before 8.5.30.
+
+#### Supply Chain
+
+* Sale order line: fixed the form being marked as modified as soon as it is opened.
+* Accounting batch: fixed customer and supplier returns being selected by the forecasted supplier/customer invoices cut-off batches.
+* Sale order / Purchase order: fixed analytic distribution amounts staying at zero when selecting a product with a default analytic distribution template.
+
+
+### Developer
+
+#### Production
+
+SaleOrderConfirmProductionServiceImpl: the ProductionOrderSaleOrderService constructor parameter is now a Provider<ProductionOrderSaleOrderService>.
+ProductionOrderSaleOrderMOGenerationServiceImpl: removed the unused ManufOrderService constructor parameter.
+
+#### Sale
+
+SaleOrderGlobalDiscountServiceImpl's constructor now takes a SaleOrderLineComputeService parameter.
+Added resetGlobalDiscount(SaleOrder) to SaleOrderGlobalDiscountService: it resets the global discount on the lines and recomputes the sale order.
+
+#### Stock
+
+The changes of 8.5.30 for the valuation of stock locations with their sub-locations have been reverted: the formula of `StockLocation.stockLocationValue` used a recursive query not supported by Hibernate 5.
+
+The following elements have been removed:
+- the method `StockLocationLineService.getStockLocationLineValue(Long)`;
+- the transient field `stockLocationLineValue` of `StockLocationLine`;
+- the grid `stock-location-line-grouped-by-location-grid` and its extension `stock-location-line-grouped-by-location-supplychain-grid`;
+- the actions `action-location-view-location-content-grouped-by-location` and `action-stock-location-attrs-set-has-sub-location`;
+- in `stock-location-form`, the `onLoad` action, the panel-dashlet `groupedStockLocationLinesPanel` and the field `$hasSubLocation`.
+
+#### Supply Chain
+
+The analytic axis accounts of sale and purchase order lines are now filled when the analytic
+distribution is computed instead of on form load. Existing lines with analytic move lines but empty
+axis accounts keep them empty, and so do the invoice lines generated from them. The following script
+fills the axis accounts of these lines, using the same rule as the application (an axis gets its
+analytic account only when it has a single analytic move line at 100%). Please check data before
+applying.
+
+```sql
+WITH RECURSIVE sol_company AS (
+  SELECT sol.id, so.company
+  FROM sale_sale_order_line sol
+  JOIN sale_sale_order so ON so.id = sol.sale_order
+  UNION ALL
+  SELECT child.id, parent.company
+  FROM sale_sale_order_line child
+  JOIN sol_company parent ON parent.id = child.parent_sale_order_line
+  WHERE child.sale_order IS NULL
+),
+axis_account AS (
+  SELECT aml.sale_order_line AS line_id, abc.sequence, MIN(aml.analytic_account) AS analytic_account
+  FROM account_analytic_move_line aml
+  JOIN sol_company sc ON sc.id = aml.sale_order_line
+  JOIN account_account_config ac ON ac.company = sc.company
+  JOIN account_analytic_axis_by_company abc
+    ON abc.account_config = ac.id AND abc.analytic_axis = aml.analytic_axis
+  GROUP BY aml.sale_order_line, abc.sequence
+  HAVING COUNT(*) = 1 AND MIN(aml.percentage) = 100
+)
+UPDATE sale_sale_order_line sol
+SET axis1analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 1),
+    axis2analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 2),
+    axis3analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 3),
+    axis4analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 4),
+    axis5analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = sol.id AND aa.sequence = 5)
+WHERE sol.id IN (SELECT line_id FROM axis_account)
+  AND sol.axis1analytic_account IS NULL
+  AND sol.axis2analytic_account IS NULL
+  AND sol.axis3analytic_account IS NULL
+  AND sol.axis4analytic_account IS NULL
+  AND sol.axis5analytic_account IS NULL;
+
+WITH axis_account AS (
+  SELECT aml.purchase_order_line AS line_id, abc.sequence, MIN(aml.analytic_account) AS analytic_account
+  FROM account_analytic_move_line aml
+  JOIN purchase_purchase_order_line pol ON pol.id = aml.purchase_order_line
+  JOIN purchase_purchase_order po ON po.id = pol.purchase_order
+  JOIN account_account_config ac ON ac.company = po.company
+  JOIN account_analytic_axis_by_company abc
+    ON abc.account_config = ac.id AND abc.analytic_axis = aml.analytic_axis
+  GROUP BY aml.purchase_order_line, abc.sequence
+  HAVING COUNT(*) = 1 AND MIN(aml.percentage) = 100
+)
+UPDATE purchase_purchase_order_line pol
+SET axis1analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 1),
+    axis2analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 2),
+    axis3analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 3),
+    axis4analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 4),
+    axis5analytic_account = (SELECT aa.analytic_account FROM axis_account aa WHERE aa.line_id = pol.id AND aa.sequence = 5)
+WHERE pol.id IN (SELECT line_id FROM axis_account)
+  AND pol.axis1analytic_account IS NULL
+  AND pol.axis2analytic_account IS NULL
+  AND pol.axis3analytic_account IS NULL
+  AND pol.axis4analytic_account IS NULL
+  AND pol.axis5analytic_account IS NULL;
+```
+
+---
+
+Added updateAnalyticMoveLineAmounts(AnalyticLineModel) to AnalyticLineModelService.
+PurchaseOrderLineServiceSupplyChainImpl.compute(PurchaseOrderLine, PurchaseOrder) and SaleOrderLineComputeSupplychainServiceImpl.computeValues(SaleOrder, SaleOrderLine) now call it after computing the totals.
+
 ## [8.5.30] (2026-10-16)
 
 ### Fixes
@@ -4240,6 +4374,7 @@ Removed CommonInvoiceService.createInvoiceLinesFromOrder Changed the parameter o
 * Bill of material: added default value for calculation quantity.
 * Manuf order: fixed relation with production order.
 
+[8.5.31]: https://github.com/axelor/axelor-open-suite/compare/v8.5.30...v8.5.31
 [8.5.30]: https://github.com/axelor/axelor-open-suite/compare/v8.5.29...v8.5.30
 [8.5.29]: https://github.com/axelor/axelor-open-suite/compare/v8.5.28...v8.5.29
 [8.5.28]: https://github.com/axelor/axelor-open-suite/compare/v8.5.27...v8.5.28
