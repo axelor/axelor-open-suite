@@ -20,6 +20,7 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.interfaces.GlobalDiscounter;
+import com.axelor.apps.sale.db.SaleOrder;
 import java.util.Map;
 
 public interface SaleOrderGlobalDiscountService {
@@ -29,4 +30,6 @@ public interface SaleOrderGlobalDiscountService {
   void resetGlobalDiscountOnLines(GlobalDiscounter globalDiscounter);
 
   Map<String, Map<String, Object>> setDiscountDummies(GlobalDiscounter globalDiscounter);
+
+  void resetGlobalDiscount(SaleOrder saleOrder) throws AxelorException;
 }
