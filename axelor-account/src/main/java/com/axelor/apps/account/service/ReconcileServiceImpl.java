@@ -76,6 +76,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -388,9 +389,16 @@ public class ReconcileServiceImpl implements ReconcileService {
           creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()));
     }
 
-    // Check tax lines
-    this.taxLinePrecondition(creditMoveLine.getMove());
-    this.taxLinePrecondition(debitMoveLine.getMove());
+    if (!Arrays.asList(
+                MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE, MoveRepository.FUNCTIONAL_ORIGIN_OPENING)
+            .contains(creditMoveLine.getMove().getFunctionalOriginSelect())
+        && !Arrays.asList(
+                MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE, MoveRepository.FUNCTIONAL_ORIGIN_OPENING)
+            .contains(debitMoveLine.getMove().getFunctionalOriginSelect())) {
+      // Check tax lines
+      this.taxLinePrecondition(creditMoveLine.getMove());
+      this.taxLinePrecondition(debitMoveLine.getMove());
+    }
 
     if (updateInvoiceTerms && updateInvoicePayments) {
       invoiceTermPfpService.validatePfpValidatedAmount(
@@ -399,7 +407,10 @@ public class ReconcileServiceImpl implements ReconcileService {
   }
 
   protected void taxLinePrecondition(Move move) throws AxelorException {
-    if (!move.getMoveLineList().stream().allMatch(this::hasPayableReceivableAccount)
+    if (!Arrays.asList(
+                MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE, MoveRepository.FUNCTIONAL_ORIGIN_OPENING)
+            .contains(move.getFunctionalOriginSelect())
+        && !move.getMoveLineList().stream().allMatch(this::hasPayableReceivableAccount)
         && move.getMoveLineList().stream().anyMatch(this::isMissingTax)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
