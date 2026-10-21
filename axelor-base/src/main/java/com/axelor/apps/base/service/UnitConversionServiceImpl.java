@@ -77,6 +77,9 @@ public class UnitConversionServiceImpl implements UnitConversionService {
   public BigDecimal convert(
       Unit startUnit, Unit endUnit, BigDecimal value, int scale, Product product)
       throws AxelorException {
+    if (startUnit != null && startUnit.equals(endUnit)) {
+      return value;
+    }
     List<UnitConversion> unitConversionList = fetchUnitConversionList();
     return convert(unitConversionList, startUnit, endUnit, value, scale, product, "Product");
   }
