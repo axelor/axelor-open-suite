@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.umr.UmrService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.bankorder.file.address.SepaCharacterHelper;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.AccountIdentification3Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_01.BranchAndFinancialInstitutionIdentification3;
@@ -98,7 +99,9 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
       throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
     // Creditor
     PartyIdentification8 creditor = factory.createPartyIdentification8();
-    creditor.setNm(senderBankDetails.getOwnerName());
+    creditor.setNm(
+        SepaCharacterHelper.transliterateAndTruncate(
+            senderBankDetails.getOwnerName(), SepaCharacterHelper.MAX_LENGTH_NM));
 
     /*
      * Hierarchy of a XML file
@@ -589,7 +592,9 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
        * Party that owes an amount of money to the (ultimate) creditor.
        */
       PartyIdentification8 debtor = factory.createPartyIdentification8();
-      debtor.setNm(receiverBankDetails.getOwnerName());
+      debtor.setNm(
+          SepaCharacterHelper.transliterateAndTruncate(
+              receiverBankDetails.getOwnerName(), SepaCharacterHelper.MAX_LENGTH_NM));
       directDebitTransactionInformation1.setDbtr(debtor);
 
       /*
@@ -640,9 +645,8 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
       remittanceInformation1
           .getUstrd()
           .add(
-              bankOrderLine
-                  .getReceiverReference()
-                  .substring(0, Math.min(140, bankOrderLine.getReceiverReference().length() - 1)));
+              SepaCharacterHelper.transliterateAndTruncate(
+                  bankOrderLine.getReceiverReference(), SepaCharacterHelper.MAX_LENGTH_USTRD));
 
       /*
        * Structured   (choice 2 of 2)

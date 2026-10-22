@@ -21,6 +21,7 @@ package com.axelor.apps.bankpayment.service.bankorder.file.transfer;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
+import com.axelor.apps.bankpayment.service.bankorder.file.address.SepaCharacterHelper;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.AccountIdentification3Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.AmountType2Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02.BranchAndFinancialInstitutionIdentification3;
@@ -91,7 +92,9 @@ public class BankOrderFile00100102Service extends BankOrderFileService {
 
     // Payer
     PartyIdentification8 dbtr = factory.createPartyIdentification8();
-    dbtr.setNm(senderBankDetails.getOwnerName());
+    dbtr.setNm(
+        SepaCharacterHelper.transliterateAndTruncate(
+            senderBankDetails.getOwnerName(), SepaCharacterHelper.MAX_LENGTH_NM));
 
     // IBAN
     AccountIdentification3Choice iban = factory.createAccountIdentification3Choice();
@@ -156,7 +159,9 @@ public class BankOrderFile00100102Service extends BankOrderFileService {
 
       // Receiver
       cbtr = factory.createPartyIdentification8();
-      cbtr.setNm(receiverBankDetails.getOwnerName());
+      cbtr.setNm(
+          SepaCharacterHelper.transliterateAndTruncate(
+              receiverBankDetails.getOwnerName(), SepaCharacterHelper.MAX_LENGTH_NM));
 
       // IBAN
       iban = factory.createAccountIdentification3Choice();
@@ -187,7 +192,11 @@ public class BankOrderFile00100102Service extends BankOrderFileService {
       }
 
       if (!Strings.isNullOrEmpty(ustrd)) {
-        rmtInf.getUstrd().add(ustrd.substring(0, Math.min(140, ustrd.length() - 1)));
+        rmtInf
+            .getUstrd()
+            .add(
+                SepaCharacterHelper.transliterateAndTruncate(
+                    ustrd, SepaCharacterHelper.MAX_LENGTH_USTRD));
       }
 
       //			StructuredRemittanceInformation6 strd = factory.createStructuredRemittanceInformation6();
