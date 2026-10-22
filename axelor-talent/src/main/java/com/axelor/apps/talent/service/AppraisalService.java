@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.talent.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.Appraisal;
 import java.util.Set;
@@ -25,7 +26,8 @@ import javax.mail.MessagingException;
 
 public interface AppraisalService {
 
-  public void send(Appraisal appraisal) throws ClassNotFoundException, MessagingException;
+  public void send(Appraisal appraisal)
+      throws AxelorException, ClassNotFoundException, MessagingException;
 
   public void realize(Appraisal appraisal);
 
@@ -35,5 +37,5 @@ public interface AppraisalService {
 
   public Set<Long> createAppraisals(
       Appraisal appraisalTemplate, Set<Employee> employees, Boolean send)
-      throws ClassNotFoundException, MessagingException;
+      throws AxelorException, ClassNotFoundException, MessagingException;
 }

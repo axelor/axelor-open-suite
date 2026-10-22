@@ -23,6 +23,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.talent.db.Appraisal;
 import com.axelor.apps.talent.db.repo.AppraisalRepository;
+import com.axelor.apps.talent.exception.TalentExceptionMessage;
 import com.axelor.apps.talent.service.AppraisalService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -33,8 +34,11 @@ import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class AppraisalController {
@@ -125,6 +129,24 @@ public class AppraisalController {
 
       Set<Long> createdIds =
           Beans.get(AppraisalService.class).createAppraisals(appraisalTemplate, employees, send);
+
+      if (Boolean.TRUE.equals(send) && !CollectionUtils.isEmpty(createdIds)) {
+        List<Appraisal> appraisalList =
+            Beans.get(AppraisalRepository.class)
+                .all()
+                .filter("self.id IN :createdIds AND self.statusSelect != :statusSent")
+                .bind("createdIds", createdIds)
+                .bind("statusSent", AppraisalRepository.STATUS_SENT)
+                .fetch();
+        if (CollectionUtils.isNotEmpty(appraisalList)) {
+          String employeeNames =
+              appraisalList.stream()
+                  .map(appraisal -> appraisal.getEmployee().getName())
+                  .collect(Collectors.joining(", "));
+          response.setInfo(
+              String.format(I18n.get(TalentExceptionMessage.APPRAISALS_NOT_SENT), employeeNames));
+        }
+      }
 
       response.setView(
           ActionView.define(I18n.get("Appraisal"))

@@ -18,11 +18,15 @@
  */
 package com.axelor.apps.talent.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.talent.db.Appraisal;
 import com.axelor.apps.talent.db.repo.AppraisalRepository;
+import com.axelor.apps.talent.exception.TalentExceptionMessage;
 import com.axelor.auth.db.User;
+import com.axelor.i18n.I18n;
 import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.Message;
@@ -52,7 +56,8 @@ public class AppraisalServiceImpl implements AppraisalService {
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public void send(Appraisal appraisal) throws ClassNotFoundException, MessagingException {
+  public void send(Appraisal appraisal)
+      throws AxelorException, ClassNotFoundException, MessagingException {
 
     Employee employee = appraisal.getEmployee();
 
@@ -66,21 +71,24 @@ public class AppraisalServiceImpl implements AppraisalService {
             .all()
             .filter("self.metaModel.fullName = ?1", Appraisal.class.getName())
             .fetchOne();
+    if (template == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(TalentExceptionMessage.APPRAISAL_NO_MESSAGE_TEMPLATE));
+    }
 
     EmailAddress email = null;
     if (employee.getContactPartner() != null) {
       email = employee.getContactPartner().getEmailAddress();
     }
 
-    if (template != null && email != null) {
+    if (email != null) {
       Message message = templateMessageService.generateMessage(appraisal, template);
       message.addToEmailAddressSetItem(email);
       messageService.sendByEmail(message);
+      appraisal.setStatusSelect(AppraisalRepository.STATUS_SENT);
+      appraisalRepo.save(appraisal);
     }
-
-    appraisal.setStatusSelect(AppraisalRepository.STATUS_SENT);
-
-    appraisalRepo.save(appraisal);
   }
 
   @Transactional
@@ -114,7 +122,7 @@ public class AppraisalServiceImpl implements AppraisalService {
   @Override
   public Set<Long> createAppraisals(
       Appraisal appraisalTemplate, Set<Employee> employees, Boolean send)
-      throws ClassNotFoundException, MessagingException {
+      throws AxelorException, ClassNotFoundException, MessagingException {
 
     Set<Long> appraisalIds = new HashSet<Long>();
 
