@@ -1,0 +1,7 @@
+---
+title: "Appraisal: fixed appraisal marked as sent even when no email was actually sent."
+module: axelor-talent
+developer: |
+  AppraisalService:
+  - send(Appraisal): now throws AxelorException when no message template is configured for appraisals; the appraisal is only set to sent when the email is actually sent.
+  - createAppraisals(Appraisal, Set<Employee>, Boolean): now throws AxelorException.

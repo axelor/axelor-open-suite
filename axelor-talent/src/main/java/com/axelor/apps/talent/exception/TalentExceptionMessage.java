@@ -30,4 +30,10 @@ public final class TalentExceptionMessage {
 
   public static final String NO_EVENT_GENERATED = /*$$(*/
       "No Training register is generated because selected employees don't have any user." /*)*/;
+
+  public static final String APPRAISAL_NO_MESSAGE_TEMPLATE = /*$$(*/
+      "No message template is configured for appraisals, the appraisal cannot be sent." /*)*/;
+
+  public static final String APPRAISALS_NOT_SENT = /*$$(*/
+      "The appraisals of the following employees were not sent because they have no email address on the contact partner: %s" /*)*/;
 }
