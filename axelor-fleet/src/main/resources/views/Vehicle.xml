@@ -15,7 +15,7 @@
   </grid>
 
   <form name="vehicle-form" title="Vehicle" model="com.axelor.apps.fleet.db.Vehicle"
-    width="large" onNew="action-fleet-vehicle-set-defaults">
+    width="large">
     <panel name="mainPanel">
       <panel name="imagePanel" colSpan="2">
         <field name="image" widget="Image" colSpan="12"/>

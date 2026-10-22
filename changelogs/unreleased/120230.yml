@@ -1,0 +1,3 @@
+---
+title: "Fleet: fixed an error when creating a new vehicle due to a missing form initialization action."
+module: axelor-fleet
