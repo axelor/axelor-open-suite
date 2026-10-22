@@ -1,0 +1,3 @@
+---
+title: "Stock move: disabling the filter on available products is now taken into account on the lines already added."
+module: axelor-stock
