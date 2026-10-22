@@ -25,6 +25,10 @@ import java.util.regex.Pattern;
 
 public final class SepaCharacterHelper {
 
+  public static final int MAX_LENGTH_NM = 70;
+
+  public static final int MAX_LENGTH_USTRD = 140;
+
   protected static final Pattern COMBINING_MARKS_PATTERN = Pattern.compile("\\p{M}+");
 
   protected static final Pattern UNSUPPORTED_CHARACTERS_PATTERN =

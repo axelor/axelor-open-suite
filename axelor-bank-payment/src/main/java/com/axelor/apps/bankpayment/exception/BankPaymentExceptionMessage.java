@@ -350,4 +350,10 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BANK_RECONCILIATION_LINE_DEBIT_CREDIT_DIRECTION_MISMATCH = /*$$(*/
       "The bank reconciliation line %s and the move line %s are on the same side. A credit on the bank statement must be reconciled with a debit move line and vice versa." /*)*/;
+
+  public static final String BANK_ORDER_OWNER_NAME_NOT_COMPLIANT = /*$$(*/
+      "The following bank details do not meet the SEPA requirements:" /*)*/;
+
+  public static final String BANK_ORDER_OWNER_NAME_MISSING = /*$$(*/
+      "%s: the account owner name is missing on the bank details." /*)*/;
 }
