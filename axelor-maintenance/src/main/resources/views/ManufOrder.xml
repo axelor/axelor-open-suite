@@ -41,7 +41,7 @@
     <button name="cancelBtn" icon="x-circle-fill" onClick="action-manuf-order-view-cancel"
       readonlyIf="statusSelect == 2"/>
     <button name="printBtn" title="Print" icon="printer"
-      onClick="action-maintenance-manuf-order-group-print-report"/>
+      onClick="action-manuf-order-method-print"/>
   </grid>
 
   <form name="maintenance-manuf-order-form" title="Maintenance order"

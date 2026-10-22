@@ -1,0 +1,3 @@
+---
+title: "Maintenance order: fixed the print button on each line of the maintenance order list having no effect."
+module: axelor-maintenance
