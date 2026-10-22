@@ -253,6 +253,12 @@ public class StockMoveLineController {
       if (stockMove == null) {
         return;
       }
+      // The header filter may have been changed in the parent form without being saved or
+      // propagated to the line being edited, so the parent form value prevails.
+      Context parentContext = context.getParent();
+      if (parentContext != null && StockMove.class.equals(parentContext.getContextClass())) {
+        stockMove = parentContext.asType(StockMove.class);
+      }
       String domain =
           Beans.get(StockMoveLineService.class).createDomainForProduct(stockMoveLine, stockMove);
       response.setAttr("product", "domain", domain);

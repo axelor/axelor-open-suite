@@ -1831,6 +1831,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected String getFilterForStorables(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException {
     if (stockMoveLine.getFilterOnAvailableProducts()
+        && (stockMove == null || stockMove.getFilterOnAvailableProducts())
         && stockMoveLine.getFromStockLocation() != null
         && stockMoveLine.getFromStockLocation().getTypeSelect() != 3) {
       return " AND self.id in (select sll.product.id from StockLocation sl inner join sl.stockLocationLineList sll WHERE sl.id = "
