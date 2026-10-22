@@ -12,7 +12,6 @@
     <field name="acquisitionDate"/>
     <field name="vehicleState"/>
     <field name="vehicleOdometer"/>
-    <field name="vehicleOdometer.unit"/>
   </grid>
 
   <form name="vehicle-form" title="Vehicle" model="com.axelor.apps.fleet.db.Vehicle"
