@@ -34,7 +34,9 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.address.AddressService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
@@ -69,7 +71,9 @@ public class PurchaseOrderInvoiceContractServiceImpl extends PurchaseOrderInvoic
       CurrencyScaleService currencyScaleService,
       OrderInvoiceService orderInvoiceService,
       InvoiceTaxService invoiceTaxService,
-      InvoiceLineRepository invoiceLineRepository) {
+      InvoiceLineRepository invoiceLineRepository,
+      UnitConversionService unitConversionService,
+      AppBaseService appBaseService) {
     super(
         invoiceServiceSupplychain,
         invoiceService,
@@ -84,7 +88,9 @@ public class PurchaseOrderInvoiceContractServiceImpl extends PurchaseOrderInvoic
         currencyScaleService,
         orderInvoiceService,
         invoiceTaxService,
-        invoiceLineRepository);
+        invoiceLineRepository,
+        unitConversionService,
+        appBaseService);
   }
 
   @Transactional(rollbackOn = {Exception.class})
