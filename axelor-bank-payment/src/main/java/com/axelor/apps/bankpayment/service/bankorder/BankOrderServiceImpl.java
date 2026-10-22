@@ -26,7 +26,9 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
+import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderAddressFormatHelper;
 import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderAddressService;
+import com.axelor.apps.bankpayment.service.bankorder.file.address.SepaCharacterHelper;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800108Service;
@@ -39,15 +41,18 @@ import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB320XCTService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import jakarta.xml.bind.JAXBException;
@@ -56,8 +61,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 public class BankOrderServiceImpl implements BankOrderService {
@@ -151,6 +158,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     BankOrderFileFormat bankOrderFileFormat = bankOrder.getBankOrderFileFormat();
 
     bankOrderAddressService.checkAddresses(bankOrder);
+    checkOwnerNames(bankOrder);
 
     File file = null;
 
@@ -330,5 +338,48 @@ public class BankOrderServiceImpl implements BankOrderService {
   public void setStatusToDraft(BankOrder bankOrder) {
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_DRAFT);
     bankOrderRepository.save(bankOrder);
+  }
+
+  protected void checkOwnerNames(BankOrder bankOrder) throws AxelorException {
+
+    if (!BankOrderAddressFormatHelper.isSepaFileFormat(bankOrder.getBankOrderFileFormat())) {
+      return;
+    }
+
+    List<String> errorList = new ArrayList<>();
+
+    BankDetails senderBankDetails = bankOrder.getSenderBankDetails();
+    if (senderBankDetails != null
+        && SepaCharacterHelper.transliterate(senderBankDetails.getOwnerName()) == null) {
+      Company senderCompany = bankOrder.getSenderCompany();
+      errorList.add(
+          String.format(
+              I18n.get(BankPaymentExceptionMessage.BANK_ORDER_OWNER_NAME_MISSING),
+              senderCompany != null ? senderCompany.getName() : senderBankDetails.getFullName()));
+    }
+
+    for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+      BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
+      if (receiverBankDetails != null
+          && SepaCharacterHelper.transliterate(receiverBankDetails.getOwnerName()) == null) {
+        Partner partner = bankOrderLine.getPartner();
+        String partnerName = partner != null ? partner.getFullName() : "";
+        errorList.add(
+            String.format(
+                I18n.get(BankPaymentExceptionMessage.BANK_ORDER_OWNER_NAME_MISSING),
+                StringUtils.isBlank(bankOrderLine.getSequence())
+                    ? partnerName
+                    : String.format("%s - %s", bankOrderLine.getSequence(), partnerName)));
+      }
+    }
+
+    if (ObjectUtils.notEmpty(errorList)) {
+      throw new AxelorException(
+          bankOrder,
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          StringHtmlListBuilder.formatMessage(
+              I18n.get(BankPaymentExceptionMessage.BANK_ORDER_OWNER_NAME_NOT_COMPLIANT),
+              errorList));
+    }
   }
 }

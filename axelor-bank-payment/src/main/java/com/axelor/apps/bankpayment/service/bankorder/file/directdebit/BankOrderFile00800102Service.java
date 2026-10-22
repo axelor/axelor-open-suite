@@ -25,6 +25,7 @@ import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderAddressService;
 import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderFile00800102AddressAdapter;
+import com.axelor.apps.bankpayment.service.bankorder.file.address.SepaCharacterHelper;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.AccountIdentification4Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.ActiveOrHistoricCurrencyAndAmount;
@@ -101,7 +102,9 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
       throws JAXBException, IOException, AxelorException, DatatypeConfigurationException {
     // Creditor
     PartyIdentification32 creditor = factory.createPartyIdentification32();
-    creditor.setNm(senderBankDetails.getOwnerName());
+    creditor.setNm(
+        SepaCharacterHelper.transliterateAndTruncate(
+            senderBankDetails.getOwnerName(), SepaCharacterHelper.MAX_LENGTH_NM));
     creditor.setPstlAdr(
         BankOrderFile00800102AddressAdapter.createPostalAddress(
             bankOrderAddressService.createSenderPostalAddress(senderCompany, bankOrderFileFormat)));
@@ -636,7 +639,9 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
        * Party that owes an amount of money to the (ultimate) creditor.
        */
       PartyIdentification32 debtor = factory.createPartyIdentification32();
-      debtor.setNm(receiverBankDetails.getOwnerName());
+      debtor.setNm(
+          SepaCharacterHelper.transliterateAndTruncate(
+              receiverBankDetails.getOwnerName(), SepaCharacterHelper.MAX_LENGTH_NM));
       debtor.setPstlAdr(
           BankOrderFile00800102AddressAdapter.createPostalAddress(
               bankOrderAddressService.createReceiverPostalAddress(
@@ -688,7 +693,11 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
        * Information supplied to enable the matching of an entry with the items that the transfer is intended
        * to settle, eg, commercial invoices in an accounts' receivable system in an unstructured form.
        */
-      remittanceInformation5.getUstrd().add(bankOrderLine.getReceiverReference());
+      remittanceInformation5
+          .getUstrd()
+          .add(
+              SepaCharacterHelper.transliterateAndTruncate(
+                  bankOrderLine.getReceiverReference(), SepaCharacterHelper.MAX_LENGTH_USTRD));
 
       /*
        * Structured   (choice 2 of 2)

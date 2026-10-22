@@ -23,6 +23,7 @@ import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.service.bankorder.file.BankOrderFileService;
 import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderAddressService;
 import com.axelor.apps.bankpayment.service.bankorder.file.address.BankOrderFile00100103AddressAdapter;
+import com.axelor.apps.bankpayment.service.bankorder.file.address.SepaCharacterHelper;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.AccountIdentification4Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.ActiveOrHistoricCurrencyAndAmount;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03.AmountType3Choice;
@@ -95,7 +96,9 @@ public class BankOrderFile00100103Service extends BankOrderFileService {
 
     // Payer
     PartyIdentification32 dbtr = factory.createPartyIdentification32();
-    dbtr.setNm(senderBankDetails.getOwnerName());
+    dbtr.setNm(
+        SepaCharacterHelper.transliterateAndTruncate(
+            senderBankDetails.getOwnerName(), SepaCharacterHelper.MAX_LENGTH_NM));
     dbtr.setPstlAdr(
         BankOrderFile00100103AddressAdapter.createPostalAddress(
             bankOrderAddressService.createSenderPostalAddress(senderCompany, bankOrderFileFormat)));
@@ -163,7 +166,9 @@ public class BankOrderFile00100103Service extends BankOrderFileService {
 
       // Receiver
       cbtr = factory.createPartyIdentification32();
-      cbtr.setNm(receiverBankDetails.getOwnerName());
+      cbtr.setNm(
+          SepaCharacterHelper.transliterateAndTruncate(
+              receiverBankDetails.getOwnerName(), SepaCharacterHelper.MAX_LENGTH_NM));
       cbtr.setPstlAdr(
           BankOrderFile00100103AddressAdapter.createPostalAddress(
               bankOrderAddressService.createReceiverPostalAddress(
@@ -198,7 +203,11 @@ public class BankOrderFile00100103Service extends BankOrderFileService {
       }
 
       if (!Strings.isNullOrEmpty(ustrd)) {
-        rmtInf.getUstrd().add(ustrd.substring(0, Math.min(140, ustrd.length() - 1)));
+        rmtInf
+            .getUstrd()
+            .add(
+                SepaCharacterHelper.transliterateAndTruncate(
+                    ustrd, SepaCharacterHelper.MAX_LENGTH_USTRD));
       }
 
       //			StructuredRemittanceInformation7 strd = factory.createStructuredRemittanceInformation7();
