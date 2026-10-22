@@ -84,7 +84,7 @@ public class TicketServiceImpl implements TicketService {
                       + "(self.team IS null AND self.prioritySelect = :prioritySelect AND self.ticketType = :ticketType) OR "
                       + "(self.team = :team AND self.prioritySelect IS null AND self.ticketType = :ticketType)) OR "
                       + "(self.team = :team AND self.prioritySelect IS null AND self.ticketType IS null OR "
-                      + "(self.team IS null AND self.prioritySelect = :prioritySelect AND self.ticketType = null) OR "
+                      + "(self.team IS null AND self.prioritySelect = :prioritySelect AND self.ticketType IS null) OR "
                       + "(self.team IS null AND self.prioritySelect IS null AND self.ticketType = :ticketType)) OR "
                       + "(self.team IS null AND self.prioritySelect IS null AND self.ticketType IS null)")
               .bind(

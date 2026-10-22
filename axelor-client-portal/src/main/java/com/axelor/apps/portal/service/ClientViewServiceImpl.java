@@ -586,8 +586,8 @@ public class ClientViewServiceImpl implements ClientViewService {
                 + user.getPartner().getId()
                 + " AND self.assignedToUser.id = "
                 + user.getId()
-                + " AND ((self.endDateT != null AND self.endDateT > self.deadlineDateT) "
-                + " OR (self.endDateT = null and self.deadlineDateT < current_date() ) )");
+                + " AND ((self.endDateT IS NOT null AND self.endDateT > self.deadlineDateT) "
+                + " OR (self.endDateT IS null and self.deadlineDateT < current_date() ) )");
     filters.add(filter);
     addPermissionFilter(filters, filterFromPermission);
     return filters;
