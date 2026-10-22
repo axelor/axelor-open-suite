@@ -27,7 +27,10 @@ import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
+import com.axelor.mail.db.repo.MailFollowerRepository;
+import com.axelor.team.db.Team;
 import jakarta.persistence.PersistenceException;
+import java.util.Set;
 
 public class UserBaseRepository extends UserRepository {
 
@@ -50,6 +53,7 @@ public class UserBaseRepository extends UserRepository {
       }
 
       user = super.save(user);
+      updateTeamFollowers(user);
 
       if (StringUtils.notBlank(user.getTransientPassword())) {
         Beans.get(UserService.class).processChangedPassword(user);
@@ -60,6 +64,30 @@ public class UserBaseRepository extends UserRepository {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  /**
+   * Teams can be edited from the user form, which does not go through the team save: follow the
+   * teams of the user, with their menu, and unfollow the teams the user is no longer a member of.
+   */
+  protected void updateTeamFollowers(User user) {
+    MailFollowerRepository mailFollowerRepository = Beans.get(MailFollowerRepository.class);
+    Set<Team> teamSet = user.getTeamSet();
+    if (teamSet != null) {
+      teamSet.forEach(team -> mailFollowerRepository.follow(team, user));
+    }
+
+    Query.of(Team.class)
+        .filter(
+            "self.id IN (SELECT follower.relatedId FROM MailFollower follower "
+                + "WHERE follower.relatedModel = :relatedModel AND follower.user = :user "
+                + "AND follower.archived = false)")
+        .bind("relatedModel", Team.class.getName())
+        .bind("user", user)
+        .fetch()
+        .stream()
+        .filter(team -> teamSet == null || !teamSet.contains(team))
+        .forEach(team -> mailFollowerRepository.unfollow(team, user));
   }
 
   @Override
