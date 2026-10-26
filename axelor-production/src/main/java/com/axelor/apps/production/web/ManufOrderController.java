@@ -71,6 +71,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.rpc.Resource;
 import com.axelor.utils.service.TranslationService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -666,7 +667,13 @@ public class ManufOrderController {
       List<ManufOrder> moList =
           Beans.get(ManufOrderMultiLevelPlanningService.class)
               .generateAllSubManufOrder(productList, mo);
-      response.setValue("$draftManufOrderList", moList);
+      // The parent of the first-level orders is saved, so it is only serialized with its id and
+      // name unless its product is requested explicitly for the "Parent product" column.
+      response.setValue(
+          "$draftManufOrderList",
+          moList.stream()
+              .map(draftMO -> Resource.toMap(draftMO, "parentMO.product"))
+              .collect(Collectors.toList()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
