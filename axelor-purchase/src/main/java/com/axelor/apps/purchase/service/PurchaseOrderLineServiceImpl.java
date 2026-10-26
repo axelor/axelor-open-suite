@@ -335,6 +335,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     }
     if (line.getEnableFreezeFields()) {
       line.setPrice(oldPrice);
+    } else {
+      line.setPrice(price);
     }
     line.setInTaxPrice(inTaxPrice);
 
@@ -802,6 +804,24 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
               purchaseOrder.getOrderDate(),
               taxLineSet,
               true);
+    }
+
+    Map<String, Object> discounts =
+        getDiscountsFromPriceLists(
+            purchaseOrder, purchaseOrderLine, purchaseOrder.getInAti() ? inTaxPrice : price);
+    if (discounts != null && discounts.get("price") != null) {
+      BigDecimal discountPrice = (BigDecimal) discounts.get("price");
+      if (product.getInAti()) {
+        inTaxPrice = discountPrice;
+        price =
+            taxService.convertUnitPrice(
+                true, taxLineSet, discountPrice, appBaseService.getNbDecimalDigitForUnitPrice());
+      } else {
+        price = discountPrice;
+        inTaxPrice =
+            taxService.convertUnitPrice(
+                false, taxLineSet, discountPrice, appBaseService.getNbDecimalDigitForUnitPrice());
+      }
     }
 
     purchaseOrderLine.setPrice(price);

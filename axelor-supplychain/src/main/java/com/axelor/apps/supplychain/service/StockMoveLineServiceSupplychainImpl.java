@@ -316,14 +316,14 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               fromUnit,
               stockMoveLine.getUnitPriceUntaxed(),
               appBaseService.getNbDecimalDigitForUnitPrice(),
-              null);
+              stockMoveLine.getProduct());
       BigDecimal unitPriceTaxed =
           unitConversionService.convert(
               toUnit,
               fromUnit,
               stockMoveLine.getUnitPriceTaxed(),
               appBaseService.getNbDecimalDigitForUnitPrice(),
-              null);
+              stockMoveLine.getProduct());
       stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
       stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
     }

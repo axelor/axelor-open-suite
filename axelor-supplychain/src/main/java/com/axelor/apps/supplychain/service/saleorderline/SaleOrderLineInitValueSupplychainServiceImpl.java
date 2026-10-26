@@ -69,19 +69,6 @@ public class SaleOrderLineInitValueSupplychainServiceImpl
   }
 
   @Override
-  public Map<String, Object> onLoadInitValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
-      throws AxelorException {
-    Map<String, Object> values = super.onLoadInitValues(saleOrder, saleOrderLine);
-
-    if (!appSupplychainService.isApp("supplychain")) {
-      return values;
-    }
-
-    values.putAll(saleOrderLineAnalyticService.printAnalyticAccounts(saleOrder, saleOrderLine));
-    return values;
-  }
-
-  @Override
   public Map<String, Object> onNewEditableInitValues(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSol) {
     Map<String, Object> values = super.onNewEditableInitValues(saleOrder, saleOrderLine, parentSol);

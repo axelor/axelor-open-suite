@@ -1,0 +1,3 @@
+---
+title: "Bank order: fixed SEPA files generated without a cleaned party name and with a payment label missing its last character or exceeding 140 characters."
+module: axelor-bank-payment

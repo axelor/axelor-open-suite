@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticAxisService;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -40,6 +41,7 @@ import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.inject.Beans;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -158,6 +160,9 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     }
 
     this.computeAnalyticDistribution(analyticLineModel);
+
+    Beans.get(AnalyticLineService.class)
+        .setAnalyticAccount(analyticLineModel, analyticLineModel.getCompany());
 
     analyticLineModel.copyToModel();
 

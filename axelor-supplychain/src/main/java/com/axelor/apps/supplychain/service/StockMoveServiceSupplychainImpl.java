@@ -223,6 +223,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
           Beans.get(PurchaseOrderStockService.class);
       for (PurchaseOrder purchaseOrder : stockMove.getPurchaseOrderSet()) {
         purchaseOrderReceiptStateService.updatePurchaseOrderLineReceiptState(purchaseOrder);
+        if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+            && !stockMove.getIsReversion()) {
+          Beans.get(StockMoveInvoiceService.class)
+              .updatePurchaseOrderStockMoveInvoicing(purchaseOrder);
+        }
         // Update linked purchaseOrder receipt state depending on BackOrder's existence
         if (newStockSeq != null) {
           purchaseOrder.setReceiptState(PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED);

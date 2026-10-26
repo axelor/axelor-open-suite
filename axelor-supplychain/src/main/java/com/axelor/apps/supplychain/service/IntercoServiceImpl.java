@@ -68,7 +68,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.google.common.collect.Sets;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.io.File;
@@ -309,9 +308,6 @@ public class IntercoServiceImpl implements IntercoService {
             .computeDiscount(purchaseOrderLine, purchaseOrder.getInAti());
     purchaseOrderLine.setPriceDiscounted(priceDiscounted);
 
-    // tax
-    purchaseOrderLine.setTaxLineSet(Sets.newHashSet(saleOrderLine.getTaxLineSet()));
-
     // analyticalDistribution
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
     analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
@@ -356,9 +352,6 @@ public class IntercoServiceImpl implements IntercoService {
     // delivery
     saleOrderLine.setDesiredDeliveryDate(purchaseOrderLine.getDesiredReceiptDate());
     saleOrderLine.setEstimatedDeliveryDate(purchaseOrderLine.getEstimatedReceiptDate());
-
-    // tax
-    saleOrderLine.setTaxLineSet(Sets.newHashSet(purchaseOrderLine.getTaxLineSet()));
 
     // analyticDistribution
     AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);

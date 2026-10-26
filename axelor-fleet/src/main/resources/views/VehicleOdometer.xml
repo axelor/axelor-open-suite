@@ -19,7 +19,8 @@
       <field name="date"/>
       <field name="vehicle" required="true"/>
       <field name="value"/>
-      <field name="unit" domain="self.name IN ('Kilometer','Miles')"/>
+      <field name="unit"
+        domain="self.labelToPrinting = 'km' or self.labelToPrinting = 'miles'"/>
     </panel>
   </form>
 

@@ -44,6 +44,18 @@ public final class BankOrderAddressFormatHelper {
           BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_08_SBB,
           BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_08_SDD);
 
+  protected static final Set<String> SEPA_FILE_FORMAT_SET =
+      Set.of(
+          BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_02_SCT,
+          BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_03_SCT,
+          BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_09_SCT,
+          BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SDD,
+          BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SBB,
+          BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SDD,
+          BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SBB,
+          BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_08_SDD,
+          BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_08_SBB);
+
   private BankOrderAddressFormatHelper() {}
 
   public static boolean isAddressFormatEnabled(String addressFormat) {
@@ -81,5 +93,11 @@ public final class BankOrderAddressFormatHelper {
           addressFormat,
           orderFileFormat);
     }
+  }
+
+  public static boolean isSepaFileFormat(BankOrderFileFormat bankOrderFileFormat) {
+
+    return bankOrderFileFormat != null
+        && SEPA_FILE_FORMAT_SET.contains(bankOrderFileFormat.getOrderFileFormatSelect());
   }
 }
