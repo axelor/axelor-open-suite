@@ -65,8 +65,7 @@ public abstract class ShippingAbstractService {
     }
 
     if (alreadyHasShippingCostLine(shippableOrder, shippingCostProduct)) {
-      updateLineAndComputeOrder(shippableOrder, shippingCostProduct);
-      return null;
+      return updateLineAndComputeOrder(shippableOrder, shippingCostProduct);
     }
 
     addLineAndComputeOrder(shippableOrder, shippingCostProduct);
@@ -192,6 +191,6 @@ public abstract class ShippingAbstractService {
   protected abstract void addLineAndComputeOrder(
       ShippableOrder shippableOrder, Product shippingCostProduct) throws AxelorException;
 
-  protected abstract void updateLineAndComputeOrder(
+  protected abstract String updateLineAndComputeOrder(
       ShippableOrder shippableOrder, Product shippingCostProduct) throws AxelorException;
 }

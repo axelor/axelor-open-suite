@@ -746,6 +746,7 @@
 "The packaging line qty can not be greater than the stock move line's qty remaining to package.",,,
 "The payment condition must be the same for all purchase orders",,,
 "The payment mode must be the same for all purchase orders",,,
+"The price of the shipment cost line has been updated according to the freight carrier pricing",,,
 "The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error.",,,
 "The product will not be delivered in time for its corresponding need.",,,
 "The proposal has been successfully generated.",,,
