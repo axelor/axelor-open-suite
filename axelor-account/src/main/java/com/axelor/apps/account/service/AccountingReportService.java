@@ -88,6 +88,5 @@ public interface AccountingReportService {
 
   void checkReportType(AccountingReport accountingReport) throws AxelorException;
 
-  AccountingReportType resolveReportTypeForCompany(
-      AccountingReport accountingReport, boolean isCustom);
+  AccountingReportType resolveReportTypeForCompany(AccountingReport accountingReport);
 }

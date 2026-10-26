@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.MoveLineExportService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
@@ -50,7 +51,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -317,11 +318,8 @@ public class AccountingReportController {
 
   public void setAccountingReportTypeDomain(ActionRequest request, ActionResponse response) {
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-    boolean isCustom =
-        Optional.ofNullable((Boolean) request.getContext().get("_isCustom")).orElse(false);
     String accountingReportTypeIds =
-        Beans.get(AccountingReportToolService.class)
-            .getAccountingReportTypeIds(accountingReport, isCustom);
+        Beans.get(AccountingReportToolService.class).getAccountingReportTypeIds(accountingReport);
     response.setAttr(
         "reportType",
         "domain",
@@ -346,12 +344,18 @@ public class AccountingReportController {
 
   public void emptyReportTypeField(ActionRequest request, ActionResponse response) {
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
-    boolean isCustom =
-        Optional.ofNullable((Boolean) request.getContext().get("_isCustom")).orElse(false);
-
     response.setValue(
         "reportType",
-        Beans.get(AccountingReportService.class)
-            .resolveReportTypeForCompany(accountingReport, isCustom));
+        Beans.get(AccountingReportService.class).resolveReportTypeForCompany(accountingReport));
+  }
+
+  public void syncCompanyFromCompanySet(ActionRequest request, ActionResponse response) {
+    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+    Set<Company> companySet = accountingReport.getCompanySet();
+    if (CollectionUtils.isNotEmpty(companySet) && companySet.size() == 1) {
+      response.setValue("company", companySet.iterator().next());
+    } else {
+      response.setValue("company", null);
+    }
   }
 }
