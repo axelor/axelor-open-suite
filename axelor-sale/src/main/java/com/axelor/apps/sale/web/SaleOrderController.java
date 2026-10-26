@@ -807,7 +807,7 @@ public class SaleOrderController {
       if (saleOrder.getDiscountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_NONE) {
         // Removing the global discount must clear the line discounts derived from it, otherwise the
         // stale discounts are kept and carried to the invoice.
-        globalDiscountService.resetGlobalDiscountOnLines(saleOrder);
+        globalDiscountService.resetGlobalDiscount(saleOrder);
       } else {
         globalDiscountService.applyGlobalDiscountOnLines(saleOrder);
       }
