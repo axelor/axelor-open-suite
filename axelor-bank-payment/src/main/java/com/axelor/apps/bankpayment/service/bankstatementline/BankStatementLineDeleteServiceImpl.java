@@ -44,6 +44,12 @@ public class BankStatementLineDeleteServiceImpl implements BankStatementLineDele
             .filter("self.bankStatement = :bankStatement")
             .bind("bankStatement", bankStatement)
             .fetch();
+    deleteBankStatementLines(bankStatementLines);
+  }
+
+  @Override
+  @Transactional
+  public void deleteBankStatementLines(List<BankStatementLine> bankStatementLines) {
     for (BankStatementLine bsl : bankStatementLines) {
       bankStatementLineRepository.remove(bsl);
     }

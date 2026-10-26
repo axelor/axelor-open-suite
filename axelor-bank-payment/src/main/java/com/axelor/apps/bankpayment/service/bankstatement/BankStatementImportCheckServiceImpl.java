@@ -29,11 +29,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BankStatementImportCheckServiceImpl implements BankStatementImportCheckService {
@@ -42,6 +45,8 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
   protected BankStatementRepository bankStatementRepository;
   protected BankStatementLineRepository bankStatementLineRepository;
   protected CurrencyScaleService currencyScaleService;
+  protected BankStatementDateService bankStatementDateService;
+  protected TraceBackRepository traceBackRepository;
 
   @Inject
   public BankStatementImportCheckServiceImpl(
@@ -49,12 +54,27 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
       BankStatementLineDeleteService bankStatementLineDeleteService,
       BankStatementRepository bankStatementRepository,
       BankStatementLineRepository bankStatementLineRepository,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      BankStatementDateService bankStatementDateService,
+      TraceBackRepository traceBackRepository) {
     this.bankStatementLineFetchService = bankStatementLineFetchService;
     this.bankStatementLineDeleteService = bankStatementLineDeleteService;
     this.bankStatementRepository = bankStatementRepository;
     this.bankStatementLineRepository = bankStatementLineRepository;
     this.currencyScaleService = currencyScaleService;
+    this.bankStatementDateService = bankStatementDateService;
+    this.traceBackRepository = traceBackRepository;
+  }
+
+  @Override
+  public long countSkippedStatements(BankStatement bankStatement, ZonedDateTime fromDateTime) {
+    return traceBackRepository
+        .all()
+        .filter("self.ref = :ref AND self.refId = :refId AND self.date >= :fromDateTime")
+        .bind("ref", BankStatement.class.getName())
+        .bind("refId", bankStatement.getId())
+        .bind("fromDateTime", fromDateTime)
+        .count();
   }
 
   @Override
@@ -73,10 +93,16 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
 
   protected void checkImportPrecondition(BankStatement bankStatement, List<BankDetails> bankDetails)
       throws AxelorException {
-    boolean alreadyImported = false;
+    List<AxelorException> skippedStatements = new ArrayList<>();
+    boolean hasStatementToImport = false;
 
     for (BankDetails bd : bankDetails) {
-      alreadyImported = isAlreadyImported(bankStatement, bd, alreadyImported);
+      skippedStatements.addAll(removeAlreadyImportedStatements(bankStatement, bd));
+
+      if (findBankStatementLines(bankStatement, bd).count() == 0) {
+        continue;
+      }
+      hasStatementToImport = true;
 
       BankStatementLine initialBankStatementLine =
           orderBankStatementLineQuery(
@@ -106,11 +132,88 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
       this.checkAmountWithinBankStatement(bankStatement, bd);
     }
 
-    if (alreadyImported) {
+    if (skippedStatements.isEmpty()) {
+      return;
+    }
+
+    if (!hasStatementToImport) {
       throw new AxelorException(
           bankStatement,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_ALREADY_IMPORTED));
+    }
+
+    updateBankStatementDates(bankStatement);
+    skippedStatements.forEach(TraceBackService::trace);
+  }
+
+  protected List<AxelorException> removeAlreadyImportedStatements(
+      BankStatement bankStatement, BankDetails bankDetails) {
+    List<AxelorException> skippedStatements = new ArrayList<>();
+
+    for (List<BankStatementLine> statementLines :
+        splitByStatement(findBankStatementLines(bankStatement, bankDetails).fetch())) {
+      if (!isAlreadyImportedStatement(statementLines)) {
+        continue;
+      }
+
+      skippedStatements.add(
+          new AxelorException(
+              bankStatement,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_ALREADY_IMPORTED_SKIPPED),
+              bankDetails.getFullName(),
+              statementLines.get(0).getOperationDate(),
+              statementLines.get(statementLines.size() - 1).getOperationDate()));
+      bankStatementLineDeleteService.deleteBankStatementLines(statementLines);
+    }
+
+    return skippedStatements;
+  }
+
+  protected List<List<BankStatementLine>> splitByStatement(List<BankStatementLine> lines) {
+    List<List<BankStatementLine>> statements = new ArrayList<>();
+    List<BankStatementLine> currentStatement = null;
+
+    for (BankStatementLine line : lines) {
+      if (currentStatement == null
+          || line.getLineTypeSelect() == BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE) {
+        currentStatement = new ArrayList<>();
+        statements.add(currentStatement);
+      }
+      currentStatement.add(line);
+    }
+
+    return statements;
+  }
+
+  protected Query<BankStatementLine> findBankStatementLines(
+      BankStatement bankStatement, BankDetails bankDetails) {
+    return bankStatementLineRepository
+        .all()
+        .filter("self.bankStatement = :bankStatement AND self.bankDetails = :bankDetails")
+        .bind("bankStatement", bankStatement)
+        .bind("bankDetails", bankDetails)
+        .order("sequence")
+        .order("id");
+  }
+
+  protected void updateBankStatementDates(BankStatement bankStatement) {
+    bankStatement.setFromDate(null);
+    bankStatement.setToDate(null);
+    for (BankStatementLine line :
+        bankStatementLineRepository
+            .all()
+            .filter("self.bankStatement = :bankStatement AND self.lineTypeSelect IN (:lineTypes)")
+            .bind("bankStatement", bankStatement)
+            .bind(
+                "lineTypes",
+                List.of(
+                    BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE,
+                    BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE))
+            .fetch()) {
+      bankStatementDateService.updateBankStatementDate(
+          bankStatement, line.getOperationDate(), line.getLineTypeSelect());
     }
   }
 
@@ -132,27 +235,6 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_NO_FINAL_LINE_ON_IMPORT));
     }
-  }
-
-  protected boolean isAlreadyImported(
-      BankStatement bankStatement, BankDetails bd, boolean alreadyImported) {
-    List<BankStatementLine> initialLines =
-        orderBankStatementLineQuery(
-                bankStatementLineFetchService.findByBankStatementBankDetailsAndLineType(
-                    bankStatement, bd, BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE),
-                BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE)
-            .fetch();
-
-    List<BankStatementLine> finalLines =
-        orderBankStatementLineQuery(
-                bankStatementLineFetchService.findByBankStatementBankDetailsAndLineType(
-                    bankStatement, bd, BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE),
-                BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE)
-            .fetch();
-
-    return bankStatementLineAlreadyExists(initialLines)
-        || bankStatementLineAlreadyExists(finalLines)
-        || alreadyImported;
   }
 
   protected void checkAmountWithPreviousBankStatement(
@@ -222,29 +304,34 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
                 false));
   }
 
-  protected boolean bankStatementLineAlreadyExists(List<BankStatementLine> initialLines) {
-    boolean alreadyImported = false;
-    BankStatementLine tempBankStatementLine;
-    for (BankStatementLine bsl : initialLines) {
-      tempBankStatementLine =
-          bankStatementLineRepository
-              .all()
-              .filter(
-                  "self.operationDate = :operationDate"
-                      + " AND self.lineTypeSelect = :lineTypeSelect"
-                      + " AND self.bankStatement != :bankStatement"
-                      + " AND self.bankDetails = :bankDetails")
-              .bind("operationDate", bsl.getOperationDate())
-              .bind("lineTypeSelect", bsl.getLineTypeSelect())
-              .bind("bankStatement", bsl.getBankStatement())
-              .bind("bankDetails", bsl.getBankDetails())
-              .fetchOne();
-      if (ObjectUtils.notEmpty(tempBankStatementLine)) {
-        alreadyImported = true;
-        break;
-      }
-    }
-    return alreadyImported;
+  protected boolean isAlreadyImportedStatement(List<BankStatementLine> statementLines) {
+    BankStatementLine initialLine = statementLines.get(0);
+    BankStatementLine finalLine = statementLines.get(statementLines.size() - 1);
+
+    return initialLine.getLineTypeSelect() == BankStatementLineRepository.LINE_TYPE_INITIAL_BALANCE
+        && finalLine.getLineTypeSelect() == BankStatementLineRepository.LINE_TYPE_FINAL_BALANCE
+        && balanceLineAlreadyExists(initialLine)
+        && balanceLineAlreadyExists(finalLine);
+  }
+
+  protected boolean balanceLineAlreadyExists(BankStatementLine balanceLine) {
+    return bankStatementLineRepository
+            .all()
+            .filter(
+                "self.operationDate = :operationDate"
+                    + " AND self.lineTypeSelect = :lineTypeSelect"
+                    + " AND self.debit = :debit"
+                    + " AND self.credit = :credit"
+                    + " AND self.bankStatement != :bankStatement"
+                    + " AND self.bankDetails = :bankDetails")
+            .bind("operationDate", balanceLine.getOperationDate())
+            .bind("lineTypeSelect", balanceLine.getLineTypeSelect())
+            .bind("debit", balanceLine.getDebit())
+            .bind("credit", balanceLine.getCredit())
+            .bind("bankStatement", balanceLine.getBankStatement())
+            .bind("bankDetails", balanceLine.getBankDetails())
+            .count()
+        > 0;
   }
 
   protected void checkBankStatementBalanceIncoherence(
