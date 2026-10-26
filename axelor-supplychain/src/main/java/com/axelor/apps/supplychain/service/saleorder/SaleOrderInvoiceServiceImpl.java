@@ -269,6 +269,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             .reduce(BigDecimal.ZERO, BigDecimal::add)
             .divide(denominator, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP)
             .multiply(BigDecimal.valueOf(100));
+    checkTimetablesNotInvoiced(saleOrder, timetableList);
     checkTimetableInvoiceAmount(saleOrder, timetableList);
     Invoice invoice =
         generateInvoiceFromLines(saleOrder, generateQtyToInvoiceMap(saleOrder, percentSum), true);
@@ -277,6 +278,26 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       timetableRepo.save(timetable);
     }
     return invoice;
+  }
+
+  /**
+   * A timetable already invoiced, or linked to an invoice not ventilated yet, cannot be invoiced
+   * again: same rule as the invoice generation button of the timetable.
+   */
+  protected void checkTimetablesNotInvoiced(SaleOrder saleOrder, List<Timetable> timetableList)
+      throws AxelorException {
+    for (Timetable timetable : timetableList) {
+      Invoice timetableInvoice = timetable.getInvoice();
+      if (timetable.getInvoiced()
+          || (timetableInvoice != null
+              && timetableInvoice.getStatusSelect() < InvoiceRepository.STATUS_VENTILATED)) {
+        throw new AxelorException(
+            saleOrder,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SupplychainExceptionMessage.SO_INVOICE_TIMETABLE_ALREADY_INVOICED),
+            timetableInvoice != null ? timetableInvoice.getInvoiceId() : "");
+      }
+    }
   }
 
   protected void checkTimetableInvoiceAmount(SaleOrder saleOrder, List<Timetable> timetableList)

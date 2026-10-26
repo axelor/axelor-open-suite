@@ -50,6 +50,8 @@ public final class SupplychainExceptionMessage {
       "There are no lines to invoice" /*)*/;
   public static final String SO_INVOICE_NO_TIMETABLES_SELECTED = /*$$(*/
       "There are no selected timetables to invoice" /*)*/;
+  public static final String SO_INVOICE_TIMETABLE_ALREADY_INVOICED = /*$$(*/
+      "A selected timetable has already been invoiced by the invoice %s. It can be invoiced again only if this invoice is cancelled." /*)*/;
   public static final String SO_INVOICE_QTY_MAX = /*$$(*/
       "The quantity to invoice is greater than the quantity in the sale order" /*)*/;
   public static final String SO_INVOICE_AMOUNT_MAX = /*$$(*/

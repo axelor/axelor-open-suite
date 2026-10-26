@@ -112,7 +112,7 @@
     name="action-record-sale-order-invoicing-wizard-set-uninvoiced-timetables-list"
     model="com.axelor.apps.sale.db.SaleOrder">
     <field name="$uninvoicedTimetablesList"
-      expr="eval: timetableList.findAll{it.invoiced == false}.sort{it.estimatedDate}"/>
+      expr="eval: timetableList.findAll{!it.invoiced &amp;&amp; (it.invoice == null || it.invoice.statusSelect &gt;= 3)}.sort{it.estimatedDate}"/>
   </action-record>
 
   <action-method
