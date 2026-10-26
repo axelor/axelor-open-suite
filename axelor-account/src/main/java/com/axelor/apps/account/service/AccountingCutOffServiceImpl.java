@@ -493,7 +493,10 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             analyticMoveLineService.getEffectiveAnalyticMoveLines(
                 moveLine.getAnalyticMoveLineList()),
             cutOffMoveLine,
-            amountInCurrency.abs());
+            convertedAmount.abs());
+        if (isExistingCutOffMoveLine) {
+          analyticMoveLineList.forEach(cutOffMoveLine::addAnalyticMoveLineListItem);
+        }
         if (CollectionUtils.isNotEmpty(cutOffMoveLine.getAnalyticMoveLineList())) {
           cutOffMoveLine
               .getAnalyticMoveLineList()
