@@ -1,0 +1,3 @@
+---
+title: "Sale order: the shipping cost is now deducted from the gross margin, and the margin rate and markup are recomputed accordingly."
+module: axelor-supplychain
