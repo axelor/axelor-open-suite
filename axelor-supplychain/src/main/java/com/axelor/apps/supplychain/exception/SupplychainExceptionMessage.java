@@ -379,6 +379,9 @@ public final class SupplychainExceptionMessage {
   public static final String SHIPMENT_THRESHOLD_EXCEEDED = /*$$(*/
       "Carriage paid threshold is exceeded, all shipment cost lines are removed" /*)*/;
 
+  public static final String SHIPMENT_COST_LINE_PRICE_UPDATED = /*$$(*/
+      "The price of the shipment cost line has been updated according to the freight carrier pricing" /*)*/;
+
   public static final String COULD_NOT_FIND_ELIGIBLE_EMAIL_TEMPLATE_FOR_STOCK_RULES = /*$$(*/
       "Could not find eligible email template for stock rules: %s" /*)*/;
 

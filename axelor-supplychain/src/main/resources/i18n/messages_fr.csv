@@ -877,6 +877,7 @@
 "The packaging line qty can not be greater than the stock move line's qty remaining to package.","La quantité de la ligne d'emballage ne peut pas être supérieure à la quantité restante à emballer de la ligne de mouvement de stock.",,
 "The payment condition must be the same for all purchase orders","La condition de paiement doit être identique pour l'ensemble des commandes fournisseurs sélectionnées",,
 "The payment mode must be the same for all purchase orders","Le mode de paiement doit être identique pour l'ensemble des commandes fournisseurs sélectionnées",,
+"The price of the shipment cost line has been updated according to the freight carrier pricing","Le prix de la ligne de frais de port a été mis à jour selon la tarification du transporteur",,
 "The process was stopped because the computation is stuck in an infinite loop. This error can be caused by a configuration error.","Le processus a été arrêté car le calcul était bloqué dans une boucle infinie. Cette erreur peut être causée par une erreur de configuration.",,
 "The product will not be delivered in time for its corresponding need.","Le produit ne sera pas livré à temps pour le besoin correspondant.",,
 "The proposal has been successfully generated.","La proposition a été générée avec succès.",,
