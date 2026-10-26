@@ -110,6 +110,7 @@ public class BatchRealizeFixedAssetLine extends BatchStrategy {
         fixedAssetDerogatoryLineRepo.all().filter(query).bind(queryParameters).fetch();
 
     fixedAssetLineMoveService.setBatch(batch);
+    fixedAssetDerogatoryLineMoveService.setBatch(batch);
     realizeFixedAssetLineList(fixedAssetLineList);
     realizeFixedAssetDerogatoryLineList(fixedAssetDerogatoryLineList);
   }

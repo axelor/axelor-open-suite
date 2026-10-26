@@ -148,6 +148,9 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     fixedAssetDerogatoryLineRepository.save(fixedAssetDerogatoryLine);
 
     if (fixedAssetDerogatoryLine.getFixedAsset() != null) {
+      if (batch != null) {
+        fixedAssetLineMoveService.setBatch(batch);
+      }
       fixedAssetLineMoveService.realizeOthersLines(
           fixedAssetDerogatoryLine.getFixedAsset(),
           fixedAssetDerogatoryLine.getDepreciationDate(),
