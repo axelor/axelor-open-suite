@@ -23,17 +23,23 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.interfaces.ShippableOrder;
 import com.axelor.apps.base.interfaces.ShippableOrderLine;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineOnChangeService;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineInitValueService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.ShippingAbstractService;
 import com.axelor.apps.supplychain.service.ShippingService;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,23 +83,45 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
   }
 
   @Override
-  protected void updateLineAndComputeOrder(
+  protected String updateLineAndComputeOrder(
       ShippableOrder shippableOrder, Product shippingCostProduct) throws AxelorException {
     SaleOrder saleOrder = getSaleOrder(shippableOrder);
     if (saleOrder == null) {
-      return;
+      return null;
     }
-    SaleOrderLine saleOrderLine = createShippingCostLine(saleOrder, shippingCostProduct);
-    saleOrder
-        .getSaleOrderLineList()
-        .forEach(
-            line -> {
-              if (line.getProduct() != null && line.getProduct().getIsShippingCostsProduct()) {
-                line.setPrice(saleOrderLine.getPrice());
-                line.setProduct(saleOrderLine.getProduct());
-              }
-            });
+    String message = null;
+    if (isShippingCostPriceComputedByPricingScale(saleOrder)) {
+      message = updateShippingCostLinePrice(saleOrder, shippingCostProduct);
+    }
     computeSaleOrder(saleOrder);
+    return message;
+  }
+
+  protected boolean isShippingCostPriceComputedByPricingScale(SaleOrder saleOrder) {
+    return saleOrder.getFreightCarrierMode() != null
+        && Beans.get(AppBaseService.class).getAppBase().getEnablePricingScale();
+  }
+
+  protected String updateShippingCostLinePrice(SaleOrder saleOrder, Product shippingCostProduct)
+      throws AxelorException {
+    BigDecimal price = createShippingCostLine(saleOrder, shippingCostProduct).getPrice();
+    if (price == null) {
+      return null;
+    }
+    SaleOrderLineOnChangeService saleOrderLineOnChangeService =
+        Beans.get(SaleOrderLineOnChangeService.class);
+    boolean priceUpdated = false;
+    for (SaleOrderLine line : saleOrder.getSaleOrderLineList()) {
+      if (shippingCostProduct.equals(line.getProduct())
+          && (line.getPrice() == null || line.getPrice().compareTo(price) != 0)) {
+        line.setPrice(price);
+        saleOrderLineOnChangeService.priceOnChange(line, saleOrder);
+        priceUpdated = true;
+      }
+    }
+    return priceUpdated
+        ? I18n.get(SupplychainExceptionMessage.SHIPMENT_COST_LINE_PRICE_UPDATED)
+        : null;
   }
 
   @Override

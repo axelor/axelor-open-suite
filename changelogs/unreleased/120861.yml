@@ -1,0 +1,6 @@
+---
+title: "Sale order: fixed the shipping cost line whose unit price was reset to the product price whenever the order lines changed, leaving the line inconsistent. The price is now kept, unless pricing scales are enabled with a freight carrier mode, in which case the line is fully recomputed and the user is notified."
+module: axelor-supplychain
+developer: |
+  `ShippingAbstractService#updateLineAndComputeOrder(ShippableOrder, Product)` now returns a `String`
+  (a message to display, or `null`) instead of `void`. Classes overriding it must update their signature.
