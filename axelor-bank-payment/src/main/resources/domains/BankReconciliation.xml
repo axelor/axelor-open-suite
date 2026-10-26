@@ -36,6 +36,9 @@
       scale="3"/>
     <boolean name="includeOtherBankStatements" title="Include other bank statements"
       default="true"/>
+    <boolean name="showAlreadyBankReconciledOnPeriodMoveLines"
+      title="Display accounting entries already reconciled on the period" transient="true"
+      default="false"/>
     <many-to-one name="validatedByUser" title="Validated By"
       ref="com.axelor.auth.db.User" readonly="true"/>
     <datetime name="validateDateTime" title="Validated On" readonly="true"/>

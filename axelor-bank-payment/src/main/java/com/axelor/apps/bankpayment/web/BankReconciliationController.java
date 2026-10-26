@@ -84,12 +84,31 @@ public class BankReconciliationController {
           br.getBankReconciliationLineList().stream()
               .filter(line -> line.getIsSelectedBankReconciliation())
               .collect(Collectors.toList());
-      if (bankReconciliationLines.isEmpty()) {
+
+      // Move lines reconciled together (moveLine-to-moveLine reconciliation)
+      List<MoveLine> selectedMoveLines =
+          Beans.get(MoveLineRepository.class)
+              .all()
+              .filter(
+                  "self.isSelectedBankReconciliation = true"
+                      + " AND self.moveLineBankReconcileNbr IS NOT NULL"
+                      + " AND self.moveLineBankReconcileNbr != ''"
+                      + " AND self.move.company = :company")
+              .bind("company", br.getCompany())
+              .fetch();
+
+      if (bankReconciliationLines.isEmpty() && selectedMoveLines.isEmpty()) {
         response.setInfo(I18n.get(ITranslation.BANK_RECONCILIATION_SELECT_A_LINE));
       } else {
-        Beans.get(BankReconciliationLineUnreconciliationService.class)
-            .unreconcileLines(bankReconciliationLines);
-        Beans.get(BankReconciliationService.class).mergeSplitedReconciliationLines(br);
+        if (!bankReconciliationLines.isEmpty()) {
+          Beans.get(BankReconciliationLineUnreconciliationService.class)
+              .unreconcileLines(bankReconciliationLines);
+          Beans.get(BankReconciliationService.class).mergeSplitedReconciliationLines(br);
+        }
+        if (!selectedMoveLines.isEmpty()) {
+          Beans.get(BankReconciliationReconciliationService.class)
+              .unreconcileMoveLines(selectedMoveLines);
+        }
         Beans.get(BankReconciliationBalanceComputationService.class).computeBalances(br);
         response.setReload(true);
       }
@@ -421,6 +440,15 @@ public class BankReconciliationController {
   }
 
   public void showUnreconciledMoveLines(ActionRequest request, ActionResponse response) {
+    setMoveLinesView(request, response, false);
+  }
+
+  public void showAlreadyReconciledMoveLines(ActionRequest request, ActionResponse response) {
+    setMoveLinesView(request, response, true);
+  }
+
+  protected void setMoveLinesView(
+      ActionRequest request, ActionResponse response, boolean onlyReconciledOnPeriod) {
     try {
       BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
       BankReconciliationQueryService bankReconciliationQueryService =
@@ -438,14 +466,18 @@ public class BankReconciliationController {
       }
 
       actionViewBuilder.add("form", "move-line-form");
-      BigDecimal selectedLinesBalance =
-          Beans.get(BankReconciliationSelectedLineComputationService.class)
-              .computeBankReconciliationLinesSelection(bankReconciliation);
-      BigDecimal credit =
-          selectedLinesBalance.signum() > 0 ? selectedLinesBalance : BigDecimal.ZERO;
-      BigDecimal debit =
-          selectedLinesBalance.signum() < 0 ? selectedLinesBalance.abs() : BigDecimal.ZERO;
-      actionViewBuilder.domain(bankReconciliationQueryService.getRequestMoveLines(credit, debit));
+      if (onlyReconciledOnPeriod) {
+        actionViewBuilder.domain(bankReconciliationQueryService.getRequestMoveLines(true));
+      } else {
+        BigDecimal selectedLinesBalance =
+            Beans.get(BankReconciliationSelectedLineComputationService.class)
+                .computeBankReconciliationLinesSelection(bankReconciliation);
+        BigDecimal credit =
+            selectedLinesBalance.signum() > 0 ? selectedLinesBalance : BigDecimal.ZERO;
+        BigDecimal debit =
+            selectedLinesBalance.signum() < 0 ? selectedLinesBalance.abs() : BigDecimal.ZERO;
+        actionViewBuilder.domain(bankReconciliationQueryService.getRequestMoveLines(credit, debit));
+      }
       if (bankReconciliation.getCompany() == null) {
         return;
       }

@@ -35,7 +35,7 @@ public class MoveLinePostedNbrServiceImpl implements MoveLinePostedNbrService {
       posted = String.join(",", postedNbrs);
     } else posted = postedNbr;
     moveLine.setPostedNbr(posted);
-    return moveLine;
+    return updateBankReconcileNbr(moveLine);
   }
 
   @Override
@@ -45,6 +45,26 @@ public class MoveLinePostedNbrServiceImpl implements MoveLinePostedNbrService {
     postedNbrs.remove(postedNbr);
     posted = String.join(",", postedNbrs);
     moveLine.setPostedNbr(posted);
+    return updateBankReconcileNbr(moveLine);
+  }
+
+  @Override
+  public MoveLine updateBankReconcileNbr(MoveLine moveLine) {
+    String reconciledNbr = moveLine.getMoveLineBankReconcileNbr();
+    String postedNumber = moveLine.getPostedNbr();
+    boolean hasReconciled = StringUtils.notEmpty(reconciledNbr);
+    boolean hasPosted = StringUtils.notEmpty(postedNumber);
+    String bankReconcileNbr;
+    if (hasPosted && hasReconciled) {
+      bankReconcileNbr = postedNumber + "/" + reconciledNbr;
+    } else if (hasPosted) {
+      bankReconcileNbr = postedNumber;
+    } else if (hasReconciled) {
+      bankReconcileNbr = reconciledNbr;
+    } else {
+      bankReconcileNbr = null;
+    }
+    moveLine.setBankReconcileNbr(bankReconcileNbr);
     return moveLine;
   }
 }

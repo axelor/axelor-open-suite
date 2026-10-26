@@ -103,6 +103,10 @@
     <string name="taxCode" readonly="true"/>
 
     <boolean name="isSelectedBankReconciliation" title="Selected" default="false"/>
+    <string name="moveLineBankReconcileNbr" title="Move lines reconciliation number"/>
+    <!-- Stored (kept in sync by MoveLinePostedNbrService) so it can be shown in grids: postedNbr/moveLineBankReconcileNbr,
+      or the only non-empty one. -->
+    <string name="bankReconcileNbr" title="Reconciliation / posted number" readonly="true"/>
 
     <decimal name="taxAmount" scale="3" precision="20" title="Tax amount" readonly="true"/>
     <one-to-many name="taxPaymentMoveLineList" mappedBy="moveLine"

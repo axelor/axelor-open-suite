@@ -25,4 +25,11 @@ public interface MoveLinePostedNbrService {
   MoveLine setMoveLinePostedNbr(MoveLine moveLine, String postedNbr);
 
   MoveLine removePostedNbr(MoveLine moveLine, String postedNbr);
+
+  /**
+   * Recomputes and stores the bankReconcileNbr from the current postedNbr and
+   * moveLineBankReconcileNbr of the move line (postedNbr/moveLineBankReconcileNbr, or the only
+   * non-empty one). Stored so it can be displayed in grids.
+   */
+  MoveLine updateBankReconcileNbr(MoveLine moveLine);
 }

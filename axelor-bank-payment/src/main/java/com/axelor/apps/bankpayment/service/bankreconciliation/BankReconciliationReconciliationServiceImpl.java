@@ -28,14 +28,18 @@ import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementQueryRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.moveline.MoveLinePostedNbrService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.cache.AxelorCache;
 import com.axelor.cache.CacheBuilder;
+import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.script.GroovyScriptHelper;
@@ -47,6 +51,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -66,6 +72,9 @@ public class BankReconciliationReconciliationServiceImpl
   protected CurrencyService currencyService;
   protected DateService dateService;
   protected CurrencyScaleService currencyScaleService;
+  protected SequenceService sequenceService;
+  protected BankReconciliationRepository bankReconciliationRepository;
+  protected MoveLinePostedNbrService moveLinePostedNbrService;
 
   private final AxelorCache<String, BigDecimal> exchangeRateCache =
       CacheBuilder.newBuilder("exchangeRateCache")
@@ -81,7 +90,10 @@ public class BankReconciliationReconciliationServiceImpl
       BankReconciliationLineService bankReconciliationLineService,
       CurrencyService currencyService,
       DateService dateService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      SequenceService sequenceService,
+      BankReconciliationRepository bankReconciliationRepository,
+      MoveLinePostedNbrService moveLinePostedNbrService) {
     this.bankStatementQueryRepository = bankStatementQueryRepository;
     this.moveLineRepository = moveLineRepository;
     this.bankReconciliationQueryService = bankReconciliationQueryService;
@@ -89,6 +101,9 @@ public class BankReconciliationReconciliationServiceImpl
     this.currencyService = currencyService;
     this.dateService = dateService;
     this.currencyScaleService = currencyScaleService;
+    this.sequenceService = sequenceService;
+    this.bankReconciliationRepository = bankReconciliationRepository;
+    this.moveLinePostedNbrService = moveLinePostedNbrService;
   }
 
   @Override
@@ -191,6 +206,7 @@ public class BankReconciliationReconciliationServiceImpl
             }
 
             moveLine.setPostedNbr(bankReconciliationLine.getPostedNbr());
+            moveLinePostedNbrService.updateBankReconcileNbr(moveLine);
             matchedMoveLineIds.add(moveLine.getId());
             matchedLineCount++;
             totalMatchedLineCount++;
@@ -298,7 +314,6 @@ public class BankReconciliationReconciliationServiceImpl
   @Transactional(rollbackOn = {Exception.class})
   public BankReconciliation reconcileSelected(BankReconciliation bankReconciliation)
       throws AxelorException {
-    BankReconciliationLine bankReconciliationLine;
     String filter = bankReconciliationQueryService.getRequestMoveLines();
     filter = filter.concat(" AND self.isSelectedBankReconciliation = true");
     List<MoveLine> moveLines =
@@ -307,12 +322,30 @@ public class BankReconciliationReconciliationServiceImpl
             .filter(filter)
             .bind(bankReconciliationQueryService.getBindRequestMoveLine(bankReconciliation))
             .fetch();
-    checkReconciliation(moveLines, bankReconciliation);
-    bankReconciliationLine =
+
+    // Check if bankReconciliationLines are selected
+    List<BankReconciliationLine> selectedBankReconciliationLines =
         bankReconciliation.getBankReconciliationLineList().stream()
             .filter(line -> line.getIsSelectedBankReconciliation())
-            .collect(Collectors.toList())
-            .get(0);
+            .collect(Collectors.toList());
+
+    // Case 1: Reconcile two moveLines together (no bankReconciliationLine selected)
+    if (selectedBankReconciliationLines.isEmpty()) {
+      // Validation: Check maximum 2 moveLines selection for moveLine-to-moveLine reconciliation
+      if (moveLines.size() > 2) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_MAX_TWO_MOVE_LINES));
+      }
+      if (moveLines.size() == 2) {
+        reconcileTwoMoveLines(bankReconciliation, moveLines.get(0), moveLines.get(1));
+        return bankReconciliation;
+      }
+    }
+
+    // Case 2: Reconcile bankReconciliationLine with moveLine (existing behavior)
+    checkReconciliation(moveLines, bankReconciliation);
+    BankReconciliationLine bankReconciliationLine = selectedBankReconciliationLines.get(0);
     bankReconciliationLineService.checkDebitCreditDirection(
         bankReconciliationLine, moveLines.get(0));
     bankReconciliationLine.setMoveLine(moveLines.get(0));
@@ -328,6 +361,211 @@ public class BankReconciliationReconciliationServiceImpl
       bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
     }
     return bankReconciliation;
+  }
+
+  protected void reconcileTwoMoveLines(
+      BankReconciliation bankReconciliation, MoveLine moveLine1, MoveLine moveLine2)
+      throws AxelorException {
+    // Amount still to reconcile on each move line (supports partial reconciliation)
+    BigDecimal remainingAmount1 = getUnreconciledAmount(moveLine1);
+    BigDecimal remainingAmount2 = getUnreconciledAmount(moveLine2);
+
+    // Validation 1: block only if a move line is already fully reconciled (nothing remaining)
+    if (remainingAmount1.signum() <= 0) {
+      throw new AxelorException(
+          moveLine1,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_MOVE_LINE_ALREADY_RECONCILED),
+          moveLine1.getName());
+    }
+    if (remainingAmount2.signum() <= 0) {
+      throw new AxelorException(
+          moveLine2,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_MOVE_LINE_ALREADY_RECONCILED),
+          moveLine2.getName());
+    }
+
+    // Validation 2: Check debit VS credit - one must be debit and one must be credit
+    boolean moveLine1IsDebit =
+        moveLine1.getDebit() != null && moveLine1.getDebit().compareTo(BigDecimal.ZERO) > 0;
+    boolean moveLine2IsDebit =
+        moveLine2.getDebit() != null && moveLine2.getDebit().compareTo(BigDecimal.ZERO) > 0;
+
+    if (moveLine1IsDebit == moveLine2IsDebit) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              BankPaymentExceptionMessage.BANK_RECONCILIATION_MOVE_LINES_MUST_BE_DEBIT_VS_CREDIT));
+    }
+
+    // Reconcile the smallest remaining amount, scaled to the currency scale (2 decimals)
+    BigDecimal reconciledAmount =
+        currencyScaleService.getScaledValue(remainingAmount1.min(remainingAmount2));
+
+    // The reconciliation number references the move line with the smallest remaining amount
+    MoveLine moveLineWithSmallestAmount =
+        remainingAmount1.compareTo(remainingAmount2) <= 0 ? moveLine1 : moveLine2;
+
+    // The reconciliation number uses the bank reconciliation sequence (same as
+    // bankReconciliationLine.reconcileNumber), shared by both lines, with the reconciled amount
+    // appended: "{sequence}:{reconciledAmount}" (e.g. BNKREC2:2000.00). No spaces, to ease parsing.
+    String reconcileNumber =
+        sequenceService.getSequenceNumber(
+            SequenceRepository.BANK_RECONCILIATION,
+            bankReconciliation.getCompany(),
+            BankReconciliationLine.class,
+            "reconcileNumber",
+            moveLineWithSmallestAmount);
+    if (reconcileNumber == null) {
+      throw new AxelorException(
+          bankReconciliation,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_COMPANY_NO_SEQUENCE),
+          bankReconciliation.getCompany().getName());
+    }
+    String moveLineBankReconcileNbr = String.format("%s:%s", reconcileNumber, reconciledAmount);
+
+    // Accumulate the reconciled amount and the reconciliation number on both move lines
+    applyMoveLineReconciliation(moveLine1, reconciledAmount, moveLineBankReconcileNbr);
+    applyMoveLineReconciliation(moveLine2, reconciledAmount, moveLineBankReconcileNbr);
+  }
+
+  protected void applyMoveLineReconciliation(
+      MoveLine moveLine, BigDecimal reconciledAmount, String moveLineBankReconcileNbr) {
+    BigDecimal alreadyReconciled =
+        moveLine.getBankReconciledAmount() != null
+            ? moveLine.getBankReconciledAmount()
+            : BigDecimal.ZERO;
+    moveLine.setBankReconciledAmount(
+        currencyScaleService.getScaledValue(alreadyReconciled.add(reconciledAmount)));
+    moveLine.setMoveLineBankReconcileNbr(
+        addMoveLineBankReconcileNbr(
+            moveLine.getMoveLineBankReconcileNbr(), moveLineBankReconcileNbr));
+    moveLine.setIsSelectedBankReconciliation(false);
+    moveLinePostedNbrService.updateBankReconcileNbr(moveLine);
+    moveLineRepository.save(moveLine);
+  }
+
+  protected BigDecimal getUnreconciledAmount(MoveLine moveLine) {
+    BigDecimal debit = moveLine.getDebit() != null ? moveLine.getDebit() : BigDecimal.ZERO;
+    BigDecimal credit = moveLine.getCredit() != null ? moveLine.getCredit() : BigDecimal.ZERO;
+    BigDecimal alreadyReconciled =
+        moveLine.getBankReconciledAmount() != null
+            ? moveLine.getBankReconciledAmount()
+            : BigDecimal.ZERO;
+    return debit.add(credit).subtract(alreadyReconciled);
+  }
+
+  protected String addMoveLineBankReconcileNbr(String existing, String moveLineBankReconcileNbr) {
+    if (StringUtils.isEmpty(existing)) {
+      return moveLineBankReconcileNbr;
+    }
+    List<String> reconciledNbrs = new ArrayList<>(Arrays.asList(existing.split(",")));
+    reconciledNbrs.add(moveLineBankReconcileNbr);
+    return String.join(",", reconciledNbrs);
+  }
+
+  protected String removeMoveLineBankReconcileNbr(
+      String existing, String moveLineBankReconcileNbr) {
+    if (StringUtils.isEmpty(existing)) {
+      return existing;
+    }
+    List<String> reconciledNbrs = new ArrayList<>(Arrays.asList(existing.split(",")));
+    reconciledNbrs.remove(moveLineBankReconcileNbr);
+    return reconciledNbrs.isEmpty() ? null : String.join(",", reconciledNbrs);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void unreconcileMoveLines(List<MoveLine> moveLines) throws AxelorException {
+    // Only the move line to move line reconciliations (moveLineBankReconcileNbr) are undone here:
+    // reconciliations against a bank reconciliation line are undone by selecting that line.
+    Set<String> processedReconciledNbrs = new HashSet<>();
+    for (MoveLine moveLine : moveLines) {
+      String reconciledNbrList = moveLine.getMoveLineBankReconcileNbr();
+      if (StringUtils.isEmpty(reconciledNbrList)) {
+        continue;
+      }
+      for (String moveLineBankReconcileNbr : reconciledNbrList.split(",")) {
+        // Each reconciliation number is shared by the two reconciled lines: process it once
+        if (processedReconciledNbrs.add(moveLineBankReconcileNbr)) {
+          unreconcileByReconciledNbr(moveLineBankReconcileNbr);
+        }
+      }
+    }
+  }
+
+  protected void unreconcileByReconciledNbr(String moveLineBankReconcileNbr)
+      throws AxelorException {
+    // The reconciled amount is stored in the number: "{sequence}:{amount}" (e.g. BNKREC2:2000.00)
+    BigDecimal reconciledAmount =
+        new BigDecimal(
+            moveLineBankReconcileNbr.substring(moveLineBankReconcileNbr.indexOf(":") + 1).trim());
+    List<MoveLine> reconciledMoveLines =
+        moveLineRepository
+            .all()
+            .filter("self.moveLineBankReconcileNbr LIKE :moveLineBankReconcileNbr")
+            .bind("moveLineBankReconcileNbr", "%" + moveLineBankReconcileNbr + "%")
+            .fetch()
+            .stream()
+            // Guard against LIKE substring false positives (e.g. "BNKREC2:10" inside "BNKREC2:100")
+            .filter(
+                moveLine ->
+                    Arrays.asList(moveLine.getMoveLineBankReconcileNbr().split(","))
+                        .contains(moveLineBankReconcileNbr))
+            .collect(Collectors.toList());
+
+    // Check every line before changing any of them
+    for (MoveLine moveLine : reconciledMoveLines) {
+      checkNotInValidatedBankReconciliation(moveLine);
+    }
+
+    for (MoveLine moveLine : reconciledMoveLines) {
+      BigDecimal alreadyReconciled =
+          moveLine.getBankReconciledAmount() != null
+              ? moveLine.getBankReconciledAmount()
+              : BigDecimal.ZERO;
+      moveLine.setBankReconciledAmount(
+          currencyScaleService.getScaledValue(
+              alreadyReconciled.subtract(reconciledAmount).max(BigDecimal.ZERO)));
+      moveLine.setMoveLineBankReconcileNbr(
+          removeMoveLineBankReconcileNbr(
+              moveLine.getMoveLineBankReconcileNbr(), moveLineBankReconcileNbr));
+      moveLine.setIsSelectedBankReconciliation(false);
+      moveLinePostedNbrService.updateBankReconcileNbr(moveLine);
+      moveLineRepository.save(moveLine);
+    }
+  }
+
+  // A move line to move line reconciliation is not linked to a bank reconciliation, so a move
+  // line dated in a period already covered by a validated bank reconciliation of its account is
+  // considered closed and cannot be unreconciled.
+  protected void checkNotInValidatedBankReconciliation(MoveLine moveLine) throws AxelorException {
+    BankReconciliation validatedBankReconciliation =
+        bankReconciliationRepository
+            .all()
+            .filter(
+                "self.company = :company"
+                    + " AND self.statusSelect = :validated"
+                    + " AND self.toDate >= :date"
+                    + " AND (self.cashAccount IS NULL OR self.cashAccount = :account)")
+            .bind("company", moveLine.getMove().getCompany())
+            .bind("validated", BankReconciliationRepository.STATUS_VALIDATED)
+            .bind("date", moveLine.getDate())
+            .bind("account", moveLine.getAccount())
+            .order("-toDate")
+            .fetchOne();
+    if (validatedBankReconciliation != null) {
+      throw new AxelorException(
+          moveLine,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              BankPaymentExceptionMessage
+                  .BANK_RECONCILIATION_MOVE_LINE_IN_VALIDATED_RECONCILIATION),
+          moveLine.getName(),
+          validatedBankReconciliation.getName());
+    }
   }
 
   protected BigDecimal getAmountMarginLow(BankReconciliation bankReconciliation) {

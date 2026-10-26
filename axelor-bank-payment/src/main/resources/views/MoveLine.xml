@@ -9,7 +9,7 @@
       title="Select / Unselect" icon="check-circle-fill" showIf="!isSelectedBankReconciliation"/>
     <button onClick="action-move-line-method-set-selected" name="unselect"
       title="Select / Unselect" icon="dash-circle-fill" showIf="isSelectedBankReconciliation"/>
-    <field name="postedNbr"/>
+    <field name="bankReconcileNbr"/>
     <field name="name"/>
     <field name="date"/>
     <field name="move.period" canView="false"/>
@@ -36,7 +36,7 @@
       title="Select / Unselect" icon="check-circle-fill" showIf="!isSelectedBankReconciliation"/>
     <button onClick="action-move-line-method-set-selected" name="unselect"
       title="Select / Unselect" icon="dash-circle-fill" showIf="isSelectedBankReconciliation"/>
-    <field name="postedNbr"/>
+    <field name="bankReconcileNbr"/>
     <field name="name"/>
     <field name="date"/>
     <field name="move.period" canView="false"/>
@@ -64,12 +64,33 @@
     <extend target="//field[@name='bankReconciledAmount']">
       <attribute name="onChange"
         value="action-move-line-method-bank-reconciled-amount-onchange"/>
+      <insert position="after">
+        <field name="bankReconcileNbr" readonly="true"/>
+        <field name="postedNbr" hidden="true"/>
+        <field name="moveLineBankReconcileNbr" hidden="true"/>
+      </insert>
+    </extend>
+    <extend target="//panel-dashlet[@name='bankReconciliationLinePanel']">
+      <attribute name="hideIf"
+        value="(postedNbr == null || postedNbr == '') &amp;&amp; (bankReconciledAmount == null || bankReconciledAmount == 0)"/>
+      <attribute name="height" value="200"/>
+      <insert position="after">
+        <panel-dashlet name="moveLineBankReconcilePanel" title="Reconciled move lines"
+          action="action-move-line-method-show-move-line-bank-reconcile" canAttach="false"
+          height="200"
+          showIf="moveLineBankReconcileNbr != null &amp;&amp; moveLineBankReconcileNbr != '' &amp;&amp; bankReconciledAmount != null &amp;&amp; bankReconciledAmount != 0"/>
+      </insert>
     </extend>
   </form>
 
   <action-method name="action-move-line-method-bank-reconciled-amount-onchange">
     <call class="com.axelor.apps.bankpayment.web.MoveLineController"
       method="bankReconciledAmountOnChange"/>
+  </action-method>
+
+  <action-method name="action-move-line-method-show-move-line-bank-reconcile">
+    <call class="com.axelor.apps.bankpayment.web.MoveLineController"
+      method="showMoveLineBankReconcile"/>
   </action-method>
 
   <action-method name="action-move-line-method-set-selected">
