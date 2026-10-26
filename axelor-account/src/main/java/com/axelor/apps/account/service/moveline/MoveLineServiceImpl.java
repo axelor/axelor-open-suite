@@ -66,6 +66,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.persistence.EntityTransaction;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -194,8 +195,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
       try {
         moveLineLists = this.findMoveLineLists(moveLineLists);
-        errorNumber +=
-            this.useExcessPaymentOnMoveLinesDontThrow(byDate, paymentService, moveLineLists);
+        errorNumber += this.reconcileMoveLineListsInTransaction(byDate, moveLineLists);
       } catch (Exception e) {
         TraceBackService.trace(e);
         log.debug(e.getMessage());
@@ -472,5 +472,38 @@ public class MoveLineServiceImpl implements MoveLineService {
       moveLineList.add(moveLine);
     }
     return moveLineList;
+  }
+
+  /**
+   * Reconcile the move lines of a group in a single transaction, so that no partial reconcile nor
+   * foreign exchange gap move is kept when one of the reconciles fails.
+   */
+  protected int reconcileMoveLineListsInTransaction(
+      Comparator<MoveLine> byDate, Pair<List<MoveLine>, List<MoveLine>> moveLineLists) {
+    EntityTransaction transaction = JPA.em().getTransaction();
+    if (transaction.isActive()) {
+      return this.useExcessPaymentOnMoveLinesDontThrow(byDate, paymentService, moveLineLists);
+    }
+
+    List<MoveLine> companyPartnerCreditMoveLineList = moveLineLists.getLeft();
+    List<MoveLine> companyPartnerDebitMoveLineList = moveLineLists.getRight();
+    companyPartnerCreditMoveLineList.sort(byDate);
+    companyPartnerDebitMoveLineList.sort(byDate);
+
+    try {
+      transaction.begin();
+      paymentService.useExcessPaymentOnMoveLines(
+          companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
+      transaction.commit();
+      return 0;
+    } catch (Exception e) {
+      if (transaction.isActive()) {
+        transaction.rollback();
+      }
+      JPA.clear();
+      TraceBackService.trace(e);
+      log.debug(e.getMessage());
+      return 1;
+    }
   }
 }

@@ -183,7 +183,8 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     Partner partner = null;
 
     if (debitMoveLine.getMove().getFunctionalOriginSelect()
-        == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT) {
+            == MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT
+        || debitMoveLine.getMove().getInvoice() == null) {
       invoice = creditMoveLine.getMove().getInvoice();
     } else {
       invoice = debitMoveLine.getMove().getInvoice();

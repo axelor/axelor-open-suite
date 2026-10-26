@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.reconcilegroup;
 
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.ReconcileGroup;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
@@ -46,6 +47,10 @@ public class ReconcileGroupUnletterServiceImpl implements ReconcileGroupUnletter
         reconcileGroupFetchService.fetchConfirmedReconciles(reconcileGroup);
 
     for (Reconcile reconcile : reconcileList) {
+      // The foreign exchange gap reconcile is already canceled by the reverse of its move
+      if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CANCELED) {
+        continue;
+      }
       unReconcileService.unreconcile(reconcile);
     }
   }
