@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed the advance payments tab not displayed on a ventilated invoice with imputed advance payments."
+module: axelor-account
