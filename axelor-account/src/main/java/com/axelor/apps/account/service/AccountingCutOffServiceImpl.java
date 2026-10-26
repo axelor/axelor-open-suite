@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Journal;
@@ -61,7 +60,6 @@ import com.google.common.collect.Sets;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -425,33 +423,26 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
           && (moveLine.getCutOffEndDate().isAfter(moveDate) || isReverse)) {
         moveLineAccount = moveLine.getAccount();
         amountInCurrency = moveLineService.getCutOffProrataAmount(moveLine, originMoveDate);
-        BigDecimal convertedAmount =
+
+        // The prorata amount carries the sign of the origin line (positive on debit, negative on
+        // credit). The cut-off line is booked on the opposite side of its origin line and the
+        // reverse cut-off line on the same side, so that an origin line booked against the usual
+        // side (credit on an expense account, debit on an income account) is deducted.
+        BigDecimal signedAmountInCurrency =
+            isReverse ? amountInCurrency : amountInCurrency.negate();
+        BigDecimal signedConvertedAmount =
             currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-                amountInCurrency, currencyRate, companyCurrency);
+                signedAmountInCurrency, currencyRate, companyCurrency);
 
         Pair<Account, List<String>> cutOffMoveLineKey =
             Pair.of(moveLineAccount, this.getAnalyticDistributionKey(moveLine));
 
         // Check if move line already exists with that account and analytic distribution
-        boolean isExistingCutOffMoveLine = cutOffMoveLineMap.containsKey(cutOffMoveLineKey);
-        if (isExistingCutOffMoveLine) {
-          cutOffMoveLine = cutOffMoveLineMap.get(cutOffMoveLineKey);
-          boolean isCutOffDebit =
-              isReverse
-                  != (accountingCutOffTypeSelect
-                      == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES);
-          BigDecimal signedAmountInCurrency =
-              isCutOffDebit ? amountInCurrency.abs() : amountInCurrency.abs().negate();
-          BigDecimal currencyAmount =
-              cutOffMoveLine.getCurrencyAmount().add(signedAmountInCurrency);
-          if (isCutOffDebit) {
-            cutOffMoveLine.setDebit(cutOffMoveLine.getDebit().add(convertedAmount.abs()));
-            cutOffMoveLine.setCurrencyAmount(currencyAmount.abs());
-          } else {
-            cutOffMoveLine.setCredit(cutOffMoveLine.getCredit().add(convertedAmount.abs()));
-            currencyAmount = moveLineToolService.computeCurrencyAmountSign(currencyAmount, false);
-            cutOffMoveLine.setCurrencyAmount(currencyAmount);
-          }
+        if (cutOffMoveLineMap.containsKey(cutOffMoveLineKey)) {
+          this.addSignedAmountToCutOffMoveLine(
+              cutOffMoveLineMap.get(cutOffMoveLineKey),
+              signedAmountInCurrency,
+              signedConvertedAmount);
 
         } else {
           cutOffMoveLine =
@@ -459,10 +450,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
                   cutOffMove,
                   partner,
                   moveLineAccount,
-                  amountInCurrency.abs(),
-                  isReverse
-                      != (accountingCutOffTypeSelect
-                          == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES),
+                  signedAmountInCurrency.abs(),
+                  signedAmountInCurrency.signum() >= 0,
                   cutOffMove.getDate(),
                   ++counter,
                   origin,
@@ -475,45 +464,41 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
           }
           cutOffMoveLine.setOriginDate(originDate);
 
-          cutOffMoveLineMap.put(cutOffMoveLineKey, cutOffMoveLine);
-        }
-
-        List<AnalyticMoveLine> analyticMoveLineList =
-            CollectionUtils.isEmpty(cutOffMoveLine.getAnalyticMoveLineList())
-                ? new ArrayList<>()
-                : new ArrayList<>(cutOffMoveLine.getAnalyticMoveLineList());
-        cutOffMoveLine.clearAnalyticMoveLineList();
-
-        // Copy analytic move lines
-        if (!isExistingCutOffMoveLine) {
+          // Copy analytic move lines: every origin line merged into this cut-off line shares the
+          // same analytic distribution, the amounts are recomputed from the netted amount below
           moveLineComputeAnalyticService.clearAnalyticAccounting(cutOffMoveLine);
-        }
-        moveLineComputeAnalyticService.copyAnalyticsDataFromMoveLine(
-            moveLine,
-            analyticMoveLineService.getEffectiveAnalyticMoveLines(
-                moveLine.getAnalyticMoveLineList()),
-            cutOffMoveLine,
-            convertedAmount.abs());
-        if (CollectionUtils.isNotEmpty(cutOffMoveLine.getAnalyticMoveLineList())) {
-          cutOffMoveLine
-              .getAnalyticMoveLineList()
-              .forEach(
-                  line -> {
-                    line.setDate(moveDate);
-                    line.setSubTypeSelect(AnalyticMoveLineRepository.SUB_TYPE_ORIGINAL);
-                    line.setOriginAnalyticMoveLine(null);
-                  });
+          moveLineComputeAnalyticService.copyAnalyticsDataFromMoveLine(
+              moveLine,
+              analyticMoveLineService.getEffectiveAnalyticMoveLines(
+                  moveLine.getAnalyticMoveLineList()),
+              cutOffMoveLine,
+              signedConvertedAmount.abs());
+          if (CollectionUtils.isNotEmpty(cutOffMoveLine.getAnalyticMoveLineList())) {
+            cutOffMoveLine
+                .getAnalyticMoveLineList()
+                .forEach(
+                    line -> {
+                      line.setDate(moveDate);
+                      line.setSubTypeSelect(AnalyticMoveLineRepository.SUB_TYPE_ORIGINAL);
+                      line.setOriginAnalyticMoveLine(null);
+                    });
+          }
+
+          cutOffMoveLineMap.put(cutOffMoveLineKey, cutOffMoveLine);
         }
       }
     }
 
-    cutOffMoveLineMap
-        .values()
-        .forEach(
-            line -> {
-              recomputeAnalyticPercentage(line);
-              cutOffMove.addMoveLineListItem(line);
-            });
+    for (MoveLine line : cutOffMoveLineMap.values()) {
+      BigDecimal lineAmount = line.getDebit().add(line.getCredit());
+      // Origin lines cancelling each other out do not generate any cut-off line
+      if (lineAmount.signum() == 0) {
+        continue;
+      }
+      analyticMoveLineService.updateAnalyticMoveLineList(
+          line.getAnalyticMoveLineList(), lineAmount, moveDate);
+      cutOffMove.addMoveLineListItem(line);
+    }
 
     // Partner move line
     Account account =
@@ -680,44 +665,26 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     return null;
   }
 
-  protected void recomputeAnalyticPercentage(MoveLine cutOffMoveLine) {
-    List<AnalyticMoveLine> analyticMoveLineList = cutOffMoveLine.getAnalyticMoveLineList();
-    if (CollectionUtils.isEmpty(analyticMoveLineList)) {
-      return;
-    }
+  /**
+   * Adds a signed amount (positive on debit, negative on credit) to a cut-off move line generated
+   * from a previous origin line with the same account and analytic distribution. The amounts are
+   * netted and the result is booked on the side given by its sign, in company currency as well as
+   * in move currency.
+   */
+  protected void addSignedAmountToCutOffMoveLine(
+      MoveLine cutOffMoveLine,
+      BigDecimal signedAmountInCurrency,
+      BigDecimal signedConvertedAmount) {
+    BigDecimal netAmount =
+        cutOffMoveLine.getDebit().subtract(cutOffMoveLine.getCredit()).add(signedConvertedAmount);
+    BigDecimal netCurrencyAmount = cutOffMoveLine.getCurrencyAmount().add(signedAmountInCurrency);
+    boolean isDebit =
+        netAmount.signum() != 0 ? netAmount.signum() > 0 : netCurrencyAmount.signum() >= 0;
 
-    Map<AnalyticAxis, List<AnalyticMoveLine>> analyticMoveLinesByAxis =
-        analyticMoveLineList.stream()
-            .collect(Collectors.groupingBy(AnalyticMoveLine::getAnalyticAxis));
-
-    for (List<AnalyticMoveLine> axisAnalyticMoveLineList : analyticMoveLinesByAxis.values()) {
-      BigDecimal axisAmount =
-          axisAnalyticMoveLineList.stream()
-              .map(AnalyticMoveLine::getAmount)
-              .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-      if (axisAmount.signum() == 0) {
-        continue;
-      }
-
-      BigDecimal percentageSum = BigDecimal.ZERO;
-      for (int i = 0; i < axisAnalyticMoveLineList.size(); i++) {
-        AnalyticMoveLine analyticMoveLine = axisAnalyticMoveLineList.get(i);
-        BigDecimal percentage;
-        if (i == axisAnalyticMoveLineList.size() - 1) {
-          percentage =
-              BigDecimal.valueOf(100).setScale(2, RoundingMode.HALF_UP).subtract(percentageSum);
-        } else {
-          percentage =
-              analyticMoveLine
-                  .getAmount()
-                  .multiply(BigDecimal.valueOf(100))
-                  .divide(axisAmount, 2, RoundingMode.HALF_UP);
-          percentageSum = percentageSum.add(percentage);
-        }
-        analyticMoveLine.setPercentage(percentage);
-      }
-    }
+    cutOffMoveLine.setDebit(isDebit ? netAmount.abs() : BigDecimal.ZERO);
+    cutOffMoveLine.setCredit(isDebit ? BigDecimal.ZERO : netAmount.abs());
+    cutOffMoveLine.setCurrencyAmount(
+        moveLineToolService.computeCurrencyAmountSign(netCurrencyAmount, isDebit));
   }
 
   protected List<String> getAnalyticDistributionKey(MoveLine moveLine) {
