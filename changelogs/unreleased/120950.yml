@@ -1,0 +1,3 @@
+---
+title: "Accounting batch: fixed the partner credit balance reimbursement batch not generating any bank order while reporting 0 anomaly."
+module: axelor-bank-payment
