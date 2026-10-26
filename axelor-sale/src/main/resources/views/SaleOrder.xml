@@ -2372,6 +2372,7 @@
   <action-group name="action-sale-order-group-discount-type-onchange">
     <action name="action-sale-order-record-clear-discount-amount"/>
     <action name="action-sale-order-attrs-line-discount-readonly"/>
+    <action name="action-sale-order-method-on-global-discount-change"/>
     <action name="action-sale-order-method-on-line-change"/>
   </action-group>
 

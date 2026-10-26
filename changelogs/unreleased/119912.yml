@@ -1,0 +1,5 @@
+---
+title: "Sale order: fixed removing the global discount not resetting the discounts on sale order lines."
+module: axelor-sale
+developer : |
+ Added SaleOrderLineComputeService as parameter in SaleOrderGlobalDiscountServiceImpl's constructor
