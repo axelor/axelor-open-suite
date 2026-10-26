@@ -32,6 +32,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -103,7 +104,8 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
     try {
       createBankOrder(accountingBatch, reimbursementList);
     } catch (Exception ex) {
-      TraceBackService.trace(ex);
+      incrementAnomaly();
+      TraceBackService.trace(ex, ExceptionOriginRepository.CREDIT_TRANSFER, batch.getId());
       logger.error(ex.getLocalizedMessage());
     }
   }
@@ -152,7 +154,7 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
               reimbursement.getDescription(),
               reimbursement);
       bankOrder.addBankOrderLineListItem(bankOrderLine);
-      reimbursementExportService.reimburse(reimbursement, accountingBatch.getCompany());
+      partnerReimbursementExportService.reimburse(reimbursement, accountingBatch.getCompany());
     }
 
     bankOrder = bankOrderRepository.save(bankOrder);
