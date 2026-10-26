@@ -23,6 +23,7 @@ import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportCheckService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveService;
 import com.axelor.apps.base.AxelorException;
@@ -38,6 +39,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import jakarta.inject.Singleton;
 import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -52,7 +54,18 @@ public class BankStatementController {
     BankStatementRepository bankStatementRepo = Beans.get(BankStatementRepository.class);
     BankStatementImportService bankStatementService = Beans.get(BankStatementImportService.class);
     bankStatement = bankStatementRepo.find(bankStatement.getId());
+    ZonedDateTime importDateTime = ZonedDateTime.now();
     bankStatementService.runImport(bankStatement, true);
+
+    long skippedStatementCount =
+        Beans.get(BankStatementImportCheckService.class)
+            .countSkippedStatements(bankStatement, importDateTime);
+    if (skippedStatementCount > 0) {
+      response.setInfo(
+          String.format(
+              I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_SKIPPED_STATEMENTS),
+              skippedStatementCount));
+    }
     response.setReload(true);
   }
 

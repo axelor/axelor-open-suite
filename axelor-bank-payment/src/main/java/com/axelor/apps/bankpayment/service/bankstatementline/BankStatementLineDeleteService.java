@@ -19,7 +19,11 @@
 package com.axelor.apps.bankpayment.service.bankstatementline;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
+import com.axelor.apps.bankpayment.db.BankStatementLine;
+import java.util.List;
 
 public interface BankStatementLineDeleteService {
   void deleteBankStatementLines(BankStatement bankStatement);
+
+  void deleteBankStatementLines(List<BankStatementLine> bankStatementLines);
 }
