@@ -126,7 +126,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected BigDecimal computeCompanyAmountRemaining(Invoice invoice) throws AxelorException {
     List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
     BigDecimal amount = invoice.getAmountRemaining();
-    if (!CollectionUtils.isEmpty(invoiceTermList)) {
+    if (!CollectionUtils.isEmpty(invoiceTermList) && invoice.getMove() != null) {
       BigDecimal currencyAmount =
           invoiceTermList.stream()
               .map(InvoiceTerm::getCompanyAmountRemaining)
