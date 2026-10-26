@@ -179,6 +179,13 @@ public class ReconcileInvoiceTermComputationServiceImpl
 
         if (invoicePayment == null) {
           invoicePayment = this.getExistingInvoicePayment(invoice, otherMove);
+          // The payment needs its reconcile to value the foreign exchange gap it absorbs
+          if (invoicePayment != null
+              && reconcile.getForeignExchangeMove() != null
+              && !reconcile.getForeignExchangeMove().equals(move)
+              && !reconcile.getForeignExchangeMove().equals(otherMove)) {
+            invoicePayment.setReconcile(reconcile);
+          }
         }
       }
 
@@ -195,6 +202,9 @@ public class ReconcileInvoiceTermComputationServiceImpl
               this.isForeignExchangeGapReconciled(reconcile, moveLine)
                   ? this.getTotal(otherMoveLine, moveLine, amount, true)
                   : this.getTotal(moveLine, otherMoveLine, amount, true);
+        } else if (this.isForeignExchangeGapReconciled(reconcile, otherMoveLine)) {
+          // When the foreign exchange gap is absorbed by the payment, it is part of the amount paid
+          invoicePaymentAmount = amount.add(this.getForeignExchangeGapAmount(reconcile));
         }
 
         InvoicePayment foreignExchangePayment =
@@ -553,5 +563,11 @@ public class ReconcileInvoiceTermComputationServiceImpl
         && (move == null
             || move.getInvoice() == null
             || !InvoiceToolService.isRefund(move.getInvoice()));
+  }
+
+  protected BigDecimal getForeignExchangeGapAmount(Reconcile reconcile) {
+    return reconcile.getForeignExchangeMove().getMoveLineList().stream()
+        .map(MoveLine::getCredit)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 }
