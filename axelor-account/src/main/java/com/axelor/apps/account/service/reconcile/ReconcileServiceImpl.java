@@ -864,14 +864,14 @@ public class ReconcileServiceImpl implements ReconcileService {
           Invoice invoice = invoicePayment.getInvoice();
           invoicePaymentToolService.updateAmountPaid(invoice);
           invoicePaymentRepository.save(invoicePayment);
-
-          reconcile.setAmount(
-              reconcile
-                  .getCreditMoveLine()
-                  .getAmountRemaining()
-                  .abs()
-                  .min(reconcile.getDebitMoveLine().getAmountRemaining().abs()));
         }
+
+        reconcile.setAmount(
+            reconcile
+                .getCreditMoveLine()
+                .getAmountRemaining()
+                .abs()
+                .min(reconcile.getDebitMoveLine().getAmountRemaining().abs()));
       }
     }
   }

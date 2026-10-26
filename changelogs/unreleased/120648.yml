@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed the reconciliation of an invoice in currency with a payment in company currency, blocked in case of foreign exchange loss and leaving an inconsistent amount due."
+module: axelor-account
