@@ -393,6 +393,7 @@
 "No lines were generated. Please check that at least one line has a quantity to order.","Aucune ligne n'a été générée. Veuillez vérifier qu'au moins une ligne ait une quantité à commander.",,
 "No order line needs to be generated for this cart.","Aucune ligne de commande n'est à générer pour ce panier.",,
 "No pricing scale used for this record","Pas de barème utilisé pour cet enregistrement",,
+"No product is associated with the reference %s for the customer %s.","Aucun produit n'est associé à la référence %s pour le client %s.",,
 "No unit is set for this product: %s","Aucune unité n'est définie pour ce produit : %s",,
 "Not delivered","Non Livré",,
 "Not invoiced","Non facturé",,

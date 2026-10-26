@@ -2973,7 +2973,11 @@ left outer join base_unit as Unit on (InvoiceLine.unit = Unit.id)
 left outer join base_currency as Currency on (Invoice.currency = Currency.id)  
 left outer join sale_sale_order_line as SaleOrderLine on InvoiceLine.sale_order_line = SaleOrderLine.id';  
 IF (SELECT COUNT(to_regclass('sale_customer_catalog')) != 0) THEN  
-	sql_query := sql_query || ' left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = Invoice.partner)';  
+	IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = 'account_invoice_line' AND column_name = 'customer_catalog') THEN  
+		sql_query := sql_query || ' left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.id = (SELECT CC.id FROM sale_customer_catalog CC WHERE (InvoiceLine.customer_catalog IS NOT NULL OR InvoiceLine.sale_order_line IS NULL) AND CC.product = InvoiceLine.product AND CC.customer_partner = Invoice.partner ORDER BY (CC.id = InvoiceLine.customer_catalog) DESC NULLS LAST, CC.id LIMIT 1))';  
+	ELSE  
+		sql_query := sql_query || ' left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = Invoice.partner)';  
+	END IF;  
 END IF;  
 IF (SELECT COUNT(to_regclass('studio_app_business_project')) != 0) THEN  
 	sql_query := sql_query || ' left outer join hr_expense_line as ExpenseLine on (InvoiceLine.expense_line = ExpenseLine.id)';  

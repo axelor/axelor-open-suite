@@ -1978,7 +1978,7 @@ left join sale_sale_order as SaleOrder on (SaleOrderSet.sale_order_set = SaleOrd
 left join stock_stock_move_purchase_order_set PurchaseOrderSet on (PurchaseOrderSet.stock_stock_move = SM.id)
 left join purchase_purchase_order as PurchaseOrder on (PurchaseOrderSet.purchase_order_set = PurchaseOrder.id)
 where SM.id = StockMove.id))
-left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = StockMove.partner) 
+left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.id = (SELECT CC.id FROM sale_customer_catalog CC WHERE (StockMoveLine.customer_catalog IS NOT NULL OR StockMoveLine.sale_order_line IS NULL) AND CC.product = StockMoveLine.product AND CC.customer_partner = StockMove.partner ORDER BY (CC.id = StockMoveLine.customer_catalog) DESC NULLS LAST, CC.id LIMIT 1))
 left outer join stock_stock_location as FromLocation on (FromLocation.id = StockMove.from_stock_location and StockMove.type_select = 1)
 left outer join stock_stock_location_line as FromStockLocationLine on (FromLocation.id = FromStockLocationLine.stock_location and FromStockLocationLine.product = Product.id)
 left outer join stock_stock_location as ToLocation on (ToLocation.id = StockMove.to_stock_location and StockMove.type_select in (1,3))

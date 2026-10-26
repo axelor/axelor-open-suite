@@ -169,6 +169,14 @@
 
   <form id="stock-move-line-supplychain-form" name="stock-move-line-form"
     title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine" extension="true">
+    <extend target="//panel[@name='mainPanel']/field[@name='product']">
+      <insert position="after">
+        <field name="customerCatalog" target-name="productCustomerCode" readonly="true"
+          showIf="customerCatalog" form-view="customer-catalog-partner-form"
+          grid-view="customer-catalog-partner-grid"
+          if="__config__.app.getApp('sale')?.getEnableCustomerCatalogMgt()"/>
+      </insert>
+    </extend>
     <extend target="//field[@name='qtyInvoiced']">
       <insert position="after">
         <field name="qtyRemainingToPackage" readonly="true" x-scale="$nbDecimalDigitForQty"

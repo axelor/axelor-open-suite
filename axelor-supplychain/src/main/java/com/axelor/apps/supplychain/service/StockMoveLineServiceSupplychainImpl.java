@@ -189,6 +189,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       stockMoveLine.setIsQtyRequested(
           requestedReservedQty != null && requestedReservedQty.signum() > 0);
       stockMoveLine.setSaleOrderLine(saleOrderLine);
+      if (saleOrderLine != null) {
+        stockMoveLine.setCustomerCatalog(saleOrderLine.getCustomerCatalog());
+      }
       stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
       TrackingNumberConfiguration trackingNumberConfiguration =
           (TrackingNumberConfiguration)
@@ -343,6 +346,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     stockMoveLine.setRequestedReservedQty(reservedQtyAfterSplit);
     newStockMoveLine.setRequestedReservedQty(reservedQtyInNewLine);
     newStockMoveLine.setSaleOrderLine(stockMoveLine.getSaleOrderLine());
+    newStockMoveLine.setCustomerCatalog(stockMoveLine.getCustomerCatalog());
     newStockMoveLine.setPurchaseOrderLine(stockMoveLine.getPurchaseOrderLine());
     return newStockMoveLine;
   }
@@ -427,6 +431,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
             null);
 
     generatedStockMoveLine.setSaleOrderLine(saleOrderLine);
+    if (saleOrderLine != null) {
+      generatedStockMoveLine.setCustomerCatalog(saleOrderLine.getCustomerCatalog());
+    }
     generatedStockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
     generatedStockMoveLine.setIsMergedStockMoveLine(true);
     return generatedStockMoveLine;
@@ -475,6 +482,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
     stockMoveLine.setUnit(saleOrderLine.getUnit());
     stockMoveLine.setProductName(saleOrderLine.getProductName());
+    stockMoveLine.setCustomerCatalog(saleOrderLine.getCustomerCatalog());
     if (Strings.isNullOrEmpty(stockMoveLine.getDescription())) {
       stockMoveLine.setDescription(saleOrderLine.getDescription());
     }

@@ -9,6 +9,8 @@
 
     <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
       title="Sales order line"/>
+    <many-to-one name="customerCatalog" ref="com.axelor.apps.sale.db.CustomerCatalog"
+      title="Customer reference"/>
     <many-to-one name="parentStockMoveLine" ref="com.axelor.apps.stock.db.StockMoveLine"
       title="Parent stock move line"/>
     <one-to-many name="childStockMoveLineList"

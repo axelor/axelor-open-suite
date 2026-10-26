@@ -25,6 +25,8 @@
     <field name="typeSelect" hidden="true"/>
     <field name="deliveryState" hidden="true" if="__config__.app.isApp('supplychain')"/>
     <field name="product.code" width="120"/>
+    <field name="customerCatalog" target-name="productCustomerCode"
+      if="__config__.app.getApp('sale')?.getEnableCustomerCatalogMgt()"/>
     <field name="productName"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
     <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
@@ -109,6 +111,12 @@
       onChange="action-sale-order-line-method-get-product-information"
       onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
       grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"
+      readonlyIf="$isParentTitleLine"/>
+    <field name="customerCatalog" hidden="true"
+      if="__config__.app.getApp('sale')?.getEnableCustomerCatalogMgt()"/>
+    <field name="customerProductCode" readonly="false"
+      onChange="action-sale-order-line-method-customer-product-code-onchange"
+      if="__config__.app.getApp('sale')?.getEnableCustomerCatalogMgt()"
       readonlyIf="$isParentTitleLine"/>
     <field name="product.code" width="120" readonlyIf="$isParentTitleLine"/>
     <field name="productName" readonlyIf="$isParentTitleLine"/>
@@ -343,6 +351,11 @@
             onChange="action-sale-order-line-method-get-product-information"
             onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
             grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
+          <field name="customerCatalog" hidden="true"
+            if="__config__.app.getApp('sale')?.getEnableCustomerCatalogMgt()"/>
+          <field name="customerProductCode" readonly="false" colSpan="2"
+            onChange="action-sale-order-line-method-customer-product-code-onchange"
+            if="__config__.app.getApp('sale')?.getEnableCustomerCatalogMgt()"/>
           <field name="enableFreezeFields" colSpan="2"/>
           <field name="typeSelect" colSpan="2"
             onChange="action-sale-order-line-method-type-select-onchange"/>
@@ -735,6 +748,11 @@
   <action-method name="action-sale-order-line-method-get-product-information">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController"
       method="getProductInformation"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-customer-product-code-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController"
+      method="customerProductCodeOnChange"/>
   </action-method>
 
   <action-method name="action-sale-order-line-method-onchange-price">

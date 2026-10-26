@@ -210,6 +210,8 @@ import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineCustomerCatalogService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineCustomerCatalogServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
@@ -280,6 +282,8 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderLinePackService.class).to(SaleOrderLinePackServiceImpl.class);
     bind(SaleOrderLinePricingService.class).to(SaleOrderLinePricingServiceImpl.class);
     bind(SaleOrderLineProductService.class).to(SaleOrderLineProductServiceImpl.class);
+    bind(SaleOrderLineCustomerCatalogService.class)
+        .to(SaleOrderLineCustomerCatalogServiceImpl.class);
     bind(SaleOrderLineTaxService.class).to(SaleOrderLineTaxServiceImpl.class);
     bind(SaleOrderLineDiscountService.class).to(SaleOrderLineDiscountServiceImpl.class);
     bind(SaleOrderLineDomainService.class).to(SaleOrderLineDomainServiceImpl.class);

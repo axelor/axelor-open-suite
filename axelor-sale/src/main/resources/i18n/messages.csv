@@ -393,6 +393,7 @@
 "No lines were generated. Please check that at least one line has a quantity to order.",,,
 "No order line needs to be generated for this cart.",,,
 "No pricing scale used for this record",,,
+"No product is associated with the reference %s for the customer %s.",,,
 "No unit is set for this product: %s",,,
 "Not delivered",,,
 "Not invoiced",,,

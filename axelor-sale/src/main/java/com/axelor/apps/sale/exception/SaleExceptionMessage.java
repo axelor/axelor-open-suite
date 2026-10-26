@@ -91,6 +91,9 @@ public final class SaleExceptionMessage {
   public static final String SALE_ORDER_LINE_PRICING_NOT_APPLIED = /*$$(*/
       "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal." /*)*/;
 
+  public static final String SALE_ORDER_LINE_CUSTOMER_CATALOG_NOT_FOUND = /*$$(*/
+      "No product is associated with the reference %s for the customer %s." /*)*/;
+
   /** Sale Order Workflow Service * */
   public static final String SALE_ORDER_FINALIZE_QUOTATION_WRONG_STATUS = /*$$(*/
       "Can only finalize a drafted quotation." /*)*/;

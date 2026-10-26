@@ -19,6 +19,7 @@
 package com.axelor.apps.sale.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PricingRepository;
@@ -26,6 +27,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingService;
+import com.axelor.apps.sale.db.CustomerCatalog;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -42,6 +44,7 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineMultipleQtyServic
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineOnChangeService;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineInitValueService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineCustomerCatalogService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.axelor.apps.sale.service.saleorderline.subline.SaleOrderLineCommercialBomService;
@@ -59,6 +62,7 @@ import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Singleton
@@ -153,56 +157,116 @@ public class SaleOrderLineController {
     try {
       Context context = request.getContext();
       SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
-      PricingService pricingService = Beans.get(PricingService.class);
+      fillProductInformation(context, saleOrderLine, response);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called by the sale order line form. Search the typed customer reference in the catalog of the
+   * customer of the sale order, then fill the product and update all fields as on product change.
+   *
+   * @param request
+   * @param response
+   */
+  public void customerProductCodeOnChange(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      // The customer product code is computed from the customer catalog: read the typed value
+      String productCustomerCode = (String) request.getRawContext().get("customerProductCode");
+      SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
       SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
-      SaleOrderLineProductService saleOrderLineProductService =
-          Beans.get(SaleOrderLineProductService.class);
+      CustomerCatalog currentCustomerCatalog = saleOrderLine.getCustomerCatalog();
+
+      if (StringUtils.isBlank(productCustomerCode)) {
+        response.setValue("customerCatalog", null);
+        return;
+      }
+
+      Partner customerPartner = saleOrder != null ? saleOrder.getClientPartner() : null;
+      CustomerCatalog customerCatalog =
+          Beans.get(SaleOrderLineCustomerCatalogService.class)
+              .getCustomerCatalog(productCustomerCode, customerPartner);
+      if (customerCatalog == null) {
+        response.setValue(
+            "customerProductCode",
+            currentCustomerCatalog != null
+                ? currentCustomerCatalog.getProductCustomerCode()
+                : null);
+        response.setInfo(
+            String.format(
+                I18n.get(SaleExceptionMessage.SALE_ORDER_LINE_CUSTOMER_CATALOG_NOT_FOUND),
+                productCustomerCode,
+                customerPartner != null ? customerPartner.getFullName() : ""));
+        return;
+      }
+
+      saleOrderLine.setCustomerCatalog(customerCatalog);
+      if (Objects.equals(customerCatalog.getProduct(), saleOrderLine.getProduct())) {
+        response.setValue("customerCatalog", customerCatalog);
+        response.setValue("customerProductCode", customerCatalog.getProductCustomerCode());
+        return;
+      }
+      saleOrderLine.setProduct(customerCatalog.getProduct());
+      fillProductInformation(context, saleOrderLine, response);
+      response.setValue("product", saleOrderLine.getProduct());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  protected void fillProductInformation(
+      Context context, SaleOrderLine saleOrderLine, ActionResponse response) {
+    PricingService pricingService = Beans.get(PricingService.class);
+    SaleOrder saleOrder = SaleOrderLineContextHelper.getSaleOrder(context, saleOrderLine);
+    SaleOrderLineProductService saleOrderLineProductService =
+        Beans.get(SaleOrderLineProductService.class);
+
+    try {
+      Map<String, Object> saleOrderLineMap =
+          Beans.get(SaleOrderLineOnProductChangeService.class)
+              .computeLineFromProduct(saleOrder, saleOrderLine);
+      saleOrderLineMap.putAll(
+          Beans.get(SaleOrderLineDummyService.class)
+              .getOnProductChangeDummies(saleOrderLine, saleOrder));
+      saleOrderLineMap.put(
+          "subSaleOrderLineList",
+          Beans.get(SaleOrderLineCommercialBomService.class)
+              .createSubLinesFromCommercialBom(saleOrderLine, saleOrder));
+      response.setAttrs(
+          Beans.get(SaleOrderLineViewService.class)
+              .getProductOnChangeAttrs(saleOrderLine, saleOrder));
 
       try {
-        Map<String, Object> saleOrderLineMap =
-            Beans.get(SaleOrderLineOnProductChangeService.class)
-                .computeLineFromProduct(saleOrder, saleOrderLine);
-        saleOrderLineMap.putAll(
-            Beans.get(SaleOrderLineDummyService.class)
-                .getOnProductChangeDummies(saleOrderLine, saleOrder));
-        saleOrderLineMap.put(
-            "subSaleOrderLineList",
-            Beans.get(SaleOrderLineCommercialBomService.class)
-                .createSubLinesFromCommercialBom(saleOrderLine, saleOrder));
-        response.setAttrs(
-            Beans.get(SaleOrderLineViewService.class)
-                .getProductOnChangeAttrs(saleOrderLine, saleOrder));
-
-        try {
-          Beans.get(SaleOrderLineCheckService.class).productOnChangeCheck(saleOrderLine, saleOrder);
-        } catch (AxelorException e) {
-          // this is just a warning, displaying it in alert popup
-          response.setAlert(e.getMessage());
-        }
-
-        if (Beans.get(AppBaseService.class).getAppBase().getEnablePricingScale()) {
-          Optional<Pricing> defaultPricing =
-              pricingService.getRandomPricing(
-                  saleOrder.getCompany(),
-                  saleOrderLine,
-                  null,
-                  PricingRepository.PRICING_TYPE_SELECT_SALE_PRICING);
-
-          if (defaultPricing.isPresent()
-              && !Beans.get(SaleOrderLinePricingService.class)
-                  .hasPricingLine(saleOrderLine, saleOrder)) {
-            response.setInfo(
-                String.format(
-                    I18n.get(SaleExceptionMessage.SALE_ORDER_LINE_PRICING_NOT_APPLIED),
-                    defaultPricing.get().getName()));
-          }
-        }
-        response.setValues(saleOrderLineMap);
-      } catch (Exception e) {
-        response.setValues(saleOrderLineProductService.resetProductInformation(saleOrderLine));
-        TraceBackService.trace(response, e);
+        Beans.get(SaleOrderLineCheckService.class).productOnChangeCheck(saleOrderLine, saleOrder);
+      } catch (AxelorException e) {
+        // this is just a warning, displaying it in alert popup
+        response.setAlert(e.getMessage());
       }
+
+      if (Beans.get(AppBaseService.class).getAppBase().getEnablePricingScale()) {
+        Optional<Pricing> defaultPricing =
+            pricingService.getRandomPricing(
+                saleOrder.getCompany(),
+                saleOrderLine,
+                null,
+                PricingRepository.PRICING_TYPE_SELECT_SALE_PRICING);
+
+        if (defaultPricing.isPresent()
+            && !Beans.get(SaleOrderLinePricingService.class)
+                .hasPricingLine(saleOrderLine, saleOrder)) {
+          response.setInfo(
+              String.format(
+                  I18n.get(SaleExceptionMessage.SALE_ORDER_LINE_PRICING_NOT_APPLIED),
+                  defaultPricing.get().getName()));
+        }
+      }
+      response.setValues(saleOrderLineMap);
     } catch (Exception e) {
+      response.setValues(saleOrderLineProductService.resetProductInformation(saleOrderLine));
+      response.setValue("customerCatalog", saleOrderLine.getCustomerCatalog());
+      response.setValue("customerProductCode", saleOrderLine.getCustomerProductCode());
       TraceBackService.trace(response, e);
     }
   }

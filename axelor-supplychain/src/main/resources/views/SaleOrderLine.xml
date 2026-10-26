@@ -113,6 +113,10 @@
       <attribute name="onChange"
         value="action-sale-order-line-method-get-product-information,action-sale-order-line-record-set-call-tender-config"/>
     </extend>
+    <extend target="//field[@name='customerProductCode']">
+      <attribute name="onChange"
+        value="action-sale-order-line-method-customer-product-code-onchange,action-sale-order-line-record-set-call-tender-config"/>
+    </extend>
   </form>
 
   <action-record name="action-sale-order-line-record-set-call-tender-config"

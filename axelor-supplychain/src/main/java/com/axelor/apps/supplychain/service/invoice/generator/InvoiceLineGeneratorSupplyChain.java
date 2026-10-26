@@ -336,6 +336,10 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     }
     if (saleOrderLine != null) {
       invoiceLine.setSaleOrderLine(saleOrderLine);
+      invoiceLine.setCustomerCatalog(saleOrderLine.getCustomerCatalog());
+    }
+    if (stockMoveLine != null && stockMoveLine.getCustomerCatalog() != null) {
+      invoiceLine.setCustomerCatalog(stockMoveLine.getCustomerCatalog());
     }
     if (purchaseOrderLine != null) {
       invoiceLine.setPurchaseOrderLine(purchaseOrderLine);
