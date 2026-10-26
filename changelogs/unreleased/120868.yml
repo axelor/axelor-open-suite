@@ -1,0 +1,3 @@
+---
+title: "Reconcile: fixed the foreign exchange gap move not being reversed when unreconciling a manual reconcile between foreign currency moves without invoice."
+module: axelor-account
