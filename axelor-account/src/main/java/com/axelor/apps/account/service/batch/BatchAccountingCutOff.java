@@ -121,45 +121,9 @@ public class BatchAccountingCutOff extends PreviewBatch {
     }
   }
 
-  @Transactional
   protected boolean _processMove(Move move, AccountingBatch accountingBatch) {
     try {
-      Journal miscOpeJournal = accountingBatch.getMiscOpeJournal();
-      LocalDate reverseMoveDate = accountingBatch.getReverseMoveDate();
-      LocalDate moveDate = accountingBatch.getMoveDate();
-      String moveDescription = accountingBatch.getMoveDescription();
-      String reverseMoveDescription = accountingBatch.getReverseMoveDescription();
-      int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
-      int cutOffMoveStatusSelect = accountingBatch.getGeneratedMoveStatusSelect();
-      boolean automaticReverse = accountingBatch.getAutomaticReverse();
-      boolean automaticReconcile = accountingBatch.getAutomaticReconcile();
-      String prefixOrigin =
-          accountingBatch.getPrefixOrigin() != null
-              ? accountingBatch.getPrefixOrigin()
-              : miscOpeJournal.getPrefixOrigin() != null ? miscOpeJournal.getPrefixOrigin() : "";
-
-      List<Move> moveList =
-          cutOffService.generateCutOffMovesFromMove(
-              move,
-              miscOpeJournal,
-              moveDate,
-              reverseMoveDate,
-              moveDescription,
-              reverseMoveDescription,
-              accountingCutOffTypeSelect,
-              cutOffMoveStatusSelect,
-              automaticReverse,
-              automaticReconcile,
-              prefixOrigin);
-
-      if (moveList != null && !moveList.isEmpty()) {
-        updateAccountMove(move, true);
-
-        for (Move cutOffMove : moveList) {
-          updateAccountMove(cutOffMove, false);
-        }
-      }
-
+      this.generateCutOffMoves(move, accountingBatch);
     } catch (AxelorException e) {
       TraceBackService.trace(
           new AxelorException(e, e.getCategory(), I18n.get("Move") + " %s", move.getReference()),
@@ -213,5 +177,45 @@ public class BatchAccountingCutOff extends PreviewBatch {
 
   protected String getProcessedMessage() {
     return I18n.get(AccountExceptionMessage.ACCOUNTING_CUT_OFF_MOVE_PROCESSED);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void generateCutOffMoves(Move move, AccountingBatch accountingBatch)
+      throws AxelorException {
+    Journal miscOpeJournal = accountingBatch.getMiscOpeJournal();
+    LocalDate reverseMoveDate = accountingBatch.getReverseMoveDate();
+    LocalDate moveDate = accountingBatch.getMoveDate();
+    String moveDescription = accountingBatch.getMoveDescription();
+    String reverseMoveDescription = accountingBatch.getReverseMoveDescription();
+    int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
+    int cutOffMoveStatusSelect = accountingBatch.getGeneratedMoveStatusSelect();
+    boolean automaticReverse = accountingBatch.getAutomaticReverse();
+    boolean automaticReconcile = accountingBatch.getAutomaticReconcile();
+    String prefixOrigin =
+        accountingBatch.getPrefixOrigin() != null
+            ? accountingBatch.getPrefixOrigin()
+            : miscOpeJournal.getPrefixOrigin() != null ? miscOpeJournal.getPrefixOrigin() : "";
+
+    List<Move> moveList =
+        cutOffService.generateCutOffMovesFromMove(
+            move,
+            miscOpeJournal,
+            moveDate,
+            reverseMoveDate,
+            moveDescription,
+            reverseMoveDescription,
+            accountingCutOffTypeSelect,
+            cutOffMoveStatusSelect,
+            automaticReverse,
+            automaticReconcile,
+            prefixOrigin);
+
+    if (moveList != null && !moveList.isEmpty()) {
+      updateAccountMove(move, true);
+
+      for (Move cutOffMove : moveList) {
+        updateAccountMove(cutOffMove, false);
+      }
+    }
   }
 }
