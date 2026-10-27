@@ -48,15 +48,20 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
   protected BankReconciliationLineRepository bankReconciliationLineRepository;
   protected CurrencyScaleService currencyScaleService;
   protected MoveLinePostedNbrService moveLinePostedNbrService;
+  protected BankReconciliationLineUnreconciliationService
+      bankReconciliationLineUnreconciliationService;
 
   @Inject
   public BankReconciliationLineServiceImpl(
       BankReconciliationLineRepository bankReconciliationLineRepository,
       CurrencyScaleService currencyScaleService,
-      MoveLinePostedNbrService moveLinePostedNbrService) {
+      MoveLinePostedNbrService moveLinePostedNbrService,
+      BankReconciliationLineUnreconciliationService bankReconciliationLineUnreconciliationService) {
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.currencyScaleService = currencyScaleService;
     this.moveLinePostedNbrService = moveLinePostedNbrService;
+    this.bankReconciliationLineUnreconciliationService =
+        bankReconciliationLineUnreconciliationService;
   }
 
   @Override
@@ -186,6 +191,9 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
   @Transactional
   public BankReconciliationLine reconcileBRLAndMoveLine(
       BankReconciliationLine bankReconciliationLine, MoveLine moveLine) {
+    if (ObjectUtils.notEmpty(bankReconciliationLine.getMoveLine())) {
+      bankReconciliationLineUnreconciliationService.unreconcileLine(bankReconciliationLine);
+    }
     bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());
     bankReconciliationLine.setConfidenceIndex(
         BankReconciliationLineRepository.CONFIDENCE_INDEX_GREEN);

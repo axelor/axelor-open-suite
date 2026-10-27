@@ -66,6 +66,7 @@ public class BankReconciliationReconciliationServiceImpl
   protected CurrencyService currencyService;
   protected DateService dateService;
   protected CurrencyScaleService currencyScaleService;
+  protected BankReconciliationService bankReconciliationService;
 
   private final Cache<String, BigDecimal> exchangeRateCache =
       CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).maximumSize(100).build();
@@ -78,7 +79,8 @@ public class BankReconciliationReconciliationServiceImpl
       BankReconciliationLineService bankReconciliationLineService,
       CurrencyService currencyService,
       DateService dateService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      BankReconciliationService bankReconciliationService) {
     this.bankStatementQueryRepository = bankStatementQueryRepository;
     this.moveLineRepository = moveLineRepository;
     this.bankReconciliationQueryService = bankReconciliationQueryService;
@@ -86,6 +88,7 @@ public class BankReconciliationReconciliationServiceImpl
     this.currencyService = currencyService;
     this.dateService = dateService;
     this.currencyScaleService = currencyScaleService;
+    this.bankReconciliationService = bankReconciliationService;
   }
 
   @Override
@@ -312,7 +315,6 @@ public class BankReconciliationReconciliationServiceImpl
             .get(0);
     bankReconciliationLineService.checkDebitCreditDirection(
         bankReconciliationLine, moveLines.get(0));
-    bankReconciliationLine.setMoveLine(moveLines.get(0));
     bankReconciliationLine =
         bankReconciliationLineService.reconcileBRLAndMoveLine(
             bankReconciliationLine, moveLines.get(0));
@@ -324,6 +326,7 @@ public class BankReconciliationReconciliationServiceImpl
       bankReconciliationLineService.checkAmount(bankReconciliationLine);
       bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
     }
+    bankReconciliationService.checkMultipleMoveLineReconciliation(bankReconciliation);
     return bankReconciliation;
   }
 
