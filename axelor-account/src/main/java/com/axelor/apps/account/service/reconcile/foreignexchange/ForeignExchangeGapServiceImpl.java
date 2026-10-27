@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.reconcile.foreignexchange;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -31,6 +32,7 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -39,6 +41,8 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService {
 
@@ -50,6 +54,7 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
   protected AppBaseService appBaseService;
   protected ForeignExchangeGapToolService foreignExchangeGapToolService;
   protected CurrencyScaleService currencyScaleService;
+  protected ReconcileInvoiceTermComputationService reconcileInvoiceTermComputationService;
 
   @Inject
   public ForeignExchangeGapServiceImpl(
@@ -60,7 +65,8 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
       MoveReverseService moveReverseService,
       AppBaseService appBaseService,
       ForeignExchangeGapToolService foreignExchangeGapToolService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      ReconcileInvoiceTermComputationService reconcileInvoiceTermComputationService) {
     this.accountConfigService = accountConfigService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveCreateService = moveCreateService;
@@ -69,6 +75,7 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     this.appBaseService = appBaseService;
     this.foreignExchangeGapToolService = foreignExchangeGapToolService;
     this.currencyScaleService = currencyScaleService;
+    this.reconcileInvoiceTermComputationService = reconcileInvoiceTermComputationService;
   }
 
   @Override
@@ -146,14 +153,95 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
         amountReconciled = creditMoveLine.getAmountRemaining().abs();
         currencyAmount = creditCurrencyAmountRemaining;
         moveLineRate = foreignExchangeGapToolService.getCurrencyRate(debitMoveLine, creditMoveLine);
+        if (this.isValuedByInvoiceTerms(debitMoveLine)) {
+          return amountReconciled
+              .subtract(
+                  this.getCompanyAmount(
+                      debitMoveLine, creditMoveLine, currencyAmount, debitCurrencyAmountRemaining))
+              .abs();
+        }
       } else {
         amountReconciled = debitMoveLine.getAmountRemaining().abs();
         currencyAmount = debitCurrencyAmountRemaining;
         moveLineRate = foreignExchangeGapToolService.getCurrencyRate(creditMoveLine, debitMoveLine);
+        if (this.isValuedByInvoiceTerms(creditMoveLine)) {
+          return amountReconciled
+              .subtract(
+                  this.getCompanyAmount(
+                      creditMoveLine, debitMoveLine, currencyAmount, creditCurrencyAmountRemaining))
+              .abs();
+        }
       }
     }
 
     return amountReconciled.subtract(currencyAmount.multiply(moveLineRate)).abs();
+  }
+
+  /**
+   * The rate of a move line carrying several invoice terms is the one of its first invoice term, as
+   * the invoice terms are rounded separately, so its company amounts are read from the invoice
+   * terms or prorated on its remaining amounts instead.
+   */
+  protected boolean isValuedByInvoiceTerms(MoveLine moveLine) {
+    return foreignExchangeGapToolService.isMultiCurrency(moveLine)
+        && CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList());
+  }
+
+  /**
+   * Company amount of a part of the remaining currency amount of the move line. When this part
+   * settles whole unpaid invoice terms, it is the sum of their company amounts, otherwise it is
+   * prorated on the remaining amounts of the move line.
+   */
+  protected BigDecimal getCompanyAmount(
+      MoveLine moveLine,
+      MoveLine otherMoveLine,
+      BigDecimal currencyAmount,
+      BigDecimal currencyAmountRemaining)
+      throws AxelorException {
+    BigDecimal invoiceTermsCompanyAmount =
+        this.getInvoiceTermsCompanyAmount(moveLine, otherMoveLine, currencyAmount);
+    if (invoiceTermsCompanyAmount != null) {
+      return invoiceTermsCompanyAmount;
+    }
+
+    return currencyScaleService.getCompanyScaledValue(
+        moveLine,
+        moveLine
+            .getAmountRemaining()
+            .abs()
+            .multiply(currencyAmount)
+            .divide(
+                currencyAmountRemaining, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP));
+  }
+
+  protected BigDecimal getInvoiceTermsCompanyAmount(
+      MoveLine moveLine, MoveLine otherMoveLine, BigDecimal currencyAmount) throws AxelorException {
+    List<InvoiceTerm> invoiceTermList =
+        reconcileInvoiceTermComputationService.getInvoiceTermsToPay(
+            moveLine.getMove().getInvoice(), otherMoveLine.getMove(), moveLine);
+    if (CollectionUtils.isEmpty(invoiceTermList)) {
+      return null;
+    }
+
+    BigDecimal currencyAmountToSettle = currencyAmount;
+    BigDecimal companyAmount = BigDecimal.ZERO;
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      if (currencyAmountToSettle.signum() == 0) {
+        break;
+      }
+
+      // Only invoice terms not paid at all keep their company amount at the invoice rate
+      if (invoiceTerm.getAmountRemaining().compareTo(invoiceTerm.getAmount()) != 0
+          || invoiceTerm.getCompanyAmountRemaining().compareTo(invoiceTerm.getCompanyAmount()) != 0
+          || invoiceTerm.getAmountRemaining().compareTo(currencyAmountToSettle) > 0) {
+        return null;
+      }
+
+      currencyAmountToSettle = currencyAmountToSettle.subtract(invoiceTerm.getAmountRemaining());
+      companyAmount = companyAmount.add(invoiceTerm.getCompanyAmountRemaining());
+    }
+
+    return currencyAmountToSettle.signum() == 0 ? companyAmount : null;
   }
 
   protected Move createForeignExchangeGapMove(Reconcile reconcile, BigDecimal foreignExchangeAmount)
@@ -271,6 +359,17 @@ public class ForeignExchangeGapServiceImpl implements ForeignExchangeGapService 
     if (lineAmount.signum() == 0 || currencyAmount.signum() == 0) {
       return amountRemaining.divide(
           moveLine.getCurrencyRate(), moveLine.getCurrencyDecimals(), RoundingMode.HALF_UP);
+    }
+
+    // Invoice terms are rounded separately, so the remaining amounts are not proportional
+    if (this.isValuedByInvoiceTerms(moveLine)) {
+      BigDecimal currencyAmountRemaining =
+          reconcileInvoiceTermComputationService.getCurrencyAmountRemaining(moveLine);
+      if (currencyAmountRemaining != null
+          && currencyAmountRemaining.signum() > 0
+          && currencyAmountRemaining.compareTo(currencyAmount) <= 0) {
+        return currencyAmountRemaining;
+      }
     }
 
     return currencyAmount

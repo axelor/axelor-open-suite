@@ -300,6 +300,11 @@ public class ReconcileInvoiceTermComputationServiceImpl
       return false;
     }
 
+    return this.getCurrencyAmountPaid(reconcile, moveLine, currency).compareTo(currencyAmount) >= 0;
+  }
+
+  protected BigDecimal getCurrencyAmountPaid(
+      Reconcile reconcile, MoveLine moveLine, Currency currency) {
     BigDecimal currencyAmountPaid = BigDecimal.ZERO;
     for (Reconcile otherReconcile : this.getConfirmedReconcileList(moveLine)) {
       if (otherReconcile.equals(reconcile)) {
@@ -317,7 +322,28 @@ public class ReconcileInvoiceTermComputationServiceImpl
               this.getReconciledCurrencyAmount(otherReconcile, reconciledMoveLine, currency));
     }
 
-    return currencyAmountPaid.compareTo(currencyAmount) >= 0;
+    return currencyAmountPaid;
+  }
+
+  @Override
+  public BigDecimal getCurrencyAmountRemaining(MoveLine moveLine) {
+    Currency currency = moveLine.getMove().getCurrency();
+    if (currency == null) {
+      return null;
+    }
+
+    for (Reconcile reconcile : this.getConfirmedReconcileList(moveLine)) {
+      Move reconciledMove = this.getOtherMoveLine(reconcile, moveLine).getMove();
+      if (!currency.equals(reconciledMove.getCurrency())
+          && !reconciledMove.equals(reconcile.getForeignExchangeMove())) {
+        return null;
+      }
+    }
+
+    return moveLine
+        .getCurrencyAmount()
+        .abs()
+        .subtract(this.getCurrencyAmountPaid(null, moveLine, currency));
   }
 
   /**
@@ -493,7 +519,8 @@ public class ReconcileInvoiceTermComputationServiceImpl
     return ratioPaid.multiply(percentage);
   }
 
-  protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine)
+  @Override
+  public List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine)
       throws AxelorException {
     List<InvoiceTerm> voucherTerms = getInvoiceTermsFromPaymentVoucher(move, moveLine);
     if (CollectionUtils.isNotEmpty(voucherTerms)) {
