@@ -27,4 +27,7 @@ public interface BankReconciliationService {
       throws AxelorException;
 
   void mergeSplitedReconciliationLines(BankReconciliation bankReconciliation);
+
+  void checkMultipleMoveLineReconciliation(BankReconciliation bankReconciliation)
+      throws AxelorException;
 }

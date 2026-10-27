@@ -18,23 +18,27 @@
  */
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.BankReconciliationToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BankReconciliationServiceImpl implements BankReconciliationService {
   protected BankStatementLineRepository bankStatementLineRepository;
@@ -134,5 +138,23 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
         bankReconciliationLineRepository.save(bankReconciliationLine);
       }
     }
+  }
+
+  @Override
+  public void checkMultipleMoveLineReconciliation(BankReconciliation bankReconciliation)
+      throws AxelorException {
+    List<MoveLine> moveLineList =
+        BankReconciliationToolService.getMoveLineOnMultipleReconciliationLine(bankReconciliation);
+    if (ObjectUtils.isEmpty(moveLineList)) {
+      return;
+    }
+
+    throw new AxelorException(
+        bankReconciliation,
+        TraceBackRepository.CATEGORY_INCONSISTENCY,
+        I18n.get(
+            BankPaymentExceptionMessage
+                .BANK_RECONCILIATION_MULTIPLE_MOVE_LINE_RECONCILIATION_ERROR),
+        moveLineList.stream().map(MoveLine::getName).distinct().collect(Collectors.joining(",")));
   }
 }
