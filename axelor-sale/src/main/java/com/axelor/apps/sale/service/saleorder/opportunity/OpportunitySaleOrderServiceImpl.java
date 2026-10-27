@@ -21,6 +21,7 @@ package com.axelor.apps.sale.service.saleorder.opportunity;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -87,10 +88,19 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
     opportunity.addSaleOrderListItem(saleOrder);
 
     saleOrder.setTradingName(opportunity.getTradingName());
+    setPartnerComments(saleOrder, opportunity.getPartner());
 
     saleOrderRepo.save(saleOrder);
 
     return saleOrder;
+  }
+
+  protected void setPartnerComments(SaleOrder saleOrder, Partner partner) {
+    saleOrder.setDeliveryComments(partner.getDeliveryComments());
+    saleOrder.setDescription(partner.getSaleOrderComments());
+    saleOrder.setPickingOrderComments(partner.getPickingOrderComments());
+    saleOrder.setProformaComments(partner.getProformaComments());
+    saleOrder.setInvoiceComments(partner.getInvoiceComments());
   }
 
   protected SaleOrder createSaleOrder(Opportunity opportunity, Currency currency)
