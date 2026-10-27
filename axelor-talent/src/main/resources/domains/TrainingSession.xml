@@ -21,6 +21,15 @@
       ref="com.axelor.apps.talent.db.TrainingRegister" title="Training register list"
       mappedBy="trainingSession"/>
     <decimal name="overallRatingToApply" title="Overall rating to apply"/>
+
+    <extra-code><![CDATA[
+
+      // STATUS SELECT
+      public static final int STATUS_PLANNED = 1;
+      public static final int STATUS_COMPLETED = 2;
+      public static final int STATUS_CANCELED = 3;
+
+    ]]></extra-code>
   </entity>
 
 </domain-models>
