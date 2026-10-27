@@ -97,6 +97,12 @@ public class BillOfExchangeInvoiceTermQueryServiceImpl
       AccountingBatch accountingBatch, List<Long> anomalyList) {
     StringBuilder filter = new StringBuilder();
     boolean manageMultiBanks = appAccountService.getAppBase().getManageMultiBanks();
+    // PostgreSQL cannot type a date parameter in a ":dueDate IS NULL" test, so the blocking date
+    // is only compared when the batch has a due date (no due date: blocked invoices stay eligible).
+    String billOfExchangeBlockingFilter =
+        accountingBatch.getDueDate() != null
+            ? "    AND (self.invoice.billOfExchangeBlockingOk = FALSE OR (self.invoice.billOfExchangeBlockingOk = TRUE AND self.invoice.billOfExchangeBlockingToDate < :dueDate)) "
+            : "";
     filter.append(
         "self.isPaid = FALSE "
             + "AND self.amountRemaining > 0 "
@@ -109,7 +115,7 @@ public class BillOfExchangeInvoiceTermQueryServiceImpl
             + "    AND self.invoice.statusSelect = :statusSelect "
             + "    AND self.invoice.hasPendingPayments = FALSE "
             + "    AND self.invoice.lcrAccounted = FALSE "
-            + "    AND (self.invoice.billOfExchangeBlockingOk = FALSE OR (self.invoice.billOfExchangeBlockingOk = TRUE AND (:dueDate IS NULL OR self.invoice.billOfExchangeBlockingToDate < :dueDate))) "
+            + billOfExchangeBlockingFilter
             + "  ) OR ("
             + "    self.invoice IS NULL "
             + "    AND self.moveLine.move.functionalOriginSelect = :functionalOriginSale "
@@ -122,13 +128,13 @@ public class BillOfExchangeInvoiceTermQueryServiceImpl
     bindings.put("statusSelect", InvoiceRepository.STATUS_VENTILATED);
     bindings.put("paymentMode", accountingBatch.getPaymentMode());
     bindings.put("anomalyList", anomalyList);
-    bindings.put("dueDate", accountingBatch.getDueDate());
     bindings.put("functionalOriginSale", MoveRepository.FUNCTIONAL_ORIGIN_SALE);
     bindings.put("daybookStatus", MoveRepository.STATUS_DAYBOOK);
     bindings.put("accountedStatus", MoveRepository.STATUS_ACCOUNTED);
 
     if (accountingBatch.getDueDate() != null) {
       filter.append("AND self.dueDate <= :dueDate ");
+      bindings.put("dueDate", accountingBatch.getDueDate());
     }
     if (accountingBatch.getCurrency() != null) {
       filter.append("AND self.currency = :currency ");

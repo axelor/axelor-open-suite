@@ -1,0 +1,3 @@
+---
+title: "Bill of exchange batch: fixed the SQL error of the customer invoice terms preview and generation when the batch has a due date."
+module: axelor-bank-payment
