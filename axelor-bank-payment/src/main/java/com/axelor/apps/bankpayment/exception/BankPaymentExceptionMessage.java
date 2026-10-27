@@ -215,6 +215,10 @@ public final class BankPaymentExceptionMessage {
       "Missing bank statement file format" /*)*/;
   public static final String BANK_STATEMENT_ALREADY_IMPORTED = /*$$(*/
       "Bank statement already imported. Aborted." /*)*/;
+  public static final String BANK_STATEMENT_ALREADY_IMPORTED_SKIPPED = /*$$(*/
+      "Statement of bank details %s from %s to %s already imported, skipped." /*)*/;
+  public static final String BANK_STATEMENT_SKIPPED_STATEMENTS = /*$$(*/
+      "%s already imported statement(s) skipped. See the tracebacks for details." /*)*/;
   public static final String BANK_STATEMENT_NOT_MATCHING = /*$$(*/
       "Current bank statement's initial balance does not match previous bank statement's final balance" /*)*/;
   public static final String BANK_STATEMENT_INCOHERENT_BALANCE = /*$$(*/

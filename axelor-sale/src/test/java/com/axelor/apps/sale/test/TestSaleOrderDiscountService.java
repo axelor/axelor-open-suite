@@ -22,6 +22,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
@@ -92,7 +93,8 @@ class TestSaleOrderDiscountService extends BaseTest {
     when(appSaleService.getAppSale()).thenReturn(appSale);
     createSaleOrderComputeService(appSaleService);
     saleOrderGlobalDiscountService =
-        new SaleOrderGlobalDiscountServiceImpl(saleOrderComputeService);
+        new SaleOrderGlobalDiscountServiceImpl(
+            saleOrderComputeService, createSaleOrderLineComputeService(appSaleService));
     prepareSaleOrder();
   }
 
@@ -226,8 +228,7 @@ class TestSaleOrderDiscountService extends BaseTest {
     // the global discount is removed: lines must be reset and totals recomputed at full price
     saleOrder.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
     saleOrder.setDiscountAmount(BigDecimal.ZERO);
-    saleOrderGlobalDiscountService.resetGlobalDiscountOnLines(saleOrder);
-    saleOrderComputeService.computeSaleOrder(saleOrder);
+    saleOrderGlobalDiscountService.resetGlobalDiscount(saleOrder);
 
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       Assertions.assertEquals(
@@ -240,5 +241,55 @@ class TestSaleOrderDiscountService extends BaseTest {
     Assertions.assertEquals(
         BigDecimal.valueOf(102).setScale(SCALE_VALUE, RoundingMode.HALF_UP),
         saleOrder.getExTaxTotal());
+  }
+
+  @Test
+  void testApplyPercentageGlobalDiscountOnLinesWithProduct() throws AxelorException {
+    setProductOnLines();
+    saleOrder.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_PERCENT);
+    saleOrder.setDiscountAmount(BigDecimal.TEN);
+    saleOrderGlobalDiscountService.applyGlobalDiscountOnLines(saleOrder);
+    Assertions.assertEquals(
+        BigDecimal.valueOf(91.8).setScale(SCALE_VALUE, RoundingMode.HALF_UP),
+        saleOrder.getExTaxTotal());
+  }
+
+  @Test
+  void testApplyFixedGlobalDiscountOnLinesWithProductAdjustsLastLine() throws AxelorException {
+    saleOrder.setSaleOrderLineList(new ArrayList<>());
+    for (int i = 0; i < 3; i++) {
+      saleOrder.addSaleOrderLineListItem(
+          createSaleOrderLine(
+              BigDecimal.TEN.setScale(SCALE_VALUE, RoundingMode.HALF_UP), BigDecimal.ONE));
+    }
+    setProductOnLines();
+    saleOrder.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_FIXED);
+    saleOrder.setDiscountAmount(BigDecimal.TEN);
+    saleOrderGlobalDiscountService.applyGlobalDiscountOnLines(saleOrder);
+    Assertions.assertEquals(
+        BigDecimal.valueOf(20).setScale(SCALE_VALUE, RoundingMode.HALF_UP),
+        saleOrder.getExTaxTotal());
+  }
+
+  @Test
+  void testResetGlobalDiscountOnLinesWithProduct() throws AxelorException {
+    setProductOnLines();
+    saleOrder.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_PERCENT);
+    saleOrder.setDiscountAmount(BigDecimal.TEN);
+    saleOrderGlobalDiscountService.applyGlobalDiscountOnLines(saleOrder);
+
+    saleOrder.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
+    saleOrder.setDiscountAmount(BigDecimal.ZERO);
+    saleOrderGlobalDiscountService.resetGlobalDiscount(saleOrder);
+
+    Assertions.assertEquals(
+        BigDecimal.valueOf(102).setScale(SCALE_VALUE, RoundingMode.HALF_UP),
+        saleOrder.getExTaxTotal());
+  }
+
+  protected void setProductOnLines() {
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      saleOrderLine.setProduct(new Product());
+    }
   }
 }

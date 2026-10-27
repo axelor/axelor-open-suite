@@ -19,11 +19,13 @@
 package com.axelor.apps.account.service.reconcile;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface ReconcileInvoiceTermComputationService {
 
@@ -38,5 +40,15 @@ public interface ReconcileInvoiceTermComputationService {
       Move otherMove,
       BigDecimal amount,
       boolean updateInvoiceTerms)
+      throws AxelorException;
+
+  /**
+   * Currency amount remaining on the move line, computed from its confirmed reconciles with move
+   * lines in its currency. Returns null when the move line is also settled in another currency than
+   * through a foreign exchange gap move, as that part has no currency amount.
+   */
+  BigDecimal getCurrencyAmountRemaining(MoveLine moveLine);
+
+  List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine)
       throws AxelorException;
 }

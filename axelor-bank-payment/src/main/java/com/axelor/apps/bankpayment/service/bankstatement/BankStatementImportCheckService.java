@@ -20,7 +20,10 @@ package com.axelor.apps.bankpayment.service.bankstatement;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.base.AxelorException;
+import java.time.ZonedDateTime;
 
 public interface BankStatementImportCheckService {
   void checkImport(BankStatement bankStatement) throws AxelorException;
+
+  long countSkippedStatements(BankStatement bankStatement, ZonedDateTime fromDateTime);
 }

@@ -19,22 +19,30 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.interfaces.GlobalDiscounter;
 import com.axelor.apps.base.interfaces.GlobalDiscounterLine;
 import com.axelor.apps.base.service.discount.GlobalDiscountAbstractService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderGlobalDiscountServiceImpl extends GlobalDiscountAbstractService
     implements SaleOrderGlobalDiscountService {
 
   protected final SaleOrderComputeService saleOrderComputeService;
+  protected final SaleOrderLineComputeService saleOrderLineComputeService;
 
   @Inject
-  public SaleOrderGlobalDiscountServiceImpl(SaleOrderComputeService saleOrderComputeService) {
+  public SaleOrderGlobalDiscountServiceImpl(
+      SaleOrderComputeService saleOrderComputeService,
+      SaleOrderLineComputeService saleOrderLineComputeService) {
     this.saleOrderComputeService = saleOrderComputeService;
+    this.saleOrderLineComputeService = saleOrderLineComputeService;
   }
 
   @Override
@@ -42,6 +50,11 @@ public class SaleOrderGlobalDiscountServiceImpl extends GlobalDiscountAbstractSe
     SaleOrder saleOrder = getSaleOrder(globalDiscounter);
     if (saleOrder == null) {
       return;
+    }
+    if (CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+      }
     }
     saleOrderComputeService.computeSaleOrder(saleOrder);
   }
@@ -62,5 +75,22 @@ public class SaleOrderGlobalDiscountServiceImpl extends GlobalDiscountAbstractSe
       saleOrder = (SaleOrder) globalDiscounter;
     }
     return saleOrder;
+  }
+
+  @Override
+  public void applyGlobalDiscountOnLines(GlobalDiscounter globalDiscounter) throws AxelorException {
+    super.applyGlobalDiscountOnLines(globalDiscounter);
+    if (globalDiscounter == null
+        || CollectionUtils.isEmpty(getGlobalDiscounterLines(globalDiscounter))
+        || globalDiscounter.getDiscountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_NONE) {
+      return;
+    }
+    compute(globalDiscounter);
+  }
+
+  @Override
+  public void resetGlobalDiscount(SaleOrder saleOrder) throws AxelorException {
+    resetGlobalDiscountOnLines(saleOrder);
+    compute(saleOrder);
   }
 }

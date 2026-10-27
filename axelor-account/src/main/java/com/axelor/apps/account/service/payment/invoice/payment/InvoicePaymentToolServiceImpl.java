@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.payment.invoice.payment;
 
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -126,7 +127,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected BigDecimal computeCompanyAmountRemaining(Invoice invoice) throws AxelorException {
     List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
     BigDecimal amount = invoice.getAmountRemaining();
-    if (!CollectionUtils.isEmpty(invoiceTermList)) {
+    if (!CollectionUtils.isEmpty(invoiceTermList) && invoice.getMove() != null) {
       BigDecimal currencyAmount =
           invoiceTermList.stream()
               .map(InvoiceTerm::getCompanyAmountRemaining)
@@ -200,6 +201,20 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
             }
             amountPaid = amountPaid.add(computedPaidAmount);
           } else if (Objects.equals(
+                  invoicePayment.getCurrency(), invoice.getCompany().getCurrency())
+              && invoice.getCompanyInTaxTotal().signum() != 0
+              && !this.hasForeignExchangeAccounts(invoice.getCompany())) {
+            // Without foreign exchange accounts the gap is not booked: the payment is valued at
+            // the invoice rate, consistently with its move line
+            amountPaid =
+                amountPaid.add(
+                    paymentAmount
+                        .multiply(invoice.getInTaxTotal())
+                        .divide(
+                            invoice.getCompanyInTaxTotal(),
+                            currencyScaleService.getScale(invoice),
+                            RoundingMode.HALF_UP));
+          } else if (Objects.equals(
               invoicePayment.getCurrency(), invoice.getCompany().getCurrency())) {
             amountPaid =
                 amountPaid.add(
@@ -226,6 +241,10 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     boolean isMinus = moveToolService.isMinus(invoice);
     if (isMinus) {
       amountPaid = amountPaid.negate();
+    }
+
+    if (this.isPaidByInvoiceTermsInCurrency(invoice)) {
+      amountPaid = invoice.getInTaxTotal();
     }
 
     log.debug("Amount paid total : {}", amountPaid);
@@ -540,5 +559,23 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     }
 
     return amountInCurrency;
+  }
+
+  /**
+   * An invoice in currency whose invoice terms are all paid has nothing left to pay, whatever the
+   * rates its payments are converted at.
+   */
+  protected boolean isPaidByInvoiceTermsInCurrency(Invoice invoice) {
+    List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
+    return !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency())
+        && CollectionUtils.isNotEmpty(invoiceTermList)
+        && invoiceTermList.stream().allMatch(InvoiceTerm::getIsPaid);
+  }
+
+  protected boolean hasForeignExchangeAccounts(Company company) {
+    AccountConfig accountConfig = company.getAccountConfig();
+    return accountConfig != null
+        && (accountConfig.getForeignExchangeGainsAccount() != null
+            || accountConfig.getForeignExchangeLossesAccount() != null);
   }
 }

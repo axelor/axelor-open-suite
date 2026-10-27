@@ -18,12 +18,14 @@
  */
 package com.axelor.apps.talent.db.repo;
 
+import com.axelor.apps.talent.db.TrainingRegister;
 import com.axelor.apps.talent.db.TrainingSession;
 import com.axelor.apps.talent.exception.TalentExceptionMessage;
 import com.axelor.apps.talent.service.TrainingSessionComputeNameService;
 import com.axelor.i18n.I18n;
 import jakarta.inject.Inject;
 import jakarta.validation.ValidationException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class TrainingSessionTalentRepository extends TrainingSessionRepository {
 
@@ -45,5 +47,18 @@ public class TrainingSessionTalentRepository extends TrainingSessionRepository {
     trainingSession.setFullName(trainingSessionComputeNameService.computeFullName(trainingSession));
 
     return super.save(trainingSession);
+  }
+
+  @Override
+  public TrainingSession copy(TrainingSession entity, boolean deep) {
+    TrainingSession copy = super.copy(entity, deep);
+    copy.setStatusSelect(STATUS_PLANNED);
+    if (CollectionUtils.isNotEmpty(copy.getTrainingRegisterList())) {
+      for (TrainingRegister trainingRegister : copy.getTrainingRegisterList()) {
+        trainingRegister.setStatusSelect(TrainingRegisterRepository.STATUS_REQUESTED);
+        trainingRegister.clearEventList();
+      }
+    }
+    return copy;
   }
 }

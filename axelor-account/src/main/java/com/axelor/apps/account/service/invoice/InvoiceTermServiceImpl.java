@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -801,10 +802,23 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       needConvert = false;
     }
 
-    if (needConvert && invoicePayment != null) {
+    if (needConvert
+        && invoicePayment != null
+        && invoiceTerm.getCompanyAmount().signum() != 0
+        && !this.hasForeignExchangeAccounts(invoiceTerm.getCompany())) {
+      // Without foreign exchange accounts the gap is not booked: the payment is valued at the
+      // invoice term rate, consistently with its move line
       paidAmount =
           invoiceTermPayment
               .getCompanyPaidAmount()
+              .multiply(invoiceTerm.getAmount())
+              .divide(
+                  invoiceTerm.getCompanyAmount(),
+                  currencyScaleService.getScale(invoiceTerm),
+                  RoundingMode.HALF_UP);
+    } else if (needConvert && invoicePayment != null) {
+      paidAmount =
+          this.getPaymentCompanyPaidAmount(invoiceTermPayment, invoicePayment)
               .divide(
                   currencyService.getCurrencyConversionRate(
                       invoiceTerm.getCurrency(), currency, invoicePayment.getPaymentDate()),
@@ -853,7 +867,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         InvoicePayment invoicePayment = invoiceTermPayment.getInvoicePayment();
         if (invoicePayment != null
             && !invoicePayment.getCurrency().equals(invoiceTerm.getCurrency())) {
-          paidAmount = this.manageForeignExchange(invoiceTermPayment, invoicePayment, paidAmount);
+          // Restore the amount in currency as it was deducted from the invoice term
+          paidAmount =
+              this.computePaidAmount(invoiceTermPayment, invoicePayment, invoiceTerm)
+                  .add(invoiceTermPayment.getFinancialDiscountAmount());
         }
 
         invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().add(paidAmount));
@@ -2000,5 +2017,33 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return false;
     }
     return invoiceTermList.stream().anyMatch(invoiceTermRecordService::computeIsCustomized);
+  }
+
+  /**
+   * When the foreign exchange gap is absorbed by the payment, the reconciled amount is lower than
+   * the amount paid: the company paid amount is then valued at the share of the amount paid.
+   */
+  protected BigDecimal getPaymentCompanyPaidAmount(
+      InvoiceTermPayment invoiceTermPayment, InvoicePayment invoicePayment) {
+    BigDecimal companyPaidAmount = invoiceTermPayment.getCompanyPaidAmount();
+    Reconcile reconcile = invoicePayment.getReconcile();
+    if (reconcile == null
+        || reconcile.getForeignExchangeMove() == null
+        || reconcile.getForeignExchangeMove().equals(invoicePayment.getMove())
+        || reconcile.getAmount().signum() == 0
+        || reconcile.getAmount().compareTo(invoicePayment.getAmount()) >= 0) {
+      return companyPaidAmount;
+    }
+
+    return companyPaidAmount
+        .multiply(invoicePayment.getAmount())
+        .divide(reconcile.getAmount(), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+  }
+
+  protected boolean hasForeignExchangeAccounts(Company company) {
+    AccountConfig accountConfig = company != null ? company.getAccountConfig() : null;
+    return accountConfig != null
+        && (accountConfig.getForeignExchangeGainsAccount() != null
+            || accountConfig.getForeignExchangeLossesAccount() != null);
   }
 }

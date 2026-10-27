@@ -854,6 +854,7 @@ public class ReconcileServiceImpl implements ReconcileService {
               true,
               true);
       if (foreignExchangeReconcile != null) {
+        reconcile.setForeignExchangeMove(foreignExchangeGapMove.getMove());
         InvoicePayment invoicePayment =
             invoicePaymentRepository.findByReconcile(foreignExchangeReconcile).fetchOne();
         if (invoicePayment != null) {
@@ -863,15 +864,14 @@ public class ReconcileServiceImpl implements ReconcileService {
           Invoice invoice = invoicePayment.getInvoice();
           invoicePaymentToolService.updateAmountPaid(invoice);
           invoicePaymentRepository.save(invoicePayment);
-
-          reconcile.setForeignExchangeMove(foreignExchangeGapMove.getMove());
-          reconcile.setAmount(
-              reconcile
-                  .getCreditMoveLine()
-                  .getAmountRemaining()
-                  .abs()
-                  .min(reconcile.getDebitMoveLine().getAmountRemaining().abs()));
         }
+
+        reconcile.setAmount(
+            reconcile
+                .getCreditMoveLine()
+                .getAmountRemaining()
+                .abs()
+                .min(reconcile.getDebitMoveLine().getAmountRemaining().abs()));
       }
     }
   }

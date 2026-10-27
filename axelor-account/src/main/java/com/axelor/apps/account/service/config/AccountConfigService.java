@@ -719,19 +719,22 @@ public class AccountConfigService {
   public Account getPartnerAccount(AccountConfig accountConfig, int accountingCutOffTypeSelect)
       throws AxelorException {
     Account account = null;
+    String missingAccountMessage = AccountExceptionMessage.CUT_OFF_BATCH_NO_PARTNER_ACCOUNT;
 
     if (accountingCutOffTypeSelect
         == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) {
       account = accountConfig.getPrepaidExpensesAccount();
+      missingAccountMessage = AccountExceptionMessage.CUT_OFF_BATCH_NO_PREPAID_EXPENSES_ACCOUNT;
     } else if (accountingCutOffTypeSelect
         == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES) {
       account = accountConfig.getDeferredIncomesAccount();
+      missingAccountMessage = AccountExceptionMessage.CUT_OFF_BATCH_NO_DEFERRED_INCOMES_ACCOUNT;
     }
 
     if (account == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.CUT_OFF_BATCH_NO_PARTNER_ACCOUNT),
+          I18n.get(missingAccountMessage),
           accountConfig.getCompany().getName());
     }
     return account;
@@ -774,7 +777,6 @@ public class AccountConfigService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           message,
-          I18n.get(BaseExceptionMessage.EXCEPTION),
           accountConfig.getCompany().getName());
     }
 

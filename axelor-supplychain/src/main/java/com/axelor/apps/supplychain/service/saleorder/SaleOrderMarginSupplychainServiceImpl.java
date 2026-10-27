@@ -25,6 +25,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginServiceImpl;
 import jakarta.inject.Inject;
+import java.math.BigDecimal;
 
 public class SaleOrderMarginSupplychainServiceImpl extends SaleOrderMarginServiceImpl {
 
@@ -45,6 +46,21 @@ public class SaleOrderMarginSupplychainServiceImpl extends SaleOrderMarginServic
       return;
     }
 
-    saleOrder.setTotalCostPrice(saleOrder.getTotalCostPrice().add(saleOrder.getShippingCost()));
+    BigDecimal shippingCost = saleOrder.getShippingCost();
+    if (shippingCost == null || shippingCost.signum() == 0) {
+      return;
+    }
+
+    BigDecimal accountedRevenue = saleOrder.getAccountedRevenue();
+    BigDecimal totalCostPrice = saleOrder.getTotalCostPrice().add(shippingCost);
+    BigDecimal totalGrossMargin = saleOrder.getTotalGrossMargin().subtract(shippingCost);
+
+    setSaleOrderMarginInfo(
+        saleOrder,
+        accountedRevenue,
+        totalCostPrice,
+        totalGrossMargin,
+        computeRate(accountedRevenue, totalGrossMargin),
+        computeRate(totalCostPrice, totalGrossMargin));
   }
 }

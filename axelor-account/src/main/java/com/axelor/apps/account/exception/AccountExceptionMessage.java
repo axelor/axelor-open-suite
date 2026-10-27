@@ -1401,6 +1401,12 @@ public final class AccountExceptionMessage {
   public static final String CUT_OFF_BATCH_NO_PARTNER_ACCOUNT = /*$$(*/
       "No partner account was found for company %s." /*)*/;
 
+  public static final String CUT_OFF_BATCH_NO_PREPAID_EXPENSES_ACCOUNT = /*$$(*/
+      "Please select a prepaid expenses account in account config for company %s." /*)*/;
+
+  public static final String CUT_OFF_BATCH_NO_DEFERRED_INCOMES_ACCOUNT = /*$$(*/
+      "Please select a deferred incomes account in account config for company %s." /*)*/;
+
   public static final String ACCOUNT_CONFIG_MISSING_PURCH_FINANCIAL_DISCOUNT_ACCOUNT = /*$$(*/
       "Please select a purchase financial discount account in account config for company %s." /*)*/;
 
