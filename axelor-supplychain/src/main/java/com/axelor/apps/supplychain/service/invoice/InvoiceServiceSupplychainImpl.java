@@ -147,8 +147,6 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
   }
 
   protected void updateTimetable(Invoice invoice) {
-    timetableService.updateTimetables(invoice);
-
     int operationTypeSelect = invoice.getOperationTypeSelect();
     if (operationTypeSelect == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
         || operationTypeSelect == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
@@ -156,7 +154,10 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       if (originalInvoice != null) {
         timetableService.cancelTimetable(originalInvoice);
       }
+      return;
     }
+
+    timetableService.updateTimetables(invoice);
   }
 
   @Override

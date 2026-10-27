@@ -1,0 +1,3 @@
+---
+title: "Timetable: fixed a ventilated refund being linked to the next timetable, which was then shown as invoiced and could no longer be invoiced for its full amount."
+module: axelor-supplychain
