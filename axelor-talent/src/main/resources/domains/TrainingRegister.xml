@@ -20,6 +20,16 @@
       title="Calendar"/>
     <string name="fullName" namecolumn="true"/>
     <one-to-many name="eventList" title="Event list" ref="com.axelor.apps.crm.db.Event"/>
+
+    <extra-code><![CDATA[
+
+      // STATUS SELECT
+      public static final int STATUS_REQUESTED = 0;
+      public static final int STATUS_PLANNED = 1;
+      public static final int STATUS_COMPLETED = 2;
+      public static final int STATUS_CANCELED = 3;
+
+    ]]></extra-code>
   </entity>
 
 </domain-models>
