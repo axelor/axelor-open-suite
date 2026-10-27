@@ -1,0 +1,5 @@
+---
+title: "Payment voucher: fixed invoice terms still proposed in a new payment voucher while their payment is pending on a bank order with deferred accounting, which allowed to pay them twice."
+module: axelor-bank-payment
+developer: |
+ Added InvoiceTermPaymentService as parameter for PaymentVoucherConfirmServiceBankPayImpl's constructor

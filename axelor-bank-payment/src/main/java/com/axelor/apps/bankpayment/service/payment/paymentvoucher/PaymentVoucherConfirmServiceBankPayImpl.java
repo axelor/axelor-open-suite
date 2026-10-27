@@ -41,6 +41,7 @@ import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherControlService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
@@ -66,6 +67,7 @@ public class PaymentVoucherConfirmServiceBankPayImpl extends PaymentVoucherConfi
   protected BankOrderCreateService bankOrderCreateService;
   protected BankOrderValidationService bankOrderValidationService;
   protected InvoicePaymentToolService invoicePaymentToolService;
+  protected InvoiceTermPaymentService invoiceTermPaymentService;
 
   @Inject
   public PaymentVoucherConfirmServiceBankPayImpl(
@@ -93,7 +95,8 @@ public class PaymentVoucherConfirmServiceBankPayImpl extends PaymentVoucherConfi
       AppBaseService appBaseService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderValidationService bankOrderValidationService,
-      InvoicePaymentToolService invoicePaymentToolService) {
+      InvoicePaymentToolService invoicePaymentToolService,
+      InvoiceTermPaymentService invoiceTermPaymentService) {
     super(
         reconcileService,
         moveCreateService,
@@ -120,6 +123,7 @@ public class PaymentVoucherConfirmServiceBankPayImpl extends PaymentVoucherConfi
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderValidationService = bankOrderValidationService;
     this.invoicePaymentToolService = invoicePaymentToolService;
+    this.invoiceTermPaymentService = invoiceTermPaymentService;
   }
 
   @Override
@@ -163,6 +167,7 @@ public class PaymentVoucherConfirmServiceBankPayImpl extends PaymentVoucherConfi
                 "self.invoice = ?1 AND self.bankOrder = ?2 AND self.move IS NULL AND self.reconcile IS NULL",
                 invoice,
                 paymentVoucher.getBankOrder())
+            .order("id")
             .fetchOne();
     if (invoicePayment != null) {
       invoicePayment.setMove(move);
@@ -201,7 +206,7 @@ public class PaymentVoucherConfirmServiceBankPayImpl extends PaymentVoucherConfi
       throws AxelorException {
     Set<Invoice> invoices = new LinkedHashSet<>();
     for (PayVoucherElementToPay payVoucherElementToPay :
-        paymentVoucher.getPayVoucherElementToPayList()) {
+        getPayVoucherElementToPayList(paymentVoucher)) {
       Invoice invoice =
           Optional.ofNullable(payVoucherElementToPay.getMoveLine())
               .map(MoveLine::getMove)
@@ -229,6 +234,17 @@ public class PaymentVoucherConfirmServiceBankPayImpl extends PaymentVoucherConfi
       invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
       invoicePayment.setBankOrder(bankOrder);
       invoice.addInvoicePaymentListItem(invoicePayment);
+      // Built without the invoice payment to keep its financial discount untouched
+      invoicePayment.addInvoiceTermPaymentListItem(
+          invoiceTermPaymentService.createInvoiceTermPayment(
+              null,
+              payVoucherElementToPay.getInvoiceTerm(),
+              amount,
+              currencyService.getAmountCurrencyConvertedAtDate(
+                  invoicePayment.getCurrency(),
+                  invoice.getCompanyCurrency(),
+                  amount,
+                  invoicePayment.getPaymentDate())));
       invoicePaymentRepository.save(invoicePayment);
       invoices.add(invoice);
     }
