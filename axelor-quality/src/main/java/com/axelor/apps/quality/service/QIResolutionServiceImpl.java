@@ -33,6 +33,7 @@ import com.axelor.apps.quality.db.QIResolutionDecision;
 import com.axelor.apps.quality.db.QualityConfig;
 import com.axelor.apps.quality.db.repo.QIDecisionDistributionRepository;
 import com.axelor.apps.quality.service.config.QualityConfigService;
+import com.axelor.common.StringUtils;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.Message;
@@ -192,7 +193,10 @@ public class QIResolutionServiceImpl implements QIResolutionService {
     if (qiDecisionDistributionPrintTemplate == null) {
       return null;
     }
-    String fileName = getFileName(qiDecisionDistribution);
+    String fileName =
+        StringUtils.notEmpty(qiDecisionDistributionPrintTemplate.getScriptFieldName())
+            ? qiDecisionDistributionPrintTemplate.getScriptFieldName()
+            : getFileName(qiDecisionDistribution);
     File file =
         printingTemplatePrintService.getPrintFile(
             qiDecisionDistributionPrintTemplate,
@@ -202,7 +206,7 @@ public class QIResolutionServiceImpl implements QIResolutionService {
     DMSFile generatedFile = null;
     if (file != null) {
       try (InputStream is = new FileInputStream(file)) {
-        generatedFile = metaFiles.attach(is, fileName, qiDecisionDistribution);
+        generatedFile = metaFiles.attach(is, file.getName(), qiDecisionDistribution);
       }
     }
     return generatedFile;
