@@ -42,6 +42,7 @@ class TestSaleOrderMarginSupplychainService {
   void prepare() {
     AppSaleService appSaleService = mock(AppSaleService.class);
     when(appSaleService.getAppSale()).thenReturn(new AppSale());
+    when(appSaleService.isApp("supplychain")).thenReturn(true);
     saleOrderMarginService =
         new SaleOrderMarginSupplychainServiceImpl(
             appSaleService,
