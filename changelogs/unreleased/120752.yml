@@ -1,0 +1,5 @@
+---
+title: "Invoice: fixed foreign exchange difference overstated by 0.01 when an invoice in currency with several invoice terms is paid term by term."
+module: axelor-account
+developer: |
+ Added ReconcileInvoiceTermComputationService as parameter for ForeignExchangeGapServiceImpl's constructor
