@@ -1,0 +1,3 @@
+---
+title: "Accounting report: fixed the aged balance missing supplier invoices and computing wrong amounts for credit notes, foreign currency invoices and invoices with several terms."
+module: axelor-account
