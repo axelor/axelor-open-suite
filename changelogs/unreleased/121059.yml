@@ -1,0 +1,3 @@
+---
+title: "Quality improvement: fixed the decision distribution generated file missing its extension and ignoring the printing template file name script."
+module: axelor-quality
