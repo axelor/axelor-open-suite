@@ -110,6 +110,7 @@
             		{functionalOriginSelect == 50 && <Badge bg="danger">{_t('Batch')}</Badge>}
             		{functionalOriginSelect == 51 && <Badge bg="danger">{_t('MonthlyPaymentScheduleLines (batch)')}</Badge>}
             		{functionalOriginSelect == 52 && <Badge bg="danger">{_t('CreditTransferPartnerReimbursement (batch)')}</Badge>}
+            		{functionalOriginSelect == 60 && <Badge bg="danger">{_t('Payment voucher')}</Badge>}
             	</Box>
             </>
           ]]>
