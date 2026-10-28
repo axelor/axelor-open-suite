@@ -355,7 +355,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
               vatSystem,
               isDebit);
     } else {
-      this.updateFinancialDiscountTaxMoveLine(moveLine, financialDiscountTaxAmount, isDebit);
+      this.updateFinancialDiscountTaxMoveLine(taxMoveLine, financialDiscountTaxAmount, isDebit);
     }
 
     return counter;
