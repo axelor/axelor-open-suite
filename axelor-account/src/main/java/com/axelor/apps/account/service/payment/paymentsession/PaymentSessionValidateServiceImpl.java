@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -64,8 +63,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppAccount;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import jakarta.xml.bind.JAXBException;
@@ -263,7 +260,6 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       throws AxelorException {
     this.updateStatus(paymentSession);
     this.generateCashMoveAndLines(paymentSession, moveDateMap, paymentAmountMap, out, isGlobal);
-    this.generateTaxMoveLines(moveDateMap);
     this.updateStatuses(paymentSession, moveDateMap, paymentAmountMap);
   }
 
@@ -811,49 +807,6 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
               move, partner, cashAccount, amount, this.getMoveLineDescription(paymentSession), out);
         }
       }
-    }
-  }
-
-  protected void generateTaxMoveLines(Map<LocalDate, Map<Partner, List<Move>>> moveDateMap)
-      throws AxelorException {
-    for (Map<Partner, List<Move>> moveMap : moveDateMap.values()) {
-      for (Partner partner : moveMap.keySet()) {
-        for (Move move : moveMap.get(partner)) {
-          move = moveRepo.find(move.getId());
-          Map<MoveLine, Set<TaxLine>> taxLineMap =
-              this.extractTaxLinesFromFinancialDiscountLines(move);
-
-          moveLineTaxService.autoTaxLineGenerate(move, null, false);
-
-          this.applyTaxes(taxLineMap);
-        }
-      }
-    }
-  }
-
-  protected Map<MoveLine, Set<TaxLine>> extractTaxLinesFromFinancialDiscountLines(Move move)
-      throws AxelorException {
-    Map<MoveLine, Set<TaxLine>> taxLineMap = new HashMap<>();
-    AppAccount account = appService.getAppAccount();
-    if (account == null || !account.getManageFinancialDiscount()) {
-      return taxLineMap;
-    }
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLineFinancialDiscountService.isFinancialDiscountLine(
-          moveLine,
-          move.getCompany(),
-          move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)) {
-        taxLineMap.put(moveLine, moveLine.getTaxLineSet());
-        moveLine.setTaxLineSet(Sets.newHashSet());
-      }
-    }
-
-    return taxLineMap;
-  }
-
-  protected void applyTaxes(Map<MoveLine, Set<TaxLine>> taxLineMap) {
-    for (MoveLine moveLine : taxLineMap.keySet()) {
-      moveLine.setTaxLineSet(taxLineMap.get(moveLine));
     }
   }
 
