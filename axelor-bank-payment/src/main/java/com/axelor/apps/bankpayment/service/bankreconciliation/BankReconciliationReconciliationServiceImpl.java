@@ -75,6 +75,7 @@ public class BankReconciliationReconciliationServiceImpl
   protected SequenceService sequenceService;
   protected BankReconciliationRepository bankReconciliationRepository;
   protected MoveLinePostedNbrService moveLinePostedNbrService;
+  protected BankReconciliationService bankReconciliationService;
 
   private final AxelorCache<String, BigDecimal> exchangeRateCache =
       CacheBuilder.newBuilder("exchangeRateCache")
@@ -93,7 +94,8 @@ public class BankReconciliationReconciliationServiceImpl
       CurrencyScaleService currencyScaleService,
       SequenceService sequenceService,
       BankReconciliationRepository bankReconciliationRepository,
-      MoveLinePostedNbrService moveLinePostedNbrService) {
+      MoveLinePostedNbrService moveLinePostedNbrService,
+      BankReconciliationService bankReconciliationService) {
     this.bankStatementQueryRepository = bankStatementQueryRepository;
     this.moveLineRepository = moveLineRepository;
     this.bankReconciliationQueryService = bankReconciliationQueryService;
@@ -104,6 +106,7 @@ public class BankReconciliationReconciliationServiceImpl
     this.sequenceService = sequenceService;
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.moveLinePostedNbrService = moveLinePostedNbrService;
+    this.bankReconciliationService = bankReconciliationService;
   }
 
   @Override
@@ -348,7 +351,6 @@ public class BankReconciliationReconciliationServiceImpl
     BankReconciliationLine bankReconciliationLine = selectedBankReconciliationLines.get(0);
     bankReconciliationLineService.checkDebitCreditDirection(
         bankReconciliationLine, moveLines.get(0));
-    bankReconciliationLine.setMoveLine(moveLines.get(0));
     bankReconciliationLine =
         bankReconciliationLineService.reconcileBRLAndMoveLine(
             bankReconciliationLine, moveLines.get(0));
@@ -360,6 +362,7 @@ public class BankReconciliationReconciliationServiceImpl
       bankReconciliationLineService.checkAmount(bankReconciliationLine);
       bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
     }
+    bankReconciliationService.checkMultipleMoveLineReconciliation(bankReconciliation);
     return bankReconciliation;
   }
 
