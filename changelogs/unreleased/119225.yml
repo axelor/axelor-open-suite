@@ -1,3 +1,0 @@
----
-title: "Interco: fixed the tax on quotation and purchase order lines generated from an intercompany order, which copied the tax of the source order instead of the sale or purchase tax of the company."
-module: axelor-supplychain

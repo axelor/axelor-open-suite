@@ -1,3 +1,0 @@
----
-title: "Accounting batch: fixed the cut-off leaving a partial unbalanced move when the prepaid expenses or deferred incomes account is not configured."
-module: axelor-account

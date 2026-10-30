@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed the amount due in company currency that stayed unchanged on a paid foreign-currency advance payment invoice."
-module: axelor-account
