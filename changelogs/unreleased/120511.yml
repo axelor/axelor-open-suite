@@ -1,6 +1,0 @@
----
-title: "Sale order: improved performance when computing quotations with the standard line display, while keeping the global discount correctly applied to the lines."
-module: axelor-sale
-developer: |
-    SaleOrderGlobalDiscountServiceImpl's constructor now takes a SaleOrderLineComputeService parameter.
-    Added resetGlobalDiscount(SaleOrder) to SaleOrderGlobalDiscountService: it resets the global discount on the lines and recomputes the sale order.
