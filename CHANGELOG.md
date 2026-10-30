@@ -1,3 +1,14 @@
+## [8.4.38] (2026-10-30)
+
+### Fixes
+#### Base
+
+* Unit conversion: improved performance by not loading the unit conversion list when both units are the same.
+
+#### Sale
+
+* Opportunity: the quotation generated from an opportunity now gets the default comments of the customer, as a quotation created directly.
+
 ## [8.4.37] (2026-10-16)
 
 ### Fixes
@@ -3622,6 +3633,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.38]: https://github.com/axelor/axelor-open-suite/compare/v8.4.37...v8.4.38
 [8.4.37]: https://github.com/axelor/axelor-open-suite/compare/v8.4.36...v8.4.37
 [8.4.36]: https://github.com/axelor/axelor-open-suite/compare/v8.4.35...v8.4.36
 [8.4.35]: https://github.com/axelor/axelor-open-suite/compare/v8.4.34...v8.4.35
