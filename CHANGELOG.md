@@ -1,3 +1,10 @@
+## [7.2.73] (2026-10-30)
+
+### Fixes
+#### Account
+
+* Reconcile: removed check on tax for opening/closure.
+
 ## [7.2.72] (2026-08-13)
 
 ### Fixes
@@ -3296,6 +3303,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.73]: https://github.com/axelor/axelor-open-suite/compare/v7.2.72...v7.2.73
 [7.2.72]: https://github.com/axelor/axelor-open-suite/compare/v7.2.71...v7.2.72
 [7.2.71]: https://github.com/axelor/axelor-open-suite/compare/v7.2.70...v7.2.71
 [7.2.70]: https://github.com/axelor/axelor-open-suite/compare/v7.2.69...v7.2.70
