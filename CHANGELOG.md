@@ -1,3 +1,10 @@
+## [8.3.45] (2026-10-30)
+
+### Fixes
+#### Sale
+
+* Opportunity: the quotation generated from an opportunity now gets the default comments of the customer, as a quotation created directly.
+
 ## [8.3.44] (2026-10-16)
 
 ### Fixes
@@ -3567,6 +3574,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.45]: https://github.com/axelor/axelor-open-suite/compare/v8.3.44...v8.3.45
 [8.3.44]: https://github.com/axelor/axelor-open-suite/compare/v8.3.43...v8.3.44
 [8.3.43]: https://github.com/axelor/axelor-open-suite/compare/v8.3.42...v8.3.43
 [8.3.42]: https://github.com/axelor/axelor-open-suite/compare/v8.3.41...v8.3.42
