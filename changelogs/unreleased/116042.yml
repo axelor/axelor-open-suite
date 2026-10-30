@@ -1,3 +1,0 @@
----
-title: "Stock location line: skip lines with invalid product during import."
-module: axelor-stock
