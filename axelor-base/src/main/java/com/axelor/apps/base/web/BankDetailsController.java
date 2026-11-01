@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.exceptions.InvalidIbanException;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.i18n.I18n;
@@ -30,9 +31,6 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import jakarta.inject.Singleton;
-import org.iban4j.IbanFormatException;
-import org.iban4j.InvalidCheckDigitException;
-import org.iban4j.UnsupportedCountryException;
 
 @Singleton
 public class BankDetailsController {
@@ -52,7 +50,7 @@ public class BankDetailsController {
         && bank.getBankDetailsTypeSelect() == BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
       try {
         Beans.get(BankDetailsService.class).validateIban(bankDetails.getIban());
-      } catch (IbanFormatException | InvalidCheckDigitException | UnsupportedCountryException e) {
+      } catch (InvalidIbanException e) {
         if (request.getAction().endsWith("onchange")) {
           response.setInfo(I18n.get(BaseExceptionMessage.BANK_DETAILS_1));
         }
