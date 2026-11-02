@@ -326,7 +326,11 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
         try {
           invoiceQty =
               unitConversionService.convert(
-                  invUnit, movUnit, invoiceQty, appBaseService.getNbDecimalDigitForQty(), null);
+                  invUnit,
+                  movUnit,
+                  invoiceQty,
+                  appBaseService.getNbDecimalDigitForQty(),
+                  invoiceLine.getProduct());
         } catch (AxelorException e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -479,7 +483,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
                   stockMoveLine.getUnit(),
                   remainingQtyToInvoice,
                   appBaseService.getNbDecimalDigitForQty(),
-                  null);
+                  invoiceLine.getProduct());
         } catch (AxelorException e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -500,7 +504,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
                 invoiceLine.getUnit(),
                 qtyApplied,
                 appBaseService.getNbDecimalDigitForQty(),
-                null);
+                invoiceLine.getProduct());
         remainingQtyToInvoice = remainingQtyToInvoice.subtract(qtyAppliedInInvoiceUnit);
       }
     }
