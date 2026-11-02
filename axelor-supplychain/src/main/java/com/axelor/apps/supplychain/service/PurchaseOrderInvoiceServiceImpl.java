@@ -429,16 +429,6 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
           currencyScaleService.getScaledValue(purchaseOrder, invoicedAmount.subtract(refundAmount));
     }
 
-    if (!purchaseOrder.getCurrency().equals(purchaseOrder.getCompany().getCurrency())
-        && purchaseOrder.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
-      BigDecimal rate =
-          currencyService.computeScaledExchangeRate(
-              invoicedAmount, purchaseOrder.getCompanyExTaxTotal());
-      invoicedAmount =
-          currencyScaleService.getScaledValue(
-              purchaseOrder, purchaseOrder.getExTaxTotal().multiply(rate));
-    }
-
     log.debug(
         "Compute the invoiced amount ({}) of the purchase order : {}",
         invoicedAmount,
@@ -454,7 +444,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       int invoiceOperationTypeSelect) {
 
     String query =
-        "SELECT SUM(self.companyExTaxTotal)"
+        "SELECT SUM(CASE WHEN self.invoice.currency = :currency THEN self.exTaxTotal"
+            + " ELSE self.companyExTaxTotal * :rate END)"
             + " FROM InvoiceLine as self"
             + " WHERE ((self.purchaseOrderLine.purchaseOrder.id = :purchaseOrderId AND self.invoice.purchaseOrder IS NULL)"
             + " OR self.invoice.purchaseOrder.id = :purchaseOrderId )"
@@ -477,6 +468,13 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     Query q = JPA.em().createQuery(query, BigDecimal.class);
 
     q.setParameter("purchaseOrderId", purchaseOrder.getId());
+    q.setParameter("currency", purchaseOrder.getCurrency());
+    q.setParameter(
+        "rate",
+        purchaseOrder.getCompanyExTaxTotal().signum() == 0
+            ? BigDecimal.ONE
+            : currencyService.computeScaledExchangeRate(
+                purchaseOrder.getExTaxTotal(), purchaseOrder.getCompanyExTaxTotal()));
     q.setParameter("statusVentilated", InvoiceRepository.STATUS_VENTILATED);
     q.setParameter("invoiceOperationTypeSelect", invoiceOperationTypeSelect);
     if (currentInvoiceId != null) {
