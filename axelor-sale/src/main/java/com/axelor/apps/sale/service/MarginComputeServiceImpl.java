@@ -80,7 +80,7 @@ public class MarginComputeServiceImpl implements MarginComputeService {
             saleOrder.getCurrency(),
             company != null ? company.getCurrency() : null,
             totalPrice,
-            null);
+            saleOrder.getCreationDate());
 
     if (totalPrice.compareTo(BigDecimal.ZERO) != 0
         && subTotalCostPrice.compareTo(BigDecimal.ZERO) != 0) {
