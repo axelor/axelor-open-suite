@@ -1,0 +1,7 @@
+---
+title: "Sale/Purchase order: fixed the invoiced amount of orders in a foreign currency when the exchange rate changed before invoicing."
+module: axelor-supplychain
+developer: |
+  `SaleOrderInvoiceServiceImpl.getAmountVentilated` and
+  `PurchaseOrderInvoiceServiceImpl.getAmountVentilated` now return the amount in the order currency
+  instead of the company currency.
