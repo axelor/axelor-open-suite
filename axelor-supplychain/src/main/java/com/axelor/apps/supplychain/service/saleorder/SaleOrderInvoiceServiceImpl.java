@@ -835,14 +835,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           currencyScaleService.getScaledValue(saleOrder, invoicedAmount.subtract(refundAmount));
     }
 
-    if (!saleOrder.getCurrency().equals(saleOrder.getCompany().getCurrency())
-        && saleOrder.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
-      BigDecimal rate =
-          invoicedAmount.divide(saleOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
-      invoicedAmount =
-          currencyScaleService.getScaledValue(saleOrder, saleOrder.getExTaxTotal().multiply(rate));
-    }
-
     log.debug(
         "Compute the invoiced amount ({}) of the sale order : {}",
         invoicedAmount,
@@ -870,7 +862,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       boolean excludeCurrentInvoice,
       int invoiceOperationTypeSelect) {
 
-    String query = "SELECT SUM(self.companyExTaxTotal)" + " FROM InvoiceLine as self";
+    String query =
+        "SELECT SUM(CASE WHEN self.invoice.currency = :currency THEN self.exTaxTotal"
+            + " ELSE self.companyExTaxTotal * :rate END)"
+            + " FROM InvoiceLine as self";
     query += " WHERE self.saleOrderLine.saleOrder.id = :saleOrderId";
     query += " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect";
 
@@ -897,6 +892,17 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     jakarta.persistence.Query q = JPA.em().createQuery(query, BigDecimal.class);
 
     q.setParameter("saleOrderId", saleOrder.getId());
+    q.setParameter("currency", saleOrder.getCurrency());
+    q.setParameter(
+        "rate",
+        saleOrder.getCompanyExTaxTotal().signum() == 0
+            ? BigDecimal.ONE
+            : saleOrder
+                .getExTaxTotal()
+                .divide(
+                    saleOrder.getCompanyExTaxTotal(),
+                    AppBaseService.DEFAULT_EXCHANGE_RATE_SCALE,
+                    RoundingMode.HALF_UP));
     q.setParameter("statusVentilated", InvoiceRepository.STATUS_VENTILATED);
     q.setParameter("invoiceOperationTypeSelect", invoiceOperationTypeSelect);
     if (invoiceIsNotAdvancePayment) {
