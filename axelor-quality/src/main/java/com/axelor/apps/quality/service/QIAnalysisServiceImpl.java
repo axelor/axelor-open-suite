@@ -32,6 +32,7 @@ import com.axelor.apps.quality.db.repo.QIActionDistributionRepository;
 import com.axelor.apps.quality.db.repo.QIAnalysisRepository;
 import com.axelor.apps.quality.service.app.QIActionDistributionService;
 import com.axelor.apps.quality.service.config.QualityConfigService;
+import com.axelor.common.StringUtils;
 import com.axelor.db.Model;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
@@ -179,7 +180,10 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
     if (qiActionDistributionPrintTemplate == null) {
       return null;
     }
-    String fileName = getFileName(qiActionDistribution);
+    String fileName =
+        StringUtils.notEmpty(qiActionDistributionPrintTemplate.getScriptFieldName())
+            ? qiActionDistributionPrintTemplate.getScriptFieldName()
+            : getFileName(qiActionDistribution);
     File file =
         printingTemplatePrintService.getPrintFile(
             qiActionDistributionPrintTemplate,
