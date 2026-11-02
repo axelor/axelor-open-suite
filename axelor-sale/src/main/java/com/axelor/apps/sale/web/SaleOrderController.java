@@ -946,4 +946,14 @@ public class SaleOrderController {
             .context("_showRecord", String.valueOf(copySaleOrder.getId()))
             .map());
   }
+
+  public void updateLinesAfterCreationDateChange(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      Beans.get(SaleOrderDateService.class).updateLinesAfterCreationDateChange(saleOrder);
+      response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

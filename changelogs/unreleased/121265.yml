@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed the margin of foreign currency orders computed with today's exchange rate instead of the rate at the creation date."
+module: axelor-sale
