@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.quality.db.QIActionDistribution;
 import com.axelor.apps.quality.db.QIAnalysis;
 import com.axelor.apps.quality.service.QIAnalysisService;
+import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -117,9 +118,12 @@ public class QIAnalysisController {
                   .collect(Collectors.toList());
 
       Template qiActionDistributionMessageTemplate =
-          Mapper.toBean(
+          JPA.find(
               Template.class,
-              (Map<String, Object>) context.get("qiActionDistributionMessageTemplate"));
+              Long.valueOf(
+                  ((Map<String, Object>) context.get("qiActionDistributionMessageTemplate"))
+                      .get("id")
+                      .toString()));
 
       Beans.get(QIAnalysisService.class)
           .sendQIActionDistributions(qiActionDistributionList, qiActionDistributionMessageTemplate);

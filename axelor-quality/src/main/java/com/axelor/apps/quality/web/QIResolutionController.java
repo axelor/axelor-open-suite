@@ -23,6 +23,7 @@ import com.axelor.apps.quality.db.QIDecisionDistribution;
 import com.axelor.apps.quality.db.QIResolution;
 import com.axelor.apps.quality.db.repo.QIResolutionRepository;
 import com.axelor.apps.quality.service.QIResolutionService;
+import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -76,9 +77,12 @@ public class QIResolutionController {
                   .map(map -> Mapper.toBean(QIDecisionDistribution.class, map))
                   .collect(Collectors.toList());
       Template qiDecisionDistributionMessageTemplate =
-          Mapper.toBean(
+          JPA.find(
               Template.class,
-              (Map<String, Object>) context.get("qiDecisionDistributionMessageTemplate"));
+              Long.valueOf(
+                  ((Map<String, Object>) context.get("qiDecisionDistributionMessageTemplate"))
+                      .get("id")
+                      .toString()));
 
       Beans.get(QIResolutionService.class)
           .sendQIDecisionDistributions(
