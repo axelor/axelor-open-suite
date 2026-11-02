@@ -1072,7 +1072,8 @@
   </input>
 
   <input file="base_indicatorConfig.csv" separator=";"
-    type="com.axelor.apps.base.db.IndicatorConfig" search="self.importId = :importId">
+    type="com.axelor.apps.base.db.IndicatorConfig" search="self.importId = :importId"
+    call="com.axelor.csv.script.ImportIndicatorConfig:importIndicatorConfig">
     <bind column="targetModelFullName" to="targetModel"
       search="self.fullName = :targetModelFullName"
       check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaModel', 'fullName', targetModelFullName)"
