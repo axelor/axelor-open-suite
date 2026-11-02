@@ -939,7 +939,7 @@
     <panel name="datesPanel" title="Dates" hideIf="clientPartner == null" sidebar="true"
       canCollapse="true" collapseIf="true">
       <field name="creationDate" readonlyIf="statusSelect != 1" colSpan="6"
-        onChange="action-sale-order-record-compute-end-of-validity-date"/>
+        onChange="action-sale-order-group-on-creation-date-change"/>
       <field name="confirmedByUser" readonly="true"
         showIf="statusSelect == 3 || statusSelect == 4" colSpan="6" canNew="false" canView="false"
         canEdit="false" form-view="user-form" grid-view="user-grid"/>
@@ -1873,6 +1873,20 @@
   <action-method name="action-sale-order-record-compute-end-of-validity-date">
     <call class="com.axelor.apps.sale.web.SaleOrderController"
       method="computeEndOfValidityDate"/>
+  </action-method>
+
+  <action-group name="action-sale-order-group-on-creation-date-change">
+    <action name="action-sale-order-record-compute-end-of-validity-date"/>
+    <action name="action-sale-order-method-update-lines-after-creation-date-change"
+      if="saleOrderLineList?.size() &gt; 0"/>
+    <action name="action-sale-order-method-on-line-change"
+      if="saleOrderLineList?.size() &gt; 0"/>
+  </action-group>
+
+  <action-method
+    name="action-sale-order-method-update-lines-after-creation-date-change">
+    <call class="com.axelor.apps.sale.web.SaleOrderController"
+      method="updateLinesAfterCreationDateChange"/>
   </action-method>
 
   <action-method name="action-sale-order-method-compute">

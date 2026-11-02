@@ -970,4 +970,14 @@ public class SaleOrderController {
             .collect(Collectors.toList());
     return allIds.isEmpty() ? Collections.singletonList(0L) : allIds;
   }
+
+  public void updateLinesAfterCreationDateChange(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      Beans.get(SaleOrderDateService.class).updateLinesAfterCreationDateChange(saleOrder);
+      response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

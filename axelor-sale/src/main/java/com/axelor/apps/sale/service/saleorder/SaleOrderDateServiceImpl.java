@@ -18,10 +18,17 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.MarginComputeService;
+import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.inject.Beans;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderDateServiceImpl implements SaleOrderDateService {
 
@@ -37,5 +44,22 @@ public class SaleOrderDateServiceImpl implements SaleOrderDateService {
               .computeDuration(saleOrder.getDuration(), saleOrder.getCreationDate()));
     }
     return saleOrder;
+  }
+
+  @Override
+  public void updateLinesAfterCreationDateChange(SaleOrder saleOrder) throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return;
+    }
+    SaleOrderLineComputeService saleOrderLineComputeService =
+        Beans.get(SaleOrderLineComputeService.class);
+    MarginComputeService marginComputeService = Beans.get(MarginComputeService.class);
+    boolean considerZeroCost = Beans.get(AppSaleService.class).getAppSale().getConsiderZeroCost();
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+      marginComputeService.computeSubMargin(
+          saleOrder, saleOrderLine, saleOrderLine.getExTaxTotal(), considerZeroCost);
+    }
   }
 }
