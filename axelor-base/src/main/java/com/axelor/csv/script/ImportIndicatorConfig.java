@@ -20,8 +20,8 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.base.db.IndicatorConfig;
 import com.axelor.apps.base.db.repo.IndicatorConfigRepository;
-import jakarta.inject.Inject;
 import java.util.Map;
+import javax.inject.Inject;
 
 public class ImportIndicatorConfig {
 
