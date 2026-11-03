@@ -76,6 +76,7 @@ public class TaskTemplateHrServiceImpl extends TaskTemplateServiceImpl {
 
     if (task.getTotalPlannedHrs().signum() > 0
         && task.getAssignedTo() != null
+        && task.getAssignedTo().getEmployee() != null
         && task.getProduct() != null) {
       LocalDateTime startDateTime = task.getTaskDate().atStartOfDay();
       BigDecimal dailyWorkHours = appBaseService.getDailyWorkHours();
