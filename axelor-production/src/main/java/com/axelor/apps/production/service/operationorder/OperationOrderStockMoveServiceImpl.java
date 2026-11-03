@@ -330,7 +330,9 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
     if (stockMoveList != null) {
 
       for (StockMove stockMove : stockMoveList) {
-        stockMoveService.cancel(stockMove);
+        if (stockMove.getStatusSelect() != StockMoveRepository.STATUS_CANCELED) {
+          stockMoveService.cancel(stockMove);
+        }
       }
 
       stockMoveList.stream()
