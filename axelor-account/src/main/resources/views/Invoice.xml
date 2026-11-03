@@ -2832,14 +2832,11 @@
       <domain>self.statusSelect = 3</domain>
     </filter>
     <filter name="customer-invoices-filters-unpaid" title="Unpaid">
-      <domain>self.amountRemaining &gt; 0</domain>
+      <domain>self.statusSelect = 3 and self.amountRemaining &gt; 0</domain>
     </filter>
     <filter name="customer-invoices-filters-unpaid-due" title="Unpaid Due">
-      <domain>CURRENT_DATE &gt; self.dueDate and self.amountRemaining &gt; 0</domain>
-    </filter>
-    <filter name="customer-invoices-filters-with-payment-rejected"
-      title="With Payment Rejected">
-      <domain>self.rejectMoveLine IS NOT NULL</domain>
+      <domain>self.statusSelect = 3 and CURRENT_DATE &gt; self.dueDate and self.amountRemaining &gt;
+        0</domain>
     </filter>
     <filter name="customer-invoices-filters-b2b" title="B2B">
       <domain>self.partner.partnerTypeSelect = 1</domain>
@@ -2895,10 +2892,11 @@
       <domain>self.statusSelect = 3</domain>
     </filter>
     <filter name="customer-refunds-filters-unpaid" title="Unpaid">
-      <domain>self.amountRemaining &gt; 0</domain>
+      <domain>self.statusSelect = 3 and self.amountRemaining &gt; 0</domain>
     </filter>
     <filter name="customer-refunds-filters-unpaid-due" title="Unpaid Due">
-      <domain>CURRENT_DATE &gt; self.dueDate and self.amountRemaining &gt; 0</domain>
+      <domain>self.statusSelect = 3 and CURRENT_DATE &gt; self.dueDate and self.amountRemaining &gt;
+        0</domain>
     </filter>
   </search-filters>
 
@@ -2951,10 +2949,11 @@
       <domain>self.statusSelect = 3</domain>
     </filter>
     <filter name="supplier-invoices-filters-unpaid" title="Unpaid">
-      <domain>self.amountRemaining &gt; 0</domain>
+      <domain>self.statusSelect = 3 and self.amountRemaining &gt; 0</domain>
     </filter>
     <filter name="supplier-invoices-filters-unpaid-due" title="Unpaid Due">
-      <domain>CURRENT_DATE &gt; self.dueDate and self.amountRemaining &gt; 0</domain>
+      <domain>self.statusSelect = 3 and CURRENT_DATE &gt; self.dueDate and self.amountRemaining &gt;
+        0</domain>
     </filter>
   </search-filters>
 
@@ -3007,10 +3006,11 @@
       <domain>self.statusSelect = 3</domain>
     </filter>
     <filter name="supplier-refunds-filters-unpaid" title="Unpaid">
-      <domain>self.amountRemaining &gt; 0</domain>
+      <domain>self.statusSelect = 3 and self.amountRemaining &gt; 0</domain>
     </filter>
     <filter name="supplier-refunds-filters-unpaid-due" title="Unpaid Due">
-      <domain>CURRENT_DATE &gt; self.dueDate and self.amountRemaining &gt; 0</domain>
+      <domain>self.statusSelect = 3 and CURRENT_DATE &gt; self.dueDate and self.amountRemaining &gt;
+        0</domain>
     </filter>
   </search-filters>
 
