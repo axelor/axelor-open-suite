@@ -62,7 +62,9 @@ public class BomLineCreationServiceImpl implements BomLineCreationService {
                         Optional.ofNullable(subSaleOrderLine.getBillOfMaterialLine())
                             .map(BillOfMaterialLine::getPriority))
                 .orElse(0),
-            subSaleOrderLine.getProduct().getStockManaged(),
+            Optional.ofNullable(subSaleOrderLine.getBillOfMaterialLine())
+                .map(BillOfMaterialLine::getHasNoManageStock)
+                .orElse(false),
             Optional.ofNullable(subSaleOrderLine.getBillOfMaterialLine())
                 .map(BillOfMaterialLine::getWasteRate)
                 .orElse(BigDecimal.ZERO));
@@ -84,7 +86,9 @@ public class BomLineCreationServiceImpl implements BomLineCreationService {
         Optional.ofNullable(saleOrderLineDetails.getBillOfMaterialLine())
             .map(BillOfMaterialLine::getPriority)
             .orElse(0),
-        saleOrderLineDetails.getProduct().getStockManaged(),
+        Optional.ofNullable(saleOrderLineDetails.getBillOfMaterialLine())
+            .map(BillOfMaterialLine::getHasNoManageStock)
+            .orElse(false),
         BigDecimal.ZERO);
   }
 }
