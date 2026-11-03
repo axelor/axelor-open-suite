@@ -72,7 +72,7 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineSaleReposit
     SaleOrderLine copy = super.copy(entity, deep);
     copy.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
     copy.setInvoicingState(SaleOrderLineRepository.INVOICING_STATE_NOT_INVOICED);
-    copy.setDeliveredQty(null);
+    copy.setDeliveredQty(BigDecimal.ZERO);
     copy.setAmountInvoiced(null);
     copy.setInvoiced(null);
     copy.setIsInvoiceControlled(null);
