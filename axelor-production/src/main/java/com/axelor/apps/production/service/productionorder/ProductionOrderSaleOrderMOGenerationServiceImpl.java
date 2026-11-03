@@ -123,11 +123,15 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
       ManufOrderService.ManufOrderOriginType manufOrderOriginType)
       throws AxelorException {
 
+    if (billOfMaterial == null) {
+      billOfMaterial = getBillOfMaterial(saleOrderLine, product);
+    }
+
     ManufOrder manufOrder =
         manufOrderGenerationService.generateManufOrder(
             product,
             billOfMaterial,
-            qtyRequested,
+            qtyRequested.multiply(billOfMaterial.getQty()),
             startDate,
             endDate,
             saleOrder,
@@ -140,7 +144,8 @@ public class ProductionOrderSaleOrderMOGenerationServiceImpl
 
   @Override
   public BillOfMaterial findBillOfMaterial(SaleOrderLine saleOrderLine, Product product) {
-    BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
+    BillOfMaterial billOfMaterial =
+        saleOrderLine != null ? saleOrderLine.getBillOfMaterial() : null;
 
     if (billOfMaterial == null) {
       // May call billOfMaterialService here

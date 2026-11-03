@@ -187,7 +187,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
     ManufOrder manufOrder =
         manufOrderService.generateManufOrder(
             product,
-            mrpLine.getQty(),
+            mrpLine.getQty().multiply(billOfMaterial.getQty()),
             ManufOrderService.DEFAULT_PRIORITY,
             ManufOrderService.IS_TO_INVOICE,
             billOfMaterial,
