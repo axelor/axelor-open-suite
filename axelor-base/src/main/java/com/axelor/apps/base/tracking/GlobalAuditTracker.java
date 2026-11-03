@@ -31,7 +31,6 @@ import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
-import com.axelor.db.internal.DBHelper;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.event.Event;
 import com.axelor.events.internal.BeforeTransactionComplete;
@@ -75,8 +74,6 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
   private final Set<Model> updated = new HashSet<>();
   private final Set<Model> deleted = new HashSet<>();
   private final List<CollectionState> updatedCollections = new ArrayList<>();
-
-  private GlobalTrackingLogRepository globalTrackingLogRepository;
 
   public record CollectionState(
       Model owner,
@@ -171,7 +168,7 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
         }
       }
     }
-    getGlobalTrackingLogRepository().save(log);
+    persistLog(log);
   }
 
   protected GlobalTrackingLogLine createCreationLogLine(
@@ -229,7 +226,7 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
     if (CollectionUtils.isEmpty(log.getGlobalTrackingLogLineList())) {
       return;
     }
-    getGlobalTrackingLogRepository().save(log);
+    persistLog(log);
   }
 
   protected GlobalTrackingLogLine createUpdateLogLine(
@@ -383,11 +380,8 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
     };
   }
 
-  private GlobalTrackingLogRepository getGlobalTrackingLogRepository() {
-    if (globalTrackingLogRepository == null) {
-      globalTrackingLogRepository = Beans.get(GlobalTrackingLogRepository.class);
-    }
-    return globalTrackingLogRepository;
+  private void persistLog(GlobalTrackingLog log) {
+    JPA.em().persist(log);
   }
 
   protected List<GlobalTrackingConfigurationLine> getGlobalTrackingConfigLines(Model model) {
@@ -407,31 +401,16 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
   }
 
   private void processTracks() {
-    var count = 0;
-
     for (var states : store.values()) {
       for (var state : states.values()) {
         process(state);
-
-        if (++count % DBHelper.getJdbcBatchSize() == 0) {
-          JPA.flush();
-          JPA.clear();
-        }
       }
     }
   }
 
   private void processCollections() {
-    var count = 0;
-
     for (var collectionState : updatedCollections) {
-
       processCollection(collectionState);
-
-      if (++count % DBHelper.getJdbcBatchSize() == 0) {
-        JPA.flush();
-        JPA.clear();
-      }
     }
   }
 
@@ -504,7 +483,7 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
     List<Long> previousIdList = getPreviousIdList(oldValues);
     List<Long> newIdList = getNewIdList((Collection<AuditableModel>) newValues);
     createLineLog(log, fieldName, previousIdList, newIdList, metaField);
-    getGlobalTrackingLogRepository().save(log);
+    persistLog(log);
   }
 
   protected void createLineLog(
