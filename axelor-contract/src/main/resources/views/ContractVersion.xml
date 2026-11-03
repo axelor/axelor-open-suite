@@ -5,9 +5,9 @@
 
   <grid name="contract-version-next-grid" title="Amendments"
     model="com.axelor.apps.contract.db.ContractVersion">
-    <field name="contract.contractId"/>
-    <field name="contract.name"/>
-    <field name="contract.partner"/>
+    <field name="nextContract.contractId"/>
+    <field name="nextContract.name"/>
+    <field name="nextContract.partner"/>
     <field name="activationDateTime"/>
     <field name="statusSelect" widget="single-select"/>
   </grid>
