@@ -248,10 +248,19 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   public StockMoveLine qtyOnChange(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException {
 
-    if (stockMove == null || !appBaseService.isApp("supplychain")) {
+    if (stockMove == null
+        || !appBaseService.isApp("supplychain")
+        || !isLinkedToOrder(stockMoveLine, stockMove)) {
       return super.qtyOnChange(stockMoveLine, stockMove);
     }
-    return computePriceFromOrder(stockMoveLine, stockMove);
+    return computeFromOrder(stockMoveLine, stockMove);
+  }
+
+  protected boolean isLinkedToOrder(StockMoveLine stockMoveLine, StockMove stockMove) {
+    return (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())
+            && stockMoveLine.getSaleOrderLine() != null)
+        || (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())
+            && stockMoveLine.getPurchaseOrderLine() != null);
   }
 
   protected StockMoveLine computeFromOrder(StockMoveLine stockMoveLine, StockMove stockMove)
