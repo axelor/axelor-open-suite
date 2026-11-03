@@ -1,0 +1,15 @@
+---
+title: "Timetable: fixed lines marked as invoiced before their invoice was ventilated and lines that could not be invoiced again after their invoice was cancelled."
+module: axelor-supplychain
+developer: |
+  Script to fix existing timetable lines:
+
+  ```sql
+  UPDATE supplychain_timetable t SET invoiced = false
+  FROM account_invoice i
+  WHERE t.invoice = i.id AND t.invoiced = true AND i.status_select IN (1, 2);
+
+  UPDATE supplychain_timetable t SET invoiced = false, invoice = NULL
+  FROM account_invoice i
+  WHERE t.invoice = i.id AND i.status_select = 4;
+  ```
