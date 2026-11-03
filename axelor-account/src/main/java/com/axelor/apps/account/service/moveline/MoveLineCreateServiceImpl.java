@@ -45,6 +45,7 @@ import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.account.util.TaxConfiguration;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -71,13 +72,16 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -431,6 +435,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     int moveLineId = moveLines.size() + 1;
+    Map<InvoiceLine, MoveLine> chargeMoveLineMap = new LinkedHashMap<>();
 
     // Creation of product move lines for each invoice line
     for (InvoiceLine invoiceLine :
@@ -488,11 +493,14 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
         moveLine = fillMoveLineWithInvoiceLine(moveLine, invoiceLine, move.getCompany());
         moveLines.add(moveLine);
+        chargeMoveLineMap.put(invoiceLine, moveLine);
       }
     }
     for (MoveLine moveLine : moveLines) {
       moveLineRecordService.refreshVatSystemSelect(moveLine, move.getCompany());
     }
+
+    Map<TaxConfiguration, Set<InvoiceLine>> invoiceLineSetByTaxConfiguration = null;
 
     // Creation of tax move lines for each invoice line tax
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
@@ -509,32 +517,70 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               company.getName());
         }
 
-        MoveLine moveLine =
-            this.createMoveLine(
-                move,
-                partner,
-                account,
-                invoiceLineTax.getTaxTotal(),
-                invoiceLineTax.getCompanyTaxTotal(),
-                null,
-                !isDebitCustomer,
-                invoice.getInvoiceDate(),
-                null,
-                originDate,
-                moveLineId++,
-                origin,
-                null);
-
-        if (tax.getIsNonDeductibleTax()) {
-          fillIfChargeOnOriginalAccount(tax, invoice, move, moveLine);
+        List<InvoiceLine> invoiceLineList = new ArrayList<>();
+        if (tax.getIsNonDeductibleTax() && isChargeOnOriginalAccount(tax, company)) {
+          if (invoiceLineSetByTaxConfiguration == null) {
+            invoiceLineSetByTaxConfiguration = getInvoiceLineSetByTaxConfiguration(invoice);
+          }
+          invoiceLineList =
+              getChargeInvoiceLineList(
+                  invoiceLineTax, invoiceLineSetByTaxConfiguration, chargeMoveLineMap);
         }
 
-        moveLine.setTaxLineSet(Sets.newHashSet(invoiceLineTax.getTaxLine()));
-        moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
-        moveLine.setTaxCode(tax.getCode());
-        moveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
-        moveLineToolService.setIsNonDeductibleTax(moveLine, tax);
-        moveLines.add(moveLine);
+        if (invoiceLineList.isEmpty()) {
+          MoveLine moveLine =
+              this.createMoveLine(
+                  move,
+                  partner,
+                  account,
+                  invoiceLineTax.getTaxTotal(),
+                  invoiceLineTax.getCompanyTaxTotal(),
+                  null,
+                  !isDebitCustomer,
+                  invoice.getInvoiceDate(),
+                  null,
+                  originDate,
+                  moveLineId++,
+                  origin,
+                  null);
+          fillTaxMoveLine(moveLine, invoiceLineTax, tax);
+          moveLines.add(moveLine);
+          continue;
+        }
+
+        // The non deductible tax charged on the original account is split between its charge
+        // lines, so each part gets the analytic, budget and cut-off of its charge line
+        List<Pair<BigDecimal, BigDecimal>> taxTotalList =
+            splitNonDeductibleTax(
+                invoice, invoiceLineTax, invoiceLineList, invoiceLineSetByTaxConfiguration);
+
+        for (int i = 0; i < invoiceLineList.size(); i++) {
+          InvoiceLine invoiceLine = invoiceLineList.get(i);
+          BigDecimal taxTotal = taxTotalList.get(i).getLeft();
+          BigDecimal companyTaxTotal = taxTotalList.get(i).getRight();
+          if (taxTotal.signum() == 0 && companyTaxTotal.signum() == 0) {
+            continue;
+          }
+
+          MoveLine moveLine =
+              this.createMoveLine(
+                  move,
+                  partner,
+                  account,
+                  taxTotal,
+                  companyTaxTotal,
+                  null,
+                  !isDebitCustomer,
+                  invoice.getInvoiceDate(),
+                  null,
+                  originDate,
+                  moveLineId++,
+                  origin,
+                  null);
+          fillNonDeductibleTaxMoveLineWithInvoiceLine(moveLine, invoiceLine, company);
+          fillTaxMoveLine(moveLine, invoiceLineTax, tax);
+          moveLines.add(moveLine);
+        }
       }
     }
 
@@ -545,6 +591,122 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     return moveLines;
   }
 
+  protected void fillTaxMoveLine(MoveLine moveLine, InvoiceLineTax invoiceLineTax, Tax tax) {
+    moveLine.setTaxLineSet(Sets.newHashSet(invoiceLineTax.getTaxLine()));
+    moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
+    moveLine.setTaxCode(tax.getCode());
+    moveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
+    moveLineToolService.setIsNonDeductibleTax(moveLine, tax);
+  }
+
+  protected boolean isChargeOnOriginalAccount(Tax tax, Company company) {
+    return Optional.ofNullable(
+            accountManagementService.getAccountManagement(tax.getAccountManagementList(), company))
+        .map(AccountManagement::getChargeOnOriginalAccount)
+        .orElse(false);
+  }
+
+  protected Map<TaxConfiguration, Set<InvoiceLine>> getInvoiceLineSetByTaxConfiguration(
+      Invoice invoice) throws AxelorException {
+    return new TaxInvoiceLine(invoice, invoice.getInvoiceLineList())
+        .getInvoiceLineSetByTaxConfiguration();
+  }
+
+  /**
+   * Get the invoice lines, having a charge move line, which are grouped in the given invoice line
+   * tax. They are sorted in the invoice line order.
+   */
+  protected List<InvoiceLine> getChargeInvoiceLineList(
+      InvoiceLineTax invoiceLineTax,
+      Map<TaxConfiguration, Set<InvoiceLine>> invoiceLineSetByTaxConfiguration,
+      Map<InvoiceLine, MoveLine> chargeMoveLineMap) {
+    TaxConfiguration taxConfiguration =
+        new TaxConfiguration(
+            invoiceLineTax.getTaxLine(),
+            invoiceLineTax.getImputedAccount(),
+            Optional.ofNullable(invoiceLineTax.getVatSystemSelect()).orElse(0),
+            invoiceLineTax.getVatExemptionReason());
+    Set<InvoiceLine> invoiceLineSet =
+        invoiceLineSetByTaxConfiguration.getOrDefault(taxConfiguration, Set.of());
+
+    return chargeMoveLineMap.keySet().stream()
+        .filter(invoiceLineSet::contains)
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Split a non deductible tax between its invoice lines.
+   *
+   * @return for each invoice line, its tax amount in invoice currency (left) and in company
+   *     currency (right)
+   */
+  protected List<Pair<BigDecimal, BigDecimal>> splitNonDeductibleTax(
+      Invoice invoice,
+      InvoiceLineTax invoiceLineTax,
+      List<InvoiceLine> invoiceLineList,
+      Map<TaxConfiguration, Set<InvoiceLine>> invoiceLineSetByTaxConfiguration) {
+    List<BigDecimal> weightList =
+        getNonDeductibleTaxWeightList(invoiceLineList, invoiceLineSetByTaxConfiguration);
+    List<BigDecimal> taxTotalList =
+        splitNonDeductibleTaxAmount(
+            invoiceLineTax.getTaxTotal(), weightList, currencyScaleService.getScale(invoice));
+    List<BigDecimal> companyTaxTotalList =
+        splitNonDeductibleTaxAmount(
+            invoiceLineTax.getCompanyTaxTotal(),
+            weightList,
+            currencyScaleService.getCompanyScale(invoice));
+
+    List<Pair<BigDecimal, BigDecimal>> amountList = new ArrayList<>();
+    for (int i = 0; i < invoiceLineList.size(); i++) {
+      amountList.add(Pair.of(taxTotalList.get(i), companyTaxTotalList.get(i)));
+    }
+    return amountList;
+  }
+
+  /**
+   * Weight of each invoice line in a non deductible tax: its ex tax base multiplied by the rates of
+   * the deductible taxes it is grouped in, as in the invoice tax computation.
+   */
+  protected List<BigDecimal> getNonDeductibleTaxWeightList(
+      List<InvoiceLine> invoiceLineList,
+      Map<TaxConfiguration, Set<InvoiceLine>> invoiceLineSetByTaxConfiguration) {
+    List<BigDecimal> weightList = new ArrayList<>();
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      BigDecimal deductibleTaxRate =
+          invoiceLineSetByTaxConfiguration.entrySet().stream()
+              .filter(entry -> !entry.getKey().getTaxLine().getTax().getIsNonDeductibleTax())
+              .filter(entry -> entry.getValue().contains(invoiceLine))
+              .map(entry -> entry.getKey().getTaxLine().getValue())
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+      weightList.add(invoiceLine.getExTaxTotal().multiply(deductibleTaxRate));
+    }
+
+    if (weightList.stream().allMatch(weight -> weight.signum() == 0)) {
+      return invoiceLineList.stream().map(InvoiceLine::getExTaxTotal).collect(Collectors.toList());
+    }
+    return weightList;
+  }
+
+  /** Split an amount according to the given weights. The rounding gap is put on the last part. */
+  protected List<BigDecimal> splitNonDeductibleTaxAmount(
+      BigDecimal amount, List<BigDecimal> weightList, int scale) {
+    BigDecimal totalWeight = weightList.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    List<BigDecimal> amountList = new ArrayList<>();
+    BigDecimal remainingAmount = amount;
+    for (int i = 0; i < weightList.size() - 1; i++) {
+      BigDecimal partAmount =
+          totalWeight.signum() == 0
+              ? BigDecimal.ZERO
+              : amount.multiply(weightList.get(i)).divide(totalWeight, scale, RoundingMode.HALF_UP);
+      amountList.add(partAmount);
+      remainingAmount = remainingAmount.subtract(partAmount);
+    }
+    amountList.add(remainingAmount);
+
+    return amountList;
+  }
+
   @Override
   public MoveLine fillMoveLineWithInvoiceLine(
       MoveLine moveLine, InvoiceLine invoiceLine, Company company) throws AxelorException {
@@ -552,6 +714,29 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       return null;
     }
 
+    fillAnalyticAndCutOffWithInvoiceLine(moveLine, invoiceLine, company);
+
+    Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
+    if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      moveLine.setTaxLineSet(Sets.newHashSet(taxLineSet));
+      moveLine.setTaxRate(taxService.getTotalTaxRateInPercentage(taxLineSet));
+      moveLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
+    }
+
+    return moveLine;
+  }
+
+  /**
+   * Fill a non deductible tax move line, charged on the original account, with the data of its
+   * charge invoice line.
+   */
+  protected void fillNonDeductibleTaxMoveLineWithInvoiceLine(
+      MoveLine moveLine, InvoiceLine invoiceLine, Company company) throws AxelorException {
+    fillAnalyticAndCutOffWithInvoiceLine(moveLine, invoiceLine, company);
+  }
+
+  protected void fillAnalyticAndCutOffWithInvoiceLine(
+      MoveLine moveLine, InvoiceLine invoiceLine, Company company) throws AxelorException {
     List<AnalyticMoveLine> analyticMoveLineList =
         CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
             ? new ArrayList<>()
@@ -572,38 +757,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     analyticLineService.setAnalyticAccount(moveLine, company);
 
-    Set<TaxLine> taxLineSet = invoiceLine.getTaxLineSet();
-    if (CollectionUtils.isNotEmpty(taxLineSet)) {
-      moveLine.setTaxLineSet(Sets.newHashSet(taxLineSet));
-      moveLine.setTaxRate(taxService.getTotalTaxRateInPercentage(taxLineSet));
-      moveLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
-    }
-
     // Cut off
     if (invoiceLine.getAccount() != null && invoiceLine.getAccount().getManageCutOffPeriod()) {
       moveLine.setCutOffStartDate(invoiceLine.getCutOffStartDate());
       moveLine.setCutOffEndDate(invoiceLine.getCutOffEndDate());
-    }
-    return moveLine;
-  }
-
-  protected void fillIfChargeOnOriginalAccount(
-      Tax tax, Invoice invoice, Move move, MoveLine moveLine) throws AxelorException {
-    if (!Optional.ofNullable(
-            accountManagementService.getAccountManagement(
-                tax.getAccountManagementList(), move.getCompany()))
-        .map(AccountManagement::getChargeOnOriginalAccount)
-        .orElse(false)) {
-      return;
-    }
-
-    Set<InvoiceLine> invoiceLineSet =
-        invoice.getInvoiceLineList().stream()
-            .filter(line -> line.getAccount().equals(moveLine.getAccount()))
-            .collect(Collectors.toSet());
-    if (ObjectUtils.notEmpty(invoiceLineSet) && invoiceLineSet.size() == 1) {
-      fillMoveLineWithInvoiceLine(
-          moveLine, invoiceLineSet.stream().findFirst().orElse(null), move.getCompany());
     }
   }
 
@@ -708,6 +865,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       Move move,
       Map<String, MoveLine> map,
       Map<String, MoveLine> newMap,
+      Map<MoveLine, Map<String, MoveLine>> nonDeductibleTaxMoveLineMap,
       MoveLine moveLine,
       TaxLine taxLine,
       String accountType,
@@ -787,15 +945,25 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId() + " " + vatSystem;
+    Map<String, MoveLine> existingTaxMoveLineMap = map;
+    Map<String, MoveLine> newTaxMoveLineMap = newMap;
+    if (taxLine.getTax().getIsNonDeductibleTax()
+        && isChargeOnOriginalAccount(taxLine.getTax(), company)) {
+      // One tax move line per charge move line, to keep the analytic of each charge line
+      existingTaxMoveLineMap = Map.of();
+      newTaxMoveLineMap =
+          nonDeductibleTaxMoveLineMap.computeIfAbsent(moveLine, key -> new HashMap<>());
+    }
     MoveLine newOrUpdatedMoveLine = new MoveLine();
 
-    if (!map.containsKey(newSourceTaxLineKey) && !newMap.containsKey(newSourceTaxLineKey)) {
+    if (!existingTaxMoveLineMap.containsKey(newSourceTaxLineKey)
+        && !newTaxMoveLineMap.containsKey(newSourceTaxLineKey)) {
 
       newOrUpdatedMoveLine = this.createMoveLine(date, taxLine, newAccount, move);
-    } else if (newMap.containsKey(newSourceTaxLineKey)) {
-      newOrUpdatedMoveLine = newMap.get(newSourceTaxLineKey);
+    } else if (newTaxMoveLineMap.containsKey(newSourceTaxLineKey)) {
+      newOrUpdatedMoveLine = newTaxMoveLineMap.get(newSourceTaxLineKey);
     } else {
-      newOrUpdatedMoveLine = map.get(newSourceTaxLineKey);
+      newOrUpdatedMoveLine = existingTaxMoveLineMap.get(newSourceTaxLineKey);
     }
 
     newOrUpdatedMoveLine.setMove(move);
@@ -833,13 +1001,13 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     if (newOrUpdatedMoveLine.getDebit().signum() != 0
         || newOrUpdatedMoveLine.getCredit().signum() != 0) {
-      newMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
+      newTaxMoveLineMap.put(newSourceTaxLineKey, newOrUpdatedMoveLine);
     } else if (newOrUpdatedMoveLine
             .getDebit()
             .add(newOrUpdatedMoveLine.getCredit())
             .compareTo(BigDecimal.ZERO)
         == 0) {
-      newMap.remove(newSourceTaxLineKey, newOrUpdatedMoveLine);
+      newTaxMoveLineMap.remove(newSourceTaxLineKey, newOrUpdatedMoveLine);
     }
 
     createMoveLineRCForAutoTax(
