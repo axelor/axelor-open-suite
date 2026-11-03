@@ -476,7 +476,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
 
   public void cancel(StockMove stockMove) throws AxelorException {
 
-    if (stockMove != null) {
+    if (stockMove != null && stockMove.getStatusSelect() != StockMoveRepository.STATUS_CANCELED) {
 
       stockMoveProductionService.cancelFromManufOrder(stockMove);
       stockMove = JpaModelHelper.ensureManaged(stockMove);
