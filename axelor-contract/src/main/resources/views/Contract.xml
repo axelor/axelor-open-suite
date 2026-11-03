@@ -759,7 +759,9 @@
     model="com.axelor.apps.contract.db.ContractVersion">
     <view type="grid" name="contract-version-next-grid"/>
     <view type="form" name="contract-version-next-form"/>
+    <domain>self.nextContract.id = :_contractId</domain>
     <context name="_showRecord" expr="eval: nextVersion.id"/>
+    <context name="_contractId" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-view-contract-add-version" title="New version"
@@ -774,7 +776,8 @@
     model="com.axelor.apps.contract.db.Contract" title="Contract">
     <view type="form" name="contract-form"/>
     <view type="grid" name="contract-grid"/>
-    <context name="_showRecord" expr="eval: nextContract.id"/>
+    <context name="_showRecord"
+      expr="eval: nextContract?.id ?: contract?.id ?: contractHistory?.id"/>
   </action-view>
 
   <action-view name="action-contract-view-invoicing"
