@@ -144,6 +144,27 @@ public class TaxInvoiceLine extends TaxGenerator {
     return finalizeInvoiceLineTaxes(map, invoiceLineSetMap, updatedInvoiceLineTaxList);
   }
 
+  /**
+   * Group the invoice lines by tax configuration, the same way as {@link #creates()}, without
+   * updating the invoice.
+   *
+   * @return the invoice lines of each tax configuration
+   * @throws AxelorException
+   */
+  public Map<TaxConfiguration, Set<InvoiceLine>> getInvoiceLineSetByTaxConfiguration()
+      throws AxelorException {
+    Map<TaxConfiguration, InvoiceLineTax> map = new HashMap<>();
+    Map<TaxConfiguration, Set<InvoiceLine>> invoiceLineSetMap = new HashMap<>();
+
+    if (invoiceLines != null) {
+      for (InvoiceLine invoiceLine : invoiceLines) {
+        createInvoiceLineTaxes(invoiceLine, map, invoiceLineSetMap);
+      }
+    }
+
+    return invoiceLineSetMap;
+  }
+
   protected void createInvoiceLineTaxes(
       InvoiceLine invoiceLine,
       Map<TaxConfiguration, InvoiceLineTax> map,

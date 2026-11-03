@@ -74,9 +74,9 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
         continue;
       }
 
-      // Different sizes = consolidate
+      // Different sizes = don't consolidate, try next candidate
       if (list1.size() != list2.size()) {
-        return moveLineIt;
+        continue;
       }
 
       // Same size - compare analytic lines one by one
