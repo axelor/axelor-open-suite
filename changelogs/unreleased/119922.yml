@@ -1,0 +1,3 @@
+---
+title: "Contract: fixed an error when clicking 'Show contract' on a contract version that is not a pending amendment."
+module: axelor-contract
