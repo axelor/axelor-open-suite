@@ -342,6 +342,10 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         value = fetchRelationalField(fieldName, intId.longValue(), Product.class);
       }
     }
+    if (value instanceof Model && ((Model) value).getId() != null) {
+      Model model = (Model) value;
+      value = JPA.find(EntityHelper.getEntityClass(model), model.getId());
+    }
     if (value instanceof BigDecimal) {
       // Necessary step as if the big decimal is not with the right scale, it needs to be
       // recomputed.
