@@ -73,10 +73,11 @@ public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService 
     billOfMaterialLine.setUnit(unit);
     billOfMaterialLine.setPriority(priority);
     billOfMaterialLine.setWasteRate(wasteRate);
+    billOfMaterialLine.setHasNoManageStock(hasNoManageStock);
+    fillHasNoManageStock(billOfMaterialLine);
 
     if (billOfMaterial != null) {
       billOfMaterialLine.setBillOfMaterial(billOfMaterial);
-      billOfMaterial.setHasNoManageStock(hasNoManageStock);
     }
 
     return billOfMaterialLine;
@@ -87,16 +88,9 @@ public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService 
 
     Product product = billOfMaterial.getProduct();
     BigDecimal qty = billOfMaterial.getQty();
-    boolean hasNoManageStock = billOfMaterial.getHasNoManageStock();
 
     return createBillOfMaterialLine(
-        product,
-        billOfMaterial,
-        qty,
-        billOfMaterial.getUnit(),
-        null,
-        hasNoManageStock,
-        BigDecimal.ZERO);
+        product, billOfMaterial, qty, billOfMaterial.getUnit(), null, false, BigDecimal.ZERO);
   }
 
   @Override
