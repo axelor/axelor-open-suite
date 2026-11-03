@@ -1,0 +1,3 @@
+---
+title: "ABC analysis: fixed cumulated percentages not reaching exactly 100 % on the last line, which could leave the last product without a class."
+module: axelor-base
