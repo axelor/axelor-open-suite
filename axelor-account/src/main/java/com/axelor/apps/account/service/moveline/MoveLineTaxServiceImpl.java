@@ -53,6 +53,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -366,6 +367,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
     Map<String, MoveLine> map = new HashMap<>();
     Map<String, MoveLine> newMap = new HashMap<>();
+    Map<MoveLine, Map<String, MoveLine>> nonDeductibleTaxMoveLineMap = new IdentityHashMap<>();
     while (moveLineItr.hasNext()) {
 
       MoveLine moveLine = moveLineItr.next();
@@ -415,6 +417,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
             move,
             map,
             newMap,
+            nonDeductibleTaxMoveLineMap,
             moveLine,
             account,
             percentMoveTemplate,
@@ -424,6 +427,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
             move,
             map,
             newMap,
+            nonDeductibleTaxMoveLineMap,
             moveLine,
             account,
             percentMoveTemplate,
@@ -433,12 +437,14 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     }
 
     moveLineList.addAll(newMap.values());
+    nonDeductibleTaxMoveLineMap.values().forEach(taxMap -> moveLineList.addAll(taxMap.values()));
   }
 
   protected void computeMoveLineTax(
       Move move,
       Map<String, MoveLine> map,
       Map<String, MoveLine> newMap,
+      Map<MoveLine, Map<String, MoveLine>> nonDeductibleTaxMoveLineMap,
       MoveLine moveLine,
       Account account,
       boolean percentMoveTemplate,
@@ -454,6 +460,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
               move,
               map,
               newMap,
+              nonDeductibleTaxMoveLineMap,
               moveLine,
               taxLine,
               accountType,

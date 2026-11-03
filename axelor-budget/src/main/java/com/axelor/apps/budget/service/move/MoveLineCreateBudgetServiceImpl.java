@@ -43,13 +43,19 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
 
   protected BudgetToolsService budgetToolsService;
+  protected BudgetDistributionService budgetDistributionService;
 
   @Inject
   public MoveLineCreateBudgetServiceImpl(
@@ -72,7 +78,8 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
       CurrencyScaleService currencyScaleService,
       MoveLineRecordService moveLineRecordService,
       AccountManagementService accountManagementService,
-      BudgetToolsService budgetToolsService) {
+      BudgetToolsService budgetToolsService,
+      BudgetDistributionService budgetDistributionService) {
     super(
         companyConfigService,
         currencyService,
@@ -94,6 +101,7 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
         moveLineRecordService,
         accountManagementService);
     this.budgetToolsService = budgetToolsService;
+    this.budgetDistributionService = budgetDistributionService;
   }
 
   @Override
@@ -115,5 +123,64 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
             moveLine.getBudgetDistributionList(), moveLine.getCredit().max(moveLine.getDebit())));
 
     return moveLine;
+  }
+
+  @Override
+  protected void fillNonDeductibleTaxMoveLineWithInvoiceLine(
+      MoveLine moveLine, InvoiceLine invoiceLine, Company company) throws AxelorException {
+    super.fillNonDeductibleTaxMoveLineWithInvoiceLine(moveLine, invoiceLine, company);
+
+    moveLine.setBudget(invoiceLine.getBudget());
+    moveLine.setBudgetFromDate(invoiceLine.getBudgetFromDate());
+    moveLine.setBudgetToDate(invoiceLine.getBudgetToDate());
+    // The budget distributions of the invoice line stay on its charge move line
+    createBudgetDistributionsFromInvoiceLine(moveLine, invoiceLine);
+  }
+
+  /**
+   * Create the budget distributions of the move line from the ones of the invoice line, with the
+   * same percentages applied to the move line amount. The rounding gap is put on the last one.
+   */
+  protected void createBudgetDistributionsFromInvoiceLine(
+      MoveLine moveLine, InvoiceLine invoiceLine) {
+    BigDecimal moveLineAmount = moveLine.getCredit().max(moveLine.getDebit());
+    BigDecimal invoiceLineAmount = invoiceLine.getCompanyExTaxTotal().abs();
+
+    if (!CollectionUtils.isEmpty(invoiceLine.getBudgetDistributionList())
+        && invoiceLineAmount.signum() != 0) {
+      BigDecimal distributedAmount =
+          invoiceLine.getBudgetDistributionList().stream()
+              .map(BudgetDistribution::getAmount)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+      boolean isFullyDistributed = distributedAmount.compareTo(invoiceLineAmount) == 0;
+      BigDecimal remainingAmount = moveLineAmount;
+      int count = invoiceLine.getBudgetDistributionList().size();
+
+      for (BudgetDistribution invoiceLineBudgetDistribution :
+          invoiceLine.getBudgetDistributionList()) {
+        BigDecimal amount =
+            invoiceLineBudgetDistribution
+                .getAmount()
+                .multiply(moveLineAmount)
+                .divide(
+                    invoiceLineAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+        if (--count == 0 && isFullyDistributed) {
+          amount = remainingAmount;
+        }
+        LocalDate imputationDate =
+            Optional.ofNullable(invoiceLineBudgetDistribution.getImputationDate())
+                .orElse(moveLine.getDate());
+        BudgetDistribution budgetDistribution =
+            budgetDistributionService.createDistributionFromBudget(
+                invoiceLineBudgetDistribution.getBudget(), amount, imputationDate);
+        budgetDistribution.setImputationDate(invoiceLineBudgetDistribution.getImputationDate());
+        remainingAmount = remainingAmount.subtract(budgetDistribution.getAmount());
+        budgetDistributionService.linkBudgetDistributionWithParent(budgetDistribution, moveLine);
+      }
+    }
+
+    moveLine.setBudgetRemainingAmountToAllocate(
+        budgetToolsService.getBudgetRemainingAmountToAllocate(
+            moveLine.getBudgetDistributionList(), moveLineAmount));
   }
 }
