@@ -22,6 +22,7 @@ import static com.axelor.apps.production.exceptions.ProductionExceptionMessage.Y
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
@@ -107,11 +108,12 @@ public class SaleOrderLineMOGenerationMultiLineServiceImpl
       startDateTime = null;
     }
 
+    BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
     var manufOrder =
         manufOrderGenerationService.generateManufOrder(
             saleOrderLine.getProduct(),
-            saleOrderLine.getBillOfMaterial(),
-            qtyRequested,
+            billOfMaterial,
+            billOfMaterial != null ? qtyRequested.multiply(billOfMaterial.getQty()) : qtyRequested,
             startDateTime,
             endDateTime,
             saleOrder,
