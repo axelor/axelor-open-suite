@@ -75,13 +75,16 @@ public class PurchaseRequestLineServiceImpl implements PurchaseRequestLineServic
   @Override
   public Map<String, Object> getProductInformation(PurchaseRequestLine purchaseRequestLine) {
     Product product = purchaseRequestLine.getProduct();
-    if (product == null) {
-      return null;
-    }
-    Unit unit = product.getPurchasesUnit() != null ? product.getPurchasesUnit() : product.getUnit();
     Map<String, Object> values = new HashMap<>();
-    purchaseRequestLine.setUnit(unit);
-    purchaseRequestLine.setProductTitle(product.getName());
+    if (product == null) {
+      purchaseRequestLine.setUnit(null);
+      purchaseRequestLine.setProductTitle(null);
+    } else {
+      Unit unit =
+          product.getPurchasesUnit() != null ? product.getPurchasesUnit() : product.getUnit();
+      purchaseRequestLine.setUnit(unit);
+      purchaseRequestLine.setProductTitle(product.getName());
+    }
     values.put("unit", purchaseRequestLine.getUnit());
     values.put("productTitle", purchaseRequestLine.getProductTitle());
     return values;
