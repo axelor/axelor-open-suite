@@ -295,13 +295,20 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
               .divide(totalWorth, 3, RoundingMode.HALF_UP);
     }
 
-    incCumulatedQty(qty);
-    incCumulatedWorth(worth);
+    incCumulatedQty(abcAnalysisLine.getDecimalQty());
+    incCumulatedWorth(abcAnalysisLine.getDecimalWorth());
 
     abcAnalysisLine.setQty(qty);
-    abcAnalysisLine.setCumulatedQty(cumulatedQty);
+    abcAnalysisLine.setCumulatedQty(computeCumulatedPercentage(cumulatedQty, totalQty));
     abcAnalysisLine.setWorth(worth);
-    abcAnalysisLine.setCumulatedWorth(cumulatedWorth);
+    abcAnalysisLine.setCumulatedWorth(computeCumulatedPercentage(cumulatedWorth, totalWorth));
+  }
+
+  protected BigDecimal computeCumulatedPercentage(BigDecimal cumulated, BigDecimal total) {
+    if (total.compareTo(BigDecimal.ZERO) <= 0) {
+      return BigDecimal.ZERO;
+    }
+    return cumulated.multiply(BigDecimal.valueOf(100)).divide(total, 3, RoundingMode.HALF_UP);
   }
 
   protected void setABCAnalysisClass(ABCAnalysisLine abcAnalysisLine) {
