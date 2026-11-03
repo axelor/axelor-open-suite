@@ -40,6 +40,7 @@ import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
@@ -50,6 +51,7 @@ import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
+import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -715,6 +717,19 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     mergedManufOrder.setMoCommentFromSaleOrder("");
     mergedManufOrder.setMoCommentFromSaleOrderLine("");
+
+    OperationOrderWorkflowService operationOrderWorkflowService =
+        Beans.get(OperationOrderWorkflowService.class);
+    for (ManufOrder manufOrder : manufOrderList) {
+      if (manufOrder.getOperationOrderList() != null) {
+        for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+          if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_CANCELED) {
+            operationOrderWorkflowService.cancel(operationOrder);
+          }
+        }
+      }
+      manufOrderStockMoveService.cancel(manufOrder);
+    }
 
     for (ManufOrder manufOrder : manufOrderList) {
       manufOrder.setStatusSelect(ManufOrderRepository.STATUS_MERGED);
