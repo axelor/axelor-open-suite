@@ -151,6 +151,10 @@ public class LoanController {
 
   public void copyLoanManagementConfig(ActionRequest request, ActionResponse response) {
     Loan loan = request.getContext().asType(Loan.class);
+    // The configuration is optional: removing it keeps the journal and accounts filled by hand.
+    if (loan.getLoanManagementConfig() == null) {
+      return;
+    }
     Beans.get(LoanService.class).copyManagementConfigToLoan(loan);
     setConfigValues(response, loan);
   }

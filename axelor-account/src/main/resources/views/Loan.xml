@@ -22,7 +22,7 @@
         onChange="action-loan-method-set-default-config"/>
       <field name="currency" readonlyIf="statusSelect &gt; 1"/>
       <field name="partner" readonlyIf="statusSelect &gt; 1"/>
-      <field name="loanManagementConfig" required="true" readonlyIf="statusSelect &gt; 1"
+      <field name="loanManagementConfig" readonlyIf="statusSelect &gt; 1"
         domain="self.company = :company" onChange="action-loan-method-copy-config"/>
       <field name="currency.numberOfDecimals" hidden="true"/>
     </panel>
@@ -55,13 +55,20 @@
         form-view="loan-line-form" editable="true" canNew="false" canRemove="false"
         onChange="action-loan-method-recompute-schedule"/>
       <panel name="accountsPanel" title="Accounts">
-        <field name="journal" readonly="true"/>
-        <field name="borrowingDebtAccount" readonly="true"/>
-        <field name="interestExpenseAccount" readonly="true"/>
-        <field name="insuranceExpenseAccount" readonly="true"/>
-        <field name="bankAccount" readonly="true"/>
-        <field name="accruedInterestAccount" readonly="true"/>
-        <field name="prepaidExpenseAccount" readonly="true"/>
+        <field name="journal" readonlyIf="statusSelect &gt; 1"
+          domain="self.company = :company AND self.statusSelect = 1"/>
+        <field name="borrowingDebtAccount" readonlyIf="statusSelect &gt; 1"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'debt'"/>
+        <field name="interestExpenseAccount" readonlyIf="statusSelect &gt; 1"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"/>
+        <field name="insuranceExpenseAccount" readonlyIf="statusSelect &gt; 1"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'charge'"/>
+        <field name="bankAccount" readonlyIf="statusSelect &gt; 1"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"/>
+        <field name="accruedInterestAccount" readonlyIf="statusSelect &gt; 1"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'debt'"/>
+        <field name="prepaidExpenseAccount" readonlyIf="statusSelect &gt; 1"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect != 'view'"/>
       </panel>
     </panel-tabs>
     <panel name="actionsPanel" sidebar="true" showIf="statusSelect == 1">

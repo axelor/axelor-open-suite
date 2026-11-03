@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.LoanRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.i18n.I18n;
@@ -43,7 +44,10 @@ public class LoanServiceImpl implements LoanService {
   public String generateReference(Loan loan) throws AxelorException {
     LoanManagementConfig config = loan.getLoanManagementConfig();
     String companyName = loan.getCompany() != null ? loan.getCompany().getName() : "";
-    Sequence sequence = config != null ? config.getSequence() : null;
+    Sequence sequence =
+        config != null && config.getSequence() != null
+            ? config.getSequence()
+            : sequenceService.getSequence(SequenceRepository.LOAN, loan.getCompany());
     if (sequence == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

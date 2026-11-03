@@ -57,14 +57,6 @@ public class LoanValidateServiceImpl implements LoanValidateService {
           I18n.get(AccountExceptionMessage.LOAN_NOT_DRAFT));
     }
 
-    if (loan.getLoanManagementConfig() == null) {
-      throw new AxelorException(
-          Loan.class,
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(AccountExceptionMessage.LOAN_MANAGEMENT_CONFIG_MISSING),
-          loan.getCompany() != null ? loan.getCompany().getName() : "");
-    }
-
     loanLineGenerationService.generateSchedule(loan);
 
     if (StringUtils.isEmpty(loan.getReference())) {

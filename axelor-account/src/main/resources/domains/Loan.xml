@@ -17,7 +17,7 @@
       required="true" help="Currency of the loan; its number of decimals drives the amounts scale."/>
     <many-to-one name="loanManagementConfig"
       ref="com.axelor.apps.account.db.LoanManagementConfig" title="Loan configuration"
-      help="Loan configuration providing the journal and accounts copied on validation."/>
+      help="Optional loan configuration prefilling the journal, the accounts and the default conditions; they remain editable while the loan is draft."/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Lender"/>
 
     <decimal name="amount" title="Borrowed amount" precision="20" scale="3"/>
