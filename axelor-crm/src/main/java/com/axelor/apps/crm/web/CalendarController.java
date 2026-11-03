@@ -18,10 +18,12 @@
  */
 package com.axelor.apps.crm.web;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -42,6 +44,9 @@ public class CalendarController {
             .domain(
                 "self.user.id = :_userId or self.calendar.user.id = :_userId or :_userId IN (SELECT attendee.user FROM self.attendees attendee) or self.organizer.user.id = :_userId")
             .context("_userId", user.getId())
+            .context(
+                "_currentDate",
+                Beans.get(AppBaseService.class).getTodayDate(user.getActiveCompany()))
             .map());
   }
 }
