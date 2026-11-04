@@ -29,6 +29,7 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.AuthUtils;
@@ -42,6 +43,7 @@ import com.google.common.collect.Lists;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,19 +54,23 @@ import java.util.Set;
 public class ProdProcessService {
 
   protected ProdProcessRepository prodProcessRepo;
+  protected AppProductionService appProductionService;
 
   @Inject
-  public ProdProcessService(ProdProcessRepository prodProcessRepo) {
+  public ProdProcessService(
+      ProdProcessRepository prodProcessRepo, AppProductionService appProductionService) {
     this.prodProcessRepo = prodProcessRepo;
+    this.appProductionService = appProductionService;
   }
 
   public void validateProdProcess(ProdProcess prodProcess, BillOfMaterial bom)
       throws AxelorException {
     Map<Product, BigDecimal> bomMap = new HashMap<Product, BigDecimal>();
+    int scale = appProductionService.getNbDecimalDigitForBomQty();
 
     List<BillOfMaterialLine> billOfMaterialLines = bom.getBillOfMaterialLineList();
     for (BillOfMaterialLine boml : billOfMaterialLines) {
-      bomMap.put(boml.getProduct(), boml.getQty());
+      bomMap.put(boml.getProduct(), boml.getQty().setScale(scale, RoundingMode.HALF_UP));
     }
     List<ProdProcessLine> listPPL =
         MoreObjects.firstNonNull(prodProcess.getProdProcessLineList(), Collections.emptyList());
@@ -81,7 +87,9 @@ public class ProdProcessService {
         }
         bomMap.put(
             prodProduct.getProduct(),
-            bomMap.get(prodProduct.getProduct()).subtract(prodProduct.getQty()));
+            bomMap
+                .get(prodProduct.getProduct())
+                .subtract(prodProduct.getQty().setScale(scale, RoundingMode.HALF_UP)));
       }
     }
     Set<Product> keyList = bomMap.keySet();
