@@ -102,7 +102,6 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
   @Override
   public TrackingNumber save(TrackingNumber trackingNumber) {
 
-    // Barcode generation
     AppStock appStock = appStockService.getAppStock();
     try {
       // This method calls is to check circular parent dependencies.
@@ -112,6 +111,10 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
       throw new PersistenceException(e.getMessage(), e);
     }
 
+    // Save first so that the barcode file is named with the id of a new tracking number
+    trackingNumber = super.save(trackingNumber);
+
+    // Barcode generation
     if (appStock != null
         && appStock.getActivateTrackingNumberBarCodeGeneration()
         && trackingNumber.getBarCode() == null) {
@@ -163,6 +166,6 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
       }
     }
 
-    return super.save(trackingNumber);
+    return trackingNumber;
   }
 }
