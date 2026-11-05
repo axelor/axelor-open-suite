@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
@@ -562,11 +563,13 @@ public class ReimbursementExportService {
             .all()
             .filter(
                 "self.account.useForPartnerBalance = true "
-                    + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining != 0 AND self.credit > 0 AND self.partner = ?3 AND self.reimbursementStatusSelect = ?4 ",
+                    + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining != 0 AND self.credit > 0 AND self.partner = ?3 AND self.reimbursementStatusSelect = ?4 "
+                    + "AND self.account.accountType.technicalTypeSelect = ?5",
                 MoveRepository.STATUS_ACCOUNTED,
                 MoveRepository.STATUS_DAYBOOK,
                 partner,
-                MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
+                MoveLineRepository.REIMBURSEMENT_STATUS_NULL,
+                AccountTypeRepository.TYPE_RECEIVABLE)
             .fetch();
 
     this.createReimbursementInvoice(partner, company, moveLineList);
