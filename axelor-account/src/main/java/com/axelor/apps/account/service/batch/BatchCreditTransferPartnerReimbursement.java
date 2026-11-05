@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.batch;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -68,9 +69,19 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
         JPA.em()
             .createQuery(
                 "SELECT self FROM Partner self JOIN self.accountingSituationList accountingSituation "
-                    + "WHERE accountingSituation.company = :company AND accountingSituation.balanceCustAccount < 0",
+                    + "WHERE accountingSituation.company = :company AND self.id IN ("
+                    + "SELECT moveLine.partner.id FROM MoveLine moveLine "
+                    + "WHERE moveLine.move.company = :company "
+                    + "AND moveLine.account.useForPartnerBalance = true "
+                    + "AND moveLine.account.accountType.technicalTypeSelect = :technicalTypeSelect "
+                    + "AND moveLine.move.statusSelect IN (:statusAccounted, :statusDaybook) "
+                    + "AND (moveLine.move.ignoreInAccountingOk IS NULL OR moveLine.move.ignoreInAccountingOk = false) "
+                    + "GROUP BY moveLine.partner.id HAVING SUM(moveLine.amountRemaining) < 0)",
                 Partner.class);
     partnerQuery.setParameter("company", accountingBatch.getCompany());
+    partnerQuery.setParameter("technicalTypeSelect", AccountTypeRepository.TYPE_RECEIVABLE);
+    partnerQuery.setParameter("statusAccounted", MoveRepository.STATUS_ACCOUNTED);
+    partnerQuery.setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK);
     List<Partner> partnerList = partnerQuery.getResultList();
 
     for (Partner partner : partnerList) {
@@ -136,12 +147,15 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
                 "self.account.reconcileOk = true AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) "
                     + "AND self.amountRemaining != 0 AND self.credit > 0 "
                     + "AND self.move.partner = ?3 AND self.move.company = ?4 "
-                    + "AND self.reimbursementStatusSelect = ?5",
+                    + "AND self.reimbursementStatusSelect = ?5 "
+                    + "AND self.account.accountType.technicalTypeSelect = ?6 "
+                    + "AND self.account.useForPartnerBalance = true",
                 MoveRepository.STATUS_ACCOUNTED,
                 MoveRepository.STATUS_DAYBOOK,
                 partner,
                 company,
-                MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
+                MoveLineRepository.REIMBURSEMENT_STATUS_NULL,
+                AccountTypeRepository.TYPE_RECEIVABLE)
             .fetch();
 
     Reimbursement reimbursement =
