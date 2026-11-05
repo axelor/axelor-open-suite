@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.batch;
 
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reimbursement;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -195,13 +196,15 @@ public class BatchReimbursementExport extends BatchStrategy {
                 .all()
                 .filter(
                     "self.account.useForPartnerBalance = true "
-                        + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining != 0 AND self.credit > 0 AND self.partner = ?3 AND self.company = ?4 AND "
-                        + "self.reimbursementStatusSelect = ?5 ",
+                        + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining != 0 AND self.credit > 0 AND self.partner = ?3 AND self.move.company = ?4 AND "
+                        + "self.reimbursementStatusSelect = ?5 "
+                        + "AND self.account.accountType.technicalTypeSelect = ?6",
                     MoveRepository.STATUS_ACCOUNTED,
                     MoveRepository.STATUS_DAYBOOK,
                     partnerRepository.find(partner.getId()),
                     companyRepo.find(company.getId()),
-                    MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
+                    MoveLineRepository.REIMBURSEMENT_STATUS_NULL,
+                    AccountTypeRepository.TYPE_RECEIVABLE)
                 .fetch();
 
         log.debug("Overpayment list : {}", moveLineList);
