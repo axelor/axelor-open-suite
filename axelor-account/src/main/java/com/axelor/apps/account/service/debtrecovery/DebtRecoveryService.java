@@ -64,6 +64,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -475,6 +476,10 @@ public class DebtRecoveryService {
         debtRecovery.setCurrency(partner.getCurrency());
         debtRecovery.setBalanceDue(balanceDue);
 
+        Set<Invoice> previousInvoiceSet =
+            debtRecovery.getInvoiceDebtRecoverySet() == null
+                ? new HashSet<>()
+                : new HashSet<>(debtRecovery.getInvoiceDebtRecoverySet());
         this.updateInvoiceTermDebtRecovery(debtRecovery, invoiceTermList);
         this.updateInvoiceDebtRecovery(
             debtRecovery, this.getInvoiceListFromInvoiceTerm(invoiceTermList));
@@ -486,10 +491,12 @@ public class DebtRecoveryService {
           levelDebtRecovery = debtRecovery.getDebtRecoveryMethodLine().getSequence();
         }
 
-        LocalDate oldReferenceDate = debtRecovery.getReferenceDate();
+        LocalDate oldReferenceDate =
+            this.getLastDate(
+                debtRecovery.getReferenceDate(), this.getLastDateDebtRecovery(debtRecovery));
         LocalDate referenceDate = this.getReferenceDate(debtRecovery, invoiceTermList);
 
-        boolean isReset = this.isInvoiceSetNew(debtRecovery, oldReferenceDate);
+        boolean isReset = this.isInvoiceSetNew(debtRecovery, oldReferenceDate, previousInvoiceSet);
 
         if (referenceDate != null) {
           log.debug("reference date : {} ", referenceDate);
@@ -594,13 +601,16 @@ public class DebtRecoveryService {
     }
   }
 
-  protected boolean isInvoiceSetNew(DebtRecovery debtRecovery, LocalDate oldReferenceDate) {
+  protected boolean isInvoiceSetNew(
+      DebtRecovery debtRecovery, LocalDate oldReferenceDate, Set<Invoice> previousInvoiceSet) {
 
     if (debtRecovery.getInvoiceDebtRecoverySet() != null && oldReferenceDate != null) {
       return debtRecovery.getInvoiceDebtRecoverySet().stream()
           .allMatch(
               invoice ->
-                  invoice.getDueDate() != null && invoice.getDueDate().isAfter(oldReferenceDate));
+                  !previousInvoiceSet.contains(invoice)
+                      || (invoice.getDueDate() != null
+                          && invoice.getDueDate().isAfter(oldReferenceDate)));
     }
     return false;
   }
