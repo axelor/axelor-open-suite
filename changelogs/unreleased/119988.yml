@@ -1,0 +1,3 @@
+---
+title: "Reimbursement batches: fixed supplier invoices and customer advances being reimbursed, customers still in debit being refunded, and generate reimbursements failing for every partner."
+module: axelor-account
