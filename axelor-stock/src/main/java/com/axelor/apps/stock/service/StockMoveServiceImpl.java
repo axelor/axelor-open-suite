@@ -418,6 +418,8 @@ public class StockMoveServiceImpl implements StockMoveService {
           I18n.get(StockExceptionMessage.STOCK_MOVE_PLAN_WRONG_STATUS));
     }
 
+    stockMove = cancelBackorderOnPlan(stockMove);
+
     LOG.debug("Stock move planification : {} ", stockMove.getStockMoveSeq());
 
     // This call will split move line by tracking number
@@ -457,6 +459,48 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
 
     stockMoveRepo.save(stockMove);
+  }
+
+  @Override
+  public Optional<StockMove> getBackorder(StockMove stockMove) {
+    Long backorderId = stockMove.getBackorderId();
+    if (backorderId == null || backorderId == 0) {
+      return Optional.empty();
+    }
+    return Optional.ofNullable(stockMoveRepo.find(backorderId))
+        .filter(backorder -> stockMove.equals(backorder.getStockMoveOrigin()));
+  }
+
+  protected StockMove cancelBackorderOnPlan(StockMove stockMove) throws AxelorException {
+    Long backorderId = stockMove.getBackorderId();
+    if (backorderId == null || backorderId == 0) {
+      return stockMove;
+    }
+    Optional<StockMove> backorder = getBackorder(stockMove);
+    if (backorder.isPresent()
+        && backorder.get().getStatusSelect() == StockMoveRepository.STATUS_REALIZED) {
+      return stockMove;
+    }
+    CancelReason cancelReason = stockMove.getCancelReason();
+    stockMove.setBackorderId(null);
+    stockMoveRepo.save(stockMove);
+    if (backorder.isEmpty()) {
+      return stockMove;
+    }
+    StockMove backorderStockMove = backorder.get();
+    if (backorderStockMove.getStatusSelect() == StockMoveRepository.STATUS_DRAFT) {
+      if (cancelReason != null) {
+        applyCancelReason(backorderStockMove, cancelReason);
+      }
+      setCancelStatus(backorderStockMove);
+    } else if (backorderStockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
+      if (cancelReason != null) {
+        cancel(backorderStockMove, cancelReason);
+      } else {
+        cancel(backorderStockMove);
+      }
+    }
+    return JpaModelHelper.ensureManaged(stockMove);
   }
 
   /**
@@ -887,6 +931,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     newStockMove.setSignatoryUser(null);
     newStockMove.setIsConformityCertifSigned(false);
     newStockMove.setElectronicSignature(null);
+    newStockMove.setBackorderId(null);
     newStockMove.setStockMoveOrigin(stockMove);
     newStockMove = stockMoveRepo.save(newStockMove);
     stockMove.setBackorderId(newStockMove.getId());

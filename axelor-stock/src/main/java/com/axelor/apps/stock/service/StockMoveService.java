@@ -254,6 +254,8 @@ public interface StockMoveService {
 
   void planWithNoSplit(StockMove stockMove) throws AxelorException;
 
+  Optional<StockMove> getBackorder(StockMove stockMove);
+
   public void addStockMovesToLogisticalForm(
       LogisticalForm logisticalForm, List<StockMove> stockMoveList) throws AxelorException;
 

@@ -957,6 +957,7 @@
 
   <action-group name="action-group-stock-stockmove-plan-click">
     <action name="save"/>
+    <action name="action-stock-move-method-check-backorder-before-plan"/>
     <action name="action-stock-move-method-plan"/>
     <action name="save"/>
   </action-group>
@@ -1228,6 +1229,11 @@
 
   <action-method name="action-stock-move-method-plan">
     <call class="com.axelor.apps.stock.web.StockMoveController" method="plan"/>
+  </action-method>
+
+  <action-method name="action-stock-move-method-check-backorder-before-plan">
+    <call class="com.axelor.apps.stock.web.StockMoveController"
+      method="checkBackorderBeforePlan"/>
   </action-method>
 
   <action-method name="action-stock-move-method-realize">

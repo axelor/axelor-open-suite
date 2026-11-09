@@ -110,6 +110,10 @@ public final class StockExceptionMessage {
       "Can't realize this stock move because of the ongoing inventory %s." /*)*/;
   public static final String STOCK_MOVE_PLAN_WRONG_STATUS = /*$$(*/
       "Can only plan a drafted stock move." /*)*/;
+  public static final String STOCK_MOVE_BACKORDER_CANCELLED_ON_PLAN = /*$$(*/
+      "Backorder %s has been cancelled because the original stock move has been planned again." /*)*/;
+  public static final String STOCK_MOVE_BACKORDER_ALREADY_REALIZED = /*$$(*/
+      "Backorder %s has already been realized. Planning this stock move again may lead to processing the same quantities twice. Do you want to continue?" /*)*/;
   public static final String STOCK_MOVE_REALIZATION_WRONG_STATUS = /*$$(*/
       "Cannot realize a stock move that is not planned." /*)*/;
   public static final String STOCK_MOVE_CANCEL_WRONG_STATUS = /*$$(*/

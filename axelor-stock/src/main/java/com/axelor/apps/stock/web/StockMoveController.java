@@ -82,9 +82,23 @@ public class StockMoveController {
       // we have to inject TraceBackService to use non static methods
       TraceBackService traceBackService = Beans.get(TraceBackService.class);
       long tracebackCount = traceBackService.countMessageTraceBack(stockMove);
+      Optional<String> cancelledBackorderSeq =
+          Beans.get(StockMoveService.class)
+              .getBackorder(Beans.get(StockMoveRepository.class).find(stockMove.getId()))
+              .filter(
+                  backorder ->
+                      backorder.getStatusSelect() == StockMoveRepository.STATUS_DRAFT
+                          || backorder.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
+              .map(StockMove::getStockMoveSeq);
       Beans.get(StockMoveService.class)
           .plan(Beans.get(StockMoveRepository.class).find(stockMove.getId()));
       response.setReload(true);
+      cancelledBackorderSeq.ifPresent(
+          seq ->
+              response.setInfo(
+                  String.format(
+                      I18n.get(StockExceptionMessage.STOCK_MOVE_BACKORDER_CANCELLED_ON_PLAN),
+                      seq)));
       if (traceBackService.countMessageTraceBack(stockMove) > tracebackCount) {
         traceBackService
             .findLastMessageTraceBack(stockMove)
@@ -95,6 +109,23 @@ public class StockMoveController {
                             I18n.get(BaseExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkBackorderBeforePlan(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      Beans.get(StockMoveService.class)
+          .getBackorder(Beans.get(StockMoveRepository.class).find(stockMove.getId()))
+          .filter(backorder -> backorder.getStatusSelect() == StockMoveRepository.STATUS_REALIZED)
+          .ifPresent(
+              backorder ->
+                  response.setAlert(
+                      String.format(
+                          I18n.get(StockExceptionMessage.STOCK_MOVE_BACKORDER_ALREADY_REALIZED),
+                          backorder.getStockMoveSeq())));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

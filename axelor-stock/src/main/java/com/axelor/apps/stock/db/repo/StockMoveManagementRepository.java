@@ -110,7 +110,8 @@ public class StockMoveManagementRepository extends StockMoveRepository {
       throw new PersistenceException(
           I18n.get(StockExceptionMessage.STOCK_MOVE_REALIZED_NOT_DELETED));
     } else {
-      if (entity.getStockMoveOrigin() != null) {
+      if (entity.getStockMoveOrigin() != null
+          && entity.getId().equals(entity.getStockMoveOrigin().getBackorderId())) {
         entity.getStockMoveOrigin().setBackorderId(null);
       }
       super.remove(entity);
