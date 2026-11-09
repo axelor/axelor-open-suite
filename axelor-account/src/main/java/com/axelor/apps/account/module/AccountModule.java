@@ -1046,5 +1046,6 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceNoteService.class).to(InvoiceNoteServiceImpl.class);
     bind(InvoiceCategoryService.class).to(InvoiceCategoryServiceImpl.class);
     bind(CompanyRepository.class).to(CompanyAccountRepository.class);
+    bind(StatusMassUpdateService.class).to(StatusMassUpdateServiceImpl.class);
   }
 }
