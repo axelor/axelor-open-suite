@@ -8,25 +8,6 @@
     <extend target="/">
       <attribute name="onNew" value="action-group-base-message-onnew"/>
     </extend>
-    <extend target="//field[@name='$statusSelectTag']">
-      <replace/>
-    </extend>
-    <extend target="//field[@name='mediaTypeSelect']">
-      <insert position="before">
-        <field name="$statusSelectTag" showTitle="false" readonly="true" colSpan="12"
-          css="label-bold bold">
-          <viewer><![CDATA[
-	          <>
-	              <Box d="flex" justifyContent="flex-end">
-	                  {statusSelect == 1 && sentDateT == null && <Badge bg="info">{_t('Not sent')}</Badge>}
-	                  {statusSelect == 3 && sentDateT != null && <Badge bg="success">{_t('Successful send')}</Badge>}
-	                  {statusSelect == 2 && sentDateT == null && <Badge bg="danger">{_t('In progress')}</Badge>}
-	              </Box>
-	          </>
-          ]]></viewer>
-        </field>
-      </insert>
-    </extend>
     <extend target="//field[@name='senderUser']">
       <attribute name="canNew" value="false"/>
       <attribute name="canView" value="false"/>
