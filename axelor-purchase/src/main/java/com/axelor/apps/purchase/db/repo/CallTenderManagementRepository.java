@@ -73,7 +73,6 @@ public class CallTenderManagementRepository extends CallTenderRepository {
   public CallTender copy(CallTender entity, boolean deep) {
     CallTender copy = super.copy(entity, deep);
     copy.clearCallTenderOfferList();
-    copy.clearCallTenderOfferImportHistoryList();
     return copy;
   }
 }
