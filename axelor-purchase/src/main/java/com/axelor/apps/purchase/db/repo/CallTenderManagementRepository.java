@@ -68,4 +68,12 @@ public class CallTenderManagementRepository extends CallTenderRepository {
       throw new PersistenceException(e.getMessage(), e);
     }
   }
+
+  @Override
+  public CallTender copy(CallTender entity, boolean deep) {
+    CallTender copy = super.copy(entity, deep);
+    copy.clearCallTenderOfferList();
+    copy.clearCallTenderOfferImportHistoryList();
+    return copy;
+  }
 }
