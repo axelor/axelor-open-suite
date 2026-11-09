@@ -58,6 +58,8 @@
 "Avg outgoing quantity on 12 past months (One-off sale excluded)","Quantité moyenne vendue sur les 12 derniers mois (hors vente exceptionnelle)",,
 "Back to provision","Retour à mise à disposition",,
 "Backorder","Reliquat",,
+"Backorder %s has already been realized. Planning this stock move again may lead to processing the same quantities twice. Do you want to continue?","Le reliquat %s a déjà été réalisé. Replanifier ce mouvement peut entraîner un double traitement des mêmes quantités. Voulez-vous continuer ?",,
+"Backorder %s has been cancelled because the original stock move has been planned again.","Le reliquat %s a été annulé car le mouvement d'origine a été replanifié.",,
 "Backorder Id","Id Reliquat",,
 "Backorder Stock Move","Mvt. De stock (reliquat)",,
 "Bad stock move type","Mauvais type de mvt. de stock.",,
