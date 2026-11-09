@@ -189,6 +189,7 @@
     <view-param name="search-filters" value="products-filters"/>
     <domain>self.isShippingCostsProduct = true AND self.dtype = 'Product'</domain>
     <context name="_isShippingCostsProduct" expr="true"/>
+    <context name="_productTypeSelect" expr="service"/>
   </action-view>
 
   <menuitem name="sc-root-sale-conf-partner-price-list" parent="sc-root-sale-conf"
