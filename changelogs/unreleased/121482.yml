@@ -1,0 +1,8 @@
+---
+title: "Doubtful customer batch: the generated doubtful customer moves are now linked to the batch, so the 'Account moves' button of the batch displays them."
+module: axelor-account
+developer: |
+  `DoubtfulCustomerService.createDoubtFulCustomerMove(Move, Account, String)` and
+  `DoubtfulCustomerService.createDoubtFulCustomerRejectMove(MoveLine, Account, String)` now return
+  the generated move instead of `void`. Implementations overriding these methods must update their
+  return type.
