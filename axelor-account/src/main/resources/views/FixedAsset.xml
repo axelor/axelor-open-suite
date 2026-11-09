@@ -161,6 +161,7 @@
           <field name="firstDepreciationDate"
             onChange="action-fixed-asset-validate-check-first-depreciation-date"
             requiredIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;2&quot;) || depreciationPlanSelect.includes(&quot;3&quot;))"/>
+          <field name="depreciationEndDate" readonly="true"/>
           <field name="computationMethodSelect"
             onChange="action-fixed-asset-attrs-set-degressive-coef,action-group-account-change-economic-depreciation-date-init-select,action-fixed-asset-method-check-depreciation-plans"
             requiredIf="depreciationPlanSelect != null &amp;&amp; !depreciationPlanSelect.includes(&quot;0&quot;)"/>
