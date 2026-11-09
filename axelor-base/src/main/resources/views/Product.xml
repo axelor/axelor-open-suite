@@ -164,7 +164,7 @@
             showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('production')"
             onChange="action-product-record-product-sub-type-select-onchange"/>
           <field name="isShippingCostsProduct" colSpan="4"
-            hideIf="productTypeSelect != 'storable' || productSubTypeSelect || _fromProduction || _fromStock || _fromSale || _fromPurchase"/>
+            hideIf="productSubTypeSelect || _fromProduction || _fromStock || _fromSale || _fromPurchase"/>
           <field name="isActivity"
             showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct"
             if-module="axelor-human-resource" if="__config__.app.isApp('employee')"/>
@@ -740,7 +740,7 @@
   <action-record name="action-product-record-sellable"
     model="com.axelor.apps.base.db.Product">
     <field name="sellable" expr="eval: false"
-      if="_fromProduction || _fromStock || _isShippingCostsProduct || _fromPurchase"/>
+      if="_fromProduction || _fromStock || _fromPurchase"/>
   </action-record>
 
   <action-record name="action-product-record-in-ati"

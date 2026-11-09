@@ -1,0 +1,3 @@
+---
+title: "Product: the shipping costs product checkbox is now available on service products, a shipping costs product created from the sales configuration is a sellable service by default, and shipping cost lines are no longer included in deliveries and receptions whatever the product type."
+module: axelor-base

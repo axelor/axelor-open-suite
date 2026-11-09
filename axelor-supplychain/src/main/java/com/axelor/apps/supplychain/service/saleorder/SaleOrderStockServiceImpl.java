@@ -728,18 +728,20 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     SupplyChainConfig supplyChainConfig = supplyChainConfigService.getSupplyChainConfig(company);
 
-    if (outSmGenerationService.isOnlyForManagedLines(supplyChainConfig)) {
-      return saleOrderLine.getManagedInStockMove() && saleOrderLine.getProduct() != null;
-    }
-
     Product product = saleOrderLine.getProduct();
 
-    return (product != null
-        && ((ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())
-                && outSmGenerationService.isGeneratedForServices(supplyChainConfig)
-                && !product.getIsShippingCostsProduct())
-            || (ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())
-                && outSmGenerationService.isGeneratedForStorable(supplyChainConfig))));
+    if (product == null || product.getIsShippingCostsProduct()) {
+      return false;
+    }
+
+    if (outSmGenerationService.isOnlyForManagedLines(supplyChainConfig)) {
+      return saleOrderLine.getManagedInStockMove();
+    }
+
+    return ((ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())
+            && outSmGenerationService.isGeneratedForServices(supplyChainConfig))
+        || (ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())
+            && outSmGenerationService.isGeneratedForStorable(supplyChainConfig)));
   }
 
   protected boolean existActiveStockMoveForSaleOrderLine(SaleOrderLine saleOrderLine) {
