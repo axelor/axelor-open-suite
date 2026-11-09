@@ -591,9 +591,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     Product product = purchaseOrderLine.getProduct();
 
     return (product != null
+        && !product.getIsShippingCostsProduct()
         && ((ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())
-                && supplyChainConfig.getHasInSmForNonStorableProduct()
-                && !product.getIsShippingCostsProduct())
+                && supplyChainConfig.getHasInSmForNonStorableProduct())
             || (ProductRepository.PRODUCT_TYPE_STORABLE.equals(product.getProductTypeSelect())
                 && supplyChainConfig.getHasInSmForStorableProduct())));
   }
