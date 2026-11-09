@@ -1106,5 +1106,6 @@ public class AccountModule extends AxelorModule {
     bind(MoveTemplateLineComputeAnalyticService.class)
         .to(MoveTemplateLineComputeAnalyticServiceImpl.class);
     bind(CompanyRepository.class).to(CompanyAccountRepository.class);
+    bind(StatusMassUpdateService.class).to(StatusMassUpdateServiceImpl.class);
   }
 }

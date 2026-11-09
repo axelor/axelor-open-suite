@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.service.StatusMassUpdateService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
@@ -52,7 +53,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.helpers.MassUpdateHelper;
 import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -213,7 +213,8 @@ public class AccountController {
       List<Integer> selectedIds = (List<Integer>) selectedIdObj;
       final Class<? extends Model> modelClass = (Class<? extends Model>) Class.forName(metaModel);
       Integer recordsUpdated =
-          MassUpdateHelper.update(modelClass, fieldName, statusSelect, selectedIds);
+          Beans.get(StatusMassUpdateService.class)
+              .update(modelClass, fieldName, statusSelect, selectedIds);
       String message = null;
       if (recordsUpdated > 0) {
         message =
@@ -243,7 +244,9 @@ public class AccountController {
       String metaModel = (String) request.getContext().get("_metaModel");
       Integer statusSelect = (Integer) statusObj;
       final Class<? extends Model> modelClass = (Class<? extends Model>) Class.forName(metaModel);
-      Integer recordsUpdated = MassUpdateHelper.update(modelClass, fieldName, statusSelect, null);
+      Integer recordsUpdated =
+          Beans.get(StatusMassUpdateService.class)
+              .update(modelClass, fieldName, statusSelect, null);
       String message = null;
       if (recordsUpdated > 0) {
         message =
