@@ -59,6 +59,8 @@
 "Avg outgoing quantity on 12 past months (One-off sale excluded)",,,
 "Back to provision",,,
 "Backorder",,,
+"Backorder %s has already been realized. Planning this stock move again may lead to processing the same quantities twice. Do you want to continue?",,,
+"Backorder %s has been cancelled because the original stock move has been planned again.",,,
 "Backorder Id",,,
 "Backorder Stock Move",,,
 "Bad stock move type",,,

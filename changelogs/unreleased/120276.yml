@@ -1,0 +1,7 @@
+---
+title: "Stock move: fixed a new backorder being created each time a partially realized stock move is planned again, without cancelling the previous one."
+module: axelor-stock
+developer: |
+  - Added `getBackorder(StockMove)` to `StockMoveService`.
+  - Added `action-stock-move-method-check-backorder-before-plan` to the action-group
+    `action-group-stock-stockmove-plan-click`.
