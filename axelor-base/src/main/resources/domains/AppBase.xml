@@ -158,6 +158,7 @@
 
     <boolean name="enableTaxNumbers" title="Enable tax numbers"
       help="This configuration enables the tax number feature. If disabled, the fiscal position no longer depends on tax numbers when creating an order."/>
+    <boolean name="enableEcoTax" title="Enable eco-tax" default="false"/>
     <many-to-one name="defaultAddressTemplate"
       ref="com.axelor.apps.base.db.AddressTemplate" title="Default address template"/>
 
@@ -344,6 +345,7 @@
       <field name="isRegistrationCodeCheckBlocking" on="UPDATE"/>
       <field name="isGlobalDiscountEnabled" on="UPDATE"/>
       <field name="enableTaxNumbers" on="UPDATE"/>
+      <field name="enableEcoTax" on="UPDATE"/>
       <field name="defaultAddressTemplate" on="UPDATE"/>
       <field name="pfxCertificate" on="UPDATE"/>
       <field name="sireneUrl" on="UPDATE"/>
