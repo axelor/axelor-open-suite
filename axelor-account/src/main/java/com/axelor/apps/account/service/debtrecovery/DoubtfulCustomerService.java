@@ -165,10 +165,11 @@ public class DoubtfulCustomerService {
    * @param move Une écritures de facture
    * @param doubtfulCustomerAccount Un compte client douteux
    * @param debtPassReason Un motif de passage en client douteux
+   * @return the generated doubtful customer move
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public void createDoubtFulCustomerMove(
+  public Move createDoubtFulCustomerMove(
       Move move, Account doubtfulCustomerAccount, String debtPassReason) throws AxelorException {
     Company company = move.getCompany();
     Partner partner = move.getPartner();
@@ -261,6 +262,8 @@ public class DoubtfulCustomerService {
     }
 
     this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
+
+    return newMove;
   }
 
   protected BigDecimal getCurrencyAmountRemaining(MoveLine moveLine) {
@@ -291,10 +294,11 @@ public class DoubtfulCustomerService {
    * @param moveLine Une ligne d'écritures de rejet de facture
    * @param doubtfulCustomerAccount Un compte client douteux
    * @param debtPassReason Un motif de passage en client douteux
+   * @return the generated doubtful customer move
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public void createDoubtFulCustomerRejectMove(
+  public Move createDoubtFulCustomerRejectMove(
       MoveLine moveLine, Account doubtfulCustomerAccount, String debtPassReason)
       throws AxelorException {
 
@@ -357,9 +361,11 @@ public class DoubtfulCustomerService {
     debitMoveLine.setPassageReason(debtPassReason);
 
     moveValidateService.accounting(newMove);
-    moveRepo.save(newMove);
+    newMove = moveRepo.save(newMove);
 
     this.invoiceRejectProcess(debitMoveLine, doubtfulCustomerAccount, debtPassReason);
+
+    return newMove;
   }
 
   /**

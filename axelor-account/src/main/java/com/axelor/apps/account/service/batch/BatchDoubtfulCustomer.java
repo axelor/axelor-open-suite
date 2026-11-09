@@ -220,13 +220,17 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
       boolean isReject)
       throws AxelorException {
     if (isReject) {
-      doubtfulCustomerService.createDoubtFulCustomerRejectMove(
-          moveLine, doubtfulCustomerAccount, debtPassReason);
+      Move doubtfulCustomerMove =
+          doubtfulCustomerService.createDoubtFulCustomerRejectMove(
+              moveLine, doubtfulCustomerAccount, debtPassReason);
+      this.updateAccountMove(doubtfulCustomerMove, false);
 
       this.updateInvoice(invoice);
     } else {
-      doubtfulCustomerService.createDoubtFulCustomerMove(
-          move, doubtfulCustomerAccount, debtPassReason);
+      Move doubtfulCustomerMove =
+          doubtfulCustomerService.createDoubtFulCustomerMove(
+              move, doubtfulCustomerAccount, debtPassReason);
+      this.updateAccountMove(doubtfulCustomerMove, false);
 
       if (invoice != null) {
         this.updateInvoice(invoice);
