@@ -19,6 +19,7 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
@@ -37,7 +38,11 @@ import com.google.common.base.Strings;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetManagementRepository extends FixedAssetRepository {
 
@@ -71,6 +76,7 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
         // barcode generation
         generateBarcode(fixedAsset);
       }
+      computeDepreciationEndDate(fixedAsset);
       return super.save(fixedAsset);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
@@ -164,5 +170,20 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
         .bind("statusValidated", FixedAssetRepository.STATUS_VALIDATED)
         .bind("statusDepreciated", FixedAssetRepository.STATUS_DEPRECIATED)
         .bind("ids", ids);
+  }
+
+  protected void computeDepreciationEndDate(FixedAsset fixedAsset) {
+    List<FixedAssetLine> fixedAssetLineList = fixedAsset.getFixedAssetLineList();
+    if (CollectionUtils.isEmpty(fixedAssetLineList)) {
+      fixedAsset.setDepreciationEndDate(null);
+      return;
+    }
+    LocalDate depreciationEndDate =
+        fixedAssetLineList.stream()
+            .map(FixedAssetLine::getDepreciationDate)
+            .filter(Objects::nonNull)
+            .max(Comparator.naturalOrder())
+            .orElse(null);
+    fixedAsset.setDepreciationEndDate(depreciationEndDate);
   }
 }
