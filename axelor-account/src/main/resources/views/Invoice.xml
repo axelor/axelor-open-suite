@@ -686,9 +686,10 @@
     <panel-tabs name="mainPanelTab" hideIf="partner == null">
       <panel name="invoiceContentPanel" title="Content" showTitle="false" itemSpan="12">
         <field name="invoiceCategorySelect"
-          showIf="(operationTypeSelect == 1 || operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting &amp;&amp; statusSelect >= 2"
-          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
-          readonlyIf="statusSelect &gt;= 3" colSpan="2"/>
+          showIf="[1,3,4].includes(operationTypeSelect) &amp;&amp; [1,2,3].includes(operationSubTypeSelect) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting &amp;&amp; statusSelect >= 2"
+          requiredIf="[1,3,4].includes(operationTypeSelect) &amp;&amp; [1,2,3].includes(operationSubTypeSelect) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; [2,3].includes(statusSelect) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
+          readonlyIf="statusSelect &gt;= 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)"
+          colSpan="2"/>
         <field name="company.accountConfig.displayItemsCategoriesOnPrinting" hidden="true"/>
         <panel name="cutOffPanel" title="Cut off period" itemSpan="4"
           readonlyIf="statusSelect == 3" if="__config__.app.getApp('account').manageCutOffPeriod">
@@ -1363,9 +1364,10 @@
     <panel-tabs name="invoiceDetails">
       <panel name="invoiceContentPanel" title="Invoice content" showTitle="false">
         <field name="invoiceCategorySelect"
-          showIf="(operationTypeSelect == 1 || operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting &amp;&amp; statusSelect >= 2"
-          requiredIf="(operationTypeSelect == 1 || operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; (operationSubTypeSelect == 1 || operationSubTypeSelect == 3) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; (statusSelect == 2 || statusSelect == 3) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
-          readonlyIf="statusSelect &gt;= 3" colSpan="2"/>
+          showIf="[1,3,4].includes(operationTypeSelect) &amp;&amp; [1,2,3].includes(operationSubTypeSelect) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting &amp;&amp; statusSelect >= 2"
+          requiredIf="[1,3,4].includes(operationTypeSelect) &amp;&amp; [1,2,3].includes(operationSubTypeSelect) &amp;&amp; invoiceLineList &amp;&amp; invoiceLineList.length != 0 &amp;&amp; [2,3].includes(statusSelect) &amp;&amp; company.accountConfig.displayItemsCategoriesOnPrinting"
+          readonlyIf="statusSelect &gt;= 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)"
+          colSpan="2"/>
         <field name="company.accountConfig.displayItemsCategoriesOnPrinting" hidden="true"/>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
@@ -2144,7 +2146,7 @@
     <field name="tradingName" expr="eval: __user__?.tradingName"/>
     <field name="invoiceCategorySelect"
       expr="eval: __user__?.activeCompany?.accountConfig?.defaultInvoiceCategorySelect"
-      if="(_operationTypeSelect == 1 || _operationTypeSelect == 3 || _operationTypeSelect == 4) &amp;&amp; (!_operationSubTypeSelect || _operationSubTypeSelect == 1 || operationSubTypeSelect == 3)"/>
+      if="[1,3,4].contains(_operationTypeSelect) &amp;&amp; (!_operationSubTypeSelect || [1,2,3].contains(_operationSubTypeSelect))"/>
   </action-record>
 
   <action-record name="action-invoice-record-partner-change"
