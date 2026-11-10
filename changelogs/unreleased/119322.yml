@@ -1,0 +1,3 @@
+---
+title: "Invoice: no longer print the technical texts `Used to load InvoiceLineProc`, `Used to load InvoiceProc` and `Used to load TimesheetLineProc` at the top of the invoice report in DOC and XLS, and in PDF when a header height is set."
+module: axelor-account
