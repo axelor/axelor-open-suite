@@ -50,7 +50,7 @@ public class SaleOrderSplitDummyServiceImpl implements SaleOrderSplitDummyServic
         saleOrder.getSaleOrderLineList().stream()
             .filter(
                 line ->
-                    line.getTypeSelect() == SaleOrderLineRepository.TYPE_END_OF_PACK
+                    line.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL
                         || line.getOrderedQty().compareTo(line.getQty()) != 0)
             .collect(Collectors.toList());
     for (SaleOrderLine saleOrderLine : filteredSaleOrderLineList) {

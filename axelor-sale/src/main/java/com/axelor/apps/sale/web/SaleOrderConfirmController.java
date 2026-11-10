@@ -39,6 +39,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderConfirmController {
@@ -128,7 +129,10 @@ public class SaleOrderConfirmController {
         Beans.get(SaleOrderSplitDummyService.class).getSaleOrderLineMapList(saleOrder);
     BigDecimal currentlyTotalOrdered = BigDecimal.ZERO;
     for (Map<String, Object> map : saleOrderLineListContext) {
-      BigDecimal qtyToOrder = (BigDecimal) map.get("$qtyToOrderLeft");
+      BigDecimal qtyToOrder =
+          Objects.equals(SaleOrderLineRepository.TYPE_NORMAL, map.get("typeSelect"))
+              ? (BigDecimal) map.get("$qtyToOrderLeft")
+              : BigDecimal.ZERO;
       map.put("$qtyToOrder", qtyToOrder);
       BigDecimal price =
           (BigDecimal) (saleOrder.getInAti() ? map.get("inTaxPrice") : map.get("price"));
