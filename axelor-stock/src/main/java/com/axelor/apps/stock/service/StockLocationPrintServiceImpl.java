@@ -153,7 +153,9 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
             "FinancialDataDateTime",
             financialDataDateTime,
             "WithoutDetailsByStockLocation",
-            withoutDetailsByStockLocation));
+            withoutDetailsByStockLocation,
+            "IncludeOutOfStock",
+            stockLocation.getIncludeOutOfStock()));
 
     return printingTemplatePrintService.getPrintLink(
         stockLocationPrintTemplate, factoryContext, true);

@@ -1,0 +1,19 @@
+---
+title: "Stock location: the 'Stock locations financial data' printing now respects the 'Include out of stock products' setting of the stock location."
+module: axelor-stock
+developer: |
+  The `StockLocation` report has a new `IncludeOutOfStock` parameter, filled by two new
+  `BirtTemplateParameter` rows in the stock data-init (templates `StockLocation PDF` and
+  `StockLocation XLSX`). Data-init is not replayed on an existing database: until the rows exist,
+  the printing keeps its previous behavior (all lines). On an existing database, run:
+
+  ```sql
+  INSERT INTO base_birt_template_parameter (id, version, name, type, value, birt_template, import_id)
+  SELECT nextval('base_birt_template_parameter_seq'), 0, 'IncludeOutOfStock', 'boolean',
+         '${hasVariable(''IncludeOutOfStock'')?IncludeOutOfStock:stockLocation?.includeOutOfStock}',
+         t.id, CASE t.import_id WHEN '27' THEN '740' ELSE '741' END
+  FROM base_birt_template t
+  WHERE t.import_id IN ('27', '123')
+    AND NOT EXISTS (SELECT 1 FROM base_birt_template_parameter p
+                    WHERE p.birt_template = t.id AND p.name = 'IncludeOutOfStock');
+  ```

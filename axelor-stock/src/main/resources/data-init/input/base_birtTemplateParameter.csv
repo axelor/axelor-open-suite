@@ -44,3 +44,5 @@
 671;123;"__locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale()}";"string"
 672;123;"StockLocationId";"${hasVariable('StockLocationId')?StockLocationId:'('+stockLocation?.id+')'}";"string"
 673;123;"WithoutDetailsByStockLocation";"${hasVariable('WithoutDetailsByStockLocation') && WithoutDetailsByStockLocation}";"boolean"
+740;27;"IncludeOutOfStock";"${hasVariable('IncludeOutOfStock')?IncludeOutOfStock:stockLocation?.includeOutOfStock}";"boolean"
+741;123;"IncludeOutOfStock";"${hasVariable('IncludeOutOfStock')?IncludeOutOfStock:stockLocation?.includeOutOfStock}";"boolean"
