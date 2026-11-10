@@ -1,0 +1,3 @@
+---
+title: "Sale order : the order lines generated from a quotation no longer inherit the cumulated ordered quantity of the quotation line, the ordered quantity is only displayed on quotation lines, and the deletion of a line coming from the quotation stays blocked with a dedicated message."
+module: axelor-sale
