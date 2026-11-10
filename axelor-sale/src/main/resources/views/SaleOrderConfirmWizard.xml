@@ -74,14 +74,16 @@
       x-scale="$nbDecimalDigitForUnitPrice" type="decimal"/>
     <field name="orderedQty" readonly="true" x-scale="$nbDecimalDigitForQty" type="decimal"/>
     <field name="$qtyToOrder" title="Qty to order" type="decimal"
-      readonlyIf="$orderAll || (qty == orderedQty)" min="0" x-scale="$nbDecimalDigitForQty"
-      validIf="$number($qtyToOrder) &lt;= $number($qtyToOrderLeft)"
+      readonlyIf="$orderAll || (qty == orderedQty) || typeSelect != 0" min="0"
+      x-scale="$nbDecimalDigitForQty" validIf="$number($qtyToOrder) &lt;= $number($qtyToOrderLeft)"
       onChange="action-sale-order-line-confirm-validate-qty-to-order"/>
     <field name="$orderAll" title="Order all" type="boolean"
-      onChange="action-attrs-sale-order-line-confirm-wizard-fill-qty" readonlyIf="qty == orderedQty"/>
+      onChange="action-attrs-sale-order-line-confirm-wizard-fill-qty"
+      readonlyIf="qty == orderedQty || typeSelect != 0"/>
     <field name="$nbDecimalDigitForUnitPrice" type="decimal" hidden="true"/>
     <field name="$nbDecimalDigitForQty" type="decimal" hidden="true"/>
     <field name="$qtyToOrderLeft" type="decimal" hidden="true"/>
+    <field name="typeSelect" hidden="true"/>
   </grid>
 
   <action-attrs name="action-attrs-sale-order-line-confirm-wizard-fill-qty">
