@@ -5101,17 +5101,17 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                             <text id="6267">
                                 <property name="dataSet">InvoiceLineProc</property>
                                 <property name="contentType">auto</property>
-                                <text-property name="content"><![CDATA[Used to load InvoiceLineProc]]></text-property>
+                                <text-property name="content"><![CDATA[]]></text-property>
                             </text>
                             <text id="6268">
                                 <property name="dataSet">InvoiceProc</property>
                                 <property name="contentType">auto</property>
-                                <text-property name="content"><![CDATA[Used to load InvoiceProc]]></text-property>
+                                <text-property name="content"><![CDATA[]]></text-property>
                             </text>
                             <text id="6269">
                                 <property name="dataSet">TimesheetLineProc</property>
                                 <property name="contentType">auto</property>
-                                <text-property name="content"><![CDATA[Used to load TimesheetLineProc]]></text-property>
+                                <text-property name="content"><![CDATA[]]></text-property>
                             </text>
                         </cell>
                     </row>
