@@ -464,7 +464,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetLine.getDepreciationDate();
 
-    if (!isDisposal) {
+    if (!isDisposal && !date.equals(fixedAsset.getDisposalDate())) {
       int periodicityTypeSelect = fixedAsset.getPeriodicityTypeSelect();
       if (periodicityTypeSelect == FixedAssetRepository.PERIODICITY_TYPE_MONTH) {
         date = date.with(TemporalAdjusters.lastDayOfMonth());
