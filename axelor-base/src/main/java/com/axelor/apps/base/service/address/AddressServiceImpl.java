@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.address.AddressHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -96,7 +97,6 @@ public class AddressServiceImpl implements AddressService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public Optional<Pair<BigDecimal, BigDecimal>> getOrUpdateLatLong(Address address)
       throws AxelorException {
     Preconditions.checkNotNull(address, I18n.get(BaseExceptionMessage.ADDRESS_CANNOT_BE_NULL));
@@ -106,7 +106,9 @@ public class AddressServiceImpl implements AddressService {
       return latLong;
     }
 
-    return updateLatLong(address);
+    // Goes through the injector so that the transaction of updateLatLong is opened, only when the
+    // address really has to be geocoded.
+    return Beans.get(AddressService.class).updateLatLong(address);
   }
 
   @Override
