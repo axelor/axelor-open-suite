@@ -150,9 +150,7 @@ public class UserHrServiceImpl implements UserHrService {
         employeeName += " " + employee.getContactPartner().getFirstName();
       }
       employeeUser.setName(employeeName);
-      if (employee.getContactPartner().getEmailAddress() != null) {
-        employeeUser.setEmail(employee.getContactPartner().getEmailAddress().getAddress());
-      }
+      userService.setEmailFromPartner(employeeUser);
     }
 
     if (employee.getMainEmploymentContract() != null) {

@@ -19,6 +19,10 @@
 
   <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User"
     onNew="action-user-group-on-new" onLoad="action-user-group-on-load" extension="true">
+    <extend target="/">
+      <attribute name="onSave"
+        value="action-method-user-save,action-user-method-check-email-unicity"/>
+    </extend>
     <extend target="panel[@title='Overview']">
       <insert position="before">
         <panel name="stepUserPanel" showIf="[0,1,2,3,4].indexOf(stepStatusSelect) > -1">
@@ -301,6 +305,8 @@
     <extend target="/">
       <attribute name="onNew" value="action-user-attrs"/>
       <attribute name="onLoad" value="action-user-attrs"/>
+      <attribute name="onSave"
+        value="action-method-user-save,action-user-method-check-email-unicity"/>
     </extend>
 
     <extend target="//field[@name='email']">
@@ -471,6 +477,10 @@
 
   <action-method name="action-user-method-validate-code">
     <call class="com.axelor.apps.base.web.UserController" method="validateCode"/>
+  </action-method>
+
+  <action-method name="action-user-method-check-email-unicity">
+    <call class="com.axelor.apps.base.web.UserController" method="checkEmailUnicity"/>
   </action-method>
 
   <action-view name="action-user-view-show-all-permissions" title="All permissions"
