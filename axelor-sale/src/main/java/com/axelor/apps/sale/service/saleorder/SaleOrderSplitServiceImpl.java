@@ -79,7 +79,7 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
     checkBeforeConfirm(saleOrder, qtyToOrderMap);
     SaleOrder confirmedSaleOrder = getConfirmedSaleOrder(saleOrder);
     addLines(qtyToOrderMap, confirmedSaleOrder);
-    addEndOfPackLines(saleOrder, confirmedSaleOrder);
+    addNonStandardLines(saleOrder, confirmedSaleOrder);
     saleOrderComputeService.computeSaleOrder(confirmedSaleOrder);
     saleOrderFinalizeService.finalizeQuotation(confirmedSaleOrder);
     saleOrderConfirmService.confirmSaleOrder(confirmedSaleOrder);
@@ -111,6 +111,9 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
       }
 
       SaleOrderLine saleOrderLineToCopy = saleOrderLineRepository.find(lineId);
+      if (saleOrderLineToCopy.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL) {
+        continue;
+      }
       updateOriginSol(saleOrderLineToCopy, qtyToOrder, appBase);
       SaleOrderLine copySaleOrderLine =
           getSaleOrderLineCopy(saleOrderLineToCopy, qtyToOrder, confirmedSaleOrder);
@@ -124,13 +127,13 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
     }
   }
 
-  protected void addEndOfPackLines(SaleOrder saleOrder, SaleOrder confirmedSaleOrder) {
-    List<SaleOrderLine> endOfPackLines =
+  protected void addNonStandardLines(SaleOrder saleOrder, SaleOrder confirmedSaleOrder) {
+    List<SaleOrderLine> nonStandardLines =
         saleOrder.getSaleOrderLineList().stream()
-            .filter(line -> line.getTypeSelect() == SaleOrderLineRepository.TYPE_END_OF_PACK)
+            .filter(line -> line.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL)
             .collect(Collectors.toList());
-    for (SaleOrderLine endOfPackLine : endOfPackLines) {
-      SaleOrderLine copy = saleOrderLineRepository.copy(endOfPackLine, true);
+    for (SaleOrderLine nonStandardLine : nonStandardLines) {
+      SaleOrderLine copy = saleOrderLineRepository.copy(nonStandardLine, true);
       copy.setSaleOrder(null);
       saleOrderLineRepository.save(copy);
       confirmedSaleOrder.addSaleOrderLineListItem(copy);
@@ -166,6 +169,7 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
   public void checkSolOrderedQty(SaleOrder saleOrder) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     if (saleOrderLineList.stream()
+        .filter(line -> line.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL)
         .allMatch(line -> line.getQty().compareTo(line.getOrderedQty()) == 0)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
