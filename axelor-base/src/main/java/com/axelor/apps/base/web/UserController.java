@@ -154,6 +154,17 @@ public class UserController {
     }
   }
 
+  public void checkEmailUnicity(ActionRequest request, ActionResponse response) {
+    try {
+      User user = request.getContext().asType(User.class);
+      UserService userService = Beans.get(UserService.class);
+      userService.setEmailFromPartner(user);
+      userService.checkEmailUnicity(user);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
   public void validateCode(ActionRequest request, ActionResponse response) {
     try {
       User user = request.getContext().asType(User.class);

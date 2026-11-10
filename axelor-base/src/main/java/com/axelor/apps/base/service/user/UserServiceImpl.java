@@ -535,4 +535,51 @@ public class UserServiceImpl implements UserService {
     user.setTradingName(tradingName);
     userRepo.save(user);
   }
+
+  @Override
+  public void setEmailFromPartner(User user) {
+    Partner partner = user.getPartner();
+    if (partner == null || partner.getEmailAddress() == null) {
+      return;
+    }
+
+    String partnerEmail = partner.getEmailAddress().getAddress();
+    if (StringUtils.isBlank(partnerEmail)
+        || partnerEmail.equals(user.getEmail())
+        || findOtherUserByEmail(user, partnerEmail) != null) {
+      return;
+    }
+
+    user.setEmail(partnerEmail);
+  }
+
+  @Override
+  public void checkEmailUnicity(User user) throws AxelorException {
+    String email = user.getEmail();
+    if (StringUtils.isBlank(email)) {
+      return;
+    }
+
+    User otherUser = findOtherUserByEmail(user, email);
+    if (otherUser != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BaseExceptionMessage.USER_EMAIL_ALREADY_USED),
+          email,
+          otherUser.getName());
+    }
+  }
+
+  /**
+   * Does not flush: called while saving the user, whose pending email may itself be a duplicate.
+   */
+  protected User findOtherUserByEmail(User user, String email) {
+    return userRepo
+        .all()
+        .filter("LOWER(self.email) = LOWER(:email) AND self.id != :id")
+        .bind("email", email)
+        .bind("id", user.getId() != null ? user.getId() : 0L)
+        .autoFlush(false)
+        .fetchOne();
+  }
 }

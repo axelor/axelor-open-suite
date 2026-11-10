@@ -44,19 +44,15 @@ public class UserBaseRepository extends UserRepository {
           && (user.getLanguage() == null || "".contentEquals(user.getLanguage()))) {
         user.setLanguage(appSettings.get("application.locale"));
       }
-      if (user.getPartner() != null
-          && user.getPartner().getEmailAddress() != null
-          && StringUtils.notBlank(user.getPartner().getEmailAddress().getAddress())
-          && !user.getPartner().getEmailAddress().getAddress().equals(user.getEmail())) {
-
-        user.setEmail(user.getPartner().getEmailAddress().getAddress());
-      }
+      UserService userService = Beans.get(UserService.class);
+      userService.setEmailFromPartner(user);
+      userService.checkEmailUnicity(user);
 
       user = super.save(user);
       updateTeamFollowers(user);
 
       if (StringUtils.notBlank(user.getTransientPassword())) {
-        Beans.get(UserService.class).processChangedPassword(user);
+        userService.processChangedPassword(user);
       }
 
       return user;
