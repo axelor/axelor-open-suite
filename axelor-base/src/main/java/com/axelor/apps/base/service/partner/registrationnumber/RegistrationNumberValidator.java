@@ -175,9 +175,6 @@ public abstract class RegistrationNumberValidator {
   }
 
   protected String getRegistrationCode(String registrationCode) {
-    if (registrationCode == null) {
-      return "";
-    }
-    return registrationCode.replaceAll("[ ./-]", "");
+    return RegistrationCodeHelper.normalizeRegistrationCode(registrationCode);
   }
 }
