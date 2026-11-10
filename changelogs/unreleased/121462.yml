@@ -1,0 +1,3 @@
+---
+title: "Turnover study: fixed the turnover by product chart splitting a product by line description and counting pack totals twice."
+module: axelor-sale
