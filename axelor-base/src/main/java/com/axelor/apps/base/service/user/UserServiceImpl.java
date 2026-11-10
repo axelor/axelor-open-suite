@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.theme.MetaThemeFetchService;
 import com.axelor.auth.AuthService;
@@ -35,6 +36,7 @@ import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
@@ -401,5 +403,52 @@ public class UserServiceImpl implements UserService {
   public void setTradingName(User user, TradingName tradingName) {
     user.setTradingName(tradingName);
     userRepo.save(user);
+  }
+
+  @Override
+  public void setEmailFromPartner(User user) {
+    Partner partner = user.getPartner();
+    if (partner == null || partner.getEmailAddress() == null) {
+      return;
+    }
+
+    String partnerEmail = partner.getEmailAddress().getAddress();
+    if (StringUtils.isBlank(partnerEmail)
+        || partnerEmail.equals(user.getEmail())
+        || findOtherUserByEmail(user, partnerEmail) != null) {
+      return;
+    }
+
+    user.setEmail(partnerEmail);
+  }
+
+  @Override
+  public void checkEmailUnicity(User user) throws AxelorException {
+    String email = user.getEmail();
+    if (StringUtils.isBlank(email)) {
+      return;
+    }
+
+    User otherUser = findOtherUserByEmail(user, email);
+    if (otherUser != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BaseExceptionMessage.USER_EMAIL_ALREADY_USED),
+          email,
+          otherUser.getName());
+    }
+  }
+
+  /**
+   * Does not flush: called while saving the user, whose pending email may itself be a duplicate.
+   */
+  protected User findOtherUserByEmail(User user, String email) {
+    return userRepo
+        .all()
+        .filter("LOWER(self.email) = LOWER(:email) AND self.id != :id")
+        .bind("email", email)
+        .bind("id", user.getId() != null ? user.getId() : 0L)
+        .autoFlush(false)
+        .fetchOne();
   }
 }

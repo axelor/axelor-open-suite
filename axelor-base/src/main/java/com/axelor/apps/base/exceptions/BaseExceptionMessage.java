@@ -343,6 +343,8 @@ public final class BaseExceptionMessage {
       "A user with this login already exists." /*)*/;
   public static final String USER_CODE_LENGTH_SHOULD_BE_GREATER_THAN_2 = /*$$(*/
       "Code length should be greater than 2." /*)*/;
+  public static final String USER_EMAIL_ALREADY_USED = /*$$(*/
+      "The email address %s is already used by the user %s." /*)*/;
 
   /** Convert demo data file */
   public static final String DUPLICATE_CSV_FILE_NAME_EXISTS = /*$$(*/
