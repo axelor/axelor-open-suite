@@ -235,7 +235,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
     LocalDate date = fixedAssetDerogatoryLine.getDepreciationDate();
-    if (!isDisposal) {
+    if (!isDisposal && !date.equals(fixedAsset.getDisposalDate())) {
       int periodicityTypeSelect = fixedAsset.getPeriodicityTypeSelect();
       if (periodicityTypeSelect == FixedAssetRepository.PERIODICITY_TYPE_MONTH) {
         date = date.with(TemporalAdjusters.lastDayOfMonth());
@@ -243,7 +243,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
         date =
             fixedAssetDateService.computeLastDayOfFiscalYear(company, date, periodicityTypeSelect);
       }
-    } else {
+    } else if (isDisposal) {
       date = disposalDate;
     }
 
