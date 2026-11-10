@@ -153,6 +153,19 @@
             <property name="controlType">check-box</property>
             <structure name="format"/>
         </scalar-parameter>
+        <scalar-parameter name="IncludeOutOfStock" id="5798">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">boolean</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">true</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">check-box</property>
+            <structure name="format"/>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -783,7 +796,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     </structure>
                 </list-property>
             </structure>
-            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["StockLocationId"]).replace('@FinancialDataDateTime', "'"+Formatter.format(params["FinancialDataDateTime"],'MM/dd/yyyy HH:mm:ss')+"'")]]></method>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["StockLocationId"]).replace('@FinancialDataDateTime', "'"+Formatter.format(params["FinancialDataDateTime"],'MM/dd/yyyy HH:mm:ss')+"'").replace('@IncludeOutOfStock', params["IncludeOutOfStock"].value == false ? 'FALSE' : 'TRUE')]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -962,6 +975,7 @@ FROM
         LEFT JOIN
     base_currency AS Currency ON (Currency.id = Company.currency)
 where Location.id in (@INJECTID) AND (Location.type_select != 3 OR (Location.type_select = 3 AND ? = '2'))
+  AND (@IncludeOutOfStock OR COALESCE(CASE WHEN Location.type_select = 3 THEN StockLocationLine.current_qty ELSE StockLocationLineHistoryQty.qty END, 0) <> 0)
 order by Product.code;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1219,7 +1233,7 @@ order by Product.code;]]></xml-property>
                     </structure>
                 </list-property>
             </structure>
-            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["StockLocationId"]).replace('@FinancialDataDateTime', "'"+Formatter.format(params["FinancialDataDateTime"],'MM/dd/yyyy HH:mm:ss')+"'")]]></method>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["StockLocationId"]).replace('@FinancialDataDateTime', "'"+Formatter.format(params["FinancialDataDateTime"],'MM/dd/yyyy HH:mm:ss')+"'").replace('@IncludeOutOfStock', params["IncludeOutOfStock"].value == false ? 'FALSE' : 'TRUE')]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1383,6 +1397,7 @@ WHERE stock_location in (
                             ON sll.parent_stock_location = stock_location_and_all_sub_stock_locations.id
     ) SELECT id FROM stock_location_and_all_sub_stock_locations)
   AND (Location.type_select != 3 OR (Location.type_select = 3 AND ? = '2'))
+  AND (@IncludeOutOfStock OR COALESCE(CASE WHEN Location.type_select = 3 THEN StockLocationLine.current_qty ELSE StockLocationLineHistoryQty.qty END, 0) <> 0)
 GROUP BY product.id, Unit.id, Currency.id, ProductFamily.id, StockConfig.id;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
