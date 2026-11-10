@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.i18n.I18n;
@@ -45,7 +46,7 @@ public class SaleOrderLineCheckServiceImpl implements SaleOrderLineCheckService 
   @Override
   public void qtyOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    checkOrderedQty(saleOrderLine);
+    checkOrderedQty(saleOrderLine, saleOrder);
   }
 
   @Override
@@ -60,11 +61,12 @@ public class SaleOrderLineCheckServiceImpl implements SaleOrderLineCheckService 
     return null;
   }
 
-  protected void checkOrderedQty(SaleOrderLine saleOrderLine) throws AxelorException {
+  protected void checkOrderedQty(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException {
     AppSale appSale = appSaleService.getAppSale();
     boolean isSplitEnabled = appSale.getIsQuotationAndOrderSplitEnabled();
 
-    if (!isSplitEnabled) {
+    if (!isSplitEnabled || !isQuotationLine(saleOrderLine, saleOrder)) {
       return;
     }
 
@@ -73,5 +75,12 @@ public class SaleOrderLineCheckServiceImpl implements SaleOrderLineCheckService 
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.SALE_QUOTATION_CHECK_ORDERED_QTY));
     }
+  }
+
+  protected boolean isQuotationLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    SaleOrder parent = saleOrder != null ? saleOrder : saleOrderLine.getSaleOrder();
+    return parent == null
+        || parent.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION
+        || parent.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION;
   }
 }
