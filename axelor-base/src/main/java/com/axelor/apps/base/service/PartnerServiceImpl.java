@@ -36,6 +36,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.partner.registrationnumber.RegistrationCodeHelper;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -703,14 +704,16 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public String checkIfRegistrationCodeExists(Partner partner) {
     String message = "";
-    String registrationCode = partner.getRegistrationCode();
+    String registrationCode =
+        RegistrationCodeHelper.normalizeRegistrationCode(partner.getRegistrationCode());
     if (StringUtils.isBlank(registrationCode)) {
       return message;
     }
-    registrationCode = registrationCode.replaceAll("\\s+", "");
     Query<Partner> query = partnerRepo.all();
     StringBuilder filter =
-        new StringBuilder("REPLACE(self.registrationCode, ' ', '') = :registrationCode");
+        new StringBuilder(
+            RegistrationCodeHelper.getNormalizedRegistrationCodeExpression("self.registrationCode")
+                + " = :registrationCode");
     if (partner.getId() != null) {
       filter.append(" AND self.id != :id");
     }
