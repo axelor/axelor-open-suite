@@ -20,6 +20,7 @@ package com.axelor.apps.sale.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.i18n.I18n;
@@ -30,6 +31,12 @@ public class SaleOrderLineListener {
 
   @PreRemove
   public void preRemove(SaleOrderLine saleOrderLine) throws AxelorException {
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    if (saleOrder != null && saleOrder.getOriginSaleQuotation() != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.SALE_ORDER_LINE_FROM_QUOTATION_CANNOT_BE_DELETED));
+    }
     if (saleOrderLine.getOrderedQty().compareTo(BigDecimal.ZERO) > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
