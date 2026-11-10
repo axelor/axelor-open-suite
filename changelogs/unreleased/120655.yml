@@ -1,0 +1,3 @@
+---
+title: "Move: duplicating a move now relinks the copied analytic reverse and revision lines to the copied original lines, so a new analytic revision of the copy no longer reverses an already revised line twice."
+module: axelor-account
