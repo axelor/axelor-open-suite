@@ -156,6 +156,7 @@ public class SaleOrderSplitServiceImpl implements SaleOrderSplitService {
       throws AxelorException {
     SaleOrderLine copySaleOrderLine = saleOrderLineRepository.copy(saleOrderLineToCopy, true);
     copySaleOrderLine.setQty(qtyToOrder);
+    copySaleOrderLine.setOrderedQty(BigDecimal.ZERO);
     copySaleOrderLine.setSaleOrder(null);
     saleOrderLineOnChangeService.qtyOnChange(copySaleOrderLine, confirmedSaleOrder, null);
     saleOrderLineRepository.save(copySaleOrderLine);

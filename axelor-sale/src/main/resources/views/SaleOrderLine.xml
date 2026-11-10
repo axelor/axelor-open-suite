@@ -353,7 +353,8 @@
             readonlyIf="$availabiltyRequest || ($isReadOnly !== false &amp;&amp; !$get('saleOrder.orderBeingEdited'))"
             validIf="$qtyValid !== false" x-scale="$nbDecimalDigitForQty"/>
           <field name="orderedQty" colSpan="3" x-scale="$nbDecimalDigitForQty"
-            if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled" readonly="true"/>
+            if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled" readonly="true"
+            hideIf="$get('saleOrder.statusSelect') &gt;= 3"/>
           <field name="unit" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable"
             onChange="action-sale-order-line-method-unit-onchange" requiredIf="typeSelect == 0"

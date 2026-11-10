@@ -684,6 +684,7 @@
 "The total amount of quotation is zero.",,,
 "The width can be specified as percentage or fixed value.The fix width can be either in \'px\' or \'em\', \'px\' is assumed if not specified.",,,
 "There are lines with a discount superior to the maximal authorized discount.",,,
+"This line comes from the quotation and cannot be deleted. To remove it from the order, set its quantity to 0.",,,
 "This Year To Date",,,
 "This configuration blocks the creation of orders, or ignores missing products, if there are products missing from the cart.",,,
 "This configuration enables you to recalculate line prices using a quotation. The recalculation will take into account pricing, if any, then the partner's price lists.",,,

@@ -209,4 +209,7 @@ public final class SaleExceptionMessage {
 
   public static final String SALE_QUOTATION_DELETE_LINE_WITH_ORDERED_QTY_ERROR = /*$$(*/
       "You can not delete lines with an ordered quantity superior to 0." /*)*/;
+
+  public static final String SALE_ORDER_LINE_FROM_QUOTATION_CANNOT_BE_DELETED = /*$$(*/
+      "This line comes from the quotation and cannot be deleted. To remove it from the order, set its quantity to 0." /*)*/;
 }

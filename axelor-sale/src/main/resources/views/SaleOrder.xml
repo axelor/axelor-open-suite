@@ -1582,10 +1582,16 @@
       expr="eval: __config__.app.getApp('base')?.enableTradingNamesManagement"/>
   </action-record>
 
+  <action-attrs name="action-sale-order-attrs-hide-ordered-qty">
+    <attribute name="hidden" for="saleOrderLineList.orderedQty"
+      expr="eval: statusSelect &gt;= 3"/>
+  </action-attrs>
+
   <action-group name="action-group-sale-saleorder-onload">
     <action name="action-sale-order-method-onload"/>
     <action name="action-sale-order-attrs-collapse-specific-settings-group"/>
     <action name="action-sale-order-attrs-in-ati"/>
+    <action name="action-sale-order-attrs-hide-ordered-qty"/>
     <action name="action-sale-order-attrs-hidden-bank-details"/>
     <action name="action-sale-order-record-project-default-fields"
       if="__config__.app.isApp('business-project')"/>
