@@ -1,0 +1,3 @@
+---
+title: "Accounting report: fixed the account type filter not being applied when printing the partner balance."
+module: axelor-account
