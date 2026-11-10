@@ -127,17 +127,21 @@
 		SELECT
 			SUM(_line.ex_tax_total) AS _turn_over,
 			DATE_PART('year',_order.confirmation_date_time) AS _year,
-			_line.product_name AS _product
+			COALESCE(_prod.full_name, _line.product_name) AS _product
 		FROM
 			sale_sale_order AS _order
 		LEFT JOIN
 			sale_sale_order_line AS _line
 			ON _line.sale_order = _order.id
+		LEFT JOIN
+			base_product AS _prod
+			ON _prod.id = _line.product
 		JOIN
 			auth_user AS _user ON _user.id = :__user__
 		WHERE
 			_order.status_select in (3,4)
 			AND _order.company = _user.active_company
+			AND _line.type_select = 0
 			AND ( ( DATE(_order.confirmation_date_time) >= TO_DATE(DATE_PART('year',CURRENT_DATE - INTERVAL '1 year') || '-01-01','YYYY-MM-DD')
 			        AND DATE(_order.confirmation_date_time) <= DATE(CURRENT_DATE - INTERVAL '1 year'))
 			      OR
