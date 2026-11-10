@@ -43,7 +43,12 @@ import com.axelor.inject.Beans;
 import jakarta.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveManagementRepository extends MoveRepository {
@@ -101,6 +106,53 @@ public class MoveManagementRepository extends MoveRepository {
     }
 
     return copy;
+  }
+
+  /**
+   * A duplicated move keeps the origin link of its reverse and revision analytic lines on the lines
+   * of the source move. The link is made again on the copied original line (same axis, account,
+   * amount and percentage), or cleared when there is none, so that a new analytic revision still
+   * sees the original line as already revised. The copy cannot do it, as its lines are not saved
+   * yet and could not be sent to the client as a reference.
+   */
+  public void relinkOriginAnalyticMoveLines(List<AnalyticMoveLine> analyticMoveLineList) {
+    Map<Long, AnalyticMoveLine> copyByOriginId = new HashMap<>();
+    Set<AnalyticMoveLine> usedOriginalSet = new HashSet<>();
+
+    for (AnalyticMoveLine line : analyticMoveLineList) {
+      AnalyticMoveLine origin = line.getOriginAnalyticMoveLine();
+      if (origin == null || origin.getId() == null || isInList(origin, analyticMoveLineList)) {
+        continue;
+      }
+      if (!copyByOriginId.containsKey(origin.getId())) {
+        AnalyticMoveLine copiedOriginal =
+            analyticMoveLineList.stream()
+                .filter(l -> l.getSubTypeSelect() == origin.getSubTypeSelect())
+                .filter(l -> !usedOriginalSet.contains(l) && isSameDistribution(l, origin))
+                .findFirst()
+                .orElse(null);
+        if (copiedOriginal != null) {
+          usedOriginalSet.add(copiedOriginal);
+        }
+        copyByOriginId.put(origin.getId(), copiedOriginal);
+      }
+      line.setOriginAnalyticMoveLine(copyByOriginId.get(origin.getId()));
+    }
+  }
+
+  protected boolean isInList(AnalyticMoveLine line, List<AnalyticMoveLine> analyticMoveLineList) {
+    return analyticMoveLineList.stream().anyMatch(l -> line.getId().equals(l.getId()));
+  }
+
+  protected boolean isSameDistribution(AnalyticMoveLine line, AnalyticMoveLine other) {
+    return Objects.equals(line.getAnalyticAxis(), other.getAnalyticAxis())
+        && Objects.equals(line.getAnalyticAccount(), other.getAnalyticAccount())
+        && line.getAmount() != null
+        && other.getAmount() != null
+        && line.getAmount().compareTo(other.getAmount()) == 0
+        && line.getPercentage() != null
+        && other.getPercentage() != null
+        && line.getPercentage().compareTo(other.getPercentage()) == 0;
   }
 
   public void resetMoveLine(
@@ -185,6 +237,7 @@ public class MoveManagementRepository extends MoveRepository {
           moveLineControlService.validateMoveLine(moveLine);
           List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
           if (analyticMoveLineList != null) {
+            relinkOriginAnalyticMoveLines(analyticMoveLineList);
             for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
               analyticMoveLine.setAccount(moveLine.getAccount());
               analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
