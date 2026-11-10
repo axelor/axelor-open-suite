@@ -772,7 +772,7 @@
 661810;661800;"Intérêts des dettes commerciales";"FRA_PCG2000";"true";0;;;;;;;0;"false";"NDAS";"true";;;;;;1
 661880;661800;"Intérêts des dettes diverses";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 664000;660;"Pertes sur créances liées à des participations";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
-665000;660;"Escomptes accordés";"FRA_PCG2000";"true";2;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
+665000;660;"Escomptes accordés";"FRA_PCG2000";"true";2;;;;"true";;;1;"false";"NDAS";"true";;;;;;1
 666000;660;"Pertes de change financières";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 667000;660;"Charges sur cession d'éléments financiers";"FRA_PCG2000";"true";2;;;;;;;0;"false";"NDAS";"true";;;;;;1
 668000;660;"Autres charges financières";"FRA_PCG2000";"true";2;;;;"true";;;2;"false";"NDAS";"true";;;;;;1
@@ -894,7 +894,7 @@
 763100;763000;"Revenus des créances commerciales ";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
 763800;763000;"Revenus des créances diverses";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
 764000;760;"Revenus des valeurs mobilières de placement";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
-765000;760;"Escomptes obtenus";"FRA_PCG1000";"true";1;;;;"true";;;0;"false";"NDAS";"true";;;;;;1
+765000;760;"Escomptes obtenus";"FRA_PCG1000";"true";1;;;;"true";;;1;"false";"NDAS";"true";;;;;;1
 766000;760;"Gains de change financiers";"FRA_PCG1000";"true";1;;;;;;;0;"false";"NDAS";"true";;;;;;1
 767000;760;"Produits sur cession d'éléments financiers";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
 768000;760;"Autres produits financiers";"FRA_PCG1000";"true";1;;;;"true";;"N_C";0;"false";"NDAS";"true";;;;;;1
