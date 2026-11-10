@@ -27,11 +27,23 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AccountAccountRepository extends AccountRepository {
+
+  @Override
+  public Map<String, Object> validate(Map<String, Object> json, Map<String, Object> context) {
+    // The embedded template editor of the account form submits {id: null} instead of null once
+    // the template has been cleared, which would be persisted as a new template without name.
+    if (Boolean.FALSE.equals(json.get("analyticDistributionAuthorized"))
+        && json.get("analyticDistributionTemplate") != null) {
+      json.put("analyticDistributionTemplate", null);
+    }
+    return super.validate(json, context);
+  }
 
   @Override
   public Account save(Account account) {
