@@ -179,4 +179,20 @@ public interface UserService {
   void setActiveCompany(User user, Company company);
 
   void setTradingName(User user, TradingName tradingName);
+
+  /**
+   * Copies the email address of the partner of the given user into its email, unless another user
+   * already uses this address.
+   *
+   * @param user the user
+   */
+  void setEmailFromPartner(User user);
+
+  /**
+   * Checks that no other user uses the email of the given user.
+   *
+   * @param user the user
+   * @throws AxelorException if the email is already used by another user
+   */
+  void checkEmailUnicity(User user) throws AxelorException;
 }
