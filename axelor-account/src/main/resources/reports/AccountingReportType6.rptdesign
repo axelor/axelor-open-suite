@@ -405,6 +405,7 @@ left outer join account_account as ParentAccount6 on (ParentAccount5.parent_acco
 
 left outer join account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 left outer join account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
+left outer join account_accounting_report_account_type_set as AccountTypeSet on (AccountTypeSet.account_accounting_report = AccountingReport.id)
 
 left outer join account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
 left outer join account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
@@ -429,6 +430,7 @@ or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = Parent
 or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
 or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account) AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
+(AccountTypeSet.account_type_set IS NULL OR AccountTypeSet.account_type_set = Account.account_type) AND
 (ReportAccountTagSet.account_tag_set IS NULL OR AccountTagSet.account_account IN (Account.id, ParentAccount.id, ParentAccount2.id, ParentAccount3.id, ParentAccount4.id, ParentAccount5.id, ParentAccount6.id, ParentAccount6.parent_account)) AND
 (ReportPartnerTagSet.partner_tag_set IS NULL OR PartnerTagSet.base_partner = MoveLine.partner) AND
 
