@@ -25,7 +25,7 @@ import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.ObjectFactory;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.PaymentTypeInformation26;
 import com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_09.ServiceLevel8Choice;
 import com.axelor.apps.base.db.Currency;
-import jakarta.inject.Inject;
+import com.google.inject.Inject;
 
 /** Generates the pain.001.001.09 file of an international credit transfer (XCT). */
 public class BankOrderFile00100109XCTService extends BankOrderFile00100109Service {
