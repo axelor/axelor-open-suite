@@ -57,6 +57,7 @@ import javax.xml.datatype.DatatypeFactory;
 public class BankOrderFile00100109Service extends BankOrderFileService {
 
   protected static final String BIC_NOT_PROVIDED = "NOTPROVIDED";
+  protected static final String SERVICE_LEVEL_SEPA = "SEPA";
 
   protected BankOrderAddressService bankOrderAddressService;
 
@@ -81,11 +82,7 @@ public class BankOrderFile00100109Service extends BankOrderFileService {
 
     ObjectFactory factory = new ObjectFactory();
 
-    ServiceLevel8Choice svcLvl = factory.createServiceLevel8Choice();
-    svcLvl.setCd("SEPA");
-
-    PaymentTypeInformation26 pmtTpInf = factory.createPaymentTypeInformation26();
-    pmtTpInf.getSvcLvl().add(svcLvl);
+    PaymentTypeInformation26 pmtTpInf = createPaymentTypeInformation(factory);
 
     // Payer
     PartyIdentification135 dbtr = factory.createPartyIdentification135();
@@ -152,9 +149,7 @@ public class BankOrderFile00100109Service extends BankOrderFileService {
       pmtId.setEndToEndId(bankOrderLine.getSequence());
 
       // Amount
-      instdAmt = factory.createActiveOrHistoricCurrencyAndAmount();
-      instdAmt.setCcy(companyCurrency.getCodeISO());
-      instdAmt.setValue(bankOrderLine.getCompanyCurrencyAmount());
+      instdAmt = createInstructedAmount(factory, bankOrderLine);
 
       amt = factory.createAmountType4Choice();
       amt.setInstdAmt(instdAmt);
@@ -169,12 +164,9 @@ public class BankOrderFile00100109Service extends BankOrderFileService {
               bankOrderAddressService.createReceiverPostalAddress(
                   bankOrderLine, bankOrderFileFormat)));
 
-      // IBAN
-      iban = factory.createAccountIdentification4Choice();
-      iban.setIBAN(receiverBankDetails.getIban());
-
+      // Account
       cbtrAcct = factory.createCashAccount38();
-      cbtrAcct.setId(iban);
+      cbtrAcct.setId(createCreditorAccountIdentification(factory, receiverBankDetails));
 
       // BIC
       finInstnId = factory.createFinancialInstitutionIdentification18();
@@ -257,6 +249,56 @@ public class BankOrderFile00100109Service extends BankOrderFileService {
     fileToCreate = factory.createDocument(xml);
 
     return super.generateFile();
+  }
+
+  /**
+   * Creates the payment type information of the payment instruction. For a SEPA credit transfer,
+   * the service level is SEPA.
+   *
+   * @param factory the pain.001.001.09 object factory
+   * @return the payment type information
+   */
+  protected PaymentTypeInformation26 createPaymentTypeInformation(ObjectFactory factory) {
+
+    ServiceLevel8Choice svcLvl = factory.createServiceLevel8Choice();
+    svcLvl.setCd(SERVICE_LEVEL_SEPA);
+
+    PaymentTypeInformation26 pmtTpInf = factory.createPaymentTypeInformation26();
+    pmtTpInf.getSvcLvl().add(svcLvl);
+    return pmtTpInf;
+  }
+
+  /**
+   * Creates the instructed amount of a transaction. For a SEPA credit transfer, the amount is sent
+   * in the company currency.
+   *
+   * @param factory the pain.001.001.09 object factory
+   * @param bankOrderLine the bank order line
+   * @return the instructed amount
+   */
+  protected ActiveOrHistoricCurrencyAndAmount createInstructedAmount(
+      ObjectFactory factory, BankOrderLine bankOrderLine) {
+
+    ActiveOrHistoricCurrencyAndAmount instdAmt = factory.createActiveOrHistoricCurrencyAndAmount();
+    instdAmt.setCcy(companyCurrency.getCodeISO());
+    instdAmt.setValue(bankOrderLine.getCompanyCurrencyAmount());
+    return instdAmt;
+  }
+
+  /**
+   * Creates the creditor account identification. For a SEPA credit transfer, the account is
+   * identified by its IBAN.
+   *
+   * @param factory the pain.001.001.09 object factory
+   * @param receiverBankDetails the receiver bank details
+   * @return the creditor account identification
+   */
+  protected AccountIdentification4Choice createCreditorAccountIdentification(
+      ObjectFactory factory, BankDetails receiverBankDetails) {
+
+    AccountIdentification4Choice accountId = factory.createAccountIdentification4Choice();
+    accountId.setIBAN(receiverBankDetails.getIban());
+    return accountId;
   }
 
   /**
