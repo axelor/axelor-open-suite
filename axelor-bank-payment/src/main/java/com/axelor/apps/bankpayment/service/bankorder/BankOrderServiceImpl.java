@@ -36,6 +36,7 @@ import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderF
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100103Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100109Service;
+import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFile00100109XCTService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160DCOService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB160ICTService;
 import com.axelor.apps.bankpayment.service.bankorder.file.transfer.BankOrderFileAFB320XCTService;
@@ -173,6 +174,10 @@ public class BankOrderServiceImpl implements BankOrderService {
 
       case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_09_SCT:
         file = new BankOrderFile00100109Service(bankOrder).generateFile();
+        break;
+
+      case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_09_XCT:
+        file = new BankOrderFile00100109XCTService(bankOrder).generateFile();
         break;
 
       case BankOrderFileFormatRepository.FILE_FORMAT_PAIN_XXX_CFONB320_XCT:
