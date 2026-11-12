@@ -35,6 +35,7 @@ public final class BankOrderAddressFormatHelper {
           BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SBB,
           BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SDD,
           BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_09_SCT,
+          BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_09_XCT,
           BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_08_SBB,
           BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_08_SDD);
 
@@ -49,6 +50,7 @@ public final class BankOrderAddressFormatHelper {
           BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_02_SCT,
           BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_03_SCT,
           BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_09_SCT,
+          BankOrderFileFormatRepository.FILE_FORMAT_PAIN_001_001_09_XCT,
           BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SDD,
           BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_01_SBB,
           BankOrderFileFormatRepository.FILE_FORMAT_PAIN_008_001_02_SDD,
