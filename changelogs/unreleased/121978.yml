@@ -1,0 +1,28 @@
+---
+title: "Bank order: added the pain.001.001.09 international credit transfer export."
+module: axelor-bank-payment
+developer: |
+  New bank order file format pain.001.001.09.xct (international credit transfer, IBAN only), with
+  a structured postal address and a transfer currency that can differ from the bank details
+  currency. The init data now also sets allowOrderCurrDiffFromBankDetails on every file format.
+
+  Existing installations must run the following migration script, which sets
+  allowOrderCurrDiffFromBankDetails to false on the existing file formats where it is not filled,
+  and creates the pain.001.001.09.xct file format when missing:
+
+  ```sql
+  UPDATE bankpayment_bank_order_file_format
+      SET allow_order_curr_diff_from_bank_details = false
+      WHERE allow_order_curr_diff_from_bank_details IS NULL;
+
+  INSERT INTO bankpayment_bank_order_file_format
+      (id, version, created_on, import_id, order_file_format_select, order_type_select, currency,
+       name, description, file_generation_supported, bank_details_type_select,
+       allow_order_curr_diff_from_bank_details, address_format_select)
+  SELECT nextval('bankpayment_bank_order_file_format_seq'), 0, now(), '39', 'pain.001.001.09.xct',
+         3, (SELECT id FROM base_currency WHERE code = 'EUR'),
+         'pain.001.001.09.xct - Virement international',
+         'Remise de virement international - Version 9', true, '1', true, 'structured'
+  WHERE NOT EXISTS (SELECT 1 FROM bankpayment_bank_order_file_format
+                    WHERE order_file_format_select = 'pain.001.001.09.xct');
+  ```
