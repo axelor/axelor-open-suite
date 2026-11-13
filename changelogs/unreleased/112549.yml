@@ -1,3 +1,0 @@
----
-title: "Project: extracted functional blocks in ProjectManagementRepository.save() into overridable protected sub-methods."
-module: axelor-project

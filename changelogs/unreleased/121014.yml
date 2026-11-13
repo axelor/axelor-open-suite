@@ -1,7 +1,0 @@
----
-title: "Accounting batch: fixed the 'Accounting cut-off' batch for prepaid expenses and deferred incomes adding the amount of a move line booked on the opposite side (such as a discount line or a credit note line) instead of deducting it."
-module: axelor-account
-developer: |
-  `AccountingCutOffServiceImpl#recomputeAnalyticPercentage(MoveLine)` has been removed and replaced by
-  `AccountingCutOffServiceImpl#addSignedAmountToCutOffMoveLine(MoveLine, BigDecimal, BigDecimal)`.
-  The analytic move lines of a generated cut-off move line are now computed from the netted amount of the line.

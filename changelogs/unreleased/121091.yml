@@ -1,9 +1,0 @@
----
-title: "Bank statement: an already imported statement no longer aborts the import of the other statements of the file, it is skipped and traced."
-module: axelor-bank-payment
-developer: |
-  BankStatementImportCheckServiceImpl: added the BankStatementDateService and TraceBackRepository constructor parameters.
-  BankStatementImportCheckServiceImpl: removed the isAlreadyImported(BankStatement, BankDetails, boolean) method, replaced by removeAlreadyImportedStatements(BankStatement, BankDetails).
-  BankStatementImportCheckServiceImpl: removed the bankStatementLineAlreadyExists(List<BankStatementLine>) method, replaced by isAlreadyImportedStatement(List<BankStatementLine>) which also compares the initial and final balance amounts.
-  BankStatementImportCheckService: added countSkippedStatements(BankStatement, ZonedDateTime).
-  BankStatementLineDeleteService: added deleteBankStatementLines(List<BankStatementLine>).

@@ -1,3 +1,0 @@
----
-title: "Contract: fixed error when terminating a contract whose current version is not ongoing."
-module: axelor-contract

@@ -1,3 +1,0 @@
----
-title: "Sale order: fixed an error when confirming an order with several lines to produce while automatic planning of generated manufacturing orders is enabled."
-module: axelor-production

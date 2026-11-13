@@ -1,3 +1,0 @@
----
-title: "Payment: fixed the error message on a missing foreign exchange gain or loss account, which displayed 'Warning' instead of the company name."
-module: axelor-account

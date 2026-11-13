@@ -1,7 +1,0 @@
----
-title: "Fleet: Remove an unused vehicle image action."
-module: axelor-fleet
-developer: |
-  ```sql
-  DELETE FROM meta_action WHERE name = 'action-method-set-image-in-vehicle';
-  ```

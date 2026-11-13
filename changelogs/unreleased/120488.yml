@@ -1,3 +1,0 @@
----
-title: "Ticket: fixed SLA policies defined with a priority only (no team and no ticket type) never being applied to tickets, and the number of late tickets always displayed as 0 on the client portal."
-module: axelor-helpdesk

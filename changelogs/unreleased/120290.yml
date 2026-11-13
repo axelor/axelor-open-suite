@@ -1,3 +1,0 @@
----
-title: "Account configuration: fixed the error 'No such property: size' preventing to save the accounting configuration of a company managing analytic accounting."
-module: axelor-account

@@ -1,3 +1,0 @@
----
-title: "Sale order: fixed the invoicing wizard offering a timetable already invoiced by an invoice not ventilated yet, which led to invoice it twice."
-module: axelor-supplychain

@@ -1,3 +1,0 @@
----
-title: "Purchase order line: fixed the replace type price list price not applied to the unit price when the discount is included in the unit price."
-module: axelor-purchase
