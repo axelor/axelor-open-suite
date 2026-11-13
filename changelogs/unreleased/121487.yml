@@ -1,3 +1,0 @@
----
-title: "Global tracking: fixed errors in processes reusing their records after saving 20 records or more at once."
-module: axelor-base

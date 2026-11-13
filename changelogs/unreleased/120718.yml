@@ -1,6 +1,0 @@
----
-title: "Debt recovery: fixed the reminder level going back to the first step after the oldest invoice was paid."
-module: axelor-account
-developer: |
-  `DebtRecoveryService.isInvoiceSetNew(DebtRecovery, LocalDate)` now also takes the invoice set of the
-  previous run: `isInvoiceSetNew(DebtRecovery, LocalDate, Set<Invoice>)`.

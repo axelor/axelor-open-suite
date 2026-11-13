@@ -1,3 +1,0 @@
----
-title: "Invoice: the 'Unpaid' and 'Unpaid Due' filters now only return ventilated invoices, and the 'With Payment Rejected' filter, which always returned nothing, was removed."
-module: axelor-account

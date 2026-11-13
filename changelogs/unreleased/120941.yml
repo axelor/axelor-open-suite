@@ -1,3 +1,0 @@
----
-title: "MAP : Fix the Suppliers, Customers and Prospects maps being very slow with thousands of geolocated partners."
-module: axelor-base

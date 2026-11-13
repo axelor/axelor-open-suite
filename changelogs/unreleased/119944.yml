@@ -1,3 +1,0 @@
----
-title: "Partner: fixed the duplicate registration number check skipped when editing a partner and missing numbers written with dots, slashes or dashes."
-module: axelor-base

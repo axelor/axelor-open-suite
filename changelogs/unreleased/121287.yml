@@ -1,3 +1,0 @@
----
-title: "Fixed asset: fixed the depreciation and derogatory moves generated on disposal being dated at the end of the fiscal year instead of the disposal date."
-module: axelor-account

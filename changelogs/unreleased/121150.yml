@@ -1,3 +1,0 @@
----
-title: "Configurator: fixed 'Duplicate with configurators' keeping the original product on lines whose product depends on a relational attribute."
-module: axelor-sale

@@ -1,3 +1,250 @@
+## [9.0.23] (2026-11-13)
+
+### Fixes
+#### Base
+
+* Upgrade to AOP 8.2.6
+* User: fixed the save failing on a raw SQL error when the email of the partner is already used by another user.
+* Email: fixed the `extend target not found` error on `$statusSelectTag` when loading the email form, by removing the status tag extension that duplicated the one of the message module.
+* Partner: fixed the error displayed when opening the indicators from a customer form.
+* ABC analysis: fixed cumulated percentages not reaching exactly 100 % on the last line, which could leave the last product without a class.
+* Product: the shipping costs product checkbox is now available on service products, a shipping costs product created from the sales configuration is a sellable service by default, and shipping cost lines are no longer included in deliveries and receptions whatever the product type.
+* Partner: fixed the duplicate registration number check skipped when editing a partner and missing numbers written with dots, slashes or dashes.
+* MAP : Fix the Suppliers, Customers and Prospects maps being very slow with thousands of geolocated partners.
+* Global tracking: fixed errors in processes reusing their records after saving 20 records or more at once.
+
+#### Account
+
+* Account: fixed the error when updating the status of several accounts, journals, analytic accounts or analytic journals at once.
+* Invoice: fixed invoice category not being filled for advance payment invoices.
+* Fixed asset: the depreciation end date is now filled from the depreciation schedule and displayed on the fixed asset form.
+* Account: fixed an error when saving an account after unchecking 'Analytic distribution authorized'.
+* Demo data: the financial discount accounts 665000 and 765000 now have a VAT system so that a payment session with a financial discount can be validated.
+* Move: duplicating a move now relinks the copied analytic reverse and revision lines to the copied original lines, so a new analytic revision of the copy no longer reverses an already revised line twice.
+* Invoice: the 'Unpaid' and 'Unpaid Due' filters now only return ventilated invoices, and the 'With Payment Rejected' filter, which always returned nothing, was removed.
+* Fixed asset: fixed the depreciation and derogatory moves generated on disposal being dated at the end of the fiscal year instead of the disposal date.
+* Doubtful customer batch: the generated doubtful customer moves are now linked to the batch, so the 'Account moves' button of the batch displays them.
+* Invoice: no longer print the technical texts `Used to load InvoiceLineProc`, `Used to load InvoiceProc` and `Used to load TimesheetLineProc` at the top of the invoice report in DOC and XLS, and in PDF when a header height is set.
+* Reimbursement batches: fixed supplier invoices and customer advances being reimbursed, customers still in debit being refunded, and generate reimbursements failing for every partner.
+* Debt recovery: fixed the reminder level going back to the first step after the oldest invoice was paid.
+* Invoice: fixed missing analytic, budget and cut-off dates on the non-deductible tax charged on the original account when several invoice lines use the same account.
+* Accounting report: fixed the account type filter not being applied when printing the partner balance.
+
+#### Bank Payment
+
+* Bank order: added the pain.001.001.09 international credit transfer export.
+
+#### Budget
+
+* Budget: fixed spelling and grammar mistakes in the French help of the option checking the available budget on purchase orders.
+
+#### Contract
+
+* Contract: fixed an error when clicking 'Show contract' on a contract version that is not a pending amendment.
+
+#### CRM
+
+* Event: fixed the search filters not working from the 'My CRM events' calendar menu.
+
+#### Human Resource
+
+* Project template: fixed the project creation failing when the user assigned to a task template has no employee.
+
+#### Production
+
+* Bill of materials: fixed 'Not manage stock' not set on bill of materials lines generated from sale orders and written on the component's bill of materials instead.
+* Manufacturing order: fixed stock moves and operations of merged manufacturing orders staying planned.
+* Bill of materials: fixed the missing quantity message on phases when the quantities shown are identical.
+* Manufacturing order: fixed the quantity to produce being divided by the bill of materials quantity when generated from the production order wizard, a sale order in editable tree display, the calculation of requirements or stock rules.
+
+#### Purchase
+
+* Purchase request: fixed the error displayed when emptying the product of a purchase request line.
+* Call for tender: fixed duplication copying the offers.
+* Call for tenders: fixed missing French translation of the supplier offer titles.
+
+#### Quality
+
+* Quality improvement: fixed the empty subject and content of the email sent for decision and action distributions.
+* QI action distribution: the generated file now uses the file name script of the printing template.
+
+#### Sale
+
+* Configurator: fixed 'Duplicate with configurators' keeping the original product on lines whose product depends on a relational attribute.
+* Sale order: fixed title and start of pack lines missing from orders generated by the quotation split.
+* Sale order: fixed the margin of foreign currency orders computed with today's exchange rate instead of the rate at the creation date.
+* Turnover study: fixed the turnover by product chart splitting a product by line description and counting pack totals twice.
+* Sale order : the order lines generated from a quotation no longer inherit the cumulated ordered quantity of the quotation line, the ordered quantity is only displayed on quotation lines, and the deletion of a line coming from the quotation stays blocked with a dedicated message.
+
+#### Stock
+
+* Stock move: fixed automatic tracking number selection (FIFO/LIFO) choosing tracking numbers in alphabetical order instead of their order of entry into stock.
+* Stock location: the 'Stock locations financial data' printing now respects the 'Include out of stock products' setting of the stock location.
+* Stock move: fixed a new backorder being created each time a partially realized stock move is planned again, without cancelling the previous one.
+* Tracking number: the barcode file of a tracking number created by a process is now named with the id of the tracking number instead of null.
+
+#### Supply Chain
+
+* Sale/Purchase order: fixed the invoiced amount of orders in a foreign currency when the exchange rate changed before invoicing.
+* Stock move line: fixed the unit price being recomputed on quantity change for lines without order.
+* MRP: fixed sale orders generated from a quotation not being selectable in the sale orders selector.
+* Invoice: fixed the ventilation error on an invoice line whose unit is converted into the stock move unit with a formula based on the product.
+* Timetable: fixed lines marked as invoiced before their invoice was ventilated and lines that could not be invoiced again after their invoice was cancelled.
+
+#### Talent
+
+* Training: fixed missing French translation of the employee list in the mass training registration popup.
+
+
+### Developer
+
+#### Base
+
+The following service interface has new methods:
+
+- `UserService#setEmailFromPartner(User)`.
+- `UserService#checkEmailUnicity(User)`.
+
+Custom implementations of `UserService` must implement the new interface methods.
+
+#### Account
+
+The depreciation end date of a fixed asset is now computed on save from its last economic
+depreciation line. The following script fills it on existing fixed assets:
+
+```sql
+UPDATE account_fixed_asset fixed_asset
+SET depreciation_end_date = last_depreciation.depreciation_end_date
+FROM (
+  SELECT fixed_asset_line.fixed_asset, MAX(fixed_asset_line.depreciation_date) AS depreciation_end_date
+  FROM account_fixed_asset_line fixed_asset_line
+  WHERE fixed_asset_line.fixed_asset IS NOT NULL
+  GROUP BY fixed_asset_line.fixed_asset
+) last_depreciation
+WHERE last_depreciation.fixed_asset = fixed_asset.id;
+```
+
+---
+
+`DoubtfulCustomerService.createDoubtFulCustomerMove(Move, Account, String)` and
+`DoubtfulCustomerService.createDoubtFulCustomerRejectMove(MoveLine, Account, String)` now return
+the generated move instead of `void`. Implementations overriding these methods must update their
+return type.
+
+---
+
+`DebtRecoveryService.isInvoiceSetNew(DebtRecovery, LocalDate)` now also takes the invoice set of the
+previous run: `isInvoiceSetNew(DebtRecovery, LocalDate, Set<Invoice>)`.
+
+---
+
+The non-deductible tax charged on the original account is now split into one move line per
+invoice line, weighted by the deductible tax of each line.
+
+The following service constructor has a new injected parameter:
+
+- `MoveLineCreateBudgetServiceImpl`: `BudgetDistributionService`.
+
+`MoveLineCreateServiceImpl#fillIfChargeOnOriginalAccount(Tax, Invoice, Move, MoveLine)` has been
+removed, use `MoveLineCreateServiceImpl#fillNonDeductibleTaxMoveLineWithInvoiceLine(MoveLine, InvoiceLine, Company)` instead.
+
+Added `TaxInvoiceLine#getInvoiceLineSetByTaxConfiguration()`.
+
+`MoveLineCreateService#createMoveLineForAutoTax` has a new `Map<MoveLine, Map<String, MoveLine>> nonDeductibleTaxMoveLineMap`
+parameter, holding the non-deductible tax move lines charged on the original account by charge move line.
+`MoveLineTaxServiceImpl#computeMoveLineTax` has the same new parameter.
+
+Implementations extending `MoveLineCreateBudgetServiceImpl` must accept and forward the new constructor parameter.
+
+#### Bank Payment
+
+New bank order file format pain.001.001.09.xct (international credit transfer, IBAN only), with
+a structured postal address and a transfer currency that can differ from the bank details
+currency. The init data now also sets allowOrderCurrDiffFromBankDetails on every file format.
+
+Existing installations must run the following migration script, which sets
+allowOrderCurrDiffFromBankDetails to false on the existing file formats where it is not filled,
+and creates the pain.001.001.09.xct file format when missing:
+
+```sql
+UPDATE bankpayment_bank_order_file_format
+    SET allow_order_curr_diff_from_bank_details = false
+    WHERE allow_order_curr_diff_from_bank_details IS NULL;
+
+INSERT INTO bankpayment_bank_order_file_format
+    (id, version, created_on, import_id, order_file_format_select, order_type_select, currency,
+     name, description, file_generation_supported, bank_details_type_select,
+     allow_order_curr_diff_from_bank_details, address_format_select)
+SELECT nextval('bankpayment_bank_order_file_format_seq'), 0, now(), '39', 'pain.001.001.09.xct',
+       3, (SELECT id FROM base_currency WHERE code = 'EUR'),
+       'pain.001.001.09.xct - Virement international',
+       'Remise de virement international - Version 9', true, '1', true, 'structured'
+WHERE NOT EXISTS (SELECT 1 FROM bankpayment_bank_order_file_format
+                  WHERE order_file_format_select = 'pain.001.001.09.xct');
+```
+
+#### Production
+
+Added `AppProductionService` as a constructor parameter of `ProdProcessService`.
+
+#### Sale
+
+Replaced `addEndOfPackLines(SaleOrder, SaleOrder)` by `addNonStandardLines(SaleOrder, SaleOrder)` in
+`SaleOrderSplitServiceImpl`.
+
+#### Stock
+
+The `StockLocation` report has a new `IncludeOutOfStock` parameter, filled by two new
+`BirtTemplateParameter` rows in the stock data-init (templates `StockLocation PDF` and
+`StockLocation XLSX`). Data-init is not replayed on an existing database: until the rows exist,
+the printing keeps its previous behavior (all lines). On an existing database, run:
+
+```sql
+INSERT INTO base_birt_template_parameter (id, version, name, type, value, birt_template, import_id)
+SELECT nextval('base_birt_template_parameter_seq'), 0, 'IncludeOutOfStock', 'boolean',
+       '${hasVariable(''IncludeOutOfStock'')?IncludeOutOfStock:stockLocation?.includeOutOfStock}',
+       t.id, CASE t.import_id WHEN '27' THEN '740' ELSE '741' END
+FROM base_birt_template t
+WHERE t.import_id IN ('27', '123')
+  AND NOT EXISTS (SELECT 1 FROM base_birt_template_parameter p
+                  WHERE p.birt_template = t.id AND p.name = 'IncludeOutOfStock');
+```
+
+---
+
+- Added `getBackorder(StockMove)` to `StockMoveService`.
+- Added `action-stock-move-method-check-backorder-before-plan` to the action-group
+  `action-group-stock-stockmove-plan-click`.
+
+#### Supply Chain
+
+`SaleOrderInvoiceServiceImpl.getAmountVentilated` and
+`PurchaseOrderInvoiceServiceImpl.getAmountVentilated` now return the amount in the order currency
+instead of the company currency.
+
+---
+
+Copied sale order lines, such as the lines of an order generated from a quotation, had an empty
+delivered quantity. The following script sets it to 0 on existing lines.
+
+```sql
+UPDATE sale_sale_order_line SET delivered_qty = 0 WHERE delivered_qty IS NULL;
+```
+
+---
+
+Script to fix existing timetable lines:
+
+```sql
+UPDATE supplychain_timetable t SET invoiced = false
+FROM account_invoice i
+WHERE t.invoice = i.id AND t.invoiced = true AND i.status_select IN (1, 2);
+
+UPDATE supplychain_timetable t SET invoiced = false, invoice = NULL
+FROM account_invoice i
+WHERE t.invoice = i.id AND i.status_select = 4;
+```
+
 ## [9.0.22] (2026-10-30)
 
 ### Fixes
@@ -3723,6 +3970,7 @@ Replaced the attrs action `action-purchase-order-line-attrs-delivery-panel` with
 
 * Project: improve task tree management.
 
+[9.0.23]: https://github.com/axelor/axelor-open-suite/compare/v9.0.22...v9.0.23
 [9.0.22]: https://github.com/axelor/axelor-open-suite/compare/v9.0.21...v9.0.22
 [9.0.21]: https://github.com/axelor/axelor-open-suite/compare/v9.0.20...v9.0.21
 [9.0.20]: https://github.com/axelor/axelor-open-suite/compare/v9.0.19...v9.0.20

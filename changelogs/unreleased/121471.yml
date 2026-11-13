@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed the ventilation error on an invoice line whose unit is converted into the stock move unit with a formula based on the product."
-module: axelor-supplychain
