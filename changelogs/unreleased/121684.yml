@@ -1,3 +1,0 @@
----
-title: "Stock move: fixed automatic tracking number selection (FIFO/LIFO) choosing tracking numbers in alphabetical order instead of their order of entry into stock."
-module: axelor-stock

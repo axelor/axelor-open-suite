@@ -1,3 +1,0 @@
----
-title: "Account: fixed an error when saving an account after unchecking 'Analytic distribution authorized'."
-module: axelor-account

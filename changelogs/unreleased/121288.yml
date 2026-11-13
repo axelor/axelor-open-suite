@@ -1,3 +1,0 @@
----
-title: "Manufacturing order: fixed the quantity to produce being divided by the bill of materials quantity when generated from the production order wizard, a sale order in editable tree display, the calculation of requirements or stock rules."
-module: axelor-production
