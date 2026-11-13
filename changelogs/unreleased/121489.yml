@@ -1,5 +1,0 @@
----
-title: "Bill of materials: fixed the missing quantity message on phases when the quantities shown are identical."
-module: axelor-production
-developer: |
-  Added `AppProductionService` as a constructor parameter of `ProdProcessService`.

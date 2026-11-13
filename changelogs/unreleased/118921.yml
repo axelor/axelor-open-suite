@@ -1,3 +1,0 @@
----
-title: "Project template: fixed the project creation failing when the user assigned to a task template has no employee."
-module: axelor-human-resource

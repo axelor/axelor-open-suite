@@ -1,3 +1,0 @@
----
-title: "Email: fixed the `extend target not found` error on `$statusSelectTag` when loading the email form, by removing the status tag extension that duplicated the one of the message module."
-module: axelor-base

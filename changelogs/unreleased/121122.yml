@@ -1,3 +1,0 @@
----
-title: "Tracking number: the barcode file of a tracking number created by a process is now named with the id of the tracking number instead of null."
-module: axelor-stock
