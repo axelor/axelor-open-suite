@@ -1,3 +1,40 @@
+## [8.4.39] (2026-11-13)
+
+### Fixes
+#### Base
+
+* Upgrade to AOP 7.4.14
+
+#### Production
+
+* Manufacturing order: fixed stock moves and operations of merged manufacturing orders staying planned.
+
+#### Sale
+
+* Sale order : the order lines generated from a quotation no longer inherit the cumulated ordered quantity of the quotation line, the ordered quantity is only displayed on quotation lines, and the deletion of a line coming from the quotation stays blocked with a dedicated message.
+
+#### Supply Chain
+
+* Invoice: fixed the ventilation error on an invoice line whose unit is converted into the stock move unit with a formula based on the product.
+* Timetable: fixed lines marked as invoiced before their invoice was ventilated and lines that could not be invoiced again after their invoice was cancelled.
+
+
+### Developer
+
+#### Supply Chain
+
+Script to fix existing timetable lines:
+
+```sql
+UPDATE supplychain_timetable t SET invoiced = false
+FROM account_invoice i
+WHERE t.invoice = i.id AND t.invoiced = true AND i.status_select IN (1, 2);
+
+UPDATE supplychain_timetable t SET invoiced = false, invoice = NULL
+FROM account_invoice i
+WHERE t.invoice = i.id AND i.status_select = 4;
+```
+
 ## [8.4.38] (2026-10-30)
 
 ### Fixes
@@ -3633,6 +3670,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.39]: https://github.com/axelor/axelor-open-suite/compare/v8.4.38...v8.4.39
 [8.4.38]: https://github.com/axelor/axelor-open-suite/compare/v8.4.37...v8.4.38
 [8.4.37]: https://github.com/axelor/axelor-open-suite/compare/v8.4.36...v8.4.37
 [8.4.36]: https://github.com/axelor/axelor-open-suite/compare/v8.4.35...v8.4.36
