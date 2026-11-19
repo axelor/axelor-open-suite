@@ -60,6 +60,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -808,9 +809,29 @@ public class BudgetServiceImpl implements BudgetService {
       if (budget.getPeriodDurationSelect() == null) {
         budget.setPeriodDurationSelect(0);
       }
-      budget.setAmountForGeneration(budget.getTotalAmountExpected());
+      budget.setAmountForGeneration(getAmountForRegeneration(budget));
       generatePeriods(budget);
+      budgetRepository.save(budget);
     }
+  }
+
+  /**
+   * Amount given to each line when the periods are regenerated after a dates update. A budget on a
+   * single period carries its whole expected amount on its only line. A budget split in several
+   * periods keeps its amount for each line, restored from its first line when it is empty, and
+   * never takes the expected amount of the budget, which is the sum of all its lines.
+   */
+  protected BigDecimal getAmountForRegeneration(Budget budget) {
+    if (budget.getPeriodDurationSelect() == BudgetRepository.BUDGET_PERIOD_SELECT_ONE_TIME) {
+      return budget.getTotalAmountExpected();
+    }
+    if (budget.getAmountForGeneration().signum() != 0) {
+      return budget.getAmountForGeneration();
+    }
+    return budget.getBudgetLineList().stream()
+        .min(Comparator.comparing(BudgetLine::getFromDate))
+        .map(BudgetLine::getAmountExpected)
+        .orElse(BigDecimal.ZERO);
   }
 
   @Override
