@@ -1,3 +1,10 @@
+## [8.5.34] (2026-11-19)
+
+### Fixes
+#### Supply Chain
+
+* Invoice: fixed the error preventing the ventilation and the cancellation of an invoice linked to a sale or purchase order.
+
 ## [8.5.33] (2026-11-13)
 
 ### Fixes
@@ -4784,6 +4791,7 @@ Removed CommonInvoiceService.createInvoiceLinesFromOrder Changed the parameter o
 * Bill of material: added default value for calculation quantity.
 * Manuf order: fixed relation with production order.
 
+[8.5.34]: https://github.com/axelor/axelor-open-suite/compare/v8.5.33...v8.5.34
 [8.5.33]: https://github.com/axelor/axelor-open-suite/compare/v8.5.32...v8.5.33
 [8.5.32]: https://github.com/axelor/axelor-open-suite/compare/v8.5.31...v8.5.32
 [8.5.31]: https://github.com/axelor/axelor-open-suite/compare/v8.5.30...v8.5.31
