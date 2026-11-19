@@ -1691,6 +1691,12 @@ SELECT * FROM SO;
                     <text-property name="displayName">packHideUnitAmounts</text-property>
                     <text-property name="heading">packHideUnitAmounts</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">eco_tax_mention</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">eco_tax_mention</text-property>
+                    <text-property name="heading">eco_tax_mention</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -1836,6 +1842,11 @@ SELECT * FROM SO;
                         <property name="position">26</property>
                         <property name="name">packHideUnitAmounts</property>
                         <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">27</property>
+                        <property name="name">eco_tax_mention</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -2023,6 +2034,13 @@ SELECT * FROM SO;
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">27</property>
+                    <property name="name">eco_tax_mention</property>
+                    <property name="nativeName">eco_tax_mention</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[WITH SOL AS (
       select * from sale_order_line_proc(cast(? as bigint))
@@ -2054,7 +2072,8 @@ SELECT
     SOL."showTotal",
     SOL."hideUnitAmounts",
     SOL."UnitCode",
-	SOL."packHideUnitAmounts"
+	SOL."packHideUnitAmounts",
+	SOL.eco_tax_mention
 FROM SOL
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN sale_sale_order SaleOrder ON (SOL."SaleOrderId" = SaleOrder.id)
@@ -2093,7 +2112,8 @@ SELECT
     BOOL_AND(SOL."showTotal") as "showTotal",
     BOOL_OR(SOL."hideUnitAmounts") as "hideUnitAmounts",
     SOL."UnitCode",
-	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts"
+	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts",
+	NULL as eco_tax_mention
 FROM SOL
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN sale_sale_order SaleOrder ON (SOL."SaleOrderId" = SaleOrder.id)
@@ -2135,7 +2155,8 @@ SELECT
     BOOL_AND(SOL."showTotal") as "showTotal",
     BOOL_OR(SOL."hideUnitAmounts") as "hideUnitAmounts",
     SOL."UnitCode",
-	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts"
+	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts",
+	NULL as eco_tax_mention
 FROM SOL
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN sale_sale_order SaleOrder ON (SOL."SaleOrderId" = SaleOrder.id)
@@ -2936,7 +2957,8 @@ RETURNS table("SaleOrderId" bigint, id bigint, "levelNo" int, "levelIndicator" v
     "product_category_code" varchar, sale_order_type_select int,
     "CustomerProductCode" varchar, "CustomerProductName" varchar,
     "EstimatedShippingDate" date, price_discounted numeric, "showTotal" boolean,
-    "hideUnitAmounts" boolean, "UnitCode" varchar, "packHideUnitAmounts" boolean) as
+    "hideUnitAmounts" boolean, "UnitCode" varchar, "packHideUnitAmounts" boolean,
+    eco_tax_mention varchar) as
 $func$
 BEGIN
 IF (SELECT true FROM pg_attribute WHERE attrelid = 'sale_sale_order'::regclass AND attname = 'sale_order_type_select') THEN
@@ -2987,7 +3009,8 @@ SELECT
     SOLine.is_hide_unit_amounts as "hideUnitAmounts",
     Unit.label_to_printing as "UnitCode",
 	(SELECT is_hide_unit_amounts from sale_sale_order_line as SOL
-	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts"
+	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts",
+	SOLine.eco_tax_mention
 
 from sale_sale_order as SaleOrder
 cross join studio_app_sale as AppSale
@@ -3042,7 +3065,8 @@ SELECT
     SOLine.is_hide_unit_amounts as "hideUnitAmounts",
     Unit.label_to_printing as "UnitCode",
 	(SELECT is_hide_unit_amounts from sale_sale_order_line as SOL
-	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts"
+	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts",
+	SOLine.eco_tax_mention
 
 from sale_sale_order as SaleOrder
 cross join studio_app_sale as AppSale
@@ -3105,7 +3129,8 @@ SELECT
     SOLine.is_hide_unit_amounts as "hideUnitAmounts",
     Unit.label_to_printing as "UnitCode",
 	(SELECT is_hide_unit_amounts from sale_sale_order_line as SOL
-	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts"
+	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts",
+	SOLine.eco_tax_mention
 
 from sale_sale_order as SaleOrder
 cross join studio_app_sale as AppSale
@@ -3160,7 +3185,8 @@ SELECT
     SOLine.is_hide_unit_amounts as "hideUnitAmounts",
     Unit.label_to_printing as "UnitCode",
 	(SELECT is_hide_unit_amounts from sale_sale_order_line as SOL
-	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts"
+	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts",
+	SOLine.eco_tax_mention
 
 from sale_sale_order as SaleOrder
 cross join studio_app_sale as AppSale
@@ -6414,6 +6440,12 @@ row["message_key"]
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
+                                <property name="name">eco_tax_mention</property>
+                                <text-property name="displayName">eco_tax_mention</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["eco_tax_mention"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
                                 <property name="name">quantity</property>
                                 <text-property name="displayName">quantity</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
@@ -7393,12 +7425,12 @@ else {
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">row["typeSelect"] != 0</expression>
+                                                    <expression name="valueExpr" type="javascript">row["typeSelect"] != 0 || (row["description"] == null &amp;&amp; (row["eco_tax_mention"] == null || row["eco_tax_mention"] == ""))</expression>
                                                 </structure>
                                             </list-property>
                                             <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I>]]></text-property>
+                                            <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">var out = (row["description"] != null) ? row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"") : ""; if (row["eco_tax_mention"] != null &amp;&amp; row["eco_tax_mention"] != "") { out += "<br/>" + row["eco_tax_mention"]; } out;</VALUE-OF></I>]]></text-property>
                                         </text>
                                         <text id="5375">
                                             <property name="fontSize">8pt</property>
@@ -7464,12 +7496,12 @@ else {
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">row["typeSelect"] == 0 || (row["enablePackMangement"] &amp;&amp; row["typeSelect"] == 3 &amp;&amp; !row["showTotal"])</expression>
+                                                    <expression name="valueExpr" type="javascript">row["typeSelect"] == 0 || (row["enablePackMangement"] &amp;&amp; row["typeSelect"] == 3 &amp;&amp; !row["showTotal"]) || (row["description"] == null &amp;&amp; (row["eco_tax_mention"] == null || row["eco_tax_mention"] == ""))</expression>
                                                 </structure>
                                             </list-property>
                                             <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I>]]></text-property>
+                                            <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">var out = (row["description"] != null) ? row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"") : ""; if (row["eco_tax_mention"] != null &amp;&amp; row["eco_tax_mention"] != "") { out += "<br/>" + row["eco_tax_mention"]; } out;</VALUE-OF></I>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4563">
