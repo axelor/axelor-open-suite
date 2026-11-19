@@ -1,0 +1,3 @@
+---
+title: "Global budget: fixed the amount of each line replaced by the expected amount when updating the dates, and recomputed the expected amount after the periods are regenerated."
+module: axelor-budget
