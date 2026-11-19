@@ -1,0 +1,11 @@
+---
+title: "Budget: fixed the simulated amount of the budget and of the global budget staying at 0 when an account move with a budget imputation is simulated."
+module: axelor-budget
+developer: |
+  `BudgetToolsServiceImpl#computeBudgetAmountMap` (used by `BudgetComputeServiceImpl#computeBudgetFieldsWithLines`
+  on every budget save, and by the budget form) now keeps the current `simulatedAmount` of the budget instead of
+  resetting it to zero, and computes `availableAmountWithSimulated` from it. The simulated amount is not derived from the
+  budget lines, it is set by `BudgetService#computeTotalSimulatedAmount` from the simulated moves.
+
+  Existing databases: the simulated amount of a budget that currently has simulated moves is corrected the next time one of
+  its moves is simulated, accounted in daybook or deleted. No migration script is provided.

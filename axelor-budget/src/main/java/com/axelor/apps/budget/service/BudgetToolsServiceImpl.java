@@ -311,6 +311,10 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
   public Map<String, BigDecimal> computeBudgetAmountMap(Budget budget) {
     Objects.requireNonNull(budget);
     Map<String, BigDecimal> amountByField = prepareAmountByFieldMap();
+    // The simulated amount comes from simulated moves, not from the budget lines: keep it.
+    amountByField.put(
+        "simulatedAmount",
+        Optional.ofNullable(budget.getSimulatedAmount()).orElse(BigDecimal.ZERO));
 
     if (ObjectUtils.isEmpty(budget.getBudgetLineList())) {
       return amountByField;
