@@ -445,7 +445,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
     String query =
         "SELECT SUM(CASE WHEN self.invoice.currency = :currency THEN self.exTaxTotal"
-            + " ELSE self.companyExTaxTotal * :rate END)"
+            + " ELSE (self.companyExTaxTotal * :rate) END)"
             + " FROM InvoiceLine as self"
             + " WHERE ((self.purchaseOrderLine.purchaseOrder.id = :purchaseOrderId AND self.invoice.purchaseOrder IS NULL)"
             + " OR self.invoice.purchaseOrder.id = :purchaseOrderId )"

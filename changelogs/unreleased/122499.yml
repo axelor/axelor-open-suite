@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed the error preventing the ventilation and the cancellation of an invoice linked to a sale or purchase order."
+module: axelor-supplychain

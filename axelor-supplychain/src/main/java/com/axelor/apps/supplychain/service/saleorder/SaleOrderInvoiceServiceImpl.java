@@ -820,7 +820,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     String query =
         "SELECT SUM(CASE WHEN self.invoice.currency = :currency THEN self.exTaxTotal"
-            + " ELSE self.companyExTaxTotal * :rate END)"
+            + " ELSE (self.companyExTaxTotal * :rate) END)"
             + " FROM InvoiceLine as self";
     query += " WHERE self.saleOrderLine.saleOrder.id = :saleOrderId";
     query += " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect";
