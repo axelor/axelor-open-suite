@@ -47,8 +47,6 @@
     </extend>
 
     <extend target="//button[@name='ventilateBtn']">
-      <attribute name="onClick" value="action-budget-invoice-group-ventilate-button"/>
-
       <insert position="after">
         <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
           onClick="action-budget-group-compute-budget-distribution" hidden="true"
@@ -56,11 +54,6 @@
           showIf="company.accountConfig.enableBudgetKey &amp;&amp; purchaseOrder == null &amp;&amp; (statusSelect == 1 || statusSelect == 2) &amp;&amp; (invoiceLineList &amp;&amp; invoiceLineList.length != 0)"
           icon="clipboard2-data-fill" readonlyIf="!invoiceLineList || invoiceLineList.length == 0"/>
       </insert>
-    </extend>
-
-    <extend target="//button[@name='validateAndVentilateBtn']">
-      <attribute name="onClick"
-        value="action-budget-invoice-group-validate-and-ventilate-button"/>
     </extend>
 
     <extend target="//field[@name='dueDate']">
@@ -73,22 +66,30 @@
     </extend>
   </form>
 
-  <action-group name="action-budget-invoice-group-ventilate-button">
+  <action-group name="action-invoice-group-ventilate"
+    id="action-budget-invoice-group-ventilate">
     <action name="action-invoice-method-budget-auto-compute-budget-distribution"
       if="__config__.app.isApp('budget')"/>
     <action name="action-invoice-method-budget-validate-ventilation"
       if="__config__.app.isApp('budget')"/>
     <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
-    <action name="action-invoice-group-ventilate"/>
+    <action name="action-invoice-method-set-supplier-invoice-number-and-origin-date"
+      if="(!supplierInvoiceNb || !originDate || (!printedPDF &amp;&amp; company.accountConfig.originalInvoiceRequiredOnSupplierInvoice)) &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2)"/>
+    <action name="action-invoice-group-ventilate-button"
+      if="(supplierInvoiceNb &amp;&amp; originDate &amp;&amp; (printedPDF || !company.accountConfig.originalInvoiceRequiredOnSupplierInvoice) &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 2)) || (operationTypeSelect == 3 || operationTypeSelect == 4)"/>
   </action-group>
 
-  <action-group name="action-budget-invoice-group-validate-and-ventilate-button">
+  <action-group name="action-invoice-group-validate-and-ventilate-onclick"
+    id="action-budget-invoice-group-validate-and-ventilate-onclick">
     <action name="action-invoice-method-budget-auto-compute-budget-distribution"
       if="__config__.app.isApp('budget')"/>
     <action name="action-invoice-method-budget-validate-ventilation"
       if="__config__.app.isApp('budget')"/>
     <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
-    <action name="action-invoice-group-validate-and-ventilate-onclick"/>
+    <action name="action-invoice-group-before-validate"/>
+    <action name="action-invoice-group-before-ventilate"/>
+    <action name="save"/>
+    <action name="action-invoice-method-validate-and-ventilate"/>
   </action-group>
 
   <action-method name="action-invoice-method-budget-auto-compute-budget-distribution">
