@@ -30,7 +30,7 @@ import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.base.service.tax.TaxRateService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
@@ -137,7 +137,7 @@ public class PurchaseOrderLineController {
 
     try {
       PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
-      TaxService taxService = Beans.get(TaxService.class);
+      TaxRateService taxRateService = Beans.get(TaxRateService.class);
 
       BigDecimal price =
           purchaseOrderLine.getProduct().getInAti()
@@ -185,7 +185,7 @@ public class PurchaseOrderLineController {
                 != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
           response.setValue(
               "discountAmount",
-              taxService.convertUnitPrice(
+              taxRateService.convertUnitPrice(
                   purchaseOrderLine.getProduct().getInAti(),
                   purchaseOrderLine.getTaxLineSet(),
                   (BigDecimal) discounts.get("discountAmount"),
@@ -218,7 +218,7 @@ public class PurchaseOrderLineController {
 
       response.setValue(
           "price",
-          Beans.get(TaxService.class)
+          Beans.get(TaxRateService.class)
               .convertUnitPrice(
                   true,
                   taxLineSet,
@@ -246,7 +246,7 @@ public class PurchaseOrderLineController {
 
       response.setValue(
           "inTaxPrice",
-          Beans.get(TaxService.class)
+          Beans.get(TaxRateService.class)
               .convertUnitPrice(
                   false,
                   taxLineSet,
@@ -278,7 +278,8 @@ public class PurchaseOrderLineController {
       BigDecimal inTaxPrice =
           price.add(
               price.multiply(
-                  Beans.get(TaxService.class).getTotalTaxRate(purchaseOrderLine.getTaxLineSet())));
+                  Beans.get(TaxRateService.class)
+                      .getTotalTaxRate(purchaseOrderLine.getTaxLineSet())));
 
       response.setValue("inTaxPrice", inTaxPrice);
 
