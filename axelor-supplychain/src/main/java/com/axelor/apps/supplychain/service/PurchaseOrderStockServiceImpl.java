@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
@@ -113,7 +114,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       ProductCompanyService productCompanyService,
-      TaxService taxService,
+      TaxAccountService taxAccountService,
       AppStockService appStockService,
       StockMoveLineStockLocationService stockMoveLineStockLocationService,
       StockMoveRepository stockMoveRepository) {
@@ -128,7 +129,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
     this.productCompanyService = productCompanyService;
-    this.taxService = taxService;
+    this.taxService = taxAccountService;
     this.appStockService = appStockService;
     this.stockMoveLineStockLocationService = stockMoveLineStockLocationService;
     this.stockMoveRepository = stockMoveRepository;

@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.service.invoice.generator;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
@@ -42,8 +43,9 @@ public class InvoiceLineOrderServiceImpl implements InvoiceLineOrderService {
   protected AppBaseService appBaseService;
 
   @Inject
-  public InvoiceLineOrderServiceImpl(TaxService taxService, AppBaseService appBaseService) {
-    this.taxService = taxService;
+  public InvoiceLineOrderServiceImpl(
+      TaxAccountService taxAccountService, AppBaseService appBaseService) {
+    this.taxService = taxAccountService;
     this.appBaseService = appBaseService;
   }
 

@@ -374,6 +374,8 @@ import com.axelor.apps.base.service.tax.TaxArchiveService;
 import com.axelor.apps.base.service.tax.TaxArchiveServiceImpl;
 import com.axelor.apps.base.service.tax.TaxEquivService;
 import com.axelor.apps.base.service.tax.TaxEquivServiceImpl;
+import com.axelor.apps.base.service.tax.TaxRateService;
+import com.axelor.apps.base.service.tax.TaxRateServiceImpl;
 import com.axelor.apps.base.service.theme.MetaThemeFetchService;
 import com.axelor.apps.base.service.theme.MetaThemeFetchServiceImpl;
 import com.axelor.apps.base.service.user.AuthServiceBaseImpl;
@@ -651,5 +653,6 @@ public class BaseModule extends AxelorModule {
     bind(MapToolService.class).to(MapToolServiceImpl.class);
     bind(PriceListLineRepository.class).to(PriceListLineManagementRepository.class);
     bind(TaxArchiveService.class).to(TaxArchiveServiceImpl.class);
+    bind(TaxRateService.class).to(TaxRateServiceImpl.class);
   }
 }
