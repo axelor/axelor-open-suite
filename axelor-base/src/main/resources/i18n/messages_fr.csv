@@ -705,6 +705,7 @@
 "Countries","Pays",,
 "Country","Pays",,
 "Country Code","Code Pays",,
+"Country code is not supported: %s","Le code pays n'est pas pris en charge : %s",,
 "Country filters","Filtres pays",,
 "Country name","Nom Pays",,
 "Country sub division","Etat",,

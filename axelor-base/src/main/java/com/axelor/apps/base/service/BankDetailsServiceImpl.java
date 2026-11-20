@@ -25,7 +25,9 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.exceptions.InvalidIbanException;
+import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.StringHelper;
 import de.speedbanking.iban.Iban;
 import de.speedbanking.iban.IbanRegistry;
@@ -180,7 +182,8 @@ public class BankDetailsServiceImpl implements BankDetailsService {
     String countryCode = iban == null || iban.length() < 2 ? null : iban.substring(0, 2);
     if (!Country.isAssigned(countryCode)) {
       throw new InvalidIbanException(
-          String.format("Country code is not supported: %s", countryCode));
+          String.format(
+              I18n.get(BaseExceptionMessage.BANK_DETAILS_IBAN_COUNTRY_NOT_SUPPORTED), countryCode));
     }
     if (IbanRegistry.getByCode(countryCode) == null) {
       return;
