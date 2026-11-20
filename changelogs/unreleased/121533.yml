@@ -1,0 +1,3 @@
+---
+title: "User: fixed the message asking to select an active company when creating a user, which did not say at which step to fill it in."
+module: axelor-base
