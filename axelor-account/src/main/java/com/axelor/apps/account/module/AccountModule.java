@@ -483,6 +483,7 @@ import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.apps.base.service.tax.AccountManagementServiceImpl;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
+import com.axelor.apps.base.service.tax.TaxRateServiceImpl;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.message.service.TemplateMessageServiceImpl;
 
@@ -1044,5 +1045,6 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceNoteService.class).to(InvoiceNoteServiceImpl.class);
     bind(InvoiceCategoryService.class).to(InvoiceCategoryServiceImpl.class);
     bind(StatusMassUpdateService.class).to(StatusMassUpdateServiceImpl.class);
+    bind(TaxRateServiceImpl.class).to(TaxRateServiceAccountImpl.class);
   }
 }

@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -115,7 +116,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.accountManagementService = Beans.get(AccountManagementAccountService.class);
     this.productCompanyService = Beans.get(ProductCompanyService.class);
     this.currencyScaleService = Beans.get(CurrencyScaleService.class);
-    this.taxService = Beans.get(TaxService.class);
+    this.taxService = Beans.get(TaxAccountService.class);
     this.currencyService = Beans.get(CurrencyService.class);
     this.accountingSituationService = Beans.get(AccountingSituationService.class);
     this.fiscalPositionAccountService = Beans.get(FiscalPositionAccountService.class);

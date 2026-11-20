@@ -43,6 +43,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.OrderLineTaxService;
+import com.axelor.apps.base.service.tax.TaxRateService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -93,6 +94,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   @Inject protected FiscalPositionService fiscalPositionService;
   @Inject protected OrderLineTaxService orderLineTaxService;
 
+  @Inject protected TaxRateService taxRateService;
+
   @Inject protected ProductPriceService productPriceService;
 
   @Deprecated private int sequence = 0;
@@ -117,7 +120,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     BigDecimal taxRate = BigDecimal.ZERO;
 
     if (CollectionUtils.isNotEmpty(purchaseOrderLine.getTaxLineSet())) {
-      taxRate = taxService.getTotalTaxRate(purchaseOrderLine.getTaxLineSet());
+      taxRate = taxRateService.getTotalTaxRate(purchaseOrderLine.getTaxLineSet());
     }
 
     if (!purchaseOrder.getInAti()) {
@@ -285,7 +288,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
         if (product.getInAti()) {
           inTaxPrice = discountPrice;
           price =
-              taxService.convertUnitPrice(
+              taxRateService.convertUnitPrice(
                   true,
                   line.getTaxLineSet(),
                   discountPrice,
@@ -293,7 +296,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
         } else {
           price = discountPrice;
           inTaxPrice =
-              taxService.convertUnitPrice(
+              taxRateService.convertUnitPrice(
                   false,
                   line.getTaxLineSet(),
                   discountPrice,
@@ -304,7 +307,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
           && (Integer) discounts.get("discountTypeSelect")
               != PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
         line.setDiscountAmount(
-            taxService.convertUnitPrice(
+            taxRateService.convertUnitPrice(
                 product.getInAti(),
                 line.getTaxLineSet(),
                 (BigDecimal) discounts.get("discountAmount"),
@@ -376,7 +379,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       if (purchaseOrder.getInAti()
           != (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany())) {
         price =
-            taxService.convertUnitPrice(
+            taxRateService.convertUnitPrice(
                 (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany()),
                 saleTaxLineSet,
                 ((BigDecimal)
@@ -667,18 +670,18 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       purchaseOrderLine.setInTaxTotal(
           currencyScaleService.getScaledValue(
               purchaseOrder,
-              taxService.convertUnitPrice(
+              taxRateService.convertUnitPrice(
                   false, taxLineSet, exTaxTotal, appBaseService.getNbDecimalDigitForUnitPrice())));
       purchaseOrderLine.setCompanyInTaxTotal(
           currencyScaleService.getCompanyScaledValue(
               purchaseOrder,
-              taxService.convertUnitPrice(
+              taxRateService.convertUnitPrice(
                   false,
                   taxLineSet,
                   companyExTaxTotal,
                   appBaseService.getNbDecimalDigitForUnitPrice())));
       purchaseOrderLine.setInTaxPrice(
-          taxService.convertUnitPrice(
+          taxRateService.convertUnitPrice(
               false, taxLineSet, purchasePrice, appBaseService.getNbDecimalDigitForUnitPrice()));
     }
     return purchaseOrderLineList;
@@ -777,12 +780,12 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       if (product.getInAti()) {
         inTaxPrice = discountPrice;
         price =
-            taxService.convertUnitPrice(
+            taxRateService.convertUnitPrice(
                 true, taxLineSet, discountPrice, appBaseService.getNbDecimalDigitForUnitPrice());
       } else {
         price = discountPrice;
         inTaxPrice =
-            taxService.convertUnitPrice(
+            taxRateService.convertUnitPrice(
                 false, taxLineSet, discountPrice, appBaseService.getNbDecimalDigitForUnitPrice());
       }
     }

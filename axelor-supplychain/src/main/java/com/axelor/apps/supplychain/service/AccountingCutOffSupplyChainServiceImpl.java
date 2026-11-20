@@ -537,7 +537,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
 
       if (CollectionUtils.isNotEmpty(taxLineSet)) {
         moveLine.setTaxLineSet(taxLineSet);
-        BigDecimal taxRate = taxService.getTotalTaxRateInPercentage(taxLineSet);
+        BigDecimal taxRate = taxAccountService.getTotalTaxRateInPercentage(taxLineSet);
         moveLine.setTaxRate(taxRate);
         moveLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
 

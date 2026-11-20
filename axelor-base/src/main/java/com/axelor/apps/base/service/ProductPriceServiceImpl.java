@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.base.service.tax.TaxRateService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -44,6 +45,7 @@ public class ProductPriceServiceImpl implements ProductPriceService {
   protected TaxService taxService;
   protected AccountManagementService accountManagementService;
   protected ProductPriceListService productPriceListService;
+  protected TaxRateService taxRateService;
 
   @Inject
   public ProductPriceServiceImpl(
@@ -53,7 +55,8 @@ public class ProductPriceServiceImpl implements ProductPriceService {
       AppBaseService appBaseService,
       AccountManagementService accountManagementService,
       FiscalPositionService fiscalPositionService,
-      ProductPriceListService productPriceListService) {
+      ProductPriceListService productPriceListService,
+      TaxRateService taxRateService) {
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
     this.appBaseService = appBaseService;
@@ -61,6 +64,7 @@ public class ProductPriceServiceImpl implements ProductPriceService {
     this.accountManagementService = accountManagementService;
     this.fiscalPositionService = fiscalPositionService;
     this.productPriceListService = productPriceListService;
+    this.taxRateService = taxRateService;
   }
 
   @Override
@@ -143,7 +147,7 @@ public class ProductPriceServiceImpl implements ProductPriceService {
       throws AxelorException {
     if ((Boolean) productCompanyService.get(product, "inAti", company) != resultInAti) {
       price =
-          taxService.convertUnitPrice(
+          taxRateService.convertUnitPrice(
               (Boolean) productCompanyService.get(product, "inAti", company),
               taxLineSet,
               price,
