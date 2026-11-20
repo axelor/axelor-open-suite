@@ -705,6 +705,7 @@
 "Countries",,,
 "Country",,,
 "Country Code",,,
+"Country code is not supported: %s",,,
 "Country filters",,,
 "Country name",,,
 "Country sub division",,,

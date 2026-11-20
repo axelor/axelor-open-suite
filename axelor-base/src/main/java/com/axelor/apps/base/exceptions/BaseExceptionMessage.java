@@ -230,6 +230,9 @@ public final class BaseExceptionMessage {
   public static final String BANK_DETAILS_2 = /*$$(*/
       "At least one iban code you have entered for this partner is not valid. Here is the list of invalid codes : %s" /*)*/;
 
+  public static final String BANK_DETAILS_IBAN_COUNTRY_NOT_SUPPORTED = /*$$(*/
+      "Country code is not supported: %s" /*)*/;
+
   /** General controller */
   public static final String GENERAL_1 = /*$$(*/ "No duplicate records found" /*)*/;
 

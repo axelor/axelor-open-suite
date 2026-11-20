@@ -32,6 +32,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.exceptions.InvalidIbanException;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.MapGoogleService;
@@ -86,9 +87,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.exception.BirtException;
-import org.iban4j.IbanFormatException;
-import org.iban4j.InvalidCheckDigitException;
-import org.iban4j.UnsupportedCountryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -324,9 +322,7 @@ public class PartnerController {
           LOG.debug("checking iban code : {}", bankDetails.getIban());
           try {
             Beans.get(BankDetailsService.class).validateIban(bankDetails.getIban());
-          } catch (IbanFormatException
-              | InvalidCheckDigitException
-              | UnsupportedCountryException e) {
+          } catch (InvalidIbanException e) {
             ibanInError.add(bankDetails.getIban());
           }
         }
