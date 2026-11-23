@@ -219,4 +219,63 @@ class LoanAdjustmentServiceImplTest {
     assertEquals(0, originalCapital.compareTo(tracked.getCapitalAmount()));
     assertNull(loan.getScheduleSnapshot());
   }
+
+  @Test
+  void cancelDeferral_capitalizeAndRecompute_restoresScheduleBeforeDeferral()
+      throws AxelorException {
+    Loan loan = scheduledLoan();
+    List<LoanLine> originalLines = sorted(loan);
+    service.defer(loan, 2, true, true, true);
+
+    service.cancelDeferral(loan);
+
+    List<LoanLine> lines = sorted(loan);
+    assertEquals(12, lines.size());
+    for (int i = 0; i < lines.size(); i++) {
+      LoanLine original = originalLines.get(i);
+      LoanLine restored = lines.get(i);
+      assertEquals(original.getInstallmentDate(), restored.getInstallmentDate());
+      assertEquals(
+          0, original.getRemainingDebtBefore().compareTo(restored.getRemainingDebtBefore()));
+      assertEquals(0, original.getCapitalAmount().compareTo(restored.getCapitalAmount()));
+      assertEquals(0, original.getTotalAmount().compareTo(restored.getTotalAmount()));
+    }
+    assertEquals(
+        0,
+        new BigDecimal("100000")
+            .compareTo(
+                lines.stream()
+                    .map(LoanLine::getCapitalAmount)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add)));
+    assertNull(loan.getScheduleSnapshot());
+  }
+
+  @Test
+  void cancelDeferral_bookedDeferralInstallment_resumesFromBookedRemainingDebt()
+      throws AxelorException {
+    Loan loan = scheduledLoan();
+    service.defer(loan, 2, true, true, true);
+    LoanLine bookedDeferralLine = sorted(loan).get(0);
+    bookedDeferralLine.setAccountMove(new com.axelor.apps.account.db.Move());
+    BigDecimal bookedRemainingDebtAfter = bookedDeferralLine.getRemainingDebtAfter();
+
+    service.cancelDeferral(loan);
+
+    List<LoanLine> lines = sorted(loan);
+    assertEquals(13, lines.size());
+    assertEquals(bookedDeferralLine, lines.get(0));
+    assertEquals(0, bookedRemainingDebtAfter.compareTo(bookedDeferralLine.getRemainingDebtAfter()));
+    for (int i = 1; i < lines.size(); i++) {
+      assertEquals(
+          0,
+          lines
+              .get(i - 1)
+              .getRemainingDebtAfter()
+              .compareTo(lines.get(i).getRemainingDebtBefore()));
+      assertEquals(
+          lines.get(i - 1).getInstallmentDate().plusMonths(1), lines.get(i).getInstallmentDate());
+    }
+    assertTrue(isZero(lastLine(loan).getRemainingDebtAfter()));
+    assertNull(loan.getScheduleSnapshot());
+  }
 }

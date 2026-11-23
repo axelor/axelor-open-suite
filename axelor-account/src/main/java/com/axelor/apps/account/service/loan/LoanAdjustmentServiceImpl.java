@@ -292,6 +292,16 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
         line.setInstallmentDate(line.getInstallmentDate().minusMonths(deferralCount));
       }
     }
+    // A deferral with capitalized interest and recomputed payments rebuilt the following
+    // installments on a higher remaining debt: shifting them back is not enough, the schedule
+    // saved before the deferral is restored.
+    List<LoanLine> snapshotLines = deserializeSnapshot(loan.getScheduleSnapshot());
+    if (isScheduleRebuiltByDeferral(loan, snapshotLines)) {
+      removePlannedLines(loan);
+      snapshotLines.forEach(loan::addLineListItem);
+    } else {
+      rebuildPlannedLinesFromLastBookedLine(loan);
+    }
     loan.setScheduleSnapshot(null);
     loanRepository.save(loan);
   }
@@ -397,7 +407,9 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
         plain(line.getInsuranceAmount()),
         plain(line.getTotalAmount()),
         plain(line.getRemainingDebtAfter()),
-        Boolean.toString(Boolean.TRUE.equals(line.getIsManuallyModified())));
+        Boolean.toString(Boolean.TRUE.equals(line.getIsManuallyModified())),
+        Boolean.toString(Boolean.TRUE.equals(line.getIsDeferral())),
+        Boolean.toString(Boolean.TRUE.equals(line.getIsDraftDeferral())));
   }
 
   protected String plain(BigDecimal value) {
@@ -410,5 +422,92 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
 
   protected int nz(Integer value) {
     return value == null ? 0 : value;
+  }
+
+  /**
+   * True when the planned installments no longer start from the remaining debt saved before the
+   * deferral (they were recomputed), and no installment has been booked since the snapshot.
+   */
+  protected boolean isScheduleRebuiltByDeferral(Loan loan, List<LoanLine> snapshotLines) {
+    List<LoanLine> plannedLines = orderedPlannedLines(loan);
+    if (snapshotLines.isEmpty() || plannedLines.isEmpty()) {
+      return false;
+    }
+    LoanLine firstSnapshotLine = snapshotLines.get(0);
+    boolean bookedSinceSnapshot =
+        loan.getLineList().stream()
+            .anyMatch(
+                line ->
+                    line.getAccountMove() != null
+                        && line.getInstallmentDate() != null
+                        && !line.getInstallmentDate()
+                            .isBefore(firstSnapshotLine.getInstallmentDate()));
+    return !bookedSinceSnapshot
+        && nz(plannedLines.get(0).getRemainingDebtBefore())
+                .compareTo(nz(firstSnapshotLine.getRemainingDebtBefore()))
+            != 0;
+  }
+
+  protected List<LoanLine> deserializeSnapshot(String snapshot) {
+    List<LoanLine> lines = new ArrayList<>();
+    for (String serializedLine : snapshot.split(SNAPSHOT_LINE_SEPARATOR)) {
+      if (!serializedLine.isBlank()) {
+        lines.add(deserializeLine(serializedLine));
+      }
+    }
+    return lines;
+  }
+
+  protected LoanLine deserializeLine(String serializedLine) {
+    String[] fields = serializedLine.split(SNAPSHOT_FIELD_SEPARATOR);
+    LoanLine line = new LoanLine();
+    line.setInstallmentDate(LocalDate.parse(fields[0]));
+    line.setRemainingDebtBefore(new BigDecimal(fields[1]));
+    line.setInterestAmount(new BigDecimal(fields[2]));
+    line.setCapitalAmount(new BigDecimal(fields[3]));
+    line.setInsuranceAmount(new BigDecimal(fields[4]));
+    line.setTotalAmount(new BigDecimal(fields[5]));
+    line.setRemainingDebtAfter(new BigDecimal(fields[6]));
+    line.setIsManuallyModified(Boolean.parseBoolean(fields[7]));
+    line.setIsDeferral(fields.length > 8 && Boolean.parseBoolean(fields[8]));
+    line.setIsDraftDeferral(fields.length > 9 && Boolean.parseBoolean(fields[9]));
+    return line;
+  }
+
+  /**
+   * When a deferral installment was booked before the cancellation, the planned installments are
+   * recomputed from the remaining debt after the last booked installment if they no longer follow
+   * on from it.
+   */
+  protected void rebuildPlannedLinesFromLastBookedLine(Loan loan) throws AxelorException {
+    List<LoanLine> plannedLines = orderedPlannedLines(loan);
+    if (plannedLines.isEmpty()) {
+      return;
+    }
+    LoanLine firstPlannedLine = plannedLines.get(0);
+    LoanLine lastBookedLine =
+        orderedLines(loan).stream()
+            .filter(
+                line ->
+                    line.getAccountMove() != null
+                        && line.getInstallmentDate() != null
+                        && line.getInstallmentDate()
+                            .isBefore(firstPlannedLine.getInstallmentDate()))
+            .reduce((previousLine, nextLine) -> nextLine)
+            .orElse(null);
+    if (lastBookedLine == null
+        || nz(lastBookedLine.getRemainingDebtAfter())
+                .compareTo(nz(firstPlannedLine.getRemainingDebtBefore()))
+            == 0) {
+      return;
+    }
+    List<LoanLine> recomputedLines =
+        loanLineComputationService.computeLinesFrom(
+            loan,
+            lastBookedLine.getRemainingDebtAfter(),
+            firstPlannedLine.getInstallmentDate(),
+            plannedLines.size());
+    removePlannedLines(loan);
+    recomputedLines.forEach(loan::addLineListItem);
   }
 }
