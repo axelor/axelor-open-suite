@@ -20,6 +20,7 @@ package com.axelor.apps.maintenance.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.maintenance.db.EquipementMaintenance;
+import com.axelor.apps.maintenance.db.MaintenanceRequest;
 import com.axelor.apps.production.db.ProductionBatch;
 
 public interface PreventiveMaintenanceProcessService {
@@ -27,8 +28,8 @@ public interface PreventiveMaintenanceProcessService {
   /**
    * Process a single equipment for preventive maintenance.
    *
-   * <p>Evaluates criteria, creates a maintenance request if triggered, and updates equipment fields
-   * (nextMtnDate, lastMtnOperatingHoursRef).
+   * <p>Evaluates criteria and creates a maintenance request if triggered. The equipment is updated
+   * when the request is completed, see {@link #updateEquipmentOnCompletion}.
    *
    * @param equipment the equipment to process
    * @param productionBatch the batch configuration
@@ -37,4 +38,13 @@ public interface PreventiveMaintenanceProcessService {
    */
   boolean processEquipment(EquipementMaintenance equipment, ProductionBatch productionBatch)
       throws AxelorException;
+
+  /**
+   * Update the equipment of a completed preventive maintenance request: next maintenance date is
+   * the completion date plus the calendar cadence, and the operating hours reference is the current
+   * machine operating hours.
+   *
+   * @param maintenanceRequest the completed request
+   */
+  void updateEquipmentOnCompletion(MaintenanceRequest maintenanceRequest);
 }
