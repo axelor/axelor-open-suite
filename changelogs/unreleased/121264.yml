@@ -1,0 +1,13 @@
+---
+title: "Stock move, purchase request, timesheet: the status can no longer be changed through the generic REST API, only through the record actions. A realized stock move can no longer be realized a second time."
+module: axelor-stock
+developer: |
+  The new `WorkflowStatusGuardService.checkStatusUnchanged(repository, json)` (axelor-base) refuses a
+  generic save (`/ws/rest`, web client) that changes the `statusSelect` of an existing record sent
+  with its current version. It is called from the `validate()` method of
+  `StockMoveManagementRepository`, `PurchaseRequestManagementRepository` and `TimesheetHRRepository`:
+  overrides of `validate()` in subclasses must call `super.validate(json, context)`. Record creation,
+  records nested in the save of another record and mass updates are not checked.
+
+  Custom code or integrations that changed `statusSelect` of stock moves, purchase requests or
+  timesheets through `/ws/rest` must use the record actions or the dedicated `/ws/aos` API instead.

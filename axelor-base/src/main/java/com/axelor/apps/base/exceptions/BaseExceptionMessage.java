@@ -756,4 +756,7 @@ public final class BaseExceptionMessage {
 
   public static final String SEQUENCE_MONTH_VALIDITY_ERROR = /*$$(*/
       "Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true" /*)*/;
+
+  public static final String WORKFLOW_STATUS_CHANGE_NOT_ALLOWED = /*$$(*/
+      "The status of this record can only be changed through its actions (buttons or dedicated API)." /*)*/;
 }

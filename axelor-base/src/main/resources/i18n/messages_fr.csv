@@ -2470,6 +2470,7 @@
 "The sequence type '%s' is not handled.",,,
 "The start date cannot be later than the end date.","La date de début ne peut pas être postérieure à la date de fin.",,
 "The status has been changed successfully.","Le statut a été modifié avec succès.",,
+"The status of this record can only be changed through its actions (buttons or dedicated API).","Le statut de cet enregistrement ne peut être modifié que par ses actions (boutons ou API dédiée).",,
 "The syntax of the script is correct.","La syntaxe du script est correcte.",,
 "The tags below can be used as a prefix or a suffix","Les variables ci-dessous peuvent être utilisées en tant que préfixe ou suffixe",,
 "The tags below can be used to specify the pattern","Les étiquettes ci-dessous peuvent être utilisées pour spécifier le modèle",,
