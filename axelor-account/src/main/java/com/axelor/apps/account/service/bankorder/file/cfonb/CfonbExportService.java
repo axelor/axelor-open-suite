@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.account.service.bankorder.file.cfonb;
 
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CfonbConfig;
 import com.axelor.apps.account.db.Invoice;
@@ -43,11 +45,10 @@ import com.axelor.utils.helpers.StringHelper;
 import com.axelor.utils.helpers.file.FileHelper;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,15 +125,22 @@ public class CfonbExportService {
         this.createReimbursementTotalCFONB(
             this.getTotalAmountReimbursementExport(reimbursementList));
 
-    //		cfonbToolService.testLength(senderCFONB, totalCFONB, multiRecipientCFONB, company);
+    List<String> cFONB = new ArrayList<>();
+    cFONB.add(senderCFONB);
+    cFONB.addAll(multiRecipientCFONB);
+    cFONB.add(totalCFONB);
+    cFONB.replaceAll(String::toUpperCase);
 
-    //		List<String> cFONB = this.createCFONBExport(senderCFONB, multiRecipientCFONB, totalCFONB);
-
-    // Mise en majuscule des enregistrement
-    //		cFONB = this.toUpperCase(cFONB);
-
-    //		this.createCFONBFile(cFONB, datetime,
-    // company.getAccountConfig().getReimbursementExportFolderPathCFONB(), "virement");
+    this.createCFONBFile(
+        cFONB,
+        datetime,
+        Paths.get(
+                AppSettings.get().get(AvailableAppSettings.DATA_UPLOAD_DIR),
+                cfonbConfigService
+                    .getAccountConfig(company)
+                    .getReimbursementExportFolderPathCFONB())
+            .toString(),
+        "virement");
   }
 
   /**
@@ -310,8 +318,7 @@ public class CfonbExportService {
   protected String createSenderReimbursementCFONB(
       ZonedDateTime zonedDateTime, BankDetails bankDetails) throws AxelorException {
 
-    DateFormat ddmmFormat = new SimpleDateFormat("ddMM");
-    String date = ddmmFormat.format(zonedDateTime.toLocalDate());
+    String date = zonedDateTime.format(DateTimeFormatter.ofPattern("ddMM"));
     date +=
         String.format(
             "%s", StringHelper.truncLeft(String.format("%s", zonedDateTime.getYear()), 1));
@@ -383,8 +390,7 @@ public class CfonbExportService {
   protected String createSenderMonthlyExportCFONB(LocalDate localDate, BankDetails bankDetails)
       throws AxelorException {
 
-    DateFormat ddmmFormat = new SimpleDateFormat("ddMM");
-    String date = ddmmFormat.format(localDate.atTime(LocalTime.now()).toLocalDate());
+    String date = localDate.format(DateTimeFormatter.ofPattern("ddMM"));
     date +=
         String.format("%s", StringHelper.truncLeft(String.format("%s", localDate.getYear()), 1));
 
@@ -675,8 +681,7 @@ public class CfonbExportService {
    */
   protected void createCFONBFile(
       List<String> cFONB, ZonedDateTime zonedDateTime, String destinationFolder, String prefix) {
-    DateFormat yyyyMMddHHmmssFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-    String dateFileName = yyyyMMddHHmmssFormat.format(zonedDateTime);
+    String dateFileName = zonedDateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
     String fileName = String.format("%s%s.dat", prefix, dateFileName);
 
     FileHelper.writer(destinationFolder, fileName, cFONB);
