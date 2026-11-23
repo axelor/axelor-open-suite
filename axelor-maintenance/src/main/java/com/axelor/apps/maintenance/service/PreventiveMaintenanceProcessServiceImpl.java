@@ -21,6 +21,7 @@ package com.axelor.apps.maintenance.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.maintenance.db.EquipementMaintenance;
+import com.axelor.apps.maintenance.db.MaintenanceRequest;
 import com.axelor.apps.maintenance.db.repo.EquipementMaintenanceRepository;
 import com.axelor.apps.maintenance.db.repo.MaintenanceRequestRepository;
 import com.axelor.apps.production.db.ProductionBatch;
@@ -28,6 +29,7 @@ import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class PreventiveMaintenanceProcessServiceImpl
     implements PreventiveMaintenanceProcessService {
@@ -66,11 +68,23 @@ public class PreventiveMaintenanceProcessServiceImpl
     maintenanceRequestCreateService.createMaintenanceRequest(
         equipment, expectedDate, MaintenanceRequestRepository.ACTION_PREVENTIVE);
 
-    updateNextMtnDate(equipment, previousNextMtnDate, today);
+    return true;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateEquipmentOnCompletion(MaintenanceRequest maintenanceRequest) {
+    EquipementMaintenance equipment = maintenanceRequest.getEquipementMaintenance();
+    if (equipment == null
+        || !Objects.equals(
+            maintenanceRequest.getActionSelect(), MaintenanceRequestRepository.ACTION_PREVENTIVE)) {
+      return;
+    }
+
+    updateNextMtnDate(equipment, maintenanceRequest.getDoneOn());
     updateLastMtnOperatingHoursRef(equipment);
 
     equipementMaintenanceRepository.save(equipment);
-    return true;
   }
 
   protected LocalDate computeExpectedDate(
@@ -84,16 +98,11 @@ public class PreventiveMaintenanceProcessServiceImpl
     return today;
   }
 
-  protected void updateNextMtnDate(
-      EquipementMaintenance equipment, LocalDate previousNextMtnDate, LocalDate today) {
-    if (equipment.getMtnEachDay() <= 0) {
+  protected void updateNextMtnDate(EquipementMaintenance equipment, LocalDate doneOn) {
+    if (equipment.getMtnEachDay() <= 0 || doneOn == null) {
       return;
     }
-    if (previousNextMtnDate != null) {
-      equipment.setNextMtnDate(previousNextMtnDate.plusDays(equipment.getMtnEachDay()));
-    } else {
-      equipment.setNextMtnDate(today.plusDays(equipment.getMtnEachDay()));
-    }
+    equipment.setNextMtnDate(doneOn.plusDays(equipment.getMtnEachDay()));
   }
 
   protected void updateLastMtnOperatingHoursRef(EquipementMaintenance equipment) {
