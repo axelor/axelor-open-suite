@@ -33,8 +33,10 @@ import com.axelor.apps.helpdesk.service.TicketService;
 import com.axelor.apps.helpdesk.service.TicketStatusService;
 import com.axelor.apps.helpdesk.service.TicketWorkflowService;
 import com.axelor.apps.helpdesk.service.TimerTicketService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.date.LocalDateHelper;
@@ -331,5 +333,29 @@ public class TicketController {
     Beans.get(TicketService.class).computeSLAAndDeadLine(ticket);
     response.setValue("slaPolicy", ticket.getSlaPolicy());
     response.setValue("deadlineDateT", ticket.getDeadlineDateT());
+  }
+
+  /**
+   * Open the tickets that are neither resolved nor closed.
+   *
+   * @param request
+   * @param response
+   */
+  public void showCurrentTickets(ActionRequest request, ActionResponse response) {
+    response.setView(
+        ActionView.define(I18n.get("Tickets"))
+            .model(Ticket.class.getName())
+            .add("kanban", "ticket-kanban")
+            .add("grid", "ticket-grid")
+            .add("form", "ticket-form")
+            .add("calendar", "ticket-calendar")
+            .param("search-filters", "ticket-filters")
+            .domain(
+                "self.ticketStatus IS NULL OR self.ticketStatus.id NOT IN (:_resolvedAndClosedStatusIds)")
+            .context(
+                "_resolvedAndClosedStatusIds",
+                Beans.get(TicketStatusService.class).getResolvedAndClosedStatusIds())
+            .context("_user", AuthUtils.getUser())
+            .map());
   }
 }

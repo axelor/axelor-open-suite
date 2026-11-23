@@ -23,6 +23,11 @@ import com.axelor.apps.helpdesk.db.TicketStatus;
 import com.axelor.apps.helpdesk.service.app.AppHelpdeskService;
 import com.axelor.studio.db.AppHelpdesk;
 import jakarta.inject.Inject;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TicketStatusServiceImpl implements TicketStatusService {
 
@@ -78,5 +83,20 @@ public class TicketStatusServiceImpl implements TicketStatusService {
   @Override
   public boolean isClosedTicket(Ticket ticket) {
     return ticket.getTicketStatus() != null && ticket.getTicketStatus().equals(findClosedStatus());
+  }
+
+  @Override
+  public Set<Long> getResolvedAndClosedStatusIds() {
+    Set<Long> statusIds =
+        Stream.of(findResolvedStatus(), findClosedStatus())
+            .filter(Objects::nonNull)
+            .map(TicketStatus::getId)
+            .collect(Collectors.toCollection(HashSet::new));
+
+    // A JPQL IN or NOT IN clause needs at least one value
+    if (statusIds.isEmpty()) {
+      statusIds.add(0L);
+    }
+    return statusIds;
   }
 }
