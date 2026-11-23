@@ -1,0 +1,3 @@
+---
+title: "Helpdesk: fixed email fetching failing on emails that are not replies to an email sent from the application."
+module: axelor-helpdesk
