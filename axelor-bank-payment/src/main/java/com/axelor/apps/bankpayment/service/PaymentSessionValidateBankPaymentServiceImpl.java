@@ -171,7 +171,10 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()
           && bankOrder.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
         try {
-          updatePaymentSessionStatus(paymentSession);
+          if (paymentSession.getAccountingTriggerSelect()
+              != PaymentSessionRepository.ACCOUNTING_TRIGGER_BANK_ORDER_REALIZATION) {
+            updatePaymentSessionStatus(paymentSession);
+          }
           bankOrderValidationService.confirm(bankOrder);
         } catch (JAXBException | IOException | DatatypeConfigurationException e) {
           throw new AxelorException(
