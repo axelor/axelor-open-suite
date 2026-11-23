@@ -166,13 +166,7 @@ public class TicketUpdateRestServiceImpl implements TicketUpdateRestService {
           BigDecimal.valueOf(timerTicketService.compute(ticket).toMinutes() / 60F));
     }
 
-    ticket.setEndDateT(endDateT);
-
-    if (ticket.getStartDateT() != null && ticket.getStartDateT().isBefore(ticket.getEndDateT())) {
-      ticket.setDuration(ticketService.computeDuration(ticket));
-    } else if (ticket.getDuration() != null && ticket.getDuration() != 0) {
-      ticket.setStartDateT(ticketService.computeStartDate(ticket));
-    }
+    fillEndDate(ticket, endDateT);
 
     ticketWorkflowService.resolveTicket(ticket);
     ticket.setProgressSelect(100);
@@ -192,8 +186,23 @@ public class TicketUpdateRestServiceImpl implements TicketUpdateRestService {
           BigDecimal.valueOf(timerTicketService.compute(ticket).toMinutes() / 60F));
     }
 
+    // A ticket already resolved keeps the end date set when it was resolved
+    if (ticket.getEndDateT() == null || !ticketStatusService.isResolvedTicket(ticket)) {
+      fillEndDate(ticket, endDateT);
+    }
+
     ticketWorkflowService.closeTicket(ticket);
 
     return ticketRepository.save(ticket);
+  }
+
+  protected void fillEndDate(Ticket ticket, LocalDateTime endDateT) {
+    ticket.setEndDateT(endDateT);
+
+    if (ticket.getStartDateT() != null && ticket.getStartDateT().isBefore(ticket.getEndDateT())) {
+      ticket.setDuration(ticketService.computeDuration(ticket));
+    } else if (ticket.getDuration() != null && ticket.getDuration() != 0) {
+      ticket.setStartDateT(ticketService.computeStartDate(ticket));
+    }
   }
 }
