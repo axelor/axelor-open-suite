@@ -190,6 +190,8 @@ import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.TradingNameServiceImpl;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.UnitConversionServiceImpl;
+import com.axelor.apps.base.service.WorkflowStatusGuardService;
+import com.axelor.apps.base.service.WorkflowStatusGuardServiceImpl;
 import com.axelor.apps.base.service.YearService;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.address.AddressAttrsService;
@@ -645,5 +647,6 @@ public class BaseModule extends AxelorModule {
     bind(PriceListLineRepository.class).to(PriceListLineManagementRepository.class);
     bind(TaxArchiveService.class).to(TaxArchiveServiceImpl.class);
     bind(TaxRateService.class).to(TaxRateServiceImpl.class);
+    bind(WorkflowStatusGuardService.class).to(WorkflowStatusGuardServiceImpl.class);
   }
 }

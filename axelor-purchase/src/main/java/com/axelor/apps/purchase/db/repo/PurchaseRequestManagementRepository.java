@@ -21,12 +21,15 @@ package com.axelor.apps.purchase.db.repo;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.WorkflowStatusGuardService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.util.Map;
 import javax.persistence.PersistenceException;
 
 public class PurchaseRequestManagementRepository extends PurchaseRequestRepository {
@@ -62,6 +65,18 @@ public class PurchaseRequestManagementRepository extends PurchaseRequestReposito
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  /** Called by the generic save only (REST API, web client), never by the services. */
+  @Override
+  public Map<String, Object> validate(Map<String, Object> json, Map<String, Object> context) {
+    try {
+      Beans.get(WorkflowStatusGuardService.class).checkStatusUnchanged(this, json);
+    } catch (AxelorException e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
+    return super.validate(json, context);
   }
 
   @Override

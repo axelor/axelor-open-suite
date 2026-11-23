@@ -2464,6 +2464,7 @@
 "The sequence type '%s' is not handled.",,,
 "The start date cannot be later than the end date.",,,
 "The status has been changed successfully.",,,
+"The status of this record can only be changed through its actions (buttons or dedicated API).",,,
 "The syntax of the script is correct.",,,
 "The tags below can be used as a prefix or a suffix",,,
 "The tags below can be used to specify the pattern",,,

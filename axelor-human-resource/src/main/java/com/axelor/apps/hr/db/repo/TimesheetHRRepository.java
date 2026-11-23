@@ -18,6 +18,9 @@
  */
 package com.axelor.apps.hr.db.repo;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.WorkflowStatusGuardService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
@@ -27,6 +30,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Map;
+import javax.persistence.PersistenceException;
 
 public class TimesheetHRRepository extends TimesheetRepository {
 
@@ -53,8 +57,15 @@ public class TimesheetHRRepository extends TimesheetRepository {
     return super.save(timesheet);
   }
 
+  /** Called by the generic save only (REST API, web client), never by the services. */
   @Override
   public Map<String, Object> validate(Map<String, Object> json, Map<String, Object> context) {
+    try {
+      Beans.get(WorkflowStatusGuardService.class).checkStatusUnchanged(this, json);
+    } catch (AxelorException e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
 
     Map<String, Object> obj = super.validate(json, context);
 
