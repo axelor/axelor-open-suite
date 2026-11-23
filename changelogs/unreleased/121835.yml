@@ -1,0 +1,3 @@
+---
+title: "Move: fixed generated tax lines ignoring the VAT system selected on the original line."
+module: axelor-account
