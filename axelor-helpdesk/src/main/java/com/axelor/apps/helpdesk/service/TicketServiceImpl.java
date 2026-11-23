@@ -30,6 +30,7 @@ import com.axelor.apps.helpdesk.service.app.AppHelpdeskService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.studio.db.AppHelpdesk;
+import com.axelor.team.db.Team;
 import com.axelor.utils.helpers.date.DurationHelper;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
@@ -64,8 +65,12 @@ public class TicketServiceImpl implements TicketService {
   }
 
   /**
-   * Finding SLA, apply on ticket & Calculate the deadline of the ticket based on days & hours which
-   * is defined in SLA.
+   * Finds the SLA policy of the ticket and sets it on the ticket.
+   *
+   * <p>An SLA policy matches the ticket when its team, its ticket type and its minimum priority are
+   * empty or match the ticket, and when the ticket status is still below its stage to reach. When
+   * several policies match, the first one in the order of {@link #getSlaComparator()} is applied.
+   * Returns null, and removes the SLA policy of the ticket, when no policy matches.
    */
   @Override
   public Sla computeSLA(Ticket ticket) {
@@ -74,46 +79,58 @@ public class TicketServiceImpl implements TicketService {
     Sla sla = null;
 
     if (helpdesk.getIsSla()) {
-
-      List<Sla> potentialSlaList =
-          slaRepo
-              .all()
-              .filter(
-                  "self.team = :team AND self.prioritySelect = :prioritySelect AND self.ticketType = :ticketType OR "
-                      + "(self.team = :team AND self.prioritySelect = :prioritySelect AND self.ticketType = null OR "
-                      + "(self.team = null AND self.prioritySelect = :prioritySelect AND self.ticketType = :ticketType) OR "
-                      + "(self.team = :team AND self.prioritySelect = null AND self.ticketType = :ticketType)) OR "
-                      + "(self.team = :team AND self.prioritySelect = null AND self.ticketType = null OR "
-                      + "(self.team = null AND self.prioritySelect = :prioritySelect AND self.ticketType = null) OR "
-                      + "(self.team = null AND self.prioritySelect = null AND self.ticketType = :ticketType)) OR "
-                      + "(self.team = null AND self.prioritySelect = null AND self.ticketType = null)")
-              .bind(
-                  "team",
-                  ticket.getAssignedToUser() == null
-                      ? null
-                      : ticket.getAssignedToUser().getActiveTeam())
-              .bind("prioritySelect", ticket.getPrioritySelect())
-              .bind("ticketType", ticket.getTicketType())
-              .fetch();
+      int ticketStatusPriority =
+          Optional.ofNullable(ticket.getTicketStatus()).map(TicketStatus::getPriority).orElse(0);
 
       sla =
-          potentialSlaList.stream()
+          getMatchingSlaList(ticket).stream()
               .filter(
-                  _sla ->
-                      ticket.getTicketStatus().getPriority()
-                          < Optional.ofNullable(_sla.getReachStageTicketStatus())
-                              .map(TicketStatus::getPriority)
-                              .orElse(0))
-              .min(
-                  Comparator.comparingInt(
-                      sla2 ->
-                          Optional.ofNullable(sla2.getReachStageTicketStatus())
-                              .map(TicketStatus::getPriority)
-                              .orElse(0)))
+                  candidate ->
+                      candidate.getReachStageTicketStatus() != null
+                          && ticketStatusPriority
+                              < candidate.getReachStageTicketStatus().getPriority())
+              .min(getSlaComparator())
               .orElse(null);
     }
     ticket.setSlaPolicy(sla);
     return sla;
+  }
+
+  /**
+   * SLA policies whose team, ticket type and minimum priority are empty or match the ticket. A
+   * minimum priority applies to the tickets of this priority and above.
+   */
+  protected List<Sla> getMatchingSlaList(Ticket ticket) {
+    return slaRepo
+        .all()
+        .filter(
+            "(self.team IS NULL OR self.team = :team) "
+                + "AND (self.ticketType IS NULL OR self.ticketType = :ticketType) "
+                + "AND (self.prioritySelect IS NULL OR self.prioritySelect <= :prioritySelect)")
+        .bind("team", getSlaTeam(ticket))
+        .bind("ticketType", ticket.getTicketType())
+        .bind("prioritySelect", ticket.getPrioritySelect())
+        .fetch();
+  }
+
+  /** Team compared to the team of the SLA policies: the active team of the assigned user. */
+  protected Team getSlaTeam(Ticket ticket) {
+    return Optional.ofNullable(ticket.getAssignedToUser()).map(User::getActiveTeam).orElse(null);
+  }
+
+  /**
+   * Order of the matching SLA policies, the first one being applied: a policy with a team before a
+   * policy for any team, then a policy with a ticket type before a policy for any type, then the
+   * highest minimum priority (an empty one counts as the lowest), then the closest stage to reach,
+   * then the smallest id. The compared policies must have a stage to reach.
+   */
+  protected Comparator<Sla> getSlaComparator() {
+    return Comparator.comparing((Sla sla) -> sla.getTeam() == null)
+        .thenComparing(sla -> sla.getTicketType() == null)
+        // getPrioritySelect() returns 0 for an empty minimum priority, below every priority
+        .thenComparing(Sla::getPrioritySelect, Comparator.<Integer>reverseOrder())
+        .thenComparingInt(sla -> sla.getReachStageTicketStatus().getPriority())
+        .thenComparing(Sla::getId, Comparator.nullsLast(Comparator.<Long>naturalOrder()));
   }
 
   @Override
