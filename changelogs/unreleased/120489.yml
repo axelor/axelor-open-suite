@@ -1,0 +1,21 @@
+---
+title: "Ticket: fixed the SLA policy selection: the minimum priority now includes higher priorities, the stage to reach is required and the most specific policy is applied."
+module: axelor-helpdesk
+developer: |
+  TicketServiceImpl.computeSLA: an SLA policy now matches a ticket when its minimum priority is
+  empty or lower than or equal to the priority of the ticket (it was compared by equality). Among the
+  matching policies whose stage to reach is not reached yet, the applied one is the most specific: a
+  policy with a team before a policy for any team, then a policy with a ticket type before a policy
+  for any type, then the highest minimum priority (empty counts as the lowest), then the closest
+  stage to reach, then the smallest id. New protected methods getMatchingSlaList(Ticket),
+  getSlaTeam(Ticket) and getSlaComparator().
+
+  The stage to reach is now required in the SLA policy form (sla-form); the domain is unchanged. SLA
+  policies without a stage to reach have not been applied since 8.0.0 and are still not applied: fill
+  their stage to reach to apply them. To list them:
+
+  ```sql
+  SELECT id, name FROM helpdesk_sla WHERE reach_stage_ticket_status IS NULL;
+  ```
+
+  The SLA policy and the deadline of the existing tickets are recomputed at their next save only.
