@@ -245,8 +245,11 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  public boolean getUserCondition(User pfpValidatorUser, User user) {
-    return user.equals(pfpValidatorUser) || user.getIsSuperPfpUser();
+  public boolean getUserCondition(User pfpValidatorUser, User user, Company company) {
+    return user.equals(pfpValidatorUser)
+        || user.getIsSuperPfpUser()
+        || invoiceTermPfpToolService.isActiveSubstitutePfpValidator(
+            pfpValidatorUser, user, company);
   }
 
   @Override
