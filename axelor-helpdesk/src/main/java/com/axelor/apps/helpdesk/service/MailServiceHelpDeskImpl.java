@@ -46,7 +46,9 @@ public class MailServiceHelpDeskImpl extends MailServiceBaseImpl {
   protected MailMessage messageReceived(MimeMessage email) throws MessagingException, IOException {
     MailMessage message = super.messageReceived(email);
 
-    if (!Beans.get(AppService.class).isApp("helpdesk")) {
+    if (message == null
+        || message.getBody() == null
+        || !Beans.get(AppService.class).isApp("helpdesk")) {
       return message;
     }
     Document doc = Jsoup.parse(message.getBody());
