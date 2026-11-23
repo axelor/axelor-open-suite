@@ -49,7 +49,7 @@ public interface InvoiceTermPfpService {
 
   void refreshInvoicePfpStatus(Invoice invoice);
 
-  boolean getUserCondition(User pfpValidatorUser, User user);
+  boolean getUserCondition(User pfpValidatorUser, User user, Company company);
 
   boolean getInvoiceTermsCondition(List<InvoiceTerm> invoiceTermList);
 

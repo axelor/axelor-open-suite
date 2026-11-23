@@ -72,9 +72,20 @@
       NULL AND
       self.moveLine.move.statusSelect IN (2,3))) AND
       self.pfpValidateStatusSelect = 1 AND
-      self.pfpValidatorUser = :_currentUser</domain>
+      (self.pfpValidatorUser = :_currentUser OR EXISTS (SELECT substitutePfpValidator FROM User
+      pfpValidatorUser JOIN pfpValidatorUser.substitutePfpValidatorList substitutePfpValidator
+      WHERE
+      pfpValidatorUser = self.pfpValidatorUser AND
+      substitutePfpValidator.substitutePfpValidatorUser
+      = :_currentUser AND
+      (substitutePfpValidator.substituteStartDate IS NULL OR
+      substitutePfpValidator.substituteStartDate &lt; :_todayDate) AND
+      (substitutePfpValidator.substituteEndDate IS NULL OR
+      substitutePfpValidator.substituteEndDate
+      &gt; :_todayDate)))</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
     <context name="_currentUser" expr="eval:__user__"/>
+    <context name="_todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem name="invoice-root-pfp-awaiting-pfp" title="awaitingPfpMenuTitle"
