@@ -1,0 +1,3 @@
+---
+title: "Helpdesk: the help of the SLA option no longer mentions alerts that do not exist, and the French labels of the SLA policy form ('Apply on', 'Reach stage') and of the 'SLA completed' indicator have been corrected."
+module: axelor-helpdesk
