@@ -54,6 +54,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -317,7 +318,9 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     Company company = move.getCompany();
     Partner partner = move.getPartner();
     LocalDate originDate = move.getOriginDate();
-    String origin = prefixOrigin + move.getReference();
+    String origin =
+        prefixOrigin
+            + (StringUtils.isBlank(move.getOrigin()) ? move.getReference() : move.getOrigin());
 
     Move cutOffMove =
         moveCreateService.createMove(
