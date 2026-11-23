@@ -1391,7 +1391,7 @@
 "Weekly planning",,,
 "Weekly work duration",,,
 "Weekly work hours",,,
-"When the checkbox is true, it enables to choose the project when filling timesheet lines VIA THE DYNAMIC EDITOR of the HR timesheet app.",,,
+"When the checkbox is true, the project can no longer be selected and its timesheet lines are read-only when filling timesheet lines VIA THE DYNAMIC EDITOR of the HR timesheet app.",,,
 "When this configuration is enabled, an event will be associated with planned times, meaning that when time is planned for a user, an event linked to this planned time appears on their calendar.",,,
 "When this option is enabled, for kilometric expenses, the number of kilometers between the departure and arrival addresses is automatically calculated using a web service connecting to Google Maps or Open Street Map. These web services are configured in the Base application settings, in the Interface tab. Note that with Google Maps, API fees may apply after a certain number of requests.",,,
 "When this option is enabled, the project that was used during the last timer use is automatically reused when you start the timer again.",,,
