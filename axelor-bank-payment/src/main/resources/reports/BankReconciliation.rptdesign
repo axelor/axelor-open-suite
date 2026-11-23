@@ -1127,7 +1127,7 @@ bankReconciliationLine.credit ;]]></xml-property>
             <xml-property name="queryText"><![CDATA[SELECT
 bankReconciliation.account_balance AS account_balance ,
 moveLine.name AS code ,
-bankReconciliation.to_date AS to_date ,
+moveLine.date_val AS to_date ,
 bankReconciliationLine.reference AS reference ,
 moveLine.description AS name ,
 bankReconciliationLine.type_select  AS type ,
