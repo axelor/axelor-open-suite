@@ -246,7 +246,6 @@ public class BankReconciliationValidateService {
             2,
             origin,
             description);
-    cashMoveLine.setBankReconciledAmount(amount);
 
     move.addMoveLineListItem(cashMoveLine);
 
