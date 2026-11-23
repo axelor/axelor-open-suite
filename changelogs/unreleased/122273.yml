@@ -1,0 +1,6 @@
+---
+title: "Bank reconciliation: fixed the analytic distribution template of the bank reconciliation line being ignored when validating the reconciliation."
+module: axelor-bank-payment
+developer: |
+  Added `MoveLineComputeAnalyticService` and `AnalyticLineService` as constructor parameters of
+  `BankReconciliationValidateService`.
