@@ -238,6 +238,11 @@ public class MoveCheckServiceImpl implements MoveCheckService {
 
   @Override
   public void checkManageCutOffDates(Move move) throws AxelorException {
+    if (move.getCutOffMoveGenerated()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.MOVE_CUT_OFF_MOVE_ALREADY_GENERATED));
+    }
     if (!(CollectionUtils.isNotEmpty(move.getMoveLineList())
         && move.getMoveLineList().stream().anyMatch(moveLineService::checkManageCutOffDates))) {
       throw new AxelorException(

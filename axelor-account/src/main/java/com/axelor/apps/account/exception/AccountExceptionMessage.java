@@ -1009,6 +1009,8 @@ public final class AccountExceptionMessage {
 
   public static final String NO_CUT_OFF_TO_APPLY = /*$$(*/
       "No cut off period could be applied. Please check that you have entered lines and that the Cut off period is enabled on the account associated to each line." /*)*/;
+  public static final String MOVE_CUT_OFF_MOVE_ALREADY_GENERATED = /*$$(*/
+      "The cut off move has already been generated for this move: its cut off dates can no longer be modified." /*)*/;
 
   public static final String ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE = /*$$(*/
       "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance." /*)*/;
