@@ -1,0 +1,10 @@
+---
+title: "Bank details: fixed the camt.053 bank statement lines missing from the bank details tree and the bank details balance button."
+module: axelor-bank-payment
+developer: |
+  - `action-bank-details-view-show-bank-statement-lines` and
+    `action-bank-details-view-show-bank-statement-lines-final-balance` now open
+    `BankStatementLine` with the new grid `bank-statement-line-bank-details-grid` and the form
+    `bank-statement-line-form` instead of `bank-statement-line-afb-120-grid` and
+    `bank-statement-line-afb-120-form`.
+  - The search filters `bank-statement-line-afb-120-filters` now target `BankStatementLine`.
