@@ -88,7 +88,7 @@ public class MovePfpServiceImpl implements MovePfpService {
     boolean pfpCondition = this._getPfpCondition(move);
 
     boolean validatorUserCondition =
-        invoiceTermPfpService.getUserCondition(move.getPfpValidatorUser(), user);
+        invoiceTermPfpService.getUserCondition(move.getPfpValidatorUser(), user, move.getCompany());
 
     boolean statusCondition = this._getStatusCondition(move);
 

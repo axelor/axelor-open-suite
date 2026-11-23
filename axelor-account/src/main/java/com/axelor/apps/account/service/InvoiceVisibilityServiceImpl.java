@@ -53,7 +53,8 @@ public class InvoiceVisibilityServiceImpl implements InvoiceVisibilityService {
       throws AxelorException {
 
     boolean validatorUserCondition =
-        invoiceTermPfpService.getUserCondition(invoice.getPfpValidatorUser(), user);
+        invoiceTermPfpService.getUserCondition(
+            invoice.getPfpValidatorUser(), user, invoice.getCompany());
 
     boolean statusCondition = this._getStatusCondition(invoice);
 
