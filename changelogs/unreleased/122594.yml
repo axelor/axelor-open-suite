@@ -1,0 +1,5 @@
+---
+title: "Mass customer stock move invoicing: fixed the deliveries offered when the validation step for invoicing is enabled."
+module: axelor-supplychain
+developer: |
+  Added `AppSupplychainService` as a constructor parameter of `StockMoveMultiInvoiceServiceImpl`.
