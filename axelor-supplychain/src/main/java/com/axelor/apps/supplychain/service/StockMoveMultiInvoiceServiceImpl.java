@@ -46,6 +46,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
 import com.axelor.common.ObjectUtils;
@@ -83,6 +84,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected final PurchaseOrderInvoiceService purchaseOrderInvoiceService;
   protected final SupplyChainConfigService supplyChainConfigService;
   protected final StockMoveRepository stockMoveRepository;
+  protected final AppSupplychainService appSupplychainService;
 
   @Inject
   public StockMoveMultiInvoiceServiceImpl(
@@ -95,7 +97,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SupplyChainConfigService supplyChainConfigService,
-      StockMoveRepository stockMoveRepository) {
+      StockMoveRepository stockMoveRepository,
+      AppSupplychainService appSupplychainService) {
     this.invoiceRepository = invoiceRepository;
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
@@ -106,6 +109,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.supplyChainConfigService = supplyChainConfigService;
     this.stockMoveRepository = stockMoveRepository;
+    this.appSupplychainService = appSupplychainService;
   }
 
   @Override
@@ -1018,18 +1022,16 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
                 "self.statusSelect = :realized "
                     + "AND ((self.typeSelect = :primaryType AND self.isReversion = :isReversion) "
                     + "OR (self.typeSelect = :reversionType AND self.isReversion = :notIsReversion)) "
-                    + "AND self.invoicingStatusSelect IN :invoicingStatuses")
+                    + "AND ((self.typeSelect = :outgoing AND self.invoicingStatusSelect IN :outgoingInvoicingStatuses) "
+                    + "OR (self.typeSelect != :outgoing AND self.invoicingStatusSelect IN :invoicingStatuses))")
             .bind("realized", StockMoveRepository.STATUS_REALIZED)
             .bind("primaryType", primaryType)
             .bind("reversionType", reversionType)
             .bind("isReversion", !primaryIsNonReversion)
             .bind("notIsReversion", primaryIsNonReversion)
-            .bind(
-                "invoicingStatuses",
-                List.of(
-                    StockMoveRepository.STATUS_NOT_INVOICED,
-                    StockMoveRepository.STATUS_PARTIALLY_INVOICED,
-                    StockMoveRepository.STATUS_DELAYED_INVOICE))
+            .bind("outgoing", StockMoveRepository.TYPE_OUTGOING)
+            .bind("invoicingStatuses", getInvoicingStatuses())
+            .bind("outgoingInvoicingStatuses", getOutgoingInvoicingStatuses(primaryType))
             .fetch();
 
     List<StockMove> filteredStockMoves = new ArrayList<StockMove>();
@@ -1046,5 +1048,20 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       }
     }
     return "self.id IN (" + StringHelper.getIdListString(filteredStockMoves) + ")";
+  }
+
+  protected List<Integer> getInvoicingStatuses() {
+    return List.of(
+        StockMoveRepository.STATUS_NOT_INVOICED,
+        StockMoveRepository.STATUS_PARTIALLY_INVOICED,
+        StockMoveRepository.STATUS_DELAYED_INVOICE);
+  }
+
+  protected List<Integer> getOutgoingInvoicingStatuses(int primaryType) {
+    if (primaryType == StockMoveRepository.TYPE_OUTGOING
+        && appSupplychainService.getAppSupplychain().getValidStepForInvOutSM()) {
+      return List.of(StockMoveRepository.STATUS_VALIDATED_INVOICE);
+    }
+    return getInvoicingStatuses();
   }
 }
