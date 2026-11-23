@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.PartnerAccountService;
@@ -824,6 +825,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             + " FROM InvoiceLine as self";
     query += " WHERE self.saleOrderLine.saleOrder.id = :saleOrderId";
     query += " AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect";
+    query += " AND self.typeSelect = :typeNormal";
 
     // exclude invoices that are advance payments
     boolean invoiceIsNotAdvancePayment =
@@ -861,6 +863,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
                     RoundingMode.HALF_UP));
     q.setParameter("statusVentilated", InvoiceRepository.STATUS_VENTILATED);
     q.setParameter("invoiceOperationTypeSelect", invoiceOperationTypeSelect);
+    q.setParameter("typeNormal", InvoiceLineRepository.TYPE_NORMAL);
     if (invoiceIsNotAdvancePayment) {
       q.setParameter("invoiceId", currentInvoiceId);
     }
