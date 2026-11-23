@@ -22,8 +22,10 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
@@ -58,6 +60,8 @@ public class BankReconciliationValidateService {
   protected BankReconciliationComputeService bankReconciliationComputeService;
   protected CurrencyScaleService currencyScaleService;
   protected MoveLinePostedNbrService moveLinePostedNbrService;
+  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
+  protected AnalyticLineService analyticLineService;
 
   @Inject
   public BankReconciliationValidateService(
@@ -70,7 +74,9 @@ public class BankReconciliationValidateService {
       BankReconciliationLineService bankReconciliationLineService,
       BankReconciliationComputeService bankReconciliationComputeService,
       CurrencyScaleService currencyScaleService,
-      MoveLinePostedNbrService moveLinePostedNbrService) {
+      MoveLinePostedNbrService moveLinePostedNbrService,
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      AnalyticLineService analyticLineService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -82,6 +88,8 @@ public class BankReconciliationValidateService {
     this.bankReconciliationComputeService = bankReconciliationComputeService;
     this.currencyScaleService = currencyScaleService;
     this.moveLinePostedNbrService = moveLinePostedNbrService;
+    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.analyticLineService = analyticLineService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -198,6 +206,15 @@ public class BankReconciliationValidateService {
             1,
             origin,
             description);
+
+    if (partnerMoveLine.getAccount().getAnalyticDistributionAuthorized()
+        && bankReconciliationLine.getAnalyticDistributionTemplate() != null) {
+      partnerMoveLine.setAnalyticDistributionTemplate(
+          bankReconciliationLine.getAnalyticDistributionTemplate());
+      moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(partnerMoveLine);
+      analyticLineService.setAnalyticAccount(partnerMoveLine, company);
+    }
+
     move.addMoveLineListItem(partnerMoveLine);
 
     MoveLine cashMoveLine =
