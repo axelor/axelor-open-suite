@@ -35,10 +35,8 @@ import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDistributionService {
@@ -91,10 +89,7 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
             new PaymentMoveLineDistribution(
                 move.getPartner(), reconcile, moveLine, move, new HashSet<>(taxLineSet));
 
-        paymentMvlD.setOperationDate(
-            Optional.ofNullable(reconcile.getReconciliationDateTime())
-                .map(LocalDateTime::toLocalDate)
-                .orElse(null));
+        paymentMvlD.setOperationDate(reconcile.getEffectiveDate());
         if (!moveLine.getAccount().getReconcileOk()) {
           this.computeProratedAmounts(
               paymentMvlD,
@@ -128,7 +123,9 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
 
         reversePaymentMvlD.setIsAlreadyReverse(true);
         reversePaymentMvlD.setOperationDate(
-            reconcile.getReconciliationCancelDateTime().toLocalDate());
+            reconcile.getEffectiveDate() != null
+                ? reconcile.getEffectiveDate()
+                : reconcile.getReconciliationCancelDateTime().toLocalDate());
         if (!paymentMvlD.getMoveLine().getAccount().getReconcileOk()) {
           reversePaymentMvlD.setExTaxProratedAmount(paymentMvlD.getExTaxProratedAmount().negate());
           reversePaymentMvlD.setTaxProratedAmount(paymentMvlD.getTaxProratedAmount().negate());
