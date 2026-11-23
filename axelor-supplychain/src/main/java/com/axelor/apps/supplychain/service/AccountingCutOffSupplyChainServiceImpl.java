@@ -352,6 +352,17 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
             I18n.get(SupplychainExceptionMessage.MISSING_FORECASTED_INV_SUPP_ACCOUNT));
       }
     }
+    if (partnerAccount == null) {
+      partnerAccount = isPurchase ? forecastedInvSuppAccount : forecastedInvCustAccount;
+      if (partnerAccount == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(
+                isPurchase
+                    ? SupplychainExceptionMessage.MISSING_FORECASTED_INV_SUPP_ACCOUNT
+                    : SupplychainExceptionMessage.MISSING_FORECASTED_INV_CUST_ACCOUNT));
+      }
+    }
 
     String origin = prefixOrigin + stockMove.getStockMoveSeq();
 

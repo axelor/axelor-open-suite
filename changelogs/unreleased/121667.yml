@@ -1,0 +1,3 @@
+---
+title: "Accounting cut-off: fixed the empty not invoiced amount and the missing cut-off entry for deliveries and receipts without order."
+module: axelor-supplychain
