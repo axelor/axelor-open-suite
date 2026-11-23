@@ -368,7 +368,7 @@
     <attribute name="value" for="$bankStatementReference"
       expr="eval: _selectedBankReconciliationLine.reference"/>
     <attribute name="value" for="$bankStatementAmountRemainToReconcile"
-      expr="eval: _selectedBankReconciliationLine.bankStatementLine.amountRemainToReconcile"/>
+      expr="eval: (_selectedBankReconciliationLine.debit + _selectedBankReconciliationLine.credit).min(_selectedBankReconciliationLine.bankStatementLine.amountRemainToReconcile)"/>
     <attribute for="$currencyNumberOfDecimals" name="value"
       expr="eval: _selectedBankReconciliationLine.bankReconciliation.currency.numberOfDecimals"/>
   </action-attrs>

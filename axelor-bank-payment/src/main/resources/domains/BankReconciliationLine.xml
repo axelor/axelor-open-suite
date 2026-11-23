@@ -44,6 +44,12 @@
       return bankReconciliation != null ? bankReconciliation.getCompanyCurrency() : null;
 	    ]]>
     </many-to-one>
+    <decimal name="amountRemainToReconcile" title="Amount remaining to reconcile"
+      formula="true" precision="20" scale="3">
+      <![CDATA[
+        CASE WHEN is_posted THEN 0 ELSE COALESCE(debit, 0) + COALESCE(credit, 0) END
+      ]]>
+    </decimal>
     <many-to-one name="analyticDistributionTemplate"
       title="Analytic distribution template"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
