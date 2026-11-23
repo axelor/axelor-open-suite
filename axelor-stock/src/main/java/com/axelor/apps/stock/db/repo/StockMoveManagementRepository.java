@@ -18,7 +18,9 @@
  */
 package com.axelor.apps.stock.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
+import com.axelor.apps.base.service.WorkflowStatusGuardService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
@@ -97,6 +99,18 @@ public class StockMoveManagementRepository extends StockMoveRepository {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  /** Called by the generic save only (REST API, web client), never by the services. */
+  @Override
+  public Map<String, Object> validate(Map<String, Object> json, Map<String, Object> context) {
+    try {
+      Beans.get(WorkflowStatusGuardService.class).checkStatusUnchanged(this, json);
+    } catch (AxelorException e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
+    return super.validate(json, context);
   }
 
   @Override
