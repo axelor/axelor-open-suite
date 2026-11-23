@@ -20,6 +20,7 @@ package com.axelor.apps.helpdesk.service;
 
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.TicketStatus;
+import java.util.Set;
 
 public interface TicketStatusService {
 
@@ -38,4 +39,6 @@ public interface TicketStatusService {
   boolean isResolvedTicket(Ticket ticket);
 
   boolean isClosedTicket(Ticket ticket);
+
+  Set<Long> getResolvedAndClosedStatusIds();
 }

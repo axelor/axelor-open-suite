@@ -57,8 +57,10 @@
       DATE(_ticket.created_on) BETWEEN DATE(:fromDate)
       AND DATE(:toDate)
       AND _ticket.assigned_to_user = :_user_id
-      AND _ticket_status.id = (SELECT
-      resolved_ticket_status FROM studio_app_helpdesk)
+      AND _ticket_status.id IN (SELECT
+      resolved_ticket_status FROM studio_app_helpdesk
+      UNION SELECT closed_ticket_status FROM
+      studio_app_helpdesk)
       GROUP BY
       translation.message_value
     </dataset>
@@ -137,8 +139,10 @@
       AND
       DATE(:toDate)
       AND _team.id = :_myActiveTeam
-      AND _ticket_status.id = (SELECT
-      resolved_ticket_status FROM studio_app_helpdesk)
+      AND _ticket_status.id IN (SELECT
+      resolved_ticket_status FROM studio_app_helpdesk
+      UNION SELECT closed_ticket_status FROM
+      studio_app_helpdesk)
       GROUP BY
       translation.message_value
     </dataset>
@@ -198,8 +202,9 @@
       WHERE
       DATE(_ticket.created_on) BETWEEN DATE(:fromDate)
       AND DATE(:toDate)
-      AND _ticket_status.id = (SELECT resolved_ticket_status FROM
-      studio_app_helpdesk)
+      AND _ticket_status.id IN (SELECT resolved_ticket_status FROM
+      studio_app_helpdesk
+      UNION SELECT closed_ticket_status FROM studio_app_helpdesk)
       GROUP BY
       translation.message_value
     </dataset>
@@ -216,9 +221,11 @@
     </search-fields>
     <dataset type="sql">
       SELECT
-      COUNT(*) * 100 / (SELECT COUNT(*) FROM helpdesk_ticket) AS
-      _percentage,
-      (CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL)
+      ROUND(COUNT(*) * 100.0 / (SELECT NULLIF(COUNT(*), 0) FROM
+      helpdesk_ticket
+      WHERE sla_policy = :sla), 2) AS _percentage,
+      (CASE
+      WHEN(translation.message_value = '' OR translation.message_value IS NULL)
       THEN
       'Solved'
       ELSE
@@ -227,16 +234,8 @@
       FROM
       helpdesk_ticket AS _ticket1
       JOIN
-      auth_user AS _user
-      ON
-      _user.id = _ticket1.assigned_to_user
-      JOIN
-      team_team AS _team
-      ON
-      _team.id =
-      _user.active_team
-      JOIN
-      helpdesk_sla AS _sla
+      helpdesk_sla AS
+      _sla
       ON
       _sla.id = _ticket1.sla_policy
       LEFT JOIN
@@ -247,13 +246,13 @@
       WHERE
       _ticket1.is_sla_completed = true
       AND _sla.id = :sla
-      AND _team.id = _sla.team
       GROUP BY
       translation.message_value
       UNION ALL
       SELECT
-      COUNT(*) * 100 / (SELECT COUNT(*) FROM
-      helpdesk_ticket) AS _percentage,
+      ROUND(COUNT(*) * 100.0 / (SELECT NULLIF(COUNT(*), 0) FROM helpdesk_ticket
+      WHERE
+      sla_policy = :sla), 2) AS _percentage,
       (CASE WHEN(translation.message_value = '' OR
       translation.message_value IS NULL) THEN
       'Unsolved'
@@ -263,14 +262,6 @@
       FROM
       helpdesk_ticket AS _ticket1
       JOIN
-      auth_user AS _user
-      ON
-      _user.id = _ticket1.assigned_to_user
-      JOIN
-      team_team AS _team
-      ON
-      _team.id = _user.active_team
-      JOIN
       helpdesk_sla AS _sla
       ON
       _sla.id =
@@ -279,12 +270,12 @@
       meta_translation as translation
       ON
       translation.message_key =
-      'Unsolved' AND translation.language = :_language
+      'Unsolved' AND translation.language
+      = :_language
       WHERE
       _ticket1.is_sla_completed = false
       AND
       _sla.id = :sla
-      AND _team.id = _sla.team
       GROUP BY
       translation.message_value
     </dataset>
@@ -300,13 +291,16 @@
         x-required="true"/>
       <field name="user" title="User" type="reference" target="com.axelor.auth.db.User"
         x-required="true"
-        domain="self IN (SELECT u FROM User u JOIN u.teamSet tset JOIN Sla sla ON sla.team In tset WHERE sla.id=:sla)"/>
+        domain="self.id IN (SELECT ticket.assignedToUser.id FROM Ticket ticket WHERE ticket.slaPolicy = :sla)"/>
     </search-fields>
     <dataset type="sql">
       SELECT
-      COUNT(*) * 100 / (SELECT COUNT(*) FROM helpdesk_ticket) AS
+      ROUND(COUNT(*) * 100.0 / (SELECT NULLIF(COUNT(*), 0) FROM
+      helpdesk_ticket
+      WHERE sla_policy = :sla AND assigned_to_user = :user), 2) AS
       _percentage,
-      (CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL)
+      (CASE
+      WHEN(translation.message_value = '' OR translation.message_value IS NULL)
       THEN
       'Solved'
       ELSE
@@ -327,20 +321,25 @@
       meta_translation as translation
       ON
       translation.message_key =
-      'Solved' AND translation.language = :_language
+      'Solved' AND
+      translation.language = :_language
       WHERE
       _ticket1.is_sla_completed = true
       AND _sla.id
       = :sla
-      AND _user.id = :user
+      AND
+      _user.id = :user
       GROUP BY
       translation.message_value
       UNION ALL
       SELECT
-      COUNT(*) * 100 /
-      (SELECT COUNT(*) FROM helpdesk_ticket) AS _percentage,
+      ROUND(COUNT(*) * 100.0 /
+      (SELECT NULLIF(COUNT(*), 0) FROM helpdesk_ticket
+      WHERE sla_policy = :sla AND assigned_to_user =
+      :user), 2) AS _percentage,
       (CASE WHEN(translation.message_value =
-      '' OR translation.message_value IS NULL) THEN
+      '' OR
+      translation.message_value IS NULL) THEN
       'Unsolved'
       ELSE
       translation.message_value
@@ -358,7 +357,8 @@
       ON
       _sla.id = _ticket1.sla_policy
       LEFT JOIN
-      meta_translation as translation
+      meta_translation as
+      translation
       ON
       translation.message_key = 'Unsolved' AND translation.language
       = :_language
@@ -394,14 +394,6 @@
       FROM
       helpdesk_ticket AS _ticket1
       JOIN
-      auth_user AS _user
-      ON
-      _user.id = _ticket1.assigned_to_user
-      JOIN
-      team_team AS _team
-      ON
-      _team.id = _user.active_team
-      JOIN
       helpdesk_sla AS _sla
       ON
       _sla.id =
@@ -410,34 +402,27 @@
       meta_translation as translation
       ON
       translation.message_key =
-      'Solved' AND translation.language = :_language
+      'Solved' AND translation.language =
+      :_language
       WHERE
       _ticket1.is_sla_completed = true
       AND _sla.id
       = :sla
-      AND _team.id = _sla.team
       GROUP BY
       translation.message_value
       UNION ALL
       SELECT
       COUNT(*) AS
       _total,
-      (CASE WHEN(translation.message_value = '' OR translation.message_value IS NULL) THEN
+      (CASE WHEN(translation.message_value
+      = '' OR translation.message_value IS NULL) THEN
       'Unsolved'
       ELSE
       translation.message_value
-      END) AS _status
+      END) AS
+      _status
       FROM
       helpdesk_ticket AS _ticket1
-      JOIN
-      auth_user AS _user
-      ON
-      _user.id = _ticket1.assigned_to_user
-      JOIN
-      team_team AS _team
-      ON
-      _team.id =
-      _user.active_team
       JOIN
       helpdesk_sla AS _sla
       ON
@@ -445,13 +430,14 @@
       LEFT JOIN
       meta_translation as translation
       ON
-      translation.message_key = 'Unsolved' AND translation.language
+      translation.message_key = 'Unsolved' AND
+      translation.language
       = :_language
       WHERE
       _ticket1.is_sla_completed = false
       AND _sla.id = :sla
-      AND _team.id = _sla.team
-      GROUP BY
+      GROUP
+      BY
       translation.message_value
     </dataset>
     <category key="_status" type="text" title="Status"/>
@@ -465,7 +451,7 @@
         x-required="true"/>
       <field name="user" title="User" type="reference" target="com.axelor.auth.db.User"
         x-required="true"
-        domain="self IN (SELECT u FROM User u JOIN u.teamSet tset JOIN Sla sla ON sla.team In tset WHERE sla.id=:sla)"/>
+        domain="self.id IN (SELECT ticket.assignedToUser.id FROM Ticket ticket WHERE ticket.slaPolicy = :sla)"/>
     </search-fields>
     <dataset type="sql">
       SELECT
