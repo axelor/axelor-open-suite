@@ -1,0 +1,7 @@
+---
+title: "Ticket: the status API used by the mobile application no longer starts, stops or cancels a timer when 'Manage Timer' is disabled."
+module: axelor-helpdesk
+developer: |
+  The constructor of `TicketUpdateRestServiceImpl` has a new injected parameter: `AppHelpdeskService`.
+
+  Implementations extending this class must accept and forward the new constructor parameter.
