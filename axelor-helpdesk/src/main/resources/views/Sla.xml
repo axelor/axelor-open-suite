@@ -24,7 +24,7 @@
       </panel>
 
       <panel name="targetPanel" title="Target" colSpan="12">
-        <field name="reachStageTicketStatus"/>
+        <field name="reachStageTicketStatus" required="true"/>
         <field name="reachIn" title="Reach in">
           <viewer><![CDATA[
           <>
