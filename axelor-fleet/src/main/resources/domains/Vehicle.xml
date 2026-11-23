@@ -46,6 +46,7 @@
     <string name="fuelCardCode" title="Fuel card code"/>
     <one-to-many name="vehicleRepairList" title="Repairs"
       ref="com.axelor.apps.fleet.db.VehicleRepair"/>
+    <entity-listener class="com.axelor.apps.fleet.db.repo.VehicleListener"/>
   </entity>
 
 </domain-models>
