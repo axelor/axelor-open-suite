@@ -41,6 +41,7 @@ import com.axelor.apps.maintenance.service.ManufOrderStockMoveServiceMaintenance
 import com.axelor.apps.maintenance.service.ManufOrderWorkflowMaintenanceServiceImpl;
 import com.axelor.apps.maintenance.service.MrpServiceMaintenanceImpl;
 import com.axelor.apps.maintenance.service.OperationOrderStockMoveServiceMaintenanceImpl;
+import com.axelor.apps.maintenance.service.OperationOrderWorkflowServiceMaintenanceImpl;
 import com.axelor.apps.maintenance.service.PreventiveMaintenanceCriterionService;
 import com.axelor.apps.maintenance.service.PreventiveMaintenanceCriterionServiceImpl;
 import com.axelor.apps.maintenance.service.PreventiveMaintenanceEligibilityService;
@@ -58,6 +59,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderPlanServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveServiceImpl;
+import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowServiceImpl;
 
 public class MaintenanceModule extends AxelorModule {
 
@@ -91,6 +93,8 @@ public class MaintenanceModule extends AxelorModule {
     bind(ManufOrderStockMoveServiceImpl.class).to(ManufOrderStockMoveServiceMaintenanceImpl.class);
     bind(OperationOrderStockMoveServiceImpl.class)
         .to(OperationOrderStockMoveServiceMaintenanceImpl.class);
+    bind(OperationOrderWorkflowServiceImpl.class)
+        .to(OperationOrderWorkflowServiceMaintenanceImpl.class);
 
     // RM#109711: include maintenance orders in MRP calculation
     bind(MrpServiceProductionImpl.class).to(MrpServiceMaintenanceImpl.class);
