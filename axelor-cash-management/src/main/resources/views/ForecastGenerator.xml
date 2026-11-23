@@ -59,7 +59,7 @@
   <action-attrs name="action-forecast-generator-attrs-title-generate">
     <attribute name="title" for="generateBtn"
       expr="eval:com.axelor.i18n.I18n.get('Actualize')"
-      if="__repo__(Forecast).all().filter('self.forecastGenerator.id = ?',__id__).fetch()?.size &gt; 0"/>
+      if="__repo__(Forecast).all().filter('self.forecastGenerator.id = ?',__id__).fetch()?.size() &gt; 0"/>
   </action-attrs>
 
   <action-method name="action-forecast-generator-method-generate">
