@@ -1,0 +1,3 @@
+---
+title: "Bank reconciliation: fixed 'Multiple reconciles' giving no confidence index colour, splitting an already split line on the full statement amount, and showing the statement remaining amount on every line instead of the line's own remaining amount."
+module: axelor-bank-payment
