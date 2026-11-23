@@ -136,7 +136,10 @@ public class InvoiceTermPfpToolServiceImpl implements InvoiceTermPfpToolService 
         && (user.getIsSuperPfpUser()
             || (invoiceTerm != null
                 && invoiceTerm.getPfpValidatorUser() != null
-                && user.equals(invoiceTerm.getPfpValidatorUser())));
+                && (user.equals(invoiceTerm.getPfpValidatorUser())
+                    || (isActiveSubstitutePfpValidator(
+                            invoiceTerm.getPfpValidatorUser(), user, invoiceTerm.getCompany())
+                        && checkPfpValidatorUser(invoiceTerm)))));
   }
 
   @Override
@@ -161,5 +164,24 @@ public class InvoiceTermPfpToolServiceImpl implements InvoiceTermPfpToolService 
     }
 
     return pfpStatus;
+  }
+
+  @Override
+  public boolean isActiveSubstitutePfpValidator(User pfpValidatorUser, User user, Company company) {
+    if (pfpValidatorUser == null
+        || user == null
+        || CollectionUtils.isEmpty(pfpValidatorUser.getSubstitutePfpValidatorList())) {
+      return false;
+    }
+    LocalDate todayDate = appBaseService.getTodayDate(company);
+
+    return pfpValidatorUser.getSubstitutePfpValidatorList().stream()
+        .anyMatch(
+            substitutePfpValidator ->
+                user.equals(substitutePfpValidator.getSubstitutePfpValidatorUser())
+                    && (substitutePfpValidator.getSubstituteStartDate() == null
+                        || substitutePfpValidator.getSubstituteStartDate().isBefore(todayDate))
+                    && (substitutePfpValidator.getSubstituteEndDate() == null
+                        || substitutePfpValidator.getSubstituteEndDate().isAfter(todayDate)));
   }
 }

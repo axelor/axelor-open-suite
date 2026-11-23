@@ -39,4 +39,6 @@ public interface InvoiceTermPfpToolService {
   boolean isPfpValidatorUser(InvoiceTerm invoiceTerm, User user);
 
   Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList);
+
+  boolean isActiveSubstitutePfpValidator(User pfpValidatorUser, User user, Company company);
 }

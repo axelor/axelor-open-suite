@@ -1,0 +1,3 @@
+---
+title: "Invoice term: fixed substitute PFP validators not being able to validate or refuse the invoice terms of the validator they replace, and not seeing them in 'My awaiting PFP'."
+module: axelor-account
