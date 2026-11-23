@@ -1185,7 +1185,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     if (pairMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
       creditMoveLine = moveLine;
       debitMoveLine = pairMoveLine;
-    } else if (pairMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
+    } else if (pairMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE
+        || paymentSession.getPartnerTypeSelect()
+            == PaymentSessionRepository.PARTNER_TYPE_EMPLOYEE) {
       creditMoveLine = pairMoveLine;
       debitMoveLine = moveLine;
     }
