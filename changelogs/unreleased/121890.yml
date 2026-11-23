@@ -1,0 +1,3 @@
+---
+title: "Payment session: fixed no term being retrieved when the recipient type is Employee."
+module: axelor-account
