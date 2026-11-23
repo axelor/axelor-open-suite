@@ -598,6 +598,14 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       } else {
         amountInCurrency = saleOrderLine.getExTaxTotal();
       }
+    } else {
+      BigDecimal unitPrice =
+          ati && !(isPurchase && recoveredTax)
+              ? stockMoveLine.getUnitPriceTaxed()
+              : stockMoveLine.getUnitPriceUntaxed();
+      return unitPrice
+          .multiply(stockMoveLine.getRealQty().subtract(stockMoveLine.getQtyInvoiced()))
+          .setScale(2, RoundingMode.HALF_UP);
     }
 
     if (totalQty == null || BigDecimal.ZERO.compareTo(totalQty) == 0) {
