@@ -1071,7 +1071,7 @@
 
   <action-attrs name="action-purchase-order-attrs-compute-tax-number-domain">
     <attribute name="domain" for="taxNumber"
-      expr="eval: company?.taxNumberList?.collect{it.id}?.size > 0 ? &quot;self.id IN (${company?.taxNumberList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"
+      expr="eval: company?.taxNumberList?.collect{it.id}?.size() > 0 ? &quot;self.id IN (${company?.taxNumberList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"
       if="__config__.app.isApp('account')"/>
   </action-attrs>
 
