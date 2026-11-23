@@ -37,6 +37,8 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
@@ -920,7 +922,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
 
-    if (vatSystem == AccountRepository.VAT_SYSTEM_DEFAULT) {
+    if (vatSystem == AccountRepository.VAT_SYSTEM_DEFAULT
+        || (moveLine.getVatSystemSelect() != AccountRepository.VAT_SYSTEM_DEFAULT
+            && !isVatOptionOnDeliveries(move, moveLine))) {
       vatSystem = moveLine.getVatSystemSelect();
     }
 
@@ -1415,5 +1419,27 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     taxMoveLine.setTaxCode(Optional.of(taxLine).map(TaxLine::getTax).map(Tax::getCode).orElse(""));
     taxMoveLine.setVatSystemSelect(taxConfiguration.getVatSystem());
     return taxMoveLine;
+  }
+
+  protected boolean isVatOptionOnDeliveries(Move move, MoveLine moveLine) {
+    if (move.getInvoice() != null) {
+      return move.getInvoice().getVatSystemSelect()
+          == InvoiceRepository.VAT_LIABILITY_OPTION_ON_DELIVERIES;
+    }
+
+    int journalTechnicalType = move.getJournal().getJournalType().getTechnicalTypeSelect();
+    Partner partner = move.getPartner() != null ? move.getPartner() : moveLine.getPartner();
+    AccountingSituation accountingSituation = null;
+    if (journalTechnicalType == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE) {
+      accountingSituation =
+          accountingSituationRepository.findByCompanyAndPartner(move.getCompany(), partner);
+    } else if (journalTechnicalType == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE) {
+      accountingSituation =
+          accountingSituationRepository.findByCompanyAndPartner(
+              move.getCompany(), move.getCompany().getPartner());
+    }
+
+    return accountingSituation != null
+        && accountingSituation.getVatSystemSelect() == AccountingSituationRepository.VAT_DELIVERY;
   }
 }
