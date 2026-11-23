@@ -19,10 +19,29 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.Loan;
+import com.axelor.apps.account.db.LoanLine;
+import com.axelor.apps.account.service.loan.LoanAdjustmentService;
 import com.axelor.apps.account.service.loan.LoanService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.inject.Beans;
+import jakarta.persistence.PersistenceException;
 
 public class LoanManagementRepository extends LoanRepository {
+
+  @Override
+  public Loan save(Loan entity) {
+    if (entity.getLineList() != null) {
+      LoanAdjustmentService loanAdjustmentService = Beans.get(LoanAdjustmentService.class);
+      try {
+        for (LoanLine line : entity.getLineList()) {
+          loanAdjustmentService.checkBeforeSave(line);
+        }
+      } catch (AxelorException e) {
+        throw new PersistenceException(e.getMessage(), e);
+      }
+    }
+    return super.save(entity);
+  }
 
   @Override
   public Loan copy(Loan entity, boolean deep) {

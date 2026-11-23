@@ -37,6 +37,13 @@ public interface LoanAdjustmentService {
   void computeEditedLine(LoanLine loanLine) throws AxelorException;
 
   /**
+   * Checks, before an installment is saved, the same rules as {@link #computeEditedLine}: no
+   * negative interest, capital or insurance, and a capital not above the remaining debt of the
+   * installment. A booked installment is not checked. Throws an exception on the first violation.
+   */
+  void checkBeforeSave(LoanLine loanLine) throws AxelorException;
+
+  /**
    * Recomputes the following installments after a manual edit, applying the Quadra rules: editing
    * the interest only regularizes the last installment; editing the capital re-amortizes all the
    * following installments; editing the insurance carries the new insurance to the following

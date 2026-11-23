@@ -1,0 +1,3 @@
+---
+title: "Loan: an installment with a negative amount or a capital above the remaining debt can no longer be saved."
+module: axelor-account

@@ -73,12 +73,7 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
     BigDecimal insurance = nz(loanLine.getInsuranceAmount());
     BigDecimal total = nz(loanLine.getTotalAmount());
 
-    if (interest.signum() < 0 || capital.signum() < 0 || insurance.signum() < 0) {
-      throw new AxelorException(
-          LoanLine.class,
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.LOAN_LINE_NEGATIVE_AMOUNT));
-    }
+    checkAmountsNotNegative(interest, capital, insurance);
 
     if (nz(loanLine.getEditedFieldSelect()) == LoanLineRepository.EDITED_FIELD_INTEREST) {
       // Keep the installment total and adjust the capital repayment.
@@ -88,17 +83,44 @@ public class LoanAdjustmentServiceImpl implements LoanAdjustmentService {
       }
     }
 
-    if (capital.compareTo(rdBefore) > 0) {
-      throw new AxelorException(
-          LoanLine.class,
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.LOAN_LINE_CAPITAL_EXCEEDS_REMAINING_DEBT));
-    }
+    checkCapitalWithinRemainingDebt(capital, rdBefore);
 
     loanLine.setCapitalAmount(capital);
     loanLine.setTotalAmount(scale(loan, interest.add(capital).add(insurance)));
     loanLine.setRemainingDebtAfter(scale(loan, rdBefore.subtract(capital)));
     loanLine.setIsManuallyModified(true);
+  }
+
+  @Override
+  public void checkBeforeSave(LoanLine loanLine) throws AxelorException {
+    if (loanLine.getAccountMove() != null) {
+      // A booked installment is read-only: it is not checked again.
+      return;
+    }
+    BigDecimal capital = nz(loanLine.getCapitalAmount());
+    checkAmountsNotNegative(
+        nz(loanLine.getInterestAmount()), capital, nz(loanLine.getInsuranceAmount()));
+    checkCapitalWithinRemainingDebt(capital, nz(loanLine.getRemainingDebtBefore()));
+  }
+
+  protected void checkAmountsNotNegative(
+      BigDecimal interest, BigDecimal capital, BigDecimal insurance) throws AxelorException {
+    if (interest.signum() < 0 || capital.signum() < 0 || insurance.signum() < 0) {
+      throw new AxelorException(
+          LoanLine.class,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.LOAN_LINE_NEGATIVE_AMOUNT));
+    }
+  }
+
+  protected void checkCapitalWithinRemainingDebt(BigDecimal capital, BigDecimal remainingDebtBefore)
+      throws AxelorException {
+    if (capital.compareTo(remainingDebtBefore) > 0) {
+      throw new AxelorException(
+          LoanLine.class,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.LOAN_LINE_CAPITAL_EXCEEDS_REMAINING_DEBT));
+    }
   }
 
   @Override

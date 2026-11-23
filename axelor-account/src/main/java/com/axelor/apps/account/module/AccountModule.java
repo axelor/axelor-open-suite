@@ -53,6 +53,8 @@ import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalManagementRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.LoanLineManagementRepository;
+import com.axelor.apps.account.db.repo.LoanLineRepository;
 import com.axelor.apps.account.db.repo.LoanManagementRepository;
 import com.axelor.apps.account.db.repo.LoanRepository;
 import com.axelor.apps.account.db.repo.MoveLineManagementRepository;
@@ -841,6 +843,7 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetValidateService.class).to(FixedAssetValidateServiceImpl.class);
 
     bind(LoanRepository.class).to(LoanManagementRepository.class);
+    bind(LoanLineRepository.class).to(LoanLineManagementRepository.class);
     bind(LoanManagementConfigService.class).to(LoanManagementConfigServiceImpl.class);
     bind(LoanService.class).to(LoanServiceImpl.class);
     bind(LoanValidateService.class).to(LoanValidateServiceImpl.class);

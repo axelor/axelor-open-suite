@@ -8,11 +8,14 @@
     <field name="installmentDate" readonly="true"/>
     <field name="remainingDebtBefore" x-scale="loan.currency.numberOfDecimals" readonly="true"/>
     <field name="interestAmount" x-scale="loan.currency.numberOfDecimals"
+      validIf="interestAmount &gt;= 0 &amp;&amp; totalAmount - interestAmount - insuranceAmount - remainingDebtBefore &lt; 0.001"
       readonlyIf="accountMove != null" onChange="action-loan-line-method-edit-interest"/>
     <field name="capitalAmount" x-scale="loan.currency.numberOfDecimals"
+      validIf="capitalAmount &gt;= 0 &amp;&amp; capitalAmount - remainingDebtBefore &lt;= 0"
       readonlyIf="accountMove != null" onChange="action-loan-line-method-edit-capital"/>
     <field name="insuranceAmount" x-scale="loan.currency.numberOfDecimals"
-      readonlyIf="accountMove != null" onChange="action-loan-line-method-edit-insurance"/>
+      validIf="insuranceAmount &gt;= 0" readonlyIf="accountMove != null"
+      onChange="action-loan-line-method-edit-insurance"/>
     <field name="totalAmount" x-scale="loan.currency.numberOfDecimals" readonly="true"/>
     <field name="remainingDebtAfter" x-scale="loan.currency.numberOfDecimals" readonly="true"/>
     <field name="accountMove" readonly="true"/>
@@ -28,11 +31,14 @@
       <field name="remainingDebtBefore" readonly="true"
         x-scale="loan.currency.numberOfDecimals"/>
       <field name="interestAmount" x-scale="loan.currency.numberOfDecimals"
+        validIf="interestAmount &gt;= 0 &amp;&amp; totalAmount - interestAmount - insuranceAmount - remainingDebtBefore &lt; 0.001"
         readonlyIf="accountMove != null" onChange="action-loan-line-method-edit-interest"/>
       <field name="capitalAmount" x-scale="loan.currency.numberOfDecimals"
+        validIf="capitalAmount &gt;= 0 &amp;&amp; capitalAmount - remainingDebtBefore &lt;= 0"
         readonlyIf="accountMove != null" onChange="action-loan-line-method-edit-capital"/>
       <field name="insuranceAmount" x-scale="loan.currency.numberOfDecimals"
-        readonlyIf="accountMove != null" onChange="action-loan-line-method-edit-insurance"/>
+        validIf="insuranceAmount &gt;= 0" readonlyIf="accountMove != null"
+        onChange="action-loan-line-method-edit-insurance"/>
       <field name="totalAmount" readonly="true" x-scale="loan.currency.numberOfDecimals"/>
       <field name="remainingDebtAfter" readonly="true"
         x-scale="loan.currency.numberOfDecimals"/>
