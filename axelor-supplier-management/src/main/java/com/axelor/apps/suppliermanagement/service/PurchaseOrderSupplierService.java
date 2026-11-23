@@ -38,6 +38,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderCreateSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
@@ -246,12 +247,22 @@ public class PurchaseOrderSupplierService {
         "Creation of a purchase order line for the product : {}",
         purchaseOrderLine.getProductName());
 
-    return purchaseOrderLineService.createPurchaseOrderLine(
-        purchaseOrder,
-        purchaseOrderLine.getProduct(),
-        purchaseOrderLine.getProductName(),
-        purchaseOrderLine.getDescription(),
-        purchaseOrderLine.getQty(),
-        purchaseOrderLine.getUnit());
+    PurchaseOrderLine supplierPurchaseOrderLine =
+        purchaseOrderLineService.createPurchaseOrderLine(
+            purchaseOrder,
+            purchaseOrderLine.getProduct(),
+            purchaseOrderLine.getProductName(),
+            purchaseOrderLine.getDescription(),
+            purchaseOrderLine.getQty(),
+            purchaseOrderLine.getUnit());
+
+    PurchaseOrderSupplierLine acceptedSupplierLine =
+        purchaseOrderSupplierLineService.getAcceptedSupplierLine(purchaseOrderLine);
+    if (acceptedSupplierLine != null) {
+      purchaseOrderSupplierLineService.applySupplierPrice(
+          supplierPurchaseOrderLine, purchaseOrder, acceptedSupplierLine.getPrice());
+    }
+
+    return supplierPurchaseOrderLine;
   }
 }

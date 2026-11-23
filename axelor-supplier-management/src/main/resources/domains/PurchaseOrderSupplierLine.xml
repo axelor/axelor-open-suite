@@ -13,7 +13,7 @@
 
     <decimal name="availableQty" title="Available qty" default="0"/>
 
-    <decimal name="price" title="Unit price" initParam="true"/>
+    <decimal name="price" title="Unit price" initParam="true" precision="20" scale="10"/>
 
     <string name="comments" title="Comments" large="true"/>
 
