@@ -295,9 +295,15 @@
       if="__config__.app.getApp('helpdesk')?.getManageTimer()"/>
     <action name="action-ticket-method-play"
       if="__config__.app.getApp('helpdesk')?.getManageTimer()"/>
+    <action name="action-ticket-group-fill-start-date"
+      if="ticketStatus?.id == __config__.app.getApp('helpdesk')?.defaultTicketStatus?.id"/>
+    <action name="save"/>
+    <action name="action-ticket-method-start-ticket"/>
+  </action-group>
+
+  <action-group name="action-ticket-group-fill-start-date">
     <action name="action-ticket-record-to-fill-startDate"/>
     <action name="action-ticket-method-compute-from-start-date-time"/>
-    <action name="action-ticket-method-start-ticket"/>
   </action-group>
 
   <action-group name="action-ticket-group-on-validate">
@@ -320,7 +326,15 @@
     <action name="action-ticket-method-pause"
       if="__config__.app.getApp('helpdesk')?.getManageTimer()"/>
     <action name="action-ticket-method-compute-real-total-duration"/>
+    <action name="action-ticket-group-fill-end-date"
+      if="endDateT == null || ticketStatus?.id != __config__.app.getApp('helpdesk')?.resolvedTicketStatus?.id"/>
+    <action name="save"/>
     <action name="action-ticket-method-close-ticket"/>
+  </action-group>
+
+  <action-group name="action-ticket-group-fill-end-date">
+    <action name="action-ticket-record-to-fill-endDate"/>
+    <action name="action-ticket-method-compute-from-end-date-time"/>
   </action-group>
 
   <action-group name="action-ticket-group-on-pause">
