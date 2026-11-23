@@ -279,7 +279,7 @@
             colSpan="12" readonlyIf="cutOffMoveGenerated == true" hideIf="cutOffOriginMove != null"/>
           <button name="applyCutOffDatesBtn" title="Apply Cut off dates"
             onClick="action-move-method-apply-cut-off-dates"
-            hideIf="$cutOffStartDate == null || $cutOffEndDate == null || $cutOffStartDate > $cutOffEndDate"
+            hideIf="cutOffMoveGenerated || $cutOffStartDate == null || $cutOffEndDate == null || $cutOffStartDate > $cutOffEndDate"
             colSpan="12"/>
         </panel>
       </panel>
@@ -411,6 +411,7 @@
           <field name="paymentCondition.isFree" hidden="true"/>
           <field name="$validatePeriod" hidden="true" type="boolean"/>
           <field name="$isThereRelatedCutOffMoves" hidden="true" type="boolean"/>
+          <field name="cutOffMoveGenerated" hidden="true"/>
           <field name="journal.hasRequiredOrigin" hidden="true" readonly="true"/>
           <field name="journal.hasDuplicateDetectionOnOrigin" hidden="true" readonly="true"/>
           <field name="journal.authorizeSimulatedMove" hidden="true"/>
