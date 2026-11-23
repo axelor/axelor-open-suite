@@ -194,7 +194,8 @@ public class BankReconciliationReconciliationServiceImpl
 
           Boolean result = (Boolean) new GroovyScriptHelper(sb).eval(query);
 
-          if (result) {
+          if (result
+              && !isMoveLineAmountExceeded(bankReconciliation, bankReconciliationLine, moveLine)) {
             bankStatementLine.setMoveLine(moveLine);
             bankReconciliationLine =
                 updateBankReconciliationLine(bankReconciliationLine, moveLine, bankStatementQuery);
@@ -458,6 +459,19 @@ public class BankReconciliationReconciliationServiceImpl
             ? moveLine.getBankReconciledAmount()
             : BigDecimal.ZERO;
     return debit.add(credit).subtract(alreadyReconciled);
+  }
+
+  protected boolean isMoveLineAmountExceeded(
+      BankReconciliation bankReconciliation,
+      BankReconciliationLine bankReconciliationLine,
+      MoveLine moveLine) {
+    BigDecimal amount = bankReconciliationLine.getDebit().add(bankReconciliationLine.getCredit());
+    for (BankReconciliationLine line : bankReconciliation.getBankReconciliationLineList()) {
+      if (moveLine.equals(line.getMoveLine())) {
+        amount = amount.add(line.getDebit().add(line.getCredit()));
+      }
+    }
+    return amount.compareTo(moveLine.getDebit().add(moveLine.getCredit())) > 0;
   }
 
   protected String addMoveLineBankReconcileNbr(String existing, String moveLineBankReconcileNbr) {
