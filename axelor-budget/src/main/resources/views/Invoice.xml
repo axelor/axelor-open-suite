@@ -41,7 +41,7 @@
           </panel>
           <panel-dashlet name="budgetDistributionPanel" title="Budget distribution"
             action="action-budget-distribution-view-budget-distribution" colSpan="12"
-            readonly="true"/>
+            readonly="true" if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
         </panel>
       </insert>
     </extend>
