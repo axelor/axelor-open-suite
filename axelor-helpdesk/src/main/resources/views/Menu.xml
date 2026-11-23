@@ -9,15 +9,9 @@
   <menuitem title="Current tickets" name="helpdesk-ticket-current"
     action="helpdesk.ticket.current" order="100" parent="helpdesk-root"/>
 
-  <action-view name="helpdesk.ticket.current" title="Tickets"
-    model="com.axelor.apps.helpdesk.db.Ticket">
-    <view type="kanban" name="ticket-kanban"/>
-    <view type="grid" name="ticket-grid"/>
-    <view type="form" name="ticket-form"/>
-    <view type="calendar" name="ticket-calendar"/>
-    <view-param name="search-filters" value="ticket-filters"/>
-    <context name="_user" expr="eval: __user__"/>
-  </action-view>
+  <action-method name="helpdesk.ticket.current">
+    <call class="com.axelor.apps.helpdesk.web.TicketController" method="showCurrentTickets"/>
+  </action-method>
 
   <menuitem title="My tickets" name="helpdesk-my-ticket-all"
     action="helpdesk.my.ticket.all" order="200" parent="helpdesk-root"/>
