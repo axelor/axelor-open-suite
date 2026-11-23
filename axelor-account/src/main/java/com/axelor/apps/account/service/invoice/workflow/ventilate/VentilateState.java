@@ -251,7 +251,7 @@ public class VentilateState extends WorkflowInvoice {
     }
     if (invoiceRepo.all().filter(query).bind(params).count() > 0) {
       Invoice lastInvoice =
-          invoiceRepo.all().filter(query).bind(params).order("invoiceDate").fetchOne();
+          invoiceRepo.all().filter(query).bind(params).order("-invoiceDate").fetchOne();
       if (sequence.getMonthlyResetOk()) {
         throw new AxelorException(
             sequence,
