@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed the invoiced amount counting the pack total when the end of pack line shows the total."
+module: axelor-supplychain
