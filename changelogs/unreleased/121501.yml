@@ -1,0 +1,3 @@
+---
+title: "Accounting cut-off: fixed the origin of generated moves, which used the provisional number of the original move instead of its origin."
+module: axelor-account
