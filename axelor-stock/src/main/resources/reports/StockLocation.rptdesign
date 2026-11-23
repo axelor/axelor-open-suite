@@ -1785,7 +1785,7 @@ if(params["PrintType"].value.equals('2'))
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["sale_price"] * row["current_qty"]</expression>
+                                        <expression name="value" type="javascript">row["sale_price"] * row["qty"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
