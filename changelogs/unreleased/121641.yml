@@ -1,0 +1,3 @@
+---
+title: "Payment session: fixed payment moves not generated at bank order realization when the bank order is confirmed automatically."
+module: axelor-bank-payment
