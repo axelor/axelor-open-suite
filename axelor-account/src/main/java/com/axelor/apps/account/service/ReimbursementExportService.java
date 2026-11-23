@@ -305,15 +305,21 @@ public class ReimbursementExportService {
     reimbursement.setPartner(partner);
     reimbursement.setCompany(company);
 
-    BankDetails bankDetails = partnerService.getDefaultBankDetails(partner);
-
-    reimbursement.setBankDetails(bankDetails);
+    reimbursement.setBankDetails(getActiveDefaultBankDetails(partner));
 
     reimbursement.setRef(
         sequenceService.getSequenceNumber(
             SequenceRepository.REIMBOURSEMENT, company, Reimbursement.class, "ref", reimbursement));
 
     return reimbursement;
+  }
+
+  protected BankDetails getActiveDefaultBankDetails(Partner partner) {
+    return partner.getBankDetailsList().stream()
+        .filter(BankDetails::getIsDefault)
+        .filter(BankDetails::getActive)
+        .findFirst()
+        .orElse(null);
   }
 
   /**
