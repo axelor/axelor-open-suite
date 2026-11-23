@@ -25,9 +25,11 @@ import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
-import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine;
 import com.axelor.apps.suppliermanagement.db.repo.PurchaseOrderSupplierLineRepository;
 import com.axelor.i18n.I18n;
@@ -35,10 +37,15 @@ import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
+import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 
 public class PurchaseOrderSupplierLineService {
 
   @Inject PurchaseOrderSupplierLineRepository poSupplierLineRepo;
+  @Inject PurchaseOrderLineService purchaseOrderLineService;
+  @Inject TaxService taxService;
+  @Inject AppBaseService appBaseService;
 
   @Transactional(rollbackOn = {Exception.class})
   public void accept(PurchaseOrderSupplierLine purchaseOrderSupplierLine) throws AxelorException {
@@ -59,12 +66,10 @@ public class PurchaseOrderSupplierLineService {
     }
     purchaseOrderLine.setSupplierPartner(supplierPartner);
 
-    purchaseOrderLine.setPrice(purchaseOrderSupplierLine.getPrice());
-    purchaseOrderLine.setExTaxTotal(
-        PurchaseOrderLineServiceImpl.computeAmount(
-            purchaseOrderLine.getQty(),
-            purchaseOrderLine.getPrice(),
-            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS));
+    applySupplierPrice(
+        purchaseOrderLine,
+        purchaseOrderLine.getPurchaseOrder(),
+        purchaseOrderSupplierLine.getPrice());
 
     purchaseOrderSupplierLine.setStateSelect(PurchaseOrderSupplierLineRepository.STATE_ACCEPTED);
 
@@ -75,5 +80,32 @@ public class PurchaseOrderSupplierLineService {
 
     return new PurchaseOrderSupplierLine(
         price, PurchaseOrderSupplierLineRepository.STATE_REQUESTED, supplierPartner);
+  }
+
+  public void applySupplierPrice(
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, BigDecimal price)
+      throws AxelorException {
+    purchaseOrderLine.setPrice(price);
+    purchaseOrderLine.setInTaxPrice(
+        taxService.convertUnitPrice(
+            false,
+            purchaseOrderLine.getTaxLineSet(),
+            price,
+            appBaseService.getNbDecimalDigitForUnitPrice()));
+    purchaseOrderLineService.compute(purchaseOrderLine, purchaseOrder);
+  }
+
+  public PurchaseOrderSupplierLine getAcceptedSupplierLine(PurchaseOrderLine purchaseOrderLine) {
+    if (CollectionUtils.isEmpty(purchaseOrderLine.getPurchaseOrderSupplierLineList())) {
+      return null;
+    }
+    return purchaseOrderLine.getPurchaseOrderSupplierLineList().stream()
+        .filter(
+            supplierLine ->
+                supplierLine.getStateSelect() == PurchaseOrderSupplierLineRepository.STATE_ACCEPTED
+                    && Objects.equals(
+                        supplierLine.getSupplierPartner(), purchaseOrderLine.getSupplierPartner()))
+        .findFirst()
+        .orElse(null);
   }
 }
