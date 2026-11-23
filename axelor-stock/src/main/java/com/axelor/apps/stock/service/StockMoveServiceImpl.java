@@ -301,8 +301,6 @@ public class StockMoveServiceImpl implements StockMoveService {
       }
     }
 
-    this.realize(stockMove);
-
     return stockMove;
   }
 
@@ -315,6 +313,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setCompany(company);
     stockMove.setFromStockLocation(fromStockLocation);
     stockMove.setFromAddress(fromStockLocation.getAddress());
+    stockMove.setTradingName(fromStockLocation.getTradingName());
     stockMove.setToStockLocation(toStockLocation);
     stockMove.setToAddress(toStockLocation.getAddress());
     stockMove.setNote(""); // comment to display on stock move

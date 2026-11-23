@@ -19,6 +19,7 @@
 package com.axelor.apps.stock.rest;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.rest.dto.StockInternalMovePostRequest;
@@ -133,14 +134,21 @@ public class StockMoveRestController {
   public Response createInternalStockMove(StockInternalMovePostRequest requestBody)
       throws AxelorException {
     RequestValidator.validateBody(requestBody);
-    new SecurityCheck().createAccess(StockMove.class).check();
+    new SecurityCheck()
+        .createAccess(StockMove.class)
+        .readAccess(StockLocation.class, requestBody.fetchStockLocationIds())
+        .check();
+
+    StockMoveService stockMoveService = Beans.get(StockMoveService.class);
     StockMove stockmove =
-        Beans.get(StockMoveService.class)
-            .createStockMoveMobility(
-                requestBody.fetchFromStockLocation(),
-                requestBody.fetchToStockLocation(),
-                requestBody.fetchCompany(),
-                StockInternalMoveStockMoveLinePostRequestMapper.map(requestBody.getLineList()));
+        stockMoveService.createStockMoveMobility(
+            requestBody.fetchFromStockLocation(),
+            requestBody.fetchToStockLocation(),
+            requestBody.fetchCompany(),
+            StockInternalMoveStockMoveLinePostRequestMapper.map(requestBody.getLineList()));
+
+    new SecurityCheck().writeAccess(StockMove.class, stockmove.getId()).check();
+    stockMoveService.realize(stockmove);
 
     return ResponseConstructor.buildCreateResponse(
         stockmove, new StockInternalMoveResponse(stockmove));

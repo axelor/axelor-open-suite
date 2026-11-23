@@ -25,6 +25,8 @@ import com.axelor.utils.api.RequestPostStructure;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 public class StockInternalMovePostRequest extends RequestPostStructure {
 
@@ -84,5 +86,19 @@ public class StockInternalMovePostRequest extends RequestPostStructure {
 
   public Company fetchCompany() {
     return ObjectFinder.find(Company.class, companyId, ObjectFinder.NO_VERSION);
+  }
+
+  public Long[] fetchStockLocationIds() {
+    Stream<Long> lineStockLocationIds =
+        lineList == null
+            ? Stream.empty()
+            : lineList.stream()
+                .filter(Objects::nonNull)
+                .flatMap(
+                    line -> Stream.of(line.getFromStockLocationId(), line.getToStockLocationId()));
+    return Stream.concat(Stream.of(fromStockLocationId, toStockLocationId), lineStockLocationIds)
+        .filter(Objects::nonNull)
+        .distinct()
+        .toArray(Long[]::new);
   }
 }
