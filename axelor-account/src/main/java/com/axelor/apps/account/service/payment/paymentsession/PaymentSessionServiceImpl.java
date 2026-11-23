@@ -261,8 +261,10 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             .bind("payable", AccountTypeRepository.TYPE_PAYABLE)
             .bind("partnerTypeClient", PaymentSessionRepository.PARTNER_TYPE_CUSTOMER)
             .bind("partnerTypeSupplier", PaymentSessionRepository.PARTNER_TYPE_SUPPLIER)
+            .bind("partnerTypeEmployee", PaymentSessionRepository.PARTNER_TYPE_EMPLOYEE)
             .bind("functionalOriginClient", MoveRepository.FUNCTIONAL_ORIGIN_SALE)
             .bind("functionalOriginSupplier", MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)
+            .bind("functionalOriginPayment", MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT)
             .bind("pfpValidateStatusValidated", InvoiceTermRepository.PFP_STATUS_VALIDATED)
             .bind(
                 "pfpValidateStatusPartiallyValidated",
@@ -299,6 +301,10 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             + " AND (self.paymentMode = :paymentMode OR (self.paymentMode.inOutSelect != :paymentModeInOutSelect AND self.paymentMode.typeSelect = :paymentModeTypeSelect))"
             + " AND :partnerTypeSelect = :partnerTypeSupplier "
             + " AND self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier ) "
+            + " OR ( self.moveLine.partner.isEmployee = TRUE "
+            + " AND (self.paymentMode = :paymentMode OR (self.paymentMode.inOutSelect != :paymentModeInOutSelect AND self.paymentMode.typeSelect = :paymentModeTypeSelect))"
+            + " AND :partnerTypeSelect = :partnerTypeEmployee "
+            + " AND self.moveLine.move.functionalOriginSelect != :functionalOriginPayment ) "
             + " OR ( :accountingMethodSelect in (2,3) AND self.moveLine.partner.isCustomer = TRUE AND self.moveLine.partner.isSupplier = TRUE AND self.moveLine.partner.isCompensation = TRUE "
             + " AND (self.moveLine.move.functionalOriginSelect = :functionalOriginClient OR self.moveLine.move.functionalOriginSelect = :functionalOriginSupplier )))";
 
@@ -424,6 +430,16 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
             && invoiceTerm.getMoveLine().getMove().getFunctionalOriginSelect()
                 == MoveRepository.FUNCTIONAL_ORIGIN_SALE)) {
       isSignedNegative = !isSignedNegative;
+    }
+
+    if (paymentSession.getPartnerTypeSelect() == PaymentSessionRepository.PARTNER_TYPE_EMPLOYEE) {
+      isSignedNegative =
+          invoiceTerm
+                  .getMoveLine()
+                  .getCredit()
+                  .subtract(invoiceTerm.getMoveLine().getDebit())
+                  .signum()
+              < 0;
     }
 
     invoiceTerm.setPaymentSession(paymentSession);

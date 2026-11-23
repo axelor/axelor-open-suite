@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveValidateServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineTaxServiceImpl;
+import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionServiceImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileCheckServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceImpl;
@@ -96,6 +97,7 @@ import com.axelor.apps.hr.service.MoveLineTaxHRServiceImpl;
 import com.axelor.apps.hr.service.PartnerConvertHRServiceImpl;
 import com.axelor.apps.hr.service.PartnerEmployeeService;
 import com.axelor.apps.hr.service.PartnerEmployeeServiceImpl;
+import com.axelor.apps.hr.service.PaymentSessionServiceHRImpl;
 import com.axelor.apps.hr.service.PayrollPreparationExportService;
 import com.axelor.apps.hr.service.PayrollPreparationExportServiceImpl;
 import com.axelor.apps.hr.service.ReconcileCheckServiceHRImpl;
@@ -471,6 +473,7 @@ public class HumanResourceModule extends AxelorModule {
         .to(ProjectPlanningTimeResponseComputeServiceImpl.class);
     bind(MoveLineTaxServiceImpl.class).to(MoveLineTaxHRServiceImpl.class);
     bind(ReconcileCheckServiceImpl.class).to(ReconcileCheckServiceHRImpl.class);
+    bind(PaymentSessionServiceImpl.class).to(PaymentSessionServiceHRImpl.class);
     bind(PayrollPreparationExportService.class).to(PayrollPreparationExportServiceImpl.class);
     bind(TimesheetLineRemoveService.class).to(TimesheetLineRemoveServiceImpl.class);
 

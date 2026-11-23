@@ -1473,6 +1473,19 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
                     == MoveRepository.FUNCTIONAL_ORIGIN_SALE))) {
       isSignedNegative = !isSignedNegative;
     }
+
+    if (invoiceTerm.getPaymentSession() != null
+        && invoiceTerm.getMoveLine() != null
+        && invoiceTerm.getPaymentSession().getPartnerTypeSelect()
+            == PaymentSessionRepository.PARTNER_TYPE_EMPLOYEE) {
+      isSignedNegative =
+          invoiceTerm
+                  .getMoveLine()
+                  .getCredit()
+                  .subtract(invoiceTerm.getMoveLine().getDebit())
+                  .signum()
+              < 0;
+    }
     return isSignedNegative;
   }
 
