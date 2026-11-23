@@ -1,0 +1,3 @@
+---
+title: "Fleet : fixed inconsistent demo data (vehicle acquisition dates, contracts linked to a vehicle with costs, employee drivers, fuel logs in the past)."
+module: axelor-fleet
