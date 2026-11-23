@@ -1,0 +1,13 @@
+---
+title: "Helpdesk: fixed the 'Current tickets' menu listing resolved and closed tickets, the 'Resolved' bars of the ticket charts ignoring closed tickets, the SLA charts computing their percentages on all the tickets of the database instead of those of the SLA and staying empty for an SLA without team, and the 'User' field of the SLA charts per user proposing no user."
+module: axelor-helpdesk
+developer: |
+  Added getResolvedAndClosedStatusIds() to TicketStatusService. Custom classes implementing this
+  interface without extending TicketStatusServiceImpl must implement it.
+
+  The action helpdesk.ticket.current of the 'Current tickets' menu is now an action-method calling
+  TicketController.showCurrentTickets(), which excludes the resolved and closed statuses of the
+  helpdesk configuration. The SQL datasets of the ticket and SLA charts of the helpdesk dashboards
+  and the domain of the user search field of the SLA charts per user have changed. Views overriding
+  them by name in custom modules keep their previous behaviour. The SLA charts per team now count
+  all the tickets of the selected SLA and no longer filter on the active team of the assignee.
