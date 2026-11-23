@@ -1,0 +1,3 @@
+---
+title: "Accounting batch: fixed the reimbursement export always reporting an anomaly and not generating the CFONB transfer file."
+module: axelor-account
