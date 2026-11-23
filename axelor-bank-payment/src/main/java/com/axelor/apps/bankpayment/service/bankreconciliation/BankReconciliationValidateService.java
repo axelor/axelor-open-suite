@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
+import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.service.BankReconciliationToolService;
 import com.axelor.apps.bankpayment.service.moveline.MoveLinePostedNbrService;
@@ -269,7 +270,11 @@ public class BankReconciliationValidateService {
     String name = bankReconciliationLine.getName();
     String reference = bankReconciliationLine.getReference();
     BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
-    BigDecimal bankStatementAmountRemaining = bankStatementLine.getAmountRemainToReconcile();
+    BigDecimal bankStatementAmountRemaining =
+        bankReconciliationLine
+            .getDebit()
+            .add(bankReconciliationLine.getCredit())
+            .min(bankStatementLine.getAmountRemainToReconcile());
     boolean isDebit = bankReconciliationLine.getDebit().compareTo(BigDecimal.ZERO) == 1;
 
     boolean firstLine = true;
@@ -330,6 +335,8 @@ public class BankReconciliationValidateService {
                   effectDate, debit, credit, name, reference, bankStatementLine, moveLine);
           bankReconciliation.addBankReconciliationLineListItem(bankReconciliationLine);
         }
+        bankReconciliationLine.setConfidenceIndex(
+            BankReconciliationLineRepository.CONFIDENCE_INDEX_GREEN);
         if (isUnderCorrection) {
           bankReconciliationLine.setIsPosted(true);
           bankReconciliationLineService.checkAmount(bankReconciliationLine);
