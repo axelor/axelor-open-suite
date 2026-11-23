@@ -626,9 +626,9 @@
   <action-attrs name="action-project-attrs-set-completed-task-status-domain">
     <attribute name="domain" for="completedTaskStatus"
       expr="eval: 'self.isCompleted = true AND self.id IN (' + projectTaskStatusSet?.collect{ it.id }?.join(',') + ')'"
-      if="projectTaskStatusSet?.collect{it.id}?.size &gt; 0"/>
+      if="projectTaskStatusSet?.collect{it.id}?.size() &gt; 0"/>
     <attribute name="domain" for="completedTaskStatus" expr="eval: 'self.id = 0'"
-      if="projectTaskStatusSet?.collect{it.id}?.size == 0"/>
+      if="projectTaskStatusSet?.collect{it.id}?.size() == 0"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-set-parent-project-domain"
