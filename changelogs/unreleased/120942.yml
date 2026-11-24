@@ -1,0 +1,3 @@
+---
+title: "Purchase order: cancelling a purchase order is now blocked, without cancelling any receipt, when one of its receipts cannot be cancelled."
+module: axelor-supplychain

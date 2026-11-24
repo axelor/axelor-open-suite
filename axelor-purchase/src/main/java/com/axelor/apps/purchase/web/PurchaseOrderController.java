@@ -21,6 +21,7 @@ package com.axelor.apps.purchase.web;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -234,7 +235,7 @@ public class PurchaseOrderController {
       Beans.get(PurchaseOrderWorkflowService.class).cancelPurchaseOrder(purchaseOrder);
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

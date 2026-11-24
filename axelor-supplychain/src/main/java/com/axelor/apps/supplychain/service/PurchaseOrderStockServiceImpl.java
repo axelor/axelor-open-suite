@@ -593,6 +593,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         null);
   }
 
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelReceipt(PurchaseOrder purchaseOrder) throws AxelorException {
 
     List<StockMove> stockMoveList =
