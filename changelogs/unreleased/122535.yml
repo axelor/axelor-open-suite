@@ -1,0 +1,3 @@
+---
+title: "Payment schedule: fixed direct debit of the next schedule lines failing once one of the schedule invoices is fully paid."
+module: axelor-account
