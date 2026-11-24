@@ -97,4 +97,15 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
     }
   }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+    if (appSupplychainService.isApp("supplychain")
+        && purchaseOrder.getStatusSelect() != null
+        && purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_VALIDATED) {
+      purchaseOrderStockService.cancelReceipt(purchaseOrder);
+    }
+    super.cancelPurchaseOrder(purchaseOrder);
+  }
 }

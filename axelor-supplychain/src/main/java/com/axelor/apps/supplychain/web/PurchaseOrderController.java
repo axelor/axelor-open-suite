@@ -111,7 +111,7 @@ public class PurchaseOrderController {
       Beans.get(PurchaseOrderStockServiceImpl.class).cancelReceipt(purchaseOrder);
       response.setReload(true);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
